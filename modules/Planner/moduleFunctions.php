@@ -332,8 +332,6 @@ function getThread($guid, $connection2, $gibbonPlannerEntryID, $parent, $level, 
 						$output.="</td>" ;
 					}
 				$output.="</tr>" ;
-				
-				
 			$output.="</table>" ; 
 			
 			//Get any replies

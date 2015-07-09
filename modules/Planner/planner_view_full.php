@@ -1596,10 +1596,6 @@ else {
 										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner_view_full.php$params#chat'>" . _('Refresh') . "<img style='margin-left: 5px' title='" . _('Refresh') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/refresh.png'/></a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full_post.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&search=" . $gibbonPersonID . "'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a> " ;						
 										print "</div>" ;
 							
-										print "<div style='margin-bottom: 0px' class='success'>" ;
-											print sprintf(_('Items in %1$sred%2$s are new since your last login. Items in green are older.'), "<span style='color: #c00'>", "</span>") ;
-										print "</div>" ;
-								
 										//Get discussion
 										print getThread($guid, $connection2, $gibbonPlannerEntryID, NULL, 0, NULL, $viewBy, $subView, $date, $class, $gibbonCourseClassID, $gibbonPersonID, $row["role"]) ;
 							
