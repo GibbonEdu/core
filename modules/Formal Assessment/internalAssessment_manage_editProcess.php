@@ -95,6 +95,19 @@ else {
 						$gibbonScaleIDAttainment=$_POST["gibbonScaleIDAttainment"] ;
 					}
 				}
+				//Sort out effort
+				$effort=$_POST["effort"] ;
+				if ($effort=="N") {
+					$gibbonScaleIDEffort=NULL ;
+				}
+				else {
+					if ($_POST["gibbonScaleIDEffort"]=="") {
+						$gibbonScaleIDEffort=NULL ;
+					}
+					else {
+						$gibbonScaleIDEffort=$_POST["gibbonScaleIDEffort"] ;
+					}
+				}
 				$comment=$_POST["comment"] ;
 				$uploadedResponse=$_POST["uploadedResponse"] ;
 				$completeDate=$_POST["completeDate"] ;
@@ -147,8 +160,8 @@ else {
 				else {
 					//Write to database
 					try {
-						$data=array("gibbonCourseClassID"=>$gibbonCourseClassID, "name"=>$name, "description"=>$description, "type"=>$type, "attainment"=>$attainment, "gibbonScaleIDAttainment"=>$gibbonScaleIDAttainment, "comment"=>$comment, "uploadedResponse"=>$uploadedResponse, "completeDate"=>$completeDate, "complete"=>$complete, "viewableStudents"=>$viewableStudents, "viewableParents"=>$viewableParents, "attachment"=>$attachment, "gibbonPersonIDLastEdit"=>$gibbonPersonIDLastEdit, "gibbonInternalAssessmentColumnID"=>$gibbonInternalAssessmentColumnID); 
-						$sql="UPDATE gibbonInternalAssessmentColumn SET gibbonCourseClassID=:gibbonCourseClassID, name=:name, description=:description, type=:type, attainment=:attainment, gibbonScaleIDAttainment=:gibbonScaleIDAttainment, comment=:comment, uploadedResponse=:uploadedResponse, completeDate=:completeDate, complete=:complete, viewableStudents=:viewableStudents, viewableParents=:viewableParents, attachment=:attachment, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit WHERE gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID" ;
+						$data=array("gibbonCourseClassID"=>$gibbonCourseClassID, "name"=>$name, "description"=>$description, "type"=>$type, "attainment"=>$attainment, "gibbonScaleIDAttainment"=>$gibbonScaleIDAttainment, "effort"=>$effort, "gibbonScaleIDEffort"=>$gibbonScaleIDEffort, "comment"=>$comment, "uploadedResponse"=>$uploadedResponse, "completeDate"=>$completeDate, "complete"=>$complete, "viewableStudents"=>$viewableStudents, "viewableParents"=>$viewableParents, "attachment"=>$attachment, "gibbonPersonIDLastEdit"=>$gibbonPersonIDLastEdit, "gibbonInternalAssessmentColumnID"=>$gibbonInternalAssessmentColumnID); 
+						$sql="UPDATE gibbonInternalAssessmentColumn SET gibbonCourseClassID=:gibbonCourseClassID, name=:name, description=:description, type=:type, attainment=:attainment, gibbonScaleIDAttainment=:gibbonScaleIDAttainment, effort=:effort, gibbonScaleIDEffort=:gibbonScaleIDEffort, comment=:comment, uploadedResponse=:uploadedResponse, completeDate=:completeDate, complete=:complete, viewableStudents=:viewableStudents, viewableParents=:viewableParents, attachment=:attachment, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit WHERE gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID" ;
 						$result=$connection2->prepare($sql);
 						$result->execute($data);
 					}

@@ -471,6 +471,9 @@ RENAME TABLE internalAssessmentColumn TO gibbonInternalAssessmentColumn;end
 RENAME TABLE internalAssessmentEntry TO gibbonInternalAssessmentEntry;end
 ALTER TABLE `gibbonInternalAssessmentColumn` CHANGE `internalAssessmentColumnID` `gibbonInternalAssessmentColumnID` INT(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;end
 ALTER TABLE `gibbonInternalAssessmentEntry` CHANGE `internalAssessmentEntryID` `gibbonInternalAssessmentEntryID` INT(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, CHANGE `internalAssessmentColumnID` `gibbonInternalAssessmentColumnID` INT(10) UNSIGNED ZEROFILL NOT NULL;end
+ALTER TABLE `gibbonInternalAssessmentColumn` ADD `effort` ENUM('Y','N') NOT NULL DEFAULT 'Y' AFTER `gibbonScaleIDAttainment`, ADD `gibbonScaleIDEffort` INT(5) UNSIGNED ZEROFILL NULL DEFAULT NULL AFTER `effort`;end
+ALTER TABLE `gibbonInternalAssessmentEntry` ADD `effortValue` VARCHAR(10) NULL DEFAULT NULL AFTER `attainmentDescriptor`, ADD `effortDescriptor` VARCHAR(100) NULL DEFAULT NULL AFTER `effortValue`;end
+
 ";
 
 ?>

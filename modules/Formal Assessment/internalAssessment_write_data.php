@@ -25,6 +25,8 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 //Get alternative header names
 $attainmentAlternativeName=getSettingByScope($connection2, "Markbook", "attainmentAlternativeName") ;
 $attainmentAlternativeNameAbrev=getSettingByScope($connection2, "Markbook", "attainmentAlternativeNameAbrev") ;
+$effortAlternativeName=getSettingByScope($connection2, "Markbook", "effortAlternativeName") ;
+$effortAlternativeNameAbrev=getSettingByScope($connection2, "Markbook", "effortAlternativeNameAbrev") ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Formal Assessment/internalAssessment_write_data.php")==FALSE) {
 	//Acess denied
@@ -145,6 +147,9 @@ else {
 						if ($row2["attainment"]=="Y") {
 							$span++ ;
 						}
+						if ($row2["effort"]=="Y") {
+							$span++ ;
+						}
 						if ($row2["comment"]=="Y" OR $row2["uploadedResponse"]=="Y") {
 							$span++ ;
 						}
@@ -220,11 +225,13 @@ else {
 								
 								$columnID=array() ;
 								$attainmentID=array() ;
+								$effortID=array() ;
 								$submission=FALSE ;
 								
 								for ($i=0;$i<$columns;$i++) {
 									$columnID[$i]=$row2["gibbonInternalAssessmentColumnID"];
 									$attainmentID[$i]=$row2["gibbonScaleIDAttainment"];
+									$effortID[$i]=$row2["gibbonScaleIDEffort"];
 									
 									print "<th style='text-align: center' colspan=$span-2>" ;
 										print "<span title='" . htmlPrep($row2["description"]) . "'>" . $row2["name"] . "<br/>" ;
@@ -278,6 +285,37 @@ else {
 											}
 											else {
 												print "<span title='" . _('Attainment') . htmlPrep($scale) . "'>" . _('Att') . "</span>" ;
+											}
+										print "</th>" ;
+									}
+									if ($row2["effort"]=="Y") {
+										print "<th style='text-align: center; width: 30px'>" ;
+											$scale="" ;
+											if ($effortID[$i]!="") {
+												try {
+													$dataScale=array("gibbonScaleID"=>$effortID[$i]); 
+													$sqlScale="SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID" ;
+													$resultScale=$connection2->prepare($sqlScale);
+													$resultScale->execute($dataScale);
+												}
+												catch(PDOException $e) { }
+												$scale="" ;
+												if ($resultScale->rowCount()==1) {
+													$rowScale=$resultScale->fetch() ;
+													$scale=" - " . $rowScale["name"] ;
+													if ($rowScale["usage"]!="") {
+														$scale=$scale . ": " . $rowScale["usage"] ;
+													}
+												}
+												$gibbonScaleIDEffort=$rowScale["gibbonScaleID"] ;
+												print "<input name='scaleEffort' id='scaleEffort' value='" . $effortID[$i] . "' type='hidden'>" ;
+												print "<input name='lowestAcceptableEffort' id='lowestAcceptableEffort' value='" . $rowScale["lowestAcceptable"] . "' type='hidden'>" ;
+											}
+											if ($effortAlternativeName!="" AND $effortAlternativeNameAbrev!="") {
+												print "<span title='" . $effortAlternativeName . htmlPrep($scale) . "'>" . $effortAlternativeNameAbrev . "</span>" ;
+											}
+											else {
+												print "<span title='" . _('Effort') . htmlPrep($scale) . "'>" . _('Eff') . "</span>" ;
 											}
 										print "</th>" ;
 									}
@@ -427,6 +465,32 @@ else {
 																	print "<option value='" . htmlPrep($rowSelect["value"]) . "'>" . htmlPrep(_($rowSelect["value"])) . "</option>" ;
 																}
 															}			
+														print "</select>" ;
+													}
+												print "</td>" ;
+											}
+											if ($row2["effort"]=="Y") {
+												print "<td style='text-align: center'>" ;
+													if ($row2["gibbonScaleIDEffort"]!="") {
+														print "<select name='$count-effortValue' id='$count-effortValue' style='width:50px'>" ;
+															try {
+																$dataSelect=array("gibbonScaleID"=>$gibbonScaleIDEffort); 
+																$sqlSelect="SELECT * FROM gibbonScaleGrade WHERE gibbonScaleID=:gibbonScaleID ORDER BY sequenceNumber" ;
+																$resultSelect=$connection2->prepare($sqlSelect);
+																$resultSelect->execute($dataSelect);
+															}
+															catch(PDOException $e) { }
+															print "<option value=''></option>" ;
+															$sequence="" ;
+															$descriptor="" ;
+															while ($rowSelect=$resultSelect->fetch()) {
+																if ($rowEntry["effortValue"]==$rowSelect["value"]) {
+																	print "<option selected value='" . htmlPrep($rowSelect["value"]) . "'>" . htmlPrep(_($rowSelect["value"])) . "</option>" ;
+																}
+																else {
+																	print "<option value='" . htmlPrep($rowSelect["value"]) . "'>" . htmlPrep(_($rowSelect["value"])) . "</option>" ;
+																}
+															}
 														print "</select>" ;
 													}
 												print "</td>" ;

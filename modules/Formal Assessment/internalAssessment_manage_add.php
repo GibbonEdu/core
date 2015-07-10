@@ -25,6 +25,8 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 //Get alternative header names
 $attainmentAlternativeName=getSettingByScope($connection2, "Markbook", "attainmentAlternativeName") ;
 $attainmentAlternativeNameAbrev=getSettingByScope($connection2, "Markbook", "attainmentAlternativeNameAbrev") ;
+$effortAlternativeName=getSettingByScope($connection2, "Markbook", "effortAlternativeName") ;
+$effortAlternativeNameAbrev=getSettingByScope($connection2, "Markbook", "effortAlternativeNameAbrev") ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Formal Assessment/internalAssessment_manage_add.php")==FALSE) {
 	//Acess denied
@@ -248,6 +250,56 @@ else {
 						</td>
 						<td class="right">
 							<select name="gibbonScaleIDAttainment" id="gibbonScaleIDAttainment" style="width: 302px">
+								<?php
+								try {
+									$dataSelect=array(); 
+									$sqlSelect="SELECT * FROM gibbonScale WHERE (active='Y') ORDER BY name" ;
+									$resultSelect=$connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								}
+								catch(PDOException $e) { }
+								print "<option value=''></option>" ;
+								while ($rowSelect=$resultSelect->fetch()) {
+									$selected="" ;
+									if ($rowSelect["gibbonScaleID"]==$_SESSION[$guid]["primaryAssessmentScale"]) {
+										$selected="selected" ;
+									}
+									print "<option $selected value='" . $rowSelect["gibbonScaleID"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
+								}
+								?>				
+							</select>
+						</td>
+					</tr>
+					<script type="text/javascript">
+						/* Homework Control */
+						$(document).ready(function(){
+							 $(".effort").click(function(){
+								if ($('input[name=effort]:checked').val()=="Y" ) {
+									$("#gibbonScaleIDEffortRow").slideDown("fast", $("#gibbonScaleIDEffortRow").css("display","table-row")); 
+									$("#gibbonRubricIDEffortRow").slideDown("fast", $("#gibbonRubricIDEffortRow").css("display","table-row")); 
+
+								} else {
+									$("#gibbonScaleIDEffortRow").css("display","none");
+									$("#gibbonRubricIDEffortRow").css("display","none");
+								}
+							 });
+						});
+					</script>
+					<tr>
+						<td> 
+							<b><?php if ($effortAlternativeName!="") { print sprintf(_('Assess %1$s?'), $effortAlternativeName) ; } else { print _('Assess Effort?') ; } ?> *</b><br/>
+						</td>
+						<td class="right">
+							<input checked type="radio" name="effort" value="Y" class="effort" /> <?php print _('Yes') ?>
+							<input type="radio" name="effort" value="N" class="effort" /> <?php print _('No') ?>
+						</td>
+					</tr>
+					<tr id="gibbonScaleIDEffortRow">
+						<td> 
+							<b><?php if ($effortAlternativeName!="") { print $effortAlternativeName . " " . _('Scale') ; } else { print _('Effort Scale') ; } ?> *</b><br/>
+						</td>
+						<td class="right">
+							<select name="gibbonScaleIDEffort" id="gibbonScaleIDEffort" style="width: 302px">
 								<?php
 								try {
 									$dataSelect=array(); 

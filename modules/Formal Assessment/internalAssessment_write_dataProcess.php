@@ -84,6 +84,8 @@ else {
 				$partialFail=FALSE ;
 				$attainment=$row["attainment"] ;
 				$gibbonScaleIDAttainment=$row["gibbonScaleIDAttainment"] ;
+				$effort=$row["effort"] ;
+				$gibbonScaleIDEffort=$row["gibbonScaleIDEffort"] ;
 				$comment=$row["comment"] ;
 				$uploadedResponse=$row["uploadedResponse"] ;
 				
@@ -96,6 +98,14 @@ else {
 					}
 					else {
 						$attainmentValue=$_POST["$i-attainmentValue"] ;
+					}
+					//Effort
+					if ($effort=="N" OR $gibbonScaleIDEffort=="") {
+						$effortValue=NULL ;
+						$effortDescriptor=NULL ;
+					}
+					else {
+						$effortValue=$_POST["$i-effortValue"] ;
 					}
 					//Comment
 					if ($comment!="Y") {
@@ -136,6 +146,32 @@ else {
 								$rowScale=$resultScale->fetch() ;
 								$sequence=$rowScale["sequenceNumber"] ;
 								$attainmentDescriptor=$rowScale["descriptor"] ;
+							}
+						}
+					}
+					
+					//SET AND CALCULATE FOR EFFORT
+					if ($effort=="Y" AND $gibbonScaleIDEffort!="") {
+						$effortDescriptor="" ;
+						if ($effortValue!="") {
+							$lowestAcceptableEffort=$_POST["lowestAcceptableEffort"] ;
+							$scaleEffort=$_POST["scaleEffort"] ;
+							try {
+								$dataScale=array("effortValue"=>$effortValue, "scaleEffort"=>$scaleEffort); 
+								$sqlScale="SELECT * FROM gibbonScaleGrade JOIN gibbonScale ON (gibbonScaleGrade.gibbonScaleID=gibbonScale.gibbonScaleID) WHERE value=:effortValue AND gibbonScaleGrade.gibbonScaleID=:scaleEffort" ;
+								$resultScale=$connection2->prepare($sqlScale);
+								$resultScale->execute($dataScale);
+							}
+							catch(PDOException $e) { 
+								$partialFail=TRUE ;
+							}
+							if ($resultScale->rowCount()!=1) {
+								$partialFail=TRUE ;
+							}
+							else {
+								$rowScale=$resultScale->fetch() ;
+								$sequence=$rowScale["sequenceNumber"] ;
+								$effortDescriptor=$rowScale["descriptor"] ;
 							}
 						}
 					}
@@ -189,8 +225,8 @@ else {
 					if (!($selectFail)) {
 						if ($result->rowCount()<1) {
 							try {
-								$data=array("gibbonInternalAssessmentColumnID"=>$gibbonInternalAssessmentColumnID, "gibbonPersonIDStudent"=>$gibbonPersonIDStudent, "attainmentValue"=>$attainmentValue, "attainmentDescriptor"=>$attainmentDescriptor, "comment"=>$commentValue, "attachment"=>$attachment, "gibbonPersonIDLastEdit"=>$gibbonPersonIDLastEdit); 
-								$sql="INSERT INTO gibbonInternalAssessmentEntry SET gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID, gibbonPersonIDStudent=:gibbonPersonIDStudent, attainmentValue=:attainmentValue, attainmentDescriptor=:attainmentDescriptor, comment=:comment, response=:attachment, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit" ;
+								$data=array("gibbonInternalAssessmentColumnID"=>$gibbonInternalAssessmentColumnID, "gibbonPersonIDStudent"=>$gibbonPersonIDStudent, "attainmentValue"=>$attainmentValue, "attainmentDescriptor"=>$attainmentDescriptor, "effortValue"=>$effortValue, "effortDescriptor"=>$effortDescriptor, "comment"=>$commentValue, "attachment"=>$attachment, "gibbonPersonIDLastEdit"=>$gibbonPersonIDLastEdit); 
+								$sql="INSERT INTO gibbonInternalAssessmentEntry SET gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID, gibbonPersonIDStudent=:gibbonPersonIDStudent, attainmentValue=:attainmentValue, attainmentDescriptor=:attainmentDescriptor, effortValue=:effortValue, effortDescriptor=:effortDescriptor, comment=:comment, response=:attachment, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit" ;
 								$result=$connection2->prepare($sql);
 								$result->execute($data);
 							}
@@ -202,8 +238,8 @@ else {
 							$row=$result->fetch() ;
 							//Update
 							try {
-								$data=array("gibbonInternalAssessmentColumnID"=>$gibbonInternalAssessmentColumnID, "gibbonPersonIDStudent"=>$gibbonPersonIDStudent, "attainmentValue"=>$attainmentValue, "attainmentDescriptor"=>$attainmentDescriptor, "comment"=>$commentValue, "attachment"=>$attachment, "gibbonPersonIDLastEdit"=>$gibbonPersonIDLastEdit, "gibbonInternalAssessmentEntryID"=>$row["gibbonInternalAssessmentEntryID"]); 
-								$sql="UPDATE gibbonInternalAssessmentEntry SET gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID, gibbonPersonIDStudent=:gibbonPersonIDStudent, attainmentValue=:attainmentValue, attainmentDescriptor=:attainmentDescriptor, comment=:comment, response=:attachment, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit WHERE gibbonInternalAssessmentEntryID=:gibbonInternalAssessmentEntryID" ;
+								$data=array("gibbonInternalAssessmentColumnID"=>$gibbonInternalAssessmentColumnID, "gibbonPersonIDStudent"=>$gibbonPersonIDStudent, "attainmentValue"=>$attainmentValue, "attainmentDescriptor"=>$attainmentDescriptor, "comment"=>$commentValue, "attachment"=>$attachment, "effortValue"=>$effortValue, "effortDescriptor"=>$effortDescriptor, "gibbonPersonIDLastEdit"=>$gibbonPersonIDLastEdit, "gibbonInternalAssessmentEntryID"=>$row["gibbonInternalAssessmentEntryID"]); 
+								$sql="UPDATE gibbonInternalAssessmentEntry SET gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID, gibbonPersonIDStudent=:gibbonPersonIDStudent, attainmentValue=:attainmentValue, attainmentDescriptor=:attainmentDescriptor, effortValue=:effortValue, effortDescriptor=:effortDescriptor, comment=:comment, response=:attachment, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit WHERE gibbonInternalAssessmentEntryID=:gibbonInternalAssessmentEntryID" ;
 								$result=$connection2->prepare($sql);
 								$result->execute($data);
 							}

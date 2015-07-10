@@ -25,6 +25,8 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 //Get alternative header names
 $attainmentAlternativeName=getSettingByScope($connection2, "Markbook", "attainmentAlternativeName") ;
 $attainmentAlternativeNameAbrev=getSettingByScope($connection2, "Markbook", "attainmentAlternativeNameAbrev") ;
+$effortAlternativeName=getSettingByScope($connection2, "Markbook", "effortAlternativeName") ;
+$effortAlternativeNameAbrev=getSettingByScope($connection2, "Markbook", "effortAlternativeNameAbrev") ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Formal Assessment/internalAssessment_write.php")==FALSE) {
 	//Acess denied
@@ -307,6 +309,7 @@ else {
 							
 								$columnID=array() ;
 								$attainmentID=array() ;
+								$effortID=array() ;
 								for ($i=0; $i<$columnsThisPage; $i++) {
 									$row=$result->fetch() ;
 									if ($row===FALSE) {
@@ -316,6 +319,8 @@ else {
 										$columnID[$i]=$row["gibbonInternalAssessmentColumnID"];
 										$attainmentOn[$i]=$row["attainment"];
 										$attainmentID[$i]=$row["gibbonScaleIDAttainment"];
+										$effortOn[$i]=$row["effort"];
+										$effortID[$i]=$row["gibbonScaleIDEffort"];
 										$comment[$i]=$row["comment"];
 										$uploadedResponse[$i]=$row["uploadedResponse"];
 										$submission[$i]=FALSE ;
@@ -326,6 +331,9 @@ else {
 									$span=0 ;
 									$contents=TRUE ;
 									if ($attainmentOn[$i]=="Y" AND $attainmentID[$i]!="") {
+										$span++ ;
+									}
+									if ($effortOn[$i]=="Y" AND $effortID[$i]!="") {
 										$span++ ;
 									}
 									if ($comment[$i]=="Y") {
@@ -393,6 +401,39 @@ else {
 												}
 												else {
 													print "<span title='" . _('Attainment') . htmlPrep($scale) . "'>" . _('Att') . "</span>" ;
+												}
+											print "</th>" ;
+										}
+										
+										if ($effortOn[$i]=="Y" AND $effortID[$i]!="") {
+											$leftBorderStyle='' ;
+											if ($leftBorder==FALSE) {
+												$leftBorder=TRUE ;
+												$leftBorderStyle="border-left: 2px solid #666;" ;
+											}
+											print "<th style='$leftBorderStyle text-align: center; width: 40px'>" ;
+												try {
+													$dataScale=array("gibbonScaleID"=>$effortID[$i]); 
+													$sqlScale="SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID" ;
+													$resultScale=$connection2->prepare($sqlScale);
+													$resultScale->execute($dataScale);
+												}
+												catch(PDOException $e) { 
+													print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+												}
+												$scale="" ;
+												if ($resultScale->rowCount()==1) {
+													$rowScale=$resultScale->fetch() ;
+													$scale=" - " . $rowScale["name"] ;
+													if ($rowScale["usage"]!="") {
+														$scale=$scale . ": " . $rowScale["usage"] ;
+													}
+												}
+												if ($effortAlternativeName!="" AND $effortAlternativeNameAbrev!="") {
+													print "<span title='" . $effortAlternativeName . htmlPrep($scale) . "'>" . $effortAlternativeNameAbrev . "</span>" ;
+												}
+												else {
+													print "<span title='" . _('Effort') . htmlPrep($scale) . "'>" . _('Eff') . "</span>" ;
 												}
 											print "</th>" ;
 										}
@@ -511,6 +552,32 @@ else {
 														}
 													print "</td>" ;
 												}
+												if ($effortOn[$i]=="Y" AND $effortID[$i]!="") {
+													$leftBorderStyle='' ;
+													if ($leftBorder==FALSE) {
+														$leftBorder=TRUE ;
+														$leftBorderStyle="border-left: 2px solid #666;" ;
+													}
+													print "<td style='$leftBorderStyle text-align: center;'>" ;
+														if ($effortID[$i]!="") {
+															$styleEffort="" ;
+															$effort="" ;
+															if ($rowEntry["effortValue"]!="") {
+																$effort=_($rowEntry["effortValue"]) ;
+															}
+															if ($rowEntry["effortValue"]=="Complete") {
+																$effort=_("Com") ;
+															}
+															else if ($rowEntry["effortValue"]=="Incomplete") {
+																$effort=_("Inc") ;
+															}
+															print "<div $styleEffort title='" . htmlPrep($rowEntry["effortDescriptor"]) . "'>$effort" ;
+														}
+														if ($effortID[$i]!="") {
+															print "</div>" ;
+														}
+													print "</td>" ;
+												}
 												
 												if ($comment[$i]=="Y") {
 													$leftBorderStyle='' ;
@@ -546,6 +613,9 @@ else {
 											else {
 												$emptySpan=0 ;
 												if ($attainmentOn[$i]=="Y" AND $attainmentID[$i]!="") {
+													$emptySpan++ ;
+												}
+												if ($effortOn[$i]=="Y" AND $effortID[$i]!="") {
 													$emptySpan++ ;
 												}
 												if ($comment[$i]=="Y") {

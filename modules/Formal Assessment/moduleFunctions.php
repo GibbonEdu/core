@@ -24,7 +24,8 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
 	//Get alternative header names
 	$attainmentAlternativeName=getSettingByScope($connection2, "Markbook", "attainmentAlternativeName") ;
 	$attainmentAlternativeNameAbrev=getSettingByScope($connection2, "Markbook", "attainmentAlternativeNameAbrev") ;
-	$showParentAttainmentWarning=getSettingByScope($connection2, "Markbook", "showParentAttainmentWarning" ) ; 
+	$effortAlternativeName=getSettingByScope($connection2, "Markbook", "effortAlternativeName") ;
+	$effortAlternativeNameAbrev=getSettingByScope($connection2, "Markbook", "effortAlternativeNameAbrev") ;
 	$alert=getAlert($connection2, 002) ;	
 		
 	//Get school years in reverse order
@@ -77,6 +78,9 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
 						$output.="</th>" ;
 						$output.="<th style='width: 75px; text-align: center'>" ;
 							if ($attainmentAlternativeName!="") { $output.=$attainmentAlternativeName ; } else { $output.=_('Attainment') ; }
+						$output.="</th>" ;
+						$output.="<th style='width: 75px; text-align: center'>" ;
+							if ($effortAlternativeName!="") { $output.=$effortAlternativeName ; } else { $output.=_('Effort') ; }
 						$output.="</th>" ;
 						$output.="<th>" ;
 							$output.="Comment" ;
@@ -137,7 +141,40 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
 									}
 								$output.="</td>" ;
 							}
-							
+							if ($rowInternalAssessment["effort"]=="N" OR $rowInternalAssessment["gibbonScaleIDEffort"]=="") {
+								$output.="<td class='dull' style='color: #bbb; text-align: center'>" ;
+									$output.=_('N/A') ;
+								$output.="</td>" ;
+							}
+							else {
+								$output.="<td style='text-align: center'>" ;
+									$effortExtra="" ;
+									try {
+										$dataEffort=array("gibbonScaleID"=>$rowInternalAssessment["gibbonScaleIDEffort"]); 
+										$sqlEffort="SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID" ;
+										$resultEffort=$connection2->prepare($sqlEffort);
+										$resultEffort->execute($dataEffort);
+									}
+									catch(PDOException $e) { 
+										$output.="<div class='error'>" . $e->getMessage() . "</div>" ; 
+									}
+									if ($resultEffort->rowCount()==1) {
+										$rowEffort=$resultEffort->fetch() ;
+										$effortExtra="<br/>" . _($rowEffort["usage"]) ;
+									}
+									$styleEffort="style='font-weight: bold'" ;
+									$output.="<div $styleEffort>" . $rowInternalAssessment["effortValue"] ;
+									$output.="</div>" ;
+									if ($rowInternalAssessment["effortValue"]!="") {
+										$output.="<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'>" ;
+											$output.="<b>" . htmlPrep(_($rowInternalAssessment["effortDescriptor"])) . "</b>" ;
+											if ($effortExtra!="") {
+												$output.=_($effortExtra) ;
+											}
+										$output.="</div>" ;
+									}
+								$output.="</td>" ;
+							}
 							if ($rowInternalAssessment["comment"]=="N" AND $rowInternalAssessment["uploadedResponse"]=="N") {
 								print "<td class='dull' style='color: #bbb; text-align: left'>" ;
 									print _('N/A') ;
