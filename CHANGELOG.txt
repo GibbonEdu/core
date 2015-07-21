@@ -59,6 +59,9 @@ General: added Nepalese Rupee as currency option
 	Edited file /modules/System Admin/systemSettings.php
 	Edited file /installer/install.php
 
+User Admin: added username to student selection list to help differentiate students with same name
+	Edited file /modules/User Admin/studentEnrolment_manage_add.php
+
 v10.0.00
 --------
 i18n: added Urdu as inactive development language
