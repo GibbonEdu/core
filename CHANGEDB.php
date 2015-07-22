@@ -473,7 +473,12 @@ ALTER TABLE `gibbonInternalAssessmentColumn` CHANGE `internalAssessmentColumnID`
 ALTER TABLE `gibbonInternalAssessmentEntry` CHANGE `internalAssessmentEntryID` `gibbonInternalAssessmentEntryID` INT(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, CHANGE `internalAssessmentColumnID` `gibbonInternalAssessmentColumnID` INT(10) UNSIGNED ZEROFILL NOT NULL;end
 ALTER TABLE `gibbonInternalAssessmentColumn` ADD `effort` ENUM('Y','N') NOT NULL DEFAULT 'Y' AFTER `gibbonScaleIDAttainment`, ADD `gibbonScaleIDEffort` INT(5) UNSIGNED ZEROFILL NULL DEFAULT NULL AFTER `effort`;end
 ALTER TABLE `gibbonInternalAssessmentEntry` ADD `effortValue` VARCHAR(10) NULL DEFAULT NULL AFTER `attainmentDescriptor`, ADD `effortDescriptor` VARCHAR(100) NULL DEFAULT NULL AFTER `effortValue`;end
-
+CREATE TABLE `gibbonAlarm` (  `gibbonAlarmID` int(5) unsigned zerofill NOT NULL, `type` enum('General','Lockdown') DEFAULT NULL, `status` enum('Current','Past') NOT NULL DEFAULT 'Past', `gibbonPersonID` int(10) unsigned zerofill NOT NULL,  `timestampStart` timestamp NULL DEFAULT NULL,  `timestampEnd` timestamp NULL DEFAULT NULL) ENGINE=MyISAM DEFAULT CHARSET=utf8;end
+ALTER TABLE `gibbonAlarm`  ADD PRIMARY KEY (`gibbonAlarmID`);end
+ALTER TABLE `gibbonAlarm`  MODIFY `gibbonAlarmID` int(5) unsigned zerofill NOT NULL AUTO_INCREMENT;end
+CREATE TABLE `gibbonAlarmConfirm` (  `gibbonAlarmConfirmID` int(8) unsigned zerofill NOT NULL,  `gibbonAlarmID` int(5) unsigned zerofill NOT NULL,  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8;end
+ALTER TABLE `gibbonAlarmConfirm`  ADD PRIMARY KEY (`gibbonAlarmConfirmID`),  ADD UNIQUE KEY `gibbonAlarmID` (`gibbonAlarmID`,`gibbonPersonID`);end
+ALTER TABLE `gibbonAlarmConfirm`  MODIFY `gibbonAlarmConfirmID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT;end
 ";
 
 ?>

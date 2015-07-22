@@ -49,8 +49,8 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
 //Setup variables
 $output="" ;
-if (isset($_GET["id"])) {
-	$id=$_GET["id"] ;
+if (isset($_POST["gibbonTTID"])) {
+	$id=$_POST["gibbonTTID"] ;
 }
 else {
 	$id="" ;
@@ -91,6 +91,8 @@ else {
 			$_SESSION[$guid]["viewCalendarSpaceBooking"]="N" ;
 		}
 	}
+	
+	print "here" . $id . "<br/>" ;
 	
 	$tt=renderTT($guid, $connection2, $_SESSION[$guid]["gibbonPersonID"], $id, FALSE, $ttDate) ;
 	if ($tt!=FALSE) {

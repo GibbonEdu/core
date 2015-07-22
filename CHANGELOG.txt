@@ -62,6 +62,16 @@ General: added Nepalese Rupee as currency option
 User Admin: added username to student selection list to help differentiate students with same name
 	Edited file /modules/User Admin/studentEnrolment_manage_add.php
 
+System Admin: added feature to allow staff to confirm receipt of alarm, with report on current alarm for admins
+	New tables gibbonAlarm, gibbonAlarmConfirm
+	Edited files /modules/System Admin/alarm*.php
+	Edited file /index_notification_ajax_alarm.php
+	New files /index_notification_ajax_alarmProcess.php, index_notification_ajax_alarmConfirmProcess.php
+
+Timetable: homepage timetable not showing multiple timetables correctly
+	Edited files /index.php, index_tt_ajax.php
+
+
 v10.0.00
 --------
 i18n: added Urdu as inactive development language

@@ -53,9 +53,9 @@ else {
 		header("Location: {$URL}");
 	}
 	else {	
-		//Write to database
 		$fail=FALSE ;
 		
+		//Write setting to database
 		try {
 			$data=array("alarm"=>$alarm); 
 			$sql="UPDATE gibbonSetting SET value=:alarm WHERE scope='System' AND name='alarm'" ;
@@ -65,6 +65,68 @@ else {
 		catch(PDOException $e) { 
 			$fail=TRUE ;
 		}	
+		
+		//Check for existing alarm
+		$checkFail=FALSE ;
+		try {
+			$data=array(); 
+			$sql="SELECT * FROM gibbonAlarm WHERE status='Current'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$checkFail=TRUE ;
+		}
+			
+		//Alarm is being turned on, so insert new record
+		if ($alarm=="General" OR $alarm=="Lockdown") {
+			if ($checkFail==TRUE) {
+				$fail=TRUE ;
+			}
+			else {
+				if ($result->rowCount()==0) {
+					//Write alarm to database
+					try {
+						$data=array("type"=>$alarm, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "timestampStart"=>date("Y-m-d H:i:s")); 
+						$sql="INSERT INTO gibbonAlarm SET type=:type, status='Current', gibbonPersonID=:gibbonPersonID, timestampStart=:timestampStart" ;
+						$result=$connection2->prepare($sql);
+						$result->execute($data);
+					}
+					catch(PDOException $e) { 
+						$fail=TRUE ;
+					}	 
+				}
+				else {
+					$row=$result->fetch() ;
+					try {
+						$data=array("type"=>$alarm, "gibbonAlarmID"=>$row["gibbonAlarmID"]); 
+						$sql="UPDATE gibbonAlarm SET type=:type WHERE gibbonAlarmID=:gibbonAlarmID" ;
+						$result=$connection2->prepare($sql);
+						$result->execute($data);
+					}
+					catch(PDOException $e) { 
+						$fail=TRUE ;
+					}	 
+				}
+			}
+		}
+		else {
+			if ($result->rowCount()==1) {
+				$row=$result->fetch() ;
+				try {
+					$data=array("timestampEnd"=>date("Y-m-d H:i:s"), "gibbonAlarmID"=>$row["gibbonAlarmID"]); 
+					$sql="UPDATE gibbonAlarm SET status='Past', timestampEnd=:timestampEnd WHERE gibbonAlarmID=:gibbonAlarmID" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					$fail=TRUE ;
+				}	 
+			}
+			else {
+				$fail=TRUE ;
+			}
+		}
 			
 		if ($fail==TRUE) {
 			//Fail 2
