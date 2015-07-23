@@ -39,7 +39,7 @@ if (isset($_GET["type"])) {
 }
 $output="" ;
 
-if ($type=="general" OR $type=="lockdown") {
+if ($type=="general" OR $type=="lockdown" OR $type=="custom") {
 	$output.="<div style='width: 100%; min-height: 492px; background-color: #f00; color: #fff; margin: 0'>" ;
 		$output.="<div style='padding-top: 150px; font-size: 120px; font-weight: bold; font-family: arial, sans; text-align: center'>" ;
 			if ($type=="general") {
@@ -48,10 +48,26 @@ if ($type=="general" OR $type=="lockdown") {
 					<source src=\"./audio/alarm_general.mp3\" type=\"audio/mpeg\">
 				</audio>" ;	
 			}
-			else {
+			else if ($type=="lockdown") {
 				$output.=_("Lockdown!") ;
 				$output.="<audio loop autoplay volume=3>
 					<source src=\"./audio/alarm_lockdown.mp3\" type=\"audio/mpeg\">
+				</audio>" ;	
+			}
+			else if ($type=="custom") {
+				$output.=_("Alarm!") ;
+				
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='System Admin' AND name='customAlarmSound'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { }
+				$row=$result->fetch() ;
+				
+				$output.="<audio loop autoplay volume=3>
+					<source src=\"" . $row["value"] . "\" type=\"audio/mpeg\">
 				</audio>" ;	
 			}
 		$output.="</div>" ;	

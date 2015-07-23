@@ -45,16 +45,58 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/alarm.php")==
 else {
 	//Proceed!
 	$alarm=$_POST["alarm"] ;
+	$attachmentCurrent=$_POST["attachmentCurrent"] ;
+	$alarmCurrent=$_POST["alarmCurrent"] ;
 	
 	//Validate Inputs
-	if ($alarm!="None" AND $alarm!="General" AND $alarm!="Lockdown") {
+	if ($alarm!="None" AND $alarm!="General" AND $alarm!="Lockdown" AND $alarm!="Custom" AND $alarmCurrent!="") {
 		//Fail 3
 		$URL.="&updateReturn=fail3" ;
 		header("Location: {$URL}");
 	}
 	else {	
 		$fail=FALSE ;
+			
+		//DEAL WITH CUSTOM SOUND SETTING
+		$time=time() ;
+		//Move attached file, if there is one
+		if ($_FILES['file']["tmp_name"]!="") {
+			//Check for folder in uploads based on today's date
+			$path=$_SESSION[$guid]["absolutePath"] ;
+			if (is_dir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time))==FALSE) {
+				mkdir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time), 0777, TRUE) ;
+			}
+			$unique=FALSE;
+			$count=0 ;
+			while ($unique==FALSE AND $count<100) {
+				$suffix=randomPassword(16) ;
+				$attachment="uploads/" . date("Y", $time) . "/" . date("m", $time) . "/alarmSound_$suffix" . strrchr($_FILES["file"]["name"], ".") ;
+				if (!(file_exists($path . "/" . $attachment))) {
+					$unique=TRUE ;
+				}
+				$count++ ;
+			}
 		
+			if (!(move_uploaded_file($_FILES["file"]["tmp_name"],$path . "/" . $attachment))) {
+				$fail=TRUE ;
+			}
+		}
+		else {
+			$attachment=$attachmentCurrent ;
+		}
+		
+		//Write setting to database
+		try {
+			$data=array("value"=>$attachment); 
+			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='System Admin' AND name='customAlarmSound'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ;
+		}	
+		
+		//DEAL WITH ALARM SETTING
 		//Write setting to database
 		try {
 			$data=array("alarm"=>$alarm); 
@@ -79,7 +121,7 @@ else {
 		}
 			
 		//Alarm is being turned on, so insert new record
-		if ($alarm=="General" OR $alarm=="Lockdown") {
+		if ($alarm=="General" OR $alarm=="Lockdown" OR $alarm=="Custom") {
 			if ($checkFail==TRUE) {
 				$fail=TRUE ;
 			}
@@ -110,7 +152,7 @@ else {
 				}
 			}
 		}
-		else {
+		else if ($alarmCurrent!=$alarm) {
 			if ($result->rowCount()==1) {
 				$row=$result->fetch() ;
 				try {

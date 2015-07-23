@@ -81,6 +81,12 @@ Library: fixed bug preventing library images from showing up in catalog browsing
 School Admin: fixed issue preventing editing of current school year
 	Edited file /modules/School Admin/schoolYear_manage_editProcess.php
 
+System Admin: added custom alarm sound file as a setting in Sound Alarm
+	New value in table gibbonSetting
+	Edited table gibbonAlarm
+	Edited files /core/modules/System Admin/alarm*.php
+	Edited files /functions.php, index_notification_ajax*.php
+	
 
 v10.0.00
 --------

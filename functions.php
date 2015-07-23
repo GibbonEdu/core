@@ -136,10 +136,13 @@ function getMinorLinks($connection2, $guid, $cacheLoad) {
 			if (isset($_SESSION[$guid]["gibbonRoleIDCurrentCategory"])) {
 				if ($_SESSION[$guid]["gibbonRoleIDCurrentCategory"]=="Staff") {
 					$alarm=getSettingByScope($connection2, "System", "alarm") ;
-					if ($alarm=="General" OR $alarm=="Lockdown") {
+					if ($alarm=="General" OR $alarm=="Lockdown" OR $alarm=="Custom") {
 						$type="general" ;
 						if ($alarm=="Lockdown") {
 							$type="lockdown" ;
+						}
+						else if ($alarm=="Custom") {
+							$type="custom" ;
 						}
 						$return.="<script>
 							if ($('div#TB_window').is(':visible')===false) {

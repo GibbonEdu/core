@@ -480,6 +480,8 @@ CREATE TABLE `gibbonAlarmConfirm` (  `gibbonAlarmConfirmID` int(8) unsigned zero
 ALTER TABLE `gibbonAlarmConfirm`  ADD PRIMARY KEY (`gibbonAlarmConfirmID`),  ADD UNIQUE KEY `gibbonAlarmID` (`gibbonAlarmID`,`gibbonPersonID`);end
 ALTER TABLE `gibbonAlarmConfirm`  MODIFY `gibbonAlarmConfirmID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT;end
 ALTER TABLE `gibbonNotification` ADD `status` ENUM('New','Archived') NOT NULL DEFAULT 'New' AFTER `gibbonPersonID`;end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'System Admin', 'customAlarmSound', 'Custom Alarm Sound', 'A custom alarm sound file.', '');end
+ALTER TABLE `gibbonAlarm` CHANGE `type` `type` ENUM('General','Lockdown','Custom') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
 
 ";
 
