@@ -75,6 +75,8 @@ General: added notification archive as default action, rather than deletion
 	Edited table gibbonNotification
 	Edited files /functions.php, notifications.php, notificationsActionProcess.php
 
+Library: fixed bug preventing library images from showing up in catalog browsing
+	Edited file /modules/Library/moduleFunctions.php
 
 v10.0.00
 --------
