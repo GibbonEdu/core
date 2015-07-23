@@ -68,7 +68,7 @@ else {
 	}
 
 	print "<div class='linkTop'>" ; 
-		print "<a onclick='return confirm(\"Are you sure you want to delete these records.\")' title='" . _('Delete All Notifications') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/notificationsDeleteAllProcess.php'><img style='opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_on_dark.png'></a>" ;
+		print "<a onclick='return confirm(\"Are you sure you want to delete these records.\")' href='" . $_SESSION[$guid]["absoluteURL"] . "/notificationsDeleteAllProcess.php'>" . _('Delete All Notifications') . " <img style='vertical-align: -25%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'></a>" ;
 	print "</div>" ;
 	
 	//Get and show newnotifications

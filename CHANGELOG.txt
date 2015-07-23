@@ -96,6 +96,16 @@ School Admin: added custom space type setting to allow for flexible space typing
 General: added module actions to Fast Finder, in order to allow quick access to any functionality in the system	
 	Edited files /index.php, functions.php, indexFindRedirect.php
 
+General: improved notification icon in minor links area
+	Edited files /functions.php, index_notification_ajax.php
+	Edited files /themes/Default/img/notifications_on.png, notifications_off.png
+	Deleted file /themes/Default/img/notifications_on_dark.png
+
+General: improved star icon in minor links area
+	Edited files /functions.php
+	Deleted file /themes/Default/img/like_on_flat.png
+	New files /themes/Default/img/like_large_on.png, like_large_off.png
+
 
 v10.0.00
 --------

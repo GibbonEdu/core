@@ -73,9 +73,9 @@ if (isset($_SESSION[$guid]["gibbonRoleIDCurrentCategory"])) {
 //GET & SHOW NOTIFICATIONS
 try {
 	$dataNotifications=array("gibbonPersonID"=>@$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonID2"=>@$_SESSION[$guid]["gibbonPersonID"]); 
-	$sqlNotifications="(SELECT gibbonNotification.*, gibbonModule.name AS source FROM gibbonNotification JOIN gibbonModule ON (gibbonNotification.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonPersonID=:gibbonPersonID)
+	$sqlNotifications="(SELECT gibbonNotification.*, gibbonModule.name AS source FROM gibbonNotification JOIN gibbonModule ON (gibbonNotification.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonPersonID=:gibbonPersonID AND status='New')
 	UNION
-	(SELECT gibbonNotification.*, 'System' AS source FROM gibbonNotification WHERE gibbonModuleID IS NULL AND gibbonPersonID=:gibbonPersonID2)
+	(SELECT gibbonNotification.*, 'System' AS source FROM gibbonNotification WHERE gibbonModuleID IS NULL AND gibbonPersonID=:gibbonPersonID2 AND status='New')
 	ORDER BY timestamp DESC, source, text" ;
 	$resultNotifications=$connection2->prepare($sqlNotifications);
 	$resultNotifications->execute($dataNotifications); 
