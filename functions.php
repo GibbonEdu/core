@@ -109,9 +109,9 @@ function getMinorLinks($connection2, $guid, $cacheLoad) {
 		//GET & SHOW NOTIFICATIONS
 		try {
 			$dataNotifications=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonID2"=>$_SESSION[$guid]["gibbonPersonID"]); 
-			$sqlNotifications="(SELECT gibbonNotification.*, gibbonModule.name AS source FROM gibbonNotification JOIN gibbonModule ON (gibbonNotification.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonPersonID=:gibbonPersonID)
+			$sqlNotifications="(SELECT gibbonNotification.*, gibbonModule.name AS source FROM gibbonNotification JOIN gibbonModule ON (gibbonNotification.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonPersonID=:gibbonPersonID AND status='New')
 			UNION
-			(SELECT gibbonNotification.*, 'System' AS source FROM gibbonNotification WHERE gibbonModuleID IS NULL AND gibbonPersonID=:gibbonPersonID2)
+			(SELECT gibbonNotification.*, 'System' AS source FROM gibbonNotification WHERE gibbonModuleID IS NULL AND gibbonPersonID=:gibbonPersonID2 AND status='New')
 			ORDER BY timestamp DESC, source, text" ;
 			$resultNotifications=$connection2->prepare($sqlNotifications);
 			$resultNotifications->execute($dataNotifications); 
@@ -1031,16 +1031,16 @@ function setNotification($connection2, $guid, $gibbonPersonID, $text, $moduleNam
 		$moduleName=NULL ;
 	}
 	
-	//Check for existence of notification
+	//Check for existence of notification in new status
 	$dataCheck=array("gibbonPersonID"=>$gibbonPersonID, "text"=>$text, "actionLink"=>$actionLink, "name"=>$moduleName); 
-	$sqlCheck="SELECT * FROM gibbonNotification WHERE gibbonPersonID=:gibbonPersonID AND text=:text AND actionLink=:actionLink AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:name)" ;
+	$sqlCheck="SELECT * FROM gibbonNotification WHERE gibbonPersonID=:gibbonPersonID AND text=:text AND actionLink=:actionLink AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:name) AND status='New'" ;
 	$resultCheck=$connection2->prepare($sqlCheck);
 	$resultCheck->execute($dataCheck);
 	
 	if ($resultCheck->rowCount()==1) { //If exists, increment count
 		$rowCheck=$resultCheck->fetch() ;
 		$dataInsert=array("count"=>($rowCheck["count"]+1), "gibbonPersonID"=>$gibbonPersonID, "text"=>$text, "name"=>$moduleName); 
-		$sqlInsert="UPDATE gibbonNotification SET count=:count WHERE gibbonPersonID=:gibbonPersonID AND text=:text AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:name)" ;
+		$sqlInsert="UPDATE gibbonNotification SET count=:count WHERE gibbonPersonID=:gibbonPersonID AND text=:text AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:name) AND status='New'" ;
 		$resultInsert=$connection2->prepare($sqlInsert);
 		$resultInsert->execute($dataInsert);
 	}

@@ -479,6 +479,8 @@ ALTER TABLE `gibbonAlarm`  MODIFY `gibbonAlarmID` int(5) unsigned zerofill NOT N
 CREATE TABLE `gibbonAlarmConfirm` (  `gibbonAlarmConfirmID` int(8) unsigned zerofill NOT NULL,  `gibbonAlarmID` int(5) unsigned zerofill NOT NULL,  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8;end
 ALTER TABLE `gibbonAlarmConfirm`  ADD PRIMARY KEY (`gibbonAlarmConfirmID`),  ADD UNIQUE KEY `gibbonAlarmID` (`gibbonAlarmID`,`gibbonPersonID`);end
 ALTER TABLE `gibbonAlarmConfirm`  MODIFY `gibbonAlarmConfirmID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT;end
+ALTER TABLE `gibbonNotification` ADD `status` ENUM('New','Archived') NOT NULL DEFAULT 'New' AFTER `gibbonPersonID`;end
+
 ";
 
 ?>
