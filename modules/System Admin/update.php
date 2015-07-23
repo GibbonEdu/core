@@ -97,7 +97,7 @@ else {
 				print "<li>" . sprintf(_('You are currently using Gibbon v%1$s.'), $versionCode) . "</i></li>" ;
 				print "<li>" . sprintf(_('Check %1$s for a newer version of Gibbon.'), "<a target='_blank' href='https://gibbonedu.org/download'>the Gibbon download page</a>") . "</li>" ;
 				print "<li>" . _('Download the latest version, and unzip it on your computer.') . "</li>" ;
-				print "<li>" . _('Use an FTP client to upload the new files to your server, making sure not to overwrite the uploads folder and the config.php file.') . "</li>" ;
+				print "<li>" . _('Use an FTP client to upload the new files to your server, making sure not to overwrite any additional modules and themes previously added to the system.') . "</li>" ;
 				print "<li>" . _('Reload this page and follow the instructions to update your database to the latest version.') . "</li>" ;
 			print "</ol>" ;
 		}
@@ -171,7 +171,7 @@ else {
 				print "<li>" . sprintf(_('You are currently using Cutting Edge Gibbon v%1$s'), $versionCode) . "</i></li>" ;
 				print "<li>" . sprintf(_('Check %1$s to get the latest commits.'), "<a target='_blank' href='https://github.com/GibbonEdu/core'>our GitHub repo</a>") . "</li>" ;
 				print "<li>" . _('Download the latest commits, and unzip it on your computer.') . "</li>" ;
-				print "<li>" . _('Use an FTP client to upload the new files to your server, making sure not to overwrite the uploads folder and the config.php file.') . "</li>" ;
+				print "<li>" . _('Use an FTP client to upload the new files to your server, making sure not to overwrite any additional modules and themes previously added to the system.') . "</li>" ;
 				print "<li>" . _('Reload this page and follow the instructions to update your database to the latest version.') . "</li>" ;
 			print "</ol>" ;
 		}

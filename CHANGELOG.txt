@@ -86,6 +86,12 @@ System Admin: added custom alarm sound file as a setting in Sound Alarm
 	Edited table gibbonAlarm
 	Edited files /core/modules/System Admin/alarm*.php
 	Edited files /functions.php, index_notification_ajax*.php
+
+School Admin: added custom space type setting to allow for flexible space typing
+	New values in tables gibbonSetting, gibbonAction, gibbonPermission
+	Edited table gibbonSpace
+	New files /modules/School Admin/spaceSettings*.php
+	Edited files /modules/School Admin/space_manage_add.php, space_manage_edit.php
 	
 
 v10.0.00

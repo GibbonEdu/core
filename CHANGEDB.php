@@ -482,6 +482,10 @@ ALTER TABLE `gibbonAlarmConfirm`  MODIFY `gibbonAlarmConfirmID` int(8) unsigned 
 ALTER TABLE `gibbonNotification` ADD `status` ENUM('New','Archived') NOT NULL DEFAULT 'New' AFTER `gibbonPersonID`;end
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'System Admin', 'customAlarmSound', 'Custom Alarm Sound', 'A custom alarm sound file.', '');end
 ALTER TABLE `gibbonAlarm` CHANGE `type` `type` ENUM('General','Lockdown','Custom') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'School Admin', 'spaceTypes', 'Space Types', 'A comma-separated list of types for spaces.', 'Classroom,Hall,Laboratory,Library,Office,Outdoor,Performance,Staffroom,Storage,Study,Undercover,Other');end
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='School Admin'), 'Manage Space Settings', 0, 'Other', 'Allows privileged users to manage settings for spaces.', 'spaceSettings.php', 'spaceSettings.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N') ;end
+INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='School Admin' AND gibbonAction.name='Manage Space Settings'));end
+ALTER TABLE `gibbonSpace` CHANGE `type` `type` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
 
 ";
 

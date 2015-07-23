@@ -114,24 +114,34 @@ else {
 							 </script>
 						</td>
 					</tr>
+					<?php
+					$types=getSettingByScope($connection2, "School Admin", "spaceTypes") ;
+					$types=explode(",", $types) ;
+					?>
 					<tr>
 						<td> 
 							<b><?php print _('Type') ?> *</b><br/>
+							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
 							<select name="type" id="type" style="width: 302px">
-								<option <?php if ($row["type"]=="Classroom") {print "selected ";} ?>value="Classroom"><?php print _('Classroom') ?></option>
-								<option <?php if ($row["type"]=="Performance") {print "selected ";} ?>value="Performance"><?php print _('Performance') ?></option>
-								<option <?php if ($row["type"]=="Hall") {print "selected ";} ?>value="Hall"><?php print _('Hall') ?></option>
-								<option <?php if ($row["type"]=="Outdoor") {print "selected ";} ?>value="Outdoor"><?php print _('Outdoor') ?></option>
-								<option <?php if ($row["type"]=="Undercover") {print "selected ";} ?>value="Undercover"><?php print _('Undercover') ?></option>
-								<option <?php if ($row["type"]=="Storage") {print "selected ";} ?>value="Storage"><?php print _('Storage') ?></option>
-								<option <?php if ($row["type"]=="Office") {print "selected ";} ?>value="Office"><?php print _('Office') ?></option>
-								<option <?php if ($row["type"]=="Staffroom") {print "selected ";} ?>value="Staffroom"><?php print _('Staffroom') ?></option>
-								<option <?php if ($row["type"]=="Study") {print "selected ";} ?>value="Study"><?php print _('Study') ?></option>
-								<option <?php if ($row["type"]=="Library") {print "selected ";} ?>value="Library"><?php print _('Library') ?></option>
-								<option <?php if ($row["type"]=="Other") {print "selected ";} ?>value="Other"><?php print _('Other') ?></option>
+								<option value="Please select..."><?php print _('Please select...') ?></option>
+								<?php
+								for ($i=0; $i<count($types); $i++) {
+									$selected="" ;
+									if ($row["type"]==$types[$i]) {
+										$selected="selected" ;
+									}
+									?>
+									<option <?php print $selected ?> value="<?php print trim($types[$i]) ?>"><?php print trim($types[$i]) ?></option>
+								<?php
+								}
+								?>
 							</select>
+							<script type="text/javascript">
+								var type=new LiveValidation('type');
+								type.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+							 </script>
 						</td>
 					</tr>
 					<tr>

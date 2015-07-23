@@ -189,7 +189,10 @@ else {
 			}
 			?>
 			<tr>
-				<td class="right" colspan=3>
+				<td>
+					<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+				</td>
+				<td class="right" colspan=2>
 					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 					<input type="submit" value="<?php print _("Submit") ; ?>">
 				</td>

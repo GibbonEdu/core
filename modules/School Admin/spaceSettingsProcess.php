@@ -35,39 +35,22 @@ catch(PDOException $e) {
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/formalAssessmentSettings.php" ;
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/spaceSettings.php" ;
 
-if (isActionAccessible($guid, $connection2, "/modules/School Admin/formalAssessmentSettings.php")==FALSE) {
+if (isActionAccessible($guid, $connection2, "/modules/School Admin/spaceSettings.php")==FALSE) {
 	//Fail 0
 	$URL.="&updateReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
-	$internalAssessmentTypes="" ; 
-	foreach (explode(",", $_POST["internalAssessmentTypes"]) as $type) {
-		$internalAssessmentTypes.=trim($type) . "," ;
+	$spaceTypes="" ; 
+	foreach (explode(",", $_POST["spaceTypes"]) as $type) {
+		$spaceTypes.=trim($type) . "," ;
 	}
-	$internalAssessmentTypes=substr($internalAssessmentTypes,0,-1) ;
-	$gibbonYearGroupID=$_POST["gibbonYearGroupID"] ;
-	$gibbonExternalAssessmentID=$_POST["gibbonExternalAssessmentID"] ;
-	if (isset($_POST["category"])) {
-		$category=$_POST["category"] ;
-	}
-	$count=0 ; 
-	$primaryExternalAssessmentByYearGroup=array() ;
-	
-	foreach ($gibbonYearGroupID as $year) {
-		if (isset($gibbonExternalAssessmentID[$count]) AND isset($category[$count]) AND $category[$count]!="") {
-			$primaryExternalAssessmentByYearGroup[$year]=$gibbonExternalAssessmentID[$count] . "-" . $category[$count] ;
-		}
-		else {
-			$primaryExternalAssessmentByYearGroup[$year]=NULL ;
-		}
-		$count++ ;
-	}
-	
+	$spaceTypes=substr($spaceTypes,0,-1) ;
+
 	//Validate Inputs
-	if ($internalAssessmentTypes=="") {
+	if ($spaceTypes=="") {
 		//Fail 3
 		$URL.="&updateReturn=fail3" ;
 		header("Location: {$URL}");
@@ -78,19 +61,8 @@ else {
 		
 		//Update internal assessment fields
 		try {
-			$data=array("value"=>$internalAssessmentTypes); 
-			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Formal Assessment' AND name='internalAssessmentTypes'" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$fail=TRUE ; 
-		}
-		
-		//Update external assessment fields
-		try {
-			$data=array("value"=>serialize($primaryExternalAssessmentByYearGroup)); 
-			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='School Admin' AND name='primaryExternalAssessmentByYearGroup'" ;
+			$data=array("value"=>$spaceTypes); 
+			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='School Admin' AND name='spaceTypes'" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
