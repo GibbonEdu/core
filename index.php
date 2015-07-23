@@ -356,7 +356,7 @@ else {
 							//Show student and staff quick finder
 							if (isset($_SESSION[$guid]["username"])) {
 								if ($cacheLoad) {
-									$_SESSION[$guid]["studentFastFinder"]=getStudentFastFinder($connection2, $guid) ;
+									$_SESSION[$guid]["studentFastFinder"]=getFastFinder($connection2, $guid) ;
 								}
 								print $_SESSION[$guid]["studentFastFinder"] ;
 							}

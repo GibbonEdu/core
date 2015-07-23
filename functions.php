@@ -1301,97 +1301,102 @@ function getPasswordPolicy($connection2) {
 	return $output ;
 }
 
-function getStudentFastFinder($connection2, $guid) {
+function getFastFinder($connection2, $guid) {
 	$output=FALSE ;
 	
-	$output.="<div id='findStaffStudents'>" ;
-		$studentHighestAction=getHighestGroupedAction($guid, "/modules/Students/student_view_details.php", $connection2) ;
+	$output.="<div id='fastFinder'>" ;
+		$studentIsAccessible=isActionAccessible($guid, $connection2, "/modules/students/student_view.php") ;
 		$staffIsAccessible=isActionAccessible($guid, $connection2, "/modules/Staff/staff_view.php") ;
-		if ($studentHighestAction=="View Student Profile_full" OR $staffIsAccessible==TRUE) {
-			//Get student list
-			try {
-				if ($studentHighestAction=="View Student Profile_full" AND $staffIsAccessible==TRUE) {
-					$dataList=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-					$sqlList="(SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonRollGroup.name AS name, 'Student' AS role FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND status='FULL' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID) UNION (SELECT gibbonPerson.gibbonPersonID, preferredName, surname, NULL AS name, 'Staff' AS role FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full') ORDER BY surname, preferredName" ;
-				}
-				else if ($studentHighestAction=="View Student Profile_full") {
-					$dataList=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-					$sqlList="SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonRollGroup.name AS name, 'Student' AS role FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND status='FULL' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName" ;
-				}
-				else {
-					$dataList=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-					$sqlList="SELECT gibbonPerson.gibbonPersonID, preferredName, surname, NULL AS name, 'Staff' AS role FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName" ;
-				}
-				$resultList=$connection2->prepare($sqlList);
-				$resultList->execute($dataList); 
+		//Get list
+		try {
+			if ($studentIsAccessible==TRUE AND $staffIsAccessible==TRUE) {
+				$dataList=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonRoleID"=>$_SESSION[$guid]["gibbonRoleIDCurrent"]); 
+				$sqlList="(SELECT gibbonPerson.gibbonPersonID AS id, concat(surname, ', ', preferredName, ' (', gibbonRollGroup.name, ')') AS name, 'Student' AS type FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND status='FULL' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID) UNION (SELECT gibbonPerson.gibbonPersonID AS id, concat(surname, ', ', preferredName) AS name, 'Staff' AS type FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full') UNION (SELECT DISTINCT concat(gibbonModule.name, '/', gibbonAction.entryURL) AS id, SUBSTRING_INDEX(gibbonAction.name, '_', 1) AS name, 'Action' AS type FROM `gibbonModule`, gibbonAction, gibbonPermission WHERE (active='Y') AND (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID)) ORDER BY type, name" ;
 			}
-			catch(PDOException $e) { $output.=$e->getMessage() ; }
-
-			$studentCount=0 ;
-			$list="" ;
-			while ($rowList=$resultList->fetch()) {
-				$list.="{id: \"" . substr($rowList["role"],0,3) . "-" . $rowList["gibbonPersonID"] . "\", name: \"" . formatName("", htmlPrep($rowList["preferredName"]), htmlPrep($rowList["surname"]), "Student", true) ; if ($rowList["role"]=="Student") { $list.=" (" . htmlPrep($rowList["name"]) . ")\"}," ; } else { $list.=" (" . _("Staff") . ")\"}," ; }
-				if ($rowList["role"]=="Student") {
-					$studentCount++ ;
-				}
+			else if ($studentIsAccessible==TRUE) {
+				$dataList=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonRoleID"=>$_SESSION[$guid]["gibbonRoleIDCurrent"]); 
+				$sqlList="(SELECT gibbonPerson.gibbonPersonID AS id, concat(surname, ', ', preferredName, ' (', gibbonRollGroup.name, ')') AS name, 'Student' AS type FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND status='FULL' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID) UNION (SELECT DISTINCT concat(gibbonModule.name, '/', gibbonAction.entryURL) AS id, SUBSTRING_INDEX(gibbonAction.name, '_', 1) AS name, 'Action' AS type FROM `gibbonModule`, gibbonAction, gibbonPermission WHERE (active='Y') AND (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID)) ORDER BY type, name" ;
 			}
-			$output.="<style>" ;
-				$output.="ul.token-input-list-facebook { width: 275px; float: left; height: 25px!important; }" ;
-				$output.="div.token-input-dropdown-facebook { width: 275px }" ;
-			$output.="</style>" ;
-			$output.="<div style='padding-bottom: 7px; height: 40px; margin-top: 0px'>" ;
-				$output.="<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/indexFindRedirect.php'>" ;
-					$output.="<table class='smallIntBorder' cellspacing='0' style='width: 100%; margin: 0px 0px; opacity: 0.8'>" ;	
-						$output.="<tr>" ;
-							$output.="<td style='vertical-align: top; padding: 0px' colspan=2>" ;
-								$output.="<h2 style='padding-bottom: 0px'>" ;
-								if ($studentHighestAction=="View Student Profile_full" AND $staffIsAccessible==TRUE) {
-									$output.=_("Find Staff & Students") . "<br/>" ;
-								}
-								else if ($studentHighestAction=="View Student Profile_full") {
-									$output.=_("Find Students") . "<br/>" ;
-								}
-								else {
-									$output.=_("Find Staff") . "<br/>" ;
-								}
-								$output.="</h2>" ;
-							$output.="</td>" ;
-						$output.="</tr>" ;
-						$output.="<tr>" ;
-							$output.="<td style='vertical-align: top; border: none'>" ; 
-								$output.="<input class='topFinder' style='width: 275px' type='text' id='gibbonPersonID' name='gibbonPersonID' />" ;
-								$output.="<script type='text/javascript'>" ;
-									$output.="$(document).ready(function() {" ;
-										 $output.="$(\"#gibbonPersonID\").tokenInput([" ;
-											$output.=substr($list,0,-1) ;
-										$output.="]," ; 
-											$output.="{theme: \"facebook\"," ;
-											$output.="hintText: \"Start typing a name...\"," ;
-											$output.="allowCreation: false," ;
-											$output.="preventDuplicates: true," ;
-											$output.="tokenLimit: 1});" ;
-									$output.="});" ;
-								$output.="</script>" ;
-								$output.="<script type='text/javascript'>" ;
-									$output.="var gibbonPersonID=new LiveValidation('gibbonPersonID');" ;
-									$output.="gibbonPersonID.add(Validate.Presence);" ;
-								 $output.="</script>" ;
-							$output.="</td>" ;
-							$output.="<td class='right' style='vertical-align: top; border: none'>" ;
-								$output.="<input style='height: 27px; width: 60px!important; margin-top: 0px;' type='submit' value='" . _('Go') . "'>" ;
-							$output.="</td>" ;
-						$output.="</tr>" ;
-						if (getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2)=="Staff") {
-							$output.="<tr>" ;
-								$output.="<td style='vertical-align: top' colspan=2>" ;
-									$output.="<div style='padding-bottom: 0px; font-size: 80%; font-weight: normal; font-style: italic; line-height: 80%; padding: 1em,1em,1em,1em; width: 99%; text-align: left; color: #888;' >" . _('Total Student Enrolment:') . " " . $studentCount . "</div>" ;
-								$output.="</td>" ;
-							$output.="</tr>" ;
-						}
-					$output.="</table>" ;
-				$output.="</form>" ;
-			$output.="</div>" ;
+			else if ($staffIsAccessible==TRUE) {
+				$dataList=array("gibbonRoleID"=>$_SESSION[$guid]["gibbonRoleIDCurrent"]); 
+				$sqlList="(SELECT gibbonPerson.gibbonPersonID AS id, concat(surname, ', ', preferredName) AS name, 'Staff' AS type FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full') UNION (SELECT DISTINCT concat(gibbonModule.name, '/', gibbonAction.entryURL) AS id, SUBSTRING_INDEX(gibbonAction.name, '_', 1) AS name, 'Action' AS type FROM `gibbonModule`, gibbonAction, gibbonPermission WHERE (active='Y') AND (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID)) ORDER BY type, name" ;
+			}
+			else {
+				$dataList=array("gibbonRoleID"=>$_SESSION[$guid]["gibbonRoleIDCurrent"]); 
+				$sqlList="SELECT DISTINCT concat(gibbonModule.name, '/', gibbonAction.entryURL) AS id, SUBSTRING_INDEX(gibbonAction.name, '_', 1) AS name, 'Action' AS type FROM `gibbonModule`, gibbonAction, gibbonPermission WHERE (active='Y') AND (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) ORDER BY type, name" ;
+			}
+			$resultList=$connection2->prepare($sqlList);
+			$resultList->execute($dataList); 
 		}
+		catch(PDOException $e) { $output.=$e->getMessage() ; }
+
+		$studentCount=0 ;
+		$list="" ;
+		while ($rowList=$resultList->fetch()) {
+			$list.="{id: \"" . substr($rowList["type"],0,3) . "-" . $rowList["id"] . "\", name: \"" . htmlPrep($rowList["type"]) . " - " . htmlPrep($rowList["name"]) . "\"}," ;
+			if ($rowList["type"]=="Student") {
+				$studentCount++ ;
+			}
+		}
+		$output.="<style>" ;
+			$output.="ul.token-input-list-facebook { width: 275px; float: left; height: 25px!important; }" ;
+			$output.="div.token-input-dropdown-facebook { width: 275px }" ;
+		$output.="</style>" ;
+		$output.="<div style='padding-bottom: 7px; height: 40px; margin-top: 0px'>" ;
+			$output.="<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/indexFindRedirect.php'>" ;
+				$output.="<table class='smallIntBorder' cellspacing='0' style='width: 100%; margin: 0px 0px; opacity: 0.8'>" ;	
+					$output.="<tr>" ;
+						$output.="<td style='vertical-align: top; padding: 0px' colspan=2>" ;
+							$output.="<h2 style='padding-bottom: 0px'>" ;
+							if ($studentIsAccessible==TRUE AND $staffIsAccessible==TRUE) {
+								$output.=_("Fast Finder: Actions, Staff & Students") . "<br/>" ;
+							}
+							else if ($studentIsAccessible==TRUE) {
+								$output.=_("Fast Finder: Actions & Students") . "<br/>" ;
+							}
+							else if ($staffIsAccessible==TRUE) {
+								$output.=_("Fast Finder: Actions & Staff") . "<br/>" ;
+							}
+							else {
+								$output.=_("Fast Finder: Actions") . "<br/>" ;
+							}
+							$output.="</h2>" ;
+						$output.="</td>" ;
+					$output.="</tr>" ;
+					$output.="<tr>" ;
+						$output.="<td style='vertical-align: top; border: none'>" ; 
+							$output.="<input class='topFinder' style='width: 275px' type='text' id='id' name='id' />" ;
+							$output.="<script type='text/javascript'>" ;
+								$output.="$(document).ready(function() {" ;
+									 $output.="$(\"#id\").tokenInput([" ;
+										$output.=substr($list,0,-1) ;
+									$output.="]," ; 
+										$output.="{theme: \"facebook\"," ;
+										$output.="hintText: \"Start typing a name...\"," ;
+										$output.="allowCreation: false," ;
+										$output.="preventDuplicates: true," ;
+										$output.="tokenLimit: 1});" ;
+								$output.="});" ;
+							$output.="</script>" ;
+							$output.="<script type='text/javascript'>" ;
+								$output.="var id=new LiveValidation('id');" ;
+								$output.="id.add(Validate.Presence);" ;
+							 $output.="</script>" ;
+						$output.="</td>" ;
+						$output.="<td class='right' style='vertical-align: top; border: none'>" ;
+							$output.="<input style='height: 27px; width: 60px!important; margin-top: 0px;' type='submit' value='" . _('Go') . "'>" ;
+						$output.="</td>" ;
+					$output.="</tr>" ;
+					if (getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2)=="Staff") {
+						$output.="<tr>" ;
+							$output.="<td style='vertical-align: top' colspan=2>" ;
+								$output.="<div style='padding-bottom: 0px; font-size: 80%; font-weight: normal; font-style: italic; line-height: 80%; padding: 1em,1em,1em,1em; width: 99%; text-align: left; color: #888;' >" . _('Total Student Enrolment:') . " " . $studentCount . "</div>" ;
+							$output.="</td>" ;
+						$output.="</tr>" ;
+					}
+				$output.="</table>" ;
+			$output.="</form>" ;
+		$output.="</div>" ;
 	$output.="</div>" ;
 	
 	return $output ;

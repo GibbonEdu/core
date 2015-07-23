@@ -92,7 +92,10 @@ School Admin: added custom space type setting to allow for flexible space typing
 	Edited table gibbonSpace
 	New files /modules/School Admin/spaceSettings*.php
 	Edited files /modules/School Admin/space_manage_add.php, space_manage_edit.php
-	
+
+General: added module actions to Fast Finder, in order to allow quick access to any functionality in the system	
+	Edited files /index.php, functions.php, indexFindRedirect.php
+
 
 v10.0.00
 --------
