@@ -92,8 +92,6 @@ else {
 		}
 	}
 	
-	print "here" . $id . "<br/>" ;
-	
 	$tt=renderTT($guid, $connection2, $_SESSION[$guid]["gibbonPersonID"], $id, FALSE, $ttDate) ;
 	if ($tt!=FALSE) {
 		$output.=$tt ;

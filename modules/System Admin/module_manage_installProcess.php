@@ -145,7 +145,7 @@ else {
 						}
 					}
 					//Create module actions
-					if (is_null($actionRows)==FALSE) {
+					if (is_null(@$actionRows)==FALSE) {
 						for ($i=0;$i<count($actionRows);$i++) {
 							$categoryPermissionStaff="Y" ;
 							$categoryPermissionStudent="Y" ;
