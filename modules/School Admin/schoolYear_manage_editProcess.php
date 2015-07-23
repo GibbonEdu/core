@@ -108,8 +108,8 @@ else {
 					$currentFail=FALSE ;
 					if ($status=="Current") {
 						try {
-							$data=array(); 
-							$sql="SELECT * FROM gibbonSchoolYear WHERE status='Current'" ;
+							$data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID); 
+							$sql="SELECT * FROM gibbonSchoolYear WHERE status='Current' AND NOT gibbonSchoolYearID=:gibbonSchoolYearID" ;
 							$result=$connection2->prepare($sql);
 							$result->execute($data);
 						}

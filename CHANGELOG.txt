@@ -78,6 +78,10 @@ General: added notification archive as default action, rather than deletion
 Library: fixed bug preventing library images from showing up in catalog browsing
 	Edited file /modules/Library/moduleFunctions.php
 
+School Admin: fixed issue preventing editing of current school year
+	Edited file /modules/School Admin/schoolYear_manage_editProcess.php
+
+
 v10.0.00
 --------
 i18n: added Urdu as inactive development language
