@@ -106,6 +106,9 @@ General: improved star icon in minor links area
 	Deleted file /themes/Default/img/like_on_flat.png
 	New files /themes/Default/img/like_large_on.png, like_large_off.png
 
+System Admin: fixed minor install bug relating to old manifests, not having category permissions set
+	Edited file /modules/System Admin/module_manage_installProcess.php
+
 
 v10.0.00
 --------
