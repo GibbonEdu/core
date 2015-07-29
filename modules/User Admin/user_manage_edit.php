@@ -257,6 +257,30 @@ else {
 							</script>
 						</td>
 					</tr>
+					<tr>
+						<td> 
+							<b><?php print _('User Photo') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('240px by 320px') ?><br/>
+							<?php if ($row["image_240"]!="") {
+							print "<?php print _('Will overwrite existing attachment.') ?>" ;
+							} ?>
+							</i></span>
+						</td>
+						<td class="right">
+							<?php
+							if ($row["image_240"]!="") {
+								print _("Current attachment:") . " <a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["image_240"] . "'>" . $row["image_240"] . "</a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/User Admin/user_manage_edit_photoDeleteProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&size=240' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' id='image_240_delete' title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a><br/><br/>" ;
+							}
+							?>
+							<input type="file" name="file1" id="file1"><br/><br/>
+							<input type="hidden" name="attachment1" value='<?php print $row["image_240"] ?>'>
+							<script type="text/javascript">
+								var file1=new LiveValidation('file1');
+								file1.add( Validate.Inclusion, { within: ['gif','jpg','jpeg','png'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+							</script>
+						</td>
+					</tr>
+					
 					
 					<tr class='break'>
 						<td colspan=2> 
@@ -1143,7 +1167,7 @@ else {
 						<td class="right">
 							<?php
 							if ($row["citizenship1PassportScan"]!="") {
-								print _("Current attachment:") . " <a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["citizenship1PassportScan"] . "'>" . $row["citizenship1PassportScan"] . "</a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/User Admin/user_manage_edit_photoDeleteProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&size=passport' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' id='image_75_delete' title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a><br/><br/>" ;
+								print _("Current attachment:") . " <a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["citizenship1PassportScan"] . "'>" . $row["citizenship1PassportScan"] . "</a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/User Admin/user_manage_edit_photoDeleteProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&size=passport' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a><br/><br/>" ;
 							}
 							?>
 							<input type="file" name="citizenship1PassportScan" id="citizenship1PassportScan"><br/><br/>
@@ -1232,7 +1256,7 @@ else {
 						<td class="right">
 							<?php
 							if ($row["nationalIDCardScan"]!="") {
-								print _("Current attachment:") . " <a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["nationalIDCardScan"] . "'>" . $row["nationalIDCardScan"] . "</a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/User Admin/user_manage_edit_photoDeleteProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&size=id' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' id='image_75_delete' title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a><br/><br/>" ;
+								print _("Current attachment:") . " <a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["nationalIDCardScan"] . "'>" . $row["nationalIDCardScan"] . "</a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/User Admin/user_manage_edit_photoDeleteProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&size=id' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a><br/><br/>" ;
 							}
 							?>
 							<input type="file" name="nationalIDCardScan" id="nationalIDCardScan"><br/><br/>
@@ -1439,59 +1463,6 @@ else {
 						<?php
 					}
 					?>
-					
-					<tr class='break'>
-						<td colspan=2> 
-							<h3><?php print _('Images') ?></h3>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b>Medium Portrait</b><br/>
-							<span style="font-size: 90%"><i><?php print _('240px by 320px') ?><br/>
-							<?php if ($row["image_240"]!="") {
-							print "<?php print _('Will overwrite existing attachment.') ?>" ;
-							} ?>
-							</i></span>
-						</td>
-						<td class="right">
-							<?php
-							if ($row["image_240"]!="") {
-								print _("Current attachment:") . " <a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["image_240"] . "'>" . $row["image_240"] . "</a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/User Admin/user_manage_edit_photoDeleteProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&size=240' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' id='image_75_delete' title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a><br/><br/>" ;
-							}
-							?>
-							<input type="file" name="file1" id="file1"><br/><br/>
-							<input type="hidden" name="attachment1" value='<?php print $row["image_240"] ?>'>
-							<script type="text/javascript">
-								var file1=new LiveValidation('file1');
-								file1.add( Validate.Inclusion, { within: ['gif','jpg','jpeg','png'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php print _('Small Portrait') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print _('75px by 100px') ?><br/>
-							<?php if ($row["image_75"]!="") {
-							print _("Will overwrite existing attachment.") ;
-							} ?>
-							</i></span>
-						</td>
-						<td class="right">
-							<?php
-							if ($row["image_75"]!="") {
-								print _("Current attachment:") . " <a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["image_75"] . "'>" . $row["image_75"] . "</a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/User Admin/user_manage_edit_photoDeleteProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&size=75' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' id='image_75_delete' title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a><br/><br/>" ;
-							}
-							?>
-							<input type="file" name="file2" id="file2"><br/><br/>
-							<input type="hidden" name="attachment2" value='<?php print $row["image_75"] ?>'>
-							<script type="text/javascript">
-								var file2=new LiveValidation('file2');
-								file2.add( Validate.Inclusion, { within: ['gif','jpg','jpeg','png'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
-							</script>
-						</td>
-					</tr>
-					
 					
 					<tr class='break'>
 						<td colspan=2> 

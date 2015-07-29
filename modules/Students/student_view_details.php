@@ -1149,7 +1149,7 @@ else {
 									print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 										print "<tr>" ;
 											print "<td style='width: 33%; vertical-align: top' rowspan=2>" ;
-												print getUserPhoto($guid, $rowMember["image_75"], 75) ;
+												print getUserPhoto($guid, $rowMember["image_240"], 75) ;
 											print "</td>" ;
 											print "<td style='width: 33%; vertical-align: top'>" ;
 												print "<span style='font-size: 115%; font-weight: bold'>" . _('Name') . "</span><br/>" ;
@@ -1309,7 +1309,7 @@ else {
 											}
 											print "<td style='width:30%; text-align: left; vertical-align: top'>" ;
 												//User photo
-												print getUserPhoto($guid, $rowMember["image_75"], 75) ;	
+												print getUserPhoto($guid, $rowMember["image_240"], 75) ;	
 												print "<div style='padding-top: 5px'><b>" ;
 												if ($rowMember["status"]=="Full") {
 													print "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $rowMember["gibbonPersonID"] . "'>" . formatName("", $rowMember["preferredName"], $rowMember["surname"], "Student") . "</a><br/>" ;

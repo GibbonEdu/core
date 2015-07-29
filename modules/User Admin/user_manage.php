@@ -160,7 +160,7 @@ else {
 				//COLOR ROW BY STATUS!
 				print "<tr class=$rowNum>" ;
 					print "<td>" ;
-						print getUserPhoto($guid, $row["image_75"], 75) ;
+						print getUserPhoto($guid, $row["image_240"], 75) ;
 					print "</td>" ;
 					print "<td>" ;
 						print formatName("", $row["preferredName"], $row["surname"], "Student", true) ;

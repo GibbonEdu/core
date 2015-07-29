@@ -195,7 +195,6 @@ else {
 					$_SESSION[$guid]["gibbonRoleIDCurrentCategory"]=getRoleCategory($row["gibbonRoleIDPrimary"], $connection2)  ;
 					$_SESSION[$guid]["gibbonRoleIDAll"]=getRoleList($row["gibbonRoleIDAll"], $connection2) ;
 					$_SESSION[$guid]["image_240"]=$row["image_240"] ;
-					$_SESSION[$guid]["image_75"]=$row["image_75"] ;
 					$_SESSION[$guid]["lastTimestamp"]=$row["lastTimestamp"] ;
 					$_SESSION[$guid]["calendarFeedPersonal"]=$row["calendarFeedPersonal"] ;
 					$_SESSION[$guid]["viewCalendarSchool"]=$row["viewCalendarSchool"] ;

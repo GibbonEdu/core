@@ -285,7 +285,7 @@ else {
 			$children=array() ;
 			$count=0 ;
 			while ($rowChildren=$resultChildren->fetch()) {
-				$children[$count]["image_75"]=$rowChildren["image_75"] ;
+				$children[$count]["image_240"]=$rowChildren["image_240"] ;
 				$children[$count]["gibbonPersonID"]=$rowChildren["gibbonPersonID"] ;
 				$children[$count]["preferredName"]=$rowChildren["preferredName"] ;
 				$children[$count]["surname"]=$rowChildren["surname"] ;
@@ -306,7 +306,7 @@ else {
 			$adults=array() ;
 			$count=0 ;
 			while ($rowAdults=$resultAdults->fetch()) {
-				$adults[$count]["image_75"]=$rowAdults["image_75"] ;
+				$adults[$count]["image_240"]=$rowAdults["image_240"] ;
 				$adults[$count]["gibbonPersonID"]=$rowAdults["gibbonPersonID"] ;
 				$adults[$count]["title"]=$rowAdults["title"] ;
 				$adults[$count]["preferredName"]=$rowAdults["preferredName"] ;
@@ -457,7 +457,7 @@ else {
 						//COLOR ROW BY STATUS!
 						print "<tr class=$rowNum>" ;
 							print "<td>" ;
-								print getUserPhoto($guid, $child["image_75"], 75) ;
+								print getUserPhoto($guid, $child["image_240"], 75) ;
 							print "</td>" ;
 							print "<td>" ;
 								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=" . $child["gibbonPersonID"] . "'>" . formatName("", $child["preferredName"], $child["surname"], "Student") . "</a>" ;

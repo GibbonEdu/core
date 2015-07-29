@@ -1860,7 +1860,7 @@ else {
 										
 										//Get photos
 										$_SESSION[$guid]["sidebarExtra"].="<div>" ;
-											$_SESSION[$guid]["sidebarExtra"].=getUserPhoto($guid, $rowClassGroup["image_75"], 75) ;
+											$_SESSION[$guid]["sidebarExtra"].=getUserPhoto($guid, $rowClassGroup["image_240"], 75) ;
 										
 											if ($row["role"]=="Teacher" AND $teacher==TRUE) {
 												if ($rowClassGroup["role"]=="Student") {
@@ -1985,7 +1985,7 @@ else {
 								
 									$_SESSION[$guid]["sidebarExtra"].="<td style='border: 1px solid #ffffff; width:20%; text-align: center; vertical-align: top'>" ;
 								
-									$_SESSION[$guid]["sidebarExtra"].=getUserPhoto($guid, $rowClassGroup["image_75"], 75) ;
+									$_SESSION[$guid]["sidebarExtra"].=getUserPhoto($guid, $rowClassGroup["image_240"], 75) ;
 								
 									$_SESSION[$guid]["sidebarExtra"].="<div style='padding-top: 5px'><b>" . formatName($rowClassGroup["title"], $rowClassGroup["preferredName"], $rowClassGroup["surname"], "Staff") . "</b><br/>" ;
 								

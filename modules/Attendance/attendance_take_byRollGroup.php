@@ -274,7 +274,7 @@ else {
 								print "<td style='border: 1px solid #ffffff; width:20%; text-align: center; vertical-align: top'>" ;
 							}
 								
-								print getUserPhoto($guid, $rowRollGroup["image_75"], 75) ;
+								print getUserPhoto($guid, $rowRollGroup["image_240"], 75) ;
 								
 								print "<div style='padding-top: 5px'><b>" . formatName("", htmlPrep($rowRollGroup["preferredName"]), htmlPrep($rowRollGroup["surname"]), "Student", true) . "<b></div><br/>" ;
 								

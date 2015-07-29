@@ -27,7 +27,7 @@ print "</p>" ;
 //Count planner likes
 try {
 	$dataLike=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-	$sqlLike="SELECT timestamp, gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRoleIDPrimary, image_75, gibbonRoleIDPrimary, gibbonPlannerEntry.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID FROM gibbonPlannerEntryLike JOIN gibbonPlannerEntry ON (gibbonPlannerEntryLike.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=.gibbonPlannerEntryLike.gibbonPersonID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY timestamp DESC" ;
+	$sqlLike="SELECT timestamp, gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRoleIDPrimary, image_240, gibbonRoleIDPrimary, gibbonPlannerEntry.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID FROM gibbonPlannerEntryLike JOIN gibbonPlannerEntry ON (gibbonPlannerEntryLike.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=.gibbonPlannerEntryLike.gibbonPersonID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY timestamp DESC" ;
 	$resultLike=$connection2->prepare($sqlLike);
 	$resultLike->execute($dataLike);
 }
@@ -68,7 +68,7 @@ if ($resultLike->rowCount()>0) {
 			//COLOR ROW BY STATUS!
 			print "<tr class=$rowNum>" ;
 				print "<td>" ;
-					print getUserPhoto($guid, $row["image_75"], 75) ;
+					print getUserPhoto($guid, $row["image_240"], 75) ;
 				print "</td>" ;
 				print "<td>" ;
 					$roleCategory=getRoleCategory($row["gibbonRoleIDPrimary"], $connection2) ;
@@ -96,7 +96,7 @@ if ($resultLike->rowCount()>0) {
 //Count positive haviour
 try {
 	$dataLike=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-	$sqlLike="SELECT descriptor, comment, timestamp, surname, preferredName, gibbonRoleIDPrimary, image_75, gibbonRoleIDPrimary FROM gibbonBehaviour JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonBehaviour.gibbonPersonIDCreator) WHERE gibbonBehaviour.gibbonPersonID=:gibbonPersonID AND type='Positive' AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY timestamp DESC" ;
+	$sqlLike="SELECT descriptor, comment, timestamp, surname, preferredName, gibbonRoleIDPrimary, image_240, gibbonRoleIDPrimary FROM gibbonBehaviour JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonBehaviour.gibbonPersonIDCreator) WHERE gibbonBehaviour.gibbonPersonID=:gibbonPersonID AND type='Positive' AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY timestamp DESC" ;
 	$resultLike=$connection2->prepare($sqlLike);
 	$resultLike->execute($dataLike);
 }
@@ -137,7 +137,7 @@ if ($resultLike->rowCount()>0) {
 			//COLOR ROW BY STATUS!
 			print "<tr class=$rowNum>" ;
 				print "<td>" ;
-					print getUserPhoto($guid, $row["image_75"], 75) ;
+					print getUserPhoto($guid, $row["image_240"], 75) ;
 				print "</td>" ;
 				print "<td>" ;
 					$roleCategory=getRoleCategory($row["gibbonRoleIDPrimary"], $connection2) ;
@@ -161,7 +161,7 @@ if ($resultLike->rowCount()>0) {
 //Count crowd assessment likes
 try {
 	$dataLike=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-	$sqlLike="SELECT gibbonPlannerEntryHomework.gibbonPlannerEntryHomeworkID, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRoleIDPrimary, image_75, gibbonPlannerEntry.name, gibbonCrowdAssessLike.timestamp FROM gibbonCrowdAssessLike JOIN gibbonPlannerEntryHomework ON (gibbonCrowdAssessLike.gibbonPlannerEntryHomeworkID=gibbonPlannerEntryHomework.gibbonPlannerEntryHomeworkID) JOIN gibbonPlannerEntry ON (gibbonPlannerEntryHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonPerson ON (gibbonCrowdAssessLike.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonPlannerEntryHomework.gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY timestamp DESC" ;
+	$sqlLike="SELECT gibbonPlannerEntryHomework.gibbonPlannerEntryHomeworkID, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRoleIDPrimary, image_240, gibbonPlannerEntry.name, gibbonCrowdAssessLike.timestamp FROM gibbonCrowdAssessLike JOIN gibbonPlannerEntryHomework ON (gibbonCrowdAssessLike.gibbonPlannerEntryHomeworkID=gibbonPlannerEntryHomework.gibbonPlannerEntryHomeworkID) JOIN gibbonPlannerEntry ON (gibbonPlannerEntryHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonPerson ON (gibbonCrowdAssessLike.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonPlannerEntryHomework.gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY timestamp DESC" ;
 	$resultLike=$connection2->prepare($sqlLike);
 	$resultLike->execute($dataLike);
 }
@@ -202,7 +202,7 @@ if ($resultLike->rowCount()>0) {
 			//COLOR ROW BY STATUS!
 			print "<tr class=$rowNum>" ;
 				print "<td>" ;
-					print getUserPhoto($guid, $row["image_75"], 75) ;
+					print getUserPhoto($guid, $row["image_240"], 75) ;
 				print "</td>" ;
 				print "<td>" ;
 					$roleCategory=getRoleCategory($row["gibbonRoleIDPrimary"], $connection2) ;

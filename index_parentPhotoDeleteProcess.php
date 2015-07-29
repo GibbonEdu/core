@@ -69,7 +69,7 @@ else {
 		//UPDATE
 		try {
 			$data=array("gibbonPersonID"=>$gibbonPersonID); 
-			$sql="UPDATE gibbonPerson SET image_240='', image_75='' WHERE gibbonPersonID=:gibbonPersonID" ;
+			$sql="UPDATE gibbonPerson SET image_240='' WHERE gibbonPersonID=:gibbonPersonID" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
@@ -82,7 +82,6 @@ else {
 		
 		//Update session variables
 		$_SESSION[$guid]["image_240"]="" ;
-		$_SESSION[$guid]["image_75"]="" ;
 		
 		//Clear cusotm sidebar
 		unset($_SESSION[$guid]["index_customSidebar.php"]) ;

@@ -200,7 +200,7 @@ function getMinorLinks($connection2, $guid, $cacheLoad) {
 							$output[($count-1)]["source"]=$output[($count-1)]["source"] . "<br/>" .$rowPosts["source"] ;
 						}
 						else {
-							$output[$_SESSION[$guid]["messageWallCount"]]["photo"]=$rowPosts["image_75"] ;
+							$output[$_SESSION[$guid]["messageWallCount"]]["photo"]=$rowPosts["image_240"] ;
 							$output[$_SESSION[$guid]["messageWallCount"]]["subject"]=$rowPosts["subject"] ;
 							$output[$_SESSION[$guid]["messageWallCount"]]["details"]=$rowPosts["body"] ;
 							$output[$_SESSION[$guid]["messageWallCount"]]["author"]=formatName($rowPosts["title"], $rowPosts["preferredName"], $rowPosts["surname"], $rowPosts["category"]) ;
@@ -1474,7 +1474,7 @@ function getParentPhotoUploader($connection2, $guid) {
 			$output.="<p>" ;
 				$output.=getUserPhoto($guid, $_SESSION[$guid]["image_240"], 240) ;
 				$output.="<div style='margin-left: 220px; margin-top: -50px'>" ;
-					$output.="<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index_parentPhotoDeleteProcess.php?gibbonPersonID=" . $_SESSION[$guid]["gibbonPersonID"] . "' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' id='image_75_delete' title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a><br/><br/>" ;
+					$output.="<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index_parentPhotoDeleteProcess.php?gibbonPersonID=" . $_SESSION[$guid]["gibbonPersonID"] . "' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' id='image_240_delete' title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a><br/><br/>" ;
 				$output.="</div>" ;
 			$output.="</p>" ;
 		}
@@ -3013,7 +3013,7 @@ function printRollGroupTable($guid, $gibbonRollGroupID, $columns, $connection2, 
 		}
 		
 		//User photo
-		print getUserPhoto($guid, $rowRollGroup["image_75"], 75) ;
+		print getUserPhoto($guid, $rowRollGroup["image_240"], 75) ;
 		
 		//HEY SHORTY IT'S YOUR BIRTHDAY!
 		$daysUntilNextBirthday=daysUntilNextBirthday($rowRollGroup["dob"]) ;
@@ -3101,7 +3101,7 @@ function printClassGroupTable($guid, $gibbonCourseClassID, $columns, $connection
 		print getAlertBar($guid, $connection2, $rowClassGroup["gibbonPersonID"], $rowClassGroup["privacy"]) ;
 		
 		//User photo
-		print getUserPhoto($guid, $rowClassGroup["image_75"], 75) ;
+		print getUserPhoto($guid, $rowClassGroup["image_240"], 75) ;
 		
 		//HEY SHORTY IT'S YOUR BIRTHDAY!
 		$daysUntilNextBirthday=daysUntilNextBirthday($rowClassGroup["dob"]) ;

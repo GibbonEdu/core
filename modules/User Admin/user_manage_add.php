@@ -194,6 +194,21 @@ else {
 					</script>
 				</td>
 			</tr>
+			<tr>
+				<td> 
+					<b><?php print _('User Photo') ?></b><br/>
+					<span style="font-size: 90%"><i><?php print _('240px by 320px') ?></i></span>
+				</td>
+				<td class="right">
+					<input type="file" name="file1" id="file1"><br/><br/>
+					<script type="text/javascript">
+						var file1=new LiveValidation('file1');
+						file1.add( Validate.Inclusion, { within: ['gif','jpg','jpeg','png'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+					</script>
+				</td>
+			</tr>
+			
+			
 			<tr class='break'>
 				<td colspan=2> 
 					<h3><?php print _('System Access') ?></h3>
@@ -1138,38 +1153,6 @@ else {
 				</td>
 				<td class="right">
 					<input name="emergency2Number2" id="emergency2Number2" maxlength=30 value="" type="text" style="width: 300px">
-				</td>
-			</tr>
-			
-			<tr class='break'>
-				<td colspan=2> 
-					<h3><?php print _('Images') ?></h3>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php print _('Medium Portrait') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('240px by 320px') ?></i></span>
-				</td>
-				<td class="right">
-					<input type="file" name="file1" id="file1"><br/><br/>
-					<script type="text/javascript">
-						var file1=new LiveValidation('file1');
-						file1.add( Validate.Inclusion, { within: ['gif','jpg','jpeg','png'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
-					</script>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php print _('Small Portrait') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('75px by 100px') ?></i></span>
-				</td>
-				<td class="right">
-					<input type="file" name="file2" id="file2"><br/><br/>
-					<script type="text/javascript">
-						var file2=new LiveValidation('file2');
-						file2.add( Validate.Inclusion, { within: ['gif','jpg','jpeg','png'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
-					</script>
 				</td>
 			</tr>
 			
