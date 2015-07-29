@@ -901,6 +901,7 @@ include "../functions.php" ;
 																	</optgroup>
 																	<optgroup label='--<?php print _('OTHERS') ?>--'/>
 																		<option value='BTC'>Bitcoin</option>
+																		<option value='XAF FCFA'>Central African Francs (FCFA)</option>
 																		<option value='INR ₹'>Indian Rupee (₹)</option>
 																		<option value='IDR Rp'>Indonesian Rupiah (Rp)</option>
 																		<option value='KES KSh'>Kenyan Shilling (KSh)</option>

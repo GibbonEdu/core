@@ -109,6 +109,9 @@ General: improved star icon in minor links area
 System Admin: fixed minor install bug relating to old manifests, not having category permissions set
 	Edited file /modules/System Admin/module_manage_installProcess.php
 
+General: added Central African Francs as a currency
+	Edited file /modules/System Admin/systemSettings.php
+	Edited file /installer/install.php
 
 v10.0.00
 --------
