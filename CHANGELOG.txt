@@ -121,6 +121,9 @@ User Admin: removed thumbnail image size (75 x 100px) to simplify image manageme
 User Admin: greater flexibility in acceptable image size for User Photo
 	Edited files /modules/User Admin/user_manage_add*.php, user_manage_edit*.php
 
+System Admin: added option to remove database tables/views when uninstalling module
+	Edited files /modules/System Admin/module_manage.php, module_manage_uninstall*.php
+
 
 v10.0.00
 --------
