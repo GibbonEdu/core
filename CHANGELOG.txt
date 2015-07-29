@@ -118,6 +118,9 @@ User Admin: removed thumbnail image size (75 x 100px) to simplify image manageme
 	Edited files /modules/User Admin/user_manage*.php
 	Edited various files across the system
 
+User Admin: greater flexibility in acceptable image size for User Photo
+	Edited files /modules/User Admin/user_manage_add*.php, user_manage_edit*.php
+
 
 v10.0.00
 --------

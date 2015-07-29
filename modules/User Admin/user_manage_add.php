@@ -197,7 +197,7 @@ else {
 			<tr>
 				<td> 
 					<b><?php print _('User Photo') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('240px by 320px') ?></i></span>
+					<span style="font-size: 90%"><i><?php print _('Displayed at 240px by 320px.') . "<br/>" . _('Accepts images up to 360px by 480px.') . "<br/>" . _('Accepts aspect ratio between 1:1.2 and 1:1.4.') ?></i></span>
 				</td>
 				<td class="right">
 					<input type="file" name="file1" id="file1"><br/><br/>

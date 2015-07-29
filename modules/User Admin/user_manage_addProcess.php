@@ -366,7 +366,8 @@ else {
 							$size1=getimagesize($path . "/" . $attachment1) ;
 							$width1=$size1[0] ;
 							$height1=$size1[1] ;
-							if ($width1!=240 OR $height1!=320) {
+							$aspect1=$height1/$width1 ;
+							if ($width1>360 OR $height1>480 OR $aspect1<1.2 OR $aspect1>1.4) {
 								$attachment1="" ;
 								$imageFail=TRUE ;
 							}

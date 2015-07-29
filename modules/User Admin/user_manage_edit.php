@@ -260,9 +260,9 @@ else {
 					<tr>
 						<td> 
 							<b><?php print _('User Photo') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print _('240px by 320px') ?><br/>
+							<span style="font-size: 90%"><i><?php print _('Displayed at 240px by 320px.') . "<br/>" . _('Accepts images up to 360px by 480px.') . "<br/>" . _('Accepts aspect ratio between 1:1.2 and 1:1.4.') ?><br/>
 							<?php if ($row["image_240"]!="") {
-							print "<?php print _('Will overwrite existing attachment.') ?>" ;
+							print _('Will overwrite existing attachment.') ;
 							} ?>
 							</i></span>
 						</td>
