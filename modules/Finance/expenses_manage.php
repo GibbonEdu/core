@@ -329,7 +329,8 @@ else {
 							print _("View") ;
 							print "</h3>" ;
 			
-							if ($highestAction=="Manage Expenses_all") { //Access to everything
+							$allowExpenseAdd=getSettingByScope($connection2, "Finance", "allowExpenseAdd") ;
+							if ($highestAction=="Manage Expenses_all" AND $allowExpenseAdd=="Y") { //Access to everything
 								print "<div class='linkTop' style='text-align: right'>" ;
 									print "<a style='margin-right: 3px' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/expenses_manage_add.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=$status&gibbonFinanceBudgetID=$gibbonFinanceBudgetID'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a><br/>" ;
 								print "</div>" ;
@@ -345,7 +346,8 @@ else {
 							print "<span style='font-weight: normal; font-style: italic; font-size: 55%'> " . sprintf(_('%1$s expense requests in current view'), $result->rowCount()) . "</span>" ;
 							print "</h3>" ;
 
-							if ($highestAction=="Manage Expenses_all") { //Access to everything
+							$allowExpenseAdd=getSettingByScope($connection2, "Finance", "allowExpenseAdd") ;
+							if ($highestAction=="Manage Expenses_all" AND $allowExpenseAdd=="Y") { //Access to everything
 								print "<div class='linkTop' style='text-align: right'>" ;
 									print "<a style='margin-right: 3px' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/expenses_manage_add.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=$status&gibbonFinanceBudgetID=$gibbonFinanceBudgetID'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a><br/>" ;
 								print "</div>" ;

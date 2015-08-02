@@ -124,6 +124,10 @@ User Admin: greater flexibility in acceptable image size for User Photo
 System Admin: added option to remove database tables/views when uninstalling module
 	Edited files /modules/System Admin/module_manage.php, module_manage_uninstall*.php
 
+Finance: added switch to prevent adding expenses without going through the request procedure
+	New value in table gibbonSetting
+	Edited files /modules/School Admin/financeSettings.php
+	Edited files /modules/Finance/expenses_manage.php, expenses_manage_add*.php
 
 v10.0.00
 --------
