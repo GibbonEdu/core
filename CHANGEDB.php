@@ -488,7 +488,12 @@ INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`
 ALTER TABLE `gibbonSpace` CHANGE `type` `type` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
 ALTER TABLE `gibbonPerson` DROP `image_75`;end
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'Finance', 'allowExpenseAdd', 'Allow Expense Add', 'Allows privileged users to add expenses without going through request process.', 'Y');end
-
+UPDATE gibbonAction SET precedence=1, name='View Behaviour Records_all' WHERE name='View Behaviour Records' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Behaviour');end
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Behaviour'), 'View Behaviour Records_myChildren', 0, '', 'View behaviour records for students within a family.', 'behaviour_view.php,behaviour_view_details.php', 'behaviour_view.php', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'Y', 'N') ;end
+ALTER TABLE `gibbonHouse` ADD `logo` VARCHAR(255) NOT NULL AFTER `nameShort`;end
+ALTER TABLE `gibbonLog` ADD `ip` VARCHAR(15) NOT NULL AFTER `serialisedArray`;end
+ALTER TABLE `gibbonLog` CHANGE `gibbonModuleID` `gibbonModuleID` INT(4) UNSIGNED ZEROFILL NULL DEFAULT NULL;end
+ALTER TABLE `gibbonLog` CHANGE `gibbonPersonID` `gibbonPersonID` INT(10) UNSIGNED ZEROFILL NULL DEFAULT NULL;end
 ";
 
 ?>

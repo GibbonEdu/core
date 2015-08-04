@@ -275,6 +275,7 @@ if(isset($_SESSION[$guid]['gplusuer'])){
 		$_SESSION[$guid]["gibboni18nIDPersonal"]=$row["gibboni18nIDPersonal"] ;
 		$_SESSION[$guid]["googleAPIRefreshToken"]=$row["googleAPIRefreshToken"] ;
 		$_SESSION[$guid]['receiveNoticiationEmails']=$row["receiveNoticiationEmails"] ;
+		$_SESSION[$guid]['gibbonHouseID']=$row["gibbonHouseID"] ;
 
 		//If user has personal language set, load it to session variable.
 		if (!is_null($_SESSION[$guid]["gibboni18nIDPersonal"])) {

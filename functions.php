@@ -99,10 +99,10 @@ function getMinorLinks($connection2, $guid, $cacheLoad) {
 		//Spit out likes
 		if (isset($_SESSION[$guid]["likeCount"])) {
 			if ($_SESSION[$guid]["likeCount"]>0) {
-				$return.=" . <a title='" . substr($_SESSION[$guid]["likeCountTitle"],0,-2) . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=stars.php'>" . $_SESSION[$guid]["likeCount"] . " x <img style='margin-left: 2px; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_large_on.png'></a>" ;
+				$return.=" . <a title='" . substr($_SESSION[$guid]["likeCountTitle"],0,-2) . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=stars.php'>" . $_SESSION[$guid]["likeCount"] . " x <img class='minorLinkIcon' style='margin-left: 2px; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_large_on.png'></a>" ;
 			}
 			else {
-				$return.=" . " . $_SESSION[$guid]["likeCount"] . " x <img title='" . substr($_SESSION[$guid]["likeCountTitle"],0,-2) . "' style='margin-left: 2px; opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_large_off.png'>" ;
+				$return.=" . " . $_SESSION[$guid]["likeCount"] . " x <img class='minorLinkIcon' title='" . substr($_SESSION[$guid]["likeCountTitle"],0,-2) . "' style='margin-left: 2px; opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_large_off.png'>" ;
 			}
 		}
 		
@@ -158,10 +158,10 @@ function getMinorLinks($connection2, $guid, $cacheLoad) {
 			}
 			
 			if ($resultNotifications->rowCount()>0) {
-				$return.=" . <a title='" . _('Notifications') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=notifications.php'>" . $resultNotifications->rowCount() . " x " . "<img style='margin-left: 2px; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_on.png'></a>" ;
+				$return.=" . <a title='" . _('Notifications') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=notifications.php'>" . $resultNotifications->rowCount() . " x " . "<img class='minorLinkIcon' style='margin-left: 2px; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_on.png'></a>" ;
 			}
 			else {
-				$return.=" . 0 x " . "<img style='margin-left: 2px; opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_off.png'>" ;
+				$return.=" . 0 x " . "<img class='minorLinkIcon' style='margin-left: 2px; opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_off.png'>" ;
 			}
 		$return.="</div>" ;
 
@@ -218,14 +218,14 @@ function getMinorLinks($connection2, $guid, $cacheLoad) {
 			
 			$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Messenger/messageWall_view.php" ;
 			if (isset($_SESSION[$guid]["messageWallCount"])==FALSE) {
-				$return.=" . 0 x <img style='margin-left: 4px; opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/messageWall_none.png'>" ;
+				$return.=" . 0 x <img class='minorLinkIcon' style='margin-left: 4px; opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/messageWall_none.png'>" ;
 			}
 			else {
 				if ($_SESSION[$guid]["messageWallCount"]<1) {
-					$return.=" . 0 x <img style='margin-left: 4px; opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/messageWall_none.png'>" ;
+					$return.=" . 0 x <img class='minorLinkIcon' style='margin-left: 4px; opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/messageWall_none.png'>" ;
 				}
 				else {
-					$return.=" . <a title='" . _('Message Wall') . "' href='$URL'>" . $_SESSION[$guid]["messageWallCount"] . " x <img style='margin-left: 4px; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/messageWall.png'></a>" ;
+					$return.=" . <a title='" . _('Message Wall') . "' href='$URL'>" . $_SESSION[$guid]["messageWallCount"] . " x <img class='minorLinkIcon' style='margin-left: 4px; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/messageWall.png'></a>" ;
 					if ($_SESSION[$guid]["pageLoads"]==0 AND ($_SESSION[$guid]["messengerLastBubble"]==NULL OR $_SESSION[$guid]["messengerLastBubble"]<date("Y-m-d"))) {
 						print $messageBubbleBGColor=getSettingByScope($connection2, "Messenger", "messageBubbleBGColor") ;
 						$bubbleBG="" ;
@@ -299,6 +299,11 @@ function getMinorLinks($connection2, $guid, $cacheLoad) {
 					}
 				}
 			}
+		}
+		
+		//House logo
+		if (isset($_SESSION[$guid]["gibbonHouseIDLogo"]) AND isset($_SESSION[$guid]["gibbonHouseIDName"])) {
+			$return.=" . <img class='minorLinkIcon' title='" . $_SESSION[$guid]["gibbonHouseIDName"] . "' style='vertical-align: -75%; margin-left: 4px' src='" . $_SESSION[$guid]["absoluteURL"] . "/" . $_SESSION[$guid]["gibbonHouseIDLogo"] . "'/>" ; 
 		}
 	}
 	
@@ -3798,8 +3803,8 @@ function formatPhone($num) { //Function by Zeromatik on StackOverflow
     return $num;
 }
 
-function setLog($connection2, $gibbonSchoolYearID, $gibbonModuleID, $gibbonPersonID, $title, $array=null) {
-	if((!is_array($array) && $array!=null) || $title == null || $gibbonModuleID == null || $gibbonSchoolYearID == null) {
+function setLog($connection2, $gibbonSchoolYearID, $gibbonModuleID, $gibbonPersonID, $title, $array=null, $ip=NULL) {
+	if((!is_array($array) && $array!=null) || $title == null || $gibbonSchoolYearID == null) {
 		return null;	
 	}
 	
@@ -3810,8 +3815,8 @@ function setLog($connection2, $gibbonSchoolYearID, $gibbonModuleID, $gibbonPerso
 		$serialisedArray=null;
 	}
 	try {
-		$dataLog=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "gibbonModuleID"=>$gibbonModuleID, "gibbonPersonID"=>$gibbonPersonID, "title"=>$title, "serialisedArray"=>$serialisedArray); 
-		$sqlLog="INSERT INTO gibbonLog SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonModuleID=:gibbonModuleID, gibbonPersonID=:gibbonPersonID, title=:title, serialisedArray=:serialisedArray;" ;
+		$dataLog=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "gibbonModuleID"=>$gibbonModuleID, "gibbonPersonID"=>$gibbonPersonID, "title"=>$title, "serialisedArray"=>$serialisedArray, "ip"=>$ip); 
+		$sqlLog="INSERT INTO gibbonLog SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonModuleID=:gibbonModuleID, gibbonPersonID=:gibbonPersonID, title=:title, serialisedArray=:serialisedArray, ip=:ip" ;
 		$resultLog=$connection2->prepare($sqlLog);
 		$resultLog->execute($dataLog); 
 	}

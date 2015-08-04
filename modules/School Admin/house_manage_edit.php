@@ -59,6 +59,19 @@ else {
 		print "</div>" ;
 	} 
 	
+	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
+	$deleteReturnMessage="" ;
+	$class="error" ;
+	if (!($deleteReturn=="")) {
+		if ($deleteReturn=="success0") {
+			$deleteReturnMessage=_("Your request was completed successfully.") ;		
+			$class="success" ;
+		}
+		print "<div class='$class'>" ;
+			print $deleteReturnMessage;
+		print "</div>" ;
+	} 
+	
 	//Check if school year specified
 	$gibbonHouseID=$_GET["gibbonHouseID"] ;
 	if ($gibbonHouseID=="") {
@@ -86,7 +99,7 @@ else {
 			//Let's go!
 			$row=$result->fetch() ;
 			?>
-			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/house_manage_editProcess.php?gibbonHouseID=$gibbonHouseID" ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/house_manage_editProcess.php?gibbonHouseID=$gibbonHouseID" ?>" enctype="multipart/form-data">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td style='width: 275px'> 
@@ -112,6 +125,24 @@ else {
 								var nameShort=new LiveValidation('nameShort');
 								nameShort.add(Validate.Presence);
 							 </script> 
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<b><?php print _('Logo') ?></b><br/>
+						</td>
+						<td class="right">
+							<?php
+							if ($row["logo"]!="") {
+								print _("Current attachment:") . " <a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["logo"] . "'>" . $row["logo"] . "</a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/School Admin/house_manage_edit_photoDeleteProcess.php?gibbonHouseID=$gibbonHouseID' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a><br/><br/>" ;
+							}
+							?>
+							<input type="file" name="file1" id="file1"><br/><br/>
+							<input type="hidden" name="attachment1" value='<?php print $row["image_240"] ?>'>
+							<script type="text/javascript">
+								var file1=new LiveValidation('file1');
+								file1.add( Validate.Inclusion, { within: ['gif','jpg','jpeg','png'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+							</script>
 						</td>
 					</tr>
 					<tr>

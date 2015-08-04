@@ -129,6 +129,24 @@ Finance: added switch to prevent adding expenses without going through the reque
 	Edited files /modules/School Admin/financeSettings.php
 	Edited files /modules/Finance/expenses_manage.php, expenses_manage_add*.php
 
+Behaviour: added interface for parents to view behaviour records for their children
+	Edited value in table gibbonAction
+	New value in table gibbonAction
+	Edited files /modules/Behaviour/behaviour_view.php, behaviour_view_details.php
+
+School Admin: added logo field to houses and displayed it for users in house
+	Edited table gibbonHouse
+	Edited files /modules/School Admin/house_manage.php
+	New file /modules/School Admin/house_manage_edit_photoDeleteProcess.php
+	Edited file /lib/googleOAuth/index.php
+	Edited files /index.php, login.php, functions.php
+	Edited file /themes/Default/css/main.css
+
+General: added system log of logins, both failed and successful
+	Edited table gibbonLog
+	Edited files /functions.php, login.php
+
+
 v10.0.00
 --------
 i18n: added Urdu as inactive development language

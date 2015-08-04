@@ -222,6 +222,10 @@ div.minorLinks {
 	font-weight: normal; 
 	height: 38px;
 }
+img.minorLinkIcon {
+	height: 38px ;
+	max-height: 38px ;
+}
 
 div.minorLinks a {
 	color: #fff;

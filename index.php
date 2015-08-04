@@ -330,6 +330,23 @@ else {
 		</head>
 		<body>
 			<?php
+			//Get house logo and set session variable, only on first load after login (for performance)
+			if ($_SESSION[$guid]["pageLoads"]==0 AND isset($_SESSION[$guid]["username"]) AND $_SESSION[$guid]["gibbonHouseID"]!="") {
+				try {
+					$dataHouse=array("gibbonHouseID"=>$_SESSION[$guid]["gibbonHouseID"]); 
+					$sqlHouse="SELECT logo, name FROM gibbonHouse WHERE gibbonHouseID=:gibbonHouseID" ;
+					$resultHouse=$connection2->prepare($sqlHouse);
+					$resultHouse->execute($dataHouse);
+				}
+				catch(PDOException $e) { }
+
+				if ($resultHouse->rowCount()==1) {
+					$rowHouse=$resultHouse->fetch() ;
+					$_SESSION[$guid]["gibbonHouseIDLogo"]=$rowHouse["logo"] ;
+					$_SESSION[$guid]["gibbonHouseIDName"]=$rowHouse["name"] ;
+				}
+			}
+			
 			//Show warning if not in the current school year
 			if (isset($_SESSION[$guid]["username"])) {
 				if ($_SESSION[$guid]["gibbonSchoolYearID"]!=$_SESSION[$guid]["gibbonSchoolYearIDCurrent"]) {
