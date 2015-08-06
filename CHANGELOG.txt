@@ -151,6 +151,8 @@ General: fixed broken links to gibbonedu.org
 	Edited file /modules/System Admin/module_manage_update.php
 	Edited file /modules/Planner/units_embed.php
 
+General: removed config-sample.php as it is a throw back to pre-installer days
+	Deleted file /config-sample.php
 
 v10.0.00
 --------
