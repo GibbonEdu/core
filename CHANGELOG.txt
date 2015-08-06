@@ -154,6 +154,11 @@ General: fixed broken links to gibbonedu.org
 General: removed config-sample.php as it is a throw back to pre-installer days
 	Deleted file /config-sample.php
 
+i18n: added Romanian as active language (thanks to Iulian Ghetau for his translation)
+	New value in table gibboni18n
+	New folder /i18n/ro_RO
+
+
 v10.0.00
 --------
 i18n: added Urdu as inactive development language

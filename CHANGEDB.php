@@ -494,6 +494,7 @@ ALTER TABLE `gibbonHouse` ADD `logo` VARCHAR(255) NOT NULL AFTER `nameShort`;end
 ALTER TABLE `gibbonLog` ADD `ip` VARCHAR(15) NOT NULL AFTER `serialisedArray`;end
 ALTER TABLE `gibbonLog` CHANGE `gibbonModuleID` `gibbonModuleID` INT(4) UNSIGNED ZEROFILL NULL DEFAULT NULL;end
 ALTER TABLE `gibbonLog` CHANGE `gibbonPersonID` `gibbonPersonID` INT(10) UNSIGNED ZEROFILL NULL DEFAULT NULL;end
+INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('ro_RO', 'Română', 'N', 'N', 'Iulian Ghetau', '', 'dd.mm.yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\d\\\d$/i', 'd.m.Y', 'N');end
 ";
 
 ?>
