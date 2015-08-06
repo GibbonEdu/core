@@ -149,7 +149,7 @@ else {
 						print "<div class='error'>There are no smart blocks in this unit.</div>" ; 
 					}
 					else {
-						print "<p>Smart blocks are <a target='_parent' href='http://www.gibbonedu.org'>Gibbon's</a> unique method for organising the content within a unit. Each block represents an element of a lesson, perhaps an activity, a discussion or even an outcome. Here you can simply view the blocks, but if your school runs Gibbon you can use the blocks to create lessons plans, and use drag and drop to quickly move content between lessons.</p>" ;
+						print "<p>Smart blocks are <a target='_parent' href='http://gibbonedu.org'>Gibbon's</a> unique method for organising the content within a unit. Each block represents an element of a lesson, perhaps an activity, a discussion or even an outcome. Here you can simply view the blocks, but if your school runs Gibbon you can use the blocks to create lessons plans, and use drag and drop to quickly move content between lessons.</p>" ;
 						while ($rowBlocks=$resultBlocks->fetch()) {
 							makeBlock($guid, $connection2, $i, "embed", $rowBlocks["title"], $rowBlocks["type"], $rowBlocks["length"], $rowBlocks["contents"], "N", $rowBlocks["gibbonUnitBlockID"], "", $rowBlocks["teachersNotes"]) ;
 							$i++ ;
@@ -212,10 +212,10 @@ else {
 					
 					print "<h3>Source</h3>" ;
 					if ($_SESSION[$guid]["webLink"]=="") {
-						print "<p>This unit was built with, and is powered by, <a target='_parent' href='http://www.gibbonedu.org'>Gibbon</a> (the open, flexible and free school platform) at " . $_SESSION[$guid]["organisationName"] . "</p>" ;
+						print "<p>This unit was built with, and is powered by, <a target='_parent' href='http://gibbonedu.org'>Gibbon</a> (the open, flexible and free school platform) at " . $_SESSION[$guid]["organisationName"] . "</p>" ;
 					}
 					else {
-						print "<p>This unit was built with, and is powered by, <a target='_parent' href='http://www.gibbonedu.org'>Gibbon</a> (the open, flexible and free school platform) at <a target='_parent' href='" . $_SESSION[$guid]["webLink"] . "'>" . $_SESSION[$guid]["organisationName"] . "</a></p>" ;
+						print "<p>This unit was built with, and is powered by, <a target='_parent' href='http://gibbonedu.org'>Gibbon</a> (the open, flexible and free school platform) at <a target='_parent' href='" . $_SESSION[$guid]["webLink"] . "'>" . $_SESSION[$guid]["organisationName"] . "</a></p>" ;
 					}
 				}
 			}

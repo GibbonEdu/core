@@ -146,6 +146,11 @@ General: added system log of logins, both failed and successful
 	Edited table gibbonLog
 	Edited files /functions.php, login.php
 
+General: fixed broken links to gibbonedu.org
+	Edited file /index.php
+	Edited file /modules/System Admin/module_manage_update.php
+	Edited file /modules/Planner/units_embed.php
+
 
 v10.0.00
 --------
