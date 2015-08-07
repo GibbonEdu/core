@@ -94,6 +94,21 @@ else {
 				break ;
 			}
 			
+			$gibbonBehaviourID=$connection2->lastInsertID() ;
+			
+			//Attempt to add like
+			$likeComment="" ;
+			if ($descriptor!=NULL) {
+				$likeComment.=$descriptor ;
+			}
+			if ($descriptor!=NULL AND $comment!="") {
+				$likeComment.=": " ;
+			}
+			if ($comment!="") {
+				$likeComment.=$comment ;
+			}
+			$return=setLike($connection2, "Behaviour", $_SESSION[$guid]["gibbonSchoolYearID"], "gibbonBehaviourID", $gibbonBehaviourID, $_SESSION[$guid]["gibbonPersonID"], $gibbonPersonID, "Positive Behaviour", $likeComment) ;
+			
 			//Success 0
 			$URL.="&addReturn=success0" ;
 			header("Location: {$URL}");

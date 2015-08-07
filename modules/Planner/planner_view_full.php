@@ -1864,6 +1864,7 @@ else {
 										
 											if ($row["role"]=="Teacher" AND $teacher==TRUE) {
 												if ($rowClassGroup["role"]=="Student") {
+													
 													try {
 														$dataLike=array("gibbonPlannerEntryID"=>$row["gibbonPlannerEntryID"],"gibbonPersonID"=>$rowClassGroup["gibbonPersonID"]); 
 														$sqlLike="SELECT * FROM gibbonBehaviour WHERE type='Positive' AND gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID" ;
@@ -1871,6 +1872,7 @@ else {
 														$resultLike->execute($dataLike); 
 													}
 													catch(PDOException $e) { }
+													
 													//HEY SHORTY IT'S YOUR BIRTHDAY!
 													$daysUntilNextBirthday=daysUntilNextBirthday($rowClassGroup["dob"]) ;
 													if ($daysUntilNextBirthday==0) {
@@ -1884,20 +1886,25 @@ else {
 														$_SESSION[$guid]["sidebarExtra"].=" until " . $rowClassGroup["preferredName"] . "&#39;s birthday!' style='margin: -24px 0 0 0; width: 25px; height: 25px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/gift.png'/>" ;
 													}
 										
+													//DEAL WITH LIKES
+													$likesGiven=countLikesByContextAndGiver($connection2, "Planner", "gibbonPlannerEntryID", $gibbonPlannerEntryID, $_SESSION[$guid]["gibbonPersonID"], $rowClassGroup["gibbonPersonID"]) ;
+													$comment=addSlashes($row["course"] . "." . $row["class"] . ": " . $row["name"]) ;
 													$_SESSION[$guid]["sidebarExtra"].="<div id='star" . $rowClassGroup["gibbonPersonID"] . "'>" ;
 														$_SESSION[$guid]["sidebarExtra"].="<script type=\"text/javascript\">" ;
 															$_SESSION[$guid]["sidebarExtra"].="$(document).ready(function(){" ;
 																$_SESSION[$guid]["sidebarExtra"].="$(\"#starAdd" . $rowClassGroup["gibbonPersonID"] . "\").click(function(){" ;
-																	$_SESSION[$guid]["sidebarExtra"].="$(\"#star" . $rowClassGroup["gibbonPersonID"] . "\").load(\"" . $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/planner_view_full_starAjax.php\",{\"gibbonPersonID\": \"" . $rowClassGroup["gibbonPersonID"] . "\", \"gibbonPlannerEntryID\": \"" . $row["gibbonPlannerEntryID"] . "\"});" ;
+																	$_SESSION[$guid]["sidebarExtra"].="$(\"#star" . $rowClassGroup["gibbonPersonID"] . "\").load(\"" . $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/planner_view_full_starAjax.php\",{\"gibbonPersonID\": \"" . $rowClassGroup["gibbonPersonID"] . "\", \"gibbonPlannerEntryID\": \"" . $row["gibbonPlannerEntryID"] . "\", \"mode\": \"add\", \"comment\": \"" . $comment . "\"});" ;
+																$_SESSION[$guid]["sidebarExtra"].="});" ;
+																$_SESSION[$guid]["sidebarExtra"].="$(\"#starRemove" . $rowClassGroup["gibbonPersonID"] . "\").click(function(){" ;
+																	$_SESSION[$guid]["sidebarExtra"].="$(\"#star" . $rowClassGroup["gibbonPersonID"] . "\").load(\"" . $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/planner_view_full_starAjax.php\",{\"gibbonPersonID\": \"" . $rowClassGroup["gibbonPersonID"] . "\", \"gibbonPlannerEntryID\": \"" . $row["gibbonPlannerEntryID"] . "\", \"mode\": \"remove\", \"comment\": \"" . $comment . "\"});" ;
 																$_SESSION[$guid]["sidebarExtra"].="});" ;
 															$_SESSION[$guid]["sidebarExtra"].="});" ;
 														$_SESSION[$guid]["sidebarExtra"].="</script>" ;
-														if ($resultLike->rowCount()!=1) {
+														if ($likesGiven!=1) {
 															$_SESSION[$guid]["sidebarExtra"].="<a id='starAdd" . $rowClassGroup["gibbonPersonID"] . "' onclick='return false;' href='#'><img style='margin-top: -30px; margin-left: 60px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_off.png'></a>" ;
 														}
 														else {
-															$rowLike=$resultLike->fetch() ;
-															$_SESSION[$guid]["sidebarExtra"].="<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage_edit.php&gibbonBehaviourID=" . $rowLike["gibbonBehaviourID"] . "&gibbonPersonID=&gibbonRollGroupID=&gibbonYearGroupID=&type='><img style='margin-top: -30px; margin-left: 60px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_on.png'></a>" ;
+															$_SESSION[$guid]["sidebarExtra"].="<a id='starRemove" . $rowClassGroup["gibbonPersonID"] . "' onclick='return false;' href='#'><img style='margin-top: -30px; margin-left: 60px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_on.png'></a>" ;
 														}
 													
 													$_SESSION[$guid]["sidebarExtra"].="</div>" ;

@@ -104,7 +104,6 @@ else {
 		else {
 			$proceed=true ;
 			if ($highestAction=="Lesson Planner_viewMyChildrensClasses") {
-				
 				try {
 					$dataChild=array("gibbonPersonID1"=>$gibbonPersonID2, "gibbonPersonID2"=>$gibbonPersonID ); 
 					$sqlChild="SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID1 AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'" ;
@@ -167,56 +166,65 @@ else {
 				}
 				else {
 					//Check like statatus
-					try {
-						$dataLike=array("gibbonPlannerEntryID"=>$gibbonPlannerEntryID, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-						$sqlLike="SELECT * FROM gibbonPlannerEntryLike WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID" ;
-						$resultLike=$connection2->prepare($sqlLike);
-						$resultLike->execute($dataLike);
-					}
-					catch(PDOException $e) { 
-						//Fail2
-						$URL.="&updateReturn=fail2$params" ;
-						header("Location: {$URL}");
-						break ;
-					}
-
-					//INSERT
-					if ($resultLike->rowCount()!=1) {
+					$likesGiven=countLikesByContextAndGiver($connection2, "Planner", "gibbonPlannerEntryID", $gibbonPlannerEntryID, $_SESSION[$guid]["gibbonPersonID"]) ;
+					if ($likesGiven!=1) {
+						//One like for each teacher
+						$insertFail=FALSE ;
 						try {
-							$data=array("gibbonPlannerEntryID"=>$gibbonPlannerEntryID, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-							$sql="INSERT INTO gibbonPlannerEntryLike SET gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonPersonID=:gibbonPersonID" ;
-							$result=$connection2->prepare($sql);
-							$result->execute($data);
+							$dataTeachers=array("gibbonPlannerEntryID"=>$gibbonPlannerEntryID); 
+							$sqlTeachers="SELECT gibbonPlannerEntry.name, gibbonCourseClassPerson.gibbonPersonID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND role='Teacher' AND status='Full'" ;
+							$resultTeachers=$connection2->prepare($sqlTeachers);
+							$resultTeachers->execute($dataTeachers);
 						}
-						catch(PDOException $e) { 
+						catch(PDOException $e) { $insertFail=TRUE ; }
+						
+						while ($rowTeachers=$resultTeachers->fetch()) {
+							$return=setLike($connection2, "Planner", $_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPlannerEntryID", $gibbonPlannerEntryID, $_SESSION[$guid]["gibbonPersonID"], $rowTeachers["gibbonPersonID"], "Planner - Lesson Design", $rowTeachers["course"] . "." . $rowTeachers["class"] . ": " . $rowTeachers["name"]) ;
+							if ($return==FALSE) {
+								$insertFail=TRUE ;
+							}
+						}
+						
+						if ($insertFail==TRUE) {
 							//Fail 2
 							$URL.="&updateReturn=fail2$params" ;
 							header("Location: {$URL}");
-							break ;
 						}
-
-						//Success 0
-						$URL.="&updateReturn=success0$params" ;
-						header("Location: {$URL}");
+						else {
+							//Success 0
+							$URL.="&updateReturn=success0$params" ;
+							header("Location: {$URL}");
+						}
 					}
 					//DELETE
 					else {
+						//One like for each teacher
+						$insertFail=FALSE ;
 						try {
-							$data=array("gibbonPlannerEntryID"=>$gibbonPlannerEntryID, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-							$sql="DELETE FROM gibbonPlannerEntryLike WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID" ;
-							$result=$connection2->prepare($sql);
-							$result->execute($data);
+							$dataTeachers=array("gibbonPlannerEntryID"=>$gibbonPlannerEntryID); 
+							$sqlTeachers="SELECT gibbonCourseClassPerson.gibbonPersonID FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND role='Teacher' AND status='Full'" ;
+							$resultTeachers=$connection2->prepare($sqlTeachers);
+							$resultTeachers->execute($dataTeachers);
 						}
-						catch(PDOException $e) { 
+						catch(PDOException $e) { $insertFail=TRUE ; }
+						
+						while ($rowTeachers=$resultTeachers->fetch()) {
+							$return=deleteLike($connection2, "Planner", "gibbonPlannerEntryID", $gibbonPlannerEntryID, $_SESSION[$guid]["gibbonPersonID"], $rowTeachers["gibbonPersonID"], "Planner - Lesson Design") ;
+							if ($return==FALSE) {
+								$insertFail=TRUE ;
+							}
+						}
+						
+						if ($insertFail==TRUE) {
 							//Fail 2
 							$URL.="&updateReturn=fail2$params" ;
 							header("Location: {$URL}");
-							break ;
 						}
-
-						//Success 0
-						$URL.="&updateReturn=success0$params" ;
-						header("Location: {$URL}");
+						else {
+							//Success 0
+							$URL.="&updateReturn=success0$params" ;
+							header("Location: {$URL}");
+						}
 					}
 				}
 			}

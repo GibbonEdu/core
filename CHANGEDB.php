@@ -495,6 +495,12 @@ ALTER TABLE `gibbonLog` ADD `ip` VARCHAR(15) NOT NULL AFTER `serialisedArray`;en
 ALTER TABLE `gibbonLog` CHANGE `gibbonModuleID` `gibbonModuleID` INT(4) UNSIGNED ZEROFILL NULL DEFAULT NULL;end
 ALTER TABLE `gibbonLog` CHANGE `gibbonPersonID` `gibbonPersonID` INT(10) UNSIGNED ZEROFILL NULL DEFAULT NULL;end
 INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('ro_RO', 'Română', 'N', 'N', 'Iulian Ghetau', '', 'dd.mm.yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\d\\\d$/i', 'd.m.Y', 'N');end
+CREATE TABLE `gibbonLike` (  `gibbonLikeID` int(16) unsigned zerofill NOT NULL,  `gibbonSchoolYearID` int(3) unsigned zerofill NOT NULL,  `gibbonModuleID` int(4) unsigned zerofill NOT NULL,  `contextKeyName` varchar(255) NOT NULL,  `contextKeyValue` int(20) NOT NULL,  `gibbonPersonIDRecipient` int(10) unsigned zerofill NOT NULL,  `gibbonPersonIDGiver` int(10) unsigned zerofill NOT NULL,  `title` varchar(50) NOT NULL,  `comment` text NOT NULL,  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP) ENGINE=MyISAM DEFAULT CHARSET=utf8;end
+ALTER TABLE `gibbonLike`  ADD PRIMARY KEY (`gibbonLikeID`),  ADD KEY `gibbonModuleID` (`gibbonModuleID`),  ADD KEY `gibbonPersonIDRecipient` (`gibbonPersonIDRecipient`), ADD KEY `gibbonPersonIDGiver` (`gibbonPersonIDGiver`);end
+ALTER TABLE `gibbonLike` MODIFY `gibbonLikeID` int(16) unsigned zerofill NOT NULL AUTO_INCREMENT;end
+UPDATE gibbonAction SET name='Staff Likes' WHERE name='Staff Gold Stars' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Planner');end
+DROP TABLE gibbonPlannerEntryLike;end
+DROP TABLE gibbonCrowdAssessLike;end
 ";
 
 ?>

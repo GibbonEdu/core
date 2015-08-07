@@ -78,6 +78,8 @@ else {
 				header("Location: {$URL}");
 			}
 			else {
+				$row=$result->fetch() ;
+				
 				//Write to database
 				try {
 					$data=array("gibbonBehaviourID"=>$gibbonBehaviourID); 
@@ -91,6 +93,8 @@ else {
 					header("Location: {$URL}");
 					break ;
 				}
+				
+				$return=deleteLike($connection2, "Behaviour", "gibbonBehaviourID", $gibbonBehaviourID, $_SESSION[$guid]["gibbonPersonID"], $row["gibbonPersonID"], "Positive Behaviour") ;
 				
 				//Success 0
 				$URLDelete=$URLDelete . "&deleteReturn=success0" ;

@@ -158,6 +158,17 @@ i18n: added Romanian as active language (thanks to Iulian Ghetau for his transla
 	New value in table gibboni18n
 	New folder /i18n/ro_RO
 
+General: generalised stars, so that they are all in one table, with common methods, usable to additional modules. LOSES OLD LIKES!
+	New table gibbonLike
+	Updated value in table gibbonAction
+	Deleted tables gibbonPlannerEntryLike, gibbonCrowdAssessLike
+	Edited file /index.php, functions.php
+	Edited file /modules/Planner/planner.php, plannerProcess.php
+	Renamed file /stars.php to likes.php
+	Edited file /modules/Planner/report_goldStars_staff.php
+	Edited file /modules/Crowd Assessment/crowdAssess_view*.php
+	Edited files /modules/Planner/planner_view_full.php, planner_view_full_starAjax.php
+	Edited files /modules/Behaviour/behaviour_manage_edit*.php, behaviour_manage_add*.php, behaviour_manage_deleteProcess.php
 
 v10.0.00
 --------

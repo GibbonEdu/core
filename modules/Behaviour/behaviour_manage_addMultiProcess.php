@@ -74,6 +74,18 @@ else {
 	else {
 		$partialFail=FALSE ;
 		
+		//Prep like comment
+		$likeComment="" ;
+		if ($descriptor!=NULL) {
+			$likeComment.=$descriptor ;
+		}
+		if ($descriptor!=NULL AND $comment!="") {
+			$likeComment.=": " ;
+		}
+		if ($comment!="") {
+			$likeComment.=$comment ;
+		}
+		
 		foreach ($gibbonPersonIDMulti AS $gibbonPersonID) {
 			//Write to database
 			try {
@@ -85,6 +97,11 @@ else {
 			catch(PDOException $e) { 
 				$partialFail=TRUE ;	
 			}
+			
+			$gibbonBehaviourID=$connection2->lastInsertID() ;
+			
+			//Attempt to add like
+			$return=setLike($connection2, "Behaviour", $_SESSION[$guid]["gibbonSchoolYearID"], "gibbonBehaviourID", $gibbonBehaviourID, $_SESSION[$guid]["gibbonPersonID"], $gibbonPersonID, "Positive Behaviour", $likeComment) ;
 		}
 		
 		if ($partialFail==TRUE) {

@@ -185,87 +185,83 @@ else {
 						<tr>
 							<td> 
 								<b><?php print _('Type') ?> *</b><br/>
-								<span style="font-size: 90%"><i></i></span>
+								<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 							</td>
 							<td class="right">
-								<select name="type" id="type" style="width: 302px">
-									<option <?php if ($row["type"]=="Positive") { print "selected" ; } ?> value="Positive"><?php print _('Positive') ?></option>
-									<option <?php if ($row["type"]=="Negative") { print "selected" ; } ?> value="Negative"><?php print _('Negative') ?></option>
-								</select>
+								<input name="type" id="type" readonly="readonly" maxlength=20 value="<?php print _($row["type"]) ?>" type="text" style="width: 300px">
 							</td>
 						</tr>
+						
 						<?php
 						if ($enableDescriptors=="Y") {
-							try {
-								$sqlPositive="SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='positiveDescriptors'" ;
-								$resultPositive=$connection2->query($sqlPositive);   
-								$sqlNegative="SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='negativeDescriptors'" ;
-								$resultNegative=$connection2->query($sqlNegative);   
-							}
-							catch(PDOException $e) { }
-						
-							if ($resultPositive->rowCount()==1 AND $resultNegative->rowCount()==1) {
-								$rowPositive=$resultPositive->fetch() ;
-								$rowNegative=$resultNegative->fetch() ;
-							
-								$optionsPositive=$rowPositive["value"] ;
-								$optionsNegative=$rowNegative["value"] ;
-							
-								if ($optionsPositive!="" AND $optionsNegative!="") {
-									$optionsPositive=explode(",", $optionsPositive) ;
-									$optionsNegative=explode(",", $optionsNegative) ;
-									?>
-									<tr>
-										<td> 
-											<b><?php print _('Descriptor') ?> *</b><br/>
-											<span style="font-size: 90%"><i></i></span>
-										</td>
-										<td class="right">
-											<select name="descriptor" id="descriptor" style="width: 302px">
-												<option value="Please select..."><?php print _('Please select...') ?></option>
-												<?php
-												if ($row["descriptor"]=="Quick Star") {
-													print "<option class='Positive' value='Quick Star'>" . _('Quick Star') . "</option>" ;
-												}
-												for ($i=0; $i<count($optionsPositive); $i++) {
-													$selected="" ;
-													if ($row["descriptor"]==$optionsPositive[$i]) {
-														$selected="selected" ;
-													}
-													?>
-													<option <?php print $selected ?> class='Positive' <?php if ($row["descriptor"]==$optionsPositive[$i]) {print "selected ";}?>value="<?php print trim($optionsPositive[$i]) ?>"><?php print trim($optionsPositive[$i]) ?></option>
-												<?php
-												}
-												?>
-												<?php
-												for ($i=0; $i<count($optionsNegative); $i++) {
-													$selected="" ;
-													if ($row["descriptor"]==$optionsNegative[$i]) {
-														$selected="selected" ;
-													}
-													?>
-													<option <?php print $selected ?> class='Negative' <?php if ($row["descriptor"]==$optionsNegative[$i]) {print "selected ";}?>value="<?php print trim($optionsNegative[$i]) ?>"><?php print trim($optionsNegative[$i]) ?></option>
-												<?php
-												}
-												?>
-											</select>
-											<script type="text/javascript">
-												var descriptor=new LiveValidation('descriptor');
-												descriptor.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-											 </script>
-											 <script type="text/javascript">
-												$("#descriptor").chainedTo("#type");
-											</script>
-										</td>
-									</tr>
-									<?php
+							$options=array() ;
+							if ($row["type"]=="Positive") { //Show positive descriptors
+								try {
+									$sqlPositive="SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='positiveDescriptors'" ;
+									$resultPositive=$connection2->query($sqlPositive);   
 								}
+								catch(PDOException $e) { }
+								
+								if ($resultPositive->rowCount()==1) {
+									$rowPositive=$resultPositive->fetch() ;
+									$optionsPositive=$rowPositive["value"] ;
+									if ($optionsPositive!="") {
+										$options=explode(",", $optionsPositive) ;
+									}
+								}
+								
+							}
+							else if ($row["type"]=="Negative") { //Show negative descriptors
+								try {
+									$sqlNegative="SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='negativeDescriptors'" ;
+									$resultNegative=$connection2->query($sqlNegative);   
+								}
+								catch(PDOException $e) { }
+								
+								if ($resultNegative->rowCount()==1) {
+									$rowNegative=$resultNegative->fetch() ;
+									$optionsNegative=$rowNegative["value"] ;
+									if ($optionsNegative!="") {
+										$options=explode(",", $optionsNegative) ;
+									}
+								}
+							}
+						
+							if (count($options)>0) {
+								?>
+								<tr>
+									<td> 
+										<b><?php print _('Descriptor') ?> *</b><br/>
+										<span style="font-size: 90%"><i></i></span>
+									</td>
+									<td class="right">
+										<select name="descriptor" id="descriptor" style="width: 302px">
+											<option value="Please select..."><?php print _('Please select...') ?></option>
+											<?php
+											for ($i=0; $i<count($options); $i++) {
+												$selected="" ;
+												if ($row["descriptor"]==$options[$i]) {
+													$selected="selected" ;
+												}
+												?>
+												<option <?php print $selected ?> <?php if ($row["descriptor"]==$options[$i]) {print "selected ";}?>value="<?php print trim($options[$i]) ?>"><?php print trim($options[$i]) ?></option>
+												<?php
+											}
+											?>
+										</select>
+										<script type="text/javascript">
+											var descriptor=new LiveValidation('descriptor');
+											descriptor.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+										 </script>
+									</td>
+								</tr>
+								<?php
 							}
 						}
 						?>
 						
 						<?php
-						if ($enableDescriptors=="Y") {
+						if ($enableLevels=="Y") {
 							try {
 								$dataLevels=array(); 
 								$sqlLevels="SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='Levels'" ;

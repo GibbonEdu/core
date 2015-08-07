@@ -52,57 +52,27 @@ function getMinorLinks($connection2, $guid, $cacheLoad) {
 			$return.=" . <a target='_blank' href='" . $_SESSION[$guid]["website"] . "'>" . _('My Website') . "</a>" ;
 		}
 
-		//STARS!
+		//GET AND SHOW LIKES
+		//Get likes
+		$getLikes=FALSE ;
 		if ($cacheLoad) {
-			$_SESSION[$guid]["likeCount"]=0 ;
-			$_SESSION[$guid]["likeCountTitle"]="" ;
-			//Count crowd assessment likes
-			try {
-				$dataLike=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-				$sqlLike="SELECT * FROM gibbonCrowdAssessLike JOIN gibbonPlannerEntryHomework ON (gibbonCrowdAssessLike.gibbonPlannerEntryHomeworkID=gibbonPlannerEntryHomework.gibbonPlannerEntryHomeworkID) JOIN gibbonPlannerEntry ON (gibbonPlannerEntryHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonPlannerEntryHomework.gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID" ;
-				$resultLike=$connection2->prepare($sqlLike);
-				$resultLike->execute($dataLike); 
-				if ($resultLike->rowCount()>0) {
-					$_SESSION[$guid]["likeCount"]+=$resultLike->rowCount() ;
-					$_SESSION[$guid]["likeCountTitle"].=_('Crowd Assessment') . ": " . $resultLike->rowCount() . ", " ;
-				}
-			}
-			catch(PDOException $e) { $return.="<div class='error'>" . $e->getMessage() . "</div>" ; }
-
-			//Count planner likes
-			try {
-				$dataLike=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-				$sqlLike="SELECT * FROM gibbonPlannerEntryLike JOIN gibbonPlannerEntry ON (gibbonPlannerEntryLike.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonSchoolYearID=:gibbonSchoolYearID" ;
-				$resultLike=$connection2->prepare($sqlLike);
-				$resultLike->execute($dataLike); 
-				if ($resultLike->rowCount()>0) {
-					$_SESSION[$guid]["likeCount"]+=$resultLike->rowCount() ;
-					$_SESSION[$guid]["likeCountTitle"].=_('Planner') . ": " . $resultLike->rowCount() . ", " ;
-				}
-			}
-			catch(PDOException $e) { $return.="<div class='error'>" . $e->getMessage() . "</div>" ; }
-
-			//Count positive haviour
-			try {
-				$dataLike=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-				$sqlLike="SELECT * FROM gibbonBehaviour WHERE gibbonPersonID=:gibbonPersonID AND type='Positive' AND gibbonSchoolYearID=:gibbonSchoolYearID" ;
-				$resultLike=$connection2->prepare($sqlLike);
-				$resultLike->execute($dataLike); 
-				if ($resultLike->rowCount()>0) {
-					$_SESSION[$guid]["likeCount"]+=$resultLike->rowCount() ;
-					$_SESSION[$guid]["likeCountTitle"].=_('Behaviour') . ": " . $resultLike->rowCount() . ", " ;
-				}
-			}
-			catch(PDOException $e) { $return.="<div class='error'>" . $e->getMessage() . "</div>" ; }
+			$getLikes=TRUE ;
 		}
-
-		//Spit out likes
-		if (isset($_SESSION[$guid]["likeCount"])) {
-			if ($_SESSION[$guid]["likeCount"]>0) {
-				$return.=" . <a title='" . substr($_SESSION[$guid]["likeCountTitle"],0,-2) . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=stars.php'>" . $_SESSION[$guid]["likeCount"] . " x <img class='minorLinkIcon' style='margin-left: 2px; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_large_on.png'></a>" ;
+		else if (isset($_GET["q"])) {
+			if ($_GET["q"]=="likes.php") {
+				$getLikes=TRUE ;
+			}
+		}
+		if ($getLikes) {
+			$_SESSION[$guid]["likesCount"]=countLikesByRecipient($connection2, $_SESSION[$guid]["gibbonPersonID"], "count", $_SESSION[$guid]["gibbonSchoolYearID"]) ;
+		}
+		//Show likes
+		if (isset($_SESSION[$guid]["likesCount"])) {
+			if ($_SESSION[$guid]["likesCount"]>0) {
+				$return.=" . <a title='" . _('Likes') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=likes.php'>" . $_SESSION[$guid]["likesCount"] . " x <img class='minorLinkIcon' style='margin-left: 2px; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_large_on.png'></a>" ;
 			}
 			else {
-				$return.=" . " . $_SESSION[$guid]["likeCount"] . " x <img class='minorLinkIcon' title='" . substr($_SESSION[$guid]["likeCountTitle"],0,-2) . "' style='margin-left: 2px; opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_large_off.png'>" ;
+				$return.=" . " . $_SESSION[$guid]["likesCount"] . " x <img class='minorLinkIcon' title='" . _('Likes') . "' style='margin-left: 2px; opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_large_off.png'>" ;
 			}
 		}
 		
@@ -429,19 +399,12 @@ function getParentalDashboardContents($connection2, $guid, $gibbonPersonID) {
 							}
 						$plannerOutput.="</td>" ;
 						$plannerOutput.="<td>" ;
-							try {
-								$dataLike=array("gibbonPlannerEntryID"=>$row["gibbonPlannerEntryID"],"gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-								$sqlLike="SELECT * FROM gibbonPlannerEntryLike WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID" ;
-								$resultLike=$connection2->prepare($sqlLike);
-								$resultLike->execute($dataLike); 
-							}
-							catch(PDOException $e) { 
-								$plannerOutput.="<div class='error'>" . $e->getMessage() . "</div>" ; 
-							}
-							if ($resultLike->rowCount()!=1) {
+							$likesGiven=countLikesByContextAndGiver($connection2, "Planner", "gibbonPlannerEntryID", $row["gibbonPlannerEntryID"], $_SESSION[$guid]["gibbonPersonID"]) ;
+							if ($likesGiven!=1) {
 								$plannerOutput.="<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/plannerProcess.php?gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&address=/modules/Planner/planner.php&viewBy=date&date=$date&gibbonPersonID=" . $gibbonPersonID . "&returnToIndex=Y'><img src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_off.png'></a>" ;
 							}
 							else {
+							
 								$plannerOutput.="<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/plannerProcess.php?gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&address=/modules/Planner/planner.php&viewBy=date&date=$date&gibbonPersonID=" . $gibbonPersonID . "&returnToIndex=Y'><img src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_on.png'></a>" ;
 							}
 						$plannerOutput.="</td>" ;
@@ -3916,4 +3879,115 @@ function getModuleIDFromName($connection2, $name) {
 	}
 	return $row['gibbonModuleID'];
 }
+
+function setLike($connection2, $moduleName, $gibbonSchoolYearID, $contextKeyName, $contextKeyValue, $gibbonPersonIDGiver, $gibbonPersonIDRecipient, $title, $comment=NULL) {
+	$return=TRUE ;
+	
+	try {
+		$data=array("moduleName"=>$moduleName, "gibbonSchoolYearID"=>$gibbonSchoolYearID, "contextKeyName"=>$contextKeyName, "contextKeyValue"=>$contextKeyValue, "gibbonPersonIDGiver"=>$gibbonPersonIDGiver, "gibbonPersonIDRecipient"=>$gibbonPersonIDRecipient, "title"=>$title, "comment"=>$comment); 
+		$sql="INSERT INTO gibbonLike SET gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:moduleName), gibbonSchoolYearID=:gibbonSchoolYearID, contextKeyName=:contextKeyName, contextKeyValue=:contextKeyValue, gibbonPersonIDGiver=:gibbonPersonIDGiver, gibbonPersonIDRecipient=:gibbonPersonIDRecipient, title=:title, comment=:comment" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { 
+		$return=FALSE ;
+	}
+	
+	return $return ;
+}
+
+function deleteLike($connection2, $moduleName, $contextKeyName, $contextKeyValue, $gibbonPersonIDGiver, $gibbonPersonIDRecipient, $title) {
+	$return=TRUE ;
+	
+	try {
+		$data=array("moduleName"=>$moduleName, "contextKeyName"=>$contextKeyName, "contextKeyValue"=>$contextKeyValue, "gibbonPersonIDGiver"=>$gibbonPersonIDGiver, "gibbonPersonIDRecipient"=>$gibbonPersonIDRecipient, "title"=>$title); 
+		$sql="DELETE FROM gibbonLike WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:moduleName) AND contextKeyName=:contextKeyName AND contextKeyValue=:contextKeyValue AND gibbonPersonIDGiver=:gibbonPersonIDGiver AND gibbonPersonIDRecipient=:gibbonPersonIDRecipient AND title=:title" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { 
+		$return=FALSE ;
+	}
+	
+	return $return ;
+}
+
+function countLikesByContext($connection2, $moduleName, $contextKeyName, $contextKeyValue) {
+	$return=NULL ;
+	
+	try {
+		$data=array("moduleName"=>$moduleName, "contextKeyName"=>$contextKeyName, "contextKeyValue"=>$contextKeyValue); 
+		$sql="SELECT DISTINCT gibbonSchoolYearID, gibbonModuleID, contextKeyName, contextKeyValue, gibbonPersonIDGiver FROM gibbonLike WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:moduleName) AND contextKeyName=:contextKeyName AND contextKeyValue=:contextKeyValue" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { 
+		$return=FALSE ;
+	}
+	
+	
+	if ($return!==FALSE) {
+		$return=$result->rowCount() ;
+	} 
+	
+	return $return ; 
+}
+
+function countLikesByContextAndGiver($connection2, $moduleName, $contextKeyName, $contextKeyValue, $gibbonPersonIDGiver, $gibbonPersonIDRecipient=NULL) {
+	$return=NULL ;
+	
+	try {
+		if ($gibbonPersonIDRecipient==NULL) {
+			$data=array("moduleName"=>$moduleName, "contextKeyName"=>$contextKeyName, "contextKeyValue"=>$contextKeyValue, "gibbonPersonIDGiver"=>$gibbonPersonIDGiver); 
+			$sql="SELECT DISTINCT gibbonSchoolYearID, gibbonModuleID, contextKeyName, contextKeyValue FROM gibbonLike WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:moduleName) AND contextKeyName=:contextKeyName AND contextKeyValue=:contextKeyValue AND gibbonPersonIDGiver=:gibbonPersonIDGiver" ;
+		}
+		else {
+			$data=array("moduleName"=>$moduleName, "contextKeyName"=>$contextKeyName, "contextKeyValue"=>$contextKeyValue, "gibbonPersonIDGiver"=>$gibbonPersonIDGiver, "gibbonPersonIDRecipient"=>$gibbonPersonIDRecipient); 
+			$sql="SELECT DISTINCT gibbonSchoolYearID, gibbonModuleID, contextKeyName, contextKeyValue FROM gibbonLike WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:moduleName) AND contextKeyName=:contextKeyName AND contextKeyValue=:contextKeyValue AND gibbonPersonIDGiver=:gibbonPersonIDGiver AND gibbonPersonIDRecipient=:gibbonPersonIDRecipient" ;
+		}
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { 
+		$return=FALSE ;
+	}
+	
+	
+	if ($return!==FALSE) {
+		$return=$result->rowCount() ;
+	} 
+	
+	return $return ; 
+}
+
+//$mode can be either "count" to get a numeric count, or "result" to get a result set
+function countLikesByRecipient($connection2, $gibbonPersonIDRecipient, $mode="count", $gibbonSchoolYearID) {
+	$return=NULL ;
+	
+	try {
+		$data=array("gibbonPersonIDRecipient"=>$gibbonPersonIDRecipient, "gibbonSchoolYearID"=>$gibbonSchoolYearID); 
+		if ($mode=="count") {
+			$sql="SELECT * FROM gibbonLike WHERE gibbonPersonIDRecipient=:gibbonPersonIDRecipient AND gibbonSchoolYearID=:gibbonSchoolYearID" ;
+		}
+		else {
+			$sql="SELECT gibbonLike.*, gibbonPersonID, image_240, gibbonRoleIDPrimary, preferredName, surname FROM gibbonLike JOIN gibbonPerson ON (gibbonLike.gibbonPersonIDGiver=gibbonPerson.gibbonPersonID) WHERE gibbonPersonIDRecipient=:gibbonPersonIDRecipient AND gibbonSchoolYearID=:gibbonSchoolYearID" ;
+		}
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { 
+		$return=FALSE ;
+	}
+	
+	if ($mode=="count") {
+		$return=$result->rowCount() ;
+	}
+	else {
+		$return=$result ;
+	}
+	
+	return $return ; 
+}
+
+
 ?>

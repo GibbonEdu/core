@@ -794,24 +794,11 @@ else {
 																print "</td>" ;
 																print "<td>" ;
 																	if ($row["role"]=="Teacher") {
-																		try {
-																			$dataLike=array("gibbonPlannerEntryID"=>$row["gibbonPlannerEntryID"]); 
-																			$sqlLike="SELECT * FROM gibbonPlannerEntryLike WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID" ;
-																			$resultLike=$connection2->prepare($sqlLike);
-																			$resultLike->execute($dataLike); 
-																		}
-																		catch(PDOException $e) { }
-																		print $resultLike->rowCount() ;
+																		print countLikesByContext($connection2, "Planner", "gibbonPlannerEntryID", $row["gibbonPlannerEntryID"]) ;
 																	}
 																	else {
-																		try {
-																			$dataLike=array("gibbonPlannerEntryID"=>$row["gibbonPlannerEntryID"],"gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-																			$sqlLike="SELECT * FROM gibbonPlannerEntryLike WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID" ;
-																			$resultLike=$connection2->prepare($sqlLike);
-																			$resultLike->execute($dataLike); 
-																		}
-																		catch(PDOException $e) { }
-																		if ($resultLike->rowCount()!=1) {
+																		$likesGiven=countLikesByContextAndGiver($connection2, "Planner", "gibbonPlannerEntryID", $row["gibbonPlannerEntryID"], $_SESSION[$guid]["gibbonPersonID"]) ;
+																		if ($likesGiven!=1) {
 																			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/plannerProcess.php?gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&address=/modules/Planner/planner.php&viewBy=Class&gibbonCourseClassID=" . $row["gibbonPlannerEntryID"] . "&date=&returnToIndex=Y'><img src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_off.png'></a>" ;
 																		}
 																		else {

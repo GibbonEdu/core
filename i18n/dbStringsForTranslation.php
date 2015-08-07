@@ -17,6 +17,15 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+//STATIC: DO NOT OVERWRITE FROM DATABASE
+//Like types
+_('Positive Behaviour') ;
+_('Crowd Assessment Feedback') ;
+_('Planner - Learning Feedback') ;
+_('Planner - Lesson Design') ;
+
+
+//DYNAMIC: OVERWRITE FROM DATABASE
 //gibbonAction - category
 _('Actions') ;
 _('Admissions') ;
