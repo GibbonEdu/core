@@ -173,7 +173,11 @@ General: generalised stars, so that they are all in one table, with common metho
 Resources: slight tweak to UX for inserting images via editor
 	Edited file /modules/Resources/resources_addQuick_ajax.php
 
-
+Timetable: added View Master Timetable to allow all teachers and rooms to be seen in one go
+	New values in tables gibbonAction, gibbonPermission
+	New file /modules/Timetable/tt_master.php
+	
+	
 v10.0.00
 --------
 i18n: added Urdu as inactive development language
