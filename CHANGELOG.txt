@@ -179,6 +179,9 @@ Timetable: added View Master Timetable to allow all teachers and rooms to be see
 
 Timetable Admin: added order field to Courses, to allow them to be ordered in reports	
 	Edited table gibbonCourse
+
+Behaviour: added tutor notification for negative behaviour comments
+	Edited file /modules/Behaviour/behaviour_manage_addProcess.php, behaviour_manage_addMultiProcess.php
 	
 	
 v10.0.00

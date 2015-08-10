@@ -96,18 +96,47 @@ else {
 			
 			$gibbonBehaviourID=$connection2->lastInsertID() ;
 			
-			//Attempt to add like
-			$likeComment="" ;
-			if ($descriptor!=NULL) {
-				$likeComment.=$descriptor ;
+			//Attempt to add like on positive behaviour
+			if ($type=="Positive") {
+				$likeComment="" ;
+				if ($descriptor!=NULL) {
+					$likeComment.=$descriptor ;
+				}
+				if ($descriptor!=NULL AND $comment!="") {
+					$likeComment.=": " ;
+				}
+				if ($comment!="") {
+					$likeComment.=$comment ;
+				}
+				$return=setLike($connection2, "Behaviour", $_SESSION[$guid]["gibbonSchoolYearID"], "gibbonBehaviourID", $gibbonBehaviourID, $_SESSION[$guid]["gibbonPersonID"], $gibbonPersonID, "Positive Behaviour", $likeComment) ;
 			}
-			if ($descriptor!=NULL AND $comment!="") {
-				$likeComment.=": " ;
+			
+			//Attempt to notify tutor(s) on negative behaviour
+			if ($type=="Negative") {
+				try {
+					$dataDetail=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID"=>$gibbonPersonID); 
+					$sqlDetail="SELECT gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, surname, preferredName FROM gibbonRollGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID" ;
+					$resultDetail=$connection2->prepare($sqlDetail);
+					$resultDetail->execute($dataDetail);
+				}
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+				if ($resultDetail->rowCount()==1) {
+					$rowDetail=$resultDetail->fetch() ;
+					$name=formatName("", $rowDetail["preferredName"], $rowDetail["surname"], "Student", false) ;
+					$notificationText=sprintf(_('Someone has created a negative behaviour record for your tutee, %1$s.'), $name) ;
+					if ($rowDetail["gibbonPersonIDTutor"]!=NULL AND $rowDetail["gibbonPersonIDTutor"]!=$_SESSION[$guid]["gibbonPersonID"]) {
+						setNotification($connection2, $guid, $rowDetail["gibbonPersonIDTutor"], $notificationText, "Behaviour", "/index.php?q=/modules/Behaviour/behaviour_view_details.php&gibbonPersonID=$gibbonPersonID&search=") ;
+					}
+					if ($rowDetail["gibbonPersonIDTutor2"]!=NULL AND $rowDetail["gibbonPersonIDTutor2"]!=$_SESSION[$guid]["gibbonPersonID"]) {
+						setNotification($connection2, $guid, $rowDetail["gibbonPersonIDTutor2"], $notificationText, "Behaviour", "/index.php?q=/modules/Behaviour/behaviour_view_details.php&gibbonPersonID=$gibbonPersonID&search=") ;
+					}
+					if ($rowDetail["gibbonPersonIDTutor3"]!=NULL AND $rowDetail["gibbonPersonIDTutor3"]!=$_SESSION[$guid]["gibbonPersonID"]) {
+						setNotification($connection2, $guid, $rowDetail["gibbonPersonIDTutor3"], $notificationText, "Behaviour", "/index.php?q=/modules/Behaviour/behaviour_view_details.php&gibbonPersonID=$gibbonPersonID&search=") ;
+					}
+				}
 			}
-			if ($comment!="") {
-				$likeComment.=$comment ;
-			}
-			$return=setLike($connection2, "Behaviour", $_SESSION[$guid]["gibbonSchoolYearID"], "gibbonBehaviourID", $gibbonBehaviourID, $_SESSION[$guid]["gibbonPersonID"], $gibbonPersonID, "Positive Behaviour", $likeComment) ;
 			
 			//Success 0
 			$URL.="&addReturn=success0" ;
