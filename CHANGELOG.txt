@@ -185,6 +185,10 @@ Behaviour: added tutor notification for negative behaviour comments
 
 User Admin: fixed date bug caused by erroneous data import
 	Edited file /modules/User Admin/user_manage_edit.php
+
+Library: added ability, in Browse Library, to search all fields
+	Edited file /modules/Library/library_browse.php
+
 	
 v10.0.00
 --------

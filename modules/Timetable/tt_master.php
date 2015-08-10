@@ -41,6 +41,19 @@ else {
 	if (isset($_GET["gibbonTTID"])) {
 		$gibbonTTID=$_GET["gibbonTTID"] ;
 	}
+	if ($gibbonTTID==NULL) { //If TT not set, get the first timetable in the current year, and display that
+		try {
+			$dataSelect=array(); 
+			$sqlSelect="SELECT gibbonTTID FROM gibbonTT JOIN gibbonSchoolYear ON (gibbonTT.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonSchoolYear.status='Current' ORDER BY gibbonTT.name LIMIT 0, 1" ;
+			$resultSelect=$connection2->prepare($sqlSelect);
+			$resultSelect->execute($dataSelect);
+		}
+		catch(PDOException $e) { }
+		if ($resultSelect->rowCount()==1) {
+			$rowSelect=$resultSelect->fetch() ;
+			$gibbonTTID=$rowSelect["gibbonTTID"] ;
+		}
+	}
 	?>
 	
 	<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
@@ -52,7 +65,6 @@ else {
 				<td class="right">
 					<select style="width: 302px" name="gibbonTTID">
 						<?php
-						print "<option value=''></option>" ;
 						try {
 							$dataSelect=array(); 
 							$sqlSelect="SELECT gibbonTTID, gibbonTT.name AS TT, gibbonSchoolYear.name AS year FROM gibbonTT JOIN gibbonSchoolYear ON (gibbonTT.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) ORDER BY gibbonSchoolYear.sequenceNumber, gibbonTT.name" ;
