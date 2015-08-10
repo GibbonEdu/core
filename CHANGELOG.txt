@@ -170,6 +170,10 @@ General: generalised stars, so that they are all in one table, with common metho
 	Edited files /modules/Planner/planner_view_full.php, planner_view_full_starAjax.php
 	Edited files /modules/Behaviour/behaviour_manage_edit*.php, behaviour_manage_add*.php, behaviour_manage_deleteProcess.php
 
+Resources: slight tweak to UX for inserting images via editor
+	Edited file /modules/Resources/resources_addQuick_ajax.php
+
+
 v10.0.00
 --------
 i18n: added Urdu as inactive development language
