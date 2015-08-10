@@ -176,6 +176,9 @@ Resources: slight tweak to UX for inserting images via editor
 Timetable: added View Master Timetable to allow all teachers and rooms to be seen in one go
 	New values in tables gibbonAction, gibbonPermission
 	New file /modules/Timetable/tt_master.php
+
+Timetable Admin: added order field to Courses, to allow them to be ordered in reports	
+	Edited table gibbonCourse
 	
 	
 v10.0.00

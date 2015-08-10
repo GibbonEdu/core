@@ -85,7 +85,7 @@ else {
 	else {
 		try {
 			$data=array("gibbonCourseID"=>$gibbonCourseID); 
-			$sql="SELECT gibbonCourseID, gibbonDepartmentID, gibbonCourse.name AS name, gibbonCourse.nameShort as nameShort, gibbonCourse.description, gibbonCourse.gibbonSchoolYearID, gibbonSchoolYear.name as yearName, gibbonYearGroupIDList FROM gibbonCourse, gibbonSchoolYear WHERE gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonCourseID=:gibbonCourseID" ;
+			$sql="SELECT gibbonCourseID, gibbonDepartmentID, gibbonCourse.name AS name, gibbonCourse.nameShort as nameShort, orderBy, gibbonCourse.description, gibbonCourse.gibbonSchoolYearID, gibbonSchoolYear.name as yearName, gibbonYearGroupIDList FROM gibbonCourse, gibbonSchoolYear WHERE gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonCourseID=:gibbonCourseID" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
@@ -168,6 +168,19 @@ else {
 							var nameShort=new LiveValidation('nameShort');
 							nameShort.add(Validate.Presence);
 						 </script>
+					</td>
+				</tr>
+				<tr>
+					<td> 
+						<b><?php print _('Order') ?></b><br/>
+						<span style="font-size: 90%"><i><?php print _('May be used to adjust arrangement of courses in reports.') ?></i></span>
+					</td>
+					<td class="right">
+						<input name="orderBy" id="orderBy" maxlength=6 value="<?php print $row["orderBy"] ; ?>" type="text" style="width: 300px">
+						<script type="text/javascript">
+							var orderBy=new LiveValidation('orderBy');
+							orderBy.add(Validate.Numericality);
+						</script>
 					</td>
 				</tr>
 				<tr>
