@@ -182,7 +182,9 @@ Timetable Admin: added order field to Courses, to allow them to be ordered in re
 
 Behaviour: added tutor notification for negative behaviour comments
 	Edited file /modules/Behaviour/behaviour_manage_addProcess.php, behaviour_manage_addMultiProcess.php
-	
+
+User Admin: fixed date bug caused by erroneous data import
+	Edited file /modules/User Admin/user_manage_edit.php
 	
 v10.0.00
 --------
