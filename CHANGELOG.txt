@@ -189,6 +189,10 @@ User Admin: fixed date bug caused by erroneous data import
 Library: added ability, in Browse Library, to search all fields
 	Edited file /modules/Library/library_browse.php
 
+Progress: added new module to provide longitudinal graphing of student Markbook and Internal Assessment results
+	New folder /lib/Chart.js
+	New values in tables gibbonModule, gibbonAction, gibbonPermissions
+	New folder /modules/Tracking
 	
 v10.0.00
 --------
