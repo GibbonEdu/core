@@ -120,7 +120,7 @@ else {
 				} 
 				?>
 	
-				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_addProcess.php?gibbonCourseClassID=$gibbonCourseClassID&address=" . $_SESSION[$guid]["address"] ?>" enctype="multipart/form-data">
+				<form method="post" id="form" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_addProcess.php?gibbonCourseClassID=$gibbonCourseClassID&address=" . $_SESSION[$guid]["address"] ?>" enctype="multipart/form-data">
 					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 						<tr class='break'>
 							<td colspan=2> 
@@ -309,6 +309,54 @@ else {
 									<script type="text/javascript">
 										var file=new LiveValidation('file');
 										file.add( Validate.Inclusion, { within: [<?php print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+									</script>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<b><?php print _('Audio Recording') ?></b><br/><br/> 
+								</td>
+								<td class="right">
+									<input type="button" id="start-rec" value="Start">
+									<input type="button" id="stop-rec" value="Stop" disabled>
+									<input type="hidden" name="rec" id="rec" value="">
+									<a id="play-rec"><?php print _('Playback')?></a>
+									<?php print ("<script src='./modules/" . $_SESSION[$guid]["module"] . "/js/MediaStreamRecorder.js'></script>") ; ?>
+									<script>
+										var mediaConstraints = { audio: true };
+										var mediaRecorder, stream;
+
+										document.querySelector('#start-rec').onclick = function() {
+											this.disabled = true;
+											navigator.getUserMedia(mediaConstraints, onMediaSuccess, onMediaError);
+										}
+
+										document.querySelector('#stop-rec').onclick = function() {
+											this.disabled = true;
+											mediaRecorder.stop();
+											stream.stop();
+											document.querySelector('#start-rec').disabled = false;
+										}
+
+										function onMediaSuccess(s) {
+											stream = s;
+											mediaRecorder = new MediaStreamRecorder(s);
+											mediaRecorder.mimeType = 'audio/wav';
+											mediaRecorder.audioChannels = 1;
+											mediaRecorder.ondataavailable = function (blob) {
+												blob.name = "recording";
+												blob.lastModifiedDate = new Date();
+												document.getElementById('rec').value = blob;
+											}
+											mediaRecorder.start(999999999);
+											streamURL = URL.createObjectURL(stream);
+											document.querySelector('#stop-rec').disabled = false;
+											document.querySelector('#play-rec').disabled = false;
+										}
+
+										function onMediaError(s) {
+											console.error("Media Error");
+										}
 									</script>
 								</td>
 							</tr>
