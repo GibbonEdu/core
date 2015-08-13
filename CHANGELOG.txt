@@ -193,6 +193,9 @@ Progress: added new module to provide longitudinal graphing of student Markbook 
 	New folder /lib/Chart.js
 	New values in tables gibbonModule, gibbonAction, gibbonPermissions
 	New folder /modules/Tracking
+
+Timetable Admin: added current student number beside class name in student enrolment view
+	Edited file /modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php
 	
 v10.0.00
 --------
