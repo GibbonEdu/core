@@ -3790,18 +3790,18 @@ function setLog($connection2, $gibbonSchoolYearID, $gibbonModuleID, $gibbonPerso
 	return $gibbonLogID;
 }
 
-function getLog($connection2, $gibbonSchoolYearID, $gibbonModuleID=null, $gibbonPersonID=null, $title=null, $startDate=null, $endDate=null) {
-	if($gibbonSchoolYearID == null) {
+function getLog($connection2, $gibbonSchoolYearID, $gibbonModuleID=null, $gibbonPersonID=null, $title=null, $startDate=null, $endDate=null, $ip=null) {
+	if($gibbonSchoolYearID == null || $gibbonSchoolYearID == "") {
 		return null;
 	}
 	$dataLog=array("gibbonSchoolYearID"=>$gibbonSchoolYearID);
 	$where="";
-	if($gibbonModuleID!=null)  {
+	if($gibbonModuleID!=null && $gibbonModuleID!="")  {
 		$dataLog['gibbonModuleID'] = $gibbonModuleID;
 		$where.=" AND gibbonModuleID=:gibbonModuleID";
 	}
 	
-	if($gibbonPersonID!=null)  {
+	if($gibbonPersonID!=null && $gibbonPersonID!="")  {
 		$dataLog['gibbonPersonID'] = $gibbonPersonID;
 		$where.=" AND gibbonPersonID=:gibbonPersonID";
 	}
@@ -3819,7 +3819,7 @@ function getLog($connection2, $gibbonSchoolYearID, $gibbonModuleID=null, $gibbon
 	}
 	else if($startDate==null && $endDate!=null) {
 		$endDate = str_replace('/', '-', $endDate);
-		$endDate = date("Y-m-d", strtotime($endDate));
+		$endDate = date("Y-m-d", strtotime($endDate)) + date("H:i:s");
 		$dataLog['endDate'] = $endDate;
 		$where.=" AND timestamp<=:endDate";
 	}
@@ -3828,11 +3828,16 @@ function getLog($connection2, $gibbonSchoolYearID, $gibbonModuleID=null, $gibbon
 		$startDate = date("Y-m-d", strtotime($startDate));
 		$dataLog['startDate'] = $startDate;
 		$endDate = str_replace('/', '-', $endDate);
-		$endDate = date("Y-m-d", strtotime($endDate));
+		$endDate = date("Y-m-d", strtotime($endDate)) + date("H:i:s");
 		$dataLog['endDate'] = $endDate;
 		$where.=" AND timestamp>=:startDate AND  timestamp<=:endDate";
 	}
  	 	
+	if($ip!=null || $ip!="")  {
+		$dataLog['ip'] = $ip;
+		$where.=" AND ip=:ip";
+	}
+		
 	try {
 		$sqlLog="SELECT * FROM gibbonLog WHERE gibbonSchoolYearID=:gibbonSchoolYearID " . $where . " ORDER BY timestamp DESC" ;
 		$resultLog=$connection2->prepare($sqlLog);
