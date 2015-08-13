@@ -35,4 +35,5 @@ function getColourArray() {
 	
 	return $return ;
 }
+
 ?>
