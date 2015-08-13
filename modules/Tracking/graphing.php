@@ -46,9 +46,9 @@ else {
 		print _("Filter") ;
 		print "</h2>" ;
 	
-		$gibbonPersonID=NULL ;
-		if (isset($_POST["gibbonPersonID"])) {
-			$gibbonPersonID=$_POST["gibbonPersonID"] ;
+		$gibbonPersonIDs=NULL ;
+		if (isset($_POST["gibbonPersonIDs"])) {
+			$gibbonPersonIDs=$_POST["gibbonPersonIDs"] ;
 		}
 		
 		$gibbonDepartmentIDs=NULL ;
@@ -67,10 +67,10 @@ else {
 				<tr>
 					<td style='width: 275px'> 
 						<b><?php print _('Student') ?> *</b><br/>
+						<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
 					</td>
 					<td class="right">
-						<select name="gibbonPersonID" id="gibbonPersonID" style="width: 302px">
-							<option></option>
+						<select name="gibbonPersonIDs[]" id="gibbonPersonIDs[]" multiple style="width: 302px; height: 150px">
 							<optgroup label='--<?php print _('Students by Roll Group') ?>--'>
 								<?php
 								try {
@@ -82,8 +82,12 @@ else {
 								catch(PDOException $e) { }
 								while ($rowSelect=$resultSelect->fetch()) {
 									$selected="" ;
-									if ($rowSelect["gibbonPersonID"]==$gibbonPersonID) {
-										$selected="selected" ;
+									if (is_array($gibbonPersonIDs)) {
+										foreach ($gibbonPersonIDs AS $gibbonPersonID) {
+											if ($rowSelect["gibbonPersonID"]==$gibbonPersonID) {
+												$selected="selected" ;
+											}
+										}
 									}
 									print "<option $selected value='" . $rowSelect["gibbonPersonID"] . "'>" . htmlPrep($rowSelect["name"]) . " - " . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . "</option>" ;
 								}
@@ -99,7 +103,15 @@ else {
 								}
 								catch(PDOException $e) { }
 								while ($rowSelect=$resultSelect->fetch()) {
-									print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . " (" . htmlPrep($rowSelect["name"]) . ")</option>" ;
+									$selected="" ;
+									if (is_array($gibbonPersonIDs)) {
+										foreach ($gibbonPersonIDs AS $gibbonPersonID) {
+											if ($rowSelect["gibbonPersonID"]==$gibbonPersonID) {
+												$selected="selected" ;
+											}
+										}
+									}
+									print "<option $selected value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . " (" . htmlPrep($rowSelect["name"]) . ")</option>" ;
 								}
 								?>
 							</optgroup>
@@ -124,8 +136,8 @@ else {
 						}
 						?>
 						<select name="dataType" id="dataType" style="width: 302px">
-							<option value="attainment"><?php print _($attainmentTitle) ?></option>
-							<option value="effort"><?php print _($effortTitle) ?></option>
+							<option <?php if ($dataType=="attainment") { print "selected" ; } ?> value="attainment"><?php print _($attainmentTitle) ?></option>
+							<option <?php if ($dataType=="effort") { print "selected" ; } ?> value="effort"><?php print _($effortTitle) ?></option>
 						</select>
 					</td>
 				</tr>
@@ -172,7 +184,7 @@ else {
 		</form>
 		<?php
 		if (count($_POST)>0) {
-			if ($gibbonPersonID==NULL OR $gibbonDepartmentIDs==NULL OR ($dataType!="attainment" AND $dataType!="effort")) {
+			if ($gibbonPersonIDs==NULL OR $gibbonDepartmentIDs==NULL OR ($dataType!="attainment" AND $dataType!="effort")) {
 				print "<div class='error'>" ;
 				print _("There are no records to display.") ;
 				print "</div>" ;
@@ -186,269 +198,315 @@ else {
 				print _("The chart below shows Years and Terms along the X axis, and mean Markbook grades, converted to a 0-1 scale, on the Y axis.") ;
 				print "</p>" ;
 			
+				//GET DEPARTMENTS
+				$departments=array() ;
+				$departmentCount=0 ;
+				$colours=getColourArray() ;	
 				try {
-					$dataYears=array("gibbonPersonID"=>$gibbonPersonID); 
-					$sqlYears="SELECT * FROM gibbonStudentEnrolment JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY sequenceNumber DESC" ;
-					$resultYears=$connection2->prepare($sqlYears);
-					$resultYears->execute($dataYears);
+					$dataDepartments=array(); 
+					$departmentExtra_MB="" ;
+					$departmentExtra_IA="" ;
+					foreach ($gibbonDepartmentIDs AS $gibbonDepartmentID) { //INCLUDE ONLY SELECTED DEPARTMENTS
+						$dataDepartments["department_MB" . $gibbonDepartmentID]=$gibbonDepartmentID ;
+						$departmentExtra_MB.="gibbonDepartment.gibbonDepartmentID=:department_MB" . $gibbonDepartmentID . " OR " ;
+						$dataDepartments["department_IA" . $gibbonDepartmentID]=$gibbonDepartmentID ;
+						$departmentExtra_IA.="gibbonDepartment.gibbonDepartmentID=:department_IA" . $gibbonDepartmentID . " OR " ;
+					}
+					if ($departmentExtra_MB!="") {
+						$departmentExtra_MB="AND (" . substr($departmentExtra_MB, 0, -4) . ")" ;
+					}
+					if ($departmentExtra_IA!="") {
+						$departmentExtra_IA="AND (" . substr($departmentExtra_IA, 0, -4) . ")" ;
+					}
+					$personExtra_MB="" ;
+					$personExtra_IA="" ;
+					foreach ($gibbonPersonIDs AS $gibbonPersonID) { //INCLUDE ONLY SELECTED STUDENTS
+						$dataDepartments["person_MB" . $gibbonPersonID]=$gibbonPersonID ;
+						$personExtra_MB.="gibbonMarkbookEntry.gibbonPersonIDStudent=:person_MB" . $gibbonPersonID . " OR " ;
+						$dataDepartments["person_IA" . $gibbonPersonID]=$gibbonPersonID ;
+						$personExtra_IA.="gibbonInternalAssessmentEntry.gibbonPersonIDStudent=:person_IA" . $gibbonPersonID . " OR " ;
+					}
+					if ($personExtra_MB!="") {
+						$personExtra_MB="AND (" . substr($personExtra_MB, 0, -4) . ")" ;
+					}
+					if ($personExtra_IA!="") {
+						$personExtra_IA="AND (" . substr($personExtra_IA, 0, -4) . ")" ;
+					}
+					
+					$sqlDepartments="(SELECT DISTINCT gibbonDepartment.name AS department
+						FROM gibbonMarkbookEntry 
+						JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID)
+						JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+						JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
+						JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) 
+						JOIN gibbonScale ON (gibbonMarkbookColumn.gibbonScaleID" . ucfirst($dataType) . "=gibbonScale.gibbonScaleID) 
+						JOIN gibbonSchoolYearTerm ON (gibbonSchoolYearTerm.firstDay<=completeDate AND gibbonSchoolYearTerm.lastDay>=completeDate)
+						JOIN gibbonSchoolYear ON (gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
+						WHERE complete='Y' AND completeDate<='" . date("Y-m-d") . "' AND (SELECT count(*) FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID)>3 AND " . $dataType . "Value!='' AND " . $dataType . "Value IS NOT NULL $departmentExtra_MB $personExtra_MB)
+						UNION
+						(SELECT DISTINCT gibbonDepartment.name AS department
+						FROM gibbonInternalAssessmentEntry 
+						JOIN gibbonInternalAssessmentColumn ON (gibbonInternalAssessmentEntry.gibbonInternalAssessmentColumnID=gibbonInternalAssessmentColumn.gibbonInternalAssessmentColumnID)
+						JOIN gibbonCourseClass ON (gibbonInternalAssessmentColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+						JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
+						JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) 
+						JOIN gibbonScale ON (gibbonInternalAssessmentColumn.gibbonScaleID" . ucfirst($dataType) . "=gibbonScale.gibbonScaleID) 
+						JOIN gibbonSchoolYearTerm ON (gibbonSchoolYearTerm.firstDay<=completeDate AND gibbonSchoolYearTerm.lastDay>=completeDate)
+						JOIN gibbonSchoolYear ON (gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
+						WHERE complete='Y' AND completeDate<='" . date("Y-m-d") . "' AND (SELECT count(*) FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID)>3 AND " . $dataType . "Value!='' AND " . $dataType . "Value IS NOT NULL $departmentExtra_IA $personExtra_IA)
+						ORDER BY department" ;
+					$resultDepartments=$connection2->prepare($sqlDepartments);
+					$resultDepartments->execute($dataDepartments);
 				}
 				catch(PDOException $e) { 
 					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 				}
-
-				if ($resultYears->rowCount()<1) {
+				while ($rowDepartments=$resultDepartments->fetch()) { 
+					$departments[$departmentCount]["department"]=$rowDepartments["department"] ;
+					$departments[$departmentCount]["colour"]=$colours[$departmentCount%12] ;
+					$departmentCount++ ;
+				}
+				
+				//GET GRADES & TERMS
+				try {
+					$dataGrades=array(); 
+					$departmentExtra_MB="" ;
+					$departmentExtra_IA="" ;
+					foreach ($gibbonDepartmentIDs AS $gibbonDepartmentID) { //INCLUDE ONLY SELECTED DEPARTMENTS
+						$dataGrades["department_MB" . $gibbonDepartmentID]=$gibbonDepartmentID ;
+						$departmentExtra_MB.="gibbonDepartment.gibbonDepartmentID=:department_MB" . $gibbonDepartmentID . " OR " ;
+						$dataGrades["department_IA" . $gibbonDepartmentID]=$gibbonDepartmentID ;
+						$departmentExtra_IA.="gibbonDepartment.gibbonDepartmentID=:department_IA" . $gibbonDepartmentID . " OR " ;
+					}
+					if ($departmentExtra_MB!="") {
+						$departmentExtra_MB="AND (" . substr($departmentExtra_MB, 0, -4) . ")" ;
+					}
+					if ($departmentExtra_IA!="") {
+						$departmentExtra_IA="AND (" . substr($departmentExtra_IA, 0, -4) . ")" ;
+					}
+					$personExtra_MB="" ;
+					$personExtra_IA="" ;
+					foreach ($gibbonPersonIDs AS $gibbonPersonID) { //INCLUDE ONLY SELECTED STUDENTS
+						$dataGrades["person_MB" . $gibbonPersonID]=$gibbonPersonID ;
+						$personExtra_MB.="gibbonMarkbookEntry.gibbonPersonIDStudent=:person_MB" . $gibbonPersonID . " OR " ;
+						$dataGrades["person_IA" . $gibbonPersonID]=$gibbonPersonID ;
+						$personExtra_IA.="gibbonInternalAssessmentEntry.gibbonPersonIDStudent=:person_IA" . $gibbonPersonID . " OR " ;
+					}
+					if ($personExtra_MB!="") {
+						$personExtra_MB="AND (" . substr($personExtra_MB, 0, -4) . ")" ;
+					}
+					if ($personExtra_IA!="") {
+						$personExtra_IA="AND (" . substr($personExtra_IA, 0, -4) . ")" ;
+					}
+					$sqlGrades="(SELECT gibbonSchoolYearTerm.sequenceNumber AS termSequence, gibbonSchoolYear.sequenceNumber AS yearSequence, gibbonSchoolYear.name AS year, gibbonSchoolYearTerm.name AS term, gibbonSchoolYearTerm.gibbonSchoolYearTermID AS termID, gibbonDepartment.name AS department, gibbonMarkbookColumn.name AS markbook, completeDate, " . $dataType . ", gibbonScaleID" . ucfirst($dataType) . ", " . $dataType . "Value, " . $dataType . "Descriptor, (SELECT count(*) FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID) AS totalGrades, (SELECT count(*) FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID AND sequenceNumber>=(SELECT sequenceNumber FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID AND value=gibbonMarkbookEntry." . $dataType . "Value) ORDER BY sequenceNumber DESC) AS gradePosition
+						FROM gibbonMarkbookEntry 
+						JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID)
+						JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+						JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
+						JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) 
+						JOIN gibbonScale ON (gibbonMarkbookColumn.gibbonScaleID" . ucfirst($dataType) . "=gibbonScale.gibbonScaleID) 
+						JOIN gibbonSchoolYearTerm ON (gibbonSchoolYearTerm.firstDay<=completeDate AND gibbonSchoolYearTerm.lastDay>=completeDate)
+						JOIN gibbonSchoolYear ON (gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
+						WHERE complete='Y' AND completeDate<='" . date("Y-m-d") . "' AND (SELECT count(*) FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID)>3 AND " . $dataType . "Value!='' AND " . $dataType. "Value IS NOT NULL $departmentExtra_MB $personExtra_MB)
+						UNION
+						(SELECT gibbonSchoolYearTerm.sequenceNumber AS termSequence, gibbonSchoolYear.sequenceNumber AS yearSequence, gibbonSchoolYear.name AS year, gibbonSchoolYearTerm.name AS term, gibbonSchoolYearTerm.gibbonSchoolYearTermID AS termID, gibbonDepartment.name AS department, gibbonInternalAssessmentColumn.name AS markbook, completeDate, " . $dataType . ", gibbonScaleID" . ucfirst($dataType) . ", " . $dataType . "Value, " . $dataType . "Descriptor, (SELECT count(*) FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID) AS totalGrades, (SELECT count(*) FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID AND sequenceNumber>=(SELECT sequenceNumber FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID AND value=gibbonInternalAssessmentEntry." . $dataType . "Value) ORDER BY sequenceNumber DESC) AS gradePosition
+						FROM gibbonInternalAssessmentEntry 
+						JOIN gibbonInternalAssessmentColumn ON (gibbonInternalAssessmentEntry.gibbonInternalAssessmentColumnID=gibbonInternalAssessmentColumn.gibbonInternalAssessmentColumnID)
+						JOIN gibbonCourseClass ON (gibbonInternalAssessmentColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+						JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
+						JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) 
+						JOIN gibbonScale ON (gibbonInternalAssessmentColumn.gibbonScaleID" . ucfirst($dataType) . "=gibbonScale.gibbonScaleID) 
+						JOIN gibbonSchoolYearTerm ON (gibbonSchoolYearTerm.firstDay<=completeDate AND gibbonSchoolYearTerm.lastDay>=completeDate)
+						JOIN gibbonSchoolYear ON (gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
+						WHERE complete='Y' AND completeDate<='" . date("Y-m-d") . "' AND (SELECT count(*) FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID)>3 AND " . $dataType . "Value!='' AND " . $dataType. "Value IS NOT NULL $departmentExtra_IA $personExtra_IA)
+						ORDER BY yearSequence, termSequence, completeDate, markbook" ;
+					$resultGrades=$connection2->prepare($sqlGrades);
+					$resultGrades->execute($dataGrades);
+				}
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+			
+				if ($resultGrades->rowCount()<1) {
 					print "<div class='error'>" ;
 					print _("There are no records to display.") ;
 					print "</div>" ;
 				}
 				else {
-					//GET DEPARTMENTS
-					$departments=array() ;
-					$departmentCount=0 ;
-					$colours=getColourArray() ;	
-					try {
-						$dataDepartments=array("gibbonPersonIDStudent"=>$gibbonPersonID); 
-						$departmentExtra="" ;
-						foreach ($gibbonDepartmentIDs AS $gibbonDepartmentID) { //INCLUDE ONLY SELECTED DEPARTMENTS
-							$dataDepartments["department" . $gibbonDepartmentID]=$gibbonDepartmentID ;
-							$departmentExtra.="gibbonDepartment.gibbonDepartmentID=:department" . $gibbonDepartmentID . " OR " ;
+					//Prep grades & terms
+					$grades=array() ;
+					$gradeCount=0 ;
+					$lastDepartment="" ;
+					$terms=array() ;
+					$termCount=0 ;
+					$lastTerm="" ;
+					while ($rowGrades=$resultGrades->fetch()) { 
+						//Store grades
+						$grades[$gradeCount]["department"]=$rowGrades["department"] ;
+						$grades[$gradeCount]["year"]=$rowGrades["year"] ;
+						$grades[$gradeCount]["term"]=$rowGrades["term"] ;
+						$grades[$gradeCount]["termID"]=$rowGrades["termID"] ;
+						$grades[$gradeCount]["markbook"]=$rowGrades["markbook"] ;
+						$grades[$gradeCount]["completeDate"]=$rowGrades["completeDate"] ;
+						$grades[$gradeCount][$dataType]=$rowGrades[$dataType] ;
+						$grades[$gradeCount]["gibbonScaleID" . ucfirst($dataType)]=$rowGrades["gibbonScaleID" . ucfirst($dataType)] ;
+						$grades[$gradeCount][$dataType . "Value"]=$rowGrades[$dataType . "Value"] ;
+						$grades[$gradeCount][$dataType . "Descriptor"]=$rowGrades[$dataType . "Descriptor"] ;
+						$grades[$gradeCount]["totalGrades"]=$rowGrades["totalGrades"] ;
+						$grades[$gradeCount]["gradePosition"]=$rowGrades["gradePosition"] ;
+						$grades[$gradeCount]["gradeWeighted"]=round($rowGrades["gradePosition"]/$rowGrades["totalGrades"], 2) ;
+					
+						//Store terms for axis
+						if ($lastTerm!=$rowGrades["term"]) {
+							$terms[$termCount]["year"]=$rowGrades["year"] ;
+							$terms[$termCount]["term"]=$rowGrades["term"] ;
+							$terms[$termCount]["termID"]=$rowGrades["termID"] ;
+							$terms[$termCount]["termFullName"]=$rowGrades["year"] . " " . $rowGrades["term"] ;
+							$termCount++ ;
 						}
-						if ($departmentExtra!="") {
-							$departmentExtra="AND (" . substr($departmentExtra, 0, -4) . ")" ;
+						$lastTerm=$rowGrades["term"] ;
+					
+						$gradeCount++ ;
+					}
+					
+					
+					//POPULATE FINAL DATA
+					$finalData=array() ;
+					foreach ($terms AS $term) {
+						foreach ($departments AS $department) {
+							$finalData[$term["termID"]][$department["department"]]["termID"]=$term["termID"] ;
+							$finalData[$term["termID"]][$department["department"]]["termFullName"]=$term["termFullName"] ;
+							$finalData[$term["termID"]][$department["department"]]["department"]=$department["department"] ;
+							$finalData[$term["termID"]][$department["department"]]["gradeWeightedTotal"]=NULL ;
+							$finalData[$term["termID"]][$department["department"]]["gradeWeightedDivisor"]=0 ;
+							$finalData[$term["termID"]][$department["department"]]["gradeWeightedMean"]=NULL ;
+					
+							foreach ($grades AS $grade) {
+								if ($grade["termID"]==$term["termID"] AND $grade["department"]==$department["department"]) {
+									$finalData[$term["termID"]][$department["department"]]["gradeWeightedTotal"]+=$grade["gradeWeighted"] ;
+									$finalData[$term["termID"]][$department["department"]]["gradeWeightedDivisor"]++ ;
+								}
+							}
 						}
-						
-						$sqlDepartments="SELECT DISTINCT gibbonDepartment.name AS department
-							FROM gibbonMarkbookEntry 
-							JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID)
-							JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
-							JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
-							JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) 
-							JOIN gibbonScale ON (gibbonMarkbookColumn.gibbonScaleID" . ucfirst($dataType) . "=gibbonScale.gibbonScaleID) 
-							JOIN gibbonSchoolYearTerm ON (gibbonSchoolYearTerm.firstDay<=completeDate AND gibbonSchoolYearTerm.lastDay>=completeDate)
-							JOIN gibbonSchoolYear ON (gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
-							WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent AND complete='Y' AND completeDate<='" . date("Y-m-d") . "' AND (SELECT count(*) FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID)>3 AND " . $dataType . "Value!='' AND " . $dataType . "Value IS NOT NULL $departmentExtra
-							ORDER BY gibbonDepartment.name" ;
-						$resultDepartments=$connection2->prepare($sqlDepartments);
-						$resultDepartments->execute($dataDepartments);
-					}
-					catch(PDOException $e) { 
-						print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-					}
-					while ($rowDepartments=$resultDepartments->fetch()) { 
-						$departments[$departmentCount]["department"]=$rowDepartments["department"] ;
-						$departments[$departmentCount]["colour"]=$colours[$departmentCount%12] ;
-						$departmentCount++ ;
 					}
 			
-					//GET GRADES & TERMS
-					try {
-						$dataGrades=array("gibbonPersonIDStudent"=>$gibbonPersonID); 
-						$departmentExtra="" ;
-						foreach ($gibbonDepartmentIDs AS $gibbonDepartmentID) { //INCLUDE ONLY SELECTED DEPARTMENTS
-							$dataGrades["department" . $gibbonDepartmentID]=$gibbonDepartmentID ;
-							$departmentExtra.="gibbonDepartment.gibbonDepartmentID=:department" . $gibbonDepartmentID . " OR " ;
+					//CALCULATE AVERAGES
+					foreach($departments AS $department) {
+						foreach ($terms AS $term) {
+							if ($finalData[$term["termID"]][$department["department"]]["gradeWeightedDivisor"]>0) {
+								$finalData[$term["termID"]][$department["department"]]["gradeWeightedMean"]=round(($finalData[$term["termID"]][$department["department"]]["gradeWeightedTotal"]/$finalData[$term["termID"]][$department["department"]]["gradeWeightedDivisor"]) , 2) ;
+							}	
+							else {
+								$finalData[$term["termID"]][$department["department"]]["gradeWeightedMean"]="null" ;
+							}
 						}
-						if ($departmentExtra!="") {
-							$departmentExtra="AND (" . substr($departmentExtra, 0, -4) . ")" ;
-						}
-						$sqlGrades="SELECT gibbonSchoolYear.name AS year, gibbonSchoolYearTerm.name AS term, gibbonSchoolYearTerm.gibbonSchoolYearTermID AS termID, gibbonDepartment.name AS department, gibbonMarkbookColumn.name AS markbook, completeDate, " . $dataType . ", gibbonScaleID" . ucfirst($dataType) . ", " . $dataType . "Value, " . $dataType . "Descriptor, (SELECT count(*) FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID) AS totalGrades, (SELECT count(*) FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID AND sequenceNumber>=(SELECT sequenceNumber FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID AND value=gibbonMarkbookEntry." . $dataType . "Value) ORDER BY sequenceNumber DESC) AS gradePosition
-							FROM gibbonMarkbookEntry 
-							JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID)
-							JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
-							JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
-							JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) 
-							JOIN gibbonScale ON (gibbonMarkbookColumn.gibbonScaleID" . ucfirst($dataType) . "=gibbonScale.gibbonScaleID) 
-							JOIN gibbonSchoolYearTerm ON (gibbonSchoolYearTerm.firstDay<=completeDate AND gibbonSchoolYearTerm.lastDay>=completeDate)
-							JOIN gibbonSchoolYear ON (gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
-							WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent AND complete='Y' AND completeDate<='" . date("Y-m-d") . "' AND (SELECT count(*) FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID)>3 AND " . $dataType . "Value!='' AND " . $dataType. "Value IS NOT NULL $departmentExtra
-							ORDER BY gibbonSchoolYear.sequenceNumber, gibbonSchoolYearTerm.sequenceNumber, completeDate, gibbonMarkbookColumn.name" ;
-						$resultGrades=$connection2->prepare($sqlGrades);
-						$resultGrades->execute($dataGrades);
 					}
-					catch(PDOException $e) { 
-						print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-					}
-				
-					if ($resultGrades->rowCount()<1) {
+
+			
+					if (count($grades)<5) {
 						print "<div class='error'>" ;
-						print _("There are no records to display.") ;
+						print _("The are less than 4 data points, so no graph can be produced.") ;
 						print "</div>" ;
 					}
 					else {
-						//Prep grades & terms
-						$grades=array() ;
-						$gradeCount=0 ;
-						$lastDepartment="" ;
-						$terms=array() ;
-						$termCount=0 ;
-						$lastTerm="" ;
-						while ($rowGrades=$resultGrades->fetch()) { 
-							//Store grades
-							$grades[$gradeCount]["department"]=$rowGrades["department"] ;
-							$grades[$gradeCount]["year"]=$rowGrades["year"] ;
-							$grades[$gradeCount]["term"]=$rowGrades["term"] ;
-							$grades[$gradeCount]["termID"]=$rowGrades["termID"] ;
-							$grades[$gradeCount]["markbook"]=$rowGrades["markbook"] ;
-							$grades[$gradeCount]["completeDate"]=$rowGrades["completeDate"] ;
-							$grades[$gradeCount][$dataType]=$rowGrades[$dataType] ;
-							$grades[$gradeCount]["gibbonScaleID" . ucfirst($dataType)]=$rowGrades["gibbonScaleID" . ucfirst($dataType)] ;
-							$grades[$gradeCount][$dataType . "Value"]=$rowGrades[$dataType . "Value"] ;
-							$grades[$gradeCount][$dataType . "Descriptor"]=$rowGrades[$dataType . "Descriptor"] ;
-							$grades[$gradeCount]["totalGrades"]=$rowGrades["totalGrades"] ;
-							$grades[$gradeCount]["gradePosition"]=$rowGrades["gradePosition"] ;
-							$grades[$gradeCount]["gradeWeighted"]=round($rowGrades["gradePosition"]/$rowGrades["totalGrades"], 2) ;
-						
-							//Store terms for axis
-							if ($lastTerm!=$rowGrades["term"]) {
-								$terms[$termCount]["year"]=$rowGrades["year"] ;
-								$terms[$termCount]["term"]=$rowGrades["term"] ;
-								$terms[$termCount]["termID"]=$rowGrades["termID"] ;
-								$terms[$termCount]["termFullName"]=$rowGrades["year"] . " " . $rowGrades["term"] ;
-								$termCount++ ;
-							}
-							$lastTerm=$rowGrades["term"] ;
-						
-							$gradeCount++ ;
-						}
-				
-						//POPULATE FINAL DATA
-						$finalData=array() ;
-						foreach ($terms AS $term) {
+						//CREATE LEGEND
+						print "<p style='margin-top: 20px; margin-bottom: 5px'><b>" . _('Legend') . "</b></p>" ;
+						print "<table class='noIntBorder' style='width: 100%;  border-spacing: 0; border-collapse: collapse;'>" ;
+							$columns=8 ;
+							$columnCount=0 ;
 							foreach ($departments AS $department) {
-								$finalData[$term["termID"]][$department["department"]]["termID"]=$term["termID"] ;
-								$finalData[$term["termID"]][$department["department"]]["termFullName"]=$term["termFullName"] ;
-								$finalData[$term["termID"]][$department["department"]]["department"]=$department["department"] ;
-								$finalData[$term["termID"]][$department["department"]]["gradeWeightedTotal"]=NULL ;
-								$finalData[$term["termID"]][$department["department"]]["gradeWeightedDivisor"]=0 ;
-								$finalData[$term["termID"]][$department["department"]]["gradeWeightedMean"]=NULL ;
-						
-								foreach ($grades AS $grade) {
-									if ($grade["termID"]==$term["termID"] AND $grade["department"]==$department["department"]) {
-										$finalData[$term["termID"]][$department["department"]]["gradeWeightedTotal"]+=$grade["gradeWeighted"] ;
-										$finalData[$term["termID"]][$department["department"]]["gradeWeightedDivisor"]++ ;
-									}
+								if ($columnCount%$columns==0) {
+									print "<tr>" ;
 								}
-							}
-						}
-				
-						//CALCULATE AVERAGES
-						foreach($departments AS $department) {
-							foreach ($terms AS $term) {
-								if ($finalData[$term["termID"]][$department["department"]]["gradeWeightedDivisor"]>0) {
-									$finalData[$term["termID"]][$department["department"]]["gradeWeightedMean"]=round(($finalData[$term["termID"]][$department["department"]]["gradeWeightedTotal"]/$finalData[$term["termID"]][$department["department"]]["gradeWeightedDivisor"]) , 2) ;
-								}	
-								else {
-									$finalData[$term["termID"]][$department["department"]]["gradeWeightedMean"]="null" ;
-								}
-							}
-						}
-
-				
-						if (count($grades)<5) {
-							print "<div class='error'>" ;
-							print _("The are less than 4 data points, so no graph can be produced.") ;
-							print "</div>" ;
-						}
-						else {
-							//CREATE LEGEND
-							print "<p style='margin-top: 20px; margin-bottom: 5px'><b>" . _('Legend') . "</b></p>" ;
-							print "<table class='noIntBorder' style='width: 100%;  border-spacing: 0; border-collapse: collapse;'>" ;
-								$columns=8 ;
-								$columnCount=0 ;
-								foreach ($departments AS $department) {
-									if ($columnCount%$columns==0) {
-										print "<tr>" ;
-									}
-									print "<td style='vertical-align: middle!important; height: 35px; width: 25px; border-right-width: 0px!important'>" ;
-										print "<div style='width: 25px; height: 25px; border: 2px solid rgb(" . $department["colour"] . "); background-color: rgba(" . $department["colour"] . ", 0.8) '></div>" ;
-									print "</td>" ;
-									print "<td style='vertical-align: middle!important; height: 35px; width: " . (100/$columns) . "%'>" ;
-										print "<b>" . $department["department"] . "</b>" ;
-									print "</td>" ;
-									
-									if ($columnCount%$columns==7) {
-										print "</tr>" ;
-									}
-									
-									$columnCount++ ;
-								}
-								if ($columnCount%$columns!=0) {
-									for ($i=($columnCount%$columns); $i<$columns; $i++) {
-										print "<td colspan=2 style='width: " . (100/$columns) . "%'>" ;
-									
-										print "</td>" ;
-									}
-								}
-								if ($columnCount%$columns!=7) {
+								print "<td style='vertical-align: middle!important; height: 35px; width: 25px; border-right-width: 0px!important'>" ;
+									print "<div style='width: 25px; height: 25px; border: 2px solid rgb(" . $department["colour"] . "); background-color: rgba(" . $department["colour"] . ", 0.8) '></div>" ;
+								print "</td>" ;
+								print "<td style='vertical-align: middle!important; height: 35px; width: " . (100/$columns) . "%'>" ;
+									print "<b>" . $department["department"] . "</b>" ;
+								print "</td>" ;
+								
+								if ($columnCount%$columns==7) {
 									print "</tr>" ;
 								}
-							print "</table>" ;
-					
-					
-							//PLOT DATA
-							print "<script type=\"text/javascript\" src=\"" . $_SESSION[$guid]["absoluteURL"] . "/lib/Chart.js/Chart.min.js\"></script>" ;
+								
+								$columnCount++ ;
+							}
+							if ($columnCount%$columns!=0) {
+								for ($i=($columnCount%$columns); $i<$columns; $i++) {
+									print "<td colspan=2 style='width: " . (100/$columns) . "%'>" ;
+								
+									print "</td>" ;
+								}
+							}
+							if ($columnCount%$columns!=7) {
+								print "</tr>" ;
+							}
+						print "</table>" ;
 				
-							print "<p style='margin-top: 20px; margin-bottom: 5px'><b>" . _('Data') . "</b></p>" ;
-							print "<div style=\"width:100%\">" ;
-								print "<div>" ;
-									print "<canvas id=\"canvas\"></canvas>" ;
-								print "</div>" ;
+				
+						//PLOT DATA
+						print "<script type=\"text/javascript\" src=\"" . $_SESSION[$guid]["absoluteURL"] . "/lib/Chart.js/Chart.min.js\"></script>" ;
+			
+						print "<p style='margin-top: 20px; margin-bottom: 5px'><b>" . _('Data') . "</b></p>" ;
+						print "<div style=\"width:100%\">" ;
+							print "<div>" ;
+								print "<canvas id=\"canvas\"></canvas>" ;
 							print "</div>" ;
-				
-							?>
-							<script>
-								var lineChartData = {
-									labels : [
-										<?php
-											foreach ($terms AS $term) {
-												print "'" . $term["termFullName"] . "'," ;
-											}
-										?>
-									],
-									datasets : [
-										<?php
-											foreach($departments AS $department) {
-												?>
-												{
-													fillColor : "rgba(<?php print $department["colour"] ?>,0)",
-													strokeColor : "rgba(<?php print $department["colour"] ?>,1)",
-													pointColor : "rgba(<?php print $department["colour"] ?>,1)",
-													pointStrokeColor : "rgba(<?php print $department["colour"] ?>,0.4)",
-													pointHighlightFill : "rgba(<?php print $department["colour"] ?>,4)",
-													pointHighlightStroke : "rgba(<?php print $department["colour"] ?>,0.1)",
-													data : [
-														<?php
-															foreach ($terms AS $term) {
-																if ($finalData[$term["termID"]][$department["department"]]["termID"]==$term["termID"]) {
-																	if ($finalData[$term["termID"]][$department["department"]]["department"]==$department["department"]) {
-																		print $finalData[$term["termID"]][$department["department"]]["gradeWeightedMean"] . "," ;
-																	}
+						print "</div>" ;
+			
+						?>
+						<script>
+							var lineChartData = {
+								labels : [
+									<?php
+										foreach ($terms AS $term) {
+											print "'" . $term["termFullName"] . "'," ;
+										}
+									?>
+								],
+								datasets : [
+									<?php
+										foreach($departments AS $department) {
+											?>
+											{
+												fillColor : "rgba(<?php print $department["colour"] ?>,0)",
+												strokeColor : "rgba(<?php print $department["colour"] ?>,1)",
+												pointColor : "rgba(<?php print $department["colour"] ?>,1)",
+												pointStrokeColor : "rgba(<?php print $department["colour"] ?>,0.4)",
+												pointHighlightFill : "rgba(<?php print $department["colour"] ?>,4)",
+												pointHighlightStroke : "rgba(<?php print $department["colour"] ?>,0.1)",
+												data : [
+													<?php
+														foreach ($terms AS $term) {
+															if ($finalData[$term["termID"]][$department["department"]]["termID"]==$term["termID"]) {
+																if ($finalData[$term["termID"]][$department["department"]]["department"]==$department["department"]) {
+																	print $finalData[$term["termID"]][$department["department"]]["gradeWeightedMean"] . "," ;
 																}
 															}
-														?>
-													]
-												},
-											<?php
-											}
-										?>
-									]
+														}
+													?>
+												]
+											},
+										<?php
+										}
+									?>
+								]
 
-								}
+							}
 
-								window.onload = function(){
-									var ctx = document.getElementById("canvas").getContext("2d");
-									window.myLine = new Chart(ctx).Line(lineChartData, {
-										responsive: true,
-										showTooltips: false,
-										scaleOverride : true,
-										scaleSteps : 10,
-										scaleStepWidth : 0.1,
-										scaleStartValue : 0
-									});
-								}
-							</script>
-							<?php
-						}
+							window.onload = function(){
+								var ctx = document.getElementById("canvas").getContext("2d");
+								window.myLine = new Chart(ctx).Line(lineChartData, {
+									responsive: true,
+									showTooltips: false,
+									scaleOverride : true,
+									scaleSteps : 10,
+									scaleStepWidth : 0.1,
+									scaleStartValue : 0
+								});
+							}
+						</script>
+						<?php
 					}
 				}
 			}
