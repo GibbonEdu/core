@@ -114,6 +114,7 @@ else {
 										$type=NULL ;
 										$tokens=NULL ;
 										$name="" ;
+										$moduleTable=trim($moduleTable) ;
 										if (substr($moduleTable, 0, 12)=="CREATE TABLE") {
 											$type=_("Table") ;
 										}
