@@ -81,11 +81,8 @@ else {
 			catch(PDOException $e) { }
 		
 			if ($row["failCount"]==3) {
-				$to=getSettingByScope($connection2, "System", "organisationAdministratorEmail") ;
-				$subject=$_SESSION[$guid]["organisationNameShort"] . " Failed Login Notification";
-				$body="Please note that someone has failed to login to account \"$username\" 3 times in a row.\n\n" . $_SESSION[$guid]["systemName"] . " Administrator";
-				$headers="From: " . $to ;
-				mail($to, $subject, $body, $headers) ;
+				$notificationText=sprintf(_('Someone failed to login to account "%1$s" 3 times in a row.'), $username) ;
+				setNotification($connection2, $guid, $_SESSION[$guid]["organisationAdministrator"], $notificationText, "System", "/index.php?q=/modules/User Admin/user_manage.php&search=$username") ;
 			}
 		
 			setLog($connection2, $_SESSION[$guid]["gibbonSchoolYearIDCurrent"], NULL, $row["gibbonPersonID"], "Login - Failed", array("username"=>$username, "reason"=>"Too many failed logins"), $_SERVER["REMOTE_ADDR"]) ;

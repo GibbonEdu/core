@@ -207,6 +207,9 @@ System admin: changed administrator, DBA and admissions contacts to system users
 	Edited file /functions.php
 	Edited file /modules/System Admin/systemSettings.php
 	Edited file /installer/install.php
+
+General: migrated from email notifications to system notifications
+	Edited file /login.php
 	
 v10.0.00
 --------

@@ -3287,7 +3287,7 @@ msgstr "Foto"
 #: modules/User Admin/user_manage.php:126 stars.php:47 stars.php:116
 #: stars.php:181
 msgid "Name"
-msgstr "N"
+msgstr "Nume"
 
 #: stars.php:50 stars.php:50
 msgid "Class/Lesson"
@@ -11090,7 +11090,7 @@ msgstr "<b> Tema + Termene </ b> permite profesorilor și elevilor să vadă ter
 #: functions.php:1027 functions.php:1082 functions.php:1083 functions.php:1208
 #: functions.php:1212 functions.php:1213 functions.php:1213
 msgid "<b>Markbook</b> provides an organised way to assess, record and report on student progress. Use grade scales, rubrics, comments and file uploads to keep students and parents up to date. Link markbooks to the %1$sPlanner%2$s, and see student work as you are marking it.<br/><br/>Choose a class from the menu on the right, and then click on the \"Add\" button (below this message, on the right) to create a new markbook column."
-msgstr "<b> Catalog </ b> oferă un mod organizat de a evalua, înregistra și raportare datele privitoare la progresul  elevilor. Utilizați scala de notare , grile, comentarii și încărcări de fișiere pentru a face cunoscute rezultatele elevilor și părinților până la o dată anume. Catalog  link către% 1 $ sPlanner% 2 $ s, și vedeți  lucrările elevilor în timp ce sunt evaluate. <br/> Alegeți clasa din  meniul din dreapta, și apoi faceți clic pe butonul \"Adaugă\" (sub acest mesaj, în dreapta) pentru a crea o nouă  coloană în Catalog."
+msgstr "<b> Catalog </ b> oferă un mod organizat de a evalua, înregistra și raportare datele privitoare la progresul  elevilor. Utilizați scara de notare , grile, comentarii și încărcări de fișiere pentru a face cunoscute rezultatele elevilor și părinților până la o dată anume. Catalog  link către% 1 $ sPlanner% 2 $ s, și vedeți  lucrările elevilor în timp ce sunt evaluate. <br/> Alegeți clasa din  meniul din dreapta, și apoi faceți clic pe butonul \"Adaugă\" (sub acest mesaj, în dreapta) pentru a crea o nouă  coloană în Catalog."
 
 #: functions.php:147 functions.php:168 functions.php:195 functions.php:826
 #: functions.php:1035 functions.php:1090 functions.php:1091 functions.php:1216
@@ -11222,7 +11222,7 @@ msgstr "Total Cursanți înscriși"
 #: modules/User Admin/role_manage_add.php:69
 #: modules/User Admin/role_manage_edit.php:112
 msgid "Staff"
-msgstr "Conducere"
+msgstr "Responsabil"
 
 #: functions.php:300 modules/Markbook/markbook_view.php:787
 #: modules/Markbook/moduleFunctions.php:139
@@ -11873,7 +11873,7 @@ msgstr "Participați"
 #: functions.php:2591 functions.php:2591
 #: modules/Resources/moduleFunctions.php:99
 msgid "Resource Tags"
-msgstr "Etichete Resursă"
+msgstr "Etichete Resurse"
 
 #: functions.php:1445 functions.php:1449 i18n/dbStringsForTranslation.php:219
 #: modules/Resources/resources_view.php:33
@@ -11959,7 +11959,7 @@ msgstr "Mărimea maximă pentru toate fișierele:% 1 $ sMB"
 #: functions.php:2658 functions.php:2661 functions.php:2739 functions.php:2742
 #: functions.php:2763 functions.php:2766 functions.php:2763 functions.php:2766
 msgid "Maximum file size: %1$sMB"
-msgstr "Dimensiunea maximă a fișierului:% 1 $ sMB"
+msgstr "Dimensiunea maximă a fișierului:%1$ sMB"
 
 #: functions.php:1656 functions.php:1660 functions.php:1664 functions.php:1685
 #: functions.php:1774 functions.php:1778 functions.php:1611 functions.php:1610
@@ -16861,7 +16861,7 @@ msgstr "Caractere asiatice sau altă grafologie asia, ebraic, etc"
 #: modules/User Admin/user_manage_add.php:168
 #: modules/User Admin/user_manage_edit.php:231 publicRegistration.php:149
 msgid "Female"
-msgstr "Femeiesc"
+msgstr "Feminin"
 
 #: modules/Application Form/applicationForm.php:224
 #: Form/applicationForm.php:1144 modules/User
@@ -18660,7 +18660,7 @@ msgstr "Manager"
 #: modules/School Admin/department_manage_add.php:192
 #: modules/School Admin/department_manage_edit.php:316
 msgid "Administrator"
-msgstr "Administrator patrimoniu"
+msgstr "Administrator "
 
 #: modules/School Admin/department_manage_delete.php:34
 #: modules/School Admin/department_manage_delete.php:34
@@ -18895,7 +18895,7 @@ msgstr "Editează Evaluare Externă"
 #: modules/School Admin/gradeScales_manage_add.php:97
 #: modules/School Admin/gradeScales_manage_edit.php:136
 msgid "Brief description of how scale is used."
-msgstr "Scurtă descriere a modului în care este utilizată scala de evaluare."
+msgstr "Scurtă descriere a modului în care este utilizată scara de evaluare."
 
 #: modules/School Admin/externalAssessments_manage_edit.php:172
 #: Admin/externalAssessments_manage_edit.php:184
@@ -19095,14 +19095,14 @@ msgstr "Ordinea în care apar cîmpurile în  categoria <br/> Ar trebui să fie 
 #: modules/School Admin/gradeScales_manage_edit_grade_add.php:92
 #: modules/School Admin/gradeScales_manage_edit_grade_edit.php:93
 msgid "Grade Scale"
-msgstr "Scală evaluare"
+msgstr "Scara notare"
 
 #: modules/School Admin/externalAssessments_manage_edit_field_add.php:140
 #: Admin/externalAssessments_manage_edit_field_edit.php:141
 #: modules/School Admin/externalAssessments_manage_edit_field_add.php:140
 #: modules/School Admin/externalAssessments_manage_edit_field_edit.php:141
 msgid "Grade scale used to control values that can be assigned."
-msgstr "Scală notare folosită pentru a controla valorile care pot fi atribuite"
+msgstr "Scara de notare folosită pentru a controla valorile care pot fi atribuite"
 
 #: modules/School Admin/externalAssessments_manage_edit_field_add.php:167
 #: Admin/externalAssessments_manage_edit_field_edit.php:173
@@ -19281,7 +19281,7 @@ msgstr "Editați extensii fișiere"
 #: modules/School Admin/gradeScales_manage_edit_grade_delete.php:58
 #: modules/School Admin/gradeScales_manage_edit_grade_edit.php:58
 msgid "Manage Grade Scales"
-msgstr "Gestionați scala de notare"
+msgstr "Gestionați scara de notare"
 
 #: modules/School Admin/gradeScales_manage.php:34
 #: modules/School Admin/gradeScales_manage.php:34
@@ -19306,17 +19306,17 @@ msgstr "Numeric"
 #: modules/School Admin/gradeScales_manage_add.php:34
 #: modules/School Admin/gradeScales_manage_add.php:34
 msgid "Add Grade Scale"
-msgstr "Adaugă scală de notare"
+msgstr "Adaugă scară de notare"
 
 #: modules/School Admin/gradeScales_manage_add.php:121
 #: modules/School Admin/gradeScales_manage_add.php:121
 msgid "Does this scale use only numeric grades? Note, grade \"Incomplete\" is exempt."
-msgstr "Această scală folosește numai date numerice? Notă, clasa \"incompletă\" este exceptată."
+msgstr "Această scară folosește numai date numerice? Notă, clasa \"incompletă\" este exceptată."
 
 #: modules/School Admin/gradeScales_manage_delete.php:31
 #: modules/School Admin/gradeScales_manage_delete.php:31
 msgid "Delete Grade Scale"
-msgstr "Șterge Scala de Notare"
+msgstr "Șterge Scara de Notare"
 
 #: modules/School Admin/gradeScales_manage_edit.php:34
 #: Admin/gradeScales_manage_edit_grade_add.php:57
@@ -19327,7 +19327,7 @@ msgstr "Șterge Scala de Notare"
 #: modules/School Admin/gradeScales_manage_edit_grade_delete.php:58
 #: modules/School Admin/gradeScales_manage_edit_grade_edit.php:58
 msgid "Edit Grade Scale"
-msgstr "Editează Scala de Notare"
+msgstr "Editează Scara de Notare"
 
 #: modules/School Admin/gradeScales_manage_edit.php:110 modules/Timetable
 #: Admin/course_manage_add.php:134 Admin/course_manage_edit.php:150
@@ -19339,7 +19339,7 @@ msgstr "Editează Scala de Notare"
 #: modules/Timetable Admin/tt_edit.php:123
 #: modules/Timetable Admin/ttColumn_add.php:71
 msgid "Must be unique for this school year."
-msgstr "Trebuie să fie unică pentru acest an școlar."
+msgstr "Trebuie să fie unic pentru acest an școlar."
 
 #: modules/School Admin/gradeScales_manage_edit.php:171
 #: modules/School Admin/gradeScales_manage_edit.php:171
@@ -19382,7 +19382,7 @@ msgstr "Adaugă Notă"
 #: modules/School Admin/gradeScales_manage_edit_grade_edit.php:103
 #: modules/School Admin/gradeScales_manage_edit_grade_edit.php:129
 msgid "Must be unique for this grade scale."
-msgstr "Trebuie să fie unic pentru această scală de notare."
+msgstr "Trebuie să fie unic pentru această scară de notare."
 
 #: modules/School Admin/house_manage.php:31 Admin/house_manage_add.php:31
 #: Admin/house_manage_delete.php:31 Admin/house_manage_edit.php:31
@@ -19967,7 +19967,7 @@ msgstr "Competență"
 #: modules/School Admin/space_manage.php:93
 #: modules/School Admin/space_manage.php:93
 msgid "Facilities"
-msgstr "Aptitudini (deprinderi)"
+msgstr "Facilități"
 
 #: modules/School Admin/space_manage.php:145
 #: modules/School Admin/space_manage.php:145
@@ -24654,7 +24654,7 @@ msgstr "Părinte/Tutore%1$s Date Personale"
 #: modules/User Admin/user_manage_add.php:87
 #: modules/User Admin/user_manage_edit.php:150
 msgid "Title"
-msgstr "Carte"
+msgstr "Titlu"
 
 #: modules/User Admin/applicationForm_manage_edit.php:1164
 msgid "Ms"
@@ -24684,7 +24684,7 @@ msgstr "D-ra"
 #: modules/User Admin/user_manage_add.php:94
 #: modules/User Admin/user_manage_edit.php:157
 msgid "Mr."
-msgstr "D-na"
+msgstr "D-nul"
 
 #: modules/User Admin/applicationForm_manage_edit.php:1167
 #: Admin/user_manage_add.php:91 Admin/user_manage_edit.php:154 modules/Data
@@ -26297,7 +26297,7 @@ msgstr "Urgență 2 rude"
 #: modules/User Admin/user_manage_add.php:1260
 #: modules/User Admin/user_manage_edit.php:1599
 msgid "Vehicle Registration"
-msgstr "Nr. înreg.mașină"
+msgstr "Adresă Locație"
 
 #: modules/User Admin/data_personal_edit.php:1016
 #: modules/Students/student_view_details.php:475
@@ -28957,7 +28957,7 @@ msgstr "Șterge utilizator"
 #: modules/User Admin/user_manage_edit.php:135 Admin/user_manage_edit.php:139
 #: modules/User Admin/user_manage_edit.php:139
 msgid "Note that certain fields are hidden or revealed depending on the role categories (Staff, Student, Parent) that a user is assigned to. For example, parents do not get Emergency Contact fields, and stunders/staff do not get Employment fields."
-msgstr "Rețineți că anumite câmpuri sunt ascunse sau evidențiate în funcție de categoriile de rol (Personal, Cursant, părinte) cărora  un utilizator este atribuit. De exemplu, părinții nu pot accesa  domenilei de urgență de contact, și cursanții/ personal nu pot accesa domeniile  ocupare forță de muncă  ???."
+msgstr "Rețineți că anumite câmpuri sunt ascunse sau evidențiate în funcție de categoriile de rol (Personal, Cursant, părinte) cărora  un utilizator este atribuit. De exemplu, părinții nu pot accesa contactele din domeniile de urgență  , cursanții/ personal nu pot accesa domeniile  ocupare forță de muncă  ???."
 
 #: modules/User Admin/user_manage_edit.php:257 Admin/user_manage_edit.php:261
 #: Admin/user_manage_edit.php:263 modules/User Admin/user_manage_edit.php:263
@@ -30706,7 +30706,7 @@ msgstr "Notă"
 #: modules/External Assessment/externalAssessment_manage_details_add.php:571
 #: modules/External Assessment/externalAssessment_manage_details_edit.php:240
 msgid "Primary Assessment Scale Grade"
-msgstr "Scală de evaluare inițială"
+msgstr "Scară de evaluare inițială"
 
 #: modules/External Assessment/externalAssessment_manage_details_add.php:522
 #: Assessment/externalAssessment_manage_details_edit.php:192
@@ -30739,7 +30739,7 @@ msgstr "Editare Evaluare"
 #: modules/Finance/invoices_manage_print.php:113
 #: modules/Library/report_viewOverdueItems.php:62
 msgid "Item"
-msgstr "Carte"
+msgstr "Titlu"
 
 #: modules/External Assessment/moduleFunctions.php:84
 #: Assessment/import_results.php:124 Assessment/moduleFunctions.php:91
@@ -30752,7 +30752,7 @@ msgstr "Rezultat"
 #: Assessment/moduleFunctions.php:94
 #: modules/External Assessment/moduleFunctions.php:94
 msgid "Primary assessment scale equivalent"
-msgstr "Echivalent Scală inițială evaluare"
+msgstr "Echivalent Scară inițială evaluare"
 
 #: modules/External Assessment/moduleFunctions.php:87
 #: Assessment/moduleFunctions.php:94
@@ -32104,7 +32104,7 @@ msgstr "Afișare ecran întreg"
 #: modules/Markbook/markbook_edit_edit.php:524
 #: modules/Markbook/markbook_view.php:343
 msgid "Scale"
-msgstr "Scală"
+msgstr "Scară"
 
 #: modules/Markbook/markbook_view.php:292
 #: modules/Markbook/markbook_view_full.php:193
@@ -32579,12 +32579,12 @@ msgstr "Școală"
 
 #: modules/Rubrics/rubrics_add.php:254 modules/Rubrics/rubrics_edit.php:328
 msgid "Grading Scale"
-msgstr "Scala de notare"
+msgstr "Scara de notare"
 
 #: modules/Rubrics/rubrics_add.php:255 modules/Rubrics/rubrics_add.php:271
 #: modules/Rubrics/rubrics_add.php:271
 msgid "Link columns to grades on a scale?"
-msgstr "Asociere coloane la scala de notare ?"
+msgstr "Asociere coloane la scara de notare ?"
 
 #: modules/Rubrics/rubrics_add.php:285 modules/Rubrics/rubrics_edit.php:376
 #: modules/Rubrics/rubrics_add.php:301 modules/Rubrics/rubrics_edit.php:391
@@ -32600,7 +32600,7 @@ msgstr "Rânduri inițiale"
 #: modules/Rubrics/rubrics_add.php:291 modules/Rubrics/rubrics_add.php:307
 #: modules/Rubrics/rubrics_add.php:307
 msgid "Rows store assessment strands."
-msgstr ""
+msgstr "Rîndurile înregistrează nivelurile de strands "
 
 #: modules/Rubrics/rubrics_add.php:305 modules/Rubrics/rubrics_add.php:321
 #: modules/Rubrics/rubrics_add.php:321
@@ -33120,7 +33120,7 @@ msgstr "Administrare taxe"
 #: i18n/dbStringsForTranslation.php:116 i18n/dbStringsForTranslation.php:117
 #: i18n/dbStringsForTranslation.php:127 i18n/dbStringsForTranslation.php:127
 msgid "Manage IN Descriptors"
-msgstr ""
+msgstr "Gestionați descriptori Nevoi Individuale"
 
 #: i18n/dbStringsForTranslation.php:113
 #: modules/Finance/invoicees_manage.php:31
@@ -33666,7 +33666,7 @@ msgstr "Afișare orar pe spații"
 #: i18n/dbStringsForTranslation.php:258 i18n/dbStringsForTranslation.php:258
 #: modules/Planner/report_workSummary_byRollGroup.php:34
 msgid "Work Summary by Roll Group"
-msgstr "Sumar muncă pe clasă"
+msgstr "Sumar rezultate pe clasă"
 
 #: i18n/dbStringsForTranslation.php:232 i18n/dbStringsForTranslation.php:588
 #: i18n/dbStringsForTranslation.php:404 i18n/dbStringsForTranslation.php:406
@@ -36993,7 +36993,7 @@ msgstr "Formular cerere"
 #: i18n/dbStringsForTranslation.php:977 index.php:505
 #: modules/School Admin/department_manage.php:117
 msgid "Departments"
-msgstr "discipline"
+msgstr "Discipline"
 
 #: i18n/dbStringsForTranslation.php:687 i18n/dbStringsForTranslation.php:1048
 #: i18n/dbStringsForTranslation.php:1053 i18n/dbStringsForTranslation.php:1105
@@ -37077,7 +37077,7 @@ msgstr "Clase"
 #: i18n/dbStringsForTranslation.php:958 i18n/dbStringsForTranslation.php:988
 #: i18n/dbStringsForTranslation.php:988
 msgid "School Admin"
-msgstr "Administrator Școală"
+msgstr "Administrare Școală"
 
 #: i18n/dbStringsForTranslation.php:699 i18n/dbStringsForTranslation.php:1060
 #: i18n/dbStringsForTranslation.php:1065 i18n/dbStringsForTranslation.php:1117
@@ -37086,7 +37086,7 @@ msgstr "Administrator Școală"
 #: i18n/dbStringsForTranslation.php:961 i18n/dbStringsForTranslation.php:991
 #: i18n/dbStringsForTranslation.php:991
 msgid "System Admin"
-msgstr "Administrator Sistem"
+msgstr "Administrare Sistem"
 
 #: i18n/dbStringsForTranslation.php:701 i18n/dbStringsForTranslation.php:1062
 #: i18n/dbStringsForTranslation.php:1067 i18n/dbStringsForTranslation.php:1119
@@ -37095,7 +37095,7 @@ msgstr "Administrator Sistem"
 #: i18n/dbStringsForTranslation.php:963 i18n/dbStringsForTranslation.php:993
 #: i18n/dbStringsForTranslation.php:993
 msgid "Timetable Admin"
-msgstr "Administrator Orar"
+msgstr "Administrare Orar"
 
 #: i18n/dbStringsForTranslation.php:702 i18n/dbStringsForTranslation.php:1063
 #: i18n/dbStringsForTranslation.php:1068 i18n/dbStringsForTranslation.php:1120
@@ -37104,7 +37104,7 @@ msgstr "Administrator Orar"
 #: i18n/dbStringsForTranslation.php:964 i18n/dbStringsForTranslation.php:994
 #: i18n/dbStringsForTranslation.php:994
 msgid "User Admin"
-msgstr "Administrator utilizatori"
+msgstr "Administrare utilizatori"
 
 #: i18n/dbStringsForTranslation.php:705 i18n/dbStringsForTranslation.php:1066
 #: i18n/dbStringsForTranslation.php:1071 i18n/dbStringsForTranslation.php:1123
@@ -42601,7 +42601,7 @@ msgstr "Post scriptum"
 #: i18n/dbStringsForTranslation.php:1816 i18n/dbStringsForTranslation.php:1854
 #: i18n/dbStringsForTranslation.php:1795 i18n/dbStringsForTranslation.php:1795
 msgid "Primary Assessment Scale"
-msgstr "Scala de evaluare primară"
+msgstr "Scara de evaluare primară"
 
 #: i18n/dbStringsForTranslation.php:1475 i18n/dbStringsForTranslation.php:1836
 #: i18n/dbStringsForTranslation.php:1841 i18n/dbStringsForTranslation.php:1893
@@ -42853,7 +42853,7 @@ msgstr "Notificare cursant mesaj"
 #: i18n/dbStringsForTranslation.php:1853 i18n/dbStringsForTranslation.php:1900
 #: i18n/dbStringsForTranslation.php:1841 i18n/dbStringsForTranslation.php:1841
 msgid "System Administrator"
-msgstr "Administrator sistem"
+msgstr "Administrare sistem"
 
 #: i18n/dbStringsForTranslation.php:1507 i18n/dbStringsForTranslation.php:1868
 #: i18n/dbStringsForTranslation.php:1873 i18n/dbStringsForTranslation.php:1925
@@ -43812,7 +43812,7 @@ msgstr "Cel mult un cursant se poate înscrie la un termen. Setați 0 pentru nel
 #: i18n/dbStringsForTranslation.php:1980 i18n/dbStringsForTranslation.php:2042
 #: i18n/dbStringsForTranslation.php:1983
 msgid "The most commonly used, or official, assessment scale for the school."
-msgstr "Cele mai frecvent utilizate, sau oficial, scara de evaluare pentru școală(pentru Romania creați o scală de la 0-10)"
+msgstr "Cele mai frecvent utilizate, sau oficial, scara de evaluare pentru școală(pentru Romania creați o scară de la 0-10)"
 
 #: i18n/dbStringsForTranslation.php:1618 i18n/dbStringsForTranslation.php:1979
 #: i18n/dbStringsForTranslation.php:1984 i18n/dbStringsForTranslation.php:2036
@@ -53565,7 +53565,7 @@ msgstr "Dacă profesorul nu a introdus temele în Gibbonedu, sau doriți să în
 #: i18n/dbStringsForTranslation.php:199 i18n/dbStringsForTranslation.php:199
 #: modules/Planner/report_parentWeeklyEmailSummaryConfirmation.php:34
 msgid "Parent Weekly Email Summary"
-msgstr "Părinte rezumat e-mail săptîmănal"
+msgstr "Părinte rezumat e-mail săptămînal"
 
 #: modules/Planner/report_parentWeeklyEmailSummaryConfirmation.php:37
 #: i18n/dbStringsForTranslation.php:377 i18n/dbStringsForTranslation.php:388
@@ -54162,7 +54162,7 @@ msgstr "Trebuie să se potrivească valorii gibbonEvaluareExternăCîmp.nume în
 #: modules/External Assessment/import_results.php:124
 #: modules/External Assessment/import_results.php:125
 msgid "Must match value of gibbonScaleGrade.value in database."
-msgstr "Trebuie să se potrivească valorii gibbonScalăEvaluareNotă.valoare în baza de date"
+msgstr "Trebuie să se potrivească valorii gibbonScarăEvaluareNotă.valoare în baza de date"
 
 #: modules/External Assessment/import_results.php:125
 #: modules/External Assessment/import_results.php:125
@@ -54172,7 +54172,7 @@ msgstr ""
 #: modules/External Assessment/import_results.php:125
 #: modules/External Assessment/import_results.php:125
 msgid "The Primary Assessment Scale equivalent grade."
-msgstr "Scala de evaluare primară grad echivalare"
+msgstr "Scara de evaluare primară grad echivalare"
 
 #: modules/External Assessment/import_results.php:207
 #: modules/External Assessment/import_results.php:207
@@ -55303,7 +55303,7 @@ msgstr "Cale relativă la logo-ul site (400 x 100px)"
 #: i18n/dbStringsForTranslation.php:1935 i18n/dbStringsForTranslation.php:1992
 #: i18n/dbStringsForTranslation.php:1933 i18n/dbStringsForTranslation.php:1933
 msgid "Should department information be made available to the public, via the Gibbon homeoage?"
-msgstr "Ar informații departament să fie puse la dispoziția publicului, prin intermediul homeoage Gibbon?"
+msgstr "Informațiile departament pot fi puse la dispoziția publicului, prin intermediul paginii principale Gibbon?"
 
 #: i18n/dbStringsForTranslation.php:1938 i18n/dbStringsForTranslation.php:1995
 #: i18n/dbStringsForTranslation.php:1936 i18n/dbStringsForTranslation.php:1936
