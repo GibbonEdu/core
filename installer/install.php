@@ -414,6 +414,8 @@ include "../functions.php" ;
 																	$connection2->query($sql) ;
 																}
 																catch(PDOException $e) {
+																	print $sql . "<br/>" ;
+																	print $e->getMessage() . "<br/><br/>" ;
 																	$demoFail=TRUE ;
 																}
 															}
@@ -1168,18 +1170,21 @@ include "../functions.php" ;
 												$sql="INSERT INTO gibbonPerson SET gibbonPersonID=1, title=:title, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, username=:username, password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, status=:status, canLogin=:canLogin, passwordForceReset=:passwordForceReset, gibbonRoleIDPrimary=:gibbonRoleIDPrimary, gibbonRoleIDAll=:gibbonRoleIDAll, email=:email" ;
 												$result=$connection2->prepare($sql);
 												$result->execute($data);
-												
-												$dataStaff=array("gibbonPersonID"=>1, "type"=>'Teaching') ;
-												$sqlStaff="INSERT INTO gibbonStaff SET gibbonPersonID=:gibbonPersonID, type=:type" ;
-												$resultStaff=$connection2->prepare($sqlStaff);
-												$resultStaff->execute($dataStaff);
 											}
 											catch(PDOException $e) { 
 												$userFail=true ;
 												print "<div class='error'>" ;
-													print _("Errors occurred in populating the database; empty your database, remove ../config.php and try again.") ;
+													print sprintf(_('Errors occurred in populating the database; empty your database, remove ../config.php and %1$stry again%2$s.'), "<a href='./install.php'>", "</a>") ;
 												print "</div>" ;
 											}
+											
+											try {
+												$dataStaff=array("gibbonPersonID"=>1, "type"=>'Teaching') ;
+												$sqlStaff="INSERT INTO gibbonStaff SET gibbonPersonID=1, type='Teaching'" ;
+												$resultStaff=$connection2->prepare($sqlStaff);
+												$resultStaff->execute($dataStaff);
+											}
+											catch(PDOException $e) { }
 											
 											if ($userFail==false) {
 												$settingsFail=FALSE ;		
