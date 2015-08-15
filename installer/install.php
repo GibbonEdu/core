@@ -256,7 +256,7 @@ include "../functions.php" ;
 								//Estabish db connection without database name
 								$connected1=TRUE ;
 								try {
-									$connection2=new PDO("mysql:host=$databaseServer;charset=utf8", $databaseUsername, $databasePassword);
+									@$connection2=new PDO("mysql:host=$databaseServer;charset=utf8", $databaseUsername, $databasePassword);
 									$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 									$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 								}
@@ -738,12 +738,13 @@ include "../functions.php" ;
 																	<span style="font-size: 90%"><i><?php print _($row["description"]) ?>. <?php print "<b>" . _('Not recommended for non-experts!.') . "<b>" ?></i></span>
 																</td>
 																<td class="right">
-																	<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+																	<select disabled name="<?php print $row["name"] ?>Disabled" id="<?php print $row["name"] ?>" style="width: 302px">
 																		<?php
 																		print "<option selected value='N'>" . ynExpander('N') . "</option>" ;
 																		print "<option value='Y'>" . ynExpander('Y') . "</option>" ;
 																		?>			
 																	</select>
+																	<input type='hidden' name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>Hidden" value="N">
 																</td>
 															</tr>
 															<?php
@@ -762,6 +763,7 @@ include "../functions.php" ;
 																			print "else {" ;
 																				print "$(\"#status\").html('" . _('Cutting Edge Code check successful.') . "') ;" ;
 																				print "$(\"#cuttingEdgeCode\").val('Y');" ;
+																				print "$(\"#cuttingEdgeCodeHidden\").val('Y');" ;
 																			print "}" ;
 																		print "}," ;
 																		print "error: function (data, textStatus, errorThrown) {" ;
@@ -1166,6 +1168,11 @@ include "../functions.php" ;
 												$sql="INSERT INTO gibbonPerson SET gibbonPersonID=1, title=:title, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, username=:username, password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, status=:status, canLogin=:canLogin, passwordForceReset=:passwordForceReset, gibbonRoleIDPrimary=:gibbonRoleIDPrimary, gibbonRoleIDAll=:gibbonRoleIDAll, email=:email" ;
 												$result=$connection2->prepare($sql);
 												$result->execute($data);
+												
+												$dataStaff=array("gibbonPersonID"=>1, "type"=>'Teaching') ;
+												$sqlStaff="INSERT INTO gibbonStaff SET gibbonPersonID=:gibbonPersonID, type=:type" ;
+												$resultStaff=$connection2->prepare($sqlStaff);
+												$resultStaff->execute($dataStaff);
 											}
 											catch(PDOException $e) { 
 												$userFail=true ;
@@ -1237,65 +1244,35 @@ include "../functions.php" ;
 												}
 	
 												try {
-													$data=array("organisationAdministratorName"=>$preferredName . " " . $surname); 
-													$sql="UPDATE gibbonSetting SET value=:organisationAdministratorName WHERE scope='System' AND name='organisationAdministratorName'" ;
+													$data=array("organisationAdministrator"=>1); 
+													$sql="UPDATE gibbonSetting SET value=:organisationAdministrator WHERE scope='System' AND name='organisationAdministrator'" ;
 													$result=$connection2->prepare($sql);
 													$result->execute($data);
 												}
 												catch(PDOException $e) { 
 													$settingsFail=TRUE ;
 												}
-	
+												
 												try {
-													$data=array("organisationAdministratorEmail"=>$email); 
-													$sql="UPDATE gibbonSetting SET value=:organisationAdministratorEmail WHERE scope='System' AND name='organisationAdministratorEmail'" ;
+													$data=array("organisationDBA"=>1); 
+													$sql="UPDATE gibbonSetting SET value=:organisationDBA WHERE scope='System' AND name='organisationDBA'" ;
 													$result=$connection2->prepare($sql);
 													$result->execute($data);
 												}
 												catch(PDOException $e) { 
 													$settingsFail=TRUE ;
 												}
-	
+												
 												try {
-													$data=array("organisationDBAName"=>$preferredName . " " . $surname); 
-													$sql="UPDATE gibbonSetting SET value=:organisationDBAName WHERE scope='System' AND name='organisationDBAName'" ;
+													$data=array("organisationAdmissions"=>1); 
+													$sql="UPDATE gibbonSetting SET value=:organisationAdmissions WHERE scope='System' AND name='organisationAdmissions'" ;
 													$result=$connection2->prepare($sql);
 													$result->execute($data);
 												}
 												catch(PDOException $e) { 
 													$settingsFail=TRUE ;
 												}
-	
-												try {
-													$data=array("organisationDBAEmail"=>$email); 
-													$sql="UPDATE gibbonSetting SET value=:organisationDBAEmail WHERE scope='System' AND name='organisationDBAEmail'" ;
-													$result=$connection2->prepare($sql);
-													$result->execute($data);
-												}
-												catch(PDOException $e) { 
-													$settingsFail=TRUE ;
-												}
-	
-												try {
-													$data=array("organisationAdmissionsName"=>$preferredName . " " . $surname); 
-													$sql="UPDATE gibbonSetting SET value=:organisationAdmissionsName WHERE scope='System' AND name='organisationAdmissionsName'" ;
-													$result=$connection2->prepare($sql);
-													$result->execute($data);
-												}
-												catch(PDOException $e) { 
-													$settingsFail=TRUE ;
-												}
-	
-												try {
-													$data=array("organisationAdmissionsEmail"=>$email); 
-													$sql="UPDATE gibbonSetting SET value=:organisationAdmissionsEmail WHERE scope='System' AND name='organisationAdmissionsEmail'" ;
-													$result=$connection2->prepare($sql);
-													$result->execute($data);
-												}
-												catch(PDOException $e) { 
-													$settingsFail=TRUE ;
-												}
-	
+												
 												try {
 													$data=array("country"=>$country); 
 													$sql="UPDATE gibbonSetting SET value=:country WHERE scope='System' AND name='country'" ;
@@ -1403,10 +1380,10 @@ include "../functions.php" ;
 													catch(PDOException $e) { }
 													
 													foreach ($sqlTokens AS $sqlToken) {
-														if ($tokenCount<=$versionMaxLinesMax) {
-															if (trim($sqlToken)!="") { //Decide whether this has been run or not
+														if ($tokenCount<=$versionMaxLinesMax) { //Decide whether this has been run or not
+															if (trim($sqlToken)!="") { 
 																try {
-																	$result=$connection2->query($sqlToken);   
+																	$result=$connection2->query($sqlToken);
 																}
 																catch(PDOException $e) { 
 																	$partialFail=TRUE;

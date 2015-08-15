@@ -3259,6 +3259,48 @@ function getSystemSettings($guid, $connection2) {
 		$_SESSION[$guid][$name]=$row["value"] ;
 	}
 	
+	//Get names and emails for administrator, dba, admissions
+	//System Administrator
+	try {
+		$data=array("gibbonPersonID"=>$_SESSION[$guid]["organisationAdministrator"]); 
+		$sql="SELECT surname, preferredName, email FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { }
+	if ($result->rowCount()==1) {
+		$row=$result->fetch() ;
+		$_SESSION[$guid]["organisationAdministratorName"]=formatName("", $row["preferredName"], $row["surname"], "Staff", FALSE, TRUE) ;
+		$_SESSION[$guid]["organisationAdministratorEmail"]=$row["email"] ;
+	}
+	//DBA
+	try {
+		$data=array("gibbonPersonID"=>$_SESSION[$guid]["organisationDBA"]); 
+		$sql="SELECT surname, preferredName, email FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { }
+	if ($result->rowCount()==1) {
+		$row=$result->fetch() ;
+		$_SESSION[$guid]["organisationDBAName"]=formatName("", $row["preferredName"], $row["surname"], "Staff", FALSE, TRUE) ;
+		$_SESSION[$guid]["organisationDBAEmail"]=$row["email"] ;
+	}
+	//Admissions
+	try {
+		$data=array("gibbonPersonID"=>$_SESSION[$guid]["organisationAdmissions"]); 
+		$sql="SELECT surname, preferredName, email FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { }
+	if ($result->rowCount()==1) {
+		$row=$result->fetch() ;
+		$_SESSION[$guid]["organisationAdmissionsName"]=formatName("", $row["preferredName"], $row["surname"], "Staff", FALSE, TRUE) ;
+		$_SESSION[$guid]["organisationAdmissionsEmail"]=$row["email"] ;
+	}
+		
+	
 	//Language settings from gibboni18n
 	try {
 		$data=array(); 

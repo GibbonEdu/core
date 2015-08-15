@@ -201,7 +201,13 @@ School Admin: added ability to copy all form/roll groups in a year, into the fol
 	Edited file /modules/School Admin/rollGroup_manage.php	
 	New file /modules/School Admin/rollGroup_manage_copyProcess.php
 
-
+System admin: changed administrator, DBA and admissions contacts to system users, not addresses. THIS MEANS ADMINS NEED TO BE RESET UNLESS THEY HAVE gibbonPersonID=1.
+	Deleted values from table gibbonSetting
+	New values in table gibbonSetting
+	Edited file /functions.php
+	Edited file /modules/System Admin/systemSettings.php
+	Edited file /installer/install.php
+	
 v10.0.00
 --------
 i18n: added Urdu as inactive development language

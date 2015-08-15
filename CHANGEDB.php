@@ -507,8 +507,15 @@ ALTER TABLE `gibbonCourse` ADD `orderBy` INT(3) NOT NULL AFTER `gibbonYearGroupI
 INSERT INTO `gibbonModule` (`gibbonModuleID`, `name`, `description`, `entryURL`, `type`, `active`, `category`, `version`, `author`, `url`) VALUES (NULL, 'Tracking', 'Provides visual graphing of student progress, as recorded in the Markbook and Internal Assessment.', 'graphing.php', 'Core', 'Y', 'Assess', '', 'Ross Parker', 'https://rossparker.org');end
 INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `entrySidebar`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Tracking'), 'Graphing_all', 2, '', 'Allows a user to see progress tracking graphs for all students in school.', 'graphing.php', 'graphing.php', 'N', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N') ;end
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Tracking' AND gibbonAction.name='Graphing_all'));end
-
-
+DELETE FROM gibbonSetting WHERE scope='System' AND name='organisationAdministratorName';end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'System', 'organisationAdministrator', 'System Administrator', 'The staff member who receives notifications for system events.', 1);end
+DELETE FROM gibbonSetting WHERE scope='System' AND name='organisationAdministratorEmail';end
+DELETE FROM gibbonSetting WHERE scope='System' AND name='organisationDBAName';end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'System', 'organisationDBA', 'Database Administrator', 'The staff member who receives notifications for data events.', 1);end
+DELETE FROM gibbonSetting WHERE scope='System' AND name='organisationDBAEmail';end
+DELETE FROM gibbonSetting WHERE scope='System' AND name='organisationAdmissionsName';end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'System', 'organisationAdmissions', 'Admissions Administrator', 'The staff member who receives notifications for admissions events.', 1);end
+DELETE FROM gibbonSetting WHERE scope='System' AND name='organisationAdmissionsEmail';end
 ";
 
 ?>
