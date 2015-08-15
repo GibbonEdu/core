@@ -23,6 +23,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include "./functions.php" ;
 include "./config.php" ;
 
+//Load jQuery
+Print "<script type=\"text/javascript\" src=\"" . $_SESSION[$guid]["absoluteURL"] . "/lib/jquery/jquery.js\"></script>" ;
+			
 //New PDO DB connection
 try {
   	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
@@ -41,37 +44,6 @@ $output="" ;
 
 if ($type=="general" OR $type=="lockdown" OR $type=="custom") {
 	$output.="<div style='width: 100%; min-height: 492px; background-color: #f00; color: #fff; margin: 0'>" ;
-		$output.="<div style='padding-top: 150px; font-size: 120px; font-weight: bold; font-family: arial, sans; text-align: center'>" ;
-			if ($type=="general") {
-				$output.=_("General Alarm!") ;
-				$output.="<audio loop autoplay volume=3>
-					<source src=\"./audio/alarm_general.mp3\" type=\"audio/mpeg\">
-				</audio>" ;	
-			}
-			else if ($type=="lockdown") {
-				$output.=_("Lockdown!") ;
-				$output.="<audio loop autoplay volume=3>
-					<source src=\"./audio/alarm_lockdown.mp3\" type=\"audio/mpeg\">
-				</audio>" ;	
-			}
-			else if ($type=="custom") {
-				$output.=_("Alarm!") ;
-				
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='System Admin' AND name='customAlarmSound'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { }
-				$row=$result->fetch() ;
-				
-				$output.="<audio loop autoplay volume=3>
-					<source src=\"" . $row["value"] . "\" type=\"audio/mpeg\">
-				</audio>" ;	
-			}
-		$output.="</div>" ;	
-		
 		//Check alarm details
 		try {
 			$data=array(); 
@@ -88,6 +60,44 @@ if ($type=="general" OR $type=="lockdown" OR $type=="custom") {
 		if ($result->rowCount()==1) { //Alarm details OK
 			$row=$result->fetch() ;
 			
+			$output.="<div style='padding-top: 10px; font-size: 120px; font-weight: bold; font-family: arial, sans; text-align: center'>" ;
+				//Allow alarm sounder to terminate alarm
+				$output.="<div style='height: 20px; margin-bottom: 120px; width: 100%; text-align: right; font-size: 14px'>" ;
+				if ($row["gibbonPersonID"]==$_SESSION[$guid]["gibbonPersonID"]) {
+					$output.="<p style='padding-right: 20px'><a style='color: #fff' target='_parent' href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/System Admin/alarm_cancelProcess.php?gibbonAlarmID=" . $row["gibbonAlarmID"] . "'>" . _('Turn Alarm Off') . "</a></p>" ;
+				}
+				$output.="</div>" ;
+				
+				if ($type=="general") {
+					$output.=_("General Alarm!") ;
+					$output.="<audio loop autoplay volume=3>
+						<source src=\"./audio/alarm_general.mp3\" type=\"audio/mpeg\">
+					</audio>" ;	
+				}
+				else if ($type=="lockdown") {
+					$output.=_("Lockdown!") ;
+					$output.="<audio loop autoplay volume=3>
+						<source src=\"./audio/alarm_lockdown.mp3\" type=\"audio/mpeg\">
+					</audio>" ;	
+				}
+				else if ($type=="custom") {
+					$output.=_("Alarm!") ;
+				
+					try {
+						$dataCustom=array(); 
+						$sqlCustom="SELECT * FROM gibbonSetting WHERE scope='System Admin' AND name='customAlarmSound'" ;
+						$resultCustom=$connection2->prepare($sqlCustom);
+						$resultCustom->execute($dataCustom);
+					}
+					catch(PDOException $e) { }
+					$rowCustom=$resultCustom->fetch() ;
+				
+					$output.="<audio loop autoplay volume=3>
+						<source src=\"" . $rowCustom["value"] . "\" type=\"audio/mpeg\">
+					</audio>" ;	
+				}
+			$output.="</div>" ;	
+		
 			$output.="<div style='padding: 0 20px; font-family: arial, sans; text-align: center'>" ;
 				//Allow everyone except alarm sounder to confirm receipt
 				if ($row["gibbonPersonID"]!=$_SESSION[$guid]["gibbonPersonID"]) {
@@ -106,11 +116,11 @@ if ($type=="general" OR $type=="lockdown" OR $type=="custom") {
 						}
 						
 						if ($resultConfirm->rowCount()==0) {
-							$output.="<a target='_parent' style='font-weight: bold; color: #fff' href='" . $_SESSION[$guid]["absoluteURL"] . "/index_notification_ajax_alarmProcess.php?gibbonAlarmID=" . $row["gibbonAlarmID"] . "'>" . _('Click here to confirm that you have received this alarm.') . "</a><br/>" ;
-							$output.="<i>" . _("After confirming receipt, the alarm will continue to be displayed until it has been turned off.") . "</i>" ;
+							$output.="<a target='_parent' style='font-size: 180%; font-weight: bold; color: #fff' href='" . $_SESSION[$guid]["absoluteURL"] . "/index_notification_ajax_alarmProcess.php?gibbonAlarmID=" . $row["gibbonAlarmID"] . "'>" . _('Click here to confirm that you have received this alarm.') . "</a><br/>" ;
+							$output.="<i>" . _("After confirming receipt, the alarm will continue to be displayed until an administrator has cancelled the alarm.") . "</i>" ;
 						}
 						else {
-							$output.="<i>" . _("You have successfully confirmed receipt of this alarm, which will continue to be displayed until it has been turned off.") . "</i>" ;
+							$output.="<i>" . _("You have successfully confirmed receipt of this alarm, which will continue to be displayed until an administrator has cancelled the alarm.") . "</i>" ;
 						}
 					$output.="</p>" ;
 				}
@@ -150,11 +160,19 @@ if ($type=="general" OR $type=="lockdown" OR $type=="custom") {
 								$output.="</th>" ;
 							$output.="</tr>" ;
 				
+							$rowCount=0 ;
 							while ($rowConfirm=$resultConfirm->fetch()) {
 								//COLOR ROW BY STATUS!
-								$output.="<tr>" ;
+								$output.="<script type=\"text/javascript\">
+									$(document).ready(function(){
+										setInterval(function() {
+											$(\"#row" . $rowCount . "\").load(\"index_notification_ajax_alarm_tickUpdate.php\", {\"gibbonAlarmID\": \"" . $row["gibbonAlarmID"] . "\", \"gibbonPersonID\": \"" . $rowConfirm["gibbonPersonID"] . "\"});
+										}, 5000);
+									});
+								</script>" ;
+								$output.="<tr id='row" . $rowCount . "'>" ;
 									$output.="<td style='color: #fff'>" ;
-										$output.=formatName("", $rowConfirm["preferredName"],$rowConfirm["surname"], "Student", true) . "<br/>" ;
+										$output.=formatName("", $rowConfirm["preferredName"],$rowConfirm["surname"], "Staff", true, true) . "<br/>" ;
 									$output.="</td>" ;
 									$output.="<td style='color: #fff'>" ;
 										if ($row["gibbonPersonID"]==$rowConfirm["gibbonPersonID"]) {
@@ -174,6 +192,7 @@ if ($type=="general" OR $type=="lockdown" OR $type=="custom") {
 										}
 									$output.="</td>" ;
 								$output.="</tr>" ;
+								$rowCount++ ;
 							}
 						$output.="</table>" ;
 					}
