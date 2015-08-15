@@ -196,7 +196,12 @@ Progress: added new module to provide longitudinal graphing of student Markbook 
 
 Timetable Admin: added current student number beside class name in student enrolment view
 	Edited file /modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php
-	
+
+School Admin: added ability to copy all form/roll groups in a year, into the following year
+	Edited file /modules/School Admin/rollGroup_manage.php	
+	New file /modules/School Admin/rollGroup_manage_copyProcess.php
+
+
 v10.0.00
 --------
 i18n: added Urdu as inactive development language
