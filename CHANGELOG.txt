@@ -212,7 +212,11 @@ General: migrated from email notifications to system notifications
 	Edited files /login.php, functions.php, publicRegistrationProcess.php
 	Edited file /modules/Application Form/applicationFormProcess.php
 	Edited files /modules/Data Updater/data_familyProcess.php, data_financeProcess.php, data_medicalProcess.php, data_personalProcess.php
+
+Planner: improved reliability of lesson plan bumping
+	Edited file /modules/Planner/planner_bumpProcess.php
 	
+
 v10.0.00
 --------
 i18n: added Urdu as inactive development language
