@@ -516,6 +516,7 @@ DELETE FROM gibbonSetting WHERE scope='System' AND name='organisationDBAEmail';e
 DELETE FROM gibbonSetting WHERE scope='System' AND name='organisationAdmissionsName';end
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'System', 'organisationAdmissions', 'Admissions Administrator', 'The staff member who receives notifications for admissions events.', 1);end
 DELETE FROM gibbonSetting WHERE scope='System' AND name='organisationAdmissionsEmail';end
+ALTER TABLE `gibbonFinanceExpense` ADD `countAgainstBudget` ENUM('Y','N') NOT NULL DEFAULT 'Y' AFTER `cost`;end
 ";
 
 ?>

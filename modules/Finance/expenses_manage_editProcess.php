@@ -42,6 +42,7 @@ $gibbonFinanceBudgetCycleID=$_POST["gibbonFinanceBudgetCycleID"] ;
 $gibbonFinanceBudgetID=$_POST["gibbonFinanceBudgetID"] ;
 $gibbonFinanceExpenseID=$_POST["gibbonFinanceExpenseID"] ;
 $status=$_POST["status"] ;
+$countAgainstBudget=$_POST["countAgainstBudget"] ;
 		
 if ($gibbonFinanceBudgetCycleID=="" OR $gibbonFinanceBudgetID=="") {
 	print "Fatal error loading this page!" ;
@@ -62,7 +63,7 @@ else {
 			header("Location: {$URL}");
 		}
 		else {
-			if ($gibbonFinanceExpenseID=="" OR $status=="") {
+			if ($gibbonFinanceExpenseID=="" OR $status=="" OR $countAgainstBudget=="") {
 				//Fail 0
 				$URL.="&editReturn=fail0" ;
 				header("Location: {$URL}");
@@ -169,8 +170,8 @@ else {
 			
 							//Write back to gibbonFinanceExpense
 							try {
-								$data=array("gibbonFinanceExpenseID"=>$gibbonFinanceExpenseID, "status"=>$status, "paymentDate"=>$paymentDate, "paymentAmount"=>$paymentAmount, "gibbonPersonIDPayment"=>$gibbonPersonIDPayment, "paymentMethod"=>$paymentMethod, "paymentID"=>$paymentID, "paymentReimbursementStatus"=>$paymentReimbursementStatus); 
-								$sql="UPDATE gibbonFinanceExpense SET status=:status, paymentDate=:paymentDate, paymentAmount=:paymentAmount, gibbonPersonIDPayment=:gibbonPersonIDPayment, paymentMethod=:paymentMethod, paymentID=:paymentID, paymentReimbursementStatus=:paymentReimbursementStatus WHERE gibbonFinanceExpenseID=:gibbonFinanceExpenseID" ;
+								$data=array("gibbonFinanceExpenseID"=>$gibbonFinanceExpenseID, "status"=>$status, "countAgainstBudget"=>$countAgainstBudget, "paymentDate"=>$paymentDate, "paymentAmount"=>$paymentAmount, "gibbonPersonIDPayment"=>$gibbonPersonIDPayment, "paymentMethod"=>$paymentMethod, "paymentID"=>$paymentID, "paymentReimbursementStatus"=>$paymentReimbursementStatus); 
+								$sql="UPDATE gibbonFinanceExpense SET status=:status, countAgainstBudget=:countAgainstBudget, paymentDate=:paymentDate, paymentAmount=:paymentAmount, gibbonPersonIDPayment=:gibbonPersonIDPayment, paymentMethod=:paymentMethod, paymentID=:paymentID, paymentReimbursementStatus=:paymentReimbursementStatus WHERE gibbonFinanceExpenseID=:gibbonFinanceExpenseID" ;
 								$result=$connection2->prepare($sql);
 								$result->execute($data);
 							}

@@ -349,7 +349,7 @@ else {
 							</tr>
 							<tr id="paymentIDRow">
 								<td> 
-									<b><?php print _('Payment Receipt') ?></b><br/>
+									<b><?php print _('Payment Receipt') ?> *</b><br/>
 									<span style="font-size: 90%"><i><?php print _('Digital copy of the receipt for this payment.') ?></i></span>
 								</td>
 								<td class="right">

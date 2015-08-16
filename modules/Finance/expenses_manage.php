@@ -441,14 +441,14 @@ else {
 												print "</td>" ;
 												print "<td>" ;
 													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/expenses_manage_view.php&gibbonFinanceExpenseID=" . $row["gibbonFinanceExpenseID"] . "&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=$status&gibbonFinanceBudgetID=$gibbonFinanceBudgetID'><img title='" . _('View') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
+													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/expenses_manage_print.php&gibbonFinanceExpenseID=" . $row["gibbonFinanceExpenseID"] . "&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=$status&gibbonFinanceBudgetID=" . $row["gibbonFinanceBudgetID"] . "'><img title='Print' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
+													if ($row["status"]=="Requested" OR $row["status"]=="Approved" OR $row["status"]=="Ordered") {
+														print "<a style='margin-left: 4px' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/expenses_manage_edit.php&gibbonFinanceExpenseID=" . $row["gibbonFinanceExpenseID"] . "&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=$status&gibbonFinanceBudgetID=" . $row["gibbonFinanceBudgetID"] . "'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+													}
 													if ($row["status"]=="Requested") {
 														if (approvalRequired($guid, $_SESSION[$guid]["gibbonPersonID"], $row["gibbonFinanceExpenseID"], $gibbonFinanceBudgetCycleID, $connection2, FALSE)==TRUE) {
 															print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/expenses_manage_approve.php&gibbonFinanceExpenseID=" . $row["gibbonFinanceExpenseID"] . "&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=$status&gibbonFinanceBudgetID=" . $row["gibbonFinanceBudgetID"] . "'><img title='" . _('Approve/Reject') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/></a> " ;
 														}
-													}
-													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/expenses_manage_print.php&gibbonFinanceExpenseID=" . $row["gibbonFinanceExpenseID"] . "&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=$status&gibbonFinanceBudgetID=" . $row["gibbonFinanceBudgetID"] . "'><img title='Print' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
-													if ($row["status"]=="Requested" OR $row["status"]=="Approved" OR $row["status"]=="Ordered") {
-														print "<a style='margin-left: 4px' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/expenses_manage_edit.php&gibbonFinanceExpenseID=" . $row["gibbonFinanceExpenseID"] . "&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=$status&gibbonFinanceBudgetID=" . $row["gibbonFinanceBudgetID"] . "'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 													}
 												print "</td>" ;
 												print "<td>" ;

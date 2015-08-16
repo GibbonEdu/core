@@ -57,10 +57,11 @@ else {
 		$title=$_POST["title"] ;
 		$body=$_POST["body"] ;
 		$cost=$_POST["cost"] ;
+		$countAgainstBudget=$_POST["countAgainstBudget"] ;
 		$purchaseBy=$_POST["purchaseBy"] ;
 		$purchaseDetails=$_POST["purchaseDetails"] ;
 			
-		if ($title=="" OR $body=="" OR $cost=="" OR $purchaseBy=="") {
+		if ($title=="" OR $body=="" OR $cost=="" OR $purchaseBy=="" OR $countAgainstBudget=="") {
 			//Fail 3
 			$URL.="&addReturn=fail3" ;
 			header("Location: {$URL}");
@@ -91,8 +92,8 @@ else {
 			
 			//Write to database
 			try {
-				$data=array("gibbonFinanceBudgetCycleID"=>$gibbonFinanceBudgetCycleID, "gibbonFinanceBudgetID"=>$gibbonFinanceBudgetID, "title"=>$title, "body"=>$body, "status"=>$status, "statusApprovalBudgetCleared"=>$statusApprovalBudgetCleared, "cost"=>$cost, "purchaseBy"=>$purchaseBy, "purchaseDetails"=>$purchaseDetails, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"]); 
-				$sql="INSERT INTO gibbonFinanceExpense SET gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID, gibbonFinanceBudgetID=:gibbonFinanceBudgetID, title=:title, body=:body, status=:status, statusApprovalBudgetCleared=:statusApprovalBudgetCleared, cost=:cost, purchaseBy=:purchaseBy, purchaseDetails=:purchaseDetails, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestampCreator='" . date("Y-m-d H:i:s") . "'" ;
+				$data=array("gibbonFinanceBudgetCycleID"=>$gibbonFinanceBudgetCycleID, "gibbonFinanceBudgetID"=>$gibbonFinanceBudgetID, "title"=>$title, "body"=>$body, "status"=>$status, "statusApprovalBudgetCleared"=>$statusApprovalBudgetCleared, "cost"=>$cost, "countAgainstBudget"=>$countAgainstBudget, "purchaseBy"=>$purchaseBy, "purchaseDetails"=>$purchaseDetails, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"]); 
+				$sql="INSERT INTO gibbonFinanceExpense SET gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID, gibbonFinanceBudgetID=:gibbonFinanceBudgetID, title=:title, body=:body, status=:status, statusApprovalBudgetCleared=:statusApprovalBudgetCleared, cost=:cost, countAgainstBudget=:countAgainstBudget, purchaseBy=:purchaseBy, purchaseDetails=:purchaseDetails, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestampCreator='" . date("Y-m-d H:i:s") . "'" ;
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
 			}

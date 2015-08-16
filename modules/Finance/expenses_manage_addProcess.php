@@ -65,6 +65,7 @@ else {
 			$title=$_POST["title"] ;
 			$body=$_POST["body"] ;
 			$cost=$_POST["cost"] ;
+			$countAgainstBudget=$_POST["countAgainstBudget"] ;
 			$purchaseBy=$_POST["purchaseBy"] ;
 			$purchaseDetails=$_POST["purchaseDetails"] ;
 			if ($status=="Paid") {
@@ -82,7 +83,7 @@ else {
 				$paymentID=NULL ;
 			}
 			
-			if ($status=="" OR $title=="" OR $cost=="" OR $purchaseBy=="" OR ($status=="Paid" AND ($paymentDate=="" OR $paymentAmount=="" OR $gibbonPersonIDPayment=="" OR $paymentMethod==""))) {
+			if ($status=="" OR $title=="" OR $cost=="" OR $countAgainstBudget=="" OR $purchaseBy=="" OR ($status=="Paid" AND ($paymentDate=="" OR $paymentAmount=="" OR $gibbonPersonIDPayment=="" OR $paymentMethod==""))) {
 				//Fail 3
 				$URL.="&addReturn=fail3" ;
 				header("Location: {$URL}");
@@ -90,8 +91,8 @@ else {
 			else {
 				//Write to database
 				try {
-					$data=array("gibbonFinanceBudgetCycleID"=>$gibbonFinanceBudgetCycleID, "gibbonFinanceBudgetID"=>$gibbonFinanceBudgetID, "title"=>$title, "body"=>$body, "status"=>$status, "statusApprovalBudgetCleared"=>'Y', "cost"=>$cost, "purchaseBy"=>$purchaseBy, "purchaseDetails"=>$purchaseDetails, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"], "paymentDate"=>$paymentDate, "paymentAmount"=>$paymentAmount, "gibbonPersonIDPayment"=>$gibbonPersonIDPayment, "paymentMethod"=>$paymentMethod, "paymentID"=>$paymentID); 
-					$sql="INSERT INTO gibbonFinanceExpense SET gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID, gibbonFinanceBudgetID=:gibbonFinanceBudgetID, title=:title, body=:body, status=:status, statusApprovalBudgetCleared=:statusApprovalBudgetCleared, cost=:cost, purchaseBy=:purchaseBy, purchaseDetails=:purchaseDetails, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestampCreator='" . date("Y-m-d H:i:s") . "', paymentDate=:paymentDate, paymentAmount=:paymentAmount, gibbonPersonIDPayment=:gibbonPersonIDPayment, paymentMethod=:paymentMethod, paymentID=:paymentID" ;
+					$data=array("gibbonFinanceBudgetCycleID"=>$gibbonFinanceBudgetCycleID, "gibbonFinanceBudgetID"=>$gibbonFinanceBudgetID, "title"=>$title, "body"=>$body, "status"=>$status, "statusApprovalBudgetCleared"=>'Y', "cost"=>$cost, "countAgainstBudget"=>$countAgainstBudget, "purchaseBy"=>$purchaseBy, "purchaseDetails"=>$purchaseDetails, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"], "paymentDate"=>$paymentDate, "paymentAmount"=>$paymentAmount, "gibbonPersonIDPayment"=>$gibbonPersonIDPayment, "paymentMethod"=>$paymentMethod, "paymentID"=>$paymentID); 
+					$sql="INSERT INTO gibbonFinanceExpense SET gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID, gibbonFinanceBudgetID=:gibbonFinanceBudgetID, title=:title, body=:body, status=:status, statusApprovalBudgetCleared=:statusApprovalBudgetCleared, cost=:cost, countAgainstBudget=:countAgainstBudget, purchaseBy=:purchaseBy, purchaseDetails=:purchaseDetails, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestampCreator='" . date("Y-m-d H:i:s") . "', paymentDate=:paymentDate, paymentAmount=:paymentAmount, gibbonPersonIDPayment=:gibbonPersonIDPayment, paymentMethod=:paymentMethod, paymentID=:paymentID" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
 				}

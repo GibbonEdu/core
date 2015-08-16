@@ -232,6 +232,22 @@ else {
 									</script>
 								</td>
 							</tr>
+							<tr>
+								<td> 
+									<b><?php print _('Count Against Budget') ?> *</b><br/>
+									<span style="font-size: 90%"><i>
+										<?php print _("For tracking purposes, should the item be counted against the budget? If immediately offset by some revenue, perhaps not.") ; ?>
+									</i></span>
+								</td>
+								<td class="right">
+									<select name="countAgainstBudget" id="countAgainstBudget" style="width: 302px">
+										<?php
+										print "<option selected value='Y'>" . ynExpander('Y') . "</option>" ;
+										print "<option value='N'>" . ynExpander('N') . "</option>" ;
+										?>			
+									</select>
+								</td>
+							</tr>
 							
 							<tr>
 								<td style='width: 275px'> 

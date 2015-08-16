@@ -216,6 +216,10 @@ General: migrated from email notifications to system notifications
 Planner: improved reliability of lesson plan bumping
 	Edited file /modules/Planner/planner_bumpProcess.php
 	
+Finance: added option to prevent request being counted against a budget
+	Edited table gibbonFinanceExpense
+	Edited file /modules/Finance/expenses_manage*.php
+	Edited file /modules/Finance/expenseRequest_manage*.php
 
 v10.0.00
 --------

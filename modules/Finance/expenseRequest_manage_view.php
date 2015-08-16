@@ -202,6 +202,17 @@ else {
 								</tr>
 								<tr>
 									<td> 
+										<b><?php print _('Count Against Budget') ?> *</b><br/>
+									</td>
+									<td class="right">
+										<input readonly name="countAgainstBudget" id="countAgainstBudget" maxlength=60 value="<?php print ynExpander($row["countAgainstBudget"]) ; ?>" type="text" style="width: 300px">
+									</td>
+								</tr>
+								
+								
+								
+								<tr>
+									<td> 
 										<b><?php print _('Purchase By') ?> *</b><br/>
 									</td>
 									<td class="right">
