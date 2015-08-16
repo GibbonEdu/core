@@ -122,7 +122,7 @@ else {
 				else {
 					//Lock table
 					try {
-						$sqlLock="LOCK TABLES gibbonPersonMedicalUpdate WRITE, gibbonPersonMedicalConditionUpdate WRITE" ;
+						$sqlLock="LOCK TABLES gibbonPersonMedicalUpdate WRITE, gibbonPersonMedicalConditionUpdate WRITE, gibbonNotification WRITE, gibbonModule WRITE, gibbonPerson WRITE" ;
 						$resultLock=$connection2->query($sqlLock);   
 					}
 					catch(PDOException $e) { 
@@ -164,7 +164,10 @@ else {
 			
 				//Update existing medical conditions
 				$partialFail=FALSE ;
-				$count=$_POST["count"] ;
+				$count=0 ;
+				if (isset($_POST["count"])) {
+					$count=$_POST["count"] ;
+				}
 				
 				if ($existing!="N") {
 					for ($i=0; $i<$count; $i++) {
@@ -272,13 +275,10 @@ else {
 					}
 				}
 				
-				//Attempt to send email to DBA
-				if ($_SESSION[$guid]["organisationDBAEmail"]!="" AND $_SESSION[$guid]["organisationDBAName"]!="") {
-					$to=$_SESSION[$guid]["organisationDBAEmail"];
-					$subject=$_SESSION[$guid]["organisationNameShort"] . " Gibbon Medical Data Update Request";
-					$body="You have a new medical data update request from Gibbon. Please log in and process it as soon as possible.\n\n" . $_SESSION[$guid]["systemName"] . " Administrator";
-					$headers="From: " . $_SESSION[$guid]["organisationAdministratorEmail"] ;
-					mail($to, $subject, $body, $headers) ;
+				//Attempt to notify to DBA
+				if ($_SESSION[$guid]["organisationDBA"]!="") {
+					$notificationText=sprintf(_('A medical data update request has been submitted.')) ;
+					setNotification($connection2, $guid, $_SESSION[$guid]["organisationDBA"], $notificationText, "Data Updater", "/index.php?q=/modules/User Admin/data_medical.php") ;
 				}
 				
 				//Write to database

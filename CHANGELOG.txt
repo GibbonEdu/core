@@ -209,7 +209,9 @@ System admin: changed administrator, DBA and admissions contacts to system users
 	Edited file /installer/install.php
 
 General: migrated from email notifications to system notifications
-	Edited file /login.php
+	Edited files /login.php, functions.php, publicRegistrationProcess.php
+	Edited file /modules/Application Form/applicationFormProcess.php
+	Edited files /modules/Data Updater/data_familyProcess.php, data_financeProcess.php, data_medicalProcess.php, data_personalProcess.php
 	
 v10.0.00
 --------

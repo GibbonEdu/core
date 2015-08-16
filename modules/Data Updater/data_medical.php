@@ -555,7 +555,7 @@ else {
 										<b><?php print _('Triggers') ?></b><br/>
 									</td>
 									<td class="right">
-										<input name="triggers" id="triggers" maxlength=255 value="<?php print htmlPrep($rowCond["triggers"]) ?>" type="text" style="width: 300px">
+										<input name="triggers" id="triggers" maxlength=255 value="" type="text" style="width: 300px">
 									</td>
 								</tr>
 								<tr>
@@ -563,7 +563,7 @@ else {
 										<b><?php print _('Reaction') ?></b><br/>
 									</td>
 									<td class="right">
-										<input name="reaction" id="reaction" maxlength=255 value="<?php print htmlPrep($rowCond["reaction"]) ?>" type="text" style="width: 300px">
+										<input name="reaction" id="reaction" maxlength=255 value="" type="text" style="width: 300px">
 									</td>
 								</tr>
 								<tr>
@@ -571,7 +571,7 @@ else {
 										<b><?php print _('Response') ?></b><br/>
 									</td>
 									<td class="right">
-										<input name="response" id="response" maxlength=255 value="<?php print htmlPrep($rowCond["response"]) ?>" type="text" style="width: 300px">
+										<input name="response" id="response" maxlength=255 value="" type="text" style="width: 300px">
 									</td>
 								</tr>
 								<tr>
@@ -579,7 +579,7 @@ else {
 										<b><?php print _('Medication') ?></b><br/>
 									</td>
 									<td class="right">
-										<input name="medication" id="medication" maxlength=255 value="<?php print htmlPrep($rowCond["medication"]) ?>" type="text" style="width: 300px">
+										<input name="medication" id="medication" maxlength=255 value="" type="text" style="width: 300px">
 									</td>
 								</tr>
 								<tr>
@@ -588,7 +588,7 @@ else {
 										<span style="font-size: 90%"><i><?php print _('Format:') . " " . $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 									</td>
 									<td class="right">
-										<input name="lastEpisode" id="lastEpisode" maxlength=10 value="<?php print dateConvertBack($guid, $rowCond["lastEpisode"]) ?>" type="text" style="width: 300px">
+										<input name="lastEpisode" id="lastEpisode" maxlength=10 value="" type="text" style="width: 300px">
 										<script type="text/javascript">
 											var lastEpisode=new LiveValidation('lastEpisode');
 											lastEpisode.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
@@ -605,7 +605,7 @@ else {
 										<b><?php print _('Last Episode Treatment') ?></b><br/>
 									</td>
 									<td class="right">
-										<input name="lastEpisodeTreatment" id="lastEpisodeTreatment" maxlength=255 value="<?php print htmlPrep($rowCond["lastEpisodeTreatment"]) ?>" type="text" style="width: 300px">
+										<input name="lastEpisodeTreatment" id="lastEpisodeTreatment" maxlength=255 value="" type="text" style="width: 300px">
 									</td>
 								</tr>
 								<tr>
@@ -613,7 +613,7 @@ else {
 										<b><?php print _('Comment') ?></b><br/>
 									</td>
 									<td class="right">
-										<textarea name="comment" id="comment" rows=8 style="width: 300px"><?php print $rowCond["comment"] ?></textarea>
+										<textarea name="comment" id="comment" rows=8 style="width: 300px"></textarea>
 									</td>
 								</tr>
 								<tr>

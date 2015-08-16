@@ -3830,7 +3830,7 @@ function setLog($connection2, $gibbonSchoolYearID, $gibbonModuleID, $gibbonPerso
 	catch(PDOException $e) {
 		return null;
 	}
-	$gibbonLogID = $connection2->lastInsertId();
+	$gibbonLogID=$connection2->lastInsertId();
 	return $gibbonLogID;
 }
 

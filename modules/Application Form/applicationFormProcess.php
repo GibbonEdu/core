@@ -626,27 +626,10 @@ else {
 			}
 			
 			
-			//Attempt to send email to DBA
-			if ($_SESSION[$guid]["organisationAdmissionsName"]!="" AND $_SESSION[$guid]["organisationAdmissionsEmail"]!="") {
-				//Work out year of entry
-				$extra="" ;
-				try {
-					$dataEntry=array("gibbonSchoolYearIDEntry"=>$gibbonSchoolYearIDEntry); 
-					$sqlEntry="SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearIDEntry" ;
-					$resultEntry=$connection2->prepare($sqlEntry);
-					$resultEntry->execute($dataEntry);
-				}
-				catch(PDOException $e) { }
-				if ($resultEntry->rowCount()==1) {
-					$rowEntry=$resultEntry->fetch() ;
-					$extra=", for the academic year " . $rowEntry["name"] ;
-				}
-			
-				$to=$_SESSION[$guid]["organisationAdmissionsEmail"];
-				$subject=$_SESSION[$guid]["organisationNameShort"] . " Gibbon Application Form";
-				$body="You have a new application form from Gibbon" . $extra . ". Please log in and process it as soon as possible.\n\n" . $_SESSION[$guid]["systemName"] . " Administrator";
-				$headers="From: " . $_SESSION[$guid]["organisationAdministratorEmail"] ;
-				mail($to, $subject, $body, $headers) ;
+			//Attempt to notify admissions administrator
+			if ($_SESSION[$guid]["organisationAdmissions"]) {
+				$notificationText=sprintf(_('An application form has submitted for %1$s.'), formatName("", $preferredName, $surname, "Student")) ;
+				setNotification($connection2, $guid, $_SESSION[$guid]["organisationAdmissions"], $notificationText, "Application Form", "/index.php?q=/modules/User Admin/applicationForm_manage_edit.php&gibbonApplicationFormID=$AI&gibbonSchoolYearID=$gibbonSchoolYearIDEntry&search=") ;
 			}
 		
 			//Attempt payment if everything is set up for it

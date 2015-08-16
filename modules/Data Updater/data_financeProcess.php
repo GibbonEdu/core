@@ -135,13 +135,10 @@ else {
 					$gibbonFinanceFeeCategoryIDList=NULL ;
 				}
 				
-				//Attempt to send email to DBA
-				if ($_SESSION[$guid]["organisationDBAEmail"]!="" AND $_SESSION[$guid]["organisationDBAName"]!="") {
-					$to=$_SESSION[$guid]["organisationDBAEmail"];
-					$subject=$_SESSION[$guid]["organisationNameShort"] . " Gibbon Finance Data Update Request";
-					$body="You have a new finance data update request from Gibbon. Please log in and process it as soon as possible.\n\n" . $_SESSION[$guid]["systemName"] . " Administrator";
-					$headers="From: " . $_SESSION[$guid]["organisationAdministratorEmail"] ;
-					mail($to, $subject, $body, $headers) ;
+				//Attempt to notify to DBA
+				if ($_SESSION[$guid]["organisationDBA"]!="") {
+					$notificationText=sprintf(_('A finance data update request has been submitted.')) ;
+					setNotification($connection2, $guid, $_SESSION[$guid]["organisationDBA"], $notificationText, "Data Updater", "/index.php?q=/modules/User Admin/data_finance.php") ;
 				}
 				
 				//Write to database
