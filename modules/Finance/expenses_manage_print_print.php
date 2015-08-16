@@ -311,7 +311,7 @@ else {
 													$budgetAllocationFail=TRUE ;
 												}
 												if ($resultCheck->rowCount()!=1) {
-													print "<i>" . _('NA') . "</i>" ;
+													print "<input readonly name=\"name\" id=\"name\" maxlength=60 value=\"" . _('NA') . "\" type=\"text\" style=\"width: 300px\">" ;
 													$budgetAllocationFail=TRUE ;
 												}
 												else {

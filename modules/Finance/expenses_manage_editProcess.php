@@ -39,16 +39,18 @@ catch(PDOException $e) {
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
 $gibbonFinanceBudgetCycleID=$_POST["gibbonFinanceBudgetCycleID"] ;
-$gibbonFinanceBudgetID=$_POST["gibbonFinanceBudgetID"] ;
+$gibbonFinanceBudgetID2=$_POST["gibbonFinanceBudgetID2"] ;
 $gibbonFinanceExpenseID=$_POST["gibbonFinanceExpenseID"] ;
-$status=$_POST["status"] ;
+$status2=$_POST["status2"] ;
 $countAgainstBudget=$_POST["countAgainstBudget"] ;
+$status=$_POST["status"] ;
+
 		
-if ($gibbonFinanceBudgetCycleID=="" OR $gibbonFinanceBudgetID=="") {
+if ($gibbonFinanceBudgetCycleID=="") {
 	print "Fatal error loading this page!" ;
 }
 else {
-	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/expenses_manage_edit.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&gibbonFinanceBudgetID=$gibbonFinanceBudgetID&status=$status" ;
+	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/expenses_manage_edit.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2&status2=$status2" ;
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Finance/expenses_manage_add.php", "Manage Expenses_all")==FALSE) {
 		//Fail 0

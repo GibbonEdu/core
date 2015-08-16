@@ -41,12 +41,14 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 $gibbonFinanceBudgetCycleID=$_POST["gibbonFinanceBudgetCycleID"] ;
 $gibbonFinanceBudgetID=$_POST["gibbonFinanceBudgetID"] ;
 $status=$_POST["status"] ;
+$gibbonFinanceBudgetID2=$_POST["gibbonFinanceBudgetID2"] ;
+$status2=$_POST["status2"] ;
 		
-if ($gibbonFinanceBudgetCycleID=="" OR $gibbonFinanceBudgetID=="" OR $status=="") {
+if ($gibbonFinanceBudgetCycleID=="" OR $gibbonFinanceBudgetID=="" OR $status=="" OR $status!="Requested") {
 	print "Fatal error loading this page!" ;
 }
 else {
-	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/expenseRequest_manage_add.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&gibbonFinanceBudgetID=$gibbonFinanceBudgetID&status=$status" ;
+	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/expenseRequest_manage_add.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2&status2=$status2" ;
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Finance/expenseRequest_manage_add.php")==FALSE) {
 		//Fail 0

@@ -58,8 +58,8 @@ else {
 	//Check if params are specified
 	$gibbonFinanceExpenseID=$_GET["gibbonFinanceExpenseID"] ;
 	$gibbonFinanceBudgetCycleID=$_GET["gibbonFinanceBudgetCycleID"] ;
-	$status=$_GET["status"] ;
-	$gibbonFinanceBudgetID=$_GET["gibbonFinanceBudgetID"] ;
+	$status2=$_GET["status2"] ;
+	$gibbonFinanceBudgetID2=$_GET["gibbonFinanceBudgetID2"] ;
 	if ($gibbonFinanceExpenseID=="" OR $gibbonFinanceBudgetCycleID=="") {
 		print "<div class='error'>" ;
 			print _("You have not specified one or more required parameters.") ;
@@ -116,9 +116,9 @@ else {
 					//Let's go!
 					$row=$result->fetch() ;
 			
-					if ($status!="" OR $gibbonFinanceBudgetID!="") {
+					if ($status2!="" OR $gibbonFinanceBudgetID2!="") {
 						print "<div class='linkTop'>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/expenseRequest_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=$status&gibbonFinanceBudgetID=$gibbonFinanceBudgetID'>" . _('Back to Search Results') . "</a>" ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/expenseRequest_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>" . _('Back to Search Results') . "</a>" ;
 						print "</div>" ;
 					}
 					?>
@@ -374,6 +374,8 @@ else {
 								<td class="right">
 									<input name="gibbonFinanceExpenseID" id="gibbonFinanceExpenseID" value="<?php print $gibbonFinanceExpenseID ?>" type="hidden">
 									<input name="gibbonFinanceBudgetID" id="gibbonFinanceBudgetID" value="<?php print $row["gibbonFinanceBudgetID"] ?>" type="hidden">
+									<input name="status2" id="status2" value="<?php print $status2 ?>" type="hidden">
+									<input name="gibbonFinanceBudgetID2" id="gibbonFinanceBudgetID2" value="<?php print $gibbonFinanceBudgetID2 ?>" type="hidden">
 									<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 									<input type="submit" value="<?php print _("Submit") ; ?>">
 								</td>

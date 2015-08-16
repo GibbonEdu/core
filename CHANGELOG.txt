@@ -220,6 +220,10 @@ Finance: added option to prevent request being counted against a budget
 	Edited table gibbonFinanceExpense
 	Edited file /modules/Finance/expenses_manage*.php
 	Edited file /modules/Finance/expenseRequest_manage*.php
+	
+Finance: stopped filters from reseting themselves all the time
+	Edited file /modules/Finance/expenses_manage*.php
+	Edited file /modules/Finance/expenseRequest_manage*.php
 
 v10.0.00
 --------

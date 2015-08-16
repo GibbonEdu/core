@@ -42,13 +42,15 @@ $gibbonFinanceBudgetCycleID=$_POST["gibbonFinanceBudgetCycleID"] ;
 $gibbonFinanceBudgetID=$_POST["gibbonFinanceBudgetID"] ;
 $gibbonFinanceExpenseID=$_POST["gibbonFinanceExpenseID"] ;
 $status=$_POST["status"] ;
+$gibbonFinanceBudgetID2=$_POST["gibbonFinanceBudgetID2"] ;
+$status2=$_POST["status2"] ;
 
 if ($gibbonFinanceBudgetCycleID=="" OR $gibbonFinanceBudgetID=="") {
 	print "Fatal error loading this page!" ;
 }
 else {
-	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/expenseRequest_manage_reimburse.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&gibbonFinanceBudgetID=$gibbonFinanceBudgetID&status=$status" ;
-	$URLSuccess=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/expenseRequest_manage.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&gibbonFinanceBudgetID=$gibbonFinanceBudgetID&status=" ;
+	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/expenseRequest_manage_reimburse.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2&status2=$status2" ;
+	$URLSuccess=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/expenseRequest_manage.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2&status2=$status2" ;
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Finance/expenseRequest_manage_reimburse.php")==FALSE) {
 		//Fail 0
@@ -164,7 +166,7 @@ else {
 						$reimbursementOfficer=getSettingByScope($connection2, "Finance", "reimbursementOfficer") ;
 						if ($reimbursementOfficer!=FALSE AND $reimbursementOfficer!="") {
 							$notificationText=sprintf(_('Someone has requested reimbursement for "%1$s" in budget "%2$s".'), $row["title"], $row["budget"]) ;
-							setNotification($connection2, $guid, $reimbursementOfficer, $notificationText, "Finance", "/index.php?q=/modules/Finance/expenses_manage_edit.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=&gibbonFinanceBudgetID=" . $row["gibbonFinanceBudgetID"]) ;
+							setNotification($connection2, $guid, $reimbursementOfficer, $notificationText, "Finance", "/index.php?q=/modules/Finance/expenses_manage_edit.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=&gibbonFinanceBudgetID2=" . $row["gibbonFinanceBudgetID"]) ;
 						}
 						
 						//Write paid change to log
