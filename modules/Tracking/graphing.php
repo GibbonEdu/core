@@ -159,6 +159,17 @@ else {
 							print "<i>" . _('No Learning Areas available.') . "</i>" ;
 						}
 						else {
+							print "<fieldset style='border: none'>" ;
+							?>
+							<script type="text/javascript">
+								$(function () {
+									$('.checkall').click(function () {
+										$(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
+									});
+								});
+							</script>
+							<?php
+							print _("All/None") . " <input type='checkbox' class='checkall'><br/>" ;
 							while ($rowLA=$resultLA->fetch()) {
 								$checked="" ;
 								if ($gibbonDepartmentIDs!=NULL) {
@@ -171,6 +182,7 @@ else {
 								print _($rowLA["name"]) . " <input $checked type='checkbox' name='gibbonDepartmentIDs[]' value='" . $rowLA["gibbonDepartmentID"] . "'><br/>" ;
 							}
 						}
+						print "</fieldset>" ;
 						?>
 						<input type="hidden" name="count" value="<?php print (count($learningAreas))/2 ?>">
 					</td>
