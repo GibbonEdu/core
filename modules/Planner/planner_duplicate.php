@@ -119,9 +119,25 @@ else {
 			}
 			
 			if ($result->rowCount()!=1) {
-				print "<div class='error'>" ;
-					print _("The selected record does not exist, or you do not have access to it.") ;
-				print "</div>" ;
+				$otherYearDuplicateSuccess=FALSE ;
+				//Deal with duplicate to other year
+				if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
+				$updateReturnMessage="" ;
+				$class="success" ;
+				if (!($updateReturn=="")) {
+					if ($updateReturn=="success0") {
+						$updateReturnMessage=_("Your request was completed successfully, but the target class is in another year, so you cannot see the results here.") ;	
+						$otherYearDuplicateSuccess=TRUE ;
+					}
+					print "<div class='$class'>" ;
+						print $updateReturnMessage;
+					print "</div>" ;
+				}
+				if ($otherYearDuplicateSuccess!=TRUE) {
+					print "<div class='error'>" ;
+						print _("The selected record does not exist, or you do not have access to it.") ;
+					print "</div>" ;
+				}
 			}
 			else {
 				//Let's go!
@@ -182,6 +198,36 @@ else {
 						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 							<tr>
 								<td style='width: 275px'> 
+									<b><?php print _('Target Year') ?> *</b><br/>
+								</td>
+								<td class="right">
+									<select name="gibbonSchoolYearID" id="gibbonSchoolYearID" style="width: 302px">
+										<?php
+										print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+										try {
+											$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
+											$sqlSelect="SELECT * FROM gibbonSchoolYear WHERE sequenceNumber>=(SELECT sequenceNumber FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID) ORDER BY sequenceNumber" ;
+											$resultSelect=$connection2->prepare($sqlSelect);
+											$resultSelect->execute($dataSelect);
+										}
+										catch(PDOException $e) { print $e->getMessage() ;}
+										while ($rowSelect=$resultSelect->fetch()) {
+											$selected="" ;
+											if ($rowSelect["gibbonSchoolYearID"]==$_SESSION[$guid]["gibbonSchoolYearID"]) {
+												$selected="selected" ;
+											}
+											print "<option $selected value='" . $rowSelect["gibbonSchoolYearID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
+										}		
+										?>				
+									</select>
+									<script type="text/javascript">
+										var gibbonCourseClassID=new LiveValidation('gibbonCourseClassID');
+										gibbonCourseClassID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+									 </script>
+								</td>
+							</tr>
+							<tr>
+								<td style='width: 275px'> 
 									<b><?php print _('Target Class') ?> *</b><br/>
 								</td>
 								<td class="right">
@@ -191,29 +237,32 @@ else {
 										try {
 											if ($highestAction=="Lesson Planner_viewEditAllClasses" ) {
 												$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-												$sqlSelect="SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY course, class" ;
+												$sqlSelect="SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonSchoolYear.gibbonSchoolYearID FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonSchoolYear.sequenceNumber>=(SELECT sequenceNumber FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID) ORDER BY gibbonSchoolYear.gibbonSchoolYearID, course, class" ;
 											}
 											else {	
 												$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-												$sqlSelect="SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClassPerson JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID ORDER BY course, class" ;
+												$sqlSelect="SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonSchoolYear.gibbonSchoolYearID FROM gibbonCourseClassPerson JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonSchoolYear.sequenceNumber>=(SELECT sequenceNumber FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID) AND gibbonPersonID=:gibbonPersonID ORDER BY course, class" ;
 											}
 											$resultSelect=$connection2->prepare($sqlSelect);
 											$resultSelect->execute($dataSelect);
 										}
-										catch(PDOException $e) { }
+										catch(PDOException $e) { print $e->getMessage() ; }
 										while ($rowSelect=$resultSelect->fetch()) {
 											$selected="" ;
 											if ($rowSelect["gibbonCourseClassID"]==$row["gibbonCourseClassID"]) {
 												$selected="selected" ;
 											}
-											print "<option $selected value='" . $rowSelect["gibbonCourseClassID"] . "'>" . htmlPrep($rowSelect["course"]) . "." . htmlPrep($rowSelect["class"]) . "</option>" ;
+											print "<option $selected class='" . $rowSelect["gibbonSchoolYearID"] . "' value='" . $rowSelect["gibbonCourseClassID"] . "'>" . htmlPrep($rowSelect["course"]) . "." . htmlPrep($rowSelect["class"]) . "</option>" ;
 										}		
 										?>				
 									</select>
 									<script type="text/javascript">
 										var gibbonCourseClassID=new LiveValidation('gibbonCourseClassID');
 										gibbonCourseClassID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-									 </script>
+									</script> 
+									<script type="text/javascript">
+										$("#gibbonCourseClassID").chainedTo("#gibbonSchoolYearID");
+									</script>
 								</td>
 							</tr>
 							<?php
@@ -252,6 +301,7 @@ else {
 								</td>
 								<td class="right">
 									<input name="viewBy" id="viewBy" value="<?php print $viewBy ?>" type="hidden">
+									<input name="gibbonPlannerEntryID_org" id="gibbonPlannerEntryID_org" value="<?php print $gibbonPlannerEntryID ?>" type="hidden">
 									<input name="subView" id="subView" value="<?php print $subView ?>" type="hidden">
 									<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 									<input type="submit" value="<?php print _('Next') ?>">
@@ -262,12 +312,14 @@ else {
 					<?php
 				}
 				else if ($step==2) {
+					$gibbonPlannerEntryID_org=$_POST["gibbonPlannerEntryID_org"] ;
 					$gibbonCourseClassID=$_POST["gibbonCourseClassID"] ;
+					$gibbonSchoolYearID=$_POST["gibbonSchoolYearID"] ;
 					$duplicate=NULL ;
 					if (isset($_POST["duplicate"])) {
 						$duplicate=$_POST["duplicate"] ;
 					}
-					if ($gibbonCourseClassID=="") {
+					if ($gibbonCourseClassID=="" OR $gibbonSchoolYearID=="") {
 						print "<div class='error'>" ;
 							print _("You have not specified one or more required parameters.") ;
 						print "</div>" ;
@@ -285,30 +337,29 @@ else {
 										<?php
 										try {
 											if ($highestAction=="Lesson Planner_viewEditAllClasses" ) {
-												$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-												$sqlSelect="SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY course, class" ;
+												$dataSelect=array("gibbonCourseClassID"=>$gibbonCourseClassID, "gibbonSchoolYearID"=>$gibbonSchoolYearID); 
+												$sqlSelect="SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class" ;
 											}
 											else {	
-												$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-												$sqlSelect="SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClassPerson JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID ORDER BY course, class" ;
+												$dataSelect=array("gibbonCourseClassID"=>$gibbonCourseClassID, "gibbonSchoolYearID"=>$gibbonSchoolYearID, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
+												$sqlSelect="SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClassPerson JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class" ;
 											}
 											$resultSelect=$connection2->prepare($sqlSelect);
 											$resultSelect->execute($dataSelect);
 										}
-										catch(PDOException $e) { }
-										while ($rowSelect=$resultSelect->fetch()) {
-											if ($rowSelect["gibbonCourseClassID"]==$gibbonCourseClassID) {
-												?>
-												<input readonly name="class" id="class" maxlength=50 value="<?php print htmlPrep($rowSelect["course"]) . "." . htmlPrep($rowSelect["class"]) ?>" type="text" style="width: 300px">
-												<?php
-											}
+										catch(PDOException $e) { print $e->getMEssage() ; }
+										if ($resultSelect->rowCount()==1) {
+											$rowSelect=$resultSelect->fetch()
+											?>
+											<input readonly name="class" id="class" maxlength=50 value="<?php print htmlPrep($rowSelect["course"]) . "." . htmlPrep($rowSelect["class"]) ?>" type="text" style="width: 300px">
+											<?php
 										}		
 										?>		
 									</td>
 								</tr>
 								
 								<?php
-								if ($row["gibbonUnitID"]!="") {
+								if ($row["gibbonUnitID"]!="" AND $gibbonSchoolYearID==$_SESSION[$guid]["gibbonSchoolYearID"]) {
 									//KEEP IN UNIT
 									try {
 										$dataMarkbook=array("gibbonCourseClassID"=>$gibbonCourseClassID, "gibbonUnitID"=>$row["gibbonUnitID"]); 
@@ -473,7 +524,9 @@ else {
 									</td>
 									<td class="right">
 										<input name="duplicate" id="duplicate" value="<?php print $duplicate ?>" type="hidden">
+										<input name="gibbonPlannerEntryID_org" id="gibbonPlannerEntryID_org" value="<?php print $gibbonPlannerEntryID_org ?>" type="hidden">
 										<input name="gibbonCourseClassID" id="gibbonCourseClassID" value="<?php print $gibbonCourseClassID ?>" type="hidden">
+										<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php print $gibbonSchoolYearID ?>" type="hidden">
 										<input name="viewBy" id="viewBy" value="<?php print $viewBy ?>" type="hidden">
 										<input name="subView" id="subView" value="<?php print $subView ?>" type="hidden">
 										<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

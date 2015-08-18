@@ -225,6 +225,10 @@ Finance: stopped filters from reseting themselves all the time
 	Edited file /modules/Finance/expenses_manage*.php
 	Edited file /modules/Finance/expenseRequest_manage*.php
 
+Planner: added ability to duplicate lesson plan to another year
+	Edited files /modules/Planner/planner_duplicate*.php
+
+
 v10.0.00
 --------
 i18n: added Urdu as inactive development language
