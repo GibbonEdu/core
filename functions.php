@@ -274,7 +274,7 @@ function getMinorLinks($connection2, $guid, $cacheLoad) {
 		//House logo
 		if (isset($_SESSION[$guid]["gibbonHouseIDLogo"]) AND isset($_SESSION[$guid]["gibbonHouseIDName"])) {
 			if ($_SESSION[$guid]["gibbonHouseIDLogo"]!="") {
-				$return.=" . <img class='minorLinkIcon' title='" . $_SESSION[$guid]["gibbonHouseIDName"] . "' style='vertical-align: -75%; margin-left: 4px' src='" . $_SESSION[$guid]["absoluteURL"] . "/" . $_SESSION[$guid]["gibbonHouseIDLogo"] . "'/>" ; 
+				$return.=" . <img class='minorLinkIconLarge' title='" . $_SESSION[$guid]["gibbonHouseIDName"] . "' style='vertical-align: -75%; margin-left: 4px' src='" . $_SESSION[$guid]["absoluteURL"] . "/" . $_SESSION[$guid]["gibbonHouseIDLogo"] . "'/>" ; 
 			}
 		}
 	}
