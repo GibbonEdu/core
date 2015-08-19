@@ -240,6 +240,9 @@ Departments: improved Class page
 	New files /themes/Default/img/*.png
 	Edited files /themes/Default/img/*.png
 
+General: added classes to Fast Finder
+	Edited files /functions.php, indexFindRedirect.php
+
 
 v10.0.00
 --------

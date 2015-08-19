@@ -1277,24 +1277,35 @@ function getFastFinder($connection2, $guid) {
 	$output.="<div id='fastFinder'>" ;
 		$studentIsAccessible=isActionAccessible($guid, $connection2, "/modules/students/student_view.php") ;
 		$staffIsAccessible=isActionAccessible($guid, $connection2, "/modules/Staff/staff_view.php") ;
+		$classIsAccessible=FALSE ;
+		$highestActionClass=getHighestGroupedAction($guid, "/modules/Planner/planner.php", $connection2) ;
+		if (isActionAccessible($guid, $connection2, "/modules/Planner/planner.php") AND $highestActionClass!="Lesson Planner_viewMyChildrensClasses") {
+			$classIsAccessible=TRUE ;
+		}
 		//Get list
 		try {
-			if ($studentIsAccessible==TRUE AND $staffIsAccessible==TRUE) {
-				$dataList=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonRoleID"=>$_SESSION[$guid]["gibbonRoleIDCurrent"]); 
-				$sqlList="(SELECT gibbonPerson.gibbonPersonID AS id, concat(surname, ', ', preferredName, ' (', gibbonRollGroup.name, ')') AS name, 'Student' AS type FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND status='FULL' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID) UNION (SELECT gibbonPerson.gibbonPersonID AS id, concat(surname, ', ', preferredName) AS name, 'Staff' AS type FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full') UNION (SELECT DISTINCT concat(gibbonModule.name, '/', gibbonAction.entryURL) AS id, SUBSTRING_INDEX(gibbonAction.name, '_', 1) AS name, 'Action' AS type FROM `gibbonModule`, gibbonAction, gibbonPermission WHERE (active='Y') AND (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID)) ORDER BY type, name" ;
+			$dataList=array("gibbonRoleID"=>$_SESSION[$guid]["gibbonRoleIDCurrent"]); 
+			$sqlList="(SELECT DISTINCT concat(gibbonModule.name, '/', gibbonAction.entryURL) AS id, SUBSTRING_INDEX(gibbonAction.name, '_', 1) AS name, 'Action' AS type FROM `gibbonModule`, gibbonAction, gibbonPermission WHERE (active='Y') AND (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID))" ;
+			if ($staffIsAccessible==TRUE) {
+				$sqlList.=" UNION (SELECT gibbonPerson.gibbonPersonID AS id, concat(surname, ', ', preferredName) AS name, 'Staff' AS type FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full')" ;
 			}
-			else if ($studentIsAccessible==TRUE) {
-				$dataList=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonRoleID"=>$_SESSION[$guid]["gibbonRoleIDCurrent"]); 
-				$sqlList="(SELECT gibbonPerson.gibbonPersonID AS id, concat(surname, ', ', preferredName, ' (', gibbonRollGroup.name, ')') AS name, 'Student' AS type FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND status='FULL' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID) UNION (SELECT DISTINCT concat(gibbonModule.name, '/', gibbonAction.entryURL) AS id, SUBSTRING_INDEX(gibbonAction.name, '_', 1) AS name, 'Action' AS type FROM `gibbonModule`, gibbonAction, gibbonPermission WHERE (active='Y') AND (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID)) ORDER BY type, name" ;
+			if ($studentIsAccessible==TRUE) {
+				$dataList["gibbonSchoolYearID"]=$_SESSION[$guid]["gibbonSchoolYearID"] ;
+				$sqlList.=" UNION (SELECT gibbonPerson.gibbonPersonID AS id, concat(surname, ', ', preferredName, ' (', gibbonRollGroup.name, ')') AS name, 'Student' AS type FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND status='FULL' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID)" ;
 			}
-			else if ($staffIsAccessible==TRUE) {
-				$dataList=array("gibbonRoleID"=>$_SESSION[$guid]["gibbonRoleIDCurrent"]); 
-				$sqlList="(SELECT gibbonPerson.gibbonPersonID AS id, concat(surname, ', ', preferredName) AS name, 'Staff' AS type FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full') UNION (SELECT DISTINCT concat(gibbonModule.name, '/', gibbonAction.entryURL) AS id, SUBSTRING_INDEX(gibbonAction.name, '_', 1) AS name, 'Action' AS type FROM `gibbonModule`, gibbonAction, gibbonPermission WHERE (active='Y') AND (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID)) ORDER BY type, name" ;
+			if ($classIsAccessible) {
+				if ($highestActionClass=="Lesson Planner_viewEditAllClasses" OR $highestActionClass=="Lesson Planner_viewAllEditMyClasses") {
+					$dataList["gibbonSchoolYearID2"]=$_SESSION[$guid]["gibbonSchoolYearID"]; 
+					$sqlList.=" UNION (SELECT gibbonCourseClass.gibbonCourseClassID AS id, concat(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS name, 'Class' AS type FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID2)" ;				
+				}
+				else {
+					$dataList["gibbonSchoolYearID3"]=$_SESSION[$guid]["gibbonSchoolYearID"] ;
+					$dataList["gibbonPersonID"]=$_SESSION[$guid]["gibbonPersonID"] ; 
+					$sqlList.=" UNION (SELECT gibbonCourseClass.gibbonCourseClassID AS id, concat(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS name, 'Class' AS type FROM gibbonCourseClassPerson JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID3 AND gibbonPersonID=:gibbonPersonID)" ;
+				}
 			}
-			else {
-				$dataList=array("gibbonRoleID"=>$_SESSION[$guid]["gibbonRoleIDCurrent"]); 
-				$sqlList="SELECT DISTINCT concat(gibbonModule.name, '/', gibbonAction.entryURL) AS id, SUBSTRING_INDEX(gibbonAction.name, '_', 1) AS name, 'Action' AS type FROM `gibbonModule`, gibbonAction, gibbonPermission WHERE (active='Y') AND (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) ORDER BY type, name" ;
-			}
+			$sqlList.=" ORDER BY type, name" ;
+			
 			$resultList=$connection2->prepare($sqlList);
 			$resultList->execute($dataList); 
 		}
@@ -1318,18 +1329,17 @@ function getFastFinder($connection2, $guid) {
 					$output.="<tr>" ;
 						$output.="<td style='vertical-align: top; padding: 0px' colspan=2>" ;
 							$output.="<h2 style='padding-bottom: 0px'>" ;
-							if ($studentIsAccessible==TRUE AND $staffIsAccessible==TRUE) {
-								$output.=_("Fast Finder: Actions, Staff & Students") . "<br/>" ;
+							$output.=_("Fast Finder") . ": Actions" ;
+							if ($classIsAccessible==TRUE) {
+								$output.=", " . _("Classes") ;
 							}
-							else if ($studentIsAccessible==TRUE) {
-								$output.=_("Fast Finder: Actions & Students") . "<br/>" ;
+							if ($studentIsAccessible==TRUE) {
+								$output.=", " . _("Students") ;
 							}
-							else if ($staffIsAccessible==TRUE) {
-								$output.=_("Fast Finder: Actions & Staff") . "<br/>" ;
+							if ($staffIsAccessible==TRUE) {
+								$output.=", " . _("Staff") ;
 							}
-							else {
-								$output.=_("Fast Finder: Actions") . "<br/>" ;
-							}
+							$output.="<br/>" ;
 							$output.="</h2>" ;
 						$output.="</td>" ;
 					$output.="</tr>" ;

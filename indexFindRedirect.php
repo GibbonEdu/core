@@ -18,6 +18,9 @@ else {
 	else if ($type=="Sta") {
 		$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID=" . $id ;
 	}
+	else if ($type=="Cla") {
+		$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID=" . $id ;
+	}
 }
 
 header("Location: {$URL}") ;
