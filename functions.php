@@ -2536,7 +2536,7 @@ function sidebar($connection2, $guid) {
 					//COLOR ROW BY STATUS!
 					print "<tr class=$rowNum>" ;
 						print "<td style='word-wrap: break-word'>" ;
-							print $row["course"] . "." . $row["class"] ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "'>" . $row["course"] . "." . $row["class"] . "</a>" ;
 						print "</td>" ;
 						if (isActionAccessible($guid, $connection2, "/modules/Planner/planner.php")) {
 							print "<td style='text-align: center'>" ;

@@ -231,9 +231,14 @@ Planner: added ability to duplicate lesson plan to another year
 Library: tweaked lending log view to include current borrower if item on loan
 	Edited file /modules/Library/library_lending.php
 
-Genera: migrated CLI notifications from email to system notifications
+General: migrated CLI notifications from email to system notifications
 	Edited files /cli/userAdmin_statusCheckAndFix.php, attendance_dailyIncompleteEmail.php, planner_parentWeeklyEmailSummary.php
 
+Departments: improved Class page
+	Deleted file /modules/Departments/department_course_class_full.php
+	Edited file /modules/Departments/department_course_class.php
+	New files /themes/Default/img/*.png
+	Edited files /themes/Default/img/*.png
 
 
 v10.0.00

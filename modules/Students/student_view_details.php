@@ -1335,7 +1335,7 @@ else {
 											print "</tr>" ;
 										}
 	
-										print "</table>" ;	
+									print "</table>" ;	
 								}
 							}
 						}
