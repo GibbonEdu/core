@@ -164,7 +164,7 @@ else {
 				if ($_SESSION[$guid]["address"]!="") {
 					if (strstr($_SESSION[$guid]["address"],"..")==FALSE) {
 						if (getModuleName($_SESSION[$guid]["address"])!="") {
-							print " - " . getModuleName($_SESSION[$guid]["address"]) ;
+							print " - " . _(getModuleName($_SESSION[$guid]["address"])) ;
 						}
 					}
 				}

@@ -145,25 +145,9 @@ else {
 		}
 	}
 	
-	//Send confirmation email to admin
-	$body=_("Users Updated") . ": " . $count . "<br/><br/>" ;	
-	$body.="<p style='font-style: italic;'>" . sprintf(_('Email sent via %1$s at %2$s.'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationName"]) ."</p>" ;
-	$bodyPlain=preg_replace('#<br\s*/?>#i', "\n", $body) ;
-	$bodyPlain=str_replace("</p>", "\n\n", $bodyPlain) ;
-	$bodyPlain=str_replace("</div>", "\n\n", $bodyPlain) ;
-	$bodyPlain=preg_replace("#\<a.+href\=[\"|\'](.+)[\"|\'].*\>.*\<\/a\>#U","$1",$bodyPlain); 
-	$bodyPlain=strip_tags($bodyPlain, '<a>');
-
-	$mail=new PHPMailer;
-	$mail->AddAddress($_SESSION[$guid]["organisationAdministratorEmail"], $_SESSION[$guid]["organisationAdministratorName"]);
-	$mail->SetFrom($_SESSION[$guid]["organisationEmail"], $_SESSION[$guid]["organisationName"]);
-	$mail->CharSet="UTF-8"; 
-	$mail->Encoding="base64" ;
-	$mail->IsHTML(true);                            
-	$mail->Subject=_('User Admin CLI Report') ;
-	$mail->Body=$body ;
-	$mail->AltBody=$bodyPlain ;
-	$mail->Send() ;
+	//Notify admin
+	$notificationText=sprintf(_('A User Admin CLI script has run, updating %1$s users.'), $count) ;
+	setNotification($connection2, $guid, $_SESSION[$guid]["organisationAdministrator"], $notificationText, "User Admin", "/index.php?q=/modules/User Admin/user_manage.php") ;
 }
 
 ?>

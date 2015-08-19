@@ -228,6 +228,13 @@ Finance: stopped filters from reseting themselves all the time
 Planner: added ability to duplicate lesson plan to another year
 	Edited files /modules/Planner/planner_duplicate*.php
 
+Library: tweaked lending log view to include current borrower if item on loan
+	Edited file /modules/Library/library_lending.php
+
+Genera: migrated CLI notifications from email to system notifications
+	Edited files /cli/userAdmin_statusCheckAndFix.php, attendance_dailyIncompleteEmail.php, planner_parentWeeklyEmailSummary.php
+
+
 
 v10.0.00
 --------

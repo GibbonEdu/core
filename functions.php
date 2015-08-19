@@ -1310,7 +1310,7 @@ function getFastFinder($connection2, $guid) {
 		}
 		$output.="<style>" ;
 			$output.="ul.token-input-list-facebook { width: 275px; float: left; height: 25px!important; }" ;
-			$output.="div.token-input-dropdown-facebook { width: 275px }" ;
+			$output.="div.token-input-dropdown-facebook { width: 275px; z-index: 99999999 }" ;
 		$output.="</style>" ;
 		$output.="<div style='padding-bottom: 7px; height: 40px; margin-top: 0px'>" ;
 			$output.="<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/indexFindRedirect.php'>" ;
