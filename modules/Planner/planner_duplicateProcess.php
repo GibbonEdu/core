@@ -111,6 +111,30 @@ else {
 				$timeEnd=$_POST["timeEnd"] ;
 				$summary=$row["summary"] ;
 				$description=$row["description"] ;
+				//Add to smart blocks to description if copying to another year
+				if ($gibbonSchoolYearID!=$_SESSION[$guid]["gibbonSchoolYearID"]) {
+					try {
+						$dataBlocks=array("gibbonPlannerEntryID"=>$gibbonPlannerEntryID); 
+						$sqlBlocks="SELECT * FROM gibbonUnitClassBlock WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID" ;
+						$resultBlocks=$connection2->prepare($sqlBlocks);
+						$resultBlocks->execute($dataBlocks);
+					}
+					catch(PDOException $e) { 
+						$partialFail=true ;
+					}
+					while ($rowBlocks=$resultBlocks->fetch()) {
+						$description.="<h2>" . $rowBlocks["title"] . "</h2>" ;
+						$description.=$rowBlocks["contents"] ;
+					 }
+					 
+					try {
+						$dataPlannerUpdate=array("gibbonPlannerEntryID"=>$AI, "description"=>$description); 
+						$sqlPlannerUpdate="UPDATE gibbonPlannerEntry SET description=:description WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID" ;
+						$resultPlannerUpdate=$connection2->prepare($sqlPlannerUpdate);
+						$resultPlannerUpdate->execute($dataPlannerUpdate);
+					}
+					catch(PDOException $e) { }
+				}
 				
 				$keepUnit=NULL ;
 				$gibbonUnitClassID=NULL ;

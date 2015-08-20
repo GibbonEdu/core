@@ -63,6 +63,7 @@ else {
 		$gibbonFinanceExpenseID=$_GET["gibbonFinanceExpenseID"] ;
 		$gibbonFinanceBudgetCycleID=$_GET["gibbonFinanceBudgetCycleID"] ;
 		$status2=$_GET["status2"] ;
+		$gibbonFinanceBudgetID=$_GET["gibbonFinanceBudgetID"] ;
 		$gibbonFinanceBudgetID2=$_GET["gibbonFinanceBudgetID2"] ;
 		if ($gibbonFinanceExpenseID=="" OR $gibbonFinanceBudgetCycleID=="") {
 			print "<div class='error'>" ;
