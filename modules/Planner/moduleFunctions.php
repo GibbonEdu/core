@@ -685,11 +685,11 @@ function sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYe
 						$output.="<select name='gibbonCourseID' id='gibbonCourseID' style='width:161px'>" ;
 							$output.="<option value=''></option>" ;
 							try {
-								if ($highestAction=="Manage Units_all") {
+								if ($highestAction=="Unit Planner_all") {
 									$dataSelect=array("gibbonSchoolYearID"=>$gibbonSchoolYearID); 
 									$sqlSelect="SELECT gibbonCourse.nameShort AS course, gibbonSchoolYear.name AS year, gibbonCourseID FROM gibbonCourse JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY nameShort" ;
 								}
-								else if ($highestAction=="Manage Units_learningAreas") {
+								else if ($highestAction=="Unit Planner_learningAreas") {
 									$dataSelect=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
 									$sqlSelect="SELECT gibbonCourse.nameShort AS course, gibbonSchoolYear.name AS year, gibbonCourseID FROM gibbonCourse JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY gibbonCourse.nameShort" ;
 								}

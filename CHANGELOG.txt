@@ -249,6 +249,10 @@ General: updated jquery, jquery-ui and tinymce libraries
 	Edited file /installer/install.php
 	Edited file /themes/Default/css/main.css
 
+Planner: changed "Manage Units" to "Unit Planner"
+	Updated table gibbonAction
+	Edited files /modules/Planner/units.php*
+
 
 v10.0.00
 --------
