@@ -24,7 +24,8 @@ include "./functions.php" ;
 include "./config.php" ;
 
 //Load jQuery
-Print "<script type=\"text/javascript\" src=\"" . $_SESSION[$guid]["absoluteURL"] . "/lib/jquery/jquery.js\"></script>" ;
+print "<script type=\"text/javascript\" src=\"" . $_SESSION[$guid]["absoluteURL"] . "/lib/jquery/jquery.js\"></script>" ;
+print "<script type=\"text/javascript\" src=\"" . $_SESSION[$guid]["absoluteURL"] . "/lib/jquery/jquery-migrate.min.jsprint\"></script>" ;
 			
 //New PDO DB connection
 try {

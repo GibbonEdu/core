@@ -243,6 +243,12 @@ Departments: improved Class page
 General: added classes to Fast Finder
 	Edited files /functions.php, indexFindRedirect.php
 
+General: updated jquery, jquery-ui and tinymce libraries
+	Edited folders /lib/jquery, jquery-ui, tinymce
+	Edited files /index.php, fullscreen.php, index_notification_ajax_alarm.php
+	Edited file /installer/install.php
+	Edited file /themes/Default/css/main.css
+
 
 v10.0.00
 --------

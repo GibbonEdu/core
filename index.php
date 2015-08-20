@@ -178,6 +178,7 @@ else {
 			<script type="text/javascript" src="./lib/LiveValidation/livevalidation_standalone.compressed.js"></script>
 
 			<script type="text/javascript" src="<?php print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery/jquery.js"></script>
+			<script type="text/javascript" src="<?php print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery/jquery-migrate.min.js"></script>
 			<script type="text/javascript" src="<?php print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery-ui/js/jquery-ui.min.js"></script>
 			<?php 
 			if (isset($_SESSION[$guid]["i18n"]["code"])) {

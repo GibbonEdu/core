@@ -62,6 +62,7 @@ print "<style type=\"text/css\">" ;
 	print "}" ;
 print "</style>" ;
 print "<script type=\"text/javascript\" src=" . $_SESSION[$guid]["absoluteURL"] . "/lib/jquery/jquery.js\"></script>" ;
+print "<script type=\"text/javascript\" src=\"" . $_SESSION[$guid]["absoluteURL"] . "/lib/jquery/jquery.js\"></script>" ;
 print "<script type=\"text/javascript\" src=" . $_SESSION[$guid]["absoluteURL"] . "/lib/jquery-ui/js/jquery-ui.min.js\"></script>" ;
 
 if ($gibbonCourseID=="" OR $gibbonSchoolYearID=="") {
