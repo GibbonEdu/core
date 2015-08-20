@@ -63,7 +63,7 @@ else {
 		$purchaseBy=$_POST["purchaseBy"] ;
 		$purchaseDetails=$_POST["purchaseDetails"] ;
 			
-		if ($title=="" OR $body=="" OR $cost=="" OR $purchaseBy=="" OR $countAgainstBudget=="") {
+		if ($title=="" OR $cost=="" OR $purchaseBy=="" OR $countAgainstBudget=="") {
 			//Fail 3
 			$URL.="&addReturn=fail3" ;
 			header("Location: {$URL}");

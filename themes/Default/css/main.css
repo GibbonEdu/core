@@ -215,7 +215,7 @@ div.minorLinks {
 	text-align: right; 
 	padding-right: 13px; 
 	padding-top: 0px;
-	margin-top: 20px; 
+	margin-top: 10px; 
 	margin-bottom: 0px; 
 	color: #fff;
 	font-size: 80%; 
@@ -227,8 +227,8 @@ img.minorLinkIcon {
 }
 
 img.minorLinkIconLarge {
-	height: 75px ;
-	max-height: 75px ;
+	height: 65px ;
+	max-height: 65px ;
 }
 
 div.minorLinks a {

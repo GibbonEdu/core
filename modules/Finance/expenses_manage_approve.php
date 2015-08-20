@@ -63,7 +63,6 @@ else {
 		$gibbonFinanceExpenseID=$_GET["gibbonFinanceExpenseID"] ;
 		$gibbonFinanceBudgetCycleID=$_GET["gibbonFinanceBudgetCycleID"] ;
 		$status2=$_GET["status2"] ;
-		$gibbonFinanceBudgetID=$_GET["gibbonFinanceBudgetID"] ;
 		$gibbonFinanceBudgetID2=$_GET["gibbonFinanceBudgetID2"] ;
 		if ($gibbonFinanceExpenseID=="" OR $gibbonFinanceBudgetCycleID=="") {
 			print "<div class='error'>" ;
@@ -202,7 +201,44 @@ else {
 											<b><?php print _('Budget') ?> *</b><br/>
 										</td>
 										<td class="right">
-											<input readonly name="name" id="name" maxlength=20 value="<?php print $row["budget"] ; ?>" type="text" style="width: 300px">
+											<?php
+											if ($highestAction=="Manage Expenses_all" AND $row["statusApprovalBudgetCleared"]=="Y") { //Can change budgets only if budget level approval is passed (e.g. you are a school approver.
+												try {
+													$dataBudget=array();
+													$sqlBudget="SELECT * FROM gibbonFinanceBudget WHERE active='Y' ORDER BY name" ;
+													$resultBudget=$connection2->prepare($sqlBudget);
+													$resultBudget->execute($dataBudget);
+												}
+												catch(PDOException $e) { }
+				
+												print "<select name='gibbonFinanceBudgetID' id='gibbonFinanceBudgetID' style='width:302px'>" ;
+													$selected="" ;
+													if ($gibbonFinanceBudgetID=="") {
+														$selected="selected" ;
+													}
+													print "<option $selected value='Please select...'>" . _('Please select...') . "</option>" ;
+													while ($rowBudget=$resultBudget->fetch()) {
+														$selected="" ;
+														if ($row["gibbonFinanceBudgetID"]==$rowBudget["gibbonFinanceBudgetID"]) {
+															$selected="selected" ;
+														}
+														print "<option $selected value='" . $rowBudget["gibbonFinanceBudgetID"] . "'>" . $rowBudget["name"] . "</option>" ;
+													}
+												print "</select>" ;
+												?>
+												<script type="text/javascript">
+													var gibbonFinanceBudgetID=new LiveValidation('gibbonFinanceBudgetID');
+													gibbonFinanceBudgetID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+												</script>
+												<?php
+											}
+											else { //Cannot change budget
+												?>
+												<input readonly name="name" id="name" maxlength=20 value="<?php print $row["budget"] ; ?>" type="text" style="width: 300px">
+												<input type='hidden' name='gibbonFinanceBudgetID' value='<?php print $row["gibbonFinanceBudgetID"] ?>'/>
+												<?php
+											}
+											?>
 										</td>
 									</tr>
 									<tr>
@@ -475,7 +511,6 @@ else {
 												<input name="gibbonFinanceBudgetCycleID" id="gibbonFinanceBudgetCycleID" value="<?php print $gibbonFinanceBudgetCycleID ?>" type="hidden">
 												<input name="status2" id="status2" value="<?php print $status2 ?>" type="hidden">
 												<input name="gibbonFinanceBudgetID2" id="gibbonFinanceBudgetID2" value="<?php print $gibbonFinanceBudgetID2 ?>" type="hidden">
-												<input name="gibbonFinanceBudgetID" id="gibbonFinanceBudgetID" value="<?php print $gibbonFinanceBudgetID ?>" type="hidden">
 												<input name="status" id="status" value="<?php print $status ?>" type="hidden">
 												<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 												<input type="submit" value="<?php print _("Submit") ; ?>">

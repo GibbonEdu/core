@@ -189,6 +189,20 @@ else {
 									header("Location: {$URL}");
 								}
 								else {
+									//Write budget change
+									try {
+										$dataBudgetChange=array("gibbonFinanceBudgetID"=>$gibbonFinanceBudgetID, "gibbonFinanceExpenseID"=>$gibbonFinanceExpenseID); 
+										$sqlBudgetChange="UPDATE gibbonFinanceExpense SET gibbonFinanceBudgetID=:gibbonFinanceBudgetID WHERE gibbonFinanceExpenseID=:gibbonFinanceExpenseID" ;
+										$resultBudgetChange=$connection2->prepare($sqlBudgetChange);
+										$resultBudgetChange->execute($dataBudgetChange);
+									}
+									catch(PDOException $e) { 
+										//Fail2
+										$URL.="&approveReturn=fail2" ;
+										header("Location: {$URL}");
+										break ;
+									}
+								
 									if ($approval=="Rejection") { //REJECT!
 										//Write back to gibbonFinanceExpense
 										try {

@@ -150,6 +150,7 @@ function approvalRequired($guid, $gibbonPersonID, $gibbonFinanceExpenseID, $gibb
 		}
 
 		if ($result->rowCount()!=1) {
+			print $result->rowCount() ; eixt() ;
 			return FALSE ; 
 		}
 		else {
