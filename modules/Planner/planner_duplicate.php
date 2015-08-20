@@ -192,7 +192,7 @@ else {
 				if ($step==1) {
 					?>
 					<p>
-					<?php print _('This process will duplicate all aspects of the selected lesson, with the exception of Smart Blocks content, which belongs to the unit, not the lesson.') ?>
+					<?php print _('This process will duplicate all aspects of the selected lesson. If a lesson is copied into another course, Smart Block content will be added into the lesson body, so it does not get left out.') ?>
 					</p>
 					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_duplicate.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date&step=2" ?>">
 						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	

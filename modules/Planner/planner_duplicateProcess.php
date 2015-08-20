@@ -112,10 +112,10 @@ else {
 				$summary=$row["summary"] ;
 				$description=$row["description"] ;
 				//Add to smart blocks to description if copying to another year
-				if ($gibbonSchoolYearID!=$_SESSION[$guid]["gibbonSchoolYearID"]) {
+				if ($gibbonSchoolYearID!=$_SESSION[$guid]["gibbonSchoolYearID"] OR @$_POST["keepUnit"]!="Y") {
 					try {
 						$dataBlocks=array("gibbonPlannerEntryID"=>$gibbonPlannerEntryID); 
-						$sqlBlocks="SELECT * FROM gibbonUnitClassBlock WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID" ;
+						$sqlBlocks="SELECT * FROM gibbonUnitClassBlock WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPlannerEntryID IS NOT NULL" ;
 						$resultBlocks=$connection2->prepare($sqlBlocks);
 						$resultBlocks->execute($dataBlocks);
 					}
