@@ -217,6 +217,11 @@ else {
 											}
 											print "<option $selected value='Requested'>" . _('Requested') . "</option>" ;
 											$selected="" ;
+											if ($status2=="Requested - Approval Required") {
+												$selected="selected" ;
+											}
+											print "<option $selected value='Requested - Approval Required'>" . _('Requested - Approval Required') . "</option>" ;
+											$selected="" ;
 											if ($status2=="Approved") {
 												$selected="selected" ;
 											}
@@ -293,9 +298,16 @@ else {
 								$data["gibbonFinanceBudgetID"]=$gibbonFinanceBudgetID2 ;
 								$whereBudget.=" AND gibbonFinanceBudget.gibbonFinanceBudgetID=:gibbonFinanceBudgetID" ;
 							}
+							$approvalRequiredFilter=FALSE ;
 							$whereStatus="" ;
 							if ($status2!="") {
-								$data["status"]=$status2 ;
+								if ($status2=="Requested - Approval Required") {
+									$data["status"]='Requested' ;
+									$approvalRequiredFilter=TRUE ;
+								}
+								else {
+									$data["status"]=$status2 ;
+								}
 								$whereStatus.=" AND gibbonFinanceExpense.status=:status" ;
 							}
 							//GET THE DATA ACCORDING TO FILTERS
@@ -323,89 +335,74 @@ else {
 						catch(PDOException $e) { 
 							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 						}
+						
+						print "<h3>" ;
+						print _("View") ;
+						print "</h3>" ;
 		
-						if ($result->rowCount()<1) {
-							print "<h3>" ;
-							print _("View") ;
-							print "</h3>" ;
-			
-							$allowExpenseAdd=getSettingByScope($connection2, "Finance", "allowExpenseAdd") ;
-							if ($highestAction=="Manage Expenses_all" AND $allowExpenseAdd=="Y") { //Access to everything
-								print "<div class='linkTop' style='text-align: right'>" ;
-									print "<a style='margin-right: 3px' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/expenses_manage_add.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a><br/>" ;
-								print "</div>" ;
-							}
-			
-							print "<div class='error'>" ;
-							print _("There are no records to display.") ;
+						$allowExpenseAdd=getSettingByScope($connection2, "Finance", "allowExpenseAdd") ;
+						if ($highestAction=="Manage Expenses_all" AND $allowExpenseAdd=="Y") { //Access to everything
+							print "<div class='linkTop' style='text-align: right'>" ;
+								print "<a style='margin-right: 3px' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/expenses_manage_add.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a><br/>" ;
 							print "</div>" ;
 						}
-						else {
-							print "<h3>" ;
-							print _("View") ;
-							print "<span style='font-weight: normal; font-style: italic; font-size: 55%'> " . sprintf(_('%1$s expense requests in current view'), $result->rowCount()) . "</span>" ;
-							print "</h3>" ;
-
-							$allowExpenseAdd=getSettingByScope($connection2, "Finance", "allowExpenseAdd") ;
-							if ($highestAction=="Manage Expenses_all" AND $allowExpenseAdd=="Y") { //Access to everything
-								print "<div class='linkTop' style='text-align: right'>" ;
-									print "<a style='margin-right: 3px' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/expenses_manage_add.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a><br/>" ;
-								print "</div>" ;
-							}
-			
-							print "<form onsubmit='return confirm(\"" ._('Are you sure you wish to process this action? It cannot be undone.') . "\")' method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/expenses_manage_processBulk.php?gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>" ;
-								print "<fieldset style='border: none'>" ;
-									print "<div class='linkTop' style='text-align: right; margin-bottom: 40px'>" ;
-										?>
-										<input style='margin-top: 0px; float: right' type='submit' value='<?php print _('Go') ?>'>
-										<select name="action" id="action" style='width:120px; float: right; margin-right: 1px;'>
-											<option value="Select action"><?php print _('Select action') ?></option>
-											<option value="export"><?php print _('Export') ?></option>
-										</select>
-										<script type="text/javascript">
-											var action=new LiveValidation('action');
-											action.add(Validate.Exclusion, { within: ['Select action'], failureMessage: "<?php print _('Select something!') ?>"});
-										</script>
-										<?php
-									print "</div>" ;	
-									print "<table cellspacing='0' style='width: 100%'>" ;
-										print "<tr class='head'>" ;
-											print "<th style='width: 110px'>" ;
-												print _("Title") . "<br/>" ;
-												print "<span style='font-size: 85%; font-style: italic'>" . _('Budget') . "</span>" ;
-											print "</th>" ;
-											print "<th style='width: 110px'>" ;
-												print _("Staff") ;
-											print "</th>" ;
-											print "<th style='width: 100px'>" ;
-												print _("Status") ;
-											print "</th>" ;
-											print "<th style='width: 90px'>" ;
-												print _("Cost") . "<br/><span style='font-style: italic; font-size: 75%'>(" . $_SESSION[$guid]["currency"] . ")</span><br/>" ;
-											print "</th>" ;
-											print "<th style='width: 120px'>" ;
-												print _("Date") ;
-											print "</th>" ;
-											print "<th style='width: 140px'>" ;
-												print _("Actions") ;
-											print "</th>" ;
-											print "<th>" ;
-												?>
-												<script type="text/javascript">
-													$(function () {
-														$('.checkall').click(function () {
-															$(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
-														});
+						
+						
+						print "<form onsubmit='return confirm(\"" ._('Are you sure you wish to process this action? It cannot be undone.') . "\")' method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/expenses_manage_processBulk.php?gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>" ;
+							print "<fieldset style='border: none'>" ;
+								print "<div class='linkTop' style='text-align: right; margin-bottom: 40px'>" ;
+									?>
+									<input style='margin-top: 0px; float: right' type='submit' value='<?php print _('Go') ?>'>
+									<select name="action" id="action" style='width:120px; float: right; margin-right: 1px;'>
+										<option value="Select action"><?php print _('Select action') ?></option>
+										<option value="export"><?php print _('Export') ?></option>
+									</select>
+									<script type="text/javascript">
+										var action=new LiveValidation('action');
+										action.add(Validate.Exclusion, { within: ['Select action'], failureMessage: "<?php print _('Select something!') ?>"});
+									</script>
+									<?php
+								print "</div>" ;	
+								print "<table cellspacing='0' style='width: 100%'>" ;
+									print "<tr class='head'>" ;
+										print "<th style='width: 110px'>" ;
+											print _("Title") . "<br/>" ;
+											print "<span style='font-size: 85%; font-style: italic'>" . _('Budget') . "</span>" ;
+										print "</th>" ;
+										print "<th style='width: 110px'>" ;
+											print _("Staff") ;
+										print "</th>" ;
+										print "<th style='width: 100px'>" ;
+											print _("Status") ;
+										print "</th>" ;
+										print "<th style='width: 90px'>" ;
+											print _("Cost") . "<br/><span style='font-style: italic; font-size: 75%'>(" . $_SESSION[$guid]["currency"] . ")</span><br/>" ;
+										print "</th>" ;
+										print "<th style='width: 120px'>" ;
+											print _("Date") ;
+										print "</th>" ;
+										print "<th style='width: 140px'>" ;
+											print _("Actions") ;
+										print "</th>" ;
+										print "<th>" ;
+											?>
+											<script type="text/javascript">
+												$(function () {
+													$('.checkall').click(function () {
+														$(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
 													});
-												</script>
-												<?php
-												print "<input type='checkbox' class='checkall'>" ;
-											print "</th>" ;
-										print "</tr>" ;
-	
-										$count=0;
-										$rowNum="odd" ;
-										while ($row=$result->fetch()) {
+												});
+											</script>
+											<?php
+											print "<input type='checkbox' class='checkall'>" ;
+										print "</th>" ;
+									print "</tr>" ;
+
+									$count=0;
+									$rowNum="odd" ;
+									while ($row=$result->fetch()) {
+										$approvalRequired=approvalRequired($guid, $_SESSION[$guid]["gibbonPersonID"], $row["gibbonFinanceExpenseID"], $gibbonFinanceBudgetCycleID, $connection2, FALSE) ;
+										if ($approvalRequiredFilter==FALSE OR ($approvalRequiredFilter AND $approvalRequired)) {
 											if ($count%2==0) {
 												$rowNum="even" ;
 											}
@@ -413,7 +410,7 @@ else {
 												$rowNum="odd" ;
 											}
 											$count++ ;
-		
+	
 											//Color row by status
 											if ($row["status"]=="Approved") {
 												$rowNum="current" ;	
@@ -421,7 +418,7 @@ else {
 											if ($row["status"]=="Rejected" OR $row["status"]=="Cancelled") {
 												$rowNum="error" ;	
 											}
-		
+	
 											print "<tr class=$rowNum>" ;
 												print "<td>" ;
 													print "<b>" . $row["title"] . "</b><br/>" ;
@@ -446,7 +443,7 @@ else {
 														print "<a style='margin-left: 4px' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/expenses_manage_edit.php&gibbonFinanceExpenseID=" . $row["gibbonFinanceExpenseID"] . "&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 													}
 													if ($row["status"]=="Requested") {
-														if (approvalRequired($guid, $_SESSION[$guid]["gibbonPersonID"], $row["gibbonFinanceExpenseID"], $gibbonFinanceBudgetCycleID, $connection2, FALSE)==TRUE) {
+														if ($approvalRequired==TRUE) {
 															print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/expenses_manage_approve.php&gibbonFinanceExpenseID=" . $row["gibbonFinanceExpenseID"] . "&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'><img title='" . _('Approve/Reject') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/></a> " ;
 														}
 													}
@@ -456,12 +453,21 @@ else {
 												print "</td>" ;
 											print "</tr>" ;
 										}
-										print "<input type=\"hidden\" name=\"address\" value=\"" . $_SESSION[$guid]["address"] . "\">" ;
-						
-									print "</fieldset>" ;
-								print "</table>" ;
-							print "</form>" ;
-						}
+									}
+									if ($count<1) {
+										print "<tr>" ;
+											print "<td colspan=7>" ;
+												print "<div class='error'>" ;
+												print _("There are no records to display.") ;
+												print "</div>" ;
+											print "</td>" ;
+										print "</tr>" ;
+									}
+									print "<input type=\"hidden\" name=\"address\" value=\"" . $_SESSION[$guid]["address"] . "\">" ;
+					
+								print "</fieldset>" ;
+							print "</table>" ;
+						print "</form>" ;
 					}
 				}
 			}
