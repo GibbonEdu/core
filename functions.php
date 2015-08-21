@@ -131,7 +131,7 @@ function getMinorLinks($connection2, $guid, $cacheLoad) {
 				$return.=" . <a title='" . _('Notifications') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=notifications.php'>" . $resultNotifications->rowCount() . " x " . "<img class='minorLinkIcon' style='margin-left: 2px; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_on.png'></a>" ;
 			}
 			else {
-				$return.=" . 0 x " . "<img title='" . _('Notifications') . " class='minorLinkIcon' style='margin-left: 2px; opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_off.png'>" ;
+				$return.=" . 0 x " . "<img title='" . _('Notifications') . "' class='minorLinkIcon' style='margin-left: 2px; opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_off.png'>" ;
 			}
 		$return.="</div>" ;
 
@@ -188,11 +188,11 @@ function getMinorLinks($connection2, $guid, $cacheLoad) {
 			
 			$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Messenger/messageWall_view.php" ;
 			if (isset($_SESSION[$guid]["messageWallCount"])==FALSE) {
-				$return.=" . 0 x <img class='minorLinkIcon' style='margin-left: 4px; opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/messageWall_none.png'>" ;
+				$return.=" . 0 x <img title='" . _('Message Wall') . "' class='minorLinkIcon' style='margin-left: 4px; opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/messageWall_none.png'>" ;
 			}
 			else {
 				if ($_SESSION[$guid]["messageWallCount"]<1) {
-					$return.=" . 0 x <img class='minorLinkIcon' style='margin-left: 4px; opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/messageWall_none.png'>" ;
+					$return.=" . 0 x <img title='" . _('Message Wall') . "' class='minorLinkIcon' style='margin-left: 4px; opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/messageWall_none.png'>" ;
 				}
 				else {
 					$return.=" . <a title='" . _('Message Wall') . "' href='$URL'>" . $_SESSION[$guid]["messageWallCount"] . " x <img class='minorLinkIcon' style='margin-left: 4px; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/messageWall.png'></a>" ;
