@@ -269,7 +269,7 @@ else {
 						$blocks2=array() ;
 						try {
 							$dataBlocks2=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-							$sqlBlocks2="SELECT * FROM gibbonUnitBlockStar JOIN gibbonUnitBlock ON (gibbonUnitBlockStar.gibbonUnitBlockID=gibbonUnitBlock.gibbonUnitBlockID) ORDER BY title" ;
+							$sqlBlocks2="SELECT * FROM gibbonUnitBlockStar JOIN gibbonUnitBlock ON (gibbonUnitBlockStar.gibbonUnitBlockID=gibbonUnitBlock.gibbonUnitBlockID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY title" ;
 							$resultBlocks2=$connection2->prepare($sqlBlocks2);
 							$resultBlocks2->execute($dataBlocks2);
 						}

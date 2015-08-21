@@ -251,7 +251,7 @@ General: updated jquery, jquery-ui and tinymce libraries
 
 Planner: changed "Manage Units" to "Unit Planner"
 	Updated table gibbonAction
-	Edited files /modules/Planner/units.php*
+	Edited files /modules/Planner/units*.php
 
 
 v10.0.00
