@@ -519,6 +519,7 @@ DELETE FROM gibbonSetting WHERE scope='System' AND name='organisationAdmissionsE
 ALTER TABLE `gibbonFinanceExpense` ADD `countAgainstBudget` ENUM('Y','N') NOT NULL DEFAULT 'Y' AFTER `cost`;end
 UPDATE gibbonAction SET name='Unit Planner_all', precedence=1 WHERE name='Manage Units_all' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Planner');end
 UPDATE gibbonAction SET name='Unit Planner_learningAreas' WHERE name='Manage Units_learningAreas' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Planner');end
+ALTER TABLE `gibbonLog` CHANGE `ip` `ip` VARCHAR(15) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
 
 ";
 

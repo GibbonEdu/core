@@ -1024,6 +1024,7 @@ div#tabs {
 	border-radius: 0 ;
 	background: rgba(25, 25, 25, 0.9);
 	box-shadow: 2px 2px 4px rgba(25, 25, 25, 0.9);
+	color: #fff ;!important
 }
 
 .ui-autocomplete .ui-menu-item, .ui-autocomplete .ui-menu-item:hover {
