@@ -739,10 +739,11 @@ function getParentalDashboardContents($connection2, $guid, $gibbonPersonID) {
 	$timetable=FALSE ;
 	$timetableOutput="" ;
 	if (isActionAccessible($guid, $connection2, "/modules/Timetable/tt_view.php")) {
-		$timetableOutput.="<div class='linkTop'>" ;
-			$timetableOutput.="<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable/tt.php'>" . _('View All Timetables') . "</a>" ;
-		$timetableOutput.="</div>" ;
-		$timetableOutputTemp=renderTT($guid, $connection2, $gibbonPersonID, NULL, NULL, dateConvertToTimestamp(date("Y-m-d")), "/index.php", "", TRUE) ;
+		$date=date("Y-m-d") ;
+		if (isset($_POST["ttDate"])) {
+			$date=dateConvert($guid, $_POST["ttDate"]) ; 
+		}
+		$timetableOutputTemp=renderTT($guid, $connection2, $gibbonPersonID, NULL, NULL, dateConvertToTimestamp($date), "", "", TRUE) ;
 		if ($timetableOutputTemp!=FALSE) {
 			$timetable=TRUE ;
 			$timetableOutput.=$timetableOutputTemp ;

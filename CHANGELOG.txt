@@ -253,6 +253,9 @@ Planner: changed "Manage Units" to "Unit Planner"
 	Updated table gibbonAction
 	Edited files /modules/Planner/units*.php
 
+General: fixed date swap bug in homepage Parental Dashboard TT
+	Edite file /functions.php
+
 
 v10.0.00
 --------
