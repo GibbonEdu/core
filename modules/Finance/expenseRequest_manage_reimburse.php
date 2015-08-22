@@ -356,7 +356,7 @@ else {
 									<input type="file" name="file" id="file"><br/><br/>
 										<?php
 										print getMaxUpload() ;
-										$ext="'.png','.jpeg','.jpg','.gif'" ;
+										$ext="'.png','.jpeg','.jpg','.gif','.pdf'" ;
 										?>
 										<script type="text/javascript">
 											var file=new LiveValidation('file');
