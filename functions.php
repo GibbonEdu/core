@@ -743,7 +743,11 @@ function getParentalDashboardContents($connection2, $guid, $gibbonPersonID) {
 		if (isset($_POST["ttDate"])) {
 			$date=dateConvert($guid, $_POST["ttDate"]) ; 
 		}
-		$timetableOutputTemp=renderTT($guid, $connection2, $gibbonPersonID, NULL, NULL, dateConvertToTimestamp($date), "", "", TRUE) ;
+		$params="" ;
+		if ($classes!=FALSE OR $grades!=FALSE OR $deadlines!=FALSE) {
+			$params="&tab=1" ;
+		}
+		$timetableOutputTemp=renderTT($guid, $connection2, $gibbonPersonID, NULL, NULL, dateConvertToTimestamp($date), "", $params, TRUE) ;
 		if ($timetableOutputTemp!=FALSE) {
 			$timetable=TRUE ;
 			$timetableOutput.=$timetableOutputTemp ;
@@ -930,9 +934,14 @@ function getParentalDashboardContents($connection2, $guid, $gibbonPersonID) {
 		$return.="</div>" ;
 	}
 	else {
+		$defaultTab=0 ;
+		if (isset($_GET["tab"])) {
+			$defaultTab=$_GET["tab"] ;
+		}
 		$return.="<script type='text/javascript'>" ;
 			$return.="$(function() {" ;
 				$return.="$( \"#" . $gibbonPersonID . "tabs\" ).tabs({" ;
+					$return.="active: " . $defaultTab . "," ; 
 					$return.="ajaxOptions: {" ;
 						$return.="error: function( xhr, status, index, anchor ) {" ;
 							$return.="$( anchor.hash ).html(" ;
