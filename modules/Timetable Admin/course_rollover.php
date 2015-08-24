@@ -156,31 +156,29 @@ else {
 				print "</p>" ;
 				
 				print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/course_rollover.php&step=3'>" ;
-					if (getNextSchoolYearID($nextYear, $connection2)==FALSE) {
-						print "<h4>" ;
-						print sprintf(_('Options'), $nameNext) ;
-						print "</h4>" ;
-						?>
-						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
-							<tr>
-								<td style='width: 275px'> 
-									<b><?php print _('Include Students') ?> *</b><br/>
-								</td>
-								<td class="right">
-									<input checked type='checkbox' name='rollStudents'>
-								</td>
-							</tr>
-							<tr>
-								<td style='width: 275px'> 
-									<b><?php print _('Include Teachers') ?> *</b><br/>
-								</td>
-								<td class="right">
-									<input type='checkbox' name='rollTeachers'>
-								</td>
-							</tr>
-						</table>
-						<?php
-					}
+					print "<h4>" ;
+					print sprintf(_('Options'), $nameNext) ;
+					print "</h4>" ;
+					?>
+					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+						<tr>
+							<td style='width: 275px'> 
+								<b><?php print _('Include Students') ?> *</b><br/>
+							</td>
+							<td class="right">
+								<input checked type='checkbox' name='rollStudents'>
+							</td>
+						</tr>
+						<tr>
+							<td style='width: 275px'> 
+								<b><?php print _('Include Teachers') ?> *</b><br/>
+							</td>
+							<td class="right">
+								<input type='checkbox' name='rollTeachers'>
+							</td>
+						</tr>
+					</table>
+					<?php
 					
 					print "<h4>" ;
 					print _("Map Classess") ;
@@ -227,7 +225,6 @@ else {
 								$coursesNext[$coursesNextCount][3]=str_replace($matches[0][0], str_pad(($matches[0][0]-1),strlen($matches[0][0]),"0", STR_PAD_LEFT), $rowNext["course"]) ;
 							}
 						}
-						
 						
 						$coursesNextCount++ ;
 					}

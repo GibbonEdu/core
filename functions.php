@@ -1297,7 +1297,7 @@ function getFastFinder($connection2, $guid) {
 			$dataList=array("gibbonRoleID"=>$_SESSION[$guid]["gibbonRoleIDCurrent"]); 
 			$sqlList="(SELECT DISTINCT concat(gibbonModule.name, '/', gibbonAction.entryURL) AS id, SUBSTRING_INDEX(gibbonAction.name, '_', 1) AS name, 'Action' AS type FROM `gibbonModule`, gibbonAction, gibbonPermission WHERE (active='Y') AND (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID))" ;
 			if ($staffIsAccessible==TRUE) {
-				$sqlList.=" UNION (SELECT gibbonPerson.gibbonPersonID AS id, concat(surname, ', ', preferredName) AS name, 'Staff' AS type FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full')" ;
+				$sqlList.=" UNION (SELECT gibbonPerson.gibbonPersonID AS id, concat(surname, ', ', preferredName) AS name, 'Staff' AS type FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "'))" ;
 			}
 			if ($studentIsAccessible==TRUE) {
 				$dataList["gibbonSchoolYearID"]=$_SESSION[$guid]["gibbonSchoolYearID"] ;
