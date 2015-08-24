@@ -254,7 +254,14 @@ Planner: changed "Manage Units" to "Unit Planner"
 	Edited files /modules/Planner/units*.php
 
 General: fixed date swap bug in homepage Parental Dashboard TT
-	Edite file /functions.php
+	Edited file /functions.php
+
+Timetable Admin: added ability to copy all courses and classes to the next school year
+	Edited file /modules/Timetable Admin/course_manage.php
+
+Timetable Admin: added teacher and student enrolment rollover for courses
+	New values in tables gibbonAction, gibbonPermission
+	New file /modules/Timetable Admin/course_rollover.php 
 
 
 v10.0.00
