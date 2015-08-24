@@ -202,7 +202,10 @@ else {
 										header("Location: {$URL}");
 										break ;
 									}
-								
+									
+									//Attempt to archive notification
+									archiveNotification($connection2, $guid, $_SESSION[$guid]["gibbonPersonID"], "/index.php?q=/modules/Finance/expenses_manage_approve.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID") ;
+									
 									if ($approval=="Rejection") { //REJECT!
 										//Write back to gibbonFinanceExpense
 										try {

@@ -268,6 +268,10 @@ Finance: added ability for all involved parties to comment on an expense request
 	Edited files /modules/Finance/expenses_manage_approve*.php, expenseRequest_manage_view.php
 	New file /modules/Finance/expenseRequest_manage_viewProcess.php
 
+Finance: made expense approval request notification self destructing, when approval is carried out (in case notification was bypassed)
+	Edited file /function.php
+	Edited files /modules/Finance/expenses_manage_approveProcess.php, expenseRequest_manage_addProcess.php
+	
 
 v10.0.00
 --------

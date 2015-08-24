@@ -106,7 +106,7 @@ else {
 				break ;
 			}
 			
-			$gibbonFinanceExpenseID=$connection2->lastInsertID() ;
+			$gibbonFinanceExpenseID=str_pad($connection2->lastInsertID(), 14, "0", STR_PAD_LEFT) ;
 			
 			//Add log entry
 			try {

@@ -1008,6 +1008,21 @@ function getParentalDashboardContents($connection2, $guid, $gibbonPersonID) {
 	return $return ;
 }
 
+//Archives one or more notifications, based on partial match of actionLink and total match of gibbonPersonID
+function archiveNotification($connection2, $guid, $gibbonPersonID, $actionLink) {
+	$return=TRUE ;
+	
+	try {
+		$data=array("gibbonPersonID"=>$gibbonPersonID, "actionLink"=>"%$actionLink%"); 
+		$sql="UPDATE gibbonNotification SET status='Archived' WHERE gibbonPersonID=:gibbonPersonID AND actionLink LIKE :actionLink AND status='New'" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { $return=FALSE ; }
+	
+	return $return ;
+}
+
 //Sets a system-wide notification 
 function setNotification($connection2, $guid, $gibbonPersonID, $text, $moduleName, $actionLink) {
 	if ($moduleName=="") {
