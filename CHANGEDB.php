@@ -522,6 +522,7 @@ UPDATE gibbonAction SET name='Unit Planner_learningAreas' WHERE name='Manage Uni
 ALTER TABLE `gibbonLog` CHANGE `ip` `ip` VARCHAR(15) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
 INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Timetable Admin'), 'Course Enrolment Rollover', 0, 'Courses & Classes', 'Allows privileged users to move enrolments from the current year to the next year.', 'course_rollover.php', 'course_rollover.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N') ;end
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Timetable Admin' AND gibbonAction.name='Course Enrolment Rollover'));end
+ALTER TABLE `gibbonFinanceExpenseLog` CHANGE `action` `action` ENUM('Request','Approval - Partial - Budget','Approval - Partial - School','Approval - Final','Approval - Exempt','Rejection','Cancellation','Order','Payment','Reimbursement Request','Reimbursement Completion','Comment') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
 ";
 
 ?>

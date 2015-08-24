@@ -488,6 +488,7 @@ else {
 													print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 													print "<option value='Approval - Partial'>" . _('Approve') . "</option>" ;
 													print "<option value='Rejection'>" . _('Reject') . "</option>" ;
+													print "<option value='Comment'>" . _('Comment') . "</option>" ;
 												print "</select>" ;
 												?>
 												<script type="text/javascript">

@@ -263,6 +263,11 @@ Timetable Admin: added teacher and student enrolment rollover for courses
 	New values in tables gibbonAction, gibbonPermission
 	New file /modules/Timetable Admin/course_rollover.php 
 
+Finance: added ability for all involved parties to comment on an expense request
+	Edited table gibbonFinanceExpenseLog
+	Edited files /modules/Finance/expenses_manage_approve*.php, expenseRequest_manage_view.php
+	New file /modules/Finance/expenseRequest_manage_viewProcess.php
+
 
 v10.0.00
 --------

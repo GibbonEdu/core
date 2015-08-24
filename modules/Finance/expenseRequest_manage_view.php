@@ -110,7 +110,7 @@ else {
 							print "</div>" ;
 						}
 						?>
-						<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/expenseRequest_manage_addProcess.php" ?>">
+						<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/expenseRequest_manage_viewProcess.php" ?>">
 							<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 								<tr class='break'>
 									<td colspan=2> 
@@ -240,6 +240,26 @@ else {
 										<?php
 										print getExpenseLog($guid, $gibbonFinanceExpenseID, $connection2) ;
 										?>
+									</td>
+								</tr>
+								<tr>
+									<td colspan=2> 
+										<b><?php print _('Comment') ?></b><br/>
+										<textarea name="comment" id="comment" rows=8 style="width: 100%"></textarea>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+									</td>
+									<td class="right">
+										<input name="gibbonFinanceExpenseID" id="gibbonFinanceExpenseID" value="<?php print $gibbonFinanceExpenseID ?>" type="hidden">
+										<input name="gibbonFinanceBudgetCycleID" id="gibbonFinanceBudgetCycleID" value="<?php print $gibbonFinanceBudgetCycleID ?>" type="hidden">
+										<input name="status2" id="status2" value="<?php print $status2 ?>" type="hidden">
+										<input name="gibbonFinanceBudgetID2" id="gibbonFinanceBudgetID2" value="<?php print $gibbonFinanceBudgetID2 ?>" type="hidden">
+										<input name="status" id="status" value="<?php print $status ?>" type="hidden">
+										<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+										<input type="submit" value="<?php print _("Submit") ; ?>">
 									</td>
 								</tr>
 							</table>

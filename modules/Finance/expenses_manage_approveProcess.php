@@ -240,6 +240,29 @@ else {
 										$URLApprove.="&approveReturn=success0" ;
 										header("Location: {$URLApprove}");
 									}
+									else if ($approval=="Comment") { //COMMENT!
+										//Write comment to log
+										try {
+											$data=array("gibbonFinanceExpenseID"=>$gibbonFinanceExpenseID, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "comment"=>$comment); 
+											$sql="INSERT INTO gibbonFinanceExpenseLog SET gibbonFinanceExpenseID=:gibbonFinanceExpenseID, gibbonPersonID=:gibbonPersonID, timestamp='" . date("Y-m-d H:i:s") . "', action='Comment', comment=:comment" ;
+											$result=$connection2->prepare($sql);
+											$result->execute($data);
+										}
+										catch(PDOException $e) { 
+											//Fail2
+											$URL.="&approveReturn=fail2" ;
+											header("Location: {$URL}");
+											break ;
+										}
+										
+										//Notify original creator that it is commented upon
+										$notificationText=sprintf(_('Someone has commented on your expense request for "%1$s" in budget "%2$s".'), $row["title"], $row["budget"]) ;
+										setNotification($connection2, $guid, $row["gibbonPersonIDCreator"], $notificationText, "Finance", "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=" . $row["gibbonFinanceBudgetID"]) ;
+										
+										//Success 0
+										$URLApprove.="&approveReturn=success0" ;
+										header("Location: {$URLApprove}");
+									}
 									else { //APPROVE!
 										if (approvalRequired($guid, $_SESSION[$guid]["gibbonPersonID"], $row["gibbonFinanceExpenseID"], $gibbonFinanceBudgetCycleID, $connection2, TRUE)==FALSE) {
 											//Fail 0
