@@ -186,6 +186,14 @@ function getMinorLinks($connection2, $guid, $cacheLoad) {
 				}
 			}
 			
+			//Check for house logo (needed to get bubble, below, in right spot)
+			$isHouseLogo=FALSE ;
+			if (isset($_SESSION[$guid]["gibbonHouseIDLogo"]) AND isset($_SESSION[$guid]["gibbonHouseIDName"])) {
+				if ($_SESSION[$guid]["gibbonHouseIDLogo"]!="") {
+					$isHouseLogo=TRUE ;
+				}
+			}
+				
 			$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Messenger/messageWall_view.php" ;
 			if (isset($_SESSION[$guid]["messageWallCount"])==FALSE) {
 				$return.=" . 0 x <img title='" . _('Message Wall') . "' class='minorLinkIcon' style='margin-left: 4px; opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/messageWall_none.png'>" ;
@@ -213,10 +221,10 @@ function getMinorLinks($connection2, $guid, $cacheLoad) {
 							$bubbleWidth=700 ;
 							$bubbleLeft=370 ;
 						}
-						if (isset($_SESSION[$guid]["gibbonHouseIDLogo"])) { //Spacing with house logo
+						if ($isHouseLogo) { //Spacing with house logo
 							$bubbleLeft=$bubbleLeft-70 ;
-							$return.="<div id='messageBubbleArrow' style=\"left: 1019px; top: 62px; z-index: 9999\" class='arrow top'></div>" ;
-							$return.="<div id='messageBubble' style=\"left: " . $bubbleLeft . "px; top: 78px; width: " . $bubbleWidth . "px; min-width: " . $bubbleWidth . "px; max-width: " . $bubbleWidth . "px; min-height: 100px; text-align: center; padding-bottom: 10px\" class=\"ui-tooltip ui-widget ui-corner-all ui-widget-content\" role=\"tooltip\">" ;
+							$return.="<div id='messageBubbleArrow' style=\"left: 1019px; top: 58px; z-index: 9999\" class='arrow top'></div>" ;
+							$return.="<div id='messageBubble' style=\"left: " . $bubbleLeft . "px; top: 74px; width: " . $bubbleWidth . "px; min-width: " . $bubbleWidth . "px; max-width: " . $bubbleWidth . "px; min-height: 100px; text-align: center; padding-bottom: 10px\" class=\"ui-tooltip ui-widget ui-corner-all ui-widget-content\" role=\"tooltip\">" ;
 						}
 						else { //Spacing without house logo
 							$return.="<div id='messageBubbleArrow' style=\"left: 1089px; top: 38px; z-index: 9999\" class='arrow top'></div>" ;
@@ -279,10 +287,8 @@ function getMinorLinks($connection2, $guid, $cacheLoad) {
 		}
 		
 		//House logo
-		if (isset($_SESSION[$guid]["gibbonHouseIDLogo"]) AND isset($_SESSION[$guid]["gibbonHouseIDName"])) {
-			if ($_SESSION[$guid]["gibbonHouseIDLogo"]!="") {
-				$return.=" . <img class='minorLinkIconLarge' title='" . $_SESSION[$guid]["gibbonHouseIDName"] . "' style='vertical-align: -75%; margin-left: 4px' src='" . $_SESSION[$guid]["absoluteURL"] . "/" . $_SESSION[$guid]["gibbonHouseIDLogo"] . "'/>" ; 
-			}
+		if ($isHouseLogo) {
+			$return.=" . <img class='minorLinkIconLarge' title='" . $_SESSION[$guid]["gibbonHouseIDName"] . "' style='vertical-align: -75%; margin-left: 4px' src='" . $_SESSION[$guid]["absoluteURL"] . "/" . $_SESSION[$guid]["gibbonHouseIDLogo"] . "'/>" ; 
 		}
 	}
 	
