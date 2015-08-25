@@ -213,8 +213,15 @@ function getMinorLinks($connection2, $guid, $cacheLoad) {
 							$bubbleWidth=700 ;
 							$bubbleLeft=370 ;
 						}
-						$return.="<div id='messageBubbleArrow' style=\"left: 1089px; top: 38px; z-index: 9999\" class='arrow top'></div>" ;
-						$return.="<div id='messageBubble' style=\"left: " . $bubbleLeft . "px; top: 54px; width: " . $bubbleWidth . "px; min-width: " . $bubbleWidth . "px; max-width: " . $bubbleWidth . "px; min-height: 100px; text-align: center; padding-bottom: 10px\" class=\"ui-tooltip ui-widget ui-corner-all ui-widget-content\" role=\"tooltip\">" ;
+						if (isset($_SESSION[$guid]["gibbonHouseIDLogo"])) { //Spacing with house logo
+							$bubbleLeft=$bubbleLeft-70 ;
+							$return.="<div id='messageBubbleArrow' style=\"left: 1019px; top: 62px; z-index: 9999\" class='arrow top'></div>" ;
+							$return.="<div id='messageBubble' style=\"left: " . $bubbleLeft . "px; top: 78px; width: " . $bubbleWidth . "px; min-width: " . $bubbleWidth . "px; max-width: " . $bubbleWidth . "px; min-height: 100px; text-align: center; padding-bottom: 10px\" class=\"ui-tooltip ui-widget ui-corner-all ui-widget-content\" role=\"tooltip\">" ;
+						}
+						else { //Spacing without house logo
+							$return.="<div id='messageBubbleArrow' style=\"left: 1089px; top: 38px; z-index: 9999\" class='arrow top'></div>" ;
+							$return.="<div id='messageBubble' style=\"left: " . $bubbleLeft . "px; top: 54px; width: " . $bubbleWidth . "px; min-width: " . $bubbleWidth . "px; max-width: " . $bubbleWidth . "px; min-height: 100px; text-align: center; padding-bottom: 10px\" class=\"ui-tooltip ui-widget ui-corner-all ui-widget-content\" role=\"tooltip\">" ;
+						}
 							$return.="<div class=\"ui-tooltip-content\">" ;
 								$return.="<div style='font-weight: bold; font-style: italic; font-size: 120%; margin-top: 10px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dotted rgba(255,255,255,0.5); display: block'>" . _('New Messages') . "</div>" ;
 								$test=count($output) ;
