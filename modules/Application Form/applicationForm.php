@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start() ;
 
+//Module includes from User Admin (for custom fields)
+include "./modules/User Admin/moduleFunctions.php" ;
+
 $proceed=FALSE ;
 $public=FALSE ;
 
@@ -696,7 +699,7 @@ else {
 					</td>
 				</tr>
 				<?php
-			}		
+			}	
 			?>
 			
 			
@@ -792,6 +795,21 @@ else {
 			
 			
 			<?php
+			//CUSTOM FIELDS FOR STUDENT
+			$resultFields=getCustomFields($connection2, $guid, TRUE, FALSE, FALSE, FALSE, TRUE, NULL) ;
+			if ($resultFields->rowCount()>0) {
+				?>
+				<tr>
+					<td colspan=2> 
+						<h4><?php print _('Other Information') ?></h4>
+					</td>
+				</tr>
+				<?php
+				while ($rowFields=$resultFields->fetch()) {
+					print renderCustomFieldRow($connection2, $guid, $rowFields) ;	
+				}
+			}	
+			
 			//FAMILY
 			try {
 				$dataSelect=array("gibbonPersonID"=>$gibbonPersonID); 
@@ -957,6 +975,16 @@ else {
 							 </script>
 						</td>
 					</tr>
+					<?php
+						//CUSTOM FIELDS FOR PARENT 1 WITH FAMILY
+						$resultFields=getCustomFields($connection2, $guid, FALSE, FALSE, TRUE, FALSE, TRUE, NULL) ;
+						if ($resultFields->rowCount()>0) {
+							while ($rowFields=$resultFields->fetch()) {
+								print renderCustomFieldRow($connection2, $guid, $rowFields, "", "parent1") ;	
+							}
+						}	
+					?>
+					
 					<input name='parent1gibbonPersonID' value="<?php print $gibbonPersonID ?>" type="hidden">
 					<?php
 				}
@@ -1441,6 +1469,42 @@ else {
 						</td>
 					</tr>
 					<?php
+					
+					
+					//CUSTOM FIELDS FOR PARENTS, WITH FAMILY
+					$resultFields=getCustomFields($connection2, $guid, FALSE, FALSE, TRUE, FALSE, TRUE, NULL) ;
+					if ($resultFields->rowCount()>0) {
+						?>
+						<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
+							<td colspan=2> 
+								<h4><?php print _('Parent/Guardian') ?> <?php print $i ?> <?php print _('Other Fields') ?></h4>
+							</td>
+						</tr>
+						<?php
+						while ($rowFields=$resultFields->fetch()) {
+							if ($i==2) {
+								print renderCustomFieldRow($connection2, $guid, $rowFields, "", "parent2", "secondParent") ;
+								?>
+								<script type="text/javascript">
+									/* Advanced Options Control */
+									$(document).ready(function(){
+										$("#secondParent").click(function(){
+											if ($('input[name=secondParent]:checked').val()=="No" ) {
+												$("#parent<?php print $i ?>custom<?php print $rowFields["gibbonPersonFieldID"] ?>").attr("disabled", "disabled");
+											} 
+											else {
+												$("#parent<?php print $i ?>custom<?php print $rowFields["gibbonPersonFieldID"] ?>").removeAttr("disabled");
+											}
+										 });
+									});
+								</script>
+								<?php
+							}
+							else {
+								print renderCustomFieldRow($connection2, $guid, $rowFields, "", "parent1") ;
+							}
+						}
+					}	
 				}
 			}
 			else {

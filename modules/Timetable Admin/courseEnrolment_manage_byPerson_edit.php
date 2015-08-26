@@ -174,7 +174,7 @@ else {
 										}
 										print "<option value='" . $rowSelect["gibbonCourseClassID"] . "'>" . htmlPrep($rowSelect["course"]) . "." . htmlPrep($rowSelect["class"]) ;
 										if ($teachers!="") {
-											print " - " . substr($teachers,0,-2) . "" ;
+											print " - " . substr($teachers,0,-2) ;
 										
 										}
 										print " - " . $rowSelect["studentCount"] . " " . _('students') ;

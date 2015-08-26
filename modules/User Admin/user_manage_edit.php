@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start() ;
 
+//Module includes
+include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
+
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/user_manage_edit.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
@@ -110,6 +113,7 @@ else {
 			$staff=FALSE ;
 			$student=FALSE ;
 			$parent=FALSE ;
+			$other=FALSE ;
 			$roles=explode(",", $row["gibbonRoleIDAll"]) ;
 			foreach ($roles AS $role) {
 				$roleCategory=getRoleCategory($role, $connection2) ;
@@ -121,6 +125,9 @@ else {
 				} 
 				if ($roleCategory=="Parent") {
 					$parent=TRUE ;
+				} 
+				if ($roleCategory=="Other") {
+					$other=TRUE ;
 				} 
 			}
 			
@@ -1658,6 +1665,22 @@ else {
 								</td>
 							</tr>
 							<?php
+						}
+					}
+					
+					//CUSTOM FIELDS
+					$fields=unserialize($row["fields"]) ;
+					$resultFields=getCustomFields($connection2, $guid, $student, $staff, $parent, $other) ;
+					if ($resultFields->rowCount()>0) {
+						?>
+						<tr class='break'>
+							<td colspan=2> 
+								<h3><?php print _('Custom Fields') ?></h3>
+							</td>
+						</tr>
+						<?php
+						while ($rowFields=$resultFields->fetch()) {
+							print renderCustomFieldRow($connection2, $guid, $rowFields, $fields[$rowFields["gibbonPersonFieldID"]]) ;	
 						}
 					}
 					?>

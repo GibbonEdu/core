@@ -949,9 +949,23 @@ else {
 						</td>
 					</tr>
 					
-					
-					
 					<?php
+					//CUSTOM FIELDS FOR STUDENT
+					$fields=unserialize($row["fields"]) ;
+					$resultFields=getCustomFields($connection2, $guid, TRUE, FALSE, FALSE, FALSE, TRUE, NULL) ;
+					if ($resultFields->rowCount()>0) {
+						?>
+						<tr>
+							<td colspan=2> 
+								<h4><?php print _('Other Information') ?></h4>
+							</td>
+						</tr>
+						<?php
+						while ($rowFields=$resultFields->fetch()) {
+							print renderCustomFieldRow($connection2, $guid, $rowFields, $fields[$rowFields["gibbonPersonFieldID"]]) ;	
+						}
+					}	
+					
 					if ($row["gibbonFamilyID"]=="") {
 						?>
 						<input type="hidden" name="gibbonFamily" value="FALSE">
@@ -1116,6 +1130,16 @@ else {
 							</tr>
 							<input name='parent1gibbonPersonID' value="<?php print $row["parent1gibbonPersonID"] ?>" type="hidden">
 							<?php
+								//CUSTOM FIELDS FOR PARENT 1 WITH FAMILY
+								$parent1fields=unserialize($row["parent1fields"]) ;
+								$resultFields=getCustomFields($connection2, $guid, FALSE, FALSE, TRUE, FALSE, TRUE, NULL) ;
+								if ($resultFields->rowCount()>0) {
+									while ($rowFields=$resultFields->fetch()) {
+										print renderCustomFieldRow($connection2, $guid, $rowFields, $parent1fields[$rowFields["gibbonPersonFieldID"]], "parent1") ;	
+									}
+								}	
+							?>
+							<?php
 						}
 						else {
 							$start=1 ;
@@ -1271,7 +1295,18 @@ else {
 								</td>
 								<td class="right">
 									<select name="<?php print "parent$i" ?>gender" id="<?php print "parent$i" ?>gender" style="width: 302px">
-										<option value="Please select..."><?php print _('Please select...') ?></option>
+										<?php 
+										if ($i==1) {
+											?>
+											<option value="Please select..."><?php print _('Please select...') ?></option>
+											<?php
+										}
+										else {
+											?>
+											<option value=""></option>
+											<?php
+										}
+										?>
 										<option <?php if ($row["parent$i" . "gender"]=="F") { print "selected" ; } ?> value="F">F</option>
 										<option <?php if ($row["parent$i" . "gender"]=="M") { print "selected" ; } ?> value="M">M</option>
 									</select>
@@ -1593,6 +1628,43 @@ else {
 								</td>
 							</tr>
 							<?php
+							
+							//CUSTOM FIELDS FOR PARENTS, WITH FAMILY
+							$parent1fields=unserialize($row["parent1fields"]) ;
+							$parent2fields=unserialize($row["parent2fields"]) ;
+							$resultFields=getCustomFields($connection2, $guid, FALSE, FALSE, TRUE, FALSE, TRUE, NULL) ;
+							if ($resultFields->rowCount()>0) {
+								?>
+								<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
+									<td colspan=2> 
+										<h4><?php print _('Parent/Guardian') ?> <?php print $i ?> <?php print _('Other Fields') ?></h4>
+									</td>
+								</tr>
+								<?php
+								while ($rowFields=$resultFields->fetch()) {
+									if ($i==2) {
+										print renderCustomFieldRow($connection2, $guid, $rowFields, $parent2fields[$rowFields["gibbonPersonFieldID"]], "parent2", "secondParent", TRUE) ;
+										?>
+										<script type="text/javascript">
+											/* Advanced Options Control */
+											$(document).ready(function(){
+												$("#secondParent").click(function(){
+													if ($('input[name=secondParent]:checked').val()=="No" ) {
+														$("#parent<?php print $i ?>custom<?php print $rowFields["gibbonPersonFieldID"] ?>").attr("disabled", "disabled");
+													} 
+													else {
+														$("#parent<?php print $i ?>custom<?php print $rowFields["gibbonPersonFieldID"] ?>").removeAttr("disabled");
+													}
+												 });
+											});
+										</script>
+										<?php
+									}
+									else {
+										print renderCustomFieldRow($connection2, $guid, $rowFields, $parent1fields[$rowFields["gibbonPersonFieldID"]], "parent1") ;
+									}
+								}
+							}
 						}
 					}
 					else {

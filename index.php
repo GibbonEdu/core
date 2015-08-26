@@ -1033,7 +1033,7 @@ else {
 								}
 							}
 							else {
-								if (strstr($_SESSION[$guid]["address"],"..")!=FALSE) {
+								if (strstr($_SESSION[$guid]["address"],"..")==TRUE OR strstr($_SESSION[$guid]["address"],"installer")==TRUE OR strstr($_SESSION[$guid]["address"],"uploads")==TRUE) {
 									print "<div class='error'>" ;
 									print _("Illegal address detected: access denied.") ;
 									print "</div>" ;

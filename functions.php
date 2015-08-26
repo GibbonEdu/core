@@ -1353,10 +1353,16 @@ function getFastFinder($connection2, $guid) {
 		$list="" ;
 		while ($rowList=$resultList->fetch()) {
 			$list.="{id: \"" . substr($rowList["type"],0,3) . "-" . $rowList["id"] . "\", name: \"" . htmlPrep($rowList["type"]) . " - " . htmlPrep($rowList["name"]) . "\"}," ;
+			if ($rowList["name"]=="Sound Alarm") { //Special lockdown entry
+				if (isActionAccessible($guid, $connection2, "/modules/System Admin/alarm.php")) {
+					$list.="{id: \"" . substr($rowList["type"],0,3) . "-" . $rowList["id"] . "\", name: \"" . htmlPrep($rowList["type"]) . " - Lockdown\"}," ;
+				}
+			}
 			if ($rowList["type"]=="Student") {
 				$studentCount++ ;
 			}
 		}
+		
 		$output.="<style>" ;
 			$output.="ul.token-input-list-facebook { width: 275px; float: left; height: 25px!important; }" ;
 			$output.="div.token-input-dropdown-facebook { width: 275px; z-index: 99999999 }" ;
