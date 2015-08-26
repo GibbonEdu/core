@@ -531,6 +531,8 @@ ALTER TABLE `gibbonPersonUpdate` ADD `fields` TEXT NOT NULL COMMENT 'Serialised 
 INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='User Admin'), 'Manage User Custom Fields', 0, 'User Management', 'Allows a user to create, edit and delete custom fields for users.', 'userFields.php, userFields_add.php, userFields_edit.php, userFields_delete.php', 'userFields.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N') ;end
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='User Admin' AND gibbonAction.name='Manage User Custom Fields'));end
 ALTER TABLE `gibbonApplicationForm` ADD `fields` TEXT NOT NULL COMMENT 'Serialised array of custom field values' AFTER `privacy`, ADD `parent1fields` TEXT NOT NULL COMMENT 'Serialised array of custom field values' AFTER `fields`, ADD `parent2fields` TEXT NOT NULL COMMENT 'Serialised array of custom field values' AFTER `parent1fields`;end
+INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('ja_JP', '日本語', 'N', 'N', 'Yoshie Cresp', '', 'yyyy-mm-dd', '/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/', 'Y-m-d', 'N');end
+
 ";
 
 ?>
