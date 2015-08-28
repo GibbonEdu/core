@@ -777,38 +777,20 @@ else {
 							
 							<tr class='address'>
 								<td> 
-									<b><?php print _('Address 1') ?><?php if (isset($required["address1"])) { if ($required["address1"]=="Y") { print " *" ; } } ?></b><br/>
+									<b><?php print _('Address 1') ?></b><br/>
 									<span style="font-size: 90%"><i><span style="font-size: 90%"><i><?php print _('Unit, Building, Street') ?></i></span></i></span>
 								</td>
 								<td class="right">
-									<input name="address1" id="address1" maxlength=255 value="<?php print htmlPrep($row["address1"]) ?>" type="text" style="width: 300px">
-									<?php
-									$fieldName="address1" ; 
-									if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
-										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
-											print $fieldName . ".add(Validate.Presence);" ;
-										 print "</script>" ;
-									} }
-									?>									
+									<input name="address1" id="address1" maxlength=255 value="<?php print htmlPrep($row["address1"]) ?>" type="text" style="width: 300px">							
 								</td>
 							</tr>
 							<tr class='address'>
 								<td> 
-									<b><?php print _('Address 1 District') ?><?php if (isset($required["address1District"])) { if ($required["address1District"]=="Y") { print " *" ; } } ?></b><br/>
+									<b><?php print _('Address 1 District') ?></b><br/>
 									<span style="font-size: 90%"><i><?php print _('County, State, District') ?></i></span>
 								</td>
 								<td class="right">
-									<input name="address1District" id="address1District" maxlength=30 value="<?php print $row["address1District"] ?>" type="text" style="width: 300px">
-									<?php
-									$fieldName="address1District" ; 
-									if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
-										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
-											print $fieldName . ".add(Validate.Presence);" ;
-										 print "</script>" ;
-									} }
-									?>									
+									<input name="address1District" id="address1District" maxlength=30 value="<?php print $row["address1District"] ?>" type="text" style="width: 300px">								
 								</td>
 								<script type="text/javascript">
 									$(function() {
@@ -832,7 +814,7 @@ else {
 							</tr>
 							<tr class='address'>
 								<td> 
-									<b><?php print _('Address 1 Country') ?><?php if (isset($required["address1Country"])) { if ($required["address1Country"]=="Y") { print " *" ; } } ?></b><br/>
+									<b><?php print _('Address 1 Country') ?></b><br/>
 								</td>
 								<td class="right">
 									<select name="address1Country" id="address1Country" style="width: 302px">
@@ -854,15 +836,6 @@ else {
 										}
 										?>				
 									</select>
-									<?php
-									$fieldName="address1Country" ; 
-									if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
-										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
-											print $fieldName . ".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"Select something!\"});" ;
-										 print "</script>" ;
-									} }
-									?>
 								</td>
 							</tr>
 							
@@ -911,38 +884,20 @@ else {
 					
 							<tr class='address'>
 								<td> 
-									<b><?php print _('Address 2') ?><?php if (isset($required["address2"])) { if ($required["address2"]=="Y") { print " *" ; } } ?></b><br/>
+									<b><?php print _('Address 2') ?></b><br/>
 									<span style="font-size: 90%"><i><span style="font-size: 90%"><i><?php print _('Unit, Building, Street') ?></i></span></i></span>
 								</td>
 								<td class="right">
-									<input name="address2" id="address2" maxlength=255 value="<?php print htmlPrep($row["address2"]) ?>" type="text" style="width: 300px">
-									<?php
-									$fieldName="address2" ; 
-									if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
-										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
-											print $fieldName . ".add(Validate.Presence);" ;
-										 print "</script>" ;
-									} }
-									?>									
+									<input name="address2" id="address2" maxlength=255 value="<?php print htmlPrep($row["address2"]) ?>" type="text" style="width: 300px">							
 								</td>
 							</tr>
 							<tr class='address'>
 								<td> 
-									<b><?php print _('Address 2 District') ?><?php if (isset($required["address2District"])) { if ($required["address2District"]=="Y") { print " *" ; } } ?></b><br/>
+									<b><?php print _('Address 2 District') ?></b><br/>
 									<span style="font-size: 90%"><i><?php print _('County, State, District') ?></i></span>
 								</td>
 								<td class="right">
-									<input name="address2District" id="address2District" maxlength=30 value="<?php print $row["address2District"] ?>" type="text" style="width: 300px">
-									<?php
-									$fieldName="address2District" ; 
-									if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
-										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
-											print $fieldName . ".add(Validate.Presence);" ;
-										 print "</script>" ;
-									} }
-									?>									
+									<input name="address2District" id="address2District" maxlength=30 value="<?php print $row["address2District"] ?>" type="text" style="width: 300px">						
 								</td>
 								<script type="text/javascript">
 									$(function() {
@@ -966,7 +921,7 @@ else {
 							</tr>
 							<tr class='address'>
 								<td> 
-									<b><?php print _('Address 2 Country') ?><?php if (isset($required["address2Country"])) { if ($required["address2Country"]=="Y") { print " *" ; } } ?></b><br/>
+									<b><?php print _('Address 2 Country') ?></b><br/>
 								</td>
 								<td class="right">
 									<select name="address2Country" id="address2Country" style="width: 302px">
@@ -988,15 +943,6 @@ else {
 										}
 										?>				
 									</select>
-									<?php
-									$fieldName="address2Country" ; 
-									if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
-										print "<script type=\"text/javascript\">" ;
-											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
-											print $fieldName . ".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"Select something!\"});" ;
-										 print "</script>" ;
-									} }
-									?>
 								</td>
 							</tr>
 							<?php
