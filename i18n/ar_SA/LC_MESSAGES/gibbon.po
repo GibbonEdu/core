@@ -31062,7 +31062,7 @@ msgstr "معلومات التطوير"
 #: modules/Application Form/applicationForm.php:591
 msgid ""
 "Provide any comments or information concerning your child's development that "
-"may be relevant to your child\\âs performance in the classroom or elsewhere? "
+"may be relevant to your child's performance in the classroom or elsewhere? "
 "(Incorrect or withheld information may affect continued enrolment)."
 msgstr ""
 "قم بتقديم أية تعليقات أو معلومات بشأن تطوير طفلك قد تكون ذات صلة بأداء طفلك "
