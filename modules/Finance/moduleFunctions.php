@@ -17,6 +17,153 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+//Returns amount paid on an particular table/ID combo
+function getAmountPaid($connection2, $guid, $foreignTable, $foreignTableID) {
+	$return=TRUE ;
+	
+	try {
+		$data=array("foreignTable"=>$foreignTable, "foreignTableID"=>$foreignTableID); 
+		$sql="SELECT gibbonPayment.* FROM gibbonPayment WHERE foreignTable=:foreignTable AND foreignTableID=:foreignTableID ORDER BY timestamp" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { $return=FALSE ; }
+	if ($result) {
+		$return=0 ;
+		while ($row=$result->fetch()) {
+			$return+=$row["amount"] ;	
+		}
+	}
+	
+	return $return ;
+}
+
+//Returns log associated with a particular expense
+function getPaymentLog($connection2, $guid, $foreignTable, $foreignTableID) {
+	$return="" ;
+	try {
+		$data=array("foreignTable"=>$foreignTable, "foreignTableID"=>$foreignTableID); 
+		$sql="SELECT gibbonPayment.*, surname, preferredName FROM gibbonPayment JOIN gibbonPerson ON (gibbonPayment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignTable=:foreignTable AND foreignTableID=:foreignTableID ORDER BY timestamp" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { 
+		$return.="<div class='error'>" . $e->getMessage() . "</div>" ; 
+	}
+
+	if ($result->rowCount()<1) {
+		$return.="<div class='error'>" ;
+		$return.=_("There are no records to display.") ;
+		$return.="</div>" ;
+	}
+	else {
+		$return.="<table cellspacing='0' style='width: 100%'>" ;
+			$return.="<tr class='head'>" ;
+				$return.="<th>" ;
+					$return.=_("Person") ;
+				$return.="</th>" ;
+				$return.="<th>" ;
+					$return.=_("Date") ;
+				$return.="</th>" ;
+				$return.="<th>" ;
+					$return.=_("Payment Event") ;
+				$return.="</th>" ;
+				$return.="<th>" ;
+					$return.=_("Amount") . "<br/>" ;
+					if ($_SESSION[$guid]["currency"]!="") {
+						$return.="<span style='font-style: italic; font-size: 85%'>" . $_SESSION[$guid]["currency"] . "</span>" ;
+					}
+				$return.="</th>" ;
+				$return.="<th>" ;
+					$return.=_("Type") ;
+				$return.="</th>" ;
+				$return.="<th>" ;
+					$return.=_("Transaction ID") ;
+				$return.="</th>" ;
+			$return.="</tr>" ;
+			
+			$rowNum="odd" ;
+			$count=0;
+			$paymentTotal=0 ;
+			
+			while ($row=$result->fetch()) {
+				if ($count%2==0) {
+					$rowNum="even" ;
+				}
+				else {
+					$rowNum="odd" ;
+				}
+				$count++ ;
+				
+				//COLOR ROW BY STATUS!
+				$return.="<tr class=$rowNum>" ;
+					$return.="<td>" ;
+						$return.=formatName("", $row["preferredName"], $row["surname"], "Staff", false, true) ;
+					$return.="</td>" ;
+					$return.="<td>" ;
+						$return.=dateConvertBack($guid, substr($row["timestamp"],0 , 10)) ;
+					$return.="</td>" ;
+					$return.="<td>" ;
+						$return.=$row["status"] ;
+					$return.="</td>" ;
+					$return.="<td>" ;
+						$paymentTotal+=$row["amount"] ;
+						if (substr($_SESSION[$guid]["currency"],4)!="") {
+							$return.=substr($_SESSION[$guid]["currency"],4) . " " ;
+						}
+						$return.=number_format($row["amount"], 2, ".", ",") ;
+					$return.="</td>" ;
+					$return.="<td>" ;
+						$return.=$row["type"] ;
+					$return.="</td>" ;
+					$return.="<td>" ;
+						$return.=$row["paymentTransactionID"] ;
+					$return.="</td>" ;
+				$return.="</tr>" ;
+			}
+			$return.="<tr style='height: 35px' class='current'>" ;
+				$return.="<td colspan=5 style='text-align: right'>" ;
+					$return.="<b>" . _('Payment Total:') . "</b>";
+				$return.="</td>" ;
+				$return.="<td>" ;
+					if (substr($_SESSION[$guid]["currency"],4)!="") {
+						$return.=substr($_SESSION[$guid]["currency"],4) . " " ;
+					}
+					$return.="<b>" . number_format($paymentTotal, 2, ".", ",") . "</b>" ;
+				$return.="</td>" ;
+			$return.="</tr>" ;
+		$return.="</table>" ;
+	}
+	
+	return $return ;
+}
+
+//Create an entry in the payment log table, recording the details of a particular payment
+function setPaymentLog($connection2, $guid, $foreignTable, $foreignTableID, $type, $status, $amount, $gateway=NULL, $onlineTransactionStatus=NULL, $paymentToken=NULL, $paymentPayerID=NULL, $paymentTransactionID=NULL, $paymentReceiptID=NULL, $timestamp=NULL) {
+	$return=TRUE ;
+	
+	if ($timestamp==NULL) {
+		$timestampe=date("Y-m-d H:i:s") ;
+	}
+	$gibbonPersonID=NULL ;
+	if (isset($_SESSION[$guid]["gibbonPersonID"])) {
+		$gibbonPersonID=$_SESSION[$guid]["gibbonPersonID"] ;
+	}
+	try {
+		$data=array("foreignTable"=>$foreignTable, "foreignTableID"=>$foreignTableID, "gibbonPersonID"=>$gibbonPersonID, "type"=>$type, "status"=>$status, "amount"=>$amount, "gateway"=>$gateway, "onlineTransactionStatus"=>$onlineTransactionStatus, "paymentToken"=>$paymentToken, "paymentPayerID"=>$paymentPayerID, "paymentTransactionID"=>$paymentTransactionID, "paymentReceiptID"=>$paymentReceiptID, "timestamp"=>$timestamp); 
+		$sql="INSERT INTO gibbonPayment SET foreignTable=:foreignTable, foreignTableID=:foreignTableID, gibbonPersonID=:gibbonPersonID, type=:type, status=:status, amount=:amount, gateway=:gateway, onlineTransactionStatus=:onlineTransactionStatus, paymentToken=:paymentToken, paymentPayerID=:paymentPayerID, paymentTransactionID=:paymentTransactionID, paymentReceiptID=:paymentReceiptID, timestamp=:timestamp" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { 
+		$return=FALSE ;
+	}
+	
+	$return=$connection2->lastInsertID() ;
+	
+	return $return ;
+}
+
 //Checks log to see if approval is complete. Returns false (on error), none (if no completion), budget (if budget completion done or not required), school (if all complete)
 function checkLogForApprovalComplete($guid, $gibbonFinanceExpenseID, $connection2) {
 	//Lock tables
@@ -1279,19 +1426,13 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 						$return.="<b>" . number_format($feeTotal, 2, ".", ",") . "</b>" ;
 					$return.="</td>" ;
 				$return.="</tr>" ;
-				$return.="<tr style='height: 35px' class='current'>" ;
-						$return.="<td colspan=3 style='text-align: right; $style2'>" ;
-						$return.="<b>" . _('Amount Paid:') . "</b>";
-					$return.="</td>" ;
-					$return.="<td style='$style2'>" ;
-						if (substr($currency,4)!="") {
-							$return.=substr($currency,4) . " " ;
-						}
-						$return.="<b>" . number_format($row["paidAmount"], 2, ".", ",") . "</b>" ;
-					$return.="</td>" ;
-				$return.="</tr>" ;
 			}
 		$return.="</table>" ;
+		
+		$return.="<h3 style='padding-top: 40px; padding-left: 10px; margin: 0px; $style4'>" ;
+			$return.=_("Payment Log") ;
+		$return.="</h3>" ;
+		$return.=getPaymentLog($connection2, $guid, "gibbonFinanceInvoice", $gibbonFinanceInvoiceID) ;
 
 		//Invoice Notes
 		$receiptNotes=getSettingByScope( $connection2, "Finance", "receiptNotes" ) ;

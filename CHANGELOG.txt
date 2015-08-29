@@ -286,6 +286,11 @@ User Admin: added ability to add custom demographic fields for person, applicati
 	Edited files /modules/Application Form/applicationForm.php
 	Edited files /modules/User Admin/applicationForm_manage_edit*.php, applicationForm_manage_accept.php
 
+Finance: added ability to record partial payments, as well as a log to record payment 
+	Edited tables gibbonPayment, gibbonFinanceInvoice
+	Edited files /modules/Finance/invoices_manage*.php, invoices_payOnlineProcess.php, moduleFunctions.php
+	Edited file /modules/Application Form/applicationFormProcess.php
+	
 	
 v10.0.00
 --------

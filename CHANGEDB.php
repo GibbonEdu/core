@@ -532,7 +532,15 @@ INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, 
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='User Admin' AND gibbonAction.name='Manage User Custom Fields'));end
 ALTER TABLE `gibbonApplicationForm` ADD `fields` TEXT NOT NULL COMMENT 'Serialised array of custom field values' AFTER `privacy`, ADD `parent1fields` TEXT NOT NULL COMMENT 'Serialised array of custom field values' AFTER `fields`, ADD `parent2fields` TEXT NOT NULL COMMENT 'Serialised array of custom field values' AFTER `parent1fields`;end
 INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('ja_JP', '日本語', 'N', 'N', 'Yoshie Cresp', '', 'yyyy-mm-dd', '/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/', 'Y-m-d', 'N');end
-
+ALTER TABLE `gibbonPayment` ADD `type` ENUM('Online','Bank Transfer','Cash','Cheque','Other') NOT NULL DEFAULT 'Online' AFTER `foreignTableID`;end
+ALTER TABLE `gibbonPayment` CHANGE `status` `onlineTransactionStatus` ENUM('Success','Failure') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Success';end
+ALTER TABLE `gibbonPayment` ADD `status` ENUM('Complete','Partial','Final','Failure') NOT NULL DEFAULT 'Complete' COMMENT 'Complete means paid in one go, partial is part of a set of payments, and final is last in a set of payments.' AFTER `type`;end
+ALTER TABLE `gibbonPayment` CHANGE `gateway` `gateway` ENUM('Paypal') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `transactionStatus` `transactionStatus` ENUM('Success','Failure') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
+ALTER TABLE `gibbonFinanceInvoice` CHANGE `status` `status` ENUM('Pending','Issued','Paid','Paid - Partial','Cancelled','Refunded') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Pending';end
+ALTER TABLE `gibbonPayment` ADD `gibbonPersonID` INT(10) unsigned zerofill NOT NULL COMMENT 'Person recording the transaction' AFTER `foreignTableID`;end
+ALTER TABLE `gibbonPayment` ADD `amount` DECIMAL(13,2) NOT NULL AFTER `status`;end
+ALTER TABLE `gibbonFinanceInvoice` CHANGE `paidAmount` `paidAmount` DECIMAL(13,2) NULL DEFAULT NULL COMMENT 'The current running total amount paid to this invoice';end
+ALTER TABLE `gibbonPayment` CHANGE `gibbonPersonID` `gibbonPersonID` INT(10) UNSIGNED ZEROFILL NULL DEFAULT NULL COMMENT 'Person recording the transaction';
 ";
 
 ?>

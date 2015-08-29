@@ -35,6 +35,9 @@ catch(PDOException $e) {
 //Module includes from User Admin (for custom fields)
 include "../User Admin/moduleFunctions.php" ;
 
+//Module includes from Finance (for setting payment log)
+include "../Finance/moduleFunctions.php" ;
+
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
@@ -807,17 +810,7 @@ else {
 				$updateFail=false ;
 				
 				//Save payment details to gibbonPayment
-				try {
-					$data=array("status"=>"Success", "paymentToken"=>$paymentToken, "paymentPayerID"=>$paymentPayerID, "paymentTransactionID"=>$paymentTransactionID, "paymentReceiptID"=>$paymentReceiptID, "foreignTable"=>"gibbonApplicationForm", "foreignTableID"=>$gibbonApplicationFormID); 
-					$sql="INSERT INTO gibbonPayment SET status=:status, paymentToken=:paymentToken, paymentPayerID=:paymentPayerID, paymentTransactionID=:paymentTransactionID, paymentReceiptID=:paymentReceiptID, foreignTable=:foreignTable, foreignTableID=:foreignTableID" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { 
-					$updateFail=true ;
-				}
-				
-				$gibbonPaymentID=$connection2->lastInsertID() ;
+				$gibbonPaymentID=setPaymentLog($connection2, $guid, "gibbonApplicationForm", $gibbonApplicationFormID, "Online", "Complete", $applicationFee, "Paypal", "Success", $paymentToken, $paymentPayerID, $paymentTransactionID, $paymentReceiptID) ;
 				
 				//Link gibbonPayment record to gibbonApplicationForm, and make note that payment made
 				if ($gibbonPaymentID!="") {
@@ -853,17 +846,7 @@ else {
 				$updateFail=false ;
 				
 				//Save payment details to gibbonPayment
-				try {
-					$data=array("status"=>"Failure", "paymentToken"=>$paymentToken, "paymentPayerID"=>$paymentPayerID, "paymentTransactionID"=>$paymentTransactionID, "paymentReceiptID"=>$paymentReceiptID, "foreignTable"=>"gibbonApplicationForm", "foreignTableID"=>$gibbonApplicationFormID); 
-					$sql="INSERT INTO gibbonPayment SET status=:status, paymentToken=:paymentToken, paymentPayerID=:paymentPayerID, paymentTransactionID=:paymentTransactionID, paymentReceiptID=:paymentReceiptID, foreignTable=:foreignTable, foreignTableID=:foreignTableID" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { 
-					$updateFail=true ;
-				}
-				
-				$gibbonPaymentID=$connection2->lastInsertID() ;
+				$gibbonPaymentID=setPaymentLog($connection2, $guid, "gibbonApplicationForm", $gibbonApplicationFormID, "Online", "Failure", $applicationFee, "Paypal", "Failure", $paymentToken, $paymentPayerID, $paymentTransactionID, $paymentReceiptID) ;
 				
 				//Link gibbonPayment record to gibbonApplicationForm, and make note that payment made
 				if ($gibbonPaymentID!="") {
