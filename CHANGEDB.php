@@ -535,7 +535,7 @@ INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainer
 ALTER TABLE `gibbonPayment` ADD `type` ENUM('Online','Bank Transfer','Cash','Cheque','Other') NOT NULL DEFAULT 'Online' AFTER `foreignTableID`;end
 ALTER TABLE `gibbonPayment` CHANGE `status` `onlineTransactionStatus` ENUM('Success','Failure') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Success';end
 ALTER TABLE `gibbonPayment` ADD `status` ENUM('Complete','Partial','Final','Failure') NOT NULL DEFAULT 'Complete' COMMENT 'Complete means paid in one go, partial is part of a set of payments, and final is last in a set of payments.' AFTER `type`;end
-ALTER TABLE `gibbonPayment` CHANGE `gateway` `gateway` ENUM('Paypal') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `transactionStatus` `transactionStatus` ENUM('Success','Failure') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
+ALTER TABLE `gibbonPayment` CHANGE `gateway` `gateway` ENUM('Paypal') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `onlineTransactionStatus` `onlineTransactionStatus` ENUM('Success','Failure') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
 ALTER TABLE `gibbonFinanceInvoice` CHANGE `status` `status` ENUM('Pending','Issued','Paid','Paid - Partial','Cancelled','Refunded') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Pending';end
 ALTER TABLE `gibbonPayment` ADD `gibbonPersonID` INT(10) unsigned zerofill NOT NULL COMMENT 'Person recording the transaction' AFTER `foreignTableID`;end
 ALTER TABLE `gibbonPayment` ADD `amount` DECIMAL(13,2) NOT NULL AFTER `status`;end
