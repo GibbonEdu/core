@@ -290,8 +290,14 @@ Finance: added ability to record partial payments, as well as a log to record pa
 	Edited tables gibbonPayment, gibbonFinanceInvoice
 	Edited files /modules/Finance/invoices_manage*.php, invoices_payOnlineProcess.php, moduleFunctions.php
 	Edited file /modules/Application Form/applicationFormProcess.php
+
+Activities: UX improvements to parent sign ups
+	Edited files /modules/Activities/activities_view.php, activities_view_register*.php
 	
-	
+Activities: added Waiting List column to manage view
+	Edited file /modules/Activities/activities_manage.php
+
+
 v10.0.00
 --------
 i18n: added Urdu as inactive development language
