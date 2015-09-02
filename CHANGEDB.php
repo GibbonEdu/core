@@ -541,6 +541,8 @@ ALTER TABLE `gibbonPayment` ADD `gibbonPersonID` INT(10) unsigned zerofill NOT N
 ALTER TABLE `gibbonPayment` ADD `amount` DECIMAL(13,2) NOT NULL AFTER `status`;end
 ALTER TABLE `gibbonFinanceInvoice` CHANGE `paidAmount` `paidAmount` DECIMAL(13,2) NULL DEFAULT NULL COMMENT 'The current running total amount paid to this invoice';end
 ALTER TABLE `gibbonPayment` CHANGE `gibbonPersonID` `gibbonPersonID` INT(10) UNSIGNED ZEROFILL NULL DEFAULT NULL COMMENT 'Person recording the transaction';
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'Finance', 'hideItemisation', 'Hide Itemisation', 'Hide fee and payment details in both invoices and receipts?', 'N');end
+
 ";
 
 ?>

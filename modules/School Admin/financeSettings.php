@@ -155,7 +155,7 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><?php print _('Invoices') ?></h3>
+					<h3><?php print _('Invoices & Receipts') ?></h3>
 				</td>
 			</tr>
 			<tr>
@@ -230,11 +230,6 @@ else {
 				</td>
 			</tr>
 			
-			<tr class='break'>
-				<td colspan=2> 
-					<h3><?php print _('Receipts') ?></h3>
-				</td>
-			</tr>
 			<tr>
 				<?php
 				try {
@@ -271,6 +266,36 @@ else {
 				</td>
 				<td class="right">
 					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" type="text" style="width: 300px" rows=4><?php print $row["value"] ?></textarea>
+				</td>
+			</tr>
+			<tr>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='Finance' AND name='hideItemisation'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+				</td>
+				<td class="right">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<?php
+						$selected="" ;
+						if ($row["value"]=="Y" ) { $selected="selected" ; }
+						print "<option $selected value='Y'>" . ynExpander('Y') . "</option>" ;
+						$selected="" ;
+						if ($row["value"]=="N" ) { $selected="selected" ; }
+						print "<option $selected value='N'>" . ynExpander('N') . "</option>" ;
+						?>			
+					</select>
 				</td>
 			</tr>
 			

@@ -221,6 +221,9 @@ div.minorLinks {
 	font-size: 80%; 
 	font-weight: normal; 
 }
+div.minorLinksTopGap {
+	margin-top: 25px; 
+}
 img.minorLinkIcon {
 	height: 38px ;
 	max-height: 38px ;

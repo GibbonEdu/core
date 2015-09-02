@@ -297,6 +297,14 @@ Activities: UX improvements to parent sign ups
 Activities: added Waiting List column to manage view
 	Edited file /modules/Activities/activities_manage.php
 
+Activities: fixed bug preventing Activity add when type field is not in use
+	Edited file /modules/Activities/activities_manage_addProcess.php
+
+Finance: added ability to remove itemisation from invoices and receipts
+	New value in table gibbonSetting
+	Edited files /modules/School Admin/financeSettings.php
+	Edited file /modules/Finance/moduleFunctions.php
+
 
 v10.0.00
 --------

@@ -56,7 +56,7 @@ else {
 		
 			$count=0;
 			$rowNum="odd" ;
-			while ($row=$resultLike->fetch() AND $count<20) {
+			while ($row=$resultLike->fetch()) {
 				if ($count%2==0) {
 					$rowNum="even" ;
 				}

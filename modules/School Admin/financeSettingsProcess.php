@@ -52,6 +52,7 @@ else {
 	$invoiceNumber=$_POST["invoiceNumber"] ;
 	$receiptText=$_POST["receiptText"] ;
 	$receiptNotes=$_POST["receiptNotes"] ;
+	$hideItemisation=$_POST["hideItemisation"] ;
 	$reminder1Text=$_POST["reminder1Text"] ;
 	$reminder2Text=$_POST["reminder2Text"] ;
 	$reminder3Text=$_POST["reminder3Text"] ;
@@ -63,7 +64,7 @@ else {
 	$purchasingOfficer=$_POST["purchasingOfficer"] ;
 	$reimbursementOfficer=$_POST["reimbursementOfficer"] ;
 	
-	if ($email=="" OR $financeOnlinePaymentEnabled=="" OR $invoiceNumber=="" OR $budgetCategories=="" OR $expenseApprovalType=="" OR $budgetLevelExpenseApproval=="" OR $allowExpenseAdd=="") {
+	if ($email=="" OR $financeOnlinePaymentEnabled=="" OR $invoiceNumber=="" OR $hideItemisation=="" OR $budgetCategories=="" OR $expenseApprovalType=="" OR $budgetLevelExpenseApproval=="" OR $allowExpenseAdd=="") {
 		//Fail 3
 		$URL.="&addReturn=fail3" ;
 		header("Location: {$URL}");
@@ -151,7 +152,17 @@ else {
 		catch(PDOException $e) { 
 			$fail=TRUE ;
 		}
-	
+		
+		try {
+			$data=array("value"=>$hideItemisation); 
+			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Finance' AND name='hideItemisation'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ;
+		}
+		
 		try {
 			$data=array("value"=>$reminder1Text); 
 			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Finance' AND name='reminder1Text'" ;

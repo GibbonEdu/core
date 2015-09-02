@@ -360,8 +360,13 @@ else {
 						
 			<div id="wrapOuter">
 				<?php
-				print "<div class='minorLinks'>" ;
-					print getMinorLinks($connection2, $guid, $cacheLoad) ;
+				if (@$_SESSION[$guid]["gibbonHouseIDLogo"]=="") {
+					print "<div class='minorLinks minorLinksTopGap'>" ;
+				}
+				else {
+					print "<div class='minorLinks'>" ;
+				}
+				print getMinorLinks($connection2, $guid, $cacheLoad) ;
 				print "</div>" ;
 				?>
 				<div id="wrap">
