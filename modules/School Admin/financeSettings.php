@@ -155,7 +155,7 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><?php print _('Invoices & Receipts') ?></h3>
+					<h3><?php print _('Invoices') ?></h3>
 				</td>
 			</tr>
 			<tr>
@@ -230,6 +230,11 @@ else {
 				</td>
 			</tr>
 			
+			<tr class='break'>
+				<td colspan=2> 
+					<h3><?php print _('Receipts') ?></h3>
+				</td>
+			</tr>
 			<tr>
 				<?php
 				try {

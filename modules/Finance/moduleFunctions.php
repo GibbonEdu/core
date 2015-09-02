@@ -1053,9 +1053,6 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 			$return.="</tr>" ;
 		$return.="</table>" ;
 
-		//Check itemisation status
-		$hideItemisation=getSettingByScope($connection2, "Finance", "hideItemisation") ;
-		
 		try {
 			if ($preview==TRUE) {
 				//Standard
@@ -1085,89 +1082,72 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 		else {
 			$feeTotal=0 ;
 			
-			if ($hideItemisation!="Y") { //Do not hide itemisation
-				//Fee table
-				$return.="<h3 style='padding-top: 40px; padding-left: 10px; margin: 0px; $style4'>" ;
-					$return.=_("Fee Table") ;
-				$return.="</h3>" ;
-				
-				$return.="<table cellspacing='0' style='width: 100%; $style4'>" ;
-					$return.="<tr class='head'>" ;
-						$return.="<th style='text-align: left; padding-left: 10px'>" ;
-							$return.=_("Name") ;
-						$return.="</th>" ;
-						$return.="<th style='text-align: left'>" ;
-							$return.=_("Category") ;
-						$return.="</th>" ;
-						$return.="<th style='text-align: left'>" ;
-							$return.=_("Description") ;
-						$return.="</th>" ;
-						$return.="<th style='text-align: left'>" ;
-							$return.=_("Fee") . "<br/>" ;
-							if ($currency!="") {
-								$return.="<span style='font-style: italic; font-size: 85%'>" . $currency . "</span>" ;
-							}
-						$return.="</th>" ;
-					$return.="</tr>" ;
-
-					$count=0;
-					$rowNum="odd" ;
-					while ($rowFees=$resultFees->fetch()) {
-						if ($count%2==0) {
-							$rowNum="even" ;
+			//Fee table
+			$return.="<h3 style='padding-top: 40px; padding-left: 10px; margin: 0px; $style4'>" ;
+				$return.=_("Fee Table") ;
+			$return.="</h3>" ;
+			
+			$return.="<table cellspacing='0' style='width: 100%; $style4'>" ;
+				$return.="<tr class='head'>" ;
+					$return.="<th style='text-align: left; padding-left: 10px'>" ;
+						$return.=_("Name") ;
+					$return.="</th>" ;
+					$return.="<th style='text-align: left'>" ;
+						$return.=_("Category") ;
+					$return.="</th>" ;
+					$return.="<th style='text-align: left'>" ;
+						$return.=_("Description") ;
+					$return.="</th>" ;
+					$return.="<th style='text-align: left'>" ;
+						$return.=_("Fee") . "<br/>" ;
+						if ($currency!="") {
+							$return.="<span style='font-style: italic; font-size: 85%'>" . $currency . "</span>" ;
 						}
-						else {
-							$rowNum="odd" ;
-						}
-						$count++ ;
+					$return.="</th>" ;
+				$return.="</tr>" ;
 
-						$return.="<tr style='height: 25px' class=$rowNum>" ;
-							$return.="<td style='padding-left: 10px'>" ;
-								$return.=$rowFees["name"] ;
-							$return.="</td>" ;
-							$return.="<td>" ;
-								$return.=$rowFees["category"] ;
-							$return.="</td>" ;
-							$return.="<td>" ;
-								$return.=$rowFees["description"] ;
-							$return.="</td>" ;
-							$return.="<td>" ;
-								if (substr($currency,4)!="") {
-									$return.=substr($currency,4) . " " ;
-								}
-								$return.=number_format($rowFees["fee"], 2, ".", ",") ;
-								$feeTotal+=$rowFees["fee"] ;
-							$return.="</td>" ;
-						$return.="</tr>" ;
+				$count=0;
+				$rowNum="odd" ;
+				while ($rowFees=$resultFees->fetch()) {
+					if ($count%2==0) {
+						$rowNum="even" ;
 					}
-					$return.="<tr style='height: 35px' class='current'>" ;
-						$return.="<td colspan=3 style='text-align: right; $style2'>" ;
-							$return.="<b>" . _("Invoice Total:") . "</b>";
+					else {
+						$rowNum="odd" ;
+					}
+					$count++ ;
+
+					$return.="<tr style='height: 25px' class=$rowNum>" ;
+						$return.="<td style='padding-left: 10px'>" ;
+							$return.=$rowFees["name"] ;
 						$return.="</td>" ;
-						$return.="<td style='$style2'>" ;
+						$return.="<td>" ;
+							$return.=$rowFees["category"] ;
+						$return.="</td>" ;
+						$return.="<td>" ;
+							$return.=$rowFees["description"] ;
+						$return.="</td>" ;
+						$return.="<td>" ;
 							if (substr($currency,4)!="") {
 								$return.=substr($currency,4) . " " ;
 							}
-							$return.="<b>" . number_format($feeTotal, 2, ".", ",") . "</b>" ;
+							$return.=number_format($rowFees["fee"], 2, ".", ",") ;
+							$feeTotal+=$rowFees["fee"] ;
 						$return.="</td>" ;
 					$return.="</tr>" ;
-				$return.="</table>" ;
-			}
-			else {
-				$return.="<h3 style='padding-top: 40px; padding-left: 10px; margin: 0px; $style4'>" ;
-					$return.=_("Amount Due") ;
-				$return.="</h3>" ;
-				while ($rowFees=$resultFees->fetch()) {
-					$feeTotal+=$rowFees["fee"] ;
 				}
-				$return.="<p style='margin-top: 10px; text-align: right'>" ;
-					$return.=_('Invoice Total') . ": " ;
-					if (substr($currency,4)!="") {
-						$return.=substr($currency,4) . " " ;
-					}
-					$return.="<b>" . number_format($feeTotal, 2, ".", ",") . "</b>" ;
-				$return.="</p>" ;
-			}
+				$return.="<tr style='height: 35px' class='current'>" ;
+					$return.="<td colspan=3 style='text-align: right; $style2'>" ;
+						$return.="<b>" . _("Invoice Total:") . "</b>";
+					$return.="</td>" ;
+					$return.="<td style='$style2'>" ;
+						if (substr($currency,4)!="") {
+							$return.=substr($currency,4) . " " ;
+						}
+						$return.="<b>" . number_format($feeTotal, 2, ".", ",") . "</b>" ;
+					$return.="</td>" ;
+				$return.="</tr>" ;
+			$return.="</table>" ;
 		}
 
 		//Online payment
