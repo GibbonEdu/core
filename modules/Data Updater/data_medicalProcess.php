@@ -250,7 +250,10 @@ else {
 						$gibbonPersonMedicalUpdateID=NULL ;
 					}
 					$name=$_POST["name"] ; 	
-					$gibbonAlertLevelID=$_POST["gibbonAlertLevelID"] ; 	
+					$gibbonAlertLevelID=NULL ;
+					if ($_POST["gibbonAlertLevelID"]!="Please select...") {
+						$gibbonAlertLevelID=$_POST["gibbonAlertLevelID"] ; 	
+					}
 					$triggers=$_POST["triggers"] ; 	
 					$reaction=$_POST["reaction"] ; 	
 					$response=$_POST["response"] ; 	
