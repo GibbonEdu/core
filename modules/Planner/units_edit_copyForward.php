@@ -208,7 +208,7 @@ else {
 										<script type="text/javascript">
 											var gibbonSchoolYearIDCopyTo=new LiveValidation('gibbonSchoolYearIDCopyTo');
 											gibbonSchoolYearIDCopyTo.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-										 </script>
+										</script>
 									</td>
 								</tr>
 								<tr>
@@ -251,7 +251,7 @@ else {
 										<script type="text/javascript">
 											var nameTarget=new LiveValidation('nameTarget');
 											nameTarget.add(Validate.Presence);
-										 </script>
+										</script>
 									</td>
 								</tr>
 								

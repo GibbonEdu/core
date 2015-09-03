@@ -243,7 +243,7 @@ else {
 								<script type="text/javascript">
 									var name2=new LiveValidation('name');
 									name2.add(Validate.Presence);
-								 </script>
+								</script>
 							</td>
 						</tr>
 						<tr>
@@ -255,7 +255,7 @@ else {
 								<script type="text/javascript">
 									var description=new LiveValidation('description');
 									description.add(Validate.Presence);
-								 </script>
+								</script>
 							</td>
 						</tr>
 						<?php
@@ -282,7 +282,7 @@ else {
 									<script type="text/javascript">
 										var type=new LiveValidation('type');
 										type.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-									 </script>
+									</script>
 								</td>
 							</tr>
 							<tr>
@@ -614,7 +614,7 @@ else {
 								<script type="text/javascript">
 									var completeDate=new LiveValidation('completeDate');
 									completeDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-								 </script>
+								</script>
 								 <script type="text/javascript">
 									$(function() {
 										$( "#completeDate" ).datepicker();

@@ -184,7 +184,7 @@ else {
 									<script type="text/javascript">
 										var title=new LiveValidation('title');
 										title.add(Validate.Presence);
-									 </script>
+									</script>
 								</td>
 							</tr>
 							<tr>
@@ -197,7 +197,7 @@ else {
 									<script type="text/javascript">
 										var status=new LiveValidation('status');
 										status.add(Validate.Presence);
-									 </script>
+									</script>
 								</td>
 							</tr>
 							<tr id="teachersNotesRow">

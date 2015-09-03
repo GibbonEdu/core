@@ -167,7 +167,7 @@ else {
 							<script type="text/javascript">
 								var type=new LiveValidation('type');
 								type.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr id="optionsRow">

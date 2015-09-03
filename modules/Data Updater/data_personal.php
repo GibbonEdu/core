@@ -1447,7 +1447,7 @@ else {
 											print "visaExpiryDate.add(Validate.Presence);" ;
 										}
 										?>
-									 </script>
+									</script>
 									 <script type="text/javascript">
 										$(function() {
 											$( "#visaExpiryDate" ).datepicker();

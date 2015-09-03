@@ -218,7 +218,7 @@ else {
 									<script type="text/javascript">
 										var name<?php print $i ?>=new LiveValidation('name<?php print $i ?>');
 										name<?php print $i ?>.add(Validate.Presence);
-									 </script>
+									</script>
 								</td>
 							</tr>
 							<tr>
@@ -246,7 +246,7 @@ else {
 										var id<?php print $i ?>=new LiveValidation('id<?php print $i ?>');
 										id<?php print $i ?>.add( Validate.Exclusion, { within: [<?php print $idList ;?>], failureMessage: "ID already in use!", partialMatch: false, caseSensitive: false } );
 										id<?php print $i ?>.add(Validate.Presence);
-									 </script>
+									</script>
 								</td>
 							</tr>
 							<tr>
@@ -259,7 +259,7 @@ else {
 									<script type="text/javascript">
 										var producer<?php print $i ?>=new LiveValidation('producer<?php print $i ?>');
 										producer<?php print $i ?>.add(Validate.Presence);
-									 </script>
+									</script>
 								</td>
 							</tr>
 							<tr>
@@ -281,7 +281,7 @@ else {
 									<script type="text/javascript">
 										var purchaseDate=new LiveValidation('purchaseDate');
 										purchaseDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-									 </script>
+									</script>
 									 <script type="text/javascript">
 										$(function() {
 											$( "#purchaseDate" ).datepicker();

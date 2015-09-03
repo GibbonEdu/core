@@ -179,7 +179,7 @@ include "../functions.php" ;
 												<script type="text/javascript">
 													var databaseServer=new LiveValidation('databaseServer');
 													databaseServer.add(Validate.Presence);
-												 </script>
+												</script>
 											</td>
 										</tr>
 										<tr>
@@ -192,7 +192,7 @@ include "../functions.php" ;
 												<script type="text/javascript">
 													var databaseName=new LiveValidation('databaseName');
 													databaseName.add(Validate.Presence);
-												 </script>
+												</script>
 											</td>
 										</tr>
 										<tr>
@@ -204,7 +204,7 @@ include "../functions.php" ;
 												<script type="text/javascript">
 													var databaseUsername=new LiveValidation('databaseUsername');
 													databaseUsername.add(Validate.Presence);
-												 </script>
+												</script>
 											</td>
 										</tr>
 										<tr>
@@ -216,7 +216,7 @@ include "../functions.php" ;
 												<script type="text/javascript">
 													var databasePassword=new LiveValidation('databasePassword');
 													databasePassword.add(Validate.Presence);
-												 </script>
+												</script>
 											</td>
 										</tr>
 										
@@ -480,7 +480,7 @@ include "../functions.php" ;
 																	<script type="text/javascript">
 																		var surname=new LiveValidation('surname');
 																		surname.add(Validate.Presence);
-																	 </script>
+																	</script>
 																</td>
 															</tr>
 															<tr>
@@ -493,7 +493,7 @@ include "../functions.php" ;
 																	<script type="text/javascript">
 																		var firstName=new LiveValidation('firstName');
 																		firstName.add(Validate.Presence);
-																	 </script>
+																	</script>
 																</td>
 															</tr>
 															<tr>
@@ -506,7 +506,7 @@ include "../functions.php" ;
 																		var email=new LiveValidation('email');
 																		email.add(Validate.Email);
 																		email.add(Validate.Presence);
-																	 </script>
+																	</script>
 																</td>
 															</tr>
 															<tr>
@@ -541,7 +541,7 @@ include "../functions.php" ;
 																	<script type="text/javascript">
 																		var username=new LiveValidation('username');
 																		username.add(Validate.Presence);
-																	 </script>
+																	</script>
 																</td>
 															</tr>
 															<tr>
@@ -584,7 +584,7 @@ include "../functions.php" ;
 																			print "password.add( Validate.Length, { minimum: " . $minLength . "} );" ;
 																		}
 																		?>
-																	 </script>
+																	</script>
 																</td>
 															</tr>
 															<tr>
@@ -598,7 +598,7 @@ include "../functions.php" ;
 																		var passwordConfirm=new LiveValidation('passwordConfirm');
 																		passwordConfirm.add(Validate.Presence);
 																		passwordConfirm.add(Validate.Confirmation, { match: 'password' } );
-																	 </script>
+																	</script>
 																</td>
 															</tr>
 														
@@ -631,7 +631,7 @@ include "../functions.php" ;
 																		var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 																		<?php print $row["name"] ?>.add(Validate.Presence);
 																		<?php print $row["name"] ?>.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
-																	 </script> 
+																	</script> 
 																</td>
 															</tr>
 															<tr>
@@ -656,7 +656,7 @@ include "../functions.php" ;
 																	<script type="text/javascript">
 																		var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 																		<?php print $row["name"] ?>.add(Validate.Presence);
-																	 </script> 
+																	</script> 
 																</td>
 															</tr>
 															<tr>
@@ -681,7 +681,7 @@ include "../functions.php" ;
 																	<script type="text/javascript">
 																		var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 																		<?php print $row["name"] ?>.add(Validate.Presence);
-																	 </script> 
+																	</script> 
 																</td>
 															</tr>
 															<tr>
@@ -832,7 +832,7 @@ include "../functions.php" ;
 																	<script type="text/javascript">
 																		var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 																		<?php print $row["name"] ?>.add(Validate.Presence);
-																	 </script> 
+																	</script> 
 																</td>
 															</tr>
 															<tr>
@@ -857,7 +857,7 @@ include "../functions.php" ;
 																	<script type="text/javascript">
 																		var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 																		<?php print $row["name"] ?>.add(Validate.Presence);
-																	 </script> 
+																	</script> 
 																</td>
 															</tr>
 															<tr>
@@ -1010,7 +1010,7 @@ include "../functions.php" ;
 																	<script type="text/javascript">
 																		var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 																		<?php print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-																	 </script>
+																	</script>
 																</td>
 															</tr>
 															<tr>
@@ -1035,7 +1035,7 @@ include "../functions.php" ;
 																	<script type="text/javascript">
 																		var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 																		<?php print $row["name"] ?>.add(Validate.Presence);
-																	 </script> 
+																	</script> 
 																</td>
 															</tr>
 															<tr>
@@ -1076,7 +1076,7 @@ include "../functions.php" ;
 																	<script type="text/javascript">
 																		var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 																		<?php print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-																	 </script>
+																	</script>
 																</td>
 															</tr>
 			

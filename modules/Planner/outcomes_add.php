@@ -107,7 +107,7 @@ else {
 								<script type="text/javascript">
 									var scope=new LiveValidation('scope');
 									scope.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-								 </script>
+								</script>
 								 <?php
 							}
 							else if ($highestAction=="Manage Outcomes_viewAllEditLearningArea") {

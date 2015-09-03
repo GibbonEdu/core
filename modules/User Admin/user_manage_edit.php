@@ -177,7 +177,7 @@ else {
 							<script type="text/javascript">
 								var surname=new LiveValidation('surname');
 								surname.add(Validate.Presence);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -190,7 +190,7 @@ else {
 							<script type="text/javascript">
 								var firstName=new LiveValidation('firstName');
 								firstName.add(Validate.Presence);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -203,7 +203,7 @@ else {
 							<script type="text/javascript">
 								var preferredName=new LiveValidation('preferredName');
 								preferredName.add(Validate.Presence);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -216,7 +216,7 @@ else {
 							<script type="text/javascript">
 								var officialName=new LiveValidation('officialName');
 								officialName.add(Validate.Presence);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -243,7 +243,7 @@ else {
 							<script type="text/javascript">
 								var gender=new LiveValidation('gender');
 								gender.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -262,7 +262,7 @@ else {
 							<script type="text/javascript">
 								var dob=new LiveValidation('dob');
 								dob.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-							 </script>
+							</script>
 							 <script type="text/javascript">
 								$(function() {
 									$( "#dob" ).datepicker();
@@ -331,7 +331,7 @@ else {
 							<script type="text/javascript">
 								var gibbonRoleIDPrimary=new LiveValidation('gibbonRoleIDPrimary');
 								gibbonRoleIDPrimary.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -367,7 +367,7 @@ else {
 							<script type="text/javascript">
 								var gibbonRoleIDPrimary=new LiveValidation('gibbonRoleIDPrimary');
 								gibbonRoleIDPrimary.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -380,7 +380,7 @@ else {
 							<script type="text/javascript">
 								var username=new LiveValidation('username');
 								username.add(Validate.Presence);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					
@@ -453,7 +453,7 @@ else {
 							<script type="text/javascript">
 								var email=new LiveValidation('email');
 								email.add(Validate.Email);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -466,7 +466,7 @@ else {
 							<script type="text/javascript">
 								var emailAlternate=new LiveValidation('emailAlternate');
 								emailAlternate.add(Validate.Email);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -826,7 +826,7 @@ else {
 							<script type="text/javascript">
 								var dateStart=new LiveValidation('dateStart');
 								dateStart.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-							 </script>
+							</script>
 							 <script type="text/javascript">
 								$(function() {
 									$( "#dateStart" ).datepicker();
@@ -844,7 +844,7 @@ else {
 							<script type="text/javascript">
 								var dateEnd=new LiveValidation('dateEnd');
 								dateEnd.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-							 </script>
+							</script>
 							 <script type="text/javascript">
 								$(function() {
 									$( "#dateEnd" ).datepicker();
@@ -1337,7 +1337,7 @@ else {
 							<script type="text/javascript">
 								var visaExpiryDate=new LiveValidation('visaExpiryDate');
 								visaExpiryDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-							 </script>
+							</script>
 							 <script type="text/javascript">
 								$(function() {
 									$( "#visaExpiryDate" ).datepicker();

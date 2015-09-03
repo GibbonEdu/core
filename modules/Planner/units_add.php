@@ -166,7 +166,7 @@ else {
 										<script type="text/javascript">
 											var name2=new LiveValidation('name');
 											name2.add(Validate.Presence);
-										 </script>
+										</script>
 									</td>
 								</tr>
 								<tr>

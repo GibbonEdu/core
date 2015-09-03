@@ -124,7 +124,7 @@ else {
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Presence);
 						<?php print $row["name"] ?>.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
-					 </script> 
+					</script> 
 				</td>
 			</tr>
 			<tr>
@@ -149,7 +149,7 @@ else {
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Presence);
-					 </script> 
+					</script> 
 				</td>
 			</tr>
 			<tr>
@@ -174,7 +174,7 @@ else {
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Presence);
-					 </script> 
+					</script> 
 				</td>
 			</tr>
 			<tr>
@@ -199,7 +199,7 @@ else {
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Presence);
-					 </script> 
+					</script> 
 				</td>
 			</tr>
 			<tr>
@@ -314,7 +314,7 @@ else {
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Presence);
-					 </script> 
+					</script> 
 				</td>
 			</tr>
 			<tr>
@@ -339,7 +339,7 @@ else {
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Presence);
-					 </script> 
+					</script> 
 				</td>
 			</tr>
 			<tr>
@@ -364,7 +364,7 @@ else {
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Email);
-					 </script> 
+					</script> 
 				</td>
 			</tr>
 			<tr>
@@ -389,7 +389,7 @@ else {
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Presence);
-					 </script> 
+					</script> 
 				</td>
 			</tr>
 			
@@ -433,7 +433,7 @@ else {
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-					 </script>
+					</script>
 				</td>
 			</tr>
 			<tr>
@@ -476,7 +476,7 @@ else {
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-					 </script>
+					</script>
 				</td>
 			</tr>
 			<tr>
@@ -519,7 +519,7 @@ else {
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-					 </script>
+					</script>
 				</td>
 			</tr>
 			
@@ -681,7 +681,7 @@ else {
 						<?php print $row["name"] ?>.add(Validate.Numericality);
 						<?php print $row["name"] ?>.add( Validate.Numericality, { minimum: 1200 } );
 						<?php print $row["name"] ?>.add(Validate.Presence);
-					 </script> 
+					</script> 
 				</td>
 			</tr>
 			<tr>
@@ -823,7 +823,7 @@ else {
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Presence);
-					 </script> 
+					</script> 
 				</td>
 			</tr>
 			<tr>
@@ -963,7 +963,7 @@ else {
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Numericality);
 						<?php print $row["name"] ?>.add(Validate.Presence);
-					 </script> 
+					</script> 
 				</td>
 			</tr>
 			<tr>
@@ -1030,7 +1030,7 @@ else {
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-					 </script>
+					</script>
 				</td>
 			</tr>
 			

@@ -2079,7 +2079,7 @@ function sidebar($connection2, $guid) {
 							<script type="text/javascript">
 								var username=new LiveValidation('username', {onlyOnSubmit: true });
 								username.add(Validate.Presence);
-							 </script> 
+							</script> 
 						</td>
 					</tr>
 					<tr>
@@ -2091,7 +2091,7 @@ function sidebar($connection2, $guid) {
 							<script type="text/javascript">
 								var password=new LiveValidation('password', {onlyOnSubmit: true });
 								password.add(Validate.Presence);
-							 </script> 
+							</script> 
 						</td>
 					</tr>
 					<tr class='schoolYear' id='schoolYear'>

@@ -252,7 +252,7 @@ else {
 										<script type="text/javascript">
 											var descriptor=new LiveValidation('descriptor');
 											descriptor.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-										 </script>
+										</script>
 									</td>
 								</tr>
 								<?php
@@ -299,7 +299,7 @@ else {
 											<script type="text/javascript">
 												var level=new LiveValidation('level');
 												level.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-											 </script>
+											</script>
 										</td>
 									</tr>
 									<?php

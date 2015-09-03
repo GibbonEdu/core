@@ -242,39 +242,43 @@ else {
 				}
 				
 				//Add new medical condition
-				if ($_POST["name"]!="" AND $_POST["gibbonAlertLevelID"]!="") {
-					if ($AI!="") {
-						$gibbonPersonMedicalUpdateID=$AI ;
-					}
-					else {
-						$gibbonPersonMedicalUpdateID=NULL ;
-					}
-					$name=$_POST["name"] ; 	
-					$gibbonAlertLevelID=NULL ;
-					if ($_POST["gibbonAlertLevelID"]!="Please select...") {
-						$gibbonAlertLevelID=$_POST["gibbonAlertLevelID"] ; 	
-					}
-					$triggers=$_POST["triggers"] ; 	
-					$reaction=$_POST["reaction"] ; 	
-					$response=$_POST["response"] ; 	
-					$medication=$_POST["medication"] ; 	
-					if ($_POST["lastEpisode"]!="") {
-						$lastEpisode=dateConvert($guid, $_POST["lastEpisode"]) ;
-					}
-					else {
-						$lastEpisode=NULL ;
-					}
-					$lastEpisodeTreatment=$_POST["lastEpisodeTreatment"] ; 	
-					$comment=$_POST["comment"] ; 	
+				if (isset($_POST["addCondition"])) {
+					if ($_POST["addCondition"]=="Yes") {
+						if ($_POST["name"]!="" AND $_POST["gibbonAlertLevelID"]!="") {
+							if ($AI!="") {
+								$gibbonPersonMedicalUpdateID=$AI ;
+							}
+							else {
+								$gibbonPersonMedicalUpdateID=NULL ;
+							}
+							$name=$_POST["name"] ; 	
+							$gibbonAlertLevelID=NULL ;
+							if ($_POST["gibbonAlertLevelID"]!="Please select...") {
+								$gibbonAlertLevelID=$_POST["gibbonAlertLevelID"] ; 	
+							}
+							$triggers=$_POST["triggers"] ; 	
+							$reaction=$_POST["reaction"] ; 	
+							$response=$_POST["response"] ; 	
+							$medication=$_POST["medication"] ; 	
+							if ($_POST["lastEpisode"]!="") {
+								$lastEpisode=dateConvert($guid, $_POST["lastEpisode"]) ;
+							}
+							else {
+								$lastEpisode=NULL ;
+							}
+							$lastEpisodeTreatment=$_POST["lastEpisodeTreatment"] ; 	
+							$comment=$_POST["comment"] ; 	
 					
-					try {
-						$data=array("gibbonPersonMedicalUpdateID"=>$gibbonPersonMedicalUpdateID, "gibbonPersonMedicalID"=>$gibbonPersonMedicalID, "name"=>$name, "gibbonAlertLevelID"=>$gibbonAlertLevelID, "triggers"=>$triggers, "reaction"=>$reaction, "response"=>$response, "medication"=>$medication, "lastEpisode"=>$lastEpisode, "lastEpisodeTreatment"=>$lastEpisodeTreatment, "comment"=>$comment, "gibbonPersonIDUpdater"=>$_SESSION[$guid]["gibbonPersonID"]); 
-						$sql="INSERT INTO gibbonPersonMedicalConditionUpdate SET gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID, gibbonPersonMedicalID=:gibbonPersonMedicalID, name=:name, gibbonAlertLevelID=:gibbonAlertLevelID, triggers=:triggers, reaction=:reaction, response=:response, medication=:medication, lastEpisode=:lastEpisode, lastEpisodeTreatment=:lastEpisodeTreatment, comment=:comment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater" ;
-						$result=$connection2->prepare($sql);
-						$result->execute($data);
-					}
-					catch(PDOException $e) { 
-						$partialFail=TRUE ;
+							try {
+								$data=array("gibbonPersonMedicalUpdateID"=>$gibbonPersonMedicalUpdateID, "gibbonPersonMedicalID"=>$gibbonPersonMedicalID, "name"=>$name, "gibbonAlertLevelID"=>$gibbonAlertLevelID, "triggers"=>$triggers, "reaction"=>$reaction, "response"=>$response, "medication"=>$medication, "lastEpisode"=>$lastEpisode, "lastEpisodeTreatment"=>$lastEpisodeTreatment, "comment"=>$comment, "gibbonPersonIDUpdater"=>$_SESSION[$guid]["gibbonPersonID"]); 
+								$sql="INSERT INTO gibbonPersonMedicalConditionUpdate SET gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID, gibbonPersonMedicalID=:gibbonPersonMedicalID, name=:name, gibbonAlertLevelID=:gibbonAlertLevelID, triggers=:triggers, reaction=:reaction, response=:response, medication=:medication, lastEpisode=:lastEpisode, lastEpisodeTreatment=:lastEpisodeTreatment, comment=:comment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater" ;
+								$result=$connection2->prepare($sql);
+								$result->execute($data);
+							}
+							catch(PDOException $e) { 
+								$partialFail=TRUE ;
+							}
+						}
 					}
 				}
 				

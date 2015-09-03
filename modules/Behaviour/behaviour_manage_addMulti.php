@@ -129,7 +129,7 @@ else {
 					<script type="text/javascript">
 						var date=new LiveValidation('date');
 						date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-					 </script>
+					</script>
 					 <script type="text/javascript">
 						$(function() {
 							$( "#date" ).datepicker();
@@ -196,7 +196,7 @@ else {
 								<script type="text/javascript">
 									var descriptor=new LiveValidation('descriptor');
 									descriptor.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-								 </script>
+								</script>
 								 <script type="text/javascript">
 									$("#descriptor").chainedTo("#type");
 								</script>
@@ -231,7 +231,7 @@ else {
 							<script type="text/javascript">
 								var level=new LiveValidation('level');
 								level.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<?php

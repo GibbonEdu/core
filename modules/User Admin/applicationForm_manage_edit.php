@@ -214,7 +214,7 @@ else {
 							<script type="text/javascript">
 								var dateStart=new LiveValidation('dateStart');
 								dateStart.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-							 </script>
+							</script>
 							 <script type="text/javascript">
 								$(function() {
 									$( "#dateStart" ).datepicker();
@@ -252,7 +252,7 @@ else {
 							<script type="text/javascript">
 								var gibbonSchoolYearIDEntry=new LiveValidation('gibbonSchoolYearIDEntry');
 								gibbonSchoolYearIDEntry.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -286,7 +286,7 @@ else {
 							<script type="text/javascript">
 								var gibbonYearGroupIDEntry=new LiveValidation('gibbonYearGroupIDEntry');
 								gibbonYearGroupIDEntry.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<?php
@@ -429,7 +429,7 @@ else {
 							<script type="text/javascript">
 								var surname=new LiveValidation('surname');
 								surname.add(Validate.Presence);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -442,7 +442,7 @@ else {
 							<script type="text/javascript">
 								var firstName=new LiveValidation('firstName');
 								firstName.add(Validate.Presence);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -455,7 +455,7 @@ else {
 							<script type="text/javascript">
 								var preferredName=new LiveValidation('preferredName');
 								preferredName.add(Validate.Presence);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -468,7 +468,7 @@ else {
 							<script type="text/javascript">
 								var officialName=new LiveValidation('officialName');
 								officialName.add(Validate.Presence);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -493,7 +493,7 @@ else {
 							<script type="text/javascript">
 								var gender=new LiveValidation('gender');
 								gender.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -507,7 +507,7 @@ else {
 								var dob=new LiveValidation('dob');
 								dob.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 								dob.add(Validate.Presence);
-							 </script>
+							</script>
 							 <script type="text/javascript">
 								$(function() {
 									$( "#dob" ).datepicker();
@@ -767,7 +767,7 @@ else {
 							<script type="text/javascript">
 								var visaExpiryDate=new LiveValidation('visaExpiryDate');
 								visaExpiryDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-							 </script>
+							</script>
 							 <script type="text/javascript">
 								$(function() {
 									$( "#visaExpiryDate" ).datepicker();
@@ -791,7 +791,7 @@ else {
 							<script type="text/javascript">
 								var email=new LiveValidation('email');
 								email.add(Validate.Email);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<?php
@@ -994,7 +994,7 @@ else {
 								<script type="text/javascript">
 									var homeAddress=new LiveValidation('homeAddress');
 									homeAddress.add(Validate.Presence);
-								 </script>
+								</script>
 							</td>
 						</tr>
 						<tr>
@@ -1027,7 +1027,7 @@ else {
 							<script type="text/javascript">
 								var homeAddressDistrict=new LiveValidation('homeAddressDistrict');
 								homeAddressDistrict.add(Validate.Presence);
-							 </script>
+							</script>
 						</tr>
 						<tr>
 							<td> 
@@ -1056,7 +1056,7 @@ else {
 								<script type="text/javascript">
 									var homeAddressCountry=new LiveValidation('homeAddressCountry');
 									homeAddressCountry.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-								 </script>
+								</script>
 							</td>
 						</tr>
 						<?php
@@ -1125,7 +1125,7 @@ else {
 									<script type="text/javascript">
 										var parent1relationship=new LiveValidation('parent1relationship');
 										parent1relationship.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-									 </script>
+									</script>
 								</td>
 							</tr>
 							<input name='parent1gibbonPersonID' value="<?php print $row["parent1gibbonPersonID"] ?>" type="hidden">
@@ -1198,7 +1198,7 @@ else {
 										<script type="text/javascript">
 											var <?php print "parent$i" ?>title=new LiveValidation('<?php print "parent$i" ?>title');
 											<?php print "parent$i" ?>title.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-										 </script>
+										</script>
 										 <?php
 									}
 									?>
@@ -1217,7 +1217,7 @@ else {
 										<script type="text/javascript">
 											var <?php print "parent$i" ?>surname=new LiveValidation('<?php print "parent$i" ?>surname');
 											<?php print "parent$i" ?>surname.add(Validate.Presence);
-										 </script>
+										</script>
 										 <?php
 									}
 									?>
@@ -1236,7 +1236,7 @@ else {
 										<script type="text/javascript">
 											var <?php print "parent$i" ?>firstName=new LiveValidation('<?php print "parent$i" ?>firstName');
 											<?php print "parent$i" ?>firstName.add(Validate.Presence);
-										 </script>
+										</script>
 										 <?php
 									}
 									?>
@@ -1255,7 +1255,7 @@ else {
 										<script type="text/javascript">
 											var <?php print "parent$i" ?>preferredName=new LiveValidation('<?php print "parent$i" ?>preferredName');
 											<?php print "parent$i" ?>preferredName.add(Validate.Presence);
-										 </script>
+										</script>
 										 <?php
 									}
 									?>
@@ -1274,7 +1274,7 @@ else {
 										<script type="text/javascript">
 											var <?php print "parent$i" ?>officialName=new LiveValidation('<?php print "parent$i" ?>officialName');
 											<?php print "parent$i" ?>officialName.add(Validate.Presence);
-										 </script>
+										</script>
 										 <?php
 									}
 									?>
@@ -1316,7 +1316,7 @@ else {
 										<script type="text/javascript">
 											var <?php print "parent$i" ?>gender=new LiveValidation('<?php print "parent$i" ?>gender');
 											<?php print "parent$i" ?>gender.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-										 </script>
+										</script>
 										 <?php
 									}
 									?>
@@ -1354,7 +1354,7 @@ else {
 										<script type="text/javascript">
 											var <?php print "parent$i" ?>relationship=new LiveValidation('<?php print "parent$i" ?>relationship');
 											<?php print "parent$i" ?>relationship.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-										 </script>
+										</script>
 										 <?php
 									}
 									?>
@@ -1520,7 +1520,7 @@ else {
 									<script type="text/javascript">
 										var <?php print "parent$i" ?>visaExpiryDate=new LiveValidation('<?php print "parent$i" ?>visaExpiryDate');
 										<?php print "parent$i" ?>visaExpiryDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-									 </script>
+									</script>
 									 <script type="text/javascript">
 										$(function() {
 											$( "#<?php print "parent$i" ?>visaExpiryDate" ).datepicker();
@@ -1549,7 +1549,7 @@ else {
 											print "parent$i" . "email.add(Validate.Presence);" ;
 										}
 										?>
-									 </script>
+									</script>
 								</td>
 							</tr>
 							<?php
@@ -1568,7 +1568,7 @@ else {
 											<script type="text/javascript">
 												var <?php print "parent$i" ?>phone<?php print $y ?>=new LiveValidation('<?php print "parent$i" ?>phone<?php print $y ?>');
 												<?php print "parent$i" ?>phone<?php print $y ?>.add(Validate.Presence);
-											 </script>
+											</script>
 											<?php
 										}
 										?>

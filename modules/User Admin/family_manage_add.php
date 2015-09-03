@@ -85,7 +85,7 @@ else {
 					<script type="text/javascript">
 						var name2=new LiveValidation('name');
 						name2.add(Validate.Presence);
-					 </script>
+					</script>
 				</td>
 			</tr>
 			<tr>
@@ -120,7 +120,7 @@ else {
 					<script type="text/javascript">
 						var nameAddress=new LiveValidation('nameAddress');
 						nameAddress.add(Validate.Presence);
-					 </script>
+					</script>
 				</td>
 			</tr>
 			<tr>

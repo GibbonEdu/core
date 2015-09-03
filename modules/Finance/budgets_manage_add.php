@@ -132,7 +132,7 @@ else {
 						<script type="text/javascript">
 							var category=new LiveValidation('category');
 							category.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-						 </script>
+						</script>
 					</td>
 				</tr>
 				<?php

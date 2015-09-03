@@ -582,7 +582,7 @@ else {
 													var paymentDate=new LiveValidation('paymentDate');
 													paymentDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 													paymentDate.add(Validate.Presence);
-												 </script>
+												</script>
 												 <script type="text/javascript">
 													$(function() {
 														$( "#paymentDate" ).datepicker();
@@ -607,7 +607,7 @@ else {
 													var paymentAmount=new LiveValidation('paymentAmount');
 													paymentAmount.add( Validate.Format, { pattern: /^(?:\d*\.\d{1,2}|\d+)$/, failureMessage: "Invalid number format!" } );
 													paymentAmount.add(Validate.Presence);
-												 </script>
+												</script>
 											</td>
 										</tr>
 										<tr id="payeeRow">

@@ -315,6 +315,11 @@ User Admin: fixed instances of gibbonAlertID set to 000 in data updates
 	Edited file /modules/Data Updater/data_medicalProcess.php
 	Edited file /modules/User Admin/data_medical_editProcess.php
 
+Data Updater: improved UX for adding medical conditions
+	Edited files /modules/Data Updater/data_medical.php
+
+General: removed white space before </script> across system
+	Edited various files
 
 v10.0.00
 --------

@@ -115,7 +115,7 @@ else {
 							<script type="text/javascript">
 								var gibbonPersonID=new LiveValidation('gibbonPersonID');
 								gibbonPersonID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<?php

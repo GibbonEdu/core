@@ -132,7 +132,7 @@ else {
 						<script type="text/javascript">
 							var gibbonPersonID=new LiveValidation('gibbonPersonID');
 							gibbonPersonID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-						 </script>
+						</script>
 					</td>
 				</tr>
 				<tr>
@@ -159,7 +159,7 @@ else {
 						<script type="text/javascript">
 							var gibbonYearGroupID=new LiveValidation('gibbonYearGroupID');
 							gibbonYearGroupID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-						 </script>
+						</script>
 					</td>
 				</tr>
 				<tr>
@@ -186,7 +186,7 @@ else {
 						<script type="text/javascript">
 							var gibbonRollGroupID=new LiveValidation('gibbonRollGroupID');
 							gibbonRollGroupID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-						 </script>
+						</script>
 					</td>
 				</tr>
 				<tr>

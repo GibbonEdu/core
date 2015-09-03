@@ -218,7 +218,7 @@ else {
 							<script type="text/javascript">
 								var companyEmail=new LiveValidation('companyEmail');
 								companyEmail.add(Validate.Email);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr id="companyCCFamilyRow">

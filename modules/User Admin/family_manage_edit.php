@@ -193,7 +193,7 @@ else {
 							<script type="text/javascript">
 								var nameAddress=new LiveValidation('nameAddress');
 								nameAddress.add(Validate.Presence);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -548,7 +548,7 @@ else {
 							<script type="text/javascript">
 								var gibbonPersonID=new LiveValidation('gibbonPersonID');
 								gibbonPersonID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -708,7 +708,7 @@ else {
 							<script type="text/javascript">
 								var gibbonPersonID2=new LiveValidation('gibbonPersonID2');
 								gibbonPersonID2.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -721,7 +721,7 @@ else {
 							<script type="text/javascript">
 								var comment2=new LiveValidation('comment2');
 								comment2.add( Validate.Length, { maximum: 1000 } );
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
