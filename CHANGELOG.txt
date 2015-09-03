@@ -305,6 +305,10 @@ Finance: added ability to remove itemisation from invoices and receipts
 	Edited files /modules/School Admin/financeSettings.php
 	Edited file /modules/Finance/moduleFunctions.php
 
+System Admin: added Vietnamese Dong as a currency
+	Edited file /modules/System Admin/systemSettings.php
+	Edited file /installer/install.php
+
 
 v10.0.00
 --------

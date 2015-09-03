@@ -913,6 +913,7 @@ include "../functions.php" ;
 																		<option value='NPR ₨'>Nepalese Rupee (₨)</option>
 																		<option value='NGN ₦'>Nigerian Naira (₦)</option>
 																		<option value='SAR ﷼‎'>Saudi Riyal (﷼‎)</option>
+																		<option value='VND ₫‎'>Vietnamese Dong (₫‎)</option>
 																	</optgroup>
 																</select>
 															</td>
