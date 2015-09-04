@@ -1827,8 +1827,11 @@ else {
 					$("#companyPhoneRow").css("display","none");
 					$("#companyAllRow").css("display","none");
 					$("#companyCategoriesRow").css("display","none");
-					
-					
+					companyEmail.disable() ;
+					companyAddress.disable() ;
+					companyContact.disable() ;
+					companyName.disable() ;
+			
 					$(".payment").click(function(){
 						if ($('input[name=payment]:checked').val()=="Family" ) {
 							$("#companyNameRow").css("display","none");
@@ -1839,6 +1842,10 @@ else {
 							$("#companyPhoneRow").css("display","none");
 							$("#companyAllRow").css("display","none");
 							$("#companyCategoriesRow").css("display","none");
+							companyEmail.disable() ;
+							companyAddress.disable() ;
+							companyContact.disable() ;
+							companyName.disable() ;
 						} else {
 							$("#companyNameRow").slideDown("fast", $("#companyNameRow").css("display","table-row")); 
 							$("#companyContactRow").slideDown("fast", $("#companyContactRow").css("display","table-row")); 
@@ -1847,12 +1854,18 @@ else {
 							$("#companyCCFamilyRow").slideDown("fast", $("#companyCCFamilyRow").css("display","table-row")); 
 							$("#companyPhoneRow").slideDown("fast", $("#companyPhoneRow").css("display","table-row")); 
 							$("#companyAllRow").slideDown("fast", $("#companyAllRow").css("display","table-row")); 
-							if ($('input[name=companyAll]:checked').val()=="N" ) {
+							if ($('input[name=companyAll]:checked').val()=="Y" ) {
+								$("#companyCategoriesRow").css("display","none");
+							} else {
 								$("#companyCategoriesRow").slideDown("fast", $("#companyCategoriesRow").css("display","table-row")); 
 							}
+							companyEmail.enable() ;
+							companyAddress.enable() ;
+							companyContact.enable() ;
+							companyName.enable() ;
 						}
 					 });
-					 
+			 
 					 $(".companyAll").click(function(){
 						if ($('input[name=companyAll]:checked').val()=="Y" ) {
 							$("#companyCategoriesRow").css("display","none");
@@ -1878,36 +1891,49 @@ else {
 			</tr>
 			<tr id="companyNameRow">
 				<td> 
-					<b><?php print _('Company Name') ?></b><br/>
+					<b><?php print _('Company Name') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<input name="companyName" id="companyName" maxlength=100 value="" type="text" style="width: 300px">
+					<script type="text/javascript">
+						var companyName=new LiveValidation('companyName');
+						companyName.add(Validate.Presence);
+					</script>
 				</td>
 			</tr>
 			<tr id="companyContactRow">
 				<td> 
-					<b><?php print _('Company Contact Person') ?></b><br/>
+					<b><?php print _('Company Contact Person') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<input name="companyContact" id="companyContact" maxlength=100 value="" type="text" style="width: 300px">
+					<script type="text/javascript">
+						var companyContact=new LiveValidation('companyContact');
+						companyContact.add(Validate.Presence);
+					</script>
 				</td>
 			</tr>
 			<tr id="companyAddressRow">
 				<td> 
-					<b><?php print _('Company Address') ?></b><br/>
+					<b><?php print _('Company Address') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<input name="companyAddress" id="companyAddress" maxlength=255 value="" type="text" style="width: 300px">
+					<script type="text/javascript">
+						var companyAddress=new LiveValidation('companyAddress');
+						companyAddress.add(Validate.Presence);
+					</script>
 				</td>
 			</tr>
 			<tr id="companyEmailRow">
 				<td> 
-					<b><?php print _('Company Email') ?></b><br/>
+					<b><?php print _('Company Email') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<input name="companyEmail" id="companyEmail" maxlength=255 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var companyEmail=new LiveValidation('companyEmail');
+						companyEmail.add(Validate.Presence);
 						companyEmail.add(Validate.Email);
 					</script>
 				</td>

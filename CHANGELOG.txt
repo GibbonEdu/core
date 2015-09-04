@@ -321,6 +321,13 @@ Data Updater: improved UX for adding medical conditions
 General: removed white space before </script> across system
 	Edited various files
 
+Finance: made certain invoicee fields compulsory for company payment
+	Edited table gibbonApplicationForm
+	Edited file /modules/Finance/invoicees_manage_edit.php
+	Edited file /modules/Data Updater/data_finance.php
+	Edited files /modules/Application Form/applicationForm*.php
+	Edited file /modules/User Admin/applicationForm_manage_edit.php
+
 v10.0.00
 --------
 i18n: added Urdu as inactive development language

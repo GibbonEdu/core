@@ -683,7 +683,6 @@ else {
 						catch(PDOException $e) { }
 						$count++ ;
 					}
-				
 				}
 			
 				//Deal with required documents

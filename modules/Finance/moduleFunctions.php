@@ -971,6 +971,9 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 								$return.="<li>" ;
 								$invoiceTo="" ;
 								$invoiceTo.="<b>" . formatName(htmlPrep($rowParents["title"]), htmlPrep($rowParents["preferredName"]), htmlPrep($rowParents["surname"]), "Parent", false) . "</b>, " ;
+								if ($rowParents["email"]!="") {
+									$invoiceTo.=$rowParents["email"] . ", " ; 
+								}
 								if ($rowParents["address1"]!="") {
 									$invoiceTo.=$rowParents["address1"] . ", " ;
 									if ($rowParents["address1District"]!="") {
@@ -1272,6 +1275,9 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 								$return.="<li>" ;
 								$invoiceTo="" ;
 								$invoiceTo.="<b>" . formatName(htmlPrep($rowParents["title"]), htmlPrep($rowParents["preferredName"]), htmlPrep($rowParents["surname"]), "Parent", false) . "</b>, " ;
+								if ($rowParents["email"]!="") {
+									$invoiceTo.=$rowParents["email"] . ", " ; 
+								}
 								if ($rowParents["address1"]!="") {
 									$invoiceTo.=$rowParents["address1"] . ", " ;
 									if ($rowParents["address1District"]!="") {

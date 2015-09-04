@@ -546,6 +546,7 @@ ALTER TABLE `gibbonPersonMedicalCondition` CHANGE `gibbonAlertLevelID` `gibbonAl
 UPDATE gibbonPersonMedicalCondition SET gibbonAlertLevelID=NULL WHERE gibbonAlertLevelID=0 ;end
 ALTER TABLE `gibbonPersonMedicalConditionUpdate` CHANGE `gibbonAlertLevelID` `gibbonAlertLevelID` INT( 3 ) UNSIGNED ZEROFILL NULL DEFAULT NULL ;end
 UPDATE gibbonPersonMedicalConditionUpdate SET gibbonAlertLevelID=NULL WHERE gibbonAlertLevelID=0 ;end
+ALTER TABLE `gibbonApplicationForm` CHANGE `companyName` `companyName` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `companyContact` `companyContact` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `companyAddress` `companyAddress` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `companyEmail` `companyEmail` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `companyPhone` `companyPhone` VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
 
 ";
 
