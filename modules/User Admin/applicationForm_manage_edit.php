@@ -1914,7 +1914,7 @@ else {
 					<script type="text/javascript">
 						/* Resource 1 Option Control */
 						$(document).ready(function(){
-							if ($('input[name=invoiceTo]:checked').val()=="Family" ) {
+							if ($('input[name=payment]:checked').val()=="Family" ) {
 								$("#companyNameRow").css("display","none");
 								$("#companyContactRow").css("display","none");
 								$("#companyAddressRow").css("display","none");
