@@ -55,7 +55,7 @@ else {
 	//Lock activities table
 	try {
 		$data=array(); 
-		$sql="LOCK TABLES gibbonPerson WRITE, gibbonSetting READ" ;
+		$sql="LOCK TABLES gibbonPerson WRITE, gibbonSetting READ, gibbonNotification WRITE, gibbonModule WRITE" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}
@@ -154,15 +154,14 @@ else {
 						header("Location: {$URL}");
 						break ;
 					}
+					
+					$gibbonPersonID=$connection2->lastInsertId();
 
 					if ($status=="Pending Approval") {
-						//Attempt to send email to DBA
-						if ($_SESSION[$guid]["organisationAdmissionsName"]!="" AND $_SESSION[$guid]["organisationAdmissionsEmail"]!="") {
-							$to=$_SESSION[$guid]["organisationAdmissionsEmail"];
-							$subject=$_SESSION[$guid]["organisationNameShort"] . " Gibbon Application Form";
-							$body="You have a new public registration, pending approval, from Gibbon. Please log in and process it as soon as possible.\n\n" . $_SESSION[$guid]["systemName"] . " Administrator";
-							$headers="From: " . $_SESSION[$guid]["organisationAdministratorEmail"] ;
-							mail($to, $subject, $body, $headers) ;
+						//Attempt to notify Admissions
+						if ($_SESSION[$guid]["organisationAdmissions"]) {
+							$notificationText=sprintf(_('An new public registration, for %1$s, is pending approval.'), formatName("", $preferredName, $surname, "Student")) ;
+							setNotification($connection2, $guid, $_SESSION[$guid]["organisationAdmissions"], $notificationText, "User Admin", "/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID&search=") ;
 						}
 						
 						//Success 1

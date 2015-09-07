@@ -207,33 +207,16 @@ else {
 								print "</td>" ;
 								print "<td>" ;
 									if ($rowWork["gibbonPlannerEntryHomeworkID"]!="" AND $rowList["gibbonPersonID"]!=$_SESSION[$guid]["gibbonPersonID"] AND $rowWork["status"]!="Exemption") {
-										try {
-											$dataLike=array("gibbonPlannerEntryHomeworkID"=>$rowWork["gibbonPlannerEntryHomeworkID"], "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-											$sqlLike="SELECT * FROM gibbonCrowdAssessLike WHERE gibbonPlannerEntryHomeworkID=:gibbonPlannerEntryHomeworkID AND gibbonPersonID=:gibbonPersonID" ;
-											$resultLike=$connection2->prepare($sqlLike);
-											$resultLike->execute($dataLike);
-										}
-										catch(PDOException $e) { 
-											print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-										}
-											
-										if ($resultLike->rowCount()!=1) {
+										$likesGiven=countLikesByContextAndGiver($connection2, "Crowd Assessment", "gibbonPlannerEntryHomeworkID", $rowWork["gibbonPlannerEntryHomeworkID"], $_SESSION[$guid]["gibbonPersonID"]) ;
+										if ($likesGiven!=1) {
 											print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Crowd Assessment/crowdAssess_viewProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=" . $rowWork["gibbonPlannerEntryHomeworkID"] . "&address=" . $_GET["q"] . "&gibbonPersonID=" . $rowList["gibbonPersonID"] . "'><img src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_off.png'></a>" ;
 										}
 										else {
 											print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Crowd Assessment/crowdAssess_viewProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=" . $rowWork["gibbonPlannerEntryHomeworkID"] . "&address=" . $_GET["q"] . "&gibbonPersonID=" . $rowList["gibbonPersonID"] . "'><img src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_on.png'></a>" ;
 										}
 										
-										try {
-											$dataLike=array("gibbonPlannerEntryHomeworkID"=>$rowWork["gibbonPlannerEntryHomeworkID"]); 
-											$sqlLike="SELECT * FROM gibbonCrowdAssessLike WHERE gibbonPlannerEntryHomeworkID=:gibbonPlannerEntryHomeworkID" ;
-											$resultLike=$connection2->prepare($sqlLike);
-											$resultLike->execute($dataLike);
-										}
-										catch(PDOException $e) { 
-											print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-										}
-										print " x " . $resultLike->rowCount() ;
+										$likesTotal=countLikesByContext($connection2, "Crowd Assessment", "gibbonPlannerEntryHomeworkID", $rowWork["gibbonPlannerEntryHomeworkID"]) ;
+										print " x " . $likesTotal ;
 									}
 								print "</td>" ;
 								print "<td>" ;

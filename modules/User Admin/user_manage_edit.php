@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start() ;
 
+//Module includes
+include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
+
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/user_manage_edit.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
@@ -110,6 +113,7 @@ else {
 			$staff=FALSE ;
 			$student=FALSE ;
 			$parent=FALSE ;
+			$other=FALSE ;
 			$roles=explode(",", $row["gibbonRoleIDAll"]) ;
 			foreach ($roles AS $role) {
 				$roleCategory=getRoleCategory($role, $connection2) ;
@@ -121,6 +125,9 @@ else {
 				} 
 				if ($roleCategory=="Parent") {
 					$parent=TRUE ;
+				} 
+				if ($roleCategory=="Other") {
+					$other=TRUE ;
 				} 
 			}
 			
@@ -170,7 +177,7 @@ else {
 							<script type="text/javascript">
 								var surname=new LiveValidation('surname');
 								surname.add(Validate.Presence);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -183,7 +190,7 @@ else {
 							<script type="text/javascript">
 								var firstName=new LiveValidation('firstName');
 								firstName.add(Validate.Presence);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -196,7 +203,7 @@ else {
 							<script type="text/javascript">
 								var preferredName=new LiveValidation('preferredName');
 								preferredName.add(Validate.Presence);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -209,7 +216,7 @@ else {
 							<script type="text/javascript">
 								var officialName=new LiveValidation('officialName');
 								officialName.add(Validate.Presence);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -236,7 +243,7 @@ else {
 							<script type="text/javascript">
 								var gender=new LiveValidation('gender');
 								gender.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -245,11 +252,17 @@ else {
 							<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 						</td>
 						<td class="right">
-							<input name="dob" id="dob" maxlength=10 value="<?php print dateConvertBack($guid, $row["dob"]) ?>" type="text" style="width: 300px">
+							<?php 
+							$value="" ;
+							if ($row["dob"]!=NULL AND $row["dob"]!="" AND $row["dob"]!="0000-00-00") {
+								$value=dateConvertBack($guid, $row["dob"]) ;
+							}
+							?>
+							<input name="dob" id="dob" maxlength=10 value="<?php print $value ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var dob=new LiveValidation('dob');
 								dob.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-							 </script>
+							</script>
 							 <script type="text/javascript">
 								$(function() {
 									$( "#dob" ).datepicker();
@@ -257,6 +270,30 @@ else {
 							</script>
 						</td>
 					</tr>
+					<tr>
+						<td> 
+							<b><?php print _('User Photo') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _('Displayed at 240px by 320px.') . "<br/>" . _('Accepts images up to 360px by 480px.') . "<br/>" . _('Accepts aspect ratio between 1:1.2 and 1:1.4.') ?><br/>
+							<?php if ($row["image_240"]!="") {
+							print _('Will overwrite existing attachment.') ;
+							} ?>
+							</i></span>
+						</td>
+						<td class="right">
+							<?php
+							if ($row["image_240"]!="") {
+								print _("Current attachment:") . " <a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["image_240"] . "'>" . $row["image_240"] . "</a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/User Admin/user_manage_edit_photoDeleteProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&size=240' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' id='image_240_delete' title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a><br/><br/>" ;
+							}
+							?>
+							<input type="file" name="file1" id="file1"><br/><br/>
+							<input type="hidden" name="attachment1" value='<?php print $row["image_240"] ?>'>
+							<script type="text/javascript">
+								var file1=new LiveValidation('file1');
+								file1.add( Validate.Inclusion, { within: ['gif','jpg','jpeg','png'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+							</script>
+						</td>
+					</tr>
+					
 					
 					<tr class='break'>
 						<td colspan=2> 
@@ -294,7 +331,7 @@ else {
 							<script type="text/javascript">
 								var gibbonRoleIDPrimary=new LiveValidation('gibbonRoleIDPrimary');
 								gibbonRoleIDPrimary.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -330,7 +367,7 @@ else {
 							<script type="text/javascript">
 								var gibbonRoleIDPrimary=new LiveValidation('gibbonRoleIDPrimary');
 								gibbonRoleIDPrimary.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -343,7 +380,7 @@ else {
 							<script type="text/javascript">
 								var username=new LiveValidation('username');
 								username.add(Validate.Presence);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					
@@ -416,7 +453,7 @@ else {
 							<script type="text/javascript">
 								var email=new LiveValidation('email');
 								email.add(Validate.Email);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -429,7 +466,7 @@ else {
 							<script type="text/javascript">
 								var emailAlternate=new LiveValidation('emailAlternate');
 								emailAlternate.add(Validate.Email);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -789,7 +826,7 @@ else {
 							<script type="text/javascript">
 								var dateStart=new LiveValidation('dateStart');
 								dateStart.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-							 </script>
+							</script>
 							 <script type="text/javascript">
 								$(function() {
 									$( "#dateStart" ).datepicker();
@@ -807,7 +844,7 @@ else {
 							<script type="text/javascript">
 								var dateEnd=new LiveValidation('dateEnd');
 								dateEnd.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-							 </script>
+							</script>
 							 <script type="text/javascript">
 								$(function() {
 									$( "#dateEnd" ).datepicker();
@@ -1143,7 +1180,7 @@ else {
 						<td class="right">
 							<?php
 							if ($row["citizenship1PassportScan"]!="") {
-								print _("Current attachment:") . " <a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["citizenship1PassportScan"] . "'>" . $row["citizenship1PassportScan"] . "</a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/User Admin/user_manage_edit_photoDeleteProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&size=passport' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' id='image_75_delete' title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a><br/><br/>" ;
+								print _("Current attachment:") . " <a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["citizenship1PassportScan"] . "'>" . $row["citizenship1PassportScan"] . "</a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/User Admin/user_manage_edit_photoDeleteProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&size=passport' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a><br/><br/>" ;
 							}
 							?>
 							<input type="file" name="citizenship1PassportScan" id="citizenship1PassportScan"><br/><br/>
@@ -1232,7 +1269,7 @@ else {
 						<td class="right">
 							<?php
 							if ($row["nationalIDCardScan"]!="") {
-								print _("Current attachment:") . " <a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["nationalIDCardScan"] . "'>" . $row["nationalIDCardScan"] . "</a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/User Admin/user_manage_edit_photoDeleteProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&size=id' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' id='image_75_delete' title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a><br/><br/>" ;
+								print _("Current attachment:") . " <a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["nationalIDCardScan"] . "'>" . $row["nationalIDCardScan"] . "</a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/User Admin/user_manage_edit_photoDeleteProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&size=id' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a><br/><br/>" ;
 							}
 							?>
 							<input type="file" name="nationalIDCardScan" id="nationalIDCardScan"><br/><br/>
@@ -1290,11 +1327,17 @@ else {
 							?>
 						</td>
 						<td class="right">
-							<input name="visaExpiryDate" id="visaExpiryDate" maxlength=10 value="<?php print dateConvertBack($guid, $row["visaExpiryDate"]) ?>" type="text" style="width: 300px">
+							<?php 
+							$value="" ;
+							if ($row["visaExpiryDate"]!=NULL AND $row["visaExpiryDate"]!="" AND $row["visaExpiryDate"]!="0000-00-00") {
+								$value=dateConvertBack($guid, $row["visaExpiryDate"]) ;
+							}
+							?>
+							<input name="visaExpiryDate" id="visaExpiryDate" maxlength=10 value="<?php print $value ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var visaExpiryDate=new LiveValidation('visaExpiryDate');
 								visaExpiryDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-							 </script>
+							</script>
 							 <script type="text/javascript">
 								$(function() {
 									$( "#visaExpiryDate" ).datepicker();
@@ -1439,59 +1482,6 @@ else {
 						<?php
 					}
 					?>
-					
-					<tr class='break'>
-						<td colspan=2> 
-							<h3><?php print _('Images') ?></h3>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b>Medium Portrait</b><br/>
-							<span style="font-size: 90%"><i><?php print _('240px by 320px') ?><br/>
-							<?php if ($row["image_240"]!="") {
-							print "<?php print _('Will overwrite existing attachment.') ?>" ;
-							} ?>
-							</i></span>
-						</td>
-						<td class="right">
-							<?php
-							if ($row["image_240"]!="") {
-								print _("Current attachment:") . " <a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["image_240"] . "'>" . $row["image_240"] . "</a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/User Admin/user_manage_edit_photoDeleteProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&size=240' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' id='image_75_delete' title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a><br/><br/>" ;
-							}
-							?>
-							<input type="file" name="file1" id="file1"><br/><br/>
-							<input type="hidden" name="attachment1" value='<?php print $row["image_240"] ?>'>
-							<script type="text/javascript">
-								var file1=new LiveValidation('file1');
-								file1.add( Validate.Inclusion, { within: ['gif','jpg','jpeg','png'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php print _('Small Portrait') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print _('75px by 100px') ?><br/>
-							<?php if ($row["image_75"]!="") {
-							print _("Will overwrite existing attachment.") ;
-							} ?>
-							</i></span>
-						</td>
-						<td class="right">
-							<?php
-							if ($row["image_75"]!="") {
-								print _("Current attachment:") . " <a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["image_75"] . "'>" . $row["image_75"] . "</a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/User Admin/user_manage_edit_photoDeleteProcess.php?gibbonPersonID=$gibbonPersonID&search=$search&size=75' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' id='image_75_delete' title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a><br/><br/>" ;
-							}
-							?>
-							<input type="file" name="file2" id="file2"><br/><br/>
-							<input type="hidden" name="attachment2" value='<?php print $row["image_75"] ?>'>
-							<script type="text/javascript">
-								var file2=new LiveValidation('file2');
-								file2.add( Validate.Inclusion, { within: ['gif','jpg','jpeg','png'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
-							</script>
-						</td>
-					</tr>
-					
 					
 					<tr class='break'>
 						<td colspan=2> 
@@ -1675,6 +1665,22 @@ else {
 								</td>
 							</tr>
 							<?php
+						}
+					}
+					
+					//CUSTOM FIELDS
+					$fields=unserialize($row["fields"]) ;
+					$resultFields=getCustomFields($connection2, $guid, $student, $staff, $parent, $other) ;
+					if ($resultFields->rowCount()>0) {
+						?>
+						<tr class='break'>
+							<td colspan=2> 
+								<h3><?php print _('Custom Fields') ?></h3>
+							</td>
+						</tr>
+						<?php
+						while ($rowFields=$resultFields->fetch()) {
+							print renderCustomFieldRow($connection2, $guid, $rowFields, @$fields[$rowFields["gibbonPersonFieldID"]]) ;	
 						}
 					}
 					?>

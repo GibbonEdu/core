@@ -35,78 +35,69 @@ if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_view_d
 	print "</div>" ;
 }
 else {
-	$gibbonPersonID=$_GET["gibbonPersonID"] ;
-	
-	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_view.php'>" . _('View Behaviour Records') . "</a> > </div><div class='trailEnd'>" . _('View Student Record') . "</div>" ;
-	print "</div>" ;
-	
-	try {
-		$data=array("gibbonPersonID"=>$gibbonPersonID, "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-		$sql="SELECT * FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonPerson.gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID" ;
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { 
-		print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-	}
-
-	if ($result->rowCount()!=1) {
+	 //Get action with highest precendence
+    $highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
+    if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print _("The selected record does not exist, or you do not have access to it.") ;
+			print _("The highest grouped action cannot be determined.") ;
 		print "</div>" ;
-	}
-	else {
-		$row=$result->fetch() ;
-		
-		if ($_GET["search"]!="") {
-			print "<div class='linkTop'>" ;
-				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_view.php&search=" . $_GET["search"] . "'>" . _('Back to Search Results') . "</a>" ;
+    }
+    else {
+		$gibbonPersonID=$_GET["gibbonPersonID"] ;
+	
+		print "<div class='trail'>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_view.php'>" . _('View Behaviour Records') . "</a> > </div><div class='trailEnd'>" . _('View Student Record') . "</div>" ;
+		print "</div>" ;
+	
+		try {
+			if ($highestAction=="View Behaviour Records_all") {
+				$data=array("gibbonPersonID"=>$gibbonPersonID, "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
+				$sql="SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, preferredName, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)  JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonPerson.gibbonPersonID=:gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID" ;
+			}
+			else {
+				$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonID2"=>$gibbonPersonID); 
+				$sql="SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, preferredName, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) JOIN gibbonFamilyChild ON (gibbonPerson.gibbonPersonID=gibbonFamilyChild.gibbonPersonID) JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID AND childDataAccess='Y') WHERE gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonPerson.gibbonPersonID=:gibbonPersonID2 ORDER BY surname, preferredName" ; 
+			}
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+		}
+
+		if ($result->rowCount()!=1) {
+			print "<div class='error'>" ;
+			print _("The selected record does not exist, or you do not have access to it.") ;
 			print "</div>" ;
 		}
-	
-		print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
-			print "<tr>" ;
-				print "<td style='width: 34%; vertical-align: top'>" ;
-					print "<span style='font-size: 115%; font-weight: bold'>" . _('Name') . "</span><br/>" ;
-					print formatName("", $row["preferredName"], $row["surname"], "Student") ;
-				print "</td>" ;
-				print "<td style='width: 33%; vertical-align: top'>" ;
-					print "<span style='font-size: 115%; font-weight: bold'>" . _('Year Group') . "</span><br/>" ;
-					try {
-						$dataDetail=array("gibbonYearGroupID"=>$row["gibbonYearGroupID"]); 
-						$sqlDetail="SELECT * FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupID" ;
-						$resultDetail=$connection2->prepare($sqlDetail);
-						$resultDetail->execute($dataDetail);
-					}
-					catch(PDOException $e) { 
-						print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-					}
-					if ($resultDetail->rowCount()==1) {
-						$rowDetail=$resultDetail->fetch() ;
-						print "<i>" . _($rowDetail["name"]) . "</i>" ;
-					}
-				print "</td>" ;
-				print "<td style='width: 34%; vertical-align: top'>" ;
-					print "<span style='font-size: 115%; font-weight: bold'>" . _('Roll Group') . "</span><br/>" ;
-					try {
-						$dataDetail=array("gibbonRollGroupID"=>$row["gibbonRollGroupID"]); 
-						$sqlDetail="SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID" ;
-						$resultDetail=$connection2->prepare($sqlDetail);
-						$resultDetail->execute($dataDetail);
-					}
-					catch(PDOException $e) { 
-						print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-					}
-					if ($resultDetail->rowCount()==1) {
-						$rowDetail=$resultDetail->fetch() ;
-						print "<i>" . $rowDetail["name"] . "</i>" ;
-					}
-				print "</td>" ;
-			print "</tr>" ;
-		print "</table>" ;
+		else {
+			$row=$result->fetch() ;
 		
-		getBehaviourRecord($guid, $gibbonPersonID, $connection2) ;
+			if ($_GET["search"]!="") {
+				print "<div class='linkTop'>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_view.php&search=" . $_GET["search"] . "'>" . _('Back to Search Results') . "</a>" ;
+				print "</div>" ;
+			}
+	
+			print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
+				print "<tr>" ;
+					print "<td style='width: 34%; vertical-align: top'>" ;
+						print "<span style='font-size: 115%; font-weight: bold'>" . _('Name') . "</span><br/>" ;
+						print formatName("", $row["preferredName"], $row["surname"], "Student") ;
+					print "</td>" ;
+					print "<td style='width: 33%; vertical-align: top'>" ;
+						print "<span style='font-size: 115%; font-weight: bold'>" . _('Year Group') . "</span><br/>" ;
+						print "<i>" . _($row["yearGroup"]) . "</i>" ;
+					print "</td>" ;
+					print "<td style='width: 34%; vertical-align: top'>" ;
+						print "<span style='font-size: 115%; font-weight: bold'>" . _('Roll Group') . "</span><br/>" ;
+						print "<i>" . _($row["rollGroup"]) . "</i>" ;
+					print "</td>" ;
+				print "</tr>" ;
+			print "</table>" ;
+		
+			getBehaviourRecord($guid, $gibbonPersonID, $connection2) ;
+		}
 	}
 }
 ?>

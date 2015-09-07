@@ -146,7 +146,7 @@ else {
 						var date=new LiveValidation('date');
 						date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 						date.add(Validate.Presence);
-					 </script>
+					</script>
 					 <script type="text/javascript">
 						$(function() {
 							$( "#currentDate" ).datepicker();
@@ -274,7 +274,7 @@ else {
 								print "<td style='border: 1px solid #ffffff; width:20%; text-align: center; vertical-align: top'>" ;
 							}
 								
-								print getUserPhoto($guid, $rowRollGroup["image_75"], 75) ;
+								print getUserPhoto($guid, $rowRollGroup["image_240"], 75) ;
 								
 								print "<div style='padding-top: 5px'><b>" . formatName("", htmlPrep($rowRollGroup["preferredName"]), htmlPrep($rowRollGroup["surname"]), "Student", true) . "<b></div><br/>" ;
 								

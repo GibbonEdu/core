@@ -106,7 +106,7 @@ else {
 							<script type="text/javascript">
 								var value=new LiveValidation('value');
 								value.add(Validate.Presence);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -119,7 +119,7 @@ else {
 							<script type="text/javascript">
 								var descriptor=new LiveValidation('descriptor');
 								descriptor.add(Validate.Presence);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -132,7 +132,7 @@ else {
 							<script type="text/javascript">
 								var sequenceNumber=new LiveValidation('sequenceNumber');
 								sequenceNumber.add(Validate.Presence);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>

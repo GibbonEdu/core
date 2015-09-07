@@ -260,7 +260,6 @@ else {
 
 					if ($result->rowCount()!=1) {
 						$emailFail=TRUE ;
-						print $result->rowCount() ; exit() ;
 					}
 					else {
 						$row=$result->fetch() ;

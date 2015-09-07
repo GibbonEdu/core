@@ -157,16 +157,8 @@ else {
 								print "</td>" ;
 								print "<td style='width: 34%; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>Like Count</span><br/>" ;
-									try {
-										$dataLike=array("gibbonPlannerEntryHomeworkID"=>$rowWork["gibbonPlannerEntryHomeworkID"]); 
-										$sqlLike="SELECT * FROM gibbonCrowdAssessLike WHERE gibbonPlannerEntryHomeworkID=:gibbonPlannerEntryHomeworkID" ;
-										$resultLike=$connection2->prepare($sqlLike);
-										$resultLike->execute($dataLike);
-									}
-									catch(PDOException $e) { 
-										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-									}
-									print $resultLike->rowCount() ;
+									$likesTotal=countLikesByContext($connection2, "Crowd Assessment", "gibbonPlannerEntryHomeworkID", $rowWork["gibbonPlannerEntryHomeworkID"]) ;
+									print " x " . $likesTotal ;
 								print "</td>" ;
 							print "</tr>" ;
 						print "</table>" ;

@@ -68,7 +68,7 @@ else {
 			//LOCK INVOICE TABLES
 			try {
 				$data=array(); 
-				$sql="LOCK TABLES gibbonFinanceInvoice WRITE, gibbonFinanceInvoiceFee WRITE, gibbonFinanceInvoicee WRITE" ;
+				$sql="LOCK TABLES gibbonFinanceInvoice WRITE, gibbonFinanceInvoiceFee WRITE, gibbonFinanceInvoicee WRITE, gibbonPayment READ" ;
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
 			}
@@ -103,22 +103,37 @@ else {
 				$status=$row["status"] ;
 				if ($status!="Pending") {
 					$status=$_POST["status"] ;
+					if ($status=="Paid - Complete") {
+						$status="Paid" ;
+					}
 				}
 				$order=NULL ;
 				if (isset($_POST["order"])) {
 					$order=$_POST["order"] ;
 				}
-				if ($_POST["status"]=="Paid" OR $_POST["status"]=="Refunded") {
+				if ($_POST["status"]=="Paid" OR $_POST["status"]=="Paid - Partial" OR $_POST["status"]=="Paid - Complete" OR $_POST["status"]=="Refunded") {
 					$paidDate=dateConvert($guid, $_POST["paidDate"]) ;
 				}
 				else {
 					$paidDate=NULL ;
 				}
-				if ($_POST["status"]=="Paid" OR $_POST["status"]=="Refunded") {
+				if ($_POST["status"]=="Paid" OR $_POST["status"]=="Paid - Partial" OR $_POST["status"]=="Paid - Complete" OR $_POST["status"]=="Refunded") {
+					$paidAmountLog=$_POST["paidAmount"] ;
 					$paidAmount=$_POST["paidAmount"] ;
+					//If some paid already, work out amount, and add it to total
+					$alreadyPaid=getAmountPaid($connection2, $guid, "gibbonFinanceInvoice", $gibbonFinanceInvoiceID) ;
+					$paidAmount+=$alreadyPaid ;
 				}
 				else {
 					$paidAmount=NULL ;
+				}
+				$paymentType=NULL ;
+				if ($_POST["status"]=="Paid" OR $_POST["status"]=="Paid - Partial" OR $_POST["status"]=="Paid - Complete") {
+					$paymentType=$_POST["paymentType"] ;
+				}
+				$paymentTransactionID=NULL ;
+				if ($_POST["status"]=="Paid" OR $_POST["status"]=="Paid - Partial" OR $_POST["status"]=="Paid - Complete") {
+					$paymentTransactionID=$_POST["paymentTransactionID"] ;
 				}
 				if ($row["billingScheduleType"]=="Ad Hoc" AND ($row["status"]=="Pending" OR $row["status"]=="Issued")) {
 					$invoiceDueDate=dateConvert($guid, $_POST["invoiceDueDate"]) ;
@@ -194,7 +209,7 @@ else {
 					}
 				}
 				
-				//Unlock module table
+				//Unlock tables
 				try {
 					$sql="UNLOCK TABLES" ;
 					$result=$connection2->query($sql);   
@@ -304,6 +319,22 @@ else {
 								$emailFail=TRUE ;
 							}
 						}
+					}
+				}
+				
+				if ($status=="Paid" OR $status=="Paid - Partial") {
+					if ($_POST["status"]=="Paid") {
+						$statusLog="Complete" ;
+					}
+					else if ($_POST["status"]=="Paid - Partial") {
+						$statusLog="Partial" ;
+					}
+					else if ($_POST["status"]=="Paid - Complete") {
+						$statusLog="Final" ;
+					}
+					$logFail=setPaymentLog($connection2, $guid, "gibbonFinanceInvoice", $gibbonFinanceInvoiceID, $paymentType, $statusLog, $paidAmountLog, NULL, NULL, NULL, NULL, $paymentTransactionID, NULL, $paidDate) ;
+					if ($logFail==FALSE) {
+						$partialFail=TRUE ;
 					}
 				}
 				

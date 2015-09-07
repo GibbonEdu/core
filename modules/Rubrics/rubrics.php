@@ -189,7 +189,7 @@ else {
 					print "<th>" ;
 						print _("Active") ;
 					print "</th>" ;
-					print "<th style='width: 90px'>" ;
+					print "<th style='width: 120px'>" ;
 						print _("Actions") ;
 					print "</th>" ;
 				print "</tr>" ;

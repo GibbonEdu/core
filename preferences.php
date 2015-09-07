@@ -134,7 +134,7 @@ if ($result->rowCount()==1) {
 				<script type="text/javascript">
 					var password=new LiveValidation('password');
 					password.add(Validate.Presence);
-				 </script>
+				</script>
 			</td>
 		</tr>
 		<tr>
@@ -165,7 +165,7 @@ if ($result->rowCount()==1) {
 						print "passwordNew.add( Validate.Length, { minimum: " . $minLength . "} );" ;
 					}
 					?>
-				 </script>
+				</script>
 			</td>
 		</tr>
 		<tr>
@@ -179,7 +179,7 @@ if ($result->rowCount()==1) {
 					var passwordConfirm=new LiveValidation('passwordConfirm');
 					passwordConfirm.add(Validate.Presence);
 					passwordConfirm.add(Validate.Confirmation, { match: 'passwordNew' } );
-				 </script>
+				</script>
 			</td>
 		</tr>
 		<tr>

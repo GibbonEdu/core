@@ -153,27 +153,29 @@ else {
 			//Print sidebar
 			$_SESSION[$guid]["sidebarExtra"]="" ; 
 			
-			//Print class list
-			try {
-				$dataCourse=array("gibbonCourseID"=>$gibbonCourseID); 
-				$sqlCourse="SELECT gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourse.gibbonCourseID=:gibbonCourseID ORDER BY class" ;
-				$resultCourse=$connection2->prepare($sqlCourse);
-				$resultCourse->execute($dataCourse);
-			}
-			catch(PDOException $e) { 
-				print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-			}
-			
-			if ($resultCourse->rowCount()>0) {
-				$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<h2>" ;
-				$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . _("Class List") ;
-				$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</h2>" ;
-			
-				$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<ul>" ;
-				while ($rowCourse=$resultCourse->fetch()) {
-					$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<li><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Departments/department_course_class.php&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=" . $rowCourse["gibbonCourseClassID"] . "'>" . $rowCourse["course"] . "." . $rowCourse["class"] . "</a></li>" ;
+			if (isActionAccessible($guid, $connection2, "/modules/Departments/department_course_class.php")) {
+				//Print class list
+				try {
+					$dataCourse=array("gibbonCourseID"=>$gibbonCourseID); 
+					$sqlCourse="SELECT gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourse.gibbonCourseID=:gibbonCourseID ORDER BY class" ;
+					$resultCourse=$connection2->prepare($sqlCourse);
+					$resultCourse->execute($dataCourse);
 				}
-				$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</ul>" ;	
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+			
+				if ($resultCourse->rowCount()>0) {
+					$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<h2>" ;
+					$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . _("Class List") ;
+					$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</h2>" ;
+			
+					$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<ul>" ;
+					while ($rowCourse=$resultCourse->fetch()) {
+						$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<li><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Departments/department_course_class.php&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=" . $rowCourse["gibbonCourseClassID"] . "'>" . $rowCourse["course"] . "." . $rowCourse["class"] . "</a></li>" ;
+					}
+					$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</ul>" ;	
+				}
 			}
 		}
 	}

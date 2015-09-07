@@ -98,7 +98,7 @@ else {
 					<script type="text/javascript">
 						var gibbonSchoolYearIDTarget=new LiveValidation('gibbonSchoolYearIDTarget');
 						gibbonSchoolYearIDTarget.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-					 </script>	
+					</script>	
 				</td>
 			</tr>
 			<tr>

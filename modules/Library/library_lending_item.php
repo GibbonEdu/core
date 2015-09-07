@@ -239,7 +239,7 @@ else {
 							if ($rowEvent["gibbonPersonIDStatusResponsible"]!="") {
 								try {
 									$dataPerson=array("gibbonPersonID"=>$rowEvent["gibbonPersonIDStatusResponsible"]); 
-									$sqlPerson="SELECT title, preferredName, surname, image_75 FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
+									$sqlPerson="SELECT title, preferredName, surname, image_240 FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
 									$resultPerson=$connection2->prepare($sqlPerson);
 									$resultPerson->execute($dataPerson);
 								}
@@ -252,7 +252,7 @@ else {
 							}
 							print "<td>" ;
 								if (is_array($rowPerson)) {
-									print getUserPhoto($guid, $rowPerson["image_75"], 75) ;
+									print getUserPhoto($guid, $rowPerson["image_240"], 75) ;
 								}
 								if (is_array($rowPerson)) {
 									print "<div style='margin-top: 3px; font-weight: bold'>" . formatName($rowPerson["title"], $rowPerson["preferredName"], $rowPerson["surname"], "Staff", FALSE, TRUE) . "</div>" ;
@@ -283,7 +283,7 @@ else {
 								if ($rowEvent["gibbonPersonIDOut"]!="") {
 									try {
 										$dataPerson=array("gibbonPersonID"=>$rowEvent["gibbonPersonIDOut"]); 
-										$sqlPerson="SELECT title, preferredName, surname, image_75 FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
+										$sqlPerson="SELECT title, preferredName, surname, image_240 FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
 										$resultPerson=$connection2->prepare($sqlPerson);
 										$resultPerson->execute($dataPerson);
 									}
@@ -298,7 +298,7 @@ else {
 								if ($rowEvent["gibbonPersonIDIn"]!="") {
 									try {
 										$dataPerson=array("gibbonPersonID"=>$rowEvent["gibbonPersonIDIn"]); 
-										$sqlPerson="SELECT title, preferredName, surname, image_75 FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
+										$sqlPerson="SELECT title, preferredName, surname, image_240 FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
 										$resultPerson=$connection2->prepare($sqlPerson);
 										$resultPerson->execute($dataPerson);
 									}

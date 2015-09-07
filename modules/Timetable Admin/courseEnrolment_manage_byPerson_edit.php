@@ -150,7 +150,12 @@ else {
 									<?php
 									try {
 										$dataSelect=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "gibbonYearGroupIDList"=>"%" . $row["gibbonYearGroupID"] . "%"); 
-										$sqlSelect="SELECT gibbonCourseClassID, gibbonCourse.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonYearGroupIDList LIKE :gibbonYearGroupIDList ORDER BY course, class" ;
+										$sqlSelect="SELECT gibbonCourseClassID, gibbonCourse.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class,
+												(SELECT count(*) FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND (status='Full' OR status='Expected') AND role='Student') AS studentCount 
+											FROM gibbonCourse 
+											JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) 
+											WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonYearGroupIDList LIKE :gibbonYearGroupIDList 
+											ORDER BY course, class" ;
 										$resultSelect=$connection2->prepare($sqlSelect);
 										$resultSelect->execute($dataSelect);
 									}
@@ -169,34 +174,31 @@ else {
 										}
 										print "<option value='" . $rowSelect["gibbonCourseClassID"] . "'>" . htmlPrep($rowSelect["course"]) . "." . htmlPrep($rowSelect["class"]) ;
 										if ($teachers!="") {
-											print " - " . substr($teachers,0,-2) . "" ;
+											print " - " . substr($teachers,0,-2) ;
 										
 										}
+										print " - " . $rowSelect["studentCount"] . " " . _('students') ;
 										print "</option>" ;
 									}
 									?>
 									</optgroup>
 								<?php
 								}
-								else {
-									?>
-									<optgroup label='--<?php print _('All Classes') ?>--'>
-									<?php
-									try {
-										$dataSelect=array("gibbonSchoolYearID"=>$gibbonSchoolYearID); 
-										$sqlSelect="SELECT gibbonCourseClassID, gibbonCourse.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY course, class" ;
-										$resultSelect=$connection2->prepare($sqlSelect);
-										$resultSelect->execute($dataSelect);
-									}
-									catch(PDOException $e) { }
-									while ($rowSelect=$resultSelect->fetch()) {
-										print "<option value='" . $rowSelect["gibbonCourseClassID"] . "'>" . htmlPrep($rowSelect["course"]) . "." . htmlPrep($rowSelect["class"]) . " - " . $rowSelect["name"] . "</option>" ;
-									}
-									?>
-									</optgroup>
-									<?php
+								?>
+								<optgroup label='--<?php print _('All Classes') ?>--'>
+								<?php
+								try {
+									$dataSelect=array("gibbonSchoolYearID"=>$gibbonSchoolYearID); 
+									$sqlSelect="SELECT gibbonCourseClassID, gibbonCourse.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY course, class" ;
+									$resultSelect=$connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								}
+								catch(PDOException $e) { }
+								while ($rowSelect=$resultSelect->fetch()) {
+									print "<option value='" . $rowSelect["gibbonCourseClassID"] . "'>" . htmlPrep($rowSelect["course"]) . "." . htmlPrep($rowSelect["class"]) . " - " . $rowSelect["name"] . "</option>" ;
 								}
 								?>
+								</optgroup>
 							</select>
 						</td>
 					</tr>

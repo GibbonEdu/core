@@ -108,7 +108,7 @@ else {
 								<script type="text/javascript">
 									var title=new LiveValidation('title');
 									title.add(Validate.Presence);
-								 </script>
+								</script>
 							</td>
 						</tr>
 						<?php
@@ -138,7 +138,7 @@ else {
 									<script type="text/javascript">
 										var gibbonStudentNoteCategoryID=new LiveValidation('gibbonStudentNoteCategoryID');
 										gibbonStudentNoteCategoryID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-									 </script>
+									</script>
 									 <script type="text/javascript">
 										$("#gibbonStudentNoteCategoryID").change(function() {
 											if ($("#gibbonStudentNoteCategoryID").val()!="Please select...") {
@@ -157,7 +157,7 @@ else {
 											
 											}
 										});
-									 </script>
+									</script>
 								</td>
 							</tr>
 							<?php

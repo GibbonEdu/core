@@ -66,8 +66,8 @@ else {
 		//Check if params are specified
 		$gibbonFinanceExpenseID=$_GET["gibbonFinanceExpenseID"] ;
 		$gibbonFinanceBudgetCycleID=$_GET["gibbonFinanceBudgetCycleID"] ;
-		$status=$_GET["status"] ;
-		$gibbonFinanceBudgetID=$_GET["gibbonFinanceBudgetID"] ;
+		$status2=$_GET["status2"] ;
+		$gibbonFinanceBudgetID2=$_GET["gibbonFinanceBudgetID2"] ;
 		if ($gibbonFinanceExpenseID=="" OR $gibbonFinanceBudgetCycleID=="") {
 			print "<div class='error'>" ;
 				print _("You have not specified one or more required parameters.") ;
@@ -144,9 +144,9 @@ else {
 							//Let's go!
 							$row=$result->fetch() ;
 					
-							if ($status!="" OR $gibbonFinanceBudgetID!="") {
+							if ($status2!="" OR $gibbonFinanceBudgetID2!="") {
 								print "<div class='linkTop'>" ;
-									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/expenses_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=$status&gibbonFinanceBudgetID=$gibbonFinanceBudgetID'>" . _('Back to Search Results') . "</a>" ;
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/expenses_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>" . _('Back to Search Results') . "</a>" ;
 								print "</div>" ;
 							}
 							?>
@@ -355,123 +355,152 @@ else {
 										</tr>
 										<tr>
 											<td> 
-												<b><?php print _('Budget For Cycle') ?> *</b><br/>
-												<span style="font-size: 90%">
-													<i>
-													<?php
-													if ($_SESSION[$guid]["currency"]!="") {
-														print sprintf(_('Numeric value of the fee in %1$s.'), $_SESSION[$guid]["currency"]) ;
-													}
-													else {
-														print _("Numeric value of the fee.") ;
-													}
-													?>
-													</i>
-												</span>
+												<b><?php print _('Count Against Budget') ?> *</b><br/>
+												<span style="font-size: 90%"><i>
+													<?php print _("For tracking purposes, should the item be counted against the budget? If immediately offset by some revenue, perhaps not.") ; ?>
+												</i></span>
 											</td>
 											<td class="right">
-												<?php
-												$budgetAllocation=NULL ;
-												$budgetAllocationFail=FALSE ;
-												try {
-													$dataCheck=array("gibbonFinanceBudgetCycleID"=>$gibbonFinanceBudgetCycleID, "gibbonFinanceBudgetID"=>$gibbonFinanceBudgetID); 
-													$sqlCheck="SELECT * FROM gibbonFinanceBudgetCycleAllocation WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID" ;
-													$resultCheck=$connection2->prepare($sqlCheck);
-													$resultCheck->execute($dataCheck);
-												}
-												catch(PDOException $e) {
-													print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-													$budgetAllocationFail=TRUE ;
-												}
-												if ($resultCheck->rowCount()!=1) {
-													print "<i>" . _('NA') . "</i>" ;
-													$budgetAllocationFail=TRUE ;
-												}
-												else {
-													$rowCheck=$resultCheck->fetch() ;
-													$budgetAllocation=$rowCheck["value"] ;
-													?>
-													<input readonly name="name" id="name" maxlength=60 value="<?php print number_format($budgetAllocation, 2, ".", ",") ; ?>" type="text" style="width: 300px">
+												<select name="countAgainstBudget" id="countAgainstBudget" style="width: 302px">
 													<?php
-												}
-												?>
+													$selected="" ;
+													if ($row["countAgainstBudget"]=="Y") {
+														$selected="selected" ;
+													}
+													print "<option $selected value='Y'>" . ynExpander('Y') . "</option>" ;
+													$selected="" ;
+													if ($row["countAgainstBudget"]=="N") {
+														$selected="selected" ;
+													}
+													print "<option $selected value='N'>" . ynExpander('N') . "</option>" ;
+													?>			
+												</select>
 											</td>
 										</tr>
-										<tr>
-											<td> 
-												<b><?php print _('Amount already approved or spent') ?> *</b><br/>
-												<span style="font-size: 90%">
-													<i>
-													<?php
-													if ($_SESSION[$guid]["currency"]!="") {
-														print sprintf(_('Numeric value of the fee in %1$s.'), $_SESSION[$guid]["currency"]) ;
-													}
-													else {
-														print _("Numeric value of the fee.") ;
-													}
-													?>
-													</i>
-												</span>
-											</td>
-											<td class="right">
-												<?php
-												$budgetAllocated=0 ;
-												$budgetAllocatedFail=FALSE ;
-												try {
-													$dataCheck=array("gibbonFinanceBudgetCycleID"=>$gibbonFinanceBudgetCycleID, "gibbonFinanceBudgetID"=>$gibbonFinanceBudgetID); 
-													$sqlCheck="(SELECT cost FROM gibbonFinanceExpense WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID AND FIELD(status, 'Approved', 'Order'))
-													UNION
-													(SELECT paymentAmount AS cost FROM gibbonFinanceExpense WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID AND FIELD(status, 'Paid'))
-													" ;
-													$resultCheck=$connection2->prepare($sqlCheck);
-													$resultCheck->execute($dataCheck);
-												}
-												catch(PDOException $e) {
-													print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-													$budgetAllocatedFail=TRUE ;
-												}
-												if ($budgetAllocatedFail==FALSE) {
-													while ($rowCheck=$resultCheck->fetch()) {
-														$budgetAllocated=$budgetAllocated+$rowCheck["cost"] ;
-													}
-													?>
-													<input readonly name="name" id="name" maxlength=60 value="<?php print number_format($budgetAllocated, 2, ".", ",") ; ?>" type="text" style="width: 300px">
-													<?php
-												}
-											
-												?>
-											</td>
-										</tr>
+
 										<?php
-										if ($budgetAllocationFail==FALSE AND $budgetAllocatedFail==FALSE) {
+										if ($row["countAgainstBudget"]=="Y") {
 											?>
 											<tr>
-											<td> 
-												<b><?php print _('Budget Remaining For Cycle') ?> *</b><br/>
-												<span style="font-size: 90%">
-													<i>
+												<td> 
+													<b><?php print _('Budget For Cycle') ?> *</b><br/>
+													<span style="font-size: 90%">
+														<i>
+														<?php
+														if ($_SESSION[$guid]["currency"]!="") {
+															print sprintf(_('Numeric value of the fee in %1$s.'), $_SESSION[$guid]["currency"]) ;
+														}
+														else {
+															print _("Numeric value of the fee.") ;
+														}
+														?>
+														</i>
+													</span>
+												</td>
+												<td class="right">
 													<?php
-													if ($_SESSION[$guid]["currency"]!="") {
-														print sprintf(_('Numeric value of the fee in %1$s.'), $_SESSION[$guid]["currency"]) ;
+													$budgetAllocation=NULL ;
+													$budgetAllocationFail=FALSE ;
+													try {
+														$dataCheck=array("gibbonFinanceBudgetCycleID"=>$gibbonFinanceBudgetCycleID, "gibbonFinanceBudgetID"=>$row["gibbonFinanceBudgetID"]); 
+														$sqlCheck="SELECT * FROM gibbonFinanceBudgetCycleAllocation WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID" ;
+														$resultCheck=$connection2->prepare($sqlCheck);
+														$resultCheck->execute($dataCheck);
+													}
+													catch(PDOException $e) {
+														print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+														$budgetAllocationFail=TRUE ;
+													}
+													if ($resultCheck->rowCount()!=1) {
+														print "<input readonly name=\"name\" id=\"name\" maxlength=60 value=\"" . _('NA') . "\" type=\"text\" style=\"width: 300px\">" ;
+														$budgetAllocationFail=TRUE ;
 													}
 													else {
-														print _("Numeric value of the fee.") ;
+														$rowCheck=$resultCheck->fetch() ;
+														$budgetAllocation=$rowCheck["value"] ;
+														?>
+														<input readonly name="name" id="name" maxlength=60 value="<?php print number_format($budgetAllocation, 2, ".", ",") ; ?>" type="text" style="width: 300px">
+														<?php
 													}
 													?>
-													</i>
-												</span>
-											</td>
-											<td class="right">
-												<?php
-												$color="red" ;
-												if (($budgetAllocation-$budgetAllocated)-$row["cost"]>0) {
-													$color="green" ;
-												}
+												</td>
+											</tr>
+											<tr>
+												<td> 
+													<b><?php print _('Amount already approved or spent') ?> *</b><br/>
+													<span style="font-size: 90%">
+														<i>
+														<?php
+														if ($_SESSION[$guid]["currency"]!="") {
+															print sprintf(_('Numeric value of the fee in %1$s.'), $_SESSION[$guid]["currency"]) ;
+														}
+														else {
+															print _("Numeric value of the fee.") ;
+														}
+														?>
+														</i>
+													</span>
+												</td>
+												<td class="right">
+													<?php
+													$budgetAllocated=0 ;
+													$budgetAllocatedFail=FALSE ;
+													try {
+														$dataCheck=array("gibbonFinanceBudgetCycleID"=>$gibbonFinanceBudgetCycleID, "gibbonFinanceBudgetID"=>$row["gibbonFinanceBudgetID"]); 
+														$sqlCheck="(SELECT cost FROM gibbonFinanceExpense WHERE countAgainstBudget='Y' AND gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID AND FIELD(status, 'Approved', 'Order'))
+														UNION
+														(SELECT paymentAmount AS cost FROM gibbonFinanceExpense WHERE countAgainstBudget='Y' AND gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID AND FIELD(status, 'Paid'))
+														" ;
+														$resultCheck=$connection2->prepare($sqlCheck);
+														$resultCheck->execute($dataCheck);
+													}
+													catch(PDOException $e) {
+														print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+														$budgetAllocatedFail=TRUE ;
+													}
+													if ($budgetAllocatedFail==FALSE) {
+														while ($rowCheck=$resultCheck->fetch()) {
+															$budgetAllocated=$budgetAllocated+$rowCheck["cost"] ;
+														}
+														?>
+														<input readonly name="name" id="name" maxlength=60 value="<?php print number_format($budgetAllocated, 2, ".", ",") ; ?>" type="text" style="width: 300px">
+														<?php
+													}
+											
+													?>
+												</td>
+											</tr>
+											<?php
+											if ($budgetAllocationFail==FALSE AND $budgetAllocatedFail==FALSE) {
 												?>
-												<input readonly name="name" id="name" maxlength=60 value="<?php print number_format(($budgetAllocation-$budgetAllocated), 2, ".", ",") ; ?>" type="text" style="width: 300px; font-weight: bold; color: <?php print $color ?>">
-											</td>
-										</tr>
-										<?php
+												<tr>
+												<td> 
+													<b><?php print _('Budget Remaining For Cycle') ?> *</b><br/>
+													<span style="font-size: 90%">
+														<i>
+														<?php
+														if ($_SESSION[$guid]["currency"]!="") {
+															print sprintf(_('Numeric value of the fee in %1$s.'), $_SESSION[$guid]["currency"]) ;
+														}
+														else {
+															print _("Numeric value of the fee.") ;
+														}
+														?>
+														</i>
+													</span>
+												</td>
+												<td class="right">
+													<?php
+													$color="red" ;
+													if (($budgetAllocation-$budgetAllocated)-$row["cost"]>0) {
+														$color="green" ;
+													}
+													?>
+													<input readonly name="name" id="name" maxlength=60 value="<?php print number_format(($budgetAllocation-$budgetAllocated), 2, ".", ",") ; ?>" type="text" style="width: 300px; font-weight: bold; color: <?php print $color ?>">
+												</td>
+											</tr>
+											<?php
+											}	
 										}
 									}
 									?>
@@ -553,7 +582,7 @@ else {
 													var paymentDate=new LiveValidation('paymentDate');
 													paymentDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 													paymentDate.add(Validate.Presence);
-												 </script>
+												</script>
 												 <script type="text/javascript">
 													$(function() {
 														$( "#paymentDate" ).datepicker();
@@ -578,7 +607,7 @@ else {
 													var paymentAmount=new LiveValidation('paymentAmount');
 													paymentAmount.add( Validate.Format, { pattern: /^(?:\d*\.\d{1,2}|\d+)$/, failureMessage: "Invalid number format!" } );
 													paymentAmount.add(Validate.Presence);
-												 </script>
+												</script>
 											</td>
 										</tr>
 										<tr id="payeeRow">
@@ -781,6 +810,8 @@ else {
 										<td class="right">
 											<input name="gibbonFinanceExpenseID" id="gibbonFinanceExpenseID" value="<?php print $gibbonFinanceExpenseID ?>" type="hidden">
 											<input name="gibbonFinanceBudgetID" id="gibbonFinanceBudgetID" value="<?php print $gibbonFinanceBudgetID ?>" type="hidden">
+											<input name="status2" id="status2" value="<?php print $status2 ?>" type="hidden">
+											<input name="gibbonFinanceBudgetID2" id="gibbonFinanceBudgetID2" value="<?php print $gibbonFinanceBudgetID2 ?>" type="hidden">
 											<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 											<input type="submit" value="<?php print _("Submit") ; ?>">
 										</td>

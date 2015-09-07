@@ -215,7 +215,7 @@ else {
 										var invoiceDueDate=new LiveValidation('invoiceDueDate');
 										invoiceDueDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 										invoiceDueDate.add(Validate.Presence);
-									 </script>
+									</script>
 									 <script type="text/javascript">
 										$(function() {
 											$( "#invoiceDueDate" ).datepicker();
@@ -261,12 +261,19 @@ else {
 								print "<select name='status' id='status' style='width:302px'>" ;
 									print "<option selected value='Issued'>" . _('Issued') . "</option>" ;
 									print "<option value='Paid'>" . _('Paid') . "</option>" ;
+									print "<option value='Paid - Partial'>" . _('Paid - Partial') . "</option>" ;
 									print "<option value='Cancelled'>" . _('Cancelled') . "</option>" ;
 								print "</select>" ;
 							}
-							else if ($row["status"]=="Paid") {
+							else if ($row["status"]=="Paid" OR $row["status"]=="Paid - Partial") {
 								print "<select name='status' id='status' style='width:302px'>" ;
-									print "<option selected value='Paid'>" . _('Paid') . "</option>" ;
+									if ($row["status"]=="Paid") {
+										print "<option selected value='Paid'>" . _('Paid') . "</option>" ;
+									}
+									if ($row["status"]=="Paid - Partial") {
+										print "<option value='Paid - Partial'>" . _('Paid - Partial') . "</option>" ;
+										print "<option value='Paid - Complete'>" . _('Paid - Complete') . "</option>" ;
+									}
 									print "<option value='Refunded'>" . _('Refunded') . "</option>" ;
 								print "</select>" ;
 							}
@@ -274,29 +281,74 @@ else {
 						</td>
 					</tr>
 					<?php
-					if ($row["status"]=="Issued") {
+					if ($row["status"]=="Issued" OR $row["status"]=="Paid - Partial") {
 						?>
 						<script type="text/javascript">
 							$(document).ready(function(){
-								$("#paidDateRow").css("display","none");
-								$("#paidAmountRow").css("display","none");
-								paidDate.disable() ;
-								paidAmount.disable() ;
+								<?php
+								if ($row["status"]=="Issued") {
+									?>
+									$("#paidDateRow").css("display","none");
+									$("#paidAmountRow").css("display","none");
+									$("#paymentTypeRow").css("display","none");
+									$("#paymentTransactionIDRow").css("display","none");
+									paidDate.disable() ;
+									paidAmount.disable() ;
+									paymentType.disable() ;
+									<?php
+								}
+								?>
 								$("#status").change(function(){
-									if ($('#status option:selected').val()=="Paid" ) {
+									if ($('#status option:selected').val()=="Paid" || $('#status option:selected').val()=="Paid - Partial" || $('#status option:selected').val()=="Paid - Complete") {
 										$("#paidDateRow").slideDown("fast", $("#paidDateRow").css("display","table-row")); 
 										$("#paidAmountRow").slideDown("fast", $("#paidAmountRow").css("display","table-row")); 
+										$("#paymentTypeRow").slideDown("fast", $("#paymentTypeRow").css("display","table-row")); 
+										$("#paymentTransactionIDRow").slideDown("fast", $("#paymentTransactionIDRow").css("display","table-row")); 
 										paidDate.enable() ;
 										paidAmount.enable() ;
+										paymentType.enable() ;
 									} else {
 										$("#paidDateRow").css("display","none");
 										$("#paidAmountRow").css("display","none");
+										$("#paymentTypeRow").css("display","none");
+										$("#paymentTransactionIDRow").css("display","none");
 										paidDate.disable() ;
 										paidAmount.disable() ;
+										paymentType.disable() ;
 									}
 								 });
 							});
 						</script>
+						<tr id="paymentTypeRow">
+							<td> 
+								<b><?php print _('Payment Type') ?> *</b><br/>
+							</td>
+							<td class="right">
+								<?php
+								print "<select name='paymentType' id='paymentType' style='width:302px'>" ;
+									print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+									print "<option value='Online'>" . _('Online') . "</option>" ;
+									print "<option value='Bank Transfer'>" . _('Bank Transfer') . "</option>" ;
+									print "<option value='Cash'>" . _('Cash') . "</option>" ;
+									print "<option value='Cheque'>" . _('Cheque') . "</option>" ;
+									print "<option value='Other'>" . _('Other') . "</option>" ;
+								print "</select>" ;
+								?>
+								<script type="text/javascript">
+									var paymentType=new LiveValidation('paymentType');
+									paymentType.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+								</script>
+							</td>
+						</tr>
+						<tr id="paymentTransactionIDRow">
+							<td> 
+								<b><?php print _('Transaction ID') ?></b><br/>
+								<span style="font-size: 90%"><i><?php print _('Date of payment, not entry to system.') ?></i></span>
+							</td>
+							<td class="right">
+								<input name="paymentTransactionID" id="paymentTransactionID" maxlength=50 value="" type="text" style="width: 300px">
+							</td>
+						</tr>
 						<tr id="paidDateRow">
 							<td> 
 								<b><?php print _('Date Paid') ?> *</b><br/>
@@ -308,7 +360,7 @@ else {
 									var paidDate=new LiveValidation('paidDate');
 									paidDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 									paidDate.add(Validate.Presence);
-								 </script>
+								</script>
 								 <script type="text/javascript">
 									$(function() {
 										$( "#paidDate" ).datepicker();
@@ -319,7 +371,7 @@ else {
 						<tr id="paidAmountRow">
 							<td> 
 								<b><?php print _('Amount Paid') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print _('Final amount paid.') ?>
+								<span style="font-size: 90%"><i><?php print _('Amount in current payment.') ?>
 								<?php
 								if ($_SESSION[$guid]["currency"]!="") {
 									print "<span style='font-style: italic; font-size: 85%'>" . $_SESSION[$guid]["currency"] . "</span>" ;
@@ -336,12 +388,15 @@ else {
 									$resultFees=$connection2->prepare($sqlFees);
 									$resultFees->execute($dataFees);
 								}
-								catch(PDOException $e) { 
-									print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-								}
+								catch(PDOException $e) { }
 								$paidAmountDefault=0 ;
 								while ($rowFees=$resultFees->fetch()) {
 									$paidAmountDefault=$paidAmountDefault+$rowFees["fee"] ;
+								}
+								//If some paid already, work out amount, and subtract it off
+								if ($row["status"]=="Paid - Partial") {
+									$alreadyPaid=getAmountPaid($connection2, $guid, "gibbonFinanceInvoice", $gibbonFinanceInvoiceID) ;
+									$paidAmountDefault-=$alreadyPaid ;
 								}
 								?>
 								<input name="paidAmount" id="paidAmount" maxlength=14 value="<?php print number_format($paidAmountDefault,2,'.','') ?>" type="text" style="width: 300px">
@@ -349,35 +404,7 @@ else {
 									var paidAmount=new LiveValidation('paidAmount');
 									paidAmount.add( Validate.Format, { pattern: /^(?:\d*\.\d{1,2}|\d+)$/, failureMessage: "Invalid number format!" } );
 									paidAmount.add(Validate.Presence);
-								 </script>
-							</td>
-						</tr>
-						<?php
-					}
-					else if ($row["status"]=="Paid" OR $row["status"]=="Refunded") {
-						?>
-						<tr>
-							<td> 
-								<b><?php print _('Date Paid') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print _('Date of payment, not entry to system.') ?></i></span>
-							</td>
-							<td class="right">
-								<input readonly name="paidDate" id="paidDate" maxlength=10 value="<?php print dateConvertBack($guid, $row["paidDate"]) ; ?>" type="text" style="width: 300px">
-							</td>
-						</tr>
-						<tr>
-							<td> 
-								<b><?php print _('Amount Paid') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print _('Final amount paid.') ?>
-								<?php
-								if ($_SESSION[$guid]["currency"]!="") {
-									print "<span style='font-style: italic; font-size: 85%'>" . $_SESSION[$guid]["currency"] . "</span>" ;
-								}
-								?>
-								</i></span>
-							</td>
-							<td class="right">
-								<input readonly name="paidAmount" id="paidAmount" maxlength=14 value="<?php print number_format($row["paidAmount"],2,'.','') ; ?> " type="text" style="width: 300px">
+								</script>
 							</td>
 						</tr>
 						<?php
@@ -589,6 +616,20 @@ else {
 						}
 					}
 					
+					//PUT PAYMENT LOG
+					print "<tr class='break'>" ;
+						print "<td colspan=2>" ; 
+							print "<h3>" . _('Payment Log') . "</h3>" ;
+						print "</td>" ;
+					print "</tr>" ;
+					print "<tr>" ;
+						print "<td colspan=2>" ;
+							print getPaymentLog($connection2, $guid, "gibbonFinanceInvoice", $gibbonFinanceInvoiceID) ;
+						print "</td>" ;
+					print "</tr>" ;
+					
+					
+					
 					//Receipt emailing
 					if ($row["status"]=="Issued") {
 						?>
@@ -649,10 +690,10 @@ else {
 											$resultParents->execute($dataParents);
 										}
 										catch(PDOException $e) { 
-											$return.="<div class='error'>" . $e->getMessage() . "</div>" ; 
+											print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 										}
 										if ($resultParents->rowCount()<1) {
-											$return.="<div class='warning'>" . _('There are no family members available to send this receipt to.') . "</div>" ; 
+											print "<div class='warning'>" . _('There are no family members available to send this receipt to.') . "</div>" ; 
 										}
 										else {
 											while ($rowParents=$resultParents->fetch()) {
@@ -675,7 +716,7 @@ else {
 									}
 								}
 								else {
-									$return.="<div class='warning'>" . _('There is no company contact available to send this invoice to.') . "</div>" ; 
+									print "<div class='warning'>" . _('There is no company contact available to send this invoice to.') . "</div>" ; 
 								}
 							}
 							else {
@@ -686,10 +727,10 @@ else {
 									$resultParents->execute($dataParents);
 								}
 								catch(PDOException $e) { 
-									$return.="<div class='error'>" . $e->getMessage() . "</div>" ; 
+									print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 								}
 								if ($resultParents->rowCount()<1) {
-									$return.="<div class='warning'>" . _('There are no family members available to send this receipt to.') . "</div>" ; 
+									print "<div class='warning'>" . _('There are no family members available to send this receipt to.') . "</div>" ; 
 								}
 								else {
 									while ($rowParents=$resultParents->fetch()) {
@@ -787,10 +828,10 @@ else {
 											$resultParents->execute($dataParents);
 										}
 										catch(PDOException $e) { 
-											$return.="<div class='error'>" . $e->getMessage() . "</div>" ; 
+											print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 										}
 										if ($resultParents->rowCount()<1) {
-											$return.="<div class='warning'>" . _('There are no family members available to send this receipt to.') . "</div>" ; 
+											print "<div class='warning'>" . _('There are no family members available to send this receipt to.') . "</div>" ; 
 										}
 										else {
 											while ($rowParents=$resultParents->fetch()) {
@@ -813,7 +854,7 @@ else {
 									}
 								}
 								else {
-									$return.="<div class='warning'>" . _('There is no company contact available to send this invoice to.') . "</div>" ; 
+									print "<div class='warning'>" . _('There is no company contact available to send this invoice to.') . "</div>" ; 
 								}
 							}
 							else {
@@ -824,10 +865,10 @@ else {
 									$resultParents->execute($dataParents);
 								}
 								catch(PDOException $e) { 
-									$return.="<div class='error'>" . $e->getMessage() . "</div>" ; 
+									print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 								}
 								if ($resultParents->rowCount()<1) {
-									$return.="<div class='warning'>" . _('There are no family members available to send this receipt to.') . "</div>" ; 
+									print "<div class='warning'>" . _('There are no family members available to send this receipt to.') . "</div>" ; 
 								}
 								else {
 									while ($rowParents=$resultParents->fetch()) {

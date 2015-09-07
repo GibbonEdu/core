@@ -22,6 +22,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
+//Module includes for User Admin (for custom fields)
+include "./modules/User Admin/moduleFunctions.php" ;
+
 if (isActionAccessible($guid, $connection2, "/modules/Students/student_view_details.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
@@ -1060,6 +1063,53 @@ else {
 								print "</tr>" ;
 							}
 						print "</table>" ;
+						
+						//Custom Fields
+						$fields=unserialize($row["fields"]) ;
+						$resultFields=getCustomFields($connection2, $guid, TRUE) ;
+						if ($resultFields->rowCount()>0) {
+							print "<h4>" ;
+							print _("Custom Fields") ;
+							print "</h4>" ;
+							
+							print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
+								$count=0 ;
+								$columns=3 ;
+
+								while ($rowFields=$resultFields->fetch()) {
+									if ($count%$columns==0) {
+										print "<tr>" ;
+									}
+									print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
+											print "<span style='font-size: 115%; font-weight: bold'>" . _($rowFields["name"]) . "</span><br/>" ;
+											if (isset($fields[$rowFields["gibbonPersonFieldID"]])) {
+												if ($rowFields["type"]=="date") {
+													print dateConvertBack($guid, $fields[$rowFields["gibbonPersonFieldID"]]) ;
+												}
+												else if ($rowFields["type"]=="url") {
+													print "<a target='_blank' href='" . $fields[$rowFields["gibbonPersonFieldID"]] . "'>" . $fields[$rowFields["gibbonPersonFieldID"]] . "</a>" ;
+												}
+												else {
+													print $fields[$rowFields["gibbonPersonFieldID"]] ;
+												}
+											}
+									print "</td>" ;
+
+									if ($count%$columns==($columns-1)) {
+										print "</tr>" ;
+									}
+									$count++ ;
+								}
+
+								if ($count%$columns!=0) {
+									for ($i=0;$i<$columns-($count%$columns);$i++) {
+										print "<td style='width: 33%; padding-top: 15px; vertical-align: top'></td>" ;
+									}
+									print "</tr>" ;
+								}
+
+							print "</table>" ;	
+						}
 					}
 					else if ($subpage=="Family") {
 						try {
@@ -1149,7 +1199,7 @@ else {
 									print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 										print "<tr>" ;
 											print "<td style='width: 33%; vertical-align: top' rowspan=2>" ;
-												print getUserPhoto($guid, $rowMember["image_75"], 75) ;
+												print getUserPhoto($guid, $rowMember["image_240"], 75) ;
 											print "</td>" ;
 											print "<td style='width: 33%; vertical-align: top'>" ;
 												print "<span style='font-size: 115%; font-weight: bold'>" . _('Name') . "</span><br/>" ;
@@ -1309,7 +1359,7 @@ else {
 											}
 											print "<td style='width:30%; text-align: left; vertical-align: top'>" ;
 												//User photo
-												print getUserPhoto($guid, $rowMember["image_75"], 75) ;	
+												print getUserPhoto($guid, $rowMember["image_240"], 75) ;	
 												print "<div style='padding-top: 5px'><b>" ;
 												if ($rowMember["status"]=="Full") {
 													print "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $rowMember["gibbonPersonID"] . "'>" . formatName("", $rowMember["preferredName"], $rowMember["surname"], "Student") . "</a><br/>" ;
@@ -1335,7 +1385,7 @@ else {
 											print "</tr>" ;
 										}
 	
-										print "</table>" ;	
+									print "</table>" ;	
 								}
 							}
 						}
@@ -2345,6 +2395,46 @@ else {
 							}
 						}
 					}
+					else if ($subpage=="Internal Assessment") {
+						if (isActionAccessible($guid, $connection2, "/modules/Formal Assessment/internalAssessment_view.php")==FALSE) {
+							print "<div class='error'>" ;
+								print _("Your request failed because you do not have access to this action.");
+							print "</div>" ;
+						}
+						else {
+							$highestAction=getHighestGroupedAction($guid, "/modules/Formal Assessment/internalAssessment_view.php", $connection2) ;
+							if ($highestAction==FALSE) {
+								print "<div class='error'>" ;
+									print _("The highest grouped action cannot be determined.") ;
+								print "</div>" ;
+							}
+							else {
+								//Module includes
+								include "./modules/Formal Assessment/moduleFunctions.php" ;
+								
+								if ($highestAction=="View Internal Assessments_all") {
+									print getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID) ;
+								}
+								else if ($highestAction=="View Internal Assessments_myChildrens") {
+									print getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, "parent") ;
+								}
+							}
+						}
+					}
+					
+					else if ($subpage=="External Assessment") {
+						if (isActionAccessible($guid, $connection2, "/modules/Formal Assessment/externalAssessment_details.php")==FALSE) {
+							print "<div class='error'>" ;
+								print _("Your request failed because you do not have access to this action.");
+							print "</div>" ;
+						}
+						else {
+							//Module includes
+							include "./modules/Formal Assessment/moduleFunctions.php" ;
+							
+							print externalAssessmentDetails($guid, $gibbonPersonID, $connection2) ;
+						}
+					}
 					else if ($subpage=="Individual Needs") {
 						if (isActionAccessible($guid, $connection2, "/modules/Attendance/report_studentHistory.php")==FALSE) {
 							print "<div class='error'>" ;
@@ -3045,12 +3135,22 @@ else {
 						$studentMenuLink[$studentMenuCount]="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&search=$search&allStudents=$allStudents&subpage=Markbook'>" . _('Markbook') . "</a></li>" ;
 						$studentMenuCount++ ;
 					}
-					if (isActionAccessible($guid, $connection2, "/modules/External Assessment/externalAssessment_details.php")) {
+					if (isActionAccessible($guid, $connection2, "/modules/Formal Assessment/internalAssessment_view.php")) {
+						$style="" ;
+						if ($subpage=="Internal Assessment") {
+							$style="style='font-weight: bold'" ;
+						}
+						$studentMenuCategory[$studentMenuCount]=$mainMenu["Formal Assessment"] ;
+						$studentMenuName[$studentMenuCount]=_('Formal Assessment') ;
+						$studentMenuLink[$studentMenuCount]="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&search=$search&allStudents=$allStudents&subpage=Internal%20Assessment'>" . _('Internal Assessment') . "</a></li>" ;
+						$studentMenuCount++ ;
+					}
+					if (isActionAccessible($guid, $connection2, "/modules/Formal Assessment/externalAssessment_details.php")) {
 						$style="" ;
 						if ($subpage=="External Assessment") {
 							$style="style='font-weight: bold'" ;
 						}
-						$studentMenuCategory[$studentMenuCount]=$mainMenu["External Assessment"] ;
+						$studentMenuCategory[$studentMenuCount]=$mainMenu["Formal Assessment"] ;
 						$studentMenuName[$studentMenuCount]=_('External Assessment') ;
 						$studentMenuLink[$studentMenuCount]="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&search=$search&allStudents=$allStudents&subpage=External Assessment'>" . _('External Assessment') . "</a></li>" ;
 						$studentMenuCount++ ;

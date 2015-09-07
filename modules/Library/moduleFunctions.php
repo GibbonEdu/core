@@ -178,9 +178,9 @@ function getImage($guid, $type, $location, $border=true ) {
 			$output.="</div>" ;
 		}
 		if ($type=="File") {
-			if (is_file($_SESSION[$guid]["absoluteURL"] . "/" . $location)) {
+			if (is_file($_SESSION[$guid]["absolutePath"] . "/" . $location)) {
 				$output.="<div style='height: 240px; width: 240px; display:table-cell; vertical-align:middle; text-align:center; $borderStyle'>" ;
-					$output.="<img class='user' style='max-height: 240px; max-width: 240px; opacity: 1.0; margin: auto' title='" . htmlPrep($row["name"]) . "' src='" . $_SESSION[$guid]["absoluteURL"] . "/" . $location . "'/><br/>" ;
+					$output.="<img class='user' style='max-height: 240px; max-width: 240px; opacity: 1.0; margin: auto' title='' src='" . $_SESSION[$guid]["absoluteURL"] . "/" . $location . "'/><br/>" ;
 				$output.="</div>" ;
 			}
 			else {

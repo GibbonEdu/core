@@ -76,8 +76,19 @@ else {
 				print "</div>" ;
 			} 
 			
+			$filter2="" ;
+			if (isset($_GET["filter2"])) {
+				$filter2=$_GET["filter2"] ;
+			}
+			
+			if ($filter2!="") {
+				print "<div class='linkTop'>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/outcomes.php&filter2=" . $filter2 . "'>" . _('Back to Search Results') . "</a>" ;
+				print "</div>" ;
+			}
+			
 			?>
-			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/outcomes_addProcess.php" ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/outcomes_addProcess.php?filter2=" . $filter2 ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td style='width: 275px'> 
@@ -96,7 +107,7 @@ else {
 								<script type="text/javascript">
 									var scope=new LiveValidation('scope');
 									scope.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-								 </script>
+								</script>
 								 <?php
 							}
 							else if ($highestAction=="Manage Outcomes_viewAllEditLearningArea") {

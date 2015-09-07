@@ -80,6 +80,17 @@ else {
 				print "</div>" ;
 			} 
 			
+			$filter2="" ;
+			if (isset($_GET["filter2"])) {
+				$filter2=$_GET["filter2"] ;
+			}
+			
+			if ($filter2!="") {
+				print "<div class='linkTop'>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/outcomes.php&filter2=" . $filter2 . "'>" . _('Back to Search Results') . "</a>" ;
+				print "</div>" ;
+			}
+			
 			//Check if school year specified
 			$gibbonOutcomeID=$_GET["gibbonOutcomeID"];
 			if ($gibbonOutcomeID=="") {
@@ -113,7 +124,7 @@ else {
 					//Let's go!
 					$row=$result->fetch() ;
 					?>
-					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/outcomes_editProcess.php?gibbonOutcomeID=$gibbonOutcomeID" ?>">
+					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/outcomes_editProcess.php?gibbonOutcomeID=$gibbonOutcomeID&filter2=" . $filter2 ?>">
 						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 							<tr>
 								<td style='width: 275px'> 

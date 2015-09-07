@@ -164,7 +164,7 @@ else {
 				if ($_SESSION[$guid]["address"]!="") {
 					if (strstr($_SESSION[$guid]["address"],"..")==FALSE) {
 						if (getModuleName($_SESSION[$guid]["address"])!="") {
-							print " - " . getModuleName($_SESSION[$guid]["address"]) ;
+							print " - " . _(getModuleName($_SESSION[$guid]["address"])) ;
 						}
 					}
 				}
@@ -178,6 +178,7 @@ else {
 			<script type="text/javascript" src="./lib/LiveValidation/livevalidation_standalone.compressed.js"></script>
 
 			<script type="text/javascript" src="<?php print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery/jquery.js"></script>
+			<script type="text/javascript" src="<?php print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery/jquery-migrate.min.js"></script>
 			<script type="text/javascript" src="<?php print $_SESSION[$guid]["absoluteURL"] ?>/lib/jquery-ui/js/jquery-ui.min.js"></script>
 			<?php 
 			if (isset($_SESSION[$guid]["i18n"]["code"])) {
@@ -330,6 +331,23 @@ else {
 		</head>
 		<body>
 			<?php
+			//Get house logo and set session variable, only on first load after login (for performance)
+			if ($_SESSION[$guid]["pageLoads"]==0 AND isset($_SESSION[$guid]["username"]) AND $_SESSION[$guid]["gibbonHouseID"]!="") {
+				try {
+					$dataHouse=array("gibbonHouseID"=>$_SESSION[$guid]["gibbonHouseID"]); 
+					$sqlHouse="SELECT logo, name FROM gibbonHouse WHERE gibbonHouseID=:gibbonHouseID" ;
+					$resultHouse=$connection2->prepare($sqlHouse);
+					$resultHouse->execute($dataHouse);
+				}
+				catch(PDOException $e) { }
+
+				if ($resultHouse->rowCount()==1) {
+					$rowHouse=$resultHouse->fetch() ;
+					$_SESSION[$guid]["gibbonHouseIDLogo"]=$rowHouse["logo"] ;
+					$_SESSION[$guid]["gibbonHouseIDName"]=$rowHouse["name"] ;
+				}
+			}
+			
 			//Show warning if not in the current school year
 			if (isset($_SESSION[$guid]["username"])) {
 				if ($_SESSION[$guid]["gibbonSchoolYearID"]!=$_SESSION[$guid]["gibbonSchoolYearIDCurrent"]) {
@@ -342,8 +360,13 @@ else {
 						
 			<div id="wrapOuter">
 				<?php
-				print "<div class='minorLinks'>" ;
-					print getMinorLinks($connection2, $guid, $cacheLoad) ;
+				if (@$_SESSION[$guid]["gibbonHouseIDLogo"]=="") {
+					print "<div class='minorLinks minorLinksTopGap'>" ;
+				}
+				else {
+					print "<div class='minorLinks'>" ;
+				}
+				print getMinorLinks($connection2, $guid, $cacheLoad) ;
 				print "</div>" ;
 				?>
 				<div id="wrap">
@@ -356,7 +379,7 @@ else {
 							//Show student and staff quick finder
 							if (isset($_SESSION[$guid]["username"])) {
 								if ($cacheLoad) {
-									$_SESSION[$guid]["studentFastFinder"]=getStudentFastFinder($connection2, $guid) ;
+									$_SESSION[$guid]["studentFastFinder"]=getFastFinder($connection2, $guid) ;
 								}
 								print $_SESSION[$guid]["studentFastFinder"] ;
 							}
@@ -583,7 +606,7 @@ else {
 											while ($row=$result->fetch()) {
 												try {
 													$dataChild=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"],"gibbonFamilyID"=>$row["gibbonFamilyID"]); 
-													$sqlChild="SELECT gibbonPerson.gibbonPersonID, image_75, surname, preferredName, dateStart, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, gibbonRollGroup.website AS rollGroupWebsite, gibbonRollGroup.gibbonRollGroupID FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') ORDER BY surname, preferredName " ;
+													$sqlChild="SELECT gibbonPerson.gibbonPersonID, image_240, surname, preferredName, dateStart, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, gibbonRollGroup.website AS rollGroupWebsite, gibbonRollGroup.gibbonRollGroupID FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') ORDER BY surname, preferredName " ;
 													$resultChild=$connection2->prepare($sqlChild);
 													$resultChild->execute($dataChild); 
 												}
@@ -596,7 +619,7 @@ else {
 													$students[$count][2]=$rowChild["yearGroup"] ;
 													$students[$count][3]=$rowChild["rollGroup"] ;
 													$students[$count][4]=$rowChild["gibbonPersonID"] ;
-													$students[$count][5]=$rowChild["image_75"] ;
+													$students[$count][5]=$rowChild["image_240"] ;
 													$students[$count][6]=$rowChild["dateStart"] ;
 													$students[$count][7]=$rowChild["gibbonRollGroupID"] ;
 													$students[$count][8]=$rowChild["rollGroupWebsite"] ;
@@ -777,24 +800,11 @@ else {
 																print "</td>" ;
 																print "<td>" ;
 																	if ($row["role"]=="Teacher") {
-																		try {
-																			$dataLike=array("gibbonPlannerEntryID"=>$row["gibbonPlannerEntryID"]); 
-																			$sqlLike="SELECT * FROM gibbonPlannerEntryLike WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID" ;
-																			$resultLike=$connection2->prepare($sqlLike);
-																			$resultLike->execute($dataLike); 
-																		}
-																		catch(PDOException $e) { }
-																		print $resultLike->rowCount() ;
+																		print countLikesByContext($connection2, "Planner", "gibbonPlannerEntryID", $row["gibbonPlannerEntryID"]) ;
 																	}
 																	else {
-																		try {
-																			$dataLike=array("gibbonPlannerEntryID"=>$row["gibbonPlannerEntryID"],"gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-																			$sqlLike="SELECT * FROM gibbonPlannerEntryLike WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID" ;
-																			$resultLike=$connection2->prepare($sqlLike);
-																			$resultLike->execute($dataLike); 
-																		}
-																		catch(PDOException $e) { }
-																		if ($resultLike->rowCount()!=1) {
+																		$likesGiven=countLikesByContextAndGiver($connection2, "Planner", "gibbonPlannerEntryID", $row["gibbonPlannerEntryID"], $_SESSION[$guid]["gibbonPersonID"]) ;
+																		if ($likesGiven!=1) {
 																			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/plannerProcess.php?gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&address=/modules/Planner/planner.php&viewBy=Class&gibbonCourseClassID=" . $row["gibbonPlannerEntryID"] . "&date=&returnToIndex=Y'><img src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_off.png'></a>" ;
 																		}
 																		else {
@@ -817,7 +827,7 @@ else {
 											?>
 											<script type="text/javascript">
 												$(document).ready(function(){
-													$("#tt").load("<?php print $_SESSION[$guid]["absoluteURL"] ?>/index_tt_ajax.php",{"ttDate": "<?php print @$_POST["ttDate"] ?>", "fromTT": "<?php print @$_POST["fromTT"] ?>", "personalCalendar": "<?php print @$_POST["personalCalendar"] ?>", "schoolCalendar": "<?php print @$_POST["schoolCalendar"] ?>", "spaceBookingCalendar": "<?php print @$_POST["spaceBookingCalendar"] ?>"});
+													$("#tt").load("<?php print $_SESSION[$guid]["absoluteURL"] ?>/index_tt_ajax.php",{"gibbonTTID": "<?php print @$_GET["gibbonTTID"] ?>", "ttDate": "<?php print @$_POST["ttDate"] ?>", "fromTT": "<?php print @$_POST["fromTT"] ?>", "personalCalendar": "<?php print @$_POST["personalCalendar"] ?>", "schoolCalendar": "<?php print @$_POST["schoolCalendar"] ?>", "spaceBookingCalendar": "<?php print @$_POST["spaceBookingCalendar"] ?>"});
 												});
 											</script>
 											<?php
@@ -1028,7 +1038,7 @@ else {
 								}
 							}
 							else {
-								if (strstr($_SESSION[$guid]["address"],"..")!=FALSE) {
+								if (strstr($_SESSION[$guid]["address"],"..")==TRUE OR strstr($_SESSION[$guid]["address"],"installer")==TRUE OR strstr($_SESSION[$guid]["address"],"uploads")==TRUE) {
 									print "<div class='error'>" ;
 									print _("Illegal address detected: access denied.") ;
 									print "</div>" ;
@@ -1059,7 +1069,7 @@ else {
 					<div id="footer">
 						<?php print _("Powered by") ?> <a target='_blank' href="http://gibbonedu.org">Gibbon</a> v<?php print $version ?><?php if ($_SESSION[$guid]["cuttingEdgeCode"]=="Y") { print "dev" ; }?> | &#169; <a target='_blank' href="http://rossparker.org">Ross Parker</a> 2010-<?php print date("Y") ?><br/>
 						<span style='font-size: 90%; '>
-							<?php print _("Created under the") ?> <a target='_blank' href="http://www.gnu.org/licenses/gpl.html">GNU GPL</a> at <a target='_blank' href='http://www.ichk.edu.hk'>ICHK</a> | <a target='_blank' href='https://www.gibbonedu.org/contribute/'><?php print _("Credits") ; ?></a><br/>
+							<?php print _("Created under the") ?> <a target='_blank' href="http://www.gnu.org/licenses/gpl.html">GNU GPL</a> at <a target='_blank' href='http://www.ichk.edu.hk'>ICHK</a> | <a target='_blank' href='https://gibbonedu.org/contribute/'><?php print _("Credits") ; ?></a><br/>
 							<?php
 								$seperator=FALSE ;
 								$thirdLine=FALSE ;

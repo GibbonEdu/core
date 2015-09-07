@@ -51,13 +51,17 @@ else {
 			$addReturnMessage=_("Your request was completed successfully. You can now add another record if you wish.") ;	
 			$class="success" ;
 		}
+		else if ($addReturn=="success1") {
+			$addReturnMessage=_("Your request was completed successfully, but one or more images could not be saved. You can now add another record if you wish.") ;	
+			$class="success" ;
+		}
 		print "<div class='$class'>" ;
 			print $addReturnMessage;
 		print "</div>" ;
 	} 
 	
 	?>
-	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/house_manage_addProcess.php" ?>">
+	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/house_manage_addProcess.php" ?>" enctype="multipart/form-data">
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td style='width: 275px'> 
@@ -69,7 +73,7 @@ else {
 					<script type="text/javascript">
 						var name2=new LiveValidation('name');
 						name2.add(Validate.Presence);
-					 </script> 
+					</script> 
 				</td>
 			</tr>
 			<tr>
@@ -82,7 +86,19 @@ else {
 					<script type="text/javascript">
 						var nameShort=new LiveValidation('nameShort');
 						nameShort.add(Validate.Presence);
-					 </script> 
+					</script> 
+				</td>
+			</tr>
+			<tr>
+				<td> 
+					<b><?php print _('Logo') ?></b><br/>
+				</td>
+				<td class="right">
+					<input type="file" name="file1" id="file1"><br/><br/>
+					<script type="text/javascript">
+						var file1=new LiveValidation('file1');
+						file1.add( Validate.Inclusion, { within: ['gif','jpg','jpeg','png'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+					</script>
 				</td>
 			</tr>
 			<tr>

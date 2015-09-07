@@ -2,18 +2,24 @@
 @session_start() ;
 include "./config.php" ;
 
-$role=substr($_GET["gibbonPersonID"],0,3) ;
-$gibbonPersonID=substr($_GET["gibbonPersonID"],4) ;
+$type=substr($_GET["id"],0,3) ;
+$id=substr($_GET["id"],4) ;
 
 if ($_SESSION[$guid]["absoluteURL"]=="") {
 	$URL="./index.php" ;
 }
 else {
-	if ($role=="Stu") {
-		$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $gibbonPersonID ;
+	if ($type=="Stu") {
+		$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $id ;
 	}
-	else {
-		$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID=" . $gibbonPersonID ;
+	else if ($type=="Act") {
+		$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $id ;
+	}
+	else if ($type=="Sta") {
+		$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID=" . $id ;
+	}
+	else if ($type=="Cla") {
+		$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID=" . $id ;
 	}
 }
 

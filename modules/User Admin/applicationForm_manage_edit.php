@@ -214,7 +214,7 @@ else {
 							<script type="text/javascript">
 								var dateStart=new LiveValidation('dateStart');
 								dateStart.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-							 </script>
+							</script>
 							 <script type="text/javascript">
 								$(function() {
 									$( "#dateStart" ).datepicker();
@@ -252,7 +252,7 @@ else {
 							<script type="text/javascript">
 								var gibbonSchoolYearIDEntry=new LiveValidation('gibbonSchoolYearIDEntry');
 								gibbonSchoolYearIDEntry.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -286,7 +286,7 @@ else {
 							<script type="text/javascript">
 								var gibbonYearGroupIDEntry=new LiveValidation('gibbonYearGroupIDEntry');
 								gibbonYearGroupIDEntry.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<?php
@@ -429,7 +429,7 @@ else {
 							<script type="text/javascript">
 								var surname=new LiveValidation('surname');
 								surname.add(Validate.Presence);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -442,7 +442,7 @@ else {
 							<script type="text/javascript">
 								var firstName=new LiveValidation('firstName');
 								firstName.add(Validate.Presence);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -455,7 +455,7 @@ else {
 							<script type="text/javascript">
 								var preferredName=new LiveValidation('preferredName');
 								preferredName.add(Validate.Presence);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -468,7 +468,7 @@ else {
 							<script type="text/javascript">
 								var officialName=new LiveValidation('officialName');
 								officialName.add(Validate.Presence);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -493,7 +493,7 @@ else {
 							<script type="text/javascript">
 								var gender=new LiveValidation('gender');
 								gender.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -507,7 +507,7 @@ else {
 								var dob=new LiveValidation('dob');
 								dob.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 								dob.add(Validate.Presence);
-							 </script>
+							</script>
 							 <script type="text/javascript">
 								$(function() {
 									$( "#dob" ).datepicker();
@@ -767,7 +767,7 @@ else {
 							<script type="text/javascript">
 								var visaExpiryDate=new LiveValidation('visaExpiryDate');
 								visaExpiryDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-							 </script>
+							</script>
 							 <script type="text/javascript">
 								$(function() {
 									$( "#visaExpiryDate" ).datepicker();
@@ -791,7 +791,7 @@ else {
 							<script type="text/javascript">
 								var email=new LiveValidation('email');
 								email.add(Validate.Email);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<?php
@@ -949,9 +949,23 @@ else {
 						</td>
 					</tr>
 					
-					
-					
 					<?php
+					//CUSTOM FIELDS FOR STUDENT
+					$fields=unserialize($row["fields"]) ;
+					$resultFields=getCustomFields($connection2, $guid, TRUE, FALSE, FALSE, FALSE, TRUE, NULL) ;
+					if ($resultFields->rowCount()>0) {
+						?>
+						<tr>
+							<td colspan=2> 
+								<h4><?php print _('Other Information') ?></h4>
+							</td>
+						</tr>
+						<?php
+						while ($rowFields=$resultFields->fetch()) {
+							print renderCustomFieldRow($connection2, $guid, $rowFields, $fields[$rowFields["gibbonPersonFieldID"]]) ;	
+						}
+					}	
+					
 					if ($row["gibbonFamilyID"]=="") {
 						?>
 						<input type="hidden" name="gibbonFamily" value="FALSE">
@@ -980,7 +994,7 @@ else {
 								<script type="text/javascript">
 									var homeAddress=new LiveValidation('homeAddress');
 									homeAddress.add(Validate.Presence);
-								 </script>
+								</script>
 							</td>
 						</tr>
 						<tr>
@@ -1013,7 +1027,7 @@ else {
 							<script type="text/javascript">
 								var homeAddressDistrict=new LiveValidation('homeAddressDistrict');
 								homeAddressDistrict.add(Validate.Presence);
-							 </script>
+							</script>
 						</tr>
 						<tr>
 							<td> 
@@ -1042,7 +1056,7 @@ else {
 								<script type="text/javascript">
 									var homeAddressCountry=new LiveValidation('homeAddressCountry');
 									homeAddressCountry.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-								 </script>
+								</script>
 							</td>
 						</tr>
 						<?php
@@ -1111,10 +1125,20 @@ else {
 									<script type="text/javascript">
 										var parent1relationship=new LiveValidation('parent1relationship');
 										parent1relationship.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-									 </script>
+									</script>
 								</td>
 							</tr>
 							<input name='parent1gibbonPersonID' value="<?php print $row["parent1gibbonPersonID"] ?>" type="hidden">
+							<?php
+								//CUSTOM FIELDS FOR PARENT 1 WITH FAMILY
+								$parent1fields=unserialize($row["parent1fields"]) ;
+								$resultFields=getCustomFields($connection2, $guid, FALSE, FALSE, TRUE, FALSE, TRUE, NULL) ;
+								if ($resultFields->rowCount()>0) {
+									while ($rowFields=$resultFields->fetch()) {
+										print renderCustomFieldRow($connection2, $guid, $rowFields, $parent1fields[$rowFields["gibbonPersonFieldID"]], "parent1") ;	
+									}
+								}	
+							?>
 							<?php
 						}
 						else {
@@ -1174,7 +1198,7 @@ else {
 										<script type="text/javascript">
 											var <?php print "parent$i" ?>title=new LiveValidation('<?php print "parent$i" ?>title');
 											<?php print "parent$i" ?>title.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-										 </script>
+										</script>
 										 <?php
 									}
 									?>
@@ -1193,7 +1217,7 @@ else {
 										<script type="text/javascript">
 											var <?php print "parent$i" ?>surname=new LiveValidation('<?php print "parent$i" ?>surname');
 											<?php print "parent$i" ?>surname.add(Validate.Presence);
-										 </script>
+										</script>
 										 <?php
 									}
 									?>
@@ -1212,7 +1236,7 @@ else {
 										<script type="text/javascript">
 											var <?php print "parent$i" ?>firstName=new LiveValidation('<?php print "parent$i" ?>firstName');
 											<?php print "parent$i" ?>firstName.add(Validate.Presence);
-										 </script>
+										</script>
 										 <?php
 									}
 									?>
@@ -1231,7 +1255,7 @@ else {
 										<script type="text/javascript">
 											var <?php print "parent$i" ?>preferredName=new LiveValidation('<?php print "parent$i" ?>preferredName');
 											<?php print "parent$i" ?>preferredName.add(Validate.Presence);
-										 </script>
+										</script>
 										 <?php
 									}
 									?>
@@ -1250,7 +1274,7 @@ else {
 										<script type="text/javascript">
 											var <?php print "parent$i" ?>officialName=new LiveValidation('<?php print "parent$i" ?>officialName');
 											<?php print "parent$i" ?>officialName.add(Validate.Presence);
-										 </script>
+										</script>
 										 <?php
 									}
 									?>
@@ -1271,7 +1295,18 @@ else {
 								</td>
 								<td class="right">
 									<select name="<?php print "parent$i" ?>gender" id="<?php print "parent$i" ?>gender" style="width: 302px">
-										<option value="Please select..."><?php print _('Please select...') ?></option>
+										<?php 
+										if ($i==1) {
+											?>
+											<option value="Please select..."><?php print _('Please select...') ?></option>
+											<?php
+										}
+										else {
+											?>
+											<option value=""></option>
+											<?php
+										}
+										?>
 										<option <?php if ($row["parent$i" . "gender"]=="F") { print "selected" ; } ?> value="F">F</option>
 										<option <?php if ($row["parent$i" . "gender"]=="M") { print "selected" ; } ?> value="M">M</option>
 									</select>
@@ -1281,7 +1316,7 @@ else {
 										<script type="text/javascript">
 											var <?php print "parent$i" ?>gender=new LiveValidation('<?php print "parent$i" ?>gender');
 											<?php print "parent$i" ?>gender.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-										 </script>
+										</script>
 										 <?php
 									}
 									?>
@@ -1319,7 +1354,7 @@ else {
 										<script type="text/javascript">
 											var <?php print "parent$i" ?>relationship=new LiveValidation('<?php print "parent$i" ?>relationship');
 											<?php print "parent$i" ?>relationship.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-										 </script>
+										</script>
 										 <?php
 									}
 									?>
@@ -1485,7 +1520,7 @@ else {
 									<script type="text/javascript">
 										var <?php print "parent$i" ?>visaExpiryDate=new LiveValidation('<?php print "parent$i" ?>visaExpiryDate');
 										<?php print "parent$i" ?>visaExpiryDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-									 </script>
+									</script>
 									 <script type="text/javascript">
 										$(function() {
 											$( "#<?php print "parent$i" ?>visaExpiryDate" ).datepicker();
@@ -1514,7 +1549,7 @@ else {
 											print "parent$i" . "email.add(Validate.Presence);" ;
 										}
 										?>
-									 </script>
+									</script>
 								</td>
 							</tr>
 							<?php
@@ -1533,7 +1568,7 @@ else {
 											<script type="text/javascript">
 												var <?php print "parent$i" ?>phone<?php print $y ?>=new LiveValidation('<?php print "parent$i" ?>phone<?php print $y ?>');
 												<?php print "parent$i" ?>phone<?php print $y ?>.add(Validate.Presence);
-											 </script>
+											</script>
 											<?php
 										}
 										?>
@@ -1593,6 +1628,43 @@ else {
 								</td>
 							</tr>
 							<?php
+							
+							//CUSTOM FIELDS FOR PARENTS, WITH FAMILY
+							$parent1fields=unserialize($row["parent1fields"]) ;
+							$parent2fields=unserialize($row["parent2fields"]) ;
+							$resultFields=getCustomFields($connection2, $guid, FALSE, FALSE, TRUE, FALSE, TRUE, NULL) ;
+							if ($resultFields->rowCount()>0) {
+								?>
+								<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
+									<td colspan=2> 
+										<h4><?php print _('Parent/Guardian') ?> <?php print $i ?> <?php print _('Other Fields') ?></h4>
+									</td>
+								</tr>
+								<?php
+								while ($rowFields=$resultFields->fetch()) {
+									if ($i==2) {
+										print renderCustomFieldRow($connection2, $guid, $rowFields, $parent2fields[$rowFields["gibbonPersonFieldID"]], "parent2", "secondParent", TRUE) ;
+										?>
+										<script type="text/javascript">
+											/* Advanced Options Control */
+											$(document).ready(function(){
+												$("#secondParent").click(function(){
+													if ($('input[name=secondParent]:checked').val()=="No" ) {
+														$("#parent<?php print $i ?>custom<?php print $rowFields["gibbonPersonFieldID"] ?>").attr("disabled", "disabled");
+													} 
+													else {
+														$("#parent<?php print $i ?>custom<?php print $rowFields["gibbonPersonFieldID"] ?>").removeAttr("disabled");
+													}
+												 });
+											});
+										</script>
+										<?php
+									}
+									else {
+										print renderCustomFieldRow($connection2, $guid, $rowFields, $parent1fields[$rowFields["gibbonPersonFieldID"]], "parent1") ;
+									}
+								}
+							}
 						}
 					}
 					else {
@@ -1851,13 +1923,17 @@ else {
 								$("#companyPhoneRow").css("display","none");
 								$("#companyAllRow").css("display","none");
 								$("#companyCategoriesRow").css("display","none");
+								companyEmail.disable() ;
+								companyAddress.disable() ;
+								companyContact.disable() ;
+								companyName.disable() ;
 							}
 							else {
 								if ($('input[name=companyAll]:checked').val()=="Y" ) {
 									$("#companyCategoriesRow").css("display","none");
 								}
 							}
-							
+					
 							$(".payment").click(function(){
 								if ($('input[name=payment]:checked').val()=="Family" ) {
 									$("#companyNameRow").css("display","none");
@@ -1868,6 +1944,10 @@ else {
 									$("#companyPhoneRow").css("display","none");
 									$("#companyAllRow").css("display","none");
 									$("#companyCategoriesRow").css("display","none");
+									companyEmail.disable() ;
+									companyAddress.disable() ;
+									companyContact.disable() ;
+									companyName.disable() ;
 								} else {
 									$("#companyNameRow").slideDown("fast", $("#companyNameRow").css("display","table-row")); 
 									$("#companyContactRow").slideDown("fast", $("#companyContactRow").css("display","table-row")); 
@@ -1881,9 +1961,13 @@ else {
 									} else {
 										$("#companyCategoriesRow").slideDown("fast", $("#companyCategoriesRow").css("display","table-row")); 
 									}
+									companyEmail.enable() ;
+									companyAddress.enable() ;
+									companyContact.enable() ;
+									companyName.enable() ;
 								}
 							 });
-							 
+					 
 							 $(".companyAll").click(function(){
 								if ($('input[name=companyAll]:checked').val()=="Y" ) {
 									$("#companyCategoriesRow").css("display","none");
@@ -1913,6 +1997,10 @@ else {
 						</td>
 						<td class="right">
 							<input name="companyName" id="companyName" maxlength=100 value="<?php print $row["companyName"] ?>" type="text" style="width: 300px">
+							<script type="text/javascript">
+								var companyName=new LiveValidation('companyName');
+								companyName.add(Validate.Presence);
+							</script>
 						</td>
 					</tr>
 					<tr id="companyContactRow">
@@ -1921,6 +2009,10 @@ else {
 						</td>
 						<td class="right">
 							<input name="companyContact" id="companyContact" maxlength=100 value="<?php print $row["companyContact"] ?>" type="text" style="width: 300px">
+							<script type="text/javascript">
+								var companyContact=new LiveValidation('companyContact');
+								companyContact.add(Validate.Presence);
+							</script>
 						</td>
 					</tr>
 					<tr id="companyAddressRow">
@@ -1929,6 +2021,10 @@ else {
 						</td>
 						<td class="right">
 							<input name="companyAddress" id="companyAddress" maxlength=255 value="<?php print $row["companyAddress"] ?>" type="text" style="width: 300px">
+							<script type="text/javascript">
+								var companyAddress=new LiveValidation('companyAddress');
+								companyAddress.add(Validate.Presence);
+							</script>
 						</td>
 					</tr>
 					<tr id="companyEmailRow">
@@ -1939,6 +2035,7 @@ else {
 							<input name="companyEmail" id="companyEmail" maxlength=255 value="<?php print $row["companyEmail"] ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var companyEmail=new LiveValidation('companyEmail');
+								companyEmail.add(Validate.Presence);
 								companyEmail.add(Validate.Email);
 							</script>
 						</td>

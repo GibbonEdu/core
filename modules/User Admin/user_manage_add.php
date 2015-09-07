@@ -107,7 +107,7 @@ else {
 					<script type="text/javascript">
 						var surname=new LiveValidation('surname');
 						surname.add(Validate.Presence);
-					 </script>
+					</script>
 				</td>
 			</tr>
 			<tr>
@@ -120,7 +120,7 @@ else {
 					<script type="text/javascript">
 						var firstName=new LiveValidation('firstName');
 						firstName.add(Validate.Presence);
-					 </script>
+					</script>
 				</td>
 			</tr>
 			<tr>
@@ -133,7 +133,7 @@ else {
 					<script type="text/javascript">
 						var preferredName=new LiveValidation('preferredName');
 						preferredName.add(Validate.Presence);
-					 </script>
+					</script>
 				</td>
 			</tr>
 			<tr>
@@ -146,7 +146,7 @@ else {
 					<script type="text/javascript">
 						var officialName=new LiveValidation('officialName');
 						officialName.add(Validate.Presence);
-					 </script>
+					</script>
 				</td>
 			</tr>
 			<tr>
@@ -173,7 +173,7 @@ else {
 					<script type="text/javascript">
 						var gender=new LiveValidation('gender');
 						gender.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-					 </script>
+					</script>
 				</td>
 			</tr>
 			<tr>
@@ -186,7 +186,7 @@ else {
 					<script type="text/javascript">
 						var dob=new LiveValidation('dob');
 						dob.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-					 </script>
+					</script>
 					 <script type="text/javascript">
 						$(function() {
 							$( "#dob" ).datepicker();
@@ -194,6 +194,21 @@ else {
 					</script>
 				</td>
 			</tr>
+			<tr>
+				<td> 
+					<b><?php print _('User Photo') ?></b><br/>
+					<span style="font-size: 90%"><i><?php print _('Displayed at 240px by 320px.') . "<br/>" . _('Accepts images up to 360px by 480px.') . "<br/>" . _('Accepts aspect ratio between 1:1.2 and 1:1.4.') ?></i></span>
+				</td>
+				<td class="right">
+					<input type="file" name="file1" id="file1"><br/><br/>
+					<script type="text/javascript">
+						var file1=new LiveValidation('file1');
+						file1.add( Validate.Inclusion, { within: ['gif','jpg','jpeg','png'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+					</script>
+				</td>
+			</tr>
+			
+			
 			<tr class='break'>
 				<td colspan=2> 
 					<h3><?php print _('System Access') ?></h3>
@@ -223,7 +238,7 @@ else {
 					<script type="text/javascript">
 						var gibbonRoleIDPrimary=new LiveValidation('gibbonRoleIDPrimary');
 						gibbonRoleIDPrimary.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-					 </script>
+					</script>
 				</td>
 			</tr>
 			<tr>
@@ -250,7 +265,7 @@ else {
 						var username=new LiveValidation('username');
 						username.add( Validate.Exclusion, { within: [<?php print $idList ;?>], failureMessage: "<?php print _('Value already in use!') ?>", partialMatch: false, caseSensitive: false } );
 						username.add(Validate.Presence);
-					 </script>
+					</script>
 				</td>
 			</tr>
 			<tr>
@@ -293,7 +308,7 @@ else {
 							print "password.add( Validate.Length, { minimum: " . $minLength . "} );" ;
 						}
 						?>
-					 </script>
+					</script>
 				</td>
 			</tr>
 			<tr>
@@ -307,7 +322,7 @@ else {
 						var passwordConfirm=new LiveValidation('passwordConfirm');
 						passwordConfirm.add(Validate.Presence);
 						passwordConfirm.add(Validate.Confirmation, { match: 'password' } );
-					 </script>
+					</script>
 				</td>
 			</tr>
 			<tr>
@@ -362,7 +377,7 @@ else {
 					<script type="text/javascript">
 						var email=new LiveValidation('email');
 						email.add(Validate.Email);
-					 </script>
+					</script>
 				</td>
 			</tr>
 			<tr>
@@ -375,7 +390,7 @@ else {
 					<script type="text/javascript">
 						var emailAlternate=new LiveValidation('emailAlternate');
 						emailAlternate.add(Validate.Email);
-					 </script>
+					</script>
 				</td>
 			</tr>
 			<tr>
@@ -661,7 +676,7 @@ else {
 					<script type="text/javascript">
 						var dateStart=new LiveValidation('dateStart');
 						dateStart.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-					 </script>
+					</script>
 					 <script type="text/javascript">
 						$(function() {
 							$( "#dateStart" ).datepicker();
@@ -1009,7 +1024,7 @@ else {
 					<script type="text/javascript">
 						var visaExpiryDate=new LiveValidation('visaExpiryDate');
 						visaExpiryDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-					 </script>
+					</script>
 					 <script type="text/javascript">
 						$(function() {
 							$( "#visaExpiryDate" ).datepicker();
@@ -1138,38 +1153,6 @@ else {
 				</td>
 				<td class="right">
 					<input name="emergency2Number2" id="emergency2Number2" maxlength=30 value="" type="text" style="width: 300px">
-				</td>
-			</tr>
-			
-			<tr class='break'>
-				<td colspan=2> 
-					<h3><?php print _('Images') ?></h3>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php print _('Medium Portrait') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('240px by 320px') ?></i></span>
-				</td>
-				<td class="right">
-					<input type="file" name="file1" id="file1"><br/><br/>
-					<script type="text/javascript">
-						var file1=new LiveValidation('file1');
-						file1.add( Validate.Inclusion, { within: ['gif','jpg','jpeg','png'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
-					</script>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php print _('Small Portrait') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('75px by 100px') ?></i></span>
-				</td>
-				<td class="right">
-					<input type="file" name="file2" id="file2"><br/><br/>
-					<script type="text/javascript">
-						var file2=new LiveValidation('file2');
-						file2.add( Validate.Inclusion, { within: ['gif','jpg','jpeg','png'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
-					</script>
 				</td>
 			</tr>
 			

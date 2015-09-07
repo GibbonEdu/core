@@ -75,159 +75,127 @@ else {
 	$maxParticipants=$_POST["maxParticipants"] ;
 	$payment=$_POST["payment"] ;
 	$description=$_POST["description"] ;
+
 	
-	//Lock activities table
-	try {
-		$data=array(); 
-		$sql="LOCK TABLES gibbonActivity WRITE, gibbonActivitySlot WRITE, gibbonActivityStaff WRITE" ;
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { 
-		//Fail 2
-		$URL.="&addReturn=fail2" ;
+	if ($dateType=="" OR $name=="" OR $provider=="" OR $active=="" OR $registration=="" OR $maxParticipants=="" OR $payment=="" OR ($dateType=="Date" AND ($listingStart=="" OR $listingEnd=="" OR $programStart=="" OR $programEnd=="")) OR ($dateType=="Term" AND $gibbonSchoolYearTermIDList=="")) {
+		//Fail 3
+		$URL.="&addReturn=fail3" ;
 		header("Location: {$URL}");
-		break ;
 	}
-	
-	//Get next autoincrement
-	try {
-		$dataAI=array(); 
-		$sqlAI="SHOW TABLE STATUS LIKE 'gibbonActivity'";
-		$resultAI=$connection2->prepare($sqlAI);
-		$resultAI->execute($dataAI);
-	}
-	catch(PDOException $e) { 
-		//Fail 2
-		$URL.="&addReturn=fail2" ;
-		header("Location: {$URL}");
-		break ;
-	}
-	
-	if ($resultAI->rowCount()==1) {
-		$rowAI=$resultAI->fetch();
-		$AI=str_pad($rowAI['Auto_increment'], 14, "0", STR_PAD_LEFT) ;
-		
-		if ($dateType=="" OR $name=="" OR $provider=="" OR $active=="" OR $registration=="" OR $maxParticipants=="" OR $payment=="" OR ($dateType=="Date" AND ($listingStart=="" OR $listingEnd=="" OR $programStart=="" OR $programEnd=="")) OR ($dateType=="Term" AND $gibbonSchoolYearTermIDList=="")) {
-			//Fail 3
-			$URL.="&addReturn=fail3" ;
-			header("Location: {$URL}");
+	else {
+		//Write to database
+		$type="" ;
+		if (isset($_POST["type"])) {
+			$type=$_POST["type"] ;
 		}
-		else {
-			//Scan through slots
-			$partialFail=FALSE ;
-			for ($i=1; $i<3; $i++) {
-				$gibbonDaysOfWeekID=$_POST["gibbonDaysOfWeekID$i"] ;
-				$timeStart=$_POST["timeStart$i"] ;
-				$timeEnd=$_POST["timeEnd$i"] ;
-				$type="Internal" ;
-				if (isset($_POST["slot" . $i . "Location"])) {
-					$type=$_POST["slot" . $i . "Location"] ;
-				}
-				$gibbonSpaceID=NULL ;
-				if ($type=="Internal") {
-					if ($_POST["gibbonSpaceID$i"]!="") {
-						$gibbonSpaceID=$_POST["gibbonSpaceID$i"] ;
-					}
-					else {
-						$gibbonSpaceID=NULL ;
-					}
-					$locationExternal="" ;
+		
+		try {
+			if ($dateType=="Date") {
+				$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "name"=>$name, "provider"=>$provider, "type"=>$type, "active"=>$active, "registration"=>$registration, "listingStart"=>$listingStart, "listingEnd"=>$listingEnd, "programStart"=>$programStart, "programEnd"=>$programEnd, "gibbonYearGroupIDList"=>$gibbonYearGroupIDList, "maxParticipants"=>$maxParticipants, "payment"=>$payment, "description"=>$description); 
+				$sql="INSERT INTO gibbonActivity SET gibbonSchoolYearID=:gibbonSchoolYearID, name=:name, provider=:provider, type=:type, active=:active, registration=:registration, gibbonSchoolYearTermIDList='', listingStart=:listingStart, listingEnd=:listingEnd, programStart=:programStart, programEnd=:programEnd, gibbonYearGroupIDList=:gibbonYearGroupIDList, maxParticipants=:maxParticipants, payment=:payment, description=:description" ;
+			}
+			else {
+				$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "name"=>$name, "provider"=>$provider, "type"=>$type, "active"=>$active, "registration"=>$registration, "gibbonSchoolYearTermIDList"=>$gibbonSchoolYearTermIDList, "gibbonYearGroupIDList"=>$gibbonYearGroupIDList, "maxParticipants"=>$maxParticipants, "payment"=>$payment, "description"=>$description); 
+				$sql="INSERT INTO gibbonActivity SET gibbonSchoolYearID=:gibbonSchoolYearID, name=:name, provider=:provider, type=:type, active=:active, registration=:registration, gibbonSchoolYearTermIDList=:gibbonSchoolYearTermIDList, listingStart=NULL, listingEnd=NULL, programStart=NULL, programEnd=NULL, gibbonYearGroupIDList=:gibbonYearGroupIDList, maxParticipants=:maxParticipants, payment=:payment, description=:description" ;
+			}
+			$result=$connection2->prepare($sql);
+			$result->execute($data); 
+		}
+		catch(PDOException $e) { 
+			//Fail 2
+			$URL.="&addReturn=fail2" ;
+			header("Location: {$URL}");
+			break ; 
+		}
+		
+		//Last insert ID
+		$AI=str_pad($connection2->lastInsertID(), 14, "0", STR_PAD_LEFT) ;
+	
+		//Scan through slots
+		$partialFail=FALSE ;
+		for ($i=1; $i<3; $i++) {
+			$gibbonDaysOfWeekID=$_POST["gibbonDaysOfWeekID$i"] ;
+			$timeStart=$_POST["timeStart$i"] ;
+			$timeEnd=$_POST["timeEnd$i"] ;
+			$type="Internal" ;
+			if (isset($_POST["slot" . $i . "Location"])) {
+				$type=$_POST["slot" . $i . "Location"] ;
+			}
+			$gibbonSpaceID=NULL ;
+			if ($type=="Internal") {
+				if ($_POST["gibbonSpaceID$i"]!="") {
+					$gibbonSpaceID=$_POST["gibbonSpaceID$i"] ;
 				}
 				else {
-					$locationExternal=$_POST["location" . $i . "External"] ;
+					$gibbonSpaceID=NULL ;
 				}
-				
-				if ($gibbonDaysOfWeekID!="" AND $timeStart!="" AND $timeEnd!="") {
+				$locationExternal="" ;
+			}
+			else {
+				$locationExternal=$_POST["location" . $i . "External"] ;
+			}
+			
+			if ($gibbonDaysOfWeekID!="" AND $timeStart!="" AND $timeEnd!="") {
+				try {
+					$data=array("AI"=>$AI, "gibbonDaysOfWeekID"=>$gibbonDaysOfWeekID, "timeStart"=>$timeStart, "timeEnd"=>$timeEnd, "gibbonSpaceID"=>$gibbonSpaceID, "locationExternal"=>$locationExternal); 
+					$sql="INSERT INTO gibbonActivitySlot SET gibbonActivityID=:AI, gibbonDaysOfWeekID=:gibbonDaysOfWeekID, timeStart=:timeStart, timeEnd=:timeEnd, gibbonSpaceID=:gibbonSpaceID, locationExternal=:locationExternal" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data); 
+				}
+				catch(PDOException $e) { 
+					$partialFail=TRUE ;
+				}
+			}
+		}
+		
+		//Scan through staff
+		$staff=NULL ;
+		if (isset($_POST["staff"])) {
+			$staff=$_POST["staff"] ;
+		}
+		$role=$_POST["role"] ;
+		if ($role=="") {
+			$role="Other" ;
+		}
+		if (count($staff)>0) {
+			foreach ($staff as $t) {
+				//Check to see if person is already registered in this activity
+				try {
+					$dataGuest=array("gibbonPersonID"=>$t, "gibbonActivityID"=>$AI); 
+					$sqlGuest="SELECT * FROM gibbonActivityStaff WHERE gibbonPersonID=:gibbonPersonID AND gibbonActivityID=:gibbonActivityID" ;
+					$resultGuest=$connection2->prepare($sqlGuest);
+					$resultGuest->execute($dataGuest);
+				}
+				catch(PDOException $e) {
+					$partialFail=TRUE ;
+				}
+
+				if ($resultGuest->rowCount()==0) {
 					try {
-						$data=array("AI"=>$AI, "gibbonDaysOfWeekID"=>$gibbonDaysOfWeekID, "timeStart"=>$timeStart, "timeEnd"=>$timeEnd, "gibbonSpaceID"=>$gibbonSpaceID, "locationExternal"=>$locationExternal); 
-						$sql="INSERT INTO gibbonActivitySlot SET gibbonActivityID=:AI, gibbonDaysOfWeekID=:gibbonDaysOfWeekID, timeStart=:timeStart, timeEnd=:timeEnd, gibbonSpaceID=:gibbonSpaceID, locationExternal=:locationExternal" ;
+						$data=array("gibbonPersonID"=>$t, "gibbonActivityID"=>$AI, "role"=>$role); 
+						$sql="INSERT INTO gibbonActivityStaff SET gibbonPersonID=:gibbonPersonID, gibbonActivityID=:gibbonActivityID, role=:role" ;
 						$result=$connection2->prepare($sql);
 						$result->execute($data); 
 					}
 					catch(PDOException $e) { 
+						print "here<div class='error'>" . $e->getMessage() . "</div>" ; 
 						$partialFail=TRUE ;
 					}
 				}
 			}
-			
-			//Scan through staff
-			$staff=NULL ;
-			if (isset($_POST["staff"])) {
-				$staff=$_POST["staff"] ;
-			}
-			$role=$_POST["role"] ;
-			if ($role=="") {
-				$role="Other" ;
-			}
-			if (count($staff)>0) {
-				foreach ($staff as $t) {
-					//Check to see if person is already registered in this activity
-					try {
-						$dataGuest=array("gibbonPersonID"=>$t, "gibbonActivityID"=>$AI); 
-						$sqlGuest="SELECT * FROM gibbonActivityStaff WHERE gibbonPersonID=:gibbonPersonID AND gibbonActivityID=:gibbonActivityID" ;
-						$resultGuest=$connection2->prepare($sqlGuest);
-						$resultGuest->execute($dataGuest);
-					}
-					catch(PDOException $e) {
-						$partialFail=TRUE ;
-					}
-
-					if ($resultGuest->rowCount()==0) {
-						try {
-							$data=array("gibbonPersonID"=>$t, "gibbonActivityID"=>$AI, "role"=>$role); 
-							$sql="INSERT INTO gibbonActivityStaff SET gibbonPersonID=:gibbonPersonID, gibbonActivityID=:gibbonActivityID, role=:role" ;
-							$result=$connection2->prepare($sql);
-							$result->execute($data); 
-						}
-						catch(PDOException $e) { 
-							print "here<div class='error'>" . $e->getMessage() . "</div>" ; 
-							$partialFail=TRUE ;
-						}
-					}
-				}
-			}
-			
+		}
 		
-			//Write to database
-			$type=$_POST["type"] ;
-			
-			try {
-				if ($dateType=="Date") {
-					$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonActivityID"=>$AI, "name"=>$name, "provider"=>$provider, "type"=>$type, "active"=>$active, "registration"=>$registration, "listingStart"=>$listingStart, "listingEnd"=>$listingEnd, "programStart"=>$programStart, "programEnd"=>$programEnd, "gibbonYearGroupIDList"=>$gibbonYearGroupIDList, "maxParticipants"=>$maxParticipants, "payment"=>$payment, "description"=>$description); 
-					$sql="INSERT INTO gibbonActivity SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonActivityID=:gibbonActivityID, name=:name, provider=:provider, type=:type, active=:active, registration=:registration, gibbonSchoolYearTermIDList='', listingStart=:listingStart, listingEnd=:listingEnd, programStart=:programStart, programEnd=:programEnd, gibbonYearGroupIDList=:gibbonYearGroupIDList, maxParticipants=:maxParticipants, payment=:payment, description=:description" ;
-				}
-				else {
-					$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonActivityID"=>$AI, "name"=>$name, "provider"=>$provider, "type"=>$type, "active"=>$active, "registration"=>$registration, "gibbonSchoolYearTermIDList"=>$gibbonSchoolYearTermIDList, "gibbonYearGroupIDList"=>$gibbonYearGroupIDList, "maxParticipants"=>$maxParticipants, "payment"=>$payment, "description"=>$description); 
-					$sql="INSERT INTO gibbonActivity SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonActivityID=:gibbonActivityID, name=:name, provider=:provider, type=:type, active=:active, registration=:registration, gibbonSchoolYearTermIDList=:gibbonSchoolYearTermIDList, listingStart=NULL, listingEnd=NULL, programStart=NULL, programEnd=NULL, gibbonYearGroupIDList=:gibbonYearGroupIDList, maxParticipants=:maxParticipants, payment=:payment, description=:description" ;
-				}
-				$result=$connection2->prepare($sql);
-				$result->execute($data); 
-			}
-			catch(PDOException $e) { 
-				//Fail 2
-				$URL.="&addReturn=fail2" ;
-				header("Location: {$URL}");
-				break ; 
-			}
-
-			//Unlock module table
-			try {
-				$sql="UNLOCK TABLES" ;
-				$result=$connection2->query($sql);   
-			}
-			catch(PDOException $e) { }			
-			
-			if ($partialFail==TRUE) {
-				//Fail 5
-				$URL.="&addReturn=fail5" ;
-				header("Location: {$URL}");
-			}
-			else {
-				//Success 0
-				$URL.="&addReturn=success0" ;
-				header("Location: {$URL}");
-			}
+		
+		
+		if ($partialFail==TRUE) {
+			//Fail 5
+			$URL.="&addReturn=fail5" ;
+			header("Location: {$URL}");
+		}
+		else {
+			//Success 0
+			$URL.="&addReturn=success0" ;
+			header("Location: {$URL}");
 		}
 	}
 }

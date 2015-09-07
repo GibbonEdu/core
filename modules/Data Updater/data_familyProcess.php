@@ -94,12 +94,9 @@ else {
 				$languageHome=$_POST["languageHome"] ;
 				
 				//Attempt to send email to DBA
-				if ($_SESSION[$guid]["organisationDBAEmail"]!="" AND $_SESSION[$guid]["organisationDBAName"]!="") {
-					$to=$_SESSION[$guid]["organisationDBAEmail"];
-					$subject=$_SESSION[$guid]["organisationNameShort"] . " Gibbon Family Data Update Request";
-					$body="You have a new family data update request from Gibbon. Please log in and process it as soon as possible.\n\n" . $_SESSION[$guid]["systemName"] . " Administrator";
-					$headers="From: " . $_SESSION[$guid]["organisationAdministratorEmail"] ;
-					mail($to, $subject, $body, $headers) ;
+				if ($_SESSION[$guid]["organisationDBA"]!="") {
+					$notificationText=sprintf(_('A family data update request has been submitted.')) ;
+					setNotification($connection2, $guid, $_SESSION[$guid]["organisationDBA"], $notificationText, "Data Updater", "/index.php?q=/modules/User Admin/data_family.php") ;
 				}
 				
 				//Write to database

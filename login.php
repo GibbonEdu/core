@@ -63,6 +63,7 @@ else {
 	
 	//Test to see if username exists and is unique
 	if ($result->rowCount()!=1) {
+		setLog($connection2, $_SESSION[$guid]["gibbonSchoolYearIDCurrent"], NULL, NULL, "Login - Failed", array("username"=>$username, "reason"=>"Username does not exist"), $_SERVER["REMOTE_ADDR"]) ;
 		$URL.="?loginReturn=fail1" ;
 		header("Location: {$URL}");
 	}
@@ -80,13 +81,11 @@ else {
 			catch(PDOException $e) { }
 		
 			if ($row["failCount"]==3) {
-				$to=getSettingByScope($connection2, "System", "organisationAdministratorEmail") ;
-				$subject=$_SESSION[$guid]["organisationNameShort"] . " Failed Login Notification";
-				$body="Please note that someone has failed to login to account \"$username\" 3 times in a row.\n\n" . $_SESSION[$guid]["systemName"] . " Administrator";
-				$headers="From: " . $to ;
-				mail($to, $subject, $body, $headers) ;
+				$notificationText=sprintf(_('Someone failed to login to account "%1$s" 3 times in a row.'), $username) ;
+				setNotification($connection2, $guid, $_SESSION[$guid]["organisationAdministrator"], $notificationText, "System", "/index.php?q=/modules/User Admin/user_manage.php&search=$username") ;
 			}
 		
+			setLog($connection2, $_SESSION[$guid]["gibbonSchoolYearIDCurrent"], NULL, $row["gibbonPersonID"], "Login - Failed", array("username"=>$username, "reason"=>"Too many failed logins"), $_SERVER["REMOTE_ADDR"]) ;
 			$URL.="?loginReturn=fail6" ;
 			header("Location: {$URL}");
 		}
@@ -134,12 +133,14 @@ else {
 					$passwordTest=false ; 
 				}
 			
+				setLog($connection2, $_SESSION[$guid]["gibbonSchoolYearIDCurrent"], NULL, $row["gibbonPersonID"], "Login - Failed", array("username"=>$username, "reason"=>"Incorrect password"), $_SERVER["REMOTE_ADDR"]) ;
 				$URL.="?loginReturn=fail1" ;
 				header("Location: {$URL}");
 			}
 			else {			
 				if ($row["gibbonRoleIDPrimary"]=="" OR count(getRoleList($row["gibbonRoleIDAll"], $connection2))==0) {
 					//FAILED TO SET ROLES
+					setLog($connection2, $_SESSION[$guid]["gibbonSchoolYearIDCurrent"], NULL, $row["gibbonPersonID"], "Login - Failed", array("username"=>$username, "reason"=>"Failed to set role(s)"), $_SERVER["REMOTE_ADDR"]) ;
 					$URL.="?loginReturn=fail2" ;
 					header("Location: {$URL}");
 				}
@@ -147,6 +148,7 @@ else {
 					//Allow for non-current school years to be specified
 					if ($_POST["gibbonSchoolYearID"]!=$_SESSION[$guid]["gibbonSchoolYearID"]) {
 						if ($row["nonCurrentYearLogin"]!="Y") { //NOT ALLOWED DUE TO CONTROLS ON ROLE, KICK OUT!
+							setLog($connection2, $_SESSION[$guid]["gibbonSchoolYearIDCurrent"], NULL, $row["gibbonPersonID"], "Login - Failed", array("username"=>$username, "reason"=>"Not permitted to access non-current school year"), $_SERVER["REMOTE_ADDR"]) ;
 							$URL.="?loginReturn=fail9" ;
 							header("Location: {$URL}");
 							exit() ;
@@ -195,7 +197,6 @@ else {
 					$_SESSION[$guid]["gibbonRoleIDCurrentCategory"]=getRoleCategory($row["gibbonRoleIDPrimary"], $connection2)  ;
 					$_SESSION[$guid]["gibbonRoleIDAll"]=getRoleList($row["gibbonRoleIDAll"], $connection2) ;
 					$_SESSION[$guid]["image_240"]=$row["image_240"] ;
-					$_SESSION[$guid]["image_75"]=$row["image_75"] ;
 					$_SESSION[$guid]["lastTimestamp"]=$row["lastTimestamp"] ;
 					$_SESSION[$guid]["calendarFeedPersonal"]=$row["calendarFeedPersonal"] ;
 					$_SESSION[$guid]["viewCalendarSchool"]=$row["viewCalendarSchool"] ;
@@ -209,6 +210,7 @@ else {
 					$_SESSION[$guid]["googleAPIRefreshToken"]=$row["googleAPIRefreshToken"] ;
 					$_SESSION[$guid]['googleAPIAccessToken']=NULL ; //Set only when user logs in with Google
 					$_SESSION[$guid]['receiveNoticiationEmails']=$row["receiveNoticiationEmails"] ;
+					$_SESSION[$guid]['gibbonHouseID']=$row["gibbonHouseID"] ;
 					
 					
 					//Allow for non-system default language to be specified from login form
@@ -263,6 +265,7 @@ else {
 					else {
 						$URL="./index.php" ;
 					}		
+					setLog($connection2, $_SESSION[$guid]["gibbonSchoolYearIDCurrent"], NULL, $row["gibbonPersonID"], "Login - Success", array("username"=>$username), $_SERVER["REMOTE_ADDR"]) ;
 					header("Location: {$URL}");		
 				}
 			}

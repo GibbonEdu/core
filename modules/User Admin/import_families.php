@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/User Admin/import_studentE
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>". _('Sync Families') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>". _('Import Families') . "</div>" ;
 	print "</div>" ;
 	
 	$step=NULL ;
@@ -49,8 +49,9 @@ else {
 			<?php print _('Step 1 - Select CSV Files') ?>
 		</h2>
 		<p>
-			<?php print _('This page allows you to import student enrolment data from a CSV file. The import includes all current students, giving their school year and roll group. The system will remove all enrolments in the current year, and add those provided in the import file. Select the CSV file you wish to use for the synchronise operation.') ?><br/>
+			<?php print _('This page allows you to import family data from a CSV file, and functions as follows: data contained in the CSV files that is new will be added to the system, whereas data that already exists in the system, but has been changed, will be updated.') ?><br/>
 		</p>
+		
 		<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/import_families.php&step=2" ?>" enctype="multipart/form-data">
 			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 				<tr>
@@ -102,7 +103,7 @@ else {
 						<script type="text/javascript">
 							var fieldDelimiter=new LiveValidation('fieldDelimiter');
 							fieldDelimiter.add(Validate.Presence);
-						 </script>
+						</script>
 					</td>
 				</tr>
 				<tr>
@@ -115,7 +116,7 @@ else {
 						<script type="text/javascript">
 							var stringEnclosure=new LiveValidation('stringEnclosure');
 							stringEnclosure.add(Validate.Presence);
-						 </script>
+						</script>
 					</td>
 				</tr>
 				<tr>
@@ -545,7 +546,7 @@ else {
 						}
 					}
 					
-					//CHECK STuDENTS IN IMPORT FOR EXISTENCE, IF NOT EXIST, ADD THEM, IF THEY ARE UPDATE THEM
+					//CHECK STUDENTS IN IMPORT FOR EXISTENCE, IF NOT EXIST, ADD THEM, IF THEY ARE UPDATE THEM
 					print "<h4>" ;
 						print _("Update & Insert Students") ;
 					print "</h4>" ;

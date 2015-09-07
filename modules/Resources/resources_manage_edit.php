@@ -208,7 +208,7 @@ else {
 								<script type="text/javascript">
 									var name2=new LiveValidation('name');
 									name2.add(Validate.Presence);
-								 </script>
+								</script>
 							</td>
 						</tr>
 						<?php
@@ -252,7 +252,7 @@ else {
 										<script type="text/javascript">
 											var category=new LiveValidation('category');
 											category.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-										 </script>
+										</script>
 									</td>
 								</tr>
 								<?php
@@ -359,7 +359,7 @@ else {
 								<script type="text/javascript">
 									var tags=new LiveValidation('tags');
 									tags.add(Validate.Presence);
-								 </script>
+								</script>
 							</td>
 						</tr>
 						<tr>
