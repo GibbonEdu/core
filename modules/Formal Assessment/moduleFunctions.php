@@ -335,7 +335,12 @@ function externalAssessmentDetails($guid, $gibbonPersonID, $connection2, $gibbon
 							print "</table>" ;
 						}
 						print "<p style='font-weight: bold; margin-bottom: 0px'>" ;
-						print substr($rowResults["category"], (strpos($rowResults["category"], "_")+1)) ;
+						if (strpos($rowResults["category"], "_")===FALSE) {
+							print $rowResults["category"] ;
+						}
+						else {
+							print substr($rowResults["category"], (strpos($rowResults["category"], "_")+1)) ;
+						}
 						print "</p>" ;
 						
 						print "<table cellspacing='0' style='width: 100%'>" ;

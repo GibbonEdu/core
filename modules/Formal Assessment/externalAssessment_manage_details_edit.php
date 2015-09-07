@@ -231,7 +231,14 @@ else {
 							if ($rowField["category"]!=$lastCategory) {
 								print "<tr class='break' >" ;
 									print "<td> " ;
-										print "<h3>" . _(substr($rowField["category"], (strpos($rowField["category"], "_")+1))) . "</h3>" ;
+										print "<h3>" ;
+											if (strpos($rowField["category"], "_")===FALSE) {
+												print $rowField["category"] ;
+											}
+											else {
+												print substr($rowField["category"], (strpos($rowField["category"], "_")+1)) ;
+											}
+										print "</h3>" ;
 									print "</td>" ;
 									print "<td class='right'>" ;
 										print "<span style='font-weight: bold'>" . _('Grade') . "</span>" ;

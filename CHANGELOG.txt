@@ -332,6 +332,10 @@ Timetable: added ability for those with coordinator/assistant coordinator permis
 	New values in table gibbonAction
 	New files /modules/Timetable/studentEnrolment_manage.php
 
+Formal Assessment: fixed error stopping categories from displaying correctly when no _ in the name
+	Edited files /modules/Formal Assessment/externalAssessment*.php, moduleFunctions.php
+	
+	
 v10.0.00
 --------
 i18n: added Urdu as inactive development language
