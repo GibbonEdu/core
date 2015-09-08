@@ -508,13 +508,13 @@ else {
 												$("#addCondition").click(function(){
 													if ($('input[name=addCondition]:checked').val()=="Yes" ) {
 														$(".addConditionRow").slideDown("fast", $(".addConditionRow").css("display","table-row"));	
-														name2.enable();
-														gibbonAlertLevelID.enable();
+														namex.enable();
+														gibbonAlertLevelIDx.enable();
 													} 
 													else {
 														$(".addConditionRow").slideUp("fast"); 	
-														name2.disable();
-														gibbonAlertLevelID.disable();
+														namex.disable();
+														gibbonAlertLevelIDx.disable();
 													}
 												 });
 											});
@@ -527,7 +527,7 @@ else {
 										<b><?php print _('Condition Name') ?> *</b><br/>
 									</td>
 									<td class="right">
-										<select style="width: 302px" name="name" id="name2">
+										<select style="width: 302px" name="name" id="namex">
 											<?php
 											try {
 												$dataSelect=array(); 
@@ -558,7 +558,7 @@ else {
 										<b><?php print _('Risk') ?> *</b><br/>
 									</td>
 									<td class="right">
-										<select name="gibbonAlertLevelID" id="gibbonAlertLevelID" style="width: 302px">
+										<select name="gibbonAlertLevelID" id="gibbonAlertLevelIDx" style="width: 302px">
 											<option value='Please select...'><?php print _('Please select...') ?></option>
 											<?php
 											try {
