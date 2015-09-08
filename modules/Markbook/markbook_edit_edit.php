@@ -396,7 +396,7 @@ else {
 								</tr>
 								<tr id='gibbonScaleIDAttainmentRow' <?php if ($row2["attainment"]=="N") { print "style='display: none'" ; } ?>>
 									<td> 
-										<b><?php if ($attainmentAlternativeName!="") { print $attainmentAlternativeName . " " . _('Scale') ; } else { print _('Attainment Scale') ; } ?> *</b><br/>
+										<b><?php if ($attainmentAlternativeName!="") { print $attainmentAlternativeName . " " . _('Scale') ; } else { print _('Attainment Scale') ; } ?></b><br/>
 									</td>
 									<td class="right">
 										<select name="gibbonScaleIDAttainment" id="gibbonScaleIDAttainment" style="width: 302px">
@@ -423,7 +423,7 @@ else {
 								</tr>
 								<tr id='gibbonRubricIDAttainmentRow' <?php if ($row2["attainment"]=="N") { print "style='display: none'" ; } ?>>
 									<td> 
-										<b><?php if ($attainmentAlternativeName!="") { print $attainmentAlternativeName . " " . _('Rubric') ; } else { print _('Attainment Rubric') ; } ?> *</b><br/>
+										<b><?php if ($attainmentAlternativeName!="") { print $attainmentAlternativeName . " " . _('Rubric') ; } else { print _('Attainment Rubric') ; } ?></b><br/>
 										<span style="font-size: 90%"><i><?php print _('Choose predefined rubric, if desired.') ?></i></span>
 									</td>
 									<td class="right">
@@ -521,7 +521,7 @@ else {
 								</tr>
 								<tr id='gibbonScaleIDEffortRow' <?php if ($row2["effort"]=="N") { print "style='display: none'" ; } ?>>
 									<td> 
-										<b><?php if ($effortAlternativeName!="") { print $effortAlternativeName . " " . _('Scale') ; } else { print _('Effort Scale') ; } ?> *</b><br/>
+										<b><?php if ($effortAlternativeName!="") { print $effortAlternativeName . " " . _('Scale') ; } else { print _('Effort Scale') ; } ?></b><br/>
 									</td>
 									<td class="right">
 										<select name="gibbonScaleIDEffort" id="gibbonScaleIDEffort" style="width: 302px">
@@ -548,7 +548,7 @@ else {
 								</tr>
 								<tr id='gibbonRubricIDEffortRow' <?php if ($row2["effort"]=="N") { print "style='display: none'" ; } ?>>
 									<td> 
-										<b><?php if ($effortAlternativeName!="") { print $effortAlternativeName . " " . _('Rubric') ; } else { print _('Effort Rubric') ; } ?> *</b><br/>
+										<b><?php if ($effortAlternativeName!="") { print $effortAlternativeName . " " . _('Rubric') ; } else { print _('Effort Rubric') ; } ?></b><br/>
 										<span style="font-size: 90%"><i><?php print _('Choose predefined rubric, if desired.') ?></i></span>
 									</td>
 									<td class="right">

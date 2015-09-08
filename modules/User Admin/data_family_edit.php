@@ -187,8 +187,7 @@ else {
 							if ($row["homeAddressCountry"]!=$row["newhomeAddressCountry"]) { print "<input checked type='checkbox' name='newhomeAddressCountryOn'><input name='newhomeAddressCountry' type='hidden' value='" . htmlprep($row["newhomeAddressCountry"]) . "'>" ; }
 						print "</td>" ;
 					print "</tr>" ;
-					
-					print "<tr class='even'>" ;
+					print "<tr>" ;
 						print "<td>" ;
 							print _("Home Language") ;
 						print "</td>" ;

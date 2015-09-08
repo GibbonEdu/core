@@ -241,7 +241,7 @@ else {
 							<tr>
 								<td> 
 									<b><?php print _('Year Groups') ?></b><br/>
-									<span style="font-size: 90%"><i>Relevant student year groups<br/></i></span>
+									<span style="font-size: 90%"><i><?php print _('Relevant student year groups') ?><br/></i></span>
 								</td>
 								<td class="right">
 									<?php 
