@@ -334,7 +334,9 @@ Timetable: added ability for those with coordinator/assistant coordinator permis
 
 Formal Assessment: fixed error stopping categories from displaying correctly when no _ in the name
 	Edited files /modules/Formal Assessment/externalAssessment*.php, moduleFunctions.php
-	
+
+Activities: adjusted cost display and fixed PHP Notice errors
+	Edited files /modules/Activities/activities_view.php, activities_manage.php, activities_manage_editProcess.php, activities_manage_addProcess.php
 	
 v10.0.00
 --------

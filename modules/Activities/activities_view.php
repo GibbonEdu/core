@@ -506,7 +506,7 @@ else {
 											if (substr($_SESSION[$guid]["currency"],4)!="") {
 												print substr($_SESSION[$guid]["currency"],4) ;
 											}
-											print $row["payment"] ;
+											print number_format($row["payment"], 2) ;
 										}
 									}
 								print "</td>" ;

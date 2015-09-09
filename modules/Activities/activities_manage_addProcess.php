@@ -50,12 +50,15 @@ else {
 	$registration=$_POST["registration"] ;
 	$dateType=$_POST["dateType"] ;
 	if ($dateType=="Term") {
-		$terms=$_POST["gibbonSchoolYearTermID"] ;
 		$gibbonSchoolYearTermIDList="" ;
-		for ($i=0; $i<count($terms); $i++) {
-			$gibbonSchoolYearTermIDList=$gibbonSchoolYearTermIDList . $terms[$i] . "," ;
+		if (isset($_POST["gibbonSchoolYearTermID"])) {
+			$terms=$_POST["gibbonSchoolYearTermID"] ;
+			$gibbonSchoolYearTermIDList="" ;
+			for ($i=0; $i<count($terms); $i++) {
+				$gibbonSchoolYearTermIDList=$gibbonSchoolYearTermIDList . $terms[$i] . "," ;
+			}
+			$gibbonSchoolYearTermIDList=substr($gibbonSchoolYearTermIDList,0, -1) ;
 		}
-		$gibbonSchoolYearTermIDList=substr($gibbonSchoolYearTermIDList,0, -1) ;
 	}
 	else if ($dateType=="Date") {
 		$listingStart=dateConvert($guid, $_POST["listingStart"]) ;
@@ -77,7 +80,7 @@ else {
 	$description=$_POST["description"] ;
 
 	
-	if ($dateType=="" OR $name=="" OR $provider=="" OR $active=="" OR $registration=="" OR $maxParticipants=="" OR $payment=="" OR ($dateType=="Date" AND ($listingStart=="" OR $listingEnd=="" OR $programStart=="" OR $programEnd=="")) OR ($dateType=="Term" AND $gibbonSchoolYearTermIDList=="")) {
+	if ($dateType=="" OR $name=="" OR $provider=="" OR $active=="" OR $registration=="" OR $maxParticipants=="" OR $payment=="" OR ($dateType=="Date" AND ($listingStart=="" OR $listingEnd=="" OR $programStart=="" OR $programEnd==""))) {
 		//Fail 3
 		$URL.="&addReturn=fail3" ;
 		header("Location: {$URL}");

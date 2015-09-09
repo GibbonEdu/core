@@ -78,12 +78,15 @@ else {
 			$registration=$_POST["registration"] ;
 			$dateType=$_POST["dateType"] ;
 			if ($dateType=="Term") {
-				$terms=$_POST["gibbonSchoolYearTermID"] ;
 				$gibbonSchoolYearTermIDList="" ;
-				for ($i=0; $i<count($terms); $i++) {
-					$gibbonSchoolYearTermIDList=$gibbonSchoolYearTermIDList . $terms[$i] . "," ;
+				if (isset($_POST["gibbonSchoolYearTermID"])) {
+					$terms=$_POST["gibbonSchoolYearTermID"] ;
+					$gibbonSchoolYearTermIDList="" ;
+					for ($i=0; $i<count($terms); $i++) {
+						$gibbonSchoolYearTermIDList=$gibbonSchoolYearTermIDList . $terms[$i] . "," ;
+					}
+					$gibbonSchoolYearTermIDList=substr($gibbonSchoolYearTermIDList,0, -1) ;
 				}
-				$gibbonSchoolYearTermIDList=substr($gibbonSchoolYearTermIDList,0, -1) ;
 			}
 			else if ($dateType=="Date") {
 				$listingStart=dateConvert($guid, $_POST["listingStart"]) ;
