@@ -628,16 +628,16 @@ else {
 						print "</td>" ;
 					print "</tr>" ;
 					
-					
-					
 					//Receipt emailing
-					if ($row["status"]=="Issued") {
+					if ($row["status"]=="Issued" OR $row["status"]=="Paid - Partial") {
 						?>
 						<script type="text/javascript">
 							$(document).ready(function(){
-								$(".emailReceipt").css("display","none");
+								if ($('#status option:selected').val()!="Paid - Partial") {
+									$(".emailReceipt").css("display","none");
+								}
 								$("#status").change(function(){
-									if ($('#status option:selected').val()=="Paid" ) {
+									if ($('#status option:selected').val()=="Paid" || $('#status option:selected').val()=="Paid - Partial"  || $('#status option:selected').val()=="Paid - Complete") {
 										$(".emailReceipt").slideDown("fast", $(".emailReceipt").css("display","table-row")); 
 										$("#emailReceipt").val('Y');
 									}

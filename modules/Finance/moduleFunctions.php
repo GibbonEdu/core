@@ -39,11 +39,12 @@ function getAmountPaid($connection2, $guid, $foreignTable, $foreignTableID) {
 }
 
 //Returns log associated with a particular expense
-function getPaymentLog($connection2, $guid, $foreignTable, $foreignTableID) {
+//If $gibbonPaymentID is not NULL, then only that ID's entry is included
+function getPaymentLog($connection2, $guid, $foreignTable, $foreignTableID, $gibbonPaymentID=NULL) {
 	$return="" ;
 	try {
 		$data=array("foreignTable"=>$foreignTable, "foreignTableID"=>$foreignTableID); 
-		$sql="SELECT gibbonPayment.*, surname, preferredName FROM gibbonPayment JOIN gibbonPerson ON (gibbonPayment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignTable=:foreignTable AND foreignTableID=:foreignTableID ORDER BY timestamp" ;
+		$sql="SELECT gibbonPayment.*, surname, preferredName FROM gibbonPayment JOIN gibbonPerson ON (gibbonPayment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignTable=:foreignTable AND foreignTableID=:foreignTableID ORDER BY timestamp, gibbonPaymentID" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}
@@ -86,44 +87,53 @@ function getPaymentLog($connection2, $guid, $foreignTable, $foreignTableID) {
 			$count=0;
 			$paymentTotal=0 ;
 			
+			$beforeCurrentDate=TRUE ;	
 			while ($row=$result->fetch()) {
-				if ($count%2==0) {
-					$rowNum="even" ;
+				if ($row["gibbonPaymentID"]==$gibbonPaymentID OR $gibbonPaymentID==NULL) {
+					$beforeCurrentDate=FALSE ;
+					if ($count%2==0) {
+						$rowNum="even" ;
+					}
+					else {
+						$rowNum="odd" ;
+					}
+					$count++ ;
+				
+					//COLOR ROW BY STATUS!
+					$return.="<tr class=$rowNum>" ;
+						$return.="<td>" ;
+							$return.=formatName("", $row["preferredName"], $row["surname"], "Staff", false, true) ;
+						$return.="</td>" ;
+						$return.="<td>" ;
+							$return.=dateConvertBack($guid, substr($row["timestamp"],0 , 10)) ;
+						$return.="</td>" ;
+						$return.="<td>" ;
+							$return.=$row["status"] ;
+						$return.="</td>" ;
+						$return.="<td>" ;
+							$paymentTotal+=$row["amount"] ;
+							if (substr($_SESSION[$guid]["currency"],4)!="") {
+								$return.=substr($_SESSION[$guid]["currency"],4) . " " ;
+							}
+							$return.=number_format($row["amount"], 2, ".", ",") ;
+						$return.="</td>" ;
+						$return.="<td>" ;
+							$return.=$row["type"] ;
+						$return.="</td>" ;
+						$return.="<td>" ;
+							$return.=$row["paymentTransactionID"] ;
+						$return.="</td>" ;
+					$return.="</tr>" ;
 				}
 				else {
-					$rowNum="odd" ;
-				}
-				$count++ ;
-				
-				//COLOR ROW BY STATUS!
-				$return.="<tr class=$rowNum>" ;
-					$return.="<td>" ;
-						$return.=formatName("", $row["preferredName"], $row["surname"], "Staff", false, true) ;
-					$return.="</td>" ;
-					$return.="<td>" ;
-						$return.=dateConvertBack($guid, substr($row["timestamp"],0 , 10)) ;
-					$return.="</td>" ;
-					$return.="<td>" ;
-						$return.=$row["status"] ;
-					$return.="</td>" ;
-					$return.="<td>" ;
+					if ($beforeCurrentDate) {
 						$paymentTotal+=$row["amount"] ;
-						if (substr($_SESSION[$guid]["currency"],4)!="") {
-							$return.=substr($_SESSION[$guid]["currency"],4) . " " ;
-						}
-						$return.=number_format($row["amount"], 2, ".", ",") ;
-					$return.="</td>" ;
-					$return.="<td>" ;
-						$return.=$row["type"] ;
-					$return.="</td>" ;
-					$return.="<td>" ;
-						$return.=$row["paymentTransactionID"] ;
-					$return.="</td>" ;
-				$return.="</tr>" ;
+					}
+				}
 			}
 			$return.="<tr style='height: 35px' class='current'>" ;
 				$return.="<td colspan=5 style='text-align: right'>" ;
-					$return.="<b>" . _('Payment Total:') . "</b>";
+					$return.="<b>" . _('Total Payment On This Invoice:') . "</b>";
 				$return.="</td>" ;
 				$return.="<td>" ;
 					if (substr($_SESSION[$guid]["currency"],4)!="") {
@@ -1193,12 +1203,12 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 	}
 }
 
-function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $currency="", $email=FALSE) {
+//$receiptNumber is the numerical position (counting from 0) of the payment within a series of payments. NULL $receipt Number means it is an old receipt, prior to multiple payments (e.g. before v11)
+function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $currency="", $email=FALSE, $receiptNumber) {
 	$return="" ;
 	
 	//Get currency
 	$currency=getSettingByScope($connection2, "System", "currency") ;
-	
 	
 	try {
 		$data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "gibbonSchoolYearID2"=>$gibbonSchoolYearID, "gibbonFinanceInvoiceID"=>$gibbonFinanceInvoiceID); 
@@ -1311,7 +1321,38 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 				$return.="</td>" ;
 				$return.="<td style='width: 33%; padding-top: 15px; vertical-align: top; $style $style4'>" ;
 					$return.="<span style='font-size: 115%; font-weight: bold'>" . _('Status') . "</span><br/>" ;
-					$return.=$row["status"] ;
+					if ($receiptNumber==NULL) { //Old style receipt, before multiple payments
+						$return.=$row["status"] ;
+					}
+					else {
+						$paymentFail=FALSE ;
+						if (is_numeric($receiptNumber)==FALSE) {
+							$paymentFail=TRUE ;
+						}
+						else {
+							try {
+								$dataPayment=array("foreignTable"=>"gibbonFinanceInvoice", "foreignTableID"=>$gibbonFinanceInvoiceID); 
+								$sqlPayment="SELECT gibbonPayment.*, surname, preferredName FROM gibbonPayment JOIN gibbonPerson ON (gibbonPayment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignTable=:foreignTable AND foreignTableID=:foreignTableID LIMIT $receiptNumber, 1" ;
+								$resultPayment=$connection2->prepare($sqlPayment);
+								$resultPayment->execute($dataPayment);
+							}
+							catch(PDOException $e) { 
+								$paymentFail=TRUE ;
+								$return.="<div class='error'>" . $e->getMessage() . "</div>" ; 
+							}
+						
+							if ($resultPayment->rowCount()!=1) { //Prevent SQL injection in LIMIT
+								$paymentFail=TRUE ;
+							}
+							else {
+								$rowPayment=$resultPayment->fetch() ;
+								$return.=$row["status"] ;
+								if ($row["status"]=="Paid") {
+									$return.= " (" . $rowPayment["status"] . ")" ;
+								}
+							}
+						}
+					}
 				$return.="</td>" ;
 				$return.="<td style='width: 33%; padding-top: 15px; vertical-align: top; $style $style4'>" ;
 					$return.="<span style='font-size: 115%; font-weight: bold'>" . _('Schedule') . "</span><br/>" ;
@@ -1355,6 +1396,11 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 					}
 					else {
 						$return.=ltrim($gibbonFinanceInvoiceID, "0") ;
+					}
+					if ($receiptNumber!=NULL) {
+						$return.="<br/>" ;
+						$return.="<span style='font-size: 115%; font-weight: bold'>" . _('Receipt Number (on this invoice)') . "</span><br/>" ;
+						$return.=($receiptNumber+1) ;
 					}
 				$return.="</td>" ;
 			$return.="</tr>" ;
@@ -1466,45 +1512,53 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 		}
 		
 		//Payment details
-		if ($hideItemisation!="Y") { //Do not hide itemisation
+		if ($receiptNumber==NULL) { //Old style receipt, before multiple payments
 			$return.="<h3 style='padding-top: 40px; padding-left: 10px; margin: 0px; $style4'>" ;
-				$return.=_("Payment Log") ;
+				$return.=_("Payment Details") ;
 			$return.="</h3>" ;
-			$return.=getPaymentLog($connection2, $guid, "gibbonFinanceInvoice", $gibbonFinanceInvoiceID) ;
+			$return.="<p style='margin-top: 10px; text-align: right'>" ;
+				$return.=_('Payment Total') . ": " ;
+				if (substr($currency,4)!="") {
+					$return.=substr($currency,4) . " " ;
+				}
+				$return.="<b>" . number_format($row["paidAmount"], 2, ".", ",") . "</b>" ;
+			$return.="</p>" ;
 		}
-		else {
-			$return.="<h3 style='padding-top: 40px; padding-left: 10px; margin: 0px; $style4'>" ;
-				$return.=_("Amount Paid") ;
-			$return.="</h3>" ;
-			try {
-				$dataPayment=array("foreignTable"=>"gibbonFinanceInvoice", "foreignTableID"=>$gibbonFinanceInvoiceID); 
-				$sqlPayment="SELECT gibbonPayment.*, surname, preferredName FROM gibbonPayment JOIN gibbonPerson ON (gibbonPayment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignTable=:foreignTable AND foreignTableID=:foreignTableID ORDER BY timestamp" ;
-				$resultPayment=$connection2->prepare($sqlPayment);
-				$resultPayment->execute($dataPayment);
-			}
-			catch(PDOException $e) { 
-				$return.="<div class='error'>" . $e->getMessage() . "</div>" ; 
-			}
-
-			if ($result->rowCount()<1) {
-				$return.="<div class='error'>" ;
-				$return.=_("There are no records to display.") ;
-				$return.="</div>" ;
+		else { //New style receipt, post multiple payments
+			if ($hideItemisation!="Y") { //Do not hide itemisation
+				$return.="<h3 style='padding-top: 40px; padding-left: 10px; margin: 0px; $style4'>" ;
+					$return.=_("Payment Details") ;
+				$return.="</h3>" ;
+				if ($paymentFail) {
+					$return.="<div class='error'>" ;
+					$return.=_("There are no records to display.") ;
+					$return.="</div>" ;
+				}
+				else {
+					$return.=getPaymentLog($connection2, $guid, "gibbonFinanceInvoice", $gibbonFinanceInvoiceID, $rowPayment["gibbonPaymentID"]) ;
+				}
 			}
 			else {
-				$paymentTotal=0 ;
-				while ($rowPayment=$resultPayment->fetch()) {
-					$paymentTotal+=$rowPayment["amount"] ;
+				$return.="<h3 style='padding-top: 40px; padding-left: 10px; margin: 0px; $style4'>" ;
+					$return.=_("Amount Paid") ;
+				$return.="</h3>" ;
+				if ($paymentFail) {
+					$return.="<div class='error'>" ;
+					$return.=_("There are no records to display.") ;
+					$return.="</div>" ;
 				}
-				$return.="<p style='margin-top: 10px; text-align: right'>" ;
-					$return.=_('Payment Total') . ": " ;
-					if (substr($currency,4)!="") {
-						$return.=substr($currency,4) . " " ;
-					}
-					$return.="<b>" . number_format($paymentTotal, 2, ".", ",") . "</b>" ;
-				$return.="</p>" ;
+				else {
+					$return.="<p style='margin-top: 10px; text-align: right'>" ;
+						$return.=_('Payment Total') . ": " ;
+						if (substr($currency,4)!="") {
+							$return.=substr($currency,4) . " " ;
+						}
+						$return.="<b>" . number_format($rowPayment["amount"], 2, ".", ",") . "</b>" ;
+					$return.="</p>" ;
+				}
 			}
 		}
+		
 		
 		//Invoice Notes
 		$receiptNotes=getSettingByScope( $connection2, "Finance", "receiptNotes" ) ;
