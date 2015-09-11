@@ -338,6 +338,9 @@ Formal Assessment: fixed error stopping categories from displaying correctly whe
 Activities: adjusted cost display and fixed PHP Notice errors
 	Edited files /modules/Activities/activities_view.php, activities_manage.php, activities_manage_editProcess.php, activities_manage_addProcess.php
 	
+Activities: change attendance to only show accepted students (e.g. not kids on waiting list)
+	Edited files /modules/Activities/report_attendance*.php
+	
 v10.0.00
 --------
 i18n: added Urdu as inactive development language
