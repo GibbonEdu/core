@@ -211,7 +211,7 @@ else {
 						
 								while ($rowMember=$resultMember->fetch()) {
 									print "<h4>" ;
-									print _("Adult") . $count ;
+									print _("Adult") . " " . $count ;
 									print "</h4>" ;
 									print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 										print "<tr>" ;
