@@ -127,11 +127,21 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Login To Non-Current Years') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _("If set to No, logins are limited to current year.") ?></i></span>
+					<b><?php print _('Login To Past Years') ?> *</b><br/>
 				</td>
 				<td class="right">
-					<select name="nonCurrentYearLogin" id="nonCurrentYearLogin" style="width: 302px">
+					<select name="pastYearsLogin" id="pastYearsLogin" style="width: 302px">
+						<option value="Y"><?php print _('Yes') ?></option>
+						<option value="N"><?php print _('No') ?></option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td> 
+					<b><?php print _('Login To Future Years') ?> *</b><br/>
+				</td>
+				<td class="right">
+					<select name="futureYearsLogin" id="futureYearsLogin" style="width: 302px">
 						<option value="Y"><?php print _('Yes') ?></option>
 						<option value="N"><?php print _('No') ?></option>
 					</select>

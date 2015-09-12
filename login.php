@@ -55,7 +55,7 @@ if (($username=="") OR ($password=="")) {
 else {			
 	try {
 		$data=array("username"=>$username); 
-		$sql="SELECT gibbonPerson.*, nonCurrentYearLogin FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE ((username=:username) AND (status='Full') AND (canLogin='Y'))" ;
+		$sql="SELECT gibbonPerson.*, futureYearsLogin, pastYearsLogin FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE ((username=:username) AND (status='Full') AND (canLogin='Y'))" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}
@@ -147,13 +147,14 @@ else {
 				else {
 					//Allow for non-current school years to be specified
 					if ($_POST["gibbonSchoolYearID"]!=$_SESSION[$guid]["gibbonSchoolYearID"]) {
-						if ($row["nonCurrentYearLogin"]!="Y") { //NOT ALLOWED DUE TO CONTROLS ON ROLE, KICK OUT!
+						if ($row["futureYearsLogin"]!="Y" AND $row["pastYearsLogin"]!="Y") { //NOT ALLOWED DUE TO CONTROLS ON ROLE, KICK OUT!
 							setLog($connection2, $_SESSION[$guid]["gibbonSchoolYearIDCurrent"], NULL, $row["gibbonPersonID"], "Login - Failed", array("username"=>$username, "reason"=>"Not permitted to access non-current school year"), $_SERVER["REMOTE_ADDR"]) ;
 							$URL.="?loginReturn=fail9" ;
 							header("Location: {$URL}");
 							exit() ;
 						}
-						else { //ALLOWED
+						else {
+							//Get details on requested school year
 							try {
 								$dataYear=array("gibbonSchoolYearID"=>$_POST["gibbonSchoolYearID"]); 
 								$sqlYear="SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID" ;
@@ -167,12 +168,26 @@ else {
 							if (!($resultYear->rowCount()==1)) {
 								die("Configuration Error: there is a problem accessing the current Academic Year from the database.") ;
 							}
-							//Else get schoolYearID
+							//Else get year details
 							else {
 								$rowYear=$resultYear->fetch() ;
-								$_SESSION[$guid]["gibbonSchoolYearID"]=$rowYear["gibbonSchoolYearID"] ;
-								$_SESSION[$guid]["gibbonSchoolYearName"]=$rowYear["name"] ;
-								$_SESSION[$guid]["gibbonSchoolYearSequenceNumber"]=$rowYear["sequenceNumber"] ;
+								if ($row["futureYearsLogin"]!="Y" AND $_SESSION[$guid]["gibbonSchoolYearSequenceNumber"]<$rowYear["sequenceNumber"]) { //POSSIBLY NOT ALLOWED DUE TO CONTROLS ON ROLE, CHECK YEAR
+									setLog($connection2, $_SESSION[$guid]["gibbonSchoolYearIDCurrent"], NULL, $row["gibbonPersonID"], "Login - Failed", array("username"=>$username, "reason"=>"Not permitted to access non-current school year"), $_SERVER["REMOTE_ADDR"]) ;
+									$URL.="?loginReturn=fail9" ;
+									header("Location: {$URL}");
+									exit() ;
+								}
+								else if ($row["pastYearsLogin"]!="Y" AND $_SESSION[$guid]["gibbonSchoolYearSequenceNumber"]>$rowYear["sequenceNumber"]) { //POSSIBLY NOT ALLOWED DUE TO CONTROLS ON ROLE, CHECK YEAR
+									setLog($connection2, $_SESSION[$guid]["gibbonSchoolYearIDCurrent"], NULL, $row["gibbonPersonID"], "Login - Failed", array("username"=>$username, "reason"=>"Not permitted to access non-current school year"), $_SERVER["REMOTE_ADDR"]) ;
+									$URL.="?loginReturn=fail9" ;
+									header("Location: {$URL}");
+									exit() ;
+								}
+								else { //ALLOWED
+									$_SESSION[$guid]["gibbonSchoolYearID"]=$rowYear["gibbonSchoolYearID"] ;
+									$_SESSION[$guid]["gibbonSchoolYearName"]=$rowYear["name"] ;
+									$_SESSION[$guid]["gibbonSchoolYearSequenceNumber"]=$rowYear["sequenceNumber"] ;
+								}
 							}
 						}
 					}

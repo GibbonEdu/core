@@ -287,7 +287,7 @@ function getMinorLinks($connection2, $guid, $cacheLoad) {
 		}
 		
 		//House logo
-		if ($isHouseLogo) {
+		if (@$isHouseLogo) {
 			$return.=" . <img class='minorLinkIconLarge' title='" . $_SESSION[$guid]["gibbonHouseIDName"] . "' style='vertical-align: -75%; margin-left: 4px' src='" . $_SESSION[$guid]["absoluteURL"] . "/" . $_SESSION[$guid]["gibbonHouseIDLogo"] . "'/>" ; 
 		}
 	}
@@ -2033,7 +2033,7 @@ function sidebar($connection2, $guid) {
 			$loginReturnMessage=sprintf(_('Gmail account does not match the email stored in %1$s. If you have logged in with your school Gmail account please contact %2$s if you have any questions.'), $_SESSION[$guid]["systemName"], "<a href='mailto:" . $_SESSION[$guid]["organisationDBAEmail"] . "'>" . $_SESSION[$guid]["organisationDBAName"] . "</a>") ;	
 		}
 		else if ($loginReturn=="fail9") {
-			$loginReturnMessage=_('Your primary role does not support the ability to log in to non-current years.') ;	
+			$loginReturnMessage=_('Your primary role does not support the ability to log into the specified year.') ;	
 		}
 		
 		print "<div class='error'>" ;

@@ -340,7 +340,12 @@ Activities: adjusted cost display and fixed PHP Notice errors
 	
 Activities: change attendance to only show accepted students (e.g. not kids on waiting list)
 	Edited files /modules/Activities/report_attendance*.php
-	
+
+User Admin: enhanced granularity on login controles, so that roles can be prevented from logging into past and/or future years
+	Edited table gibbonRole
+	Edited file /login.php
+	Edited files /modules/User Admin.role_manage.php
+
 v10.0.00
 --------
 i18n: added Urdu as inactive development language

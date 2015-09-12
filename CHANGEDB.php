@@ -548,7 +548,9 @@ ALTER TABLE `gibbonPersonMedicalConditionUpdate` CHANGE `gibbonAlertLevelID` `gi
 UPDATE gibbonPersonMedicalConditionUpdate SET gibbonAlertLevelID=NULL WHERE gibbonAlertLevelID=0 ;end
 ALTER TABLE `gibbonApplicationForm` CHANGE `companyName` `companyName` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `companyContact` `companyContact` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `companyAddress` `companyAddress` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `companyEmail` `companyEmail` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `companyPhone` `companyPhone` VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
 INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Timetable'), 'Manage Student Enrolment', 0, 'Edit Timetables', 'Allows a departmental Coordinator or Assistant Coordinator to manage student enrolment within their department.', 'studentEnrolment_manage.php, studentEnrolment_manage_edit.php, studentEnrolment_manage_edit_edit.php, studentEnrolment_manage_edit_delete.php', 'studentEnrolment_manage.php', 'N', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N') ;end
-
+ALTER TABLE `gibbonRole` CHANGE `nonCurrentYearLogin` `futureYearsLogin` ENUM('Y','N') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Y';end
+ALTER TABLE `gibbonRole`  ADD `pastYearsLogin` ENUM('Y','N') NOT NULL DEFAULT 'Y';end
+UPDATE gibbonRole SET pastYearsLogin='N' WHERE futureYearsLogin='N';end
 ";
 
 ?>
