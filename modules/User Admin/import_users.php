@@ -49,7 +49,7 @@ else {
 			<?php print _('Step 1 - Select CSV Files') ?>
 		</h2>
 		<p>
-			<?php print _('This page allows you to import user data from a CSV file, in one of two modes: 1) Sync - the import file includes all users, whether they be students, staff, parents or other. The system will take the import and set any existing users not present in the file to "Left", whilst importing new users into the system, or 2) Import - the import file includes only users you wish to add to the system. New users will be assigned a random password, unless a default is set. Select the CSV file you wish to use for the synchronise operation.') ?><br/>
+			<?php print _('This page allows you to import user data from a CSV file, in one of two modes: 1) Sync - the import file includes all users, whether they be students, staff, parents or other. The system will take the import and set any existing users not present in the file to "Left", whilst importing new users into the system, or 2) Import - the import file includes only users you wish to add to the system. New users will be assigned a random password, unless a default is set or the Password field is not blank. Select the CSV file you wish to use for the synchronise operation.') ?><br/>
 		</p>
 		<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/import_users.php&step=2" ?>" enctype="multipart/form-data">
 			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
@@ -106,7 +106,7 @@ else {
 				<tr>
 					<td> 
 						<b><?php print _('Default Password') ?></b><br/>
-						<span style="font-size: 90%"><i>If not set, random passwords will be used.</i></span>
+						<span style="font-size: 90%"><i><?php print _('If not set, and Password field is empty, random passwords will be used.') ?></i></span>
 					</td>
 					<td class="right">
 						<input type="text" style="width: 300px" name="defaultPassword" value='' maxlength=20>
@@ -142,13 +142,14 @@ else {
 					<li><b><?php print _('First Name') ?> *</b> - <?php print _('Given name') ?></li>
 					<li><b><?php print _('Preferred Name') ?> *</b> - <?php print _('Most common name, alias, nickname, handle, etc') ?></li>
 					<li><b><?php print _('Official Name') ?> *</b> - <?php print _('Full name as shown in ID documents.') ?></li>
+					<li><b><?php print _('Name In Characters') ?></b> - <?php print _('e.g. Chinese name') ?></li>
 					<li><b><?php print _('Gender') ?> *</b> - <?php print _('F or M') ?></li>
 					<li><b><?php print _('Username') ?> *</b> - <?php print _('Must be unique') ?></li>
+					<li><b><?php print _('Password') ?></b> - <?php print _('If blank, default password or random password will be used.') ?></li>
 					<li><b><?php print _('House') ?></b> - <?php print _('House short name, as set in School Admin. Must already exist).') ?></li>
 					<li><b><?php print _('DOB') ?></b> - <?php print _('Date of birth') ?> (yyyy-mm-dd)</li>
 					<li><b><?php print _('Role') ?> *</b> - <?php print _('Teacher, Support Staff, Student or Parent') ?></li>
 					<li><b><?php print _('Email') ?></b></li>
-					<li><b><?php print _('Image (75)') ?></b> - <?php print _('path from /uploads/ to small portrait image (75px by 100px)') ?></b></li>
 					<li><b><?php print _('Image (240)') ?></b> - <?php print _('path from /uploads/ to medium portrait image (240px by 320px)') ?></li>
 					<li><b><?php print _('Address 1') ?></b> - <?php print _('Unit, Building, Street') ?></li>
 					<li><b><?php print _('Address 1 (District)') ?></b> - <?php print _('County, State, District') ?></li>
@@ -183,7 +184,6 @@ else {
 					<li><b><?php print _('Emergency 2 Number 2') ?></b> - <?php print _('For students and staff only') ?></li>
 					<li><b><?php print _('Emergency 2  Relationship') ?></b> - <?php print _('For students and staff only') ?></li>
 					<li><b><?php print _('Start Date') ?></b> - yyyy-mm-dd</li>
-					<li><b><?php print _('Name In Characters') ?></b> - <?php print _('e.g. Chinese name') ?></li>
 				</ol>
 			</li>
 			<li><?php print _('Do not include a header row in the CSV files.') ?></li>
@@ -262,54 +262,55 @@ else {
 						$userCount=0 ;
 						$userSuccessCount=0 ;
 						while (($data=fgetcsv($handle, 100000, stripslashes($_POST["fieldDelimiter"]), stripslashes($_POST["stringEnclosure"]))) !==FALSE) {
-							if ($data[1]!="" AND $data[2]!="" AND $data[4]!="" AND $data[5]!="" AND $data[6]!="" ) {
+							if ($data[1]!="" AND $data[2]!="" AND $data[3]!="" AND $data[4]!="" AND $data[6]!="" AND $data[7]!="" AND $data[11]!="") {
 								$users[$userSuccessCount]["title"]="" ; if (isset($data[0])) { $users[$userSuccessCount]["title"]=$data[0] ; }
 								$users[$userSuccessCount]["surname"]="" ; if (isset($data[1])) { $users[$userSuccessCount]["surname"]=$data[1] ;  }
 								$users[$userSuccessCount]["firstName"]="" ; if (isset($data[2])) { $users[$userSuccessCount]["firstName"]=$data[2] ; }
 								$users[$userSuccessCount]["preferredName"]="" ; if (isset($data[3])) { $users[$userSuccessCount]["preferredName"]=$data[3] ; }
 								$users[$userSuccessCount]["officialName"]="" ; if (isset($data[4])) { $users[$userSuccessCount]["officialName"]=$data[4] ; }
-								$users[$userSuccessCount]["gender"]="" ; if (isset($data[5])) { $users[$userSuccessCount]["gender"]=$data[5] ; }
-								$users[$userSuccessCount]["username"]="" ; if (isset($data[6])) { $users[$userSuccessCount]["username"]=$data[6] ; }
-								$users[$userSuccessCount]["house"]="" ; if (isset($data[7])) { $users[$userSuccessCount]["house"]=$data[7] ; }
-								$users[$userSuccessCount]["dob"]="" ; if (isset($data[8])) { $users[$userSuccessCount]["dob"]=$data[8] ; }
-								$users[$userSuccessCount]["role"]="" ; if (isset($data[9])) { $users[$userSuccessCount]["role"]=$data[9] ; }
-								$users[$userSuccessCount]["email"]="" ; if (isset($data[10])) { $users[$userSuccessCount]["email"]=$data[10] ; }
-								$users[$userSuccessCount]["image_240"]="" ; if (isset($data[12])) { $users[$userSuccessCount]["image_240"]=$data[12] ; }
-								$users[$userSuccessCount]["address1"]="" ; if (isset($data[13])) { $users[$userSuccessCount]["address1"]=$data[13] ; }
-								$users[$userSuccessCount]["address1District"]="" ; if (isset($data[14])) { $users[$userSuccessCount]["address1District"]=$data[14] ; }
-								$users[$userSuccessCount]["address1Country"]="" ; if (isset($data[15])) { $users[$userSuccessCount]["address1Country"]=$data[15] ; }
-								$users[$userSuccessCount]["address2"]="" ; if (isset($data[16])) { $users[$userSuccessCount]["address2"]=$data[16] ; }
-								$users[$userSuccessCount]["address2District"]="" ; if (isset($data[17])) { $users[$userSuccessCount]["address2District"]=$data[17] ; }
-								$users[$userSuccessCount]["address2Country"]="" ; if (isset($data[18])) { $users[$userSuccessCount]["address2Country"]=$data[18] ; }
-								$users[$userSuccessCount]["phone1Type"]="" ; if (isset($data[19])) { $users[$userSuccessCount]["phone1Type"]=$data[19] ; }
-								$users[$userSuccessCount]["phone1CountryCode"]="" ; if (isset($data[20])) { $users[$userSuccessCount]["phone1CountryCode"]=$data[20] ; }
-								$users[$userSuccessCount]["phone1"]="" ; if (isset($data[21])) { $users[$userSuccessCount]["phone1"]=preg_replace('/[^0-9+]/', '', $data[21]) ; }
-								$users[$userSuccessCount]["phone2Type"]="" ; if (isset($data[22])) { $users[$userSuccessCount]["phone2Type"]=$data[22] ; }
-								$users[$userSuccessCount]["phone2CountryCode"]="" ; if (isset($data[23])) { $users[$userSuccessCount]["phone2CountryCode"]=$data[23] ; }
-								$users[$userSuccessCount]["phone2"]="" ; if (isset($data[24])) { $users[$userSuccessCount]["phone2"]=preg_replace('/[^0-9+]/', '', $data[24]) ; }
-								$users[$userSuccessCount]["phone3Type"]="" ; if (isset($data[25])) { $users[$userSuccessCount]["phone3Type"]=$data[25] ; }
-								$users[$userSuccessCount]["phone3CountryCode"]="" ; if (isset($data[26])) { $users[$userSuccessCount]["phone3CountryCode"]=$data[26] ; }
-								$users[$userSuccessCount]["phone3"]="" ; if (isset($data[27])) { $users[$userSuccessCount]["phone3"]=preg_replace('/[^0-9+]/', '', $data[27]) ; }
-								$users[$userSuccessCount]["phone4Type"]="" ; if (isset($data[28])) { $users[$userSuccessCount]["phone4Type"]=$data[28] ; }
-								$users[$userSuccessCount]["phone4CountryCode"]="" ; if (isset($data[29])) { $users[$userSuccessCount]["phone4CountryCode"]=$data[29] ; }
-								$users[$userSuccessCount]["phone4"]="" ; if (isset($data[30])) { $users[$userSuccessCount]["phone4"]=preg_replace('/[^0-9+]/', '', $data[30]) ; }
-								$users[$userSuccessCount]["website"]="" ; if (isset($data[31])) { $users[$userSuccessCount]["website"]=$data[31] ; }
-								$users[$userSuccessCount]["languageFirst"]="" ; if (isset($data[32])) { $users[$userSuccessCount]["languageFirst"]=$data[32] ; }
-								$users[$userSuccessCount]["languageSecond"]="" ; if (isset($data[33])) { $users[$userSuccessCount]["languageSecond"]=$data[33] ; }
-								$users[$userSuccessCount]["profession"]="" ; if (isset($data[34])) { $users[$userSuccessCount]["profession"]=$data[34] ; }
-								$users[$userSuccessCount]["employer"]="" ; if (isset($data[35])) { $users[$userSuccessCount]["employer"]=$data[35] ; }
-								$users[$userSuccessCount]["jobTitle"]="" ; if (isset($data[36])) { $users[$userSuccessCount]["jobTitle"]=$data[36] ; }
-								$users[$userSuccessCount]["emergency1Name"]="" ; if (isset($data[37])) { $users[$userSuccessCount]["emergency1Name"]=$data[37] ; }
-								$users[$userSuccessCount]["emergency1Number1"]="" ; if (isset($data[38])) { $users[$userSuccessCount]["emergency1Number1"]=$data[38] ; }
-								$users[$userSuccessCount]["emergency1Number2"]="" ; if (isset($data[39])) { $users[$userSuccessCount]["emergency1Number2"]=$data[39] ; }
-								$users[$userSuccessCount]["emergency1Relationship"]="" ; if (isset($data[40])) { $users[$userSuccessCount]["emergency1Relationship"]=$data[40] ; }
-								$users[$userSuccessCount]["emergency2Name"]="" ; if (isset($data[41])) { $users[$userSuccessCount]["emergency2Name"]=$data[41] ; }
-								$users[$userSuccessCount]["emergency2Number1"]="" ; if (isset($data[42])) { $users[$userSuccessCount]["emergency2Number1"]=$data[42] ; }
-								$users[$userSuccessCount]["emergency2Number2"]="" ; if (isset($data[43])) { $users[$userSuccessCount]["emergency2Number2"]=$data[43] ; }
-								$users[$userSuccessCount]["emergency2Relationship"]="" ; if (isset($data[44])) { $users[$userSuccessCount]["emergency2Relationship"]=$data[44] ; }
-								$users[$userSuccessCount]["dateStart"]="" ; if (isset($data[45])) { $users[$userSuccessCount]["dateStart"]=$data[45] ; }
-								$users[$userSuccessCount]["nameInCharacters"]="" ; if (isset($data[46])) { $users[$userSuccessCount]["nameInCharacters"]=$data[46] ; }
-							
+								$users[$userSuccessCount]["nameInCharacters"]="" ; if (isset($data[5])) { $users[$userSuccessCount]["nameInCharacters"]=$data[5] ; }
+								$users[$userSuccessCount]["gender"]="" ; if (isset($data[6])) { $users[$userSuccessCount]["gender"]=$data[6] ; }
+								$users[$userSuccessCount]["username"]="" ; if (isset($data[7])) { $users[$userSuccessCount]["username"]=$data[7] ; }
+								$users[$userSuccessCount]["password"]="" ; if (isset($data[8])) { $users[$userSuccessCount]["password"]=$data[8] ; }
+								$users[$userSuccessCount]["house"]="" ; if (isset($data[9])) { $users[$userSuccessCount]["house"]=$data[9] ; }
+								$users[$userSuccessCount]["dob"]="" ; if (isset($data[10])) { $users[$userSuccessCount]["dob"]=$data[10] ; }
+								$users[$userSuccessCount]["role"]="" ; if (isset($data[11])) { $users[$userSuccessCount]["role"]=$data[11] ; }
+								$users[$userSuccessCount]["email"]="" ; if (isset($data[12])) { $users[$userSuccessCount]["email"]=$data[12] ; }
+								$users[$userSuccessCount]["image_240"]="" ; if (isset($data[13])) { $users[$userSuccessCount]["image_240"]=$data[13] ; }
+								$users[$userSuccessCount]["address1"]="" ; if (isset($data[14])) { $users[$userSuccessCount]["address1"]=$data[14] ; }
+								$users[$userSuccessCount]["address1District"]="" ; if (isset($data[15])) { $users[$userSuccessCount]["address1District"]=$data[15] ; }
+								$users[$userSuccessCount]["address1Country"]="" ; if (isset($data[16])) { $users[$userSuccessCount]["address1Country"]=$data[16] ; }
+								$users[$userSuccessCount]["address2"]="" ; if (isset($data[17])) { $users[$userSuccessCount]["address2"]=$data[17] ; }
+								$users[$userSuccessCount]["address2District"]="" ; if (isset($data[18])) { $users[$userSuccessCount]["address2District"]=$data[18] ; }
+								$users[$userSuccessCount]["address2Country"]="" ; if (isset($data[19])) { $users[$userSuccessCount]["address2Country"]=$data[19] ; }
+								$users[$userSuccessCount]["phone1Type"]="" ; if (isset($data[20])) { $users[$userSuccessCount]["phone1Type"]=$data[20] ; }
+								$users[$userSuccessCount]["phone1CountryCode"]="" ; if (isset($data[21])) { $users[$userSuccessCount]["phone1CountryCode"]=$data[21] ; }
+								$users[$userSuccessCount]["phone1"]="" ; if (isset($data[22])) { $users[$userSuccessCount]["phone1"]=preg_replace('/[^0-9+]/', '', $data[22]) ; }
+								$users[$userSuccessCount]["phone2Type"]="" ; if (isset($data[23])) { $users[$userSuccessCount]["phone2Type"]=$data[23] ; }
+								$users[$userSuccessCount]["phone2CountryCode"]="" ; if (isset($data[24])) { $users[$userSuccessCount]["phone2CountryCode"]=$data[24] ; }
+								$users[$userSuccessCount]["phone2"]="" ; if (isset($data[25])) { $users[$userSuccessCount]["phone2"]=preg_replace('/[^0-9+]/', '', $data[25]) ; }
+								$users[$userSuccessCount]["phone3Type"]="" ; if (isset($data[26])) { $users[$userSuccessCount]["phone3Type"]=$data[26] ; }
+								$users[$userSuccessCount]["phone3CountryCode"]="" ; if (isset($data[27])) { $users[$userSuccessCount]["phone3CountryCode"]=$data[27] ; }
+								$users[$userSuccessCount]["phone3"]="" ; if (isset($data[28])) { $users[$userSuccessCount]["phone3"]=preg_replace('/[^0-9+]/', '', $data[28]) ; }
+								$users[$userSuccessCount]["phone4Type"]="" ; if (isset($data[29])) { $users[$userSuccessCount]["phone4Type"]=$data[29] ; }
+								$users[$userSuccessCount]["phone4CountryCode"]="" ; if (isset($data[30])) { $users[$userSuccessCount]["phone4CountryCode"]=$data[30] ; }
+								$users[$userSuccessCount]["phone4"]="" ; if (isset($data[31])) { $users[$userSuccessCount]["phone4"]=preg_replace('/[^0-9+]/', '', $data[31]) ; }
+								$users[$userSuccessCount]["website"]="" ; if (isset($data[32])) { $users[$userSuccessCount]["website"]=$data[32] ; }
+								$users[$userSuccessCount]["languageFirst"]="" ; if (isset($data[33])) { $users[$userSuccessCount]["languageFirst"]=$data[33] ; }
+								$users[$userSuccessCount]["languageSecond"]="" ; if (isset($data[34])) { $users[$userSuccessCount]["languageSecond"]=$data[34] ; }
+								$users[$userSuccessCount]["profession"]="" ; if (isset($data[35])) { $users[$userSuccessCount]["profession"]=$data[35] ; }
+								$users[$userSuccessCount]["employer"]="" ; if (isset($data[36])) { $users[$userSuccessCount]["employer"]=$data[36] ; }
+								$users[$userSuccessCount]["jobTitle"]="" ; if (isset($data[37])) { $users[$userSuccessCount]["jobTitle"]=$data[37] ; }
+								$users[$userSuccessCount]["emergency1Name"]="" ; if (isset($data[38])) { $users[$userSuccessCount]["emergency1Name"]=$data[38] ; }
+								$users[$userSuccessCount]["emergency1Number1"]="" ; if (isset($data[39])) { $users[$userSuccessCount]["emergency1Number1"]=$data[39] ; }
+								$users[$userSuccessCount]["emergency1Number2"]="" ; if (isset($data[40])) { $users[$userSuccessCount]["emergency1Number2"]=$data[40] ; }
+								$users[$userSuccessCount]["emergency1Relationship"]="" ; if (isset($data[41])) { $users[$userSuccessCount]["emergency1Relationship"]=$data[41] ; }
+								$users[$userSuccessCount]["emergency2Name"]="" ; if (isset($data[42])) { $users[$userSuccessCount]["emergency2Name"]=$data[42] ; }
+								$users[$userSuccessCount]["emergency2Number1"]="" ; if (isset($data[43])) { $users[$userSuccessCount]["emergency2Number1"]=$data[43] ; }
+								$users[$userSuccessCount]["emergency2Number2"]="" ; if (isset($data[44])) { $users[$userSuccessCount]["emergency2Number2"]=$data[44] ; }
+								$users[$userSuccessCount]["emergency2Relationship"]="" ; if (isset($data[45])) { $users[$userSuccessCount]["emergency2Relationship"]=$data[45] ; }
+								$users[$userSuccessCount]["dateStart"]="" ; if (isset($data[46])) { $users[$userSuccessCount]["dateStart"]=$data[46] ; }
+								
 								$userSuccessCount++ ;
 							}
 							else {
@@ -451,14 +452,17 @@ else {
 									//ADD USER
 									$addUserFail=FALSE ;
 									$salt=getSalt() ;
-									if ($_POST["defaultPassword"]!="") {
+									if ($user["password"]!="") {
+										$password=$user["password"];
+										
+									}
+									else if ($_POST["defaultPassword"]!="") {
 										$password=$_POST["defaultPassword"];
-										$passwordStrong=hash("sha256", $salt.$password) ;
 									}
 									else {
 										$password=randomPassword(8);
-										$passwordStrong=hash("sha256", $salt.$password) ;
 									}
+									$passwordStrong=hash("sha256", $salt.$password) ;
 									$role="" ;
 									if ($user["role"]=="Student") {
 										$role="003" ;

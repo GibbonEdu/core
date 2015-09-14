@@ -381,7 +381,9 @@ else {
 								if ($cacheLoad) {
 									$_SESSION[$guid]["studentFastFinder"]=getFastFinder($connection2, $guid) ;
 								}
-								print $_SESSION[$guid]["studentFastFinder"] ;
+								if (isset($_SESSION[$guid]["studentFastFinder"])) {
+									print $_SESSION[$guid]["studentFastFinder"] ;
+								}
 							}
 							?>
 						</div>

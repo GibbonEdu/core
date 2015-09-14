@@ -359,6 +359,9 @@ User Admin: changed home language from text input to dropdown selection, added s
 	Edited file /modules/Students/student_view_details.php
 	Edited files /modules/Application Form/applicationForm*.php
 
+User Admin: added ability to specify password in user import
+	Edited file /modules/User Admin/import_users.php
+
 
 v10.0.00
 --------
