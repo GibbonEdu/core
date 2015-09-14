@@ -551,6 +551,16 @@ INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, 
 ALTER TABLE `gibbonRole` CHANGE `nonCurrentYearLogin` `futureYearsLogin` ENUM('Y','N') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Y';end
 ALTER TABLE `gibbonRole`  ADD `pastYearsLogin` ENUM('Y','N') NOT NULL DEFAULT 'Y';end
 UPDATE gibbonRole SET pastYearsLogin='N' WHERE futureYearsLogin='N';end
+CREATE TABLE `gibbonLanguage` (  `gibbonLanguageID` int(4) unsigned zerofill NOT NULL,  `name` varchar(30) NOT NULL) ENGINE=InnoDB AUTO_INCREMENT=74 DEFAULT CHARSET=utf8;end
+INSERT INTO `gibbonLanguage` (`gibbonLanguageID`, `name`) VALUES (0001, 'Afrikanns'), (0002, 'Albanian'), (0003, 'Arabic'), (0004, 'Armenian'), (0005, 'Basque'), (0006, 'Bengali'), (0007, 'Bulgarian'), (0008, 'Catalan'), (0009, 'Cambodian'), (0010, 'Chinese (Mandarin)'), (0011, 'Chinese (Cantonese)'), (0012, 'Croation'), (0013, 'Czech'), (0014, 'Danish'), (0015, 'Dutch'), (0016, 'English'), (0017, 'Estonian'), (0018, 'Fijian'), (0019, 'Finnish'), (0020, 'French'), (0021, 'Georgian'), (0022, 'German'), (0023, 'Greek'), (0024, 'Gujarati'), (0025, 'Hebrew'), (0026, 'Hindi'), (0027, 'Hungarian'), (0028, 'Icelandic'), (0029, 'Indonesian'), (0030, 'Irish'), (0031, 'Italian'), (0032, 'Japanese'), (0033, 'Javanese'), (0034, 'Korean'), (0035, 'Latin'), (0036, 'Latvian'), (0037, 'Lithuanian'), (0038, 'Macedonian'), (0039, 'Malay'), (0040, 'Malayalam'), (0041, 'Maltese'), (0042, 'Maori'), (0043, 'Marathi'), (0044, 'Mongolian'), (0045, 'Nepali'), (0046, 'Norwegian'), (0047, 'Persian'), (0048, 'Polish'), (0049, 'Portuguese'), (0050, 'Punjabi'), (0051, 'Quechua'), (0052, 'Romanian'), (0053, 'Russian'), (0054, 'Samoan'), (0055, 'Serbian'), (0056, 'Slovak'), (0057, 'Slovenian'), (0058, 'Spanish'), (0059, 'Swahili'), (0060, 'Swedish '), (0061, 'Tamil'), (0062, 'Tatar'), (0063, 'Telugu'), (0064, 'Thai'), (0065, 'Tibetan'), (0066, 'Tongan'), (0067, 'Turkish'), (0068, 'Ukranian'), (0069, 'Urdu'), (0070, 'Uzbek'), (0071, 'Vietnamese'), (0072, 'Welsh'), (0073, 'Xhosa');end
+ALTER TABLE `gibbonLanguage` ADD PRIMARY KEY (`gibbonLanguageID`);end
+ALTER TABLE `gibbonLanguage`  MODIFY `gibbonLanguageID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=74;end
+ALTER TABLE `gibbonApplicationForm` CHANGE `languageHome` `languageHomePrimary` VARCHAR(30) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
+ALTER TABLE `gibbonApplicationForm` ADD `languageHomeSecondary` VARCHAR(30) NOT NULL AFTER `languageHomePrimary`;end
+ALTER TABLE `gibbonFamily` CHANGE `languageHome` `languageHomePrimary` VARCHAR(30) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
+ALTER TABLE `gibbonFamily` ADD `languageHomeSecondary` VARCHAR(30) NOT NULL AFTER `languageHomePrimary`;end
+ALTER TABLE `gibbonFamilyUpdate` CHANGE `languageHome` `languageHomePrimary` VARCHAR(30) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
+ALTER TABLE `gibbonFamilyUpdate` ADD `languageHomeSecondary` VARCHAR(30) NOT NULL AFTER `languageHomePrimary`;end
 ";
 
 ?>

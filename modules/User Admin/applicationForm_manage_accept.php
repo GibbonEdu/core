@@ -700,12 +700,13 @@ else {
 								else {
 									$nameAddress=$row["parent1title"] . " " . $row["parent1surname"] ;
 								}
-								$languageHome=$row["languageHome"] ; 
+								$languageHomePrimary=$row["languageHomePrimary"] ; 
+								$languageHomeSecondary=$row["languageHomeSecondary"] ; 
 								
 								$insertOK=true ;
 								try {
-									$data=array("familyName"=>$familyName, "nameAddress"=>$nameAddress, "languageHome"=>$languageHome, "homeAddress"=>$row["homeAddress"], "homeAddressDistrict"=>$row["homeAddressDistrict"], "homeAddressCountry"=>$row["homeAddressCountry"]); 
-									$sql="INSERT INTO gibbonFamily SET name=:familyName, nameAddress=:nameAddress, languageHome=:languageHome, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry" ;
+									$data=array("familyName"=>$familyName, "nameAddress"=>$nameAddress, "languageHomePrimary"=>$languageHomePrimary, "languageHomeSecondary"=>$languageHomeSecondary, "homeAddress"=>$row["homeAddress"], "homeAddressDistrict"=>$row["homeAddressDistrict"], "homeAddressCountry"=>$row["homeAddressCountry"]); 
+									$sql="INSERT INTO gibbonFamily SET name=:familyName, nameAddress=:nameAddress, languageHomePrimary=:languageHomePrimary, languageHomeSecondary=:languageHomeSecondary, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry" ;
 									$result=$connection2->prepare($sql);
 									$result->execute($data);
 								}

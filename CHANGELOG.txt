@@ -346,6 +346,20 @@ User Admin: enhanced granularity on login controles, so that roles can be preven
 	Edited file /login.php
 	Edited files /modules/User Admin.role_manage.php
 
+User Admin: changed individual languages from text input to dropdown selection
+	New table gibbonLanguage
+	Edited files /modules/User Admin/user_manage_add.php, user_manage_edit.php, applicationForm_manage_edit.php
+	Edited file /modules/Data Updater/data_personal.php
+	Edited file /modules/Application Form/applicationForm.php
+
+User Admin: changed home language from text input to dropdown selection, added secondary home language
+	Edited tables gibbonApplicationForm, gibbonFamily, gibbonFamilyUpdate
+	Edited files /modules/User Admin/family_manage_add*.php, family_manage_edit*.php, import_families.php, data_family_edit*.php, applicationForm_manage_edit*.php, applicationForm_manage_accept.php
+	Edited files /modules/Data Updater/data_family*.php
+	Edited file /modules/Students/student_view_details.php
+	Edited files /modules/Application Form/applicationForm*.php
+
+
 v10.0.00
 --------
 i18n: added Urdu as inactive development language

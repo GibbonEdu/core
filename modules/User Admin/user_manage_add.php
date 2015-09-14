@@ -720,81 +720,66 @@ else {
 					<b><?php print _('First Language') ?></b><br/>
 				</td>
 				<td class="right">
-					<input name="languageFirst" id="languageFirst" maxlength=30 value="" type="text" style="width: 300px">
+					<select name="languageFirst" id="languageFirst" style="width: 302px">
+						<?php
+						print "<option value=''></option>" ;
+						try {
+							$dataSelect=array(); 
+							$sqlSelect="SELECT name FROM gibbonLanguage ORDER BY name" ;
+							$resultSelect=$connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						}
+						catch(PDOException $e) { }
+						while ($rowSelect=$resultSelect->fetch()) {
+							print "<option value='" . $rowSelect["name"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
+						}
+						?>				
+					</select>
 				</td>
-				<script type="text/javascript">
-					$(function() {
-						var availableTags=[
-							<?php
-							try {
-								$dataAuto=array(); 
-								$sqlAuto="SELECT DISTINCT languageFirst FROM gibbonPerson ORDER BY languageFirst" ;
-								$resultAuto=$connection2->prepare($sqlAuto);
-								$resultAuto->execute($dataAuto);
-							}
-							catch(PDOException $e) { }
-							while ($rowAuto=$resultAuto->fetch()) {
-								print "\"" . $rowAuto["languageFirst"] . "\", " ;
-							}
-							?>
-						];
-						$( "#languageFirst" ).autocomplete({source: availableTags});
-					});
-				</script>
 			</tr>
 			<tr>
 				<td> 
 					<b><?php print _('Second Language') ?></b><br/>
 				</td>
 				<td class="right">
-					<input name="languageSecond" id="languageSecond" maxlength=30 value="" type="text" style="width: 300px">
+					<select name="languageSecond" id="languageSecond" style="width: 302px">
+						<?php
+						print "<option value=''></option>" ;
+						try {
+							$dataSelect=array(); 
+							$sqlSelect="SELECT name FROM gibbonLanguage ORDER BY name" ;
+							$resultSelect=$connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						}
+						catch(PDOException $e) { }
+						while ($rowSelect=$resultSelect->fetch()) {
+							print "<option value='" . $rowSelect["name"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
+						}
+						?>				
+					</select>
 				</td>
-				<script type="text/javascript">
-					$(function() {
-						var availableTags=[
-							<?php
-							try {
-								$dataAuto=array(); 
-								$sqlAuto="SELECT DISTINCT languageSecond FROM gibbonPerson ORDER BY languageSecond" ;
-								$resultAuto=$connection2->prepare($sqlAuto);
-								$resultAuto->execute($dataAuto);
-							}
-							catch(PDOException $e) { }
-							while ($rowAuto=$resultAuto->fetch()) {
-								print "\"" . $rowAuto["languageSecond"] . "\", " ;
-							}
-							?>
-						];
-						$( "#languageSecond" ).autocomplete({source: availableTags});
-					});
-				</script>
 			</tr>
 			<tr>
 				<td> 
 					<b><?php print _('Third Language') ?></b><br/>
 				</td>
 				<td class="right">
-					<input name="languageThird" id="languageThird" maxlength=30 value="" type="text" style="width: 300px">
+					<select name="languageThird" id="languageThird" style="width: 302px">
+						<?php
+						print "<option value=''></option>" ;
+						try {
+							$dataSelect=array(); 
+							$sqlSelect="SELECT name FROM gibbonLanguage ORDER BY name" ;
+							$resultSelect=$connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						}
+						catch(PDOException $e) { }
+						while ($rowSelect=$resultSelect->fetch()) {
+							print "<option value='" . $rowSelect["name"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
+						}
+						?>				
+					</select>
 				</td>
-				<script type="text/javascript">
-					$(function() {
-						var availableTags=[
-							<?php
-							try {
-								$dataAuto=array(); 
-								$sqlAuto="SELECT DISTINCT languageThird FROM gibbonPerson ORDER BY languageThird" ;
-								$resultAuto=$connection2->prepare($sqlAuto);
-								$resultAuto->execute($dataAuto);
-							}
-							catch(PDOException $e) { }
-							while ($rowAuto=$resultAuto->fetch()) {
-								print "\"" . $rowAuto["languageThird"] . "\", " ;
-							}
-							?>
-						];
-						$( "#languageThird" ).autocomplete({source: availableTags});
-					});
-				</script>
 			</tr>
 			<tr>
 				<td> 

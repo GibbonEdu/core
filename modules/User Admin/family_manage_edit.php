@@ -177,10 +177,54 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Home Language') ?></b><br/>
+							<b><?php print _('Home Language - Primary') ?></b><br/>
 						</td>
 						<td class="right">
-							<input name="languageHome" id="languageHome" maxlength=100 value="<?php print $row["languageHome"] ?>" type="text" style="width: 300px">
+							<select name="languageHomePrimary" id="languageHomePrimary" style="width: 302px">
+								<?php
+								print "<option value=''></option>" ;
+								try {
+									$dataSelect=array(); 
+									$sqlSelect="SELECT name FROM gibbonLanguage ORDER BY name" ;
+									$resultSelect=$connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								}
+								catch(PDOException $e) { }
+								while ($rowSelect=$resultSelect->fetch()) {
+									$selected="" ;
+									if ($row["languageHomePrimary"]==$rowSelect["name"]) {
+										$selected="selected" ;
+									}
+									print "<option $selected value='" . $rowSelect["name"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
+								}
+								?>				
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<b><?php print _('Home Language - Secondary') ?></b><br/>
+						</td>
+						<td class="right">
+							<select name="languageHomeSecondary" id="languageHomeSecondary" style="width: 302px">
+								<?php
+								print "<option value=''></option>" ;
+								try {
+									$dataSelect=array(); 
+									$sqlSelect="SELECT name FROM gibbonLanguage ORDER BY name" ;
+									$resultSelect=$connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								}
+								catch(PDOException $e) { }
+								while ($rowSelect=$resultSelect->fetch()) {
+									$selected="" ;
+									if ($row["languageHomeSecondary"]==$rowSelect["name"]) {
+										$selected="selected" ;
+									}
+									print "<option $selected value='" . $rowSelect["name"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
+								}
+								?>				
+							</select>
 						</td>
 					</tr>
 					<tr>

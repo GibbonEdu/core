@@ -1027,108 +1027,105 @@ else {
 									<span style="font-size: 90%"><i><?php print _('Student\'s native/first/mother language.') ?></i></span>
 								</td>
 								<td class="right">
-									<input name="languageFirst" id="languageFirst" maxlength=30 value="<?php print $row["languageFirst"] ?>" type="text" style="width: 300px">
+									<select name="languageFirst" id="languageFirst" style="width: 302px">
+										<?php
+										if ($required["languageFirst"]=="Y") { print "<option value='Please select...'>" . _('Please select...') . "</option>" ; } else { print "<option value=''></option>" ; }
+										try {
+											$dataSelect=array(); 
+											$sqlSelect="SELECT name FROM gibbonLanguage ORDER BY name" ;
+											$resultSelect=$connection2->prepare($sqlSelect);
+											$resultSelect->execute($dataSelect);
+										}
+										catch(PDOException $e) { }
+										while ($rowSelect=$resultSelect->fetch()) {
+											$selected="" ;
+											if ($row["languageFirst"]==$rowSelect["name"]) {
+												$selected="selected" ;
+											}
+											print "<option $selected value='" . $rowSelect["name"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
+										}
+										?>				
+									</select>
 									<?php
 									$fieldName="languageFirst" ; 
 									if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
 											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
-											print $fieldName . ".add(Validate.Presence);" ;
+											print $fieldName . ".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"Select something!\"});" ;
 										 print "</script>" ;
 									} }
-									?>									
+									?>								
 								</td>
-								<script type="text/javascript">
-									$(function() {
-										var availableTags=[
-											<?php
-											try {
-												$dataAuto=array(); 
-												$sqlAuto="SELECT DISTINCT languageFirst FROM gibbonPerson ORDER BY languageFirst" ;
-												$resultAuto=$connection2->prepare($sqlAuto);
-												$resultAuto->execute($dataAuto);
-											}
-											catch(PDOException $e) { }
-											while ($rowAuto=$resultAuto->fetch()) {
-												print "\"" . $rowAuto["languageFirst"] . "\", " ;
-											}
-											?>
-										];
-										$( "#languageFirst" ).autocomplete({source: availableTags});
-									});
-								</script>
 							</tr>
 							<tr>
 								<td> 
 									<b><?php print _('Second Language') ?><?php if (isset($required["languageSecond"])) { if ($required["languageSecond"]=="Y") { print " *" ; } }?></b><br/>
 								</td>
 								<td class="right">
-									<input name="languageSecond" id="languageSecond" maxlength=30 value="<?php print $row["languageSecond"] ?>" type="text" style="width: 300px">
+									<select name="languageSecond" id="languageSecond" style="width: 302px">
+										<?php
+										if ($required["languageSecond"]=="Y") { print "<option value='Please select...'>" . _('Please select...') . "</option>" ; } else { print "<option value=''></option>" ; }
+										try {
+											$dataSelect=array(); 
+											$sqlSelect="SELECT name FROM gibbonLanguage ORDER BY name" ;
+											$resultSelect=$connection2->prepare($sqlSelect);
+											$resultSelect->execute($dataSelect);
+										}
+										catch(PDOException $e) { }
+										while ($rowSelect=$resultSelect->fetch()) {
+											$selected="" ;
+											if ($row["languageSecond"]==$rowSelect["name"]) {
+												$selected="selected" ;
+											}
+											print "<option $selected value='" . $rowSelect["name"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
+										}
+										?>				
+									</select>
 									<?php
 									$fieldName="languageSecond" ; 
 									if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
 											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
-											print $fieldName . ".add(Validate.Presence);" ;
+											print $fieldName . ".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"Select something!\"});" ;
 										 print "</script>" ;
 									} }
 									?>									
 								</td>
-								<script type="text/javascript">
-									$(function() {
-										var availableTags=[
-											<?php
-											try {
-												$dataAuto=array(); 
-												$sqlAuto="SELECT DISTINCT languageSecond FROM gibbonApplicationForm ORDER BY languageSecond" ;
-												$resultAuto=$connection2->prepare($sqlAuto);
-												$resultAuto->execute($dataAuto);
-											}
-											catch(PDOException $e) { }
-											while ($rowAuto=$resultAuto->fetch()) {
-												print "\"" . $rowAuto["languageSecond"] . "\", " ;
-											}
-											?>
-										];
-										$( "#languageSecond" ).autocomplete({source: availableTags});
-									});
-								</script>
 							</tr>
 							<tr>
 								<td> 
 									<b><?php print _('Third Language') ?><?php if (isset($required["languageThird"])) { if ($required["languageThird"]=="Y") { print " *" ; } } ?></b><br/>
 								</td>
 								<td class="right">
-									<input name="languageThird" id="languageThird" maxlength=30 value="<?php print $row["languageThird"] ?>" type="text" style="width: 300px">
+									<select name="languageThird" id="languageThird" style="width: 302px">
+										<?php
+										if ($required["languageThird"]=="Y") { print "<option value='Please select...'>" . _('Please select...') . "</option>" ; } else { print "<option value=''></option>" ; }
+										try {
+											$dataSelect=array(); 
+											$sqlSelect="SELECT name FROM gibbonLanguage ORDER BY name" ;
+											$resultSelect=$connection2->prepare($sqlSelect);
+											$resultSelect->execute($dataSelect);
+										}
+										catch(PDOException $e) { }
+										while ($rowSelect=$resultSelect->fetch()) {
+											$selected="" ;
+											if ($row["languageThird"]==$rowSelect["name"]) {
+												$selected="selected" ;
+											}
+											print "<option $selected value='" . $rowSelect["name"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
+										}
+										?>				
+									</select>
 									<?php
 									$fieldName="languageThird" ; 
 									if (isset($required[$fieldName])) { if ($required[$fieldName]=="Y") {
 										print "<script type=\"text/javascript\">" ;
 											print "var " . $fieldName . "=new LiveValidation('" . $fieldName . "');" ;
-											print $fieldName . ".add(Validate.Presence);" ;
+											print $fieldName . ".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"Select something!\"});" ;
 										 print "</script>" ;
 									} }
 									?>									
 								</td>
-								<script type="text/javascript">
-									$(function() {
-										var availableTags=[
-											<?php
-											try {
-												$dataAuto=array(); 
-												$sqlAuto="SELECT DISTINCT languageThird FROM gibbonApplicationForm ORDER BY languageThird" ;
-												$resultAuto=$connection2->prepare($sqlAuto);
-												$resultAuto->execute($dataAuto);
-											}
-											catch(PDOException $e) { }
-											while ($rowAuto=$resultAuto->fetch()) {
-												print "\"" . $rowAuto["languageThird"] . "\", " ;
-											}
-											?>
-										];
-										$( "#languageThird" ).autocomplete({source: availableTags});
-									});
-								</script>
 							</tr>
 							<tr>
 								<td> 

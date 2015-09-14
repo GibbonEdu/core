@@ -148,7 +148,7 @@ else {
 					<li><b><?php print _('Home Address (District)') ?></b> - <?php print _('County, State, District') ?></li>
 					<li><b><?php print _('Home Address (Country)') ?></b></li>
 					<li><b><?php print _('Marital Status') ?></b> - <?php print _('Married, Separated, Divorced, De Facto or Other') ?></li>
-					<li><b><?php print _('Home Language') ?></b></li>
+					<li><b><?php print _('Home Language - Primary') ?></b></li>
 				</ol>
 			</li>
 			<li><?php print _('The submitted <b><u>parent file</u></b> must have the following fields in the following order (* denotes required field):') ?> 

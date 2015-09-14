@@ -1149,8 +1149,13 @@ else {
 											print $rowFamily["status"] ;
 										print "</td>" ;
 										print "<td style='width: 34%; vertical-align: top' colspan=2>" ;
-											print "<span style='font-size: 115%; font-weight: bold'>" . _('Home Language') . "</span><br/>" ;
-											print $rowFamily["languageHome"] ;
+											print "<span style='font-size: 115%; font-weight: bold'>" . _('Home Languages') . "</span><br/>" ;
+											if ($rowFamily["languageHomePrimary"]!="") {
+												print $rowFamily["languageHomePrimary"] . "<br/>" ;
+											}
+											if ($rowFamily["languageHomeSecondary"]!="") {
+												print $rowFamily["languageHomeSecondary"] . "<br/>" ;
+											}
 										print "</td>" ;
 									print "</tr>" ;
 									print "<tr>" ;

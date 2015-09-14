@@ -91,7 +91,8 @@ else {
 				$homeAddress=$_POST["homeAddress"] ;
 				$homeAddressDistrict=$_POST["homeAddressDistrict"] ;
 				$homeAddressCountry=$_POST["homeAddressCountry"] ;
-				$languageHome=$_POST["languageHome"] ;
+				$languageHomePrimary=$_POST["languageHomePrimary"] ;
+				$languageHomeSecondary=$_POST["languageHomeSecondary"] ;
 				
 				//Attempt to send email to DBA
 				if ($_SESSION[$guid]["organisationDBA"]!="") {
@@ -104,12 +105,12 @@ else {
 				
 				try {
 					if ($existing!="N") {
-						$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "nameAddress"=>$nameAddress, "homeAddress"=>$homeAddress, "homeAddressDistrict"=>$homeAddressDistrict, "homeAddressCountry"=>$homeAddressCountry, "languageHome"=>$languageHome, "gibbonPersonIDUpdater"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonFamilyUpdateID"=>$existing); 
-						$sql="UPDATE gibbonFamilyUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, nameAddress=:nameAddress, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry, languageHome=:languageHome, gibbonPersonIDUpdater=:gibbonPersonIDUpdater WHERE gibbonFamilyUpdateID=:gibbonFamilyUpdateID" ;
+						$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "nameAddress"=>$nameAddress, "homeAddress"=>$homeAddress, "homeAddressDistrict"=>$homeAddressDistrict, "homeAddressCountry"=>$homeAddressCountry, "languageHomePrimary"=>$languageHomePrimary, "languageHomeSecondary"=>$languageHomeSecondary, "gibbonPersonIDUpdater"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonFamilyUpdateID"=>$existing); 
+						$sql="UPDATE gibbonFamilyUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, nameAddress=:nameAddress, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry, languageHomePrimary=:languageHomePrimary, languageHomeSecondary=:languageHomeSecondary, gibbonPersonIDUpdater=:gibbonPersonIDUpdater WHERE gibbonFamilyUpdateID=:gibbonFamilyUpdateID" ;
 					}
 					else {
-						$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonFamilyID"=>$gibbonFamilyID, "nameAddress"=>$nameAddress, "homeAddress"=>$homeAddress, "homeAddressDistrict"=>$homeAddressDistrict, "homeAddressCountry"=>$homeAddressCountry, "languageHome"=>$languageHome, "gibbonPersonIDUpdater"=>$_SESSION[$guid]["gibbonPersonID"]); 
-						$sql="INSERT INTO gibbonFamilyUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonFamilyID=:gibbonFamilyID, nameAddress=:nameAddress, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry, languageHome=:languageHome, gibbonPersonIDUpdater=:gibbonPersonIDUpdater" ;
+						$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonFamilyID"=>$gibbonFamilyID, "nameAddress"=>$nameAddress, "homeAddress"=>$homeAddress, "homeAddressDistrict"=>$homeAddressDistrict, "homeAddressCountry"=>$homeAddressCountry, "languageHomePrimary"=>$languageHomePrimary, "languageHomeSecondary"=>$languageHomeSecondary, "gibbonPersonIDUpdater"=>$_SESSION[$guid]["gibbonPersonID"]); 
+						$sql="INSERT INTO gibbonFamilyUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonFamilyID=:gibbonFamilyID, nameAddress=:nameAddress, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry, languageHomePrimary=:languageHomePrimary, languageHomeSecondary=:languageHomeSecondary, gibbonPersonIDUpdater=:gibbonPersonIDUpdater" ;
 					}
 					$result=$connection2->prepare($sql);
 					$result->execute($data);

@@ -229,8 +229,13 @@ else {
 				print "</tr>" ;
 				print "<tr>" ;
 					print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>" . _('Home Language') . "</span><br/>" ;
-						print "<i>" . htmlPrep($row["languageHome"]). "</i>" ;
+						print "<span style='font-size: 115%; font-weight: bold'>" . _('Home Languages') . "</span><br/>" ;
+						if ($row["languageHomePrimary"]!="") {
+							print "<i>" . htmlPrep($row["languageHomePrimary"]). "</i><br/>" ;
+						}
+						if ($row["languageHomeSecondary"]!="") {
+							print "<i>" . htmlPrep($row["languageHomeSecondary"]). "</i><br/>" ;
+						}
 					print "</td>" ;
 					print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 						print "<span style='font-size: 115%; font-weight: bold'>" . _('First Language') . "</span><br/>" ;
