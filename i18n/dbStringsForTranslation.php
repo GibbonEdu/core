@@ -2024,7 +2024,7 @@ _('Y12') ;
 _('Y13') ;
 
 //gibbonLanguage - name
-_('Afrikanns') ;
+_('Afrikaans') ;
 _('Albanian') ;
 _('Arabic') ;
 _('Armenian') ;
