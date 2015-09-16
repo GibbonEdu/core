@@ -561,6 +561,8 @@ ALTER TABLE `gibbonFamily` CHANGE `languageHome` `languageHomePrimary` VARCHAR(3
 ALTER TABLE `gibbonFamily` ADD `languageHomeSecondary` VARCHAR(30) NOT NULL AFTER `languageHomePrimary`;end
 ALTER TABLE `gibbonFamilyUpdate` CHANGE `languageHome` `languageHomePrimary` VARCHAR(30) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
 ALTER TABLE `gibbonFamilyUpdate` ADD `languageHomeSecondary` VARCHAR(30) NOT NULL AFTER `languageHomePrimary`;end
+UPDATE gibbonPerson SET receiveNoticiationEmails='Y';end
+ALTER TABLE `gibbonPerson` CHANGE `receiveNoticiationEmails` `receiveNoticiationEmails` ENUM('Y','N') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Y';end
 ";
 
 ?>

@@ -362,6 +362,11 @@ User Admin: changed home language from text input to dropdown selection, added s
 User Admin: added ability to specify password in user import
 	Edited file /modules/User Admin/import_users.php
 
+General: set all current users, and future users, to have email notifications on by default (makes notifications more obvious)
+	Edited table gibbonPerson
+	Updated values in table gibbonPerson
+	Edited file functions.php
+
 
 v10.0.00
 --------

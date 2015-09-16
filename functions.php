@@ -1076,6 +1076,9 @@ function setNotification($connection2, $guid, $gibbonPersonID, $text, $moduleNam
 		$body=_('Notification') . ": " . $text . "\n\n" ;
 		$body.=sprintf(_('Login to %1$s and use the noticiation icon to check your new notification, or use the link below:'), $_SESSION[$guid]["systemName"]) . "\n\n" ;
 		$body.=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=notifications.php\n\n" ;
+		$body.=sprintf(_('If you do not wish to receive email notifications from %1$s, please click on the link below and adjust your preferences:'), $_SESSION[$guid]["systemName"]) . "\n\n" ;
+		$body.=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=preferences.php\n\n" ;
+		$body.="<p style='font-style: italic;'>" . sprintf(_('Email sent via %1$s at %2$s.'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationName"]) ."</p>" ;
 		$headers="From: " . $_SESSION[$guid]["organisationAdministratorEmail"] ;
 		mail($to, $subject, $body, $headers) ;
 	}
