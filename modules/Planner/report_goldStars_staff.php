@@ -31,12 +31,12 @@ if (isActionAccessible($guid, $connection2, "/modules/Planner/report_goldStars_s
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Staff Gold Stars') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Staff Like') . "</div>" ;
 	print "</div>" ;
 	
 	try {
 		$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-		$sql="SELECT gibbonPerson.gibbonPersonID AS personID, surname, preferredName, COUNT(*) as likes FROM gibbonLike JOIN gibbonPerson ON (gibbonLike.gibbonPersonIDRecipient=gibbonPerson.gibbonPersonID) WHERE status='Full' AND gibbonSchoolYearID=:gibbonSchoolYearID GROUP BY gibbonPerson.gibbonPersonID ORDER BY likes DESC" ;
+		$sql="SELECT gibbonPerson.gibbonPersonID AS personID, surname, preferredName, COUNT(*) as likes FROM gibbonLike JOIN gibbonPerson ON (gibbonLike.gibbonPersonIDRecipient=gibbonPerson.gibbonPersonID) JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND gibbonSchoolYearID=:gibbonSchoolYearID GROUP BY gibbonPerson.gibbonPersonID ORDER BY likes DESC" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}
