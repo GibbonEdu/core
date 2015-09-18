@@ -24678,8 +24678,8 @@ msgstr "Detalii cursant"
 #: Admin/applicationForm_manage_accept.php:397
 #: Admin/applicationForm_manage_accept.php:433
 #: modules/User Admin/applicationForm_manage_accept.php:433
-msgid "Application Documents:"
-msgstr "Solicitări Documente:"
+msgid "Application Documents"
+msgstr "Solicitări Documente"
 
 #: modules/User Admin/applicationForm_manage_accept.php:375
 #: Admin/applicationForm_manage_accept.php:420

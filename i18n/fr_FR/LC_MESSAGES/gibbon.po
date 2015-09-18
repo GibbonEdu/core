@@ -24982,7 +24982,7 @@ msgstr "Détails de l'élève"
 #: Admin/applicationForm_manage_accept.php:397
 #: Admin/applicationForm_manage_accept.php:433
 #: modules/User Admin/applicationForm_manage_accept.php:433
-msgid "Application Documents:"
+msgid "Application Documents"
 msgstr "Documents associés à la demande:"
 
 #: modules/User Admin/applicationForm_manage_accept.php:375

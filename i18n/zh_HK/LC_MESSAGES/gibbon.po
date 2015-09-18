@@ -24961,8 +24961,8 @@ msgstr "學生的詳細資料"
 #: Admin/applicationForm_manage_accept.php:397
 #: Admin/applicationForm_manage_accept.php:433
 #: modules/User Admin/applicationForm_manage_accept.php:433
-msgid "Application Documents:"
-msgstr "申請文件："
+msgid "Application Documents"
+msgstr "申請文件"
 
 #: modules/User Admin/applicationForm_manage_accept.php:375
 #: Admin/applicationForm_manage_accept.php:420

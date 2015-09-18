@@ -25233,7 +25233,7 @@ msgstr "Datos de los Estudiantes"
 #: Admin/applicationForm_manage_accept.php:397
 #: Admin/applicationForm_manage_accept.php:433
 #: modules/User Admin/applicationForm_manage_accept.php:433
-msgid "Application Documents:"
+msgid "Application Documents"
 msgstr "Documentos de aplicaci&oacuten:"
 
 #: modules/User Admin/applicationForm_manage_accept.php:375

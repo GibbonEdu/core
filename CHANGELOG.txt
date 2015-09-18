@@ -367,6 +367,12 @@ General: set all current users, and future users, to have email notifications on
 	Updated values in table gibbonPerson
 	Edited file functions.php
 
+General: switched notification emails to HTML
+	Edited file functions.php
+
+User Admin: improved acceptance of applications to us student note title
+	Edited file /modules/User Admin/applicationForm_manage_accept.php
+
 
 v10.0.00
 --------

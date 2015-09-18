@@ -46757,8 +46757,8 @@ msgstr "البريد الإلكتروني البديل"
 #: modules/User Admin/applicationForm_manage_accept.php:397
 #: Admin/applicationForm_manage_accept.php:433
 #: modules/User Admin/applicationForm_manage_accept.php:433
-msgid "Application Documents:"
-msgstr "مستندات التسجيل:"
+msgid "Application Documents"
+msgstr "مستندات التسجيل"
 
 #: modules/User Admin/applicationForm_manage_accept.php:436
 #: Admin/applicationForm_manage_accept.php:472

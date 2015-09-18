@@ -24854,7 +24854,7 @@ msgstr "Detalhes"
 #: Admin/applicationForm_manage_accept.php:397
 #: Admin/applicationForm_manage_accept.php:433
 #: modules/User Admin/applicationForm_manage_accept.php:433
-msgid "Application Documents:"
+msgid "Application Documents"
 msgstr "Documentos para a Candidatura"
 
 #: modules/User Admin/applicationForm_manage_accept.php:375

@@ -1070,17 +1070,45 @@ function setNotification($connection2, $guid, $gibbonPersonID, $text, $moduleNam
 	if ($resultSelect->rowCount()==1) {
 		$rowSelect=$resultSelect->fetch() ;
 		
+		//Include mailer
+		$included=FALSE ;
+		$includes=get_included_files() ;
+		foreach ($includes AS $include) {
+			if (strpos(str_replace("\\","/",$include), "/lib/PHPMailer/class.phpmailer.php")!==FALSE) {
+				$included=TRUE ;
+			}
+		}
+		if ($included==FALSE) {
+			require $_SESSION[$guid]["absolutePath"] . "/lib/PHPMailer/class.phpmailer.php" ;
+		}
+		
 		//Attempt email send
-		$to=$rowSelect["email"] ;
 		$subject=sprintf(_('You have received a notification on %1$s at %2$s (%3$s %4$s)'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationNameShort"], date("H:i"), dateConvertBack($guid, date("Y-m-d"))) ;
-		$body=_('Notification') . ": " . $text . "\n\n" ;
-		$body.=sprintf(_('Login to %1$s and use the noticiation icon to check your new notification, or use the link below:'), $_SESSION[$guid]["systemName"]) . "\n\n" ;
-		$body.=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=notifications.php\n\n" ;
-		$body.=sprintf(_('If you do not wish to receive email notifications from %1$s, please click on the link below and adjust your preferences:'), $_SESSION[$guid]["systemName"]) . "\n\n" ;
-		$body.=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=preferences.php\n\n" ;
-		$body.="<p style='font-style: italic;'>" . sprintf(_('Email sent via %1$s at %2$s.'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationName"]) ."</p>" ;
-		$headers="From: " . $_SESSION[$guid]["organisationAdministratorEmail"] ;
-		mail($to, $subject, $body, $headers) ;
+		$body=_('Notification') . ": " . $text . "<br/><br/>" ;
+		$body.=sprintf(_('Login to %1$s and use the noticiation icon to check your new notification, or use the link below:'), $_SESSION[$guid]["systemName"]) . "<br/><br/>" ;
+		$body.=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=notifications.php<br/><br/>" ;
+		$body.="<hr/>" ;
+		$body.="<p style='font-style: italic; font-size: 85%'>" ;
+		$body.=sprintf(_('If you do not wish to receive email notifications from %1$s, please click on the link below and adjust your preferences:'), $_SESSION[$guid]["systemName"]) . "<br/><br/>" ;
+		$body.=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=preferences.php<br/><br/>" ;
+		$body.sprintf(_('Email sent via %1$s at %2$s.'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationName"]) ;
+		$body.="</p>" ;
+		$bodyPlain=preg_replace('#<br\s*/?>#i', "\n", $body) ;
+		$bodyPlain=str_replace("</p>", "\n\n", $bodyPlain) ;
+		$bodyPlain=str_replace("</div>", "\n\n", $bodyPlain) ;
+		$bodyPlain=preg_replace("#\<a.+href\=[\"|\'](.+)[\"|\'].*\>.*\<\/a\>#U","$1",$bodyPlain); 
+		$bodyPlain=strip_tags($bodyPlain, '<a>');
+
+		$mail=new PHPMailer;
+		$mail->SetFrom($_SESSION[$guid]["organisationAdministratorEmail"], $_SESSION[$guid]["organisationName"]);
+		$mail->AddAddress($rowSelect["email"]);
+		$mail->CharSet="UTF-8"; 
+		$mail->Encoding="base64" ;
+		$mail->IsHTML(true);                            
+		$mail->Subject=$subject ;
+		$mail->Body=$body ;
+		$mail->AltBody=$bodyPlain ;
+		$mail->Send() ;
 	}
 }
 

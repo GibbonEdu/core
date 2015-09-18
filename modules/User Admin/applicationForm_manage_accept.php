@@ -430,14 +430,14 @@ else {
 						print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 					}	
 					if ($resultDoc->rowCount()>0) {
-						$note="<p><b>" . _('Application Documents:') . " </b><br/>" ;
+						$note="<p>" ;
 						while ($rowDoc=$resultDoc->fetch()) {
 							$note.="<a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowDoc["path"] . "'>" . $rowDoc["name"] . "</a><br/>" ;
 						}
 						$note.="</p>" ;
 						try {
-							$data=array("gibbonPersonID"=>$gibbonPersonID, "note"=>$note, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"], "timestamp"=>date('Y-m-d H:i:s')); 
-							$sql="INSERT INTO gibbonStudentNote SET gibbonPersonID=:gibbonPersonID, gibbonStudentNoteCategoryID=NULL, note=:note, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestamp=:timestamp" ;
+							$data=array("gibbonPersonID"=>$gibbonPersonID, "title"=>_('Application Documents'), "note"=>$note, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"], "timestamp"=>date('Y-m-d H:i:s')); 
+							$sql="INSERT INTO gibbonStudentNote SET gibbonPersonID=:gibbonPersonID, gibbonStudentNoteCategoryID=NULL, title=:title, note=:note, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestamp=:timestamp" ;
 							$result=$connection2->prepare($sql);
 							$result->execute($data);
 						}
