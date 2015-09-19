@@ -57274,7 +57274,7 @@ msgstr "觀看今年所有的申請資料的總結。"
 #: modules/Application Form/applicationForm.php:593
 msgid ""
 "Provide any comments or information concerning your child's development that "
-"may be relevant to your child\\âs performance in the classroom or elsewhere? "
+"may be relevant to your child's performance in the classroom or elsewhere? "
 "(Incorrect or withheld information may affect continued enrolment)."
 msgstr ""
 "提供一些有可能影響還你的孩子\\âs 在學習和發展時有可能影響的資料? (錯誤和隱瞞"

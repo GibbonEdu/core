@@ -58216,7 +58216,7 @@ msgstr ""
 #: modules/Application Form/applicationForm.php:593
 msgid ""
 "Provide any comments or information concerning your child's development that "
-"may be relevant to your child\\âs performance in the classroom or elsewhere? "
+"may be relevant to your child's performance in the classroom or elsewhere? "
 "(Incorrect or withheld information may affect continued enrolment)."
 msgstr ""
 "Eventuali commenti o informazioni riguardanti lo sviluppo dell'allievo che "
