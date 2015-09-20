@@ -1085,8 +1085,8 @@ function setNotification($connection2, $guid, $gibbonPersonID, $text, $moduleNam
 		//Attempt email send
 		$subject=sprintf(_('You have received a notification on %1$s at %2$s (%3$s %4$s)'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationNameShort"], date("H:i"), dateConvertBack($guid, date("Y-m-d"))) ;
 		$body=_('Notification') . ": " . $text . "<br/><br/>" ;
-		$body.=sprintf(_('Login to %1$s and use the noticiation icon to check your new notification, or use the link below:'), $_SESSION[$guid]["systemName"]) . "<br/><br/>" ;
-		$body.=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=notifications.php<br/><br/>" ;
+		$body.=sprintf(_('Login to %1$s and use the noticiation icon to check your new notification, or %2$sclick here%3$.'), $_SESSION[$guid]["systemName"], "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=notifications.php'>", "</a>") ;
+		$body.="<br/><br/>" ;
 		$body.="<hr/>" ;
 		$body.="<p style='font-style: italic; font-size: 85%'>" ;
 		$body.=sprintf(_('If you do not wish to receive email notifications from %1$s, please %2$sclick here%3$s to adjust your preferences:'), $_SESSION[$guid]["systemName"], "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=preferences.php'>", "</a>") ;
