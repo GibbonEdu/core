@@ -379,6 +379,9 @@ Application Form: fixed bug causing failed PayPal payments to be marked as succe
 Finance: fixed bug causing failed PayPal payments to be marked as successful
 	Edited file /modules/Finance/invoices_payOnlineProcess.php
 
+Attendance: added absence count for each student when taking roll group attendance
+	Edited file /modules/Attendance/attendance_take_byRollGroup.php
+
 
 v10.0.00
 --------

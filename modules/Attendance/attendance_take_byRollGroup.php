@@ -69,7 +69,7 @@ else {
 	if (isset($_GET["gibbonRollGroupID"])==FALSE) {
 		try {
 			$data=array("gibbonPersonIDTutor1"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonIDTutor2"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonIDTutor3"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-			$sql="SELECT * FROM gibbonRollGroup WHERE (gibbonPersonIDTutor=:gibbonPersonIDTutor1 OR gibbonPersonIDTutor=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor=:gibbonPersonIDTutor3) AND gibbonSchoolYearID=:gibbonSchoolYearID" ;
+			$sql="SELECT gibbonRollGroup.*, firstDay, lastDay FROM gibbonRollGroup JOIN gibbonSchoolYear ON (gibbonRollGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE (gibbonPersonIDTutor=:gibbonPersonIDTutor1 OR gibbonPersonIDTutor=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor=:gibbonPersonIDTutor3) AND gibbonSchoolYearID=:gibbonSchoolYearID" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
@@ -177,222 +177,252 @@ else {
 				print "</div>" ;
 			}
 			else {
-				//Get last 5 school days from currentDate within the last 100
-				$timestamp=dateConvertToTimestamp($currentDate) ;
-				$count=0 ;
-				$spin=1 ;
-				$last5SchoolDays=array() ;
-				while ($count<5 AND $spin<=100) {
-					$date=date("Y-m-d", ($timestamp-($spin*86400))) ;
-					if (isSchoolOpen($guid, $date,$connection2)) {
-						$last5SchoolDays[$count]=$date ;
-						$count++ ;
-					}
-					$spin++ ;
-				}
-				$last5SchoolDaysCount=$count ;
-				
-				//Show attendance log for the current day
+				//Check roll group
+				$rollGroupFail=FALSE ;
+				$firstDay=NULL ;
+				$lastDay=NULL ;
 				try {
-					$dataLog=array("gibbonRollGroupID"=>$gibbonRollGroupID, "date"=>$currentDate . "%"); 
-					$sqlLog="SELECT * FROM gibbonAttendanceLogRollGroup, gibbonPerson WHERE gibbonAttendanceLogRollGroup.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND gibbonRollGroupID=:gibbonRollGroupID AND date LIKE :date ORDER BY timestampTaken" ;
-					$resultLog=$connection2->prepare($sqlLog);
-					$resultLog->execute($dataLog);
+					$data=array("gibbonRollGroupID"=>$gibbonRollGroupID, "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
+					$sql="SELECT gibbonRollGroup.*, firstDay, lastDay FROM gibbonRollGroup JOIN gibbonSchoolYear ON (gibbonRollGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonRollGroupID=:gibbonRollGroupID AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
 				}
 				catch(PDOException $e) { 
+					$rollGroupFail=TRUE ;
+				}
+				if ($result->rowCount()!=0) {
+					$row=$result->fetch() ;
+					$gibbonRollGroupID=$row["gibbonRollGroupID"] ;
+					$firstDay=$row["firstDay"] ;
+					$lastDay=$row["lastDay"] ;
+				}
+				if ($rollGroupFail) {
 					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 				}
-				if ($resultLog->rowCount()<1) {
-					print "<div class='error'>" ;
-						print _("Attendance has not been taken for this group yet for the specified date. The entries below are a best-guess based on defaults and information put into the system in advance, not actual data.") ;
-					print "</div>" ;
-				}
 				else {
-					print "<div class='success'>" ;
-						print _("Attendance has been taken at the following times for the specified date for this group:") ;
-						print "<ul>" ;
-						while ($rowLog=$resultLog->fetch()) {
-							print "<li>" . sprintf(_('Recorded at %1$s on %2$s by %3$s.'), substr($rowLog["timestampTaken"],11), dateConvertBack($guid, substr($rowLog["timestampTaken"],0,10)), formatName("", $rowLog["preferredName"], $rowLog["surname"], "Staff", false, true)) ."</li>" ;
-						}
-						print "</ul>" ;
-					print "</div>" ;
-				}
-				
-				//Show roll group grid
-				try {
-					$dataRollGroup=array("gibbonRollGroupID"=>$gibbonRollGroupID); 
-					$sqlRollGroup="SELECT * FROM gibbonStudentEnrolment INNER JOIN gibbonPerson ON gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonRollGroupID=:gibbonRollGroupID AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') ORDER BY rollOrder, surname, preferredName" ;
-					$resultRollGroup=$connection2->prepare($sqlRollGroup);
-					$resultRollGroup->execute($dataRollGroup);
-				}
-				catch(PDOException $e) { 
-					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-				}
-				
-				if ($resultRollGroup->rowCount()<1) {
-					print "<div class='error'>" ;
-						print _("There are no records to display.") ;
-					print "</div>" ;
-				}
-				else {
+					//Get last 5 school days from currentDate within the last 100
+					$timestamp=dateConvertToTimestamp($currentDate) ;
 					$count=0 ;
-					$countPresent=0 ;
-					$columns=4 ;
-					print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/attendance_take_byRollGroupProcess.php'>" ;
-						print "<table class='smallIntBorder' cellspacing='0' style='width:100%'>" ;
-						?>
-						<tr class='break'>
-							<td colspan=<?php print $columns ?>>
-								<h3>
-									<?php print _('Take Attendance') ?>
-								</h3>
-							</td>
-						</tr>
-						<?php
-						while ($rowRollGroup=$resultRollGroup->fetch()) {
-							if ($count%$columns==0) {
-								print "<tr>" ;
-							}
-							//Get student log data
-							try {
-								$dataLog=array("gibbonPersonID"=>$rowRollGroup["gibbonPersonID"], "date"=>$currentDate . "%"); 
-								$sqlLog="SELECT * FROM gibbonAttendanceLogPerson, gibbonPerson WHERE gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY timestampTaken DESC" ;
-								$resultLog=$connection2->prepare($sqlLog);
-								$resultLog->execute($dataLog);
-							}
-							catch(PDOException $e) { 
-								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-							}
-							
-							$rowLog=$resultLog->fetch() ;
-							
-							
-							if ($rowLog["type"]=="Absent") {
-								print "<td style='border: 1px solid #CC0000!important; background: none; background-color: #F6CECB; width:20%; text-align: center; vertical-align: top'>" ;
-							}
-							else {
-								print "<td style='border: 1px solid #ffffff; width:20%; text-align: center; vertical-align: top'>" ;
-							}
-								
-								print getUserPhoto($guid, $rowRollGroup["image_240"], 75) ;
-								
-								print "<div style='padding-top: 5px'><b>" . formatName("", htmlPrep($rowRollGroup["preferredName"]), htmlPrep($rowRollGroup["surname"]), "Student", true) . "<b></div><br/>" ;
-								
-								print "<input type='hidden' name='$count-gibbonPersonID' value='" . $rowRollGroup["gibbonPersonID"] . "'>" ;
-								print "<select style='float: none; width:130px; margin-bottom: 3px' name='$count-type'>" ;
-									print "<option " ; if ($rowLog["type"]=="Present") { print "selected " ; } ; print "value='Present'>" . _('Present') . "</option>" ;
-									print "<option " ; if ($rowLog["type"]=="Present - Late") { print "selected " ; } ; print "value='Present - Late'>" . _('Present - Late') . "</option>" ;
-									print "<option " ; if ($rowLog["type"]=="Present - Offsite") { print "selected " ; } ; print "value='Present - Offsite'>" . _('Present - Offsite') . "</option>" ;
-									print "<option " ; if ($rowLog["type"]=="Absent") { print "selected " ; } ; print "value='Absent'>" . _('Absent') . "</option>" ;
-									print "<option " ; if ($rowLog["type"]=="Left") { print "selected " ; } ; print "value='Left'>" . _('Left') . "</option>" ;
-									print "<option " ; if ($rowLog["type"]=="Left - Early") { print "selected " ; } ; print "value='Left - Early'>" . _('Left - Early') . "</option>" ;
-								print "</select>" ;
-								print "<select style='float: none; width:130px; margin-bottom: 3px' name='$count-reason'>" ;
-									print "<option " ; if ($rowLog["reason"]=="") { print "selected " ; } ; print "value=''></option>" ;
-									print "<option " ; if ($rowLog["reason"]=="Pending") { print "selected " ; } ; print "value='Pending'>" . _('Pending') . "</option>" ;
-									print "<option " ; if ($rowLog["reason"]=="Education") { print "selected " ; } ; print "value='Education'>" . _('Education') . "</option>" ;
-									print "<option " ; if ($rowLog["reason"]=="Family") { print "selected " ; } ; print "value='Family'>" . _('Family') . "</option>" ;
-									print "<option " ; if ($rowLog["reason"]=="Medical") { print "selected " ; } ; print "value='Medical'>" . _('Medical') . "</option>" ;
-									print "<option " ; if ($rowLog["reason"]=="Other") { print "selected " ; } ; print "value='Other'>" . _('Other') . "</option>" ;
-								print "</select>" ;
-								print "<input type='text' maxlength=255 name='$count-comment' id='$count-comment' style='float: none; width:126px; margin-bottom: 3px' value='" . htmlPrep($rowLog["comment"]) . "'>" ;
-								
-								if ($rowLog["type"]=="Present" OR $rowLog["type"]=="Present - Late") {
-									$countPresent++ ;
-								}	
-								
-								print "<table cellspacing='0' style='width:134px; margin: 0 auto 3px auto; height: 35px' >" ;
-									print "<tr>" ;
-										for ($i=4; $i>=0; $i--) {
-											$link="" ;
-											if ($i>($last5SchoolDaysCount-1)) {
-												$extraStyle="color: #555; background-color: #eee;" ;
-												
-												print "<td style='" . $extraStyle . "height: 25px; width: 20%'>" ;
-												print "<i>" . _('NA') . "</i>" ;
-												print "</td>" ;
-											}
-											else {
-												try {
-													$dataLast5SchoolDays=array("gibbonPersonID"=>$rowRollGroup["gibbonPersonID"], "date"=>date("Y-m-d", dateConvertToTimestamp($last5SchoolDays[$i])) . "%"); 
-													$sqlLast5SchoolDays="SELECT * FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY gibbonAttendanceLogPersonID DESC" ;
-													$resultLast5SchoolDays=$connection2->prepare($sqlLast5SchoolDays);
-													$resultLast5SchoolDays->execute($dataLast5SchoolDays);
-												}
-												catch(PDOException $e) { 
-													print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-												}
-												if ($resultLast5SchoolDays->rowCount()==0) {
-													$extraStyle="color: #555; background-color: #eee; " ;
-												}
-												else {
-													$link="./index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/attendance_take_byPerson.php&gibbonPersonID=" . $rowRollGroup["gibbonPersonID"] . "&currentDate=" . date("d/m/Y", dateConvertToTimestamp($last5SchoolDays[$i])) ;
-													$rowLast5SchoolDays=$resultLast5SchoolDays->fetch() ;
-													if ($rowLast5SchoolDays["type"]=="Absent") {
-														$color="#c00" ;
-														$extraStyle="color: #c00; background-color: #F6CECB; " ;
-													}
-													else {
-														$color="#390" ;
-														$extraStyle="color: #390; background-color: #D4F6DC; " ;
-													}
-												}
-												
-												print "<td style='" . $extraStyle . "height: 25px; width: 20%'>" ;
-													if ($link!="") {
-														print "<a style='text-decoration: none; color: $color' href='$link'>" ;
-														print date("d", dateConvertToTimestamp($last5SchoolDays[$i])) . "<br/>" ;
-														print "<span style='font-size: 65%'>" . date("M", dateConvertToTimestamp($last5SchoolDays[$i])) . "</span>" ;
-														print "</a>" ;
-													}
-													else {
-														print date("d", dateConvertToTimestamp($last5SchoolDays[$i])) . "<br/>" ;
-														print "<span style='font-size: 65%'>" . date("M", dateConvertToTimestamp($last5SchoolDays[$i])) . "</span>" ;
-													}
-												print "</td>" ;
-											}
-										}
-									print "</tr>" ;
-								print "</table>" ;
-		
-							print "</td>" ;
-							
-							if ($count%$columns==($columns-1)) {
-								print "</tr>" ;
-							}
+					$spin=1 ;
+					$last5SchoolDays=array() ;
+					while ($count<5 AND $spin<=100) {
+						$date=date("Y-m-d", ($timestamp-($spin*86400))) ;
+						if (isSchoolOpen($guid, $date,$connection2)) {
+							$last5SchoolDays[$count]=$date ;
 							$count++ ;
 						}
+						$spin++ ;
+					}
+					$last5SchoolDaysCount=$count ;
+				
+					//Show attendance log for the current day
+					try {
+						$dataLog=array("gibbonRollGroupID"=>$gibbonRollGroupID, "date"=>$currentDate . "%"); 
+						$sqlLog="SELECT * FROM gibbonAttendanceLogRollGroup, gibbonPerson WHERE gibbonAttendanceLogRollGroup.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND gibbonRollGroupID=:gibbonRollGroupID AND date LIKE :date ORDER BY timestampTaken" ;
+						$resultLog=$connection2->prepare($sqlLog);
+						$resultLog->execute($dataLog);
+					}
+					catch(PDOException $e) { 
+						print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+					}
+					if ($resultLog->rowCount()<1) {
+						print "<div class='error'>" ;
+							print _("Attendance has not been taken for this group yet for the specified date. The entries below are a best-guess based on defaults and information put into the system in advance, not actual data.") ;
+						print "</div>" ;
+					}
+					else {
+						print "<div class='success'>" ;
+							print _("Attendance has been taken at the following times for the specified date for this group:") ;
+							print "<ul>" ;
+							while ($rowLog=$resultLog->fetch()) {
+								print "<li>" . sprintf(_('Recorded at %1$s on %2$s by %3$s.'), substr($rowLog["timestampTaken"],11), dateConvertBack($guid, substr($rowLog["timestampTaken"],0,10)), formatName("", $rowLog["preferredName"], $rowLog["surname"], "Staff", false, true)) ."</li>" ;
+							}
+							print "</ul>" ;
+						print "</div>" ;
+					}
+				
+					//Show roll group grid
+					try {
+						$dataRollGroup=array("gibbonRollGroupID"=>$gibbonRollGroupID); 
+						$sqlRollGroup="SELECT * FROM gibbonStudentEnrolment INNER JOIN gibbonPerson ON gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonRollGroupID=:gibbonRollGroupID AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') ORDER BY rollOrder, surname, preferredName" ;
+						$resultRollGroup=$connection2->prepare($sqlRollGroup);
+						$resultRollGroup->execute($dataRollGroup);
+					}
+					catch(PDOException $e) { 
+						print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+					}
+				
+					if ($resultRollGroup->rowCount()<1) {
+						print "<div class='error'>" ;
+							print _("There are no records to display.") ;
+						print "</div>" ;
+					}
+					else {
+						$count=0 ;
+						$countPresent=0 ;
+						$columns=4 ;
+						print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/attendance_take_byRollGroupProcess.php'>" ;
+							print "<table class='smallIntBorder' cellspacing='0' style='width:100%'>" ;
+							?>
+							<tr class='break'>
+								<td colspan=<?php print $columns ?>>
+									<h3>
+										<?php print _('Take Attendance') ?>
+									</h3>
+								</td>
+							</tr>
+							<?php
+							while ($rowRollGroup=$resultRollGroup->fetch()) {
+								if ($count%$columns==0) {
+									print "<tr>" ;
+								}
+								//Get student log data
+								try {
+									$dataLog=array("gibbonPersonID"=>$rowRollGroup["gibbonPersonID"], "date"=>$currentDate . "%"); 
+									$sqlLog="SELECT * FROM gibbonAttendanceLogPerson, gibbonPerson WHERE gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY timestampTaken DESC" ;
+									$resultLog=$connection2->prepare($sqlLog);
+									$resultLog->execute($dataLog);
+								}
+								catch(PDOException $e) { 
+									print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+								}
+							
+								$rowLog=$resultLog->fetch() ;
+							
+							
+								if ($rowLog["type"]=="Absent") {
+									print "<td style='border: 1px solid #CC0000!important; background: none; background-color: #F6CECB; width:20%; text-align: center; vertical-align: top'>" ;
+								}
+								else {
+									print "<td style='border: 1px solid #ffffff; width:20%; text-align: center; vertical-align: top'>" ;
+								}
+								
+									print getUserPhoto($guid, $rowRollGroup["image_240"], 75) ;
+								
+									print "<div style='padding-top: 5px'><b>" . formatName("", htmlPrep($rowRollGroup["preferredName"]), htmlPrep($rowRollGroup["surname"]), "Student", true) . "</b></div>" ;
+									print "<div style='font-size: 90%; font-style: italic; font-weight: normal'>" ;
+										if ($firstDay!=NULL AND $lastDay!=NULL) {
+											$absenceCount=getAbsenceCount($guid, $rowRollGroup["gibbonPersonID"], $connection2, $firstDay, $lastDay) ;
+											if ($absenceCount!==FALSE) {
+												print sprintf(_('%1$s Days Absent'), $absenceCount) ;
+											}
+										}
+									print "</div><br/>" ;
+									print "<input type='hidden' name='$count-gibbonPersonID' value='" . $rowRollGroup["gibbonPersonID"] . "'>" ;
+									print "<select style='float: none; width:130px; margin-bottom: 3px' name='$count-type'>" ;
+										print "<option " ; if ($rowLog["type"]=="Present") { print "selected " ; } ; print "value='Present'>" . _('Present') . "</option>" ;
+										print "<option " ; if ($rowLog["type"]=="Present - Late") { print "selected " ; } ; print "value='Present - Late'>" . _('Present - Late') . "</option>" ;
+										print "<option " ; if ($rowLog["type"]=="Present - Offsite") { print "selected " ; } ; print "value='Present - Offsite'>" . _('Present - Offsite') . "</option>" ;
+										print "<option " ; if ($rowLog["type"]=="Absent") { print "selected " ; } ; print "value='Absent'>" . _('Absent') . "</option>" ;
+										print "<option " ; if ($rowLog["type"]=="Left") { print "selected " ; } ; print "value='Left'>" . _('Left') . "</option>" ;
+										print "<option " ; if ($rowLog["type"]=="Left - Early") { print "selected " ; } ; print "value='Left - Early'>" . _('Left - Early') . "</option>" ;
+									print "</select>" ;
+									print "<select style='float: none; width:130px; margin-bottom: 3px' name='$count-reason'>" ;
+										print "<option " ; if ($rowLog["reason"]=="") { print "selected " ; } ; print "value=''></option>" ;
+										print "<option " ; if ($rowLog["reason"]=="Pending") { print "selected " ; } ; print "value='Pending'>" . _('Pending') . "</option>" ;
+										print "<option " ; if ($rowLog["reason"]=="Education") { print "selected " ; } ; print "value='Education'>" . _('Education') . "</option>" ;
+										print "<option " ; if ($rowLog["reason"]=="Family") { print "selected " ; } ; print "value='Family'>" . _('Family') . "</option>" ;
+										print "<option " ; if ($rowLog["reason"]=="Medical") { print "selected " ; } ; print "value='Medical'>" . _('Medical') . "</option>" ;
+										print "<option " ; if ($rowLog["reason"]=="Other") { print "selected " ; } ; print "value='Other'>" . _('Other') . "</option>" ;
+									print "</select>" ;
+									print "<input type='text' maxlength=255 name='$count-comment' id='$count-comment' style='float: none; width:126px; margin-bottom: 3px' value='" . htmlPrep($rowLog["comment"]) . "'>" ;
+								
+									if ($rowLog["type"]=="Present" OR $rowLog["type"]=="Present - Late") {
+										$countPresent++ ;
+									}	
+								
+									print "<table cellspacing='0' style='width:134px; margin: 0 auto 3px auto; height: 35px' >" ;
+										print "<tr>" ;
+											for ($i=4; $i>=0; $i--) {
+												$link="" ;
+												if ($i>($last5SchoolDaysCount-1)) {
+													$extraStyle="color: #555; background-color: #eee;" ;
+												
+													print "<td style='" . $extraStyle . "height: 25px; width: 20%'>" ;
+													print "<i>" . _('NA') . "</i>" ;
+													print "</td>" ;
+												}
+												else {
+													try {
+														$dataLast5SchoolDays=array("gibbonPersonID"=>$rowRollGroup["gibbonPersonID"], "date"=>date("Y-m-d", dateConvertToTimestamp($last5SchoolDays[$i])) . "%"); 
+														$sqlLast5SchoolDays="SELECT * FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY gibbonAttendanceLogPersonID DESC" ;
+														$resultLast5SchoolDays=$connection2->prepare($sqlLast5SchoolDays);
+														$resultLast5SchoolDays->execute($dataLast5SchoolDays);
+													}
+													catch(PDOException $e) { 
+														print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+													}
+													if ($resultLast5SchoolDays->rowCount()==0) {
+														$extraStyle="color: #555; background-color: #eee; " ;
+													}
+													else {
+														$link="./index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/attendance_take_byPerson.php&gibbonPersonID=" . $rowRollGroup["gibbonPersonID"] . "&currentDate=" . date("d/m/Y", dateConvertToTimestamp($last5SchoolDays[$i])) ;
+														$rowLast5SchoolDays=$resultLast5SchoolDays->fetch() ;
+														if ($rowLast5SchoolDays["type"]=="Absent") {
+															$color="#c00" ;
+															$extraStyle="color: #c00; background-color: #F6CECB; " ;
+														}
+														else {
+															$color="#390" ;
+															$extraStyle="color: #390; background-color: #D4F6DC; " ;
+														}
+													}
+												
+													print "<td style='" . $extraStyle . "height: 25px; width: 20%'>" ;
+														if ($link!="") {
+															print "<a style='text-decoration: none; color: $color' href='$link'>" ;
+															print date("d", dateConvertToTimestamp($last5SchoolDays[$i])) . "<br/>" ;
+															print "<span style='font-size: 65%'>" . date("M", dateConvertToTimestamp($last5SchoolDays[$i])) . "</span>" ;
+															print "</a>" ;
+														}
+														else {
+															print date("d", dateConvertToTimestamp($last5SchoolDays[$i])) . "<br/>" ;
+															print "<span style='font-size: 65%'>" . date("M", dateConvertToTimestamp($last5SchoolDays[$i])) . "</span>" ;
+														}
+													print "</td>" ;
+												}
+											}
+										print "</tr>" ;
+									print "</table>" ;
+								print "</td>" ;
+							
+								if ($count%$columns==($columns-1)) {
+									print "</tr>" ;
+								}
+								$count++ ;
+							}
 						
-						for ($i=0;$i<$columns-($count%$columns);$i++) {
-							print "<td></td>" ;
-						}
+							for ($i=0;$i<$columns-($count%$columns);$i++) {
+								print "<td></td>" ;
+							}
 						
-						if ($count%$columns!=0) {
+							if ($count%$columns!=0) {
+								print "</tr>" ;
+							}
+						
+							print "<tr>" ;
+								print "<td class='right' colspan=5>" ;
+									print "<div class='success'>" ;
+										print "<b>" . _('Total students:') . " $count</b><br/>" ;
+										if ($resultLog->rowCount()>=1) {
+											print "<span title='" . _('e.g. Present or Present - Late') . "'>" . _('Total students present in room:') . " <b>$countPresent</b><br/>" ;
+											print "<span title='" . _('e.g. not Present and not Present - Late') . "'>" . _('Total students absent from room:') . " <b>" . ($count-$countPresent) . "</b><br/>" ;
+										}
+									print "</div>" ;
+								print "</td>" ;
 							print "</tr>" ;
-						}
-						
-						print "<tr>" ;
-							print "<td class='right' colspan=5>" ;
-								print "<div class='success'>" ;
-									print "<b>" . _('Total students:') . " $count</b><br/>" ;
-									if ($resultLog->rowCount()>=1) {
-										print "<span title='" . _('e.g. Present or Present - Late') . "'>" . _('Total students present in room:') . " <b>$countPresent</b><br/>" ;
-										print "<span title='" . _('e.g. not Present and not Present - Late') . "'>" . _('Total students absent from room:') . " <b>" . ($count-$countPresent) . "</b><br/>" ;
-									}
-								print "</div>" ;
-							print "</td>" ;
-						print "</tr>" ;
-						print "<tr>" ;
-							print "<td class='right' colspan=5>" ;
-								print "<input type='hidden' name='gibbonRollGroupID' value='$gibbonRollGroupID'>" ;
-								print "<input type='hidden' name='currentDate' value='$currentDate'>" ;
-								print "<input type='hidden' name='count' value='" . $resultRollGroup->rowCount() . "'>" ;
-								print "<input type='hidden' name='address' value='" . $_SESSION[$guid]["address"] . "'>" ;
-								print "<input type='submit' value='Submit'>" ;
-							print "</td>" ;
-						print "</tr>" ;
-						print "</table>" ;	
-					print "</form>" ;
+							print "<tr>" ;
+								print "<td class='right' colspan=5>" ;
+									print "<input type='hidden' name='gibbonRollGroupID' value='$gibbonRollGroupID'>" ;
+									print "<input type='hidden' name='currentDate' value='$currentDate'>" ;
+									print "<input type='hidden' name='count' value='" . $resultRollGroup->rowCount() . "'>" ;
+									print "<input type='hidden' name='address' value='" . $_SESSION[$guid]["address"] . "'>" ;
+									print "<input type='submit' value='Submit'>" ;
+								print "</td>" ;
+							print "</tr>" ;
+							print "</table>" ;	
+						print "</form>" ;
+					}
 				}
 			}
 		}
