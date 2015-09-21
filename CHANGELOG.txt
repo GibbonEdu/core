@@ -373,6 +373,12 @@ General: switched notification emails to HTML
 User Admin: improved acceptance of applications to us student note title
 	Edited file /modules/User Admin/applicationForm_manage_accept.php
 
+Application Form: fixed bug causing failed PayPal payments to be marked as successful
+	Edited file /modules/Application Form/applicationFormProcess.php
+
+Finance: fixed bug causing failed PayPal payments to be marked as successful
+	Edited file /modules/Finance/invoices_payOnlineProcess.php
+
 
 v10.0.00
 --------

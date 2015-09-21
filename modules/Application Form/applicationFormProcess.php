@@ -806,7 +806,7 @@ else {
 			$paymentReceiptID=$confirmPayment["PAYMENTINFO_0_RECEIPTID"] ;
 			
 			//Payment was successful. Yeah!
-			if ($ACK="Success") {
+			if ($ACK=="Success") {
 				$updateFail=false ;
 				
 				//Save payment details to gibbonPayment
