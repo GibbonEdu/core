@@ -382,6 +382,8 @@ Finance: fixed bug causing failed PayPal payments to be marked as successful
 Attendance: added absence count for each student when taking roll group attendance
 	Edited file /modules/Attendance/attendance_take_byRollGroup.php
 
+General: added super and sub script to Visual text editor
+	Edited file /index.php
 
 v10.0.00
 --------

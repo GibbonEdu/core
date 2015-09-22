@@ -563,6 +563,7 @@ ALTER TABLE `gibbonFamilyUpdate` CHANGE `languageHome` `languageHomePrimary` VAR
 ALTER TABLE `gibbonFamilyUpdate` ADD `languageHomeSecondary` VARCHAR(30) NOT NULL AFTER `languageHomePrimary`;end
 UPDATE gibbonPerson SET receiveNoticiationEmails='Y';end
 ALTER TABLE `gibbonPerson` CHANGE `receiveNoticiationEmails` `receiveNoticiationEmails` ENUM('Y','N') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Y';end
+UPDATE gibbonSetting SET value=concat(value, ',div[*]') WHERE name='allowableHTML' AND value NOT LIKE '%div[*]%';end 
 ";
 
 ?>
