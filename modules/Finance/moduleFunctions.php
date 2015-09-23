@@ -78,7 +78,7 @@ function getPaymentLog($connection2, $guid, $foreignTable, $foreignTableID, $gib
 				$return.="<th>" ;
 					$return.=_("Type") ;
 				$return.="</th>" ;
-				$return.="<th>" ;
+				$return.="<th style='width: 150px'>" ;
 					$return.=_("Transaction ID") ;
 				$return.="</th>" ;
 			$return.="</tr>" ;
@@ -1341,7 +1341,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 								$return.="<div class='error'>" . $e->getMessage() . "</div>" ; 
 							}
 						
-							if ($resultPayment->rowCount()!=1) { //Prevent SQL injection in LIMIT
+							if ($resultPayment->rowCount()!=1) {
 								$paymentFail=TRUE ;
 							}
 							else {
@@ -1443,7 +1443,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 						$return.="<th style='text-align: left'>" ;
 							$return.=_("Description") ;
 						$return.="</th>" ;
-						$return.="<th style='text-align: left'>" ;
+						$return.="<th style='text-align: left; width: 150px'>" ;
 							$return.=_("Fee") . "<br/>" ;
 							if ($currency!="") {
 								$return.="<span style='font-style: italic; font-size: 85%'>" . $currency . "</span>" ;
@@ -1559,8 +1559,66 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 			}
 		}
 		
+		//Display balance
+		if ($row["status"]=="Paid") {
+			if ($rowPayment["status"]=="Partial") {
+				if ($receiptNumber!=NULL) { //New style receipt, with multiple payments
+					$balanceFail=FALSE ;
+					$amountPaid=0 ;
+					//Get amount paid until this point
+					try {
+						$dataPayment2=array("foreignTable"=>"gibbonFinanceInvoice", "foreignTableID"=>$gibbonFinanceInvoiceID); 
+						$sqlPayment2="SELECT gibbonPayment.*, surname, preferredName FROM gibbonPayment JOIN gibbonPerson ON (gibbonPayment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignTable=:foreignTable AND foreignTableID=:foreignTableID ORDER BY timestamp LIMIT 0, " . ($receiptNumber+1) ;
+						$resultPayment2=$connection2->prepare($sqlPayment2);
+						$resultPayment2->execute($dataPayment2);
+					}
+					catch(PDOException $e) { 
+						$balanceFail=TRUE ;
+					}
+				
+					if ($resultPayment2->rowCount()<1) {
+						$paymentFail=TRUE ;
+					}
+					else {
+						while($rowPayment2=$resultPayment2->fetch()) {
+							$amountPaid+=$rowPayment2["amount"] ;
+						}
+					}
+					
+					if ($balanceFail==FALSE) {		
+						$return.="<h3 style='padding-top: 40px; padding-left: 10px; margin: 0px; $style4'>" ;
+							$return.=_("Outstanding Balance") ;
+						$return.="</h3>" ;
+						if ($hideItemisation!="Y") { //Do not hide itemisation
+							$return.="<table cellspacing='0' style='width: 100%; $style4'>" ;
+								$return.="<tr style='height: 35px' class='current'>" ;
+									$return.="<td style='text-align: right; $style2'>" ;
+										$return.="<b>" . _("Outstanding Balance:") . "</b>";
+									$return.="</td>" ;
+									$return.="<td style='width: 135px; $style2'>" ;
+										if (substr($currency,4)!="") {
+											$return.=substr($currency,4) . " " ;
+										}
+										$return.="<b>" . number_format(($feeTotal-$amountPaid), 2, ".", ",") . "</b>" ;
+									$return.="</td>" ;
+								$return.="</tr>" ;
+							$return.="</table>" ;
+						}
+						else { //Hide itemisation
+							$return.="<p style='margin-top: 10px; text-align: right'>" ;
+								$return.=_('Payment Total') . ": " ;
+								if (substr($currency,4)!="") {
+									$return.=substr($currency,4) . " " ;
+								}
+								$return.="<b>" . number_format(($feeTotal-$amountPaid), 2, ".", ",") . "</b>" ;
+							$return.="</p>" ;
+						}
+					}
+				}
+			}
+		}
 		
-		//Invoice Notes
+		//Receipts Notes
 		$receiptNotes=getSettingByScope( $connection2, "Finance", "receiptNotes" ) ;
 		if ($receiptNotes!="") {
 			$return.="<h3 style='margin-top: 40px'>" ;
