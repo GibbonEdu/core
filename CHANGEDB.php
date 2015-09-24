@@ -564,6 +564,7 @@ ALTER TABLE `gibbonFamilyUpdate` ADD `languageHomeSecondary` VARCHAR(30) NOT NUL
 UPDATE gibbonPerson SET receiveNoticiationEmails='Y';end
 ALTER TABLE `gibbonPerson` CHANGE `receiveNoticiationEmails` `receiveNoticiationEmails` ENUM('Y','N') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Y';end
 UPDATE gibbonSetting SET value=concat(value, ',div[*]') WHERE name='allowableHTML' AND value NOT LIKE '%div[*]%';end 
+ALTER TABLE `gibbonAction` ADD UNIQUE KEY `moduleActionName` (`name`,`gibbonModuleID`);end
 ";
 
 ?>

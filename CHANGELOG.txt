@@ -385,6 +385,9 @@ Attendance: added absence count for each student when taking roll group attendan
 General: added super and sub script to Visual text editor
 	Edited file /index.php
 
+General: added mysql fix to stop bug where actions appear multiple times in the database
+	Edited table gibbonAction
+	
 v10.0.00
 --------
 i18n: added Urdu as inactive development language
