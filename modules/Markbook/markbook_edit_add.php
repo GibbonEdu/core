@@ -216,15 +216,11 @@ else {
 									catch(PDOException $e) { }
 									print "<option value=''></option>" ;
 									while ($rowSelect=$resultSelect->fetch()) {
-										$selected="" ;
-										if ($rowSelect["gibbonPlannerEntryID"]==$_GET["gibbonPlannerEntryID"]) {
-											$selected="selected" ;
-										}
 										if ($rowSelect["gibbonHookID"]=="") {
-											print "<option $selected class='" . $rowSelect["gibbonUnitID"] . "' value='" . $rowSelect["gibbonPlannerEntryID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
+											print "<option class='" . $rowSelect["gibbonUnitID"] . "' value='" . $rowSelect["gibbonPlannerEntryID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
 										}
 										else {
-											print "<option $selected class='" . $rowSelect["gibbonUnitID"] . "-" . $rowSelect["gibbonHookID"] . "' value='" . $rowSelect["gibbonPlannerEntryID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
+											print "<option class='" . $rowSelect["gibbonUnitID"] . "-" . $rowSelect["gibbonHookID"] . "' value='" . $rowSelect["gibbonPlannerEntryID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
 										}
 									}		
 									?>				

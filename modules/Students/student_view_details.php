@@ -1736,7 +1736,7 @@ else {
 												<td class="right">
 													<?php
 													print "<select name='category' id='category' style='width:302px'>" ;
-														print "<option $selected value=''></option>" ;
+														print "<option value=''></option>" ;
 														while ($rowCategories=$resultCategories->fetch()) {
 															$selected="" ;
 															if ($category==$rowCategories["gibbonStudentNoteCategoryID"]) {

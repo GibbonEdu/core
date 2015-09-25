@@ -67,8 +67,14 @@ else {
 		if ($email=="Y") {
 			$from=$_POST["from"] ;
 		}
-		$emailReplyTo=$_POST["emailReplyTo"] ;
-		$messageWall=$_POST["messageWall"] ;
+		$emailReplyTo="" ;
+		if (isset($_POST["emailReplyTo"])) {
+			$emailReplyTo=$_POST["emailReplyTo"] ;
+		}
+		$messageWall="" ;
+		if (isset($_POST["messageWall"])) {
+			$messageWall=$_POST["messageWall"] ;
+		}
 		if ($messageWall!="Y") {
 			$messageWall="N" ;
 		}

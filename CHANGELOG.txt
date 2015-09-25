@@ -392,7 +392,14 @@ General: increased max password length to 30 characters (for the paranoid amongs
 	Edited files /functions.php, preferences.php, publicRegistration.php
 	Edited file /installer/install.php
 	Edited file /modules/User Admin/user_manage_add.php
-	
+
+Markbook: made access to Add Multiple Records one click quicker for admins with no classes
+	Edited file /modules/Markbook/markbook_view.php
+
+General: fixed notification PHP notice error
+	Edited file /index_notification_ajax.php
+
+
 v10.0.00
 --------
 i18n: added Urdu as inactive development language

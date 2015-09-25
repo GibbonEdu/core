@@ -248,11 +248,7 @@ else {
 										}
 										catch(PDOException $e) { print $e->getMessage() ; }
 										while ($rowSelect=$resultSelect->fetch()) {
-											$selected="" ;
-											if ($rowSelect["gibbonCourseClassID"]==$row["gibbonCourseClassID"]) {
-												$selected="selected" ;
-											}
-											print "<option $selected class='" . $rowSelect["gibbonSchoolYearID"] . "' value='" . $rowSelect["gibbonCourseClassID"] . "'>" . htmlPrep($rowSelect["course"]) . "." . htmlPrep($rowSelect["class"]) . "</option>" ;
+											print "<option class='" . $rowSelect["gibbonSchoolYearID"] . "' value='" . $rowSelect["gibbonCourseClassID"] . "'>" . htmlPrep($rowSelect["course"]) . "." . htmlPrep($rowSelect["class"]) . "</option>" ;
 										}		
 										?>				
 									</select>

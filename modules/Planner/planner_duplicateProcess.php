@@ -128,7 +128,7 @@ else {
 					 }
 					 
 					try {
-						$dataPlannerUpdate=array("gibbonPlannerEntryID"=>$AI, "description"=>$description); 
+						$dataPlannerUpdate=array("gibbonPlannerEntryID"=>$gibbonPlannerEntryID, "description"=>$description); 
 						$sqlPlannerUpdate="UPDATE gibbonPlannerEntry SET description=:description WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID" ;
 						$resultPlannerUpdate=$connection2->prepare($sqlPlannerUpdate);
 						$resultPlannerUpdate->execute($dataPlannerUpdate);

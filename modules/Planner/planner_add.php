@@ -239,10 +239,6 @@ else {
 									print "<option value=''></option>" ;
 									print "<optgroup label='--" . _('Gibbon Units') . "--'>" ;
 									while ($rowSelect=$resultSelect->fetch()) {
-										$currentType=$rowSelect["type"] ;
-										if ($currentType!=$lastType) {
-											print "<optgroup label='--" . $currentType . "--'>" ;
-										}
 										print "<option value='" . $rowSelect["gibbonUnitID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
 										$lastType=$currentType ;
 									}
@@ -286,7 +282,7 @@ else {
 								?>
 								<select name="gibbonUnitID" id="gibbonUnitID" style="width: 302px">
 									<?php
-									//List basic and smart units
+									//List units
 									try {
 										$dataSelect=array(); 
 										$sqlSelect="SELECT * FROM gibbonUnit JOIN gibbonUnitClass ON (gibbonUnit.gibbonUnitID=gibbonUnitClass.gibbonUnitID) WHERE running='Y' ORDER BY name" ;
@@ -299,10 +295,6 @@ else {
 									print "<option value=''></option>" ;
 									print "<optgroup label='--" . _('Gibbon Units') . "--'>" ;
 									while ($rowSelect=$resultSelect->fetch()) {
-										$currentType=$rowSelect["type"] ;
-										if ($currentType!=$lastType) {
-											print "<optgroup label='--" . $currentType . "--'>" ;
-										}
 										print "<option class='" . $rowSelect["gibbonCourseClassID"] . "' value='" . $rowSelect["gibbonUnitID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
 										$lastType=$currentType ;
 									}	

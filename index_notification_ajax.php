@@ -35,67 +35,72 @@ catch(PDOException $e) {
 
 $output="" ;
 
-//CHECK FOR SYSTEM ALARM
-if (isset($_SESSION[$guid]["gibbonRoleIDCurrentCategory"])) {
-	if ($_SESSION[$guid]["gibbonRoleIDCurrentCategory"]=="Staff") {
-		$alarm=getSettingByScope($connection2, "System", "alarm") ;
-		if ($alarm=="General" OR $alarm=="Lockdown" OR $alarm=="Custom") {
-			$type="general" ;
-			if ($alarm=="Lockdown") {
-				$type="lockdown" ;
-			}
-			else if ($alarm=="Custom") {
-				$type=="custom" ;
-			}
-			$output.="<script>
-				if ($('div#TB_window').is(':visible')==true && $('div#TB_window').attr('class')!='alarm') {
-					$(\"#TB_window\").remove();
-					$(\"body\").append(\"<div id='TB_window'></div>\");
-				}
-				if ($('div#TB_window').is(':visible')===false) {
-					var url = '" . $_SESSION[$guid]["absoluteURL"] . "/index_notification_ajax_alarm.php?type=" . $type . "&KeepThis=true&TB_iframe=true&width=1000&height=500';
-					tb_show('', url);
-					$('div#TB_window').addClass('alarm') ;
-				}
-			</script>" ;
-			
-		}
-		else {
-			$output.="<script>
-				if ($('div#TB_window').is(':visible')==true && $('div#TB_window').attr('class')=='alarm') {
-					tb_remove();
-				}
-			</script>" ;
-		}
-	}
-}
-
-//GET & SHOW NOTIFICATIONS
-try {
-	$dataNotifications=array("gibbonPersonID"=>@$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonID2"=>@$_SESSION[$guid]["gibbonPersonID"]); 
-	$sqlNotifications="(SELECT gibbonNotification.*, gibbonModule.name AS source FROM gibbonNotification JOIN gibbonModule ON (gibbonNotification.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonPersonID=:gibbonPersonID AND status='New')
-	UNION
-	(SELECT gibbonNotification.*, 'System' AS source FROM gibbonNotification WHERE gibbonModuleID IS NULL AND gibbonPersonID=:gibbonPersonID2 AND status='New')
-	ORDER BY timestamp DESC, source, text" ;
-	$resultNotifications=$connection2->prepare($sqlNotifications);
-	$resultNotifications->execute($dataNotifications); 
-}
-catch(PDOException $e) { $return.="<div class='error'>" . $e->getMessage() . "</div>" ; }
-
-if ($resultNotifications->rowCount()>0) {
-	if (is_file($_SESSION[$guid]["absolutePath"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_on.png")) {
-		$output.=" . <a title='" . _('Notifications') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=notifications.php'>" . $resultNotifications->rowCount() . " x " . "<img style='margin-left: 2px; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_on.png'></a>" ;
-	}
-	else {
-		$output.=" . <a title='" . _('Notifications') . "' href='./index.php?q=notifications.php'>" . $resultNotifications->rowCount() . " x " . "<img style='margin-left: 2px; vertical-align: -75%' src='./themes/Default/img/notifications_on.png'></a>" ;
-	}
+if (isset($_SESSION)==FALSE) {
+	$output.=" . 0 x " . "<img style='margin-left: 2px; opacity: 0.8; vertical-align: -75%' src='./themes/Default/img/notifications_off.png'>" ;
 }
 else {
-	if (is_file($_SESSION[$guid]["absolutePath"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_off.png")) {
-		$output.=" . 0 x " . "<img style='margin-left: 2px; opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_off.png'>" ;
+	//CHECK FOR SYSTEM ALARM
+	if (isset($_SESSION[$guid]["gibbonRoleIDCurrentCategory"])) {
+		if ($_SESSION[$guid]["gibbonRoleIDCurrentCategory"]=="Staff") {
+			$alarm=getSettingByScope($connection2, "System", "alarm") ;
+			if ($alarm=="General" OR $alarm=="Lockdown" OR $alarm=="Custom") {
+				$type="general" ;
+				if ($alarm=="Lockdown") {
+					$type="lockdown" ;
+				}
+				else if ($alarm=="Custom") {
+					$type=="custom" ;
+				}
+				$output.="<script>
+					if ($('div#TB_window').is(':visible')==true && $('div#TB_window').attr('class')!='alarm') {
+						$(\"#TB_window\").remove();
+						$(\"body\").append(\"<div id='TB_window'></div>\");
+					}
+					if ($('div#TB_window').is(':visible')===false) {
+						var url = '" . $_SESSION[$guid]["absoluteURL"] . "/index_notification_ajax_alarm.php?type=" . $type . "&KeepThis=true&TB_iframe=true&width=1000&height=500';
+						tb_show('', url);
+						$('div#TB_window').addClass('alarm') ;
+					}
+				</script>" ;
+			
+			}
+			else {
+				$output.="<script>
+					if ($('div#TB_window').is(':visible')==true && $('div#TB_window').attr('class')=='alarm') {
+						tb_remove();
+					}
+				</script>" ;
+			}
+		}
+	}
+
+	//GET & SHOW NOTIFICATIONS
+	try {
+		$dataNotifications=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonID2"=>$_SESSION[$guid]["gibbonPersonID"]); 
+		$sqlNotifications="(SELECT gibbonNotification.*, gibbonModule.name AS source FROM gibbonNotification JOIN gibbonModule ON (gibbonNotification.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonPersonID=:gibbonPersonID AND status='New')
+		UNION
+		(SELECT gibbonNotification.*, 'System' AS source FROM gibbonNotification WHERE gibbonModuleID IS NULL AND gibbonPersonID=:gibbonPersonID2 AND status='New')
+		ORDER BY timestamp DESC, source, text" ;
+		$resultNotifications=$connection2->prepare($sqlNotifications);
+		$resultNotifications->execute($dataNotifications); 
+	}
+	catch(PDOException $e) { $return.="<div class='error'>" . $e->getMessage() . "</div>" ; }
+
+	if ($resultNotifications->rowCount()>0) {
+		if (is_file($_SESSION[$guid]["absolutePath"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_on.png")) {
+			$output.=" . <a title='" . _('Notifications') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=notifications.php'>" . $resultNotifications->rowCount() . " x " . "<img style='margin-left: 2px; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_on.png'></a>" ;
+		}
+		else {
+			$output.=" . <a title='" . _('Notifications') . "' href='./index.php?q=notifications.php'>" . $resultNotifications->rowCount() . " x " . "<img style='margin-left: 2px; vertical-align: -75%' src='./themes/Default/img/notifications_on.png'></a>" ;
+		}
 	}
 	else {
-		$output.=" . 0 x " . "<img style='margin-left: 2px; opacity: 0.8; vertical-align: -75%' src='./themes/Default/img/notifications_off.png'>" ;
+		if (is_file($_SESSION[$guid]["absolutePath"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_off.png")) {
+			$output.=" . 0 x " . "<img style='margin-left: 2px; opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_off.png'>" ;
+		}
+		else {
+			$output.=" . 0 x " . "<img style='margin-left: 2px; opacity: 0.8; vertical-align: -75%' src='./themes/Default/img/notifications_off.png'>" ;
+		}
 	}
 }
 

@@ -1053,6 +1053,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 	$blank=TRUE ;
 	
 	$zCount=0 ;
+	$allDay=0 ;
 	
 	if ($schoolOpen==FALSE) {
 		$output.="<td style='text-align: center; vertical-align: top; font-size: 11px'>" ;
@@ -1442,8 +1443,6 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 						}
 					}
 				}
-			
-				$allDay=0 ;
 			
 				//Draw periods from school calendar
 				if ($eventsSchool!=FALSE) {
