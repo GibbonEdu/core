@@ -387,6 +387,11 @@ General: added super and sub script to Visual text editor
 
 General: added mysql fix to stop bug where actions appear multiple times in the database
 	Edited table gibbonAction
+
+General: increased max password length to 30 characters (for the paranoid amongst us ; )
+	Edited files /functions.php, preferences.php, publicRegistration.php
+	Edited file /installer/install.php
+	Edited file /modules/User Admin/user_manage_add.php
 	
 v10.0.00
 --------

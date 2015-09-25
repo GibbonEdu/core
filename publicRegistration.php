@@ -221,7 +221,7 @@ else {
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
-					<input name="password" id="password" maxlength=20 value="" type="password" style="width: 300px">
+					<input name="password" id="password" maxlength=30 value="" type="password" style="width: 300px">
 					<script type="text/javascript">
 						var password=new LiveValidation('password');
 						password.add(Validate.Presence);

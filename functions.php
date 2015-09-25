@@ -2118,7 +2118,7 @@ function sidebar($connection2, $guid) {
 							<b><?php print _("Password") ; ?></b>
 						</td>
 						<td class="right">
-							<input name="password" id="password" maxlength=20 type="password" style="width:120px">
+							<input name="password" id="password" maxlength=30 type="password" style="width:120px">
 							<script type="text/javascript">
 								var password=new LiveValidation('password', {onlyOnSubmit: true });
 								password.add(Validate.Presence);
