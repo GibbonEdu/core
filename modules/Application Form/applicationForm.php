@@ -590,7 +590,7 @@ else {
 			<tr>
 				<td colspan=2 style='padding-top: 15px'> 
 					<b><?php print _('Development Information') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('Provide any comments or information concerning your child\'s development that may be relevant to your child\’s performance in the classroom or elsewhere? (Incorrect or withheld information may affect continued enrolment).') ?></i></span><br/> 					
+					<span style="font-size: 90%"><i><?php print _('Provide any comments or information concerning your child\'s development that may be relevant to your child\'s performance in the classroom or elsewhere? (Incorrect or withheld information may affect continued enrolment).') ?></i></span><br/> 					
 					<textarea name="developmentInformation" id="developmentInformation" rows=5 style="width:738px; margin: 5px 0px 0px 0px"></textarea>
 				</td>
 			</tr>
@@ -1001,10 +1001,10 @@ else {
 								<?php print _('Parent/Guardian') ?> <?php print $i ?>
 								<?php
 								if ($i==1) {
-									print "<span style='font-size: 75%'> (e.g. mother)</span>" ;
+									print "<span style='font-size: 75%'> " . _('(e.g. mother)') . "</span>" ;
 								}
 								else if ($i==2 AND $gibbonPersonID=="") {
-									print "<span style='font-size: 75%'> (e.g. father)</span>" ;
+									print "<span style='font-size: 75%'> " . _('(e.g. father)') . "</span>" ;
 								}
 								?>
 							</h3>
@@ -1093,11 +1093,11 @@ else {
 						<td class="right">
 							<select style="width: 302px" id="<?php print "parent$i" ?>title" name="<?php print "parent$i" ?>title">
 								<option value="Please select..."><?php print _('Please select...') ?></option>
-								<option value="Ms.">Ms.</option>
-								<option value="Miss">Miss</option>
-								<option value="Mr.">Mr.</option>
-								<option value="Mrs.">Mrs.</option>
-								<option value="Dr.">Dr.</option>
+								<option value="Ms."><?php print _('Ms.') ?></option>
+								<option value="Miss"><?php print _('Miss.') ?></option>
+								<option value="Mr."><?php print _('Mr.') ?></option>
+								<option value="Mrs."><?php print _('Mrs.') ?></option>
+								<option value="Dr."><?php print _('Dr.') ?></option>
 							</select>
 							<script type="text/javascript">
 								var <?php print "parent$i" ?>title=new LiveValidation('<?php print "parent$i" ?>title');
@@ -1787,8 +1787,8 @@ else {
 					<span style="font-size: 90%"><i><?php print _('Indicate if you are interested in a scholarship.') ?></i></span><br/>
 				</td>
 				<td class="right">
-					<input type="radio" id="scholarshipInterest" name="scholarshipInterest" class="type" value="Y" /> Yes
-					<input checked type="radio" id="scholarshipInterest" name="scholarshipInterest" class="type" value="N" /> No
+					<input type="radio" id="scholarshipInterest" name="scholarshipInterest" class="type" value="Y" /> <?php print _('Yes') ?>
+					<input checked type="radio" id="scholarshipInterest" name="scholarshipInterest" class="type" value="N" /> <?php print _('No') ?>
 				</td>
 			</tr>
 			<tr>
@@ -1797,8 +1797,8 @@ else {
 					<span style="font-size: 90%"><i><?php print _('Is a scholarship required for you to take up a place at the school?') ?></i></span><br/>
 				</td>
 				<td class="right">
-					<input type="radio" id="scholarshipRequired" name="scholarshipRequired" class="type" value="Y" /> Yes
-					<input checked type="radio" id="scholarshipRequired" name="scholarshipRequired" class="type" value="N" /> No
+					<input type="radio" id="scholarshipRequired" name="scholarshipRequired" class="type" value="Y" /> <?php print _('Yes') ?>
+					<input checked type="radio" id="scholarshipRequired" name="scholarshipRequired" class="type" value="N" /> <?php print _('No') ?>
 				</td>
 			</tr>
 			
@@ -1877,8 +1877,8 @@ else {
 					<b><?php print _('Send Future Invoices To') ?></b><br/>
 				</td>
 				<td class="right">
-					<input type="radio" name="payment" value="Family" class="payment" checked /> Family
-					<input type="radio" name="payment" value="Company" class="payment" /> Company
+					<input type="radio" name="payment" value="Family" class="payment" checked /> <?php print _('Family') ?>
+					<input type="radio" name="payment" value="Company" class="payment" /> <?php print _('Company') ?>
 				</td>
 			</tr>
 			<tr id="companyNameRow">
@@ -1981,7 +1981,7 @@ else {
 					<td class="right">
 						<?php
 						while ($rowCat=$resultCat->fetch()) {
-							print $rowCat["name"] . " <input type='checkbox' name='gibbonFinanceFeeCategoryIDList[]' value='" . $rowCat["gibbonFinanceFeeCategoryID"] . "'/><br/>" ;
+							print _($rowCat["name"]) . " <input type='checkbox' name='gibbonFinanceFeeCategoryIDList[]' value='" . $rowCat["gibbonFinanceFeeCategoryID"] . "'/><br/>" ;
 						}
 						print _("Other") . " <input type='checkbox' name='gibbonFinanceFeeCategoryIDList[]' value='0001'/><br/>" ;
 						?>
@@ -2084,7 +2084,7 @@ else {
 							print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 							$howDidYouHears=explode(",", $howDidYouHearList) ;
 							foreach ($howDidYouHears as $howDidYouHear) {
-								print "<option value='" . trim($howDidYouHear) . "'>" . trim($howDidYouHear) . "</option>" ;
+								print "<option value='" . trim($howDidYouHear) . "'>" . _(trim($howDidYouHear)) . "</option>" ;
 							}
 						print "</select>" ;
 						?>
