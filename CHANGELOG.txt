@@ -399,6 +399,10 @@ Markbook: made access to Add Multiple Records one click quicker for admins with 
 General: fixed notification PHP notice error
 	Edited file /index_notification_ajax.php
 
+Rubrics: added ability to duplicate rubrics
+	Updated values in table gibbonAction
+	Edited file /modules/Rubrics/rubrics.php
+	New files /modules/Rubrics/rubrics_duplicate*.php
 
 v10.0.00
 --------
