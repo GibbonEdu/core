@@ -1787,8 +1787,8 @@ else {
 					<span style="font-size: 90%"><i><?php print _('Indicate if you are interested in a scholarship.') ?></i></span><br/>
 				</td>
 				<td class="right">
-					<input type="radio" id="scholarshipInterest" name="scholarshipInterest" class="type" value="Y" /> <?php print _('Yes') ?>
-					<input checked type="radio" id="scholarshipInterest" name="scholarshipInterest" class="type" value="N" /> <?php print _('No') ?>
+					<input type="radio" id="scholarshipInterest" name="scholarshipInterest" class="type" value="Y" /> <?php print ynExpander('Y') ?>
+					<input checked type="radio" id="scholarshipInterest" name="scholarshipInterest" class="type" value="N" /> <?php print ynExpander('N') ?>
 				</td>
 			</tr>
 			<tr>
@@ -1797,8 +1797,8 @@ else {
 					<span style="font-size: 90%"><i><?php print _('Is a scholarship required for you to take up a place at the school?') ?></i></span><br/>
 				</td>
 				<td class="right">
-					<input type="radio" id="scholarshipRequired" name="scholarshipRequired" class="type" value="Y" /> <?php print _('Yes') ?>
-					<input checked type="radio" id="scholarshipRequired" name="scholarshipRequired" class="type" value="N" /> <?php print _('No') ?>
+					<input type="radio" id="scholarshipRequired" name="scholarshipRequired" class="type" value="Y" /> <?php print ynExpander('Y') ?>
+					<input checked type="radio" id="scholarshipRequired" name="scholarshipRequired" class="type" value="N" /> <?php print ynExpander('N') ?>
 				</td>
 			</tr>
 			
