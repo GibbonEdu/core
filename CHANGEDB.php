@@ -566,6 +566,7 @@ ALTER TABLE `gibbonPerson` CHANGE `receiveNoticiationEmails` `receiveNoticiation
 UPDATE gibbonSetting SET value=concat(value, ',div[*]') WHERE name='allowableHTML' AND value NOT LIKE '%div[*]%';end 
 ALTER TABLE `gibbonAction` ADD UNIQUE KEY `moduleActionName` (`name`,`gibbonModuleID`);end
 UPDATE gibbonAction SET URLList='rubrics.php, rubrics_add.php, rubrics_edit.php, rubrics_delete.php, rubrics_edit_editRowsColumns.php, rubrics_duplicate.php' WHERE URLList='rubrics.php, rubrics_add.php, rubrics_edit.php, rubrics_delete.php, rubrics_edit_editRowsColumns.php';end
+ALTER TABLE `gibbonINArchive` ADD `descriptors` TEXT NOT NULL COMMENT 'Serialised array of descriptors.' AFTER `notes`;end
 ";
 
 ?>

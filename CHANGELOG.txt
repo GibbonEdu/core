@@ -404,6 +404,11 @@ Rubrics: added ability to duplicate rubrics
 	Edited file /modules/Rubrics/rubrics.php
 	New files /modules/Rubrics/rubrics_duplicate*.php
 
+Individual Needs: added descriptors states to archive
+	Edited table gibbonINArchive
+	Edited files /modules/Individual Needs/in_archiveProcess.php, in_edit.php, moduleFunctions.php
+
+
 v10.0.00
 --------
 i18n: added Urdu as inactive development language
