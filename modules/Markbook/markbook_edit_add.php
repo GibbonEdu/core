@@ -281,36 +281,36 @@ else {
 									</script>
 								</td>
 							</tr>
-							<tr>
-								<td> 
-									<b><?php print _('Attachment') ?></b><br/>
-								</td>
-								<td class="right">
-									<input type="file" name="file" id="file"><br/><br/>
-									<?php
-									//Get list of acceptable file extensions
-									try {
-										$dataExt=array(); 
-										$sqlExt="SELECT * FROM gibbonFileExtension" ;
-										$resultExt=$connection2->prepare($sqlExt);
-										$resultExt->execute($dataExt);
-									}
-									catch(PDOException $e) { }
-									$ext="" ;
-									while ($rowExt=$resultExt->fetch()) {
-										$ext=$ext . "'." . $rowExt["extension"] . "'," ;
-									}
-									?>
-							
-									<script type="text/javascript">
-										var file=new LiveValidation('file');
-										file.add( Validate.Inclusion, { within: [<?php print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
-									</script>
-								</td>
-							</tr>
 							<?php
 						}
 						?>
+						<tr>
+							<td> 
+								<b><?php print _('Attachment') ?></b><br/>
+							</td>
+							<td class="right">
+								<input type="file" name="file" id="file"><br/><br/>
+								<?php
+								//Get list of acceptable file extensions
+								try {
+									$dataExt=array(); 
+									$sqlExt="SELECT * FROM gibbonFileExtension" ;
+									$resultExt=$connection2->prepare($sqlExt);
+									$resultExt->execute($dataExt);
+								}
+								catch(PDOException $e) { }
+								$ext="" ;
+								while ($rowExt=$resultExt->fetch()) {
+									$ext=$ext . "'." . $rowExt["extension"] . "'," ;
+								}
+								?>
+						
+								<script type="text/javascript">
+									var file=new LiveValidation('file');
+									file.add( Validate.Inclusion, { within: [<?php print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+								</script>
+							</td>
+						</tr>
 						<tr class='break'>
 							<td colspan=2> 
 								<h3>
