@@ -479,11 +479,7 @@ else {
 							print "<option value=''></option>" ;
 							$residencyStatuses=explode(",", $residencyStatusList) ;
 							foreach ($residencyStatuses as $residencyStatus) {
-								$selected="" ;
-								if (trim($residencyStatus)==$row["residencyStatus"]) {
-									$selected="selected" ;
-								}
-								print "<option $selected value='" . trim($residencyStatus) . "'>" . trim($residencyStatus) . "</option>" ;
+								print "<option value='" . trim($residencyStatus) . "'>" . trim($residencyStatus) . "</option>" ;
 							}
 						print "</select>" ;
 					}
@@ -1326,11 +1322,7 @@ else {
 									print "<option value=''></option>" ;
 									$residencyStatuses=explode(",", $residencyStatusList) ;
 									foreach ($residencyStatuses as $residencyStatus) {
-										$selected="" ;
-										if (trim($residencyStatus)==$row["parent" . $i . "residencyStatus"]) {
-											$selected="selected" ;
-										}
-										print "<option $selected value='" . trim($residencyStatus) . "'>" . trim($residencyStatus) . "</option>" ;
+										print "<option value='" . trim($residencyStatus) . "'>" . trim($residencyStatus) . "</option>" ;
 									}
 								print "</select>" ;
 							}
