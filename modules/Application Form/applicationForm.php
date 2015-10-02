@@ -1705,7 +1705,7 @@ else {
 			
 			<?php
 			$languageOptionsActive=getSettingByScope($connection2, 'Application Form', 'languageOptionsActive') ;
-			if ($languageOptionsActive=="On") {
+			if ($languageOptionsActive=="Y") {
 				?>
 				<tr class='break'>
 					<td colspan=2> 

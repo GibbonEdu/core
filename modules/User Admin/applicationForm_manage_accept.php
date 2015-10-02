@@ -115,14 +115,14 @@ else {
 								<br/>
 								<?php
 								$checkedStudent="" ;
-								if (getSettingByScope( $connection2, "Application Form", "notificationStudentDefault")=="On") {
+								if (getSettingByScope( $connection2, "Application Form", "notificationStudentDefault")=="Y") {
 									$checkedStudent="checked" ;
 								}
 								?>
 								<input <?php print $checkedStudent ?> type='checkbox' name='informStudent'/> <?php print _('Automatically inform <u>student</u> of their Gibbon login details by email?') ?><br/>
 								<?php
 								$checkedParents="" ;
-								if (getSettingByScope( $connection2, "Application Form", "notificationParentsDefault")=="On") {
+								if (getSettingByScope( $connection2, "Application Form", "notificationParentsDefault")=="Y") {
 									$checkedParents="checked" ;
 								}
 								?>
@@ -208,7 +208,7 @@ else {
 				$failStudent=TRUE ;
 				$lock=true ;
 				try {
-					$sql="LOCK TABLES gibbonPerson WRITE, gibbonSetting WRITE, gibbonSchoolYear WRITE, gibbonYearGroup WRITE, gibbonRollGroup WRITE" ;
+					$sql="LOCK TABLES gibbonPerson WRITE, gibbonSetting WRITE, gibbonSchoolYear WRITE, gibbonYearGroup WRITE, gibbonRollGroup WRITE, gibbonHouse WRITE, gibbonStudentEnrolment WRITE" ;
 					$result=$connection2->query($sql);   
 				}
 				catch(PDOException $e) { 
@@ -365,11 +365,52 @@ else {
 							}
 						}
 						
+						//ATTEMPT AUTOMATIC HOUSE ASSIGNMENT
+						$gibbonHouseID=NULL ;
+						$house="" ;
+						if (getSettingByScope( $connection2, "Application Form", "autoHouseAssign")=="Y") {
+							$houseFail=FALSE ;
+							if ($row["gibbonYearGroupIDEntry"]=="" OR $row["gibbonSchoolYearIDEntry"]=="" AND $row["gender"]=="") { //No year group or school year set, so return error
+								$houseFail=TRUE ;
+							}
+							else {
+								//Check boys and girls in each house in year group
+								try {
+									$dataHouse=array("gibbonYearGroupID"=>$row["gibbonYearGroupIDEntry"], "gibbonSchoolYearID"=>$row["gibbonSchoolYearIDEntry"], "gender"=>$row["gender"]) ;
+									$sqlHouse="SELECT gibbonHouse.name AS house, gibbonHouse.gibbonHouseID, count(gibbonHouse.gibbonHouseID) AS count FROM gibbonHouse LEFT JOIN gibbonPerson ON (gibbonPerson.gibbonHouseID=gibbonHouse.gibbonHouseID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonYearGroupID=:gibbonYearGroupID AND gender=:gender AND NOT gibbonHouse.gibbonHouseID IS NULL GROUP BY house, gibbonHouse.gibbonHouseID ORDER BY count, gibbonHouse.gibbonHouseID" ;
+									$resultHouse=$connection2->prepare($sqlHouse);
+									$resultHouse->execute($dataHouse);
+								}
+								catch(PDOException $e) { 
+									$houseFail=TRUE ;
+								}
+								if ($resultHouse->rowCount()>0) {
+									$rowHouse=$resultHouse->fetch() ;
+									$gibbonHouseID=$rowHouse["gibbonHouseID"] ;
+									$house=$rowHouse["house"] ; ;
+								}
+								else {
+									$houseFail=TRUE ;
+								}
+							}
+							
+							if ($houseFail==TRUE) {
+								print "<div class='error'>" ;
+									print _('The student could not automatically be added to a house, you may wish to manually add them to a house.') ;
+								print "</div>" ;
+							}
+							else {
+								print "<div class='success'>" ;
+									print sprintf(_('The student has automatically been assigned to %1$s house.'), $house) ;
+								print "</div>" ;
+							}
+						}
+						
 						if ($continueLoop==FALSE) {
 							$insertOK=true ;
 							try {
-								$data=array("username"=>$username, "passwordStrong"=>$passwordStrong, "passwordStrongSalt"=>$salt, "surname"=>$row["surname"], "firstName"=>$row["firstName"], "preferredName"=>$row["preferredName"], "officialName"=>$row["officialName"], "nameInCharacters"=>$row["nameInCharacters"], "gender"=>$row["gender"], "dob"=>$row["dob"], "languageFirst"=>$row["languageFirst"], "languageSecond"=>$row["languageSecond"], "languageThird"=>$row["languageThird"], "countryOfBirth"=>$row["countryOfBirth"], "citizenship1"=>$row["citizenship1"], "citizenship1Passport"=>$row["citizenship1Passport"], "nationalIDCardNumber"=>$row["nationalIDCardNumber"], "residencyStatus"=>$row["residencyStatus"], "visaExpiryDate"=>$row["visaExpiryDate"], "email"=>$email, "emailAlternate"=>$emailAlternate, "website"=>$website, "phone1Type"=>$row["phone1Type"],"phone1CountryCode"=>$row["phone1CountryCode"],"phone1"=>$row["phone1"],"phone2Type"=>$row["phone2Type"],"phone2CountryCode"=>$row["phone2CountryCode"],"phone2"=>$row["phone2"], "lastSchool"=>$lastSchool, "dateStart"=>$row["dateStart"], "privacy"=>$row["privacy"], "dayType"=>$row["dayType"], "fields"=>$row["fields"]); 
-								$sql="INSERT INTO gibbonPerson SET username=:username, password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, gibbonRoleIDPrimary='003', gibbonRoleIDAll='003', status='Full', surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, dob=:dob, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, citizenship1=:citizenship1, citizenship1Passport=:citizenship1Passport, nationalIDCardNumber=:nationalIDCardNumber, residencyStatus=:residencyStatus, visaExpiryDate=:visaExpiryDate, email=:email, emailAlternate=:emailAlternate, website=:website, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, phone2Type=:phone2Type, phone2CountryCode=:phone2CountryCode, phone2=:phone2, lastSchool=:lastSchool, dateStart=:dateStart, privacy=:privacy, dayType=:dayType, fields=:fields" ;
+								$data=array("username"=>$username, "passwordStrong"=>$passwordStrong, "passwordStrongSalt"=>$salt, "surname"=>$row["surname"], "firstName"=>$row["firstName"], "preferredName"=>$row["preferredName"], "officialName"=>$row["officialName"], "nameInCharacters"=>$row["nameInCharacters"], "gender"=>$row["gender"], "dob"=>$row["dob"], "languageFirst"=>$row["languageFirst"], "languageSecond"=>$row["languageSecond"], "languageThird"=>$row["languageThird"], "countryOfBirth"=>$row["countryOfBirth"], "citizenship1"=>$row["citizenship1"], "citizenship1Passport"=>$row["citizenship1Passport"], "nationalIDCardNumber"=>$row["nationalIDCardNumber"], "residencyStatus"=>$row["residencyStatus"], "visaExpiryDate"=>$row["visaExpiryDate"], "email"=>$email, "emailAlternate"=>$emailAlternate, "website"=>$website, "phone1Type"=>$row["phone1Type"],"phone1CountryCode"=>$row["phone1CountryCode"],"phone1"=>$row["phone1"],"phone2Type"=>$row["phone2Type"],"phone2CountryCode"=>$row["phone2CountryCode"],"phone2"=>$row["phone2"], "lastSchool"=>$lastSchool, "dateStart"=>$row["dateStart"], "privacy"=>$row["privacy"], "dayType"=>$row["dayType"], "gibbonHouseID"=>$gibbonHouseID, "fields"=>$row["fields"]); 
+								$sql="INSERT INTO gibbonPerson SET username=:username, password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, gibbonRoleIDPrimary='003', gibbonRoleIDAll='003', status='Full', surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, dob=:dob, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, citizenship1=:citizenship1, citizenship1Passport=:citizenship1Passport, nationalIDCardNumber=:nationalIDCardNumber, residencyStatus=:residencyStatus, visaExpiryDate=:visaExpiryDate, email=:email, emailAlternate=:emailAlternate, website=:website, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, phone2Type=:phone2Type, phone2CountryCode=:phone2CountryCode, phone2=:phone2, lastSchool=:lastSchool, dateStart=:dateStart, privacy=:privacy, dayType=:dayType, gibbonHouseID=:gibbonHouseID, fields=:fields" ;
 								$result=$connection2->prepare($sql);
 								$result->execute($data);
 							}

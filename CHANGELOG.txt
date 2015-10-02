@@ -417,6 +417,11 @@ Attendance: added links from roll group attendance taking view to individual stu
 Attendance: fixed PHP Notice issue in student report
 	Edited file /modules/Attendance/moduleFunctions.php
 
+User Admin: added option to automatically assign newly accepted students to a house
+	New value in table gibbonSetting
+	Edited files /modules/User Admin/applicationFormSettings*.php, applicationForm_manage_accept.php
+	Edited file /modules/Application Form/applicationForm.php
+
 
 v10.0.00
 --------

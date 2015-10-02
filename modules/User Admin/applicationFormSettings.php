@@ -344,8 +344,8 @@ else {
 				</td>
 				<td class="right">
 					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
-						<option <?php if ($row["value"]=="On") {print "selected ";} ?>value="On"><?php print _('On') ?></option>
-						<option <?php if ($row["value"]=="Off") {print "selected ";} ?>value="Off"><?php print _('Off') ?></option>
+						<option <?php if ($row["value"]=="Y") {print "selected ";} ?>value="Y"><?php print ynExpander('Y') ?></option>
+						<option <?php if ($row["value"]=="N") {print "selected ";} ?>value="N"><?php print ynExpander('N') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -433,8 +433,8 @@ else {
 				</td>
 				<td class="right">
 					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
-						<option <?php if ($row["value"]=="On") {print "selected ";} ?>value="On"><?php print _('On') ?></option>
-						<option <?php if ($row["value"]=="Off") {print "selected ";} ?>value="Off"><?php print _('Off') ?></option>
+						<option <?php if ($row["value"]=="Y") {print "selected ";} ?>value="Y"><?php print ynExpander('Y') ?></option>
+						<option <?php if ($row["value"]=="N") {print "selected ";} ?>value="N"><?php print ynExpander('N') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -478,8 +478,8 @@ else {
 				</td>
 				<td class="right">
 					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
-						<option <?php if ($row["value"]=="On") {print "selected ";} ?>value="On"><?php print _('On') ?></option>
-						<option <?php if ($row["value"]=="Off") {print "selected ";} ?>value="Off"><?php print _('Off') ?></option>
+						<option <?php if ($row["value"]=="Y") {print "selected ";} ?>value="Y"><?php print ynExpander('Y') ?></option>
+						<option <?php if ($row["value"]=="N") {print "selected ";} ?>value="N"><?php print ynExpander('N') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -523,6 +523,30 @@ else {
 				</td>
 				<td class="right">
 					<input type='text' name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 300px" value='<?php print htmlPrep($row["value"]) ?>'>
+				</td>
+			</tr>
+			<tr>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='autoHouseAssign'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+				</td>
+				<td class="right">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<option <?php if ($row["value"]=="Y") {print "selected ";} ?>value="Y"><?php print ynExpander('Y') ?></option>
+						<option <?php if ($row["value"]=="N") {print "selected ";} ?>value="N"><?php print ynExpander('N') ?></option>
+					</select>
 				</td>
 			</tr>
 			

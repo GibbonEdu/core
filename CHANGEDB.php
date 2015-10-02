@@ -567,6 +567,8 @@ UPDATE gibbonSetting SET value=concat(value, ',div[*]') WHERE name='allowableHTM
 ALTER TABLE `gibbonAction` ADD UNIQUE KEY `moduleActionName` (`name`,`gibbonModuleID`);end
 UPDATE gibbonAction SET URLList='rubrics.php, rubrics_add.php, rubrics_edit.php, rubrics_delete.php, rubrics_edit_editRowsColumns.php, rubrics_duplicate.php' WHERE URLList='rubrics.php, rubrics_add.php, rubrics_edit.php, rubrics_delete.php, rubrics_edit_editRowsColumns.php';end
 ALTER TABLE `gibbonINArchive` ADD `descriptors` TEXT NOT NULL COMMENT 'Serialised array of descriptors.' AFTER `notes`;end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'Application Form', 'autoHouseAssign', 'Auto House Assign', 'Attempt to automatically place student in a house?', 'N');end
+
 ";
 
 ?>
