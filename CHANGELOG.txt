@@ -408,6 +408,15 @@ Individual Needs: added descriptors states to archive
 	Edited table gibbonINArchive
 	Edited files /modules/Individual Needs/in_archiveProcess.php, in_edit.php, moduleFunctions.php
 
+Attendance: fixed SQL error in roll group attendance taking view
+	Edited file /modules/Attendance/attendance_take_byRollGroup.php
+	
+Attendance: added links from roll group attendance taking view to individual student profiles
+	Edited file /modules/Attendance/attendance_take_byRollGroup.php
+
+Attendance: fixed PHP Notice issue in student report
+	Edited file /modules/Attendance/moduleFunctions.php
+
 
 v10.0.00
 --------

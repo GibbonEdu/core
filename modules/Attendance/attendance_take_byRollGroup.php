@@ -299,7 +299,7 @@ else {
 								
 									print getUserPhoto($guid, $rowRollGroup["image_240"], 75) ;
 								
-									print "<div style='padding-top: 5px'><b>" . formatName("", htmlPrep($rowRollGroup["preferredName"]), htmlPrep($rowRollGroup["surname"]), "Student", true) . "</b></div>" ;
+									print "<div style='padding-top: 5px'><b><a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $rowRollGroup["gibbonPersonID"] . "&subpage=School Attendance'>" . formatName("", htmlPrep($rowRollGroup["preferredName"]), htmlPrep($rowRollGroup["surname"]), "Student", true) . "</a></b></div>" ;
 									print "<div style='font-size: 90%; font-style: italic; font-weight: normal'>" ;
 										if ($firstDay!=NULL AND $lastDay!=NULL) {
 											$absenceCount=getAbsenceCount($guid, $rowRollGroup["gibbonPersonID"], $connection2, $firstDay, $lastDay) ;

@@ -151,6 +151,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 				print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 			}
 			
+			$rowSpecial=NULL ;
 			if ($resultSpecial->rowCount()>0) {
 				$rowSpecial=$resultSpecial->fetch() ;
 			}
@@ -285,9 +286,12 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 					}
 					//Student attending school
 					else {
-						if ($rowSpecial==TRUE) {
-							list($specialDayYear, $specialDayMonth, $specialDayDay)=explode('-', $rowSpecial["date"]);
-							$specialDayStamp=mktime(0, 0, 0, $specialDayMonth, $specialDayDay, $specialDayYear);
+						$specialDayStamp=NULL ;
+						if ($rowSpecial!=NULL) {
+							if ($rowSpecial==TRUE) {
+								list($specialDayYear, $specialDayMonth, $specialDayDay)=explode('-', $rowSpecial["date"]);
+								$specialDayStamp=mktime(0, 0, 0, $specialDayMonth, $specialDayDay, $specialDayYear);
+							}
 						}
 				
 						if ($i<$firstDayStamp OR $i>$lastDayStamp) {
