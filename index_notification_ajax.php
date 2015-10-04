@@ -35,7 +35,7 @@ catch(PDOException $e) {
 
 $output="" ;
 
-if (isset($_SESSION[$guid])==FALSE) {
+if (isset($_SESSION[$guid])==FALSE OR isset($_SESSION[$guid]["gibbonPersonID"])==FALSE) {
 	$output.=" . 0 x " . "<img style='margin-left: 2px; opacity: 0.8; vertical-align: -75%' src='./themes/Default/img/notifications_off.png'>" ;
 }
 else {
