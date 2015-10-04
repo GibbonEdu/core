@@ -83,7 +83,7 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td style='width: 275px'> 
-					<b><?php print _('Student') ?> *</b><br/>
+					<b><?php print _('Students') ?> *</b><br/>
 					<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?> </span>
 				</td>
 				<td class="right">
