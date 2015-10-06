@@ -1722,6 +1722,9 @@ else {
 				$bodyPlain=strip_tags($bodyPlain, '<a>');
 
 				$mail=new PHPMailer;
+				if ($emailReplyTo!="") {
+					$mail->AddReplyTo($emailReplyTo, '');
+				}
 				if ($from!=$_SESSION[$guid]["email"]) {	//If sender is using school-wide address, send from school
 					$mail->SetFrom($from, $_SESSION[$guid]["organisationName"]);
 				}
@@ -1737,9 +1740,6 @@ else {
 				$mail->Subject=$subject ;
 				$mail->Body=$body ;
 				$mail->AltBody=$bodyPlain ;
-				if ($emailReplyTo!="") {
-					$mail->AddReplyTo($emailReplyTo, '');
-				}
 				
 				if(!$mail->Send()) {
 				 	$partialFail=TRUE ;

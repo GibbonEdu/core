@@ -265,6 +265,9 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 												$bodyPlain=strip_tags($bodyPlain, '<a>');
 
 												$mail=new PHPMailer;
+												if ($replyTo!="") {
+													$mail->AddReplyTo($replyTo, $replyToName);
+												}
 												$mail->AddAddress($rowMember["email"], $rowMember["surname"] . ", " . $rowMember["preferredName"]);
 												$mail->SetFrom($_SESSION[$guid]["organisationEmail"], $_SESSION[$guid]["organisationName"]);
 												$mail->CharSet="UTF-8"; 
@@ -273,9 +276,6 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 												$mail->Subject=sprintf(_('Weekly Planner Summary for %1$s via %2$s at %3$s'), $row["surname"] . ", " . $row["preferredName"] . " (" . $row["name"] . ")", $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationName"]) ;
 												$mail->Body=$body ;
 												$mail->AltBody=$bodyPlain ;
-												if ($replyTo!="") {
-													$mail->AddReplyTo($replyTo, $replyToName);
-												}
 		
 												//Send email
 												if($mail->Send()) {

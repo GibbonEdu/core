@@ -422,6 +422,9 @@ User Admin: added option to automatically assign newly accepted students to a ho
 	Edited files /modules/User Admin/applicationFormSettings*.php, applicationForm_manage_accept.php
 	Edited file /modules/Application Form/applicationForm.php
 
+Messenger: fixed reply-to bug causing multiple reply addresses
+	Edited file /modules/Messenger/messenger_postProcess.php
+	Edited file /cli/planner_parentWeeklyEmailSummary.php
 
 v10.0.00
 --------
