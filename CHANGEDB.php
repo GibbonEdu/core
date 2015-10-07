@@ -563,12 +563,18 @@ ALTER TABLE `gibbonFamilyUpdate` CHANGE `languageHome` `languageHomePrimary` VAR
 ALTER TABLE `gibbonFamilyUpdate` ADD `languageHomeSecondary` VARCHAR(30) NOT NULL AFTER `languageHomePrimary`;end
 UPDATE gibbonPerson SET receiveNoticiationEmails='Y';end
 ALTER TABLE `gibbonPerson` CHANGE `receiveNoticiationEmails` `receiveNoticiationEmails` ENUM('Y','N') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Y';end
-UPDATE gibbonSetting SET value=concat(value, ',div[*]') WHERE name='allowableHTML' AND value NOT LIKE '%div[*]%';end 
+UPDATE gibbonSetting SET value=concat(value, ',div[*]') WHERE name='allowableHTML' AND value NOT LIKE '%div[*]%';end
 ALTER TABLE `gibbonAction` ADD UNIQUE KEY `moduleActionName` (`name`,`gibbonModuleID`);end
 UPDATE gibbonAction SET URLList='rubrics.php, rubrics_add.php, rubrics_edit.php, rubrics_delete.php, rubrics_edit_editRowsColumns.php, rubrics_duplicate.php' WHERE URLList='rubrics.php, rubrics_add.php, rubrics_edit.php, rubrics_delete.php, rubrics_edit_editRowsColumns.php';end
 ALTER TABLE `gibbonINArchive` ADD `descriptors` TEXT NOT NULL COMMENT 'Serialised array of descriptors.' AFTER `notes`;end
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'Application Form', 'autoHouseAssign', 'Auto House Assign', 'Attempt to automatically place student in a house?', 'N');end
-
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='School Admin'), 'Tracking Settings', 0, 'Assessment', 'Allows a user to manage settings for the Tracking module.', 'trackingSettings.php', 'trackingSettings.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N') ;end
+INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='School Admin' AND gibbonAction.name='Tracking Settings'));end
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Tracking'), 'Data Points', 0, 'Analyse', 'Allows a user to export certain key assessment data points to a spreadsheet.', 'dataPoints.php', 'dataPoints.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N') ;end
+INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Tracking' AND gibbonAction.name='Data Points'));end
+UPDATE gibbonAction SET category='Visualise' WHERE name='Graphing_all' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Tracking');end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'Tracking', 'externalAssessmentDataPoints', 'External Assessment Data Points', 'Stores the external assessment choices for data points output in tracking.', '');end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'Tracking', 'internalAssessmentDataPoints', 'Internal Assessment Data Points', 'Stores the internal assessment choices for data points output in tracking.', '');end
 ";
 
 ?>
