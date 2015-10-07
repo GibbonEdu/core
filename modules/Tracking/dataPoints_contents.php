@@ -21,7 +21,7 @@ Certain code below was taken from the PHPExcel examples, which are licensed unde
 
 @session_start() ;
 
-//Increase max execution time, as this stuff get's big
+//Increase max execution time, as this stuff gets big
 ini_set('max_execution_time', 600);
 
 //System includes
@@ -61,6 +61,9 @@ else {
 	$style_head_fill2=array('fill' => array('type' => PHPExcel_Style_Fill::FILL_SOLID, 'color' => array('rgb' => 'C5D9F1'))) ;
 	$style_head_fill3=array('fill' => array('type' => PHPExcel_Style_Fill::FILL_SOLID, 'color' => array('rgb' => '8DB4E2'))) ;
 	$style_head_fill4=array('fill' => array('type' => PHPExcel_Style_Fill::FILL_SOLID, 'color' => array('rgb' => '538CD6'))) ;
+	$style_head_fill5=array('fill' => array('type' => PHPExcel_Style_Fill::FILL_SOLID, 'color' => array('rgb' => 'EBF1DF'))) ;
+	$style_head_fill6=array('fill' => array('type' => PHPExcel_Style_Fill::FILL_SOLID, 'color' => array('rgb' => 'D8E3BE'))) ;
+	$style_head_fill7=array('fill' => array('type' => PHPExcel_Style_Fill::FILL_SOLID, 'color' => array('rgb' => 'C4D69E'))) ;
 
 	// Set document properties
 	$excel->getProperties()->setCreator(formatName("",$_SESSION[$guid]["preferredName"], $_SESSION[$guid]["surname"], "Staff"))
@@ -94,15 +97,32 @@ else {
 			catch(PDOException $e) { }
 			while ($row=$result->fetch()) {
 				$internalIndex=$row["gibbonYearGroupID"] . "-" . $row["course"] . "-" . $row["type"] . "-" . $row["gibbonPersonIDStudent"] ;
-
 				if (isset($internalResults[$internalIndex])==FALSE) {
 					$internalResults[$internalIndex]=$row["attainmentValue"] ;
 				}
 				$internalResultsCount++ ;
 			}
 
+			//GET ALL EXTERNAL ASSESSMENT RESULTS FOR ALL STUDENTS, AND CACHE THEM FOR USE LATER
+			$externalResults=array() ;
+			$externalResultsCount=0 ;
+			try {
+				$data=array();
+				$sql="SELECT gibbonExternalAssessment.nameShort AS assessment, gibbonExternalAssessmentField.name AS field, gibbonExternalAssessmentField.category, gibbonPerson.gibbonPersonID, gibbonScaleGrade.value, date FROM gibbonExternalAssessmentStudent JOIN gibbonPerson ON (gibbonExternalAssessmentStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonExternalAssessment ON (gibbonExternalAssessmentStudent.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) JOIN gibbonExternalAssessmentStudentEntry ON (gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentStudentID=gibbonExternalAssessmentStudent.gibbonExternalAssessmentStudentID) JOIN gibbonExternalAssessmentField ON (gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentFieldID=gibbonExternalAssessmentField.gibbonExternalAssessmentFieldID) JOIN gibbonScaleGrade ON (gibbonExternalAssessmentStudentEntry.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID WHERE date<=CURDATE() ORDER BY gibbonExternalAssessment.nameShort, category, gibbonPersonID, date DESC" ;
+				$result=$connection2->prepare($sql);
+				$result->execute($data);
+			}
+			catch(PDOException $e) { }
+			while ($row=$result->fetch()) {
+				$externalIndex=$row["assessment"] . "-" . $row["category"] . "-" . $row["field"] . "-" . $row["gibbonPersonID"] ;
+				if (isset($externalResults[$externalIndex])==FALSE) {
+					$externalResults[$externalIndex]=$row["value"] ;
+				}
+				$externalResultsCount++ ;
+			}
+
 			for ($i=0; $i<count($yearGroups); $i=$i+2) {
-				//SET UP SHEET WITH HEADERS ETC
+				//SET UP SHEET WITH HEADERS, STUDENT INFORMATION ETC
 				$activeRow=4 ;
 				if ($i>0) {
 					$excel->createSheet(); //Create sheet
@@ -123,8 +143,46 @@ else {
 				}
 
 				$columns=array() ;
+				$activeColumn=6 ;
+				//GET EXTERNAL ASSESSMENTS/CATEGORIES AND CREATE HEADERS
+				try {
+					$data=array("gibbonYearGroupID"=>$yearGroups[$i]);
+					$sql="SELECT gibbonExternalAssessment.gibbonExternalAssessmentID, gibbonExternalAssessment.name AS assessment, gibbonExternalAssessmentField.category, gibbonExternalAssessmentField.name AS field
+						FROM gibbonExternalAssessment
+						JOIN gibbonExternalAssessmentField ON (gibbonExternalAssessmentField.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID)
+						ORDER BY gibbonExternalAssessment.name, gibbonExternalAssessmentField.category, gibbonExternalAssessmentField.name" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { }
+				while ($row=$result->fetch()) {
+					//Output data
+					$excel->getActiveSheet()->setCellValue(num2alpha($activeColumn) . '1', $row["assessment"]);
+					$excel->getActiveSheet()->setCellValue(num2alpha($activeColumn) . '2', substr($row["category"], (strpos($row["category"], "_")+1)));
+					$excel->getActiveSheet()->setCellValue(num2alpha($activeColumn) . '3', $row["field"]);
+					$excel->getActiveSheet()->getStyle(num2alpha($activeColumn) . "1")->applyFromArray($style_border);
+					$excel->getActiveSheet()->getStyle(num2alpha($activeColumn) . "1")->applyFromArray($style_head_fill7) ;
+					$excel->getActiveSheet()->getStyle(num2alpha($activeColumn) . "1")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+					$excel->getActiveSheet()->getStyle(num2alpha($activeColumn) . "2")->applyFromArray($style_border);
+					$excel->getActiveSheet()->getStyle(num2alpha($activeColumn) . "2")->applyFromArray($style_head_fill6) ;
+					$excel->getActiveSheet()->getStyle(num2alpha($activeColumn) . "2")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+					$excel->getActiveSheet()->getStyle(num2alpha($activeColumn) . "3")->applyFromArray($style_border);
+					$excel->getActiveSheet()->getStyle(num2alpha($activeColumn) . "3")->applyFromArray($style_head_fill5) ;
+					$excel->getActiveSheet()->getStyle(num2alpha($activeColumn) . "3")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+					$excel->getActiveSheet()->getColumnDimension(num2alpha($activeColumn))->setAutoSize(true);
+
+					//Cache column for later user
+					$columns[($activeColumn-6)]["columnType"]='External' ;
+					$columns[($activeColumn-6)]["count"]=($activeColumn-6) ;
+					$columns[($activeColumn-6)]["gibbonExternalAssessmentID"]=$row["gibbonExternalAssessmentID"] ;
+					$columns[($activeColumn-6)]["assessment"]=$row["assessment"] ;
+					$columns[($activeColumn-6)]["category"]=$row["category"] ;
+					$columns[($activeColumn-6)]["field"]=$row["field"] ;
+
+					$activeColumn++ ;
+				}
+
 				//GET INTERNAL ASSESSMENTS AND CREATE HEADERS
-				//Get courses for all year groups that this student has been in
 				try {
 					$data=array("gibbonYearGroupID"=>$yearGroups[$i]);
 					$sql="SELECT DISTINCT gibbonYearGroup.gibbonYearGroupID, gibbonYearGroup.name AS yearGroup, sequenceNumber, gibbonCourse.nameShort AS course FROM gibbonYearGroup JOIN gibbonCourse ON (gibbonCourse.gibbonYearGroupIDList LIKE concat('%', gibbonYearGroup.gibbonYearGroupID, '%')) WHERE sequenceNumber<=(SELECT sequenceNumber FROM gibbonYearGroup AS year WHERE year.gibbonYearGroupID=:gibbonYearGroupID) ORDER BY sequenceNumber, gibbonCourse.nameShort" ;
@@ -132,7 +190,6 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { }
-				$activeColumn=6 ;
 				while ($row=$result->fetch()) {
 					foreach ($internalAssessmentTypes AS $type) {
 						$include=FALSE ;
@@ -155,6 +212,7 @@ else {
 									$excel->getActiveSheet()->getColumnDimension(num2alpha($activeColumn))->setAutoSize(true);
 
 									//Cache column for later user
+									$columns[($activeColumn-6)]["columnType"]='Internal' ;
 									$columns[($activeColumn-6)]["count"]=($activeColumn-6) ;
 									$columns[($activeColumn-6)]["gibbonYearGroupID"]=$row["gibbonYearGroupID"] ;
 									$columns[($activeColumn-6)]["yearGroup"]=$row["yearGroup"] ;
@@ -204,9 +262,17 @@ else {
 						//Create cells for each of the columns cached earlier
 						foreach ($columns AS $column) {
 							$excel->getActiveSheet()->getStyle(num2alpha($column["count"]+6) . $activeRow)->applyFromArray($style_border);
-							$internalIndex=$column["gibbonYearGroupID"] . "-" . $column["course"] . "-" . $column["type"] . "-" . $row["gibbonPersonID"] ;
-							if (isset($internalResults[$internalIndex])) {
-								$excel->getActiveSheet()->setCellValue(num2alpha($column["count"]+6) . $activeRow, $internalResults[$internalIndex]) ;
+							if ($column["columnType"]=="External") { //Output external assessment data
+								$externalIndex=$column["assessment"] . "-" . $column["category"] . "-" . $column["field"] . "-" . $row["gibbonPersonID"] ;
+								if (isset($externalResults[$externalIndex])) {
+									$excel->getActiveSheet()->setCellValue(num2alpha($column["count"]+6) . $activeRow, $externalResults[$externalIndex]) ;
+								}
+							}
+							else { //Output internal assessment data
+								$internalIndex=$column["gibbonYearGroupID"] . "-" . $column["course"] . "-" . $column["type"] . "-" . $row["gibbonPersonID"] ;
+								if (isset($internalResults[$internalIndex])) {
+									$excel->getActiveSheet()->setCellValue(num2alpha($column["count"]+6) . $activeRow, $internalResults[$internalIndex]) ;
+								}
 							}
 						}
 						$activeRow++ ;

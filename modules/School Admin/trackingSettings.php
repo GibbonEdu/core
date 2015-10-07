@@ -59,74 +59,8 @@ else {
 
 	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/trackingSettingsProcess.php" ?>">
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">
-			<tr class='break'>
-				<td colspan=2>
-					<h3><?php print _('Data Points') . " - " . _('External Assessment') ?></h3>
-					<?php print _('Use the options below to select the external assessments that you wish to include in your Data Points export. If "Show Duplicates" is not checked, only the most recent set of results will be shown, should duplicate sets exist.') ?>
-				</td>
-			</tr>
 			<?php
-			try {
-				$data=array();
-				$sql="SELECT DISTINCT gibbonExternalAssessment.gibbonExternalAssessmentID, gibbonExternalAssessment.nameShort, gibbonExternalAssessmentField.category FROM gibbonExternalAssessment JOIN gibbonExternalAssessmentField ON (gibbonExternalAssessmentField.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) WHERE active='Y' ORDER BY nameShort, category" ;
-				$result=$connection2->prepare($sql);
-				$result->execute($data);
-			}
-			catch(PDOException $e) {
-				print "<div class='error'>" . $e->getMessage() . "</div>" ;
-			}
-			$count=0 ;
-			if ($result->rowCount()<1) {
-				print "<tr class='break'>" ;
-					print "<td colspan=2>" ;
-						print "<div class='error'>" ;
-							print _("There are no records to display.") ;
-						print "</div>" ;
-					print "</td>" ;
-				print "</tr>" ;
-			}
-			else {
-				$externalAssessmentDataPoints=unserialize(getSettingByScope($connection2, "Tracking", "externalAssessmentDataPoints")) ;
-				while ($row=$result->fetch()) {
-					?>
-					<tr>
-						<td>
-							<b><?php print _($row["nameShort"]) . " - " . _(substr($row["category"], (strpos($row["category"], "_")+1))) ?></b><br/>
-						</td>
-						<td class="right">
-							<?php
-								$checked="" ;
-								$duplicate="" ;
-								foreach ($externalAssessmentDataPoints AS $setting) {
-									if ($setting["gibbonExternalAssessmentID"]==$row["gibbonExternalAssessmentID"] AND $setting["category"]==$row["category"]) {
-										$checked="checked" ;
-										if ($setting["duplicate"]==1) {
-											$duplicate="checked" ;
-										}
-									}
-								}
-								print _("Include?") . " <input $checked type='checkbox' name='external_include_" . $count . "' value='1'/> " . _("Show Duplicates?") . " <input $duplicate type='checkbox' name='external_duplicate_" . $count . "' value='1'/><br/>" ;
-								print "<input type='hidden' name='external_gibbonExternalAssessmentID_" . $count . "' value='" . $row["gibbonExternalAssessmentID"] . "'/>" ;
-								print "<input type='hidden' name='external_category_" . $count . "' value='" . $row["category"] . "'/>" ;
-							?>
-						</td>
-					</tr>
-					<?php
-					$count++ ;
-				}
-			}
-			print "<input type='hidden' name='external_category_count' value='" . $count . "'/>" ;
-			?>
-
-			<tr class='break'>
-				<td colspan=2>
-					<h3><?php print _('Data Points') . " - " . _('Interal Assessment') ?></h3>
-					<?php print _('Use the options below to select the internal assessments that you wish to include in your Data Points export. If duplicates of any assessment exist, only the most recent will be shown.') ?>
-				</td>
-			</tr>
-			<?
 			$yearGroups=getYearGroups($connection2) ;
-			$count=0 ;
 			if ($yearGroups=="") {
 				print "<tr class='break'>" ;
 					print "<td colspan=2>" ;
@@ -137,6 +71,77 @@ else {
 				print "</tr>" ;
 			}
 			else {
+				?>
+				<tr class='break'>
+					<td colspan=2>
+						<h3><?php print _('Data Points') . " - " . _('External Assessment') ?></h3>
+						<?php print _('Use the options below to select the external assessments that you wish to include in your Data Points export.') . " " . _(' If duplicates of any assessment exist, only the most recent entry will be shown.') ; ?>
+					</td>
+				</tr>
+				<?php
+				try {
+					$data=array();
+					$sql="SELECT DISTINCT gibbonExternalAssessment.gibbonExternalAssessmentID, gibbonExternalAssessment.nameShort, gibbonExternalAssessmentField.category FROM gibbonExternalAssessment JOIN gibbonExternalAssessmentField ON (gibbonExternalAssessmentField.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) WHERE active='Y' ORDER BY nameShort, category" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) {
+					print "<div class='error'>" . $e->getMessage() . "</div>" ;
+				}
+				$count=0 ;
+				if ($result->rowCount()<1) {
+					print "<tr class='break'>" ;
+						print "<td colspan=2>" ;
+							print "<div class='error'>" ;
+								print _("There are no records to display.") ;
+							print "</div>" ;
+						print "</td>" ;
+					print "</tr>" ;
+				}
+				else {
+					$externalAssessmentDataPoints=unserialize(getSettingByScope($connection2, "Tracking", "externalAssessmentDataPoints")) ;
+					while ($row=$result->fetch()) {
+						?>
+						<tr>
+							<td>
+								<b><?php print _($row["nameShort"]) . " - " . _(substr($row["category"], (strpos($row["category"], "_")+1))) ?></b><br/>
+							</td>
+							<td class="right">
+								<?php
+									for ($i=0; $i<count($yearGroups); $i=$i+2) {
+										$checked="" ;
+										foreach ($externalAssessmentDataPoints AS $externalAssessmentDataPoint) {
+											if ($externalAssessmentDataPoint["gibbonExternalAssessmentID"]==$row["gibbonExternalAssessmentID"] AND $externalAssessmentDataPoint["category"]==$row["category"]) {
+												if (isset($externalAssessmentDataPoint["gibbonYearGroupIDList"])) {
+													if (!(strpos($externalAssessmentDataPoint["gibbonYearGroupIDList"],$yearGroups[$i])===FALSE)) {
+														$checked="checked" ;
+													}
+												}
+											}
+										}
+										print _($yearGroups[($i+1)]) . " <input $checked type='checkbox' name='external_gibbonExternalAssessmentID_" . $count . "_gibbonYearGroupID_" . ($i)/2 . "' value='" . $yearGroups[$i] . "'><br/>" ;
+									}
+									print "<input type='hidden' name='external_gibbonExternalAssessmentID_" . $count . "' value='" . $row["gibbonExternalAssessmentID"] . "'/>" ;
+									print "<input type='hidden' name='external_category_" . $count . "' value='" . $row["category"] . "'/>" ;
+								?>
+							</td>
+						</tr>
+						<?php
+						$count++ ;
+					}
+				}
+				print "<input type='hidden' name='external_gibbonExternalAssessmentID_count' value='" . $count . "'/>" ;
+				print "<input type='hidden' name='external_year_count' value='" . count($yearGroups)/2 . "'/>" ;
+				?>
+
+				<tr class='break'>
+					<td colspan=2>
+						<h3><?php print _('Data Points') . " - " . _('Interal Assessment') ?></h3>
+						<?php print _('Use the options below to select the internal assessments that you wish to include in your Data Points export.') . " " . _(' If duplicates of any assessment exist, only the most recent entry will be shown.') ?>
+					</td>
+				</tr>
+				<?
+				$count=0 ;
 				?>
 				<tr>
 					<?php

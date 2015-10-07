@@ -47,23 +47,24 @@ else {
 
    //DEAL WITH EXTERNAL ASSESSMENT DATA POINTS
    $externalAssessmentDataPoints=array() ;
-   $assessmentCount=$_POST["external_category_count"] ;
+   $assessmentCount=$_POST["external_gibbonExternalAssessmentID_count"] ;
+   $yearCount=$_POST["external_year_count"] ;
    $count=0 ;
    for ($i=0; $i<$assessmentCount; $i++) {
-      if (isset($_POST["external_include_" . $i])) {
-         if ($_POST["external_include_" . $i]==1) {
-            $externalAssessmentDataPoints[$count]["gibbonExternalAssessmentID"]=$_POST["external_gibbonExternalAssessmentID_" . $i] ;
-            $externalAssessmentDataPoints[$count]["category"]=$_POST["external_category_" . $i] ;
-            $externalAssessmentDataPoints[$count]["duplicate"]=0 ;
-            if (isset($_POST["external_duplicate_" . $i])) {
-               if ($_POST["external_duplicate_" . $i]==1) {
-                  $externalAssessmentDataPoints[$count]["duplicate"]=1 ;
-               }
-            }
+      $externalAssessmentDataPoints[$count]["gibbonExternalAssessmentID"]=$_POST["external_gibbonExternalAssessmentID_" . $i] ;
+      $externalAssessmentDataPoints[$count]["category"]=$_POST["external_category_" . $i] ;
+      $externalAssessmentDataPoints[$count]["gibbonYearGroupIDList"]="" ;
+      for ($j=0; $j<$yearCount; $j++) {
+         if (isset($_POST["external_gibbonExternalAssessmentID_" . $i . "_gibbonYearGroupID_" . $j])) {
+            $externalAssessmentDataPoints[$count]["gibbonYearGroupIDList"].=$_POST["external_gibbonExternalAssessmentID_" . $i . "_gibbonYearGroupID_" . $j] . "," ;
          }
+      }
+      if ($externalAssessmentDataPoints[$count]["gibbonYearGroupIDList"]!="") {
+         $externalAssessmentDataPoints[$count]["gibbonYearGroupIDList"]=substr($externalAssessmentDataPoints[$count]["gibbonYearGroupIDList"],0,-1) ;
       }
       $count++ ;
    }
+
    //Write setting to database
    try {
 		$data=array("value"=>serialize($externalAssessmentDataPoints));
