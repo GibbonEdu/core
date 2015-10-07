@@ -121,7 +121,7 @@ else {
 			<tr class='break'>
 				<td colspan=2>
 					<h3><?php print _('Data Points') . " - " . _('Interal Assessment') ?></h3>
-					<?php print _('Use the options below to select the internal assessments that you wish to include in your Data Points export.') ?>
+					<?php print _('Use the options below to select the internal assessments that you wish to include in your Data Points export. If duplicates of any assessment exist, only the most recent will be shown.') ?>
 				</td>
 			</tr>
 			<?

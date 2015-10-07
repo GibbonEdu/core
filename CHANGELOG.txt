@@ -437,6 +437,10 @@ General: fixed deprecation notice in Google Calendar integration
 General: updated Google library to latest Version
 	Edited files in /lib/google
 
+General: added new library for export to Excel, not loaded by default (old functions have been deprecated)
+	New folder /lib/PHPExcel
+	Edited /functions.php
+
 v10.0.00
 --------
 i18n: added Urdu as inactive development language
