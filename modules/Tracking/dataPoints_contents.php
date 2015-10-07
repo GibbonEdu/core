@@ -87,7 +87,6 @@ else {
 		else {
 			//GET ALL INTERNAL ASSESSMENT RESULTS FOR ALL STUDENTS, AND CACHE THEM FOR USE LATER
 			$internalResults=array() ;
-			$internalResultsCount=0 ;
 			try {
 				$data=array();
 				$sql="SELECT gibbonStudentEnrolment.gibbonYearGroupID, gibbonCourse.nameShort AS course, gibbonInternalAssessmentColumn.type, gibbonPersonIDStudent, attainmentValue, completeDate FROM gibbonInternalAssessmentEntry JOIN gibbonPerson ON (gibbonInternalAssessmentEntry.gibbonPersonIDStudent=gibbonPerson.gibbonPersonID) JOIN gibbonInternalAssessmentColumn ON (gibbonInternalAssessmentEntry.gibbonInternalAssessmentColumnID=gibbonInternalAssessmentColumn.gibbonInternalAssessmentColumnID) JOIN gibbonCourseClass ON (gibbonInternalAssessmentColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=gibbonCourse.gibbonSchoolYearID) WHERE NOT completeDate IS NULL AND completeDate<=CURDATE() ORDER BY gibbonCourse.nameShort, gibbonPersonIDStudent, completeDate DESC" ;
@@ -100,26 +99,24 @@ else {
 				if (isset($internalResults[$internalIndex])==FALSE) {
 					$internalResults[$internalIndex]=$row["attainmentValue"] ;
 				}
-				$internalResultsCount++ ;
 			}
 
 			//GET ALL EXTERNAL ASSESSMENT RESULTS FOR ALL STUDENTS, AND CACHE THEM FOR USE LATER
 			$externalResults=array() ;
-			$externalResultsCount=0 ;
 			try {
 				$data=array();
-				$sql="SELECT gibbonExternalAssessment.nameShort AS assessment, gibbonExternalAssessmentField.name AS field, gibbonExternalAssessmentField.category, gibbonPerson.gibbonPersonID, gibbonScaleGrade.value, date FROM gibbonExternalAssessmentStudent JOIN gibbonPerson ON (gibbonExternalAssessmentStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonExternalAssessment ON (gibbonExternalAssessmentStudent.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) JOIN gibbonExternalAssessmentStudentEntry ON (gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentStudentID=gibbonExternalAssessmentStudent.gibbonExternalAssessmentStudentID) JOIN gibbonExternalAssessmentField ON (gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentFieldID=gibbonExternalAssessmentField.gibbonExternalAssessmentFieldID) JOIN gibbonScaleGrade ON (gibbonExternalAssessmentStudentEntry.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID WHERE date<=CURDATE() ORDER BY gibbonExternalAssessment.nameShort, category, gibbonPersonID, date DESC" ;
+				$sql="SELECT gibbonExternalAssessment.nameShort AS assessment, gibbonExternalAssessmentField.name AS field, gibbonExternalAssessmentField.category, gibbonPerson.gibbonPersonID, gibbonScaleGrade.value, date FROM gibbonExternalAssessmentStudent JOIN gibbonPerson ON (gibbonExternalAssessmentStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonExternalAssessment ON (gibbonExternalAssessmentStudent.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) JOIN gibbonExternalAssessmentStudentEntry ON (gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentStudentID=gibbonExternalAssessmentStudent.gibbonExternalAssessmentStudentID) JOIN gibbonExternalAssessmentField ON (gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentFieldID=gibbonExternalAssessmentField.gibbonExternalAssessmentFieldID) JOIN gibbonScaleGrade ON (gibbonExternalAssessmentStudentEntry.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID) ORDER BY gibbonExternalAssessment.nameShort, category, gibbonPersonID, date DESC" ;
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
 			}
-			catch(PDOException $e) { }
+			catch(PDOException $e) { print $e->getMessage() ; }
 			while ($row=$result->fetch()) {
 				$externalIndex=$row["assessment"] . "-" . $row["category"] . "-" . $row["field"] . "-" . $row["gibbonPersonID"] ;
 				if (isset($externalResults[$externalIndex])==FALSE) {
 					$externalResults[$externalIndex]=$row["value"] ;
 				}
-				$externalResultsCount++ ;
 			}
+
 
 			for ($i=0; $i<count($yearGroups); $i=$i+2) {
 				//SET UP SHEET WITH HEADERS, STUDENT INFORMATION ETC
@@ -147,7 +144,7 @@ else {
 				//GET EXTERNAL ASSESSMENTS/CATEGORIES AND CREATE HEADERS
 				try {
 					$data=array("gibbonYearGroupID"=>$yearGroups[$i]);
-					$sql="SELECT gibbonExternalAssessment.gibbonExternalAssessmentID, gibbonExternalAssessment.name AS assessment, gibbonExternalAssessmentField.category, gibbonExternalAssessmentField.name AS field
+					$sql="SELECT gibbonExternalAssessment.gibbonExternalAssessmentID, gibbonExternalAssessment.nameShort AS assessment, gibbonExternalAssessmentField.category, gibbonExternalAssessmentField.name AS field
 						FROM gibbonExternalAssessment
 						JOIN gibbonExternalAssessmentField ON (gibbonExternalAssessmentField.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID)
 						ORDER BY gibbonExternalAssessment.name, gibbonExternalAssessmentField.category, gibbonExternalAssessmentField.name" ;
@@ -156,30 +153,36 @@ else {
 				}
 				catch(PDOException $e) { }
 				while ($row=$result->fetch()) {
-					//Output data
-					$excel->getActiveSheet()->setCellValue(num2alpha($activeColumn) . '1', $row["assessment"]);
-					$excel->getActiveSheet()->setCellValue(num2alpha($activeColumn) . '2', substr($row["category"], (strpos($row["category"], "_")+1)));
-					$excel->getActiveSheet()->setCellValue(num2alpha($activeColumn) . '3', $row["field"]);
-					$excel->getActiveSheet()->getStyle(num2alpha($activeColumn) . "1")->applyFromArray($style_border);
-					$excel->getActiveSheet()->getStyle(num2alpha($activeColumn) . "1")->applyFromArray($style_head_fill7) ;
-					$excel->getActiveSheet()->getStyle(num2alpha($activeColumn) . "1")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-					$excel->getActiveSheet()->getStyle(num2alpha($activeColumn) . "2")->applyFromArray($style_border);
-					$excel->getActiveSheet()->getStyle(num2alpha($activeColumn) . "2")->applyFromArray($style_head_fill6) ;
-					$excel->getActiveSheet()->getStyle(num2alpha($activeColumn) . "2")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-					$excel->getActiveSheet()->getStyle(num2alpha($activeColumn) . "3")->applyFromArray($style_border);
-					$excel->getActiveSheet()->getStyle(num2alpha($activeColumn) . "3")->applyFromArray($style_head_fill5) ;
-					$excel->getActiveSheet()->getStyle(num2alpha($activeColumn) . "3")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-					$excel->getActiveSheet()->getColumnDimension(num2alpha($activeColumn))->setAutoSize(true);
+					foreach ($externalAssessmentDataPoints AS $point) {
+						if ($point["gibbonExternalAssessmentID"]==$row["gibbonExternalAssessmentID"] AND $point["category"]==$row["category"]) {
+							if (!(strpos($point["gibbonYearGroupIDList"],$yearGroups[$i])===FALSE)) {
+								//Output data
+								$excel->getActiveSheet()->setCellValue(num2alpha($activeColumn) . '1', $row["assessment"]);
+								$excel->getActiveSheet()->setCellValue(num2alpha($activeColumn) . '2', substr($row["category"], (strpos($row["category"], "_")+1)));
+								$excel->getActiveSheet()->setCellValue(num2alpha($activeColumn) . '3', $row["field"]);
+								$excel->getActiveSheet()->getStyle(num2alpha($activeColumn) . "1")->applyFromArray($style_border);
+								$excel->getActiveSheet()->getStyle(num2alpha($activeColumn) . "1")->applyFromArray($style_head_fill7) ;
+								$excel->getActiveSheet()->getStyle(num2alpha($activeColumn) . "1")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+								$excel->getActiveSheet()->getStyle(num2alpha($activeColumn) . "2")->applyFromArray($style_border);
+								$excel->getActiveSheet()->getStyle(num2alpha($activeColumn) . "2")->applyFromArray($style_head_fill6) ;
+								$excel->getActiveSheet()->getStyle(num2alpha($activeColumn) . "2")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+								$excel->getActiveSheet()->getStyle(num2alpha($activeColumn) . "3")->applyFromArray($style_border);
+								$excel->getActiveSheet()->getStyle(num2alpha($activeColumn) . "3")->applyFromArray($style_head_fill5) ;
+								$excel->getActiveSheet()->getStyle(num2alpha($activeColumn) . "3")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+								$excel->getActiveSheet()->getColumnDimension(num2alpha($activeColumn))->setAutoSize(true);
 
-					//Cache column for later user
-					$columns[($activeColumn-6)]["columnType"]='External' ;
-					$columns[($activeColumn-6)]["count"]=($activeColumn-6) ;
-					$columns[($activeColumn-6)]["gibbonExternalAssessmentID"]=$row["gibbonExternalAssessmentID"] ;
-					$columns[($activeColumn-6)]["assessment"]=$row["assessment"] ;
-					$columns[($activeColumn-6)]["category"]=$row["category"] ;
-					$columns[($activeColumn-6)]["field"]=$row["field"] ;
+								//Cache column for later user
+								$columns[($activeColumn-6)]["columnType"]='External' ;
+								$columns[($activeColumn-6)]["count"]=($activeColumn-6) ;
+								$columns[($activeColumn-6)]["gibbonExternalAssessmentID"]=$row["gibbonExternalAssessmentID"] ;
+								$columns[($activeColumn-6)]["assessment"]=$row["assessment"] ;
+								$columns[($activeColumn-6)]["category"]=$row["category"] ;
+								$columns[($activeColumn-6)]["field"]=$row["field"] ;
 
-					$activeColumn++ ;
+								$activeColumn++ ;
+							}
+						}
+					}
 				}
 
 				//GET INTERNAL ASSESSMENTS AND CREATE HEADERS
@@ -192,7 +195,6 @@ else {
 				catch(PDOException $e) { }
 				while ($row=$result->fetch()) {
 					foreach ($internalAssessmentTypes AS $type) {
-						$include=FALSE ;
 						foreach ($internalAssessmentDataPoints AS $point) {
 							if ($point["type"]==$type) {
 								if (!(strpos($point["gibbonYearGroupIDList"],$row["gibbonYearGroupID"])===FALSE)) {
