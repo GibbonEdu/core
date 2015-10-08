@@ -1330,28 +1330,29 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 							$top=(ceil((strtotime($effectiveStart)-strtotime($dayTimeStart))/60+($startPad/60))) . "px" ;
 							$title="title='" ;
 							if ($height<45) {
-								$title=$title . $rowPeriods["name"] . " | " ;
-								$title=$title . _("Timeslot:") . " " . $rowPeriods["name"] . " " ;
+								$title.=_('Time:') . " " . substr($effectiveStart,0,5) . " - " . substr($effectiveEnd,0,5) . " | " ;
+								$title.=_("Timeslot:") . " " . $rowPeriods["name"] . " | " ;
 							}
 							if ($rowPeriods["roomName"]!="") {
 								if ($height<60) {
 									if (isset($spaceChanges[$rowPeriods["gibbonTTDayRowClassID"]][0])==FALSE) {
-										$title=$title . _("Room:") . " " . $rowPeriods["roomName"] . " " ;
+										$title.=_("Room:") . " " . $rowPeriods["roomName"] . " | " ;
 									}
 									else {
-										$title=$title . _("Room:") . " " . $spaceChanges[$rowPeriods["gibbonTTDayRowClassID"]][0] . " " ;
+										$title.=_("Room:") . " " . $spaceChanges[$rowPeriods["gibbonTTDayRowClassID"]][0] . " | " ;
 									}
 								}
 								if ($rowPeriods["phoneInternal"]!="") {
 									if (isset($spaceChanges[$rowPeriods["gibbonTTDayRowClassID"]][0])==FALSE) {
-										$title=$title . _("Phone:") ." " . $rowPeriods["phoneInternal"] . " " ;
+										$title.=_("Phone:") ." " . $rowPeriods["phoneInternal"] . " | " ;
 									}
 									else {
-										$title=$title . _("Phone:") ." " . $spaceChanges[$rowPeriods["gibbonTTDayRowClassID"]][1] . " " ;
+										$title.=_("Phone:") ." " . $spaceChanges[$rowPeriods["gibbonTTDayRowClassID"]][1] . " | " ;
 									}
 								}
 							}
-							$title=$title . "'" ;
+							$title=substr($title,0,-3) ;
+							$title.="'" ;
 							$class2="ttPeriod" ;
 
 							if ((date("H:i:s")>$effectiveStart) AND (date("H:i:s")<$effectiveEnd) AND $date==date("Y-m-d")) {
@@ -2334,18 +2335,22 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
 						$top=(ceil((strtotime($effectiveStart)-strtotime($dayTimeStart))/60+($startPad/60))) . "px" ;
 						$title="title='" ;
 						if ($height<45) {
-							$title=$title . _("Timeslot:") . " " . $rowPeriods["name"] . " " ;
+							$title.=_('Time:') . " " . substr($effectiveStart,0,5) . " - " . substr($effectiveEnd,0,5) . " | " ;
+							$title.=_("Timeslot:") . " " . $rowPeriods["name"] . " | " ;
 						}
 						if ($rowPeriods["roomName"]!="") {
 							if ($height<60) {
-								$title=$title . _("Room:") . " " . $rowPeriods["roomName"] . " " ;
+								$title.=_("Room:") . " " . $rowPeriods["roomName"] . " | " ;
 							}
 							if ($rowPeriods["phoneInternal"]!="") {
-								$title=$title . _("Phone:") ." " . $rowPeriods["phoneInternal"] . " " ;
+								$title.=_("Phone:") ." " . $rowPeriods["phoneInternal"] . " | " ;
 							}
 						}
-						$title=$title . "'" ;
+
+						$title=substr($title,0,-3) ;
+						$title.="'" ;
 						$class2="ttPeriod" ;
+
 						if ((date("H:i:s")>$effectiveStart) AND (date("H:i:s")<$effectiveEnd) AND $date==date("Y-m-d")) {
 							$class2="ttPeriodCurrent" ;
 						}
@@ -2354,10 +2359,13 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
 						$output.="<div class='$class2' $title style='z-index: $zCount; position: absolute; top: $top; width: $width; height: $height; margin: 0px; padding: 0px; opacity: $ttAlpha'>" ;
 							if ($height>=45) {
 								$output.=$rowPeriods["name"] . "<br/>" ;
+								$output.="<i>" . substr($effectiveStart,0,5) . " - " . substr($effectiveEnd,0,5) . "</i><br/>" ;
 							}
-							$output.="<i>" . substr($effectiveStart,0,5) . " - " . substr($effectiveEnd,0,5) . "</i><br/>" ;
-							if (isActionAccessible($guid, $connection2, "/modules/Department/department_course_class.php")) {
-								$output.="<a style='text-decoration: none; font-weight: bold; font-size: 120%' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Department/department_course_class.php&gibbonCourseClassID=" . $rowPeriods["gibbonCourseClassID"] . "&subpage=Participants'>" . $rowPeriods["course"] . "." . $rowPeriods["class"] . "</a><br/>" ;
+
+
+
+							if (isActionAccessible($guid, $connection2, "/modules/Departments/department_course_class.php")) {
+								$output.="<a style='text-decoration: none; font-weight: bold; font-size: 120%' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID=" . $rowPeriods["gibbonCourseClassID"] . "&subpage=Participants'>" . $rowPeriods["course"] . "." . $rowPeriods["class"] . "</a><br/>" ;
 							}
 							else {
 								$output.="<span style='font-size: 120%'><b>" . $rowPeriods["course"] . "." . $rowPeriods["class"] . "</b></span><br/>" ;

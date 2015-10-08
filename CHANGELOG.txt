@@ -439,7 +439,10 @@ General: updated Google library to latest Version
 
 General: added new library for export to Excel, not loaded by default (old functions have been deprecated)
 	New folder /lib/PHPExcel
-	Edited /functions.php
+	Edited file /functions.php
+
+Timetable: improved display of short time slots, and of tooltip on hover
+	Edited file /modules/Timetable/moduleFunctions.php
 
 v10.0.00
 --------
