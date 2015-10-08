@@ -177,7 +177,7 @@ else {
 						<script type="text/javascript">
 							var gibbonFinanceFeeCategoryID=new LiveValidation('gibbonFinanceFeeCategoryID');
 							gibbonFinanceFeeCategoryID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-						 </script>
+						</script>
 					</td>
 				</tr>
 				<tr>

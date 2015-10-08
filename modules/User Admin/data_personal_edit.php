@@ -22,7 +22,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 
-
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/data_personal_edit.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
@@ -45,7 +44,7 @@ else {
 	else {
 		try {
 			$data=array("gibbonPersonUpdateID"=>$gibbonPersonUpdateID); 
-			$sql="SELECT gibbonPersonUpdate.gibbonPersonID, gibbonPerson.title AS title, gibbonPerson.surname AS surname, gibbonPerson.firstName AS firstName, gibbonPerson.preferredName AS preferredName, gibbonPerson.officialName AS officialName, gibbonPerson.nameInCharacters AS nameInCharacters, gibbonPerson.dob AS dob, gibbonPerson.email AS email, gibbonPerson.emailAlternate AS emailAlternate, gibbonPerson.address1 AS address1, gibbonPerson.address1District AS address1District, gibbonPerson.address1Country AS address1Country, gibbonPerson.address2 AS address2, gibbonPerson.address2District AS address2District, gibbonPerson.address2Country AS address2Country, gibbonPerson.phone1Type AS phone1Type, gibbonPerson.phone1CountryCode AS phone1CountryCode, gibbonPerson.phone1 AS phone1, gibbonPerson.phone2Type AS phone2Type, gibbonPerson.phone2CountryCode AS phone2CountryCode, gibbonPerson.phone2 AS phone2, gibbonPerson.phone3Type AS phone3Type, gibbonPerson.phone3CountryCode AS phone3CountryCode, gibbonPerson.phone3 AS phone3, gibbonPerson.phone4Type AS phone4Type, gibbonPerson.phone4CountryCode AS phone4CountryCode, gibbonPerson.phone4 AS phone4, gibbonPerson.languageFirst AS languageFirst, gibbonPerson.languageSecond AS languageSecond, gibbonPerson.languageThird AS languageThird, gibbonPerson.countryOfBirth AS countryOfBirth, gibbonPerson.ethnicity AS ethnicity, gibbonPerson.citizenship1 AS citizenship1, gibbonPerson.citizenship1Passport AS citizenship1Passport, gibbonPerson.citizenship2 AS citizenship2, gibbonPerson.citizenship2Passport AS citizenship2Passport, gibbonPerson.religion AS religion, gibbonPerson.nationalIDCardNumber AS nationalIDCardNumber, gibbonPerson.residencyStatus AS residencyStatus, gibbonPerson.visaExpiryDate AS visaExpiryDate, gibbonPerson.profession AS profession , gibbonPerson.employer AS employer, gibbonPerson.jobTitle AS jobTitle, gibbonPerson.emergency1Name AS emergency1Name, gibbonPerson.emergency1Number1 AS emergency1Number1, gibbonPerson.emergency1Number2 AS emergency1Number2, gibbonPerson.emergency1Relationship AS emergency1Relationship, gibbonPerson.emergency2Name AS emergency2Name, gibbonPerson.emergency2Number1 AS emergency2Number1, gibbonPerson.emergency2Number2 AS emergency2Number2, gibbonPerson.emergency2Relationship AS emergency2Relationship, gibbonPerson.vehicleRegistration AS vehicleRegistration, gibbonPerson.privacy AS privacy, gibbonPersonUpdate.title AS newtitle, gibbonPersonUpdate.surname AS newsurname, gibbonPersonUpdate.firstName AS newfirstName, gibbonPersonUpdate.preferredName AS newpreferredName, gibbonPersonUpdate.officialName AS newofficialName, gibbonPersonUpdate.nameInCharacters AS newnameInCharacters, gibbonPersonUpdate.dob AS newdob, gibbonPersonUpdate.email AS newemail, gibbonPersonUpdate.emailAlternate AS newemailAlternate, gibbonPersonUpdate.address1 AS newaddress1, gibbonPersonUpdate.address1District AS newaddress1District, gibbonPersonUpdate.address1Country AS newaddress1Country, gibbonPersonUpdate.address2 AS newaddress2, gibbonPersonUpdate.address2District AS newaddress2District, gibbonPersonUpdate.address2Country AS newaddress2Country, gibbonPersonUpdate.phone1Type AS newphone1Type, gibbonPersonUpdate.phone1CountryCode AS newphone1CountryCode, gibbonPersonUpdate.phone1 AS newphone1, gibbonPersonUpdate.phone2Type AS newphone2Type, gibbonPersonUpdate.phone2CountryCode AS newphone2CountryCode, gibbonPersonUpdate.phone2 AS newphone2, gibbonPersonUpdate.phone3Type AS newphone3Type, gibbonPersonUpdate.phone3CountryCode AS newphone3CountryCode, gibbonPersonUpdate.phone3 AS newphone3, gibbonPersonUpdate.phone4Type AS newphone4Type, gibbonPersonUpdate.phone4CountryCode AS newphone4CountryCode, gibbonPersonUpdate.phone4 AS newphone4, gibbonPersonUpdate.languageFirst AS newlanguageFirst, gibbonPersonUpdate.languageSecond AS newlanguageSecond, gibbonPersonUpdate.languageThird AS newlanguageThird, gibbonPersonUpdate.countryOfBirth AS newcountryOfBirth, gibbonPersonUpdate.ethnicity AS newethnicity, gibbonPersonUpdate.citizenship1 AS newcitizenship1, gibbonPersonUpdate.citizenship1Passport AS newcitizenship1Passport, gibbonPersonUpdate.citizenship2 AS newcitizenship2, gibbonPersonUpdate.citizenship2Passport AS newcitizenship2Passport, gibbonPersonUpdate.religion AS newreligion, gibbonPersonUpdate.nationalIDCardNumber AS newnationalIDCardNumber, gibbonPersonUpdate.residencyStatus AS newresidencyStatus, gibbonPersonUpdate.visaExpiryDate AS newvisaExpiryDate, gibbonPersonUpdate.profession AS newprofession , gibbonPersonUpdate.employer AS newemployer, gibbonPersonUpdate.jobTitle AS newjobTitle, gibbonPersonUpdate.emergency1Name AS newemergency1Name, gibbonPersonUpdate.emergency1Number1 AS newemergency1Number1, gibbonPersonUpdate.emergency1Number2 AS newemergency1Number2, gibbonPersonUpdate.emergency1Relationship AS newemergency1Relationship, gibbonPersonUpdate.emergency2Name AS newemergency2Name, gibbonPersonUpdate.emergency2Number1 AS newemergency2Number1, gibbonPersonUpdate.emergency2Number2 AS newemergency2Number2, gibbonPersonUpdate.emergency2Relationship AS newemergency2Relationship, gibbonPersonUpdate.vehicleRegistration AS newvehicleRegistration, gibbonPersonUpdate.privacy AS newprivacy FROM gibbonPersonUpdate JOIN gibbonPerson ON (gibbonPersonUpdate.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPersonUpdateID=:gibbonPersonUpdateID" ;
+			$sql="SELECT gibbonPersonUpdate.gibbonPersonID, gibbonPerson.gibbonRoleIDAll, gibbonPerson.title AS title, gibbonPerson.surname AS surname, gibbonPerson.firstName AS firstName, gibbonPerson.preferredName AS preferredName, gibbonPerson.officialName AS officialName, gibbonPerson.nameInCharacters AS nameInCharacters, gibbonPerson.dob AS dob, gibbonPerson.email AS email, gibbonPerson.emailAlternate AS emailAlternate, gibbonPerson.address1 AS address1, gibbonPerson.address1District AS address1District, gibbonPerson.address1Country AS address1Country, gibbonPerson.address2 AS address2, gibbonPerson.address2District AS address2District, gibbonPerson.address2Country AS address2Country, gibbonPerson.phone1Type AS phone1Type, gibbonPerson.phone1CountryCode AS phone1CountryCode, gibbonPerson.phone1 AS phone1, gibbonPerson.phone2Type AS phone2Type, gibbonPerson.phone2CountryCode AS phone2CountryCode, gibbonPerson.phone2 AS phone2, gibbonPerson.phone3Type AS phone3Type, gibbonPerson.phone3CountryCode AS phone3CountryCode, gibbonPerson.phone3 AS phone3, gibbonPerson.phone4Type AS phone4Type, gibbonPerson.phone4CountryCode AS phone4CountryCode, gibbonPerson.phone4 AS phone4, gibbonPerson.languageFirst AS languageFirst, gibbonPerson.languageSecond AS languageSecond, gibbonPerson.languageThird AS languageThird, gibbonPerson.countryOfBirth AS countryOfBirth, gibbonPerson.ethnicity AS ethnicity, gibbonPerson.citizenship1 AS citizenship1, gibbonPerson.citizenship1Passport AS citizenship1Passport, gibbonPerson.citizenship2 AS citizenship2, gibbonPerson.citizenship2Passport AS citizenship2Passport, gibbonPerson.religion AS religion, gibbonPerson.nationalIDCardNumber AS nationalIDCardNumber, gibbonPerson.residencyStatus AS residencyStatus, gibbonPerson.visaExpiryDate AS visaExpiryDate, gibbonPerson.profession AS profession , gibbonPerson.employer AS employer, gibbonPerson.jobTitle AS jobTitle, gibbonPerson.emergency1Name AS emergency1Name, gibbonPerson.emergency1Number1 AS emergency1Number1, gibbonPerson.emergency1Number2 AS emergency1Number2, gibbonPerson.emergency1Relationship AS emergency1Relationship, gibbonPerson.emergency2Name AS emergency2Name, gibbonPerson.emergency2Number1 AS emergency2Number1, gibbonPerson.emergency2Number2 AS emergency2Number2, gibbonPerson.emergency2Relationship AS emergency2Relationship, gibbonPerson.vehicleRegistration AS vehicleRegistration, gibbonPerson.privacy AS privacy, gibbonPerson.fields AS fields, gibbonPersonUpdate.title AS newtitle, gibbonPersonUpdate.surname AS newsurname, gibbonPersonUpdate.firstName AS newfirstName, gibbonPersonUpdate.preferredName AS newpreferredName, gibbonPersonUpdate.officialName AS newofficialName, gibbonPersonUpdate.nameInCharacters AS newnameInCharacters, gibbonPersonUpdate.dob AS newdob, gibbonPersonUpdate.email AS newemail, gibbonPersonUpdate.emailAlternate AS newemailAlternate, gibbonPersonUpdate.address1 AS newaddress1, gibbonPersonUpdate.address1District AS newaddress1District, gibbonPersonUpdate.address1Country AS newaddress1Country, gibbonPersonUpdate.address2 AS newaddress2, gibbonPersonUpdate.address2District AS newaddress2District, gibbonPersonUpdate.address2Country AS newaddress2Country, gibbonPersonUpdate.phone1Type AS newphone1Type, gibbonPersonUpdate.phone1CountryCode AS newphone1CountryCode, gibbonPersonUpdate.phone1 AS newphone1, gibbonPersonUpdate.phone2Type AS newphone2Type, gibbonPersonUpdate.phone2CountryCode AS newphone2CountryCode, gibbonPersonUpdate.phone2 AS newphone2, gibbonPersonUpdate.phone3Type AS newphone3Type, gibbonPersonUpdate.phone3CountryCode AS newphone3CountryCode, gibbonPersonUpdate.phone3 AS newphone3, gibbonPersonUpdate.phone4Type AS newphone4Type, gibbonPersonUpdate.phone4CountryCode AS newphone4CountryCode, gibbonPersonUpdate.phone4 AS newphone4, gibbonPersonUpdate.languageFirst AS newlanguageFirst, gibbonPersonUpdate.languageSecond AS newlanguageSecond, gibbonPersonUpdate.languageThird AS newlanguageThird, gibbonPersonUpdate.countryOfBirth AS newcountryOfBirth, gibbonPersonUpdate.ethnicity AS newethnicity, gibbonPersonUpdate.citizenship1 AS newcitizenship1, gibbonPersonUpdate.citizenship1Passport AS newcitizenship1Passport, gibbonPersonUpdate.citizenship2 AS newcitizenship2, gibbonPersonUpdate.citizenship2Passport AS newcitizenship2Passport, gibbonPersonUpdate.religion AS newreligion, gibbonPersonUpdate.nationalIDCardNumber AS newnationalIDCardNumber, gibbonPersonUpdate.residencyStatus AS newresidencyStatus, gibbonPersonUpdate.visaExpiryDate AS newvisaExpiryDate, gibbonPersonUpdate.profession AS newprofession , gibbonPersonUpdate.employer AS newemployer, gibbonPersonUpdate.jobTitle AS newjobTitle, gibbonPersonUpdate.emergency1Name AS newemergency1Name, gibbonPersonUpdate.emergency1Number1 AS newemergency1Number1, gibbonPersonUpdate.emergency1Number2 AS newemergency1Number2, gibbonPersonUpdate.emergency1Relationship AS newemergency1Relationship, gibbonPersonUpdate.emergency2Name AS newemergency2Name, gibbonPersonUpdate.emergency2Number1 AS newemergency2Number1, gibbonPersonUpdate.emergency2Number2 AS newemergency2Number2, gibbonPersonUpdate.emergency2Relationship AS newemergency2Relationship, gibbonPersonUpdate.vehicleRegistration AS newvehicleRegistration, gibbonPersonUpdate.privacy AS newprivacy, gibbonPersonUpdate.fields AS newfields FROM gibbonPersonUpdate JOIN gibbonPerson ON (gibbonPersonUpdate.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPersonUpdateID=:gibbonPersonUpdateID" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
@@ -89,6 +88,28 @@ else {
 
 			//Let's go!
 			$row=$result->fetch() ;
+			
+			//Get categories
+			$staff=FALSE ;
+			$student=FALSE ;
+			$parent=FALSE ;
+			$other=FALSE ;
+			$roles=explode(",", $row["gibbonRoleIDAll"]) ;
+			foreach ($roles AS $role) {
+				$roleCategory=getRoleCategory($role, $connection2) ;
+				if ($roleCategory=="Staff") {
+					$staff=TRUE ;
+				} 
+				if ($roleCategory=="Student") {
+					$student=TRUE ;
+				} 
+				if ($roleCategory=="Parent") {
+					$parent=TRUE ;
+				} 
+				if ($roleCategory=="Other") {
+					$other=TRUE ;
+				} 
+			}
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/data_personal_editProcess.php?gibbonPersonUpdateID=$gibbonPersonUpdateID" ?>">
 				<?php
@@ -108,7 +129,6 @@ else {
 						print "</th>" ;
 					print "</tr>" ;
 					
-					$rowNum="even" ;
 						
 					//COLOR ROW BY STATUS!
 					print "<tr class='odd'>" ;
@@ -130,7 +150,7 @@ else {
 							if ($row["title"]!=$row["newtitle"]) { print "<input checked type='checkbox' name='newtitleOn'><input name='newtitle' type='hidden' value='" . htmlprep($row["newtitle"]) . "'>" ; }
 						print "</td>" ;
 					print "</tr>" ;
-					print "<tr class='even'>" ;
+					print "<tr>" ;
 						print "<td>" ;
 							print _("Surname") ;
 						print "</td>" ;
@@ -189,7 +209,7 @@ else {
 							if ($row["preferredName"]!=$row["newpreferredName"]) { print "<input checked type='checkbox' name='newpreferredNameOn'><input name='newpreferredName' type='hidden' value='" . htmlprep($row["newpreferredName"]) . "'>" ; }
 						print "</td>" ;
 					print "</tr>" ;
-					print "<tr class='even'>" ;
+					print "<tr>" ;
 						print "<td>" ;
 							print _("Official Name") ;
 						print "</td>" ;
@@ -229,7 +249,7 @@ else {
 							if ($row["nameInCharacters"]!=$row["newnameInCharacters"]) { print "<input checked type='checkbox' name='newnameInCharactersOn'><input name='newnameInCharacters' type='hidden' value='" . htmlprep($row["newnameInCharacters"]) . "'>" ; }
 						print "</td>" ;
 					print "</tr>" ;
-					print "<tr class='even'>" ;
+					print "<tr>" ;
 						print "<td>" ;
 							print _("Date of Birth") ;
 						print "</td>" ;
@@ -269,7 +289,7 @@ else {
 							if ($row["email"]!=$row["newemail"]) { print "<input checked type='checkbox' name='newemailOn'><input name='newemail' type='hidden' value='" . htmlprep($row["newemail"]) . "'>" ; }
 						print "</td>" ;
 					print "</tr>" ;
-					print "<tr class='even'>" ;
+					print "<tr>" ;
 						print "<td>" ;
 							print _("Alternate Email") ;
 						print "</td>" ;
@@ -309,7 +329,7 @@ else {
 							if ($row["address1"]!=$row["newaddress1"]) { print "<input checked type='checkbox' name='newaddress1On'><input name='newaddress1' type='hidden' value='" . htmlprep($row["newaddress1"]) . "'>" ; }
 						print "</td>" ;
 					print "</tr>" ;
-					print "<tr class='even'>" ;
+					print "<tr>" ;
 						print "<td>" ;
 							print _("Address 1 District") ;
 						print "</td>" ;
@@ -349,7 +369,7 @@ else {
 							if ($row["address1Country"]!=$row["newaddress1Country"]) { print "<input checked type='checkbox' name='newaddress1CountryOn'><input name='newaddress1Country' type='hidden' value='" . htmlprep($row["newaddress1Country"]) . "'>" ; }
 						print "</td>" ;
 					print "</tr>" ;
-					print "<tr class='even'>" ;
+					print "<tr>" ;
 						print "<td>" ;
 							print _("Address 2") ;
 						print "</td>" ;
@@ -389,7 +409,7 @@ else {
 							if ($row["address2District"]!=$row["newaddress2District"]) { print "<input checked type='checkbox' name='newaddress2DistrictOn'><input name='newaddress2District' type='hidden' value='" . htmlprep($row["newaddress2District"]) . "'>" ; }
 						print "</td>" ;
 					print "</tr>" ;
-					print "<tr class='even'>" ;
+					print "<tr>" ;
 						print "<td>" ;
 							print _("Address 2 Country") ;
 						print "</td>" ;
@@ -413,9 +433,6 @@ else {
 					for ($i=1; $i<5; $i++) {
 						$phoneCount++ ;
 						$class="odd" ;
-						if ($phoneCount%2==0) {
-							$class="even" ;
-						}
 						print "<tr class='$class'>" ;
 							print "<td>" ;
 								print sprintf(_('Phone %1$s Type'), $i) ;
@@ -437,10 +454,6 @@ else {
 							print "</td>" ;
 						print "</tr>" ;
 						$phoneCount++ ;
-						$class="odd" ;
-						if ($phoneCount%2==0) {
-							$class="even" ;
-						}
 						print "<tr class='$class'>" ;
 							print "<td>" ;
 								print sprintf(_('Phone %1$s Country Code'), $i) ;
@@ -462,10 +475,6 @@ else {
 							print "</td>" ;
 						print "</tr>" ;
 						$phoneCount++ ;
-						$class="odd" ;
-						if ($phoneCount%2==0) {
-							$class="even" ;
-						}
 						print "<tr class='$class'>" ;
 							print "<td>" ;
 								print _("Phone") . " " . $i ;
@@ -507,7 +516,7 @@ else {
 							if ($row["languageFirst"]!=$row["newlanguageFirst"]) { print "<input checked type='checkbox' name='newlanguageFirstOn'><input name='newlanguageFirst' type='hidden' value='" . htmlprep($row["newlanguageFirst"]) . "'>" ; }
 						print "</td>" ;
 					print "</tr>" ;
-					print "<tr class='even'>" ;
+					print "<tr>" ;
 						print "<td>" ;
 							print _("Second Language") ;
 						print "</td>" ;
@@ -548,7 +557,7 @@ else {
 						print "</td>" ;
 					print "</tr>" ;
 					
-					print "<tr class='even'>" ;
+					print "<tr>" ;
 						print "<td>" ;
 							print _("Country of Birth") ;
 						print "</td>" ;
@@ -588,7 +597,7 @@ else {
 							if ($row["ethnicity"]!=$row["newethnicity"]) { print "<input checked type='checkbox' name='newethnicityOn'><input name='newethnicity' type='hidden' value='" . htmlprep($row["newethnicity"]) . "'>" ; }
 						print "</td>" ;
 					print "</tr>" ;
-					print "<tr class='even'>" ;
+					print "<tr>" ;
 						print "<td>" ;
 							print _("Citizenship 1") ;
 						print "</td>" ;
@@ -628,7 +637,7 @@ else {
 							if ($row["citizenship1Passport"]!=$row["newcitizenship1Passport"]) { print "<input checked type='checkbox' name='newcitizenship1PassportOn'><input name='newcitizenship1Passport' type='hidden' value='" . htmlprep($row["newcitizenship1Passport"]) . "'>" ; }
 						print "</td>" ;
 					print "</tr>" ;
-					print "<tr class='even'>" ;
+					print "<tr>" ;
 						print "<td>" ;
 							print _("Citizenship 2") ;
 						print "</td>" ;
@@ -668,7 +677,7 @@ else {
 							if ($row["citizenship2Passport"]!=$row["newcitizenship2Passport"]) { print "<input checked type='checkbox' name='newcitizenship2PassportOn'><input name='newcitizenship2Passport' type='hidden' value='" . htmlprep($row["newcitizenship2Passport"]) . "'>" ; }
 						print "</td>" ;
 					print "</tr>" ;
-					print "<tr class='even'>" ;
+					print "<tr>" ;
 						print "<td>" ;
 							print _("Religion") ;
 						print "</td>" ;
@@ -708,7 +717,7 @@ else {
 							if ($row["nationalIDCardNumber"]!=$row["newnationalIDCardNumber"]) { print "<input checked type='checkbox' name='newnationalIDCardNumberOn'><input name='newnationalIDCardNumber' type='hidden' value='" . htmlprep($row["newnationalIDCardNumber"]) . "'>" ; }
 						print "</td>" ;
 					print "</tr>" ;
-					print "<tr class='even'>" ;
+					print "<tr>" ;
 						print "<td>" ;
 							print _("Residency Status") ;
 						print "</td>" ;
@@ -748,7 +757,7 @@ else {
 							if ($row["visaExpiryDate"]!=$row["newvisaExpiryDate"]) { print "<input checked type='checkbox' name='newvisaExpiryDateOn'><input name='newvisaExpiryDate' type='hidden' value='" . htmlprep($row["newvisaExpiryDate"]) . "'>" ; }
 						print "</td>" ;
 					print "</tr>" ;
-					print "<tr class='even'>" ;
+					print "<tr>" ;
 						print "<td>" ;
 							print _("Profession") ;
 						print "</td>" ;
@@ -788,7 +797,7 @@ else {
 							if ($row["employer"]!=$row["newemployer"]) { print "<input checked type='checkbox' name='newemployerOn'><input name='newemployer' type='hidden' value='" . htmlprep($row["newemployer"]) . "'>" ; }
 						print "</td>" ;
 					print "</tr>" ;
-					print "<tr class='even'>" ;
+					print "<tr>" ;
 						print "<td>" ;
 							print _("Job Title") ;
 						print "</td>" ;
@@ -828,7 +837,7 @@ else {
 							if ($row["emergency1Name"]!=$row["newemergency1Name"]) { print "<input checked type='checkbox' name='newemergency1NameOn'><input name='newemergency1Name' type='hidden' value='" . htmlprep($row["newemergency1Name"]) . "'>" ; }
 						print "</td>" ;
 					print "</tr>" ;
-					print "<tr class='even'>" ;
+					print "<tr>" ;
 						print "<td>" ;
 							print _("Emergency 1 Number 1") ;
 						print "</td>" ;
@@ -868,7 +877,7 @@ else {
 							if ($row["emergency1Number2"]!=$row["newemergency1Number2"]) { print "<input checked type='checkbox' name='newemergency1Number2On'><input name='newemergency1Number2' type='hidden' value='" . htmlprep($row["newemergency1Number2"]) . "'>" ; }
 						print "</td>" ;
 					print "</tr>" ;
-					print "<tr class='even'>" ;
+					print "<tr>" ;
 						print "<td>" ;
 							print _("Emergency 1 Relationship") ;
 						print "</td>" ;
@@ -908,7 +917,7 @@ else {
 							if ($row["emergency2Name"]!=$row["newemergency2Name"]) { print "<input checked type='checkbox' name='newemergency2NameOn'><input name='newemergency2Name' type='hidden' value='" . htmlprep($row["newemergency2Name"]) . "'>" ; }
 						print "</td>" ;
 					print "</tr>" ;
-					print "<tr class='even'>" ;
+					print "<tr>" ;
 						print "<td>" ;
 							print _("Emergency 2 Number 1") ;
 						print "</td>" ;
@@ -948,7 +957,7 @@ else {
 							if ($row["emergency2Number2"]!=$row["newemergency2Number2"]) { print "<input checked type='checkbox' name='newemergency2Number2On'><input name='newemergency2Number2' type='hidden' value='" . htmlprep($row["newemergency2Number2"]) . "'>" ; }
 						print "</td>" ;
 					print "</tr>" ;
-					print "<tr class='even'>" ;
+					print "<tr>" ;
 						print "<td>" ;
 							print _("Emergency 2 Relationship") ;
 						print "</td>" ;
@@ -990,53 +999,82 @@ else {
 					print "</tr>" ;
 					//Check if any roles are "Student"
 					$privacySet=false ;
-					try {
-						$dataRoles=array("gibbonPersonID"=>$row["gibbonPersonID"]); 
-						$sqlRoles="SELECT gibbonRoleIDAll FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
-						$resultRoles=$connection2->prepare($sqlRoles);
-						$resultRoles->execute($dataRoles);
-					}
-					catch(PDOException $e) { }
-					if ($resultRoles->rowCount()==1) {
-						$rowRoles=$resultRoles->fetch() ;
-					
-						$isStudent=false ;
-						$roles=explode(",", $rowRoles["gibbonRoleIDAll"]) ;
-						foreach ($roles as $role) {
-							if (getRoleCategory($role, $connection2)=="Student") {
-								$isStudent=true ;
-							}
-						}
-						if ($isStudent) {
-							$privacySetting=getSettingByScope( $connection2, "User Admin", "privacy" ) ;
-							$privacyBlurb=getSettingByScope( $connection2, "User Admin", "privacyBlurb" ) ;
-							if ($privacySetting=="Y" AND $privacyBlurb!="") {
-								print "<tr class='even'>" ;
-									print "<td>" ;
-										print _("Image Privacy") ;
-									print "</td>" ;
-									print "<td>" ;
-										print $row["privacy"] ;
-									print "</td>" ;
-									print "<td>" ;
-										$style="" ;
-										if ($row["privacy"]!=$row["newprivacy"]) {
-											$style="style='color: #ff0000'" ;
-										}
-										print "<span $style>" ;
-										print $row["newprivacy"] ;
-										print "</span>" ;
-									print "</td>" ;
-									print "<td>" ;
-										if ($row["privacy"]!=$row["newprivacy"]) { print "<input checked type='checkbox' name='newprivacyOn'><input name='newprivacy' type='hidden' value='" . htmlprep($row["newprivacy"]) . "'>" ; }
-									print "</td>" ;
-								print "</tr>" ;
-								$privacySet=true ;
-							}
+					if ($student) {
+						$privacySetting=getSettingByScope( $connection2, "User Admin", "privacy" ) ;
+						$privacyBlurb=getSettingByScope( $connection2, "User Admin", "privacyBlurb" ) ;
+						if ($privacySetting=="Y" AND $privacyBlurb!="") {
+							print "<tr>" ;
+								print "<td>" ;
+									print _("Image Privacy") ;
+								print "</td>" ;
+								print "<td>" ;
+									print $row["privacy"] ;
+								print "</td>" ;
+								print "<td>" ;
+									$style="" ;
+									if ($row["privacy"]!=$row["newprivacy"]) {
+										$style="style='color: #ff0000'" ;
+									}
+									print "<span $style>" ;
+									print $row["newprivacy"] ;
+									print "</span>" ;
+								print "</td>" ;
+								print "<td>" ;
+									if ($row["privacy"]!=$row["newprivacy"]) { print "<input checked type='checkbox' name='newprivacyOn'><input name='newprivacy' type='hidden' value='" . htmlprep($row["newprivacy"]) . "'>" ; }
+								print "</td>" ;
+							print "</tr>" ;
+							$privacySet=true ;
 						}
 					}
 					if ($privacySet==false) {
 						print "<input type=\"hidden\" name=\"newprivacyOn\" value=\"\">" ;
+					}
+					
+					//CUSTOM FIELDS
+					$fields=unserialize($row["fields"]) ;
+					$newfields=unserialize($row["newfields"]) ;
+					$resultFields=getCustomFields($connection2, $guid, $student, $staff, $parent, $other, NULL, TRUE) ;
+					if ($resultFields->rowCount()>0) {
+						while ($rowFields=$resultFields->fetch()) {
+							print "<tr class='odd'>" ;
+								print "<td>" ;
+									print _($rowFields["name"]) ;
+								print "</td>" ;
+								print "<td>" ;
+									$current="" ;
+									if (isset($fields[$rowFields["gibbonPersonFieldID"]])) {
+										$current=$fields[$rowFields["gibbonPersonFieldID"]] ;
+										if ($rowFields["type"]=="date") {
+											print dateConvertBack($guid, $current) ;
+										}
+										else {
+											print $current ;
+										}
+									}
+								print "</td>" ;
+								print "<td>" ;
+									if (isset($newfields[$rowFields["gibbonPersonFieldID"]])) {
+										$style="" ;
+										if ($current!=$newfields[$rowFields["gibbonPersonFieldID"]]) {
+											$style="style='color: #ff0000'" ;
+										}
+										print "<span $style>" ;
+											if ($rowFields["type"]=="date") {
+												print dateConvertBack($guid, $newfields[$rowFields["gibbonPersonFieldID"]]) ;
+											}
+											else {
+												print $newfields[$rowFields["gibbonPersonFieldID"]] ;
+											}
+										print "</span>" ;
+									}
+								print "</td>" ;
+								print "<td>" ;
+									if (isset($newfields[$rowFields["gibbonPersonFieldID"]])) {
+										if ($current!=$newfields[$rowFields["gibbonPersonFieldID"]]) { print "<input checked type='checkbox' name='newcustom" . $rowFields["gibbonPersonFieldID"] . "On'><input name='newcustom" . $rowFields["gibbonPersonFieldID"] . "' type='hidden' value='" . htmlprep($newfields[$rowFields["gibbonPersonFieldID"]]) . "'>" ; }
+									}
+								print "</td>" ;
+							print "</tr>" ;
+						}
 					}
 					
 					print "<tr>" ;

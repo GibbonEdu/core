@@ -52,12 +52,9 @@ else {
 	$organisationNameShort=$_POST["organisationNameShort"] ;
 	$organisationEmail=$_POST["organisationEmail"] ;
 	$organisationLogo=$_POST["organisationLogo"] ;
-	$organisationAdministratorName=$_POST["organisationAdministratorName"] ;
-	$organisationAdministratorEmail=$_POST["organisationAdministratorEmail"] ;
-	$organisationDBAName=$_POST["organisationDBAName"] ;
-	$organisationDBAEmail=$_POST["organisationDBAEmail"] ;
-	$organisationAdmissionsName=$_POST["organisationAdmissionsName"] ;
-	$organisationAdmissionsEmail=$_POST["organisationAdmissionsEmail"] ;
+	$organisationAdministrator=$_POST["organisationAdministrator"] ;
+	$organisationDBA=$_POST["organisationDBA"] ;
+	$organisationAdmissions=$_POST["organisationAdmissions"] ;
 	$pagination=$_POST["pagination"] ;
 	$timezone=$_POST["timezone"] ;
 	$country=$_POST["country"] ;
@@ -79,7 +76,7 @@ else {
 	
 	
 	//Validate Inputs
-	if ($absoluteURL=="" OR $systemName=="" OR $organisationLogo=="" OR $indexText=="" OR $organisationName=="" OR $organisationNameShort=="" OR $organisationAdministratorName=="" OR $organisationAdministratorEmail=="" OR $organisationDBAName=="" OR $organisationDBAEmail=="" OR $organisationAdmissionsName=="" OR $organisationAdmissionsEmail=="" OR $pagination=="" OR (!(is_numeric($pagination))) OR $timezone=="" OR $installType=="" OR $statsCollection=="" OR $passwordPolicyMinLength=="" OR $passwordPolicyAlpha=="" OR $passwordPolicyNumeric=="" OR $passwordPolicyNonAlphaNumeric=="" OR $currency=="") {
+	if ($absoluteURL=="" OR $systemName=="" OR $organisationLogo=="" OR $indexText=="" OR $organisationName=="" OR $organisationNameShort=="" OR $organisationAdministrator=="" OR $organisationDBA=="" OR $organisationAdmissions=="" OR $pagination=="" OR (!(is_numeric($pagination))) OR $timezone=="" OR $installType=="" OR $statsCollection=="" OR $passwordPolicyMinLength=="" OR $passwordPolicyAlpha=="" OR $passwordPolicyNumeric=="" OR $passwordPolicyNonAlphaNumeric=="" OR $currency=="") {
 		//Fail 3
 		$URL.="&updateReturn=fail3" ;
 		header("Location: {$URL}");
@@ -164,29 +161,6 @@ else {
 			$fail=TRUE ;
 		}
 		
-		
-		try {
-			$data=array("organisationAdministratorName"=>$organisationAdministratorName); 
-			$sql="UPDATE gibbonSetting SET value=:organisationAdministratorName WHERE scope='System' AND name='organisationAdministratorName'" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$fail=TRUE ;
-		}
-		
-		
-		try {
-			$data=array("organisationAdministratorEmail"=>$organisationAdministratorEmail); 
-			$sql="UPDATE gibbonSetting SET value=:organisationAdministratorEmail WHERE scope='System' AND name='organisationAdministratorEmail'" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$fail=TRUE ;
-		}
-		
-		
 		try {
 			$data=array("organisationEmail"=>$organisationEmail); 
 			$sql="UPDATE gibbonSetting SET value=:organisationEmail WHERE scope='System' AND name='organisationEmail'" ;
@@ -197,48 +171,92 @@ else {
 			$fail=TRUE ;
 		}
 		
-		
+		//ADMINISTRATORS
 		try {
-			$data=array("organisationDBAName"=>$organisationDBAName); 
-			$sql="UPDATE gibbonSetting SET value=:organisationDBAName WHERE scope='System' AND name='organisationDBAName'" ;
+			$data=array("organisationAdministrator"=>$organisationAdministrator); 
+			$sql="UPDATE gibbonSetting SET value=:organisationAdministrator WHERE scope='System' AND name='organisationAdministrator'" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
 			$fail=TRUE ;
 		}
-		
-		
+		//Update session variables
 		try {
-			$data=array("organisationDBAEmail"=>$organisationDBAEmail); 
-			$sql="UPDATE gibbonSetting SET value=:organisationDBAEmail WHERE scope='System' AND name='organisationDBAEmail'" ;
+			$data=array("gibbonPersonID"=>$organisationAdministrator); 
+			$sql="SELECT surname, preferredName, email FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
 			$fail=TRUE ;
 		}
+		if ($result->rowCount()!=1) {
+			$fail=TRUE ;
+		}
+		else {
+			$row=$result->fetch() ;
+			$_SESSION[$guid]["organisationAdministratorName"]=formatName("", $row["preferredName"], $row["surname"], "Staff", FALSE, TRUE) ;
+			$_SESSION[$guid]["organisationAdministratorEmail"]=$row["email"] ;
+		}
 		
 		
 		try {
-			$data=array("organisationAdmissionsName"=>$organisationAdmissionsName); 
-			$sql="UPDATE gibbonSetting SET value=:organisationAdmissionsName WHERE scope='System' AND name='organisationAdmissionsName'" ;
+			$data=array("organisationDBA"=>$organisationDBA); 
+			$sql="UPDATE gibbonSetting SET value=:organisationDBA WHERE scope='System' AND name='organisationDBA'" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
 			$fail=TRUE ;
 		}
-		
-		
+		//Update session variables
 		try {
-			$data=array("organisationAdmissionsEmail"=>$organisationAdmissionsEmail); 
-			$sql="UPDATE gibbonSetting SET value=:organisationAdmissionsEmail WHERE scope='System' AND name='organisationAdmissionsEmail'" ;
+			$data=array("gibbonPersonID"=>$organisationDBA); 
+			$sql="SELECT surname, preferredName, email FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
 			$fail=TRUE ;
+		}
+		if ($result->rowCount()!=1) {
+			$fail=TRUE ;
+		}
+		else {
+			$row=$result->fetch() ;
+			$_SESSION[$guid]["organisationDBAName"]=formatName("", $row["preferredName"], $row["surname"], "Staff", FALSE, TRUE) ;
+			$_SESSION[$guid]["organisationDBAEmail"]=$row["email"] ;
+		}
+		
+		
+		
+		try {
+			$data=array("organisationAdmissions"=>$organisationAdmissions); 
+			$sql="UPDATE gibbonSetting SET value=:organisationAdmissions WHERE scope='System' AND name='organisationAdmissions'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ;
+		}
+		//Update session variables
+		try {
+			$data=array("gibbonPersonID"=>$organisationAdmissions); 
+			$sql="SELECT surname, preferredName, email FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ;
+		}
+		if ($result->rowCount()!=1) {
+			$fail=TRUE ;
+		}
+		else {
+			$row=$result->fetch() ;
+			$_SESSION[$guid]["organisationAdmissionsName"]=formatName("", $row["preferredName"], $row["surname"], "Staff", FALSE, TRUE) ;
+			$_SESSION[$guid]["organisationAdmissionsEmail"]=$row["email"] ;
 		}
 		
 		

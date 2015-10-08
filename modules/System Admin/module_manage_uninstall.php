@@ -89,21 +89,62 @@ else {
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/module_manage_uninstallProcess.php?gibbonModuleID=$gibbonModuleID&orphaned=$orphaned" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px' colspan=2> 
 							<b><?php print _('Are you sure you want to delete this record?') ; ?></b><br/>
 							<span style="font-size: 90%; color: #cc0000"><i><?php print _('This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!') ; ?></i></span>
 						</td>
+					</tr>
+					<tr>
+						<td style='width: 275px'> 
+							<b><?php print _("Remove Data") ?></b><br/>
+							<span style="font-size: 90%"><i><?php print _("Would you like to remove the following tables and views from your database?") ?></i></span>
+						</td>
 						<td class="right">
-							
+							<?php
+							if (is_file($_SESSION[$guid]["absolutePath"] . "/modules/" . $row["name"] . "/manifest.php")==FALSE) {
+								print "<div class='error'>" ;
+									print _("An error has occurred.") ;
+								print "</div>" ;
+							}
+							else {
+								$count=0 ;
+								include($_SESSION[$guid]["absolutePath"] . "/modules/" . $row["name"] . "/manifest.php") ;
+								if (is_array($moduleTables)) {
+									foreach ($moduleTables AS $moduleTable) {
+										$type=NULL ;
+										$tokens=NULL ;
+										$name="" ;
+										$moduleTable=trim($moduleTable) ;
+										if (substr($moduleTable, 0, 12)=="CREATE TABLE") {
+											$type=_("Table") ;
+										}
+										else if (substr($moduleTable, 0, 11)=="CREATE VIEW") {
+											$type=_("View") ;
+										}
+										if ($type!=NULL) {
+											$tokens=preg_split('/ +/', $moduleTable);
+											if (isset($tokens[2])) {
+												$name=str_replace("`", "", $tokens[2]) ;
+												if ($name!="") {
+													print "<b>" . $type . "</b>: " . $name ;
+													print " <input checked type='checkbox' name='remove[]' value='" . $type . "-" . $name . "' /><br/>" ;
+													$count++ ;
+												}
+											}
+										}
+									} 
+								}
+								if ($count==0) {
+									print _("There are no records to display.") ;
+								}
+							}
+							?>
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td class="right" colspan=2>
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<?php print _('Yes') ; ?>">
-						</td>
-						<td class="right">
-							
+							<input type="submit" value="<?php print _('Submit') ; ?>">
 						</td>
 					</tr>
 				</table>

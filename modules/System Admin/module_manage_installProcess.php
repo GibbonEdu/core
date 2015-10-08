@@ -145,23 +145,31 @@ else {
 						}
 					}
 					//Create module actions
-					if (is_null($actionRows)==FALSE) {
+					if (is_null(@$actionRows)==FALSE) {
 						for ($i=0;$i<count($actionRows);$i++) {
 							$categoryPermissionStaff="Y" ;
 							$categoryPermissionStudent="Y" ;
 							$categoryPermissionParent="Y" ;
 							$categoryPermissionOther="Y" ;
-							if ($actionRows[$i]["categoryPermissionStaff"]=="N") {
-								$categoryPermissionStaff="N" ;
+							if (isset($actionRows[$i]["categoryPermissionStaff"])) {
+								if ($actionRows[$i]["categoryPermissionStaff"]=="N") {
+									$categoryPermissionStaff="N" ;
+								}
 							}
-							if ($actionRows[$i]["categoryPermissionStudent"]=="N") {
-								$categoryPermissionStudent="N" ;
+							if (isset($actionRows[$i]["categoryPermissionStudent"])) {
+								if ($actionRows[$i]["categoryPermissionStudent"]=="N") {
+									$categoryPermissionStudent="N" ;
+								}
 							}
-							if ($actionRows[$i]["categoryPermissionParent"]=="N") {
-								$categoryPermissionParent="N" ;
+							if (isset($actionRows[$i]["categoryPermissionParent"])) {
+								if ($actionRows[$i]["categoryPermissionParent"]=="N") {
+									$categoryPermissionParent="N" ;
+								}
 							}
-							if ($actionRows[$i]["categoryPermissionOther"]=="N") {
-								$categoryPermissionOther="N" ;
+							if (isset($actionRows[$i]["categoryPermissionOther"])) {
+								if ($actionRows[$i]["categoryPermissionOther"]=="N") {
+									$categoryPermissionOther="N" ;
+								}
 							}
 							$entrySidebar="Y" ;
 							if (isset($actionRows[$i]["entrySidebar"])) {

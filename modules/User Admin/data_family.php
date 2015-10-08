@@ -85,7 +85,7 @@ else {
 				print "<th>" ;
 					print _("Status") ;
 				print "</th>" ;
-				print "<th style='width: 60px'>" ;
+				print "<th style='width: 80px'>" ;
 					print _("Actions") ;
 				print "</th>" ;
 			print "</tr>" ;

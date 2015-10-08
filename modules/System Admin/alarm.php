@@ -60,8 +60,55 @@ else {
 	} 
 	?>
 	
-	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/alarmProcess.php" ?>">
+	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/alarmProcess.php" ?>" enctype="multipart/form-data">
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+			<tr>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='System Admin' AND name='customAlarmSound'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { }
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span><br/>
+					<?php if ($row["value"]!="") { ?>
+						<span style="font-size: 90%"><i><?php print _('Will overwrite existing attachment.') ?></i></span>
+					<?php } ?>
+				</td>
+				<td class="right">
+					<?php
+					if ($row["value"]!="") {
+						print _("Current attachment:") . " <a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["value"] . "'>" . $row["value"] . "</a><br/><br/>" ;
+					}
+					?>
+					<input type="file" name="file" id="file"><br/><br/>
+					<?php
+					//Get list of acceptable file extensions
+					try {
+						$dataExt=array(); 
+						$sqlExt="SELECT * FROM gibbonFileExtension WHERE type='Audio'" ;
+						$resultExt=$connection2->prepare($sqlExt);
+						$resultExt->execute($dataExt);
+					}
+					catch(PDOException $e) { }
+					$ext="" ;
+					while ($rowExt=$resultExt->fetch()) {
+						$ext=$ext . "'." . $rowExt["extension"] . "'," ;
+					}
+					?>
+			
+					<script type="text/javascript">
+						var file=new LiveValidation('file');
+						file.add( Validate.Inclusion, { within: [<?php print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+					</script>
+					<input type="hidden" name="attachmentCurrent" value="<?php print $row["value"] ?>">
+				</td>
+			</tr>
 			<tr>
 				<?php
 				try {
@@ -82,7 +129,15 @@ else {
 						<option <?php if ($row["value"]=="None") {print "selected ";} ?>value="None"><?php print _('None') ?></option>
 						<option <?php if ($row["value"]=="General") {print "selected ";} ?>value="General"><?php print _('General') ?></option>
 						<option <?php if ($row["value"]=="Lockdown") {print "selected ";} ?>value="Lockdown"><?php print _('Lockdown') ?></option>
+						<?php
+						if ($row["value"]!="") {
+							?>
+							<option <?php if ($row["value"]=="Custom") {print "selected ";} ?>value="Custom"><?php print _('Custom') ?></option>
+							<?php
+						}
+						?>
 					</select>
+					<input type="hidden" name="alarmCurrent" value="<?php print $row["value"] ?>">
 				</td>
 			</tr>
             <tr>

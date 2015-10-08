@@ -44,8 +44,8 @@ else {
 		//Check if params are specified
 		$gibbonFinanceExpenseID=$_GET["gibbonFinanceExpenseID"] ;
 		$gibbonFinanceBudgetCycleID=$_GET["gibbonFinanceBudgetCycleID"] ;
-		$status=$_GET["status"] ;
-		$gibbonFinanceBudgetID=$_GET["gibbonFinanceBudgetID"] ;
+		$status2=$_GET["status2"] ;
+		$gibbonFinanceBudgetID2=$_GET["gibbonFinanceBudgetID2"] ;
 		if ($gibbonFinanceExpenseID=="" OR $gibbonFinanceBudgetCycleID=="") {
 			print "<div class='error'>" ;
 				print _("You have not specified one or more required parameters.") ;
@@ -138,9 +138,9 @@ else {
 							//Let's go!
 							$row=$result->fetch() ;
 					
-							if ($status!="" OR $gibbonFinanceBudgetID!="") {
+							if ($status2!="" OR $gibbonFinanceBudgetID2!="") {
 								print "<div class='linkTop'>" ;
-									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/expenses_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=$status&gibbonFinanceBudgetID=$gibbonFinanceBudgetID'>" . _('Back to Search Results') . "</a>" ;
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/expenses_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>" . _('Back to Search Results') . "</a>" ;
 								print "</div>" ;
 							}
 							?>
@@ -232,6 +232,14 @@ else {
 										</td>
 										<td class="right">
 											<input readonly name="name" id="name" maxlength=60 value="<?php print $row["cost"] ; ?>" type="text" style="width: 300px">
+										</td>
+									</tr>
+									<tr>
+										<td> 
+											<b><?php print _('Count Against Budget') ?> *</b><br/>
+										</td>
+										<td class="right">
+											<input readonly name="countAgainstBudget" id="countAgainstBudget" maxlength=60 value="<?php print ynExpander($row["countAgainstBudget"]) ; ?>" type="text" style="width: 300px">
 										</td>
 									</tr>
 									<tr>

@@ -39,6 +39,9 @@ class Google_Service_Bigquery extends Google_Service
   /** View and manage your data across Google Cloud Platform services. */
   const CLOUD_PLATFORM =
       "https://www.googleapis.com/auth/cloud-platform";
+  /** View your data across Google Cloud Platform services. */
+  const CLOUD_PLATFORM_READ_ONLY =
+      "https://www.googleapis.com/auth/cloud-platform.read-only";
   /** Manage your data and permissions in Google Cloud Storage. */
   const DEVSTORAGE_FULL_CONTROL =
       "https://www.googleapis.com/auth/devstorage.full_control";
@@ -64,6 +67,7 @@ class Google_Service_Bigquery extends Google_Service
   public function __construct(Google_Client $client)
   {
     parent::__construct($client);
+    $this->rootUrl = 'https://www.googleapis.com/';
     $this->servicePath = 'bigquery/v2/';
     $this->version = 'v2';
     $this->serviceName = 'bigquery';
@@ -180,7 +184,22 @@ class Google_Service_Bigquery extends Google_Service
         'jobs',
         array(
           'methods' => array(
-            'get' => array(
+            'cancel' => array(
+              'path' => 'project/{projectId}/jobs/{jobId}/cancel',
+              'httpMethod' => 'POST',
+              'parameters' => array(
+                'projectId' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'jobId' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'get' => array(
               'path' => 'projects/{projectId}/jobs/{jobId}',
               'httpMethod' => 'GET',
               'parameters' => array(
@@ -630,6 +649,23 @@ class Google_Service_Bigquery_Jobs_Resource extends Google_Service_Resource
 {
 
   /**
+   * Requests that a job be cancelled. This call will return immediately, and the
+   * client will need to poll for the job status to see if the cancel completed
+   * successfully. Cancelled jobs may still incur costs. (jobs.cancel)
+   *
+   * @param string $projectId Project ID of the job to cancel
+   * @param string $jobId Job ID of the job to cancel
+   * @param array $optParams Optional parameters.
+   * @return Google_Service_Bigquery_JobCancelResponse
+   */
+  public function cancel($projectId, $jobId, $optParams = array())
+  {
+    $params = array('projectId' => $projectId, 'jobId' => $jobId);
+    $params = array_merge($params, $optParams);
+    return $this->call('cancel', array($params), "Google_Service_Bigquery_JobCancelResponse");
+  }
+
+  /**
    * Returns information about a specific job. Job information is available for a
    * six month period after creation. Requires that you're the person who ran the
    * job, or have the Is Owner project role. (jobs.get)
@@ -654,9 +690,9 @@ class Google_Service_Bigquery_Jobs_Resource extends Google_Service_Resource
    * @param array $optParams Optional parameters.
    *
    * @opt_param string timeoutMs How long to wait for the query to complete, in
-   * milliseconds, before returning. Default is to return immediately. If the
-   * timeout passes before the job completes, the request will fail with a TIMEOUT
-   * error
+   * milliseconds, before returning. Default is 10 seconds. If the timeout passes
+   * before the job completes, the 'jobComplete' field in the response will be
+   * false
    * @opt_param string maxResults Maximum number of results to read
    * @opt_param string pageToken Page token, returned by a previous call, to
    * request the next page of results
@@ -688,10 +724,10 @@ class Google_Service_Bigquery_Jobs_Resource extends Google_Service_Resource
   }
 
   /**
-   * Lists all jobs that you started in the specified project. The job list
-   * returns in reverse chronological order of when the jobs were created,
-   * starting with the most recent job created. Requires the Can View project
-   * role, or the Is Owner project role if you set the allUsers property.
+   * Lists all jobs that you started in the specified project. Job information is
+   * available for a six month period after creation. The job list is sorted in
+   * reverse chronological order, by job creation time. Requires the Can View
+   * project role, or the Is Owner project role if you set the allUsers property.
    * (jobs.listJobs)
    *
    * @param string $projectId Project ID of the jobs to list
@@ -1016,6 +1052,7 @@ class Google_Service_Bigquery_Dataset extends Google_Collection
   public $id;
   public $kind;
   public $lastModifiedTime;
+  public $location;
   public $selfLink;
 
 
@@ -1098,6 +1135,14 @@ class Google_Service_Bigquery_Dataset extends Google_Collection
   public function getLastModifiedTime()
   {
     return $this->lastModifiedTime;
+  }
+  public function setLocation($location)
+  {
+    $this->location = $location;
+  }
+  public function getLocation()
+  {
+    return $this->location;
   }
   public function setSelfLink($selfLink)
   {
@@ -1413,6 +1458,8 @@ class Google_Service_Bigquery_GetQueryResultsResponse extends Google_Collection
   protected $internal_gapi_mappings = array(
   );
   public $cacheHit;
+  protected $errorsType = 'Google_Service_Bigquery_ErrorProto';
+  protected $errorsDataType = 'array';
   public $etag;
   public $jobComplete;
   protected $jobReferenceType = 'Google_Service_Bigquery_JobReference';
@@ -1434,6 +1481,14 @@ class Google_Service_Bigquery_GetQueryResultsResponse extends Google_Collection
   public function getCacheHit()
   {
     return $this->cacheHit;
+  }
+  public function setErrors($errors)
+  {
+    $this->errors = $errors;
+  }
+  public function getErrors()
+  {
+    return $this->errors;
   }
   public function setEtag($etag)
   {
@@ -1600,6 +1655,33 @@ class Google_Service_Bigquery_Job extends Google_Model
   public function getUserEmail()
   {
     return $this->userEmail;
+  }
+}
+
+class Google_Service_Bigquery_JobCancelResponse extends Google_Model
+{
+  protected $internal_gapi_mappings = array(
+  );
+  protected $jobType = 'Google_Service_Bigquery_Job';
+  protected $jobDataType = '';
+  public $kind;
+
+
+  public function setJob(Google_Service_Bigquery_Job $job)
+  {
+    $this->job = $job;
+  }
+  public function getJob()
+  {
+    return $this->job;
+  }
+  public function setKind($kind)
+  {
+    $this->kind = $kind;
+  }
+  public function getKind()
+  {
+    return $this->kind;
   }
 }
 
@@ -1953,8 +2035,9 @@ class Google_Service_Bigquery_JobConfigurationLoad extends Google_Collection
   }
 }
 
-class Google_Service_Bigquery_JobConfigurationQuery extends Google_Model
+class Google_Service_Bigquery_JobConfigurationQuery extends Google_Collection
 {
+  protected $collection_key = 'userDefinedFunctionResources';
   protected $internal_gapi_mappings = array(
   );
   public $allowLargeResults;
@@ -1970,6 +2053,8 @@ class Google_Service_Bigquery_JobConfigurationQuery extends Google_Model
   protected $tableDefinitionsType = 'Google_Service_Bigquery_ExternalDataConfiguration';
   protected $tableDefinitionsDataType = 'map';
   public $useQueryCache;
+  protected $userDefinedFunctionResourcesType = 'Google_Service_Bigquery_UserDefinedFunctionResource';
+  protected $userDefinedFunctionResourcesDataType = 'array';
   public $writeDisposition;
 
 
@@ -2053,6 +2138,14 @@ class Google_Service_Bigquery_JobConfigurationQuery extends Google_Model
   {
     return $this->useQueryCache;
   }
+  public function setUserDefinedFunctionResources($userDefinedFunctionResources)
+  {
+    $this->userDefinedFunctionResources = $userDefinedFunctionResources;
+  }
+  public function getUserDefinedFunctionResources()
+  {
+    return $this->userDefinedFunctionResources;
+  }
   public function setWriteDisposition($writeDisposition)
   {
     $this->writeDisposition = $writeDisposition;
@@ -2134,7 +2227,6 @@ class Google_Service_Bigquery_JobList extends Google_Collection
   protected $jobsDataType = 'array';
   public $kind;
   public $nextPageToken;
-  public $totalItems;
 
 
   public function setEtag($etag)
@@ -2168,14 +2260,6 @@ class Google_Service_Bigquery_JobList extends Google_Collection
   public function getNextPageToken()
   {
     return $this->nextPageToken;
-  }
-  public function setTotalItems($totalItems)
-  {
-    $this->totalItems = $totalItems;
-  }
-  public function getTotalItems()
-  {
-    return $this->totalItems;
   }
 }
 
@@ -2378,10 +2462,20 @@ class Google_Service_Bigquery_JobStatistics2 extends Google_Model
 {
   protected $internal_gapi_mappings = array(
   );
+  public $billingTier;
   public $cacheHit;
+  public $totalBytesBilled;
   public $totalBytesProcessed;
 
 
+  public function setBillingTier($billingTier)
+  {
+    $this->billingTier = $billingTier;
+  }
+  public function getBillingTier()
+  {
+    return $this->billingTier;
+  }
   public function setCacheHit($cacheHit)
   {
     $this->cacheHit = $cacheHit;
@@ -2389,6 +2483,14 @@ class Google_Service_Bigquery_JobStatistics2 extends Google_Model
   public function getCacheHit()
   {
     return $this->cacheHit;
+  }
+  public function setTotalBytesBilled($totalBytesBilled)
+  {
+    $this->totalBytesBilled = $totalBytesBilled;
+  }
+  public function getTotalBytesBilled()
+  {
+    return $this->totalBytesBilled;
   }
   public function setTotalBytesProcessed($totalBytesProcessed)
   {
@@ -2717,6 +2819,8 @@ class Google_Service_Bigquery_QueryResponse extends Google_Collection
   protected $internal_gapi_mappings = array(
   );
   public $cacheHit;
+  protected $errorsType = 'Google_Service_Bigquery_ErrorProto';
+  protected $errorsDataType = 'array';
   public $jobComplete;
   protected $jobReferenceType = 'Google_Service_Bigquery_JobReference';
   protected $jobReferenceDataType = '';
@@ -2737,6 +2841,14 @@ class Google_Service_Bigquery_QueryResponse extends Google_Collection
   public function getCacheHit()
   {
     return $this->cacheHit;
+  }
+  public function setErrors($errors)
+  {
+    $this->errors = $errors;
+  }
+  public function getErrors()
+  {
+    return $this->errors;
   }
   public function setJobComplete($jobComplete)
   {
@@ -2804,6 +2916,41 @@ class Google_Service_Bigquery_QueryResponse extends Google_Collection
   }
 }
 
+class Google_Service_Bigquery_Streamingbuffer extends Google_Model
+{
+  protected $internal_gapi_mappings = array(
+  );
+  public $estimatedBytes;
+  public $estimatedRows;
+  public $oldestEntryTime;
+
+
+  public function setEstimatedBytes($estimatedBytes)
+  {
+    $this->estimatedBytes = $estimatedBytes;
+  }
+  public function getEstimatedBytes()
+  {
+    return $this->estimatedBytes;
+  }
+  public function setEstimatedRows($estimatedRows)
+  {
+    $this->estimatedRows = $estimatedRows;
+  }
+  public function getEstimatedRows()
+  {
+    return $this->estimatedRows;
+  }
+  public function setOldestEntryTime($oldestEntryTime)
+  {
+    $this->oldestEntryTime = $oldestEntryTime;
+  }
+  public function getOldestEntryTime()
+  {
+    return $this->oldestEntryTime;
+  }
+}
+
 class Google_Service_Bigquery_Table extends Google_Model
 {
   protected $internal_gapi_mappings = array(
@@ -2812,15 +2959,20 @@ class Google_Service_Bigquery_Table extends Google_Model
   public $description;
   public $etag;
   public $expirationTime;
+  protected $externalDataConfigurationType = 'Google_Service_Bigquery_ExternalDataConfiguration';
+  protected $externalDataConfigurationDataType = '';
   public $friendlyName;
   public $id;
   public $kind;
   public $lastModifiedTime;
+  public $location;
   public $numBytes;
   public $numRows;
   protected $schemaType = 'Google_Service_Bigquery_TableSchema';
   protected $schemaDataType = '';
   public $selfLink;
+  protected $streamingBufferType = 'Google_Service_Bigquery_Streamingbuffer';
+  protected $streamingBufferDataType = '';
   protected $tableReferenceType = 'Google_Service_Bigquery_TableReference';
   protected $tableReferenceDataType = '';
   public $type;
@@ -2860,6 +3012,14 @@ class Google_Service_Bigquery_Table extends Google_Model
   {
     return $this->expirationTime;
   }
+  public function setExternalDataConfiguration(Google_Service_Bigquery_ExternalDataConfiguration $externalDataConfiguration)
+  {
+    $this->externalDataConfiguration = $externalDataConfiguration;
+  }
+  public function getExternalDataConfiguration()
+  {
+    return $this->externalDataConfiguration;
+  }
   public function setFriendlyName($friendlyName)
   {
     $this->friendlyName = $friendlyName;
@@ -2892,6 +3052,14 @@ class Google_Service_Bigquery_Table extends Google_Model
   {
     return $this->lastModifiedTime;
   }
+  public function setLocation($location)
+  {
+    $this->location = $location;
+  }
+  public function getLocation()
+  {
+    return $this->location;
+  }
   public function setNumBytes($numBytes)
   {
     $this->numBytes = $numBytes;
@@ -2923,6 +3091,14 @@ class Google_Service_Bigquery_Table extends Google_Model
   public function getSelfLink()
   {
     return $this->selfLink;
+  }
+  public function setStreamingBuffer(Google_Service_Bigquery_Streamingbuffer $streamingBuffer)
+  {
+    $this->streamingBuffer = $streamingBuffer;
+  }
+  public function getStreamingBuffer()
+  {
+    return $this->streamingBuffer;
   }
   public function setTableReference(Google_Service_Bigquery_TableReference $tableReference)
   {
@@ -3384,6 +3560,32 @@ class Google_Service_Bigquery_TableSchema extends Google_Collection
   public function getFields()
   {
     return $this->fields;
+  }
+}
+
+class Google_Service_Bigquery_UserDefinedFunctionResource extends Google_Model
+{
+  protected $internal_gapi_mappings = array(
+  );
+  public $inlineCode;
+  public $resourceUri;
+
+
+  public function setInlineCode($inlineCode)
+  {
+    $this->inlineCode = $inlineCode;
+  }
+  public function getInlineCode()
+  {
+    return $this->inlineCode;
+  }
+  public function setResourceUri($resourceUri)
+  {
+    $this->resourceUri = $resourceUri;
+  }
+  public function getResourceUri()
+  {
+    return $this->resourceUri;
   }
 }
 

@@ -49,9 +49,10 @@ else {
 	$name=$_POST["name"] ;
 	$nameShort=$_POST["nameShort"] ;
 	$description=$_POST["description"] ;
-	$nonCurrentYearLogin=$_POST["nonCurrentYearLogin"] ;
+	$futureYearsLogin=$_POST["futureYearsLogin"] ;
+	$pastYearsLogin=$_POST["pastYearsLogin"] ;
 	
-	if ($category=="" OR $name=="" OR $nameShort=="" OR $description=="" OR $nonCurrentYearLogin=="") {
+	if ($category=="" OR $name=="" OR $nameShort=="" OR $description=="" OR $futureYearsLogin=="" OR $pastYearsLogin=="") {
 		//Fail 3
 		$URL.="&addReturn=fail3" ;
 		header("Location: {$URL}");
@@ -79,8 +80,8 @@ else {
 		else {	
 			//Write to database
 			try {
-				$data=array("category"=>$category, "name"=>$name, "nameShort"=>$nameShort, "description"=>$description, "nonCurrentYearLogin"=>$nonCurrentYearLogin); 
-				$sql="INSERT INTO gibbonRole SET category=:category, name=:name, nameShort=:nameShort, description=:description, type='Additional', nonCurrentYearLogin=:nonCurrentYearLogin" ;
+				$data=array("category"=>$category, "name"=>$name, "nameShort"=>$nameShort, "description"=>$description, "futureYearsLogin"=>$futureYearsLogin, "pastYearsLogin"=>$pastYearsLogin); 
+				$sql="INSERT INTO gibbonRole SET category=:category, name=:name, nameShort=:nameShort, description=:description, type='Additional', futureYearsLogin=:futureYearsLogin, pastYearsLogin=:pastYearsLogin" ;
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
 			}

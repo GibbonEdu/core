@@ -107,54 +107,32 @@ else {
 					}
 					else {
 						//Check like status
-						try {
-							$dataLike=array("gibbonPlannerEntryHomeworkID"=>$gibbonPlannerEntryHomeworkID, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-							$sqlLike="SELECT * FROM gibbonCrowdAssessLike WHERE gibbonPlannerEntryHomeworkID=:gibbonPlannerEntryHomeworkID AND gibbonPersonID=:gibbonPersonID" ;
-							$resultLike=$connection2->prepare($sqlLike);
-							$resultLike->execute($dataLike);
-						}
-						catch(PDOException $e) { 
-							//Fail2
-							$URL.="&updateReturn=fail2" ;
-							header("Location: {$URL}");
-							break ;
-						}
-
-						//INSERT
-						if ($resultLike->rowCount()!=1) {
-							try {
-								$data=array("gibbonPlannerEntryHomeworkID"=>$gibbonPlannerEntryHomeworkID, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-								$sql="INSERT INTO gibbonCrowdAssessLike SET gibbonPlannerEntryHomeworkID=:gibbonPlannerEntryHomeworkID, gibbonPersonID=:gibbonPersonID" ;
-								$result=$connection2->prepare($sql);
-								$result->execute($data);
-							}
-							catch(PDOException $e) { 
-								//Fail2
+						$likesGiven=countLikesByContextAndGiver($connection2, "Crowd Assessment", "gibbonPlannerEntryHomeworkID", $gibbonPlannerEntryHomeworkID, $_SESSION[$guid]["gibbonPersonID"]) ;
+						if ($likesGiven!=1) { //INSERT LIKE
+							$return=setLike($connection2, "Crowd Assessment", $_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPlannerEntryHomeworkID", $gibbonPlannerEntryHomeworkID, $_SESSION[$guid]["gibbonPersonID"], $gibbonPersonID, "Crowd Assessment Feedback", $row["course"] . "." . $row["class"] . ": " . $row["name"]) ;
+							if ($return==FALSE) {
+								//Fail 2
 								$URL.="&updateReturn=fail2" ;
 								header("Location: {$URL}");
-								break ;
 							}
-							//Success 0
-							$URL.="&updateReturn=success0" ;
-							header("Location: {$URL}");
+							else {
+								//Success 0
+								$URL.="&updateReturn=success0" ;
+								header("Location: {$URL}");
+							}
 						}
-						//DELETE
-						else {
-							try {
-								$data=array("gibbonPlannerEntryHomeworkID"=>$gibbonPlannerEntryHomeworkID, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-								$sql="DELETE FROM gibbonCrowdAssessLike WHERE gibbonPlannerEntryHomeworkID=:gibbonPlannerEntryHomeworkID AND gibbonPersonID=:gibbonPersonID" ;
-								$result=$connection2->prepare($sql);
-								$result->execute($data);
-							}
-							catch(PDOException $e) { 
-								//Fail2
+						else { //DELETE LIKE
+							$return=deleteLike($connection2, "Crowd Assessment", "gibbonPlannerEntryHomeworkID", $gibbonPlannerEntryHomeworkID, $_SESSION[$guid]["gibbonPersonID"], $gibbonPersonID, "Crowd Assessment Feedback") ;
+							if ($return==FALSE) {
+								//Fail 2
 								$URL.="&updateReturn=fail2" ;
 								header("Location: {$URL}");
-								break ;
 							}
-							//Success 0
-							$URL.="&updateReturn=success0" ;
-							header("Location: {$URL}");
+							else {
+								//Success 0
+								$URL.="&updateReturn=success0" ;
+								header("Location: {$URL}");
+							}
 						}
 					}
 				}

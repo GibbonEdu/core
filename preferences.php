@@ -130,11 +130,11 @@ if ($result->rowCount()==1) {
 				<span style="font-size: 90%"><i></i></span>
 			</td>
 			<td class="right">
-				<input name="password" id="password" maxlength=20 value="" type="password" style="width: 300px">
+				<input name="password" id="password" maxlength=30 value="" type="password" style="width: 300px">
 				<script type="text/javascript">
 					var password=new LiveValidation('password');
 					password.add(Validate.Presence);
-				 </script>
+				</script>
 			</td>
 		</tr>
 		<tr>
@@ -143,7 +143,7 @@ if ($result->rowCount()==1) {
 				<span style="font-size: 90%"><i></i></span>
 			</td>
 			<td class="right">
-				<input name="passwordNew" id="passwordNew" maxlength=20 value="" type="password" style="width: 300px">
+				<input name="passwordNew" id="passwordNew" maxlength=30 value="" type="password" style="width: 300px">
 				<script type="text/javascript">
 					var passwordNew=new LiveValidation('passwordNew');
 					passwordNew.add(Validate.Presence);
@@ -165,7 +165,7 @@ if ($result->rowCount()==1) {
 						print "passwordNew.add( Validate.Length, { minimum: " . $minLength . "} );" ;
 					}
 					?>
-				 </script>
+				</script>
 			</td>
 		</tr>
 		<tr>
@@ -174,12 +174,12 @@ if ($result->rowCount()==1) {
 				<span style="font-size: 90%"><i></i></span>
 			</td>
 			<td class="right">
-				<input name="passwordConfirm" id="passwordConfirm" maxlength=20 value="" type="password" style="width: 300px">
+				<input name="passwordConfirm" id="passwordConfirm" maxlength=30 value="" type="password" style="width: 300px">
 				<script type="text/javascript">
 					var passwordConfirm=new LiveValidation('passwordConfirm');
 					passwordConfirm.add(Validate.Presence);
 					passwordConfirm.add(Validate.Confirmation, { match: 'passwordNew' } );
-				 </script>
+				</script>
 			</td>
 		</tr>
 		<tr>

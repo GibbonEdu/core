@@ -85,7 +85,7 @@ else {
 					<script type="text/javascript">
 						var name2=new LiveValidation('name');
 						name2.add(Validate.Presence);
-					 </script>
+					</script>
 				</td>
 			</tr>
 			<tr>
@@ -104,10 +104,46 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Home Language') ?></b><br/>
+					<b><?php print _('Home Language - Primary') ?></b><br/>
 				</td>
 				<td class="right">
-					<input name="languageHome" id="languageHome" maxlength=100 value="" type="text" style="width: 300px">
+					<select name="languageHomePrimary" id="languageHomePrimary" style="width: 302px">
+						<?php
+						print "<option value=''></option>" ;
+						try {
+							$dataSelect=array(); 
+							$sqlSelect="SELECT name FROM gibbonLanguage ORDER BY name" ;
+							$resultSelect=$connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						}
+						catch(PDOException $e) { }
+						while ($rowSelect=$resultSelect->fetch()) {
+							print "<option value='" . $rowSelect["name"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
+						}
+						?>				
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td> 
+					<b><?php print _('Home Language - Secondary') ?></b><br/>
+				</td>
+				<td class="right">
+					<select name="languageHomeSecondary" id="languageHomeSecondary" style="width: 302px">
+						<?php
+						print "<option value=''></option>" ;
+						try {
+							$dataSelect=array(); 
+							$sqlSelect="SELECT name FROM gibbonLanguage ORDER BY name" ;
+							$resultSelect=$connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						}
+						catch(PDOException $e) { }
+						while ($rowSelect=$resultSelect->fetch()) {
+							print "<option value='" . $rowSelect["name"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
+						}
+						?>				
+					</select>
 				</td>
 			</tr>
 			<tr>
@@ -120,7 +156,7 @@ else {
 					<script type="text/javascript">
 						var nameAddress=new LiveValidation('nameAddress');
 						nameAddress.add(Validate.Presence);
-					 </script>
+					</script>
 				</td>
 			</tr>
 			<tr>

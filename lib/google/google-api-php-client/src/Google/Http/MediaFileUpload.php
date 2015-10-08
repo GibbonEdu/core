@@ -287,7 +287,7 @@ class Google_Http_MediaFileUpload
     }
     $message = $code;
     $body = @json_decode($response->getResponseBody());
-    if (!empty( $body->error->errors ) ) {
+    if (!empty($body->error->errors) ) {
       $message .= ': ';
       foreach ($body->error->errors as $error) {
         $message .= "{$error->domain}, {$error->message};";
@@ -298,5 +298,10 @@ class Google_Http_MediaFileUpload
     $error = "Failed to start the resumable upload (HTTP {$message})";
     $this->client->getLogger()->error($error);
     throw new Google_Exception($error);
+  }
+
+  public function setChunkSize($chunkSize)
+  {
+    $this->chunkSize = $chunkSize;
   }
 }

@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start() ;
 
+//Module includes from User Admin (for custom fields)
+include "./modules/User Admin/moduleFunctions.php" ;
+
 $proceed=FALSE ;
 $public=FALSE ;
 
@@ -165,7 +168,7 @@ else {
 					<script type="text/javascript">
 						var surname=new LiveValidation('surname');
 						surname.add(Validate.Presence);
-					 </script>
+					</script>
 				</td>
 			</tr>
 			<tr>
@@ -178,7 +181,7 @@ else {
 					<script type="text/javascript">
 						var firstName=new LiveValidation('firstName');
 						firstName.add(Validate.Presence);
-					 </script>
+					</script>
 				</td>
 			</tr>
 			<tr>
@@ -191,7 +194,7 @@ else {
 					<script type="text/javascript">
 						var preferredName=new LiveValidation('preferredName');
 						preferredName.add(Validate.Presence);
-					 </script>
+					</script>
 				</td>
 			</tr>
 			<tr>
@@ -204,7 +207,7 @@ else {
 					<script type="text/javascript">
 						var officialName=new LiveValidation('officialName');
 						officialName.add(Validate.Presence);
-					 </script>
+					</script>
 				</td>
 			</tr>
 			<tr>
@@ -229,7 +232,7 @@ else {
 					<script type="text/javascript">
 						var gender=new LiveValidation('gender');
 						gender.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-					 </script>
+					</script>
 				</td>
 			</tr>
 			<tr>
@@ -243,7 +246,7 @@ else {
 						var dob=new LiveValidation('dob');
 						dob.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 					 	dob.add(Validate.Presence);
-					 </script>
+					</script>
 					 <script type="text/javascript">
 						$(function() {
 							$( "#dob" ).datepicker();
@@ -260,35 +263,52 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Home Language') ?> *</b><br/>
+					<b><?php print _('Home Language - Primary') ?> *</b><br/>
 					<span style="font-size: 90%"><i><?php print _('The primary language used in the student\'s home.') ?></i></span>
 				</td>
 				<td class="right">
-					<input name="languageHome" id="languageHome" maxlength=30 value="" type="text" style="width: 300px">
+					<select name="languageHomePrimary" id="languageHomePrimary" style="width: 302px">
+						<?php
+						print "<option value='Please select...'>Please select...</option>" ;
+						try {
+							$dataSelect=array(); 
+							$sqlSelect="SELECT name FROM gibbonLanguage ORDER BY name" ;
+							$resultSelect=$connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						}
+						catch(PDOException $e) { }
+						while ($rowSelect=$resultSelect->fetch()) {
+							print "<option value='" . $rowSelect["name"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
+						}
+						?>				
+					</select>
+					<script type="text/javascript">
+						var languageHomePrimary=new LiveValidation('languageHomePrimary');
+						languageHomePrimary.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+					</script>
 				</td>
-				<script type="text/javascript">
-					$(function() {
-						var availableTags=[
-							<?php
-							try {
-								$dataAuto=array(); 
-								$sqlAuto="SELECT DISTINCT languageHome FROM gibbonApplicationForm ORDER BY languageHome" ;
-								$resultAuto=$connection2->prepare($sqlAuto);
-								$resultAuto->execute($dataAuto);
-							}
-							catch(PDOException $e) { }
-							while ($rowAuto=$resultAuto->fetch()) {
-								print "\"" . $rowAuto["languageHome"] . "\", " ;
-							}
-							?>
-						];
-						$( "#languageHome" ).autocomplete({source: availableTags});
-					});
-				</script>
-				<script type="text/javascript">
-					var languageHome=new LiveValidation('languageHome');
-					languageHome.add(Validate.Presence);
-				</script>
+			</tr>
+			<tr>
+				<td> 
+					<b><?php print _('Home Language - Secondary') ?></b><br/>
+				</td>
+				<td class="right">
+					<select name="languageHomeSecondary" id="languageHomeSecondary" style="width: 302px">
+						<?php
+						print "<option value=''></option>" ;
+						try {
+							$dataSelect=array(); 
+							$sqlSelect="SELECT name FROM gibbonLanguage ORDER BY name" ;
+							$resultSelect=$connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						}
+						catch(PDOException $e) { }
+						while ($rowSelect=$resultSelect->fetch()) {
+							print "<option value='" . $rowSelect["name"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
+						}
+						?>				
+					</select>
+				</td>
 			</tr>
 			<tr>
 				<td> 
@@ -296,85 +316,70 @@ else {
 					<span style="font-size: 90%"><i><?php print _('Student\'s native/first/mother language.') ?></i></span>
 				</td>
 				<td class="right">
-					<input name="languageFirst" id="languageFirst" maxlength=30 value="" type="text" style="width: 300px">
+					<select name="languageFirst" id="languageFirst" style="width: 302px">
+						<?php
+						print "<option value='Please select...'>Please select...</option>" ;
+						try {
+							$dataSelect=array(); 
+							$sqlSelect="SELECT name FROM gibbonLanguage ORDER BY name" ;
+							$resultSelect=$connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						}
+						catch(PDOException $e) { }
+						while ($rowSelect=$resultSelect->fetch()) {
+							print "<option value='" . $rowSelect["name"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
+						}
+						?>				
+					</select>
+					<script type="text/javascript">
+						var languageFirst=new LiveValidation('languageFirst');
+						languageFirst.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+					</script>
 				</td>
-				<script type="text/javascript">
-					$(function() {
-						var availableTags=[
-							<?php
-							try {
-								$dataAuto=array(); 
-								$sqlAuto="SELECT DISTINCT languageFirst FROM gibbonApplicationForm ORDER BY languageFirst" ;
-								$resultAuto=$connection2->prepare($sqlAuto);
-								$resultAuto->execute($dataAuto);
-							}
-							catch(PDOException $e) { }
-							while ($rowAuto=$resultAuto->fetch()) {
-								print "\"" . $rowAuto["languageFirst"] . "\", " ;
-							}
-							?>
-						];
-						$( "#languageFirst" ).autocomplete({source: availableTags});
-					});
-				</script>
-				<script type="text/javascript">
-					var languageFirst=new LiveValidation('languageFirst');
-					languageFirst.add(Validate.Presence);
-				</script>
 			</tr>
 			<tr>
 				<td> 
 					<b><?php print _('Second Language') ?></b><br/>
 				</td>
 				<td class="right">
-					<input name="languageSecond" id="languageSecond" maxlength=30 value="" type="text" style="width: 300px">
+					<select name="languageSecond" id="languageSecond" style="width: 302px">
+						<?php
+						print "<option value=''></option>" ;
+						try {
+							$dataSelect=array(); 
+							$sqlSelect="SELECT name FROM gibbonLanguage ORDER BY name" ;
+							$resultSelect=$connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						}
+						catch(PDOException $e) { }
+						while ($rowSelect=$resultSelect->fetch()) {
+							print "<option value='" . $rowSelect["name"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
+						}
+						?>				
+					</select>
 				</td>
-				<script type="text/javascript">
-					$(function() {
-						var availableTags=[
-							<?php
-							try {
-								$dataAuto=array(); 
-								$sqlAuto="SELECT DISTINCT languageSecond FROM gibbonApplicationForm ORDER BY languageSecond" ;
-								$resultAuto=$connection2->prepare($sqlAuto);
-								$resultAuto->execute($dataAuto);
-							}
-							catch(PDOException $e) { }
-							while ($rowAuto=$resultAuto->fetch()) {
-								print "\"" . $rowAuto["languageSecond"] . "\", " ;
-							}
-							?>
-						];
-						$( "#languageSecond" ).autocomplete({source: availableTags});
-					});
-				</script>
 			</tr>
 			<tr>
 				<td> 
 					<b><?php print _('Third Language') ?></b><br/>
 				</td>
 				<td class="right">
-					<input name="languageThird" id="languageThird" maxlength=30 value="" type="text" style="width: 300px">
+					<select name="languageThird" id="languageThird" style="width: 302px">
+						<?php
+						print "<option value=''></option>" ;
+						try {
+							$dataSelect=array(); 
+							$sqlSelect="SELECT name FROM gibbonLanguage ORDER BY name" ;
+							$resultSelect=$connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						}
+						catch(PDOException $e) { }
+						while ($rowSelect=$resultSelect->fetch()) {
+							print "<option value='" . $rowSelect["name"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
+						}
+						?>				
+					</select>
 				</td>
-				<script type="text/javascript">
-					$(function() {
-						var availableTags=[
-							<?php
-							try {
-								$dataAuto=array(); 
-								$sqlAuto="SELECT DISTINCT languageThird FROM gibbonApplicationForm ORDER BY languageThird" ;
-								$resultAuto=$connection2->prepare($sqlAuto);
-								$resultAuto->execute($dataAuto);
-							}
-							catch(PDOException $e) { }
-							while ($rowAuto=$resultAuto->fetch()) {
-								print "\"" . $rowAuto["languageThird"] . "\", " ;
-							}
-							?>
-						];
-						$( "#languageThird" ).autocomplete({source: availableTags});
-					});
-				</script>
 			</tr>
 			<tr>
 				<td> 
@@ -474,11 +479,7 @@ else {
 							print "<option value=''></option>" ;
 							$residencyStatuses=explode(",", $residencyStatusList) ;
 							foreach ($residencyStatuses as $residencyStatus) {
-								$selected="" ;
-								if (trim($residencyStatus)==$row["residencyStatus"]) {
-									$selected="selected" ;
-								}
-								print "<option $selected value='" . trim($residencyStatus) . "'>" . trim($residencyStatus) . "</option>" ;
+								print "<option value='" . trim($residencyStatus) . "'>" . trim($residencyStatus) . "</option>" ;
 							}
 						print "</select>" ;
 					}
@@ -502,7 +503,7 @@ else {
 					<script type="text/javascript">
 						var visaExpiryDate=new LiveValidation('visaExpiryDate');
 						visaExpiryDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-					 </script>
+					</script>
 					 <script type="text/javascript">
 						$(function() {
 							$( "#visaExpiryDate" ).datepicker();
@@ -526,7 +527,7 @@ else {
 					<script type="text/javascript">
 						var email=new LiveValidation('email');
 						email.add(Validate.Email);
-					 </script>
+					</script>
 				</td>
 			</tr>
 			<?php
@@ -585,7 +586,7 @@ else {
 			<tr>
 				<td colspan=2 style='padding-top: 15px'> 
 					<b><?php print _('Development Information') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('Provide any comments or information concerning your child\'s development that may be relevant to your child\’s performance in the classroom or elsewhere? (Incorrect or withheld information may affect continued enrolment).') ?></i></span><br/> 					
+					<span style="font-size: 90%"><i><?php print _('Provide any comments or information concerning your child\'s development that may be relevant to your child\'s performance in the classroom or elsewhere? (Incorrect or withheld information may affect continued enrolment).') ?></i></span><br/> 					
 					<textarea name="developmentInformation" id="developmentInformation" rows=5 style="width:738px; margin: 5px 0px 0px 0px"></textarea>
 				</td>
 			</tr>
@@ -623,7 +624,7 @@ else {
 					<script type="text/javascript">
 						var gibbonSchoolYearIDEntry=new LiveValidation('gibbonSchoolYearIDEntry');
 						gibbonSchoolYearIDEntry.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-					 </script>
+					</script>
 				</td>
 			</tr>
 			<tr>
@@ -637,7 +638,7 @@ else {
 						var dateStart=new LiveValidation('dateStart');
 						dateStart.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 					 	dateStart.add(Validate.Presence);
-					 </script>
+					</script>
 					 <script type="text/javascript">
 						$(function() {
 							$( "#dateStart" ).datepicker();
@@ -671,7 +672,7 @@ else {
 					<script type="text/javascript">
 						var gibbonYearGroupIDEntry=new LiveValidation('gibbonYearGroupIDEntry');
 						gibbonYearGroupIDEntry.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-					 </script>
+					</script>
 				</td>
 			</tr>
 			
@@ -696,7 +697,7 @@ else {
 					</td>
 				</tr>
 				<?php
-			}		
+			}	
 			?>
 			
 			
@@ -792,6 +793,21 @@ else {
 			
 			
 			<?php
+			//CUSTOM FIELDS FOR STUDENT
+			$resultFields=getCustomFields($connection2, $guid, TRUE, FALSE, FALSE, FALSE, TRUE, NULL) ;
+			if ($resultFields->rowCount()>0) {
+				?>
+				<tr>
+					<td colspan=2> 
+						<h4><?php print _('Other Information') ?></h4>
+					</td>
+				</tr>
+				<?php
+				while ($rowFields=$resultFields->fetch()) {
+					print renderCustomFieldRow($connection2, $guid, $rowFields) ;	
+				}
+			}	
+			
 			//FAMILY
 			try {
 				$dataSelect=array("gibbonPersonID"=>$gibbonPersonID); 
@@ -825,7 +841,7 @@ else {
 						<script type="text/javascript">
 							var homeAddress=new LiveValidation('homeAddress');
 							homeAddress.add(Validate.Presence);
-						 </script>
+						</script>
 					</td>
 				</tr>
 				<tr>
@@ -858,7 +874,7 @@ else {
 					<script type="text/javascript">
 						var homeAddressDistrict=new LiveValidation('homeAddressDistrict');
 						homeAddressDistrict.add(Validate.Presence);
-					 </script>
+					</script>
 				</tr>
 				<tr>
 					<td> 
@@ -883,7 +899,7 @@ else {
 						<script type="text/javascript">
 							var homeAddressCountry=new LiveValidation('homeAddressCountry');
 							homeAddressCountry.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-						 </script>
+						</script>
 					</td>
 				</tr>
 				<?php
@@ -954,9 +970,19 @@ else {
 							<script type="text/javascript">
 								var parent1relationship=new LiveValidation('parent1relationship');
 								parent1relationship.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-							 </script>
+							</script>
 						</td>
 					</tr>
+					<?php
+						//CUSTOM FIELDS FOR PARENT 1 WITH FAMILY
+						$resultFields=getCustomFields($connection2, $guid, FALSE, FALSE, TRUE, FALSE, TRUE, NULL) ;
+						if ($resultFields->rowCount()>0) {
+							while ($rowFields=$resultFields->fetch()) {
+								print renderCustomFieldRow($connection2, $guid, $rowFields, "", "parent1") ;	
+							}
+						}	
+					?>
+					
 					<input name='parent1gibbonPersonID' value="<?php print $gibbonPersonID ?>" type="hidden">
 					<?php
 				}
@@ -971,10 +997,10 @@ else {
 								<?php print _('Parent/Guardian') ?> <?php print $i ?>
 								<?php
 								if ($i==1) {
-									print "<span style='font-size: 75%'> (e.g. mother)</span>" ;
+									print "<span style='font-size: 75%'> " . _('(e.g. mother)') . "</span>" ;
 								}
 								else if ($i==2 AND $gibbonPersonID=="") {
-									print "<span style='font-size: 75%'> (e.g. father)</span>" ;
+									print "<span style='font-size: 75%'> " . _('(e.g. father)') . "</span>" ;
 								}
 								?>
 							</h3>
@@ -1044,7 +1070,7 @@ else {
 										 });
 									});
 								</script>
-								<span style='font-weight: bold; font-style: italic'>Do not include a second parent/gaurdian <input id='secondParent' name='secondParent' type='checkbox' value='No'/></span>
+								<span style='font-weight: bold; font-style: italic'><?php print _('Do not include a second parent/gaurdian') ?> <input id='secondParent' name='secondParent' type='checkbox' value='No'/></span>
 							</td>
 						</tr>
 						<?php
@@ -1063,16 +1089,16 @@ else {
 						<td class="right">
 							<select style="width: 302px" id="<?php print "parent$i" ?>title" name="<?php print "parent$i" ?>title">
 								<option value="Please select..."><?php print _('Please select...') ?></option>
-								<option value="Ms.">Ms.</option>
-								<option value="Miss">Miss</option>
-								<option value="Mr.">Mr.</option>
-								<option value="Mrs.">Mrs.</option>
-								<option value="Dr.">Dr.</option>
+								<option value="Ms."><?php print _('Ms.') ?></option>
+								<option value="Miss"><?php print _('Miss.') ?></option>
+								<option value="Mr."><?php print _('Mr.') ?></option>
+								<option value="Mrs."><?php print _('Mrs.') ?></option>
+								<option value="Dr."><?php print _('Dr.') ?></option>
 							</select>
 							<script type="text/javascript">
 								var <?php print "parent$i" ?>title=new LiveValidation('<?php print "parent$i" ?>title');
 								<?php print "parent$i" ?>title.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
@@ -1085,7 +1111,7 @@ else {
 							<script type="text/javascript">
 								var <?php print "parent$i" ?>surname=new LiveValidation('<?php print "parent$i" ?>surname');
 								<?php print "parent$i" ?>surname.add(Validate.Presence);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
@@ -1098,7 +1124,7 @@ else {
 							<script type="text/javascript">
 								var <?php print "parent$i" ?>firstName=new LiveValidation('<?php print "parent$i" ?>firstName');
 								<?php print "parent$i" ?>firstName.add(Validate.Presence);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
@@ -1111,7 +1137,7 @@ else {
 							<script type="text/javascript">
 								var <?php print "parent$i" ?>preferredName=new LiveValidation('<?php print "parent$i" ?>preferredName');
 								<?php print "parent$i" ?>preferredName.add(Validate.Presence);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
@@ -1124,7 +1150,7 @@ else {
 							<script type="text/javascript">
 								var <?php print "parent$i" ?>officialName=new LiveValidation('<?php print "parent$i" ?>officialName');
 								<?php print "parent$i" ?>officialName.add(Validate.Presence);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
@@ -1149,7 +1175,7 @@ else {
 							<script type="text/javascript">
 								var <?php print "parent$i" ?>gender=new LiveValidation('<?php print "parent$i" ?>gender');
 								<?php print "parent$i" ?>gender.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
@@ -1175,7 +1201,7 @@ else {
 							<script type="text/javascript">
 								var <?php print "parent$i" ?>relationship=new LiveValidation('<?php print "parent$i" ?>relationship');
 								<?php print "parent$i" ?>relationship.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-							 </script>
+							</script>
 						</td>
 					</tr>
 					
@@ -1189,54 +1215,44 @@ else {
 							<b><?php print _('First Language') ?></b><br/>
 						</td>
 						<td class="right">
-							<input name="<?php print "parent$i" ?>languageFirst" id="<?php print "parent$i" ?>languageFirst" maxlength=30 value="" type="text" style="width: 300px">
+							<select name="<?php print "parent$i" ?>languageFirst" id="<?php print "parent$i" ?>languageFirst" style="width: 302px">
+								<?php
+								print "<option value=''></option>" ;
+								try {
+									$dataSelect=array(); 
+									$sqlSelect="SELECT name FROM gibbonLanguage ORDER BY name" ;
+									$resultSelect=$connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								}
+								catch(PDOException $e) { }
+								while ($rowSelect=$resultSelect->fetch()) {
+									print "<option value='" . $rowSelect["name"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
+								}
+								?>				
+							</select>
 						</td>
-						<script type="text/javascript">
-							$(function() {
-								var availableTags=[
-									<?php
-									try {
-										$dataAuto=array(); 
-										$sqlAuto="SELECT DISTINCT languageFirst FROM gibbonApplicationForm ORDER BY languageFirst" ;
-										$resultAuto=$connection2->prepare($sqlAuto);
-										$resultAuto->execute($dataAuto);
-									}
-									catch(PDOException $e) { }
-									while ($rowAuto=$resultAuto->fetch()) {
-										print "\"" . $rowAuto["languageFirst"] . "\", " ;
-									}
-									?>
-								];
-								$( "#<?php print 'parent' . $i ?>languageFirst" ).autocomplete({source: availableTags});
-							});
-						</script>
 					</tr>
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
 						<td> 
 							<b><?php print _('Second Language') ?></b><br/>
 						</td>
 						<td class="right">
-							<input name="<?php print "parent$i" ?>languageSecond" id="<?php print "parent$i" ?>languageSecond" maxlength=30 value="" type="text" style="width: 300px">
+							<select name="<?php print "parent$i" ?>languageSecond" id="<?php print "parent$i" ?>languageSecond" style="width: 302px">
+								<?php
+								print "<option value=''></option>" ;
+								try {
+									$dataSelect=array(); 
+									$sqlSelect="SELECT name FROM gibbonLanguage ORDER BY name" ;
+									$resultSelect=$connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								}
+								catch(PDOException $e) { }
+								while ($rowSelect=$resultSelect->fetch()) {
+									print "<option value='" . $rowSelect["name"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
+								}
+								?>				
+							</select>
 						</td>
-						<script type="text/javascript">
-							$(function() {
-								var availableTags=[
-									<?php
-									try {
-										$dataAuto=array(); 
-										$sqlAuto="SELECT DISTINCT languageSecond FROM gibbonApplicationForm ORDER BY languageSecond" ;
-										$resultAuto=$connection2->prepare($sqlAuto);
-										$resultAuto->execute($dataAuto);
-									}
-									catch(PDOException $e) { }
-									while ($rowAuto=$resultAuto->fetch()) {
-										print "\"" . $rowAuto["languageSecond"] . "\", " ;
-									}
-									?>
-								];
-								$( "#<?php print 'parent' . $i ?>languageSecond" ).autocomplete({source: availableTags});
-							});
-						</script>
 					</tr>
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
 						<td> 
@@ -1306,11 +1322,7 @@ else {
 									print "<option value=''></option>" ;
 									$residencyStatuses=explode(",", $residencyStatusList) ;
 									foreach ($residencyStatuses as $residencyStatus) {
-										$selected="" ;
-										if (trim($residencyStatus)==$row["parent" . $i . "residencyStatus"]) {
-											$selected="selected" ;
-										}
-										print "<option $selected value='" . trim($residencyStatus) . "'>" . trim($residencyStatus) . "</option>" ;
+										print "<option value='" . trim($residencyStatus) . "'>" . trim($residencyStatus) . "</option>" ;
 									}
 								print "</select>" ;
 							}
@@ -1334,7 +1346,7 @@ else {
 							<script type="text/javascript">
 								var <?php print "parent$i" ?>visaExpiryDate=new LiveValidation('<?php print "parent$i" ?>visaExpiryDate');
 								<?php print "parent$i" ?>visaExpiryDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-							 </script>
+							</script>
 							 <script type="text/javascript">
 								$(function() {
 									$( "#<?php print "parent$i" ?>visaExpiryDate" ).datepicker();
@@ -1361,7 +1373,7 @@ else {
 								print "parent$i" . "email.add(Validate.Email);";
 								print "parent$i" . "email.add(Validate.Presence);" ;
 								?>
-							 </script>
+							</script>
 						</td>
 					</tr>
 					
@@ -1381,7 +1393,7 @@ else {
 									<script type="text/javascript">
 										var <?php print "parent$i" ?>phone<?php print $y ?>=new LiveValidation('<?php print "parent$i" ?>phone<?php print $y ?>');
 										<?php print "parent$i" ?>phone<?php print $y ?>.add(Validate.Presence);
-									 </script>
+									</script>
 									<?php
 								}
 								?>
@@ -1429,7 +1441,7 @@ else {
 							<script type="text/javascript">
 								var <?php print "parent$i" ?>profession=new LiveValidation('<?php print "parent$i" ?>profession');
 								<?php print "parent$i" ?>profession.add(Validate.Presence);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
@@ -1441,6 +1453,42 @@ else {
 						</td>
 					</tr>
 					<?php
+					
+					
+					//CUSTOM FIELDS FOR PARENTS, WITH FAMILY
+					$resultFields=getCustomFields($connection2, $guid, FALSE, FALSE, TRUE, FALSE, TRUE, NULL) ;
+					if ($resultFields->rowCount()>0) {
+						?>
+						<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
+							<td colspan=2> 
+								<h4><?php print _('Parent/Guardian') ?> <?php print $i ?> <?php print _('Other Fields') ?></h4>
+							</td>
+						</tr>
+						<?php
+						while ($rowFields=$resultFields->fetch()) {
+							if ($i==2) {
+								print renderCustomFieldRow($connection2, $guid, $rowFields, "", "parent2", "secondParent") ;
+								?>
+								<script type="text/javascript">
+									/* Advanced Options Control */
+									$(document).ready(function(){
+										$("#secondParent").click(function(){
+											if ($('input[name=secondParent]:checked').val()=="No" ) {
+												$("#parent<?php print $i ?>custom<?php print $rowFields["gibbonPersonFieldID"] ?>").attr("disabled", "disabled");
+											} 
+											else {
+												$("#parent<?php print $i ?>custom<?php print $rowFields["gibbonPersonFieldID"] ?>").removeAttr("disabled");
+											}
+										 });
+									});
+								</script>
+								<?php
+							}
+							else {
+								print renderCustomFieldRow($connection2, $guid, $rowFields, "", "parent1") ;
+							}
+						}
+					}	
 				}
 			}
 			else {
@@ -1657,7 +1705,7 @@ else {
 			
 			<?php
 			$languageOptionsActive=getSettingByScope($connection2, 'Application Form', 'languageOptionsActive') ;
-			if ($languageOptionsActive=="On") {
+			if ($languageOptionsActive=="Y") {
 				?>
 				<tr class='break'>
 					<td colspan=2> 
@@ -1691,7 +1739,7 @@ else {
 						<script type="text/javascript">
 							var languageChoice=new LiveValidation('languageChoice');
 							languageChoice.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-						 </script>
+						</script>
 					</td>
 				</tr>
 				<tr>
@@ -1702,7 +1750,7 @@ else {
 						<script type="text/javascript">
 							var languageChoiceExperience=new LiveValidation('languageChoiceExperience');
 							languageChoiceExperience.add(Validate.Presence);
-						 </script>
+						</script>
 					</td>
 				</tr>
 				<?php
@@ -1731,8 +1779,8 @@ else {
 					<span style="font-size: 90%"><i><?php print _('Indicate if you are interested in a scholarship.') ?></i></span><br/>
 				</td>
 				<td class="right">
-					<input type="radio" id="scholarshipInterest" name="scholarshipInterest" class="type" value="Y" /> Yes
-					<input checked type="radio" id="scholarshipInterest" name="scholarshipInterest" class="type" value="N" /> No
+					<input type="radio" id="scholarshipInterest" name="scholarshipInterest" class="type" value="Y" /> <?php print ynExpander('Y') ?>
+					<input checked type="radio" id="scholarshipInterest" name="scholarshipInterest" class="type" value="N" /> <?php print ynExpander('N') ?>
 				</td>
 			</tr>
 			<tr>
@@ -1741,8 +1789,8 @@ else {
 					<span style="font-size: 90%"><i><?php print _('Is a scholarship required for you to take up a place at the school?') ?></i></span><br/>
 				</td>
 				<td class="right">
-					<input type="radio" id="scholarshipRequired" name="scholarshipRequired" class="type" value="Y" /> Yes
-					<input checked type="radio" id="scholarshipRequired" name="scholarshipRequired" class="type" value="N" /> No
+					<input type="radio" id="scholarshipRequired" name="scholarshipRequired" class="type" value="Y" /> <?php print ynExpander('Y') ?>
+					<input checked type="radio" id="scholarshipRequired" name="scholarshipRequired" class="type" value="N" /> <?php print ynExpander('N') ?>
 				</td>
 			</tr>
 			
@@ -1763,8 +1811,11 @@ else {
 					$("#companyPhoneRow").css("display","none");
 					$("#companyAllRow").css("display","none");
 					$("#companyCategoriesRow").css("display","none");
-					
-					
+					companyEmail.disable() ;
+					companyAddress.disable() ;
+					companyContact.disable() ;
+					companyName.disable() ;
+			
 					$(".payment").click(function(){
 						if ($('input[name=payment]:checked').val()=="Family" ) {
 							$("#companyNameRow").css("display","none");
@@ -1775,6 +1826,10 @@ else {
 							$("#companyPhoneRow").css("display","none");
 							$("#companyAllRow").css("display","none");
 							$("#companyCategoriesRow").css("display","none");
+							companyEmail.disable() ;
+							companyAddress.disable() ;
+							companyContact.disable() ;
+							companyName.disable() ;
 						} else {
 							$("#companyNameRow").slideDown("fast", $("#companyNameRow").css("display","table-row")); 
 							$("#companyContactRow").slideDown("fast", $("#companyContactRow").css("display","table-row")); 
@@ -1783,12 +1838,18 @@ else {
 							$("#companyCCFamilyRow").slideDown("fast", $("#companyCCFamilyRow").css("display","table-row")); 
 							$("#companyPhoneRow").slideDown("fast", $("#companyPhoneRow").css("display","table-row")); 
 							$("#companyAllRow").slideDown("fast", $("#companyAllRow").css("display","table-row")); 
-							if ($('input[name=companyAll]:checked').val()=="N" ) {
+							if ($('input[name=companyAll]:checked').val()=="Y" ) {
+								$("#companyCategoriesRow").css("display","none");
+							} else {
 								$("#companyCategoriesRow").slideDown("fast", $("#companyCategoriesRow").css("display","table-row")); 
 							}
+							companyEmail.enable() ;
+							companyAddress.enable() ;
+							companyContact.enable() ;
+							companyName.enable() ;
 						}
 					 });
-					 
+			 
 					 $(".companyAll").click(function(){
 						if ($('input[name=companyAll]:checked').val()=="Y" ) {
 							$("#companyCategoriesRow").css("display","none");
@@ -1808,44 +1869,57 @@ else {
 					<b><?php print _('Send Future Invoices To') ?></b><br/>
 				</td>
 				<td class="right">
-					<input type="radio" name="payment" value="Family" class="payment" checked /> Family
-					<input type="radio" name="payment" value="Company" class="payment" /> Company
+					<input type="radio" name="payment" value="Family" class="payment" checked /> <?php print _('Family') ?>
+					<input type="radio" name="payment" value="Company" class="payment" /> <?php print _('Company') ?>
 				</td>
 			</tr>
 			<tr id="companyNameRow">
 				<td> 
-					<b><?php print _('Company Name') ?></b><br/>
+					<b><?php print _('Company Name') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<input name="companyName" id="companyName" maxlength=100 value="" type="text" style="width: 300px">
+					<script type="text/javascript">
+						var companyName=new LiveValidation('companyName');
+						companyName.add(Validate.Presence);
+					</script>
 				</td>
 			</tr>
 			<tr id="companyContactRow">
 				<td> 
-					<b><?php print _('Company Contact Person') ?></b><br/>
+					<b><?php print _('Company Contact Person') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<input name="companyContact" id="companyContact" maxlength=100 value="" type="text" style="width: 300px">
+					<script type="text/javascript">
+						var companyContact=new LiveValidation('companyContact');
+						companyContact.add(Validate.Presence);
+					</script>
 				</td>
 			</tr>
 			<tr id="companyAddressRow">
 				<td> 
-					<b><?php print _('Company Address') ?></b><br/>
+					<b><?php print _('Company Address') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<input name="companyAddress" id="companyAddress" maxlength=255 value="" type="text" style="width: 300px">
+					<script type="text/javascript">
+						var companyAddress=new LiveValidation('companyAddress');
+						companyAddress.add(Validate.Presence);
+					</script>
 				</td>
 			</tr>
 			<tr id="companyEmailRow">
 				<td> 
-					<b><?php print _('Company Email') ?></b><br/>
+					<b><?php print _('Company Email') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<input name="companyEmail" id="companyEmail" maxlength=255 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var companyEmail=new LiveValidation('companyEmail');
+						companyEmail.add(Validate.Presence);
 						companyEmail.add(Validate.Email);
-					 </script>
+					</script>
 				</td>
 			</tr>
 			<tr id="companyCCFamilyRow">
@@ -1899,7 +1973,7 @@ else {
 					<td class="right">
 						<?php
 						while ($rowCat=$resultCat->fetch()) {
-							print $rowCat["name"] . " <input type='checkbox' name='gibbonFinanceFeeCategoryIDList[]' value='" . $rowCat["gibbonFinanceFeeCategoryID"] . "'/><br/>" ;
+							print _($rowCat["name"]) . " <input type='checkbox' name='gibbonFinanceFeeCategoryIDList[]' value='" . $rowCat["gibbonFinanceFeeCategoryID"] . "'/><br/>" ;
 						}
 						print _("Other") . " <input type='checkbox' name='gibbonFinanceFeeCategoryIDList[]' value='0001'/><br/>" ;
 						?>
@@ -2002,7 +2076,7 @@ else {
 							print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 							$howDidYouHears=explode(",", $howDidYouHearList) ;
 							foreach ($howDidYouHears as $howDidYouHear) {
-								print "<option value='" . trim($howDidYouHear) . "'>" . trim($howDidYouHear) . "</option>" ;
+								print "<option value='" . trim($howDidYouHear) . "'>" . _(trim($howDidYouHear)) . "</option>" ;
 							}
 						print "</select>" ;
 						?>
@@ -2084,7 +2158,7 @@ else {
 						<script type="text/javascript">
 							var agreement=new LiveValidation('agreement');
 							agreement.add( Validate.Acceptance );
-						 </script>
+						</script>
 						 <?php
 					print "</td>" ;
 				print "</tr>" ;

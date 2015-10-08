@@ -38,31 +38,49 @@ catch(PDOException $e) {
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
 $gibbonPersonID=$_POST["gibbonPersonID"] ; 
-$date=date("Y-m-d") ; 
-$type="Positive" ; 
-$descriptor="Quick Star" ; 
-$level="" ; 
-$comment="" ; 
 $gibbonPlannerEntryID=$_POST["gibbonPlannerEntryID"] ; 
+$mode=$_POST["mode"] ; //can be "add" or "remove"
+$comment="" ;
+if (isset($_POST["comment"])) {
+	$comment=$_POST["comment"] ;
+}
 	
-if ($gibbonPersonID=="" OR $date=="" OR $type=="" OR $descriptor=="" OR $gibbonPlannerEntryID=="") {
+if ($gibbonPersonID=="" OR $gibbonPlannerEntryID=="" OR ($mode!="add" AND $mode!="remove")) {
 	print _("Error") ;
 }
 else {
-	//Write to database
-	try {
-		$data=array("gibbonPersonID"=>$gibbonPersonID, "date"=>$date, "type"=>$type, "descriptor"=>$descriptor, "level"=>$level, "comment"=>$comment, "gibbonPlannerEntryID"=>$gibbonPlannerEntryID, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-		$sql="INSERT INTO gibbonBehaviour SET gibbonPersonID=:gibbonPersonID, date=:date, type=:type, descriptor=:descriptor, level=:level, comment=:comment, gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonSchoolYearID=:gibbonSchoolYearID" ;
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { 
-		//Fail 2
-		$URL.="&addReturn=fail2" ;
-		header("Location: {$URL}");
-		break ;
-	}
+	//Prepare scripts abd buttons to return via AJAX
+	$script="<script type=\"text/javascript\">
+		$(document).ready(function(){
+			$(\"#starAdd" . $gibbonPersonID . "\").click(function(){
+				$(\"#star" . $gibbonPersonID . "\").load(\"" . $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/planner_view_full_starAjax.php\",{\"gibbonPersonID\": \"" . $gibbonPersonID . "\", \"gibbonPlannerEntryID\": \"" . $gibbonPlannerEntryID . "\", \"mode\": \"add\", \"comment\": \"" . $comment . "\"});
+			});
+			$(\"#starRemove" . $gibbonPersonID . "\").click(function(){
+				$(\"#star" . $gibbonPersonID . "\").load(\"" . $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/planner_view_full_starAjax.php\",{\"gibbonPersonID\": \"" . $gibbonPersonID . "\", \"gibbonPlannerEntryID\": \"" . $gibbonPlannerEntryID . "\", \"mode\": \"remove\", \"comment\": \"" . $comment . "\"});
+			});
+		});
+	</script>" ;
+	$on=$script."<a id='starRemove" . $gibbonPersonID . "' onclick='return false;' href='#'><img style='margin-top: -30px; margin-left: 60px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_on.png'></a>" ; 
+	$off=$script."<a id='starAdd" . $gibbonPersonID . "' onclick='return false;' href='#'><img style='margin-top: -30px; margin-left: 60px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_off.png'></a>" ; 
 	
-	print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage_edit.php&gibbonBehaviourID=" . $connection2->lastInsertID() . "&gibbonPersonID=&gibbonRollGroupID=&gibbonYearGroupID=&type='><img style='margin-top: -30px; margin-left: 60px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_on.png'></a>" ;
+	//Act based on the mode
+	if ($mode=="add") { //ADD
+		$return=setLike($connection2, "Planner", $_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPlannerEntryID", $gibbonPlannerEntryID, $_SESSION[$guid]["gibbonPersonID"], $gibbonPersonID, "Planner - Learning Feedback", $comment) ;
+		if ($return==FALSE) {
+			print $off ;
+		}
+		else {
+			print $on ;
+		}
+	}
+	else if ($mode=="remove"){ //REMOVE
+		$return=deleteLike($connection2, "Planner", "gibbonPlannerEntryID", $gibbonPlannerEntryID, $_SESSION[$guid]["gibbonPersonID"], $gibbonPersonID, "Planner - Learning Feedback") ;
+		if ($return==FALSE) {
+			print $on ;
+		}
+		else {
+			print $off ;
+		}
+	}
 }
 ?>

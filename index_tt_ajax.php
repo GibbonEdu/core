@@ -49,8 +49,8 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
 //Setup variables
 $output="" ;
-if (isset($_GET["id"])) {
-	$id=$_GET["id"] ;
+if (isset($_POST["gibbonTTID"])) {
+	$id=$_POST["gibbonTTID"] ;
 }
 else {
 	$id="" ;

@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start() ;
 
-if (isActionAccessible($guid, $connection2, "/modules/School Admin/behaviourSettings.php")==FALSE) {
+if (isActionAccessible($guid, $connection2, "/modules/School Admin/markbookSettings.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
 		print _("You do not have access to this action.") ;
@@ -84,7 +84,7 @@ else {
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Presence);
-					 </script> 
+					</script> 
 				</td>
 			</tr>
 			<tr>

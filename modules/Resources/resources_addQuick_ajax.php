@@ -68,20 +68,6 @@ $output.="<table cellspacing='0' style='width: 100%'>" ;
 			$output.="<div style='margin: 0px' class='linkTop'><a href='javascript:void(0)' onclick='formReset(); \$(\"." .$id . "resourceQuickSlider\").slideUp();'><img title='" . _('Close') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/></a></div>" ;
 			$output.="<form id='" . $id . "ajaxForm'>" ;
 				$output.="<table cellspacing='0' style='border: none; width: 100%'>" ;
-					$output.="<tr>" ;
-						$output.="<td>" ;
-							$output.="<b>" . _("Insert Images As Links?") . "*</b><br/>" ;
-							$output.="<span style=\"font-size: 90%\"><i>" . _('If not, they will be inserted as images.') . "</i></span>" ;
-						$output.="</td>" ;
-						$output.="<td class=\"right\">" ;
-							$output.="<select name=\"imagesAsLinks\" id=\"imagesAsLinks\" style=\"width: 302px\">" ;
-								$output.="<option value='Y'>" . ynExpander('Y') . "</option>" ;
-								$output.="<option value='N'>" . ynExpander('N') . "</option>" ;			
-							$output.="</select>" ;
-						$output.="</td>" ;
-					$output.="</tr>" ;
-					
-					
 					//Get list of acceptable file extensions
 					try {
 						$dataExt=array(); 
@@ -110,6 +96,19 @@ $output.="<table cellspacing='0' style='width: 100%'>" ;
 							$output.="</td>" ;
 						$output.="</tr>" ;
 					}
+					
+					$output.="<tr>" ;
+						$output.="<td>" ;
+							$output.="<b>" . _("Insert Images As") . "*</b><br/>" ;
+						$output.="</td>" ;
+						$output.="<td class=\"right\">" ;
+							$output.="<select name=\"imagesAsLinks\" id=\"imagesAsLinks\" style=\"width: 302px\">" ;
+								$output.="<option value='N'>" . _('Image') . "</option>" ;		
+								$output.="<option value='Y'>" . _('Link') . "</option>" ;	
+							$output.="</select>" ;
+						$output.="</td>" ;
+					$output.="</tr>" ;
+					
 					$output.="<tr>" ;
 						$output.="<td>" ;
 							$output.=getMaxUpload(TRUE) ;

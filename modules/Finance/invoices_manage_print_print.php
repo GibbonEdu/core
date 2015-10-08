@@ -36,6 +36,10 @@ else {
 	if (isset($_GET["preview"])) {
 		$preview=$_GET["preview"] ;
 	}
+	$receiptNumber=NULL ;
+	if (isset($_GET["receiptNumber"])) {
+		$receiptNumber=$_GET["receiptNumber"] ;
+	}
 	
 	if ($gibbonFinanceInvoiceID=="" OR $gibbonSchoolYearID=="" OR $type=="") {
 		print "<div class='error'>" ;
@@ -148,8 +152,7 @@ else {
 				print "<h2>" ;
 					print _("Receipt") ;
 				print "</h2>" ;
-				
-				$receiptContents=receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]["currency"]) ;
+				$receiptContents=receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]["currency"], FALSE, $receiptNumber) ;
 				if ($receiptContents==FALSE) {
 					print "<div class='error'>" ;
 						print _("An error occurred.") ;

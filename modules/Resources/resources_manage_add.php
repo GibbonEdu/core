@@ -73,7 +73,7 @@ else {
 		} 
 		
 		?>
-		<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/resources_manage_addProcess.php?search=" . $_GET["search"] ?>" enctype="multipart/form-data">
+		<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/resources_manage_addProcess.php" ?>" enctype="multipart/form-data">
 			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 				<tr class='break'>
 					<td colspan=2> 
@@ -205,7 +205,7 @@ else {
 						<script type="text/javascript">
 							var name2=new LiveValidation('name');
 							name2.add(Validate.Presence);
-						 </script>
+						</script>
 					</td>
 				</tr>
 				<?php
@@ -244,7 +244,7 @@ else {
 								<script type="text/javascript">
 									var category=new LiveValidation('category');
 									category.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-								 </script>
+								</script>
 							</td>
 						</tr>
 						<?php
@@ -337,7 +337,7 @@ else {
 						<script type="text/javascript">
 							var tags=new LiveValidation('tags');
 							tags.add(Validate.Presence);
-						 </script>
+						</script>
 					</td>
 				</tr>
 				<tr>

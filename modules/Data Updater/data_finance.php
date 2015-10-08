@@ -277,7 +277,6 @@ else {
 								</td>
 							</tr>
 							
-							
 							<script type="text/javascript">
 								/* Resource 1 Option Control */
 								$(document).ready(function(){
@@ -290,6 +289,10 @@ else {
 										$("#companyPhoneRow").css("display","none");
 										$("#companyAllRow").css("display","none");
 										$("#companyCategoriesRow").css("display","none");
+										companyEmail.disable() ;
+										companyAddress.disable() ;
+										companyContact.disable() ;
+										companyName.disable() ;
 									}
 									else {
 										if ($('input[name=companyAll]:checked').val()=="Y" ) {
@@ -307,6 +310,10 @@ else {
 											$("#companyPhoneRow").css("display","none");
 											$("#companyAllRow").css("display","none");
 											$("#companyCategoriesRow").css("display","none");
+											companyEmail.disable() ;
+											companyAddress.disable() ;
+											companyContact.disable() ;
+											companyName.disable() ;
 										} else {
 											$("#companyNameRow").slideDown("fast", $("#companyNameRow").css("display","table-row")); 
 											$("#companyContactRow").slideDown("fast", $("#companyContactRow").css("display","table-row")); 
@@ -320,6 +327,10 @@ else {
 											} else {
 												$("#companyCategoriesRow").slideDown("fast", $("#companyCategoriesRow").css("display","table-row")); 
 											}
+											companyEmail.enable() ;
+											companyAddress.enable() ;
+											companyContact.enable() ;
+											companyName.enable() ;
 										}
 									 });
 							 
@@ -342,44 +353,57 @@ else {
 									<b><?php print _('Send Invoices To') ?></b><br/>
 								</td>
 								<td class="right">
-									<input <?php if ($row["invoiceTo"]=="Family") { print "checked" ; } ?> type="radio" name="invoiceTo" value="Family" class="invoiceTo" /> <?php print _('Family') ?>
+									<input <?php if ($row["invoiceTo"]=="Family" OR $row["invoiceTo"]=="") { print "checked" ; } ?> type="radio" name="invoiceTo" value="Family" class="invoiceTo" /> <?php print _('Family') ?>
 									<input <?php if ($row["invoiceTo"]=="Company") { print "checked" ; } ?> type="radio" name="invoiceTo" value="Company" class="invoiceTo" /> <?php print _('Company') ?>
 								</td>
 							</tr>
 							<tr id="companyNameRow">
 								<td> 
-									<b><?php print _('Company Name') ?></b><br/>
+									<b><?php print _('Company Name') ?> *</b><br/>
 								</td>
 								<td class="right">
 									<input name="companyName" id="companyName" maxlength=100 value="<?php print $row["companyName"] ?>" type="text" style="width: 300px">
+									<script type="text/javascript">
+										var companyName=new LiveValidation('companyName');
+										companyName.add(Validate.Presence);
+									</script>
 								</td>
 							</tr>
 							<tr id="companyContactRow">
 								<td> 
-									<b><?php print _('Company Contact Person') ?></b><br/>
+									<b><?php print _('Company Contact Person') ?> *</b><br/>
 								</td>
 								<td class="right">
 									<input name="companyContact" id="companyContact" maxlength=100 value="<?php print $row["companyContact"] ?>" type="text" style="width: 300px">
+									<script type="text/javascript">
+										var companyContact=new LiveValidation('companyContact');
+										companyContact.add(Validate.Presence);
+									</script>
 								</td>
 							</tr>
 							<tr id="companyAddressRow">
 								<td> 
-									<b><?php print _('Company Address') ?></b><br/>
+									<b><?php print _('Company Address') ?> *</b><br/>
 								</td>
 								<td class="right">
 									<input name="companyAddress" id="companyAddress" maxlength=255 value="<?php print $row["companyAddress"] ?>" type="text" style="width: 300px">
+									<script type="text/javascript">
+										var companyAddress=new LiveValidation('companyAddress');
+										companyAddress.add(Validate.Presence);
+									</script>
 								</td>
 							</tr>
 							<tr id="companyEmailRow">
 								<td> 
-									<b><?php print _('Company Email') ?></b><br/>
+									<b><?php print _('Company Email') ?> *</b><br/>
 								</td>
 								<td class="right">
 									<input name="companyEmail" id="companyEmail" maxlength=255 value="<?php print $row["companyEmail"] ?>" type="text" style="width: 300px">
 									<script type="text/javascript">
 										var companyEmail=new LiveValidation('companyEmail');
+										companyEmail.add(Validate.Presence);
 										companyEmail.add(Validate.Email);
-									 </script>
+									</script>
 								</td>
 							</tr>
 							<tr id="companyCCFamilyRow">

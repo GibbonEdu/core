@@ -47,7 +47,8 @@ else {
 	//Proceed!
 	$name=$_POST["name"] ;
 	$status=$_POST["status"] ;
-	$languageHome=$_POST["languageHome"] ;
+	$languageHomePrimary=$_POST["languageHomePrimary"] ;
+	$languageHomeSecondary=$_POST["languageHomeSecondary"] ;
 	$nameAddress=$_POST["nameAddress"] ;
 	$homeAddress=$_POST["homeAddress"] ;
 	$homeAddressDistrict=$_POST["homeAddressDistrict"] ;
@@ -62,8 +63,8 @@ else {
 	else {
 		//Write to database
 		try {
-			$data=array("name"=>$name, "status"=>$status, "languageHome"=>$languageHome, "nameAddress"=>$nameAddress, "homeAddress"=>$homeAddress, "homeAddressDistrict"=>$homeAddressDistrict, "homeAddressCountry"=>$homeAddressCountry); 
-			$sql="INSERT INTO gibbonFamily SET name=:name, status=:status, languageHome=:languageHome, nameAddress=:nameAddress, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry" ;
+			$data=array("name"=>$name, "status"=>$status, "languageHomePrimary"=>$languageHomePrimary, "languageHomeSecondary"=>$languageHomeSecondary, "nameAddress"=>$nameAddress, "homeAddress"=>$homeAddress, "homeAddressDistrict"=>$homeAddressDistrict, "homeAddressCountry"=>$homeAddressCountry); 
+			$sql="INSERT INTO gibbonFamily SET name=:name, status=:status, languageHomePrimary=:languageHomePrimary, languageHomeSecondary=:languageHomeSecondary, nameAddress=:nameAddress, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}

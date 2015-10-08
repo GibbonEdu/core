@@ -69,27 +69,33 @@ else {
 					<script type="text/javascript">
 						var name2=new LiveValidation('name');
 						name2.add(Validate.Presence);
-					 </script>
+					</script>
 				</td>
 			</tr>
+			<?php
+			$types=getSettingByScope($connection2, "School Admin", "spaceTypes") ;
+			$types=explode(",", $types) ;
+			?>
 			<tr>
 				<td> 
 					<b><?php print _('Type') ?> *</b><br/>
+					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
 					<select name="type" id="type" style="width: 302px">
-						<option value="Classroom"><?php print _('Classroom') ?></option>
-						<option value="Performance"><?php print _('Performance') ?></option>
-						<option value="Hall"><?php print _('Hall') ?></option>
-						<option value="Outdoor"><?php print _('Outdoor') ?></option>
-						<option value="Undercover"><?php print _('Undercover') ?></option>
-						<option value="Storage"><?php print _('Storage') ?></option>
-						<option value="Office"><?php print _('Office') ?></option>
-						<option value="Staffroom"><?php print _('Staffroom') ?></option>
-						<option value="Study"><?php print _('Study') ?></option>
-						<option value="Library"><?php print _('Library') ?></option>
-						<option value="Other"><?php print _('Other') ?></option>
+						<option value="Please select..."><?php print _('Please select...') ?></option>
+						<?php
+						for ($i=0; $i<count($types); $i++) {
+							?>
+							<option value="<?php print trim($types[$i]) ?>"><?php print trim($types[$i]) ?></option>
+						<?php
+						}
+						?>
 					</select>
+					<script type="text/javascript">
+						var type=new LiveValidation('type');
+						type.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+					</script>
 				</td>
 			</tr>
 			<tr>

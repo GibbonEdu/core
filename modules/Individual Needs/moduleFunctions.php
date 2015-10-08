@@ -17,8 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//Mode can be blank or "disabled"
-function printINStatusTable($connection2, $gibbonPersonID, $mode="") {
+//$mode can be blank or "disabled". $archive is a serialized array of values previously archived
+function printINStatusTable($connection2, $gibbonPersonID, $mode="", $archive="") {
 	$output=FALSE ;
 	
 	try {
@@ -68,21 +68,34 @@ function printINStatusTable($connection2, $gibbonPersonID, $mode="") {
 			$count++ ;
 		}
 		
-		try {
-			$dataPersonDescriptors=array("gibbonPersonID"=>$gibbonPersonID); 
-			$sqlPersonDescriptors="SELECT * FROM gibbonINPersonDescriptor WHERE gibbonPersonID=:gibbonPersonID" ;
-			$resultPersonDescriptors=$connection2->prepare($sqlPersonDescriptors);
-			$resultPersonDescriptors->execute($dataPersonDescriptors);
-		}
-		catch(PDOException $e) { 
-			$output.="<div class='error'>" . $e->getMessage() . "</div>" ; 
-		}
 		$personDescriptors=array() ;
 		$count=0 ;
-		while ($rowPersonDescriptors=$resultPersonDescriptors->fetch()) {
-			$personDescriptors[$count][0]=$rowPersonDescriptors["gibbonINDescriptorID"] ;
-			$personDescriptors[$count][1]=$rowPersonDescriptors["gibbonAlertLevelID"] ;
-			$count++ ;
+		if ($archive=="") { //Not an archive, get live data
+			try {
+				$dataPersonDescriptors=array("gibbonPersonID"=>$gibbonPersonID); 
+				$sqlPersonDescriptors="SELECT * FROM gibbonINPersonDescriptor WHERE gibbonPersonID=:gibbonPersonID" ;
+				$resultPersonDescriptors=$connection2->prepare($sqlPersonDescriptors);
+				$resultPersonDescriptors->execute($dataPersonDescriptors);
+			}
+			catch(PDOException $e) { 
+				$output.="<div class='error'>" . $e->getMessage() . "</div>" ; 
+			}
+			while ($rowPersonDescriptors=$resultPersonDescriptors->fetch()) {
+				$personDescriptors[$count][0]=$rowPersonDescriptors["gibbonINDescriptorID"] ;
+				$personDescriptors[$count][1]=$rowPersonDescriptors["gibbonAlertLevelID"] ;
+				$count++ ;
+			}
+		}
+		else { //It is an archive, so populate array
+			$archive=unserialize($archive) ;
+			if (count($archive)>0) {
+				foreach ($archive AS $archiveEntry) {
+					$personDescriptors[$count][0]=$archiveEntry["gibbonINDescriptorID"] ;
+					$personDescriptors[$count][1]=$archiveEntry["gibbonAlertLevelID"] ;
+					$count++ ;
+				}
+			}
+		
 		}
 		
 		//Print IN Status table
@@ -110,7 +123,7 @@ function printINStatusTable($connection2, $gibbonPersonID, $mode="") {
 						$output.="<span title='" . _($descriptors[$n][3]) . "'>" . _($descriptors[$n][1]) . "</span>" ;
 					$output.="<td>" ;
 					for ($i=0 ; $i<count($severity); $i++) {
-						$output.="<td>" ;
+						$output.="<td style='width: 10%'>" ;
 							$checked="" ;
 							for ($j=0 ; $j<count($personDescriptors); $j++) {
 								if ($personDescriptors[$j][0]==$descriptors[$n][0] AND $personDescriptors[$j][1]==$severity[$i][0]) {

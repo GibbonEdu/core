@@ -177,10 +177,54 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Home Language') ?></b><br/>
+							<b><?php print _('Home Language - Primary') ?></b><br/>
 						</td>
 						<td class="right">
-							<input name="languageHome" id="languageHome" maxlength=100 value="<?php print $row["languageHome"] ?>" type="text" style="width: 300px">
+							<select name="languageHomePrimary" id="languageHomePrimary" style="width: 302px">
+								<?php
+								print "<option value=''></option>" ;
+								try {
+									$dataSelect=array(); 
+									$sqlSelect="SELECT name FROM gibbonLanguage ORDER BY name" ;
+									$resultSelect=$connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								}
+								catch(PDOException $e) { }
+								while ($rowSelect=$resultSelect->fetch()) {
+									$selected="" ;
+									if ($row["languageHomePrimary"]==$rowSelect["name"]) {
+										$selected="selected" ;
+									}
+									print "<option $selected value='" . $rowSelect["name"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
+								}
+								?>				
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<b><?php print _('Home Language - Secondary') ?></b><br/>
+						</td>
+						<td class="right">
+							<select name="languageHomeSecondary" id="languageHomeSecondary" style="width: 302px">
+								<?php
+								print "<option value=''></option>" ;
+								try {
+									$dataSelect=array(); 
+									$sqlSelect="SELECT name FROM gibbonLanguage ORDER BY name" ;
+									$resultSelect=$connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								}
+								catch(PDOException $e) { }
+								while ($rowSelect=$resultSelect->fetch()) {
+									$selected="" ;
+									if ($row["languageHomeSecondary"]==$rowSelect["name"]) {
+										$selected="selected" ;
+									}
+									print "<option $selected value='" . $rowSelect["name"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
+								}
+								?>				
+							</select>
 						</td>
 					</tr>
 					<tr>
@@ -193,7 +237,7 @@ else {
 							<script type="text/javascript">
 								var nameAddress=new LiveValidation('nameAddress');
 								nameAddress.add(Validate.Presence);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -285,7 +329,7 @@ else {
 			$children=array() ;
 			$count=0 ;
 			while ($rowChildren=$resultChildren->fetch()) {
-				$children[$count]["image_75"]=$rowChildren["image_75"] ;
+				$children[$count]["image_240"]=$rowChildren["image_240"] ;
 				$children[$count]["gibbonPersonID"]=$rowChildren["gibbonPersonID"] ;
 				$children[$count]["preferredName"]=$rowChildren["preferredName"] ;
 				$children[$count]["surname"]=$rowChildren["surname"] ;
@@ -306,7 +350,7 @@ else {
 			$adults=array() ;
 			$count=0 ;
 			while ($rowAdults=$resultAdults->fetch()) {
-				$adults[$count]["image_75"]=$rowAdults["image_75"] ;
+				$adults[$count]["image_240"]=$rowAdults["image_240"] ;
 				$adults[$count]["gibbonPersonID"]=$rowAdults["gibbonPersonID"] ;
 				$adults[$count]["title"]=$rowAdults["title"] ;
 				$adults[$count]["preferredName"]=$rowAdults["preferredName"] ;
@@ -457,7 +501,7 @@ else {
 						//COLOR ROW BY STATUS!
 						print "<tr class=$rowNum>" ;
 							print "<td>" ;
-								print getUserPhoto($guid, $child["image_75"], 75) ;
+								print getUserPhoto($guid, $child["image_240"], 75) ;
 							print "</td>" ;
 							print "<td>" ;
 								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=" . $child["gibbonPersonID"] . "'>" . formatName("", $child["preferredName"], $child["surname"], "Student") . "</a>" ;
@@ -548,7 +592,7 @@ else {
 							<script type="text/javascript">
 								var gibbonPersonID=new LiveValidation('gibbonPersonID');
 								gibbonPersonID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -708,7 +752,7 @@ else {
 							<script type="text/javascript">
 								var gibbonPersonID2=new LiveValidation('gibbonPersonID2');
 								gibbonPersonID2.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -721,7 +765,7 @@ else {
 							<script type="text/javascript">
 								var comment2=new LiveValidation('comment2');
 								comment2.add( Validate.Length, { maximum: 1000 } );
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>

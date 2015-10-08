@@ -36,11 +36,11 @@ else {
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="success0") {
-			$deleteReturnMessage="Uninstall was successful. You will still need to remove the module's files and database tables yourself." ;	
+			$deleteReturnMessage="Uninstall was successful. You will still need to remove the module's files yourself." ;	
 			$class="success" ;
 		}
 		if ($deleteReturn=="success1") {
-			$deleteReturnMessage="Uninstall was successful. You will still need to remove the module's database tables yourself." ;	
+			$deleteReturnMessage="Uninstall was successful." ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;

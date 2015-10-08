@@ -211,21 +211,11 @@ else { //IF PAID IS Y WE ARE JUST RETURNING TO FINALISE PAYMENT AND RECORD OF PA
 		$paymentReceiptID=$confirmPayment["PAYMENTINFO_0_RECEIPTID"] ;
 		
 		//Payment was successful. Yeah!
-		if ($ACK="Success") {
+		if ($ACK=="Success") {
 			$updateFail=false ;
 			
 			//Save payment details to gibbonPayment
-			try {
-				$data=array("status"=>"Success", "paymentToken"=>$paymentToken, "paymentPayerID"=>$paymentPayerID, "paymentTransactionID"=>$paymentTransactionID, "paymentReceiptID"=>$paymentReceiptID, "foreignTable"=>"gibbonFinanceInvoice", "foreignTableID"=>$gibbonFinanceInvoiceID); 
-				$sql="INSERT INTO gibbonPayment SET status=:status, paymentToken=:paymentToken, paymentPayerID=:paymentPayerID, paymentTransactionID=:paymentTransactionID, paymentReceiptID=:paymentReceiptID, foreignTable=:foreignTable, foreignTableID=:foreignTableID" ;
-				$result=$connection2->prepare($sql);
-				$result->execute($data);
-			}
-			catch(PDOException $e) { 
-				$updateFail=true ;
-			}
-			
-			$gibbonPaymentID=$connection2->lastInsertID() ;
+			$gibbonPaymentID=setPaymentLog($connection2, $guid, "gibbonFinanceInvoice", $gibbonFinanceInvoiceID, "Online", "Complete", $feeTotal, "Paypal", "Success", $paymentToken, $paymentPayerID, $paymentTransactionID, $paymentReceiptID) ;
 			
 			//Link gibbonPayment record to gibbonApplicationForm, and make note that payment made
 			if ($gibbonPaymentID!="") {
@@ -324,8 +314,18 @@ else { //IF PAID IS Y WE ARE JUST RETURNING TO FINALISE PAYMENT AND RECORD OF PA
 			if (count($emails)>0) {
 				require $_SESSION[$guid]["absolutePath"] . '/lib/PHPMailer/class.phpmailer.php';
 
+				//Get receipt number
+				try {
+					$dataPayments=array("foreignTable"=>"gibbonFinanceInvoice", "foreignTableID"=>$gibbonFinanceInvoiceID); 
+					$sqlPayments="SELECT gibbonPayment.*, surname, preferredName FROM gibbonPayment JOIN gibbonPerson ON (gibbonPayment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignTable=:foreignTable AND foreignTableID=:foreignTableID ORDER BY timestamp, gibbonPaymentID" ;
+					$resultPayments=$connection2->prepare($sqlPayments);
+					$resultPayments->execute($dataPayments);
+				}
+				catch(PDOException $e) { }
+				$receiptCount=$resultPayments->rowCount() ;
+								
 				//Prep message
-				$body=receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]["currency"], TRUE) . "<p style='font-style: italic;'>Email sent via " . $_SESSION[$guid]["systemName"] . " at " . $_SESSION[$guid]["organisationName"] . ".</p>" ;
+				$body=receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]["currency"], TRUE, $receiptCount) . "<p style='font-style: italic;'>Email sent via " . $_SESSION[$guid]["systemName"] . " at " . $_SESSION[$guid]["organisationName"] . ".</p>" ;
 				$bodyPlain="This email is not viewable in plain text: enable rich text/HTML in your email client to view the receipt. Please reply to this email if you have any questions." ;
 
 				$mail=new PHPMailer;
@@ -351,17 +351,7 @@ else { //IF PAID IS Y WE ARE JUST RETURNING TO FINALISE PAYMENT AND RECORD OF PA
 			$updateFail=false ;
 			
 			//Save payment details to gibbonPayment
-			try {
-				$data=array("status"=>"Failure", "paymentToken"=>$paymentToken, "paymentPayerID"=>$paymentPayerID, "paymentTransactionID"=>$paymentTransactionID, "paymentReceiptID"=>$paymentReceiptID, "foreignTable"=>"gibbonFinanceInvoice", "foreignTableID"=>$gibbonFinanceInvoiceID); 
-				$sql="INSERT INTO gibbonPayment SET status=:status, paymentToken=:paymentToken, paymentPayerID=:paymentPayerID, paymentTransactionID=:paymentTransactionID, paymentReceiptID=:paymentReceiptID, foreignTable=:foreignTable, foreignTableID=:foreignTableID" ;
-				$result=$connection2->prepare($sql);
-				$result->execute($data);
-			}
-			catch(PDOException $e) { 
-				$updateFail=true ;
-			}
-			
-			$gibbonPaymentID=$connection2->lastInsertID() ;
+			$gibbonPaymentID=setPaymentLog($connection2, $guid, "gibbonFinanceInvoice", $gibbonFinanceInvoiceID, "Online", "Failure", $feeTotal, "Paypal", "Failure", $paymentToken, $paymentPayerID, $paymentTransactionID, $paymentReceiptID) ;
 			
 			//Link gibbonPayment record to gibbonApplicationForm, and make note that payment made
 			if ($gibbonPaymentID!="") {

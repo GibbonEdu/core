@@ -200,18 +200,55 @@ else {
 						}
 					}
 					if ($row["status"]=="Paid") {
-						?>
-						<tr class='<?php print $rowNum ?>'>
-							<td> 
-								<b><?php print _('Receipt') ?></b><br/>
-							</td>
-							<td class="left">
+						//Get individual payments that make up receipt
+						try {
+							$data=array("foreignTable"=>"gibbonFinanceInvoice", "foreignTableID"=>$gibbonFinanceInvoiceID); 
+							$sql="SELECT gibbonPayment.*, surname, preferredName FROM gibbonPayment JOIN gibbonPerson ON (gibbonPayment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignTable=:foreignTable AND foreignTableID=:foreignTableID ORDER BY timestamp, gibbonPaymentID" ;
+							$result=$connection2->prepare($sql);
+							$result->execute($data);
+						}
+						catch(PDOException $e) { 
+							$return.="<div class='error'>" . $e->getMessage() . "</div>" ; 
+						}
+
+						if ($result->rowCount()<1) {
+							?>
+							<tr class='<?php print $rowNum ?>'>
+								<td> 
+									<b><?php print _('Receipt') ?></b><br/>
+								</td>
+								<td class="left">
+									<?php
+									print "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_print_print.php&type=receipt&gibbonFinanceInvoiceID=" . $row["gibbonFinanceInvoiceID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID'>" .  _('Print') . "<img style='margin-left: 5px' title='" . _('Print') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
+									?>
+								</td>
+							</tr>
+							<?php
+						}
+						else {
+							$count2=0; 
+							while ($row=$result->fetch()) {
+								if ($count%2==0) {
+									$rowNum="even" ;
+								}
+								else {
+									$rowNum="odd" ;
+								}?>
+								<tr class='<?php print $rowNum ?>'>
+									<td> 
+										<b><?php print sprintf(_('Receipt %1$s'), ($count2+1)) ?></b><br/>
+									</td>
+									<td class="left">
+										<?php
+										print "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_print_print.php&type=receipt&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&gibbonSchoolYearID=$gibbonSchoolYearID&receiptNumber=$count2'>" .  _('Print') . "<img style='margin-left: 5px' title='" . _('Print') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
+										?>
+									</td>
+								</tr>
 								<?php
-								print "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_print_print.php&type=receipt&gibbonFinanceInvoiceID=" . $row["gibbonFinanceInvoiceID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID'>" .  _('Print') . "<img style='margin-left: 5px' title='" . _('Print') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
-								?>
-							</td>
-						</tr>
-						<?php
+								$count++ ;
+								$count2++ ;
+							}
+						}
 					}
 				print "</table>" ;
 			}
