@@ -2088,7 +2088,7 @@ function sidebar($connection2, $guid) {
 			?>
 			<script>
 				$(function(){
-					$('#siteloader').load('lib/googleOAuth/index.php');
+					$('#siteloader').load('lib/google/index.php');
 				});
 			</script>
 			<div id="siteloader"></div>
