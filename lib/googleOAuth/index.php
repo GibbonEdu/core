@@ -21,6 +21,8 @@ $_SESSION[$guid]["pageLoads"]=NULL ;
 
 $URL="index.php" ;
 
+require_once ('google-api-php-client/src/Google/autoload.php');
+
 /*
  * Copyright 2011 Google Inc.
  *
@@ -36,25 +38,25 @@ $URL="index.php" ;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
-require_once 'src/Google_Client.php'; // include the required class files for google login
-require_once 'src/contrib/Google_PlusService.php';
-require_once 'src/contrib/Google_Oauth2Service.php';
+
+require_once './src/Google_Client.php'; // include the required class files for google login
+require_once './src/contrib/Google_PlusService.php';
+require_once './src/contrib/Google_Oauth2Service.php';
 
 //Get API details
 $googleOAuth=getSettingByScope($connection2, "System", "googleOAuth") ;
-$googleClientName=getSettingByScope($connection2, "System", "googleClientName" ) ; 
-$googleClientID=getSettingByScope($connection2, "System", "googleClientID" ) ; 
-$googleClientSecret=getSettingByScope($connection2, "System", "googleClientSecret" ) ; 
-$googleRedirectUri=getSettingByScope($connection2, "System", "googleRedirectUri" ) ; 
-$googleDeveloperKey=getSettingByScope($connection2, "System", "googleDeveloperKey" ) ; 
+$googleClientName=getSettingByScope($connection2, "System", "googleClientName" ) ;
+$googleClientID=getSettingByScope($connection2, "System", "googleClientID" ) ;
+$googleClientSecret=getSettingByScope($connection2, "System", "googleClientSecret" ) ;
+$googleRedirectUri=getSettingByScope($connection2, "System", "googleRedirectUri" ) ;
+$googleDeveloperKey=getSettingByScope($connection2, "System", "googleDeveloperKey" ) ;
 
 //Test to see if correct API details exists.
 if ($googleOAuth!="Y" OR $googleClientName==FALSE OR $googleClientID==FALSE OR $googleClientSecret==FALSE OR $googleRedirectUri==FALSE OR $googleDeveloperKey==FALSE) {
 	unset($_SESSION[$guid]['googleAPIAccessToken']);
 	unset($_SESSION[$guid]['gplusuer']);
 	session_destroy();
-	$_SESSION[$guid]=NULL ;	
+	$_SESSION[$guid]=NULL ;
 }
 
 $client=new Google_Client();
@@ -92,16 +94,16 @@ if ($client->getAccessToken()) {
 	$authUrl=$client->createAuthUrl();
 }
 
-if(isset($me)){ 
+if(isset($me)){
 	$_SESSION[$guid]['gplusuer']=$me; // start the session
 	try {
-		$data=array("email"=>$email); 
+		$data=array("email"=>$email);
 		$sql="SELECT * FROM gibbonPerson WHERE (email=:email)" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}
 	catch(PDOException $e) {}
-	
+
 	//Test to see if email exists in logintable
 	if ($result->rowCount()!=1) {
 		unset($_SESSION[$guid]['googleAPIAccessToken']);
@@ -112,17 +114,17 @@ if(isset($me)){
 		header("Location: {$URL}");
 	}
 	else {
-		//logged in	
+		//logged in
 	}
 }
 
 if(isset($_GET['logout'])) {
-	 	
+
   unset($_SESSION[$guid]['googleAPIAccessToken']);
   unset($_SESSION[$guid]['gplusuer']);
- 
+
   session_destroy();
-  header('Location: http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']); // it will simply destroy the current seesion which you started before 
+  header('Location: http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']); // it will simply destroy the current seesion which you started before
   //NOTE: for logout and clear all the session direct google just uncomment the above line and comment the first header function
 }
 if(isset($authUrl)) {
@@ -171,11 +173,11 @@ if(isset($authUrl)) {
 			</div>
 		</body>
 	</html>
-<?php		
+<?php
 }
-if(isset($_SESSION[$guid]['gplusuer'])){ 
+if(isset($_SESSION[$guid]['gplusuer'])){
 	try {
-		$data=array("email"=>$email); 
+		$data=array("email"=>$email);
 		$sql="SELECT * FROM gibbonPerson WHERE ((email=:email) AND (status='Full') AND (canLogin='Y'))" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
@@ -195,10 +197,10 @@ if(isset($_SESSION[$guid]['gplusuer'])){
 		$username=$row['username'];
 		if ($row["failCount"]>=3) {
 			try {
-				$data=array("lastFailIPAddress"=> $_SERVER["REMOTE_ADDR"], "lastFailTimestamp"=> date("Y-m-d H:i:s"), "failCount"=>($row["failCount"]+1), "username"=>$username); 
+				$data=array("lastFailIPAddress"=> $_SERVER["REMOTE_ADDR"], "lastFailTimestamp"=> date("Y-m-d H:i:s"), "failCount"=>($row["failCount"]+1), "username"=>$username);
 				$sqlSecure="UPDATE gibbonPerson SET lastFailIPAddress=:lastFailIPAddress, lastFailTimestamp=:lastFailTimestamp, failCount=:failCount WHERE (username=:username)";
 				$resultSecure=$connection2->prepare($sqlSecure);
-				$resultSecure->execute($data); 
+				$resultSecure->execute($data);
 			}
 			catch(PDOException $e) { }
 
@@ -221,7 +223,7 @@ if(isset($_SESSION[$guid]['gplusuer'])){
 			$passwordStrong=hash("sha256", $salt.$password) ;
 
 			try {
-				$data=array("passwordStrong"=>$passwordStrong, "passwordStrongSalt"=>$salt, "username"=>$username); 
+				$data=array("passwordStrong"=>$passwordStrong, "passwordStrongSalt"=>$salt, "username"=>$username);
 				$sql="UPDATE gibbonPerson SET password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, failCount=0, passwordForceReset='N' WHERE username=:username";
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
@@ -280,8 +282,8 @@ if(isset($_SESSION[$guid]['gplusuer'])){
 		//If user has personal language set, load it to session variable.
 		if (!is_null($_SESSION[$guid]["gibboni18nIDPersonal"])) {
 			try {
-				$dataLanguage=array("gibboni18nID"=>$_SESSION[$guid]["gibboni18nIDPersonal"]); 
-				$sqlLanguage="SELECT * FROM gibboni18n WHERE active='Y' AND gibboni18nID=:gibboni18nID" ; 
+				$dataLanguage=array("gibboni18nID"=>$_SESSION[$guid]["gibboni18nIDPersonal"]);
+				$sqlLanguage="SELECT * FROM gibboni18n WHERE active='Y' AND gibboni18nID=:gibboni18nID" ;
 				$resultLanguage=$connection2->prepare($sqlLanguage);
 				$resultLanguage->execute($dataLanguage);
 			}
@@ -294,10 +296,10 @@ if(isset($_SESSION[$guid]['gplusuer'])){
 
 		//Make best effort to set IP address and other details, but no need to error check etc.
 		try {
-			$data=array( "lastIPAddress"=> $_SERVER["REMOTE_ADDR"], "lastTimestamp"=> date("Y-m-d H:i:s"), "failCount"=>0, "username"=> $username ); 
+			$data=array( "lastIPAddress"=> $_SERVER["REMOTE_ADDR"], "lastTimestamp"=> date("Y-m-d H:i:s"), "failCount"=>0, "username"=> $username );
 			$sql="UPDATE gibbonPerson SET lastIPAddress=:lastIPAddress, lastTimestamp=:lastTimestamp, failCount=:failCount WHERE username=:username" ;
 			$result=$connection2->prepare($sql);
-			$result->execute($data); 
+			$result->execute($data);
 		}
 		catch(PDOException $e) { }
 
@@ -305,13 +307,13 @@ if(isset($_SESSION[$guid]['gplusuer'])){
 		if ($refreshToken!="") {
 			$_SESSION[$guid]["googleAPIRefreshToken"]=$refreshToken ;
 			try {
-				$data=array( "googleAPIRefreshToken"=> $_SESSION[$guid]["googleAPIRefreshToken"], "username"=> $username ); 
+				$data=array( "googleAPIRefreshToken"=> $_SESSION[$guid]["googleAPIRefreshToken"], "username"=> $username );
 				$sql="UPDATE gibbonPerson SET googleAPIRefreshToken=:googleAPIRefreshToken WHERE username=:username" ;
 				$result=$connection2->prepare($sql);
-				$result->execute($data); 
+				$result->execute($data);
 			}
 			catch(PDOException $e) { }
-		} 
+		}
 
 		if (isset($_SESSION[$guid]["username"])) {
 			$URL="../../index.php" ;
@@ -322,8 +324,8 @@ if(isset($_SESSION[$guid]['gplusuer'])){
 			session_destroy();
 			$_SESSION[$guid]=NULL ;
 			$URL="../../index.php?loginReturn=fail8" ;
-		}		
-		header("Location: {$URL}");		
+		}
+		header("Location: {$URL}");
 	}
 }
 ?>
