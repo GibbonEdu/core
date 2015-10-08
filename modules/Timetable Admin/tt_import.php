@@ -124,7 +124,7 @@ else {
 								<script type="text/javascript">
 									var fieldDelimiter=new LiveValidation('fieldDelimiter');
 									fieldDelimiter.add(Validate.Presence);
-								 </script>
+								</script>
 							</td>
 						</tr>
 						<tr>
@@ -137,7 +137,7 @@ else {
 								<script type="text/javascript">
 									var stringEnclosure=new LiveValidation('stringEnclosure');
 									stringEnclosure.add(Validate.Presence);
-								 </script>
+								</script>
 							</td>
 						</tr>
 						<tr>

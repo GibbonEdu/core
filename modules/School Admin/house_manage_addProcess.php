@@ -74,10 +74,42 @@ else {
 			header("Location: {$URL}");
 		}
 		else {	
+			//Deal with file upload
+			$logo="" ;
+			$imageFail=FALSE ;
+			if ($_FILES['file1']["tmp_name"]!="") {
+				$time=time() ;
+				//Check for folder in uploads based on today's date
+				$path=$_SESSION[$guid]["absolutePath"] ; ;
+				if (is_dir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time))==FALSE) {
+					mkdir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time), 0777, TRUE) ;
+				}
+				$unique=FALSE;
+				$count=0 ;
+				while ($unique==FALSE AND $count<100) {
+					$suffix=randomPassword(16) ;
+					if ($count==0) {
+						$logo="uploads/" . date("Y", $time) . "/" . date("m", $time) . "/" . $name . "_$suffix" . strrchr($_FILES["file1"]["name"], ".") ;
+					}
+					else {
+						$logo="uploads/" . date("Y", $time) . "/" . date("m", $time) . "/" . $name . "_$suffix" . "_$count" . strrchr($_FILES["file1"]["name"], ".") ;
+					}
+				
+					if (!(file_exists($path . "/" . $logo))) {
+						$unique=TRUE ;
+					}
+					$count++ ;
+				}
+				if (!(move_uploaded_file($_FILES["file1"]["tmp_name"],$path . "/" . $logo))) {
+					$logo="" ;
+					$imageFail=TRUE ;
+				}
+			}
+		
 			//Write to database
 			try {
-				$data=array("name"=>$name, "nameShort"=>$nameShort); 
-				$sql="INSERT INTO gibbonHouse SET name=:name, nameShort=:nameShort" ;
+				$data=array("name"=>$name, "nameShort"=>$nameShort, "logo"=>$logo); 
+				$sql="INSERT INTO gibbonHouse SET name=:name, nameShort=:nameShort, logo=:logo" ;
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
 			}
@@ -88,9 +120,16 @@ else {
 				break ;
 			}
 			
-			//Success 0
-			$URL.="&addReturn=success0" ;
-			header("Location: {$URL}");
+			if ($imageFail) {
+				//Success 1
+				$URL.="&addReturn=success1" ;
+				header("Location: {$URL}");
+			}
+			else {
+				//Success 0
+				$URL.="&addReturn=success0" ;
+				header("Location: {$URL}");
+			}
 		}
 	}
 }

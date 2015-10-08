@@ -32,6 +32,9 @@ catch(PDOException $e) {
 
 @session_start() ;
 
+//Module includes from User Admin (for custom fields)
+include "../User Admin/moduleFunctions.php" ;
+
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
@@ -114,7 +117,8 @@ else {
 			else {
 				$dob=dateConvert($guid, $dob) ;
 			}
-			$languageHome=$_POST["languageHome"] ;
+			$languageHomePrimary=$_POST["languageHomePrimary"] ;
+			$languageHomeSecondary=$_POST["languageHomeSecondary"] ;
 			$languageFirst=$_POST["languageFirst"] ;
 			$languageSecond=$_POST["languageSecond"] ;
 			$languageThird=$_POST["languageThird"] ;
@@ -195,6 +199,7 @@ else {
 			if (isset($_POST["parent1gibbonPersonID"])) {
 				$parent1gibbonPersonID=$_POST["parent1gibbonPersonID"] ;
 			}
+			
 			$parent1title=NULL ;
 			if (isset($_POST["parent1title"])) {
 				$parent1title=$_POST["parent1title"] ;
@@ -549,73 +554,162 @@ else {
 					}
 				}
 			}
-			if ($priority=="" OR $surname=="" OR $firstName=="" OR $preferredName=="" OR $officialName=="" OR $gender=="" OR $dob=="" OR $languageHome=="" OR $languageFirst=="" OR $gibbonSchoolYearIDEntry=="" OR $dateStart=="" OR $gibbonYearGroupIDEntry=="" OR $howDidYouHear=="" OR $familyFail) {
+			if ($priority=="" OR $surname=="" OR $firstName=="" OR $preferredName=="" OR $officialName=="" OR $gender=="" OR $dob=="" OR $languageHomePrimary=="" OR $languageFirst=="" OR $gibbonSchoolYearIDEntry=="" OR $dateStart=="" OR $gibbonYearGroupIDEntry=="" OR $howDidYouHear=="" OR $familyFail) {
 				//Fail 3
 				$URL.="&addReturn=fail3" ;
 				header("Location: {$URL}");
 			}
 			
 			else {
-				//Write to database
-				try {
-					$data=array("priority"=>$priority, "status"=>$status, "milestones"=>$milestones, "dateStart"=>$dateStart, "gibbonRollGroupID"=>$gibbonRollGroupID, "paymentMade"=>$paymentMade, "notes"=>$notes, "surname"=>$surname, "firstName"=>$firstName, "preferredName"=>$preferredName, "officialName"=>$officialName, "nameInCharacters"=>$nameInCharacters, "gender"=>$gender, "dob"=>$dob, "languageHome"=>$languageHome, "languageFirst"=>$languageFirst, "languageSecond"=>$languageSecond, "languageThird"=>$languageThird, "countryOfBirth"=>$countryOfBirth, "citizenship1"=>$citizenship1, "citizenship1Passport"=>$citizenship1Passport, "nationalIDCardNumber"=>$nationalIDCardNumber, "residencyStatus"=>$residencyStatus, "visaExpiryDate"=>$visaExpiryDate, "email"=>$email, "homeAddress"=>$homeAddress, "homeAddressDistrict"=>$homeAddressDistrict, "homeAddressCountry"=>$homeAddressCountry, "phone1Type"=>$phone1Type, "phone1CountryCode"=>$phone1CountryCode, "phone1"=>$phone1, "phone2Type"=>$phone2Type, "phone2CountryCode"=>$phone2CountryCode, "phone2"=>$phone2, "medicalInformation"=>$medicalInformation, "developmentInformation"=>$developmentInformation, "gibbonSchoolYearIDEntry"=>$gibbonSchoolYearIDEntry, "gibbonYearGroupIDEntry"=>$gibbonYearGroupIDEntry, "dayType"=>$dayType, "schoolName1"=>$schoolName1, "schoolAddress1"=>$schoolAddress1, "schoolGrades1"=>$schoolGrades1, "schoolDate1"=>$schoolDate1, "schoolName2"=>$schoolName2, "schoolAddress2"=>$schoolAddress2, "schoolGrades2"=>$schoolGrades2, "schoolDate2"=>$schoolDate2, "gibbonFamilyID"=>$gibbonFamilyID, "parent1gibbonPersonID"=>$parent1gibbonPersonID, "parent1title"=>$parent1title, "parent1surname"=>$parent1surname, "parent1firstName"=>$parent1firstName, "parent1preferredName"=>$parent1preferredName, "parent1officialName"=>$parent1officialName, "parent1nameInCharacters"=>$parent1nameInCharacters, "parent1gender"=>$parent1gender, "parent1relationship"=>$parent1relationship, "parent1languageFirst"=>$parent1languageFirst, "parent1languageSecond"=>$parent1languageSecond, "parent1citizenship1"=>$parent1citizenship1, "parent1nationalIDCardNumber"=>$parent1nationalIDCardNumber, "parent1residencyStatus"=>$parent1residencyStatus, "parent1visaExpiryDate"=>$parent1visaExpiryDate, "parent1email"=>$parent1email, "parent1phone1Type"=>$parent1phone1Type, "parent1phone1CountryCode"=>$parent1phone1CountryCode, "parent1phone1"=>$parent1phone1, "parent1phone2Type"=>$parent1phone2Type, "parent1phone2CountryCode"=>$parent1phone2CountryCode, "parent1phone2"=>$parent1phone2, "parent1profession"=>$parent1profession, "parent1employer"=>$parent1employer, "parent2title"=>$parent2title, "parent2surname"=>$parent2surname, "parent2firstName"=>$parent2firstName, "parent2preferredName"=>$parent2preferredName, "parent2officialName"=>$parent2officialName, "parent2nameInCharacters"=>$parent2nameInCharacters, "parent2gender"=>$parent2gender, "parent2relationship"=>$parent2relationship, "parent2languageFirst"=>$parent2languageFirst, "parent2languageSecond"=>$parent2languageSecond, "parent2citizenship1"=>$parent2citizenship1, "parent2nationalIDCardNumber"=>$parent2nationalIDCardNumber, "parent2residencyStatus"=>$parent2residencyStatus, "parent2visaExpiryDate"=>$parent2visaExpiryDate, "parent2email"=>$parent2email, "parent2phone1Type"=>$parent2phone1Type, "parent2phone1CountryCode"=>$parent2phone1CountryCode, "parent2phone1"=>$parent2phone1, "parent2phone2Type"=>$parent2phone2Type, "parent2phone2CountryCode"=>$parent2phone2CountryCode, "parent2phone2"=>$parent2phone2, "parent2profession"=>$parent2profession, "parent2employer"=>$parent2employer, "siblingName1"=>$siblingName1, "siblingDOB1"=>$siblingDOB1, "siblingSchool1"=>$siblingSchool1, "siblingSchoolJoiningDate1"=>$siblingSchoolJoiningDate1, "siblingName2"=>$siblingName2, "siblingDOB2"=>$siblingDOB2, "siblingSchool2"=>$siblingSchool2, "siblingSchoolJoiningDate2"=>$siblingSchoolJoiningDate2, "siblingName3"=>$siblingName3, "siblingDOB3"=>$siblingDOB3, "siblingSchool3"=>$siblingSchool3, "siblingSchoolJoiningDate3"=>$siblingSchoolJoiningDate3, "languageChoice"=>$languageChoice, "languageChoiceExperience"=>$languageChoiceExperience, "scholarshipInterest"=>$scholarshipInterest, "scholarshipRequired"=>$scholarshipRequired, "payment"=>$payment, "companyName"=>$companyName, "companyContact"=>$companyContact, "companyAddress"=>$companyAddress, "companyEmail"=>$companyEmail, "companyCCFamily"=>$companyCCFamily, "companyPhone"=>$companyPhone, "companyAll"=>$companyAll, "gibbonFinanceFeeCategoryIDList"=>$gibbonFinanceFeeCategoryIDList, "howDidYouHear"=>$howDidYouHear, "howDidYouHearMore"=>$howDidYouHearMore, "privacy"=>$privacy, "gibbonApplicationFormID"=>$gibbonApplicationFormID); 
-					$sql="UPDATE gibbonApplicationForm SET priority=:priority, status=:status, milestones=:milestones, dateStart=:dateStart, gibbonRollGroupID=:gibbonRollGroupID, paymentMade=:paymentMade, notes=:notes, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, dob=:dob, languageHome=:languageHome, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, citizenship1=:citizenship1, citizenship1Passport=:citizenship1Passport, nationalIDCardNumber=:nationalIDCardNumber, residencyStatus=:residencyStatus, visaExpiryDate=:visaExpiryDate, email=:email, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, phone2Type=:phone2Type, phone2CountryCode=:phone2CountryCode, phone2=:phone2, medicalInformation=:medicalInformation, developmentInformation=:developmentInformation, gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry, gibbonYearGroupIDEntry=:gibbonYearGroupIDEntry, dayType=:dayType, schoolName1=:schoolName1, schoolAddress1=:schoolAddress1, schoolGrades1=:schoolGrades1, schoolDate1=:schoolDate1, schoolName2=:schoolName2, schoolAddress2=:schoolAddress2, schoolGrades2=:schoolGrades2, schoolDate2=:schoolDate2, gibbonFamilyID=:gibbonFamilyID, parent1gibbonPersonID=:parent1gibbonPersonID, parent1title=:parent1title, parent1surname=:parent1surname, parent1firstName=:parent1firstName, parent1preferredName=:parent1preferredName, parent1officialName=:parent1officialName, parent1nameInCharacters=:parent1nameInCharacters, parent1gender=:parent1gender, parent1relationship=:parent1relationship, parent1languageFirst=:parent1languageFirst, parent1languageSecond=:parent1languageSecond, parent1citizenship1=:parent1citizenship1, parent1nationalIDCardNumber=:parent1nationalIDCardNumber, parent1residencyStatus=:parent1residencyStatus, parent1visaExpiryDate=:parent1visaExpiryDate, parent1email=:parent1email, parent1phone1Type=:parent1phone1Type, parent1phone1CountryCode=:parent1phone1CountryCode, parent1phone1=:parent1phone1, parent1phone2Type=:parent1phone2Type, parent1phone2CountryCode=:parent1phone2CountryCode, parent1phone2=:parent1phone2, parent1profession=:parent1profession, parent1employer=:parent1employer, parent2title=:parent2title, parent2surname=:parent2surname, parent2firstName=:parent2firstName, parent2preferredName=:parent2preferredName, parent2officialName=:parent2officialName, parent2nameInCharacters=:parent2nameInCharacters, parent2gender=:parent2gender, parent2relationship=:parent2relationship, parent2languageFirst=:parent2languageFirst, parent2languageSecond=:parent2languageSecond, parent2citizenship1=:parent2citizenship1, parent2nationalIDCardNumber=:parent2nationalIDCardNumber, parent2residencyStatus=:parent2residencyStatus, parent2visaExpiryDate=:parent2visaExpiryDate, parent2email=:parent2email, parent2phone1Type=:parent2phone1Type, parent2phone1CountryCode=:parent2phone1CountryCode, parent2phone1=:parent2phone1, parent2phone2Type=:parent2phone2Type, parent2phone2CountryCode=:parent2phone2CountryCode, parent2phone2=:parent2phone2, parent2profession=:parent2profession, parent2employer=:parent2employer, siblingName1=:siblingName1, siblingDOB1=:siblingDOB1, siblingSchool1=:siblingSchool1, siblingSchoolJoiningDate1=:siblingSchoolJoiningDate1, siblingName2=:siblingName2, siblingDOB2=:siblingDOB2, siblingSchool2=:siblingSchool2, siblingSchoolJoiningDate2=:siblingSchoolJoiningDate2, siblingName3=:siblingName3, siblingDOB3=:siblingDOB3, siblingSchool3=:siblingSchool3, siblingSchoolJoiningDate3=:siblingSchoolJoiningDate3, languageChoice=:languageChoice, languageChoiceExperience=:languageChoiceExperience, scholarshipInterest=:scholarshipInterest, scholarshipRequired=:scholarshipRequired, payment=:payment, companyName=:companyName, companyContact=:companyContact, companyAddress=:companyAddress, companyEmail=:companyEmail, companyCCFamily=:companyCCFamily, companyPhone=:companyPhone, companyAll=:companyAll, gibbonFinanceFeeCategoryIDList=:gibbonFinanceFeeCategoryIDList, howDidYouHear=:howDidYouHear, howDidYouHearMore=:howDidYouHearMore, privacy=:privacy WHERE gibbonApplicationFormID=:gibbonApplicationFormID" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { 
-					//Fail 2
-					$URL.="&updateReturn=fail2" ;
-					header("Location: {$URL}");
-					break ;
-				}
-				
-				//Deal with required documents
-				$requiredDocuments=getSettingByScope($connection2, "Application Form", "requiredDocuments") ;
-				if ($requiredDocuments!="" AND $requiredDocuments!=FALSE) {
-					$fileCount=0 ;
-					if (isset($_POST["fileCount"])) {
-						$fileCount=$_POST["fileCount"] ;
+				//DEAL WITH CUSTOM FIELDS
+				$customRequireFail=FALSE ;
+				//Prepare field values
+				//CHILD
+				$resultFields=getCustomFields($connection2, $guid, TRUE, FALSE, FALSE, FALSE, TRUE, NULL) ;
+				$fields=array() ;
+				if ($resultFields->rowCount()>0) {
+					while ($rowFields=$resultFields->fetch()) {
+						if (isset($_POST["custom" . $rowFields["gibbonPersonFieldID"]])) {
+							if ($rowFields["type"]=="date") {
+								$fields[$rowFields["gibbonPersonFieldID"]]=dateConvert($guid, $_POST["custom" . $rowFields["gibbonPersonFieldID"]]) ;
+							}
+							else {
+								$fields[$rowFields["gibbonPersonFieldID"]]=$_POST["custom" . $rowFields["gibbonPersonFieldID"]] ;
+							}
+						}
+						if ($rowFields["required"]=="Y") {
+							if (isset($_POST["custom" . $rowFields["gibbonPersonFieldID"]])==FALSE) {
+								$customRequireFail=TRUE ;
+							}
+							else if ($_POST["custom" . $rowFields["gibbonPersonFieldID"]]=="") {
+								$customRequireFail=TRUE ;
+							}
+						}
 					}
-					for ($i=0; $i<$fileCount; $i++) {
-						$fileName=$_POST["fileName$i"] ;
-						$time=time() ;
-						//Move attached file, if there is one
-						if ($_FILES["file$i"]["tmp_name"]!="") {
-							//Check for folder in uploads based on today's date
-							$path=$_SESSION[$guid]["absolutePath"] ;
-							if (is_dir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time))==FALSE) {
-								mkdir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time), 0777, TRUE) ;
-							}
-							$unique=FALSE;
-							$count=0 ;
-							while ($unique==FALSE AND $count<100) {
-								$suffix=randomPassword(16) ;
-								$attachment="uploads/" . date("Y", $time) . "/" . date("m", $time) . "/Application Document_$suffix" . strrchr($_FILES["file$i"]["name"], ".") ;
-								if (!(file_exists($path . "/" . $attachment))) {
-									$unique=TRUE ;
+				}
+				if ($gibbonFamily!="TRUE") { //Only if there is no family
+					//PARENT 1
+					$resultFields=getCustomFields($connection2, $guid, FALSE, FALSE, TRUE, FALSE, TRUE, NULL) ;
+					$parent1fields=array() ;
+					if ($resultFields->rowCount()>0) {
+						while ($rowFields=$resultFields->fetch()) {
+							if (isset($_POST["parent1custom" . $rowFields["gibbonPersonFieldID"]])) {
+								if ($rowFields["type"]=="date") {
+									$parent1fields[$rowFields["gibbonPersonFieldID"]]=dateConvert($guid, $_POST["parent1custom" . $rowFields["gibbonPersonFieldID"]]) ;
 								}
-								$count++ ;
+								else {
+									$parent1fields[$rowFields["gibbonPersonFieldID"]]=$_POST["parent1custom" . $rowFields["gibbonPersonFieldID"]] ;
+								}
 							}
-							if (!(move_uploaded_file($_FILES["file$i"]["tmp_name"],$path . "/" . $attachment))) {
+							if ($rowFields["required"]=="Y") {
+								if (isset($_POST["parent1custom" . $rowFields["gibbonPersonFieldID"]])==FALSE) {
+									$customRequireFail=TRUE ;
+								}
+								else if ($_POST["parent1custom" . $rowFields["gibbonPersonFieldID"]]=="") {
+									$customRequireFail=TRUE ;
+								}
 							}
-						
-							//Write files to database
-							try {
-								$dataFile=array("gibbonApplicationFormID"=>$gibbonApplicationFormID, "name"=>$fileName, "path"=>$attachment); 
-								$sqlFile="INSERT INTO gibbonApplicationFormFile SET gibbonApplicationFormID=:gibbonApplicationFormID, name=:name, path=:path" ;
-								$resultFile=$connection2->prepare($sqlFile);
-								$resultFile->execute($dataFile);
+						}
+					}
+					//PARENT 2
+					$resultFields=getCustomFields($connection2, $guid, FALSE, FALSE, TRUE, FALSE, TRUE, NULL) ;
+					$parent2fields=array() ;
+					if ($resultFields->rowCount()>0) {
+						while ($rowFields=$resultFields->fetch()) {
+							if (isset($_POST["parent2custom" . $rowFields["gibbonPersonFieldID"]])) {
+								if ($rowFields["type"]=="date") {
+									$parent2fields[$rowFields["gibbonPersonFieldID"]]=dateConvert($guid, $_POST["parent2custom" . $rowFields["gibbonPersonFieldID"]]) ;
+								}
+								else {
+									$parent2fields[$rowFields["gibbonPersonFieldID"]]=$_POST["parent2custom" . $rowFields["gibbonPersonFieldID"]] ;
+								}
 							}
-							catch(PDOException $e) { }
 						}
 					}
 				}
 			
+				if ($customRequireFail) {
+					//Fail 3
+					$URL.="&addReturn=fail3" ;
+					header("Location: {$URL}");
+				}
+				else {
+					$fields=serialize($fields) ;
+					if (isset($parent1fields)) {
+						$parent1fields=serialize($parent1fields) ;
+					}
+					else {
+						$parent1fields="" ;
+					}
+					if (isset($parent2fields)) {
+						$parent2fields=serialize($parent2fields) ;
+					}
+					else {
+						$parent2fields="" ;
+					}
 				
-				//Success 0
-				$URL.="&updateReturn=success0" ;
-				header("Location: {$URL}");
+				
+					//Write to database
+					try {
+						$data=array("priority"=>$priority, "status"=>$status, "milestones"=>$milestones, "dateStart"=>$dateStart, "gibbonRollGroupID"=>$gibbonRollGroupID, "paymentMade"=>$paymentMade, "notes"=>$notes, "surname"=>$surname, "firstName"=>$firstName, "preferredName"=>$preferredName, "officialName"=>$officialName, "nameInCharacters"=>$nameInCharacters, "gender"=>$gender, "dob"=>$dob, "languageHomePrimary"=>$languageHomePrimary, "languageHomeSecondary"=>$languageHomeSecondary, "languageFirst"=>$languageFirst, "languageSecond"=>$languageSecond, "languageThird"=>$languageThird, "countryOfBirth"=>$countryOfBirth, "citizenship1"=>$citizenship1, "citizenship1Passport"=>$citizenship1Passport, "nationalIDCardNumber"=>$nationalIDCardNumber, "residencyStatus"=>$residencyStatus, "visaExpiryDate"=>$visaExpiryDate, "email"=>$email, "homeAddress"=>$homeAddress, "homeAddressDistrict"=>$homeAddressDistrict, "homeAddressCountry"=>$homeAddressCountry, "phone1Type"=>$phone1Type, "phone1CountryCode"=>$phone1CountryCode, "phone1"=>$phone1, "phone2Type"=>$phone2Type, "phone2CountryCode"=>$phone2CountryCode, "phone2"=>$phone2, "medicalInformation"=>$medicalInformation, "developmentInformation"=>$developmentInformation, "gibbonSchoolYearIDEntry"=>$gibbonSchoolYearIDEntry, "gibbonYearGroupIDEntry"=>$gibbonYearGroupIDEntry, "dayType"=>$dayType, "schoolName1"=>$schoolName1, "schoolAddress1"=>$schoolAddress1, "schoolGrades1"=>$schoolGrades1, "schoolDate1"=>$schoolDate1, "schoolName2"=>$schoolName2, "schoolAddress2"=>$schoolAddress2, "schoolGrades2"=>$schoolGrades2, "schoolDate2"=>$schoolDate2, "gibbonFamilyID"=>$gibbonFamilyID, "parent1gibbonPersonID"=>$parent1gibbonPersonID, "parent1title"=>$parent1title, "parent1surname"=>$parent1surname, "parent1firstName"=>$parent1firstName, "parent1preferredName"=>$parent1preferredName, "parent1officialName"=>$parent1officialName, "parent1nameInCharacters"=>$parent1nameInCharacters, "parent1gender"=>$parent1gender, "parent1relationship"=>$parent1relationship, "parent1languageFirst"=>$parent1languageFirst, "parent1languageSecond"=>$parent1languageSecond, "parent1citizenship1"=>$parent1citizenship1, "parent1nationalIDCardNumber"=>$parent1nationalIDCardNumber, "parent1residencyStatus"=>$parent1residencyStatus, "parent1visaExpiryDate"=>$parent1visaExpiryDate, "parent1email"=>$parent1email, "parent1phone1Type"=>$parent1phone1Type, "parent1phone1CountryCode"=>$parent1phone1CountryCode, "parent1phone1"=>$parent1phone1, "parent1phone2Type"=>$parent1phone2Type, "parent1phone2CountryCode"=>$parent1phone2CountryCode, "parent1phone2"=>$parent1phone2, "parent1profession"=>$parent1profession, "parent1employer"=>$parent1employer, "parent2title"=>$parent2title, "parent2surname"=>$parent2surname, "parent2firstName"=>$parent2firstName, "parent2preferredName"=>$parent2preferredName, "parent2officialName"=>$parent2officialName, "parent2nameInCharacters"=>$parent2nameInCharacters, "parent2gender"=>$parent2gender, "parent2relationship"=>$parent2relationship, "parent2languageFirst"=>$parent2languageFirst, "parent2languageSecond"=>$parent2languageSecond, "parent2citizenship1"=>$parent2citizenship1, "parent2nationalIDCardNumber"=>$parent2nationalIDCardNumber, "parent2residencyStatus"=>$parent2residencyStatus, "parent2visaExpiryDate"=>$parent2visaExpiryDate, "parent2email"=>$parent2email, "parent2phone1Type"=>$parent2phone1Type, "parent2phone1CountryCode"=>$parent2phone1CountryCode, "parent2phone1"=>$parent2phone1, "parent2phone2Type"=>$parent2phone2Type, "parent2phone2CountryCode"=>$parent2phone2CountryCode, "parent2phone2"=>$parent2phone2, "parent2profession"=>$parent2profession, "parent2employer"=>$parent2employer, "siblingName1"=>$siblingName1, "siblingDOB1"=>$siblingDOB1, "siblingSchool1"=>$siblingSchool1, "siblingSchoolJoiningDate1"=>$siblingSchoolJoiningDate1, "siblingName2"=>$siblingName2, "siblingDOB2"=>$siblingDOB2, "siblingSchool2"=>$siblingSchool2, "siblingSchoolJoiningDate2"=>$siblingSchoolJoiningDate2, "siblingName3"=>$siblingName3, "siblingDOB3"=>$siblingDOB3, "siblingSchool3"=>$siblingSchool3, "siblingSchoolJoiningDate3"=>$siblingSchoolJoiningDate3, "languageChoice"=>$languageChoice, "languageChoiceExperience"=>$languageChoiceExperience, "scholarshipInterest"=>$scholarshipInterest, "scholarshipRequired"=>$scholarshipRequired, "payment"=>$payment, "companyName"=>$companyName, "companyContact"=>$companyContact, "companyAddress"=>$companyAddress, "companyEmail"=>$companyEmail, "companyCCFamily"=>$companyCCFamily, "companyPhone"=>$companyPhone, "companyAll"=>$companyAll, "gibbonFinanceFeeCategoryIDList"=>$gibbonFinanceFeeCategoryIDList, "howDidYouHear"=>$howDidYouHear, "howDidYouHearMore"=>$howDidYouHearMore, "privacy"=>$privacy, "fields"=>$fields, "parent1fields"=>$parent1fields, "parent2fields"=>$parent2fields, "gibbonApplicationFormID"=>$gibbonApplicationFormID); 
+						$sql="UPDATE gibbonApplicationForm SET priority=:priority, status=:status, milestones=:milestones, dateStart=:dateStart, gibbonRollGroupID=:gibbonRollGroupID, paymentMade=:paymentMade, notes=:notes, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, dob=:dob, languageHomePrimary=:languageHomePrimary, languageHomeSecondary=:languageHomeSecondary, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, citizenship1=:citizenship1, citizenship1Passport=:citizenship1Passport, nationalIDCardNumber=:nationalIDCardNumber, residencyStatus=:residencyStatus, visaExpiryDate=:visaExpiryDate, email=:email, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, phone2Type=:phone2Type, phone2CountryCode=:phone2CountryCode, phone2=:phone2, medicalInformation=:medicalInformation, developmentInformation=:developmentInformation, gibbonSchoolYearIDEntry=:gibbonSchoolYearIDEntry, gibbonYearGroupIDEntry=:gibbonYearGroupIDEntry, dayType=:dayType, schoolName1=:schoolName1, schoolAddress1=:schoolAddress1, schoolGrades1=:schoolGrades1, schoolDate1=:schoolDate1, schoolName2=:schoolName2, schoolAddress2=:schoolAddress2, schoolGrades2=:schoolGrades2, schoolDate2=:schoolDate2, gibbonFamilyID=:gibbonFamilyID, parent1gibbonPersonID=:parent1gibbonPersonID, parent1title=:parent1title, parent1surname=:parent1surname, parent1firstName=:parent1firstName, parent1preferredName=:parent1preferredName, parent1officialName=:parent1officialName, parent1nameInCharacters=:parent1nameInCharacters, parent1gender=:parent1gender, parent1relationship=:parent1relationship, parent1languageFirst=:parent1languageFirst, parent1languageSecond=:parent1languageSecond, parent1citizenship1=:parent1citizenship1, parent1nationalIDCardNumber=:parent1nationalIDCardNumber, parent1residencyStatus=:parent1residencyStatus, parent1visaExpiryDate=:parent1visaExpiryDate, parent1email=:parent1email, parent1phone1Type=:parent1phone1Type, parent1phone1CountryCode=:parent1phone1CountryCode, parent1phone1=:parent1phone1, parent1phone2Type=:parent1phone2Type, parent1phone2CountryCode=:parent1phone2CountryCode, parent1phone2=:parent1phone2, parent1profession=:parent1profession, parent1employer=:parent1employer, parent2title=:parent2title, parent2surname=:parent2surname, parent2firstName=:parent2firstName, parent2preferredName=:parent2preferredName, parent2officialName=:parent2officialName, parent2nameInCharacters=:parent2nameInCharacters, parent2gender=:parent2gender, parent2relationship=:parent2relationship, parent2languageFirst=:parent2languageFirst, parent2languageSecond=:parent2languageSecond, parent2citizenship1=:parent2citizenship1, parent2nationalIDCardNumber=:parent2nationalIDCardNumber, parent2residencyStatus=:parent2residencyStatus, parent2visaExpiryDate=:parent2visaExpiryDate, parent2email=:parent2email, parent2phone1Type=:parent2phone1Type, parent2phone1CountryCode=:parent2phone1CountryCode, parent2phone1=:parent2phone1, parent2phone2Type=:parent2phone2Type, parent2phone2CountryCode=:parent2phone2CountryCode, parent2phone2=:parent2phone2, parent2profession=:parent2profession, parent2employer=:parent2employer, siblingName1=:siblingName1, siblingDOB1=:siblingDOB1, siblingSchool1=:siblingSchool1, siblingSchoolJoiningDate1=:siblingSchoolJoiningDate1, siblingName2=:siblingName2, siblingDOB2=:siblingDOB2, siblingSchool2=:siblingSchool2, siblingSchoolJoiningDate2=:siblingSchoolJoiningDate2, siblingName3=:siblingName3, siblingDOB3=:siblingDOB3, siblingSchool3=:siblingSchool3, siblingSchoolJoiningDate3=:siblingSchoolJoiningDate3, languageChoice=:languageChoice, languageChoiceExperience=:languageChoiceExperience, scholarshipInterest=:scholarshipInterest, scholarshipRequired=:scholarshipRequired, payment=:payment, companyName=:companyName, companyContact=:companyContact, companyAddress=:companyAddress, companyEmail=:companyEmail, companyCCFamily=:companyCCFamily, companyPhone=:companyPhone, companyAll=:companyAll, gibbonFinanceFeeCategoryIDList=:gibbonFinanceFeeCategoryIDList, howDidYouHear=:howDidYouHear, howDidYouHearMore=:howDidYouHearMore, privacy=:privacy, fields=:fields, parent1fields=:parent1fields, parent2fields=:parent2fields WHERE gibbonApplicationFormID=:gibbonApplicationFormID" ;
+						$result=$connection2->prepare($sql);
+						$result->execute($data);
+					}
+					catch(PDOException $e) { 
+						//Fail 2
+						$URL.="&updateReturn=fail2" ;
+						header("Location: {$URL}");
+						break ;
+					}
+				
+					//Deal with required documents
+					$requiredDocuments=getSettingByScope($connection2, "Application Form", "requiredDocuments") ;
+					if ($requiredDocuments!="" AND $requiredDocuments!=FALSE) {
+						$fileCount=0 ;
+						if (isset($_POST["fileCount"])) {
+							$fileCount=$_POST["fileCount"] ;
+						}
+						for ($i=0; $i<$fileCount; $i++) {
+							$fileName=$_POST["fileName$i"] ;
+							$time=time() ;
+							//Move attached file, if there is one
+							if ($_FILES["file$i"]["tmp_name"]!="") {
+								//Check for folder in uploads based on today's date
+								$path=$_SESSION[$guid]["absolutePath"] ;
+								if (is_dir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time))==FALSE) {
+									mkdir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time), 0777, TRUE) ;
+								}
+								$unique=FALSE;
+								$count=0 ;
+								while ($unique==FALSE AND $count<100) {
+									$suffix=randomPassword(16) ;
+									$attachment="uploads/" . date("Y", $time) . "/" . date("m", $time) . "/Application Document_$suffix" . strrchr($_FILES["file$i"]["name"], ".") ;
+									if (!(file_exists($path . "/" . $attachment))) {
+										$unique=TRUE ;
+									}
+									$count++ ;
+								}
+								if (!(move_uploaded_file($_FILES["file$i"]["tmp_name"],$path . "/" . $attachment))) {
+								}
+						
+								//Write files to database
+								try {
+									$dataFile=array("gibbonApplicationFormID"=>$gibbonApplicationFormID, "name"=>$fileName, "path"=>$attachment); 
+									$sqlFile="INSERT INTO gibbonApplicationFormFile SET gibbonApplicationFormID=:gibbonApplicationFormID, name=:name, path=:path" ;
+									$resultFile=$connection2->prepare($sqlFile);
+									$resultFile->execute($dataFile);
+								}
+								catch(PDOException $e) { }
+							}
+						}
+					}
+			
+				
+					//Success 0
+					$URL.="&updateReturn=success0" ;
+					header("Location: {$URL}");
+				}
 			}
 		}
 	}

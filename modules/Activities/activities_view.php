@@ -53,6 +53,10 @@ else {
 				$updateReturnMessage=_("Unregistration was successful.") ;	
 				$class="success" ;
 			}
+			if ($updateReturn=="success2") {
+				$updateReturnMessage=_("Registration was successful, but the activity is full, so you are on the waiting list.") ;	
+				$class="warning" ;
+			}
 			print "<div class='$class'>" ;
 				print $updateReturnMessage;
 			print "</div>" ;
@@ -368,18 +372,18 @@ else {
 								print _("Provider") ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("Days") ;
-							print "</th>" ;
-							print "<th>" ;
-								print _("Years") ;
-							print "</th>" ;
-							print "<th>" ;
 								if ($dateType!="Date") {
-									print _("Term") ;
+									print _("Terms"). "<br/>" ;
 								}
 								else {
-									print _("Dates") ;
+									print _("Dates") . "<br/>" ;
 								}
+								print "<span style='font-style: italic; font-size: 85%'>" ;
+									print _("Days") ;
+								print "</span>" ;
+							print "</th>" ;
+							print "<th style='width: 100px'>" ;
+								print _("Years") ;
 							print "</th>" ;
 							print "<th>" ;
 								print _("Cost") . "<br/>" ;
@@ -390,7 +394,7 @@ else {
 									print _("Enrolment") ;
 								print "</th>" ;
 							}
-							print "<th>" ;
+							print "<th style='width: 80px'>" ;
 								print _("Actions") ;
 							print "</th>" ;
 						print "</tr>" ;
@@ -439,32 +443,6 @@ else {
 									if ($row["provider"]=="School") { print $_SESSION[$guid]["organisationNameShort"] ; } else { print "External" ; }
 								print "</td>" ;
 								print "<td>" ;
-									try {
-										$dataSlots=array("gibbonActivityID"=>$row["gibbonActivityID"]); 
-										$sqlSlots="SELECT DISTINCT nameShort, sequenceNumber FROM gibbonActivitySlot JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID) WHERE gibbonActivityID=:gibbonActivityID ORDER BY sequenceNumber" ;
-										$resultSlots=$connection2->prepare($sqlSlots);
-										$resultSlots->execute($dataSlots);
-									}
-									catch(PDOException $e) { 
-										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-									}
-								
-									$count2=0 ;
-									while ($rowSlots=$resultSlots->fetch()) {
-										if ($count2>0) {
-											print ", " ;
-										}
-										print _($rowSlots["nameShort"]) ;
-										$count2++ ;
-									}
-									if ($count2==0) {
-										print "<i>" . _('None') . "</i>" ;
-									}
-								print "</td>" ;
-								print "<td>" ;
-									print getYearGroupsFromIDList($connection2, $row["gibbonYearGroupIDList"]) ;
-								print "</td>" ;
-								print "<td>" ;
 									if ($dateType!="Date") {
 										$terms=getTerms($connection2, $_SESSION[$guid]["gibbonSchoolYearID"], true) ;
 										$termList="" ;
@@ -488,6 +466,33 @@ else {
 											print date("F", mktime(0, 0, 0, substr($row["programStart"],5,2))) . " " . substr($row["programStart"],0,4) . " -<br/>" . date("F", mktime(0, 0, 0, substr($row["programEnd"],5,2))) . " " . substr($row["programEnd"],0,4) ;
 										}
 									}
+									
+									print "<span style='font-style: italic; font-size: 85%'>" ;
+										try {
+											$dataSlots=array("gibbonActivityID"=>$row["gibbonActivityID"]); 
+											$sqlSlots="SELECT DISTINCT nameShort, sequenceNumber FROM gibbonActivitySlot JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID) WHERE gibbonActivityID=:gibbonActivityID ORDER BY sequenceNumber" ;
+											$resultSlots=$connection2->prepare($sqlSlots);
+											$resultSlots->execute($dataSlots);
+										}
+										catch(PDOException $e) { 
+											print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+										}
+								
+										$count2=0 ;
+										while ($rowSlots=$resultSlots->fetch()) {
+											if ($count2>0) {
+												print ", " ;
+											}
+											print _($rowSlots["nameShort"]) ;
+											$count2++ ;
+										}
+										if ($count2==0) {
+											print "<i>" . _('None') . "</i>" ;
+										}
+									print "</span>" ;
+								print "</td>" ;
+								print "<td>" ;
+									print getYearGroupsFromIDList($connection2, $row["gibbonYearGroupIDList"]) ;
 								print "</td>" ;
 								print "<td>" ;
 									if ($hideExternalProviderCost=="Y" AND $row["provider"]=="External") {
@@ -501,16 +506,21 @@ else {
 											if (substr($_SESSION[$guid]["currency"],4)!="") {
 												print substr($_SESSION[$guid]["currency"],4) ;
 											}
-											print $row["payment"] ;
+											print number_format($row["payment"], 2) ;
 										}
 									}
 								print "</td>" ;
 								if (($roleCategory=="Student" AND $highestAction=="View Activities_studentRegister") OR ($roleCategory=="Parent" AND $highestAction=="View Activities_studentRegisterByParent" AND $gibbonPersonID!="" AND $countChild>0)) {
 									print "<td>" ;
-										if ($row["registration"]=="N") {
+										if ($row["provider"]=="External" AND $disableExternalProviderSignup=="Y") {
+											print "<i>" . _('See activity details') . "</i>" ;
+										}
+										else if ($row["registration"]=="N") {
 											print _('Closed') . "<br/>" ;
 										}
-										print $rowEnrol["status"] ;
+										else {
+											print $rowEnrol["status"] ;
+										}
 									print "</td>" ;
 								}
 								print "<td>" ;

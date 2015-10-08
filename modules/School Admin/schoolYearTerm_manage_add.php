@@ -85,7 +85,7 @@ else {
 					<script type="text/javascript">
 						var gibbonSchoolYearID=new LiveValidation('gibbonSchoolYearID');
 						gibbonSchoolYearID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-					 </script>
+					</script>
 				</td>
 			</tr>
 			<tr>
@@ -115,7 +115,7 @@ else {
 						sequenceNumber.add(Validate.Presence);
 						sequenceNumber.add( Validate.Exclusion, { within: [<?php print $idList ;?>], failureMessage: "<?php print _('Value already in use!') ?>", partialMatch: false, caseSensitive: false } );
 						
-					 </script>
+					</script>
 				</td>
 			</tr>
 			<tr>
@@ -128,7 +128,7 @@ else {
 					<script type="text/javascript">
 						var name2=new LiveValidation('name');
 						name2.add(Validate.Presence);
-					 </script>
+					</script>
 				</td>
 			</tr>
 			<tr>
@@ -141,7 +141,7 @@ else {
 					<script type="text/javascript">
 						var nameShort=new LiveValidation('nameShort');
 						nameShort.add(Validate.Presence);
-					 </script>
+					</script>
 				</td>
 			</tr>
 			<tr>
@@ -155,7 +155,7 @@ else {
 						var firstDay=new LiveValidation('firstDay');
 						firstDay.add(Validate.Presence);
 						firstDay.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-					 </script>
+					</script>
 					 <script type="text/javascript">
 						$(function() {
 							$( "#firstDay" ).datepicker();
@@ -174,7 +174,7 @@ else {
 						var lastDay=new LiveValidation('lastDay');
 						lastDay.add(Validate.Presence);
 						lastDay.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-					 </script>
+					</script>
 					 <script type="text/javascript">
 						$(function() {
 							$( "#lastDay" ).datepicker();

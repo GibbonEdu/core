@@ -216,15 +216,11 @@ else {
 									catch(PDOException $e) { }
 									print "<option value=''></option>" ;
 									while ($rowSelect=$resultSelect->fetch()) {
-										$selected="" ;
-										if ($rowSelect["gibbonPlannerEntryID"]==$_GET["gibbonPlannerEntryID"]) {
-											$selected="selected" ;
-										}
 										if ($rowSelect["gibbonHookID"]=="") {
-											print "<option $selected class='" . $rowSelect["gibbonUnitID"] . "' value='" . $rowSelect["gibbonPlannerEntryID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
+											print "<option class='" . $rowSelect["gibbonUnitID"] . "' value='" . $rowSelect["gibbonPlannerEntryID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
 										}
 										else {
-											print "<option $selected class='" . $rowSelect["gibbonUnitID"] . "-" . $rowSelect["gibbonHookID"] . "' value='" . $rowSelect["gibbonPlannerEntryID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
+											print "<option class='" . $rowSelect["gibbonUnitID"] . "-" . $rowSelect["gibbonHookID"] . "' value='" . $rowSelect["gibbonPlannerEntryID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
 										}
 									}		
 									?>				
@@ -243,7 +239,7 @@ else {
 								<script type="text/javascript">
 									var name2=new LiveValidation('name');
 									name2.add(Validate.Presence);
-								 </script>
+								</script>
 							</td>
 						</tr>
 						<tr>
@@ -255,7 +251,7 @@ else {
 								<script type="text/javascript">
 									var description=new LiveValidation('description');
 									description.add(Validate.Presence);
-								 </script>
+								</script>
 							</td>
 						</tr>
 						<?php
@@ -282,39 +278,39 @@ else {
 									<script type="text/javascript">
 										var type=new LiveValidation('type');
 										type.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-									 </script>
-								</td>
-							</tr>
-							<tr>
-								<td> 
-									<b><?php print _('Attachment') ?></b><br/>
-								</td>
-								<td class="right">
-									<input type="file" name="file" id="file"><br/><br/>
-									<?php
-									//Get list of acceptable file extensions
-									try {
-										$dataExt=array(); 
-										$sqlExt="SELECT * FROM gibbonFileExtension" ;
-										$resultExt=$connection2->prepare($sqlExt);
-										$resultExt->execute($dataExt);
-									}
-									catch(PDOException $e) { }
-									$ext="" ;
-									while ($rowExt=$resultExt->fetch()) {
-										$ext=$ext . "'." . $rowExt["extension"] . "'," ;
-									}
-									?>
-							
-									<script type="text/javascript">
-										var file=new LiveValidation('file');
-										file.add( Validate.Inclusion, { within: [<?php print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 									</script>
 								</td>
 							</tr>
 							<?php
 						}
 						?>
+						<tr>
+							<td> 
+								<b><?php print _('Attachment') ?></b><br/>
+							</td>
+							<td class="right">
+								<input type="file" name="file" id="file"><br/><br/>
+								<?php
+								//Get list of acceptable file extensions
+								try {
+									$dataExt=array(); 
+									$sqlExt="SELECT * FROM gibbonFileExtension" ;
+									$resultExt=$connection2->prepare($sqlExt);
+									$resultExt->execute($dataExt);
+								}
+								catch(PDOException $e) { }
+								$ext="" ;
+								while ($rowExt=$resultExt->fetch()) {
+									$ext=$ext . "'." . $rowExt["extension"] . "'," ;
+								}
+								?>
+						
+								<script type="text/javascript">
+									var file=new LiveValidation('file');
+									file.add( Validate.Inclusion, { within: [<?php print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+								</script>
+							</td>
+						</tr>
 						<tr class='break'>
 							<td colspan=2> 
 								<h3>
@@ -348,7 +344,7 @@ else {
 						</tr>
 						<tr id="gibbonScaleIDAttainmentRow">
 							<td> 
-								<b><?php if ($attainmentAlternativeName!="") { print $attainmentAlternativeName . " " . _('Scale') ; } else { print _('Attainment Scale') ; } ?> *</b><br/>
+								<b><?php if ($attainmentAlternativeName!="") { print $attainmentAlternativeName . " " . _('Scale') ; } else { print _('Attainment Scale') ; } ?></b><br/>
 							</td>
 							<td class="right">
 								<select name="gibbonScaleIDAttainment" id="gibbonScaleIDAttainment" style="width: 302px">
@@ -374,7 +370,7 @@ else {
 						</tr>
 						<tr id="gibbonRubricIDAttainmentRow">
 							<td> 
-								<b><?php if ($attainmentAlternativeName!="") { print $attainmentAlternativeName . " " . _('Rubric') ; } else { print _('Attainment Rubric') ; } ?> *</b><br/>
+								<b><?php if ($attainmentAlternativeName!="") { print $attainmentAlternativeName . " " . _('Rubric') ; } else { print _('Attainment Rubric') ; } ?></b><br/>
 								<span style="font-size: 90%"><i><?php print _('Choose predefined rubric, if desired.') ?></i></span>
 							</td>
 							<td class="right">
@@ -465,7 +461,7 @@ else {
 						</tr>
 						<tr id="gibbonScaleIDEffortRow">
 							<td> 
-								<b><?php if ($effortAlternativeName!="") { print $effortAlternativeName . " " . _('Scale') ; } else { print _('Effort Scale') ; } ?> *</b><br/>
+								<b><?php if ($effortAlternativeName!="") { print $effortAlternativeName . " " . _('Scale') ; } else { print _('Effort Scale') ; } ?></b><br/>
 							</td>
 							<td class="right">
 								<select name="gibbonScaleIDEffort" id="gibbonScaleIDEffort" style="width: 302px">
@@ -491,7 +487,7 @@ else {
 						</tr>
 						<tr id="gibbonRubricIDEffortRow">
 							<td> 
-								<b><?php if ($effortAlternativeName!="") { print $effortAlternativeName . " " . _('Rubric') ; } else { print _('Effort Rubric') ; } ?> *</b><br/>
+								<b><?php if ($effortAlternativeName!="") { print $effortAlternativeName . " " . _('Rubric') ; } else { print _('Effort Rubric') ; } ?></b><br/>
 								<span style="font-size: 90%"><i><?php print _('Choose predefined rubric, if desired.') ?></i></span>
 							</td>
 							<td class="right">
@@ -614,7 +610,7 @@ else {
 								<script type="text/javascript">
 									var completeDate=new LiveValidation('completeDate');
 									completeDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-								 </script>
+								</script>
 								 <script type="text/javascript">
 									$(function() {
 										$( "#completeDate" ).datepicker();

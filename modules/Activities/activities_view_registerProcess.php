@@ -206,8 +206,14 @@ else {
 								catch(PDOException $e) { }
 							
 								//Success 0
-								$URLSuccess=$URLSuccess . "&updateReturn=success0" ;
-								header("Location: {$URLSuccess}");
+								if ($status=="Waiting List") {
+									$URLSuccess=$URLSuccess . "&updateReturn=success2" ;
+									header("Location: {$URLSuccess}");
+								}
+								else {
+									$URLSuccess=$URLSuccess . "&updateReturn=success0" ;
+									header("Location: {$URLSuccess}");
+								}
 							}
 						}
 					}

@@ -41,13 +41,13 @@ else {
 		
 		print "<div class='trail'>" ;
 			if ($highestAction=="Individual Needs Records_view") {
-				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/in_view.php'>" . _('All Student Records') . "</a> > </div><div class='trailEnd'>" . _('View') . "</div>" ;
+				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/in_view.php'>" . _('All Student Records') . "</a> > </div><div class='trailEnd'>" . _('View Individual Needs Record') . "</div>" ;
 			}
 			else if ($highestAction=="Individual Needs Records_viewContribute") {
-				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/in_view.php'>" . _('All Student Records') . "</a> > </div><div class='trailEnd'>" . _('View & Contribute To Record') . "</div>" ;
+				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/in_view.php'>" . _('All Student Records') . "</a> > </div><div class='trailEnd'>" . _('View & Contribute To Individual Needs Record') . "</div>" ;
 			}
 			else if ($highestAction=="Individual Needs Records_viewEdit") {
-				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/in_view.php'>" . _('All Student Records') . "</a> > </div><div class='trailEnd'>" . _('Edit') . "</div>" ;
+				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/in_view.php'>" . _('All Student Records') . "</a> > </div><div class='trailEnd'>" . _('Edit Individual Needs Record') . "</div>" ;
 			}
 		print "</div>" ;
 		
@@ -145,6 +145,7 @@ else {
 			$archiveStrategies=NULL ;
 			$archiveTargets=NULL ;
 			$archiveNotes=NULL ;
+			$archiveDescriptors=NULL ;
 		
 			try {
 				$dataArchive=array("gibbonPersonID"=>$gibbonPersonID); 
@@ -158,7 +159,7 @@ else {
 					print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/in_edit.php&gibbonPersonID=$gibbonPersonID&search=$search&source=$source&gibbonINDescriptorID=$gibbonINDescriptorID&gibbonAlertLevelID=$gibbonAlertLevelID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID'>" ;
 						print _("Archived Plans") . " " ;
 						print "<select name=\"gibbonINArchiveID\" style=\"float: none; width: 200px; margin-top: -10px; margin-bottom: 5px\">" ;
-							print "<option value=''></option>" ;
+							print "<option value=''>" . _('Current Plan') . "</option>" ;
 							while ($rowArchive=$resultArchive->fetch()) {
 								$selected="" ;
 								if ($rowArchive["gibbonINArchiveID"]==$gibbonINArchiveID) {
@@ -166,6 +167,7 @@ else {
 									$archiveStrategies=$rowArchive["strategies"] ;
 									$archiveTargets=$rowArchive["targets"] ;
 									$archiveNotes=$rowArchive["notes"] ;
+									$archiveDescriptors=$rowArchive["descriptors"] ;
 								}
 								print "<option $selected value='" . $rowArchive["gibbonINArchiveID"] . "'>" . $rowArchive["archiveTitle"] . " (" . dateConvertBack($guid, substr($rowArchive["archiveTimestamp"], 0, 10)) . ")</option>" ;
 							}
@@ -202,7 +204,7 @@ else {
 				}
 				else if ($highestAction=="Individual Needs Records_viewEdit") {
 					if ($gibbonINArchiveID!="") {
-						$statusTable=printINStatusTable($connection2, $gibbonPersonID, "disabled") ;
+						$statusTable=printINStatusTable($connection2, $gibbonPersonID, "disabled", $archiveDescriptors) ;
 					}
 					else {
 						$statusTable=printINStatusTable($connection2, $gibbonPersonID) ;

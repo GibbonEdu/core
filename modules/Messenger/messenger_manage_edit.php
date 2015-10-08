@@ -170,7 +170,7 @@ else {
 									<script type="text/javascript">
 										var date1=new LiveValidation('date1');
 										date1.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-									 </script>
+									</script>
 									 <script type="text/javascript">
 										$(function() {
 											$( "#date1" ).datepicker();
@@ -181,7 +181,7 @@ else {
 									<script type="text/javascript">
 										var date2=new LiveValidation('date2');
 										date2.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-									 </script>
+									</script>
 									 <script type="text/javascript">
 										$(function() {
 											$( "#date2" ).datepicker();
@@ -192,7 +192,7 @@ else {
 									<script type="text/javascript">
 										var date3=new LiveValidation('date3');
 										date3.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-									 </script>
+									</script>
 									 <script type="text/javascript">
 										$(function() {
 											$( "#date3" ).datepicker();
@@ -240,7 +240,7 @@ else {
 								<script type="text/javascript">
 									var subject=new LiveValidation('subject');
 									subject.add(Validate.Presence);
-								 </script>
+								</script>
 							</td>
 						</tr>
 						<tr>

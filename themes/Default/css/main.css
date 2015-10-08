@@ -215,12 +215,23 @@ div.minorLinks {
 	text-align: right; 
 	padding-right: 13px; 
 	padding-top: 0px;
-	margin-top: 20px; 
+	margin-top: 10px; 
 	margin-bottom: 0px; 
 	color: #fff;
 	font-size: 80%; 
 	font-weight: normal; 
-	height: 38px;
+}
+div.minorLinksTopGap {
+	margin-top: 25px; 
+}
+img.minorLinkIcon {
+	height: 38px ;
+	max-height: 38px ;
+}
+
+img.minorLinkIconLarge {
+	height: 65px ;
+	max-height: 65px ;
 }
 
 div.minorLinks a {
@@ -887,6 +898,10 @@ div.ui-dialog button.ui-button {
 	border-radius: 2px; 
 }
 
+div#ui-datepicker-div {
+	z-index: 1000!important;
+}
+
 /* Live Validation */
 
 .LV_validation_message{
@@ -1012,6 +1027,7 @@ div#tabs {
 	border-radius: 0 ;
 	background: rgba(25, 25, 25, 0.9);
 	box-shadow: 2px 2px 4px rgba(25, 25, 25, 0.9);
+	color: #fff ;!important
 }
 
 .ui-autocomplete .ui-menu-item, .ui-autocomplete .ui-menu-item:hover {

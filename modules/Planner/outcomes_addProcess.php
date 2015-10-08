@@ -37,7 +37,12 @@ catch(PDOException $e) {
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/outcomes_add.php" ;
+$filter2="" ;
+if (isset($_GET["filter2"])) {
+	$filter2=$_GET["filter2"] ;
+}
+
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/outcomes_add.php&filter2=$filter2" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Planner/outcomes_add.php")==FALSE) {
 	//Fail 0

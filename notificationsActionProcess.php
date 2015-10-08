@@ -67,10 +67,10 @@ else {
 		exit() ;
 	}
 	else {
-		//Delete notification
+		//Archive notification
 		try {
 			$data=array("gibbonNotificationID"=>$gibbonNotificationID, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-			$sql="DELETE FROM gibbonNotification WHERE gibbonPersonID=:gibbonPersonID AND gibbonNotificationID=:gibbonNotificationID";
+			$sql="UPDATE gibbonNotification SET status='Archived' WHERE gibbonPersonID=:gibbonPersonID AND gibbonNotificationID=:gibbonNotificationID";
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}

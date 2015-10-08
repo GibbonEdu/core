@@ -32,9 +32,6 @@ catch(PDOException $e) {
 
 @session_start() ;
 
-$enableDescriptors=getSettingByScope($connection2, "Behaviour", "enableDescriptors") ;
-$enableLevels=getSettingByScope($connection2, "Behaviour", "enableLevels") ;
-
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
@@ -47,6 +44,8 @@ if (isActionAccessible($guid, $connection2, "/modules/School Admin/behaviourSett
 }
 else {
 	//Proceed!
+	$enableDescriptors=$_POST["enableDescriptors"] ;
+	$enableLevels=$_POST["enableLevels"] ;
 	$positiveDescriptors="" ; 
 	$negativeDescriptors="" ; 
 	if ($enableDescriptors=="Y") {
@@ -70,7 +69,7 @@ else {
 	$policyLink=$_POST["policyLink"] ;
 	
 	//Validate Inputs
-	if (($positiveDescriptors=="" AND $enableDescriptors=="Y") OR ($negativeDescriptors=="" AND $enableDescriptors=="Y") OR ($levels=="" AND $enableLevels=="Y")) {
+	if ($enableDescriptors=="" OR $enableLevels=="" OR ($positiveDescriptors=="" AND $enableDescriptors=="Y") OR ($negativeDescriptors=="" AND $enableDescriptors=="Y") OR ($levels=="" AND $enableLevels=="Y")) {
 		//Fail 3
 		$URL.="&updateReturn=fail3" ;
 		header("Location: {$URL}");
@@ -79,6 +78,15 @@ else {
 		//Write to database
 		$fail=FALSE ;
 		
+		try {
+			$data=array("value"=>$enableDescriptors); 
+			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Behaviour' AND name='enableDescriptors'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ;
+		}
 		if ($enableDescriptors=="Y") {
 			try {
 				$data=array("value"=>$positiveDescriptors); 
@@ -100,6 +108,16 @@ else {
 				$fail=TRUE ;
 			}
 		}
+		try {
+			$data=array("value"=>$enableLevels); 
+			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Behaviour' AND name='enableLevels'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ;
+		}
+		
 		if ($enableLevels=="Y") {
 			try {
 				$data=array("value"=>$levels); 

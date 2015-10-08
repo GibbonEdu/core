@@ -81,6 +81,41 @@ else {
 		else {
 			$row=$result->fetch() ;
 			$module=$row["name"] ;
+			$partialFail=FALSE ;
+			
+			//Check for tables and views to remove, and remove them
+			$tables=NULL ;
+			if (isset($_POST["remove"])) {
+				$tables=$_POST["remove"] ;
+			}
+			if (is_array($tables)) {
+				if (count($tables)>0) {
+			 		foreach ($tables AS $table) {
+			 			$type=NULL ;
+			 			$name=NULL ;
+			 			if (substr($table, 0 ,5)=="Table") {
+			 				$type="TABLE" ;
+			 				$name=substr($table, 6) ;
+			 			}
+			 			else if (substr($table, 0 ,4)=="View") {
+			 				$type="VIEW" ;
+			 				$name=substr($table, 5) ;
+			 			}
+			 			if ($type!=NULL AND $name!=NULL) {
+			 				try {
+								$dataDelete=array(); 
+								$sqlDelete="DROP $type $name" ;
+								$resultDelete=$connection2->prepare($sqlDelete);
+								$resultDelete->execute($dataDelete);
+							}
+							catch(PDOException $e) { 
+								print $e->getMessage() . "<br/><br/>" ;
+								$partialFail=TRUE ;
+							}
+			 			}
+			 		}
+			 	}
+			}
 			
 			//Get actions to remove permissions
 			try {
@@ -96,7 +131,6 @@ else {
 				break ;
 			}
 			
-			$partialFail=FALSE ;
 			while ($row=$result->fetch()) {
 				//Remove permissions
 				try {

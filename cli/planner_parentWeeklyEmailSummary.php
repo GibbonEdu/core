@@ -52,10 +52,10 @@ if (isset($_SESSION[$guid]["i18n"]["code"])) {
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
 //Check for CLI, so this cannot be run through browser
-if (php_sapi_name()!="cli") { 
-	print _("This script cannot be run from a browser, only via CLI.") . "\n\n" ;
-}
-else {
+//if (php_sapi_name()!="cli") { 
+//	print _("This script cannot be run from a browser, only via CLI.") . "\n\n" ;
+//}
+//else {
 	//Check that one of the days in question is a school day
 	$isSchoolOpen=FALSE ;
 	for ($i=0; $i<7; $i++) {
@@ -265,6 +265,9 @@ else {
 												$bodyPlain=strip_tags($bodyPlain, '<a>');
 
 												$mail=new PHPMailer;
+												if ($replyTo!="") {
+													$mail->AddReplyTo($replyTo, $replyToName);
+												}
 												$mail->AddAddress($rowMember["email"], $rowMember["surname"] . ", " . $rowMember["preferredName"]);
 												$mail->SetFrom($_SESSION[$guid]["organisationEmail"], $_SESSION[$guid]["organisationName"]);
 												$mail->CharSet="UTF-8"; 
@@ -273,9 +276,6 @@ else {
 												$mail->Subject=sprintf(_('Weekly Planner Summary for %1$s via %2$s at %3$s'), $row["surname"] . ", " . $row["preferredName"] . " (" . $row["name"] . ")", $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationName"]) ;
 												$mail->Body=$body ;
 												$mail->AltBody=$bodyPlain ;
-												if ($replyTo!="") {
-													$mail->AddReplyTo($replyTo, $replyToName);
-												}
 		
 												//Send email
 												if($mail->Send()) {
@@ -302,29 +302,15 @@ else {
 			}
 			catch(PDOException $e) { }		
 		
+			//Notify administrator
 			$body=_("Week") . ": " . date("W") . "<br/>" ;	
 			$body.=_("Student Count") . ": " . $studentCount . "<br/>" ;	
 			$body.=_("Send Succeed Count") . ": " . $sendSucceedCount . "<br/>" ;	
 			$body.=_("Send Fail Count") . ": " . $sendFailCount . "<br/><br/>" ;	
-			$body.="<p style='font-style: italic;'>" . sprintf(_('Email sent via %1$s at %2$s.'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationName"]) ."</p>" ;
-			$bodyPlain=preg_replace('#<br\s*/?>#i', "\n", $body) ;
-			$bodyPlain=str_replace("</p>", "\n\n", $bodyPlain) ;
-			$bodyPlain=str_replace("</div>", "\n\n", $bodyPlain) ;
-			$bodyPlain=preg_replace("#\<a.+href\=[\"|\'](.+)[\"|\'].*\>.*\<\/a\>#U","$1",$bodyPlain); 
-			$bodyPlain=strip_tags($bodyPlain, '<a>');
-
-			$mail=new PHPMailer;
-			$mail->AddAddress($_SESSION[$guid]["organisationAdministratorEmail"], $_SESSION[$guid]["organisationAdministratorName"]);
-			$mail->SetFrom($_SESSION[$guid]["organisationEmail"], $_SESSION[$guid]["organisationName"]);
-			$mail->CharSet="UTF-8"; 
-			$mail->Encoding="base64" ;
-			$mail->IsHTML(true);                            
-			$mail->Subject=_('Weekly Planner Summary Email Sending Report.') ;
-			$mail->Body=$body ;
-			$mail->AltBody=$bodyPlain ;
-			$mail->Send() ;
+			$notificationText=_('A Planner CLI script has run.') . "<br/>" . $body ;
+			setNotification($connection2, $guid, $_SESSION[$guid]["organisationAdministrator"], $notificationText, "Planner", "/index.php?q=/modules/Planner/report_parentWeeklyEmailSummaryConfirmation.php") ;
 		}
 	}
-}
+//}
 
 ?>

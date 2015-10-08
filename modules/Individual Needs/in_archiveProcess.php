@@ -78,10 +78,30 @@ else {
 			if ($userFail==FALSE) {
 				$userUpdateFail=FALSE ;
 				$row=$result->fetch() ;
+				
+				//Check for descriptors, and write to array
+				$descriptors=array() ;
+				$descriptorsCount=0 ;
+				try {
+					$dataDesciptors=array("gibbonPersonID"=>$gibbonPersonID); 
+					$sqlDesciptors="SELECT * FROM gibbonINPersonDescriptor WHERE gibbonPersonID=:gibbonPersonID" ;
+					$resultDesciptors=$connection2->prepare($sqlDesciptors);
+					$resultDesciptors->execute($dataDesciptors);
+				}
+				catch(PDOException $e) { 
+					$partialFail=TRUE ;
+				}
+				while ($rowDesciptors=$resultDesciptors->fetch()) {
+					$descriptors[$descriptorsCount]["gibbonINDescriptorID"]=$rowDesciptors["gibbonINDescriptorID"] ;
+					$descriptors[$descriptorsCount]["gibbonAlertLevelID"]=$rowDesciptors["gibbonAlertLevelID"] ;
+					$descriptorsCount++ ;
+				}
+				$descriptors=serialize($descriptors) ;
+				
 				//Make archive of record
 				try {
-					$dataUpdate=array("strategies"=>$row["strategies"], "targets"=>$row["targets"], "notes"=>$row["notes"], "gibbonPersonID"=>$gibbonPersonID, "title"=>$title); 
-					$sqlUpdate="INSERT INTO gibbonINArchive SET gibbonPersonID=:gibbonPersonID, strategies=:strategies, targets=:targets, notes=:notes, archiveTitle=:title, archiveTimestamp=now()" ;
+					$dataUpdate=array("strategies"=>$row["strategies"], "targets"=>$row["targets"], "notes"=>$row["notes"], "gibbonPersonID"=>$gibbonPersonID, "title"=>$title, "descriptors"=>$descriptors); 
+					$sqlUpdate="INSERT INTO gibbonINArchive SET gibbonPersonID=:gibbonPersonID, strategies=:strategies, targets=:targets, notes=:notes, archiveTitle=:title, descriptors=:descriptors, archiveTimestamp=now()" ;
 					$resultUpdate=$connection2->prepare($sqlUpdate);
 					$resultUpdate->execute($dataUpdate);
 				}

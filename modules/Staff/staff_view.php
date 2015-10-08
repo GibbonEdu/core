@@ -105,7 +105,6 @@ else {
 			$page=1 ;
 		}
 		
-		
 		try {
 			if ($allStaff!="on") {
 				$data=array(); 

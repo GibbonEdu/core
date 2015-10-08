@@ -17,6 +17,15 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+//STATIC: DO NOT OVERWRITE FROM DATABASE
+//Like types
+_('Positive Behaviour') ;
+_('Crowd Assessment Feedback') ;
+_('Planner - Learning Feedback') ;
+_('Planner - Lesson Design') ;
+
+
+//DYNAMIC: OVERWRITE FROM DATABASE
 //gibbonAction - category
 _('Actions') ;
 _('Admissions') ;
@@ -2013,5 +2022,80 @@ _('Y10') ;
 _('Y11') ;
 _('Y12') ;
 _('Y13') ;
+
+//gibbonLanguage - name
+_('Afrikaans') ;
+_('Albanian') ;
+_('Arabic') ;
+_('Armenian') ;
+_('Basque') ;
+_('Bengali') ;
+_('Bulgarian') ;
+_('Catalan') ;
+_('Cambodian') ;
+_('Chinese (Mandarin)') ;
+_('Chinese (Cantonese)') ;
+_('Croation') ;
+_('Czech') ;
+_('Danish') ;
+_('Dutch') ;
+_('English') ;
+_('Estonian') ;
+_('Fijian') ;
+_('Finnish') ;
+_('French') ;
+_('Georgian') ;
+_('German') ;
+_('Greek') ;
+_('Gujarati') ;
+_('Hebrew') ;
+_('Hindi') ;
+_('Hungarian') ;
+_('Icelandic') ;
+_('Indonesian') ;
+_('Irish') ;
+_('Italian') ;
+_('Japanese') ;
+_('Javanese') ;
+_('Korean') ;
+_('Latin') ;
+_('Latvian') ;
+_('Lithuanian') ;
+_('Macedonian') ;
+_('Malay') ;
+_('Malayalam') ;
+_('Maltese') ;
+_('Maori') ;
+_('Marathi') ;
+_('Mongolian') ;
+_('Nepali') ;
+_('Norwegian') ;
+_('Persian') ;
+_('Polish') ;
+_('Portuguese') ;
+_('Punjabi') ;
+_('Quechua') ;
+_('Romanian') ;
+_('Russian') ;
+_('Samoan') ;
+_('Serbian') ;
+_('Slovak') ;
+_('Slovenian') ;
+_('Spanish') ;
+_('Swahili') ;
+_('Swedish ') ;
+_('Tamil') ;
+_('Tatar') ;
+_('Telugu') ;
+_('Thai') ;
+_('Tibetan') ;
+_('Tongan') ;
+_('Turkish') ;
+_('Ukranian') ;
+_('Urdu') ;
+_('Uzbek') ;
+_('Vietnamese') ;
+_('Welsh') ;
+_('Xhosa') ;
 
 ?>

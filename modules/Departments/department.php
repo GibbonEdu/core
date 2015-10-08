@@ -81,7 +81,7 @@ else {
 			//Print staff
 			try {
 				$dataStaff=array("gibbonDepartmentID"=>$gibbonDepartmentID); 
-				$sqlStaff="SELECT gibbonPerson.gibbonPersonID, gibbonDepartmentStaff.role, title, surname, preferredName, image_75, gibbonStaff.jobTitle FROM gibbonDepartmentStaff JOIN gibbonPerson ON (gibbonDepartmentStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND gibbonDepartmentID=:gibbonDepartmentID ORDER BY role, surname, preferredName" ;
+				$sqlStaff="SELECT gibbonPerson.gibbonPersonID, gibbonDepartmentStaff.role, title, surname, preferredName, image_240, gibbonStaff.jobTitle FROM gibbonDepartmentStaff JOIN gibbonPerson ON (gibbonDepartmentStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND gibbonDepartmentID=:gibbonDepartmentID ORDER BY role, surname, preferredName" ;
 				$resultStaff=$connection2->prepare($sqlStaff);
 				$resultStaff->execute($dataStaff);
 			}
@@ -102,11 +102,11 @@ else {
 						print "<tr>" ;
 					}
 					print "<td style='width:20%; text-align: center; vertical-align: top'>" ;
-						if ($rowStaff["image_75"]=="" OR file_exists($_SESSION[$guid]["absolutePath"] . "/" . $rowStaff["image_75"])==FALSE) {    
+						if ($rowStaff["image_240"]=="" OR file_exists($_SESSION[$guid]["absolutePath"] . "/" . $rowStaff["image_240"])==FALSE) {    
 							print "<img style='height: 100px; width: 75px' class='user' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/anonymous_75.jpg'/><br/>" ;
 						}
 						else {
-							print "<img style='height: 100px; width: 75px' class='user' src='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowStaff["image_75"] ."'/><br/>" ;
+							print "<img style='height: 100px; width: 75px' class='user' src='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowStaff["image_240"] ."'/><br/>" ;
 						}
 						if (isActionAccessible($guid, $connection2, "/modules/Staff/staff_view_details.php")) {
 							print "<div style='padding-top: 5px'><b><a href='" .  $_SESSION[$guid]["absoluteURL"]. "/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID=" . $rowStaff["gibbonPersonID"] . "'>" . formatName($rowStaff["title"], $rowStaff["preferredName"], $rowStaff["surname"], "Staff") . "</a></b><br/><i>" ;

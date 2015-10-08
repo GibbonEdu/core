@@ -181,7 +181,7 @@ else {
 									if ($row["gibbonPersonIDReturnAction"]==$rowSelect["gibbonPersonID"]) {
 										$selected="selected" ;
 									}
-									print "<option $selected value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . "$expected</option>" ;
+									print "<option $selected value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . "</option>" ;
 								}
 								print "</optgroup>" ;
 							print "</select>" ;

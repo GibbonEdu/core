@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start() ;
 
+//Module includes for User Admin (for custom fields)
+include "./modules/User Admin/moduleFunctions.php" ;
+
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
@@ -421,6 +424,53 @@ else {
 								print "</td>" ;
 							print "</tr>" ;
 						print "</table>" ;
+						
+						//Custom Fields
+						$fields=unserialize($row["fields"]) ;
+						$resultFields=getCustomFields($connection2, $guid, FALSE, TRUE) ;
+						if ($resultFields->rowCount()>0) {
+							print "<h4>" ;
+							print _("Custom Fields") ;
+							print "</h4>" ;
+							
+							print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
+								$count=0 ;
+								$columns=3 ;
+
+								while ($rowFields=$resultFields->fetch()) {
+									if ($count%$columns==0) {
+										print "<tr>" ;
+									}
+									print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
+											print "<span style='font-size: 115%; font-weight: bold'>" . _($rowFields["name"]) . "</span><br/>" ;
+											if (isset($fields[$rowFields["gibbonPersonFieldID"]])) {
+												if ($rowFields["type"]=="date") {
+													print dateConvertBack($guid, $fields[$rowFields["gibbonPersonFieldID"]]) ;
+												}
+												else if ($rowFields["type"]=="url") {
+													print "<a target='_blank' href='" . $fields[$rowFields["gibbonPersonFieldID"]] . "'>" . $fields[$rowFields["gibbonPersonFieldID"]] . "</a>" ;
+												}
+												else {
+													print $fields[$rowFields["gibbonPersonFieldID"]] ;
+												}
+											}
+									print "</td>" ;
+
+									if ($count%$columns==($columns-1)) {
+										print "</tr>" ;
+									}
+									$count++ ;
+								}
+
+								if ($count%$columns!=0) {
+									for ($i=0;$i<$columns-($count%$columns);$i++) {
+										print "<td style='width: 33%; padding-top: 15px; vertical-align: top'></td>" ;
+									}
+									print "</tr>" ;
+								}
+
+							print "</table>" ;	
+						}
 					}
 					else if ($subpage=="Emergency Contacts") {
 						if (isActionAccessible($guid, $connection2, "/modules/User Admin/user_manage.php")==TRUE) {

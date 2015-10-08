@@ -108,7 +108,7 @@ else {
 					<script type="text/javascript">
 						var gibbonPersonID=new LiveValidation('gibbonPersonID');
 						gibbonPersonID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-					 </script>
+					</script>
 				</td>
 			</tr>
 			<tr>
@@ -150,7 +150,7 @@ else {
 					<script type="text/javascript">
 						var type=new LiveValidation('type');
 						type.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-					 </script>
+					</script>
 				</td>
 			</tr>
 			<tr>
@@ -261,7 +261,7 @@ else {
 					<script type="text/javascript">
 						var biographicalGroupingPriority=new LiveValidation('biographicalGroupingPriority');
 						biographicalGroupingPriority.add(Validate.Numericality);
-					 </script>
+					</script>
 				</td>
 			</tr>
 			<tr>

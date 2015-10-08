@@ -108,7 +108,7 @@ else {
 					print _("Type") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Login To Non-Current Years") ;
+					print _("Login Years") ;
 				print "</th>" ;
 				print "<th style='width:110px'>" ;
 					print _("Action") ;
@@ -144,7 +144,18 @@ else {
 						print _($row["type"]) ;
 					print "</td>" ;
 					print "<td>" ;
-						print ynExpander($row["nonCurrentYearLogin"]) ;
+						if ($row["futureYearsLogin"]=="Y" AND $row["pastYearsLogin"]=="Y") {
+							print _("All years") ;
+						}
+						else if ($row["futureYearsLogin"]=="N" AND $row["pastYearsLogin"]=="N") {
+							print _("Current year only") ;
+						}
+						else if ($row["futureYearsLogin"]=="N") {
+							print _("Current/past years only") ;
+						}
+						else if ($row["pastYearsLogin"]=="N") {
+							print _("Current/future years only") ;
+						}
 					print "</td>" ;
 					print "<td>" ;
 						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/role_manage_edit.php&gibbonRoleID=" . $row["gibbonRoleID"] . "'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;

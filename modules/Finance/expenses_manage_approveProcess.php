@@ -41,14 +41,15 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 $gibbonFinanceBudgetCycleID=$_POST["gibbonFinanceBudgetCycleID"] ;
 $gibbonFinanceBudgetID=$_POST["gibbonFinanceBudgetID"] ;
 $gibbonFinanceExpenseID=$_POST["gibbonFinanceExpenseID"] ;
-$status=$_POST["status"] ;
+$status2=$_POST["status2"] ;
+$gibbonFinanceBudgetID2=$_POST["gibbonFinanceBudgetID2"] ;
 		
 if ($gibbonFinanceBudgetCycleID=="" OR $gibbonFinanceBudgetID=="") {
 	print "Fatal error loading this page!" ;
 }
 else {
-	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/expenses_manage_approve.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&gibbonFinanceBudgetID=$gibbonFinanceBudgetID&status=$status" ;
-	$URLApprove=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/expenses_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&gibbonFinanceBudgetID=$gibbonFinanceBudgetID&status=$status" ;
+	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/expenses_manage_approve.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2&status2=$status2" ;
+	$URLApprove=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/expenses_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2&status2=$status2" ;
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Finance/expenses_manage_approve.php")==FALSE) {
 		//Fail 0
@@ -188,6 +189,23 @@ else {
 									header("Location: {$URL}");
 								}
 								else {
+									//Write budget change
+									try {
+										$dataBudgetChange=array("gibbonFinanceBudgetID"=>$gibbonFinanceBudgetID, "gibbonFinanceExpenseID"=>$gibbonFinanceExpenseID); 
+										$sqlBudgetChange="UPDATE gibbonFinanceExpense SET gibbonFinanceBudgetID=:gibbonFinanceBudgetID WHERE gibbonFinanceExpenseID=:gibbonFinanceExpenseID" ;
+										$resultBudgetChange=$connection2->prepare($sqlBudgetChange);
+										$resultBudgetChange->execute($dataBudgetChange);
+									}
+									catch(PDOException $e) { 
+										//Fail2
+										$URL.="&approveReturn=fail2" ;
+										header("Location: {$URL}");
+										break ;
+									}
+									
+									//Attempt to archive notification
+									archiveNotification($connection2, $guid, $_SESSION[$guid]["gibbonPersonID"], "/index.php?q=/modules/Finance/expenses_manage_approve.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID") ;
+									
 									if ($approval=="Rejection") { //REJECT!
 										//Write back to gibbonFinanceExpense
 										try {
@@ -219,7 +237,30 @@ else {
 										
 										//Notify original creator that it is rejected
 										$notificationText=sprintf(_('Your expense request for "%1$s" in budget "%2$s" has been rejected.'), $row["title"], $row["budget"]) ;
-										setNotification($connection2, $guid, $row["gibbonPersonIDCreator"], $notificationText, "Finance", "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=&gibbonFinanceBudgetID=" . $row["gibbonFinanceBudgetID"]) ;
+										setNotification($connection2, $guid, $row["gibbonPersonIDCreator"], $notificationText, "Finance", "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=" . $row["gibbonFinanceBudgetID"]) ;
+										
+										//Success 0
+										$URLApprove.="&approveReturn=success0" ;
+										header("Location: {$URLApprove}");
+									}
+									else if ($approval=="Comment") { //COMMENT!
+										//Write comment to log
+										try {
+											$data=array("gibbonFinanceExpenseID"=>$gibbonFinanceExpenseID, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "comment"=>$comment); 
+											$sql="INSERT INTO gibbonFinanceExpenseLog SET gibbonFinanceExpenseID=:gibbonFinanceExpenseID, gibbonPersonID=:gibbonPersonID, timestamp='" . date("Y-m-d H:i:s") . "', action='Comment', comment=:comment" ;
+											$result=$connection2->prepare($sql);
+											$result->execute($data);
+										}
+										catch(PDOException $e) { 
+											//Fail2
+											$URL.="&approveReturn=fail2" ;
+											header("Location: {$URL}");
+											break ;
+										}
+										
+										//Notify original creator that it is commented upon
+										$notificationText=sprintf(_('Someone has commented on your expense request for "%1$s" in budget "%2$s".'), $row["title"], $row["budget"]) ;
+										setNotification($connection2, $guid, $row["gibbonPersonIDCreator"], $notificationText, "Finance", "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=" . $row["gibbonFinanceBudgetID"]) ;
 										
 										//Success 0
 										$URLApprove.="&approveReturn=success0" ;
@@ -341,13 +382,13 @@ else {
 												$purchasingOfficer=getSettingByScope($connection2, "Finance", "purchasingOfficer") ;
 												if ($purchasingOfficer!=FALSE AND $purchasingOfficer!="" AND $row["purchaseBy"]=="School") {
 													$notificationText=sprintf(_('A newly approved expense (%1$s) needs to be purchased from budget "%2$s".'), $row["title"], $row["budget"]) ;
-													setNotification($connection2, $guid, $purchasingOfficer, $notificationText, "Finance", "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=&gibbonFinanceBudgetID=" . $row["gibbonFinanceBudgetID"]) ;
+													setNotification($connection2, $guid, $purchasingOfficer, $notificationText, "Finance", "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=" . $row["gibbonFinanceBudgetID"]) ;
 													$notificationExtra=". " . _("The Purchasing Officer has been alerted, and will purchase the item on your behalf.") ;
 												}
 												
 												//Notify original creator that it is approved
 												$notificationText=sprintf(_('Your expense request for "%1$s" in budget "%2$s" has been fully approved.') . $notificationExtra, $row["title"], $row["budget"]) ;
-												setNotification($connection2, $guid, $row["gibbonPersonIDCreator"], $notificationText, "Finance", "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=&gibbonFinanceBudgetID=" . $row["gibbonFinanceBudgetID"]) ;
+												setNotification($connection2, $guid, $row["gibbonPersonIDCreator"], $notificationText, "Finance", "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=" . $row["gibbonFinanceBudgetID"]) ;
 										
 												
 												//Success 0

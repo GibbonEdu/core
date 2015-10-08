@@ -111,7 +111,7 @@ else {
 							<script type="text/javascript">
 								var name2=new LiveValidation('name');
 								name2.add(Validate.Presence);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -124,7 +124,7 @@ else {
 							<script type="text/javascript">
 								var nameShort=new LiveValidation('nameShort');
 								nameShort.add(Validate.Presence);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -138,7 +138,7 @@ else {
 								var timeStart=new LiveValidation('timeStart');
 								timeStart.add(Validate.Presence);
 								timeStart.add( Validate.Format, {pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use hh:mm" } ); 
-							 </script>
+							</script>
 							<script type="text/javascript">
 								$(function() {
 									var availableTags=[
@@ -171,7 +171,7 @@ else {
 								var timeEnd=new LiveValidation('timeEnd');
 								timeEnd.add(Validate.Presence);
 								timeEnd.add( Validate.Format, {pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use hh:mm" } ); 
-							 </script>
+							</script>
 							<script type="text/javascript">
 								$(function() {
 									var availableTags=[

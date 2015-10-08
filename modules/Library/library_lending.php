@@ -201,23 +201,34 @@ else {
 	try {
 		$data=array(); 
 		$sqlWhere="AND " ;
+		$sqlWhere2="AND " ;
 		if ($name!="") {
 			$data["name"]="%" . $name . "%" ;
 			$data["producer"]="%" . $name . "%" ;
 			$data["id"]="%" . $name . "%" ;
-			$sqlWhere.="(name LIKE :name  OR producer LIKE :producer OR id LIKE :id) AND " ; 
+			$data["name2"]="%" . $name . "%" ;
+			$data["producer2"]="%" . $name . "%" ;
+			$data["id2"]="%" . $name . "%" ;
+			$sqlWhere.="(name LIKE :name  OR producer LIKE :producer OR id LIKE :id) AND " ;
+			$sqlWhere2.="(name LIKE :name2  OR producer LIKE :producer2 OR id LIKE :id2) AND " ; 
 		}
 		if ($gibbonLibraryTypeID!="") {
 			$data["gibbonLibraryTypeID"]=$gibbonLibraryTypeID;
+			$data["gibbonLibraryTypeID2"]=$gibbonLibraryTypeID;
 			$sqlWhere.="gibbonLibraryTypeID=:gibbonLibraryTypeID AND " ; 
+			$sqlWhere2.="gibbonLibraryTypeID=:gibbonLibraryTypeID2 AND " ; 
 		}
 		if ($gibbonSpaceID!="") {
 			$data["gibbonSpaceID"]=$gibbonSpaceID;
+			$data["gibbonSpaceID2"]=$gibbonSpaceID;
 			$sqlWhere.="gibbonSpaceID=:gibbonSpaceID AND " ; 
+			$sqlWhere2.="gibbonSpaceID=:gibbonSpaceID2 AND " ; 
 		}
 		if ($status!="") {
 			$data["status"]=$status;
+			$data["status2"]=$status;
 			$sqlWhere.="status=:status AND " ; 
+			$sqlWhere.="status=:status2 AND " ; 
 		}
 		if ($sqlWhere=="AND ") {
 			$sqlWhere="" ;
@@ -225,9 +236,16 @@ else {
 		else {
 			$sqlWhere=substr($sqlWhere,0,-5) ;
 		}
+		if ($sqlWhere2=="AND ") {
+			$sqlWhere2="" ;
+		}
+		else {
+			$sqlWhere2=substr($sqlWhere2,0,-5) ;
+		}
 		
-		
-		$sql="SELECT * FROM gibbonLibraryItem WHERE (status='Available' OR status='On Loan' OR status='Repair' OR status='Reserved') AND NOT ownershipType='Individual' AND borrowable='Y' $sqlWhere ORDER BY id" ; 
+		$sql="(SELECT gibbonLibraryItem.*, NULL AS borrower FROM gibbonLibraryItem WHERE (status='Available' OR status='Repair' OR status='Reserved') AND NOT ownershipType='Individual' AND borrowable='Y' $sqlWhere)
+			UNION
+			(SELECT gibbonLibraryItem.*, concat(preferredName, ' ', surname) AS borrower FROM gibbonLibraryItem JOIN gibbonPerson ON (gibbonLibraryItem.gibbonPersonIDStatusResponsible=gibbonPerson.gibbonPersonID) WHERE (gibbonLibraryItem.status='On Loan') AND NOT ownershipType='Individual' AND borrowable='Y' $sqlWhere2) ORDER BY name, producer" ; 
 		$sqlPage=$sql ." LIMIT " . $_SESSION[$guid]["pagination"] . " OFFSET " . (($page-1)*$_SESSION[$guid]["pagination"]) ; 
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
@@ -251,7 +269,7 @@ else {
 				print "<th>" ;
 					print _("School ID") ;
 				print "</th>" ;
-				print "<th>" ;
+				print "<th style='width: 250px'>" ;
 					print _("Name") . "<br/>" ;
 					print "<span style='font-size: 85%; font-style: italic'>" . _('Producer') . "</span>" ;
 				print "</th>" ;
@@ -263,7 +281,7 @@ else {
 				print "</th>" ;
 				print "<th>" ;
 					print _("Status") . "<br/>" ;
-					print "<span style='font-size: 85%; font-style: italic'>" . _('Return Date') . "</span>" ;
+					print "<span style='font-size: 85%; font-style: italic'>" . _('Return Date') . "<br/>" . _('Borrower') . "</span>" ;
 				print "</th>" ;
 				print "<th>" ;
 					print _("Actions") ;
@@ -297,7 +315,12 @@ else {
 						print "<b>" . $row["id"] . "</b>" ;
 					print "</td>" ;
 					print "<td>" ;
-						print "<b>" . $row["name"] . "</b><br/>" ;
+						if (strlen($row["name"])>30) {
+							print "<b>" . substr($row["name"],0, 30) . "...</b><br/>" ;
+						}
+						else {
+							print "<b>" . $row["name"] . "</b><br/>" ;
+						}
 						print "<span style='font-size: 85%; font-style: italic'>" . $row["producer"] . "</span>" ;
 					print "</td>" ;
 					print "<td>" ;
@@ -337,8 +360,15 @@ else {
 					print "</td>" ;
 					print "<td>" ;
 						print $row["status"] . "<br/>" ;
-						if ($row["returnExpected"]!="") {
-							print "<span style='font-size: 85%; font-style: italic'>" . dateConvertBack($guid, $row["returnExpected"]) . "</span>" ;
+						if ($row["returnExpected"]!="" OR $row["borrower"]!="") {
+							print "<span style='font-size: 85%; font-style: italic'>" ;
+								if ($row["returnExpected"]!="") {
+							 		print dateConvertBack($guid, $row["returnExpected"]) . "<br/>" ;
+							 	}
+							 	if ($row["borrower"]!="") {
+							 		print $row["borrower"] ;
+							 	}
+							print "</span>" ;
 						}
 					print "</td>" ;
 					print "<td>" ;
