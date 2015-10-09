@@ -444,6 +444,12 @@ General: added new library for export to Excel, not loaded by default (old funct
 Timetable: improved display of short time slots, and of tooltip on hover
 	Edited file /modules/Timetable/moduleFunctions.php
 
+Google: migrated OAuth authentication to use main Google libraries. REQUIRES ADMIN TO RESET REDIRECT URL IN BOTH GOOGLE DEV CONSOLE AND IN GIBBON!
+	Edited file /functions.php
+	Edited file /lib/google/index.php
+	Delete folder /lib/googleOAuth
+	Edited file /themes/Default/img/g_login_btn.png
+
 v10.0.00
 --------
 i18n: added Urdu as inactive development language

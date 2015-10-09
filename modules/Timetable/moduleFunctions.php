@@ -200,7 +200,6 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
 			$eventsSchool=FALSE ;
 		}
 		else {
-
 			$count=0 ;
 			foreach ($calendarListEntry as $entry) {
 				$multiDay=FALSE ;
