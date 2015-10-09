@@ -34,7 +34,7 @@ else {
 	print "<div class='trail'>" ;
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/applicationForm_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . _('Manage Application Forms') . "</a> > </div><div class='trailEnd'>" . _('Edit Form') . "</div>" ;
 	print "</div>" ;
-	
+
 	//Check if school year specified
 	$gibbonApplicationFormID=$_GET["gibbonApplicationFormID"];
 	$gibbonSchoolYearID=$_GET["gibbonSchoolYearID"] ;
@@ -46,13 +46,13 @@ else {
 	}
 	else {
 		try {
-			$data=array("gibbonApplicationFormID"=>$gibbonApplicationFormID); 
+			$data=array("gibbonApplicationFormID"=>$gibbonApplicationFormID);
 			$sql="SELECT * FROM gibbonApplicationForm LEFT JOIN gibbonPayment ON (gibbonApplicationForm.gibbonPaymentID=gibbonPayment.gibbonPaymentID AND foreignTable='gibbonApplicationForm') WHERE gibbonApplicationFormID=:gibbonApplicationFormID" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
-		catch(PDOException $e) { 
-			print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+		catch(PDOException $e) {
+			print "<div class='error'>" . $e->getMessage() . "</div>" ;
 		}
 
 		if ($result->rowCount()!=1) {
@@ -66,33 +66,33 @@ else {
 			$class="error" ;
 			if (!($updateReturn=="")) {
 				if ($updateReturn=="fail0") {
-					$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+					$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;
 				}
 				else if ($updateReturn=="fail1") {
-					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;
 				}
 				else if ($updateReturn=="fail2") {
-					$updateReturnMessage=_("Your request failed due to a database error.") ;	
+					$updateReturnMessage=_("Your request failed due to a database error.") ;
 				}
 				else if ($updateReturn=="fail3") {
-					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;
 				}
 				else if ($updateReturn=="success1") {
-					$updateReturnMessage=_("Your request was completed successfully, but status could not be updated.") ;	
+					$updateReturnMessage=_("Your request was completed successfully, but status could not be updated.") ;
 				}
 				else if ($updateReturn=="success0") {
-					$updateReturnMessage=_("Your request was completed successfully.") ;	
+					$updateReturnMessage=_("Your request was completed successfully.") ;
 					$class="success" ;
 				}
 				print "<div class='$class'>" ;
 					print $updateReturnMessage;
 				print "</div>" ;
-			} 
+			}
 
 			//Let's go!
 			$row=$result->fetch() ;
 			$proceed=TRUE ;
-			
+
 			print "<div class='linkTop'>" ;
 				if ($search!="") {
 					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/applicationForm_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>" . _('Back to Search Results') . "</a> | " ;
@@ -101,14 +101,14 @@ else {
 			print "</div>" ;
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/applicationForm_manage_editProcess.php?search=$search" ?>" enctype="multipart/form-data">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder' cellspacing='0' style="width: 100%">
 					<tr class='break'>
-						<td colspan=2> 
+						<td colspan=2>
 							<h3><?php print _('For Office Use') ?></h3>
 						</td>
 					</tr>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php print _('Application ID') ?> *</b><br/>
 							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 						</td>
@@ -117,7 +117,7 @@ else {
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php print _('Priority') ?> *</b><br/>
 							<span style="font-size: 90%"><i><?php print _('Higher priority applicants appear first in list of applications.') ?></i></span>
 						</td>
@@ -149,7 +149,7 @@ else {
 					if ($row["status"]!="Accepted") {
 						?>
 						<tr>
-							<td> 
+							<td>
 								<b><?php print _('Status') ?> *</b><br/>
 								<span style="font-size: 90%"><i><?php print _('Manually set status. "Approved" not permitted.') ?></i></span>
 							</td>
@@ -167,7 +167,7 @@ else {
 					else {
 						?>
 						<tr>
-							<td> 
+							<td>
 								<b><?php print _('Status') ?> *</b><br/>
 								<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 							</td>
@@ -181,7 +181,7 @@ else {
 					if ($milestonesMasterRaw!="") {
 						?>
 						<tr>
-							<td> 
+							<td>
 								<b><?php print _('Milestones') ?></b><br/>
 							</td>
 							<td class="right">
@@ -197,7 +197,7 @@ else {
 									}
 									print trim($milestoneMaster) . " <input $checked type='checkbox' name='milestone_" .  preg_replace('/\s+/', '', $milestoneMaster) . "'></br>" ;
 								}
-								
+
 								?>
 							</td>
 						</tr>
@@ -205,7 +205,7 @@ else {
 					}
 					?>
 					<tr>
-						<td> 
+						<td>
 							<b><?php print _('Start Date') ?></b><br/>
 							<span style="font-size: 90%"><i><?php print _('Student\'s intended first day at school.') ?><br/>Format <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } ?></i></span>
 						</td>
@@ -213,7 +213,7 @@ else {
 							<input name="dateStart" id="dateStart" maxlength=10 value="<?php print dateConvertBack($guid, $row["dateStart"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var dateStart=new LiveValidation('dateStart');
-								dateStart.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+								dateStart.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } );
 							</script>
 							 <script type="text/javascript">
 								$(function() {
@@ -223,7 +223,7 @@ else {
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php print _('Year of Entry') ?> *</b><br/>
 							<span style="font-size: 90%"><i><?php print _('When will the student join?') ?></i></span>
 						</td>
@@ -232,13 +232,13 @@ else {
 								<?php
 								print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 								try {
-									$dataSelect=array(); 
+									$dataSelect=array();
 									$sqlSelect="SELECT * FROM gibbonSchoolYear WHERE (status='Current' OR status='Upcoming') ORDER BY sequenceNumber" ;
 									$resultSelect=$connection2->prepare($sqlSelect);
 									$resultSelect->execute($dataSelect);
 								}
-								catch(PDOException $e) { 
-									print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+								catch(PDOException $e) {
+									print "<div class='error'>" . $e->getMessage() . "</div>" ;
 								}
 								while ($rowSelect=$resultSelect->fetch()) {
 									$selected="" ;
@@ -247,7 +247,7 @@ else {
 									}
 									print "<option $selected value='" . $rowSelect["gibbonSchoolYearID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
 								}
-								?>				
+								?>
 							</select>
 							<script type="text/javascript">
 								var gibbonSchoolYearIDEntry=new LiveValidation('gibbonSchoolYearIDEntry');
@@ -256,7 +256,7 @@ else {
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php print _('Year Group at Entry') ?> *</b><br/>
 							<span style="font-size: 90%"><i><?php print _('Which year level will student enter.') ?></i></span>
 						</td>
@@ -265,15 +265,15 @@ else {
 								<?php
 								print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 								try {
-									$dataSelect=array(); 
+									$dataSelect=array();
 									$sqlSelect="SELECT * FROM gibbonYearGroup ORDER BY sequenceNumber" ;
 									$resultSelect=$connection2->prepare($sqlSelect);
 									$resultSelect->execute($dataSelect);
 								}
-								catch(PDOException $e) { 
-									print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+								catch(PDOException $e) {
+									print "<div class='error'>" . $e->getMessage() . "</div>" ;
 								}
-								
+
 								while ($rowSelect=$resultSelect->fetch()) {
 									$selected="" ;
 									if ($row["gibbonYearGroupIDEntry"]==$rowSelect["gibbonYearGroupID"]) {
@@ -281,7 +281,7 @@ else {
 									}
 									print "<option $selected value='" . $rowSelect["gibbonYearGroupID"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
 								}
-								?>				
+								?>
 							</select>
 							<script type="text/javascript">
 								var gibbonYearGroupIDEntry=new LiveValidation('gibbonYearGroupIDEntry');
@@ -294,7 +294,7 @@ else {
 					if ($dayTypeOptions!="") {
 						?>
 						<tr>
-							<td> 
+							<td>
 								<b><?php print _('Day Type') ?></b><br/>
 								<span style="font-size: 90%"><i><?php print getSettingByScope($connection2, 'User Admin', 'dayTypeText') ; ?></i></span>
 							</td>
@@ -309,15 +309,15 @@ else {
 										}
 										print "<option $selected value='" . trim($dayType) . "'>" . trim($dayType) . "</option>" ;
 									}
-									?>				
+									?>
 								</select>
 							</td>
 						</tr>
 						<?php
-					}	
+					}
 					?>
 					<tr>
-						<td> 
+						<td>
 							<b><?php print _('Roll Group at Entry') ?></b><br/>
 							<span style="font-size: 90%"><?php print _('If set, the student will automatically be enroled on Accept.') ?></span>
 						</td>
@@ -326,13 +326,13 @@ else {
 								<?php
 								print "<option value=''></option>" ;
 								try {
-									$dataSelect=array(); 
+									$dataSelect=array();
 									$sqlSelect="SELECT gibbonRollGroupID, name, gibbonSchoolYearID FROM gibbonRollGroup ORDER BY gibbonSchoolYearID, name" ;
 									$resultSelect=$connection2->prepare($sqlSelect);
 									$resultSelect->execute($dataSelect);
 								}
-								catch(PDOException $e) { 
-									print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+								catch(PDOException $e) {
+									print "<div class='error'>" . $e->getMessage() . "</div>" ;
 								}
 								while ($rowSelect=$resultSelect->fetch()) {
 									$selected="" ;
@@ -341,14 +341,14 @@ else {
 									}
 									print "<option $selected class='" . $rowSelect["gibbonSchoolYearID"] . "' value='" . $rowSelect["gibbonRollGroupID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
 								}
-								?>				
+								?>
 							</select>
 							<script type="text/javascript">
 								$("#gibbonRollGroupID").chainedTo("#gibbonSchoolYearIDEntry");
 							</script>
 						</td>
 					</tr>
-					
+
 					<?php
 					$currency=getSettingByScope($connection2, "System", "currency") ;
 					$applicationFee=getSettingByScope($connection2, "Application Form", "applicationFee") ;
@@ -361,15 +361,15 @@ else {
 					if ($applicationFee>0 AND is_numeric($applicationFee)) {
 						?>
 						<tr>
-							<td> 
+							<td>
 								<b><?php print _('Payment') ?> *</b><br/>
 								<span style="font-size: 90%"><i><?php print sprintf(_('Has payment (%1$s %2$s) been made for this application.'), $currency, $applicationFee) ?></i></span>
 							</td>
 							<td class="right">
 								<select name="paymentMade" id="paymentMade" style="width: 302px">
-									<option <?php if ($row["paymentMade"]=="N") { print "selected" ; } ?> value='N'>N</option>	
-									<option <?php if ($row["paymentMade"]=="Y") { print "selected" ; } ?> value='Y'>Y</option>	
-									<option <?php if ($row["paymentMade"]=="Exemption") { print "selected" ; } ?> value='Exemption'>Exemption</option>				
+									<option <?php if ($row["paymentMade"]=="N") { print "selected" ; } ?> value='N'>N</option>
+									<option <?php if ($row["paymentMade"]=="Y") { print "selected" ; } ?> value='Y'>Y</option>
+									<option <?php if ($row["paymentMade"]=="Exemption") { print "selected" ; } ?> value='Exemption'>Exemption</option>
 								</select>
 							</td>
 						</tr>
@@ -377,7 +377,7 @@ else {
 						if ($row["paymentToken"]!="" OR $row["paymentPayerID"]!="" OR $row["paymentTransactionID"]!="" OR $row["paymentReceiptID"]!="") {
 							?>
 							<tr>
-								<td style='text-align: right' colspan=2> 
+								<td style='text-align: right' colspan=2>
 									<span style="font-size: 90%"><i>
 										<?php
 											if ($row["paymentToken"]!="") {
@@ -399,28 +399,28 @@ else {
 							<?php
 						}
 					}
-					
+
 					?>
 					<tr>
-						<td colspan=2 style='padding-top: 15px'> 
+						<td colspan=2 style='padding-top: 15px'>
 							<b><?php print _('Notes') ?></b><br/>
 							<textarea name="notes" id="notes" rows=5 style="width:738px; margin: 5px 0px 0px 0px"><?php print htmlPrep($row["notes"]) ?></textarea>
 						</td>
 					</tr>
-					
+
 					<tr class='break'>
-						<td colspan=2> 
+						<td colspan=2>
 							<h3><?php print _('Student') ?></h3>
 						</td>
 					</tr>
-					
+
 					<tr>
-						<td colspan=2> 
+						<td colspan=2>
 							<h4><?php print _('Student Personal Data') ?></h4>
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php print _('Surname') ?> *</b><br/>
 							<span style="font-size: 90%"><i><?php print _('Family name as shown in ID documents.') ?></i></span>
 						</td>
@@ -433,7 +433,7 @@ else {
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php print _('First Name') ?> *</b><br/>
 							<span style="font-size: 90%"><i><?php print _('First name as shown in ID documents.') ?></i></span>
 						</td>
@@ -446,7 +446,7 @@ else {
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php print _('Preferred Name') ?> *</b><br/>
 							<span style="font-size: 90%"><i><?php print _('Most common name, alias, nickname, etc.') ?></i></span>
 						</td>
@@ -459,7 +459,7 @@ else {
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php print _('Official Name') ?> *</b><br/>
 							<span style="font-size: 90%"><i><?php print _('Full name as shown in ID documents.') ?></i></span>
 						</td>
@@ -472,7 +472,7 @@ else {
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php print _('Name In Characters') ?></b><br/>
 							<span style="font-size: 90%"><i><?php print _('Chinese or other character-based name.') ?></i></span>
 						</td>
@@ -481,7 +481,7 @@ else {
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php print _('Gender') ?> *</b><br/>
 						</td>
 						<td class="right">
@@ -497,7 +497,7 @@ else {
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php print _('Date of Birth') ?> *</b><br/>
 							<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 						</td>
@@ -505,7 +505,7 @@ else {
 							<input name="dob" id="dob" maxlength=10 value="<?php print dateConvertBack($guid, $row["dob"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var dob=new LiveValidation('dob');
-								dob.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+								dob.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } );
 								dob.add(Validate.Presence);
 							</script>
 							 <script type="text/javascript">
@@ -515,15 +515,15 @@ else {
 							</script>
 						</td>
 					</tr>
-					
-					
+
+
 					<tr>
-						<td colspan=2> 
+						<td colspan=2>
 							<h4><?php print _('Student Background') ?></h4>
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php print _('Home Language - Primary') ?> *</b><br/>
 							<span style="font-size: 90%"><i><?php print _('The primary language used in the student\'s home.') ?></i></span>
 						</td>
@@ -532,7 +532,7 @@ else {
 								<?php
 								print "<option value='Please select...'>Please select...</option>" ;
 								try {
-									$dataSelect=array(); 
+									$dataSelect=array();
 									$sqlSelect="SELECT name FROM gibbonLanguage ORDER BY name" ;
 									$resultSelect=$connection2->prepare($sqlSelect);
 									$resultSelect->execute($dataSelect);
@@ -545,7 +545,7 @@ else {
 									}
 									print "<option $selected value='" . $rowSelect["name"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
 								}
-								?>				
+								?>
 							</select>
 							<script type="text/javascript">
 								var languageHomePrimary=new LiveValidation('languageHomePrimary');
@@ -554,7 +554,7 @@ else {
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php print _('Home Language - Secondary') ?></b><br/>
 							<span style="font-size: 90%"><i><?php print _('The primary language used in the student\'s home.') ?></i></span>
 						</td>
@@ -563,7 +563,7 @@ else {
 								<?php
 								print "<option value=''></option>" ;
 								try {
-									$dataSelect=array(); 
+									$dataSelect=array();
 									$sqlSelect="SELECT name FROM gibbonLanguage ORDER BY name" ;
 									$resultSelect=$connection2->prepare($sqlSelect);
 									$resultSelect->execute($dataSelect);
@@ -576,12 +576,12 @@ else {
 									}
 									print "<option $selected value='" . $rowSelect["name"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
 								}
-								?>				
+								?>
 							</select>
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php print _('First Language<') ?>/b><br/>
 							<span style="font-size: 90%"><i><?php print _('Student\'s native/first/mother language.') ?></i></span>
 						</td>
@@ -590,7 +590,7 @@ else {
 								<?php
 								print "<option value=''></option>" ;
 								try {
-									$dataSelect=array(); 
+									$dataSelect=array();
 									$sqlSelect="SELECT name FROM gibbonLanguage ORDER BY name" ;
 									$resultSelect=$connection2->prepare($sqlSelect);
 									$resultSelect->execute($dataSelect);
@@ -603,12 +603,12 @@ else {
 									}
 									print "<option $selected value='" . $rowSelect["name"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
 								}
-								?>				
+								?>
 							</select>
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php print _('Second Language') ?></b><br/>
 						</td>
 						<td class="right">
@@ -616,7 +616,7 @@ else {
 								<?php
 								print "<option value=''></option>" ;
 								try {
-									$dataSelect=array(); 
+									$dataSelect=array();
 									$sqlSelect="SELECT name FROM gibbonLanguage ORDER BY name" ;
 									$resultSelect=$connection2->prepare($sqlSelect);
 									$resultSelect->execute($dataSelect);
@@ -629,12 +629,12 @@ else {
 									}
 									print "<option $selected value='" . $rowSelect["name"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
 								}
-								?>				
+								?>
 							</select>
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php print _('Third Language') ?></b><br/>
 						</td>
 						<td class="right">
@@ -642,7 +642,7 @@ else {
 								<?php
 								print "<option value=''></option>" ;
 								try {
-									$dataSelect=array(); 
+									$dataSelect=array();
 									$sqlSelect="SELECT name FROM gibbonLanguage ORDER BY name" ;
 									$resultSelect=$connection2->prepare($sqlSelect);
 									$resultSelect->execute($dataSelect);
@@ -655,12 +655,12 @@ else {
 									}
 									print "<option $selected value='" . $rowSelect["name"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
 								}
-								?>				
+								?>
 							</select>
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php print _('Country of Birth') ?></b><br/>
 						</td>
 						<td class="right">
@@ -668,7 +668,7 @@ else {
 								<?php
 								print "<option value=''></option>" ;
 								try {
-									$dataSelect=array(); 
+									$dataSelect=array();
 									$sqlSelect="SELECT printable_name FROM gibbonCountry ORDER BY printable_name" ;
 									$resultSelect=$connection2->prepare($sqlSelect);
 									$resultSelect->execute($dataSelect);
@@ -681,12 +681,12 @@ else {
 									}
 									print "<option $selected value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
 								}
-								?>				
+								?>
 							</select>
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php print _('Citizenship') ?></b><br/>
 						</td>
 						<td class="right">
@@ -696,7 +696,7 @@ else {
 								$nationalityList=getSettingByScope($connection2, "User Admin", "nationality") ;
 								if ($nationalityList=="") {
 									try {
-										$dataSelect=array(); 
+										$dataSelect=array();
 										$sqlSelect="SELECT printable_name FROM gibbonCountry ORDER BY printable_name" ;
 										$resultSelect=$connection2->prepare($sqlSelect);
 										$resultSelect->execute($dataSelect);
@@ -716,13 +716,13 @@ else {
 										print "<option $selected value='" . trim($nationality) . "'>" . trim($nationality) . "</option>" ;
 									}
 								}
-								?>				
-								?>				
+								?>
+								?>
 							</select>
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php print _('Citizenship Passport Number') ?></b><br/>
 						</td>
 						<td class="right">
@@ -730,7 +730,7 @@ else {
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 						<?php
 						if ($_SESSION[$guid]["country"]=="") {
 							print "<b>" . _('National ID Card Number') . "</b><br/>" ;
@@ -745,7 +745,7 @@ else {
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<?php
 							if ($_SESSION[$guid]["country"]=="") {
 								print "<b>" . _('Residency/Visa Type') . "</b><br/>" ;
@@ -778,7 +778,7 @@ else {
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<?php
 							if ($_SESSION[$guid]["country"]=="") {
 								print "<b>" . _('Visa Expiry Date') . "</b><br/>" ;
@@ -793,7 +793,7 @@ else {
 							<input name="visaExpiryDate" id="visaExpiryDate" maxlength=10 value="<?php print dateConvertBack($guid, $row["visaExpiryDate"]) ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var visaExpiryDate=new LiveValidation('visaExpiryDate');
-								visaExpiryDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+								visaExpiryDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } );
 							</script>
 							 <script type="text/javascript">
 								$(function() {
@@ -802,15 +802,15 @@ else {
 							</script>
 						</td>
 					</tr>
-					
-					
+
+
 					<tr>
-						<td colspan=2> 
+						<td colspan=2>
 							<h4><?php print _('Student Contact') ?></h4>
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php print _('Email') ?></b><br/>
 						</td>
 						<td class="right">
@@ -825,7 +825,7 @@ else {
 					for ($i=1; $i<3; $i++) {
 						?>
 						<tr>
-							<td> 
+							<td>
 								<b><?php print _('Phone') ?> <?php print $i ?></b><br/>
 								<span style="font-size: 90%"><i><?php print _('Type, country code, number.') ?></i></span>
 							</td>
@@ -835,7 +835,7 @@ else {
 									<?php
 									print "<option value=''></option>" ;
 									try {
-										$dataSelect=array(); 
+										$dataSelect=array();
 										$sqlSelect="SELECT * FROM gibbonCountry ORDER BY printable_name" ;
 										$resultSelect=$connection2->prepare($sqlSelect);
 										$resultSelect->execute($dataSelect);
@@ -848,7 +848,7 @@ else {
 										}
 										print "<option $selected value='" . $rowSelect["iddCountryCode"] . "'>" . htmlPrep($rowSelect["iddCountryCode"]) . " - " .  htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
 									}
-									?>				
+									?>
 								</select>
 								<select style="width: 70px" name="phone<?php print $i ?>Type">
 									<option <?php if ($row["phone" . $i . "Type"]=="") { print "selected" ; }?> value=""></option>
@@ -863,37 +863,37 @@ else {
 						</tr>
 						<?php
 					}
-					?>					
+					?>
 					<tr>
-						<td colspan=2> 
+						<td colspan=2>
 							<h4><?php print _('Student Medical & Development') ?></h4>
 						</td>
 					</tr>
 					<tr>
-						<td colspan=2 style='padding-top: 15px'> 
+						<td colspan=2 style='padding-top: 15px'>
 							<b><?php print _('Medical Information') ?></b><br/>
 							<span style="font-size: 90%"><i><?php print _('Please indicate any medical conditions.') ?></i></span><br/>
 							<textarea name="medicalInformation" id="medicalInformation" rows=5 style="width:738px; margin: 5px 0px 0px 0px"><?php print htmlPrep($row["medicalInformation"]) ?></textarea>
 						</td>
 					</tr>
 					<tr>
-						<td colspan=2 style='padding-top: 15px'> 
+						<td colspan=2 style='padding-top: 15px'>
 							<b><?php print _('Development Information') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print _('Provide any comments or information concerning your child\'s development that may be relevant to your child’s performance in the classroom or elsewhere? (Incorrect or withheld information may affect continued enrolment).') ?></i></span><br/> 					
+							<span style="font-size: 90%"><i><?php print _('Provide any comments or information concerning your child\'s development that may be relevant to your child’s performance in the classroom or elsewhere? (Incorrect or withheld information may affect continued enrolment).') ?></i></span><br/>
 							<textarea name="developmentInformation" id="developmentInformation" rows=5 style="width:738px; margin: 5px 0px 0px 0px"><?php print htmlPrep($row["developmentInformation"]) ?></textarea>
 						</td>
 					</tr>
-					
-					
-					
+
+
+
 					<tr>
-						<td colspan=2> 
+						<td colspan=2>
 							<h4><?php print _('Previous Schools') ?></h4>
 							<p><?php print _('Please give information on the last two schools attended by the applicant.') ?></p>
 						</td>
 					</tr>
 					<tr>
-						<td colspan=2> 
+						<td colspan=2>
 							<?php
 							print "<table cellspacing='0' style='width: 100%'>" ;
 								print "<tr class='head'>" ;
@@ -913,8 +913,8 @@ else {
 										print _("Joining Date") . "<br/><span style='font-size: 80%'>" ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } print "</span>" ;
 									print "</th>" ;
 								print "</tr>" ;
-								
-								
+
+
 								for ($i=1; $i<3; $i++) {
 									if ((($i%2)-1)==0) {
 										$rowNum="even" ;
@@ -922,7 +922,7 @@ else {
 									else {
 										$rowNum="odd" ;
 									}
-												
+
 									print "<tr class=$rowNum>" ;
 										print "<td>" ;
 											print "<input name='schoolName$i' id='schoolName$i' maxlength=50 value='" . htmlPrep($row["schoolName$i"]) . "' type='text' style='width:120px; float: left'>" ;
@@ -941,13 +941,13 @@ else {
 													var availableTags=[
 														<?php
 														try {
-															$dataAuto=array(); 
+															$dataAuto=array();
 															$sqlAuto="SELECT DISTINCT schoolLanguage" . $i . " FROM gibbonApplicationForm ORDER BY schoolLanguage" . $i ;
 															$resultAuto=$connection2->prepare($sqlAuto);
 															$resultAuto->execute($dataAuto);
 														}
-														catch(PDOException $e) { 
-															print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+														catch(PDOException $e) {
+															print "<div class='error'>" . $e->getMessage() . "</div>" ;
 														}
 														while ($rowAuto=$resultAuto->fetch()) {
 															print "\"" . $rowAuto["schoolLanguage" . $i] . "\", " ;
@@ -975,7 +975,7 @@ else {
 							?>
 						</td>
 					</tr>
-					
+
 					<?php
 					//CUSTOM FIELDS FOR STUDENT
 					$fields=unserialize($row["fields"]) ;
@@ -983,36 +983,36 @@ else {
 					if ($resultFields->rowCount()>0) {
 						?>
 						<tr>
-							<td colspan=2> 
+							<td colspan=2>
 								<h4><?php print _('Other Information') ?></h4>
 							</td>
 						</tr>
 						<?php
 						while ($rowFields=$resultFields->fetch()) {
-							print renderCustomFieldRow($connection2, $guid, $rowFields, $fields[$rowFields["gibbonPersonFieldID"]]) ;	
+							print renderCustomFieldRow($connection2, $guid, $rowFields, $fields[$rowFields["gibbonPersonFieldID"]]) ;
 						}
-					}	
-					
+					}
+
 					if ($row["gibbonFamilyID"]=="") {
 						?>
 						<input type="hidden" name="gibbonFamily" value="FALSE">
-						
+
 						<tr class='break'>
-							<td colspan=2> 
+							<td colspan=2>
 								<h3>
 									<?php print _('Home Address') ?>
 								</h3>
 							</td>
 						</tr>
 						<tr>
-							<td colspan=2> 
+							<td colspan=2>
 								<p>
-									<?php print _('This address will be used for all members of the family. If an individual within the family needs a different address, this can be set through Data Updater after admission.') ?> 
+									<?php print _('This address will be used for all members of the family. If an individual within the family needs a different address, this can be set through Data Updater after admission.') ?>
 								</p>
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php print _('Home Address') ?> *</b><br/>
 								<span style="font-size: 90%"><i><?php print _('Unit, Building, Street') ?></i></span>
 							</td>
@@ -1025,7 +1025,7 @@ else {
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php print _('Home Address') ?> (District) *</b><br/>
 								<span style="font-size: 90%"><i><?php print _('County, State, District') ?></i></span>
 							</td>
@@ -1037,7 +1037,7 @@ else {
 									var availableTags=[
 										<?php
 										try {
-											$dataAuto=array(); 
+											$dataAuto=array();
 											$sqlAuto="SELECT DISTINCT name FROM gibbonDistrict ORDER BY name" ;
 											$resultAuto=$connection2->prepare($sqlAuto);
 											$resultAuto->execute($dataAuto);
@@ -1057,14 +1057,14 @@ else {
 							</script>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php print _('Home Address (Country)') ?> *</b><br/>
 							</td>
 							<td class="right">
 								<select name="homeAddressCountry" id="homeAddressCountry" style="width: 302px">
 									<?php
 									try {
-										$dataSelect=array(); 
+										$dataSelect=array();
 										$sqlSelect="SELECT printable_name FROM gibbonCountry ORDER BY printable_name" ;
 										$resultSelect=$connection2->prepare($sqlSelect);
 										$resultSelect->execute($dataSelect);
@@ -1078,7 +1078,7 @@ else {
 										}
 										print "<option $selected value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
 									}
-									?>				
+									?>
 								</select>
 								<script type="text/javascript">
 									var homeAddressCountry=new LiveValidation('homeAddressCountry');
@@ -1087,12 +1087,12 @@ else {
 							</td>
 						</tr>
 						<?php
-						
+
 						if ($row["parent1gibbonPersonID"]!="") {
 							$start=2 ;
 							?>
 							<tr class='break'>
-								<td colspan=2> 
+								<td colspan=2>
 									<h3>
 										<?php print _('Parent/Guardian 1') ?>
 										<?php
@@ -1104,14 +1104,14 @@ else {
 								</td>
 							</tr>
 							<tr>
-								<td colspan=2> 
+								<td colspan=2>
 									<p>
 										<?php print _('The parent is already a Gibbon user, and so their details cannot be edited in this view.') ?>
 									</p>
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php print _('Surname') ?></b><br/>
 									<span style="font-size: 90%"><i><?php print _('Family name as shown in ID documents.') ?></i></span>
 								</td>
@@ -1120,7 +1120,7 @@ else {
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php print _('Preferred Name') ?></b><br/>
 									<span style="font-size: 90%"><i><?php print _('Most common name, alias, nickname, etc.') ?></i></span>
 								</td>
@@ -1128,9 +1128,9 @@ else {
 									<input readonly name='parent1preferredName' maxlength=30 value="<?php print $row["parent1preferredName"] ?>" type="text" style="width: 300px">
 								</td>
 							</tr>
-							
+
 							<tr>
-								<td> 
+								<td>
 									<b><?php print _('Relationship') ?> *</b><br/>
 								</td>
 								<td class="right">
@@ -1162,9 +1162,9 @@ else {
 								$resultFields=getCustomFields($connection2, $guid, FALSE, FALSE, TRUE, FALSE, TRUE, NULL) ;
 								if ($resultFields->rowCount()>0) {
 									while ($rowFields=$resultFields->fetch()) {
-										print renderCustomFieldRow($connection2, $guid, $rowFields, $parent1fields[$rowFields["gibbonPersonFieldID"]], "parent1") ;	
+										print renderCustomFieldRow($connection2, $guid, $rowFields, $parent1fields[$rowFields["gibbonPersonFieldID"]], "parent1") ;
 									}
-								}	
+								}
 							?>
 							<?php
 						}
@@ -1174,7 +1174,7 @@ else {
 						for ($i=$start;$i<3;$i++) {
 							?>
 							<tr class='break'>
-								<td colspan=2> 
+								<td colspan=2>
 									<h3>
 										<?php print _('Parent/Guardian') ?> <?php print $i ?>
 										<?php
@@ -1189,12 +1189,12 @@ else {
 								</td>
 							</tr>
 							<tr>
-								<td colspan=2> 
+								<td colspan=2>
 									<h4><?php print sprintf(_('Parent/Guardian %1$s Personal Data'), $i) ?></h4>
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php print _('Title') ?><?php if ($i==1) { print " *" ;}?></b><br/>
 									<span style="font-size: 90%"><i></i></span>
 								</td>
@@ -1218,7 +1218,7 @@ else {
 										<option <?php if ($row["parent$i" . "title"]=="Mrs.") { print "selected" ; } ?> value="Mrs."><?php print _('Mrs.') ?></option>
 										<option <?php if ($row["parent$i" . "title"]=="Dr.") { print "selected" ; } ?> value="Dr."><?php print _('Dr.') ?></option>
 									</select>
-									
+
 									<?php
 									if ($i==1) {
 										?>
@@ -1232,7 +1232,7 @@ else {
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php print _('Surname') ?><?php if ($i==1) { print " *" ;}?></b><br/>
 									<span style="font-size: 90%"><i><?php print _('Family name as shown in ID documents.') ?></i></span>
 								</td>
@@ -1251,7 +1251,7 @@ else {
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php print _('First Name') ?><?php if ($i==1) { print " *" ;}?></b><br/>
 									<span style="font-size: 90%"><i><?php print _('First name as shown in ID documents.') ?></i></span>
 								</td>
@@ -1270,7 +1270,7 @@ else {
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php print _('Preferred Name') ?><?php if ($i==1) { print " *" ;}?></b><br/>
 									<span style="font-size: 90%"><i><?php print _('Most common name, alias, nickname, etc.') ?></i></span>
 								</td>
@@ -1289,7 +1289,7 @@ else {
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php print _('Official Name') ?><?php if ($i==1) { print " *" ;}?></b><br/>
 									<span style="font-size: 90%"><i><?php print _('Full name as shown in ID documents.') ?></i></span>
 								</td>
@@ -1308,7 +1308,7 @@ else {
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php print _('Name In Characters') ?></b><br/>
 									<span style="font-size: 90%"><i><?php print _('Chinese or other character-based name.') ?></i></span>
 								</td>
@@ -1317,12 +1317,12 @@ else {
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php print _('Gender') ?><?php if ($i==1) { print " *" ;}?></b><br/>
 								</td>
 								<td class="right">
 									<select name="<?php print "parent$i" ?>gender" id="<?php print "parent$i" ?>gender" style="width: 302px">
-										<?php 
+										<?php
 										if ($i==1) {
 											?>
 											<option value="Please select..."><?php print _('Please select...') ?></option>
@@ -1350,13 +1350,13 @@ else {
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php print _('Relationship') ?><?php if ($i==1) { print " *" ;}?></b><br/>
 								</td>
 								<td class="right">
 									<select name="<?php print "parent$i" ?>relationship" id="<?php print "parent$i" ?>relationship" style="width: 302px">
-										<?php 
-										if ($i==1) { 
+										<?php
+										if ($i==1) {
 											print "<option value=\"Please select...\">Please select...</option>" ;
 										}
 										else {
@@ -1387,14 +1387,14 @@ else {
 									?>
 								</td>
 							</tr>
-							
+
 							<tr>
-								<td colspan=2> 
+								<td colspan=2>
 									<h4><?php print sprintf(_('Parent/Guardian %1$s Background'), $i) ?></h4>
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php print _('First Language') ?></b><br/>
 								</td>
 								<td class="right">
@@ -1402,7 +1402,7 @@ else {
 										<?php
 										print "<option value=''></option>" ;
 										try {
-											$dataSelect=array(); 
+											$dataSelect=array();
 											$sqlSelect="SELECT name FROM gibbonLanguage ORDER BY name" ;
 											$resultSelect=$connection2->prepare($sqlSelect);
 											$resultSelect->execute($dataSelect);
@@ -1415,12 +1415,12 @@ else {
 											}
 											print "<option $selected value='" . $rowSelect["name"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
 										}
-										?>				
+										?>
 									</select>
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php print _('Second Language') ?></b><br/>
 								</td>
 								<td class="right">
@@ -1428,7 +1428,7 @@ else {
 										<?php
 										print "<option value=''></option>" ;
 										try {
-											$dataSelect=array(); 
+											$dataSelect=array();
 											$sqlSelect="SELECT name FROM gibbonLanguage ORDER BY name" ;
 											$resultSelect=$connection2->prepare($sqlSelect);
 											$resultSelect->execute($dataSelect);
@@ -1441,12 +1441,12 @@ else {
 											}
 											print "<option $selected value='" . $rowSelect["name"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
 										}
-										?>				
+										?>
 									</select>
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php print _('Citizenship') ?></b><br/>
 								</td>
 								<td class="right">
@@ -1456,7 +1456,7 @@ else {
 										$nationalityList=getSettingByScope($connection2, "User Admin", "nationality") ;
 										if ($nationalityList=="") {
 											try {
-												$dataSelect=array(); 
+												$dataSelect=array();
 												$sqlSelect="SELECT printable_name FROM gibbonCountry ORDER BY printable_name" ;
 												$resultSelect=$connection2->prepare($sqlSelect);
 												$resultSelect->execute($dataSelect);
@@ -1476,12 +1476,12 @@ else {
 												print "<option $selected value='" . trim($nationality) . "'>" . trim($nationality) . "</option>" ;
 											}
 										}
-										?>					
+										?>
 									</select>
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<?php
 									if ($_SESSION[$guid]["country"]=="") {
 										print "<b>" . _('National ID Card Number') . "</b><br/>" ;
@@ -1496,7 +1496,7 @@ else {
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<?php
 									if ($_SESSION[$guid]["country"]=="") {
 										print "<b>" . _('Residency/Visa Type') . "</b><br/>" ;
@@ -1529,7 +1529,7 @@ else {
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<?php
 									if ($_SESSION[$guid]["country"]=="") {
 										print "<b>" . _('Visa Expiry Date') . "</b><br/>" ;
@@ -1544,7 +1544,7 @@ else {
 									<input name="<?php print "parent$i" ?>visaExpiryDate" id="<?php print "parent$i" ?>visaExpiryDate" maxlength=10 value="<?php print dateConvertBack($guid, $row["parent" . $i . "visaExpiryDate"]) ?>" type="text" style="width: 300px">
 									<script type="text/javascript">
 										var <?php print "parent$i" ?>visaExpiryDate=new LiveValidation('<?php print "parent$i" ?>visaExpiryDate');
-										<?php print "parent$i" ?>visaExpiryDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+										<?php print "parent$i" ?>visaExpiryDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } );
 									</script>
 									 <script type="text/javascript">
 										$(function() {
@@ -1553,15 +1553,15 @@ else {
 									</script>
 								</td>
 							</tr>
-							
-							
+
+
 							<tr>
-								<td colspan=2> 
+								<td colspan=2>
 									<h4><?php print sprintf(_('Parent/Guardian %1$s Contact'), $i) ?></h4>
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php print _('Email') ?><?php if ($i==1) { print " *" ;}?></b><br/>
 								</td>
 								<td class="right">
@@ -1581,7 +1581,7 @@ else {
 							for ($y=1; $y<3; $y++) {
 								?>
 								<tr>
-									<td> 
+									<td>
 										<b><?php print _('Phone') ?> <?php print $y ; if ($i==1 AND $y==1) { print " *" ;}?></b><br/>
 										<span style="font-size: 90%"><i><?php print _('Type, country code, number.') ?></i></span>
 									</td>
@@ -1601,7 +1601,7 @@ else {
 											<?php
 											print "<option value=''></option>" ;
 											try {
-												$dataSelect=array(); 
+												$dataSelect=array();
 												$sqlSelect="SELECT * FROM gibbonCountry ORDER BY printable_name" ;
 												$resultSelect=$connection2->prepare($sqlSelect);
 												$resultSelect->execute($dataSelect);
@@ -1614,7 +1614,7 @@ else {
 												}
 												print "<option $selected value='" . $rowSelect["iddCountryCode"] . "'>" . htmlPrep($rowSelect["iddCountryCode"]) . " - " .  htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
 											}
-											?>				
+											?>
 										</select>
 										<select style="width: 70px" name="<?php print "parent$i" ?>phone<?php print $y ?>Type">
 											<option <?php if ($row["parent" . $i . "phone" . $y . "Type"]=="") { print "selected" ; }?> value=""></option>
@@ -1629,15 +1629,15 @@ else {
 								</tr>
 								<?php
 							}
-							?>							
-							
+							?>
+
 							<tr>
-								<td colspan=2> 
+								<td colspan=2>
 									<h4><?php print _('Employment') ?></h4>
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php print _('Profession') ?></b><br/>
 								</td>
 								<td class="right">
@@ -1645,7 +1645,7 @@ else {
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php print _('Employer') ?></b><br/>
 								</td>
 								<td class="right">
@@ -1653,7 +1653,7 @@ else {
 								</td>
 							</tr>
 							<?php
-							
+
 							//CUSTOM FIELDS FOR PARENTS, WITH FAMILY
 							$parent1fields=unserialize($row["parent1fields"]) ;
 							$parent2fields=unserialize($row["parent2fields"]) ;
@@ -1661,7 +1661,7 @@ else {
 							if ($resultFields->rowCount()>0) {
 								?>
 								<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
-									<td colspan=2> 
+									<td colspan=2>
 										<h4><?php print _('Parent/Guardian') ?> <?php print $i ?> <?php print _('Other Fields') ?></h4>
 									</td>
 								</tr>
@@ -1676,7 +1676,7 @@ else {
 												$("#secondParent").click(function(){
 													if ($('input[name=secondParent]:checked').val()=="No" ) {
 														$("#parent<?php print $i ?>custom<?php print $rowFields["gibbonPersonFieldID"] ?>").attr("disabled", "disabled");
-													} 
+													}
 													else {
 														$("#parent<?php print $i ?>custom<?php print $rowFields["gibbonPersonFieldID"] ?>").removeAttr("disabled");
 													}
@@ -1696,12 +1696,12 @@ else {
 						?>
 						<input type="hidden" name="gibbonFamily" value="TRUE">
 						<tr class='break'>
-							<td colspan=2> 
+							<td colspan=2>
 								<h3><?php print _('Family') ?></h3>
 							</td>
 						</tr>
 						<tr>
-							<td colspan=2> 
+							<td colspan=2>
 								<p><?php print sprintf(_('The applying family is already a member of %1$s.'), $_SESSION[$guid]["organisationName"]) ?></p>
 							</td>
 						</tr>
@@ -1709,15 +1709,15 @@ else {
 							<td colspan=2>
 								<?php
 								try {
-									$dataFamily=array("gibbonFamilyID"=>$row["gibbonFamilyID"]); 
+									$dataFamily=array("gibbonFamilyID"=>$row["gibbonFamilyID"]);
 									$sqlFamily="SELECT * FROM gibbonFamily WHERE gibbonFamilyID=:gibbonFamilyID" ;
 									$resultFamily=$connection2->prepare($sqlFamily);
 									$resultFamily->execute($dataFamily);
 								}
-								catch(PDOException $e) { 
-									print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+								catch(PDOException $e) {
+									print "<div class='error'>" . $e->getMessage() . "</div>" ;
 								}
-								
+
 								if ($resultFamily->rowCount()!=1) {
 									$proceed=FALSE ;
 									print "<input readonly type='text' name='gibbonFamilyID' value='There is an error with this form!' style='width: 300px; color: #c00; text-align: right; font-weight: bold'/>" ;
@@ -1739,13 +1739,13 @@ else {
 											print "</td>" ;
 											print "<td>" ;
 												try {
-													$dataRelationships=array("gibbonApplicationFormID"=>$gibbonApplicationFormID); 
-													$sqlRelationships="SELECT surname, preferredName, title, gender, gibbonApplicationFormRelationship.gibbonPersonID, relationship FROM gibbonApplicationFormRelationship JOIN gibbonPerson ON (gibbonApplicationFormRelationship.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonApplicationFormRelationship.gibbonApplicationFormID=:gibbonApplicationFormID" ; 
+													$dataRelationships=array("gibbonApplicationFormID"=>$gibbonApplicationFormID);
+													$sqlRelationships="SELECT surname, preferredName, title, gender, gibbonApplicationFormRelationship.gibbonPersonID, relationship FROM gibbonApplicationFormRelationship JOIN gibbonPerson ON (gibbonApplicationFormRelationship.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonApplicationFormRelationship.gibbonApplicationFormID=:gibbonApplicationFormID" ;
 													$resultRelationships=$connection2->prepare($sqlRelationships);
 													$resultRelationships->execute($dataRelationships);
 												}
-												catch(PDOException $e) { 
-													print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+												catch(PDOException $e) {
+													print "<div class='error'>" . $e->getMessage() . "</div>" ;
 												}
 												while ($rowRelationships=$resultRelationships->fetch()) {
 													print formatName($rowRelationships["title"], $rowRelationships["preferredName"], $rowRelationships["surname"], "Parent") . " (" . $rowRelationships["relationship"] . ")" ;
@@ -1753,7 +1753,7 @@ else {
 												}
 											print "</td>" ;
 										print "</tr>" ;
-									print "</table>" ;	
+									print "</table>" ;
 									print "<input type='hidden' name='gibbonFamilyID' value='" . $row["gibbonFamilyID"] . "'/>" ;
 								}
 								?>
@@ -1763,17 +1763,17 @@ else {
 					}
 					?>
 					<tr class='break'>
-						<td colspan=2> 
+						<td colspan=2>
 							<h3><?php print _('Siblings') ?></h3>
 						</td>
 					</tr>
 					<tr>
-						<td colspan=2 style='padding-top: 0px'> 
+						<td colspan=2 style='padding-top: 0px'>
 							<p>Please give information on any siblings not currently studying at <?php print $_SESSION[$guid]["organisationName"] ?>.</p>
 						</td>
 					</tr>
 					<tr>
-						<td colspan=2> 
+						<td colspan=2>
 							<?php
 							print "<table cellspacing='0' style='width: 100%'>" ;
 								print "<tr class='head'>" ;
@@ -1790,8 +1790,8 @@ else {
 										print _("Joining Date") . "<br/><span style='font-size: 80%'>" ;if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } print "</span>" ;
 									print "</th>" ;
 								print "</tr>" ;
-								
-								
+
+
 								for ($i=1; $i<4; $i++) {
 									if ((($i%2)-1)==0) {
 										$rowNum="even" ;
@@ -1799,7 +1799,7 @@ else {
 									else {
 										$rowNum="odd" ;
 									}
-												
+
 									print "<tr class=$rowNum>" ;
 										print "<td>" ;
 											print "<input name='siblingName$i' id='siblingName$i' maxlength=50 value='" . $row["siblingName$i"] . "' type='text' style='width:120px; float: left'>" ;
@@ -1833,13 +1833,13 @@ else {
 							?>
 						</td>
 					</tr>
-					
+
 					<?php
 					$languageOptionsActive=getSettingByScope($connection2, 'Application Form', 'languageOptionsActive') ;
-					if ($languageOptionsActive=="On") {
+					if ($languageOptionsActive=="Y") {
 						?>
 						<tr class='break'>
-							<td colspan=2> 
+							<td colspan=2>
 								<h3><?php print _('Language Selection') ?></h3>
 								<?php
 								$languageOptionsBlurb=getSettingByScope($connection2, 'Application Form', 'languageOptionsBlurb') ;
@@ -1852,7 +1852,7 @@ else {
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php print _('Language Choice') ?></b><br/>
 								<span style="font-size: 90%"><i><?php print _('Please choose preferred additional language to study.') ?></i></span>
 							</td>
@@ -1869,34 +1869,34 @@ else {
 										}
 										print "<option $selected value='" . trim($language) . "'>" . trim($language) . "</option>" ;
 									}
-									?>				
+									?>
 								</select>
 							</td>
 						</tr>
 						<tr>
-							<td colspan=2 style='padding-top: 15px'> 
+							<td colspan=2 style='padding-top: 15px'>
 								<b><?php print _('Language Choice Experience') ?></b><br/>
-								<span style="font-size: 90%"><i><?php print _('Has the applicant studied the selected language before? If so, please describe the level and type of experience.') ?></i></span><br/> 					
+								<span style="font-size: 90%"><i><?php print _('Has the applicant studied the selected language before? If so, please describe the level and type of experience.') ?></i></span><br/>
 								<textarea name="languageChoiceExperience" id="languageChoiceExperience" rows=5 style="width:738px; margin: 5px 0px 0px 0px"><?php print htmlPrep($row["languageChoiceExperience"]) ;?></textarea>
 							</td>
 						</tr>
 						<?php
-					}		
+					}
 					?>
-		
+
 					<tr class='break'>
-						<td colspan=2> 
+						<td colspan=2>
 							<h3><?php print _('Scholarships') ?></h3>
 							<?php
 							//Get scholarships info
 							try {
-								$dataIntro=array(); 
+								$dataIntro=array();
 								$sqlIntro="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='scholarships'" ;
 								$resultIntro=$connection2->prepare($sqlIntro);
 								$resultIntro->execute($dataIntro);
 							}
-							catch(PDOException $e) { 
-								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+							catch(PDOException $e) {
+								print "<div class='error'>" . $e->getMessage() . "</div>" ;
 							}
 							if ($resultIntro->rowCount()==1) {
 								$rowIntro=$resultIntro->fetch() ;
@@ -1910,7 +1910,7 @@ else {
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php print _('Interest') ?></b><br/>
 							<span style="font-size: 90%"><i><?php print _('Indicate if you are interested in a scholarship.') ?></i></span><br/>
 						</td>
@@ -1920,7 +1920,7 @@ else {
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b>Required?</b><br/>
 							<span style="font-size: 90%"><i>Is a scholarship <b>required</b> for you to take up a place at <?php print $_SESSION[$guid]["organisationNameShort"] ?>?</i></span><br/>
 						</td>
@@ -1929,10 +1929,10 @@ else {
 							<input <?php if ($row["scholarshipRequired"]=="N") { print "checked" ; } ?> type="radio" id="scholarshipRequired" name="scholarshipRequired" class="type" value="N" /> <?php print _('No') ?>
 						</td>
 					</tr>
-					
-					
+
+
 					<tr class='break'>
-						<td colspan=2> 
+						<td colspan=2>
 							<h3><?php print _('Payment') ?></h3>
 						</td>
 					</tr>
@@ -1958,7 +1958,7 @@ else {
 									$("#companyCategoriesRow").css("display","none");
 								}
 							}
-					
+
 							$(".payment").click(function(){
 								if ($('input[name=payment]:checked').val()=="Family" ) {
 									$("#companyNameRow").css("display","none");
@@ -1974,17 +1974,17 @@ else {
 									companyContact.disable() ;
 									companyName.disable() ;
 								} else {
-									$("#companyNameRow").slideDown("fast", $("#companyNameRow").css("display","table-row")); 
-									$("#companyContactRow").slideDown("fast", $("#companyContactRow").css("display","table-row")); 
-									$("#companyAddressRow").slideDown("fast", $("#companyAddressRow").css("display","table-row")); 
-									$("#companyEmailRow").slideDown("fast", $("#companyEmailRow").css("display","table-row")); 
-									$("#companyCCFamilyRow").slideDown("fast", $("#companyCCFamilyRow").css("display","table-row")); 
-									$("#companyPhoneRow").slideDown("fast", $("#companyPhoneRow").css("display","table-row")); 
-									$("#companyAllRow").slideDown("fast", $("#companyAllRow").css("display","table-row")); 
+									$("#companyNameRow").slideDown("fast", $("#companyNameRow").css("display","table-row"));
+									$("#companyContactRow").slideDown("fast", $("#companyContactRow").css("display","table-row"));
+									$("#companyAddressRow").slideDown("fast", $("#companyAddressRow").css("display","table-row"));
+									$("#companyEmailRow").slideDown("fast", $("#companyEmailRow").css("display","table-row"));
+									$("#companyCCFamilyRow").slideDown("fast", $("#companyCCFamilyRow").css("display","table-row"));
+									$("#companyPhoneRow").slideDown("fast", $("#companyPhoneRow").css("display","table-row"));
+									$("#companyAllRow").slideDown("fast", $("#companyAllRow").css("display","table-row"));
 									if ($('input[name=companyAll]:checked').val()=="Y" ) {
 										$("#companyCategoriesRow").css("display","none");
 									} else {
-										$("#companyCategoriesRow").slideDown("fast", $("#companyCategoriesRow").css("display","table-row")); 
+										$("#companyCategoriesRow").slideDown("fast", $("#companyCategoriesRow").css("display","table-row"));
 									}
 									companyEmail.enable() ;
 									companyAddress.enable() ;
@@ -1992,12 +1992,12 @@ else {
 									companyName.enable() ;
 								}
 							 });
-					 
+
 							 $(".companyAll").click(function(){
 								if ($('input[name=companyAll]:checked').val()=="Y" ) {
 									$("#companyCategoriesRow").css("display","none");
 								} else {
-									$("#companyCategoriesRow").slideDown("fast", $("#companyCategoriesRow").css("display","table-row")); 
+									$("#companyCategoriesRow").slideDown("fast", $("#companyCategoriesRow").css("display","table-row"));
 								}
 							 });
 						});
@@ -2008,7 +2008,7 @@ else {
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php print _('Send Invoices To') ?></b><br/>
 						</td>
 						<td class="right">
@@ -2017,7 +2017,7 @@ else {
 						</td>
 					</tr>
 					<tr id="companyNameRow">
-						<td> 
+						<td>
 							<b><?php print _('Company Name') ?></b><br/>
 						</td>
 						<td class="right">
@@ -2029,7 +2029,7 @@ else {
 						</td>
 					</tr>
 					<tr id="companyContactRow">
-						<td> 
+						<td>
 							<b><?php print _('Company Contact Person') ?></b><br/>
 						</td>
 						<td class="right">
@@ -2041,7 +2041,7 @@ else {
 						</td>
 					</tr>
 					<tr id="companyAddressRow">
-						<td> 
+						<td>
 							<b><?php print _('Company Address') ?></b><br/>
 						</td>
 						<td class="right">
@@ -2053,7 +2053,7 @@ else {
 						</td>
 					</tr>
 					<tr id="companyEmailRow">
-						<td> 
+						<td>
 							<b><?php print _('Company Email') ?></b><br/>
 						</td>
 						<td class="right">
@@ -2066,7 +2066,7 @@ else {
 						</td>
 					</tr>
 					<tr id="companyCCFamilyRow">
-						<td> 
+						<td>
 							<b><?php print _('CC Family?') ?></b><br/>
 							<span style="font-size: 90%"><i><?php print _('Should the family be sent a copy of billing emails?') ?></i></span>
 						</td>
@@ -2078,7 +2078,7 @@ else {
 						</td>
 					</tr>
 					<tr id="companyPhoneRow">
-						<td> 
+						<td>
 							<b><?php print _('Company Phone') ?></b><br/>
 						</td>
 						<td class="right">
@@ -2087,7 +2087,7 @@ else {
 					</tr>
 					<?php
 					try {
-						$dataCat=array(); 
+						$dataCat=array();
 						$sqlCat="SELECT * FROM gibbonFinanceFeeCategory WHERE active='Y' AND NOT gibbonFinanceFeeCategoryID=1 ORDER BY name" ;
 						$resultCat=$connection2->prepare($sqlCat);
 						$resultCat->execute($dataCat);
@@ -2099,7 +2099,7 @@ else {
 					else {
 						?>
 						<tr id="companyAllRow">
-							<td> 
+							<td>
 								<b><?php print _('Company All?') ?></b><br/>
 								<span style="font-size: 90%"><i><?php print _('Should all items be billed to the specified company, or just some?') ?></i></span>
 							</td>
@@ -2109,7 +2109,7 @@ else {
 							</td>
 						</tr>
 						<tr id="companyCategoriesRow">
-							<td> 
+							<td>
 								<b><?php print _('Company Fee Categories') ?></b><br/>
 								<span style="font-size: 90%"><i><?php print _('If the specified company is not paying all fees, which categories are they paying?') ?></i></span>
 							</td>
@@ -2132,22 +2132,22 @@ else {
 						</tr>
 						<?php
 					}
-					
+
 					$requiredDocuments=getSettingByScope($connection2, "Application Form", "requiredDocuments") ;
 					$requiredDocumentsCompulsory=getSettingByScope($connection2, "Application Form", "requiredDocumentsCompulsory") ;
 					$count=0 ;
 					if ($requiredDocuments!="" AND $requiredDocuments!=FALSE) {
 						?>
 						<tr class='break'>
-							<td colspan=2> 
+							<td colspan=2>
 								<h3><?php print _('Supporting Documents') ?></h3>
 							</td>
 						</tr>
 						<?php
-			
+
 						//Get list of acceptable file extensions
 						try {
-							$dataExt=array(); 
+							$dataExt=array();
 							$sqlExt="SELECT * FROM gibbonFileExtension" ;
 							$resultExt=$connection2->prepare($sqlExt);
 							$resultExt->execute($dataExt);
@@ -2157,11 +2157,11 @@ else {
 						while ($rowExt=$resultExt->fetch()) {
 							$ext=$ext . "'." . $rowExt["extension"] . "'," ;
 						}
-							
+
 						$requiredDocumentsList=explode(",", $requiredDocuments) ;
 						foreach ($requiredDocumentsList AS $document) {
 							try {
-								$dataFile=array("gibbonApplicationFormID"=>$gibbonApplicationFormID, "name"=>$document); 
+								$dataFile=array("gibbonApplicationFormID"=>$gibbonApplicationFormID, "name"=>$document);
 								$sqlFile="SELECT * FROM gibbonApplicationFormFile WHERE gibbonApplicationFormID=:gibbonApplicationFormID AND name=:name ORDER BY name" ;
 								$resultFile=$connection2->prepare($sqlFile);
 								$resultFile->execute($dataFile);
@@ -2170,7 +2170,7 @@ else {
 							if ($resultFile->rowCount()==0) {
 								?>
 								<tr>
-									<td> 
+									<td>
 										<b><?php print $document ; if ($requiredDocumentsCompulsory=="Y") { print " *" ; } ?></b><br/>
 									</td>
 									<td class="right">
@@ -2194,7 +2194,7 @@ else {
 								$rowFile=$resultFile->fetch() ;
 								?>
 								<tr>
-									<td> 
+									<td>
 										<?php print "<b>" . $rowFile["name"] . "</b><br/>" ?>
 										<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 									</td>
@@ -2214,7 +2214,7 @@ else {
 					if ($count>0) {
 						?>
 						<tr>
-							<td colspan=2> 
+							<td colspan=2>
 								<?php print getMaxUpload() ; ?>
 								<input type="hidden" name="fileCount" value="<?php print $count ?>">
 							</td>
@@ -2222,14 +2222,14 @@ else {
 						<?php
 					}
 					?>
-					
+
 					<tr class='break'>
-						<td colspan=2> 
+						<td colspan=2>
 							<h3><?php print _('Miscellaneous') ?></h3>
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php print _('How Did You Hear About Us?') ?></b><br/>
 						</td>
 						<td class="right">
@@ -2255,7 +2255,7 @@ else {
 						</td>
 					</tr>
 					<tr id="tellUsMoreRow">
-						<td> 
+						<td>
 							<b><?php print _('Tell Us More') ?></b><br/>
 							<span style="font-size: 90%"><i><?php print _('The name of a person or link to a website.') ?></i></span>
 						</td>
@@ -2270,7 +2270,7 @@ else {
 					if ($privacySetting=="Y" AND $privacyBlurb!="" AND $privacyOptions!="") {
 						?>
 						<tr>
-							<td> 
+							<td>
 								<b><?php print _('Privacy') ?> *</b><br/>
 								<span style="font-size: 90%"><i><?php print htmlPrep($privacyBlurb) ?><br/>
 								</i></span>
@@ -2289,10 +2289,10 @@ else {
 									print $option . " <input $checked type='checkbox' name='privacyOptions[]' value='" . htmlPrep($option) . "'/><br/>" ;
 								}
 								?>
-				
+
 							</td>
 						</tr>
-					<?php	
+					<?php
 					}
 					if ($proceed==TRUE) {
 						?>
