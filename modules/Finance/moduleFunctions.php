@@ -20,9 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Returns amount paid on an particular table/ID combo
 function getAmountPaid($connection2, $guid, $foreignTable, $foreignTableID) {
 	$return=TRUE ;
-	
+
 	try {
-		$data=array("foreignTable"=>$foreignTable, "foreignTableID"=>$foreignTableID); 
+		$data=array("foreignTable"=>$foreignTable, "foreignTableID"=>$foreignTableID);
 		$sql="SELECT gibbonPayment.* FROM gibbonPayment WHERE foreignTable=:foreignTable AND foreignTableID=:foreignTableID ORDER BY timestamp" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
@@ -31,10 +31,10 @@ function getAmountPaid($connection2, $guid, $foreignTable, $foreignTableID) {
 	if ($result) {
 		$return=0 ;
 		while ($row=$result->fetch()) {
-			$return+=$row["amount"] ;	
+			$return+=$row["amount"] ;
 		}
 	}
-	
+
 	return $return ;
 }
 
@@ -43,13 +43,13 @@ function getAmountPaid($connection2, $guid, $foreignTable, $foreignTableID) {
 function getPaymentLog($connection2, $guid, $foreignTable, $foreignTableID, $gibbonPaymentID=NULL) {
 	$return="" ;
 	try {
-		$data=array("foreignTable"=>$foreignTable, "foreignTableID"=>$foreignTableID); 
+		$data=array("foreignTable"=>$foreignTable, "foreignTableID"=>$foreignTableID);
 		$sql="SELECT gibbonPayment.*, surname, preferredName FROM gibbonPayment JOIN gibbonPerson ON (gibbonPayment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignTable=:foreignTable AND foreignTableID=:foreignTableID ORDER BY timestamp, gibbonPaymentID" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}
-	catch(PDOException $e) { 
-		$return.="<div class='error'>" . $e->getMessage() . "</div>" ; 
+	catch(PDOException $e) {
+		$return.="<div class='error'>" . $e->getMessage() . "</div>" ;
 	}
 
 	if ($result->rowCount()<1) {
@@ -82,12 +82,12 @@ function getPaymentLog($connection2, $guid, $foreignTable, $foreignTableID, $gib
 					$return.=_("Transaction ID") ;
 				$return.="</th>" ;
 			$return.="</tr>" ;
-			
+
 			$rowNum="odd" ;
 			$count=0;
 			$paymentTotal=0 ;
-			
-			$beforeCurrentDate=TRUE ;	
+
+			$beforeCurrentDate=TRUE ;
 			while ($row=$result->fetch()) {
 				if ($row["gibbonPaymentID"]==$gibbonPaymentID OR $gibbonPaymentID==NULL) {
 					$beforeCurrentDate=FALSE ;
@@ -98,7 +98,7 @@ function getPaymentLog($connection2, $guid, $foreignTable, $foreignTableID, $gib
 						$rowNum="odd" ;
 					}
 					$count++ ;
-				
+
 					//COLOR ROW BY STATUS!
 					$return.="<tr class=$rowNum>" ;
 						$return.="<td>" ;
@@ -144,14 +144,14 @@ function getPaymentLog($connection2, $guid, $foreignTable, $foreignTableID, $gib
 			$return.="</tr>" ;
 		$return.="</table>" ;
 	}
-	
+
 	return $return ;
 }
 
 //Create an entry in the payment log table, recording the details of a particular payment
 function setPaymentLog($connection2, $guid, $foreignTable, $foreignTableID, $type, $status, $amount, $gateway=NULL, $onlineTransactionStatus=NULL, $paymentToken=NULL, $paymentPayerID=NULL, $paymentTransactionID=NULL, $paymentReceiptID=NULL, $timestamp=NULL) {
 	$return=TRUE ;
-	
+
 	if ($timestamp==NULL) {
 		$timestampe=date("Y-m-d H:i:s") ;
 	}
@@ -160,17 +160,17 @@ function setPaymentLog($connection2, $guid, $foreignTable, $foreignTableID, $typ
 		$gibbonPersonID=$_SESSION[$guid]["gibbonPersonID"] ;
 	}
 	try {
-		$data=array("foreignTable"=>$foreignTable, "foreignTableID"=>$foreignTableID, "gibbonPersonID"=>$gibbonPersonID, "type"=>$type, "status"=>$status, "amount"=>$amount, "gateway"=>$gateway, "onlineTransactionStatus"=>$onlineTransactionStatus, "paymentToken"=>$paymentToken, "paymentPayerID"=>$paymentPayerID, "paymentTransactionID"=>$paymentTransactionID, "paymentReceiptID"=>$paymentReceiptID, "timestamp"=>$timestamp); 
+		$data=array("foreignTable"=>$foreignTable, "foreignTableID"=>$foreignTableID, "gibbonPersonID"=>$gibbonPersonID, "type"=>$type, "status"=>$status, "amount"=>$amount, "gateway"=>$gateway, "onlineTransactionStatus"=>$onlineTransactionStatus, "paymentToken"=>$paymentToken, "paymentPayerID"=>$paymentPayerID, "paymentTransactionID"=>$paymentTransactionID, "paymentReceiptID"=>$paymentReceiptID, "timestamp"=>$timestamp);
 		$sql="INSERT INTO gibbonPayment SET foreignTable=:foreignTable, foreignTableID=:foreignTableID, gibbonPersonID=:gibbonPersonID, type=:type, status=:status, amount=:amount, gateway=:gateway, onlineTransactionStatus=:onlineTransactionStatus, paymentToken=:paymentToken, paymentPayerID=:paymentPayerID, paymentTransactionID=:paymentTransactionID, paymentReceiptID=:paymentReceiptID, timestamp=:timestamp" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}
-	catch(PDOException $e) { 
+	catch(PDOException $e) {
 		$return=FALSE ;
 	}
-	
+
 	$return=$connection2->lastInsertID() ;
-	
+
 	return $return ;
 }
 
@@ -180,34 +180,34 @@ function checkLogForApprovalComplete($guid, $gibbonFinanceExpenseID, $connection
 	$lock=true ;
 	try {
 		$sqlLock="LOCK TABLE gibbonFinanceExpense WRITE, gibbonFinanceExpenseApprover WRITE, gibbonFinanceExpenseLog WRITE, gibbonFinanceBudget WRITE, gibbonFinanceBudgetPerson WRITE, gibbonSetting WRITE, gibbonNotification WRITE, gibbonPerson READ, gibbonModule READ" ;
-		$resultLock=$connection2->query($sqlLock);   
+		$resultLock=$connection2->query($sqlLock);
 	}
-	catch(PDOException $e) { 
+	catch(PDOException $e) {
 		$lock=FALSE ;
 		return FALSE ;
-	}	
-	
+	}
+
 	if ($lock) {
 		try {
-			$data=array("gibbonFinanceExpenseID"=>$gibbonFinanceExpenseID); 
+			$data=array("gibbonFinanceExpenseID"=>$gibbonFinanceExpenseID);
 			$sql="SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget FROM gibbonFinanceExpense JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) WHERE gibbonFinanceExpense.gibbonFinanceExpenseID=:gibbonFinanceExpenseID" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
-		catch(PDOException $e) { 
+		catch(PDOException $e) {
 			return FALSE ;
 		}
 
 		if ($result->rowCount()!=1) {
-			return FALSE ; 
+			return FALSE ;
 		}
 		else {
 			$row=$result->fetch() ;
-			
+
 			//Get settings for budget-level and school-level approval
 			$expenseApprovalType=getSettingByScope($connection2, "Finance", "expenseApprovalType") ;
 			$budgetLevelExpenseApproval=getSettingByScope($connection2, "Finance", "budgetLevelExpenseApproval") ;
-	
+
 			if ($expenseApprovalType=="" OR $budgetLevelExpenseApproval=="") {
 				return FALSE ;
 			}
@@ -229,29 +229,29 @@ function checkLogForApprovalComplete($guid, $gibbonFinanceExpenseID, $connection
 							}
 							//Do we have correct number of approvals
 							try {
-								$dataTest=array("gibbonFinanceExpenseID"=>$gibbonFinanceExpenseID); 
+								$dataTest=array("gibbonFinanceExpenseID"=>$gibbonFinanceExpenseID);
 								$sqlTest="SELECT DISTINCT * FROM gibbonFinanceExpenseLog WHERE gibbonFinanceExpenseID=:gibbonFinanceExpenseID AND action='Approval - Partial - School'" ;
 								$resultTest=$connection2->prepare($sqlTest);
 								$resultTest->execute($dataTest);
 							}
-							catch(PDOException $e) { 
+							catch(PDOException $e) {
 								return FALSE ;
 							}
 							if ($resultTest->rowCount()>=$expected) { //Yes - return "school"
 								return "school" ;
 							}
-							else { //No - return "budget" 	
+							else { //No - return "budget"
 								return "budget" ;
 							}
 						}
-						else if ($expenseApprovalType=="Chain Of All") { //Chain of all	
+						else if ($expenseApprovalType=="Chain Of All") { //Chain of all
 							try {
-								$dataApprovers=array("gibbonFinanceExpenseID"=>$gibbonFinanceExpenseID); 
-								$sqlApprovers="SELECT gibbonPerson.gibbonPersonID AS g1, gibbonFinanceExpenseLog.gibbonPersonID AS g2 FROM gibbonFinanceExpenseApprover JOIN gibbonPerson ON (gibbonFinanceExpenseApprover.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonFinanceExpenseLog ON (gibbonFinanceExpenseLog.gibbonPersonID=gibbonFinanceExpenseApprover.gibbonPersonID AND gibbonFinanceExpenseLog.action='Approval - Partial - School' AND gibbonFinanceExpenseLog.gibbonFinanceExpenseID=:gibbonFinanceExpenseID) WHERE gibbonPerson.status='Full' ORDER BY sequenceNumber, surname, preferredName" ; 
+								$dataApprovers=array("gibbonFinanceExpenseID"=>$gibbonFinanceExpenseID);
+								$sqlApprovers="SELECT gibbonPerson.gibbonPersonID AS g1, gibbonFinanceExpenseLog.gibbonPersonID AS g2 FROM gibbonFinanceExpenseApprover JOIN gibbonPerson ON (gibbonFinanceExpenseApprover.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonFinanceExpenseLog ON (gibbonFinanceExpenseLog.gibbonPersonID=gibbonFinanceExpenseApprover.gibbonPersonID AND gibbonFinanceExpenseLog.action='Approval - Partial - School' AND gibbonFinanceExpenseLog.gibbonFinanceExpenseID=:gibbonFinanceExpenseID) WHERE gibbonPerson.status='Full' ORDER BY sequenceNumber, surname, preferredName" ;
 								$resultApprovers=$connection2->prepare($sqlApprovers);
 								$resultApprovers->execute($dataApprovers);
 							}
-							catch(PDOException $e) { 
+							catch(PDOException $e) {
 								return FALSE ;
 							}
 							$approvers=$resultApprovers->fetchAll() ;
@@ -262,13 +262,13 @@ function checkLogForApprovalComplete($guid, $gibbonFinanceExpenseID, $connection
 									$count++ ;
 								}
 							}
-							
+
 							if ($count>=$countTotal) { //Yes - return "school"
 								return "school" ;
 							}
-							else { //No - return "budget" 	
+							else { //No - return "budget"
 								return "budget" ;
-							}	
+							}
 						}
 						else {
 							return FALSE ;
@@ -287,36 +287,36 @@ function approvalRequired($guid, $gibbonPersonID, $gibbonFinanceExpenseID, $gibb
 	if ($locking) {
 		try {
 			$sqlLock="LOCK TABLE gibbonFinanceExpense WRITE, gibbonFinanceExpenseApprover WRITE, gibbonFinanceExpenseLog WRITE, gibbonFinanceBudget WRITE, gibbonFinanceBudgetPerson WRITE, gibbonSetting WRITE, gibbonNotification WRITE, gibbonPerson READ, gibbonModule READ" ;
-			$resultLock=$connection2->query($sqlLock);   
+			$resultLock=$connection2->query($sqlLock);
 		}
-		catch(PDOException $e) { 
+		catch(PDOException $e) {
 			$lock=FALSE ;
 			return FALSE ;
-		}	
+		}
 	}
-	
+
 	if ($lock) {
 		try {
-			$data=array("gibbonFinanceExpenseID"=>$gibbonFinanceExpenseID); 
+			$data=array("gibbonFinanceExpenseID"=>$gibbonFinanceExpenseID);
 			$sql="SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget FROM gibbonFinanceExpense JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) WHERE gibbonFinanceExpense.gibbonFinanceExpenseID=:gibbonFinanceExpenseID" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
-		catch(PDOException $e) { 
+		catch(PDOException $e) {
 			return FALSE ;
 		}
 
 		if ($result->rowCount()!=1) {
 			print $result->rowCount() ; eixt() ;
-			return FALSE ; 
+			return FALSE ;
 		}
 		else {
 			$row=$result->fetch() ;
-			
+
 			//Get settings for budget-level and school-level approval
 			$expenseApprovalType=getSettingByScope($connection2, "Finance", "expenseApprovalType") ;
 			$budgetLevelExpenseApproval=getSettingByScope($connection2, "Finance", "budgetLevelExpenseApproval") ;
-						
+
 			if ($expenseApprovalType=="" OR $budgetLevelExpenseApproval=="") {
 				return FALSE ;
 			}
@@ -328,15 +328,15 @@ function approvalRequired($guid, $gibbonPersonID, $gibbonFinanceExpenseID, $gibb
 					if ($row["statusApprovalBudgetCleared"]=="N") {
 						//Get Full budget people
 						try {
-							$dataBudget=array("gibbonFinanceBudgetID"=>$row["gibbonFinanceBudgetID"], "gibbonPersonID"=>$gibbonPersonID); 
+							$dataBudget=array("gibbonFinanceBudgetID"=>$row["gibbonFinanceBudgetID"], "gibbonPersonID"=>$gibbonPersonID);
 							$sqlBudget="SELECT gibbonPersonID FROM gibbonFinanceBudget JOIN gibbonFinanceBudgetPerson ON (gibbonFinanceBudgetPerson.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) WHERE access='Full' AND gibbonFinanceBudget.gibbonFinanceBudgetID=:gibbonFinanceBudgetID AND gibbonFinanceBudgetPerson.gibbonPersonID=:gibbonPersonID" ;
 							$resultBudget=$connection2->prepare($sqlBudget);
 							$resultBudget->execute($dataBudget);
 						}
-						catch(PDOException $e) { 
+						catch(PDOException $e) {
 							return FALSE ;
 						}
-						
+
 						if ($resultBudget->rowCount()!=1) {
 							return FALSE ;
 						}
@@ -347,27 +347,27 @@ function approvalRequired($guid, $gibbonPersonID, $gibbonFinanceExpenseID, $gibb
 					else { //School-level approval, what type is it?
 						if ($expenseApprovalType=="One Of" OR $expenseApprovalType=="Two Of") { //One Of or Two Of, so alert all approvers
 							try {
-								$dataApprovers=array("gibbonPersonID"=>$gibbonPersonID); 
-								$sqlApprovers="SELECT gibbonPerson.gibbonPersonID FROM gibbonFinanceExpenseApprover JOIN gibbonPerson ON (gibbonFinanceExpenseApprover.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND gibbonFinanceExpenseApprover.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName" ; 
+								$dataApprovers=array("gibbonPersonID"=>$gibbonPersonID);
+								$sqlApprovers="SELECT gibbonPerson.gibbonPersonID FROM gibbonFinanceExpenseApprover JOIN gibbonPerson ON (gibbonFinanceExpenseApprover.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND gibbonFinanceExpenseApprover.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName" ;
 								$resultApprovers=$connection2->prepare($sqlApprovers);
 								$resultApprovers->execute($dataApprovers);
 							}
-							catch(PDOException $e) { 
+							catch(PDOException $e) {
 								return FALSE ;
 							}
-							
+
 							if ($resultApprovers->rowCount()!=1) {
 								return FALSE ;
 							}
 							else {
 								//Check of already approved at school-level
 								try {
-									$dataApproval=array("gibbonFinanceExpenseID"=>$gibbonFinanceExpenseID, "gibbonPersonID"=>$gibbonPersonID); 
-									$sqlApproval="SELECT * FROM gibbonFinanceExpenseLog WHERE gibbonFinanceExpenseID=:gibbonFinanceExpenseID AND gibbonPersonID=:gibbonPersonID AND action='Approval - Partial - School'" ; 
+									$dataApproval=array("gibbonFinanceExpenseID"=>$gibbonFinanceExpenseID, "gibbonPersonID"=>$gibbonPersonID);
+									$sqlApproval="SELECT * FROM gibbonFinanceExpenseLog WHERE gibbonFinanceExpenseID=:gibbonFinanceExpenseID AND gibbonPersonID=:gibbonPersonID AND action='Approval - Partial - School'" ;
 									$resultApproval=$connection2->prepare($sqlApproval);
 									$resultApproval->execute($dataApproval);
 								}
-								catch(PDOException $e) { 
+								catch(PDOException $e) {
 									return FALSE ;
 								}
 								if ($resultApproval->rowCount()>0) {
@@ -377,17 +377,17 @@ function approvalRequired($guid, $gibbonPersonID, $gibbonFinanceExpenseID, $gibb
 									return TRUE ;
 								}
 							}
-							
+
 						}
-						else if ($expenseApprovalType=="Chain Of All") { //Chain of all	
+						else if ($expenseApprovalType=="Chain Of All") { //Chain of all
 							//Get notifiers in sequence
 							try {
-								$dataApprovers=array("gibbonFinanceExpenseID"=>$gibbonFinanceExpenseID); 
-								$sqlApprovers="SELECT gibbonPerson.gibbonPersonID AS g1, gibbonFinanceExpenseLog.gibbonPersonID AS g2 FROM gibbonFinanceExpenseApprover JOIN gibbonPerson ON (gibbonFinanceExpenseApprover.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonFinanceExpenseLog ON (gibbonFinanceExpenseLog.gibbonPersonID=gibbonFinanceExpenseApprover.gibbonPersonID AND gibbonFinanceExpenseLog.action='Approval - Partial - School' AND gibbonFinanceExpenseLog.gibbonFinanceExpenseID=:gibbonFinanceExpenseID) WHERE gibbonPerson.status='Full' ORDER BY sequenceNumber, surname, preferredName" ; 
+								$dataApprovers=array("gibbonFinanceExpenseID"=>$gibbonFinanceExpenseID);
+								$sqlApprovers="SELECT gibbonPerson.gibbonPersonID AS g1, gibbonFinanceExpenseLog.gibbonPersonID AS g2 FROM gibbonFinanceExpenseApprover JOIN gibbonPerson ON (gibbonFinanceExpenseApprover.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonFinanceExpenseLog ON (gibbonFinanceExpenseLog.gibbonPersonID=gibbonFinanceExpenseApprover.gibbonPersonID AND gibbonFinanceExpenseLog.action='Approval - Partial - School' AND gibbonFinanceExpenseLog.gibbonFinanceExpenseID=:gibbonFinanceExpenseID) WHERE gibbonPerson.status='Full' ORDER BY sequenceNumber, surname, preferredName" ;
 								$resultApprovers=$connection2->prepare($sqlApprovers);
 								$resultApprovers->execute($dataApprovers);
 							}
-							catch(PDOException $e) { 
+							catch(PDOException $e) {
 								return FALSE ;
 							}
 							if ($resultApprovers->rowCount()<1) {
@@ -403,7 +403,7 @@ function approvalRequired($guid, $gibbonPersonID, $gibbonFinanceExpenseID, $gibb
 										}
 									}
 								}
-								
+
 								if (is_null($gibbonPersonIDNext)) {
 									return FALSE ;
 								}
@@ -435,34 +435,34 @@ function setExpenseNotification($guid, $gibbonFinanceExpenseID, $gibbonFinanceBu
 	$lock=true ;
 	try {
 		$sqlLock="LOCK TABLE gibbonFinanceExpense WRITE, gibbonFinanceExpenseApprover WRITE, gibbonFinanceExpenseLog WRITE, gibbonFinanceBudget WRITE, gibbonFinanceBudgetPerson WRITE, gibbonSetting WRITE, gibbonNotification WRITE, gibbonPerson READ, gibbonModule READ" ;
-		$resultLock=$connection2->query($sqlLock);   
+		$resultLock=$connection2->query($sqlLock);
 	}
-	catch(PDOException $e) { 
+	catch(PDOException $e) {
 		$lock=FALSE ;
 		return FALSE ;
-	}	
-	
+	}
+
 	if ($lock) {
 		try {
-			$data=array("gibbonFinanceExpenseID"=>$gibbonFinanceExpenseID); 
+			$data=array("gibbonFinanceExpenseID"=>$gibbonFinanceExpenseID);
 			$sql="SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget FROM gibbonFinanceExpense JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) WHERE gibbonFinanceExpense.gibbonFinanceExpenseID=:gibbonFinanceExpenseID" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
-		catch(PDOException $e) { 
+		catch(PDOException $e) {
 			return FALSE ;
 		}
 
 		if ($result->rowCount()!=1) {
-			return FALSE ; 
+			return FALSE ;
 		}
 		else {
 			$row=$result->fetch() ;
-			
+
 			//Get settings for budget-level and school-level approval
 			$expenseApprovalType=getSettingByScope($connection2, "Finance", "expenseApprovalType") ;
 			$budgetLevelExpenseApproval=getSettingByScope($connection2, "Finance", "budgetLevelExpenseApproval") ;
-	
+
 			if ($expenseApprovalType=="" OR $budgetLevelExpenseApproval=="") {
 				return FALSE ;
 			}
@@ -472,16 +472,16 @@ function setExpenseNotification($guid, $gibbonFinanceExpenseID, $gibbonFinanceBu
 				}
 				else { //Not finished
 					$notificationText=sprintf(_('Someone has requested expense approval for "%1$s" in budget "%2$s".'), $row["title"], $row["budget"]) ;
-							
+
 					if ($row["statusApprovalBudgetCleared"]=="N") { //Notify budget holders (e.g. access Full)
 						//Get Full budget people, and notify them
 						try {
-							$dataBudget=array("gibbonFinanceBudgetID"=>$row["gibbonFinanceBudgetID"]); 
+							$dataBudget=array("gibbonFinanceBudgetID"=>$row["gibbonFinanceBudgetID"]);
 							$sqlBudget="SELECT gibbonPersonID FROM gibbonFinanceBudget JOIN gibbonFinanceBudgetPerson ON (gibbonFinanceBudgetPerson.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) WHERE access='Full' AND gibbonFinanceBudget.gibbonFinanceBudgetID=:gibbonFinanceBudgetID" ;
 							$resultBudget=$connection2->prepare($sqlBudget);
 							$resultBudget->execute($dataBudget);
 						}
-						catch(PDOException $e) { 
+						catch(PDOException $e) {
 							return FALSE ;
 						}
 						if ($resultBudget->rowCount()<1) {
@@ -497,12 +497,12 @@ function setExpenseNotification($guid, $gibbonFinanceExpenseID, $gibbonFinanceBu
 					else { //School-level approval, what type is it?
 						if ($expenseApprovalType=="One Of" OR $expenseApprovalType=="Two Of") { //One Of or Two Of, so alert all approvers
 							try {
-								$dataApprovers=array("gibbonFinanceExpenseID"=>$gibbonFinanceExpenseID); 
-								$sqlApprovers="SELECT gibbonPerson.gibbonPersonID, gibbonFinanceExpenseLog.gibbonFinanceExpenseLogID FROM gibbonFinanceExpenseApprover JOIN gibbonPerson ON (gibbonFinanceExpenseApprover.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonFinanceExpenseLog ON (gibbonFinanceExpenseLog.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonFinanceExpenseLog.gibbonFinanceExpenseID=:gibbonFinanceExpenseID) WHERE gibbonPerson.status='Full' ORDER BY surname, preferredName" ; 
+								$dataApprovers=array("gibbonFinanceExpenseID"=>$gibbonFinanceExpenseID);
+								$sqlApprovers="SELECT gibbonPerson.gibbonPersonID, gibbonFinanceExpenseLog.gibbonFinanceExpenseLogID FROM gibbonFinanceExpenseApprover JOIN gibbonPerson ON (gibbonFinanceExpenseApprover.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonFinanceExpenseLog ON (gibbonFinanceExpenseLog.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonFinanceExpenseLog.gibbonFinanceExpenseID=:gibbonFinanceExpenseID) WHERE gibbonPerson.status='Full' ORDER BY surname, preferredName" ;
 								$resultApprovers=$connection2->prepare($sqlApprovers);
 								$resultApprovers->execute($dataApprovers);
 							}
-							catch(PDOException $e) { 
+							catch(PDOException $e) {
 								return FALSE ;
 							}
 							if ($resultApprovers->rowCount()<1) {
@@ -517,15 +517,15 @@ function setExpenseNotification($guid, $gibbonFinanceExpenseID, $gibbonFinanceBu
 								return TRUE ;
 							}
 						}
-						else if ($expenseApprovalType=="Chain Of All") { //Chain of all	
+						else if ($expenseApprovalType=="Chain Of All") { //Chain of all
 							//Get notifiers in sequence
 							try {
-								$dataApprovers=array("gibbonFinanceExpenseID"=>$gibbonFinanceExpenseID); 
-								$sqlApprovers="SELECT gibbonPerson.gibbonPersonID AS g1, gibbonFinanceExpenseLog.gibbonPersonID AS g2 FROM gibbonFinanceExpenseApprover JOIN gibbonPerson ON (gibbonFinanceExpenseApprover.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonFinanceExpenseLog ON (gibbonFinanceExpenseLog.gibbonPersonID=gibbonFinanceExpenseApprover.gibbonPersonID AND gibbonFinanceExpenseLog.action='Approval - Partial - School' AND gibbonFinanceExpenseLog.gibbonFinanceExpenseID=:gibbonFinanceExpenseID) WHERE gibbonPerson.status='Full' ORDER BY sequenceNumber, surname, preferredName" ; 
+								$dataApprovers=array("gibbonFinanceExpenseID"=>$gibbonFinanceExpenseID);
+								$sqlApprovers="SELECT gibbonPerson.gibbonPersonID AS g1, gibbonFinanceExpenseLog.gibbonPersonID AS g2 FROM gibbonFinanceExpenseApprover JOIN gibbonPerson ON (gibbonFinanceExpenseApprover.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonFinanceExpenseLog ON (gibbonFinanceExpenseLog.gibbonPersonID=gibbonFinanceExpenseApprover.gibbonPersonID AND gibbonFinanceExpenseLog.action='Approval - Partial - School' AND gibbonFinanceExpenseLog.gibbonFinanceExpenseID=:gibbonFinanceExpenseID) WHERE gibbonPerson.status='Full' ORDER BY sequenceNumber, surname, preferredName" ;
 								$resultApprovers=$connection2->prepare($sqlApprovers);
 								$resultApprovers->execute($dataApprovers);
 							}
-							catch(PDOException $e) { 
+							catch(PDOException $e) {
 								return FALSE ;
 							}
 							if ($resultApprovers->rowCount()<1) {
@@ -541,7 +541,7 @@ function setExpenseNotification($guid, $gibbonFinanceExpenseID, $gibbonFinanceBu
 										}
 									}
 								}
-								
+
 								if (is_null($gibbonPersonIDNext)) {
 									return FALSE ;
 								}
@@ -564,13 +564,13 @@ function setExpenseNotification($guid, $gibbonFinanceExpenseID, $gibbonFinanceBu
 //Returns log associated with a particular expense
 function getExpenseLog($guid, $gibbonFinanceExpenseID, $connection2, $commentsOpen=FALSE) {
 	try {
-		$data=array("gibbonFinanceExpenseID"=>$gibbonFinanceExpenseID); 
+		$data=array("gibbonFinanceExpenseID"=>$gibbonFinanceExpenseID);
 		$sql="SELECT gibbonFinanceExpenseLog.*, surname, preferredName FROM gibbonFinanceExpense JOIN gibbonFinanceExpenseLog ON (gibbonFinanceExpenseLog.gibbonFinanceExpenseID=gibbonFinanceExpense.gibbonFinanceExpenseID) JOIN gibbonPerson ON (gibbonFinanceExpenseLog.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFinanceExpenseLog.gibbonFinanceExpenseID=:gibbonFinanceExpenseID ORDER BY timestamp" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}
-	catch(PDOException $e) { 
-		print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+	catch(PDOException $e) {
+		print "<div class='error'>" . $e->getMessage() . "</div>" ;
 	}
 
 	if ($result->rowCount()<1) {
@@ -596,7 +596,7 @@ function getExpenseLog($guid, $gibbonFinanceExpenseID, $connection2, $commentsOp
 					print "</th>" ;
 				}
 			print "</tr>" ;
-			
+
 			$rowNum="odd" ;
 			$count=0;
 			while ($row=$result->fetch()) {
@@ -607,7 +607,7 @@ function getExpenseLog($guid, $gibbonFinanceExpenseID, $connection2, $commentsOp
 					$rowNum="odd" ;
 				}
 				$count++ ;
-				
+
 				//COLOR ROW BY STATUS!
 				print "<tr class=$rowNum>" ;
 					print "<td>" ;
@@ -621,7 +621,7 @@ function getExpenseLog($guid, $gibbonFinanceExpenseID, $connection2, $commentsOp
 					print "</td>" ;
 					if ($commentsOpen==FALSE) {
 						print "<td>" ;
-							print "<script type='text/javascript'>" ;	
+							print "<script type='text/javascript'>" ;
 								print "$(document).ready(function(){" ;
 									print "\$(\".comment-$count\").hide();" ;
 									print "\$(\".show_hide-$count\").fadeIn(1000);" ;
@@ -654,7 +654,7 @@ function getExpenseLog($guid, $gibbonFinanceExpenseID, $connection2, $commentsOp
 //Returns all budgets a person is linked to, as well as their access rights to that budget
 function getBudgetsByPerson($connection2, $gibbonPersonID, $gibbonFinanceBudgetID="") {
 	$return=FALSE ;
-	
+
 	try {
 		$data=array("gibbonPersonID"=>$gibbonPersonID);
 		if ($gibbonFinanceBudgetID=="") {
@@ -668,7 +668,7 @@ function getBudgetsByPerson($connection2, $gibbonPersonID, $gibbonFinanceBudgetI
 		$result->execute($data);
 	}
 	catch(PDOException $e) { print $e->getMessage() ;}
-	
+
 	$count=0 ;
 	if ($result->rowCount()>0) {
 		$return=array() ;
@@ -679,14 +679,14 @@ function getBudgetsByPerson($connection2, $gibbonPersonID, $gibbonFinanceBudgetI
 			$count++ ;
 		}
 	}
-	
+
 	return $return ;
 }
 
 //Returns all active budgets
 function getBudgets($connection2) {
 	$return=FALSE ;
-	
+
 	try {
 		$data=array();
 		$sql="SELECT * FROM gibbonFinanceBudget WHERE active='Y' ORDER BY name" ;
@@ -694,7 +694,7 @@ function getBudgets($connection2) {
 		$result->execute($data);
 	}
 	catch(PDOException $e) { print $e->getMessage() ;}
-	
+
 	$count=0 ;
 	if ($result->rowCount()>0) {
 		$return=array() ;
@@ -704,7 +704,7 @@ function getBudgets($connection2) {
 			$count++ ;
 		}
 	}
-	
+
 	return $return ;
 }
 
@@ -712,39 +712,9 @@ function getBudgets($connection2) {
 //Take a budget cycle, and return the previous one, or false if none
 function getPreviousBudgetCycleID($gibbonFinanceBudgetCycleID, $connection2) {
 	$output=FALSE ;
-	
-	try {
-		$data=array("gibbonFinanceBudgetCycleID"=>$gibbonFinanceBudgetCycleID); 
-		$sql="SELECT * FROM gibbonFinanceBudgetCycle WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID" ;
-		$result=$connection2->prepare($sql);
-		$result->execute($data); 
-	}
-	catch(PDOException $e) { }
-	if ($result->rowcount()==1) {
-		$row=$result->fetch() ;
-		try {
-			$dataPrevious=array("sequenceNumber"=>$row["sequenceNumber"]); 
-			$sqlPrevious="SELECT * FROM gibbonFinanceBudgetCycle WHERE sequenceNumber<:sequenceNumber ORDER BY sequenceNumber DESC" ;
-			$resultPrevious=$connection2->prepare($sqlPrevious);
-			$resultPrevious->execute($dataPrevious); 
-		}
-		catch(PDOException $e) { }
-		if ($resultPrevious->rowCount()>=1) {
-			$rowPrevious=$resultPrevious->fetch() ;
-			$output=$rowPrevious["gibbonFinanceBudgetCycleID"] ;	
-		}
-	}
-	
-	return $output ;
-}
 
-
-//Take a budget cycle, and return the previous one, or false if none
-function getNextBudgetCycleID($gibbonFinanceBudgetCycleID, $connection2) {		
-	$output=FALSE ;
-	
 	try {
-		$data=array("gibbonFinanceBudgetCycleID"=>$gibbonFinanceBudgetCycleID); 
+		$data=array("gibbonFinanceBudgetCycleID"=>$gibbonFinanceBudgetCycleID);
 		$sql="SELECT * FROM gibbonFinanceBudgetCycle WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
@@ -753,25 +723,55 @@ function getNextBudgetCycleID($gibbonFinanceBudgetCycleID, $connection2) {
 	if ($result->rowcount()==1) {
 		$row=$result->fetch() ;
 		try {
-			$dataPrevious=array("sequenceNumber"=>$row["sequenceNumber"]); 
-			$sqlPrevious="SELECT * FROM gibbonFinanceBudgetCycle WHERE sequenceNumber>:sequenceNumber ORDER BY sequenceNumber ASC" ;
+			$dataPrevious=array("sequenceNumber"=>$row["sequenceNumber"]);
+			$sqlPrevious="SELECT * FROM gibbonFinanceBudgetCycle WHERE sequenceNumber<:sequenceNumber ORDER BY sequenceNumber DESC" ;
 			$resultPrevious=$connection2->prepare($sqlPrevious);
-			$resultPrevious->execute($dataPrevious); 
+			$resultPrevious->execute($dataPrevious);
 		}
 		catch(PDOException $e) { }
 		if ($resultPrevious->rowCount()>=1) {
 			$rowPrevious=$resultPrevious->fetch() ;
-			$output=$rowPrevious["gibbonFinanceBudgetCycleID"] ;	
+			$output=$rowPrevious["gibbonFinanceBudgetCycleID"] ;
 		}
 	}
-	
+
+	return $output ;
+}
+
+
+//Take a budget cycle, and return the previous one, or false if none
+function getNextBudgetCycleID($gibbonFinanceBudgetCycleID, $connection2) {
+	$output=FALSE ;
+
+	try {
+		$data=array("gibbonFinanceBudgetCycleID"=>$gibbonFinanceBudgetCycleID);
+		$sql="SELECT * FROM gibbonFinanceBudgetCycle WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { }
+	if ($result->rowcount()==1) {
+		$row=$result->fetch() ;
+		try {
+			$dataPrevious=array("sequenceNumber"=>$row["sequenceNumber"]);
+			$sqlPrevious="SELECT * FROM gibbonFinanceBudgetCycle WHERE sequenceNumber>:sequenceNumber ORDER BY sequenceNumber ASC" ;
+			$resultPrevious=$connection2->prepare($sqlPrevious);
+			$resultPrevious->execute($dataPrevious);
+		}
+		catch(PDOException $e) { }
+		if ($resultPrevious->rowCount()>=1) {
+			$rowPrevious=$resultPrevious->fetch() ;
+			$output=$rowPrevious["gibbonFinanceBudgetCycleID"] ;
+		}
+	}
+
 	return $output ;
 }
 
 
 //Make the display for a block, according to the input provided, where $i is a unique number appended to the block's field ids.
 //Mode can be add, edit
-function makeFeeBlock($guid, $connection2, $i, $mode="add", $feeType, $gibbonFinanceFeeID, $name="", $description="", $gibbonFinanceFeeCategoryID="", $fee="", $category="", $outerBlock=TRUE) {	
+function makeFeeBlock($guid, $connection2, $i, $mode="add", $feeType, $gibbonFinanceFeeID, $name="", $description="", $gibbonFinanceFeeCategoryID="", $fee="", $category="", $outerBlock=TRUE) {
 	if ($outerBlock) {
 		print "<div id='blockOuter$i' class='blockOuter'>" ;
 	}
@@ -780,20 +780,20 @@ function makeFeeBlock($guid, $connection2, $i, $mode="add", $feeType, $gibbonFin
 			$(document).ready(function(){
 				$("#blockInner<?php print $i ?>").css("display","none");
 				$("#block<?php print $i ?>").css("height","72px")
-				
+
 				//Block contents control
 				$('#show<?php print $i ?>').unbind('click').click(function() {
 					if ($("#blockInner<?php print $i ?>").is(":visible")) {
 						$("#blockInner<?php print $i ?>").css("display","none");
 						$("#block<?php print $i ?>").css("height","72px")
-						$('#show<?php print $i ?>').css("background-image", "<?php print "url(\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png\'"?>)"); 
+						$('#show<?php print $i ?>').css("background-image", "<?php print "url(\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png\'"?>)");
 					} else {
-						$("#blockInner<?php print $i ?>").slideDown("fast", $("#blockInner<?php print $i ?>").css("display","table-row")); 
+						$("#blockInner<?php print $i ?>").slideDown("fast", $("#blockInner<?php print $i ?>").css("display","table-row"));
 						$("#block<?php print $i ?>").css("height","auto")
-						$('#show<?php print $i ?>').css("background-image", "<?php print "url(\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/minus.png\'"?>)"); 
+						$('#show<?php print $i ?>').css("background-image", "<?php print "url(\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/minus.png\'"?>)");
 					}
 				});
-				
+
 				<?php if ($mode=="add" AND $feeType=="Ad Hoc") { ?>
 					var nameClick<?php print $i ?>=false ;
 					$('#name<?php print $i ?>').focus(function() {
@@ -803,7 +803,7 @@ function makeFeeBlock($guid, $connection2, $i, $mode="add", $feeType, $gibbonFin
 							nameClick<?php print $i ?>=true ;
 						}
 					});
-					
+
 					var feeClick<?php print $i ?>=false ;
 					$('#fee<?php print $i ?>').focus(function() {
 						if (feeClick<?php print $i ?>==false) {
@@ -813,7 +813,7 @@ function makeFeeBlock($guid, $connection2, $i, $mode="add", $feeType, $gibbonFin
 						}
 					});
 				<?php } ?>
-				
+
 				$('#delete<?php print $i ?>').unbind('click').click(function() {
 					if (confirm("Are you sure you want to delete this record?")) {
 						$('#blockOuter<?php print $i ?>').fadeOut(600, function(){ $('#block<?php print $i ?>').remove(); });
@@ -834,7 +834,7 @@ function makeFeeBlock($guid, $connection2, $i, $mode="add", $feeType, $gibbonFin
 							<select name="gibbonFinanceFeeCategoryID<?php print $i ?>" id="gibbonFinanceFeeCategoryID<?php print $i ?>" style='float: none; border: 1px dotted #aaa; background: none; margin-left: 3px; margin-top: 2px; font-size: 110%; font-style: italic; width: 250px'>
 								<?php
 								try {
-									$dataSelect=array(); 
+									$dataSelect=array();
 									$sqlSelect="SELECT * FROM gibbonFinanceFeeCategory WHERE active='Y' AND NOT gibbonFinanceFeeCategoryID=1 ORDER BY name" ;
 									$resultSelect=$connection2->prepare($sqlSelect);
 									$resultSelect->execute($dataSelect);
@@ -844,9 +844,9 @@ function makeFeeBlock($guid, $connection2, $i, $mode="add", $feeType, $gibbonFin
 									print "<option value='" . $rowSelect["gibbonFinanceFeeCategoryID"] . "'>" . $rowSelect["name"] . "</option>" ;
 								}
 								print "<option selected value='1'>" . _('Other') . "</option>" ;
-								?>				
+								?>
 							</select>
-							<?php 
+							<?php
 						}
 						else {
 							?>
@@ -880,7 +880,7 @@ function makeFeeBlock($guid, $connection2, $i, $mode="add", $feeType, $gibbonFin
 				</tr>
 				<tr id="blockInner<?php print $i ?>">
 					<td colspan=2 style='vertical-align: top'>
-						<?php 
+						<?php
 						print "<div style='text-align: left; font-weight: bold; margin-top: 15px'>Description</div>" ;
 						if ($gibbonFinanceFeeID==NULL) {
 							print "<textarea style='width: 100%;' name='description" . $i . "'>" . htmlPrep($description) . "</textarea>" ;
@@ -902,30 +902,30 @@ function makeFeeBlock($guid, $connection2, $i, $mode="add", $feeType, $gibbonFin
 
 function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $currency="", $email=FALSE, $preview=FALSE) {
 	$return="" ;
-	
+
 	//Get currency
 	$currency=getSettingByScope($connection2, "System", "currency") ;
-	
+
 	try {
-		$data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "gibbonSchoolYearID2"=>$gibbonSchoolYearID, "gibbonFinanceInvoiceID"=>$gibbonFinanceInvoiceID); 
-		$sql="SELECT gibbonPerson.gibbonPersonID, studentID, surname, preferredName, gibbonFinanceInvoice.*, companyContact, companyName, companyAddress, gibbonRollGroup.name AS rollgroup FROM gibbonFinanceInvoice JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID" ; 
+		$data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "gibbonSchoolYearID2"=>$gibbonSchoolYearID, "gibbonFinanceInvoiceID"=>$gibbonFinanceInvoiceID);
+		$sql="SELECT gibbonPerson.gibbonPersonID, studentID, surname, preferredName, gibbonFinanceInvoice.*, companyContact, companyName, companyAddress, gibbonRollGroup.name AS rollgroup FROM gibbonFinanceInvoice JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}
-	catch(PDOException $e) { 
+	catch(PDOException $e) {
 		$return=FALSE ;
 	}
-	
+
 	if ($result->rowCount()==1) {
 		//Let's go!
 		$row=$result->fetch() ;
-		
+
 		if ($email==TRUE) {
 			$return.="<div style='width: 100%; text-align: right'>" ;
 				$return.="<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "'><img height='100px' width='400px' class='School Logo' alt='Logo' src='" . $_SESSION[$guid]["absoluteURL"] . "/" . $_SESSION[$guid]["organisationLogo"] ."'/></a>" ;
 			$return.="</div>" ;
 		}
-		
+
 		//Invoice Text
 		$invoiceText=getSettingByScope( $connection2, "Finance", "invoiceText" ) ;
 		if ($invoiceText!="") {
@@ -933,7 +933,7 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 				$return.=$invoiceText ;
 			$return.="</p>" ;
 		}
-		
+
 		$style="" ;
 		$style2="" ;
 		$style3="" ;
@@ -964,16 +964,16 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 					}
 					else {
 						try {
-							$dataParents=array("gibbonFinanceInvoiceeID"=>$row["gibbonFinanceInvoiceeID"]); 
-							$sqlParents="SELECT parent.title, parent.surname, parent.preferredName, parent.email, parent.address1, parent.address1District, parent.address1Country, homeAddress, homeAddressDistrict, homeAddressCountry FROM gibbonFinanceInvoicee JOIN gibbonPerson AS student ON (gibbonFinanceInvoicee.gibbonPersonID=student.gibbonPersonID) JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonPersonID=student.gibbonPersonID) JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamily.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID) JOIN gibbonPerson AS parent ON (gibbonFamilyAdult.gibbonPersonID=parent.gibbonPersonID) WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID AND (contactPriority=1 OR (contactPriority=2 AND contactEmail='Y')) ORDER BY contactPriority, surname, preferredName" ; 
+							$dataParents=array("gibbonFinanceInvoiceeID"=>$row["gibbonFinanceInvoiceeID"]);
+							$sqlParents="SELECT parent.title, parent.surname, parent.preferredName, parent.email, parent.address1, parent.address1District, parent.address1Country, homeAddress, homeAddressDistrict, homeAddressCountry FROM gibbonFinanceInvoicee JOIN gibbonPerson AS student ON (gibbonFinanceInvoicee.gibbonPersonID=student.gibbonPersonID) JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonPersonID=student.gibbonPersonID) JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamily.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID) JOIN gibbonPerson AS parent ON (gibbonFamilyAdult.gibbonPersonID=parent.gibbonPersonID) WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID AND (contactPriority=1 OR (contactPriority=2 AND contactEmail='Y')) ORDER BY contactPriority, surname, preferredName" ;
 							$resultParents=$connection2->prepare($sqlParents);
 							$resultParents->execute($dataParents);
 						}
-						catch(PDOException $e) { 
-							$return.="<div class='error'>" . $e->getMessage() . "</div>" ; 
+						catch(PDOException $e) {
+							$return.="<div class='error'>" . $e->getMessage() . "</div>" ;
 						}
 						if ($resultParents->rowCount()<1) {
-							$return.="<div class='warning'>" . _('There are no family members available to send this receipt to.') . "</div>" ; 
+							$return.="<div class='warning'>" . _('There are no family members available to send this receipt to.') . "</div>" ;
 						}
 						else {
 							$return.="<ul style='margin-top: 3px; margin-bottom: 3px'>" ;
@@ -982,7 +982,7 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 								$invoiceTo="" ;
 								$invoiceTo.="<b>" . formatName(htmlPrep($rowParents["title"]), htmlPrep($rowParents["preferredName"]), htmlPrep($rowParents["surname"]), "Parent", false) . "</b>, " ;
 								if ($rowParents["email"]!="") {
-									$invoiceTo.=$rowParents["email"] . ", " ; 
+									$invoiceTo.=$rowParents["email"] . ", " ;
 								}
 								if ($rowParents["address1"]!="") {
 									$invoiceTo.=$rowParents["address1"] . ", " ;
@@ -1026,13 +1026,13 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 					}
 					else {
 						try {
-							$dataSched=array("gibbonFinanceBillingScheduleID"=>$row["gibbonFinanceBillingScheduleID"]); 
-							$sqlSched="SELECT * FROM gibbonFinanceBillingSchedule WHERE gibbonFinanceBillingScheduleID=:gibbonFinanceBillingScheduleID" ; 
+							$dataSched=array("gibbonFinanceBillingScheduleID"=>$row["gibbonFinanceBillingScheduleID"]);
+							$sqlSched="SELECT * FROM gibbonFinanceBillingSchedule WHERE gibbonFinanceBillingScheduleID=:gibbonFinanceBillingScheduleID" ;
 							$resultSched=$connection2->prepare($sqlSched);
 							$resultSched->execute($dataSched);
 						}
-						catch(PDOException $e) { 
-							$return.="<div class='error'>" . $e->getMessage() . "</div>" ; 
+						catch(PDOException $e) {
+							$return.="<div class='error'>" . $e->getMessage() . "</div>" ;
 						}
 						if ($resultSched->rowCount()==1) {
 							$rowSched=$resultSched->fetch() ;
@@ -1069,23 +1069,23 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 		try {
 			if ($preview==TRUE) {
 				//Standard
-				$dataFees["gibbonFinanceInvoiceID1"]=$row["gibbonFinanceInvoiceID"]; 
+				$dataFees["gibbonFinanceInvoiceID1"]=$row["gibbonFinanceInvoiceID"];
 				$sqlFees="(SELECT gibbonFinanceInvoiceFee.gibbonFinanceInvoiceFeeID, gibbonFinanceInvoiceFee.feeType, gibbonFinanceFeeCategory.name AS category, gibbonFinanceFee.name AS name, gibbonFinanceFee.fee AS fee, gibbonFinanceFee.description AS description, gibbonFinanceInvoiceFee.gibbonFinanceFeeID AS gibbonFinanceFeeID, gibbonFinanceInvoiceFee.gibbonFinanceFeeCategoryID AS gibbonFinanceFeeCategoryID, sequenceNumber FROM gibbonFinanceInvoiceFee JOIN gibbonFinanceFee ON (gibbonFinanceInvoiceFee.gibbonFinanceFeeID=gibbonFinanceFee.gibbonFinanceFeeID) JOIN gibbonFinanceFeeCategory ON (gibbonFinanceFee.gibbonFinanceFeeCategoryID=gibbonFinanceFeeCategory.gibbonFinanceFeeCategoryID) WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID1 AND feeType='Standard')" ;
 				$sqlFees.=" UNION " ;
 				//Ad Hoc
-				$dataFees["gibbonFinanceInvoiceID2"]=$row["gibbonFinanceInvoiceID"]; 
+				$dataFees["gibbonFinanceInvoiceID2"]=$row["gibbonFinanceInvoiceID"];
 				$sqlFees.="(SELECT gibbonFinanceInvoiceFee.gibbonFinanceInvoiceFeeID, gibbonFinanceInvoiceFee.feeType, gibbonFinanceFeeCategory.name AS category, gibbonFinanceInvoiceFee.name AS name, gibbonFinanceInvoiceFee.fee, gibbonFinanceInvoiceFee.description AS description, NULL AS gibbonFinanceFeeID, gibbonFinanceInvoiceFee.gibbonFinanceFeeCategoryID AS gibbonFinanceFeeCategoryID, sequenceNumber FROM gibbonFinanceInvoiceFee JOIN gibbonFinanceFeeCategory ON (gibbonFinanceInvoiceFee.gibbonFinanceFeeCategoryID=gibbonFinanceFeeCategory.gibbonFinanceFeeCategoryID) WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID2 AND feeType='Ad Hoc')" ;
 				$sqlFees.=" ORDER BY sequenceNumber" ;
 			}
 			else {
-				$dataFees["gibbonFinanceInvoiceID"]=$row["gibbonFinanceInvoiceID"]; 
+				$dataFees["gibbonFinanceInvoiceID"]=$row["gibbonFinanceInvoiceID"];
 				$sqlFees="SELECT gibbonFinanceInvoiceFee.gibbonFinanceInvoiceFeeID, gibbonFinanceInvoiceFee.feeType, gibbonFinanceFeeCategory.name AS category, gibbonFinanceInvoiceFee.name AS name, gibbonFinanceInvoiceFee.fee, gibbonFinanceInvoiceFee.description AS description, NULL AS gibbonFinanceFeeID, gibbonFinanceInvoiceFee.gibbonFinanceFeeCategoryID AS gibbonFinanceFeeCategoryID, sequenceNumber FROM gibbonFinanceInvoiceFee JOIN gibbonFinanceFeeCategory ON (gibbonFinanceInvoiceFee.gibbonFinanceFeeCategoryID=gibbonFinanceFeeCategory.gibbonFinanceFeeCategoryID) WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID ORDER BY sequenceNumber" ;
 			}
 			$resultFees=$connection2->prepare($sqlFees);
 			$resultFees->execute($dataFees);
 		}
-		catch(PDOException $e) { 
-			$return.="<div class='error'>" . $e->getMessage() . "</div>" ; 
+		catch(PDOException $e) {
+			$return.="<div class='error'>" . $e->getMessage() . "</div>" ;
 		}
 		if ($resultFees->rowCount()<1) {
 			$return.="<div class='error'>" ;
@@ -1094,12 +1094,12 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 		}
 		else {
 			$feeTotal=0 ;
-			
+
 			//Fee table
 			$return.="<h3 style='padding-top: 40px; padding-left: 10px; margin: 0px; $style4'>" ;
 				$return.=_("Fee Table") ;
 			$return.="</h3>" ;
-			
+
 			$return.="<table cellspacing='0' style='width: 100%; $style4'>" ;
 				$return.="<tr class='head'>" ;
 					$return.="<th style='text-align: left; padding-left: 10px'>" ;
@@ -1168,10 +1168,10 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 		$paypalAPIUsername=getSettingByScope($connection2, "System", "paypalAPIUsername") ;
 		$paypalAPIPassword=getSettingByScope($connection2, "System", "paypalAPIPassword") ;
 		$paypalAPISignature=getSettingByScope($connection2, "System", "paypalAPISignature") ;
-	
+
 		if ($enablePayments=="Y" AND $paypalAPIUsername!="" AND $paypalAPIPassword!="" AND $paypalAPISignature!="" AND $row["status"]!="Paid" AND $row["status"]!="Cancelled" AND $row["status"]!="Refunded") {
-			$financeOnlinePaymentEnabled=getSettingByScope($connection2, "Finance", "financeOnlinePaymentEnabled" ) ; 
-			$financeOnlinePaymentThreshold=getSettingByScope($connection2, "Finance", "financeOnlinePaymentThreshold" ) ; 
+			$financeOnlinePaymentEnabled=getSettingByScope($connection2, "Finance", "financeOnlinePaymentEnabled" ) ;
+			$financeOnlinePaymentThreshold=getSettingByScope($connection2, "Finance", "financeOnlinePaymentThreshold" ) ;
 			if ($financeOnlinePaymentEnabled=="Y") {
 				$return.="<h3 style='margin-top: 40px'>" ;
 					$return.=_("Online Payment") ;
@@ -1187,7 +1187,7 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 				$return.="</p>" ;
 			}
 		}
-		
+
 		//Invoice Notes
 		$invoiceNotes=getSettingByScope( $connection2, "Finance", "invoiceNotes" ) ;
 		if ($invoiceNotes!="") {
@@ -1198,38 +1198,38 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 				$return.=$invoiceNotes ;
 			$return.="</p>" ;
 		}
-		
-		return $return ;	
+
+		return $return ;
 	}
 }
 
 //$receiptNumber is the numerical position (counting from 0) of the payment within a series of payments. NULL $receipt Number means it is an old receipt, prior to multiple payments (e.g. before v11)
 function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $currency="", $email=FALSE, $receiptNumber) {
 	$return="" ;
-	
+
 	//Get currency
 	$currency=getSettingByScope($connection2, "System", "currency") ;
-	
+
 	try {
-		$data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "gibbonSchoolYearID2"=>$gibbonSchoolYearID, "gibbonFinanceInvoiceID"=>$gibbonFinanceInvoiceID); 
-		$sql="SELECT gibbonPerson.gibbonPersonID, studentID, surname, preferredName, gibbonFinanceInvoice.*, companyContact, companyName, companyAddress, gibbonRollGroup.name AS rollgroup FROM gibbonFinanceInvoice JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID" ; 
+		$data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "gibbonSchoolYearID2"=>$gibbonSchoolYearID, "gibbonFinanceInvoiceID"=>$gibbonFinanceInvoiceID);
+		$sql="SELECT gibbonPerson.gibbonPersonID, studentID, surname, preferredName, gibbonFinanceInvoice.*, companyContact, companyName, companyAddress, gibbonRollGroup.name AS rollgroup FROM gibbonFinanceInvoice JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}
-	catch(PDOException $e) { 
+	catch(PDOException $e) {
 		$return=FALSE ;
 	}
-	
+
 	if ($result->rowCount()==1) {
 		//Let's go!
 		$row=$result->fetch() ;
-		
+
 		if ($email==TRUE) {
 			$return.="<div style='width: 100%; text-align: right'>" ;
 				$return.="<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "'><img height='100px' width='400px' class='School Logo' alt='Logo' src='" . $_SESSION[$guid]["absoluteURL"] . "/" . $_SESSION[$guid]["organisationLogo"] ."'/></a>" ;
 			$return.="</div>" ;
 		}
-		
+
 		//Receipt Text
 		$receiptText=getSettingByScope( $connection2, "Finance", "receiptText" ) ;
 		if ($receiptText!="") {
@@ -1268,16 +1268,16 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 					}
 					else {
 						try {
-							$dataParents=array("gibbonFinanceInvoiceeID"=>$row["gibbonFinanceInvoiceeID"]); 
-							$sqlParents="SELECT parent.title, parent.surname, parent.preferredName, parent.email, parent.address1, parent.address1District, parent.address1Country, homeAddress, homeAddressDistrict, homeAddressCountry FROM gibbonFinanceInvoicee JOIN gibbonPerson AS student ON (gibbonFinanceInvoicee.gibbonPersonID=student.gibbonPersonID) JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonPersonID=student.gibbonPersonID) JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamily.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID) JOIN gibbonPerson AS parent ON (gibbonFamilyAdult.gibbonPersonID=parent.gibbonPersonID) WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID AND (contactPriority=1 OR (contactPriority=2 AND contactEmail='Y')) ORDER BY contactPriority, surname, preferredName" ; 
+							$dataParents=array("gibbonFinanceInvoiceeID"=>$row["gibbonFinanceInvoiceeID"]);
+							$sqlParents="SELECT parent.title, parent.surname, parent.preferredName, parent.email, parent.address1, parent.address1District, parent.address1Country, homeAddress, homeAddressDistrict, homeAddressCountry FROM gibbonFinanceInvoicee JOIN gibbonPerson AS student ON (gibbonFinanceInvoicee.gibbonPersonID=student.gibbonPersonID) JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonPersonID=student.gibbonPersonID) JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamily.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID) JOIN gibbonPerson AS parent ON (gibbonFamilyAdult.gibbonPersonID=parent.gibbonPersonID) WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID AND (contactPriority=1 OR (contactPriority=2 AND contactEmail='Y')) ORDER BY contactPriority, surname, preferredName" ;
 							$resultParents=$connection2->prepare($sqlParents);
 							$resultParents->execute($dataParents);
 						}
-						catch(PDOException $e) { 
-							$return.="<div class='error'>" . $e->getMessage() . "</div>" ; 
+						catch(PDOException $e) {
+							$return.="<div class='error'>" . $e->getMessage() . "</div>" ;
 						}
 						if ($resultParents->rowCount()<1) {
-							$return.="<div class='warning'>" . _('There are no family members available to send this receipt to.') . "</div>" ; 
+							$return.="<div class='warning'>" . _('There are no family members available to send this receipt to.') . "</div>" ;
 						}
 						else {
 							$return.="<ul style='margin-top: 3px; margin-bottom: 3px'>" ;
@@ -1286,7 +1286,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 								$invoiceTo="" ;
 								$invoiceTo.="<b>" . formatName(htmlPrep($rowParents["title"]), htmlPrep($rowParents["preferredName"]), htmlPrep($rowParents["surname"]), "Parent", false) . "</b>, " ;
 								if ($rowParents["email"]!="") {
-									$invoiceTo.=$rowParents["email"] . ", " ; 
+									$invoiceTo.=$rowParents["email"] . ", " ;
 								}
 								if ($rowParents["address1"]!="") {
 									$invoiceTo.=$rowParents["address1"] . ", " ;
@@ -1331,16 +1331,16 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 						}
 						else {
 							try {
-								$dataPayment=array("foreignTable"=>"gibbonFinanceInvoice", "foreignTableID"=>$gibbonFinanceInvoiceID); 
+								$dataPayment=array("foreignTable"=>"gibbonFinanceInvoice", "foreignTableID"=>$gibbonFinanceInvoiceID);
 								$sqlPayment="SELECT gibbonPayment.*, surname, preferredName FROM gibbonPayment JOIN gibbonPerson ON (gibbonPayment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignTable=:foreignTable AND foreignTableID=:foreignTableID LIMIT $receiptNumber, 1" ;
 								$resultPayment=$connection2->prepare($sqlPayment);
 								$resultPayment->execute($dataPayment);
 							}
-							catch(PDOException $e) { 
+							catch(PDOException $e) {
 								$paymentFail=TRUE ;
-								$return.="<div class='error'>" . $e->getMessage() . "</div>" ; 
+								$return.="<div class='error'>" . $e->getMessage() . "</div>" ;
 							}
-						
+
 							if ($resultPayment->rowCount()!=1) {
 								$paymentFail=TRUE ;
 							}
@@ -1361,13 +1361,13 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 					}
 					else {
 						try {
-							$dataSched=array("gibbonFinanceBillingScheduleID"=>$row["gibbonFinanceBillingScheduleID"]); 
-							$sqlSched="SELECT * FROM gibbonFinanceBillingSchedule WHERE gibbonFinanceBillingScheduleID=:gibbonFinanceBillingScheduleID" ; 
+							$dataSched=array("gibbonFinanceBillingScheduleID"=>$row["gibbonFinanceBillingScheduleID"]);
+							$sqlSched="SELECT * FROM gibbonFinanceBillingSchedule WHERE gibbonFinanceBillingScheduleID=:gibbonFinanceBillingScheduleID" ;
 							$resultSched=$connection2->prepare($sqlSched);
 							$resultSched->execute($dataSched);
 						}
-						catch(PDOException $e) { 
-							$return.="<div class='error'>" . $e->getMessage() . "</div>" ; 
+						catch(PDOException $e) {
+							$return.="<div class='error'>" . $e->getMessage() . "</div>" ;
 						}
 						if ($resultSched->rowCount()==1) {
 							$rowSched=$resultSched->fetch() ;
@@ -1408,15 +1408,15 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 
 		//Check itemisation status
 		$hideItemisation=getSettingByScope($connection2, "Finance", "hideItemisation") ;
-		
+
 		try {
-			$dataFees["gibbonFinanceInvoiceID"]=$row["gibbonFinanceInvoiceID"]; 
+			$dataFees["gibbonFinanceInvoiceID"]=$row["gibbonFinanceInvoiceID"];
 			$sqlFees="SELECT gibbonFinanceInvoiceFee.gibbonFinanceInvoiceFeeID, gibbonFinanceInvoiceFee.feeType, gibbonFinanceFeeCategory.name AS category, gibbonFinanceInvoiceFee.name AS name, gibbonFinanceInvoiceFee.fee, gibbonFinanceInvoiceFee.description AS description, NULL AS gibbonFinanceFeeID, gibbonFinanceInvoiceFee.gibbonFinanceFeeCategoryID AS gibbonFinanceFeeCategoryID, sequenceNumber FROM gibbonFinanceInvoiceFee JOIN gibbonFinanceFeeCategory ON (gibbonFinanceInvoiceFee.gibbonFinanceFeeCategoryID=gibbonFinanceFeeCategory.gibbonFinanceFeeCategoryID) WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID ORDER BY sequenceNumber" ;
 			$resultFees=$connection2->prepare($sqlFees);
 			$resultFees->execute($dataFees);
 		}
-		catch(PDOException $e) { 
-			$return.="<div class='error'>" . $e->getMessage() . "</div>" ; 
+		catch(PDOException $e) {
+			$return.="<div class='error'>" . $e->getMessage() . "</div>" ;
 		}
 		if ($resultFees->rowCount()<1) {
 			$return.="<div class='error'>" ;
@@ -1425,13 +1425,13 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 		}
 		else {
 			$feeTotal=0 ;
-			
+
 			if ($hideItemisation!="Y") { //Do not hide itemisation
 				//Fee table
 				$return.="<h3 style='padding-top: 40px; padding-left: 10px; margin: 0px; $style4'>" ;
 					$return.=_("Fee Table") ;
 				$return.="</h3>" ;
-				
+
 				$return.="<table cellspacing='0' style='width: 100%; $style4'>" ;
 					$return.="<tr class='head'>" ;
 						$return.="<th style='text-align: left; padding-left: 10px'>" ;
@@ -1510,7 +1510,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 				$return.="</p>" ;
 			}
 		}
-		
+
 		//Payment details
 		if ($receiptNumber==NULL) { //Old style receipt, before multiple payments
 			$return.="<h3 style='padding-top: 40px; padding-left: 10px; margin: 0px; $style4'>" ;
@@ -1558,24 +1558,24 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 				}
 			}
 		}
-		
+
 		//Display balance
-		if ($row["status"]=="Paid") {
+		if ($row["status"]=="Paid" OR $row["status"]=="Paid - Partial") {
 			if ($rowPayment["status"]=="Partial") {
 				if ($receiptNumber!=NULL) { //New style receipt, with multiple payments
 					$balanceFail=FALSE ;
 					$amountPaid=0 ;
 					//Get amount paid until this point
 					try {
-						$dataPayment2=array("foreignTable"=>"gibbonFinanceInvoice", "foreignTableID"=>$gibbonFinanceInvoiceID); 
+						$dataPayment2=array("foreignTable"=>"gibbonFinanceInvoice", "foreignTableID"=>$gibbonFinanceInvoiceID);
 						$sqlPayment2="SELECT gibbonPayment.*, surname, preferredName FROM gibbonPayment JOIN gibbonPerson ON (gibbonPayment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignTable=:foreignTable AND foreignTableID=:foreignTableID ORDER BY timestamp LIMIT 0, " . ($receiptNumber+1) ;
 						$resultPayment2=$connection2->prepare($sqlPayment2);
 						$resultPayment2->execute($dataPayment2);
 					}
-					catch(PDOException $e) { 
+					catch(PDOException $e) {
 						$balanceFail=TRUE ;
 					}
-				
+
 					if ($resultPayment2->rowCount()<1) {
 						$paymentFail=TRUE ;
 					}
@@ -1584,8 +1584,8 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 							$amountPaid+=$rowPayment2["amount"] ;
 						}
 					}
-					
-					if ($balanceFail==FALSE) {		
+
+					if ($balanceFail==FALSE) {
 						$return.="<h3 style='padding-top: 40px; padding-left: 10px; margin: 0px; $style4'>" ;
 							$return.=_("Outstanding Balance") ;
 						$return.="</h3>" ;
@@ -1617,7 +1617,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 				}
 			}
 		}
-		
+
 		//Receipts Notes
 		$receiptNotes=getSettingByScope( $connection2, "Finance", "receiptNotes" ) ;
 		if ($receiptNotes!="") {
@@ -1628,8 +1628,8 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 				$return.=$receiptNotes ;
 			$return.="</p>" ;
 		}
-		
-		return $return ;	
+
+		return $return ;
 	}
 }
 
