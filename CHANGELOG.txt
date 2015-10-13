@@ -453,6 +453,9 @@ Google: migrated OAuth authentication to use main Google libraries. REQUIRES ADM
 General: fixed birthday alert bug causing leap year issues
 	Edited file /functions.php
 
+Data Updater: added username to drop down to distinguish between students with same names
+	Edited files /Applications/MAMP/htdocs/github_gibbonEdu/core/modules/Data Updater/data_finance.php, data_medical.php, data_personal.php
+
 v10.0.00
 --------
 i18n: added Urdu as inactive development language

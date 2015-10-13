@@ -114,7 +114,7 @@ else {
 							if ($highestAction=="Update Personal Data_any") {
 								try {
 									$dataSelect=array(); 
-									$sqlSelect="SELECT surname, preferredName, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE status='Full' ORDER BY surname, preferredName" ;
+									$sqlSelect="SELECT username, surname, preferredName, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE status='Full' ORDER BY surname, preferredName" ;
 									$resultSelect=$connection2->prepare($sqlSelect);
 									$resultSelect->execute($dataSelect);
 								}
@@ -122,10 +122,10 @@ else {
 								print "<option value=''></option>" ;
 								while ($rowSelect=$resultSelect->fetch()) {
 									if ($gibbonPersonID==$rowSelect["gibbonPersonID"]) {
-										print "<option selected value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . "</option>" ;
+										print "<option selected value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . " (" . $rowSelect["username"] . ")</option>" ;
 									}
 									else {
-										print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . "</option>" ;
+										print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . " (" . $rowSelect["username"] . ")</option>" ;
 									}
 									$self=TRUE ;
 								}
