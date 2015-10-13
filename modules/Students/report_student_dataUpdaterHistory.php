@@ -249,7 +249,7 @@ else {
 							print $count ;
 						print "</td>" ;
 						print "<td>" ;
-							print formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student", true) ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $row["gibbonPersonID"] . "'>" . formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student", true) . "</a>" ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["name"] ;

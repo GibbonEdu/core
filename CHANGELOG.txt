@@ -456,6 +456,13 @@ General: fixed birthday alert bug causing leap year issues
 Data Updater: added username to drop down to distinguish between students with same names
 	Edited files /Applications/MAMP/htdocs/github_gibbonEdu/core/modules/Data Updater/data_finance.php, data_medical.php, data_personal.php
 
+Activities: enabled generation of Finance invoices, based on activity enrolment
+	Deleted table gibbonActivityStudentPayment
+	Edited table gibbonActivityStudent
+	Renamed file /modules/Activities/report_payment.php to activities_payment.php
+	Edited file /modules/Activities/activities_payment.php
+	New file /modules/Activities/activities_paymentProcessBulk.php
+
 v10.0.00
 --------
 i18n: added Urdu as inactive development language

@@ -575,6 +575,9 @@ INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`
 UPDATE gibbonAction SET category='Visualise' WHERE name='Graphing_all' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Tracking');end
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'Tracking', 'externalAssessmentDataPoints', 'External Assessment Data Points', 'Stores the external assessment choices for data points output in tracking.', '');end
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'Tracking', 'internalAssessmentDataPoints', 'Internal Assessment Data Points', 'Stores the internal assessment choices for data points output in tracking.', '');end
+DROP TABLE gibbonActivityStudentPayment;end
+ALTER TABLE `gibbonActivityStudent` ADD `invoiceGenerated` ENUM('N','Y') NOT NULL DEFAULT 'N' AFTER `gibbonActivityIDBackup`, ADD `gibbonFinanceInvoiceID` INT(14) UNSIGNED ZEROFILL NULL DEFAULT NULL AFTER `invoiceGenerated`;end
+UPDATE gibbonAction SET URLList='activities_payment.php', entryURL='activities_payment.php', category='Finance', name='Generate Invoices' WHERE name='Payment' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE gibbonModule.name='Activities') ;end
 ";
 
 ?>
