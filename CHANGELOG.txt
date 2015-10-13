@@ -450,6 +450,9 @@ Google: migrated OAuth authentication to use main Google libraries. REQUIRES ADM
 	Delete folder /lib/googleOAuth
 	Edited file /themes/Default/img/g_login_btn.png
 
+General: fixed birthday alert bug causing leap year issues
+	Edited file /functions.php
+
 v10.0.00
 --------
 i18n: added Urdu as inactive development language

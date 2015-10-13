@@ -1145,10 +1145,29 @@ function daysUntilNextBirthday($birthday) {
 	}
 
 	$days=ceil(($bts - $ts) / 86400);
-	if ($days==365) {
+	
+	//Full year correction, and leap year correction
+	$includesLeap=FALSE ;
+	if (substr($birthday, 5, 2)<3) { //Born in January or February, so check if this year is a leap year
+		$includesLeap=is_leap_year(substr($today,0,4)) ;
+	}
+	else { //Otherwise, check next year
+		$includesLeap=is_leap_year(substr($today,0,4)+1) ;
+	}
+	
+	if ($includesLeap==TRUE AND $days==366) {
 		$days=0 ;
 	}
+	else if ($includesLeap==FALSE AND $days==365) {
+		$days=0 ;
+	}
+	
 	return $days ;
+}
+
+//This function written by David Walsh, shared under MIT License (http://davidwalsh.name/checking-for-leap-year-using-php)
+function is_leap_year($year) {
+	return ((($year % 4) == 0) && ((($year % 100) != 0) || (($year %400) == 0)));
 }
 
 function getSmartWorkflowHelp($connection2, $guid, $step="") {
