@@ -274,7 +274,7 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
 
 
 //TIMETABLE FOR INDIVIUDAL
-function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", $startDayStamp="", $q="", $params="", $narrow=FALSE) {
+function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", $startDayStamp="", $q="", $params="", $narrow=FALSE, $edit=FALSE) {
 	$zCount=0 ;
 	$output="" ;
 	$proceed=FALSE ;
@@ -293,7 +293,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 	}
 	else {
 		$self=FALSE ;
-		if ($gibbonPersonID==$_SESSION[$guid]["gibbonPersonID"]) {
+		if ($gibbonPersonID==$_SESSION[$guid]["gibbonPersonID"] AND $edit==FALSE) {
 			$self=TRUE ;
 			//Update display choices
 			if ($_SESSION[$guid]["viewCalendarSchool"]!=FALSE AND $_SESSION[$guid]["viewCalendarPersonal"]!=FALSE AND $_SESSION[$guid]["viewCalendarSpaceBooking"]!=FALSE) {
@@ -993,18 +993,18 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 								if ($resultClosure->rowCount()==1) {
 									$rowClosure=$resultClosure->fetch() ;
 									if ($rowClosure["type"]=="School Closure") {
-										$day=renderTTDay($guid, $connection2, $row["gibbonTTID"], FALSE, $startDayStamp, $count, $daysInWeek, $gibbonPersonID, $timeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $diffTime, $maxAllDays, $narrow) ;
+										$day=renderTTDay($guid, $connection2, $row["gibbonTTID"], FALSE, $startDayStamp, $count, $daysInWeek, $gibbonPersonID, $timeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $diffTime, $maxAllDays, $narrow, "", "", $edit) ;
 									}
 									else if ($rowClosure["type"]=="Timing Change") {
-										$day=renderTTDay($guid, $connection2, $row["gibbonTTID"], TRUE, $startDayStamp, $count, $daysInWeek, $gibbonPersonID, $timeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $diffTime, $maxAllDays, $narrow, $rowClosure["schoolStart"], $rowClosure["schoolEnd"]) ;
+										$day=renderTTDay($guid, $connection2, $row["gibbonTTID"], TRUE, $startDayStamp, $count, $daysInWeek, $gibbonPersonID, $timeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $diffTime, $maxAllDays, $narrow, $rowClosure["schoolStart"], $rowClosure["schoolEnd"], $edit) ;
 									}
 								}
 								else {
-									$day=renderTTDay($guid, $connection2, $row["gibbonTTID"], TRUE, $startDayStamp, $count, $daysInWeek, $gibbonPersonID, $timeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $diffTime, $maxAllDays, $narrow) ;
+									$day=renderTTDay($guid, $connection2, $row["gibbonTTID"], TRUE, $startDayStamp, $count, $daysInWeek, $gibbonPersonID, $timeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $diffTime, $maxAllDays, $narrow, "", "", $edit) ;
 								}
 							}
 							else {
-								$day=renderTTDay($guid, $connection2, $row["gibbonTTID"], FALSE, $startDayStamp, $count, $daysInWeek, $gibbonPersonID, $timeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $diffTime, $maxAllDays, $narrow) ;
+								$day=renderTTDay($guid, $connection2, $row["gibbonTTID"], FALSE, $startDayStamp, $count, $daysInWeek, $gibbonPersonID, $timeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $diffTime, $maxAllDays, $narrow, "", "", $edit) ;
 							}
 
 							if ($day=="") {
@@ -1025,7 +1025,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 	return $output ;
 }
 
-function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDayStamp, $count, $daysInWeek, $gibbonPersonID, $gridTimeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $diffTime, $maxAllDays, $narrow, $specialDayStart="", $specialDayEnd="") {
+function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDayStamp, $count, $daysInWeek, $gibbonPersonID, $gridTimeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $diffTime, $maxAllDays, $narrow, $specialDayStart="", $specialDayEnd="", $edit=FALSE) {
 	$schoolCalendarAlpha=0.85 ;
 	$ttAlpha=1.0 ;
 
@@ -1036,7 +1036,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 	$date=date("Y-m-d", ($startDayStamp+(86400*$count))) ;
 
 	$self=FALSE ;
-	if ($gibbonPersonID==$_SESSION[$guid]["gibbonPersonID"]) {
+	if ($gibbonPersonID==$_SESSION[$guid]["gibbonPersonID"] AND $edit==FALSE) {
 		$self=TRUE ;
 		$roleCategory=getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2) ;
 	}
@@ -1278,7 +1278,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 				//Draw periods from TT
 				try {
 					$dataPeriods=array("gibbonTTDayID"=>$rowDay["gibbonTTDayID"], "gibbonPersonID"=>$gibbonPersonID);
-					$sqlPeriods="SELECT gibbonTTDayRowClassID, gibbonCourseClass.gibbonCourseClassID, gibbonTTColumnRow.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, timeStart, timeEnd, phoneInternal, gibbonSpace.name AS roomName FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonTTDayRowClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID) JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) LEFT JOIN gibbonSpace ON (gibbonTTDayRowClass.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonTTDayID=:gibbonTTDayID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role LIKE '% - Left' ORDER BY timeStart, timeEnd" ;
+					$sqlPeriods="SELECT gibbonTTDayID, gibbonTTDayRowClassID, gibbonTTColumnRow.gibbonTTColumnRowID, gibbonCourseClass.gibbonCourseClassID, gibbonTTColumnRow.name, gibbonCourse.gibbonCourseID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, timeStart, timeEnd, phoneInternal, gibbonSpace.name AS roomName FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonTTDayRowClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID) JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) LEFT JOIN gibbonSpace ON (gibbonTTDayRowClass.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonTTDayID=:gibbonTTDayID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role LIKE '% - Left' ORDER BY timeStart, timeEnd" ;
 					$resultPeriods=$connection2->prepare($sqlPeriods);
 					$resultPeriods->execute($dataPeriods);
 				}
@@ -1365,32 +1365,70 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 								$output.="<i>" . substr($effectiveStart,0,5) . " - " . substr($effectiveEnd,0,5) . "</i><br/>" ;
 							}
 
-							if (isActionAccessible($guid, $connection2, "/modules/Departments/department_course_class.php")) {
+							if (isActionAccessible($guid, $connection2, "/modules/Departments/department_course_class.php") AND $edit==FALSE) {
 								$output.="<a style='text-decoration: none; font-weight: bold; font-size: 120%' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID=" . $rowPeriods["gibbonCourseClassID"] . "&subpage=Participants'>" . $rowPeriods["course"] . "." . $rowPeriods["class"] . "</a><br/>" ;
+							}
+							else if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/courseEnrolment_manage_class_edit.php") AND $edit==TRUE) {
+								$output.="<a style='text-decoration: none; font-weight: bold; font-size: 120%' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_class_edit.php&gibbonCourseClassID=" . $rowPeriods["gibbonCourseClassID"] . "&gibbonSchoolYearID=" . $_SESSION[$guid]["gibbonSchoolYearID"] . "&gibbonCourseID=" . $rowPeriods["gibbonCourseID"] . "'>" . $rowPeriods["course"] . "." . $rowPeriods["class"] . "</a><br/>" ;
 							}
 							else {
 								$output.="<span style='font-size: 120%'><b>" . $rowPeriods["course"] . "." . $rowPeriods["class"] . "</b></span><br/>" ;
 							}
 							if ($height>=60) {
-								if (isset($spaceChanges[$rowPeriods["gibbonTTDayRowClassID"]])==FALSE) {
-									$output.=$rowPeriods["roomName"] ;
-								}
-								else {
-									if ($spaceChanges[$rowPeriods["gibbonTTDayRowClassID"]][0]!="") {
-										$output.="<span style='border: 1px solid #c00; padding: 0 2px'>" . $spaceChanges[$rowPeriods["gibbonTTDayRowClassID"]][0] . "</span>" ;
+								if ($edit==FALSE) {
+									if (isset($spaceChanges[$rowPeriods["gibbonTTDayRowClassID"]])==FALSE) {
+										$output.=$rowPeriods["roomName"] ;
 									}
 									else {
-										$output.="<span style='border: 1px solid #c00; padding: 0 2px'><i>" . _("No Space Allocated") . "</i></span>" ;
+										if ($spaceChanges[$rowPeriods["gibbonTTDayRowClassID"]][0]!="") {
+											$output.="<span style='border: 1px solid #c00; padding: 0 2px'>" . $spaceChanges[$rowPeriods["gibbonTTDayRowClassID"]][0] . "</span>" ;
+										}
+										else {
+											$output.="<span style='border: 1px solid #c00; padding: 0 2px'><i>" . _("No Space Allocated") . "</i></span>" ;
+										}
 									}
 								}
+								else {
+									$output.="<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable Admin/tt_edit_day_edit_class_edit.php&gibbonTTDayID=" . $rowPeriods["gibbonTTDayID"] . "&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=" . $_SESSION[$guid]["gibbonSchoolYearID"] . "&gibbonTTColumnRowID=" . $rowPeriods["gibbonTTColumnRowID"] . "&gibbonTTDayRowClass=" . $rowPeriods["gibbonTTDayRowClassID"] . "&gibbonCourseClassID=" . $rowPeriods["gibbonCourseClassID"] . "'>" . $rowPeriods["roomName"] . "</a>" ;
+								}
+								
+								
 							}
 							$output.="</div>" ;
 							$zCount++ ;
 
 							if ($narrow==FALSE) {
-								//Add planner link icons for staff looking at own TT.
-								if ($self==TRUE AND $roleCategory=="Staff") {
-									if ($height>=30) {
+								if ($edit==FALSE) {
+									//Add planner link icons for staff looking at own TT.
+									if ($self==TRUE AND $roleCategory=="Staff") {
+										if ($height>=30) {
+											$output.="<div $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid rgba(136,136,136, $ttAlpha); height: $height; margin: 0px; padding: 0px; background-color: none; pointer-events: none'>" ;
+												//Check for lesson plan
+												$bgImg="none" ;
+
+												try {
+													$dataPlan=array("gibbonCourseClassID"=>$rowPeriods["gibbonCourseClassID"], "date"=>$date, "timeStart"=>$rowPeriods["timeStart"], "timeEnd"=>$rowPeriods["timeEnd"]);
+													$sqlPlan="SELECT * FROM gibbonPlannerEntry WHERE gibbonCourseClassID=:gibbonCourseClassID AND date=:date AND timeStart=:timeStart AND timeEnd=:timeEnd" ;
+													$resultPlan=$connection2->prepare($sqlPlan);
+													$resultPlan->execute($dataPlan);
+												}
+												catch(PDOException $e) {
+													$output.="<div class='error'>" . $e->getMessage() . "</div>" ;
+												}
+
+												if ($resultPlan->rowCount()==1) {
+													$rowPlan=$resultPlan->fetch() ;
+													$output.="<a style='pointer-events: auto' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID=" . $rowPeriods["gibbonCourseClassID"] . "&gibbonPlannerEntryID=" . $rowPlan["gibbonPlannerEntryID"] . "'><img style='float: right; margin: " . (substr($height,0,-2)-27) . "px 2px 0 0' title='Lesson planned: " . htmlPrep($rowPlan["name"]) . "' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/></a>" ;
+												}
+												else if ($resultPlan->rowCount()==0) {
+													$output.="<a style='pointer-events: auto' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_add.php&viewBy=class&gibbonCourseClassID=" . $rowPeriods["gibbonCourseClassID"] . "&date=" . $date . "&timeStart=" . $effectiveStart . "&timeEnd=" . $effectiveEnd . "'><img style='float: right; margin: " . (substr($height,0,-2)-27) . "px 2px 0 0' title='Add lesson plan' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+												}
+											$output.="</div>" ;
+											$zCount++ ;
+										}
+									}
+									//Add planner link icons for any one else's TT
+									else {
 										$output.="<div $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid rgba(136,136,136, $ttAlpha); height: $height; margin: 0px; padding: 0px; background-color: none; pointer-events: none'>" ;
 											//Check for lesson plan
 											$bgImg="none" ;
@@ -1407,35 +1445,18 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 
 											if ($resultPlan->rowCount()==1) {
 												$rowPlan=$resultPlan->fetch() ;
-												$output.="<a style='pointer-events: auto' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID=" . $rowPeriods["gibbonCourseClassID"] . "&gibbonPlannerEntryID=" . $rowPlan["gibbonPlannerEntryID"] . "'><img style='float: right; margin: " . (substr($height,0,-2)-27) . "px 2px 0 0' title='Lesson planned: " . htmlPrep($rowPlan["name"]) . "' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/></a>" ;
-											}
-											else if ($resultPlan->rowCount()==0) {
-												$output.="<a style='pointer-events: auto' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_add.php&viewBy=class&gibbonCourseClassID=" . $rowPeriods["gibbonCourseClassID"] . "&date=" . $date . "&timeStart=" . $effectiveStart . "&timeEnd=" . $effectiveEnd . "'><img style='float: right; margin: " . (substr($height,0,-2)-27) . "px 2px 0 0' title='Add lesson plan' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+												$output.="<a style='pointer-events: auto' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID=" . $rowPeriods["gibbonCourseClassID"] . "&gibbonPlannerEntryID=" . $rowPlan["gibbonPlannerEntryID"] . "&search=$gibbonPersonID'><img style='float: right; margin: " . (substr($height,0,-2)-27) . "px 2px 0 0' title='" . _('View lesson:') . " " . htmlPrep($rowPlan["name"]) . "' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a>" ;
 											}
 										$output.="</div>" ;
 										$zCount++ ;
 									}
 								}
-								//Add planner link icons for any one else's TT
-								else {
+								//Show exception editing
+								else if ($edit) {
 									$output.="<div $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid rgba(136,136,136, $ttAlpha); height: $height; margin: 0px; padding: 0px; background-color: none; pointer-events: none'>" ;
 										//Check for lesson plan
 										$bgImg="none" ;
-
-										try {
-											$dataPlan=array("gibbonCourseClassID"=>$rowPeriods["gibbonCourseClassID"], "date"=>$date, "timeStart"=>$rowPeriods["timeStart"], "timeEnd"=>$rowPeriods["timeEnd"]);
-											$sqlPlan="SELECT * FROM gibbonPlannerEntry WHERE gibbonCourseClassID=:gibbonCourseClassID AND date=:date AND timeStart=:timeStart AND timeEnd=:timeEnd" ;
-											$resultPlan=$connection2->prepare($sqlPlan);
-											$resultPlan->execute($dataPlan);
-										}
-										catch(PDOException $e) {
-											$output.="<div class='error'>" . $e->getMessage() . "</div>" ;
-										}
-
-										if ($resultPlan->rowCount()==1) {
-											$rowPlan=$resultPlan->fetch() ;
-											$output.="<a style='pointer-events: auto' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID=" . $rowPeriods["gibbonCourseClassID"] . "&gibbonPlannerEntryID=" . $rowPlan["gibbonPlannerEntryID"] . "&search=$gibbonPersonID'><img style='float: right; margin: " . (substr($height,0,-2)-27) . "px 2px 0 0' title='View lesson: " . htmlPrep($rowPlan["name"]) . "' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a>" ;
-										}
+										$output.="<a style='pointer-events: auto' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable Admin/tt_edit_day_edit_class_exception.php&gibbonTTDayID=" . $rowPeriods["gibbonTTDayID"] . "&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=" . $_SESSION[$guid]["gibbonSchoolYearID"] . "&gibbonTTColumnRowID=" . $rowPeriods["gibbonTTColumnRowID"] . "&gibbonTTDayRowClass=" . $rowPeriods["gibbonTTDayRowClassID"] . "&gibbonCourseClassID=" . $rowPeriods["gibbonCourseClassID"] . "'><img style='float: right; margin: " . (substr($height,0,-2)-27) . "px 2px 0 0' title='" . _('Manage Exceptions') . "' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.png'/></a>" ;
 									$output.="</div>" ;
 									$zCount++ ;
 								}

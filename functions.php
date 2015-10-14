@@ -1775,7 +1775,7 @@ function getEditor($guid, $tinymceInit=TRUE, $id, $value="", $rows=10, $showMedi
 		$resourceAlphaSort="true" ;
 	}
 
-	$output.="<a name='" . $id . "editor'>" ;
+	$output.="<a name='" . $id . "editor'></a>" ;
 
 	$output.="<div id='editor-toolbar'>" ;
 		$output.="<a style='margin-top:-4px' id='" . $id . "edButtonHTML' class='hide-if-no-js edButtonHTML'>HTML</a>" ;

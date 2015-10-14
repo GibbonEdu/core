@@ -19,6 +19,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start() ;
 
+//Module includes for Timetable module
+include "./modules/Timetable/moduleFunctions.php" ;
+
+
 if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
@@ -130,6 +134,7 @@ else {
 				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable/tt_view.php&gibbonPersonID=$gibbonPersonID&allUsers=$allUsers'>" . _('View') . "<img style='margin: 0 0 -4px 3px' title='" . _('View') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/planner.png'/></a> " ;
 			print "</div>" ;
 			
+			//INTERFACE TO ADD NEW CLASSES
 			print "<h2>" ;
 			print _("Add Classes") ;
 			print "</h2>" ;
@@ -227,7 +232,8 @@ else {
 				</table>
 			</form>
 
-			<?php	
+			<?php
+			//SHOW CURRENT ENROLMENT	
 			print "<h2>" ;
 			print _("Current Enrolment") ;
 			print "</h2>" ;
@@ -343,6 +349,32 @@ else {
 				print "</form>" ;
 			}
 			
+			//SHOW CURRENT TIMETABLE IN EDIT VIEW
+			print "<a name='tt'></a>" ;
+			print "<h2>" ;
+			print "Current Timetable View" ;
+			print "</h2>" ;
+			
+			$gibbonTTID=NULL ;
+			if (isset($_GET["gibbonTTID"])) {
+				$gibbonTTID=$_GET["gibbonTTID"] ;
+			}
+			$ttDate=NULL ;
+			if (isset($_POST["ttDate"])) {
+				$ttDate=dateConvertToTimestamp(dateConvert($guid, $_POST["ttDate"]));
+			}
+			
+			$tt=renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, FALSE, $ttDate, "/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php", "&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=$gibbonSchoolYearID&type=$type#tt", FALSE, TRUE) ;
+			if ($tt!=FALSE) {
+				print $tt ;
+			}
+			else {
+				print "<div class='error'>" ;
+					print _("There are no records to display.") ;
+				print "</div>" ;
+			}
+			
+			//SHOW OLD ENROLMENT RECORDS
 			print "<h2>" ;
 			print "Old Enrolment" ;
 			print "</h2>" ;

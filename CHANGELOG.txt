@@ -463,6 +463,14 @@ Activities: enabled generation of Finance invoices, based on activity enrolment
 	Edited file /modules/Activities/activities_payment.php
 	New file /modules/Activities/activities_paymentProcessBulk.php
 
+General: fixed page expiry on back issue 
+	Edited file /index.php
+
+Timetable Admin: added more visual editing to individual timetable, allowing quicker changes of spaces, exceptions, etc
+	Edited file /modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php
+	Edited file /modules/Timetable/moduleFunctions.php
+
+
 v10.0.00
 --------
 i18n: added Urdu as inactive development language
