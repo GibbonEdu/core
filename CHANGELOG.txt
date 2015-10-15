@@ -470,6 +470,8 @@ Timetable Admin: added more visual editing to individual timetable, allowing qui
 	Edited file /modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php
 	Edited file /modules/Timetable/moduleFunctions.php
 
+Planner: fixed chat box width issue in lesson plan Unit Overview
+	Edited files /modules/Planner/planner_unitOverview.php, moduleFunctions.php
 
 v10.0.00
 --------

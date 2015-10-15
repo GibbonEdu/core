@@ -428,7 +428,10 @@ else {
 											
 											//Print chats
 											print "<h5 style='font-size: 85%'>" . _("Chat") . "</h5>" ;
-											print getThread($guid, $connection2, $rowLessons["gibbonPlannerEntryID"], NULL, 0, NULL, NULL, NULL, NULL, NULL, $class[1], $_SESSION[$guid]["gibbonPersonID"], "Teacher", FALSE) ;
+											print "<style type=\"text/css\">" ;
+												print "table.chatbox { width: 90%!important }" ;
+											print "</style>" ;
+											print getThread($guid, $connection2, $rowLessons["gibbonPlannerEntryID"], NULL, 0, NULL, NULL, NULL, NULL, NULL, $class[1], $_SESSION[$guid]["gibbonPersonID"], "Teacher", FALSE, TRUE) ;
 										}
 									}
 								print "</div>" ;
