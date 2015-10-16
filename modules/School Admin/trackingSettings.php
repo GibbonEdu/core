@@ -75,7 +75,7 @@ else {
 				<tr class='break'>
 					<td colspan=2>
 						<h3><?php print _('Data Points') . " - " . _('External Assessment') ?></h3>
-						<?php print _('Use the options below to select the external assessments that you wish to include in your Data Points export.') . " " . _(' If duplicates of any assessment exist, only the most recent entry will be shown.') ; ?>
+						<?php print _('Use the options below to select the external assessments that you wish to include in your Data Points export.') . " " . _('If duplicates of any assessment exist, only the most recent entry will be shown.') /*. " " . _('Year 13 settings will be applied to recent grauates, who will be shown in the Last Graduating Cohort tab in the export.')*/ ; ?>
 					</td>
 				</tr>
 				<?php
@@ -137,7 +137,7 @@ else {
 				<tr class='break'>
 					<td colspan=2>
 						<h3><?php print _('Data Points') . " - " . _('Interal Assessment') ?></h3>
-						<?php print _('Use the options below to select the internal assessments that you wish to include in your Data Points export.') . " " . _(' If duplicates of any assessment exist, only the most recent entry will be shown.') ?>
+						<?php print _('Use the options below to select the internal assessments that you wish to include in your Data Points export.') . " " . _('If duplicates of any assessment exist, only the most recent entry will be shown.') /*. " " . _('Year 13 settings will be applied to recent grauates, who will be shown in the Last Graduating Cohort tab in the export.')*/ ; ?>
 					</td>
 				</tr>
 				<?

@@ -473,6 +473,9 @@ Timetable Admin: added more visual editing to individual timetable, allowing qui
 Planner: fixed chat box width issue in lesson plan Unit Overview
 	Edited files /modules/Planner/planner_unitOverview.php, moduleFunctions.php
 
+Behaviour: made second step in behaviour record add optional, to reduce likelihood of record not being completely added
+	Edited files /modules/Behaviour/behaviour_manage_add.php
+
 v10.0.00
 --------
 i18n: added Urdu as inactive development language

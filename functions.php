@@ -535,9 +535,9 @@ function getParentalDashboardContents($connection2, $guid, $gibbonPersonID) {
 					$gradesOutput.="</td>" ;
 				}
 				if ($rowEntry["effort"]=="N" OR ($rowEntry["gibbonScaleIDEffort"]=="" AND $rowEntry["gibbonRubricIDEffort"]=="")) {
-					print "<td class='dull' style='color: #bbb; text-align: center'>" ;
-						print _('N/A') ;
-					print "</td>" ;
+					$gradesOutput.="<td class='dull' style='color: #bbb; text-align: center'>" ;
+						$gradesOutput.=_('N/A') ;
+					$gradesOutput.="</td>" ;
 				}
 				else {
 					$gradesOutput.="<td style='text-align: center'>" ;
@@ -568,9 +568,9 @@ function getParentalDashboardContents($connection2, $guid, $gibbonPersonID) {
 					$gradesOutput.="</td>" ;
 				}
 				if ($rowEntry["commentOn"]=="N" AND $rowEntry["uploadedResponseOn"]=="N") {
-					print "<td class='dull' style='color: #bbb; text-align: left'>" ;
-						print _('N/A') ;
-					print "</td>" ;
+					$gradesOutput.="<td class='dull' style='color: #bbb; text-align: left'>" ;
+						$gradesOutput.=_('N/A') ;
+					$gradesOutput.="</td>" ;
 				}
 				else {
 					$gradesOutput.="<td>" ;
@@ -925,7 +925,7 @@ function getParentalDashboardContents($connection2, $guid, $gibbonPersonID) {
 			//Check for permission to hook
 			try {
 				$dataHook=array("gibbonRoleIDCurrent"=>$_SESSION[$guid]["gibbonRoleIDCurrent"], "sourceModuleName"=>$options["sourceModuleName"]);
-				$sqlHook="SELECT gibbonHook.name, gibbonModule.name AS module, gibbonAction.name AS action FROM gibbonHook JOIN gibbonModule ON (gibbonModule.name='" . $options["sourceModuleName"] . "') JOIN gibbonAction ON (gibbonAction.name='" . $options["sourceModuleAction"] . "') JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) WHERE gibbonAction.gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE gibbonPermission.gibbonRoleID=:gibbonRoleIDCurrent AND name=:sourceModuleName) AND gibbonHook.type='Parental Dashboard' ORDER BY name" ;
+				$sqlHook="SELECT gibbonHook.name, gibbonModule.name AS module, gibbonAction.name AS action FROM gibbonHook JOIN gibbonModule ON (gibbonHook.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) WHERE gibbonAction.gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE gibbonPermission.gibbonRoleID=:gibbonRoleIDCurrent AND name=:sourceModuleName) AND gibbonHook.type='Parental Dashboard'  AND gibbonAction.name='" . $options["sourceModuleAction"] . "' AND gibbonModule.name='" . $options["sourceModuleName"] . "' ORDER BY name" ;
 				$resultHook=$connection2->prepare($sqlHook);
 				$resultHook->execute($dataHook);
 			}
@@ -939,8 +939,7 @@ function getParentalDashboardContents($connection2, $guid, $gibbonPersonID) {
 			}
 		}
 	}
-
-
+	
 	if ($classes==FALSE AND $grades==FALSE AND $deadlines==FALSE AND $timetable==FALSE AND $activities==FALSE AND count($hooks)<1) {
 		$return.="<div class='warning'>" ;
 			$return.=_("There are no records to display.") ;
