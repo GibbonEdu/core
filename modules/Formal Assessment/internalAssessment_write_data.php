@@ -446,53 +446,13 @@ else {
 												print "<td style='text-align: center'>" ;
 													//Create attainment grade select
 													if ($row2["gibbonScaleIDAttainment"]!="") {
-														print "<select name='$count-attainmentValue' id='$count-attainmentValue' style='width:50px'>" ;
-															try {
-																$dataSelect=array("gibbonScaleID"=>$gibbonScaleIDAttainment); 
-																$sqlSelect="SELECT * FROM gibbonScaleGrade WHERE gibbonScaleID=:gibbonScaleID ORDER BY sequenceNumber" ;
-																$resultSelect=$connection2->prepare($sqlSelect);
-																$resultSelect->execute($dataSelect);
-															}
-															catch(PDOException $e) { }
-															print "<option value=''></option>" ;
-															$sequence="" ;
-															$descriptor="" ;
-															while ($rowSelect=$resultSelect->fetch()) {
-																if ($rowEntry["attainmentValue"]==$rowSelect["value"]) {
-																	print "<option selected value='" . htmlPrep($rowSelect["value"]) . "'>" . htmlPrep(_($rowSelect["value"])) . "</option>" ;
-																}
-																else {
-																	print "<option value='" . htmlPrep($rowSelect["value"]) . "'>" . htmlPrep(_($rowSelect["value"])) . "</option>" ;
-																}
-															}			
-														print "</select>" ;
+														print renderGradeScaleSelect($connection2, $guid, $gibbonScaleIDAttainment, "$count-attainmentValue", "value", TRUE, "58", "value", $rowEntry["attainmentValue"]) ;
 													}
 												print "</td>" ;
 											}
 											if ($row2["effort"]=="Y") {
 												print "<td style='text-align: center'>" ;
-													if ($row2["gibbonScaleIDEffort"]!="") {
-														print "<select name='$count-effortValue' id='$count-effortValue' style='width:50px'>" ;
-															try {
-																$dataSelect=array("gibbonScaleID"=>$gibbonScaleIDEffort); 
-																$sqlSelect="SELECT * FROM gibbonScaleGrade WHERE gibbonScaleID=:gibbonScaleID ORDER BY sequenceNumber" ;
-																$resultSelect=$connection2->prepare($sqlSelect);
-																$resultSelect->execute($dataSelect);
-															}
-															catch(PDOException $e) { }
-															print "<option value=''></option>" ;
-															$sequence="" ;
-															$descriptor="" ;
-															while ($rowSelect=$resultSelect->fetch()) {
-																if ($rowEntry["effortValue"]==$rowSelect["value"]) {
-																	print "<option selected value='" . htmlPrep($rowSelect["value"]) . "'>" . htmlPrep(_($rowSelect["value"])) . "</option>" ;
-																}
-																else {
-																	print "<option value='" . htmlPrep($rowSelect["value"]) . "'>" . htmlPrep(_($rowSelect["value"])) . "</option>" ;
-																}
-															}
-														print "</select>" ;
-													}
+													print renderGradeScaleSelect($connection2, $guid, $gibbonScaleIDEffort, "$count-effortValue", "value", TRUE, "58", "value", $rowEntry["effortValue"]) ;
 												print "</td>" ;
 											}
 											if ($row2["comment"]=="Y" OR $row2["uploadedResponse"]=="Y") {

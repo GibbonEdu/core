@@ -17,6 +17,52 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+//$valueMode can be "value" or "id" according to what goes into option's value field
+//$selectMode can be "value" or "id" according to what is used to preselect an option
+//$honourDefault can TRUE or FALSE, and determines whether or not the default grade is selected
+function renderGradeScaleSelect($connection2, $guid, $gibbonScaleID, $fieldName, $valueMode, $honourDefault=TRUE, $width=50, $selectedMode='value', $selectedValue=NULL) {
+	$return=FALSE ;
+	
+	$return.="<select name='$fieldName' id='$fieldName' style='width: " . $width . "px'>" ;
+		try {
+			$dataSelect=array("gibbonScaleID"=>$gibbonScaleID); 
+			$sqlSelect="SELECT * FROM gibbonScaleGrade WHERE gibbonScaleID=:gibbonScaleID ORDER BY sequenceNumber" ;
+			$resultSelect=$connection2->prepare($sqlSelect);
+			$resultSelect->execute($dataSelect);
+		}
+		catch(PDOException $e) { }
+		$return.="<option value=''></option>" ;
+		$sequence="" ;
+		$descriptor="" ;
+		while ($rowSelect=$resultSelect->fetch()) {
+			$selected="" ;
+			if ($honourDefault AND is_null($selectedValue)) { //Select entry based on scale default
+				if ($rowSelect["isDefault"]=="Y") {
+					$selected="selected" ;
+				}
+			}
+			else if ($selectedMode=="value") { //Select entry based on value passed
+				if ($rowSelect["value"]==$selectedValue) {
+					$selected="selected" ;
+				}
+			}
+			else if ($selectedMode=="id") { //Select entry based on id passed
+				if ($rowSelect["gibbonScaleGradeID"]==$selectedValue) {
+					$selected="selected" ;
+				}
+			}
+			if ($valueMode=="value") {
+				$return.="<option $selected value='" . htmlPrep($rowSelect["value"]) . "'>" . htmlPrep(_($rowSelect["value"])) . "</option>" ;
+			}
+			else {
+				$return.="<option $selected value='" . htmlPrep($rowSelect["gibbonScaleGradeID"]) . "'>" . htmlPrep(_($rowSelect["value"])) . "</option>" ;
+			}
+		}			
+	$return.="</select>" ;
+	
+	return $return ;
+}
+
 //Takes the provided string, and uses a tinymce style valid_elements string to strip out unwanted tags
 //Not complete, as it does not strip out unwanted options, just whole tags.
 function tinymceStyleStripTags($string, $connection2) {

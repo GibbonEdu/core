@@ -128,13 +128,23 @@ else {
 				$gibbonScaleGradeID=NULL ;
 			}
 			else {
-				$gibbonScaleGradeID=$_POST[$i . "-gibbonScaleGradeID"] ;
+				if ($_POST[$i . "-gibbonScaleGradeID"]=="") {
+					$gibbonScaleGradeID=NULL ;
+				}
+				else {
+					$gibbonScaleGradeID=$_POST[$i . "-gibbonScaleGradeID"] ;
+				}
 			}
 			if (isset($_POST[$i . "-gibbonScaleGradeIDPAS"])==FALSE) {
 				$gibbonScaleGradeIDPAS=NULL ;
 			}
 			else {
-				$gibbonScaleGradeIDPAS=$_POST[$i . "-gibbonScaleGradeIDPAS"] ;
+				if ($_POST[$i . "-gibbonScaleGradeIDPAS"]=="") {
+					$gibbonScaleGradeIDPAS=NULL ;
+				}
+				else {
+					$gibbonScaleGradeIDPAS=$_POST[$i . "-gibbonScaleGradeIDPAS"] ;
+				}
 			}
 			
 			if ($gibbonExternalAssessmentFieldID!="") {

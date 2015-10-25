@@ -350,9 +350,11 @@ else {
 								
 								$countWeighted++ ;
 								$total+=$grades[$count][1] ;
-								if ($grades[$count][2]=="Science - Double Award") {
-									$countWeighted++ ;
-									$total+=$grades[$count][1] ;
+								if (isset($grades[$count][2])) {
+									if ($grades[$count][2]=="Science - Double Award") {
+										$countWeighted++ ;
+										$total+=$grades[$count][1] ;
+									}
 								}
 								$count++ ;
 							}
@@ -586,84 +588,42 @@ else {
 										</td>
 										<td class="right">
 											<input name="<?php print $count?>-gibbonExternalAssessmentFieldID" id="<?php print $count?>-gibbonExternalAssessmentFieldID" value="<?php print $rowField["gibbonExternalAssessmentFieldID"] ?>" type="hidden">
-											<select name="<?php print $count?>-gibbonScaleGradeID" id="<?php print $count?>-gibbonScaleGradeID" style="width:160px">
-												<?php
-												try {
-													$dataSelect=array("gibbonScaleID"=>$rowField["gibbonScaleID"]); 
-													$sqlSelect="SELECT * FROM gibbonScaleGrade WHERE gibbonScaleID=:gibbonScaleID AND NOT value='Incomplete' ORDER BY sequenceNumber" ;
-													$resultSelect=$connection2->prepare($sqlSelect);
-													$resultSelect->execute($dataSelect);
+											<?php
+												$preselectValue=NULL ;
+												if ($copyToGCSECheck=="on" AND $rowField["category"]=="0_Target Grade") {
+													$preselectValue=$grades[$rowField["name"]][0] ;
 												}
-												catch(PDOException $e) { }
-												print "<option value=''></option>" ;
-												while ($rowSelect=$resultSelect->fetch()) {
-													$descriptor="" ;
-													if ($rowSelect["value"]!=$rowSelect["descriptor"]) {
-														$descriptor=" - " . htmlPrep(_($rowSelect["descriptor"])) ;
-													}
-													$selected="" ;
-													if ($copyToGCSECheck=="on" AND $rowField["category"]=="0_Target Grade") {
-														if ($rowSelect["gibbonScaleGradeID"]==$grades[$rowField["name"]][0]) {
-															$selected="selected" ;
-														}
-													}
-													if (($copyToIBCheck=="Target" OR $copyToIBCheck=="Final") AND $rowField["category"]=="0_Target Grade") {
-														//Compare subject name to $regression and find entry for current subject
-														foreach ($regression as $subject) {
-															$match=true ;
-															$subjectName=explode(" ", $subject[1]) ;
-															foreach ($subjectName as $subjectToken) {
-																//General/rough match check for all subjects
-																if (stripos($rowField["name"], $subjectToken)===false) {
+												if (($copyToIBCheck=="Target" OR $copyToIBCheck=="Final") AND $rowField["category"]=="0_Target Grade") {
+													//Compare subject name to $regression and find entry for current subject
+													foreach ($regression as $subject) {
+														$match=true ;
+														$subjectName=explode(" ", $subject[1]) ;
+														foreach ($subjectName as $subjectToken) {
+															//General/rough match check for all subjects
+															if (stripos($rowField["name"], $subjectToken)===false) {
+																$match=false ;
+															}
+															//Exact check for mathematics SL & HL
+															if (stripos($rowField["name"], "Mathematics")) {
+																if ($rowField["name"]!=$subject) {
 																	$match=false ;
 																}
-																//Exact check for mathematics SL & HL
-																if (stripos($rowField["name"], "Mathematics")) {
-																	if ($rowField["name"]!=$subject) {
-																		$match=false ;
-																	}
-																}
-															}
-															
-															if ($match==true) {
-																//If entry for current subject matches $rowSelect["value"], then select
-																if ($subject[4]==$rowSelect["value"]) {
-																	$selected="selected" ;
-																}
 															}
 														}
+													
+														if ($match==true) {
+															$preselectValue=$subject[4] ;
+														}
 													}
-													print "<option $selected value='" . $rowSelect["gibbonScaleGradeID"] . "'>" . htmlPrep(_($rowSelect["value"])) . $descriptor . "</option>" ;
 												}
-												?>				
-											</select>
+												
+												print renderGradeScaleSelect($connection2, $guid, $rowField["gibbonScaleID"], "$count-gibbonScaleGradeID", "id", FALSE, "150", "value", $preselectValue) ; 
+											?>
 										</td>
 										<td class="right">
-											<select name="<?php print $count?>-gibbonScaleGradeIDPAS" id="<?php print $count?>-gibbonScaleGradeIDPAS" style="width:160px">
-												<?php
-												print "<option value=''></option>" ;
-												try {
-													$dataSelect=array("primaryAssessmentScale"=>$_SESSION[$guid]["primaryAssessmentScale"]); 
-													$sqlSelect="SELECT * FROM gibbonScaleGrade WHERE gibbonScaleID=:primaryAssessmentScale AND NOT value='Incomplete' ORDER BY sequenceNumber" ;
-													$resultSelect=$connection2->prepare($sqlSelect);
-													$resultSelect->execute($dataSelect);
-												}
-												catch(PDOException $e) { }
-												while ($rowSelect=$resultSelect->fetch()) {
-													$descriptor="" ;
-													if ($rowSelect["value"]!=$rowSelect["descriptor"]) {
-														$descriptor=" - " . htmlPrep(_($rowSelect["descriptor"])) ;
-													}
-													$selected="" ;
-													if ($copyToGCSECheck=="on" AND $rowField["category"]=="0_Target Grade") {
-														if ($rowSelect["gibbonScaleGradeID"]==$grades[$rowField["name"]][1]) {
-															$selected="selected" ;
-														}
-													}
-													print "<option $selected value='" . $rowSelect["gibbonScaleGradeID"] . "'>" . htmlPrep(_($rowSelect["value"])) . $descriptor . "</option>" ;
-												}
-												?>				
-											</select>
+											<?php 
+												print renderGradeScaleSelect($connection2, $guid, $_SESSION[$guid]["primaryAssessmentScale"], "$count-gibbonScaleGradeIDPAS", "id", FALSE, "150") ; 
+											?>
 										</td>
 									</tr>
 									<?php

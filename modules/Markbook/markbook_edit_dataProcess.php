@@ -93,19 +93,29 @@ else {
 				for ($i=1;$i<=$count;$i++) {
 					$gibbonPersonIDStudent=$_POST["$i-gibbonPersonID"] ;
 					//Attainment
-					if ($attainment=="N" OR $gibbonScaleIDAttainment=="") {
+					if ($attainment=="N") {
 						$attainmentValue=NULL ;
 						$attainmentDescriptor=NULL ;
 						$attainmentConcern=NULL ;
+					}
+					else if ($gibbonScaleIDAttainment=="") {
+						$attainmentValue="" ;
+						$attainmentDescriptor="" ;
+						$attainmentConcern="" ;
 					}
 					else {
 						$attainmentValue=$_POST["$i-attainmentValue"] ;
 					}
 					//Effort
-					if ($effort=="N" OR $gibbonScaleIDEffort=="") {
+					if ($effort=="N") {
 						$effortValue=NULL ;
 						$effortDescriptor=NULL ;
 						$effortConcern=NULL ;
+					}
+					else if ($gibbonScaleIDEffort=="") {
+						$effortValue="" ;
+						$effortDescriptor="" ;
+						$effortConcern="" ;
 					}
 					else {
 						$effortValue=$_POST["$i-effortValue"] ;

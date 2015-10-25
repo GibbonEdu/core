@@ -81,8 +81,9 @@ else {
 				$value=$_POST["value"] ;
 				$descriptor=$_POST["descriptor"] ;
 				$sequenceNumber=$_POST["sequenceNumber"] ;
+				$isDefault=$_POST["isDefault"] ;
 
-				if ($value=="" OR $descriptor=="" OR $sequenceNumber=="") {
+				if ($value=="" OR $descriptor=="" OR $sequenceNumber=="" OR $isDefault=="") {
 					//Fail 3
 					$URL.="&updateReturn=fail3" ;
 					header("Location: {$URL}");
@@ -108,10 +109,26 @@ else {
 						header("Location: {$URL}");
 					}
 					else {	
+						//If isDefault is Y, then set all other grades in scale to N
+						if ($isDefault=="Y") {
+							try {
+								$data=array("gibbonScaleID"=>$gibbonScaleID, "gibbonScaleGradeID"=>$gibbonScaleGradeID); 
+								$sql="UPDATE gibbonScaleGrade SET isDefault='N' WHERE gibbonScaleID=:gibbonScaleID AND NOT gibbonScaleGradeID=:gibbonScaleGradeID" ;
+								$result=$connection2->prepare($sql);
+								$result->execute($data);
+							}
+							catch(PDOException $e) { 
+								//Fail 2
+								$URL.="&addReturn=fail2" ;
+								header("Location: {$URL}");
+								break ;
+							}
+						}
+			
 						//Write to database
 						try {
-							$data=array("value"=>$value, "descriptor"=>$descriptor, "sequenceNumber"=>$sequenceNumber, "gibbonScaleGradeID"=>$gibbonScaleGradeID); 
-							$sql="UPDATE gibbonScaleGrade SET value=:value, descriptor=:descriptor, sequenceNumber=:sequenceNumber WHERE gibbonScaleGradeID=:gibbonScaleGradeID" ;
+							$data=array("value"=>$value, "descriptor"=>$descriptor, "sequenceNumber"=>$sequenceNumber, "isDefault"=>$isDefault, "gibbonScaleGradeID"=>$gibbonScaleGradeID); 
+							$sql="UPDATE gibbonScaleGrade SET value=:value, descriptor=:descriptor, sequenceNumber=:sequenceNumber, isDefault=:isDefault WHERE gibbonScaleGradeID=:gibbonScaleGradeID" ;
 							$result=$connection2->prepare($sql);
 							$result->execute($data);
 						}

@@ -255,58 +255,14 @@ else {
 								</td>
 								<td class="right">
 									<input name="<?php print $count?>-gibbonExternalAssessmentStudentEntryID" id="<?php print $count?>-gibbonExternalAssessmentStudentEntryID" value="<?php print $rowField["gibbonExternalAssessmentStudentEntryID"] ?>" type="hidden">
-									<select name="<?php print $count?>-gibbonScaleGradeID" id="<?php print $count?>-gibbonScaleGradeID" style="width:160px">
-										<?php
-										try {
-											$dataSelect=array("gibbonScaleID"=>$rowField["gibbonScaleID"]); 
-											$sqlSelect="SELECT * FROM gibbonScaleGrade WHERE gibbonScaleID=:gibbonScaleID AND NOT value='Incomplete' ORDER BY sequenceNumber" ;
-											$resultSelect=$connection2->prepare($sqlSelect);
-											$resultSelect->execute($dataSelect);
-										}
-										catch(PDOException $e) { 
-											print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-										}
-										print "<option value=''></option>" ;
-										while ($rowSelect=$resultSelect->fetch()) {
-											$descriptor="" ;
-											if ($rowSelect["value"]!=$rowSelect["descriptor"]) {
-												$descriptor=" - " . htmlPrep(_($rowSelect["descriptor"])) ;
-											}
-											$selected="" ;
-											if ($rowSelect["gibbonScaleGradeID"]==$rowField["gibbonScaleGradeID"]) {
-												$selected="selected" ;
-											}
-											print "<option $selected value='" . $rowSelect["gibbonScaleGradeID"] . "'>" . htmlPrep(_($rowSelect["value"])) . $descriptor . "</option>" ;
-										}
-										?>				
-									</select>
+									<?php 
+										print renderGradeScaleSelect($connection2, $guid, $rowField["gibbonScaleID"], "$count-gibbonScaleGradeID", "id", FALSE, "150", "id", $rowField["gibbonScaleGradeID"]) ; 
+									?>
 								</td>
 								<td class="right">
-									<select name="<?php print $count?>-gibbonScaleGradeIDPAS" id="<?php print $count?>-gibbonScaleGradeIDPAS" style="width:160px">
-										<?php
-										try {
-											$dataSelect=array("gibbonScaleID"=>$_SESSION[$guid]["primaryAssessmentScale"]); 
-											$sqlSelect="SELECT * FROM gibbonScaleGrade WHERE gibbonScaleID=:gibbonScaleID AND NOT value='Incomplete' ORDER BY sequenceNumber" ;
-											$resultSelect=$connection2->prepare($sqlSelect);
-											$resultSelect->execute($dataSelect);
-										}
-										catch(PDOException $e) { 
-											print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-										}
-										print "<option value=''></option>" ;
-										while ($rowSelect=$resultSelect->fetch()) {
-											$descriptor="" ;
-											if ($rowSelect["value"]!=$rowSelect["descriptor"]) {
-												$descriptor=" - " . htmlPrep(_($rowSelect["descriptor"])) ;
-											}
-											$selected="" ;
-											if ($rowSelect["gibbonScaleGradeID"]==$rowField["gibbonScaleGradeIDPrimaryAssessmentScale"]) {
-												$selected="selected" ;
-											}
-											print "<option $selected value='" . $rowSelect["gibbonScaleGradeID"] . "'>" . htmlPrep(_($rowSelect["value"])) . $descriptor . "</option>" ;
-										}
-										?>				
-									</select>
+									<?php 
+										print renderGradeScaleSelect($connection2, $guid, $_SESSION[$guid]["primaryAssessmentScale"], "$count-gibbonScaleGradeIDPAS", "id", FALSE, "150", "id", $rowField["gibbonScaleGradeIDPrimaryAssessmentScale"]) ; 
+									?>
 								</td>
 							</tr>
 							<?php

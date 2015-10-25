@@ -137,6 +137,18 @@ else {
 						</td>
 					</tr>
 					<tr>
+						<td> 
+							<b><?php print _('Is Default?') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('Preselects this option when using this grade scale in appropriate contexts.') ?><br/></i></span>
+						</td>
+						<td class="right">
+							<select name="isDefault" id="isDefault" style="width: 302px">
+								<option <?php if ($row["isDefault"]=="N") { print "selected" ; } ?> value="N"><?php print ynExpander('N') ?></option>
+								<option <?php if ($row["isDefault"]=="Y") { print "selected" ; } ?> value="Y"><?php print ynExpander('Y') ?></option>
+							</select>
+						</td>
+					</tr>
+					<tr>
 						<td>
 							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 						</td>
