@@ -27,11 +27,9 @@ foreach ($includes AS $include) {
 		$included=TRUE ;
 	}
 }
-// This seems to be causing the problem php cannot redeclare getsignature () previously declared Error.
-/*if ($included==FALSE) {
+if ($included==FALSE) {
 	include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 }
-*/
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
