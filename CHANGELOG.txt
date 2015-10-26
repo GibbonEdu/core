@@ -488,6 +488,9 @@ School Admin: added ability to set a default grade for a grade scale, and applie
 General: increased lowest-upgrade-version to v8.3.00 to reduce file size
 	Edited files /CHANGELOG.txt, CHANGEDB.php
 
+General: added new visualisation library (not loaded by default)
+	New folder /lib/vis
+
 v10.0.00
 --------
 i18n: added Urdu as inactive development language
