@@ -871,6 +871,7 @@ else {
 							<option <?php if ($row["value"]=="USD $") { print "selected" ; } ?> value='USD $'>U.S. Dollar ($)</option>
 						</optgroup>
 						<optgroup label='--<?php print _('OTHERS') ?>--'/>
+							<option <?php if ($row["value"]=="BDT ó") { print "selected" ; } ?> value='BDT ó'>Bangladeshi Taka (ó)</option>
 							<option <?php if ($row["value"]=="BTC") { print "selected" ; } ?> value='BTC'>Bitcoin</option>
 							<option <?php if ($row["value"]=="XAF FCFA") { print "selected" ; } ?> value='XAF FCFA'>Central African Francs (FCFA)</option>
 							<option <?php if ($row["value"]=="INR ₹") { print "selected" ; } ?> value='INR ₹'>Indian Rupee (₹)</option>

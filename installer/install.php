@@ -905,6 +905,7 @@ include "../functions.php" ;
 																		<option value='USD $'>U.S. Dollar ($)</option>
 																	</optgroup>
 																	<optgroup label='--<?php print _('OTHERS') ?>--'/>
+																		<option value='BDT ó'>Bangladeshi Taka (ó)</option>
 																		<option value='BTC'>Bitcoin</option>
 																		<option value='XAF FCFA'>Central African Francs (FCFA)</option>
 																		<option value='INR ₹'>Indian Rupee (₹)</option>

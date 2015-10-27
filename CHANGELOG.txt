@@ -490,6 +490,10 @@ General: increased lowest-upgrade-version to v8.3.00 to reduce file size
 
 General: added new visualisation library (not loaded by default)
 	New folder /lib/vis
+	
+General: added Bangladeshi Taka as currency option
+	Edited file /modules/System Admin/systemSettings.php
+	Edited file /installer/install.php
 
 v10.0.00
 --------
