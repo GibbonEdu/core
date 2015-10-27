@@ -42,7 +42,7 @@ else {
 					print _("Photo") ;
 				print "</th>" ;
 				print "<th style='width: 180px'>" ;
-					print _("Giver") ;
+					print _("Giver") . "<br/>" ;
 					print "<span style='font-size: 85%; font-style: italic'>" . _("Role") . "</span>" ;
 				print "</th>" ;
 				print "<th>" ;
