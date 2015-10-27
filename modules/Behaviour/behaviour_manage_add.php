@@ -298,7 +298,7 @@ else {
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<?php print _('Next') ?>">
+							<input type="submit" value="<?php print _('Submit') ?>">
 						</td>
 					</tr>
 				</table>

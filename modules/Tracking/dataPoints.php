@@ -53,7 +53,7 @@ else {
 				print sprintf(_('Data Points has been configured to allow you to export certain key assessment data. Please contact %1$s if you are not seeing the data you need here.'), "<a href='mailto:" . $_SESSION[$guid]["organisationAdministratorEmail"] . "'>" . $_SESSION[$guid]["organisationAdministratorName"] . "</a>") . "<br/>" ;
 			}
 			else { //Yes access, give link to settings.
-				print sprintf(_('Data Points has been configured to export certain key assessment data. Please take a look at %1$sTracking Settings%2$s to change what data points are included.'), "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/School Admin/trackingSettings.php'>", "</a>") . " " . _('Use the export button below to prepare your Data Points export for download.') . "'<br/>" ;
+				print sprintf(_('Data Points has been configured to export certain key assessment data. Please take a look at %1$sTracking Settings%2$s to change what data points are included.'), "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/School Admin/trackingSettings.php'>", "</a>") . " " . _('Use the export button below to prepare your Data Points export for download.') . "<br/>" ;
 			}
 			print "<br/>" ;
 		print "</p>" ;
