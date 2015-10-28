@@ -18,8 +18,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Prevent breakage of back button on POST pages
-//ini_set('session.cache_limiter','private');
-//session_cache_limiter(false);
+ini_set('session.cache_limiter','private');
+session_cache_limiter(false);
 
 //Gibbon system-wide includes
 if (file_exists("./config.php")) {
