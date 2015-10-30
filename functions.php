@@ -85,7 +85,12 @@ function tinymceStyleStripTags($string, $connection2) {
 function getMinorLinks($connection2, $guid, $cacheLoad) {
 	$return=FALSE ;
 
-	if (isset($_SESSION[$guid]["username"])) {
+	if (isset($_SESSION[$guid]["username"])==FALSE) {
+		if ($_SESSION[$guid]["webLink"]!="") {
+			$return.= _("Return to") . " <a style='margin-right: 12px' target='_blank' href='" . $_SESSION[$guid]["webLink"] . "'>" . $_SESSION[$guid]["organisationNameShort"] . " " . _('Website') . "</a>" ;
+		}
+	}
+	else {
 		$return.=$_SESSION[$guid]["preferredName"] . " " . $_SESSION[$guid]["surname"] . " . " ;
 		$return.="<a href='./logout.php'>" . _("Logout") . "</a> . <a href='./index.php?q=preferences.php'>" . _('Preferences') . "</a>" ;
 		if ($_SESSION[$guid]["emailLink"]!="") {
