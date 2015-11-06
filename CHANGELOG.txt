@@ -501,6 +501,11 @@ General: added minor link back to school home page when not logged in
 Students: fixed bug preventing module hooks from showing when there are multiple hooks present in the system
 	Edited file /modules/Students/student_view_details.php
 
+i18n: added Russian and Ukranian as development languages (thanks to Oleg at Info Web for his offer of translation)
+	New value in table gibboni18n
+	New folder /i18n/ru_RU
+	New folder /i18n/uk_UA
+	
 v10.0.00
 --------
 i18n: added Urdu as inactive development language

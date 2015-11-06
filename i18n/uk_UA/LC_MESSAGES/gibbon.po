@@ -3,10 +3,15 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: POEditor.com\n"
+"X-Generator: Poedit 1.8.1\n"
 "Project-Id-Version: Gibbon\n"
-"Language: en\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: uk_UA\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
+"20)) ? 1 : 2);\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
 
 #: index.php:1077 index.php:1072 index.php:1074 index.php:1080 index.php:1078
 #: index.php:1084 index.php:1102 index.php:1064 index.php:1073 index.php:681
@@ -30,7 +35,7 @@ msgstr ""
 #: index.php:757 index.php:779 index.php:825 index.php:831 index.php:834
 #: index.php:845 index.php:861 index.php:878 index.php:873 index.php:877
 msgid "My Roll Group"
-msgstr "My Form Group"
+msgstr ""
 
 #: error.php:22 modules/Rubrics/moduleFunctions.php:107
 #: modules/Rubrics/moduleFunctions.php:136
@@ -4507,7 +4512,7 @@ msgstr ""
 #: modules/User Admin/studentEnrolment_manage_add.php:167
 #: modules/User Admin/studentEnrolment_manage_edit.php:177
 msgid "Roll Group"
-msgstr "Form Group"
+msgstr ""
 
 #: index.php:648 index.php:654 index.php:660 index.php:658 index.php:664
 #: index.php:669 index.php:631 index.php:634 functions.php:27
@@ -11079,7 +11084,7 @@ msgstr ""
 #: index.php:823 index.php:829 index.php:832 index.php:843 index.php:859
 #: index.php:876 index.php:871 index.php:875
 msgid "My Roll Groups"
-msgstr "My Form Groups"
+msgstr ""
 
 #: index.php:1277 modules/Activities/activities_manage_enrolment_add.php:158
 #: i18n/dbStringsForTranslation.php:698 index.php:1280
@@ -20154,12 +20159,12 @@ msgstr ""
 #: modules/School Admin/alertLevelSettings.php:112
 #: modules/School Admin/alertLevelSettings.php:112
 msgid "Font/Border Color"
-msgstr "Font/Border Colour"
+msgstr ""
 
 #: modules/School Admin/alertLevelSettings.php:125
 #: modules/School Admin/alertLevelSettings.php:125
 msgid "Background Color"
-msgstr "Background Colour"
+msgstr ""
 
 #: modules/School Admin/alertLevelSettings.php:138
 #: Admin/gradeScales_manage_edit.php:244
@@ -21584,7 +21589,7 @@ msgstr ""
 #: modules/School Admin/rollGroup_manage_delete.php:31
 #: modules/School Admin/rollGroup_manage_edit.php:31
 msgid "Manage Roll Groups"
-msgstr "Manage Form Groups"
+msgstr ""
 
 #: modules/School Admin/rollGroup_manage.php:130 modules/Roll
 #: Groups/rollGroups.php:60 Admin/rollGroup_manage.php:127
@@ -21608,7 +21613,7 @@ msgstr ""
 #: modules/School Admin/rollGroup_manage_add.php:31
 #: modules/School Admin/rollGroup_manage_add.php:31
 msgid "Add Roll Group"
-msgstr "Add Form Group"
+msgstr ""
 
 #: modules/School Admin/rollGroup_manage_add.php:128
 #: Admin/rollGroup_manage_edit.php:133 modules/Roll
@@ -21646,14 +21651,13 @@ msgstr ""
 msgid ""
 "Up to 3 per roll group. The first-listed will be marked as \"Main Tutor\"."
 msgstr ""
-"Up to 3 per form group. The first-listed will be marked as \"Main Tutor\"."
 
 #: modules/School Admin/rollGroup_manage_add.php:216
 #: Admin/rollGroup_manage_edit.php:236
 #: modules/School Admin/rollGroup_manage_add.php:216
 #: modules/School Admin/rollGroup_manage_edit.php:236
 msgid "Next Roll Group"
-msgstr "Next Form Group"
+msgstr ""
 
 #: modules/School Admin/rollGroup_manage_add.php:217
 #: Admin/rollGroup_manage_edit.php:237
@@ -21665,12 +21669,12 @@ msgstr ""
 #: modules/School Admin/rollGroup_manage_delete.php:31
 #: modules/School Admin/rollGroup_manage_delete.php:31
 msgid "Delete Roll Group"
-msgstr "Delete Form Group"
+msgstr ""
 
 #: modules/School Admin/rollGroup_manage_edit.php:31
 #: modules/School Admin/rollGroup_manage_edit.php:31
 msgid "Edit Roll Group"
-msgstr "Edit Form Group"
+msgstr ""
 
 #: modules/School Admin/schoolYear_manage.php:31
 #: modules/Finance/budgetCycles_manage.php:31
@@ -23748,7 +23752,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:75 i18n/dbStringsForTranslation.php:75
 #: modules/Timetable Admin/report_classEnrolment_byRollGroup.php:34
 msgid "Class Enrolment by Roll Group"
-msgstr "Class Enrolment by Form Group"
+msgstr ""
 
 #: modules/Timetable Admin/report_classEnrolment_byRollGroup.php:38
 #: modules/Activities/report_activitySpread_rollGroup.php:38
@@ -23763,7 +23767,7 @@ msgstr "Class Enrolment by Form Group"
 #: modules/Students/report_students_byRollGroup.php:38
 #: modules/Timetable Admin/report_classEnrolment_byRollGroup.php:38
 msgid "Choose Roll Group"
-msgstr "Choose Form Group"
+msgstr ""
 
 #: modules/Timetable Admin/report_classEnrolment_byRollGroup.php:110
 #: modules/Timetable Admin/report_classEnrolment_byRollGroup.php:110
@@ -25160,8 +25164,6 @@ msgid ""
 "Enrol the student in the selected school year (as the student has been "
 "assigned to a roll group)."
 msgstr ""
-"Enrol the student in the selected school year (as the student has been "
-"assigned to a form group)."
 
 #: modules/User Admin/applicationForm_manage_accept.php:140
 #: modules/User Admin/applicationForm_manage_accept.php:140
@@ -25204,8 +25206,6 @@ msgid ""
 "Enrol the student in the relevant academic year (this will not be done "
 "automatically, as the student has not been assigned to a roll group)."
 msgstr ""
-"Enrol the student in the relevant academic year (this will not be done "
-"automatically, as the student has not been assigned to a form group)."
 
 #: modules/User Admin/applicationForm_manage_accept.php:161
 #: Admin/applicationForm_manage_accept.php:1173
@@ -25306,8 +25306,6 @@ msgid ""
 "The student has successfully been enroled in the specified school year, year "
 "group and roll group."
 msgstr ""
-"The student has successfully been enroled in the specified school year, year "
-"group and form group."
 
 #: modules/User Admin/applicationForm_manage_accept.php:433
 #: Admin/applicationForm_manage_accept.php:478
@@ -25924,7 +25922,7 @@ msgstr ""
 #: modules/User Admin/applicationForm_manage_edit.php:321
 #: modules/User Admin/applicationForm_manage_edit_print.php:127
 msgid "Roll Group at Entry"
-msgstr "Form Group at Entry"
+msgstr ""
 
 #: modules/User Admin/applicationForm_manage_edit.php:322
 #: modules/User Admin/applicationForm_manage_edit.php:322
@@ -30209,7 +30207,7 @@ msgstr ""
 #: Admin/import_studentEnrolment.php:133
 #: modules/User Admin/import_studentEnrolment.php:133
 msgid "Roll group short name, as set in School Admim. Must already exist."
-msgstr "Form group short name, as set in School Admim. Must already exist."
+msgstr ""
 
 #: modules/User Admin/import_studentEnrolment.php:121
 #: Admin/import_studentEnrolment.php:134
@@ -31184,8 +31182,6 @@ msgid ""
 "Year groups or roll groups are not properly set up, so you cannot proceed "
 "with this section."
 msgstr ""
-"Year groups or form groups are not properly set up, so you cannot proceed "
-"with this section."
 
 #: modules/User Admin/rollover.php:384 Admin/rollover.php:499
 #: modules/User Admin/rollover.php:384 modules/User Admin/rollover.php:499
@@ -33809,7 +33805,7 @@ msgstr ""
 #: modules/Students/report_students_IDCards.php:55
 #: modules/Tracking/graphing.php:74
 msgid "Students by Roll Group"
-msgstr "Students by Form Group"
+msgstr ""
 
 #: modules/Activities/report_activityChoices_byStudent.php:74
 #: modules/Students/report_familyAddress_byStudent.php:70
@@ -33938,7 +33934,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:63
 #: modules/Activities/report_activitySpread_rollGroup.php:34
 msgid "Activity Spread by Roll Group"
-msgstr "Activity Spread by Form Group"
+msgstr ""
 
 #: modules/Activities/report_activitySpread_rollGroup.php:247
 #: modules/Activities/report_activitySpread_rollGroup.php:247
@@ -33952,7 +33948,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:64 i18n/dbStringsForTranslation.php:64
 #: modules/Activities/report_activityType_rollGroup.php:34
 msgid "Activity Type by Roll Group"
-msgstr "Activity Type by Form Group"
+msgstr ""
 
 #: modules/Activities/report_activityType_rollGroup.php:134
 #: modules/Activities/report_activityType_rollGroup.php:134
@@ -36898,7 +36894,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:108 i18n/dbStringsForTranslation.php:108
 #: modules/Students/report_lettersHome_byRollGroup.php:34
 msgid "Letters Home by Roll Group"
-msgstr "Letters Home by Form Group"
+msgstr ""
 
 #: i18n/dbStringsForTranslation.php:94 i18n/dbStringsForTranslation.php:142
 #: i18n/dbStringsForTranslation.php:143 i18n/dbStringsForTranslation.php:96
@@ -37250,7 +37246,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:214
 #: modules/Students/report_rollGroupSummary.php:34
 msgid "Roll Group Summary"
-msgstr "Form Group Summary"
+msgstr ""
 
 #: i18n/dbStringsForTranslation.php:180
 #: modules/Attendance/report_rollGroupsNotRegistered_byDate.php:34
@@ -37263,7 +37259,7 @@ msgstr "Form Group Summary"
 #: modules/Attendance/report_rollGroupsNotRegistered_byDate.php:34
 #: modules/Attendance/report_rollGroupsNotRegistered_byDate_print.php:41
 msgid "Roll Groups Not Registered"
-msgstr "Form Groups Not Registered"
+msgstr ""
 
 #: i18n/dbStringsForTranslation.php:182
 #: modules/Attendance/attendance_future_byPerson.php:34
@@ -37512,7 +37508,7 @@ msgstr ""
 #: modules/Roll Groups/rollGroups.php:31
 #: modules/Roll Groups/rollGroups_details.php:59
 msgid "View Roll Groups"
-msgstr "View Form Groups"
+msgstr ""
 
 #: i18n/dbStringsForTranslation.php:222 i18n/dbStringsForTranslation.php:223
 #: i18n/dbStringsForTranslation.php:398 i18n/dbStringsForTranslation.php:400
@@ -37571,7 +37567,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:267
 #: modules/Planner/report_workSummary_byRollGroup.php:34
 msgid "Work Summary by Roll Group"
-msgstr "Work Summary by Form Group"
+msgstr ""
 
 #: i18n/dbStringsForTranslation.php:232 i18n/dbStringsForTranslation.php:588
 #: i18n/dbStringsForTranslation.php:404 i18n/dbStringsForTranslation.php:406
@@ -41229,7 +41225,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:956 i18n/dbStringsForTranslation.php:986
 #: i18n/dbStringsForTranslation.php:995 i18n/dbStringsForTranslation.php:995
 msgid "Roll Groups"
-msgstr "Form Groups"
+msgstr ""
 
 #: i18n/dbStringsForTranslation.php:696 i18n/dbStringsForTranslation.php:1057
 #: i18n/dbStringsForTranslation.php:1062 i18n/dbStringsForTranslation.php:1114
@@ -41374,7 +41370,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:976 i18n/dbStringsForTranslation.php:1006
 #: i18n/dbStringsForTranslation.php:1015 i18n/dbStringsForTranslation.php:1015
 msgid "Allows users to view a listing of roll groups"
-msgstr "Allows users to view a listing of form groups"
+msgstr ""
 
 #: i18n/dbStringsForTranslation.php:715 i18n/dbStringsForTranslation.php:1076
 #: i18n/dbStringsForTranslation.php:1081 i18n/dbStringsForTranslation.php:1133
@@ -47146,7 +47142,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:1710 i18n/dbStringsForTranslation.php:1719
 #: i18n/dbStringsForTranslation.php:1719
 msgid "Browse Library BG Color"
-msgstr "Browse Library BG Colour"
+msgstr ""
 
 #: i18n/dbStringsForTranslation.php:1406 i18n/dbStringsForTranslation.php:1767
 #: i18n/dbStringsForTranslation.php:1772 i18n/dbStringsForTranslation.php:1824
@@ -48805,8 +48801,6 @@ msgid ""
 "RGB Hex value, without leading #. Background color used behind library "
 "browsing screen."
 msgstr ""
-"RGB Hex value, without leading #. Background colour used behind library "
-"browsing screen."
 
 #: i18n/dbStringsForTranslation.php:1573 i18n/dbStringsForTranslation.php:1934
 #: i18n/dbStringsForTranslation.php:1939 i18n/dbStringsForTranslation.php:1991
@@ -49989,7 +49983,7 @@ msgstr ""
 #: modules/Attendance/attendance_take_byRollGroup.php:34
 #: modules/Attendance/attendance_take_byRollGroup.php:34
 msgid "Take Attendance by Roll Group"
-msgstr "Take Attendance by Form Group"
+msgstr ""
 
 #: modules/Attendance/attendance_take_byRollGroup.php:176
 #: modules/Attendance/attendance_take_byRollGroup.php:176
@@ -50382,7 +50376,7 @@ msgstr ""
 #: modules/Attendance/report_rollGroupsNotRegistered_byDate.php:174
 #: modules/Attendance/report_rollGroupsNotRegistered_byDate_print.php:134
 msgid "All roll groups have been registered."
-msgstr "All form groups have been registered."
+msgstr ""
 
 #: modules/Attendance/report_studentHistory.php:182
 #: modules/Planner/planner.php:165 modules/Planner/planner_deadlines.php:148
@@ -51586,12 +51580,12 @@ msgstr ""
 #: modules/Finance/invoices_manage_add.php:137
 #: modules/Finance/invoices_manage_add.php:137
 msgid "All Enrolled Students by Roll Group"
-msgstr "All Enrolled Students by Form Group"
+msgstr ""
 
 #: modules/Finance/invoices_manage_add.php:163
 #: modules/Finance/invoices_manage_add.php:163
 msgid "Students by Roll Groups"
-msgstr "Students by Form Groups"
+msgstr ""
 
 #: modules/Finance/invoices_manage_add.php:173
 #: modules/Finance/invoices_manage_add.php:173
@@ -52594,7 +52588,7 @@ msgstr ""
 #: modules/Library/library_manage_catalog_duplicate.php:370
 #: modules/Library/library_manage_catalog_edit.php:357
 msgid "Students By Roll Group"
-msgstr "Students By Form Group"
+msgstr ""
 
 #: modules/Library/library_lending_item_renew.php:58
 #: modules/Library/library_lending_item_renew.php:58
@@ -53623,7 +53617,7 @@ msgstr ""
 #: modules/Messenger/messenger_manage_edit.php:616
 #: modules/Messenger/messenger_post.php:557
 msgid "Select Roll Groups"
-msgstr "Select Form Groups"
+msgstr ""
 
 #: modules/Messenger/messenger_manage_edit.php:594
 #: modules/Messenger/messenger_post.php:542
@@ -55895,7 +55889,7 @@ msgstr ""
 
 #: modules/Roll Groups/rollGroups.php:35 modules/Roll Groups/rollGroups.php:35
 msgid "This page shows all roll groups in the current school year."
-msgstr "This page shows all form groups in the current school year."
+msgstr ""
 
 #: modules/Roll Groups/rollGroups.php:63 modules/Roll Groups/rollGroups.php:63
 msgid "Room"
@@ -56224,7 +56218,7 @@ msgstr ""
 #: modules/Students/report_rollGroupSummary.php:157
 #: modules/Students/report_rollGroupSummary.php:157
 msgid "All Roll Groups"
-msgstr "All Form Groups"
+msgstr ""
 
 #: modules/Students/report_student_dataUpdaterHistory.php:37
 #: modules/Students/report_student_dataUpdaterHistory.php:37
@@ -58145,7 +58139,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:334 i18n/dbStringsForTranslation.php:343
 #: i18n/dbStringsForTranslation.php:343
 msgid "Bulk email to any of my roll groups"
-msgstr "Bulk email to any of my form groups"
+msgstr ""
 
 #: i18n/dbStringsForTranslation.php:477 i18n/dbStringsForTranslation.php:293
 #: i18n/dbStringsForTranslation.php:294 i18n/dbStringsForTranslation.php:304
@@ -58153,7 +58147,7 @@ msgstr "Bulk email to any of my form groups"
 #: i18n/dbStringsForTranslation.php:335 i18n/dbStringsForTranslation.php:344
 #: i18n/dbStringsForTranslation.php:344
 msgid "Bulk email to any roll group"
-msgstr "Bulk email to any form group"
+msgstr ""
 
 #: i18n/dbStringsForTranslation.php:478 i18n/dbStringsForTranslation.php:294
 #: i18n/dbStringsForTranslation.php:295 i18n/dbStringsForTranslation.php:305
@@ -58638,7 +58632,6 @@ msgstr ""
 msgid ""
 "Print a report of roll groups who have not been registered on a given day"
 msgstr ""
-"Print a report of form groups who have not been registered on a given day"
 
 #: i18n/dbStringsForTranslation.php:536 i18n/dbStringsForTranslation.php:352
 #: i18n/dbStringsForTranslation.php:353 i18n/dbStringsForTranslation.php:364
@@ -58688,7 +58681,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:405 i18n/dbStringsForTranslation.php:414
 #: i18n/dbStringsForTranslation.php:414
 msgid "Print roll group lists showing count of various activity types"
-msgstr "Print form group lists showing count of various activity types"
+msgstr ""
 
 #: i18n/dbStringsForTranslation.php:542 i18n/dbStringsForTranslation.php:358
 #: i18n/dbStringsForTranslation.php:359 i18n/dbStringsForTranslation.php:370
@@ -58696,7 +58689,7 @@ msgstr "Print form group lists showing count of various activity types"
 #: i18n/dbStringsForTranslation.php:406 i18n/dbStringsForTranslation.php:415
 #: i18n/dbStringsForTranslation.php:415
 msgid "Print student roll group lists"
-msgstr "Print student form group lists"
+msgstr ""
 
 #: i18n/dbStringsForTranslation.php:543 i18n/dbStringsForTranslation.php:359
 #: i18n/dbStringsForTranslation.php:360 i18n/dbStringsForTranslation.php:371
@@ -58704,7 +58697,7 @@ msgstr "Print student form group lists"
 #: i18n/dbStringsForTranslation.php:407 i18n/dbStringsForTranslation.php:416
 #: i18n/dbStringsForTranslation.php:416
 msgid "Print work summary statistical data by roll group"
-msgstr "Print work summary statistical data by form group"
+msgstr ""
 
 #: i18n/dbStringsForTranslation.php:544 i18n/dbStringsForTranslation.php:360
 #: i18n/dbStringsForTranslation.php:361 i18n/dbStringsForTranslation.php:372
@@ -58771,8 +58764,6 @@ msgid ""
 "Show students in roll group, less those with an older sibling, so that "
 "letters can be carried home by oldest in family."
 msgstr ""
-"Show students in form group, less those with an older sibling, so that "
-"letters can be carried home by oldest in family."
 
 #: i18n/dbStringsForTranslation.php:552 i18n/dbStringsForTranslation.php:368
 #: i18n/dbStringsForTranslation.php:369 i18n/dbStringsForTranslation.php:380
@@ -58799,7 +58790,6 @@ msgstr ""
 msgid ""
 "Shows the number of classes students are enroled in, organised by roll group"
 msgstr ""
-"Shows the number of classes students are enroled in, organised by form group"
 
 #: i18n/dbStringsForTranslation.php:555 i18n/dbStringsForTranslation.php:371
 #: i18n/dbStringsForTranslation.php:372 i18n/dbStringsForTranslation.php:383
@@ -58807,7 +58797,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:421 i18n/dbStringsForTranslation.php:430
 #: i18n/dbStringsForTranslation.php:430
 msgid "Summarises gender and number of students across all roll groups."
-msgstr "Summarises gender and number of students across all form groups."
+msgstr ""
 
 #: i18n/dbStringsForTranslation.php:556 i18n/dbStringsForTranslation.php:372
 #: i18n/dbStringsForTranslation.php:373 i18n/dbStringsForTranslation.php:384
@@ -58831,7 +58821,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:424 i18n/dbStringsForTranslation.php:433
 #: i18n/dbStringsForTranslation.php:433
 msgid "Take attendance, one roll group at a time"
-msgstr "Take attendance, one form group at a time"
+msgstr ""
 
 #: i18n/dbStringsForTranslation.php:559
 #: modules/Activities/activities_copy.php:65
@@ -58859,7 +58849,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:429 i18n/dbStringsForTranslation.php:438
 #: i18n/dbStringsForTranslation.php:438
 msgid "View a brief profile of roll groups in school."
-msgstr "View a brief profile of form groups in school."
+msgstr ""
 
 #: i18n/dbStringsForTranslation.php:562 i18n/dbStringsForTranslation.php:378
 #: i18n/dbStringsForTranslation.php:380 i18n/dbStringsForTranslation.php:391
@@ -59028,7 +59018,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:449 i18n/dbStringsForTranslation.php:458
 #: i18n/dbStringsForTranslation.php:458
 msgid "View spread of enrolment over terms and days by roll group"
-msgstr "View spread of enrolment over terms and days by form group"
+msgstr ""
 
 #: i18n/dbStringsForTranslation.php:583 i18n/dbStringsForTranslation.php:399
 #: i18n/dbStringsForTranslation.php:401 i18n/dbStringsForTranslation.php:412
@@ -64713,6 +64703,7 @@ msgid "day"
 msgid_plural "days"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
 
 #: modules/Planner/planner_deadlines.php:337
 #: modules/Planner/planner_deadlines.php:704
