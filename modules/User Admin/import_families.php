@@ -139,7 +139,7 @@ else {
 			<li><?php print _('You may only submit CSV files.') ?></li>
 			<li><?php print _('Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).') ?></li>
 			<li><?php print _('Your import should only include all current students.') ?></li>
-			<li><?php print _('The submitted <b><u>family file</u></b> must have the following fields in the following order (* denotes required field)') ?>: 
+			<li><?php print _('The submitted <b><u>family file</u></b> must have the following fields in the following order (* denotes required field).') ?>: 
 				<ol>
 					<li><b><?php print _('Family Sync Key') ?> *</b> - <?php print _('Unique ID for family, according to source system.') ?></li>
 					<li><b><?php print _('Name') ?> *</b> - <?php print _('Name by which family is known.') ?></li>

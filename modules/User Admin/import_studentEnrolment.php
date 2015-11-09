@@ -127,11 +127,12 @@ else {
 			<li><?php print _('You may only submit CSV files.') ?></li>
 			<li><?php print _('Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).') ?></li>
 			<li><?php print _('Your import should only include all current students.') ?></li>
-			<li><?php print _('The submitted file must have the following fields in the following order (all fields are required):') ?></li> 
+			<li><?php print _('The submitted file must have the following fields in the following order (* denotes required field):') ?></li> 
 				<ol>
 					<li><b><?php print _('Username') ?></b> - <?php print _('Must be unique.') ?></li>
 					<li><b><?php print _('Roll Group') ?></b> - <?php print _('Roll group short name, as set in School Admim. Must already exist.') ?></li>
 					<li><b><?php print _('Year Group') ?></b> - <?php print _('Year group short name, as set in School Admin. Must already exist') ?></li>
+					<li><b><?php print _('Roll Order') ?></b> - <?php print _('Must be unique to roll gorup if set.') ?></li>
 				</ol>
 			</li>
 			<li><?php print _('Do not include a header row in the CSV files.') ?></li>
@@ -214,6 +215,10 @@ else {
 								$users[$userSuccessCount]["username"]=$data[0] ;
 								$users[$userSuccessCount]["rollGroup"]=$data[1] ;
 								$users[$userSuccessCount]["yearGroup"]=$data[2] ;
+								$users[$userSuccessCount]["rollOrder"]=$data[3] ;
+								if ($data[3]=="" OR is_null($data[3])) {
+									$users[$userSuccessCount]["rollOrder"]=NULL ;
+								}
 								$userSuccessCount++ ;
 							}
 							else {
@@ -284,8 +289,8 @@ else {
 							foreach ($users AS $user) {
 								$addUserFail=FALSE ;
 								try {
-									$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonSchoolYearID2"=>$_SESSION[$guid]["gibbonSchoolYearID"], "username"=>$user["username"], "rollGroup"=>$user["rollGroup"], "yearGroup"=>$user["yearGroup"]); 
-									$sql="INSERT INTO gibbonStudentEnrolment SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonID=(SELECT gibbonPersonID FROM gibbonPerson WHERE username=:username), gibbonRollGroupID=(SELECT gibbonRollGroupID FROM gibbonRollGroup WHERE nameShort=:rollGroup AND gibbonSchoolYearID=:gibbonSchoolYearID2), gibbonYearGroupID=(SELECT gibbonYearGroupID FROM gibbonYearGroup WHERE nameShort=:yearGroup)" ;
+									$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonSchoolYearID2"=>$_SESSION[$guid]["gibbonSchoolYearID"], "username"=>$user["username"], "rollGroup"=>$user["rollGroup"], "yearGroup"=>$user["yearGroup"], "rollOrder"=>$user["rollOrder"]); 
+									$sql="INSERT INTO gibbonStudentEnrolment SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonID=(SELECT gibbonPersonID FROM gibbonPerson WHERE username=:username), gibbonRollGroupID=(SELECT gibbonRollGroupID FROM gibbonRollGroup WHERE nameShort=:rollGroup AND gibbonSchoolYearID=:gibbonSchoolYearID2), gibbonYearGroupID=(SELECT gibbonYearGroupID FROM gibbonYearGroup WHERE nameShort=:yearGroup), rollOrder=:rollOrder" ;
 									$result=$connection2->prepare($sql);
 									$result->execute($data);
 								}
@@ -360,6 +365,10 @@ else {
 								$users[$userSuccessCount]["username"]=$data[0] ;
 								$users[$userSuccessCount]["rollGroup"]=$data[1] ;
 								$users[$userSuccessCount]["yearGroup"]=$data[2] ;
+								$users[$userSuccessCount]["rollOrder"]=$data[3] ;
+								if ($data[3]=="" OR is_null($data[3])) {
+									$users[$userSuccessCount]["rollOrder"]=NULL ;
+								}
 								$userSuccessCount++ ;
 							}
 							else {
@@ -421,12 +430,13 @@ else {
 							}
 							else {
 								try {
-									$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonSchoolYearID2"=>$_SESSION[$guid]["gibbonSchoolYearID"], "username"=>$user["username"], "rollGroup"=>$user["rollGroup"], "yearGroup"=>$user["yearGroup"]); 
-									$sql="INSERT INTO gibbonStudentEnrolment SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonID=(SELECT gibbonPersonID FROM gibbonPerson WHERE username=:username), gibbonRollGroupID=(SELECT gibbonRollGroupID FROM gibbonRollGroup WHERE nameShort=:rollGroup AND gibbonSchoolYearID=:gibbonSchoolYearID2), gibbonYearGroupID=(SELECT gibbonYearGroupID FROM gibbonYearGroup WHERE nameShort=:yearGroup)" ;
+									$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonSchoolYearID2"=>$_SESSION[$guid]["gibbonSchoolYearID"], "username"=>$user["username"], "rollGroup"=>$user["rollGroup"], "yearGroup"=>$user["yearGroup"], "rollOrder"=>$user["rollOrder"]); 
+									$sql="INSERT INTO gibbonStudentEnrolment SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonID=(SELECT gibbonPersonID FROM gibbonPerson WHERE username=:username), gibbonRollGroupID=(SELECT gibbonRollGroupID FROM gibbonRollGroup WHERE nameShort=:rollGroup AND gibbonSchoolYearID=:gibbonSchoolYearID2), gibbonYearGroupID=(SELECT gibbonYearGroupID FROM gibbonYearGroup WHERE nameShort=:yearGroup), rollOrder=:rollOrder" ;
 									$result=$connection2->prepare($sql);
 									$result->execute($data);
 								}
 								catch(PDOException $e) { 
+									print $e->getMessage() ;
 									$addUserFail=TRUE ;
 								}
 						
