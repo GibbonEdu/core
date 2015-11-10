@@ -63573,7 +63573,7 @@ msgstr "Hai ricevuto una notifica su %1$s a %2$s"
 #: functions.php:1088
 #, php-format
 msgid ""
-"Login to %1$s and use the noticiation icon to check your new notification, "
+"Login to %1$s and use the notification icon to check your new notification, "
 "or use the link below:"
 msgstr ""
 "Login per %1$s e utilizzare l'icona per controllare la nuova notifica, o "
@@ -67803,7 +67803,7 @@ msgstr ""
 #: functions.php:1138
 #, php-format
 msgid ""
-"Login to %1$s and use the noticiation icon to check your new notification, "
+"Login to %1$s and use the notification icon to check your new notification, "
 "or %2$sclick here%3$s."
 msgstr ""
 

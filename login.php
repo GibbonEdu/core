@@ -224,7 +224,7 @@ else {
 					$_SESSION[$guid]["gibboni18nIDPersonal"]=$row["gibboni18nIDPersonal"] ;
 					$_SESSION[$guid]["googleAPIRefreshToken"]=$row["googleAPIRefreshToken"] ;
 					$_SESSION[$guid]['googleAPIAccessToken']=NULL ; //Set only when user logs in with Google
-					$_SESSION[$guid]['receiveNoticiationEmails']=$row["receiveNoticiationEmails"] ;
+					$_SESSION[$guid]['receiveNotificationEmails']=$row["receiveNotificationEmails"] ;
 					$_SESSION[$guid]['gibbonHouseID']=$row["gibbonHouseID"] ;
 					
 					

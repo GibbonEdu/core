@@ -62478,7 +62478,7 @@ msgstr "你在%1$s的%2$s收到了通知。"
 #: functions.php:1088
 #, php-format
 msgid ""
-"Login to %1$s and use the noticiation icon to check your new notification, "
+"Login to %1$s and use the notification icon to check your new notification, "
 "or use the link below:"
 msgstr "登陸進%1$s然後用通知圖表來觀看你新的通知，或用一下的鏈接。"
 
@@ -66680,7 +66680,7 @@ msgstr ""
 #: functions.php:1138
 #, php-format
 msgid ""
-"Login to %1$s and use the noticiation icon to check your new notification, "
+"Login to %1$s and use the notification icon to check your new notification, "
 "or %2$sclick here%3$s."
 msgstr ""
 

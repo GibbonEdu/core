@@ -310,15 +310,15 @@ if ($result->rowCount()==1) {
 				<span style="font-size: 90%"><i><?php print _("Notifications can always be viewed on screen.") ; ?></i></span>
 			</td>
 			<td class="right">
-				<select name="receiveNoticiationEmails" id="receiveNoticiationEmails" style="width: 302px">
+				<select name="receiveNotificationEmails" id="receiveNotificationEmails" style="width: 302px">
 					<?php
 					print "<option " ;
-					if ($_SESSION[$guid]["receiveNoticiationEmails"]=="N") {
+					if ($_SESSION[$guid]["receiveNotificationEmails"]=="N") {
 						print " selected " ;
 					}
 					print "value='N'>" . ynExpander('N') . "</option>" ;
 					print "<option " ;
-					if ($_SESSION[$guid]["receiveNoticiationEmails"]=="Y") {
+					if ($_SESSION[$guid]["receiveNotificationEmails"]=="Y") {
 						print " selected " ;
 					}
 					print "value='Y'>" . ynExpander('Y') . "</option>" ;

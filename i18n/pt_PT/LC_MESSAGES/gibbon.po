@@ -63547,10 +63547,10 @@ msgstr "Você recebeu uma notificação sobre %1$s em %2$s"
 #: functions.php:1088
 #, php-format
 msgid ""
-"Login to %1$s and use the noticiation icon to check your new notification, "
+"Login to %1$s and use the notification icon to check your new notification, "
 "or use the link below:"
 msgstr ""
-"Login para %1$s e usar o ícone de noticiation para verificar sua nova "
+"Login para %1$s e usar o ícone de notification para verificar sua nova "
 "notificação, ou use o link abaixo:"
 
 #: i18n/dbStringsForTranslation.php:81 modules/Planner/outcomes_import.php:48
@@ -67784,7 +67784,7 @@ msgstr ""
 #: functions.php:1138
 #, php-format
 msgid ""
-"Login to %1$s and use the noticiation icon to check your new notification, "
+"Login to %1$s and use the notification icon to check your new notification, "
 "or %2$sclick here%3$s."
 msgstr ""
 

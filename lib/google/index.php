@@ -211,7 +211,7 @@ print '</div>';
 		$_SESSION[$guid]["gibbonThemeIDPersonal"]=$row["gibbonThemeIDPersonal"] ;
 		$_SESSION[$guid]["gibboni18nIDPersonal"]=$row["gibboni18nIDPersonal"] ;
 		$_SESSION[$guid]["googleAPIRefreshToken"]=$row["googleAPIRefreshToken"] ;
-		$_SESSION[$guid]['receiveNoticiationEmails']=$row["receiveNoticiationEmails"] ;
+		$_SESSION[$guid]['receiveNotificationEmails']=$row["receiveNotificationEmails"] ;
 		$_SESSION[$guid]['gibbonHouseID']=$row["gibbonHouseID"] ;
 
 

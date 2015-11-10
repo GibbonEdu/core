@@ -63449,7 +63449,7 @@ msgstr "Ați primit o notificare privind% 1 $ s la% 2 $ s"
 #: functions.php:1088
 #, php-format
 msgid ""
-"Login to %1$s and use the noticiation icon to check your new notification, "
+"Login to %1$s and use the notification icon to check your new notification, "
 "or use the link below:"
 msgstr ""
 "Autentifica-te pentru a% 1 $ s și  folosiți pictograma notificare 4pentru a "
@@ -67775,7 +67775,7 @@ msgstr ""
 #: functions.php:1138
 #, php-format
 msgid ""
-"Login to %1$s and use the noticiation icon to check your new notification, "
+"Login to %1$s and use the notification icon to check your new notification, "
 "or %2$sclick here%3$s."
 msgstr ""
 

@@ -505,7 +505,14 @@ i18n: added Russian and Ukranian as development languages (thanks to Oleg at Inf
 	New value in table gibboni18n
 	New folder /i18n/ru_RU
 	New folder /i18n/uk_UA
+
+User Admin: added roll order field to student enrolment import
+	Edited file /modules/User Admin/import_studentEnrolment.php
 	
+General: fixed typo in database field name and interface strings
+	Edited table gibbonPerson
+	Edited various files across the system
+
 v10.0.00
 --------
 i18n: added Urdu as inactive development language
