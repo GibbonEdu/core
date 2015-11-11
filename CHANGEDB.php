@@ -411,6 +411,8 @@ UPDATE gibbonExternalAssessmentStudentEntry SET gibbonScaleGradeID=NULL WHERE gi
 INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('ru_RU', 'ру́сский язы́к', 'N', 'N', 'Info Web', '', 'dd.mm.yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\d\\\d$/i', 'd.m.Y', 'N');end
 INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('uk_UA', 'українська мова', 'N', 'N', 'Info Web', '', 'dd.mm.yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\d\\\d$/i', 'd.m.Y', 'N');end
 ALTER TABLE `gibbonPerson` CHANGE `receiveNoticiationEmails` `receiveNotificationEmails` ENUM('Y','N') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Y';end
+UPDATE gibbonAction SET URLList='studentEnrolment_manage.php, studentEnrolment_manage_edit.php, studentEnrolment_manage_edit_edit.php' WHERE name='Manage Student Enrolment' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Timetable');end
+
 ";
 
 ?>

@@ -89,20 +89,7 @@ else {
 			}
 			else {
 				$partialFail=false ;
-				if ($action=="Delete") {
-					for ($i=0; $i<count($people); $i++) {
-						try {
-							$data=array("gibbonCourseClassID"=>$gibbonCourseClassID, "gibbonPersonID"=>$people[$i][0]); 
-							$sql="DELETE FROM gibbonCourseClassPerson WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonID=:gibbonPersonID" ;
-							$result=$connection2->prepare($sql);
-							$result->execute($data);
-						}
-						catch(PDOException $e) { 
-							$partialFail==true ;
-						}
-					}
-				}
-				else {
+				if ($action=="Mark as left") {
 					for ($i=0; $i<count($people); $i++) {
 						if ($people[$i][1]=="Student" OR $people[$i][1]=="Teacher") {
 							try {

@@ -88,19 +88,6 @@ else {
 				print "</div>" ;
 			} 
 			
-			if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-			$deleteReturnMessage="" ;
-			$class="error" ;
-			if (!($deleteReturn=="")) {
-				if ($deleteReturn=="success0") {
-					$deleteReturnMessage=_("Your request was completed successfully.") ;		
-					$class="success" ;
-				}
-				print "<div class='$class'>" ;
-					print $deleteReturnMessage;
-				print "</div>" ;
-			} 
-	
 			print "<h2>" ;
 			print _("Add Participants") ;
 			print "</h2>" ;
@@ -201,7 +188,6 @@ else {
 						<select name="action" id="action" style='width:120px; float: right; margin-right: 1px;'>
 							<option value="Select action"><?php print _('Select action') ?></option>
 							<option value="Mark as left"><?php print _('Mark as left') ?></option>
-							<option value="Delete"><?php print _('Delete') ?></option>
 						</select>
 						<script type="text/javascript">
 							var action=new LiveValidation('action');
@@ -252,7 +238,12 @@ else {
 							//COLOR ROW BY STATUS!
 							print "<tr class=$rowNum>" ;
 								print "<td>" ;
-									print formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student", true) ;
+									if ($row["role"]=="Student") {
+										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $row["gibbonPersonID"] . "&subpage=Timetable'>" . formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student", true) . "</a>" ;
+									}
+									else {
+										print formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student", true) ;
+									}
 								print "</td>" ;
 								print "<td>" ;
 									print $row["email"] ;
@@ -263,7 +254,6 @@ else {
 								print "<td>" ;
 									if ($row["role"]=="Student") {
 										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/studentEnrolment_manage_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonPersonID=" . $row["gibbonPersonID"] . "'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/studentEnrolment_manage_edit_delete.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonPersonID=" . $row["gibbonPersonID"] . "'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 									}
 								print "</td>" ;
 								print "<td>" ;
@@ -336,7 +326,12 @@ else {
 							//COLOR ROW BY STATUS!
 							print "<tr class=$rowNum>" ;
 								print "<td>" ;
-									print formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student", true) ;
+									if ($row["role"]=="Student - Left") {
+										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $row["gibbonPersonID"] . "&subpage=Timetable'>" . formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student", true) . "</a>" ;
+									}
+									else {
+										print formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student", true) ;
+									}
 								print "</td>" ;
 								print "<td>" ;
 									print $row["email"] ;
@@ -346,7 +341,6 @@ else {
 								print "</td>" ;
 								print "<td>" ;
 									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/studentEnrolment_manage_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonPersonID=" . $row["gibbonPersonID"] . "'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/studentEnrolment_manage_edit_delete.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonPersonID=" . $row["gibbonPersonID"] . "'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 								print "</td>" ;
 							print "</tr>" ;
 						}

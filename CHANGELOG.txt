@@ -513,6 +513,21 @@ General: fixed typo in database field name and interface strings
 	Edited table gibbonPerson
 	Edited various files across the system
 
+General: made Gibbon logo in footer theme dependent
+	Edited /index.php
+
+Timetable Admin: improved ordering, labelling and linking of class enrolment editing
+	Edited file /modules/Timetable Admin/courseEnrolment_manage.php, courseEnrolment_manage_class_edit.php
+
+Timetable: prevented deleted, improved ordering, labelling and linking of student enrolment editing
+	Edited value in table gibbonAction
+	Deleted files /modules/Timetable/spaceBooking_manage_delete.php
+	Edited files /modules/Timetable/studentEnrolment_manage.php
+
+Planner: fixed bug in birthday title popup in class full view
+	Edited file /modules/Planner/planner_view_full.php
+
+
 v10.0.00
 --------
 i18n: added Urdu as inactive development language

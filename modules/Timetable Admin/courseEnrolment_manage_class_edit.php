@@ -280,7 +280,12 @@ else {
 							//COLOR ROW BY STATUS!
 							print "<tr class=$rowNum>" ;
 								print "<td>" ;
-									print formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student", true) ;
+									if ($row["role"]=="Student") {
+										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $row["gibbonPersonID"] . "&subpage=Timetable'>" . formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student", true) . "</a>" ;
+									}
+									else {
+										print formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student", true) ;
+									}
 								print "</td>" ;
 								print "<td>" ;
 									print $row["email"] ;
@@ -364,7 +369,12 @@ else {
 							//COLOR ROW BY STATUS!
 							print "<tr class=$rowNum>" ;
 								print "<td>" ;
-									print formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student", true) ;
+									if ($row["role"]=="Student - Left") {
+										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $row["gibbonPersonID"] . "&subpage=Timetable'>" . formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student", true) . "</a>" ;
+									}
+									else {
+										print formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student", true) ;
+									}
 								print "</td>" ;
 								print "<td>" ;
 									print $row["email"] ;

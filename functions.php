@@ -4177,6 +4177,27 @@ function countLikesByContextAndGiver($connection2, $moduleName, $contextKeyName,
 	return $return ;
 }
 
+function countLikesByContextAndRecipient($connection2, $moduleName, $contextKeyName, $contextKeyValue, $gibbonPersonIDRecipient) {
+	$return=NULL ;
+
+	try {
+		$data=array("moduleName"=>$moduleName, "contextKeyName"=>$contextKeyName, "contextKeyValue"=>$contextKeyValue, "gibbonPersonIDRecipient"=>$gibbonPersonIDRecipient);
+		$sql="SELECT DISTINCT gibbonSchoolYearID, gibbonModuleID, contextKeyName, contextKeyValue, gibbonPersonIDGiver FROM gibbonLike WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:moduleName) AND contextKeyName=:contextKeyName AND contextKeyValue=:contextKeyValue  AND gibbonPersonIDRecipient=:gibbonPersonIDRecipient" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) {
+		$return=FALSE ;
+	}
+
+
+	if ($return!==FALSE) {
+		$return=$result->rowCount() ;
+	}
+
+	return $return ;
+}
+
 //$mode can be either "count" to get a numeric count, or "result" to get a result set
 function countLikesByRecipient($connection2, $gibbonPersonIDRecipient, $mode="count", $gibbonSchoolYearID) {
 	$return=NULL ;

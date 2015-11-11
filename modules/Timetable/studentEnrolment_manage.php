@@ -37,7 +37,7 @@ else {
 	
 	try {
 		$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-		$sql="SELECT gibbonCourse.* FROM gibbonCourse JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE (role='Coordinator' OR role='Assistant Coordinator') AND gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY gibbonCourse.name" ; 	
+		$sql="SELECT gibbonCourse.* FROM gibbonCourse JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE (role='Coordinator' OR role='Assistant Coordinator') AND gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY gibbonCourse.nameShort" ; 	
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}
@@ -53,7 +53,7 @@ else {
 	else {
 		while ($row=$result->fetch()) {
 			print "<h3>" ;
-				print $row["name"] ;
+				print $row["nameShort"] . " (" . $row["name"] . ")" ;
 			print "</h3>" ;
 			
 			try {

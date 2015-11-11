@@ -1106,7 +1106,7 @@ else {
 								}
 							?>
 						</span>
-						<img style='z-index: 9999; margin-top: -82px; margin-left: 850px; opacity: 0.8' alt='Logo Small' src='./themes/Default/img/logoFooter.png'/>
+						<img style='z-index: 9999; margin-top: -82px; margin-left: 850px; opacity: 0.8' alt='Logo Small' src='./themes/<?php print $_SESSION[$guid]["gibbonThemeName"] ?>/img/logoFooter.png'/>
 					</div>
 				</div>
 			</div>

@@ -1876,7 +1876,7 @@ else {
 													//HEY SHORTY IT'S YOUR BIRTHDAY!
 													$daysUntilNextBirthday=daysUntilNextBirthday($rowClassGroup["dob"]) ;
 													if ($daysUntilNextBirthday==0) {
-														$_SESSION[$guid]["sidebarExtra"].="<img title='" . sprintf(_('%1$s\'s birthday today!'), $rowClassGroup["preferredName"]) . " style='margin: -24px 0 0 0; width: 25px; height: 25px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/gift_pink.png'/>" ;
+														$_SESSION[$guid]["sidebarExtra"].="<img title='" . sprintf(_('%1$s  birthday today!'), $rowClassGroup["preferredName"] . "&#39;s") . "' style='margin: -24px 0 0 0; width: 25px; height: 25px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/gift_pink.png'/>" ;
 													}
 													else if ($daysUntilNextBirthday>0 AND $daysUntilNextBirthday<8) {
 														$_SESSION[$guid]["sidebarExtra"].="<img title='$daysUntilNextBirthday day" ;
