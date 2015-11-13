@@ -469,6 +469,59 @@ else {
 									<input readonly style='width: 300px' type='text' value='Available' />
 								</td>
 							</tr>
+							
+							<tr id='gibbonSchoolYearIDReplacement'>
+								<td> 
+									<b><?php print _("Replacement Year") ; ?></b><br/>
+									<span style="font-size: 90%"><i><?php print _('When is this item scheduled for replacement.') ?></i></span>
+								</td>
+								<td class="right">
+									<select name="gibbonSchoolYearIDReplacement" id="gibbonSchoolYearIDReplacement" style="width: 302px">
+										<?php
+										try {
+											$dataSelect=array(); 
+											$sqlSelect="SELECT * FROM gibbonSchoolYear ORDER BY sequenceNumber DESC" ;
+											$resultSelect=$connection2->prepare($sqlSelect);
+											$resultSelect->execute($dataSelect);
+										}
+										catch(PDOException $e) { }
+										print "<option value=''></option>" ;
+										while ($rowSelect=$resultSelect->fetch()) {
+											$selected="" ;
+											if ($rowSelect["gibbonSchoolYearID"]==$row["gibbonSchoolYearIDReplacement"]) {
+												$selected="selected" ;
+											}
+											print "<option $selected value='" . $rowSelect["gibbonSchoolYearID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
+										}
+										?>				
+									</select>
+								</td>
+							</tr>
+							<tr id='replacementCostRow'>
+								<td> 
+									<b><?php print _("Replacement Cost") ; ?></b><br/>
+									<span style="font-size: 90%">
+										<i>
+										<?php
+										if ($_SESSION[$guid]["currency"]!="") {
+											print sprintf(_('Numeric value of the replacement cost in %1$s.'), $_SESSION[$guid]["currency"]) ;
+										}
+										else {
+											print _("Numeric value of the replacement cost.") ;
+										}
+										?>
+										</i>
+									</span>
+								</td>
+								<td class="right">
+									<input name="replacementCost" id="replacementCost" maxlength=13 value="<?php print $row["replacementCost"] ?>" type="text" style="width: 300px">
+									<script type="text/javascript">
+										var replacementCost=new LiveValidation('replacementCost');
+										replacementCost.add(Validate.Format, { pattern: /^(?:\d*\.\d{1,2}|\d+)$/, failureMessage: "Invalid number format!" } );
+									</script>
+								</td>
+							</tr>
+					
 							<tr>
 								<td colspan=2> 
 									<b><?php print _('Comments/Notes') ?></b> 
