@@ -582,13 +582,13 @@ else {
 					</tr>
 					<tr>
 						<td>
-							<b><?php print _('First Language<') ?>/b><br/>
+							<b><?php print _('First Language') ?> *</b><br/>
 							<span style="font-size: 90%"><i><?php print _('Student\'s native/first/mother language.') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="languageFirst" id="languageFirst" style="width: 302px">
 								<?php
-								print "<option value=''></option>" ;
+								print "<option value='Please select...'>Please select...</option>" ;
 								try {
 									$dataSelect=array();
 									$sqlSelect="SELECT name FROM gibbonLanguage ORDER BY name" ;
@@ -605,6 +605,10 @@ else {
 								}
 								?>
 							</select>
+							<script type="text/javascript">
+								var languageFirst=new LiveValidation('languageFirst');
+								languageFirst.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+							</script>
 						</td>
 					</tr>
 					<tr>

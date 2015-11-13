@@ -556,7 +556,7 @@ else {
 			}
 			if ($priority=="" OR $surname=="" OR $firstName=="" OR $preferredName=="" OR $officialName=="" OR $gender=="" OR $dob=="" OR $languageHomePrimary=="" OR $languageFirst=="" OR $gibbonSchoolYearIDEntry=="" OR $dateStart=="" OR $gibbonYearGroupIDEntry=="" OR $howDidYouHear=="" OR $familyFail) {
 				//Fail 3
-				$URL.="&addReturn=fail3" ;
+				$URL.="&updateReturn=fail3" ;
 				header("Location: {$URL}");
 			}
 			
@@ -630,7 +630,7 @@ else {
 			
 				if ($customRequireFail) {
 					//Fail 3
-					$URL.="&addReturn=fail3" ;
+					$URL.="&updateReturn=fail3" ;
 					header("Location: {$URL}");
 				}
 				else {
