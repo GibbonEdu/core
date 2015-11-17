@@ -531,6 +531,11 @@ i18n: added Bangla as development language (thanks to Tarul Ahsan for his offer 
 	New value in table gibboni18n
 	New folder /i18n/bn_BD
 
+Resources: improved themability of resource tag cloud
+	Edited file /modules/Resources/moduleFunctions.php
+	Edited file /themes/Default/css/main.css
+
+
 v10.0.00
 --------
 i18n: added Urdu as inactive development language

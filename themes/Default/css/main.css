@@ -1184,3 +1184,10 @@ table.chatBox tr td {
 	word-wrap: break-word ;
 	padding: 1px 4px
 }
+
+/* TAG CLOUD STYLE */
+.tag_cloud { padding: 3px; text-decoration: none; }
+.tag_cloud:link { color: #6799CF; text-decoration: none }
+.tag_cloud:visited { color: #1C528C; text-decoration: none }
+.tag_cloud { background: none }
+.tag_cloud:hover { background: #1C528C; color: #fff }
