@@ -156,7 +156,8 @@ else {
 				print "<table cellspacing='0' style='width: 100%'>" ;
 					print "<tr class='head'>" ;
 						print "<th>" ;
-							print _("Name") ;
+							print _("Name") . "<br/>" ;
+							print "<span style='font-size: 85%; font-style: italic'>" . _("Type") . "</span>" ;
 						print "</th>" ;
 						print "<th>" ;
 							print _("Date<br/>Complete") ;
@@ -180,6 +181,7 @@ else {
 						print "<tr class=$rowNum>" ;
 							print "<td>" ;
 								print "<b>" . $row["name"] . "</b><br/>" ;
+								print "<span style='font-size: 85%; font-style: italic'>" . $row["type"] . "</span>" ;
 							print "</td>" ;
 							print "<td>" ;
 								if ($row["complete"]=="Y") {

@@ -176,8 +176,8 @@ else {
 						</td>
 						<td class="right">
 							<select name="reportable" id="reportable" style="width: 302px">
-								<option <?php if ($row["reportable"]=="Y") {print "selected ";}?>value="Y">Y</option>
-								<option <?php if ($row["reportable"]=="N") {print "selected ";}?>value="N">N</option>
+								<option <?php if ($row["reportable"]=="Y") {print "selected ";}?>value="Y"><?php print ynExpander('Y') ?></option>
+								<option <?php if ($row["reportable"]=="N") {print "selected ";}?>value="N"><?php print ynExpander('N') ?></option>
 							</select>
 						</td>
 					</tr>
