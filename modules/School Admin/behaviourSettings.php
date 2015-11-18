@@ -223,7 +223,7 @@ else {
 			<tr class='break'>
 				<td colspan=2> 
 					<h3><?php print _('Behaviour Letters') ?></h3>
-					<p><?php print sprintf(_('By using an %1$sincluded CLI script%2$s, %3$s can be configured to automatically generate and email behaviour letters to parents and tutors, once certain negative behaviour threshold levels have been reached. In your letter text you may use the following fields: %4$s'), "<a target='_blank' href='https://gibbonedu.org/support/administrators/command-line-tools/'>", "</a>", $_SESSION[$guid]["systemName"], "[studentName], [parentName], [rollGroup], [behaviourCount], [behaviourRecord], [systemEmailSignature]") ?></p>
+					<p><?php print sprintf(_('By using an %1$sincluded CLI script%2$s, %3$s can be configured to automatically generate and email behaviour letters to parents and tutors, once certain negative behaviour threshold levels have been reached. In your letter text you may use the following fields: %4$s'), "<a target='_blank' href='https://gibbonedu.org/support/administrators/command-line-tools/'>", "</a>", $_SESSION[$guid]["systemName"], "[studentName], [rollGroup], [behaviourCount], [behaviourRecord]") ?></p>
 				</td>
 			</tr>
 			<tr>
@@ -269,10 +269,10 @@ else {
 						} else {
 							$("#behaviourLettersLetter1CountRow").css("display","none");
 							$("#behaviourLettersLetter1TextRow").css("display","none");
-							$("#behaviourLettersLetter1CountRow").css("display","none");
-							$("#behaviourLettersLetter1TextRow").css("display","none");
-							$("#behaviourLettersLetter1CountRow").css("display","none");
-							$("#behaviourLettersLetter1TextRow").css("display","none");
+							$("#behaviourLettersLetter2CountRow").css("display","none");
+							$("#behaviourLettersLetter2TextRow").css("display","none");
+							$("#behaviourLettersLetter3CountRow").css("display","none");
+							$("#behaviourLettersLetter3TextRow").css("display","none");
 							behaviourLettersLetter1Count.disable() ;
 							behaviourLettersLetter1Text.disable() ;
 							behaviourLettersLetter2Count.disable() ;

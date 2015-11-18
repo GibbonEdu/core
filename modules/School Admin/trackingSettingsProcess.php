@@ -114,7 +114,6 @@ else {
 	}
 	else {
 		//Success 0
-		getSystemSettings($guid, $connection2) ;
 		$URL.="&updateReturn=success0" ;
 		header("Location: {$URL}");
 	}

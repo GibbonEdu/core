@@ -433,10 +433,11 @@ INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`
 UPDATE gibbonAction SET category='Behaviour Tracking' WHERE name='Find Behaviour Patterns' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Behaviour');end
 UPDATE gibbonAction SET category='Behaviour Records' WHERE name LIKE 'Manage Behaviour Records%' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Behaviour');end
 UPDATE gibbonAction SET category='Behaviour Records' WHERE name LIKE 'View Behaviour Records%' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Behaviour');end
-    
-    
-    
-
+ALTER TABLE `gibbonBehaviourLetter` ADD `recordCountAtCreation` INT(3) NOT NULL AFTER `status`;end
+ALTER TABLE `gibbonBehaviourLetter` DROP `behaviourRecord`;end
+UPDATE `gibbonSetting` SET value='Dear Parent/Gaurdian,<br/><br/>This letter has been automatically generated to alert you to the fact that your child, [studentName], has reached [behaviourCount] negative behaviour incidents. Please see the list below for the details of these incidents:<br/><br/>[behaviourRecord]<br/><br/>This letter represents the first communication in a sequence of 3 potential alerts, each of which is more critical than the last.<br/><br/>If you would like more information on this matter, please contact your child\'s tutor.' WHERE name='behaviourLettersLetter1Text' AND scope='Behaviour';end 
+UPDATE `gibbonSetting` SET value='Dear Parent/Gaurdian,<br/><br/>This letter has been automatically generated to alert you to the fact that your child, [studentName], has reached [behaviourCount] negative behaviour incidents. Please see the list below for the details of these incidents:<br/><br/>[behaviourRecord]<br/><br/>This letter represents the second communication in a sequence of 3 potential alerts, each of which is more critical than the last.<br/><br/>If you would like more information on this matter, please contact your child\'s tutor.' WHERE name='behaviourLettersLetter2Text' AND scope='Behaviour';end 
+UPDATE `gibbonSetting` SET value='Dear Parent/Gaurdian,<br/><br/>This letter has been automatically generated to alert you to the fact that your child, [studentName], has reached [behaviourCount] negative behaviour incidents. Please see the list below for the details of these incidents:<br/><br/>[behaviourRecord]<br/><br/>This letter represents the final communication in a sequence of 3 potential alerts, each of which is more critical than the last.<br/><br/>If you would like more information on this matter, please contact your child\'s tutor.' WHERE name='behaviourLettersLetter3Text' AND scope='Behaviour';end 
 ";
 
 ?>

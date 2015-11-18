@@ -539,7 +539,9 @@ Behaviour: added automated sending of pre-defined letters for behaviour
 	New values in table gibbonSetting
 	Edited files /modules/School Admin/behaviourSettings.php
 	New file /modules/Behaviour/behaviour_letters.php
-	
+	New file /cli/beahviour_letters.php
+
+
 v10.0.00
 --------
 i18n: added Urdu as inactive development language

@@ -103,7 +103,7 @@ else {
 		$sqlWhere="AND " ;
 		if ($gibbonPersonID!="") {
 			$data["gibbonPersonID"]=$gibbonPersonID ;
-			$sqlWhere.="gibbonBehaviour.gibbonPersonID=:gibbonPersonID AND " ; 
+			$sqlWhere.="gibbonBehaviourLetter.gibbonPersonID=:gibbonPersonID AND " ; 
 		}
 		if ($sqlWhere=="AND ") {
 			$sqlWhere="" ;
