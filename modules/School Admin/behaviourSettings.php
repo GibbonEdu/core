@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 $enableDescriptors=getSettingByScope($connection2, "Behaviour", "enableDescriptors") ;
 $enableLevels=getSettingByScope($connection2, "Behaviour", "enableLevels") ;
+$enableBehaviourLetters=getSettingByScope($connection2, "Behaviour", "enableBehaviourLetters") ;
 
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/behaviourSettings.php")==FALSE) {
 	//Acess denied
@@ -151,6 +152,8 @@ else {
 					</script> 
 				</td>
 			</tr>
+			
+			
 			<tr class='break'>
 				<td colspan=2> 
 					<h3><?php print _('Levels') ?></h3>
@@ -215,6 +218,244 @@ else {
 					</script> 
 				</td>
 			</tr>
+			
+			
+			<tr class='break'>
+				<td colspan=2> 
+					<h3><?php print _('Behaviour Letters') ?></h3>
+					<p><?php print sprintf(_('By using an %1$sincluded CLI script%2$s, %3$s can be configured to automatically generate and email behaviour letters to parents and tutors, once certain negative behaviour threshold levels have been reached. In your letter text you may use the following fields: %4$s'), "<a target='_blank' href='https://gibbonedu.org/support/administrators/command-line-tools/'>", "</a>", $_SESSION[$guid]["systemName"], "[studentName], [parentName], [rollGroup], [behaviourCount], [behaviourRecord], [systemEmailSignature]") ?></p>
+				</td>
+			</tr>
+			<tr>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='enableBehaviourLetters'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+				</td>
+				<td class="right">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<option <?php if ($row["value"]=="Y") {print "selected ";} ?>value="Y"><?php print _('Yes') ?></option>
+						<option <?php if ($row["value"]=="N") {print "selected ";} ?>value="N"><?php print _('No') ?></option>
+					</select>
+				</td>
+			</tr>
+			<script type="text/javascript">
+				$(document).ready(function(){
+					 $("#enableBehaviourLetters").click(function(){
+						if ($('#enableBehaviourLetters option:selected').val()=="Y" ) {
+							$("#behaviourLettersLetter1CountRow").slideDown("fast", $("#behaviourLettersLetter1CountRow").css("display","table-row"));  
+							$("#behaviourLettersLetter1TextRow").slideDown("fast", $("#behaviourLettersLetter1TextRow").css("display","table-row"));  
+							$("#behaviourLettersLetter2CountRow").slideDown("fast", $("#behaviourLettersLetter2CountRow").css("display","table-row"));  
+							$("#behaviourLettersLetter2TextRow").slideDown("fast", $("#behaviourLettersLetter2TextRow").css("display","table-row"));  
+							$("#behaviourLettersLetter3CountRow").slideDown("fast", $("#behaviourLettersLetter3CountRow").css("display","table-row"));  
+							$("#behaviourLettersLetter3TextRow").slideDown("fast", $("#behaviourLettersLetter3TextRow").css("display","table-row"));  
+							behaviourLettersLetter1Count.enable() ;
+							behaviourLettersLetter1Text.enable() ; 
+							behaviourLettersLetter2Count.enable() ;
+							behaviourLettersLetter2Text.enable() ; 
+							behaviourLettersLetter3Count.enable() ;
+							behaviourLettersLetter3Text.enable() ;
+						} else {
+							$("#behaviourLettersLetter1CountRow").css("display","none");
+							$("#behaviourLettersLetter1TextRow").css("display","none");
+							$("#behaviourLettersLetter1CountRow").css("display","none");
+							$("#behaviourLettersLetter1TextRow").css("display","none");
+							$("#behaviourLettersLetter1CountRow").css("display","none");
+							$("#behaviourLettersLetter1TextRow").css("display","none");
+							behaviourLettersLetter1Count.disable() ;
+							behaviourLettersLetter1Text.disable() ;
+							behaviourLettersLetter2Count.disable() ;
+							behaviourLettersLetter2Text.disable() ;
+							behaviourLettersLetter3Count.disable() ;
+							behaviourLettersLetter3Text.disable() ;
+						}
+					 });
+				});
+			</script>
+			<tr id='behaviourLettersLetter1CountRow' <?php if ($enableBehaviourLetters=="N") { print " style='display: none'" ; }?>>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='behaviourLettersLetter1Count'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { }
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+				</td>
+				<td class="right">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<option value="Please select..."><?php print _('Please select...') ?></option>
+						<?php
+						for ($i=1; $i<=20; $i++) {
+							?>
+							<option <? if ($i==$row["value"]) { print "selected" ; } ?> value="<?php print $i ?>"><?php print $i ?></option>
+						<?php
+						}
+						?>
+					</select>
+					<script type="text/javascript">
+						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+						<?php print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+						<?php if ($enableBehaviourLetters=="N") { print $row["name"] . ".disable() ;" ; } ?>
+					</script> 
+				</td>
+			</tr>
+			<tr id='behaviourLettersLetter1TextRow' <?php if ($enableBehaviourLetters=="N") { print " style='display: none'" ; }?>>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='behaviourLettersLetter1Text'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { }
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+				</td>
+				<td class="right">
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" type="text" style="width: 300px" rows=4><?php print $row["value"] ?></textarea>
+					<script type="text/javascript">
+						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+						<?php print $row["name"] ?>.add(Validate.Presence);
+						<?php if ($enableBehaviourLetters=="N") { print $row["name"] . ".disable() ;" ; } ?>
+					</script> 
+				</td>
+			</tr>
+			<tr id='behaviourLettersLetter2CountRow' <?php if ($enableBehaviourLetters=="N") { print " style='display: none'" ; }?>>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='behaviourLettersLetter2Count'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { }
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+				</td>
+				<td class="right">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<option value="Please select..."><?php print _('Please select...') ?></option>
+						<?php
+						for ($i=1; $i<=20; $i++) {
+							?>
+							<option <? if ($i==$row["value"]) { print "selected" ; } ?> value="<?php print $i ?>"><?php print $i ?></option>
+						<?php
+						}
+						?>
+					</select>
+					<script type="text/javascript">
+						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+						<?php print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+						<?php if ($enableBehaviourLetters=="N") { print $row["name"] . ".disable() ;" ; } ?>
+					</script> 
+				</td>
+			</tr>
+			<tr id='behaviourLettersLetter2TextRow' <?php if ($enableBehaviourLetters=="N") { print " style='display: none'" ; }?>>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='behaviourLettersLetter2Text'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { }
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+				</td>
+				<td class="right">
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" type="text" style="width: 300px" rows=4><?php print $row["value"] ?></textarea>
+					<script type="text/javascript">
+						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+						<?php print $row["name"] ?>.add(Validate.Presence);
+						<?php if ($enableBehaviourLetters=="N") { print $row["name"] . ".disable() ;" ; } ?>
+					</script> 
+				</td>
+			</tr>
+			<tr id='behaviourLettersLetter3CountRow' <?php if ($enableBehaviourLetters=="N") { print " style='display: none'" ; }?>>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='behaviourLettersLetter3Count'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { }
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+				</td>
+				<td class="right">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<option value="Please select..."><?php print _('Please select...') ?></option>
+						<?php
+						for ($i=1; $i<=20; $i++) {
+							?>
+							<option <? if ($i==$row["value"]) { print "selected" ; } ?> value="<?php print $i ?>"><?php print $i ?></option>
+						<?php
+						}
+						?>
+					</select>
+					<script type="text/javascript">
+						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+						<?php print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+						<?php if ($enableBehaviourLetters=="N") { print $row["name"] . ".disable() ;" ; } ?>
+					</script> 
+				</td>
+			</tr>
+			<tr id='behaviourLettersLetter3TextRow' <?php if ($enableBehaviourLetters=="N") { print " style='display: none'" ; }?>>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='behaviourLettersLetter3Text'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { }
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+				</td>
+				<td class="right">
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" type="text" style="width: 300px" rows=4><?php print $row["value"] ?></textarea>
+					<script type="text/javascript">
+						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+						<?php print $row["name"] ?>.add(Validate.Presence);
+						<?php if ($enableBehaviourLetters=="N") { print $row["name"] . ".disable() ;" ; } ?>
+					</script> 
+				</td>
+			</tr>
+			
+			
 			<tr class='break'>
 				<td colspan=2> 
 					<h3><?php print _('Miscellaneous') ?></h3>
