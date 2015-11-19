@@ -541,6 +541,8 @@ Behaviour: added automated sending of pre-defined letters for behaviour
 	New file /modules/Behaviour/behaviour_letters.php
 	New file /cli/beahviour_letters.php
 
+Library: added a CLI script for notifying users with overdue loans
+	New file /cli/library_overdueNotification.php
 
 v10.0.00
 --------

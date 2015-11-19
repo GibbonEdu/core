@@ -219,6 +219,10 @@ else {
 					$everything=trim($_GET["everything"]) ;
 				}
 			}
+			$gibbonLibraryItemID=NULL ;
+			if (isset($_GET["gibbonLibraryItemID"])) {
+				$gibbonLibraryItemID=trim($_GET["gibbonLibraryItemID"]) ;
+			}
 			
 			//Display filters
 			print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Library/library_browse.php'>" ;
@@ -343,6 +347,10 @@ else {
 						$sqlWhere.="gibbonLibraryItem.fields LIKE :collection AND " ;
 					}
 				}
+				if ($gibbonLibraryItemID!="") {
+					$data["gibbonLibraryItemID"]=$gibbonLibraryItemID ;
+					$sqlWhere.="gibbonLibraryItem.gibbonLibraryItemID=:gibbonLibraryItemID AND " ; 
+				}
 				if ($sqlWhere=="AND ") {
 					$sqlWhere="" ;
 				}
@@ -401,6 +409,7 @@ else {
 					}
 					$sqlWhere.=$everythingSQL ;
 				}
+				
 				
 				$sql="SELECT gibbonLibraryItem.*, gibbonLibraryType.fields AS typeFields FROM gibbonLibraryItem JOIN gibbonLibraryType ON (gibbonLibraryItem.gibbonLibraryTypeID=gibbonLibraryType.gibbonLibraryTypeID) WHERE (status='Available' OR status='On Loan' OR status='Repair' OR status='Reserved') AND NOT ownershipType='Individual' AND borrowable='Y' $sqlWhere ORDER BY id" ; 
 				$sqlPage=$sql ." LIMIT " . $_SESSION[$guid]["pagination"] . " OFFSET " . (($page-1)*$_SESSION[$guid]["pagination"]) ; 
