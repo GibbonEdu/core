@@ -129,13 +129,28 @@ else {
 						break ;
 					}
 
-					//Create module tables and gibbonSetting entries
-					//Whilst this area is intended for use setting up module tables and gibbonSetting entries, arbitrary sql can be run at the wish of the module developer. However, such actions are not cleaned up by the uninstaller.
+					//Create module tables
+					//Whilst this area is intended for use setting up module tables, arbitrary sql can be run at the wish of the module developer. However, such actions are not cleaned up by the uninstaller.
 					$partialFail=FALSE ;
 					if(isset($moduleTables)) {		
 						for ($i=0;$i<count($moduleTables);$i++) {
 							try {
 								$sql=$moduleTables[$i] ;
+								$result=$connection2->query($sql);   
+							}
+							catch(PDOException $e) {
+								$_SESSION[$guid]["moduleInstallError"].=$sql . "<br/><b>" . $e->getMessage() . "</b></br><br/>" ; 
+								$partialFail=TRUE ;
+							}
+						}
+					}
+					//Create gibbonSetting entries
+					//Whilst this area is intended for use setting up gibbonSetting entries, arbitrary sql can be run at the wish of the module developer. However, such actions are not cleaned up by the uninstaller.
+					$partialFail=FALSE ;
+					if(isset($gibbonSetting)) {		
+						for ($i=0;$i<count($gibbonSetting);$i++) {
+							try {
+								$sql=$gibbonSetting[$i] ;
 								$result=$connection2->query($sql);   
 							}
 							catch(PDOException $e) {

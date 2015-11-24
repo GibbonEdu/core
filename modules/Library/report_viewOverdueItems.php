@@ -67,6 +67,10 @@ else {
 			print "</th>" ;
 			print "<th>" ;
 				print _("Days Overdue") ;
+			print "</th>" ;
+			print "<th style='width: 50px'>" ;
+				print _("Actions") ;
+			print "</th>" ;
 		print "</tr>" ;
 		
 		$count=0;
@@ -97,6 +101,9 @@ else {
 				print "</td>" ;
 				print "<td>" ;
 					print (strtotime($today)-strtotime($row["returnExpected"]))/(60*60*24) ;
+				print "</td>" ;
+				print "<td>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/library_lending_item.php&gibbonLibraryItemID=" . $row["gibbonLibraryItemID"] . "&name=&gibbonLibraryTypeID=&gibbonSpaceID=&status='><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 				print "</td>" ;
 			print "</tr>" ;
 		}

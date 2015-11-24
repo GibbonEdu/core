@@ -1215,7 +1215,7 @@ else {
 						}
 					}
 					
-					//SEND INFORM STUDENT EMAIL
+					//SEND STUDENT EMAIL
 					if ($informStudent=="Y") {
 						print "<h4>" ;
 						print _("Student Welcome Email") ;
@@ -1247,7 +1247,7 @@ else {
 						}	
 					}
 					
-					//SEND INFORM PARENTS EMAIL
+					//SEND PARENTS EMAIL
 					if ($informParents=="Y") {
 						print "<h4>" ;
 						print "Parent Welcome Email" ;

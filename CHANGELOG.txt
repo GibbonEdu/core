@@ -544,6 +544,13 @@ Behaviour: added automated sending of pre-defined letters for behaviour
 Library: added a CLI script for notifying users with overdue loans
 	New file /cli/library_overdueNotification.php
 
+System Admin: added extra section for settings in module installer, to avoid having to use module table bit as hack
+	Edited file /modules/System Admin/module_manage_installProcess.php
+
+Library: added ability to edit overdue loans from the overdue report
+	Edited file /modules/Library/report_viewOverdueItems.php
+
+
 v10.0.00
 --------
 i18n: added Urdu as inactive development language
