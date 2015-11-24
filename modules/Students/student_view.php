@@ -195,7 +195,7 @@ else {
 							<?php
 								$checked="" ;
 								if ($allStudents=="on") {
-								$checked="checked" ;
+									$checked="checked" ;
 								}
 								print "<input $checked name=\"allStudents\" id=\"allStudents\" type=\"checkbox\">" ;
 							?>

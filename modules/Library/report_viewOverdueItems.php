@@ -35,6 +35,50 @@ else {
 	print "</div>" ;
 	
 	print "<h2>" ;
+		print _("Filter") ;
+	print "</h2>" ;
+
+	$ignoreStatus="" ;
+	if (isset($_GET["ignoreStatus"])) {
+		$ignoreStatus=$_GET["ignoreStatus"] ;
+	}
+	
+
+	?>
+	<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
+		<table class='noIntBorder' cellspacing='0' style="width: 100%">
+			<tr><td style="width: 30%"></td><td></td></tr>
+			<tr>
+				<td>
+					<b><?php print _('Ignore Status') ?></b><br/>
+					<span style="font-size: 90%"><i><?php print _('Include all studenusersts, regardless of status and current enrolment.') ?></i></span>
+				</td>
+				<td class="right">
+					<?php
+						$checked="" ;
+						if ($ignoreStatus=="on") {
+							$checked="checked" ;
+						}
+						print "<input $checked name=\"ignoreStatus\" id=\"ignoreStatus\" type=\"checkbox\">" ;
+					?>
+				</td>
+			</tr>
+			
+			<tr>
+				<td colspan=2 class="right">
+					<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/report_viewOverdueItems.php">
+					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+					<?php
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_viewOverdueItems.php'>" . _('Clear Search') . "</a>" ;
+					?>
+					<input type="submit" value="<?php print _("Submit") ; ?>">
+				</td>
+			</tr>
+		</table>
+	</form>
+	
+	<?php			
+	print "<h2>" ;
 	print _("Report Data") ;
 	print "</h2>" ;
 	
@@ -42,7 +86,12 @@ else {
 	
 	try {
 		$data=array("today"=>$today); 
-		$sql="SELECT gibbonLibraryItem.*, surname, preferredName, email FROM gibbonLibraryItem JOIN gibbonPerson ON (gibbonLibraryItem.gibbonPersonIDStatusResponsible=gibbonPerson.gibbonPersonID) WHERE gibbonLibraryItem.status='On Loan' AND borrowable='Y' AND returnExpected<:today ORDER BY surname, preferredName" ;
+		if ($ignoreStatus=="on") {
+			$sql="SELECT gibbonLibraryItem.*, surname, preferredName, email FROM gibbonLibraryItem JOIN gibbonPerson ON (gibbonLibraryItem.gibbonPersonIDStatusResponsible=gibbonPerson.gibbonPersonID) WHERE gibbonLibraryItem.status='On Loan' AND borrowable='Y' AND returnExpected<:today ORDER BY surname, preferredName" ;
+		}
+		else {
+			$sql="SELECT gibbonLibraryItem.*, surname, preferredName, email FROM gibbonLibraryItem JOIN gibbonPerson ON (gibbonLibraryItem.gibbonPersonIDStatusResponsible=gibbonPerson.gibbonPersonID) WHERE gibbonLibraryItem.status='On Loan' AND borrowable='Y' AND returnExpected<:today AND gibbonPerson.status='Full' ORDER BY surname, preferredName" ;
+		}
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}

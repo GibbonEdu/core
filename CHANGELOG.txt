@@ -550,6 +550,9 @@ System Admin: added extra section for settings in module installer, to avoid hav
 Library: added ability to edit overdue loans from the overdue report
 	Edited file /modules/Library/report_viewOverdueItems.php
 
+General: fixed super/subscript bug relating to allowableHTML setting
+	Edited value in table gibbonSetting
+
 
 v10.0.00
 --------
