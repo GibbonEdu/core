@@ -553,7 +553,11 @@ Library: added ability to edit overdue loans from the overdue report
 General: fixed super/subscript bug relating to allowableHTML setting
 	Edited value in table gibbonSetting
 
+Finance: added action to allow parents to view invoices within their family
+	New values in tables gibbonAction, gibbonPermission
+	New files /modules/Finance/invoices_view*.php
 
+	
 v10.0.00
 --------
 i18n: added Urdu as inactive development language
