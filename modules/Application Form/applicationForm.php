@@ -96,6 +96,9 @@ else {
 			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="success0" OR $addReturn=="success1" OR $addReturn=="success2"  OR $addReturn=="success4") {
+			print "<script type='text/javascript'>" ;
+				print "alert('Your application was successfully submitted. Please read the information in the green box above the application form for additional information.') ;" ;
+			print "</script>" ;
 			if ($addReturn=="success0") {
 				$addReturnMessage=_("Your application was successfully submitted. Our admissions team will review your application and be in touch in due course.") ;
 			}

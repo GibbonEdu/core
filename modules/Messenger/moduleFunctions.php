@@ -445,6 +445,7 @@ function getMessages($guid, $connection2, $mode="", $date="") {
 					$output[$count]["author"]=formatName($rowPosts["title"], $rowPosts["preferredName"], $rowPosts["surname"], $rowPosts["category"]) ;
 					$output[$count]["source"]=$rowPosts["source"] ;
 					$output[$count]["gibbonMessengerID"]=$rowPosts["gibbonMessengerID"] ;
+					$output[$count]["gibbonPersonID"]=$rowPosts["gibbonPersonID"] ;
 			
 					$count++ ;
 					$last=$rowPosts["gibbonMessengerID"] ;
@@ -473,7 +474,40 @@ function getMessages($guid, $connection2, $mode="", $date="") {
 					$return.= "<tr class=$rowNum>" ;
 						$return.= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 100px'>" ;
 							$return.="<a name='" . $output[$i]["gibbonMessengerID"] . "'></a>" ;											
-							$return.= getUserPhoto($guid, $output[$i]["photo"], 75) . "<br/>" ;
+							$return.=getUserPhoto($guid, $output[$i]["photo"], 75) . "<br/>" ;
+							
+							//DEAL WITH LIKES
+							$likesGiven=countLikesByContextAndGiver($connection2, "Messenger", "gibbonMessengerID", $output[$i]["gibbonMessengerID"], $_SESSION[$guid]["gibbonPersonID"], $output[$i]["gibbonPersonID"]) ;
+							if ($output[$i]["gibbonPersonID"]==$_SESSION[$guid]["gibbonPersonID"]) {
+								if ($likesGiven==1) {
+									$return.=$likesGiven . "x " . _('Like') . "<br/><br/>" ;
+								}
+								else {
+									$return.=$likesGiven . "x " . _('Likes') . "<br/><br/>" ;
+								}
+							}
+							else {
+								$comment=addSlashes($output[$i]["subject"]) ;
+								$return.="<div id='star" . $output[$i]["gibbonMessengerID"] . "'>" ;
+									$return.="<script type=\"text/javascript\">" ;
+										$return.="$(document).ready(function(){" ;
+											$return.="$(\"#starAdd" . $output[$i]["gibbonMessengerID"] . "\").click(function(){" ;
+												$return.="$(\"#star" . $output[$i]["gibbonMessengerID"] . "\").load(\"" . $_SESSION[$guid]["absoluteURL"] . "/modules/Messenger/messageWall_view_starAjax.php\",{\"gibbonPersonID\": \"" . $output[$i]["gibbonPersonID"] . "\", \"gibbonMessengerID\": \"" . $output[$i]["gibbonMessengerID"] . "\", \"mode\": \"add\", \"comment\": \"" . $comment . "\"});" ;
+											$return.="});" ;
+											$return.="$(\"#starRemove" . $output[$i]["gibbonMessengerID"] . "\").click(function(){" ;
+												$return.="$(\"#star" . $output[$i]["gibbonMessengerID"] . "\").load(\"" . $_SESSION[$guid]["absoluteURL"] . "/modules/Messenger/messageWall_view_starAjax.php\",{\"gibbonPersonID\": \"" . $output[$i]["gibbonPersonID"] . "\", \"gibbonMessengerID\": \"" . $output[$i]["gibbonMessengerID"] . "\", \"mode\": \"remove\", \"comment\": \"" . $comment . "\"});" ;
+											$return.="});" ;
+										$return.="});" ;
+									$return.="</script>" ;
+									if ($likesGiven!=1) {
+										$return.="<a id='starAdd" . $output[$i]["gibbonMessengerID"] . "' onclick='return false;' href='#'><img style='margin-top: -8px; margin-bottom: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_off.png'></a>" ;
+									}
+									else {
+										$return.="<a id='starRemove" . $output[$i]["gibbonMessengerID"] . "' onclick='return false;' href='#'><img style='margin-top: -8px; margin-bottom: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_on.png'></a>" ;
+									}
+								$return.="</div>" ;
+							}
+							
 							$return.= "<b><u>Posted By</b></u><br/>" ;
 								$return.= $output[$i]["author"] . "<br/><br/>" ;
 							

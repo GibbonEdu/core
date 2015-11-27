@@ -557,6 +557,13 @@ Finance: added action to allow parents to view invoices within their family
 	New values in tables gibbonAction, gibbonPermission
 	New files /modules/Finance/invoices_view*.php
 
+Application Form: added JavaScript alert to give clear feedback when a form is accepted
+	Edited file /modules/Application Form/applicationForm.php
+
+Messenger: added ability to Like messages
+	Edited values in table gibbonAction
+	Edited file /modules/Messenger/moduleFunctions.php
+	New file /modules/Messenger/messageWall_view_starAjax.php
 	
 v10.0.00
 --------
