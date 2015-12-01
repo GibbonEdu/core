@@ -874,6 +874,7 @@ else {
 							<option <?php if ($row["value"]=="BDT ó") { print "selected" ; } ?> value='BDT ó'>Bangladeshi Taka (ó)</option>
 							<option <?php if ($row["value"]=="BTC") { print "selected" ; } ?> value='BTC'>Bitcoin</option>
 							<option <?php if ($row["value"]=="XAF FCFA") { print "selected" ; } ?> value='XAF FCFA'>Central African Francs (FCFA)</option>
+							<option <?php if ($row["value"]=="EGP £") { print "selected" ; } ?> value='EGP £'>Egyptian Pound (£)</option>
 							<option <?php if ($row["value"]=="INR ₹") { print "selected" ; } ?> value='INR ₹'>Indian Rupee (₹)</option>
 							<option <?php if ($row["value"]=="IDR Rp") { print "selected" ; } ?> value='IDR Rp'>Indonesian Rupiah (Rp)</option>
 							<option <?php if ($row["value"]=="KES KSh") { print "selected" ; } ?> value='KES KSh'>Kenyan Shilling (KSh)</option>

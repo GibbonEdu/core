@@ -908,6 +908,7 @@ include "../functions.php" ;
 																		<option value='BDT ó'>Bangladeshi Taka (ó)</option>
 																		<option value='BTC'>Bitcoin</option>
 																		<option value='XAF FCFA'>Central African Francs (FCFA)</option>
+																		<option value='EGP £'>Egyptian Pound (£)</option>
 																		<option value='INR ₹'>Indian Rupee (₹)</option>
 																		<option value='IDR Rp'>Indonesian Rupiah (Rp)</option>
 																		<option value='KES KSh'>Kenyan Shilling (KSh)</option>

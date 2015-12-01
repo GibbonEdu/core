@@ -564,6 +564,11 @@ Messenger: added ability to Like messages
 	Edited values in table gibbonAction
 	Edited file /modules/Messenger/moduleFunctions.php
 	New file /modules/Messenger/messageWall_view_starAjax.php
+
+General: added Egyptian Pound as new currency
+	Edited file /modules/System Admin/systemSettings.php
+	Edited file /installer/install.php
+
 	
 v10.0.00
 --------
