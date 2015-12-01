@@ -899,7 +899,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 				}
 
 				$output.="<tr style='height:" . (ceil($diffTime/60)+14) . "px'>" ;
-					$output.="<td style='height: 300px; width: 75px; text-align: center; vertical-align: top'>" ;
+					$output.="<td class='ttTime' style='height: 300px; width: 75px; text-align: center; vertical-align: top'>" ;
 						$output.="<div style='position: relative; width: 71px'>" ;
 							$countTime=0 ;
 							$time=$timeStart ;
@@ -2029,7 +2029,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 			$output.="</tr>" ;
 
 			$output.="<tr style='height:" . (ceil($diffTime/60)+14) . "px'>" ;
-				$output.="<td style='height: 300px; width: 75px; text-align: center; vertical-align: top'>" ;
+				$output.="<td class='ttTime' style='height: 300px; width: 75px; text-align: center; vertical-align: top'>" ;
 					$output.="<div style='position: relative; width: 71px'>" ;
 						$countTime=0 ;
 						$time=$timeStart ;
