@@ -581,7 +581,6 @@ div.right {
 }
 div.odd {
 	background-color: #E2DDCA ;
-	background:#E2DDCA url("../img/tdOdd.png") repeat-x;
 }
 tr.current, tr.current td, div.current, td.current {
 	background-color: #B3EFC2!important ;

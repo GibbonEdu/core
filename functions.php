@@ -4208,7 +4208,7 @@ function countLikesByRecipient($connection2, $gibbonPersonIDRecipient, $mode="co
 			$sql="SELECT * FROM gibbonLike WHERE gibbonPersonIDRecipient=:gibbonPersonIDRecipient AND gibbonSchoolYearID=:gibbonSchoolYearID" ;
 		}
 		else {
-			$sql="SELECT gibbonLike.*, gibbonPersonID, image_240, gibbonRoleIDPrimary, preferredName, surname FROM gibbonLike JOIN gibbonPerson ON (gibbonLike.gibbonPersonIDGiver=gibbonPerson.gibbonPersonID) WHERE gibbonPersonIDRecipient=:gibbonPersonIDRecipient AND gibbonSchoolYearID=:gibbonSchoolYearID" ;
+			$sql="SELECT gibbonLike.*, gibbonPersonID, image_240, gibbonRoleIDPrimary, preferredName, surname FROM gibbonLike JOIN gibbonPerson ON (gibbonLike.gibbonPersonIDGiver=gibbonPerson.gibbonPersonID) WHERE gibbonPersonIDRecipient=:gibbonPersonIDRecipient AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY timestamp DESC" ;
 		}
 		$result=$connection2->prepare($sql);
 		$result->execute($data);

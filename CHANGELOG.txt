@@ -569,6 +569,10 @@ General: added Egyptian Pound as new currency
 	Edited file /modules/System Admin/systemSettings.php
 	Edited file /installer/install.php
 
+General: cleaned up old tdOdd.png image from Default theme
+	Removed file /themes/Default/img/tdOdd.png
+	Edited file  /themes/Default/css/main.css
+
 	
 v10.0.00
 --------
