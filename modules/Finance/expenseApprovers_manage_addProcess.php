@@ -49,7 +49,7 @@ else {
 	$expenseApprovalType=getSettingByScope($connection2, "Finance", "expenseApprovalType") ;
 	$sequenceNumber=NULL ;
 	if ($expenseApprovalType=="Chain Of All") {
-		$sequenceNumber=$_POST["sequenceNumber"] ;
+		$sequenceNumber=abs($_POST["sequenceNumber"]) ;
 	}
 	
 	if ($gibbonPersonID=="" OR ($expenseApprovalType=="Y" AND $sequenceNumber=="")) {
