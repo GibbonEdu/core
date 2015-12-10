@@ -248,14 +248,14 @@ else {
 								mkdir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time), 0777, TRUE) ;
 							}
 							$unique=FALSE;
-							$count=0 ;
-							while ($unique==FALSE AND $count<100) {
+							$count2=0 ;
+							while ($unique==FALSE AND $count2<100) {
 								$suffix=randomPassword(16) ;
 								$attachment="uploads/" . date("Y", $time) . "/" . date("m", $time) . "/" . preg_replace("/[^a-zA-Z0-9]/", "", $name) . "_Uploaded Response_$suffix" . strrchr($_FILES["response$i"]["name"], ".") ;
 								if (!(file_exists($path . "/" . $attachment))) {
 									$unique=TRUE ;
 								}
-								$count++ ;
+								$count2++ ;
 							}
 						
 							if (!(move_uploaded_file($_FILES["response$i"]["tmp_name"],$path . "/" . $attachment))) {
