@@ -43,12 +43,13 @@ msgstr "我的班級"
 #: modules/Rubrics/moduleFunctions.php:334
 #: modules/Rubrics/moduleFunctions.php:380
 #: modules/Planner/units_edit_starAjax.php:46
+#: modules/Messenger/messageWall_view_starAjax.php:49
 #: modules/Planner/planner_view_full_starAjax.php:49
 #: modules/Planner/units_edit_starAjax.php:46
 #: modules/Rubrics/moduleFunctions.php:106
 #: modules/Rubrics/moduleFunctions.php:135
-#: modules/Rubrics/moduleFunctions.php:334
-#: modules/Rubrics/moduleFunctions.php:380
+#: modules/Rubrics/moduleFunctions.php:333
+#: modules/Rubrics/moduleFunctions.php:379
 msgid "Error"
 msgstr "錯誤"
 
@@ -714,7 +715,7 @@ msgstr "檢測到非法的地址。"
 #: modules/Rubrics/rubrics_view_full.php:28
 #: modules/School Admin/activitySettings.php:39
 #: modules/School Admin/alertLevelSettings.php:39
-#: modules/School Admin/behaviourSettings.php:42
+#: modules/School Admin/behaviourSettings.php:43
 #: modules/School Admin/daysOfWeek_manage.php:39
 #: modules/School Admin/department_manage.php:54
 #: modules/School Admin/department_manage_add.php:41
@@ -1375,8 +1376,11 @@ msgstr "指定的日期沒有資訊。"
 #: modules/Messenger/messenger_post.php:48
 #: modules/Rubrics/rubrics_duplicate.php:58 Admin/trackingSettings.php:31
 #: Admin/courseEnrolment_manage_byPerson_edit.php:83
-#: modules/Tracking/dataPoints.php:34 functions.php:2792 functions.php:2810
-#: functions.php:2815 likes.php:21 modules/Activities/activities_copy.php:34
+#: modules/Tracking/dataPoints.php:34
+#: Admin/applicationForm_manage_edit.php:860
+#: Admin/applicationForm_manage_edit.php:1626 functions.php:2792
+#: functions.php:2810 functions.php:2815 likes.php:21
+#: modules/Activities/activities_copy.php:34
 #: modules/Activities/activities_manage.php:34
 #: modules/Activities/activities_manage_add.php:33
 #: modules/Activities/activities_manage_delete.php:34
@@ -1397,8 +1401,8 @@ msgstr "指定的日期沒有資訊。"
 #: modules/Activities/report_participants.php:34
 #: modules/Application Form/applicationForm.php:60
 #: modules/Application Form/applicationForm.php:63
-#: modules/Application Form/applicationForm.php:561
-#: modules/Application Form/applicationForm.php:1418
+#: modules/Application Form/applicationForm.php:564
+#: modules/Application Form/applicationForm.php:1421
 #: modules/Attendance/attendance_future_byPerson.php:34
 #: modules/Attendance/attendance_take_byPerson.php:34
 #: modules/Attendance/attendance_take_byRollGroup.php:34
@@ -1406,6 +1410,7 @@ msgstr "指定的日期沒有資訊。"
 #: modules/Attendance/report_studentHistory.php:34
 #: modules/Attendance/report_studentsNotOnsite_byDate.php:34
 #: modules/Attendance/report_studentsNotPresent_byDate.php:34
+#: modules/Behaviour/behaviour_letters.php:33
 #: modules/Behaviour/behaviour_manage.php:44
 #: modules/Behaviour/behaviour_manage_add.php:44
 #: modules/Behaviour/behaviour_manage_addMulti.php:37
@@ -1471,6 +1476,7 @@ msgstr "指定的日期沒有資訊。"
 #: modules/Finance/invoices_manage_edit.php:42
 #: modules/Finance/invoices_manage_issue.php:42
 #: modules/Finance/invoices_manage_print.php:42
+#: modules/Finance/invoices_view.php:31
 #: modules/Formal Assessment/externalAssessment.php:33
 #: modules/Formal Assessment/externalAssessment_details.php:52
 #: modules/Formal Assessment/externalAssessment_manage_details_add.php:31
@@ -1571,7 +1577,7 @@ msgstr "指定的日期沒有資訊。"
 #: modules/Rubrics/rubrics_view.php:31
 #: modules/School Admin/activitySettings.php:31
 #: modules/School Admin/alertLevelSettings.php:31
-#: modules/School Admin/behaviourSettings.php:34
+#: modules/School Admin/behaviourSettings.php:35
 #: modules/School Admin/daysOfWeek_manage.php:31
 #: modules/School Admin/department_manage.php:33
 #: modules/School Admin/department_manage_add.php:33
@@ -2255,8 +2261,11 @@ msgstr ""
 #: Admin/gradeScales_manage_edit_grade_edit.php:158
 #: Admin/trackingSettings.php:191 Admin/systemSettings.php:1044
 #: Admin/courseEnrolment_manage_byPerson_edit.php:229
-#: Admin/applicationFormSettings.php:559 installer/install.php:145
-#: installer/install.php:242 installer/install.php:1094
+#: Admin/applicationFormSettings.php:559
+#: modules/Library/library_manage_catalog_duplicate.php:643
+#: modules/Timetable/studentEnrolment_manage_edit.php:156
+#: Admin/applicationForm_manage_edit.php:2311 installer/install.php:145
+#: installer/install.php:242 installer/install.php:1095
 #: modules/Activities/activities_copy.php:110
 #: modules/Activities/activities_manage.php:79
 #: modules/Activities/activities_manage_add.php:641
@@ -2269,7 +2278,7 @@ msgstr ""
 #: modules/Activities/report_activityType_rollGroup.php:96
 #: modules/Activities/report_attendance.php:80
 #: modules/Activities/report_participants.php:80
-#: modules/Application Form/applicationForm.php:2175
+#: modules/Application Form/applicationForm.php:2178
 #: modules/Attendance/attendance_future_byPerson.php:267
 #: modules/Attendance/attendance_take_byPerson.php:344
 #: modules/Attendance/report_rollGroupsNotRegistered_byDate.php:73
@@ -2316,6 +2325,7 @@ msgstr ""
 #: modules/Finance/invoices_manage_add.php:377
 #: modules/Finance/invoices_manage_edit.php:917
 #: modules/Finance/invoices_manage_issue.php:374
+#: modules/Finance/invoices_view.php:118
 #: modules/Formal Assessment/externalAssessment.php:84
 #: modules/Formal Assessment/externalAssessment_manage_details_add.php:652
 #: modules/Formal Assessment/externalAssessment_manage_details_edit.php:290
@@ -2332,6 +2342,7 @@ msgstr ""
 #: modules/Library/library_manage_catalog_duplicate.php:643
 #: modules/Library/library_manage_catalog_edit.php:685
 #: modules/Library/report_studentBorrowingRecord.php:79
+#: modules/Library/report_viewOverdueItems.php:74
 #: modules/Markbook/markbook_edit_add.php:628
 #: modules/Markbook/markbook_edit_addMulti.php:552
 #: modules/Markbook/markbook_edit_data.php:587
@@ -2372,7 +2383,7 @@ msgstr ""
 #: modules/Rubrics/rubrics_edit_editRowsColumns.php:411
 #: modules/School Admin/activitySettings.php:289
 #: modules/School Admin/alertLevelSettings.php:162
-#: modules/School Admin/behaviourSettings.php:253
+#: modules/School Admin/behaviourSettings.php:494
 #: modules/School Admin/daysOfWeek_manage.php:292
 #: modules/School Admin/department_manage.php:109
 #: modules/School Admin/department_manage_add.php:202
@@ -2435,7 +2446,7 @@ msgstr ""
 #: modules/System Admin/module_manage_edit.php:148
 #: modules/System Admin/module_manage_uninstall.php:147
 #: modules/System Admin/module_manage_update.php:146
-#: modules/System Admin/systemSettings.php:1044
+#: modules/System Admin/systemSettings.php:1045
 #: modules/System Admin/theme_manage.php:277
 #: modules/System Admin/theme_manage.php:342
 #: modules/System Admin/thirdPartySettings.php:406
@@ -2867,15 +2878,18 @@ msgstr "確認新密碼"
 #: Admin/gradeScales_manage_edit_grade_edit.php:153
 #: Admin/trackingSettings.php:187 Admin/systemSettings.php:1040
 #: Admin/courseEnrolment_manage_byPerson_edit.php:225
-#: Admin/applicationFormSettings.php:555 installer/install.php:142
-#: installer/install.php:238 installer/install.php:1086
+#: Admin/applicationFormSettings.php:555
+#: modules/Library/library_manage_catalog_duplicate.php:636
+#: modules/Timetable/studentEnrolment_manage_edit.php:152
+#: Admin/applicationForm_manage_edit.php:2305 installer/install.php:142
+#: installer/install.php:238 installer/install.php:1087
 #: modules/Activities/activities_copy.php:106
 #: modules/Activities/activities_manage_add.php:636
 #: modules/Activities/activities_manage_edit.php:824
 #: modules/Activities/activities_manage_enrolment_add.php:241
 #: modules/Activities/activities_manage_enrolment_edit.php:144
 #: modules/Activities/activities_view_register.php:380
-#: modules/Application Form/applicationForm.php:2171
+#: modules/Application Form/applicationForm.php:2174
 #: modules/Attendance/attendance_future_byPerson.php:263
 #: modules/Attendance/attendance_take_byPerson.php:339
 #: modules/Behaviour/behaviour_manage_add.php:297
@@ -2950,7 +2964,7 @@ msgstr "確認新密碼"
 #: modules/Rubrics/rubrics_edit_editRowsColumns.php:407
 #: modules/School Admin/activitySettings.php:285
 #: modules/School Admin/alertLevelSettings.php:157
-#: modules/School Admin/behaviourSettings.php:249
+#: modules/School Admin/behaviourSettings.php:490
 #: modules/School Admin/daysOfWeek_manage.php:288
 #: modules/School Admin/department_manage.php:105
 #: modules/School Admin/department_manage_add.php:199
@@ -2997,7 +3011,7 @@ msgstr "確認新密碼"
 #: modules/Students/student_view_details_notes_edit.php:187
 #: modules/System Admin/alarm.php:145
 #: modules/System Admin/module_manage_edit.php:144
-#: modules/System Admin/systemSettings.php:1040
+#: modules/System Admin/systemSettings.php:1041
 #: modules/System Admin/thirdPartySettings.php:402
 #: modules/Timetable/spaceBooking_manage_add.php:237
 #: modules/Timetable/spaceChange_manage_add.php:117
@@ -3085,7 +3099,7 @@ msgstr "為你的月曆的 XML 信件提供  (只是 Google 月曆)"
 #: i18n/dbStringsForTranslation.php:1848 i18n/dbStringsForTranslation.php:1789
 #: i18n/dbStringsForTranslation.php:1798 Form/applicationForm.php:1214
 #: Form/applicationForm.php:1210 i18n/dbStringsForTranslation.php:1798
-#: modules/Application Form/applicationForm.php:1210 preferences.php:228
+#: modules/Application Form/applicationForm.php:1213 preferences.php:228
 msgid "Personal Background"
 msgstr "個人背景"
 
@@ -3471,6 +3485,9 @@ msgstr "照片"
 #: Admin/applicationForm_manage_accept.php:837
 #: Admin/applicationForm_manage_accept.php:993
 #: Admin/applicationForm_manage_accept.php:1156
+#: modules/Timetable/studentEnrolment_manage_edit.php:202
+#: modules/Timetable/studentEnrolment_manage_edit.php:302
+#: Admin/courseEnrolment_manage_class_edit.php:345
 #: index_notification_ajax_alarm.php:154
 #: modules/Activities/activities_manage_add.php:79
 #: modules/Activities/activities_manage_edit.php:135
@@ -3519,7 +3536,7 @@ msgstr "照片"
 #: modules/Individual Needs/in_edit.php:184
 #: modules/Individual Needs/in_summary.php:256
 #: modules/Individual Needs/in_view.php:121
-#: modules/Library/library_browse.php:430
+#: modules/Library/library_browse.php:439
 #: modules/Library/library_import.php:141
 #: modules/Library/library_lending.php:273
 #: modules/Library/library_lending_item.php:137
@@ -3799,6 +3816,7 @@ msgstr "課堂/課程"
 #: modules/Attendance/report_rollGroupsNotRegistered_byDate.php:53
 #: modules/Attendance/report_studentsNotOnsite_byDate.php:53
 #: modules/Attendance/report_studentsNotPresent_byDate.php:53
+#: modules/Behaviour/behaviour_letters.php:139
 #: modules/Behaviour/behaviour_manage_add.php:160
 #: modules/Behaviour/behaviour_manage_addMulti.php:124
 #: modules/Behaviour/behaviour_manage_edit.php:177
@@ -4100,12 +4118,17 @@ msgstr "設定"
 #: modules/Messenger/messenger_post.php:116
 #: Admin/applicationForm_manage_accept.php:456
 #: Admin/applicationForm_manage_accept.php:994
-#: Admin/applicationForm_manage_accept.php:1157 functions.php:97
+#: Admin/applicationForm_manage_accept.php:1157
+#: modules/Timetable/studentEnrolment_manage_edit.php:205
+#: modules/Timetable/studentEnrolment_manage_edit.php:305
+#: Admin/courseEnrolment_manage_class_edit.php:348
+#: Admin/applicationForm_manage_edit.php:818
+#: Admin/applicationForm_manage_edit.php:1569 functions.php:97
 #: i18n/dbStringsForTranslation.php:1738 installer/install.php:501
-#: modules/Application Form/applicationForm.php:523
-#: modules/Application Form/applicationForm.php:1366
+#: modules/Application Form/applicationForm.php:526
+#: modules/Application Form/applicationForm.php:1369
 #: modules/Data Updater/data_personal.php:677
-#: modules/Library/report_viewOverdueItems.php:59
+#: modules/Library/report_viewOverdueItems.php:108
 #: modules/Messenger/messenger_manage.php:171
 #: modules/Messenger/messenger_manage_edit.php:124
 #: modules/Messenger/messenger_post.php:116
@@ -4549,6 +4572,7 @@ msgstr "學生檔案"
 #: modules/Behaviour/behaviour_view_details.php:93
 #: modules/Finance/invoices_manage.php:513
 #: modules/Finance/invoices_manage_processBulkExportContents.php:93
+#: modules/Finance/invoices_view.php:239
 #: modules/Finance/moduleFunctions.php:1016
 #: modules/Finance/moduleFunctions.php:1320
 #: modules/Formal Assessment/externalAssessment.php:149
@@ -5522,8 +5546,8 @@ msgstr "觀看計劃表"
 #: modules/School Admin/activitySettings.php:48
 #: modules/School Admin/alertLevelSettings.php:42
 #: modules/School Admin/alertLevelSettings.php:48
-#: modules/School Admin/behaviourSettings.php:45
-#: modules/School Admin/behaviourSettings.php:51
+#: modules/School Admin/behaviourSettings.php:46
+#: modules/School Admin/behaviourSettings.php:52
 #: modules/School Admin/daysOfWeek_manage.php:42
 #: modules/School Admin/daysOfWeek_manage.php:48
 #: modules/School Admin/daysOfWeek_manage.php:51
@@ -6264,6 +6288,7 @@ msgstr "你的請求失敗了因為你的輸入無效"
 #: modules/Rubrics/rubrics_duplicate.php:72
 #: Admin/courseEnrolment_manage_byPerson_edit.php:97
 #: modules/Tracking/dataPoints_contents.php:241
+#: modules/Library/library_manage_catalog_duplicate.php:554
 #: cli/attendance_dailyIncompleteEmail.php:74
 #: cli/attendance_dailyIncompleteEmail.php:89
 #: cli/planner_parentWeeklyEmailSummary.php:86 functions.php:369
@@ -6954,7 +6979,7 @@ msgstr "由於數據庫錯誤，你的要求失敗了."
 #: modules/Rubrics/rubrics_edit.php:169 modules/Rubrics/rubrics_view.php:39
 #: modules/School Admin/activitySettings.php:51
 #: modules/School Admin/alertLevelSettings.php:54
-#: modules/School Admin/behaviourSettings.php:54
+#: modules/School Admin/behaviourSettings.php:55
 #: modules/School Admin/daysOfWeek_manage.php:54
 #: modules/School Admin/department_manage.php:41
 #: modules/School Admin/department_manage.php:66
@@ -7372,9 +7397,9 @@ msgstr "總結"
 #: index.php:731 functions.php:356 index.php:739
 #: modules/Planner/planner.php:461 modules/Planner/planner.php:677
 #: modules/Planner/planner.php:958 functions.php:407 index.php:743
-#: functions.php:407 index.php:743 modules/Planner/planner.php:287
-#: modules/Planner/planner.php:461 modules/Planner/planner.php:677
-#: modules/Planner/planner.php:958
+#: functions.php:407 index.php:743 modules/Messenger/moduleFunctions.php:483
+#: modules/Planner/planner.php:287 modules/Planner/planner.php:461
+#: modules/Planner/planner.php:677 modules/Planner/planner.php:958
 msgid "Like"
 msgstr "喜歡"
 
@@ -7634,6 +7659,7 @@ msgstr "單元"
 #: modules/Activities/activities_my.php:113
 #: modules/Activities/activities_view.php:527
 #: modules/Activities/report_activityChoices_byStudent.php:256
+#: modules/Behaviour/behaviour_letters.php:193
 #: modules/Behaviour/behaviour_pattern.php:395
 #: modules/Behaviour/behaviour_view.php:170
 #: modules/Crowd Assessment/crowdAssess.php:111
@@ -8206,6 +8232,9 @@ msgstr "觀看詳情"
 #: Admin/courseEnrolment_manage_byPerson_edit.php:373
 #: Admin/courseEnrolment_manage_byPerson_edit.php:394
 #: modules/Tracking/dataPoints_contents.php:245
+#: modules/Timetable/studentEnrolment_manage_edit.php:179
+#: modules/Timetable/studentEnrolment_manage_edit.php:294
+#: Admin/courseEnrolment_manage_class_edit.php:337
 #: cli/attendance_dailyIncompleteEmail.php:93
 #: cli/planner_parentWeeklyEmailSummary.php:103
 #: cli/planner_parentWeeklyEmailSummary.php:129 functions.php:487
@@ -8249,6 +8278,7 @@ msgstr "觀看詳情"
 #: modules/Attendance/report_studentsNotPresent_byDate.php:125
 #: modules/Attendance/report_studentsNotPresent_byDate_print.php:58
 #: modules/Attendance/report_studentsNotPresent_byDate_print.php:85
+#: modules/Behaviour/behaviour_letters.php:127
 #: modules/Behaviour/behaviour_manage.php:268
 #: modules/Behaviour/behaviour_pattern.php:329
 #: modules/Behaviour/behaviour_view.php:116
@@ -8273,6 +8303,7 @@ msgstr "觀看詳情"
 #: modules/Finance/invoices_manage.php:469
 #: modules/Finance/invoices_manage_edit.php:549
 #: modules/Finance/invoices_manage_processBulkExportContents.php:223
+#: modules/Finance/invoices_view.php:221
 #: modules/Finance/moduleFunctions.php:57
 #: modules/Finance/moduleFunctions.php:578
 #: modules/Finance/moduleFunctions.php:1534
@@ -8293,7 +8324,7 @@ msgstr "觀看詳情"
 #: modules/Library/library_browse.php:68
 #: modules/Library/library_browse.php:107
 #: modules/Library/library_browse.php:146
-#: modules/Library/library_browse.php:416
+#: modules/Library/library_browse.php:425
 #: modules/Library/library_lending.php:259
 #: modules/Library/library_lending_item.php:188
 #: modules/Library/library_manage_catalog.php:312
@@ -8301,7 +8332,7 @@ msgstr "觀看詳情"
 #: modules/Library/report_catalogSummary.php:233
 #: modules/Library/report_catalogSummaryExportContents.php:230
 #: modules/Library/report_studentBorrowingRecord.php:94
-#: modules/Library/report_viewOverdueItems.php:106
+#: modules/Library/report_viewOverdueItems.php:162
 #: modules/Markbook/markbook_edit.php:167
 #: modules/Markbook/markbook_edit_data.php:367
 #: modules/Markbook/markbook_edit_targets.php:128
@@ -8997,7 +9028,7 @@ msgstr "在這天評估"
 #: modules/Behaviour/moduleFunctions.php:168
 #: modules/Finance/billingSchedule_manage.php:234
 #: modules/Finance/fees_manage.php:230 modules/Finance/moduleFunctions.php:634
-#: modules/Library/library_browse.php:506
+#: modules/Library/library_browse.php:515
 #: modules/Library/moduleFunctions.php:122
 #: modules/Markbook/markbook_view.php:1233
 #: modules/Markbook/markbook_view.php:1832 modules/Planner/outcomes.php:253
@@ -10427,7 +10458,10 @@ msgstr "課/單元"
 #: modules/Planner/planner_add.php:644 modules/Planner/planner_add.php:779
 #: modules/Planner/planner_add.php:1092 modules/Planner/planner_add.php:1159
 #: modules/Planner/planner_add.php:1174
-#: modules/Planner/planner_duplicate.php:381 functions.php:454
+#: modules/Planner/planner_duplicate.php:381
+#: Admin/applicationForm_manage_edit.php:1922
+#: Admin/applicationForm_manage_edit.php:1932
+#: Admin/applicationForm_manage_edit.php:2080 functions.php:454
 #: functions.php:463 index.php:791 index.php:800
 #: modules/Activities/activities_manage_add.php:149
 #: modules/Activities/activities_manage_add.php:161
@@ -10435,7 +10469,7 @@ msgstr "課/單元"
 #: modules/Activities/activities_manage_edit.php:205
 #: modules/Activities/activities_manage_edit.php:218
 #: modules/Activities/activities_manage_enrolment_delete.php:102
-#: modules/Application Form/applicationForm.php:1933
+#: modules/Application Form/applicationForm.php:1936
 #: modules/Behaviour/behaviour_manage_delete.php:116
 #: modules/Data Updater/data_finance.php:417
 #: modules/Data Updater/data_medical.php:306
@@ -10565,8 +10599,9 @@ msgstr "課/單元"
 #: modules/School Admin/activitySettings.php:213
 #: modules/School Admin/activitySettings.php:255
 #: modules/School Admin/activitySettings.php:278
-#: modules/School Admin/behaviourSettings.php:89
-#: modules/School Admin/behaviourSettings.php:178
+#: modules/School Admin/behaviourSettings.php:90
+#: modules/School Admin/behaviourSettings.php:181
+#: modules/School Admin/behaviourSettings.php:248
 #: modules/School Admin/daysOfWeek_manage.php:99
 #: modules/School Admin/daysOfWeek_manage.php:103
 #: modules/School Admin/department_manage.php:99
@@ -11084,12 +11119,15 @@ msgstr "是"
 #: modules/Planner/planner_add.php:645 modules/Planner/planner_add.php:780
 #: modules/Planner/planner_add.php:1093 modules/Planner/planner_add.php:1160
 #: modules/Planner/planner_add.php:1175
-#: modules/Planner/planner_duplicate.php:382 functions.php:450 index.php:787
+#: modules/Planner/planner_duplicate.php:382
+#: Admin/applicationForm_manage_edit.php:1923
+#: Admin/applicationForm_manage_edit.php:1933
+#: Admin/applicationForm_manage_edit.php:2079 functions.php:450 index.php:787
 #: modules/Activities/activities_manage_add.php:150
 #: modules/Activities/activities_manage_add.php:162
 #: modules/Activities/activities_manage_edit.php:206
 #: modules/Activities/activities_manage_edit.php:219
-#: modules/Application Form/applicationForm.php:1932
+#: modules/Application Form/applicationForm.php:1935
 #: modules/Data Updater/data_finance.php:416
 #: modules/Data Updater/data_medical.php:307
 #: modules/Data Updater/data_medical.php:328
@@ -11198,8 +11236,9 @@ msgstr "是"
 #: modules/School Admin/activitySettings.php:212
 #: modules/School Admin/activitySettings.php:254
 #: modules/School Admin/activitySettings.php:277
-#: modules/School Admin/behaviourSettings.php:90
-#: modules/School Admin/behaviourSettings.php:179
+#: modules/School Admin/behaviourSettings.php:91
+#: modules/School Admin/behaviourSettings.php:182
+#: modules/School Admin/behaviourSettings.php:249
 #: modules/School Admin/daysOfWeek_manage.php:100
 #: modules/School Admin/daysOfWeek_manage.php:104
 #: modules/School Admin/department_manage.php:98
@@ -11831,6 +11870,7 @@ msgstr "學生和日期"
 #: modules/Behaviour/moduleFunctions.php:88
 #: modules/Departments/department_edit.php:172
 #: modules/Finance/moduleFunctions.php:79
+#: modules/Formal Assessment/internalAssessment_manage.php:160
 #: modules/Formal Assessment/internalAssessment_manage_add.php:166
 #: modules/Formal Assessment/internalAssessment_manage_edit.php:175
 #: modules/Library/library_import.php:121
@@ -12061,7 +12101,7 @@ msgstr "位置"
 #: index.php:1060 installer/install.php:1467 index.php:1077
 #: installer/install.php:1470 index.php:1072 installer/install.php:1454
 #: index.php:1076 installer/install.php:1455 index.php:1076
-#: installer/install.php:1455
+#: installer/install.php:1456
 msgid "Powered by"
 msgstr "搭載"
 
@@ -12077,7 +12117,7 @@ msgstr "搭載"
 #: index.php:1062 installer/install.php:1469 index.php:1079
 #: installer/install.php:1472 index.php:1074 installer/install.php:1456
 #: index.php:1078 installer/install.php:1457 index.php:1078
-#: installer/install.php:1457
+#: installer/install.php:1458
 msgid "Created under the"
 msgstr "創建之下"
 
@@ -12579,6 +12619,8 @@ msgstr "解僱智能工作流程幫助"
 #: modules/Finance/invoices_manage_print_print.php:90
 #: modules/Finance/invoices_manage_print_print.php:142
 #: modules/Finance/invoices_manage_print_print.php:158
+#: modules/Finance/invoices_view_print.php:98
+#: modules/Finance/invoices_view_print.php:112
 msgid "An error occurred."
 msgstr "出現錯誤"
 
@@ -12855,8 +12897,10 @@ msgstr "員工"
 #: modules/Planner/moduleFunctions.php:715
 #: modules/Timetable/moduleFunctions.php:419
 #: modules/Timetable/moduleFunctions.php:1700
-#: Admin/courseEnrolment_manage_byPerson_edit.php:261 functions.php:1511
+#: Admin/courseEnrolment_manage_byPerson_edit.php:261
+#: modules/Timetable/studentEnrolment_manage_edit.php:187 functions.php:1511
 #: functions.php:1591 modules/Activities/activities_payment.php:91
+#: modules/Behaviour/behaviour_letters.php:81
 #: modules/Behaviour/behaviour_manage.php:196
 #: modules/Behaviour/behaviour_pattern.php:250
 #: modules/Departments/department.php:224
@@ -12870,7 +12914,7 @@ msgstr "員工"
 #: modules/Formal Assessment/moduleFunctions.php:267
 #: modules/Individual Needs/in_edit.php:175
 #: modules/Individual Needs/in_summary.php:189
-#: modules/Library/library_browse.php:314
+#: modules/Library/library_browse.php:318
 #: modules/Library/library_lending.php:184
 #: modules/Library/library_manage_catalog.php:244
 #: modules/Library/report_catalogSummary.php:183
@@ -13079,7 +13123,7 @@ msgstr "登錄"
 #: Admin/applicationForm_manage_accept.php:458
 #: Admin/applicationForm_manage_accept.php:995
 #: Admin/applicationForm_manage_accept.php:1158 functions.php:2175
-#: installer/install.php:523 modules/Application Form/applicationForm.php:924
+#: installer/install.php:523 modules/Application Form/applicationForm.php:927
 #: modules/Staff/staff_view_details.php:223
 #: modules/Students/report_students_left.php:142
 #: modules/Students/report_students_new.php:204
@@ -13506,7 +13550,7 @@ msgstr "參與者"
 #: functions.php:2269 functions.php:2287 functions.php:2307 functions.php:2308
 #: functions.php:2486 functions.php:2567 functions.php:2591 functions.php:2604
 #: functions.php:2654 functions.php:2723 functions.php:2723
-#: modules/Resources/moduleFunctions.php:99
+#: modules/Resources/moduleFunctions.php:90
 msgid "Resource Tags"
 msgstr "資源標籤"
 
@@ -13673,8 +13717,8 @@ msgstr "顯示機密的數據"
 #: functions.php:2908 functions.php:2996 functions.php:2989 functions.php:3077
 #: functions.php:3013 functions.php:3101 functions.php:3026 functions.php:3114
 #: functions.php:3076 functions.php:3164 functions.php:3145 functions.php:3233
-#: functions.php:3145 functions.php:3233
-#: modules/Planner/planner_view_full.php:1879
+#: modules/Planner/planner_view_full.php:1879 functions.php:3145
+#: functions.php:3233 modules/Planner/planner_view_full.php:1879
 #, php-format
 msgid "%1$s  birthday today!"
 msgstr "今天是%1$s的生日！"
@@ -14339,6 +14383,7 @@ msgstr "申請表"
 #: modules/Attendance/report_studentsNotOnsite_byDate_print.php:28
 #: modules/Attendance/report_studentsNotPresent_byDate.php:28
 #: modules/Attendance/report_studentsNotPresent_byDate_print.php:28
+#: modules/Behaviour/behaviour_letters.php:28
 #: modules/Behaviour/behaviour_manage.php:31
 #: modules/Behaviour/behaviour_manage_add.php:31
 #: modules/Behaviour/behaviour_manage_addMulti.php:31
@@ -14405,6 +14450,8 @@ msgstr "申請表"
 #: modules/Finance/invoices_manage_print.php:28
 #: modules/Finance/invoices_manage_print_print.php:28
 #: modules/Finance/invoices_manage_processBulkExportContents.php:37
+#: modules/Finance/invoices_view.php:25
+#: modules/Finance/invoices_view_print.php:28
 #: modules/Formal Assessment/externalAssessment.php:28
 #: modules/Formal Assessment/externalAssessment_details.php:28
 #: modules/Formal Assessment/externalAssessment_manage_details_add.php:25
@@ -14490,7 +14537,7 @@ msgstr "申請表"
 #: modules/Rubrics/rubrics_view.php:25
 #: modules/School Admin/activitySettings.php:25
 #: modules/School Admin/alertLevelSettings.php:25
-#: modules/School Admin/behaviourSettings.php:28
+#: modules/School Admin/behaviourSettings.php:29
 #: modules/School Admin/daysOfWeek_manage.php:25
 #: modules/School Admin/department_manage.php:28
 #: modules/School Admin/department_manage_add.php:28
@@ -14772,10 +14819,11 @@ msgstr "你對這個行動沒有進。"
 #: modules/Attendance/report_studentHistory.php:205
 #: modules/Behaviour/behaviour_view.php:73
 #: modules/Finance/billingSchedule_manage.php:112
-#: modules/Finance/fees_manage.php:112
+#: modules/Finance/fees_manage.php:112 modules/Finance/invoices_view.php:116
 #: modules/Formal Assessment/externalAssessment.php:82
 #: modules/Formal Assessment/internalAssessment_view.php:203
 #: modules/Individual Needs/in_view.php:71
+#: modules/Library/report_viewOverdueItems.php:72
 #: modules/Markbook/markbook_view.php:1440
 #: modules/Messenger/messenger_manage.php:82
 #: modules/Planner/planner_deadlines.php:174
@@ -15015,6 +15063,9 @@ msgstr "清除搜索"
 #: Admin/userFields.php:90 Admin/gradeScales_manage_edit.php:250
 #: Admin/courseEnrolment_manage_byPerson_edit.php:289
 #: Admin/courseEnrolment_manage_byPerson_edit.php:411
+#: modules/Timetable/studentEnrolment_manage_edit.php:211
+#: modules/Timetable/studentEnrolment_manage_edit.php:311
+#: Admin/courseEnrolment_manage_class_edit.php:354
 #: i18n/dbStringsForTranslation.php:30 index_notification_ajax_alarm.php:160
 #: modules/Activities/activities_manage.php:174
 #: modules/Activities/activities_manage_edit.php:444
@@ -15023,6 +15074,7 @@ msgstr "清除搜索"
 #: modules/Activities/activities_my.php:70
 #: modules/Activities/activities_view.php:398
 #: modules/Activities/report_activityChoices_byStudent.php:196
+#: modules/Behaviour/behaviour_letters.php:148
 #: modules/Behaviour/behaviour_manage.php:298
 #: modules/Behaviour/behaviour_pattern.php:353
 #: modules/Behaviour/behaviour_view.php:136
@@ -15040,16 +15092,18 @@ msgstr "清除搜索"
 #: modules/Finance/invoicees_manage.php:186
 #: modules/Finance/invoices_manage.php:530
 #: modules/Finance/invoices_manage_print.php:116
+#: modules/Finance/invoices_view.php:256
 #: modules/Finance/moduleFunctions.php:595
 #: modules/Formal Assessment/externalAssessment.php:152
-#: modules/Formal Assessment/internalAssessment_manage.php:165
+#: modules/Formal Assessment/internalAssessment_manage.php:166
 #: modules/Individual Needs/in_summary.php:265
 #: modules/Individual Needs/in_view.php:130
-#: modules/Library/library_browse.php:441
+#: modules/Library/library_browse.php:450
 #: modules/Library/library_lending.php:287
 #: modules/Library/library_lending_item.php:215
 #: modules/Library/library_manage_catalog.php:342
 #: modules/Library/moduleFunctions.php:56
+#: modules/Library/report_viewOverdueItems.php:121
 #: modules/Markbook/markbook_edit.php:189
 #: modules/Messenger/messenger_manage.php:180 modules/Planner/outcomes.php:173
 #: modules/Planner/planner.php:290 modules/Planner/planner.php:464
@@ -15709,6 +15763,7 @@ msgstr "沒有年級可用。"
 #: modules/Messenger/messenger_post.php:1195
 #: modules/Planner/planner_add.php:1188
 #: Admin/courseEnrolment_manage_byPerson_edit.php:147
+#: modules/Timetable/studentEnrolment_manage_edit.php:100
 #: modules/Activities/activities_manage_add.php:584
 #: modules/Activities/activities_manage_edit.php:772
 #: modules/Activities/activities_manage_enrolment_add.php:159
@@ -16068,6 +16123,7 @@ msgstr "用 Control, Command 和/或 Shift 去選擇更多。"
 #: modules/Finance/invoices_manage_print.php:75
 #: modules/Finance/invoices_manage_print_print.php:46
 #: modules/Finance/invoices_payOnline.php:70
+#: modules/Finance/invoices_view_print.php:42
 #: modules/Formal Assessment/externalAssessment_manage_details_add.php:71
 #: modules/Formal Assessment/externalAssessment_manage_details_delete.php:65
 #: modules/Formal Assessment/externalAssessment_manage_details_edit.php:72
@@ -16470,6 +16526,8 @@ msgstr "你沒有指定一個或多個需要的參數。"
 #: modules/Finance/feeCategories_manage_delete.php:78
 #: modules/Finance/invoices_manage_delete.php:84
 #: modules/Finance/invoices_payOnline.php:90
+#: modules/Finance/invoices_view.php:144
+#: modules/Finance/invoices_view_print.php:58
 #: modules/Formal Assessment/externalAssessment_details.php:86
 #: modules/Formal Assessment/externalAssessment_manage_details_add.php:263
 #: modules/Formal Assessment/internalAssessment_manage.php:77
@@ -17060,6 +17118,7 @@ msgstr "你的請求失敗由於復健錯誤。"
 #: modules/Attendance/report_studentsNotOnsite_byDate_print.php:104
 #: modules/Attendance/report_studentsNotPresent_byDate.php:144
 #: modules/Attendance/report_studentsNotPresent_byDate_print.php:104
+#: modules/Behaviour/behaviour_letters.php:145
 #: modules/Finance/budgetCycles_manage.php:79
 #: modules/Finance/budgetCycles_manage_add.php:85
 #: modules/Finance/budgetCycles_manage_edit.php:114
@@ -17084,9 +17143,10 @@ msgstr "你的請求失敗由於復健錯誤。"
 #: modules/Finance/invoices_manage_edit.php:245
 #: modules/Finance/invoices_manage_issue.php:219
 #: modules/Finance/invoices_manage_processBulkExportContents.php:105
+#: modules/Finance/invoices_view.php:242
 #: modules/Finance/moduleFunctions.php:1019
 #: modules/Finance/moduleFunctions.php:1323
-#: modules/Library/library_browse.php:435
+#: modules/Library/library_browse.php:444
 #: modules/Library/library_lending.php:283
 #: modules/Library/library_lending_item.php:147
 #: modules/Library/library_lending_item.php:202
@@ -17206,6 +17266,7 @@ msgstr "狀態"
 #: modules/Finance/fees_manage.php:59
 #: modules/Finance/invoicees_manage_edit.php:95
 #: modules/Finance/invoices_manage.php:120
+#: modules/Finance/invoices_view.php:171
 #: modules/Library/library_lending_item.php:84
 #: modules/Library/library_lending_item_signout.php:50
 #: modules/Library/library_manage_catalog_duplicate.php:87
@@ -17248,6 +17309,7 @@ msgstr "指定的記錄不存在"
 #: modules/Activities/activities_manage_enrolment_add.php:163
 #: modules/Timetable Admin/courseEnrolment_manage_class_edit.php:118
 #: modules/Timetable/studentEnrolment_manage_edit.php:112
+#: modules/Timetable/studentEnrolment_manage_edit.php:99
 #: modules/Activities/activities_manage_enrolment_add.php:163
 #: modules/Timetable/studentEnrolment_manage_edit.php:99
 #: modules/Timetable Admin/courseEnrolment_manage_class_edit.php:118
@@ -17441,6 +17503,7 @@ msgstr "所有用戶"
 #: modules/Finance/invoices_manage_issue.php:91
 #: modules/Finance/invoices_manage_print.php:91
 #: modules/Finance/invoices_manage_print_print.php:62
+#: modules/Finance/invoices_view_print.php:76
 #: modules/Formal Assessment/externalAssessment_manage_details_delete.php:80
 #: modules/Formal Assessment/externalAssessment_manage_details_edit.php:87
 #: modules/Library/library_lending_item_edit.php:50
@@ -17723,7 +17786,8 @@ msgstr "無法找到指定的記錄"
 #: Admin/applicationForm_manage_edit.php:2199
 #: modules/Behaviour/behaviour_manage_add.php:344
 #: Assessment/externalAssessment_manage_details_add.php:476
-#: modules/Planner/planner_duplicate.php:330 installer/install.php:166
+#: modules/Planner/planner_duplicate.php:330
+#: Admin/applicationForm_manage_edit.php:2203 installer/install.php:166
 #: modules/Activities/activities_manage_enrolment_edit.php:103
 #: modules/Activities/activities_manage_enrolment_edit.php:112
 #: modules/Attendance/attendance_future_byPerson.php:185
@@ -17976,6 +18040,7 @@ msgstr "不能改變這個價值。"
 #: modules/Behaviour/behaviour_manage_add.php:343
 #: modules/Markbook/markbook_view.php:335
 #: Admin/courseEnrolment_manage_byPerson_edit.php:216
+#: modules/Timetable/studentEnrolment_manage_edit.php:146
 #: i18n/dbStringsForTranslation.php:1040 i18n/dbStringsForTranslation.php:1047
 #: modules/Activities/activities_manage_enrolment.php:216
 #: modules/Activities/activities_manage_enrolment_edit.php:111
@@ -17986,10 +18051,12 @@ msgstr "不能改變這個價值。"
 #: modules/Activities/report_activityType_rollGroup.php:131
 #: modules/Activities/report_attendance.php:118
 #: modules/Activities/report_attendance_print.php:80
-#: modules/Application Form/applicationForm.php:152
+#: modules/Application Form/applicationForm.php:155
 #: modules/Attendance/attendance_future_byPerson.php:107
 #: modules/Attendance/attendance_take_byPerson.php:92
 #: modules/Attendance/report_studentHistory.php:60
+#: modules/Behaviour/behaviour_letters.php:49
+#: modules/Behaviour/behaviour_letters.php:138
 #: modules/Behaviour/behaviour_manage.php:85
 #: modules/Behaviour/behaviour_manage_add.php:120
 #: modules/Behaviour/behaviour_manage_add.php:343
@@ -17998,6 +18065,7 @@ msgstr "不能改變這個價值。"
 #: modules/Finance/invoices_manage.php:237
 #: modules/Finance/invoices_manage.php:509
 #: modules/Finance/invoices_manage_processBulkExportContents.php:90
+#: modules/Finance/invoices_view.php:235
 #: modules/Formal Assessment/internalAssessment_view.php:58
 #: modules/Formal Assessment/internalAssessment_view.php:189
 #: modules/Formal Assessment/internalAssessment_write.php:280
@@ -18280,19 +18348,24 @@ msgstr "學生"
 #: modules/Markbook/markbook_edit_add.php:269
 #: modules/Rubrics/rubrics_duplicate.php:139
 #: modules/Rubrics/rubrics_duplicate.php:187 Admin/systemSettings.php:1011
-#: installer/install.php:996 installer/install.php:1062
-#: modules/Activities/activities_copy.php:84
+#: modules/Library/library_manage_catalog_duplicate.php:578
+#: Admin/applicationForm_manage_edit.php:1077
+#: Admin/applicationForm_manage_edit.php:1142
+#: Admin/applicationForm_manage_edit.php:1210
+#: Admin/applicationForm_manage_edit.php:1332
+#: Admin/applicationForm_manage_edit.php:1866 installer/install.php:997
+#: installer/install.php:1063 modules/Activities/activities_copy.php:84
 #: modules/Activities/activities_view_register.php:348
-#: modules/Application Form/applicationForm.php:228
-#: modules/Application Form/applicationForm.php:609
-#: modules/Application Form/applicationForm.php:657
-#: modules/Application Form/applicationForm.php:893
-#: modules/Application Form/applicationForm.php:956
-#: modules/Application Form/applicationForm.php:1091
-#: modules/Application Form/applicationForm.php:1171
-#: modules/Application Form/applicationForm.php:1187
-#: modules/Application Form/applicationForm.php:1731
-#: modules/Application Form/applicationForm.php:2076
+#: modules/Application Form/applicationForm.php:231
+#: modules/Application Form/applicationForm.php:612
+#: modules/Application Form/applicationForm.php:660
+#: modules/Application Form/applicationForm.php:896
+#: modules/Application Form/applicationForm.php:959
+#: modules/Application Form/applicationForm.php:1094
+#: modules/Application Form/applicationForm.php:1174
+#: modules/Application Form/applicationForm.php:1190
+#: modules/Application Form/applicationForm.php:1734
+#: modules/Application Form/applicationForm.php:2079
 #: modules/Behaviour/behaviour_manage_add.php:131
 #: modules/Behaviour/behaviour_manage_add.php:216
 #: modules/Behaviour/behaviour_manage_add.php:258
@@ -18366,6 +18439,9 @@ msgstr "學生"
 #: modules/Rubrics/rubrics_add.php:107 modules/Rubrics/rubrics_add.php:156
 #: modules/Rubrics/rubrics_duplicate.php:139
 #: modules/Rubrics/rubrics_duplicate.php:187
+#: modules/School Admin/behaviourSettings.php:303
+#: modules/School Admin/behaviourSettings.php:360
+#: modules/School Admin/behaviourSettings.php:417
 #: modules/School Admin/externalAssessments_manage_edit_field_add.php:152
 #: modules/School Admin/externalAssessments_manage_edit_field_edit.php:153
 #: modules/School Admin/fileExtensions_manage_add.php:95
@@ -18381,7 +18457,7 @@ msgstr "學生"
 #: modules/System Admin/systemSettings.php:416
 #: modules/System Admin/systemSettings.php:459
 #: modules/System Admin/systemSettings.php:502
-#: modules/System Admin/systemSettings.php:1011
+#: modules/System Admin/systemSettings.php:1012
 #: modules/Timetable/report_viewAvailableSpaces.php:67
 #: modules/Timetable/report_viewAvailableTeachers.php:62
 #: modules/Timetable/spaceBooking_manage_add.php:96
@@ -18674,22 +18750,28 @@ msgstr "請選擇..."
 #: modules/Rubrics/rubrics_duplicate.php:145
 #: modules/Rubrics/rubrics_duplicate.php:209 Admin/systemSettings.php:1033
 #: Admin/courseEnrolment_manage_byPerson_edit.php:269
-#: installer/install.php:1013 installer/install.php:1079
-#: modules/Activities/activities_copy.php:100
+#: modules/Timetable/studentEnrolment_manage_edit.php:194
+#: Admin/applicationForm_manage_edit.php:610
+#: Admin/applicationForm_manage_edit.php:1089
+#: Admin/applicationForm_manage_edit.php:1158
+#: Admin/applicationForm_manage_edit.php:1231
+#: Admin/applicationForm_manage_edit.php:1349
+#: Admin/applicationForm_manage_edit.php:1387 installer/install.php:1014
+#: installer/install.php:1080 modules/Activities/activities_copy.php:100
 #: modules/Activities/activities_payment.php:111
 #: modules/Activities/activities_view_register.php:371
-#: modules/Application Form/applicationForm.php:234
-#: modules/Application Form/applicationForm.php:287
-#: modules/Application Form/applicationForm.php:336
-#: modules/Application Form/applicationForm.php:626
-#: modules/Application Form/applicationForm.php:674
-#: modules/Application Form/applicationForm.php:901
-#: modules/Application Form/applicationForm.php:972
-#: modules/Application Form/applicationForm.php:1100
-#: modules/Application Form/applicationForm.php:1177
-#: modules/Application Form/applicationForm.php:1203
-#: modules/Application Form/applicationForm.php:1741
-#: modules/Application Form/applicationForm.php:2085
+#: modules/Application Form/applicationForm.php:237
+#: modules/Application Form/applicationForm.php:290
+#: modules/Application Form/applicationForm.php:339
+#: modules/Application Form/applicationForm.php:629
+#: modules/Application Form/applicationForm.php:677
+#: modules/Application Form/applicationForm.php:904
+#: modules/Application Form/applicationForm.php:975
+#: modules/Application Form/applicationForm.php:1103
+#: modules/Application Form/applicationForm.php:1180
+#: modules/Application Form/applicationForm.php:1206
+#: modules/Application Form/applicationForm.php:1744
+#: modules/Application Form/applicationForm.php:2088
 #: modules/Behaviour/behaviour_manage_add.php:154
 #: modules/Behaviour/behaviour_manage_add.php:234
 #: modules/Behaviour/behaviour_manage_add.php:269
@@ -18746,6 +18828,9 @@ msgstr "請選擇..."
 #: modules/Rubrics/rubrics_add.php:113 modules/Rubrics/rubrics_add.php:178
 #: modules/Rubrics/rubrics_duplicate.php:145
 #: modules/Rubrics/rubrics_duplicate.php:209
+#: modules/School Admin/behaviourSettings.php:314
+#: modules/School Admin/behaviourSettings.php:371
+#: modules/School Admin/behaviourSettings.php:428
 #: modules/School Admin/externalAssessments_manage_edit_field_add.php:160
 #: modules/School Admin/externalAssessments_manage_edit_field_edit.php:166
 #: modules/School Admin/fileExtensions_manage_add.php:106
@@ -18760,7 +18845,7 @@ msgstr "請選擇..."
 #: modules/System Admin/systemSettings.php:435
 #: modules/System Admin/systemSettings.php:478
 #: modules/System Admin/systemSettings.php:521
-#: modules/System Admin/systemSettings.php:1033
+#: modules/System Admin/systemSettings.php:1034
 #: modules/Timetable/report_viewAvailableSpaces.php:88
 #: modules/Timetable/report_viewAvailableTeachers.php:83
 #: modules/Timetable/spaceBooking_manage_add.php:112
@@ -18861,7 +18946,7 @@ msgstr "選擇一些東西"
 #: modules/Attendance/report_studentsNotPresent_byDate.php:82
 #: modules/Library/report_catalogSummary.php:190
 #: modules/Library/report_studentBorrowingRecord.php:88
-#: modules/Library/report_viewOverdueItems.php:38
+#: modules/Library/report_viewOverdueItems.php:82
 #: modules/Planner/report_parentWeeklyEmailSummaryConfirmation.php:115
 #: modules/Planner/report_workSummary_byRollGroup.php:91
 #: modules/Students/report_emergencySMS_byTransport.php:142
@@ -18931,6 +19016,7 @@ msgstr "報告數據"
 #: modules/Finance/invoices_manage_print.php:195
 #: modules/Finance/invoices_manage_print.php:222
 #: modules/Finance/invoices_manage_print.php:243
+#: modules/Finance/invoices_view.php:363 modules/Finance/invoices_view.php:366
 #: modules/Students/report_student_emergencySummary.php:127
 #: modules/Students/report_student_emergencySummary_print.php:60
 #: modules/Students/report_student_medicalSummary.php:127
@@ -18960,9 +19046,11 @@ msgstr "打印"
 #: Updater/data_personal.php:381 Admin/applicationForm_manage_edit.php:1116
 #: Admin/applicationForm_manage_edit.php:1237 Admin/user_manage_edit.php:173
 #: Form/applicationForm.php:935 Form/applicationForm.php:1107
-#: installer/install.php:476 modules/Application Form/applicationForm.php:164
-#: modules/Application Form/applicationForm.php:935
-#: modules/Application Form/applicationForm.php:1107
+#: Admin/applicationForm_manage_edit.php:1120
+#: Admin/applicationForm_manage_edit.php:1241 installer/install.php:476
+#: modules/Application Form/applicationForm.php:167
+#: modules/Application Form/applicationForm.php:938
+#: modules/Application Form/applicationForm.php:1110
 #: modules/Data Updater/data_personal.php:381
 #: modules/User Admin/applicationForm_manage_edit.php:425
 #: modules/User Admin/applicationForm_manage_edit.php:1120
@@ -18986,9 +19074,9 @@ msgstr "顯示在身分證明文件的名稱。"
 #: installer/install.php:489 Form/applicationForm.php:177
 #: Form/applicationForm.php:1124 Updater/data_personal.php:399
 #: Admin/applicationForm_manage_edit.php:1256 Admin/user_manage_edit.php:186
-#: Form/applicationForm.php:1120 installer/install.php:489
-#: modules/Application Form/applicationForm.php:177
-#: modules/Application Form/applicationForm.php:1120
+#: Form/applicationForm.php:1120 Admin/applicationForm_manage_edit.php:1260
+#: installer/install.php:489 modules/Application Form/applicationForm.php:180
+#: modules/Application Form/applicationForm.php:1123
 #: modules/Data Updater/data_personal.php:399
 #: modules/User Admin/applicationForm_manage_edit.php:438
 #: modules/User Admin/applicationForm_manage_edit.php:1260
@@ -19013,9 +19101,11 @@ msgstr "顯示在身分證明文件的名稱。"
 #: Admin/applicationForm_manage_edit.php:1125
 #: Admin/applicationForm_manage_edit.php:1275 Admin/user_manage_edit.php:199
 #: Form/applicationForm.php:944 Form/applicationForm.php:1133
-#: modules/Application Form/applicationForm.php:190
-#: modules/Application Form/applicationForm.php:944
-#: modules/Application Form/applicationForm.php:1133
+#: Admin/applicationForm_manage_edit.php:1129
+#: Admin/applicationForm_manage_edit.php:1279
+#: modules/Application Form/applicationForm.php:193
+#: modules/Application Form/applicationForm.php:947
+#: modules/Application Form/applicationForm.php:1136
 #: modules/Data Updater/data_personal.php:417
 #: modules/User Admin/applicationForm_manage_edit.php:451
 #: modules/User Admin/applicationForm_manage_edit.php:1129
@@ -19036,9 +19126,9 @@ msgstr "最常見的名稱, 別號, 綽號 等等"
 #: Admin/import_users.php:144 Form/applicationForm.php:203
 #: Form/applicationForm.php:1150 Updater/data_personal.php:435
 #: Admin/applicationForm_manage_edit.php:1294 Admin/user_manage_edit.php:212
-#: Form/applicationForm.php:1146
-#: modules/Application Form/applicationForm.php:203
-#: modules/Application Form/applicationForm.php:1146
+#: Form/applicationForm.php:1146 Admin/applicationForm_manage_edit.php:1298
+#: modules/Application Form/applicationForm.php:206
+#: modules/Application Form/applicationForm.php:1149
 #: modules/Data Updater/data_personal.php:435
 #: modules/User Admin/applicationForm_manage_edit.php:464
 #: modules/User Admin/applicationForm_manage_edit.php:1298
@@ -19058,9 +19148,9 @@ msgstr "顯示在身分證明文件的全名。"
 #: Form/applicationForm.php:1133 Form/applicationForm.php:216
 #: Form/applicationForm.php:1163 Updater/data_personal.php:453
 #: Admin/applicationForm_manage_edit.php:1313 Admin/user_manage_edit.php:225
-#: Form/applicationForm.php:1159
-#: modules/Application Form/applicationForm.php:216
-#: modules/Application Form/applicationForm.php:1159
+#: Form/applicationForm.php:1159 Admin/applicationForm_manage_edit.php:1317
+#: modules/Application Form/applicationForm.php:219
+#: modules/Application Form/applicationForm.php:1162
 #: modules/Data Updater/data_personal.php:453
 #: modules/User Admin/applicationForm_manage_edit.php:477
 #: modules/User Admin/applicationForm_manage_edit.php:1317
@@ -19082,8 +19172,8 @@ msgstr "中文或其他基於字符的的名稱."
 #: publicRegistration.php:161 publicRegistration.php:149
 #: Form/applicationForm.php:229 Form/applicationForm.php:1176
 #: Admin/user_manage_edit.php:238 Form/applicationForm.php:1172
-#: modules/Application Form/applicationForm.php:229
-#: modules/Application Form/applicationForm.php:1172
+#: modules/Application Form/applicationForm.php:232
+#: modules/Application Form/applicationForm.php:1175
 #: modules/Students/report_rollGroupSummary.php:84
 #: modules/Students/report_students_ageGenderSummary.php:98
 #: modules/Students/report_students_ageGenderSummary.php:109
@@ -19106,8 +19196,8 @@ msgstr "女性"
 #: publicRegistration.php:162 publicRegistration.php:150
 #: Form/applicationForm.php:230 Form/applicationForm.php:1177
 #: Admin/user_manage_edit.php:239 Form/applicationForm.php:1173
-#: modules/Application Form/applicationForm.php:230
-#: modules/Application Form/applicationForm.php:1173
+#: modules/Application Form/applicationForm.php:233
+#: modules/Application Form/applicationForm.php:1176
 #: modules/Students/report_rollGroupSummary.php:81
 #: modules/Students/report_students_ageGenderSummary.php:93
 #: modules/Students/report_students_ageGenderSummary.php:104
@@ -19133,8 +19223,10 @@ msgstr "男性"
 #: Admin/applicationForm_manage_edit.php:789
 #: Admin/applicationForm_manage_edit.php:1540 Admin/user_manage_edit.php:1323
 #: Form/applicationForm.php:498 Form/applicationForm.php:1341
-#: modules/Application Form/applicationForm.php:498
-#: modules/Application Form/applicationForm.php:1341
+#: Admin/applicationForm_manage_edit.php:793
+#: Admin/applicationForm_manage_edit.php:1544
+#: modules/Application Form/applicationForm.php:501
+#: modules/Application Form/applicationForm.php:1344
 #: modules/Data Updater/data_personal.php:1434
 #: modules/User Admin/applicationForm_manage_edit.php:793
 #: modules/User Admin/applicationForm_manage_edit.php:1544
@@ -19157,8 +19249,10 @@ msgstr "如果相關。"
 #: Updater/data_personal.php:954 Admin/applicationForm_manage_edit.php:830
 #: Admin/applicationForm_manage_edit.php:1586 Admin/user_manage_edit.php:701
 #: Form/applicationForm.php:539 Form/applicationForm.php:1386
-#: modules/Application Form/applicationForm.php:539
-#: modules/Application Form/applicationForm.php:1386
+#: Admin/applicationForm_manage_edit.php:834
+#: Admin/applicationForm_manage_edit.php:1590
+#: modules/Application Form/applicationForm.php:542
+#: modules/Application Form/applicationForm.php:1389
 #: modules/Data Updater/data_personal.php:954
 #: modules/User Admin/applicationForm_manage_edit.php:834
 #: modules/User Admin/applicationForm_manage_edit.php:1590
@@ -19190,8 +19284,8 @@ msgstr "類型, 國家代碼"
 #: Admin/family_manage_add.php:165 Admin/family_manage_edit.php:246
 #: Admin/import_users.php:154 Admin/import_users.php:157
 #: Admin/user_manage_edit.php:527 Admin/user_manage_edit.php:633
-#: Form/applicationForm.php:837
-#: modules/Application Form/applicationForm.php:837
+#: Form/applicationForm.php:837 Admin/applicationForm_manage_edit.php:1021
+#: modules/Application Form/applicationForm.php:840
 #: modules/Data Updater/data_family.php:261
 #: modules/Data Updater/data_personal.php:781
 #: modules/Data Updater/data_personal.php:888
@@ -19231,8 +19325,8 @@ msgstr "單位, 建築, 街"
 #: Admin/family_manage_add.php:174 Admin/family_manage_edit.php:255
 #: Admin/import_users.php:155 Admin/import_users.php:158
 #: Admin/user_manage_edit.php:536 Admin/user_manage_edit.php:642
-#: Form/applicationForm.php:850
-#: modules/Application Form/applicationForm.php:850
+#: Form/applicationForm.php:850 Admin/applicationForm_manage_edit.php:1034
+#: modules/Application Form/applicationForm.php:853
 #: modules/Data Updater/data_family.php:274
 #: modules/Data Updater/data_personal.php:790
 #: modules/Data Updater/data_personal.php:897
@@ -19382,6 +19476,7 @@ msgstr "你的請求成功了, 但是有些數據沒有正確的保存。"
 #: modules/Behaviour/behaviour_view.php:61
 #: modules/Finance/billingSchedule_manage.php:100
 #: modules/Finance/fees_manage.php:100 modules/Finance/invoicees_manage.php:99
+#: modules/Finance/invoices_view.php:101
 #: modules/Formal Assessment/externalAssessment.php:55
 #: modules/Individual Needs/in_view.php:59
 #: modules/Markbook/markbook_view.php:1425 modules/Planner/planner.php:173
@@ -19577,9 +19672,10 @@ msgstr "後"
 #: modules/Finance/billingSchedule_manage.php:80
 #: modules/Finance/fees_manage.php:77 modules/Finance/fees_manage.php:80
 #: modules/Finance/invoices_manage.php:138
-#: modules/Finance/invoices_manage.php:141 modules/Planner/units.php:181
-#: modules/Planner/units.php:184 modules/Planner/units_public.php:94
-#: modules/Planner/units_public.php:97
+#: modules/Finance/invoices_manage.php:141
+#: modules/Finance/invoices_view.php:189 modules/Finance/invoices_view.php:192
+#: modules/Planner/units.php:181 modules/Planner/units.php:184
+#: modules/Planner/units_public.php:94 modules/Planner/units_public.php:97
 #: modules/School Admin/rollGroup_manage.php:110
 #: modules/School Admin/rollGroup_manage.php:113
 #: modules/School Admin/schoolYearSpecialDay_manage.php:114
@@ -19624,9 +19720,10 @@ msgstr "前一年"
 #: modules/Finance/billingSchedule_manage.php:87
 #: modules/Finance/fees_manage.php:84 modules/Finance/fees_manage.php:87
 #: modules/Finance/invoices_manage.php:145
-#: modules/Finance/invoices_manage.php:148 modules/Planner/units.php:188
-#: modules/Planner/units.php:191 modules/Planner/units_public.php:101
-#: modules/Planner/units_public.php:104
+#: modules/Finance/invoices_manage.php:148
+#: modules/Finance/invoices_view.php:196 modules/Finance/invoices_view.php:199
+#: modules/Planner/units.php:188 modules/Planner/units.php:191
+#: modules/Planner/units_public.php:101 modules/Planner/units_public.php:104
 #: modules/School Admin/rollGroup_manage.php:117
 #: modules/School Admin/rollGroup_manage.php:120
 #: modules/School Admin/schoolYearSpecialDay_manage.php:121
@@ -19903,7 +20000,7 @@ msgstr "簡稱"
 #: Admin/alarm.php:48 Admin/thirdPartySettings.php:48
 #: Admin/publicRegistrationSettings.php:45 Admin/behaviourSettings.php:48
 #: Admin/trackingSettings.php:45 modules/School Admin/activitySettings.php:45
-#: modules/School Admin/behaviourSettings.php:48
+#: modules/School Admin/behaviourSettings.php:49
 #: modules/School Admin/department_manage.php:60
 #: modules/School Admin/financeSettings.php:45
 #: modules/School Admin/librarySettings.php:45
@@ -19941,6 +20038,8 @@ msgstr "由於數據庫錯誤而失敗了在你的請求的一個或多個領域
 #: Admin/courseEnrolment_manage_byPerson_edit.php:257
 #: modules/Activities/activities_payment.php:93
 #: Admin/courseEnrolment_manage_byPerson_edit.php:263
+#: modules/Timetable/studentEnrolment_manage_edit.php:189
+#: modules/Timetable/studentEnrolment_manage_edit.php:194
 #: modules/Activities/activities_payment.php:93
 #: modules/Finance/expenses_manage.php:357
 #: modules/Finance/invoices_manage.php:487
@@ -19989,7 +20088,7 @@ msgstr "選擇行動"
 #: modules/Activities/activities_my_full.php:212
 #: modules/Activities/activities_view_full.php:229
 #: modules/Activities/activities_view_full.php:233
-#: modules/Library/library_browse.php:438
+#: modules/Library/library_browse.php:447
 #: modules/Library/library_import.php:147
 #: modules/Library/library_lending.php:135
 #: modules/Library/library_lending.php:280
@@ -20177,7 +20276,8 @@ msgstr "課程"
 #: Updater/data_finance.php:448 modules/Finance/expenses_manage.php:265
 #: modules/Finance/invoicees_manage_edit.php:288
 #: Admin/applicationForm_manage_edit.php:2107 Form/applicationForm.php:1964
-#: modules/Application Form/applicationForm.php:1964
+#: Admin/applicationForm_manage_edit.php:2111
+#: modules/Application Form/applicationForm.php:1967
 #: modules/Data Updater/data_finance.php:448
 #: modules/Finance/expenseRequest_manage.php:192
 #: modules/Finance/expenseRequest_manage.php:239
@@ -20514,6 +20614,7 @@ msgstr "5"
 #: modules/Finance/invoicees_manage.php:136
 #: modules/Finance/invoices_manage.php:461
 #: modules/Finance/invoices_manage.php:474
+#: modules/Finance/invoices_view.php:217 modules/Finance/invoices_view.php:226
 #: modules/Library/library_lending.php:197
 #: modules/Library/library_manage_catalog.php:257
 #: modules/Markbook/markbook_edit_add.php:75
@@ -20647,7 +20748,7 @@ msgstr "序列號"
 #: i18n/dbStringsForTranslation.php:100 i18n/dbStringsForTranslation.php:101
 #: i18n/dbStringsForTranslation.php:106 Admin/behaviourSettings.php:34
 #: i18n/dbStringsForTranslation.php:115 i18n/dbStringsForTranslation.php:115
-#: modules/School Admin/behaviourSettings.php:34
+#: modules/School Admin/behaviourSettings.php:35
 msgid "Manage Behaviour Settings"
 msgstr "管理行為的設置"
 
@@ -20860,7 +20961,9 @@ msgstr "徽標"
 #: Admin/courseEnrolment_manage_byPerson_edit.php:207
 #: Admin/import_users.php:151 modules/Messenger/messenger_post.php:342
 #: modules/Planner/planner_add.php:793 modules/Planner/planner_add.php:1209
-#: Admin/courseEnrolment_manage_byPerson_edit.php:212 likes.php:46
+#: Admin/courseEnrolment_manage_byPerson_edit.php:212
+#: modules/Timetable/studentEnrolment_manage_edit.php:142
+#: modules/Timetable/studentEnrolment_manage_edit.php:208 likes.php:46
 #: modules/Activities/activities_manage_add.php:622
 #: modules/Activities/activities_manage_edit.php:728
 #: modules/Activities/activities_manage_edit.php:810
@@ -21020,17 +21123,21 @@ msgstr "老師 (課程)"
 #: Form/applicationForm.php:1199 Form/applicationForm.php:1422
 #: Form/applicationForm.php:1561 Form/applicationForm.php:1978
 #: modules/Attendance/attendance_take_byRollGroup.php:326
+#: Admin/applicationForm_manage_edit.php:864
+#: Admin/applicationForm_manage_edit.php:1154
+#: Admin/applicationForm_manage_edit.php:1380
+#: Admin/applicationForm_manage_edit.php:1630
 #: i18n/dbStringsForTranslation.php:46 i18n/dbStringsForTranslation.php:828
 #: i18n/dbStringsForTranslation.php:891 i18n/dbStringsForTranslation.php:968
 #: i18n/dbStringsForTranslation.php:1035 i18n/dbStringsForTranslation.php:1042
 #: modules/Activities/activities_manage_add.php:629
 #: modules/Activities/activities_manage_edit.php:817
-#: modules/Application Form/applicationForm.php:565
-#: modules/Application Form/applicationForm.php:968
-#: modules/Application Form/applicationForm.php:1199
-#: modules/Application Form/applicationForm.php:1422
-#: modules/Application Form/applicationForm.php:1561
-#: modules/Application Form/applicationForm.php:1978
+#: modules/Application Form/applicationForm.php:568
+#: modules/Application Form/applicationForm.php:971
+#: modules/Application Form/applicationForm.php:1202
+#: modules/Application Form/applicationForm.php:1425
+#: modules/Application Form/applicationForm.php:1564
+#: modules/Application Form/applicationForm.php:1981
 #: modules/Attendance/attendance_future_byPerson.php:241
 #: modules/Attendance/attendance_take_byPerson.php:317
 #: modules/Attendance/attendance_take_byRollGroup.php:326
@@ -21471,7 +21578,7 @@ msgstr "編輯領域"
 #: modules/Finance/invoices_manage_edit.php:559
 #: modules/Finance/moduleFunctions.php:1109
 #: modules/Finance/moduleFunctions.php:1441
-#: modules/Library/library_browse.php:235
+#: modules/Library/library_browse.php:239
 #: modules/Planner/curriculumMapping_outcomesByCourse.php:160
 #: modules/Planner/moduleFunctions.php:239 modules/Planner/outcomes.php:161
 #: modules/Planner/outcomes_add.php:224 modules/Planner/outcomes_edit.php:208
@@ -22207,7 +22314,7 @@ msgstr "過去"
 #: modules/Finance/budgetCycles_manage_edit.php:119
 #: modules/Finance/budgetCycles_manage_add.php:90
 #: modules/Finance/budgetCycles_manage_edit.php:119
-#: modules/Rubrics/moduleFunctions.php:307
+#: modules/Rubrics/moduleFunctions.php:306
 #: modules/School Admin/schoolYear_manage_add.php:82
 #: modules/School Admin/schoolYear_manage_edit.php:111
 msgid "Current"
@@ -23210,16 +23317,16 @@ msgstr "密碼策略"
 #: Admin/systemSettings.php:890 Admin/applicationForm_manage_edit.php:2228
 #: Admin/user_manage_add.php:1146 Admin/user_manage_edit.php:1485
 #: installer/install.php:973 Form/applicationForm.php:2061
-#: Admin/systemSettings.php:891 installer/install.php:973
-#: modules/Application Form/applicationForm.php:2061
+#: Admin/systemSettings.php:891 Admin/applicationForm_manage_edit.php:2232
+#: installer/install.php:974 modules/Application Form/applicationForm.php:2064
 #: modules/Data Updater/data_personal.php:1521
-#: modules/School Admin/behaviourSettings.php:220
+#: modules/School Admin/behaviourSettings.php:461
 #: modules/School Admin/markbookSettings.php:294
 #: modules/School Admin/studentsSettings.php:145
 #: modules/Staff/staff_view_details.php:408
 #: modules/Students/student_view_details.php:1013
 #: modules/System Admin/systemSettings.php:657
-#: modules/System Admin/systemSettings.php:891
+#: modules/System Admin/systemSettings.php:892
 #: modules/User Admin/applicationForm_manage_edit.php:2232
 #: modules/User Admin/user_manage_add.php:1146
 #: modules/User Admin/user_manage_edit.php:1485
@@ -23243,7 +23350,7 @@ msgstr "月曆, 網頁, 電子郵件"
 #: installer/install.php:912 installer/install.php:914
 #: installer/install.php:915 installer/install.php:918
 #: installer/install.php:924 installer/install.php:925
-#: installer/install.php:925
+#: installer/install.php:926
 msgid "gibbonedu.com Value-Added Services"
 msgstr "gibbonedu.com 直-增值服務"
 
@@ -23645,6 +23752,7 @@ msgstr "預期"
 #: modules/Timetable/studentEnrolment_manage.php:93
 #: modules/Activities/report_activityType_rollGroup.php:149
 #: modules/Finance/invoices_manage.php:522
+#: modules/Finance/invoices_view.php:248
 #: modules/Students/report_rollGroupSummary.php:87
 #: modules/Timetable/studentEnrolment_manage.php:93
 #: modules/Timetable Admin/courseEnrolment_manage.php:143
@@ -23843,6 +23951,7 @@ msgstr "目前的註冊"
 #: Admin/courseEnrolment_manage_byPerson_edit.php:258
 #: Admin/courseEnrolment_manage_byPerson_edit.php:264
 #: modules/Timetable/studentEnrolment_manage_edit.php:190
+#: modules/Timetable/studentEnrolment_manage_edit.php:190
 #: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php:264
 #: modules/Timetable Admin/courseEnrolment_manage_class_edit.php:228
 msgid "Mark as left"
@@ -23984,7 +24093,9 @@ msgstr "被標記為離開"
 #: Admin/gradeScales_manage_edit.php:280
 #: Admin/courseEnrolment_manage_byPerson_edit.php:265
 #: Admin/courseEnrolment_manage_byPerson_edit.php:332
-#: Admin/courseEnrolment_manage_byPerson_edit.php:439 functions.php:1601
+#: Admin/courseEnrolment_manage_byPerson_edit.php:439
+#: Admin/courseEnrolment_manage_class_edit.php:301
+#: Admin/courseEnrolment_manage_class_edit.php:387 functions.php:1601
 #: modules/Activities/activities_manage.php:279
 #: modules/Activities/activities_manage_edit.php:489
 #: modules/Activities/activities_manage_edit.php:755
@@ -24001,7 +24112,7 @@ msgstr "被標記為離開"
 #: modules/Finance/invoices_manage.php:490
 #: modules/Finance/invoices_manage.php:653
 #: modules/Finance/moduleFunctions.php:868
-#: modules/Formal Assessment/internalAssessment_manage.php:191
+#: modules/Formal Assessment/internalAssessment_manage.php:193
 #: modules/Formal Assessment/internalAssessment_write_data.php:472
 #: modules/Formal Assessment/moduleFunctions.php:298
 #: modules/Library/library_manage_catalog.php:435
@@ -24100,6 +24211,8 @@ msgstr "班級代碼"
 #: Admin/courseEnrolment_manage_byPerson_edit.php:376
 #: Admin/courseEnrolment_manage_byPerson_edit.php:283
 #: Admin/courseEnrolment_manage_byPerson_edit.php:408
+#: modules/Timetable/studentEnrolment_manage_edit.php:308
+#: Admin/courseEnrolment_manage_class_edit.php:351
 #: modules/Timetable/studentEnrolment_manage_edit.php:308
 #: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php:283
 #: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php:408
@@ -24232,6 +24345,7 @@ msgstr "編輯 %1$s. %2$s 招生"
 #: modules/Timetable Admin/courseEnrolment_manage_class_edit.php:106
 #: modules/Timetable/studentEnrolment_manage_edit.php:105
 #: modules/Timetable/studentEnrolment_manage_edit.php:92
+#: modules/Timetable/studentEnrolment_manage_edit.php:92
 #: modules/Timetable Admin/courseEnrolment_manage_class_edit.php:106
 msgid "Add Participants"
 msgstr "加參與者"
@@ -24239,11 +24353,13 @@ msgstr "加參與者"
 #: modules/Timetable Admin/courseEnrolment_manage_class_edit.php:202
 #: modules/Timetable/studentEnrolment_manage_edit.php:177
 #: modules/Timetable/studentEnrolment_manage_edit.php:164
+#: modules/Timetable/studentEnrolment_manage_edit.php:164
 #: modules/Timetable Admin/courseEnrolment_manage_class_edit.php:202
 msgid "Current Participants"
 msgstr "目前的參與者"
 
 #: modules/Timetable Admin/courseEnrolment_manage_class_edit.php:317
+#: Admin/courseEnrolment_manage_class_edit.php:322
 #: modules/Timetable Admin/courseEnrolment_manage_class_edit.php:322
 msgid "Former Participants"
 msgstr "前任的參與者"
@@ -24889,7 +25005,8 @@ msgstr "空間名稱</b> - 將會在這個課室裏有課堂的 Gibbon 名字。
 #: Assessment/import_results.php:128 modules/Library/library_import.php:187
 #: modules/Planner/outcomes_import.php:158 Admin/import_families.php:166
 #: modules/Formal Admin/import_studentEnrolment.php:137
-#: Admin/import_users.php:189 modules/Formal Assessment/import_results.php:128
+#: Admin/import_users.php:189 Admin/import_studentEnrolment.php:138
+#: modules/Formal Assessment/import_results.php:128
 #: modules/Library/library_import.php:187
 #: modules/Planner/outcomes_import.php:158
 #: modules/Timetable Admin/tt_import.php:176
@@ -24905,7 +25022,8 @@ msgstr "不要在 CSV 文件裡包括一個標題行。"
 #: Assessment/import_results.php:135 modules/Library/library_import.php:194
 #: modules/Planner/outcomes_import.php:165 Admin/import_families.php:173
 #: modules/Formal Admin/import_studentEnrolment.php:144
-#: Admin/import_users.php:196 modules/Formal Assessment/import_results.php:135
+#: Admin/import_users.php:196 Admin/import_studentEnrolment.php:145
+#: modules/Formal Assessment/import_results.php:135
 #: modules/Library/library_import.php:194
 #: modules/Planner/outcomes_import.php:165
 #: modules/Timetable Admin/tt_import.php:183
@@ -24921,6 +25039,7 @@ msgstr "第二步 - 數據檢查和確認"
 #: Assessment/import_results.php:143 modules/Library/library_import.php:202
 #: modules/Planner/outcomes_import.php:173 modules/Formal
 #: Admin/import_studentEnrolment.php:152 Admin/import_users.php:204
+#: Admin/import_studentEnrolment.php:153
 #: modules/Formal Assessment/import_results.php:143
 #: modules/Library/library_import.php:202
 #: modules/Planner/outcomes_import.php:173
@@ -24940,7 +25059,8 @@ msgstr ""
 #: Assessment/import_results.php:150 modules/Library/library_import.php:209
 #: modules/Planner/outcomes_import.php:180 Admin/import_families.php:203
 #: modules/Formal Admin/import_studentEnrolment.php:159
-#: Admin/import_users.php:211 modules/Formal Assessment/import_results.php:150
+#: Admin/import_users.php:211 Admin/import_studentEnrolment.php:160
+#: modules/Formal Assessment/import_results.php:150
 #: modules/Library/library_import.php:209
 #: modules/Planner/outcomes_import.php:180
 #: modules/Timetable Admin/tt_import.php:198
@@ -24959,14 +25079,16 @@ msgstr "不能繼續輸入，由於 \"領域定界符\" 和/或  \"線機殼\" �
 #: Admin/import_families.php:212 modules/Formal
 #: Admin/import_studentEnrolment.php:177 Admin/import_studentEnrolment.php:323
 #: Admin/import_users.php:229 Admin/import_users.php:527
-#: Admin/import_users.php:531 modules/Formal Assessment/import_results.php:159
+#: Admin/import_users.php:531 Admin/import_studentEnrolment.php:178
+#: Admin/import_studentEnrolment.php:328
+#: modules/Formal Assessment/import_results.php:159
 #: modules/Library/library_import.php:218
 #: modules/Timetable Admin/tt_import.php:207
 #: modules/User Admin/import_families.php:213
 #: modules/User Admin/import_studentEnrolment.php:178
 #: modules/User Admin/import_studentEnrolment.php:328
 #: modules/User Admin/import_users.php:229
-#: modules/User Admin/import_users.php:531
+#: modules/User Admin/import_users.php:530
 msgid "Prepare Database Tables"
 msgstr "準備數據庫表"
 
@@ -24977,14 +25099,16 @@ msgstr "準備數據庫表"
 #: Admin/import_families.php:226 modules/Formal
 #: Admin/import_studentEnrolment.php:191 Admin/import_studentEnrolment.php:337
 #: Admin/import_users.php:243 Admin/import_users.php:541
-#: Admin/import_users.php:545 modules/Formal Assessment/import_results.php:173
+#: Admin/import_users.php:545 Admin/import_studentEnrolment.php:192
+#: Admin/import_studentEnrolment.php:342
+#: modules/Formal Assessment/import_results.php:173
 #: modules/Library/library_import.php:232
 #: modules/Timetable Admin/tt_import.php:232
 #: modules/User Admin/import_families.php:227
 #: modules/User Admin/import_studentEnrolment.php:192
 #: modules/User Admin/import_studentEnrolment.php:342
 #: modules/User Admin/import_users.php:243
-#: modules/User Admin/import_users.php:545
+#: modules/User Admin/import_users.php:544
 msgid "The database could not be locked for use."
 msgstr "數據庫不能被鎖定為利用。"
 
@@ -24995,14 +25119,16 @@ msgstr "數據庫不能被鎖定為利用。"
 #: Admin/import_families.php:231 modules/Formal
 #: Admin/import_studentEnrolment.php:196 Admin/import_studentEnrolment.php:342
 #: Admin/import_users.php:248 Admin/import_users.php:546
-#: Admin/import_users.php:550 modules/Formal Assessment/import_results.php:178
+#: Admin/import_users.php:550 Admin/import_studentEnrolment.php:197
+#: Admin/import_studentEnrolment.php:347
+#: modules/Formal Assessment/import_results.php:178
 #: modules/Library/library_import.php:237
 #: modules/Timetable Admin/tt_import.php:237
 #: modules/User Admin/import_families.php:232
 #: modules/User Admin/import_studentEnrolment.php:197
 #: modules/User Admin/import_studentEnrolment.php:347
 #: modules/User Admin/import_users.php:248
-#: modules/User Admin/import_users.php:550
+#: modules/User Admin/import_users.php:549
 msgid "The database was successfully locked."
 msgstr "成功的鎖定了數據庫。"
 
@@ -25024,6 +25150,7 @@ msgstr "成功的空了數據庫表"
 #: modules/Formal Admin/import_studentEnrolment.php:204
 #: Admin/import_studentEnrolment.php:350 Admin/import_users.php:256
 #: Admin/import_users.php:554 Admin/import_users.php:558
+#: Admin/import_studentEnrolment.php:205 Admin/import_studentEnrolment.php:355
 #: modules/Formal Assessment/import_results.php:186
 #: modules/Library/library_import.php:245
 #: modules/Planner/outcomes_import.php:188
@@ -25032,7 +25159,7 @@ msgstr "成功的空了數據庫表"
 #: modules/User Admin/import_studentEnrolment.php:205
 #: modules/User Admin/import_studentEnrolment.php:355
 #: modules/User Admin/import_users.php:256
-#: modules/User Admin/import_users.php:558
+#: modules/User Admin/import_users.php:557
 msgid "File Import"
 msgstr "導入文件"
 
@@ -25510,7 +25637,7 @@ msgstr "申請編號，首選，姓名，PayPal交易編號"
 #: modules/Library/library_manage_catalog_add.php:159
 #: modules/Library/library_browse.php:434
 #: modules/Students/report_students_IDCards.php:209
-#: modules/Library/library_browse.php:434
+#: modules/Library/library_browse.php:443
 #: modules/Library/library_import.php:142
 #: modules/Library/library_lending_item.php:133
 #: modules/Library/library_lending_item_edit.php:104
@@ -25558,7 +25685,8 @@ msgstr "進入年份"
 #: modules/Students/report_students_new.php:328
 #: modules/Planner/planner.php:537 modules/Planner/planner.php:1048
 #: modules/Students/report_student_emergencySummary.php:185
-#: Admin/applicationForm_manage_edit.php:1733 modules/Planner/planner.php:358
+#: Admin/applicationForm_manage_edit.php:1733
+#: Admin/applicationForm_manage_edit.php:1737 modules/Planner/planner.php:358
 #: modules/Planner/planner.php:537 modules/Planner/planner.php:751
 #: modules/Planner/planner.php:1048
 #: modules/Students/report_student_emergencySummary.php:185
@@ -25919,8 +26047,10 @@ msgstr "學生不能喝家庭連結！"
 #: Form/applicationForm.php:1872
 #: modules/Attendance/attendance_take_byRollGroup.php:324
 #: Admin/applicationForm_manage_accept.php:692
-#: modules/Application Form/applicationForm.php:1499
-#: modules/Application Form/applicationForm.php:1872
+#: Admin/applicationForm_manage_edit.php:1704
+#: Admin/applicationForm_manage_edit.php:2019
+#: modules/Application Form/applicationForm.php:1502
+#: modules/Application Form/applicationForm.php:1875
 #: modules/Attendance/attendance_future_byPerson.php:239
 #: modules/Attendance/attendance_take_byPerson.php:315
 #: modules/Attendance/attendance_take_byRollGroup.php:324
@@ -25961,7 +26091,8 @@ msgstr "家庭"
 #: Admin/applicationForm_manage_edit_print.php:537
 #: Form/applicationForm.php:1505 Admin/applicationForm_manage_accept.php:696
 #: Admin/applicationForm_manage_accept.php:782
-#: modules/Application Form/applicationForm.php:1505
+#: Admin/applicationForm_manage_edit.php:1734
+#: modules/Application Form/applicationForm.php:1508
 #: modules/Students/student_view_details.php:1144
 #: modules/User Admin/applicationForm_manage_accept.php:696
 #: modules/User Admin/applicationForm_manage_accept.php:782
@@ -26454,7 +26585,7 @@ msgstr "開始日期"
 #: modules/User Admin/applicationForm_manage_edit.php:210 modules/Application
 #: Form/applicationForm.php:627 Form/applicationForm.php:632
 #: Form/applicationForm.php:637 Form/applicationForm.php:633
-#: modules/Application Form/applicationForm.php:633
+#: modules/Application Form/applicationForm.php:636
 #: modules/User Admin/applicationForm_manage_edit.php:210
 msgid "Student's intended first day at school."
 msgstr "學生打算在學校的第一天。"
@@ -26475,7 +26606,7 @@ msgstr "車聲會什麼時候加入? "
 #: Admin/applicationForm_manage_edit_print.php:104 modules/Application
 #: Form/applicationForm.php:645 Form/applicationForm.php:650
 #: Form/applicationForm.php:655 Form/applicationForm.php:651
-#: modules/Application Form/applicationForm.php:651
+#: modules/Application Form/applicationForm.php:654
 #: modules/User Admin/applicationForm_manage_edit.php:260
 #: modules/User Admin/applicationForm_manage_edit_print.php:104
 msgid "Year Group at Entry"
@@ -26484,7 +26615,7 @@ msgstr "進入時的年級"
 #: modules/User Admin/applicationForm_manage_edit.php:261 modules/Application
 #: Form/applicationForm.php:646 Form/applicationForm.php:651
 #: Form/applicationForm.php:656 Form/applicationForm.php:652
-#: modules/Application Form/applicationForm.php:652
+#: modules/Application Form/applicationForm.php:655
 #: modules/User Admin/applicationForm_manage_edit.php:261
 msgid "Which year level will student enter."
 msgstr "學生會進入哪個級別。"
@@ -26505,7 +26636,7 @@ msgstr "學生會進入哪個級別。"
 #: Admin/user_manage_edit.php:752 Form/applicationForm.php:689
 #: modules/Students/student_view_details.php:790
 #: Admin/user_manage_edit.php:765 Form/applicationForm.php:685
-#: modules/Application Form/applicationForm.php:685
+#: modules/Application Form/applicationForm.php:688
 #: modules/Students/student_view_details.php:790
 #: modules/User Admin/applicationForm_manage_edit.php:298
 #: modules/User Admin/user_manage_add.php:624
@@ -26544,11 +26675,11 @@ msgstr "如果訂了, 學生會自動被報名和接受。"
 #: i18n/dbStringsForTranslation.php:1844 i18n/dbStringsForTranslation.php:1785
 #: i18n/dbStringsForTranslation.php:210 i18n/dbStringsForTranslation.php:1794
 #: Form/applicationForm.php:1808 Admin/applicationForm_manage_edit.php:1936
-#: Form/applicationForm.php:1800 i18n/dbStringsForTranslation.php:210
-#: i18n/dbStringsForTranslation.php:1794
+#: Form/applicationForm.php:1800 Admin/applicationForm_manage_edit.php:1940
+#: i18n/dbStringsForTranslation.php:210 i18n/dbStringsForTranslation.php:1794
 #: modules/Activities/activities_my_full.php:119
 #: modules/Activities/activities_view_full.php:136
-#: modules/Application Form/applicationForm.php:1800
+#: modules/Application Form/applicationForm.php:1803
 #: modules/User Admin/applicationForm_manage_edit.php:365
 #: modules/User Admin/applicationForm_manage_edit.php:1940
 msgid "Payment"
@@ -26579,7 +26710,7 @@ msgstr "PayPal 付款付款者 收據 身分: "
 #: modules/User Admin/applicationForm_manage_edit.php:419 modules/Application
 #: Form/applicationForm.php:150 Form/applicationForm.php:155
 #: Form/applicationForm.php:158
-#: modules/Application Form/applicationForm.php:158
+#: modules/Application Form/applicationForm.php:161
 #: modules/User Admin/applicationForm_manage_edit.php:419
 msgid "Student Personal Data"
 msgstr "學生的個人資料"
@@ -26614,9 +26745,11 @@ msgstr "學生的個人資料"
 #: Admin/applicationForm_manage_edit.php:1236 Admin/data_personal_edit.php:155
 #: Admin/user_manage_edit.php:172 Form/applicationForm.php:934
 #: Form/applicationForm.php:1106 modules/Tracking/dataPoints_contents.php:131
-#: installer/install.php:475 modules/Application Form/applicationForm.php:163
-#: modules/Application Form/applicationForm.php:934
-#: modules/Application Form/applicationForm.php:1106
+#: Admin/applicationForm_manage_edit.php:1119
+#: Admin/applicationForm_manage_edit.php:1240 installer/install.php:475
+#: modules/Application Form/applicationForm.php:166
+#: modules/Application Form/applicationForm.php:937
+#: modules/Application Form/applicationForm.php:1109
 #: modules/Data Updater/data_personal.php:380
 #: modules/Students/student_view.php:180
 #: modules/Students/student_view_details.php:616
@@ -26655,8 +26788,9 @@ msgstr "姓"
 #: modules/Students/student_view_details.php:620
 #: Admin/applicationForm_manage_edit.php:1255 Admin/data_personal_edit.php:174
 #: Admin/user_manage_edit.php:185 Form/applicationForm.php:1119
-#: installer/install.php:488 modules/Application Form/applicationForm.php:176
-#: modules/Application Form/applicationForm.php:1119
+#: Admin/applicationForm_manage_edit.php:1259 installer/install.php:488
+#: modules/Application Form/applicationForm.php:179
+#: modules/Application Form/applicationForm.php:1122
 #: modules/Data Updater/data_personal.php:398
 #: modules/Students/student_view_details.php:620
 #: modules/User Admin/applicationForm_manage_edit.php:437
@@ -26700,9 +26834,11 @@ msgstr "名字"
 #: Admin/applicationForm_manage_edit.php:1274 Admin/data_personal_edit.php:194
 #: Admin/user_manage_edit.php:198 Form/applicationForm.php:943
 #: Form/applicationForm.php:1132 modules/Tracking/dataPoints_contents.php:132
-#: modules/Application Form/applicationForm.php:189
-#: modules/Application Form/applicationForm.php:943
-#: modules/Application Form/applicationForm.php:1132
+#: Admin/applicationForm_manage_edit.php:1128
+#: Admin/applicationForm_manage_edit.php:1278
+#: modules/Application Form/applicationForm.php:192
+#: modules/Application Form/applicationForm.php:946
+#: modules/Application Form/applicationForm.php:1135
 #: modules/Data Updater/data_personal.php:416
 #: modules/Students/student_view_details.php:370
 #: modules/Students/student_view_details.php:629
@@ -26746,8 +26882,9 @@ msgstr "首選名稱"
 #: modules/Students/student_view_details.php:633
 #: Admin/applicationForm_manage_edit.php:1293 Admin/data_personal_edit.php:214
 #: Admin/user_manage_edit.php:211 Form/applicationForm.php:1145
-#: modules/Application Form/applicationForm.php:202
-#: modules/Application Form/applicationForm.php:1145
+#: Admin/applicationForm_manage_edit.php:1297
+#: modules/Application Form/applicationForm.php:205
+#: modules/Application Form/applicationForm.php:1148
 #: modules/Data Updater/data_personal.php:434
 #: modules/Formal Assessment/import_results.php:120
 #: modules/Students/student_view_details.php:374
@@ -26787,9 +26924,9 @@ msgstr "正式名稱"
 #: modules/Students/student_view_details.php:637
 #: Admin/applicationForm_manage_edit.php:1312 Admin/data_personal_edit.php:234
 #: Admin/import_users.php:145 Admin/user_manage_edit.php:224
-#: Form/applicationForm.php:1158
-#: modules/Application Form/applicationForm.php:215
-#: modules/Application Form/applicationForm.php:1158
+#: Form/applicationForm.php:1158 Admin/applicationForm_manage_edit.php:1316
+#: modules/Application Form/applicationForm.php:218
+#: modules/Application Form/applicationForm.php:1161
 #: modules/Data Updater/data_personal.php:452
 #: modules/Students/student_view_details.php:378
 #: modules/Students/student_view_details.php:637
@@ -26830,8 +26967,9 @@ msgstr "字母的名稱"
 #: modules/Students/student_view_details.php:643
 #: Admin/applicationForm_manage_edit.php:1321 Admin/import_users.php:146
 #: Admin/user_manage_edit.php:233 Form/applicationForm.php:1167
-#: modules/Application Form/applicationForm.php:224
-#: modules/Application Form/applicationForm.php:1167
+#: Admin/applicationForm_manage_edit.php:1325
+#: modules/Application Form/applicationForm.php:227
+#: modules/Application Form/applicationForm.php:1170
 #: modules/Finance/invoices_manage_processBulkExportContents.php:102
 #: modules/Staff/staff_view_details.php:323
 #: modules/Students/report_students_byRollGroup.php:167
@@ -26868,8 +27006,9 @@ msgstr "性別"
 #: modules/Students/student_view_details.php:647
 #: Admin/applicationForm_manage_edit.php:1784 Admin/data_personal_edit.php:254
 #: Admin/user_manage_edit.php:251 Form/applicationForm.php:1598
-#: modules/Application Form/applicationForm.php:240
-#: modules/Application Form/applicationForm.php:1598
+#: Admin/applicationForm_manage_edit.php:1788
+#: modules/Application Form/applicationForm.php:243
+#: modules/Application Form/applicationForm.php:1601
 #: modules/Data Updater/data_personal.php:470
 #: modules/Students/student_view_details.php:647
 #: modules/User Admin/applicationForm_manage_edit.php:501
@@ -26885,7 +27024,7 @@ msgstr "出生日期"
 #: modules/User Admin/applicationForm_manage_edit.php:522 modules/Application
 #: Form/applicationForm.php:253 Form/applicationForm.php:258
 #: Form/applicationForm.php:261
-#: modules/Application Form/applicationForm.php:261
+#: modules/Application Form/applicationForm.php:264
 #: modules/User Admin/applicationForm_manage_edit.php:522
 msgid "Student Background"
 msgstr "學生背景"
@@ -26915,7 +27054,7 @@ msgstr "母語"
 #: Form/applicationForm.php:259 Form/applicationForm.php:264 modules/Data
 #: Updater/data_family.php:336 Form/applicationForm.php:267
 #: Admin/applicationForm_manage_edit.php:559
-#: modules/Application Form/applicationForm.php:267
+#: modules/Application Form/applicationForm.php:270
 #: modules/User Admin/applicationForm_manage_edit.php:528
 #: modules/User Admin/applicationForm_manage_edit.php:559
 msgid "The primary language used in the student's home."
@@ -26930,7 +27069,7 @@ msgstr "第一語言<"
 #: Form/applicationForm.php:291 modules/Data Updater/data_personal.php:1076
 #: Form/applicationForm.php:296 Form/applicationForm.php:316
 #: Updater/data_personal.php:1027 Admin/applicationForm_manage_edit.php:586
-#: modules/Application Form/applicationForm.php:316
+#: modules/Application Form/applicationForm.php:319
 #: modules/Data Updater/data_personal.php:1027
 #: modules/User Admin/applicationForm_manage_edit.php:586
 msgid "Student's native/first/mother language."
@@ -26979,9 +27118,10 @@ msgstr "學生的本地/第一/母語。"
 #: Admin/applicationForm_manage_edit_print.php:245
 #: Admin/data_personal_edit.php:521 Admin/import_users.php:174
 #: Admin/user_manage_add.php:742 Admin/user_manage_edit.php:1006
-#: Form/applicationForm.php:1237
-#: modules/Application Form/applicationForm.php:342
-#: modules/Application Form/applicationForm.php:1237
+#: Form/applicationForm.php:1237 Admin/applicationForm_manage_edit.php:616
+#: Admin/applicationForm_manage_edit.php:1428
+#: modules/Application Form/applicationForm.php:345
+#: modules/Application Form/applicationForm.php:1240
 #: modules/Data Updater/data_personal.php:1062
 #: modules/Students/student_view_details.php:227
 #: modules/Students/student_view_details.php:855
@@ -27018,7 +27158,8 @@ msgstr "第二語言"
 #: modules/Students/student_view_details.php:859
 #: Admin/applicationForm_manage_edit.php:638 Admin/data_personal_edit.php:541
 #: Admin/user_manage_add.php:764 Admin/user_manage_edit.php:1032
-#: modules/Application Form/applicationForm.php:364
+#: Admin/applicationForm_manage_edit.php:642
+#: modules/Application Form/applicationForm.php:367
 #: modules/Data Updater/data_personal.php:1097
 #: modules/Students/student_view_details.php:859
 #: modules/User Admin/applicationForm_manage_edit.php:642
@@ -27052,7 +27193,8 @@ msgstr "第三語言"
 #: Admin/applicationForm_manage_edit.php:664
 #: Admin/applicationForm_manage_edit_print.php:251
 #: Admin/data_personal_edit.php:562 Admin/user_manage_edit.php:1058
-#: modules/Application Form/applicationForm.php:386
+#: Admin/applicationForm_manage_edit.php:668
+#: modules/Application Form/applicationForm.php:389
 #: modules/Data Updater/data_personal.php:1132
 #: modules/Students/student_view_details.php:810
 #: modules/User Admin/applicationForm_manage_edit.php:668
@@ -27074,9 +27216,10 @@ msgstr "出生國"
 #: Admin/applicationForm_manage_edit.php:690
 #: Admin/applicationForm_manage_edit.php:1450
 #: Admin/applicationForm_manage_edit_print.php:255
-#: Form/applicationForm.php:1259
-#: modules/Application Form/applicationForm.php:408
-#: modules/Application Form/applicationForm.php:1259
+#: Form/applicationForm.php:1259 Admin/applicationForm_manage_edit.php:694
+#: Admin/applicationForm_manage_edit.php:1454
+#: modules/Application Form/applicationForm.php:411
+#: modules/Application Form/applicationForm.php:1262
 #: modules/User Admin/applicationForm_manage_edit.php:694
 #: modules/User Admin/applicationForm_manage_edit.php:1454
 #: modules/User Admin/applicationForm_manage_edit_print.php:255
@@ -27086,7 +27229,8 @@ msgstr "國籍"
 #: modules/User Admin/applicationForm_manage_edit.php:699 modules/Application
 #: Form/applicationForm.php:429 Form/applicationForm.php:434
 #: Form/applicationForm.php:439 Admin/applicationForm_manage_edit.php:726
-#: modules/Application Form/applicationForm.php:439
+#: Admin/applicationForm_manage_edit.php:730
+#: modules/Application Form/applicationForm.php:442
 #: modules/User Admin/applicationForm_manage_edit.php:730
 msgid "Citizenship Passport Number"
 msgstr "國籍護照號碼"
@@ -27110,9 +27254,10 @@ msgstr "國籍護照號碼"
 #: Admin/applicationForm_manage_edit.php:1487
 #: Admin/applicationForm_manage_edit_print.php:267
 #: Admin/data_personal_edit.php:702 Admin/user_manage_edit.php:1243
-#: Form/applicationForm.php:1292
-#: modules/Application Form/applicationForm.php:449
-#: modules/Application Form/applicationForm.php:1292
+#: Form/applicationForm.php:1292 Admin/applicationForm_manage_edit.php:740
+#: Admin/applicationForm_manage_edit.php:1491
+#: modules/Application Form/applicationForm.php:452
+#: modules/Application Form/applicationForm.php:1295
 #: modules/Data Updater/data_personal.php:1350
 #: modules/User Admin/applicationForm_manage_edit.php:740
 #: modules/User Admin/applicationForm_manage_edit.php:1491
@@ -27142,8 +27287,10 @@ msgstr "國民身分證號碼"
 #: Admin/applicationForm_manage_edit.php:1490
 #: Admin/applicationForm_manage_edit_print.php:270
 #: Admin/user_manage_edit.php:1246 Form/applicationForm.php:1295
-#: modules/Application Form/applicationForm.php:452
-#: modules/Application Form/applicationForm.php:1295
+#: Admin/applicationForm_manage_edit.php:743
+#: Admin/applicationForm_manage_edit.php:1494
+#: modules/Application Form/applicationForm.php:455
+#: modules/Application Form/applicationForm.php:1298
 #: modules/Data Updater/data_personal.php:1353
 #: modules/User Admin/applicationForm_manage_edit.php:743
 #: modules/User Admin/applicationForm_manage_edit.php:1494
@@ -27204,10 +27351,14 @@ msgstr "身分證號碼"
 #: Admin/applicationForm_manage_edit_print.php:281
 #: Admin/user_manage_edit.php:1285 Admin/user_manage_edit.php:1288
 #: Form/applicationForm.php:1307 Form/applicationForm.php:1310
-#: modules/Application Form/applicationForm.php:464
+#: Admin/applicationForm_manage_edit.php:755
+#: Admin/applicationForm_manage_edit.php:758
+#: Admin/applicationForm_manage_edit.php:1506
+#: Admin/applicationForm_manage_edit.php:1509
 #: modules/Application Form/applicationForm.php:467
-#: modules/Application Form/applicationForm.php:1307
+#: modules/Application Form/applicationForm.php:470
 #: modules/Application Form/applicationForm.php:1310
+#: modules/Application Form/applicationForm.php:1313
 #: modules/Data Updater/data_personal.php:1378
 #: modules/Data Updater/data_personal.php:1381
 #: modules/Students/student_view_details.php:866
@@ -27278,11 +27429,14 @@ msgstr "住所/簽證種類"
 #: Admin/data_personal_edit.php:742 Admin/user_manage_edit.php:1318
 #: Admin/user_manage_edit.php:1321 Form/applicationForm.php:493
 #: Form/applicationForm.php:496 Form/applicationForm.php:1336
-#: Form/applicationForm.php:1339
-#: modules/Application Form/applicationForm.php:493
+#: Form/applicationForm.php:1339 Admin/applicationForm_manage_edit.php:788
+#: Admin/applicationForm_manage_edit.php:791
+#: Admin/applicationForm_manage_edit.php:1539
+#: Admin/applicationForm_manage_edit.php:1542
 #: modules/Application Form/applicationForm.php:496
-#: modules/Application Form/applicationForm.php:1336
+#: modules/Application Form/applicationForm.php:499
 #: modules/Application Form/applicationForm.php:1339
+#: modules/Application Form/applicationForm.php:1342
 #: modules/Data Updater/data_personal.php:1429
 #: modules/Data Updater/data_personal.php:1432
 #: modules/Students/student_view_details.php:875
@@ -27305,8 +27459,8 @@ msgstr "簽證到期日"
 #: modules/User Admin/applicationForm_manage_edit.php:782 modules/Application
 #: Form/applicationForm.php:512 Form/applicationForm.php:517
 #: Form/applicationForm.php:522 Admin/applicationForm_manage_edit.php:809
-#: Form/applicationForm.php:518
-#: modules/Application Form/applicationForm.php:518
+#: Form/applicationForm.php:518 Admin/applicationForm_manage_edit.php:813
+#: modules/Application Form/applicationForm.php:521
 #: modules/User Admin/applicationForm_manage_edit.php:813
 msgid "Student Contact"
 msgstr "學生聯繫"
@@ -27340,8 +27494,10 @@ msgstr "學生聯繫"
 #: Admin/applicationForm_manage_edit_print.php:304
 #: Admin/data_personal_edit.php:480 Admin/user_manage_edit.php:700
 #: Form/applicationForm.php:538 Form/applicationForm.php:1385
-#: modules/Application Form/applicationForm.php:538
-#: modules/Application Form/applicationForm.php:1385
+#: Admin/applicationForm_manage_edit.php:833
+#: Admin/applicationForm_manage_edit.php:1589
+#: modules/Application Form/applicationForm.php:541
+#: modules/Application Form/applicationForm.php:1388
 #: modules/Data Updater/data_personal.php:953
 #: modules/Staff/staff_view_details.php:344
 #: modules/Students/student_view_details.php:673
@@ -27367,8 +27523,10 @@ msgstr "電話"
 #: Updater/data_personal.php:998 Admin/applicationForm_manage_edit.php:855
 #: Admin/applicationForm_manage_edit.php:1621 Admin/user_manage_edit.php:726
 #: Form/applicationForm.php:560 Form/applicationForm.php:1417
-#: modules/Application Form/applicationForm.php:560
-#: modules/Application Form/applicationForm.php:1417
+#: Admin/applicationForm_manage_edit.php:859
+#: Admin/applicationForm_manage_edit.php:1625
+#: modules/Application Form/applicationForm.php:563
+#: modules/Application Form/applicationForm.php:1420
 #: modules/Data Updater/data_personal.php:998
 #: modules/User Admin/applicationForm_manage_edit.php:859
 #: modules/User Admin/applicationForm_manage_edit.php:1625
@@ -27390,8 +27548,10 @@ msgstr "手提電話"
 #: Updater/data_personal.php:1000 Admin/applicationForm_manage_edit.php:857
 #: Admin/applicationForm_manage_edit.php:1623 Admin/user_manage_edit.php:728
 #: Form/applicationForm.php:562 Form/applicationForm.php:1419
-#: modules/Application Form/applicationForm.php:562
-#: modules/Application Form/applicationForm.php:1419
+#: Admin/applicationForm_manage_edit.php:861
+#: Admin/applicationForm_manage_edit.php:1627
+#: modules/Application Form/applicationForm.php:565
+#: modules/Application Form/applicationForm.php:1422
 #: modules/Data Updater/data_personal.php:1000
 #: modules/User Admin/applicationForm_manage_edit.php:861
 #: modules/User Admin/applicationForm_manage_edit.php:1627
@@ -27413,8 +27573,10 @@ msgstr "作業"
 #: Updater/data_personal.php:1001 Admin/applicationForm_manage_edit.php:858
 #: Admin/applicationForm_manage_edit.php:1624 Admin/user_manage_edit.php:729
 #: Form/applicationForm.php:563 Form/applicationForm.php:1420
-#: modules/Application Form/applicationForm.php:563
-#: modules/Application Form/applicationForm.php:1420
+#: Admin/applicationForm_manage_edit.php:862
+#: Admin/applicationForm_manage_edit.php:1628
+#: modules/Application Form/applicationForm.php:566
+#: modules/Application Form/applicationForm.php:1423
 #: modules/Data Updater/data_personal.php:1001
 #: modules/User Admin/applicationForm_manage_edit.php:862
 #: modules/User Admin/applicationForm_manage_edit.php:1628
@@ -27436,8 +27598,10 @@ msgstr "傳真"
 #: Updater/data_personal.php:1002 Admin/applicationForm_manage_edit.php:859
 #: Admin/applicationForm_manage_edit.php:1625 Admin/user_manage_edit.php:730
 #: Form/applicationForm.php:564 Form/applicationForm.php:1421
-#: modules/Application Form/applicationForm.php:564
-#: modules/Application Form/applicationForm.php:1421
+#: Admin/applicationForm_manage_edit.php:863
+#: Admin/applicationForm_manage_edit.php:1629
+#: modules/Application Form/applicationForm.php:567
+#: modules/Application Form/applicationForm.php:1424
 #: modules/Data Updater/data_personal.php:1002
 #: modules/User Admin/applicationForm_manage_edit.php:863
 #: modules/User Admin/applicationForm_manage_edit.php:1629
@@ -27449,8 +27613,8 @@ msgstr "傳呼機"
 #: modules/User Admin/applicationForm_manage_edit.php:842 modules/Application
 #: Form/applicationForm.php:570 Form/applicationForm.php:575
 #: Form/applicationForm.php:580 Admin/applicationForm_manage_edit.php:869
-#: Form/applicationForm.php:576
-#: modules/Application Form/applicationForm.php:576
+#: Form/applicationForm.php:576 Admin/applicationForm_manage_edit.php:873
+#: modules/Application Form/applicationForm.php:579
 #: modules/User Admin/applicationForm_manage_edit.php:873
 msgid "Student Medical & Development"
 msgstr "學生醫療和發展"
@@ -27462,8 +27626,8 @@ msgstr "學生醫療和發展"
 #: Form/applicationForm.php:580 Form/applicationForm.php:585
 #: Admin/applicationForm_manage_edit.php:874
 #: Admin/applicationForm_manage_edit_print.php:322
-#: Form/applicationForm.php:581
-#: modules/Application Form/applicationForm.php:581
+#: Form/applicationForm.php:581 Admin/applicationForm_manage_edit.php:878
+#: modules/Application Form/applicationForm.php:584
 #: modules/User Admin/applicationForm_manage_edit.php:878
 #: modules/User Admin/applicationForm_manage_edit_print.php:322
 msgid "Medical Information"
@@ -27472,8 +27636,8 @@ msgstr "醫療資料"
 #: modules/User Admin/applicationForm_manage_edit.php:848 modules/Application
 #: Form/applicationForm.php:576 Form/applicationForm.php:581
 #: Form/applicationForm.php:586 Admin/applicationForm_manage_edit.php:875
-#: Form/applicationForm.php:582
-#: modules/Application Form/applicationForm.php:582
+#: Form/applicationForm.php:582 Admin/applicationForm_manage_edit.php:879
+#: modules/Application Form/applicationForm.php:585
 #: modules/User Admin/applicationForm_manage_edit.php:879
 msgid "Please indicate any medical conditions."
 msgstr "請表示任何醫療情況。"
@@ -27485,8 +27649,8 @@ msgstr "請表示任何醫療情況。"
 #: Form/applicationForm.php:587 Form/applicationForm.php:592
 #: Admin/applicationForm_manage_edit.php:881
 #: Admin/applicationForm_manage_edit_print.php:330
-#: Form/applicationForm.php:588
-#: modules/Application Form/applicationForm.php:588
+#: Form/applicationForm.php:588 Admin/applicationForm_manage_edit.php:885
+#: modules/Application Form/applicationForm.php:591
 #: modules/User Admin/applicationForm_manage_edit.php:885
 #: modules/User Admin/applicationForm_manage_edit_print.php:330
 msgid "Development Information"
@@ -27506,8 +27670,8 @@ msgstr ""
 #: modules/User Admin/applicationForm_manage_edit.php:864 modules/Application
 #: Form/applicationForm.php:701 Form/applicationForm.php:706
 #: Form/applicationForm.php:711 Admin/applicationForm_manage_edit.php:891
-#: Form/applicationForm.php:707
-#: modules/Application Form/applicationForm.php:707
+#: Form/applicationForm.php:707 Admin/applicationForm_manage_edit.php:895
+#: modules/Application Form/applicationForm.php:710
 #: modules/User Admin/applicationForm_manage_edit.php:895
 msgid "Previous Schools"
 msgstr "以前學校"
@@ -27515,8 +27679,8 @@ msgstr "以前學校"
 #: modules/User Admin/applicationForm_manage_edit.php:865 modules/Application
 #: Form/applicationForm.php:702 Form/applicationForm.php:707
 #: Form/applicationForm.php:712 Admin/applicationForm_manage_edit.php:892
-#: Form/applicationForm.php:708
-#: modules/Application Form/applicationForm.php:708
+#: Form/applicationForm.php:708 Admin/applicationForm_manage_edit.php:896
+#: modules/Application Form/applicationForm.php:711
 #: modules/User Admin/applicationForm_manage_edit.php:896
 msgid ""
 "Please give information on the last two schools attended by the applicant."
@@ -27525,8 +27689,8 @@ msgstr " 請提供關於申請者上兩間學校的資料。"
 #: modules/User Admin/applicationForm_manage_edit.php:874 modules/Application
 #: Form/applicationForm.php:711 Form/applicationForm.php:716
 #: Form/applicationForm.php:721 Admin/applicationForm_manage_edit.php:901
-#: Form/applicationForm.php:717
-#: modules/Application Form/applicationForm.php:717
+#: Form/applicationForm.php:717 Admin/applicationForm_manage_edit.php:905
+#: modules/Application Form/applicationForm.php:720
 #: modules/User Admin/applicationForm_manage_edit.php:905
 msgid "School Name"
 msgstr "學生名稱"
@@ -27537,7 +27701,8 @@ msgstr "學生名稱"
 #: modules/Students/report_transport_studentExportContents.php:65
 #: Form/applicationForm.php:719 Form/applicationForm.php:724
 #: Admin/applicationForm_manage_edit.php:904 Form/applicationForm.php:720
-#: modules/Application Form/applicationForm.php:720
+#: Admin/applicationForm_manage_edit.php:908
+#: modules/Application Form/applicationForm.php:723
 #: modules/Students/report_transport_student.php:60
 #: modules/Students/report_transport_studentExportContents.php:65
 #: modules/User Admin/applicationForm_manage_edit.php:908
@@ -27546,12 +27711,14 @@ msgstr "地址"
 
 #: modules/User Admin/applicationForm_manage_edit.php:880
 #: Admin/applicationForm_manage_edit.php:907
+#: Admin/applicationForm_manage_edit.php:911
 #: modules/User Admin/applicationForm_manage_edit.php:911
 msgid "Grades<br/>Attended"
 msgstr "成績<br/>參與"
 
 #: modules/User Admin/applicationForm_manage_edit.php:883
 #: Admin/applicationForm_manage_edit.php:910
+#: Admin/applicationForm_manage_edit.php:914
 #: modules/User Admin/applicationForm_manage_edit.php:914
 msgid "Language of<br/>Instruction"
 msgstr "說明的<br/>語言"
@@ -27563,9 +27730,10 @@ msgstr "說明的<br/>語言"
 #: Form/applicationForm.php:733 Form/applicationForm.php:1612
 #: Admin/applicationForm_manage_edit.php:913
 #: Admin/applicationForm_manage_edit.php:1790 Form/applicationForm.php:729
-#: Form/applicationForm.php:1604
-#: modules/Application Form/applicationForm.php:729
-#: modules/Application Form/applicationForm.php:1604
+#: Form/applicationForm.php:1604 Admin/applicationForm_manage_edit.php:917
+#: Admin/applicationForm_manage_edit.php:1794
+#: modules/Application Form/applicationForm.php:732
+#: modules/Application Form/applicationForm.php:1607
 #: modules/User Admin/applicationForm_manage_edit.php:917
 #: modules/User Admin/applicationForm_manage_edit.php:1794
 msgid "Joining Date"
@@ -27602,8 +27770,11 @@ msgstr "加入日期"
 #: Admin/applicationForm_manage_edit_print.php:551
 #: Admin/family_manage_add.php:164 Admin/family_manage_edit.php:245
 #: Form/applicationForm.php:827 Form/applicationForm.php:836
-#: modules/Application Form/applicationForm.php:827
-#: modules/Application Form/applicationForm.php:836
+#: Admin/applicationForm_manage_edit.php:1007
+#: Admin/applicationForm_manage_edit.php:1020
+#: Admin/applicationForm_manage_edit.php:1033
+#: modules/Application Form/applicationForm.php:830
+#: modules/Application Form/applicationForm.php:839
 #: modules/Data Updater/data_family.php:260
 #: modules/Students/report_familyAddress_byStudent.php:148
 #: modules/Students/student_view_details.php:1174
@@ -27622,8 +27793,8 @@ msgstr "住址"
 #: modules/User Admin/applicationForm_manage_edit.php:969 modules/Application
 #: Form/applicationForm.php:809 Form/applicationForm.php:814
 #: Form/applicationForm.php:834 Admin/applicationForm_manage_edit.php:1010
-#: Form/applicationForm.php:830
-#: modules/Application Form/applicationForm.php:830
+#: Form/applicationForm.php:830 Admin/applicationForm_manage_edit.php:1014
+#: modules/Application Form/applicationForm.php:833
 #: modules/User Admin/applicationForm_manage_edit.php:1014
 msgid ""
 "This address will be used for all members of the family. If an individual "
@@ -27648,7 +27819,8 @@ msgstr ""
 #: modules/Students/student_view_details.php:1182
 #: Admin/applicationForm_manage_edit.php:1061 Admin/family_manage_add.php:201
 #: Admin/family_manage_edit.php:282 Form/applicationForm.php:881
-#: modules/Application Form/applicationForm.php:881
+#: Admin/applicationForm_manage_edit.php:1065
+#: modules/Application Form/applicationForm.php:884
 #: modules/Data Updater/data_family.php:305
 #: modules/Students/student_view_details.php:1182
 #: modules/User Admin/applicationForm_manage_edit.php:1065
@@ -27662,14 +27834,15 @@ msgstr "住址 (國家)"
 #: modules/User Admin/applicationForm_manage_edit.php:1056 modules/Application
 #: Form/applicationForm.php:892 Form/applicationForm.php:897
 #: Form/applicationForm.php:917 Admin/applicationForm_manage_edit.php:1097
-#: Form/applicationForm.php:913
-#: modules/Application Form/applicationForm.php:913
+#: Form/applicationForm.php:913 Admin/applicationForm_manage_edit.php:1101
+#: modules/Application Form/applicationForm.php:916
 #: modules/User Admin/applicationForm_manage_edit.php:1101
 msgid "Parent/Guardian 1"
 msgstr "家長/監護人 1"
 
 #: modules/User Admin/applicationForm_manage_edit.php:1068
 #: Admin/applicationForm_manage_edit.php:1109
+#: Admin/applicationForm_manage_edit.php:1113
 #: modules/User Admin/applicationForm_manage_edit.php:1113
 msgid ""
 "The parent is already a Gibbon user, and so their details cannot be edited "
@@ -27704,9 +27877,10 @@ msgstr "這個家長已經是個 Gibbon 用戶，所以在觀看編輯他們的�
 #: modules/Students/student_view_details.php:1450
 #: Admin/applicationForm_manage_edit.php:1134
 #: Admin/applicationForm_manage_edit.php:1354 Form/applicationForm.php:952
-#: Form/applicationForm.php:1183
-#: modules/Application Form/applicationForm.php:952
-#: modules/Application Form/applicationForm.php:1183
+#: Form/applicationForm.php:1183 Admin/applicationForm_manage_edit.php:1138
+#: Admin/applicationForm_manage_edit.php:1358
+#: modules/Application Form/applicationForm.php:955
+#: modules/Application Form/applicationForm.php:1186
 #: modules/Staff/staff_view_details.php:527
 #: modules/Students/report_student_emergencySummary.php:234
 #: modules/Students/report_student_emergencySummary.php:245
@@ -27732,10 +27906,11 @@ msgstr "關係"
 #: Admin/applicationForm_manage_edit.php:1139
 #: Admin/applicationForm_manage_edit.php:1365 Admin/family_manage_edit.php:427
 #: Form/applicationForm.php:957 Form/applicationForm.php:1188
-#: Form/applicationForm.php:1550
-#: modules/Application Form/applicationForm.php:957
-#: modules/Application Form/applicationForm.php:1188
-#: modules/Application Form/applicationForm.php:1550
+#: Form/applicationForm.php:1550 Admin/applicationForm_manage_edit.php:1143
+#: Admin/applicationForm_manage_edit.php:1369
+#: modules/Application Form/applicationForm.php:960
+#: modules/Application Form/applicationForm.php:1191
+#: modules/Application Form/applicationForm.php:1553
 #: modules/Staff/staff_view_details.php:533
 #: modules/User Admin/applicationForm_manage_edit.php:1143
 #: modules/User Admin/applicationForm_manage_edit.php:1369
@@ -27757,10 +27932,11 @@ msgstr "父母"
 #: Admin/applicationForm_manage_edit.php:1140
 #: Admin/applicationForm_manage_edit.php:1366 Admin/family_manage_edit.php:428
 #: Form/applicationForm.php:958 Form/applicationForm.php:1189
-#: Form/applicationForm.php:1551
-#: modules/Application Form/applicationForm.php:958
-#: modules/Application Form/applicationForm.php:1189
-#: modules/Application Form/applicationForm.php:1551
+#: Form/applicationForm.php:1551 Admin/applicationForm_manage_edit.php:1144
+#: Admin/applicationForm_manage_edit.php:1370
+#: modules/Application Form/applicationForm.php:961
+#: modules/Application Form/applicationForm.php:1192
+#: modules/Application Form/applicationForm.php:1554
 #: modules/Staff/staff_view_details.php:530
 #: modules/User Admin/applicationForm_manage_edit.php:1144
 #: modules/User Admin/applicationForm_manage_edit.php:1370
@@ -27778,10 +27954,11 @@ msgstr "父親"
 #: Admin/applicationForm_manage_edit.php:1141
 #: Admin/applicationForm_manage_edit.php:1367 Admin/family_manage_edit.php:429
 #: Form/applicationForm.php:959 Form/applicationForm.php:1190
-#: Form/applicationForm.php:1552
-#: modules/Application Form/applicationForm.php:959
-#: modules/Application Form/applicationForm.php:1190
-#: modules/Application Form/applicationForm.php:1552
+#: Form/applicationForm.php:1552 Admin/applicationForm_manage_edit.php:1145
+#: Admin/applicationForm_manage_edit.php:1371
+#: modules/Application Form/applicationForm.php:962
+#: modules/Application Form/applicationForm.php:1193
+#: modules/Application Form/applicationForm.php:1555
 #: modules/User Admin/applicationForm_manage_edit.php:1145
 #: modules/User Admin/applicationForm_manage_edit.php:1371
 #: modules/User Admin/family_manage_edit.php:429
@@ -27798,10 +27975,11 @@ msgstr "繼母"
 #: Admin/applicationForm_manage_edit.php:1142
 #: Admin/applicationForm_manage_edit.php:1368 Admin/family_manage_edit.php:430
 #: Form/applicationForm.php:960 Form/applicationForm.php:1191
-#: Form/applicationForm.php:1553
-#: modules/Application Form/applicationForm.php:960
-#: modules/Application Form/applicationForm.php:1191
-#: modules/Application Form/applicationForm.php:1553
+#: Form/applicationForm.php:1553 Admin/applicationForm_manage_edit.php:1146
+#: Admin/applicationForm_manage_edit.php:1372
+#: modules/Application Form/applicationForm.php:963
+#: modules/Application Form/applicationForm.php:1194
+#: modules/Application Form/applicationForm.php:1556
 #: modules/User Admin/applicationForm_manage_edit.php:1146
 #: modules/User Admin/applicationForm_manage_edit.php:1372
 #: modules/User Admin/family_manage_edit.php:430
@@ -27818,10 +27996,11 @@ msgstr "繼父"
 #: Admin/applicationForm_manage_edit.php:1143
 #: Admin/applicationForm_manage_edit.php:1369 Admin/family_manage_edit.php:431
 #: Form/applicationForm.php:961 Form/applicationForm.php:1192
-#: Form/applicationForm.php:1554
-#: modules/Application Form/applicationForm.php:961
-#: modules/Application Form/applicationForm.php:1192
-#: modules/Application Form/applicationForm.php:1554
+#: Form/applicationForm.php:1554 Admin/applicationForm_manage_edit.php:1147
+#: Admin/applicationForm_manage_edit.php:1373
+#: modules/Application Form/applicationForm.php:964
+#: modules/Application Form/applicationForm.php:1195
+#: modules/Application Form/applicationForm.php:1557
 #: modules/User Admin/applicationForm_manage_edit.php:1147
 #: modules/User Admin/applicationForm_manage_edit.php:1373
 #: modules/User Admin/family_manage_edit.php:431
@@ -27838,10 +28017,11 @@ msgstr "養父母"
 #: Admin/applicationForm_manage_edit.php:1144
 #: Admin/applicationForm_manage_edit.php:1370 Admin/family_manage_edit.php:432
 #: Form/applicationForm.php:962 Form/applicationForm.php:1193
-#: Form/applicationForm.php:1555
-#: modules/Application Form/applicationForm.php:962
-#: modules/Application Form/applicationForm.php:1193
-#: modules/Application Form/applicationForm.php:1555
+#: Form/applicationForm.php:1555 Admin/applicationForm_manage_edit.php:1148
+#: Admin/applicationForm_manage_edit.php:1374
+#: modules/Application Form/applicationForm.php:965
+#: modules/Application Form/applicationForm.php:1196
+#: modules/Application Form/applicationForm.php:1558
 #: modules/User Admin/applicationForm_manage_edit.php:1148
 #: modules/User Admin/applicationForm_manage_edit.php:1374
 #: modules/User Admin/family_manage_edit.php:432
@@ -27858,10 +28038,11 @@ msgstr "監護人"
 #: Admin/applicationForm_manage_edit.php:1145
 #: Admin/applicationForm_manage_edit.php:1371 Admin/family_manage_edit.php:433
 #: Form/applicationForm.php:963 Form/applicationForm.php:1194
-#: Form/applicationForm.php:1556
-#: modules/Application Form/applicationForm.php:963
-#: modules/Application Form/applicationForm.php:1194
-#: modules/Application Form/applicationForm.php:1556
+#: Form/applicationForm.php:1556 Admin/applicationForm_manage_edit.php:1149
+#: Admin/applicationForm_manage_edit.php:1375
+#: modules/Application Form/applicationForm.php:966
+#: modules/Application Form/applicationForm.php:1197
+#: modules/Application Form/applicationForm.php:1559
 #: modules/User Admin/applicationForm_manage_edit.php:1149
 #: modules/User Admin/applicationForm_manage_edit.php:1375
 #: modules/User Admin/family_manage_edit.php:433
@@ -27878,10 +28059,11 @@ msgstr "祖母"
 #: Admin/applicationForm_manage_edit.php:1146
 #: Admin/applicationForm_manage_edit.php:1372 Admin/family_manage_edit.php:434
 #: Form/applicationForm.php:964 Form/applicationForm.php:1195
-#: Form/applicationForm.php:1557
-#: modules/Application Form/applicationForm.php:964
-#: modules/Application Form/applicationForm.php:1195
-#: modules/Application Form/applicationForm.php:1557
+#: Form/applicationForm.php:1557 Admin/applicationForm_manage_edit.php:1150
+#: Admin/applicationForm_manage_edit.php:1376
+#: modules/Application Form/applicationForm.php:967
+#: modules/Application Form/applicationForm.php:1198
+#: modules/Application Form/applicationForm.php:1560
 #: modules/User Admin/applicationForm_manage_edit.php:1150
 #: modules/User Admin/applicationForm_manage_edit.php:1376
 #: modules/User Admin/family_manage_edit.php:434
@@ -27898,10 +28080,11 @@ msgstr "祖父"
 #: Admin/applicationForm_manage_edit.php:1147
 #: Admin/applicationForm_manage_edit.php:1373 Admin/family_manage_edit.php:435
 #: Form/applicationForm.php:965 Form/applicationForm.php:1196
-#: Form/applicationForm.php:1558
-#: modules/Application Form/applicationForm.php:965
-#: modules/Application Form/applicationForm.php:1196
-#: modules/Application Form/applicationForm.php:1558
+#: Form/applicationForm.php:1558 Admin/applicationForm_manage_edit.php:1151
+#: Admin/applicationForm_manage_edit.php:1377
+#: modules/Application Form/applicationForm.php:968
+#: modules/Application Form/applicationForm.php:1199
+#: modules/Application Form/applicationForm.php:1561
 #: modules/User Admin/applicationForm_manage_edit.php:1151
 #: modules/User Admin/applicationForm_manage_edit.php:1377
 #: modules/User Admin/family_manage_edit.php:435
@@ -27918,10 +28101,11 @@ msgstr "阿姨"
 #: Admin/applicationForm_manage_edit.php:1148
 #: Admin/applicationForm_manage_edit.php:1374 Admin/family_manage_edit.php:436
 #: Form/applicationForm.php:966 Form/applicationForm.php:1197
-#: Form/applicationForm.php:1559
-#: modules/Application Form/applicationForm.php:966
-#: modules/Application Form/applicationForm.php:1197
-#: modules/Application Form/applicationForm.php:1559
+#: Form/applicationForm.php:1559 Admin/applicationForm_manage_edit.php:1152
+#: Admin/applicationForm_manage_edit.php:1378
+#: modules/Application Form/applicationForm.php:969
+#: modules/Application Form/applicationForm.php:1200
+#: modules/Application Form/applicationForm.php:1562
 #: modules/User Admin/applicationForm_manage_edit.php:1152
 #: modules/User Admin/applicationForm_manage_edit.php:1378
 #: modules/User Admin/family_manage_edit.php:436
@@ -27938,10 +28122,11 @@ msgstr "叔叔"
 #: Admin/applicationForm_manage_edit.php:1149
 #: Admin/applicationForm_manage_edit.php:1375 Admin/family_manage_edit.php:437
 #: Form/applicationForm.php:967 Form/applicationForm.php:1198
-#: Form/applicationForm.php:1560
-#: modules/Application Form/applicationForm.php:967
-#: modules/Application Form/applicationForm.php:1198
-#: modules/Application Form/applicationForm.php:1560
+#: Form/applicationForm.php:1560 Admin/applicationForm_manage_edit.php:1153
+#: Admin/applicationForm_manage_edit.php:1379
+#: modules/Application Form/applicationForm.php:970
+#: modules/Application Form/applicationForm.php:1201
+#: modules/Application Form/applicationForm.php:1563
 #: modules/User Admin/applicationForm_manage_edit.php:1153
 #: modules/User Admin/applicationForm_manage_edit.php:1379
 #: modules/User Admin/family_manage_edit.php:437
@@ -27961,13 +28146,14 @@ msgstr "保母/家務助理"
 #: Admin/applicationForm_manage_edit.php:1665 Form/applicationForm.php:997
 #: Form/applicationForm.php:1081 Form/applicationForm.php:1210
 #: Form/applicationForm.php:1361 Form/applicationForm.php:1432
-#: Form/applicationForm.php:1464
-#: modules/Application Form/applicationForm.php:997
-#: modules/Application Form/applicationForm.php:1081
-#: modules/Application Form/applicationForm.php:1210
-#: modules/Application Form/applicationForm.php:1361
-#: modules/Application Form/applicationForm.php:1432
-#: modules/Application Form/applicationForm.php:1464
+#: Form/applicationForm.php:1464 Admin/applicationForm_manage_edit.php:1183
+#: Admin/applicationForm_manage_edit.php:1669
+#: modules/Application Form/applicationForm.php:1000
+#: modules/Application Form/applicationForm.php:1084
+#: modules/Application Form/applicationForm.php:1213
+#: modules/Application Form/applicationForm.php:1364
+#: modules/Application Form/applicationForm.php:1435
+#: modules/Application Form/applicationForm.php:1467
 #: modules/User Admin/applicationForm_manage_edit.php:1183
 #: modules/User Admin/applicationForm_manage_edit.php:1669
 msgid "Parent/Guardian"
@@ -27975,22 +28161,23 @@ msgstr "家長/監護人"
 
 #: modules/User Admin/applicationForm_manage_edit.php:1131
 #: Admin/applicationForm_manage_edit.php:1182 modules/Application
-#: Form/applicationForm.php:1000
-#: modules/Application Form/applicationForm.php:1000
+#: Form/applicationForm.php:1000 Admin/applicationForm_manage_edit.php:1186
+#: modules/Application Form/applicationForm.php:1003
 #: modules/User Admin/applicationForm_manage_edit.php:1186
 msgid "(e.g. mother)"
 msgstr "(例如 母親)"
 
 #: modules/User Admin/applicationForm_manage_edit.php:1134
 #: Admin/applicationForm_manage_edit.php:1185 modules/Application
-#: Form/applicationForm.php:1003
-#: modules/Application Form/applicationForm.php:1003
+#: Form/applicationForm.php:1003 Admin/applicationForm_manage_edit.php:1189
+#: modules/Application Form/applicationForm.php:1006
 #: modules/User Admin/applicationForm_manage_edit.php:1189
 msgid "(e.g. father)"
 msgstr "(例如 父親)"
 
 #: modules/User Admin/applicationForm_manage_edit.php:1142
 #: Admin/applicationForm_manage_edit.php:1193
+#: Admin/applicationForm_manage_edit.php:1197
 #: modules/User Admin/applicationForm_manage_edit.php:1197
 #, php-format
 msgid "Parent/Guardian %1$s Personal Data"
@@ -28035,8 +28222,8 @@ msgstr "家長/監護人 %1$s 個人資料"
 #: modules/Students/student_view_details.php:1806
 #: Admin/applicationForm_manage_edit.php:1198 Admin/data_personal_edit.php:136
 #: Admin/user_manage_edit.php:157 Form/applicationForm.php:1086
-#: installer/install.php:460 likes.php:49
-#: modules/Application Form/applicationForm.php:1086
+#: Admin/applicationForm_manage_edit.php:1202 installer/install.php:460
+#: likes.php:49 modules/Application Form/applicationForm.php:1089
 #: modules/Data Updater/data_personal.php:356
 #: modules/Finance/expenseRequest_manage.php:313
 #: modules/Finance/expenseRequest_manage_add.php:180
@@ -28050,7 +28237,7 @@ msgstr "家長/監護人 %1$s 個人資料"
 #: modules/Finance/expenses_manage_print_print.php:200
 #: modules/Finance/expenses_manage_processBulkExportContents.php:93
 #: modules/Finance/expenses_manage_view.php:193
-#: modules/Library/library_browse.php:229
+#: modules/Library/library_browse.php:233
 #: modules/Students/student_view_details.php:1806
 #: modules/Students/student_view_details_notes_add.php:103
 #: modules/Students/student_view_details_notes_edit.php:131
@@ -28076,7 +28263,8 @@ msgstr "小姐"
 #: installer/install.php:462 installer/install.php:463
 #: installer/install.php:466 Updater/data_personal.php:362
 #: Admin/applicationForm_manage_edit.php:1216 Admin/user_manage_edit.php:163
-#: installer/install.php:466 modules/Data Updater/data_personal.php:362
+#: Admin/applicationForm_manage_edit.php:1220 installer/install.php:466
+#: modules/Data Updater/data_personal.php:362
 #: modules/User Admin/applicationForm_manage_edit.php:1220
 #: modules/User Admin/user_manage_add.php:93
 #: modules/User Admin/user_manage_edit.php:163
@@ -28092,8 +28280,9 @@ msgstr "小姐"
 #: installer/install.php:463 installer/install.php:464
 #: installer/install.php:467 Updater/data_personal.php:363
 #: Admin/applicationForm_manage_edit.php:1217 Admin/user_manage_edit.php:164
-#: modules/Application Form/applicationForm.php:1094 installer/install.php:467
 #: modules/Application Form/applicationForm.php:1094
+#: Admin/applicationForm_manage_edit.php:1221 installer/install.php:467
+#: modules/Application Form/applicationForm.php:1097
 #: modules/Data Updater/data_personal.php:363
 #: modules/User Admin/applicationForm_manage_edit.php:1221
 #: modules/User Admin/user_manage_add.php:94
@@ -28110,8 +28299,9 @@ msgstr "先生"
 #: installer/install.php:464 installer/install.php:465
 #: installer/install.php:468 Updater/data_personal.php:364
 #: Admin/applicationForm_manage_edit.php:1218 Admin/user_manage_edit.php:165
-#: modules/Application Form/applicationForm.php:1095 installer/install.php:468
 #: modules/Application Form/applicationForm.php:1095
+#: Admin/applicationForm_manage_edit.php:1222 installer/install.php:468
+#: modules/Application Form/applicationForm.php:1098
 #: modules/Data Updater/data_personal.php:364
 #: modules/User Admin/applicationForm_manage_edit.php:1222
 #: modules/User Admin/user_manage_add.php:95
@@ -28128,8 +28318,9 @@ msgstr "夫人"
 #: installer/install.php:465 installer/install.php:466
 #: installer/install.php:469 Updater/data_personal.php:365
 #: Admin/applicationForm_manage_edit.php:1219 Admin/user_manage_edit.php:166
-#: modules/Application Form/applicationForm.php:1096 installer/install.php:469
 #: modules/Application Form/applicationForm.php:1096
+#: Admin/applicationForm_manage_edit.php:1223 installer/install.php:469
+#: modules/Application Form/applicationForm.php:1099
 #: modules/Data Updater/data_personal.php:365
 #: modules/User Admin/applicationForm_manage_edit.php:1223
 #: modules/User Admin/user_manage_add.php:96
@@ -28139,6 +28330,7 @@ msgstr "博士"
 
 #: modules/User Admin/applicationForm_manage_edit.php:1331
 #: Admin/applicationForm_manage_edit.php:1393
+#: Admin/applicationForm_manage_edit.php:1397
 #: modules/User Admin/applicationForm_manage_edit.php:1397
 #, php-format
 msgid "Parent/Guardian %1$s Background"
@@ -28185,8 +28377,10 @@ msgstr "家長/監護人 %1$s 背景"
 #: Admin/applicationForm_manage_edit_print.php:241
 #: Admin/data_personal_edit.php:501 Admin/import_users.php:173
 #: Admin/user_manage_edit.php:980 Form/applicationForm.php:1215
-#: modules/Application Form/applicationForm.php:315
-#: modules/Application Form/applicationForm.php:1215
+#: Admin/applicationForm_manage_edit.php:585
+#: Admin/applicationForm_manage_edit.php:1402
+#: modules/Application Form/applicationForm.php:318
+#: modules/Application Form/applicationForm.php:1218
 #: modules/Data Updater/data_personal.php:1026
 #: modules/Students/student_view_details.php:223
 #: modules/Students/student_view_details.php:851
@@ -28204,6 +28398,7 @@ msgstr "第一語言"
 
 #: modules/User Admin/applicationForm_manage_edit.php:1500
 #: Admin/applicationForm_manage_edit.php:1560
+#: Admin/applicationForm_manage_edit.php:1564
 #: modules/User Admin/applicationForm_manage_edit.php:1564
 #, php-format
 msgid "Parent/Guardian %1$s Contact"
@@ -28220,8 +28415,8 @@ msgstr "家長/監護人 %1$s 聯絡"
 #: Admin/user_manage_add.php:1039 Admin/user_manage_edit.php:1336
 #: Form/applicationForm.php:1440 Updater/data_personal.php:1461
 #: Admin/applicationForm_manage_edit.php:1636 Admin/user_manage_edit.php:1352
-#: Form/applicationForm.php:1432
-#: modules/Application Form/applicationForm.php:1432
+#: Form/applicationForm.php:1432 Admin/applicationForm_manage_edit.php:1640
+#: modules/Application Form/applicationForm.php:1435
 #: modules/Data Updater/data_personal.php:1461
 #: modules/User Admin/applicationForm_manage_edit.php:1640
 #: modules/User Admin/user_manage_add.php:1024
@@ -28253,8 +28448,8 @@ msgstr "僱用"
 #: modules/Students/student_view_details.php:1303
 #: Admin/applicationForm_manage_edit.php:1641 Admin/data_personal_edit.php:762
 #: Admin/import_users.php:175 Admin/user_manage_edit.php:1357
-#: Form/applicationForm.php:1437
-#: modules/Application Form/applicationForm.php:1437
+#: Form/applicationForm.php:1437 Admin/applicationForm_manage_edit.php:1645
+#: modules/Application Form/applicationForm.php:1440
 #: modules/Data Updater/data_personal.php:1466
 #: modules/Students/student_view_details.php:1303
 #: modules/User Admin/applicationForm_manage_edit.php:1645
@@ -28290,8 +28485,8 @@ msgstr "職業"
 #: modules/Students/student_view_details.php:1307
 #: Admin/applicationForm_manage_edit.php:1649 Admin/data_personal_edit.php:782
 #: Admin/import_users.php:176 Admin/user_manage_edit.php:1365
-#: Form/applicationForm.php:1449
-#: modules/Application Form/applicationForm.php:1449
+#: Form/applicationForm.php:1449 Admin/applicationForm_manage_edit.php:1653
+#: modules/Application Form/applicationForm.php:1452
 #: modules/Data Updater/data_personal.php:1483
 #: modules/Students/student_view_details.php:1307
 #: modules/User Admin/applicationForm_manage_edit.php:1653
@@ -28305,6 +28500,7 @@ msgstr "雇主"
 
 #: modules/User Admin/applicationForm_manage_edit.php:1608
 #: Admin/applicationForm_manage_edit.php:1705
+#: Admin/applicationForm_manage_edit.php:1709
 #: modules/User Admin/applicationForm_manage_edit.php:1709
 #, php-format
 msgid "The applying family is already a member of %1$s."
@@ -28325,7 +28521,8 @@ msgstr "在申請的家庭已經是 %1$s 的員。"
 #: Form/applicationForm.php:1589
 #: modules/Students/student_view_details.php:1354
 #: Admin/applicationForm_manage_edit.php:1767 Form/applicationForm.php:1581
-#: modules/Application Form/applicationForm.php:1581
+#: Admin/applicationForm_manage_edit.php:1771
+#: modules/Application Form/applicationForm.php:1584
 #: modules/Students/student_view_details.php:1354
 #: modules/User Admin/applicationForm_manage_edit.php:1771
 msgid "Siblings"
@@ -28334,8 +28531,8 @@ msgstr "兄弟姊妹們"
 #: modules/User Admin/applicationForm_manage_edit.php:1684 modules/Application
 #: Form/applicationForm.php:1542 Form/applicationForm.php:1547
 #: Form/applicationForm.php:1603 Admin/applicationForm_manage_edit.php:1781
-#: Form/applicationForm.php:1595
-#: modules/Application Form/applicationForm.php:1595
+#: Form/applicationForm.php:1595 Admin/applicationForm_manage_edit.php:1785
+#: modules/Application Form/applicationForm.php:1598
 #: modules/User Admin/applicationForm_manage_edit.php:1785
 msgid "Sibling Name"
 msgstr "兄弟姊妹名字"
@@ -28343,8 +28540,8 @@ msgstr "兄弟姊妹名字"
 #: modules/User Admin/applicationForm_manage_edit.php:1690 modules/Application
 #: Form/applicationForm.php:1548 Form/applicationForm.php:1553
 #: Form/applicationForm.php:1609 Admin/applicationForm_manage_edit.php:1787
-#: Form/applicationForm.php:1601
-#: modules/Application Form/applicationForm.php:1601
+#: Form/applicationForm.php:1601 Admin/applicationForm_manage_edit.php:1791
+#: modules/Application Form/applicationForm.php:1604
 #: modules/User Admin/applicationForm_manage_edit.php:1791
 msgid "School Attending"
 msgstr "參與的學校"
@@ -28352,8 +28549,8 @@ msgstr "參與的學校"
 #: modules/User Admin/applicationForm_manage_edit.php:1746 modules/Application
 #: Form/applicationForm.php:1659 Form/applicationForm.php:1664
 #: Form/applicationForm.php:1720 Admin/applicationForm_manage_edit.php:1843
-#: Form/applicationForm.php:1712
-#: modules/Application Form/applicationForm.php:1712
+#: Form/applicationForm.php:1712 Admin/applicationForm_manage_edit.php:1847
+#: modules/Application Form/applicationForm.php:1715
 #: modules/User Admin/applicationForm_manage_edit.php:1847
 msgid "Language Selection"
 msgstr "選擇語言"
@@ -28361,8 +28558,8 @@ msgstr "選擇語言"
 #: modules/User Admin/applicationForm_manage_edit.php:1759 modules/Application
 #: Form/applicationForm.php:1672 Form/applicationForm.php:1677
 #: Form/applicationForm.php:1733 Admin/applicationForm_manage_edit.php:1856
-#: Form/applicationForm.php:1725
-#: modules/Application Form/applicationForm.php:1725
+#: Form/applicationForm.php:1725 Admin/applicationForm_manage_edit.php:1860
+#: modules/Application Form/applicationForm.php:1728
 #: modules/User Admin/applicationForm_manage_edit.php:1860
 msgid "Language Choice"
 msgstr "語言選項"
@@ -28370,8 +28567,8 @@ msgstr "語言選項"
 #: modules/User Admin/applicationForm_manage_edit.php:1760 modules/Application
 #: Form/applicationForm.php:1673 Form/applicationForm.php:1678
 #: Form/applicationForm.php:1734 Admin/applicationForm_manage_edit.php:1857
-#: Form/applicationForm.php:1726
-#: modules/Application Form/applicationForm.php:1726
+#: Form/applicationForm.php:1726 Admin/applicationForm_manage_edit.php:1861
+#: modules/Application Form/applicationForm.php:1729
 #: modules/User Admin/applicationForm_manage_edit.php:1861
 msgid "Please choose preferred additional language to study."
 msgstr "請另外選擇首選語言來學習。"
@@ -28379,8 +28576,8 @@ msgstr "請另外選擇首選語言來學習。"
 #: modules/User Admin/applicationForm_manage_edit.php:1781 modules/Application
 #: Form/applicationForm.php:1694 Form/applicationForm.php:1699
 #: Form/applicationForm.php:1755 Admin/applicationForm_manage_edit.php:1878
-#: Form/applicationForm.php:1747
-#: modules/Application Form/applicationForm.php:1747
+#: Form/applicationForm.php:1747 Admin/applicationForm_manage_edit.php:1882
+#: modules/Application Form/applicationForm.php:1750
 #: modules/User Admin/applicationForm_manage_edit.php:1882
 msgid "Language Choice Experience"
 msgstr "選擇語言的經驗"
@@ -28388,8 +28585,8 @@ msgstr "選擇語言的經驗"
 #: modules/User Admin/applicationForm_manage_edit.php:1782 modules/Application
 #: Form/applicationForm.php:1695 Form/applicationForm.php:1700
 #: Form/applicationForm.php:1756 Admin/applicationForm_manage_edit.php:1879
-#: Form/applicationForm.php:1748
-#: modules/Application Form/applicationForm.php:1748
+#: Form/applicationForm.php:1748 Admin/applicationForm_manage_edit.php:1883
+#: modules/Application Form/applicationForm.php:1751
 #: modules/User Admin/applicationForm_manage_edit.php:1883
 msgid ""
 "Has the applicant studied the selected language before? If so, please "
@@ -28407,8 +28604,9 @@ msgstr "申請人有沒有學過自選擇的語言？如果有，請描述級別
 #: i18n/dbStringsForTranslation.php:1880 i18n/dbStringsForTranslation.php:1821
 #: i18n/dbStringsForTranslation.php:1830 Form/applicationForm.php:1772
 #: Admin/applicationForm_manage_edit.php:1889 Form/applicationForm.php:1764
+#: Admin/applicationForm_manage_edit.php:1893
 #: i18n/dbStringsForTranslation.php:1830
-#: modules/Application Form/applicationForm.php:1764
+#: modules/Application Form/applicationForm.php:1767
 #: modules/User Admin/applicationForm_manage_edit.php:1893
 msgid "Scholarships"
 msgstr "獎學金"
@@ -28416,8 +28614,8 @@ msgstr "獎學金"
 #: modules/User Admin/applicationForm_manage_edit.php:1817 modules/Application
 #: Form/applicationForm.php:1725 Form/applicationForm.php:1730
 #: Form/applicationForm.php:1786 Admin/applicationForm_manage_edit.php:1914
-#: Form/applicationForm.php:1778
-#: modules/Application Form/applicationForm.php:1778
+#: Form/applicationForm.php:1778 Admin/applicationForm_manage_edit.php:1918
+#: modules/Application Form/applicationForm.php:1781
 #: modules/User Admin/applicationForm_manage_edit.php:1918
 msgid "Interest"
 msgstr "興趣"
@@ -28425,8 +28623,8 @@ msgstr "興趣"
 #: modules/User Admin/applicationForm_manage_edit.php:1818 modules/Application
 #: Form/applicationForm.php:1726 Form/applicationForm.php:1731
 #: Form/applicationForm.php:1787 Admin/applicationForm_manage_edit.php:1915
-#: Form/applicationForm.php:1779
-#: modules/Application Form/applicationForm.php:1779
+#: Form/applicationForm.php:1779 Admin/applicationForm_manage_edit.php:1919
+#: modules/Application Form/applicationForm.php:1782
 #: modules/User Admin/applicationForm_manage_edit.php:1919
 msgid "Indicate if you are interested in a scholarship."
 msgstr "表明如果你肚餓獎學金優興趣。"
@@ -28435,6 +28633,7 @@ msgstr "表明如果你肚餓獎學金優興趣。"
 #: Updater/data_finance.php:337 modules/Finance/invoicees_manage_edit.php:176
 #: Updater/data_finance.php:348 modules/Finance/invoicees_manage_edit.php:188
 #: Admin/applicationForm_manage_edit.php:2007
+#: Admin/applicationForm_manage_edit.php:2011
 #: modules/Data Updater/data_finance.php:348
 #: modules/Finance/invoicees_manage_edit.php:188
 #: modules/User Admin/applicationForm_manage_edit.php:2011
@@ -28453,6 +28652,7 @@ msgstr ""
 #: Updater/data_finance.php:342 modules/Finance/invoicees_manage_edit.php:181
 #: Updater/data_finance.php:353 modules/Finance/invoicees_manage_edit.php:193
 #: Admin/applicationForm_manage_edit.php:2012
+#: Admin/applicationForm_manage_edit.php:2016
 #: modules/Data Updater/data_finance.php:353
 #: modules/Finance/invoicees_manage_edit.php:193
 #: modules/User Admin/applicationForm_manage_edit.php:2016
@@ -28464,8 +28664,8 @@ msgstr "送出發票去"
 #: modules/Finance/invoicees_manage_edit.php:185 Updater/data_finance.php:357
 #: modules/Finance/invoicees_manage_edit.php:197
 #: Admin/applicationForm_manage_edit.php:2016 modules/Application
-#: Form/applicationForm.php:1873
-#: modules/Application Form/applicationForm.php:1873
+#: Form/applicationForm.php:1873 Admin/applicationForm_manage_edit.php:2020
+#: modules/Application Form/applicationForm.php:1876
 #: modules/Data Updater/data_finance.php:357
 #: modules/Finance/invoicees_manage.php:225
 #: modules/Finance/invoicees_manage_edit.php:197
@@ -28480,7 +28680,8 @@ msgstr "公司"
 #: Form/applicationForm.php:1886 Updater/data_finance.php:362
 #: modules/Finance/invoicees_manage_edit.php:202
 #: Admin/applicationForm_manage_edit.php:2021 Form/applicationForm.php:1878
-#: modules/Application Form/applicationForm.php:1878
+#: Admin/applicationForm_manage_edit.php:2025
+#: modules/Application Form/applicationForm.php:1881
 #: modules/Data Updater/data_finance.php:362
 #: modules/Finance/invoicees_manage_edit.php:202
 #: modules/User Admin/applicationForm_manage_edit.php:2025
@@ -28495,7 +28696,8 @@ msgstr "公司名字"
 #: Form/applicationForm.php:1898 Updater/data_finance.php:374
 #: modules/Finance/invoicees_manage_edit.php:214
 #: Admin/applicationForm_manage_edit.php:2033 Form/applicationForm.php:1890
-#: modules/Application Form/applicationForm.php:1890
+#: Admin/applicationForm_manage_edit.php:2037
+#: modules/Application Form/applicationForm.php:1893
 #: modules/Data Updater/data_finance.php:374
 #: modules/Finance/invoicees_manage_edit.php:214
 #: modules/User Admin/applicationForm_manage_edit.php:2037
@@ -28510,7 +28712,8 @@ msgstr "公司聯絡人"
 #: Form/applicationForm.php:1910 Updater/data_finance.php:386
 #: modules/Finance/invoicees_manage_edit.php:226
 #: Admin/applicationForm_manage_edit.php:2045 Form/applicationForm.php:1902
-#: modules/Application Form/applicationForm.php:1902
+#: Admin/applicationForm_manage_edit.php:2049
+#: modules/Application Form/applicationForm.php:1905
 #: modules/Data Updater/data_finance.php:386
 #: modules/Finance/invoicees_manage_edit.php:226
 #: modules/User Admin/applicationForm_manage_edit.php:2049
@@ -28525,7 +28728,8 @@ msgstr "公司地址"
 #: Form/applicationForm.php:1922 Updater/data_finance.php:398
 #: modules/Finance/invoicees_manage_edit.php:238
 #: Admin/applicationForm_manage_edit.php:2057 Form/applicationForm.php:1914
-#: modules/Application Form/applicationForm.php:1914
+#: Admin/applicationForm_manage_edit.php:2061
+#: modules/Application Form/applicationForm.php:1917
 #: modules/Data Updater/data_finance.php:398
 #: modules/Finance/invoicees_manage_edit.php:238
 #: modules/User Admin/applicationForm_manage_edit.php:2061
@@ -28540,7 +28744,8 @@ msgstr "公司電子郵件"
 #: Form/applicationForm.php:1935 Updater/data_finance.php:411
 #: modules/Finance/invoicees_manage_edit.php:251
 #: Admin/applicationForm_manage_edit.php:2070 Form/applicationForm.php:1927
-#: modules/Application Form/applicationForm.php:1927
+#: Admin/applicationForm_manage_edit.php:2074
+#: modules/Application Form/applicationForm.php:1930
 #: modules/Data Updater/data_finance.php:411
 #: modules/Finance/invoicees_manage_edit.php:251
 #: modules/User Admin/applicationForm_manage_edit.php:2074
@@ -28554,7 +28759,8 @@ msgstr "CC 家庭"
 #: Form/applicationForm.php:1936 Updater/data_finance.php:412
 #: modules/Finance/invoicees_manage_edit.php:252
 #: Admin/applicationForm_manage_edit.php:2071 Form/applicationForm.php:1928
-#: modules/Application Form/applicationForm.php:1928
+#: Admin/applicationForm_manage_edit.php:2075
+#: modules/Application Form/applicationForm.php:1931
 #: modules/Data Updater/data_finance.php:412
 #: modules/Finance/invoicees_manage_edit.php:252
 #: modules/User Admin/applicationForm_manage_edit.php:2075
@@ -28568,7 +28774,8 @@ msgstr "應不應該發送帳單電郵的副本給家長？"
 #: Form/applicationForm.php:1947 Updater/data_finance.php:423
 #: modules/Finance/invoicees_manage_edit.php:263
 #: Admin/applicationForm_manage_edit.php:2082 Form/applicationForm.php:1939
-#: modules/Application Form/applicationForm.php:1939
+#: Admin/applicationForm_manage_edit.php:2086
+#: modules/Application Form/applicationForm.php:1942
 #: modules/Data Updater/data_finance.php:423
 #: modules/Finance/invoicees_manage_edit.php:263
 #: modules/User Admin/applicationForm_manage_edit.php:2086
@@ -28583,7 +28790,8 @@ msgstr "公司電話"
 #: Form/applicationForm.php:1968 Updater/data_finance.php:444
 #: modules/Finance/invoicees_manage_edit.php:284
 #: Admin/applicationForm_manage_edit.php:2103 Form/applicationForm.php:1960
-#: modules/Application Form/applicationForm.php:1960
+#: Admin/applicationForm_manage_edit.php:2107
+#: modules/Application Form/applicationForm.php:1963
 #: modules/Data Updater/data_finance.php:444
 #: modules/Finance/invoicees_manage_edit.php:284
 #: modules/User Admin/applicationForm_manage_edit.php:2107
@@ -28597,7 +28805,8 @@ msgstr "全體公司"
 #: Form/applicationForm.php:1969 Updater/data_finance.php:445
 #: modules/Finance/invoicees_manage_edit.php:285
 #: Admin/applicationForm_manage_edit.php:2104 Form/applicationForm.php:1961
-#: modules/Application Form/applicationForm.php:1961
+#: Admin/applicationForm_manage_edit.php:2108
+#: modules/Application Form/applicationForm.php:1964
 #: modules/Data Updater/data_finance.php:445
 #: modules/Finance/invoicees_manage_edit.php:285
 #: modules/User Admin/applicationForm_manage_edit.php:2108
@@ -28611,9 +28820,9 @@ msgstr "應不應該把全部的項目收取費用，或只是一些。"
 #: Form/applicationForm.php:1516 Form/applicationForm.php:1973
 #: Updater/data_finance.php:449 modules/Finance/invoicees_manage_edit.php:289
 #: Admin/applicationForm_manage_edit.php:2108 Form/applicationForm.php:1508
-#: Form/applicationForm.php:1965
-#: modules/Application Form/applicationForm.php:1508
-#: modules/Application Form/applicationForm.php:1965
+#: Form/applicationForm.php:1965 Admin/applicationForm_manage_edit.php:2112
+#: modules/Application Form/applicationForm.php:1511
+#: modules/Application Form/applicationForm.php:1968
 #: modules/Data Updater/data_finance.php:449
 #: modules/Finance/invoicees_manage_edit.php:289
 #: modules/User Admin/applicationForm_manage_edit.php:2112
@@ -28627,7 +28836,8 @@ msgstr "選定"
 #: Form/applicationForm.php:1978 Updater/data_finance.php:454
 #: modules/Finance/invoicees_manage_edit.php:294
 #: Admin/applicationForm_manage_edit.php:2113 Form/applicationForm.php:1970
-#: modules/Application Form/applicationForm.php:1970
+#: Admin/applicationForm_manage_edit.php:2117
+#: modules/Application Form/applicationForm.php:1973
 #: modules/Data Updater/data_finance.php:454
 #: modules/Finance/invoicees_manage_edit.php:294
 #: modules/User Admin/applicationForm_manage_edit.php:2117
@@ -28641,7 +28851,8 @@ msgstr "公司收費類別"
 #: Form/applicationForm.php:1979 Updater/data_finance.php:455
 #: modules/Finance/invoicees_manage_edit.php:295
 #: Admin/applicationForm_manage_edit.php:2114 Form/applicationForm.php:1971
-#: modules/Application Form/applicationForm.php:1971
+#: Admin/applicationForm_manage_edit.php:2118
+#: modules/Application Form/applicationForm.php:1974
 #: modules/Data Updater/data_finance.php:455
 #: modules/Finance/invoicees_manage_edit.php:295
 #: modules/User Admin/applicationForm_manage_edit.php:2118
@@ -28653,8 +28864,8 @@ msgstr "如果特定的公司不在支付所有費用，那他們在付哪個類
 #: modules/User Admin/applicationForm_manage_edit.php:2021 modules/Application
 #: Form/applicationForm.php:1913 Form/applicationForm.php:1918
 #: Form/applicationForm.php:2000 Admin/applicationForm_manage_edit.php:2143
-#: Form/applicationForm.php:1992
-#: modules/Application Form/applicationForm.php:1992
+#: Form/applicationForm.php:1992 Admin/applicationForm_manage_edit.php:2147
+#: modules/Application Form/applicationForm.php:1995
 #: modules/User Admin/applicationForm_manage_edit.php:2147
 msgid "Supporting Documents"
 msgstr "支援文件"
@@ -28662,8 +28873,8 @@ msgstr "支援文件"
 #: modules/User Admin/applicationForm_manage_edit.php:2111 modules/Application
 #: Form/applicationForm.php:1987 Form/applicationForm.php:1992
 #: Form/applicationForm.php:2074 Admin/applicationForm_manage_edit.php:2233
-#: Form/applicationForm.php:2066
-#: modules/Application Form/applicationForm.php:2066
+#: Form/applicationForm.php:2066 Admin/applicationForm_manage_edit.php:2237
+#: modules/Application Form/applicationForm.php:2069
 #: modules/User Admin/applicationForm_manage_edit.php:2237
 msgid "How Did You Hear About Us?"
 msgstr "你是怎麼知道我們的?"
@@ -28671,14 +28882,15 @@ msgstr "你是怎麼知道我們的?"
 #: modules/User Admin/applicationForm_manage_edit.php:2137 modules/Application
 #: Form/applicationForm.php:2027 Form/applicationForm.php:2032
 #: Form/applicationForm.php:2114 Admin/applicationForm_manage_edit.php:2259
-#: Form/applicationForm.php:2106
-#: modules/Application Form/applicationForm.php:2106
+#: Form/applicationForm.php:2106 Admin/applicationForm_manage_edit.php:2263
+#: modules/Application Form/applicationForm.php:2109
 #: modules/User Admin/applicationForm_manage_edit.php:2263
 msgid "Tell Us More"
 msgstr "告訴我們更多"
 
 #: modules/User Admin/applicationForm_manage_edit.php:2138
 #: Admin/applicationForm_manage_edit.php:2260
+#: Admin/applicationForm_manage_edit.php:2264
 #: modules/User Admin/applicationForm_manage_edit.php:2264
 msgid "The name of a person or link to a website."
 msgstr "人士的名稱或鏈接到一個網站。"
@@ -28702,8 +28914,9 @@ msgstr "人士的名稱或鏈接到一個網站。"
 #: Form/applicationForm.php:2129 Updater/data_personal.php:1552
 #: Admin/applicationForm_manage_edit.php:2274 Admin/user_manage_add.php:1243
 #: Admin/user_manage_edit.php:1605 Form/applicationForm.php:2121
+#: Admin/applicationForm_manage_edit.php:2278
 #: i18n/dbStringsForTranslation.php:1806
-#: modules/Application Form/applicationForm.php:2121
+#: modules/Application Form/applicationForm.php:2124
 #: modules/Data Updater/data_personal.php:1552
 #: modules/Students/report_privacy_student.php:68
 #: modules/User Admin/applicationForm_manage_edit.php:2278
@@ -29188,7 +29401,7 @@ msgstr "新價值"
 #: modules/Students/student_view_details.php:1178
 #: Admin/family_manage_add.php:173 Admin/family_manage_edit.php:254
 #: Form/applicationForm.php:849
-#: modules/Application Form/applicationForm.php:849
+#: modules/Application Form/applicationForm.php:852
 #: modules/Data Updater/data_family.php:273
 #: modules/Students/student_view_details.php:1178
 #: modules/User Admin/data_family_edit.php:154
@@ -29230,6 +29443,7 @@ msgstr "目標用戶"
 #: modules/Finance/invoicees_manage.php:183
 #: modules/Finance/invoices_manage.php:510
 #: modules/Finance/invoices_manage_processBulkExportContents.php:96
+#: modules/Finance/invoices_view.php:236
 #: modules/Finance/moduleFunctions.php:951
 #: modules/User Admin/data_finance_edit.php:116
 msgid "Invoice To"
@@ -30223,7 +30437,7 @@ msgstr "你的請求失敗因為那位人士已經存在這個家庭裡。"
 #: Form/applicationForm.php:1458 Form/applicationForm.php:1463
 #: Form/applicationForm.php:1519 Admin/family_manage_edit.php:388
 #: Form/applicationForm.php:1511
-#: modules/Application Form/applicationForm.php:1511
+#: modules/Application Form/applicationForm.php:1514
 #: modules/User Admin/family_manage_edit.php:388
 msgid "Relationships"
 msgstr "關係"
@@ -30778,7 +30992,9 @@ msgstr "全部孩子都可以被讀取或使用，所以會繼續導入."
 #: modules/Formal Admin/import_studentEnrolment.php:246
 #: Admin/import_studentEnrolment.php:392 Admin/import_users.php:342
 #: Admin/import_users.php:640 Admin/import_users.php:343
-#: Admin/import_users.php:644 modules/Formal Assessment/import_results.php:232
+#: Admin/import_users.php:644 Admin/import_studentEnrolment.php:251
+#: Admin/import_studentEnrolment.php:401
+#: modules/Formal Assessment/import_results.php:232
 #: modules/Library/library_import.php:347
 #: modules/Planner/outcomes_import.php:235
 #: modules/User Admin/import_families.php:379
@@ -30912,6 +31128,7 @@ msgstr "在學校管理設置的年級簡稱。必須已經存在。"
 
 #: modules/User Admin/import_studentEnrolment.php:199
 #: Admin/import_studentEnrolment.php:221 Admin/import_studentEnrolment.php:367
+#: Admin/import_studentEnrolment.php:226 Admin/import_studentEnrolment.php:376
 #: modules/User Admin/import_studentEnrolment.php:226
 #: modules/User Admin/import_studentEnrolment.php:376
 #, php-format
@@ -30920,6 +31137,7 @@ msgstr "學生提供的用戶名 %1$s 有些資料故障."
 
 #: modules/User Admin/import_studentEnrolment.php:207
 #: Admin/import_studentEnrolment.php:229 Admin/import_studentEnrolment.php:375
+#: Admin/import_studentEnrolment.php:234 Admin/import_studentEnrolment.php:384
 #: modules/User Admin/import_studentEnrolment.php:234
 #: modules/User Admin/import_studentEnrolment.php:384
 msgid ""
@@ -30930,6 +31148,7 @@ msgstr ""
 
 #: modules/User Admin/import_studentEnrolment.php:213
 #: Admin/import_studentEnrolment.php:235 Admin/import_studentEnrolment.php:381
+#: Admin/import_studentEnrolment.php:240 Admin/import_studentEnrolment.php:390
 #: modules/User Admin/import_studentEnrolment.php:240
 #: modules/User Admin/import_studentEnrolment.php:390
 msgid ""
@@ -30939,31 +31158,33 @@ msgstr "有些學生不能成功的讀取或使用，所以會中止導入."
 
 #: modules/User Admin/import_studentEnrolment.php:219
 #: Admin/import_studentEnrolment.php:241 Admin/import_studentEnrolment.php:387
+#: Admin/import_studentEnrolment.php:246 Admin/import_studentEnrolment.php:396
 #: modules/User Admin/import_studentEnrolment.php:246
 #: modules/User Admin/import_studentEnrolment.php:396
 msgid "All students could be read and used, so the import will proceed."
 msgstr "全部學生都可以被讀取或使用，所以會繼續導入."
 
 #: modules/User Admin/import_studentEnrolment.php:234
-#: Admin/import_studentEnrolment.php:256
+#: Admin/import_studentEnrolment.php:256 Admin/import_studentEnrolment.php:261
 #: modules/User Admin/import_studentEnrolment.php:261
 msgid "Delete All Enrolments"
 msgstr "刪除全部的註冊"
 
 #: modules/User Admin/import_studentEnrolment.php:249
-#: Admin/import_studentEnrolment.php:271
+#: Admin/import_studentEnrolment.php:271 Admin/import_studentEnrolment.php:276
 #: modules/User Admin/import_studentEnrolment.php:276
 msgid "An error was encountered in deleting all enrolments."
 msgstr "刪除全部註冊時遇到錯誤"
 
 #: modules/User Admin/import_studentEnrolment.php:254
-#: Admin/import_studentEnrolment.php:276
+#: Admin/import_studentEnrolment.php:276 Admin/import_studentEnrolment.php:281
 #: modules/User Admin/import_studentEnrolment.php:281
 msgid "All enrolments were deleted."
 msgstr "全部的註冊被刪除了。"
 
 #: modules/User Admin/import_studentEnrolment.php:260
 #: Admin/import_studentEnrolment.php:282 Admin/import_studentEnrolment.php:401
+#: Admin/import_studentEnrolment.php:287 Admin/import_studentEnrolment.php:410
 #: modules/User Admin/import_studentEnrolment.php:287
 #: modules/User Admin/import_studentEnrolment.php:410
 msgid "Enrol All Students"
@@ -30971,7 +31192,8 @@ msgstr "招收全部學生"
 
 #: modules/User Admin/import_studentEnrolment.php:279
 #: Admin/import_studentEnrolment.php:300 Admin/import_studentEnrolment.php:419
-#: Admin/import_studentEnrolment.php:436
+#: Admin/import_studentEnrolment.php:436 Admin/import_studentEnrolment.php:305
+#: Admin/import_studentEnrolment.php:428 Admin/import_studentEnrolment.php:446
 #: modules/User Admin/import_studentEnrolment.php:305
 #: modules/User Admin/import_studentEnrolment.php:428
 #: modules/User Admin/import_studentEnrolment.php:446
@@ -30980,6 +31202,7 @@ msgstr "註冊學生時有錯誤:"
 
 #: modules/User Admin/import_studentEnrolment.php:284
 #: Admin/import_studentEnrolment.php:305 Admin/import_studentEnrolment.php:441
+#: Admin/import_studentEnrolment.php:310 Admin/import_studentEnrolment.php:451
 #: modules/User Admin/import_studentEnrolment.php:310
 #: modules/User Admin/import_studentEnrolment.php:451
 #, php-format
@@ -31024,7 +31247,8 @@ msgstr "你的輸入應該應該只包括狀態是 \"滿\" 的用戶"
 #: modules/User Admin/import_users.php:126 modules/External
 #: Assessment/import_results.php:117 modules/Library/library_import.php:117
 #: modules/Planner/outcomes_import.php:133 modules/Formal
-#: Admin/import_users.php:138 modules/Formal Assessment/import_results.php:117
+#: Admin/import_users.php:138 Admin/import_studentEnrolment.php:130
+#: modules/Formal Assessment/import_results.php:117
 #: modules/Library/library_import.php:117
 #: modules/Planner/outcomes_import.php:133
 #: modules/User Admin/import_studentEnrolment.php:130
@@ -31413,9 +31637,9 @@ msgstr "更新和插入"
 #: Admin/import_users.php:402 Admin/import_users.php:513
 #: Admin/import_users.php:670 Admin/import_users.php:740
 #: modules/User Admin/import_users.php:402
-#: modules/User Admin/import_users.php:513
+#: modules/User Admin/import_users.php:512
 #: modules/User Admin/import_users.php:670
-#: modules/User Admin/import_users.php:740
+#: modules/User Admin/import_users.php:742
 msgid "There was an error locating user:"
 msgstr "尋找用戶時有錯誤:"
 
@@ -31435,24 +31659,24 @@ msgstr "用戶%1$s更新時成功."
 #: modules/User Admin/import_users.php:461 Admin/import_users.php:459
 #: Admin/import_users.php:479 Admin/import_users.php:706
 #: Admin/import_users.php:483 Admin/import_users.php:710
-#: modules/User Admin/import_users.php:483
-#: modules/User Admin/import_users.php:710
+#: modules/User Admin/import_users.php:482
+#: modules/User Admin/import_users.php:712
 msgid "There was an error with the role of user:"
 msgstr "用戶角色有錯誤:"
 
 #: modules/User Admin/import_users.php:479 Admin/import_users.php:477
 #: Admin/import_users.php:497 Admin/import_users.php:724
 #: Admin/import_users.php:501 Admin/import_users.php:728
-#: modules/User Admin/import_users.php:501
-#: modules/User Admin/import_users.php:728
+#: modules/User Admin/import_users.php:500
+#: modules/User Admin/import_users.php:730
 msgid "There was an error creating user:"
 msgstr "創造用戶有錯誤:"
 
 #: modules/User Admin/import_users.php:484 Admin/import_users.php:482
 #: Admin/import_users.php:502 Admin/import_users.php:729
 #: Admin/import_users.php:506 Admin/import_users.php:733
-#: modules/User Admin/import_users.php:506
-#: modules/User Admin/import_users.php:733
+#: modules/User Admin/import_users.php:505
+#: modules/User Admin/import_users.php:735
 #, php-format
 msgid "User %1$s was successfully created with password %2$s."
 msgstr "成功的創建了用戶 %1$s 和他的密碼 %2$s."
@@ -32257,7 +32481,7 @@ msgstr "加入用戶"
 #: installer/install.php:1149 installer/install.php:1151
 #: installer/install.php:1152 installer/install.php:1155
 #: installer/install.php:1161 installer/install.php:1162
-#: installer/install.php:1162
+#: installer/install.php:1163
 #: modules/Finance/billingSchedule_manage_add.php:51
 #: modules/User Admin/user_manage_add.php:51
 #: modules/User Admin/user_manage_password.php:54
@@ -32281,8 +32505,8 @@ msgstr "你的要求失敗了因為你的密碼相配強度的最低要求。"
 #: installer/install.php:462 installer/install.php:465
 #: Updater/data_personal.php:361 Admin/applicationForm_manage_edit.php:1215
 #: Admin/user_manage_edit.php:162 modules/Application
-#: Form/applicationForm.php:1092 installer/install.php:465
-#: modules/Application Form/applicationForm.php:1092
+#: Form/applicationForm.php:1092 Admin/applicationForm_manage_edit.php:1219
+#: installer/install.php:465 modules/Application Form/applicationForm.php:1095
 #: modules/Data Updater/data_personal.php:361
 #: modules/User Admin/applicationForm_manage_edit.php:1219
 #: modules/User Admin/user_manage_add.php:92
@@ -33412,6 +33636,7 @@ msgstr "學生在給功課後才加入學校"
 #: modules/Behaviour/moduleFunctions.php:168
 #: modules/Finance/billingSchedule_manage.php:234
 #: modules/Finance/fees_manage.php:230 modules/Finance/invoices_manage.php:669
+#: modules/Finance/invoices_view.php:378
 #: modules/Finance/moduleFunctions.php:634
 #: modules/Messenger/messenger_manage.php:416
 #: modules/Planner/planner_unitOverview.php:359
@@ -33776,9 +34001,9 @@ msgstr "列表開始日期"
 #: modules/Activities/activities_manage_edit.php:280
 #: modules/Activities/activities_manage_edit.php:298
 #: modules/Activities/activities_manage_edit.php:316
-#: modules/Application Form/applicationForm.php:241
-#: modules/Application Form/applicationForm.php:633
-#: modules/Application Form/applicationForm.php:1341
+#: modules/Application Form/applicationForm.php:244
+#: modules/Application Form/applicationForm.php:636
+#: modules/Application Form/applicationForm.php:1344
 #: modules/Attendance/attendance_take_byPerson.php:124
 #: modules/Attendance/attendance_take_byRollGroup.php:141
 #: modules/Attendance/report_rollGroupsNotRegistered_byDate.php:54
@@ -34372,6 +34597,7 @@ msgstr ""
 #: modules/Activities/activities_view_register.php:118
 #: modules/Attendance/report_studentHistory.php:141
 #: modules/Attendance/report_studentHistory.php:173
+#: modules/Finance/invoices_view.php:51 modules/Finance/invoices_view.php:84
 #: modules/Formal Assessment/internalAssessment_view.php:140
 #: modules/Formal Assessment/internalAssessment_view.php:173
 #: modules/Markbook/markbook_view.php:1375
@@ -35080,7 +35306,7 @@ msgstr "編輯測驗"
 #: Assessment/moduleFunctions.php:344 Assessment/moduleFunctions.php:349
 #: modules/Finance/invoices_manage_print.php:113
 #: modules/Formal Assessment/moduleFunctions.php:349
-#: modules/Library/report_viewOverdueItems.php:62
+#: modules/Library/report_viewOverdueItems.php:111
 msgid "Item"
 msgstr "物件"
 
@@ -35323,6 +35549,10 @@ msgstr "編輯成績表"
 #: Admin/gradeScales_manage_edit.php:279
 #: Admin/courseEnrolment_manage_byPerson_edit.php:331
 #: Admin/courseEnrolment_manage_byPerson_edit.php:438
+#: modules/Timetable/studentEnrolment_manage_edit.php:256
+#: modules/Timetable/studentEnrolment_manage_edit.php:343
+#: Admin/courseEnrolment_manage_class_edit.php:300
+#: Admin/courseEnrolment_manage_class_edit.php:386
 #: modules/Activities/activities_manage.php:278
 #: modules/Activities/activities_manage_enrolment.php:252
 #: modules/Behaviour/behaviour_manage.php:359
@@ -35341,11 +35571,12 @@ msgstr "編輯成績表"
 #: modules/Finance/fees_manage.php:219
 #: modules/Finance/invoicees_manage.php:235
 #: modules/Finance/invoices_manage.php:649
-#: modules/Formal Assessment/internalAssessment_manage.php:190
+#: modules/Formal Assessment/internalAssessment_manage.php:192
 #: modules/Formal Assessment/moduleFunctions.php:297
 #: modules/Library/library_lending.php:375
 #: modules/Library/library_lending_item.php:316
 #: modules/Library/library_manage_catalog.php:433
+#: modules/Library/report_viewOverdueItems.php:155
 #: modules/Markbook/markbook_edit.php:90
 #: modules/Markbook/markbook_edit.php:230
 #: modules/Markbook/markbook_edit_data.php:140
@@ -35464,7 +35695,7 @@ msgstr "名稱／單元"
 
 #: modules/Markbook/markbook_edit.php:180 modules/Formal
 #: Assessment/internalAssessment_manage.php:162
-#: modules/Formal Assessment/internalAssessment_manage.php:162
+#: modules/Formal Assessment/internalAssessment_manage.php:163
 #: modules/Markbook/markbook_edit.php:180
 msgid "Date<br/>Complete"
 msgstr "日期<br/>完成"
@@ -35493,7 +35724,7 @@ msgstr "<br/>家長可見"
 #: Assessment/internalAssessment_manage.php:192
 #: Assessment/internalAssessment_write.php:364
 #: modules/Markbook/markbook_view.php:476
-#: modules/Formal Assessment/internalAssessment_manage.php:192
+#: modules/Formal Assessment/internalAssessment_manage.php:194
 #: modules/Formal Assessment/internalAssessment_write.php:364
 #: modules/Markbook/markbook_edit.php:232
 #: modules/Markbook/markbook_edit_edit.php:144
@@ -37069,7 +37300,7 @@ msgstr "你坑定需要刪除這個列行嗎?任何還沒儲蓄的更改會沒�
 #: modules/Rubrics/moduleFunctions.php:405
 #: modules/Planner/curriculumMapping_outcomesByCourse.php:163
 #: modules/Rubrics/moduleFunctions.php:146
-#: modules/Rubrics/moduleFunctions.php:405
+#: modules/Rubrics/moduleFunctions.php:404
 msgid "Outcome"
 msgstr "成果"
 
@@ -37082,7 +37313,7 @@ msgstr "你坑定需要刪除這一行嗎?任何還沒儲蓄的更改會沒有�
 
 #: modules/Rubrics/moduleFunctions.php:284
 #: modules/Rubrics/moduleFunctions.php:283
-#: modules/Rubrics/moduleFunctions.php:283
+#: modules/Rubrics/moduleFunctions.php:282
 msgid ""
 "Click on any of the cells below to highlight them. Data is saved "
 "automatically after each click."
@@ -37090,19 +37321,19 @@ msgstr "按以下的任何給來使顯他們。按了後，資料會自動儲蓄
 
 #: modules/Rubrics/moduleFunctions.php:309
 #: modules/Rubrics/moduleFunctions.php:308
-#: modules/Rubrics/moduleFunctions.php:308
+#: modules/Rubrics/moduleFunctions.php:307
 msgid "Historical Data"
 msgstr "歷史資料"
 
 #: modules/Rubrics/moduleFunctions.php:459
 #: modules/Rubrics/moduleFunctions.php:458
-#: modules/Rubrics/moduleFunctions.php:458
+#: modules/Rubrics/moduleFunctions.php:457
 msgid "Total Occurences:"
 msgstr "總共的出現次數:"
 
 #: modules/Rubrics/moduleFunctions.php:466
 #: modules/Rubrics/moduleFunctions.php:465
-#: modules/Rubrics/moduleFunctions.php:465
+#: modules/Rubrics/moduleFunctions.php:464
 msgid "Older occurrences not shown..."
 msgstr "就的出現次數沒有顯示。"
 
@@ -37140,11 +37371,13 @@ msgstr "管理評分表"
 #: modules/Behaviour/behaviour_manage.php:78
 #: modules/Behaviour/behaviour_pattern.php:83
 #: modules/Students/student_view_details.php:1726
-#: modules/Tracking/graphing.php:46 modules/Behaviour/behaviour_manage.php:78
+#: modules/Tracking/graphing.php:46 modules/Behaviour/behaviour_letters.php:42
+#: modules/Behaviour/behaviour_manage.php:78
 #: modules/Behaviour/behaviour_pattern.php:83
-#: modules/Individual Needs/in_summary.php:67 modules/Planner/outcomes.php:92
-#: modules/Rubrics/rubrics.php:106 modules/Rubrics/rubrics_view.php:100
-#: modules/Students/student_view.php:141
+#: modules/Individual Needs/in_summary.php:67
+#: modules/Library/report_viewOverdueItems.php:38
+#: modules/Planner/outcomes.php:92 modules/Rubrics/rubrics.php:106
+#: modules/Rubrics/rubrics_view.php:100 modules/Students/student_view.php:141
 #: modules/Students/student_view_details.php:1726
 #: modules/Tracking/graphing.php:46
 msgid "Filter"
@@ -47904,7 +48137,7 @@ msgstr "申請管理員電郵"
 #: publicRegistration.php:273 i18n/dbStringsForTranslation.php:1707
 #: Form/applicationForm.php:2152 Form/applicationForm.php:2144
 #: i18n/dbStringsForTranslation.php:1707
-#: modules/Application Form/applicationForm.php:2144
+#: modules/Application Form/applicationForm.php:2147
 #: publicRegistration.php:273
 msgid "Agreement"
 msgstr "合約"
@@ -48390,7 +48623,7 @@ msgstr "課堂詳情模型"
 #: i18n/dbStringsForTranslation.php:1760 modules/School
 #: Admin/behaviourSettings.php:156 i18n/dbStringsForTranslation.php:1769
 #: i18n/dbStringsForTranslation.php:1769
-#: modules/School Admin/behaviourSettings.php:156
+#: modules/School Admin/behaviourSettings.php:159
 msgid "Levels"
 msgstr "級"
 
@@ -50457,7 +50690,7 @@ msgstr "如果你沒有一個%1$s %2$s戶口，請用以下的表。"
 
 #: modules/Application Form/applicationForm.php:97
 #: Form/applicationForm.php:100
-#: modules/Application Form/applicationForm.php:100
+#: modules/Application Form/applicationForm.php:103
 msgid ""
 "Your application was successfully submitted. Our admissions team will review "
 "your application and be in touch in due course."
@@ -50467,7 +50700,7 @@ msgstr ""
 
 #: modules/Application Form/applicationForm.php:100
 #: Form/applicationForm.php:103
-#: modules/Application Form/applicationForm.php:103
+#: modules/Application Form/applicationForm.php:106
 msgid ""
 "Your application was successfully submitted and payment has been made to "
 "your credit card. Our admissions team will review your application and be in "
@@ -50478,7 +50711,7 @@ msgstr ""
 
 #: modules/Application Form/applicationForm.php:103
 #: Form/applicationForm.php:106
-#: modules/Application Form/applicationForm.php:106
+#: modules/Application Form/applicationForm.php:109
 msgid ""
 "Your application was successfully submitted, but payment could not be made "
 "to your credit card. Our admissions team will review your application and be "
@@ -50489,7 +50722,7 @@ msgstr ""
 
 #: modules/Application Form/applicationForm.php:106
 #: Form/applicationForm.php:109
-#: modules/Application Form/applicationForm.php:109
+#: modules/Application Form/applicationForm.php:112
 msgid ""
 "Your application was successfully submitted, payment has been made to your "
 "credit card, but there has been an error recording your payment. Please "
@@ -50502,7 +50735,7 @@ msgstr ""
 
 #: modules/Application Form/applicationForm.php:109
 #: Form/applicationForm.php:113 Form/applicationForm.php:116
-#: modules/Application Form/applicationForm.php:116
+#: modules/Application Form/applicationForm.php:119
 msgid ""
 "If you need to contact the school in reference to this application, please "
 "quote the following number:"
@@ -50510,13 +50743,13 @@ msgstr "如果你要因為申請表而聯絡學校，請引用以下的編號。
 
 #: modules/Application Form/applicationForm.php:131
 #: Form/applicationForm.php:136 Form/applicationForm.php:139
-#: modules/Application Form/applicationForm.php:139
+#: modules/Application Form/applicationForm.php:142
 msgid "Please note that there is an application fee of:"
 msgstr "請注意，這會有一共的費用:"
 
 #: modules/Application Form/applicationForm.php:133
 #: Form/applicationForm.php:138 Form/applicationForm.php:141
-#: modules/Application Form/applicationForm.php:141
+#: modules/Application Form/applicationForm.php:144
 msgid ""
 "Payment must be made by credit card, using our secure PayPal payment "
 "gateway. When you press Submit at the end of this form, you will be directed "
@@ -50529,35 +50762,35 @@ msgstr ""
 #: modules/Application Form/applicationForm.php:592
 #: Form/applicationForm.php:597 Form/applicationForm.php:602
 #: Form/applicationForm.php:598
-#: modules/Application Form/applicationForm.php:598
+#: modules/Application Form/applicationForm.php:601
 msgid "Student Education"
 msgstr "學生教育"
 
 #: modules/Application Form/applicationForm.php:597
 #: Form/applicationForm.php:602 Form/applicationForm.php:607
 #: Form/applicationForm.php:603
-#: modules/Application Form/applicationForm.php:603
+#: modules/Application Form/applicationForm.php:606
 msgid "Anticipated Year of Entry"
 msgstr "預期進入的年份"
 
 #: modules/Application Form/applicationForm.php:598
 #: Form/applicationForm.php:603 Form/applicationForm.php:608
 #: Form/applicationForm.php:604
-#: modules/Application Form/applicationForm.php:604
+#: modules/Application Form/applicationForm.php:607
 msgid "What school year will the student join in?"
 msgstr "學生在那一年會加入？"
 
 #: modules/Application Form/applicationForm.php:626
 #: Form/applicationForm.php:631 Form/applicationForm.php:636
 #: Form/applicationForm.php:632
-#: modules/Application Form/applicationForm.php:632
+#: modules/Application Form/applicationForm.php:635
 msgid "Intended Start Date"
 msgstr "進入的日期"
 
 #: modules/Application Form/applicationForm.php:717
 #: Form/applicationForm.php:722 Form/applicationForm.php:727
 #: Form/applicationForm.php:723
-#: modules/Application Form/applicationForm.php:723
+#: modules/Application Form/applicationForm.php:726
 #, php-format
 msgid "Grades%1$sAttended"
 msgstr "已出席的級別%1$s"
@@ -50565,7 +50798,7 @@ msgstr "已出席的級別%1$s"
 #: modules/Application Form/applicationForm.php:720
 #: Form/applicationForm.php:725 Form/applicationForm.php:730
 #: Form/applicationForm.php:726
-#: modules/Application Form/applicationForm.php:726
+#: modules/Application Form/applicationForm.php:729
 #, php-format
 msgid "Language of%1$sInstruction"
 msgstr "教%1$sI的語言"
@@ -50573,7 +50806,7 @@ msgstr "教%1$sI的語言"
 #: modules/Application Form/applicationForm.php:904
 #: Form/applicationForm.php:909 Form/applicationForm.php:929
 #: Form/applicationForm.php:925
-#: modules/Application Form/applicationForm.php:925
+#: modules/Application Form/applicationForm.php:928
 msgid "System login ID."
 msgstr "系統扥都名稱"
 
@@ -50582,7 +50815,7 @@ msgstr "系統扥都名稱"
 #: Form/applicationForm.php:1055 Form/applicationForm.php:1085
 #: modules/Students/report_student_dataUpdaterHistory.php:172
 #: Form/applicationForm.php:1081
-#: modules/Application Form/applicationForm.php:1081
+#: modules/Application Form/applicationForm.php:1084
 #: modules/Students/report_student_dataUpdaterHistory.php:172
 msgid "Personal Data"
 msgstr "私人資料"
@@ -50590,42 +50823,42 @@ msgstr "私人資料"
 #: modules/Application Form/applicationForm.php:1344
 #: Form/applicationForm.php:1349 Form/applicationForm.php:1369
 #: Form/applicationForm.php:1361
-#: modules/Application Form/applicationForm.php:1361
+#: modules/Application Form/applicationForm.php:1364
 msgid "Contact"
 msgstr "聯絡"
 
 #: modules/Application Form/applicationForm.php:1447
 #: Form/applicationForm.php:1452 Form/applicationForm.php:1508
 #: Form/applicationForm.php:1500
-#: modules/Application Form/applicationForm.php:1500
+#: modules/Application Form/applicationForm.php:1503
 msgid "Choose the family you wish to associate this application with."
 msgstr "請選擇你想見這份表格聯合的家庭。"
 
 #: modules/Application Form/applicationForm.php:1533
 #: Form/applicationForm.php:1538 Form/applicationForm.php:1594
 #: Form/applicationForm.php:1586
-#: modules/Application Form/applicationForm.php:1586
+#: modules/Application Form/applicationForm.php:1589
 msgid "Please give information on the applicants's siblings."
 msgstr "請給一些關於這位申請人的兄弟姐妹的資料。"
 
 #: modules/Application Form/applicationForm.php:1735
 #: Form/applicationForm.php:1740 Form/applicationForm.php:1796
 #: Form/applicationForm.php:1788
-#: modules/Application Form/applicationForm.php:1788
+#: modules/Application Form/applicationForm.php:1791
 msgid "Required?"
 msgstr "需要嗎?"
 
 #: modules/Application Form/applicationForm.php:1736
 #: Form/applicationForm.php:1741 Form/applicationForm.php:1797
 #: Form/applicationForm.php:1789
-#: modules/Application Form/applicationForm.php:1789
+#: modules/Application Form/applicationForm.php:1792
 msgid "Is a scholarship required for you to take up a place at the school?"
 msgstr "如果要在這間學校佔用一個學位，獎學金需要嗎?"
 
 #: modules/Application Form/applicationForm.php:1798
 #: Form/applicationForm.php:1803 Form/applicationForm.php:1872
 #: Form/applicationForm.php:1864
-#: modules/Application Form/applicationForm.php:1864
+#: modules/Application Form/applicationForm.php:1867
 msgid ""
 "If you choose family, future invoices will be sent according to your "
 "family's contact preferences, which can be changed at a later date by "
@@ -50640,14 +50873,14 @@ msgstr ""
 #: modules/Application Form/applicationForm.php:1803
 #: Form/applicationForm.php:1808 Form/applicationForm.php:1877
 #: Form/applicationForm.php:1869
-#: modules/Application Form/applicationForm.php:1869
+#: modules/Application Form/applicationForm.php:1872
 msgid "Send Future Invoices To"
 msgstr "未來的發票送給:"
 
 #: modules/Application Form/applicationForm.php:1919
 #: Form/applicationForm.php:1924 Form/applicationForm.php:2006
 #: Form/applicationForm.php:1998
-#: modules/Application Form/applicationForm.php:1998
+#: modules/Application Form/applicationForm.php:2001
 msgid ""
 "These documents must all be included before the application can be submitted."
 msgstr "申請前一定要包括所有的文件。"
@@ -50655,7 +50888,7 @@ msgstr "申請前一定要包括所有的文件。"
 #: modules/Application Form/applicationForm.php:1922
 #: Form/applicationForm.php:1927 Form/applicationForm.php:2009
 #: Form/applicationForm.php:2001
-#: modules/Application Form/applicationForm.php:2001
+#: modules/Application Form/applicationForm.php:2004
 msgid ""
 "These documents are all required, but can be submitted separately to this "
 "form if preferred. Please note, however, that your application will be "
@@ -50667,7 +50900,7 @@ msgstr ""
 #: modules/Application Form/applicationForm.php:2028
 #: Form/applicationForm.php:2033 Form/applicationForm.php:2115
 #: Form/applicationForm.php:2107
-#: modules/Application Form/applicationForm.php:2107
+#: modules/Application Form/applicationForm.php:2110
 msgid "The name of a person or link to a website, etc."
 msgstr "這一個人的姓名可以是網頁的地址等等。"
 
@@ -50675,7 +50908,7 @@ msgstr "這一個人的姓名可以是網頁的地址等等。"
 #: Form/applicationForm.php:2079 publicRegistration.php:279
 #: publicRegistration.php:284 Form/applicationForm.php:2161
 #: Form/applicationForm.php:2153
-#: modules/Application Form/applicationForm.php:2153
+#: modules/Application Form/applicationForm.php:2156
 #: publicRegistration.php:284
 msgid "Do you agree to the above?"
 msgstr "同意以上的嗎？"
@@ -50684,7 +50917,7 @@ msgstr "同意以上的嗎？"
 #: Form/applicationForm.php:2112 publicRegistration.php:311
 #: publicRegistration.php:316 Form/applicationForm.php:2194
 #: Form/applicationForm.php:2186
-#: modules/Application Form/applicationForm.php:2186
+#: modules/Application Form/applicationForm.php:2189
 #: publicRegistration.php:316
 msgid "Further Information"
 msgstr "更多 資料"
@@ -51390,6 +51623,7 @@ msgstr "肯定"
 #: modules/Finance/expenses_manage.php:286
 #: modules/Finance/invoices_manage.php:322
 #: modules/Library/library_browse.php:313
+#: modules/Behaviour/behaviour_letters.php:80
 #: modules/Behaviour/behaviour_manage.php:195
 #: modules/Behaviour/behaviour_pattern.php:249
 #: modules/Finance/expenseRequest_manage.php:257
@@ -51398,7 +51632,7 @@ msgstr "肯定"
 #: modules/Finance/invoices_manage.php:322
 #: modules/Formal Assessment/internalAssessment_view.php:89
 #: modules/Individual Needs/in_summary.php:188
-#: modules/Library/library_browse.php:313
+#: modules/Library/library_browse.php:317
 #: modules/Library/library_lending.php:183
 #: modules/Library/library_manage_catalog.php:243
 #: modules/Library/report_catalogSummary.php:182
@@ -51412,6 +51646,7 @@ msgstr "清除過濾器"
 #: modules/Behaviour/behaviour_pattern.php:248
 #: modules/Behaviour/behaviour_manage.php:204
 #: modules/Behaviour/behaviour_pattern.php:259
+#: modules/Behaviour/behaviour_letters.php:89
 #: modules/Behaviour/behaviour_manage.php:204
 #: modules/Behaviour/behaviour_pattern.php:259
 msgid "Behaviour Records"
@@ -52330,6 +52565,7 @@ msgstr "以發行-過期"
 #: modules/Finance/invoices_manage.php:523
 #: modules/Finance/invoices_manage_edit.php:263
 #: modules/Finance/invoices_manage_edit.php:271
+#: modules/Finance/invoices_view.php:249
 msgid "Paid"
 msgstr "已支付"
 
@@ -52408,6 +52644,7 @@ msgstr "特設"
 #: modules/Finance/invoices_manage.php:462
 #: modules/Finance/invoices_manage.php:475
 #: modules/Finance/invoices_manage.php:475
+#: modules/Finance/invoices_view.php:227
 #, php-format
 msgid "%1$s invoice(s) in current view"
 msgstr "現在可見有%1$s 個發票"
@@ -52421,6 +52658,7 @@ msgstr "現在可見有%1$s 個發票"
 #: modules/Finance/invoices_manage.php:478
 #: modules/Finance/expenses_manage.php:351
 #: modules/Finance/invoices_manage.php:478
+#: modules/Finance/invoices_view.php:230
 msgid "Are you sure you wish to process this action? It cannot be undone."
 msgstr "你肯定要將這個行動處理嗎? 這不能回去。"
 
@@ -52467,6 +52705,7 @@ msgstr "輸出"
 #: modules/Finance/moduleFunctions.php:1358
 #: modules/Finance/invoices_manage.php:519
 #: modules/Finance/invoices_manage_processBulkExportContents.php:108
+#: modules/Finance/invoices_view.php:245
 #: modules/Finance/moduleFunctions.php:1023
 #: modules/Finance/moduleFunctions.php:1358
 msgid "Schedule"
@@ -52478,6 +52717,7 @@ msgstr "時間表"
 #: modules/Finance/invoices_manage.php:526
 #: modules/Finance/invoices_manage.php:526
 #: modules/Finance/invoices_manage_processBulkExportContents.php:114
+#: modules/Finance/invoices_view.php:252
 msgid "Issue Date"
 msgstr "發行日期"
 
@@ -52498,10 +52738,11 @@ msgstr "發行日期"
 #: modules/Finance/moduleFunctions.php:1381
 #: modules/Finance/invoices_manage.php:527
 #: modules/Finance/invoices_manage_processBulkExportContents.php:117
+#: modules/Finance/invoices_view.php:253
 #: modules/Finance/moduleFunctions.php:1050
 #: modules/Finance/moduleFunctions.php:1381
 #: modules/Library/library_lending_item.php:206
-#: modules/Library/report_viewOverdueItems.php:66
+#: modules/Library/report_viewOverdueItems.php:115
 msgid "Due Date"
 msgstr "到期日期"
 
@@ -52907,6 +53148,7 @@ msgstr "題詩3"
 #: modules/Finance/invoices_manage_print_print.php:153
 #: modules/Finance/invoices_manage_print.php:218
 #: modules/Finance/invoices_manage_print_print.php:153
+#: modules/Finance/invoices_view_print.php:107
 msgid "Receipt"
 msgstr "收據"
 
@@ -53182,10 +53424,10 @@ msgstr "新的題目"
 #: modules/Library/report_viewOverdueItems.php:63
 #: modules/Library/library_browse.php:232
 #: modules/Library/library_browse.php:431
-#: modules/Library/library_browse.php:232
-#: modules/Library/library_browse.php:431
+#: modules/Library/library_browse.php:236
+#: modules/Library/library_browse.php:440
 #: modules/Library/moduleFunctions.php:43
-#: modules/Library/report_viewOverdueItems.php:63
+#: modules/Library/report_viewOverdueItems.php:112
 msgid "Author/Producer"
 msgstr "作者/創作人"
 
@@ -53196,7 +53438,7 @@ msgstr "作者/創作人"
 #: i18n/dbStringsForTranslation.php:879 i18n/dbStringsForTranslation.php:884
 #: i18n/dbStringsForTranslation.php:914 i18n/dbStringsForTranslation.php:923
 #: modules/Library/library_browse.php:238 i18n/dbStringsForTranslation.php:923
-#: modules/Library/library_browse.php:238
+#: modules/Library/library_browse.php:242
 msgid "Collection"
 msgstr "系列"
 
@@ -54032,6 +54274,7 @@ msgstr "應該的可用性。"
 #: modules/Library/library_import.php:154
 #: modules/Library/library_manage_catalog_add.php:519
 #: modules/Library/library_manage_catalog_edit.php:545
+#: modules/Library/library_manage_catalog_duplicate.php:527
 #: modules/Library/library_import.php:154
 #: modules/Library/library_manage_catalog_add.php:519
 #: modules/Library/library_manage_catalog_duplicate.php:527
@@ -54110,12 +54353,12 @@ msgid "Borrow Date"
 msgstr "借用日期"
 
 #: modules/Library/report_viewOverdueItems.php:56
-#: modules/Library/report_viewOverdueItems.php:56
+#: modules/Library/report_viewOverdueItems.php:105
 msgid "Borrowing User"
 msgstr "借用用戶"
 
 #: modules/Library/report_viewOverdueItems.php:69
-#: modules/Library/report_viewOverdueItems.php:69
+#: modules/Library/report_viewOverdueItems.php:118
 msgid "Days Overdue"
 msgstr "過期的日子"
 
@@ -54158,6 +54401,7 @@ msgstr "送出日期"
 #: modules/Messenger/messenger_manage.php:159
 #: modules/Messenger/messenger_manage.php:167
 #: modules/Messenger/messenger_manage.php:168
+#: modules/Behaviour/behaviour_letters.php:205
 #: modules/Messenger/messenger_manage.php:168
 msgid "Recipients"
 msgstr "收件人"
@@ -54983,6 +55227,7 @@ msgstr "SMS不能配置。請找%1$s支援。"
 #: cli/attendance_dailyIncompleteEmail.php:136
 #: modules/Messenger/messenger_postProcess.php:1711 functions.php:1094
 #: functions.php:1144 modules/Messenger/messenger_postProcess.php:1720
+#: cli/beahviour_letters.php:231 cli/beahviour_letters.php:353
 #: cli/planner_parentWeeklyEmailSummary.php:260 functions.php:1144
 #: modules/Messenger/messenger_postProcess.php:1720
 #, php-format
@@ -57577,6 +57822,7 @@ msgid "Latest student end date to include."
 msgstr "最新包括學生最後一天。"
 
 #: modules/Students/report_students_left.php:97
+#: modules/Library/report_viewOverdueItems.php:53
 #: modules/Students/report_students_left.php:97
 msgid "Ignore Status"
 msgstr "忽視狀態"
@@ -60832,7 +61078,7 @@ msgstr "包含Gibbon 文件的目錄現在可以寫，所以安裝機可以繼�
 #: installer/install.php:270 installer/install.php:301
 #: installer/install.php:1115 installer/install.php:1116
 #: installer/install.php:253 installer/install.php:270
-#: installer/install.php:301 installer/install.php:1116
+#: installer/install.php:301 installer/install.php:1117
 #, php-format
 msgid ""
 "A database connection could not be established. Please %1$stry again%2$s."
@@ -60888,7 +61134,7 @@ msgstr ""
 #: installer/install.php:1133 installer/install.php:1142
 #: installer/install.php:1144 installer/install.php:1145
 #: installer/install.php:1148 installer/install.php:1154
-#: installer/install.php:1155 installer/install.php:1155
+#: installer/install.php:1155 installer/install.php:1156
 msgid ""
 "Some required fields have not been set, and so installation cannot proceed."
 msgstr "有一些必須的領域還沒有定，所以安裝不能繼續。"
@@ -60917,8 +61163,8 @@ msgstr ""
 #: installer/install.php:1443 installer/install.php:1439
 #: installer/install.php:1446 installer/install.php:1423
 #: installer/install.php:1430 installer/install.php:1424
-#: installer/install.php:1431 installer/install.php:1424
-#: installer/install.php:1431
+#: installer/install.php:1431 installer/install.php:1425
+#: installer/install.php:1432
 #, php-format
 msgid ""
 "It is also advisable to follow the %1$sPost-Install and Server Config "
@@ -60952,7 +61198,7 @@ msgstr ""
 #: installer/install.php:1437 installer/install.php:1444
 #: installer/install.php:1453 installer/install.php:1455
 #: installer/install.php:1458 installer/install.php:1442
-#: installer/install.php:1443 installer/install.php:1443
+#: installer/install.php:1443 installer/install.php:1444
 msgid "Welcome To Gibbon"
 msgstr "歡迎來到Gibbon"
 
@@ -60963,7 +61209,7 @@ msgstr "歡迎來到Gibbon"
 #: installer/install.php:1439 installer/install.php:1446
 #: installer/install.php:1455 installer/install.php:1457
 #: installer/install.php:1460 installer/install.php:1444
-#: installer/install.php:1445 installer/install.php:1445
+#: installer/install.php:1445 installer/install.php:1446
 msgid ""
 "Created by teachers, Gibbon is the school platform which solves real "
 "problems faced by educators every day."
@@ -60976,7 +61222,7 @@ msgstr "老師創作的Gibbon是一個可以解決每天教育家遇到的真正
 #: installer/install.php:1441 installer/install.php:1448
 #: installer/install.php:1457 installer/install.php:1459
 #: installer/install.php:1462 installer/install.php:1446
-#: installer/install.php:1447 installer/install.php:1447
+#: installer/install.php:1447 installer/install.php:1448
 msgid ""
 "Free, open source and flexible, Gibbon can morph to meet the needs of a huge "
 "range of schools."
@@ -60989,7 +61235,7 @@ msgstr "免費，開源和有彈性，Gibbon可以為分多不同的學校更改
 #: installer/install.php:1443 installer/install.php:1450
 #: installer/install.php:1459 installer/install.php:1461
 #: installer/install.php:1464 installer/install.php:1448
-#: installer/install.php:1449 installer/install.php:1449
+#: installer/install.php:1449 installer/install.php:1450
 #, php-format
 msgid "For support, please visit %1$sgibbonedu.org%2$s."
 msgstr "如果需要穫支緩，請到%1$sgibbonedu.org%2$s。"
@@ -61013,7 +61259,7 @@ msgstr "用戶的帳戶"
 #: installer/install.php:1423 installer/install.php:1432
 #: installer/install.php:1434 installer/install.php:1437
 #: installer/install.php:1421 installer/install.php:1422
-#: installer/install.php:1422
+#: installer/install.php:1423
 #, php-format
 msgid ""
 "Some settings did not save. The system may work, but you may need to remove "
@@ -61031,7 +61277,7 @@ msgstr ""
 #: installer/install.php:1430 installer/install.php:1439
 #: installer/install.php:1441 installer/install.php:1444
 #: installer/install.php:1428 installer/install.php:1429
-#: installer/install.php:1429
+#: installer/install.php:1430
 #, php-format
 msgid ""
 "Congratulations, your installation is complete. Feel free to %1$sgo to your "
@@ -61072,7 +61318,7 @@ msgstr "觀看今年所有的申請資料的總結。"
 #: modules/Application Form/applicationForm.php:583
 #: Form/applicationForm.php:588 Form/applicationForm.php:593
 #: Form/applicationForm.php:589
-#: modules/Application Form/applicationForm.php:589
+#: modules/Application Form/applicationForm.php:592
 msgid ""
 "Provide any comments or information concerning your child's development that "
 "may be relevant to your child's performance in the classroom or elsewhere? "
@@ -61083,6 +61329,7 @@ msgstr ""
 
 #: modules/User Admin/applicationForm_manage_edit.php:855
 #: Admin/applicationForm_manage_edit.php:882
+#: Admin/applicationForm_manage_edit.php:886
 #: modules/User Admin/applicationForm_manage_edit.php:886
 msgid ""
 "Provide any comments or information concerning your child's development that "
@@ -61232,7 +61479,7 @@ msgstr ""
 #: cli/planner_parentWeeklyEmailSummary.php:56
 #: cli/userAdmin_statusCheckAndFix.php:56
 #: cli/attendance_dailyIncompleteEmail.php:56
-#: cli/attendance_dailyIncompleteEmail.php:56
+#: cli/attendance_dailyIncompleteEmail.php:56 cli/beahviour_letters.php:56
 #: cli/userAdmin_statusCheckAndFix.php:56
 msgid "This script cannot be run from a browser, only via CLI."
 msgstr "這一份腳本不能用瀏覽器運用，只能用CLI。"
@@ -61765,7 +62012,7 @@ msgstr "刪除所有的通知"
 #: notifications.php:91 notifications.php:99
 #: modules/Messenger/moduleFunctions.php:459
 #: modules/Messenger/moduleFunctions.php:460 notifications.php:101
-#: notifications.php:179 modules/Messenger/moduleFunctions.php:460
+#: notifications.php:179 modules/Messenger/moduleFunctions.php:461
 #: notifications.php:101 notifications.php:179
 msgid "Message"
 msgstr "信息"
@@ -63204,6 +63451,7 @@ msgstr ""
 #: Admin/studentEnrolment_manage_add.php:202
 #: Admin/studentEnrolment_manage_edit.php:210
 #: Admin/studentEnrolment_manage_add.php:194
+#: Admin/import_studentEnrolment.php:135
 #: modules/User Admin/import_studentEnrolment.php:135
 #: modules/User Admin/studentEnrolment_manage.php:187
 #: modules/User Admin/studentEnrolment_manage_add.php:194
@@ -63214,6 +63462,7 @@ msgstr "出席表秩序"
 #: modules/User Admin/studentEnrolment_manage_add.php:203
 #: Admin/studentEnrolment_manage_edit.php:211
 #: Admin/studentEnrolment_manage_add.php:195
+#: Admin/import_studentEnrolment.php:135
 #: modules/User Admin/import_studentEnrolment.php:135
 #: modules/User Admin/studentEnrolment_manage_add.php:195
 #: modules/User Admin/studentEnrolment_manage_edit.php:211
@@ -63758,7 +64007,7 @@ msgstr "其他"
 
 #: modules/Application Form/applicationForm.php:109
 #: Form/applicationForm.php:112
-#: modules/Application Form/applicationForm.php:112
+#: modules/Application Form/applicationForm.php:115
 msgid ""
 "Your application was successfully submitted, but payment could not be made "
 "as the payment gateway does not support the system's currency. Our "
@@ -63794,6 +64043,7 @@ msgstr "目錄類型"
 
 #: modules/Library/library_manage_catalog_add.php:471
 #: modules/Library/library_manage_catalog_edit.php:492
+#: modules/Library/library_manage_catalog_duplicate.php:475
 #: modules/Library/library_manage_catalog_add.php:471
 #: modules/Library/library_manage_catalog_duplicate.php:475
 #: modules/Library/library_manage_catalog_edit.php:492
@@ -63802,6 +64052,7 @@ msgstr "更換年份"
 
 #: modules/Library/library_manage_catalog_add.php:472
 #: modules/Library/library_manage_catalog_edit.php:493
+#: modules/Library/library_manage_catalog_duplicate.php:476
 #: modules/Library/library_manage_catalog_add.php:472
 #: modules/Library/library_manage_catalog_duplicate.php:476
 #: modules/Library/library_manage_catalog_edit.php:493
@@ -63810,6 +64061,7 @@ msgstr "這一件物件什麼時候預定了更換。"
 
 #: modules/Library/library_manage_catalog_add.php:494
 #: modules/Library/library_manage_catalog_edit.php:519
+#: modules/Library/library_manage_catalog_duplicate.php:502
 #: modules/Library/library_manage_catalog_add.php:494
 #: modules/Library/library_manage_catalog_duplicate.php:502
 #: modules/Library/library_manage_catalog_edit.php:519
@@ -63818,6 +64070,7 @@ msgstr "更換費用"
 
 #: modules/Library/library_manage_catalog_add.php:499
 #: modules/Library/library_manage_catalog_edit.php:524
+#: modules/Library/library_manage_catalog_duplicate.php:507
 #: modules/Library/library_manage_catalog_add.php:499
 #: modules/Library/library_manage_catalog_duplicate.php:507
 #: modules/Library/library_manage_catalog_edit.php:524
@@ -63827,6 +64080,7 @@ msgstr "更換費用的%1$s價值。"
 
 #: modules/Library/library_manage_catalog_add.php:502
 #: modules/Library/library_manage_catalog_edit.php:527
+#: modules/Library/library_manage_catalog_duplicate.php:510
 #: modules/Library/library_manage_catalog_add.php:502
 #: modules/Library/library_manage_catalog_duplicate.php:510
 #: modules/Library/library_manage_catalog_edit.php:527
@@ -65823,7 +66077,7 @@ msgstr "選擇運輸"
 
 #: modules/Messenger/moduleFunctions.php:456
 #: modules/Messenger/moduleFunctions.php:457
-#: modules/Messenger/moduleFunctions.php:457
+#: modules/Messenger/moduleFunctions.php:458
 msgid "Sharing"
 msgstr "共享"
 
@@ -66229,7 +66483,7 @@ msgid "Transport Notes"
 msgstr "運輸筆記"
 
 #: modules/School Admin/behaviourSettings.php:67
-#: modules/School Admin/behaviourSettings.php:67
+#: modules/School Admin/behaviourSettings.php:68
 msgid "Descriptors"
 msgstr "描述附"
 
@@ -66485,7 +66739,7 @@ msgid "Sync"
 msgstr "同步"
 
 #: modules/User Admin/import_studentEnrolment.php:166
-#: Admin/import_users.php:218
+#: Admin/import_users.php:218 Admin/import_studentEnrolment.php:167
 #: modules/User Admin/import_studentEnrolment.php:167
 #: modules/User Admin/import_users.php:218
 msgid "Import cannot proceed, as the \"Mode\" field have been left blank."
@@ -66645,6 +66899,7 @@ msgstr ""
 #: functions.php:72 functions.php:75 likes.php:21
 #: modules/Planner/report_goldStars_staff.php:56 functions.php:123
 #: functions.php:126 functions.php:123 functions.php:126 likes.php:21
+#: modules/Messenger/moduleFunctions.php:486
 #: modules/Planner/report_goldStars_staff.php:56
 msgid "Likes"
 msgstr ""
@@ -66967,7 +67222,7 @@ msgid ""
 msgstr ""
 
 #: installer/install.php:1179 installer/install.php:1180
-#: installer/install.php:1180
+#: installer/install.php:1181
 #, php-format
 msgid ""
 "Errors occurred in populating the database; empty your database, remove ../"
@@ -67006,7 +67261,7 @@ msgstr ""
 #: Admin/applicationForm_manage_edit.php:527 Admin/data_family_edit.php:192
 #: Admin/family_manage_add.php:107 Admin/family_manage_edit.php:180
 #: Admin/import_families.php:151
-#: modules/Application Form/applicationForm.php:266
+#: modules/Application Form/applicationForm.php:269
 #: modules/Data Updater/data_family.php:335
 #: modules/User Admin/applicationForm_manage_edit.php:527
 #: modules/User Admin/data_family_edit.php:192
@@ -67020,7 +67275,7 @@ msgstr ""
 #: Updater/data_family.php:365 modules/User
 #: Admin/applicationForm_manage_edit.php:558 Admin/data_family_edit.php:211
 #: Admin/family_manage_add.php:129 Admin/family_manage_edit.php:206
-#: modules/Application Form/applicationForm.php:293
+#: modules/Application Form/applicationForm.php:296
 #: modules/Data Updater/data_family.php:365
 #: modules/User Admin/applicationForm_manage_edit.php:558
 #: modules/User Admin/data_family_edit.php:211
@@ -67031,20 +67286,22 @@ msgstr ""
 
 #: modules/Application Form/applicationForm.php:806 modules/User
 #: Admin/applicationForm_manage_edit.php:987 Form/applicationForm.php:802
-#: modules/Application Form/applicationForm.php:802
+#: Admin/applicationForm_manage_edit.php:991
+#: modules/Application Form/applicationForm.php:805
 #: modules/User Admin/applicationForm_manage_edit.php:991
 msgid "Other Information"
 msgstr ""
 
 #: modules/Application Form/applicationForm.php:1077
 #: Form/applicationForm.php:1073
-#: modules/Application Form/applicationForm.php:1073
+#: modules/Application Form/applicationForm.php:1076
 msgid "Do not include a second parent/gaurdian"
 msgstr ""
 
 #: modules/Application Form/applicationForm.php:1472 modules/User
 #: Admin/applicationForm_manage_edit.php:1665 Form/applicationForm.php:1464
-#: modules/Application Form/applicationForm.php:1464
+#: Admin/applicationForm_manage_edit.php:1669
+#: modules/Application Form/applicationForm.php:1467
 #: modules/User Admin/applicationForm_manage_edit.php:1669
 msgid "Other Fields"
 msgstr ""
@@ -67271,7 +67528,7 @@ msgid "Payment Total"
 msgstr ""
 
 #: modules/Library/library_browse.php:301
-#: modules/Library/library_browse.php:301
+#: modules/Library/library_browse.php:305
 msgid "All Fields"
 msgstr ""
 
@@ -67368,6 +67625,7 @@ msgid ""
 msgstr ""
 
 #: modules/Timetable/studentEnrolment_manage_edit.php:289
+#: modules/Timetable/studentEnrolment_manage_edit.php:279
 #: modules/Timetable/studentEnrolment_manage_edit.php:279
 msgid "Former Students"
 msgstr ""
@@ -67663,7 +67921,7 @@ msgid "Invoices Generated"
 msgstr ""
 
 #: modules/Application Form/applicationForm.php:1093
-#: modules/Application Form/applicationForm.php:1093
+#: modules/Application Form/applicationForm.php:1096
 msgid "Miss."
 msgstr ""
 
@@ -67867,7 +68125,78 @@ msgid "The student has automatically been assigned to %1$s house."
 msgstr ""
 
 #: modules/User Admin/import_families.php:142
+#: modules/User Admin/import_families.php:142
 msgid ""
 "The submitted <b><u>family file</u></b> must have the following fields in "
 "the following order (* denotes required field)."
+msgstr ""
+
+#: cli/beahviour_letters.php:250 cli/beahviour_letters.php:319
+#, php-format
+msgid "A student (%1$s) in your form group has received a behaviour letter."
+msgstr ""
+
+#: cli/beahviour_letters.php:371
+#, php-format
+msgid "Behaviour Letter for %1$s via %2$s at %3$s"
+msgstr ""
+
+#: cli/beahviour_letters.php:403
+msgid "The Behaviour Letter CLI script has run: no emails were sent."
+msgstr ""
+
+#: cli/beahviour_letters.php:407
+#, php-format
+msgid ""
+"The Behaviour Letter CLI script has run: %1$s emails were sent, of which "
+"%2$s failed."
+msgstr ""
+
+#: cli/library_overdueNotification.php:72
+#, php-format
+msgid "You have an overdue loan item that needs to be returned (%1$s)."
+msgstr ""
+
+#: modules/Behaviour/behaviour_letters.php:33
+msgid "View Behaviour Letters"
+msgstr ""
+
+#: modules/Behaviour/behaviour_letters.php:92
+msgid ""
+"This interface displays automated behaviour letters that have been issued "
+"within the current school year."
+msgstr ""
+
+#: modules/Behaviour/behaviour_letters.php:142
+msgid "Letter"
+msgstr ""
+
+#: modules/Behaviour/behaviour_letters.php:201
+msgid "Letter Body"
+msgstr ""
+
+#: modules/Finance/invoices_view.php:31
+msgid "View Invoices"
+msgstr ""
+
+#: modules/Finance/invoices_view.php:35
+msgid ""
+"This section allows you to view and invoices for children within your family."
+msgstr ""
+
+#: modules/Library/report_viewOverdueItems.php:54
+msgid "Include all studenusersts, regardless of status and current enrolment."
+msgstr ""
+
+#: modules/School Admin/behaviourSettings.php:225
+msgid "Behaviour Letters"
+msgstr ""
+
+#: modules/School Admin/behaviourSettings.php:226
+#, php-format
+msgid ""
+"By using an %1$sincluded CLI script%2$s, %3$s can be configured to "
+"automatically generate and email behaviour letters to parents and tutors, "
+"once certain negative behaviour threshold levels have been reached. In your "
+"letter text you may use the following fields: %4$s"
 msgstr ""
