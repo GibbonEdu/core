@@ -38,7 +38,11 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 $gibbonPersonID=$_GET["gibbonPersonID"] ;
 $subpage=$_GET["subpage"] ;
 $gibbonStudentNoteID=$_GET["gibbonStudentNoteID"] ;
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/student_view_details_notes_edit.php&gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=Notes&gibbonStudentNoteID=$gibbonStudentNoteID&category=" . $_GET["category"] ;
+$allStudents="" ;
+if (isset($_GET["allStudents"])) {
+	$allStudents=$_GET["allStudents"] ;
+}
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/student_view_details_notes_edit.php&gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=Notes&gibbonStudentNoteID=$gibbonStudentNoteID&category=" . $_GET["category"] . "&allStudents=$allStudents" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Students/student_view_details_notes_edit.php")==FALSE) {
 	//Fail 0

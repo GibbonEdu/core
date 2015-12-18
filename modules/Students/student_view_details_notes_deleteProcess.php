@@ -38,8 +38,12 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 $gibbonPersonID=$_GET["gibbonPersonID"] ;
 $subpage=$_GET["subpage"] ;
 $gibbonStudentNoteID=$_GET["gibbonStudentNoteID"] ;
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/student_view_details_notes_delete.php&gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=$subpage&gibbonStudentNoteID=" . $gibbonStudentNoteID . "&category=" . $_GET["category"] ;
-$URLDelete=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=$subpage&category=" . $_GET["category"] ;
+$allStudents="" ;
+if (isset($_GET["allStudents"])) {
+	$allStudents=$_GET["allStudents"] ;
+}
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/student_view_details_notes_delete.php&gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=$subpage&gibbonStudentNoteID=" . $gibbonStudentNoteID . "&category=" . $_GET["category"] . "&allStudents=$allStudents" ;
+$URLDelete=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=$subpage&category=" . $_GET["category"] . "&allStudents=$allStudents" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Students/student_view_details_notes_delete.php")==FALSE) {
 	//Fail 0
