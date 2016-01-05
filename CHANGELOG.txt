@@ -579,6 +579,9 @@ Students: added ability to add/edit/delete notes for students who have not yet r
 Students: fixed bug preventing adding/editing/deleted a student note for a left/expected student
 	Edited files /modules/Students/student_view_details*.php
 
+Planner: fixed issue with duplicate lesson plans causing TT issues
+	Edited file /modules/Timetable/moduleFunctions.php
+	
 
 v10.0.00
 --------

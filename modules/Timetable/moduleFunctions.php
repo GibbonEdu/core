@@ -1366,7 +1366,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 							}
 
 							if (isActionAccessible($guid, $connection2, "/modules/Departments/department_course_class.php") AND $edit==FALSE) {
-								$output.="<a style='text-decoration: none; font-weight: bold; font-size: 120%' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID=" . $rowPeriods["gibbonCourseClassID"] . "&subpage=Participants'>" . $rowPeriods["course"] . "." . $rowPeriods["class"] . "</a><br/>" ;
+								$output.="<a style='text-decoration: none; font-weight: bold; font-size: 120%' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID=" . $rowPeriods["gibbonCourseClassID"] . "'>" . $rowPeriods["course"] . "." . $rowPeriods["class"] . "</a><br/>" ;
 							}
 							else if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/courseEnrolment_manage_class_edit.php") AND $edit==TRUE) {
 								$output.="<a style='text-decoration: none; font-weight: bold; font-size: 120%' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_class_edit.php&gibbonCourseClassID=" . $rowPeriods["gibbonCourseClassID"] . "&gibbonSchoolYearID=" . $_SESSION[$guid]["gibbonSchoolYearID"] . "&gibbonCourseID=" . $rowPeriods["gibbonCourseID"] . "'>" . $rowPeriods["course"] . "." . $rowPeriods["class"] . "</a><br/>" ;
@@ -1422,6 +1422,9 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 												}
 												else if ($resultPlan->rowCount()==0) {
 													$output.="<a style='pointer-events: auto' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_add.php&viewBy=class&gibbonCourseClassID=" . $rowPeriods["gibbonCourseClassID"] . "&date=" . $date . "&timeStart=" . $effectiveStart . "&timeEnd=" . $effectiveEnd . "'><img style='float: right; margin: " . (substr($height,0,-2)-27) . "px 2px 0 0' title='Add lesson plan' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+												}
+												else {
+													$output.="<a style='pointer-events: auto' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner.php&viewBy=class&gibbonCourseClassID=" . $rowPeriods["gibbonCourseClassID"] . "&date=" . $date . "&timeStart=" . $effectiveStart . "&timeEnd=" . $effectiveEnd . "'><div style='float: right; margin: " . (substr($height,0,-2)-17) . "px 5px 0 0'>" . _('Error') . "</div></a>" ;
 												}
 											$output.="</div>" ;
 											$zCount++ ;
@@ -2382,10 +2385,8 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
 								$output.="<i>" . substr($effectiveStart,0,5) . " - " . substr($effectiveEnd,0,5) . "</i><br/>" ;
 							}
 
-
-
 							if (isActionAccessible($guid, $connection2, "/modules/Departments/department_course_class.php")) {
-								$output.="<a style='text-decoration: none; font-weight: bold; font-size: 120%' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID=" . $rowPeriods["gibbonCourseClassID"] . "&subpage=Participants'>" . $rowPeriods["course"] . "." . $rowPeriods["class"] . "</a><br/>" ;
+								$output.="<a style='text-decoration: none; font-weight: bold; font-size: 120%' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID=" . $rowPeriods["gibbonCourseClassID"] . "'>" . $rowPeriods["course"] . "." . $rowPeriods["class"] . "</a><br/>" ;
 							}
 							else {
 								$output.="<span style='font-size: 120%'><b>" . $rowPeriods["course"] . "." . $rowPeriods["class"] . "</b></span><br/>" ;
