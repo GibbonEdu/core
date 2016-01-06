@@ -117,7 +117,7 @@ if ($type=="general" OR $type=="lockdown" OR $type=="custom") {
 						}
 						
 						if ($resultConfirm->rowCount()==0) {
-							$output.="<a target='_parent' style='font-size: 180%; font-weight: bold; color: #fff' href='" . $_SESSION[$guid]["absoluteURL"] . "/index_notification_ajax_alarmProcess.php?gibbonAlarmID=" . $row["gibbonAlarmID"] . "'>" . _('Click here to confirm that you have received this alarm.') . "</a><br/>" ;
+							$output.="<a target='_parent' style='font-size: 300%; font-weight: bold; color: #fff' href='" . $_SESSION[$guid]["absoluteURL"] . "/index_notification_ajax_alarmProcess.php?gibbonAlarmID=" . $row["gibbonAlarmID"] . "'>" . _('Click here to confirm that you have received this alarm.') . "</a><br/>" ;
 							$output.="<i>" . _("After confirming receipt, the alarm will continue to be displayed until an administrator has cancelled the alarm.") . "</i>" ;
 						}
 						else {

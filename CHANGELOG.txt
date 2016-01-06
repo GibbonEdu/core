@@ -582,6 +582,8 @@ Students: fixed bug preventing adding/editing/deleted a student note for a left/
 Planner: fixed issue with duplicate lesson plans causing TT issues
 	Edited file /modules/Timetable/moduleFunctions.php
 	
+System Admin: increased size of alarm confirmation link text
+	Edited file /index_notification_ajax_alarm.php
 
 v10.0.00
 --------
