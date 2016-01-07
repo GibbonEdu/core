@@ -585,6 +585,9 @@ Planner: fixed issue with duplicate lesson plans causing TT issues
 System Admin: increased size of alarm confirmation link text
 	Edited file /index_notification_ajax_alarm.php
 
+Activities: added waiting list to staff full view of an activity
+	Edited file /modules/Activities/activities_view_full.php
+
 v10.0.00
 --------
 i18n: added Urdu as inactive development language
