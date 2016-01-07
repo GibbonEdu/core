@@ -265,7 +265,6 @@ else {
 								print "</ul>" ;
 							}
 							
-							print "<h3>" . _('Waiting List') . "</h3>" ;
 							
 							try {
 								$dataStudents=array("gibbonActivityID"=>$row["gibbonActivityID"]); 
@@ -276,11 +275,9 @@ else {
 							catch(PDOException $e) { 
 								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 							}
-
-							if ($resultStudents->rowCount()<1) {
-								print "<i>" . _('None') . "</i>" ;
-							}
-							else {
+							
+							if ($resultStudents->rowCount()>0) {
+								print "<h3>" . _('Waiting List') . "</h3>" ;
 								print "<ul style='margin-left: 15px'>" ;
 								while ($rowStudent=$resultStudents->fetch()) {
 									print "<li>" . formatName("", $rowStudent["preferredName"], $rowStudent["surname"], "Student") . "</li>" ; 
