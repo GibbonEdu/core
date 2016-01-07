@@ -268,21 +268,21 @@ else {
 							
 							try {
 								$dataStudents=array("gibbonActivityID"=>$row["gibbonActivityID"]); 
-								$sqlStudents="SELECT title, preferredName, surname FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityID=:gibbonActivityID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonActivityStudent.status='Waiting List' ORDER BY surname, preferredName" ;
+								$sqlStudents="SELECT title, preferredName, surname FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityID=:gibbonActivityID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonActivityStudent.status='Waiting List' ORDER BY timestamp" ;
 								$resultStudents=$connection2->prepare($sqlStudents);
 								$resultStudents->execute($dataStudents);
 							}
 							catch(PDOException $e) { 
 								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 							}
-							
+						
 							if ($resultStudents->rowCount()>0) {
 								print "<h3>" . _('Waiting List') . "</h3>" ;
-								print "<ul style='margin-left: 15px'>" ;
+								print "<ol style='margin-left: 15px'>" ;
 								while ($rowStudent=$resultStudents->fetch()) {
 									print "<li>" . formatName("", $rowStudent["preferredName"], $rowStudent["surname"], "Student") . "</li>" ; 
 								}
-								print "</ul>" ;
+								print "</ol>" ;
 							}
 						}
 					print "</div>" ;
