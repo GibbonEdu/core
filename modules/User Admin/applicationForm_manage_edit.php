@@ -47,7 +47,7 @@ else {
 	else {
 		try {
 			$data=array("gibbonApplicationFormID"=>$gibbonApplicationFormID);
-			$sql="SELECT * FROM gibbonApplicationForm LEFT JOIN gibbonPayment ON (gibbonApplicationForm.gibbonPaymentID=gibbonPayment.gibbonPaymentID AND foreignTable='gibbonApplicationForm') WHERE gibbonApplicationFormID=:gibbonApplicationFormID" ;
+			$sql="SELECT *, gibbonApplicationForm.status AS 'applicationStatus', gibbonPayment.status AS 'paymentStatus' FROM gibbonApplicationForm LEFT JOIN gibbonPayment ON (gibbonApplicationForm.gibbonPaymentID=gibbonPayment.gibbonPaymentID AND foreignTable='gibbonApplicationForm') WHERE gibbonApplicationFormID=:gibbonApplicationFormID" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
@@ -92,7 +92,7 @@ else {
 			//Let's go!
 			$row=$result->fetch() ;
 			$proceed=TRUE ;
-
+			
 			print "<div class='linkTop'>" ;
 				if ($search!="") {
 					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/applicationForm_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>" . _('Back to Search Results') . "</a> | " ;
@@ -146,7 +146,7 @@ else {
 						</td>
 					</tr>
 					<?php
-					if ($row["status"]!="Accepted") {
+					if ($row["applicationStatus"]!="Accepted") {
 						?>
 						<tr>
 							<td>
@@ -155,10 +155,10 @@ else {
 							</td>
 							<td class="right">
 								<select name="status" id="status" style="width: 302px">
-									<option <?php if ($row["status"]=="Pending") { print "selected" ; } ?> value="Pending"><?php print _('Pending') ?></option>
-									<option <?php if ($row["status"]=="Waiting List") { print "selected" ; } ?> value="Waiting List"><?php print _('Waiting List') ?></option>
-									<option <?php if ($row["status"]=="Rejected") { print "selected" ; } ?> value="Rejected"><?php print _('Rejected') ?></option>
-									<option <?php if ($row["status"]=="Withdrawn") { print "selected" ; } ?> value="Withdrawn"><?php print _('Withdrawn') ?></option>
+									<option <?php if ($row["applicationStatus"]=="Pending") { print "selected" ; } ?> value="Pending"><?php print _('Pending') ?></option>
+									<option <?php if ($row["applicationStatus"]=="Waiting List") { print "selected" ; } ?> value="Waiting List"><?php print _('Waiting List') ?></option>
+									<option <?php if ($row["applicationStatus"]=="Rejected") { print "selected" ; } ?> value="Rejected"><?php print _('Rejected') ?></option>
+									<option <?php if ($row["applicationStatus"]=="Withdrawn") { print "selected" ; } ?> value="Withdrawn"><?php print _('Withdrawn') ?></option>
 								</select>
 							</td>
 						</tr>
@@ -172,7 +172,7 @@ else {
 								<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
 							</td>
 							<td class="right">
-								<input readonly name="status" id="status" maxlength=20 value="<?php print htmlPrep($row["status"]) ?>" type="text" style="width: 300px">
+								<input readonly name="status" id="status" maxlength=20 value="<?php print htmlPrep($row["applicationStatus"]) ?>" type="text" style="width: 300px">
 							</td>
 						</tr>
 						<?php

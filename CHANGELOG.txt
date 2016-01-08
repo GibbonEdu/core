@@ -588,6 +588,9 @@ System Admin: increased size of alarm confirmation link text
 Activities: added waiting list to staff full view of an activity
 	Edited file /modules/Activities/activities_view_full.php
 
+User Admin: fixed application status display bug in application form edit
+	Edited file /modules/User Admin/applicationForm_manage_edit.php
+
 v10.0.00
 --------
 i18n: added Urdu as inactive development language

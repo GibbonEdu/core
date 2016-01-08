@@ -66133,10 +66133,6 @@ msgstr ""
 msgid "Planned%1$Lesson"
 msgstr ""
 
-#: modules/Planner/units_edit_working_add.php:356
-msgid "TT Period%1$Time"
-msgstr ""
-
 #: i18n/dbStringsForTranslation.php:802 i18n/dbStringsForTranslation.php:1163
 #: i18n/dbStringsForTranslation.php:1168 i18n/dbStringsForTranslation.php:1220
 #: i18n/dbStringsForTranslation.php:1031 i18n/dbStringsForTranslation.php:1033

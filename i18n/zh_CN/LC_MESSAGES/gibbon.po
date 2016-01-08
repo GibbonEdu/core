@@ -56979,12 +56979,6 @@ msgstr ""
 msgid "Choose Lessons"
 msgstr ""
 
-#: modules/Planner/units_edit_working_add.php:356
-#: modules/Planner/units_edit_working_add.php:356
-#, php-format
-msgid "TT Period%1$sTime"
-msgstr ""
-
 #: modules/Planner/units_edit_working_copyback.php:42
 #: modules/Planner/units_edit_working_copyback.php:42
 msgid "Copy Back Block"
@@ -66110,10 +66104,6 @@ msgstr ""
 #: modules/Planner/units_edit_deploy.php:370
 #: modules/Planner/units_edit_working_add.php:359
 msgid "Planned%1$Lesson"
-msgstr ""
-
-#: modules/Planner/units_edit_working_add.php:356
-msgid "TT Period%1$Time"
 msgstr ""
 
 #: i18n/dbStringsForTranslation.php:802 i18n/dbStringsForTranslation.php:1163
