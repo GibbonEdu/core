@@ -32610,10 +32610,6 @@ msgstr "Restablecer Usuario Contrase&ntildea"
 msgid "Manage User Settings"
 msgstr "Administrar la configuraci&oacuten de usuario"
 
-#: modules/User Admin/userSettings.php:64
-msgid "VALORI"
-msgstr "VALORI"
-
 #: modules/User Admin/userSettings.php:154
 msgid "Authentication Settings"
 msgstr "Configuraci&oacuten de autenticaci&oacuten"

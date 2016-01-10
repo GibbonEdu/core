@@ -33634,10 +33634,6 @@ msgstr "重置用戶密碼"
 msgid "Manage User Settings"
 msgstr "編輯用戶設定"
 
-#: modules/User Admin/userSettings.php:64
-msgid "VALORI"
-msgstr "價值"
-
 #: modules/User Admin/userSettings.php:154
 msgid "Authentication Settings"
 msgstr "認證設定"

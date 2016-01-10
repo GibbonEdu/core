@@ -33637,9 +33637,6 @@ msgstr "إعادة تعيين كلمة مرور المستخدم"
 msgid "Manage User Settings"
 msgstr "إدارة إعدادات المستخدم"
 
-#: modules/User Admin/userSettings.php:64
-msgid "VALORI"
-msgstr ""
 
 #: modules/User Admin/userSettings.php:154
 msgid "Authentication Settings"

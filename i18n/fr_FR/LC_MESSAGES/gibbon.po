@@ -34006,10 +34006,6 @@ msgstr "Réinitialiser le mot de passe utilisateur"
 msgid "Manage User Settings"
 msgstr "Gérer les paramètres utilisateur"
 
-#: modules/User Admin/userSettings.php:64
-msgid "VALORI"
-msgstr ""
-
 #: modules/User Admin/userSettings.php:154
 msgid "Authentication Settings"
 msgstr "Paramètres d-authentiification"

@@ -33488,10 +33488,6 @@ msgstr ""
 msgid "Manage User Settings"
 msgstr ""
 
-#: modules/User Admin/userSettings.php:64
-msgid "VALORI"
-msgstr ""
-
 #: modules/User Admin/userSettings.php:154
 msgid "Authentication Settings"
 msgstr ""

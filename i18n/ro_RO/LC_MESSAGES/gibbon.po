@@ -33964,10 +33964,6 @@ msgstr "Resetare parolă utilizator"
 msgid "Manage User Settings"
 msgstr "Gestionați setările de utilizator"
 
-#: modules/User Admin/userSettings.php:64
-msgid "VALORI"
-msgstr "VALORI "
-
 #: modules/User Admin/userSettings.php:154
 msgid "Authentication Settings"
 msgstr "Setări autentificare"
