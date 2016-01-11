@@ -90,6 +90,8 @@ else {
 			header("Location: {$URL}");
 		}
 		else {
+			$_SESSION[$guid]["pageLoads"]=NULL ;
+			
 			//Success0
 			$URL.="&updateReturn=success0" ;
 			header("Location: {$URL}");
