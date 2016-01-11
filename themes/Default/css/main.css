@@ -1190,3 +1190,14 @@ table.chatBox tr td {
 .tag_cloud:visited { color: #1C528C; text-decoration: none }
 .tag_cloud { background: none }
 .tag_cloud:hover { background: #1C528C; color: #fff }
+
+
+/* RESOURCE UPLOAD SLIDER */
+div.resourceAddSlider {
+	min-height: 60px; 
+	border: 1px solid #C0C0C0; 
+	text-align: center; 
+	width: 100%; 
+	margin-top: 5px; 
+	margin-bottom: -5px
+}
