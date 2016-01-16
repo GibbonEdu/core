@@ -36897,7 +36897,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:67 i18n/dbStringsForTranslation.php:56
 #: i18n/dbStringsForTranslation.php:58 i18n/dbStringsForTranslation.php:63
 #: i18n/dbStringsForTranslation.php:72 i18n/dbStringsForTranslation.php:72
-msgid "Attendance By Roll"
+msgid "Attendance By Roll Group"
 msgstr ""
 
 #: i18n/dbStringsForTranslation.php:58 modules/Library/library_browse.php:34
