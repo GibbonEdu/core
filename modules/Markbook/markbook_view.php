@@ -1235,9 +1235,10 @@ else {
 											else {
 												print $rowEntry["comment"] ;
 											}
-											if ($rowEntry["response"]!="") {
-												print "<a title='" . _('Uploaded Response') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowEntry["response"] . "'>" . _('Uploaded Response') . "</a><br/>" ;
-											}
+											print "<br/>" ;
+										}
+										if ($rowEntry["response"]!="") {
+											print "<a title='" . _('Uploaded Response') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowEntry["response"] . "'>" . _('Uploaded Response') . "</a><br/>" ;
 										}
 									print "</td>" ;
 								}
@@ -1834,9 +1835,10 @@ else {
 														else {
 															print $rowEntry["comment"] ;
 														}
-														if ($rowEntry["response"]!="") {
-															print "<a title='Uploaded Response' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowEntry["response"] . "'>Uploaded Response</a><br/>" ;
-														}
+														print "<br/>" ;
+													}
+													if ($rowEntry["response"]!="") {
+														print "<a title='Uploaded Response' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowEntry["response"] . "'>Uploaded Response</a><br/>" ;
 													}
 												print "</td>" ;
 											}

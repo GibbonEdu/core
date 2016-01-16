@@ -37853,8 +37853,8 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:67 i18n/dbStringsForTranslation.php:56
 #: i18n/dbStringsForTranslation.php:58 i18n/dbStringsForTranslation.php:63
 #: i18n/dbStringsForTranslation.php:72 i18n/dbStringsForTranslation.php:82
-msgid "Attendance By Roll"
-msgstr ""
+msgid "Attendance By Roll Group"
+msgstr "Attendance By Form Group"
 
 #: i18n/dbStringsForTranslation.php:58 modules/Library/library_browse.php:34
 #: i18n/dbStringsForTranslation.php:68 i18n/dbStringsForTranslation.php:69

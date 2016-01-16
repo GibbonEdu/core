@@ -642,9 +642,10 @@ function getParentalDashboardContents($connection2, $guid, $gibbonPersonID) {
 							else {
 								$gradesOutput.=$rowEntry["comment"] ;
 							}
-							if ($rowEntry["response"]!="") {
-								$gradesOutput.="<a title='" . _('Uploaded Response') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowEntry["response"] . "'>" . _('Uploaded Response') . "</a><br/>" ;
-							}
+							$gradesOutput.="<br/>" ;
+						}
+						if ($rowEntry["response"]!="") {
+							$gradesOutput.="<a title='" . _('Uploaded Response') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowEntry["response"] . "'>" . _('Uploaded Response') . "</a><br/>" ;
 						}
 					$gradesOutput.="</td>" ;
 				}
@@ -2408,104 +2409,107 @@ function sidebar($connection2, $guid) {
 						}
 						print "<table id='messageWallWidget' style='width: 100%; height: " . $height . "px; border: 1px solid grey; padding: 6px; background-color: #eeeeee'>" ;
 							//Content added by JS
-						$rand=rand(0, count($_SESSION[$guid]["messageWallOutput"]));
-						$total=count($_SESSION[$guid]["messageWallOutput"]) ;
-						$order = "";
-						for($i=0; $i < $total; $i++) {
-							$pos=($rand+$i)%$total;
-							$order.="$pos, ";
-							$message=$_SESSION[$guid]["messageWallOutput"][$pos];
+							$rand=rand(0, count($_SESSION[$guid]["messageWallOutput"]));
+							$total=count($_SESSION[$guid]["messageWallOutput"]) ;
+							$order = "";
+							for ($i=0; $i < $total; $i++) {
+								$pos=($rand+$i)%$total;
+								$order.="$pos, ";
+								$message=$_SESSION[$guid]["messageWallOutput"][$pos];
 
-							//COLOR ROW BY STATUS!
-							print "<tr id='messageWall" . $pos . "' style='z-index: 1;'>" ;
-								print "<td style='font-size: 95%; letter-spacing: 85%;'>" ;
-									//Image
-									$style="style='width: 45px; height: 60px; float: right; margin-left: 6px; border: 1px solid black'" ;
-									if ($message["photo"]=="" OR file_exists($_SESSION[$guid]["absolutePath"] . "/" . $message["photo"])==FALSE) {
-										print "<img $style  src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/anonymous_75.jpg'/>" ;
-									}
-									else {
-										print "<img $style src='" . $_SESSION[$guid]["absoluteURL"] . "/" . $message["photo"] . "'/>" ;
-									}
-
-									//Message number
-									print "<div style='margin-bottom: 4px; text-transform: uppercase; font-size: 70%; color: #888'>Message " . ($pos+1) . "</div>" ;
-
-									//Title
-									$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Messenger/messageWall_view.php#" . $message["gibbonMessengerID"] ;
-									if (strlen($message["subject"])<=16) {
-										print "<a style='font-weight: bold; font-size: 105%; letter-spacing: 85%; text-transform: uppercase' href='$URL'>"  . $message["subject"] . "</a><br/>" ;
-									}
-									else {
-										print "<a style='font-weight: bold; font-size: 105%; letter-spacing: 85%; text-transform: uppercase' href='$URL'>"  . substr($message["subject"], 0, 16) . "...</a><br/>" ;
-									}
-
-									//Text
-									print "<div style='margin-top: 5px'>" ;
-										if (strlen(strip_tags($message["details"]))<=40) {
-											print strip_tags($message["details"]) . "<br/>" ;
+								//COLOR ROW BY STATUS!
+								print "<tr id='messageWall" . $pos . "' style='z-index: 1;'>" ;
+									print "<td style='font-size: 95%; letter-spacing: 85%;'>" ;
+										//Image
+										$style="style='width: 45px; height: 60px; float: right; margin-left: 6px; border: 1px solid black'" ;
+										if ($message["photo"]=="" OR file_exists($_SESSION[$guid]["absolutePath"] . "/" . $message["photo"])==FALSE) {
+											print "<img $style  src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/anonymous_75.jpg'/>" ;
 										}
 										else {
-											print substr(strip_tags($message["details"]), 0, 40) . "...<br/>" ;
+											print "<img $style src='" . $_SESSION[$guid]["absoluteURL"] . "/" . $message["photo"] . "'/>" ;
 										}
-									print "</div>" ;
-								print "</td>" ;
-							print "</tr>" ;
-							print "
-						<script type=\"text/javascript\">
-							$(document).ready(function(){
-								$(\"#messageWall$pos\").hide();
-							});
-						</script>" ;
-						}
+
+										//Message number
+										print "<div style='margin-bottom: 4px; text-transform: uppercase; font-size: 70%; color: #888'>Message " . ($pos+1) . "</div>" ;
+
+										//Title
+										$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Messenger/messageWall_view.php#" . $message["gibbonMessengerID"] ;
+										if (strlen($message["subject"])<=16) {
+											print "<a style='font-weight: bold; font-size: 105%; letter-spacing: 85%; text-transform: uppercase' href='$URL'>"  . $message["subject"] . "</a><br/>" ;
+										}
+										else {
+											print "<a style='font-weight: bold; font-size: 105%; letter-spacing: 85%; text-transform: uppercase' href='$URL'>"  . substr($message["subject"], 0, 16) . "...</a><br/>" ;
+										}
+
+										//Text
+										print "<div style='margin-top: 5px'>" ;
+											if (strlen(strip_tags($message["details"]))<=40) {
+												print strip_tags($message["details"]) . "<br/>" ;
+											}
+											else {
+												print substr(strip_tags($message["details"]), 0, 40) . "...<br/>" ;
+											}
+										print "</div>" ;
+									print "</td>" ;
+								print "</tr>" ;
+								print "
+									<script type=\"text/javascript\">
+										$(document).ready(function(){
+											$(\"#messageWall$pos\").hide();
+										});
+									</script>" ;
+							}
 						print "</table>" ;
 						$order = substr($order, 0, strlen($order)-2);
 						print "
-						<script type=\"text/javascript\">
-							$(document).ready(function(){
-								var order=[". $order . "];
-								var interval = 1;
+							<script type=\"text/javascript\">
+								$(document).ready(function(){
+									var order=[". $order . "];
+									var interval = 1;
 
-									for(var i=0; i<order.length; i++) {
-										var tRow = $(\"#messageWall\".concat(order[i].toString()));
-										if(i<3) {
-											tRow.show();
+										for(var i=0; i<order.length; i++) {
+											var tRow = $(\"#messageWall\".concat(order[i].toString()));
+											if(i<3) {
+												tRow.show();
+											}
+											else {
+												tRow.hide();
+											}
 										}
-										else {
-											tRow.hide();
+										$(\"#messageWall\".concat(order[0].toString())).attr('class', 'even');
+										$(\"#messageWall\".concat(order[1].toString())).attr('class', 'odd');
+										$(\"#messageWall\".concat(order[2].toString())).attr('class', 'even');
+
+									setInterval(function() {
+										if(order.length > 3) {
+											$(\"#messageWall\".concat(order[0].toString())).hide();
+											var fRow = $(\"#messageWall\".concat(order[0].toString()));
+											var lRow = $(\"#messageWall\".concat(order[order.length-1].toString()));
+											fRow.insertAfter(lRow);
+											order.push(order.shift());
+											$(\"#messageWall\".concat(order[2].toString())).show();
+
+											if(interval%2===0) {
+												$(\"#messageWall\".concat(order[0].toString())).attr('class', 'even');
+												$(\"#messageWall\".concat(order[1].toString())).attr('class', 'odd');
+												$(\"#messageWall\".concat(order[2].toString())).attr('class', 'even');
+											}
+											else {
+												$(\"#messageWall\".concat(order[0].toString())).attr('class', 'odd');
+												$(\"#messageWall\".concat(order[1].toString())).attr('class', 'even');
+												$(\"#messageWall\".concat(order[2].toString())).attr('class', 'odd');
+											}
+
+											interval++;
 										}
-									}
-									$(\"#messageWall\".concat(order[0].toString())).attr('class', 'even');
-									$(\"#messageWall\".concat(order[1].toString())).attr('class', 'odd');
-									$(\"#messageWall\".concat(order[2].toString())).attr('class', 'even');
-
-								setInterval(function() {
-									if(order.length > 3) {
-										$(\"#messageWall\".concat(order[0].toString())).hide();
-										var fRow = $(\"#messageWall\".concat(order[0].toString()));
-										var lRow = $(\"#messageWall\".concat(order[order.length-1].toString()));
-										fRow.insertAfter(lRow);
-										order.push(order.shift());
-										$(\"#messageWall\".concat(order[2].toString())).show();
-
-										if(interval%2===0) {
-											$(\"#messageWall\".concat(order[0].toString())).attr('class', 'even');
-											$(\"#messageWall\".concat(order[1].toString())).attr('class', 'odd');
-											$(\"#messageWall\".concat(order[2].toString())).attr('class', 'even');
-										}
-										else {
-											$(\"#messageWall\".concat(order[0].toString())).attr('class', 'odd');
-											$(\"#messageWall\".concat(order[1].toString())).attr('class', 'even');
-											$(\"#messageWall\".concat(order[2].toString())).attr('class', 'odd');
-										}
-
-										interval++;
-									}
-								}, 8000);
-							});
-						</script>" ;
-
+									}, 8000);
+								});
+							</script>" ;
 					}
+					print "<p style='padding-top: 5px; text-align: right'>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Messenger/messageWall_view.php'>" . _('View Message Wall') . "</a>" ;
+					print "</p>" ;
+
 				}
 			}
 		}
@@ -2599,7 +2603,7 @@ function sidebar($connection2, $guid) {
 				print "</ol>" ;
 			}
 
-			print "<p style='padding-top: 15px; text-align: right'>" ;
+			print "<p style='padding-top: 0px; text-align: right'>" ;
 			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_deadlines.php'>" . _('View Homework') . "</a>" ;
 			print "</p>" ;
 		}
