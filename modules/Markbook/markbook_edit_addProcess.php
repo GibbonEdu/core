@@ -162,6 +162,28 @@ else {
 		$AI=str_pad($rowAI['Auto_increment'], 10, "0", STR_PAD_LEFT) ;
 		
 		$time=time() ;
+
+		if($_POST['rec']!="") {
+			$path=$_SESSION[$guid]["absolutePath"] ;
+			if (is_dir($path ."/recordings/" . date("Y", $time) . "/" . date("m", $time))==FALSE) {
+				mkdir($path ."/recordings/" . date("Y", $time) . "/" . date("m", $time), 0777, TRUE) ;
+			}
+			$unique=FALSE;
+			$count=0 ;
+			while ($unique==FALSE AND $count<100) {
+				$suffix=randomPassword(16) ;
+				$attachment="recordings/" . date("Y", $time) . "/" . date("m", $time) . "/" . preg_replace("/[^a-zA-Z0-9]/", "", $name) . "_$suffix" . ".wav" ;
+				if (!(file_exists($path . "/" . $attachment))) {
+					$unique=TRUE ;
+				}
+				$count++ ;
+			}
+			if(!(file_put_contents($path . "/" . $attachment, $thing->$_POST['rec']))) {
+				$URL.="&updateReturn=fail5" ;
+				header("Location: {$URL}");
+			}
+		}
+
 		//Move attached file, if there is one
 		if ($_FILES['file']["tmp_name"]!="") {
 			//Check for folder in uploads based on today's date
