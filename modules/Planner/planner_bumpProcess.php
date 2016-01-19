@@ -123,26 +123,28 @@ else {
 							$partialFail=true ;
 						}
 						while ($rowNext=$resultNext->fetch()) {
-							try {
-								$dataPlanner=array("date"=>$rowNext["date"], "timeStart"=>$rowNext["timeStart"], "timeEnd"=>$rowNext["timeEnd"], "gibbonCourseClassID"=>$gibbonCourseClassID); 
-								$sqlPlanner="SELECT * FROM gibbonPlannerEntry WHERE date=:date AND timeStart=:timeStart AND timeEnd=:timeEnd AND gibbonCourseClassID=:gibbonCourseClassID" ;
-								$resultPlanner=$connection2->prepare($sqlPlanner);
-								$resultPlanner->execute($dataPlanner);
-							}
-							catch(PDOException $e) { 
-								$partialFail=true ;
-							}
-							if ($resultPlanner->rowCount()==0) {
+							if (isSchoolOpen($guid, $row["date"], $connection2)) {
 								try {
-									$dataNext=array("gibbonPlannerEntryID"=>$rowList["gibbonPlannerEntryID"], "date"=>$rowNext["date"], "timeStart"=>$rowNext["timeStart"], "timeEnd"=>$rowNext["timeEnd"]); 
-									$sqlNext="UPDATE gibbonPlannerEntry  set date=:date, timeStart=:timeStart, timeEnd=:timeEnd WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID" ;
-									$resultNext=$connection2->prepare($sqlNext);
-									$resultNext->execute($dataNext);
+									$dataPlanner=array("date"=>$rowNext["date"], "timeStart"=>$rowNext["timeStart"], "timeEnd"=>$rowNext["timeEnd"], "gibbonCourseClassID"=>$gibbonCourseClassID); 
+									$sqlPlanner="SELECT * FROM gibbonPlannerEntry WHERE date=:date AND timeStart=:timeStart AND timeEnd=:timeEnd AND gibbonCourseClassID=:gibbonCourseClassID" ;
+									$resultPlanner=$connection2->prepare($sqlPlanner);
+									$resultPlanner->execute($dataPlanner);
 								}
 								catch(PDOException $e) { 
 									$partialFail=true ;
 								}
-								break ;
+								if ($resultPlanner->rowCount()==0) {
+									try {
+										$dataNext=array("gibbonPlannerEntryID"=>$rowList["gibbonPlannerEntryID"], "date"=>$rowNext["date"], "timeStart"=>$rowNext["timeStart"], "timeEnd"=>$rowNext["timeEnd"]); 
+										$sqlNext="UPDATE gibbonPlannerEntry  set date=:date, timeStart=:timeStart, timeEnd=:timeEnd WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID" ;
+										$resultNext=$connection2->prepare($sqlNext);
+										$resultNext->execute($dataNext);
+									}
+									catch(PDOException $e) { 
+										$partialFail=true ;
+									}
+									break ;
+								}
 							}
 						}
 					}
@@ -172,26 +174,28 @@ else {
 							$partialFail=true ;
 						}
 						while ($rowNext=$resultNext->fetch()) {
-							try {
-								$dataPlanner=array("date"=>$rowNext["date"], "timeStart"=>$rowNext["timeStart"], "timeEnd"=>$rowNext["timeEnd"], "gibbonCourseClassID"=>$gibbonCourseClassID); 
-								$sqlPlanner="SELECT * FROM gibbonPlannerEntry WHERE date=:date AND timeStart=:timeStart AND timeEnd=:timeEnd AND gibbonCourseClassID=:gibbonCourseClassID" ;
-								$resultPlanner=$connection2->prepare($sqlPlanner);
-								$resultPlanner->execute($dataPlanner);
-							}
-							catch(PDOException $e) { 
-								$partialFail=true ;
-							}
-							if ($resultPlanner->rowCount()==0) {
+							if (isSchoolOpen($guid, $row["date"], $connection2)) {
 								try {
-									$dataNext=array("gibbonPlannerEntryID"=>$rowList["gibbonPlannerEntryID"], "date"=>$rowNext["date"], "timeStart"=>$rowNext["timeStart"], "timeEnd"=>$rowNext["timeEnd"]); 
-									$sqlNext="UPDATE gibbonPlannerEntry  set date=:date, timeStart=:timeStart, timeEnd=:timeEnd WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID" ;
-									$resultNext=$connection2->prepare($sqlNext);
-									$resultNext->execute($dataNext);
+									$dataPlanner=array("date"=>$rowNext["date"], "timeStart"=>$rowNext["timeStart"], "timeEnd"=>$rowNext["timeEnd"], "gibbonCourseClassID"=>$gibbonCourseClassID); 
+									$sqlPlanner="SELECT * FROM gibbonPlannerEntry WHERE date=:date AND timeStart=:timeStart AND timeEnd=:timeEnd AND gibbonCourseClassID=:gibbonCourseClassID" ;
+									$resultPlanner=$connection2->prepare($sqlPlanner);
+									$resultPlanner->execute($dataPlanner);
 								}
 								catch(PDOException $e) { 
 									$partialFail=true ;
 								}
-								break ;
+								if ($resultPlanner->rowCount()==0) {
+									try {
+										$dataNext=array("gibbonPlannerEntryID"=>$rowList["gibbonPlannerEntryID"], "date"=>$rowNext["date"], "timeStart"=>$rowNext["timeStart"], "timeEnd"=>$rowNext["timeEnd"]); 
+										$sqlNext="UPDATE gibbonPlannerEntry  set date=:date, timeStart=:timeStart, timeEnd=:timeEnd WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID" ;
+										$resultNext=$connection2->prepare($sqlNext);
+										$resultNext->execute($dataNext);
+									}
+									catch(PDOException $e) { 
+										$partialFail=true ;
+									}
+									break ;
+								}
 							}
 						}
 					}

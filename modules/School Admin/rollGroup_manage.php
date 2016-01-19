@@ -44,6 +44,28 @@ else {
 		print "</div>" ;
 	}
 	
+	if (isset($_GET["copyReturn"])) { $copyReturn=$_GET["copyReturn"] ; } else { $copyReturn="" ; }
+	$copyReturnMessage="" ;
+	$class="error" ;
+	if (!($copyReturn=="")) {
+		if ($copyReturn=="fail0") {
+			$copyReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+		}
+		else if ($copyReturn=="fail1") {
+			$copyReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+		}
+		else if ($copyReturn=="fail2") {
+			$copyReturnMessage=_("Your request failed due to a database error.") ;	
+		}
+		else if ($copyReturn=="success0") {
+			$copyReturnMessage=_("Your request was completed successfully.") ;		
+			$class="success" ;
+		}
+		print "<div class='$class'>" ;
+			print $copyReturnMessage;
+		print "</div>" ;
+	} 
+	
 	$gibbonSchoolYearID="" ;
 	if (isset($_GET["gibbonSchoolYearID"])) {
 		$gibbonSchoolYearID=$_GET["gibbonSchoolYearID"] ;
@@ -82,14 +104,16 @@ else {
 		
 		print "<div class='linkTop'>" ;
 			//Print year picker
-			if (getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)!=FALSE) {
+			$previousYear=getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) ;
+			$nextYear=getNextSchoolYearID($gibbonSchoolYearID, $connection2) ;
+			if ($previousYear!=FALSE) {
 				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rollGroup_manage.php&gibbonSchoolYearID=" . getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) . "'>" . _('Previous Year') . "</a> " ;
 			}
 			else {
 				print _("Previous Year") . " " ;
 			}
 			print " | " ;
-			if (getNextSchoolYearID($gibbonSchoolYearID, $connection2)!=FALSE) {
+			if ($nextYear!=FALSE) {
 				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rollGroup_manage.php&gibbonSchoolYearID=" . getNextSchoolYearID($gibbonSchoolYearID, $connection2) . "'>" . _('Next Year') . "</a> " ;
 			}
 			else {
@@ -108,7 +132,10 @@ else {
 		}
 		
 		print "<div class='linkTop'>" ;
-		print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rollGroup_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+			if ($nextYear!=FALSE) {
+				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/rollGroup_manage_copyProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&gibbonSchoolYearIDNext=$nextYear'> " . _('Copy All To Next Year') . "<img style='margin-left: 3px' title='" . _('Copy All To Next Year') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/copy.png'/></a> | " ;
+			}
+			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rollGroup_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
 		print "</div>" ;
 		
 		if ($result->rowCount()<1) {

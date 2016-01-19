@@ -64,6 +64,7 @@ else {
 	$languageOptionsLanguageList=$_POST["languageOptionsLanguageList"] ;
 	$studentDefaultEmail=$_POST["studentDefaultEmail"] ; 
 	$studentDefaultWebsite=$_POST["studentDefaultWebsite"] ;
+	$autoHouseAssign=$_POST["autoHouseAssign"] ;
 	
 	//Write to database
 	$fail=FALSE ;
@@ -267,6 +268,18 @@ else {
 	catch(PDOException $e) { 
 		$fail=TRUE ; 
 	}
+	
+	try {
+		$data=array("value"=>$autoHouseAssign); 
+		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Application Form' AND name='autoHouseAssign'" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { 
+		$fail=TRUE ; 
+	}
+	
+	
 		
 	if ($fail==TRUE) {
 		//Fail 2

@@ -80,6 +80,7 @@ else {
 			}
 			$name=$_POST["name"] ;
 			$nameShort=$_POST["nameShort"] ;
+			$orderBy=$_POST["orderBy"] ;
 			$description=$_POST["description"] ;
 			$gibbonSchoolYearID=$_POST["gibbonSchoolYearID"] ;
 			$count=$_POST["count"] ;
@@ -121,8 +122,8 @@ else {
 				else {
 					//Write to database
 					try {
-						$data=array("gibbonDepartmentID"=>$gibbonDepartmentID, "name"=>$name, "nameShort"=>$nameShort, "description"=>$description, "gibbonYearGroupIDList"=>$gibbonYearGroupIDList, "gibbonCourseID"=>$gibbonCourseID); 
-						$sql="UPDATE gibbonCourse SET gibbonDepartmentID=:gibbonDepartmentID, name=:name, nameShort=:nameShort, description=:description, gibbonYearGroupIDList=:gibbonYearGroupIDList WHERE gibbonCourseID=:gibbonCourseID" ;
+						$data=array("gibbonDepartmentID"=>$gibbonDepartmentID, "name"=>$name, "nameShort"=>$nameShort, "orderBy"=>$orderBy, "description"=>$description, "gibbonYearGroupIDList"=>$gibbonYearGroupIDList, "gibbonCourseID"=>$gibbonCourseID); 
+						$sql="UPDATE gibbonCourse SET gibbonDepartmentID=:gibbonDepartmentID, name=:name, nameShort=:nameShort, orderBy=:orderBy, description=:description, gibbonYearGroupIDList=:gibbonYearGroupIDList WHERE gibbonCourseID=:gibbonCourseID" ;
 						$result=$connection2->prepare($sql);
 						$result->execute($data);
 					}

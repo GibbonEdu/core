@@ -70,8 +70,8 @@ else {
 		//Filter variables
 		$where="" ;
 		$filter2=NULL ;
-		if (isset($_POST["filter2"])) {
-			$filter2=$_POST["filter2"] ;
+		if (isset($_GET["filter2"])) {
+			$filter2=$_GET["filter2"] ;
 		}
 		if ($filter2!="") {
 			$where.=" WHERE gibbonDepartment.gibbonDepartmentID='$filter2'" ;
@@ -91,7 +91,7 @@ else {
 		print "<h3>" ;
 		print _("Filter") ;
 		print "</h3>" ;
-		print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "'>" ;
+		print "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "'>" ;
 			print"<table class='noIntBorder' cellspacing='0' style='width: 100%'>" ;	
 				?>
 				<tr>
@@ -125,6 +125,7 @@ else {
 				print "<tr>" ;
 					print "<td class='right' colspan=2>" ;
 						print "<input type='hidden' name='q' value='" . $_GET["q"] . "'>" ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/outcomes.php'>" . _('Clear Filters') . "</a> " ;
 						print "<input type='submit' value='" . _('Go') . "'>" ;
 					print "</td>" ;
 				print "</tr>" ;
@@ -138,7 +139,7 @@ else {
 		
 		if ($highestAction=="Manage Outcomes_viewEditAll" OR $highestAction=="Manage Outcomes_viewAllEditLearningArea") {
 			print "<div class='linkTop'>" ;
-			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/outcomes_add.php'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/outcomes_add.php&filter2=$filter2'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
 			print "</div>" ;
 		}
 		if ($result->rowCount()<1) {
@@ -148,7 +149,7 @@ else {
 		}
 		else {
 			if ($result->rowCount()>$_SESSION[$guid]["pagination"]) {
-				printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top") ;
+				printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top", "filter2=$filter2") ;
 			}
 			
 			print "<table cellspacing='0' style='width: 100%'>" ;
@@ -168,7 +169,7 @@ else {
 					print "<th>" ;
 						print _("Active") ;
 					print "</th>" ;
-					print "<th style='min-width: 100px'>" ;
+					print "<th style='width: 100px'>" ;
 						print _("Actions") ;
 					print "</th>" ;
 				print "</tr>" ;
@@ -228,8 +229,8 @@ else {
 							print "</script>" ;
 							
 							if ($highestAction=="Manage Outcomes_viewEditAll") {
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/outcomes_edit.php&gibbonOutcomeID=" . $row["gibbonOutcomeID"] . "'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/outcomes_delete.php&gibbonOutcomeID=" . $row["gibbonOutcomeID"] . "'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/outcomes_edit.php&gibbonOutcomeID=" . $row["gibbonOutcomeID"] . "&filter2=$filter2'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/outcomes_delete.php&gibbonOutcomeID=" . $row["gibbonOutcomeID"] . "&filter2=$filter2'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
 							}
 							else if ($highestAction=="Manage Outcomes_viewAllEditLearningArea") {
 								if ($row["scope"]=="Learning Area" AND $row["gibbonDepartmentID"]!="") {
@@ -243,8 +244,8 @@ else {
 										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 									}
 									if ($resultLearningAreaStaff->rowCount()>0) {
-										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/outcomes_edit.php&gibbonOutcomeID=" . $row["gibbonOutcomeID"] . "'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/outcomes_delete.php&gibbonOutcomeID=" . $row["gibbonOutcomeID"] . "'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
+										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/outcomes_edit.php&gibbonOutcomeID=" . $row["gibbonOutcomeID"] . "&filter2=$filter2'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/outcomes_delete.php&gibbonOutcomeID=" . $row["gibbonOutcomeID"] . "&filter2=$filter2'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
 									}
 								}
 							}
@@ -267,7 +268,7 @@ else {
 			print "</table>" ;
 			
 			if ($result->rowCount()>$_SESSION[$guid]["pagination"]) {
-				printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "bottom") ;
+				printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "bottom", "filter2=$filter2") ;
 			}
 		}
 	}

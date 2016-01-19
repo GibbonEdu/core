@@ -210,6 +210,19 @@ else {
 					$collection=trim($_GET["collection"]) ;
 				}
 			}
+			$everything=NULL ;
+			if (isset($_POST["everything"])) {
+				$everything=trim($_POST["everything"]) ;
+			}
+			if ($everything=="") {
+				if (isset($_GET["everything"])) {
+					$everything=trim($_GET["everything"]) ;
+				}
+			}
+			$gibbonLibraryItemID=NULL ;
+			if (isset($_GET["gibbonLibraryItemID"])) {
+				$gibbonLibraryItemID=trim($_GET["gibbonLibraryItemID"]) ;
+			}
 			
 			//Display filters
 			print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Library/library_browse.php'>" ;
@@ -287,7 +300,19 @@ else {
 						print "</td>" ;
 					print "</tr>" ;
 					print "<tr>" ;
-						print "<td style='padding: 0px 2px 10px 0px; text-align: right' colspan=6>" ;
+						print "<td style='width: 10px'></td>" ;
+						print "<td style='padding-top: 10px' colspan=4>" ;
+							print "<b>" . _('All Fields') . "</b>" ;
+						print "</td>" ;
+					print "</tr>" ;
+					print "<tr>" ;
+						print "<td style='width: 10px'></td>" ;
+						print "<td style='padding: 0px 2px 3px 0px' colspan=4>" ;
+							print "<input type='text' name='everything' id='everything' value='" . htmlPrep($everything) . "' style='width:728px; height: 27px; margin-left: 0px; float: left'/>" ;
+						print "</td>" ;
+					print "</tr>" ;
+					print "<tr>" ;
+						print "<td style='padding: 0px 2px 10px 0px; text-align: right' colspan=5>" ;
 							print "<input type='hidden' name='q' value='/modules/Library/library_lending.php'>" ;
 							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Library/library_browse.php'>" . _('Clear Filters') . "</a> " ;
 							print "<input style='height: 27px; width: 20px!important; margin: 0px;' type='submit' value='" . _('Go') . "'>" ;
@@ -322,12 +347,69 @@ else {
 						$sqlWhere.="gibbonLibraryItem.fields LIKE :collection AND " ;
 					}
 				}
+				if ($gibbonLibraryItemID!="") {
+					$data["gibbonLibraryItemID"]=$gibbonLibraryItemID ;
+					$sqlWhere.="gibbonLibraryItem.gibbonLibraryItemID=:gibbonLibraryItemID AND " ; 
+				}
 				if ($sqlWhere=="AND ") {
 					$sqlWhere="" ;
 				}
 				else {
 					$sqlWhere=substr($sqlWhere,0,-5) ;
 				}
+				
+				//SEARCH ALL FIELDS (a.k.a everything)
+				try {
+					$dataEverything=array(); 
+					$sqlEverything="SHOW COLUMNS FROM gibbonLibraryItem";
+					$resultEverything=$connection2->prepare($sqlEverything);
+					$resultEverything->execute($dataEverything);
+				}
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+				$everythingCount=0 ;
+				$everythingTokens=explode(" ", $everything) ;
+				$everythingSQL="" ;
+				while ($rowEverything=$resultEverything->fetch()) {
+					$tokenCount=0 ;
+					foreach ($everythingTokens AS $everythingToken) {
+						if (count($everythingTokens)==1) { //Deal with single search token
+							$data["data" . $everythingCount]="%" . trim($everythingToken) . "%" ;
+							$everythingSQL.="gibbonLibraryItem." . $rowEverything["Field"] . " LIKE :data" . $everythingCount . " OR " ;
+							$everythingCount++ ;
+						}
+						else { //Deal with multiple search token, ANDing them within ORs
+							if ($tokenCount==0) { //First in a set of AND within ORs
+								$data["data" . $everythingCount]="%" . trim($everythingToken) . "%" ;
+								$everythingSQL.="(gibbonLibraryItem." . $rowEverything["Field"] . " LIKE :data" . $everythingCount . " AND " ;
+								$everythingCount++ ;
+							}
+							else if (($tokenCount+1)==count($everythingTokens)) { //Last in a set of AND within ORs
+								$data["data" . $everythingCount]="%" . trim($everythingToken) . "%" ;
+								$everythingSQL.="gibbonLibraryItem." . $rowEverything["Field"] . " LIKE :data" . $everythingCount . ") OR " ;
+								$everythingCount++ ;
+							}
+							else { //All others in a set of AND within ORs
+								$data["data" . $everythingCount]="%" . trim($everythingToken) . "%" ;
+								$everythingSQL.="gibbonLibraryItem." . $rowEverything["Field"] . " LIKE :data" . $everythingCount . " AND " ;
+								$everythingCount++ ;
+							}
+							$tokenCount++ ;
+						}
+					}
+				}
+				//Find prep for search all fields
+				if (strlen($everythingSQL)>0) {
+					if (count($everythingTokens)==1) {
+						$everythingSQL=" AND (" . substr($everythingSQL, 0, -5) . ")" ;
+					}
+					else {
+						$everythingSQL=" AND (" . substr($everythingSQL, 0, -4) . ")" ;
+					}
+					$sqlWhere.=$everythingSQL ;
+				}
+				
 				
 				$sql="SELECT gibbonLibraryItem.*, gibbonLibraryType.fields AS typeFields FROM gibbonLibraryItem JOIN gibbonLibraryType ON (gibbonLibraryItem.gibbonLibraryTypeID=gibbonLibraryType.gibbonLibraryTypeID) WHERE (status='Available' OR status='On Loan' OR status='Repair' OR status='Reserved') AND NOT ownershipType='Individual' AND borrowable='Y' $sqlWhere ORDER BY id" ; 
 				$sqlPage=$sql ." LIMIT " . $_SESSION[$guid]["pagination"] . " OFFSET " . (($page-1)*$_SESSION[$guid]["pagination"]) ; 

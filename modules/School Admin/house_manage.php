@@ -72,6 +72,9 @@ else {
 	else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
+				print "<th style='width: 170px'>" ;
+					print _("Logo") ;
+				print "</th>" ;
 				print "<th>" ;
 					print _("Name") ;
 				print "</th>" ;
@@ -96,6 +99,14 @@ else {
 				
 				//COLOR ROW BY STATUS!
 				print "<tr class=$rowNum>" ;
+					print "<td>" ;
+						if ($row["logo"]!="") {
+							print "<img class='user' style='max-width: 150px' src='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["logo"] . "'/>" ;
+						}
+						else {
+							print "<img class='user' style='max-width: 150px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/anonymous_240_square.jpg'/>" ;
+						}
+					print "</td>" ;
 					print "<td>" ;
 						print $row["name"] ;
 					print "</td>" ;

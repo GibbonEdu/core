@@ -116,7 +116,7 @@ else {
 							<script type="text/javascript">
 								var username=new LiveValidation('username');
 								username.add(Validate.Presence);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -147,7 +147,7 @@ else {
 									print "passwordNew.add( Validate.Length, { minimum: " . $minLength . "} );" ;
 								}
 								?>
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -161,7 +161,7 @@ else {
 								var passwordConfirm=new LiveValidation('passwordConfirm');
 								passwordConfirm.add(Validate.Presence);
 								passwordConfirm.add(Validate.Confirmation, { match: 'passwordNew' } );
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>

@@ -115,7 +115,7 @@ else {
 							<script type="text/javascript">
 								var gibbonPersonID=new LiveValidation('gibbonPersonID');
 								gibbonPersonID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<?php
@@ -131,7 +131,7 @@ else {
 								<input name="sequenceNumber" ID="sequenceNumber" value="<?php print $row["sequenceNumber"] ?>" type="text" style="width: 300px">
 								<script type="text/javascript">
 									var sequenceNumber=new LiveValidation('sequenceNumber');
-									sequenceNumber.add(Validate.Numericality);
+									sequenceNumber.add(Validate.Numericality, { minimum: 0 } );
 									sequenceNumber.add(Validate.Presence);
 								</script>
 							</td>

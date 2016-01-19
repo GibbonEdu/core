@@ -38,6 +38,7 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 $value=$_POST["value"] ;
 $descriptor=$_POST["descriptor"] ;
 $sequenceNumber=$_POST["sequenceNumber"] ;
+$isDefault=$_POST["isDefault"] ;
 
 $gibbonScaleID=$_POST["gibbonScaleID"] ;
 
@@ -51,7 +52,7 @@ if (isActionAccessible($guid, $connection2, "/modules/School Admin/gradeScales_m
 else {
 	//Proceed!
 	//Validate Inputs
-	if ($gibbonScaleID=="" OR $value=="" OR $descriptor=="" OR $sequenceNumber=="") {
+	if ($gibbonScaleID=="" OR $value=="" OR $descriptor=="" OR $sequenceNumber=="" OR $isDefault=="") {
 		//Fail 3
 		$URL.="&addReturn=fail3" ;
 		header("Location: {$URL}");
@@ -77,10 +78,26 @@ else {
 			header("Location: {$URL}");
 		}
 		else {	
+			//If isDefault is Y, then set all other grades in scale to N
+			if ($isDefault=="Y") {
+				try {
+					$data=array("gibbonScaleID"=>$gibbonScaleID); 
+					$sql="UPDATE gibbonScaleGrade SET isDefault='N' WHERE gibbonScaleID=:gibbonScaleID" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					//Fail 2
+					$URL.="&addReturn=fail2" ;
+					header("Location: {$URL}");
+					break ;
+				}
+			}
+			
 			//Write to database
 			try {
-				$data=array("gibbonScaleID"=>$gibbonScaleID, "value"=>$value, "descriptor"=>$descriptor, "sequenceNumber"=>$sequenceNumber); 
-				$sql="INSERT INTO gibbonScaleGrade SET gibbonScaleID=:gibbonScaleID, value=:value, descriptor=:descriptor, sequenceNumber=:sequenceNumber" ;
+				$data=array("gibbonScaleID"=>$gibbonScaleID, "value"=>$value, "descriptor"=>$descriptor, "sequenceNumber"=>$sequenceNumber, "isDefault"=>$isDefault); 
+				$sql="INSERT INTO gibbonScaleGrade SET gibbonScaleID=:gibbonScaleID, value=:value, descriptor=:descriptor, sequenceNumber=:sequenceNumber, isDefault=:isDefault" ;
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
 			}
@@ -90,7 +107,7 @@ else {
 				header("Location: {$URL}");
 				break ;
 			}
-
+			
 			//Success 0
 			$URL.="&addReturn=success0" ;
 			header("Location: {$URL}");

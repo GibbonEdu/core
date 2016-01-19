@@ -93,19 +93,29 @@ else {
 				for ($i=1;$i<=$count;$i++) {
 					$gibbonPersonIDStudent=$_POST["$i-gibbonPersonID"] ;
 					//Attainment
-					if ($attainment=="N" OR $gibbonScaleIDAttainment=="") {
+					if ($attainment=="N") {
 						$attainmentValue=NULL ;
 						$attainmentDescriptor=NULL ;
 						$attainmentConcern=NULL ;
+					}
+					else if ($gibbonScaleIDAttainment=="") {
+						$attainmentValue="" ;
+						$attainmentDescriptor="" ;
+						$attainmentConcern="" ;
 					}
 					else {
 						$attainmentValue=$_POST["$i-attainmentValue"] ;
 					}
 					//Effort
-					if ($effort=="N" OR $gibbonScaleIDEffort=="") {
+					if ($effort=="N") {
 						$effortValue=NULL ;
 						$effortDescriptor=NULL ;
 						$effortConcern=NULL ;
+					}
+					else if ($gibbonScaleIDEffort=="") {
+						$effortValue="" ;
+						$effortDescriptor="" ;
+						$effortConcern="" ;
 					}
 					else {
 						$effortValue=$_POST["$i-effortValue"] ;
@@ -238,14 +248,14 @@ else {
 								mkdir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time), 0777, TRUE) ;
 							}
 							$unique=FALSE;
-							$count=0 ;
-							while ($unique==FALSE AND $count<100) {
+							$count2=0 ;
+							while ($unique==FALSE AND $count2<100) {
 								$suffix=randomPassword(16) ;
 								$attachment="uploads/" . date("Y", $time) . "/" . date("m", $time) . "/" . preg_replace("/[^a-zA-Z0-9]/", "", $name) . "_Uploaded Response_$suffix" . strrchr($_FILES["response$i"]["name"], ".") ;
 								if (!(file_exists($path . "/" . $attachment))) {
 									$unique=TRUE ;
 								}
-								$count++ ;
+								$count2++ ;
 							}
 						
 							if (!(move_uploaded_file($_FILES["response$i"]["tmp_name"],$path . "/" . $attachment))) {

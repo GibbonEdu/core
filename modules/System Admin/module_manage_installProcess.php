@@ -129,8 +129,8 @@ else {
 						break ;
 					}
 
-					//Create module tables and gibbonSetting entries
-					//Whilst this area is intended for use setting up module tables and gibbonSetting entries, arbitrary sql can be run at the wish of the module developer. However, such actions are not cleaned up by the uninstaller.
+					//Create module tables
+					//Whilst this area is intended for use setting up module tables, arbitrary sql can be run at the wish of the module developer. However, such actions are not cleaned up by the uninstaller.
 					$partialFail=FALSE ;
 					if(isset($moduleTables)) {		
 						for ($i=0;$i<count($moduleTables);$i++) {
@@ -144,24 +144,47 @@ else {
 							}
 						}
 					}
+					//Create gibbonSetting entries
+					//Whilst this area is intended for use setting up gibbonSetting entries, arbitrary sql can be run at the wish of the module developer. However, such actions are not cleaned up by the uninstaller.
+					$partialFail=FALSE ;
+					if(isset($gibbonSetting)) {		
+						for ($i=0;$i<count($gibbonSetting);$i++) {
+							try {
+								$sql=$gibbonSetting[$i] ;
+								$result=$connection2->query($sql);   
+							}
+							catch(PDOException $e) {
+								$_SESSION[$guid]["moduleInstallError"].=$sql . "<br/><b>" . $e->getMessage() . "</b></br><br/>" ; 
+								$partialFail=TRUE ;
+							}
+						}
+					}
 					//Create module actions
-					if (is_null($actionRows)==FALSE) {
+					if (is_null(@$actionRows)==FALSE) {
 						for ($i=0;$i<count($actionRows);$i++) {
 							$categoryPermissionStaff="Y" ;
 							$categoryPermissionStudent="Y" ;
 							$categoryPermissionParent="Y" ;
 							$categoryPermissionOther="Y" ;
-							if ($actionRows[$i]["categoryPermissionStaff"]=="N") {
-								$categoryPermissionStaff="N" ;
+							if (isset($actionRows[$i]["categoryPermissionStaff"])) {
+								if ($actionRows[$i]["categoryPermissionStaff"]=="N") {
+									$categoryPermissionStaff="N" ;
+								}
 							}
-							if ($actionRows[$i]["categoryPermissionStudent"]=="N") {
-								$categoryPermissionStudent="N" ;
+							if (isset($actionRows[$i]["categoryPermissionStudent"])) {
+								if ($actionRows[$i]["categoryPermissionStudent"]=="N") {
+									$categoryPermissionStudent="N" ;
+								}
 							}
-							if ($actionRows[$i]["categoryPermissionParent"]=="N") {
-								$categoryPermissionParent="N" ;
+							if (isset($actionRows[$i]["categoryPermissionParent"])) {
+								if ($actionRows[$i]["categoryPermissionParent"]=="N") {
+									$categoryPermissionParent="N" ;
+								}
 							}
-							if ($actionRows[$i]["categoryPermissionOther"]=="N") {
-								$categoryPermissionOther="N" ;
+							if (isset($actionRows[$i]["categoryPermissionOther"])) {
+								if ($actionRows[$i]["categoryPermissionOther"]=="N") {
+									$categoryPermissionOther="N" ;
+								}
 							}
 							$entrySidebar="Y" ;
 							if (isset($actionRows[$i]["entrySidebar"])) {

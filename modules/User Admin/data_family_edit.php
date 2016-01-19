@@ -45,7 +45,7 @@ else {
 	else {
 		try {
 			$data=array("gibbonFamilyUpdateID"=>$gibbonFamilyUpdateID); 
-			$sql="SELECT gibbonFamilyUpdate.gibbonFamilyID, gibbonFamily.name AS name, gibbonFamily.nameAddress AS nameAddress, gibbonFamily.homeAddress AS homeAddress, gibbonFamily.homeAddressDistrict AS homeAddressDistrict, gibbonFamily.homeAddressCountry AS homeAddressCountry, gibbonFamily.languageHome AS languageHome, gibbonFamilyUpdate.nameAddress AS newnameAddress, gibbonFamilyUpdate.homeAddress AS newhomeAddress, gibbonFamilyUpdate.homeAddressDistrict AS newhomeAddressDistrict, gibbonFamilyUpdate.homeAddressCountry AS newhomeAddressCountry, gibbonFamilyUpdate.languageHome AS newlanguageHome FROM gibbonFamilyUpdate JOIN gibbonFamily ON (gibbonFamilyUpdate.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonFamilyUpdateID=:gibbonFamilyUpdateID" ;
+			$sql="SELECT gibbonFamilyUpdate.gibbonFamilyID, gibbonFamily.name AS name, gibbonFamily.nameAddress AS nameAddress, gibbonFamily.homeAddress AS homeAddress, gibbonFamily.homeAddressDistrict AS homeAddressDistrict, gibbonFamily.homeAddressCountry AS homeAddressCountry, gibbonFamily.languageHomePrimary AS languageHomePrimary, gibbonFamily.languageHomeSecondary AS languageHomeSecondary, gibbonFamilyUpdate.nameAddress AS newnameAddress, gibbonFamilyUpdate.homeAddress AS newhomeAddress, gibbonFamilyUpdate.homeAddressDistrict AS newhomeAddressDistrict, gibbonFamilyUpdate.homeAddressCountry AS newhomeAddressCountry, gibbonFamilyUpdate.languageHomePrimary AS newlanguageHomePrimary, gibbonFamilyUpdate.languageHomeSecondary AS newlanguageHomeSecondary FROM gibbonFamilyUpdate JOIN gibbonFamily ON (gibbonFamilyUpdate.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonFamilyUpdateID=:gibbonFamilyUpdateID" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
@@ -187,24 +187,42 @@ else {
 							if ($row["homeAddressCountry"]!=$row["newhomeAddressCountry"]) { print "<input checked type='checkbox' name='newhomeAddressCountryOn'><input name='newhomeAddressCountry' type='hidden' value='" . htmlprep($row["newhomeAddressCountry"]) . "'>" ; }
 						print "</td>" ;
 					print "</tr>" ;
-					
-					print "<tr class='even'>" ;
+					print "<tr>" ;
 						print "<td>" ;
-							print _("Home Language") ;
+							print _("Home Language - Primary") ;
 						print "</td>" ;
 						print "<td>" ;
-							print $row["languageHome"] ;
+							print $row["languageHomePrimary"] ;
 						print "</td>" ;
 						print "<td>" ;
 							$style="" ;
-							if ($row["languageHome"]!=$row["newlanguageHome"]) {
+							if ($row["languageHomePrimary"]!=$row["newlanguageHomePrimary"]) {
 								$style="style='color: #ff0000'" ;
 							}
 							print "<span $style>" ;
-							print $row["newlanguageHome"] ;
+							print $row["newlanguageHomePrimary"] ;
 						print "</td>" ;
 						print "<td>" ;
-							if ($row["languageHome"]!=$row["newlanguageHome"]) { print "<input checked type='checkbox' name='newlanguageHomeOn'><input name='newlanguageHome' type='hidden' value='" . htmlprep($row["newlanguageHome"]) . "'>" ; }
+							if ($row["languageHomePrimary"]!=$row["newlanguageHomePrimary"]) { print "<input checked type='checkbox' name='newlanguageHomePrimaryOn'><input name='newlanguageHomePrimary' type='hidden' value='" . htmlprep($row["newlanguageHomePrimary"]) . "'>" ; }
+						print "</td>" ;
+					print "</tr>" ;
+					print "<tr>" ;
+						print "<td>" ;
+							print _("Home Language - Secondary") ;
+						print "</td>" ;
+						print "<td>" ;
+							print $row["languageHomeSecondary"] ;
+						print "</td>" ;
+						print "<td>" ;
+							$style="" ;
+							if ($row["languageHomeSecondary"]!=$row["newlanguageHomeSecondary"]) {
+								$style="style='color: #ff0000'" ;
+							}
+							print "<span $style>" ;
+							print $row["newlanguageHomeSecondary"] ;
+						print "</td>" ;
+						print "<td>" ;
+							if ($row["languageHomeSecondary"]!=$row["newlanguageHomeSecondary"]) { print "<input checked type='checkbox' name='newlanguageHomeSecondaryOn'><input name='newlanguageHomeSecondary' type='hidden' value='" . htmlprep($row["newlanguageHomeSecondary"]) . "'>" ; }
 						print "</td>" ;
 					print "</tr>" ;
 					print "<tr>" ;

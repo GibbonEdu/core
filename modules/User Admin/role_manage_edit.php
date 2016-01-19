@@ -219,18 +219,28 @@ else {
 							<input name="type" id="type" readonly="readonly" maxlength=20 value="<?php print _($row["type"]) ?>" type="text" style="width: 300px">
 						</td>
 					</tr>
-					<tr>
 						<td> 
-							<b><?php print _('Login To Non-Current Years') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _("If set to No, logins are limited to current year.") ?></i></span>
+							<b><?php print _('Login To Past Years') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<select name="nonCurrentYearLogin" id="nonCurrentYearLogin" style="width: 302px">
-								<option <?php if ($row["nonCurrentYearLogin"]=="Y") { print "selected" ; } ?> value="Y"><?php print _('Yes') ?></option>
-								<option <?php if ($row["nonCurrentYearLogin"]=="N") { print "selected" ; } ?> value="N"><?php print _('No') ?></option>
+							<select name="pastYearsLogin" id="pastYearsLogin" style="width: 302px">
+								<option <?php if ($row["pastYearsLogin"]=="Y") { print "selected" ; } ?> value="Y"><?php print _('Yes') ?></option>
+								<option <?php if ($row["pastYearsLogin"]=="N") { print "selected" ; } ?> value="N"><?php print _('No') ?></option>
 							</select>
 						</td>
 					</tr>
+					<tr>
+						<td> 
+							<b><?php print _('Login To Future Years') ?> *</b><br/>
+						</td>
+						<td class="right">
+							<select name="futureYearsLogin" id="futureYearsLogin" style="width: 302px">
+								<option <?php if ($row["futureYearsLogin"]=="Y") { print "selected" ; } ?> value="Y"><?php print _('Yes') ?></option>
+								<option <?php if ($row["futureYearsLogin"]=="N") { print "selected" ; } ?> value="N"><?php print _('No') ?></option>
+							</select>
+						</td>
+					</tr>
+					<tr>
 					<tr>
 						<td>
 							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>

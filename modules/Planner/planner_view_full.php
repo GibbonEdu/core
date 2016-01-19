@@ -1519,7 +1519,7 @@ else {
 																print "homeworkDueDate.disable();" ;
 															}
 															?>
-														 </script>
+														</script>
 														 <script type="text/javascript">
 															$(function() {
 																$( "#homeworkDueDate" ).datepicker();
@@ -1537,7 +1537,7 @@ else {
 														<script type="text/javascript">
 															var homeworkDueDateTime=new LiveValidation('homeworkDueDateTime');
 															homeworkDueDateTime.add( Validate.Format, {pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use hh:mm" } ); 
-														 </script>
+														</script>
 														<script type="text/javascript">
 															$(function() {
 																var availableTags=[
@@ -1596,10 +1596,6 @@ else {
 										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner_view_full.php$params#chat'>" . _('Refresh') . "<img style='margin-left: 5px' title='" . _('Refresh') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/refresh.png'/></a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full_post.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&search=" . $gibbonPersonID . "'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a> " ;						
 										print "</div>" ;
 							
-										print "<div style='margin-bottom: 0px' class='success'>" ;
-											print sprintf(_('Items in %1$sred%2$s are new since your last login. Items in green are older.'), "<span style='color: #c00'>", "</span>") ;
-										print "</div>" ;
-								
 										//Get discussion
 										print getThread($guid, $connection2, $gibbonPlannerEntryID, NULL, 0, NULL, $viewBy, $subView, $date, $class, $gibbonCourseClassID, $gibbonPersonID, $row["role"]) ;
 							
@@ -1864,10 +1860,11 @@ else {
 										
 										//Get photos
 										$_SESSION[$guid]["sidebarExtra"].="<div>" ;
-											$_SESSION[$guid]["sidebarExtra"].=getUserPhoto($guid, $rowClassGroup["image_75"], 75) ;
+											$_SESSION[$guid]["sidebarExtra"].=getUserPhoto($guid, $rowClassGroup["image_240"], 75) ;
 										
 											if ($row["role"]=="Teacher" AND $teacher==TRUE) {
 												if ($rowClassGroup["role"]=="Student") {
+													
 													try {
 														$dataLike=array("gibbonPlannerEntryID"=>$row["gibbonPlannerEntryID"],"gibbonPersonID"=>$rowClassGroup["gibbonPersonID"]); 
 														$sqlLike="SELECT * FROM gibbonBehaviour WHERE type='Positive' AND gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID" ;
@@ -1875,10 +1872,11 @@ else {
 														$resultLike->execute($dataLike); 
 													}
 													catch(PDOException $e) { }
+													
 													//HEY SHORTY IT'S YOUR BIRTHDAY!
 													$daysUntilNextBirthday=daysUntilNextBirthday($rowClassGroup["dob"]) ;
 													if ($daysUntilNextBirthday==0) {
-														$_SESSION[$guid]["sidebarExtra"].="<img title='" . sprintf(_('%1$s\'s birthday today!'), $rowClassGroup["preferredName"]) . " style='margin: -24px 0 0 0; width: 25px; height: 25px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/gift_pink.png'/>" ;
+														$_SESSION[$guid]["sidebarExtra"].="<img title='" . sprintf(_('%1$s  birthday today!'), $rowClassGroup["preferredName"] . "&#39;s") . "' style='margin: -24px 0 0 0; width: 25px; height: 25px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/gift_pink.png'/>" ;
 													}
 													else if ($daysUntilNextBirthday>0 AND $daysUntilNextBirthday<8) {
 														$_SESSION[$guid]["sidebarExtra"].="<img title='$daysUntilNextBirthday day" ;
@@ -1888,20 +1886,25 @@ else {
 														$_SESSION[$guid]["sidebarExtra"].=" until " . $rowClassGroup["preferredName"] . "&#39;s birthday!' style='margin: -24px 0 0 0; width: 25px; height: 25px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/gift.png'/>" ;
 													}
 										
+													//DEAL WITH LIKES
+													$likesGiven=countLikesByContextAndGiver($connection2, "Planner", "gibbonPlannerEntryID", $gibbonPlannerEntryID, $_SESSION[$guid]["gibbonPersonID"], $rowClassGroup["gibbonPersonID"]) ;
+													$comment=addSlashes($row["course"] . "." . $row["class"] . ": " . $row["name"]) ;
 													$_SESSION[$guid]["sidebarExtra"].="<div id='star" . $rowClassGroup["gibbonPersonID"] . "'>" ;
 														$_SESSION[$guid]["sidebarExtra"].="<script type=\"text/javascript\">" ;
 															$_SESSION[$guid]["sidebarExtra"].="$(document).ready(function(){" ;
 																$_SESSION[$guid]["sidebarExtra"].="$(\"#starAdd" . $rowClassGroup["gibbonPersonID"] . "\").click(function(){" ;
-																	$_SESSION[$guid]["sidebarExtra"].="$(\"#star" . $rowClassGroup["gibbonPersonID"] . "\").load(\"" . $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/planner_view_full_starAjax.php\",{\"gibbonPersonID\": \"" . $rowClassGroup["gibbonPersonID"] . "\", \"gibbonPlannerEntryID\": \"" . $row["gibbonPlannerEntryID"] . "\"});" ;
+																	$_SESSION[$guid]["sidebarExtra"].="$(\"#star" . $rowClassGroup["gibbonPersonID"] . "\").load(\"" . $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/planner_view_full_starAjax.php\",{\"gibbonPersonID\": \"" . $rowClassGroup["gibbonPersonID"] . "\", \"gibbonPlannerEntryID\": \"" . $row["gibbonPlannerEntryID"] . "\", \"mode\": \"add\", \"comment\": \"" . $comment . "\"});" ;
+																$_SESSION[$guid]["sidebarExtra"].="});" ;
+																$_SESSION[$guid]["sidebarExtra"].="$(\"#starRemove" . $rowClassGroup["gibbonPersonID"] . "\").click(function(){" ;
+																	$_SESSION[$guid]["sidebarExtra"].="$(\"#star" . $rowClassGroup["gibbonPersonID"] . "\").load(\"" . $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/planner_view_full_starAjax.php\",{\"gibbonPersonID\": \"" . $rowClassGroup["gibbonPersonID"] . "\", \"gibbonPlannerEntryID\": \"" . $row["gibbonPlannerEntryID"] . "\", \"mode\": \"remove\", \"comment\": \"" . $comment . "\"});" ;
 																$_SESSION[$guid]["sidebarExtra"].="});" ;
 															$_SESSION[$guid]["sidebarExtra"].="});" ;
 														$_SESSION[$guid]["sidebarExtra"].="</script>" ;
-														if ($resultLike->rowCount()!=1) {
+														if ($likesGiven!=1) {
 															$_SESSION[$guid]["sidebarExtra"].="<a id='starAdd" . $rowClassGroup["gibbonPersonID"] . "' onclick='return false;' href='#'><img style='margin-top: -30px; margin-left: 60px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_off.png'></a>" ;
 														}
 														else {
-															$rowLike=$resultLike->fetch() ;
-															$_SESSION[$guid]["sidebarExtra"].="<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage_edit.php&gibbonBehaviourID=" . $rowLike["gibbonBehaviourID"] . "&gibbonPersonID=&gibbonRollGroupID=&gibbonYearGroupID=&type='><img style='margin-top: -30px; margin-left: 60px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_on.png'></a>" ;
+															$_SESSION[$guid]["sidebarExtra"].="<a id='starRemove" . $rowClassGroup["gibbonPersonID"] . "' onclick='return false;' href='#'><img style='margin-top: -30px; margin-left: 60px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_on.png'></a>" ;
 														}
 													
 													$_SESSION[$guid]["sidebarExtra"].="</div>" ;
@@ -1989,7 +1992,7 @@ else {
 								
 									$_SESSION[$guid]["sidebarExtra"].="<td style='border: 1px solid #ffffff; width:20%; text-align: center; vertical-align: top'>" ;
 								
-									$_SESSION[$guid]["sidebarExtra"].=getUserPhoto($guid, $rowClassGroup["image_75"], 75) ;
+									$_SESSION[$guid]["sidebarExtra"].=getUserPhoto($guid, $rowClassGroup["image_240"], 75) ;
 								
 									$_SESSION[$guid]["sidebarExtra"].="<div style='padding-top: 5px'><b>" . formatName($rowClassGroup["title"], $rowClassGroup["preferredName"], $rowClassGroup["surname"], "Staff") . "</b><br/>" ;
 								

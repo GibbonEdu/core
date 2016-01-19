@@ -58,8 +58,8 @@ else {
 	//Check if params are specified
 	$gibbonFinanceExpenseID=$_GET["gibbonFinanceExpenseID"] ;
 	$gibbonFinanceBudgetCycleID=$_GET["gibbonFinanceBudgetCycleID"] ;
-	$status=$_GET["status"] ;
-	$gibbonFinanceBudgetID=$_GET["gibbonFinanceBudgetID"] ;
+	$status2=$_GET["status2"] ;
+	$gibbonFinanceBudgetID2=$_GET["gibbonFinanceBudgetID2"] ;
 	if ($gibbonFinanceExpenseID=="" OR $gibbonFinanceBudgetCycleID=="") {
 		print "<div class='error'>" ;
 			print _("You have not specified one or more required parameters.") ;
@@ -116,9 +116,9 @@ else {
 					//Let's go!
 					$row=$result->fetch() ;
 			
-					if ($status!="" OR $gibbonFinanceBudgetID!="") {
+					if ($status2!="" OR $gibbonFinanceBudgetID2!="") {
 						print "<div class='linkTop'>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/expenseRequest_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=$status&gibbonFinanceBudgetID=$gibbonFinanceBudgetID'>" . _('Back to Search Results') . "</a>" ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/expenseRequest_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>" . _('Back to Search Results') . "</a>" ;
 						print "</div>" ;
 					}
 					?>
@@ -288,7 +288,7 @@ else {
 										var paymentDate=new LiveValidation('paymentDate');
 										paymentDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
 										paymentDate.add(Validate.Presence);
-									 </script>
+									</script>
 									 <script type="text/javascript">
 										$(function() {
 											$( "#paymentDate" ).datepicker();
@@ -313,7 +313,7 @@ else {
 										var paymentAmount=new LiveValidation('paymentAmount');
 										paymentAmount.add( Validate.Format, { pattern: /^(?:\d*\.\d{1,2}|\d+)$/, failureMessage: "Invalid number format!" } );
 										paymentAmount.add(Validate.Presence);
-									 </script>
+									</script>
 								</td>
 							</tr>
 							<tr id="payeeRow">
@@ -349,14 +349,14 @@ else {
 							</tr>
 							<tr id="paymentIDRow">
 								<td> 
-									<b><?php print _('Payment Receipt') ?></b><br/>
+									<b><?php print _('Payment Receipt') ?> *</b><br/>
 									<span style="font-size: 90%"><i><?php print _('Digital copy of the receipt for this payment.') ?></i></span>
 								</td>
 								<td class="right">
 									<input type="file" name="file" id="file"><br/><br/>
 										<?php
 										print getMaxUpload() ;
-										$ext="'.png','.jpeg','.jpg','.gif'" ;
+										$ext="'.png','.jpeg','.jpg','.gif','.pdf'" ;
 										?>
 										<script type="text/javascript">
 											var file=new LiveValidation('file');
@@ -374,6 +374,8 @@ else {
 								<td class="right">
 									<input name="gibbonFinanceExpenseID" id="gibbonFinanceExpenseID" value="<?php print $gibbonFinanceExpenseID ?>" type="hidden">
 									<input name="gibbonFinanceBudgetID" id="gibbonFinanceBudgetID" value="<?php print $row["gibbonFinanceBudgetID"] ?>" type="hidden">
+									<input name="status2" id="status2" value="<?php print $status2 ?>" type="hidden">
+									<input name="gibbonFinanceBudgetID2" id="gibbonFinanceBudgetID2" value="<?php print $gibbonFinanceBudgetID2 ?>" type="hidden">
 									<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 									<input type="submit" value="<?php print _("Submit") ; ?>">
 								</td>

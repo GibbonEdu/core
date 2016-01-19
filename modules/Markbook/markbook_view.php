@@ -37,6 +37,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_view.php
 else {
 	//Get action with highest precendence
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
+	$highestAction2=getHighestGroupedAction($guid, "/modules/Markbook/markbook_edit.php", $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
 		print _("The highest grouped action cannot be determined.") ;
@@ -47,7 +48,26 @@ else {
 		
 		//VIEW ACCESS TO ALL MARKBOOK DATA
 		if ($highestAction=="View Markbook_allClassesAllData") {
-			//Proceed!
+			//Check for access to multiple column add
+			$multiAdd=FALSE ;
+			//Add multiple columns
+			if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit.php")) {
+				if ($highestAction2=="Edit Markbook_multipleClassesAcrossSchool" OR $highestAction2=="Edit Markbook_multipleClassesInDepartment" OR $highestAction2=="Edit Markbook_everything") {
+					//Check highest role in any department
+					try {
+						$dataRole=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
+						$sqlRole="SELECT role FROM gibbonDepartmentStaff WHERE gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)')" ;
+						$resultRole=$connection2->prepare($sqlRole);
+						$resultRole->execute($dataRole);
+					}
+					catch(PDOException $e) { }
+					if ($resultRole->rowCount()>=1 OR $highestAction2=="Edit Markbook_multipleClassesAcrossSchool" OR $highestAction2=="Edit Markbook_everything") {
+						$multiAdd=TRUE ;
+					}
+				}
+			}
+			
+			
 			//Get class variable
 			$gibbonCourseClassID=NULL ;
 			if (isset($_GET["gibbonCourseClassID"])) {
@@ -72,6 +92,12 @@ else {
 				print "<div class='trail'>" ;
 				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" ._('View Markbook') . "</div>" ;
 				print "</div>" ;
+				//Add multiple columns
+				if ($multiAdd) {
+					print "<div class='linkTop'>" ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_addMulti.php&gibbonCourseClassID=$gibbonCourseClassID'>" . _('Add Multiple Records') . "<img style='margin-left: 5px' title='" . _('Add Multiple Records') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new_multi.png'/></a>" ;
+					print "</div>" ;
+				}
 				print "<div class='warning'>" ;
 					print "Use the class listing on the right to choose a Markbook to view." ;
 				print "</div>" ;
@@ -126,23 +152,10 @@ else {
 					}
 					
 					//Add multiple columns
-					if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit.php")) {
-						$highestAction2=getHighestGroupedAction($guid, "/modules/Markbook/markbook_edit.php", $connection2) ;
-						if ($highestAction2=="Edit Markbook_multipleClassesAcrossSchool" OR $highestAction2=="Edit Markbook_multipleClassesInDepartment" OR $highestAction2=="Edit Markbook_everything") {
-							//Check highest role in any department
-							try {
-								$dataRole=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-								$sqlRole="SELECT role FROM gibbonDepartmentStaff WHERE gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)')" ;
-								$resultRole=$connection2->prepare($sqlRole);
-								$resultRole->execute($dataRole);
-							}
-							catch(PDOException $e) { }
-							if ($resultRole->rowCount()>=1 OR $highestAction2=="Edit Markbook_multipleClassesAcrossSchool" OR $highestAction2=="Edit Markbook_everything") {
-								print "<div class='linkTop'>" ;
-									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_addMulti.php&gibbonCourseClassID=$gibbonCourseClassID'>" . _('Add Multiple Records') . "<img style='margin-left: 5px' title='" . _('Add Multiple Records') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new_multi.png'/></a>" ;
-								print "</div>" ;
-							}
-						}
+					if ($multiAdd) {
+						print "<div class='linkTop'>" ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_addMulti.php&gibbonCourseClassID=$gibbonCourseClassID'>" . _('Add Multiple Records') . "<img style='margin-left: 5px' title='" . _('Add Multiple Records') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new_multi.png'/></a>" ;
+						print "</div>" ;
 					}
 					
 					//Get teacher list
@@ -1222,9 +1235,10 @@ else {
 											else {
 												print $rowEntry["comment"] ;
 											}
-											if ($rowEntry["response"]!="") {
-												print "<a title='" . _('Uploaded Response') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowEntry["response"] . "'>" . _('Uploaded Response') . "</a><br/>" ;
-											}
+											print "<br/>" ;
+										}
+										if ($rowEntry["response"]!="") {
+											print "<a title='" . _('Uploaded Response') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowEntry["response"] . "'>" . _('Uploaded Response') . "</a><br/>" ;
 										}
 									print "</td>" ;
 								}
@@ -1444,8 +1458,8 @@ else {
 				if ($gibbonPersonID!="" AND $count>0) {
 					//Confirm access to this student
 					try {
-						$dataChild=array(); 
-						$sqlChild="SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonFamilyChild.gibbonPersonID=$gibbonPersonID AND gibbonFamilyAdult.gibbonPersonID=" . $_SESSION[$guid]["gibbonPersonID"] . " AND childDataAccess='Y'" ;
+						$dataChild=array("gibbonPersonID"=>$gibbonPersonID, "gibbonPersonID2"=>$_SESSION[$guid]["gibbonPersonID"]); 
+						$sqlChild="SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'" ;
 						$resultChild=$connection2->prepare($sqlChild);
 						$resultChild->execute($dataChild);
 					}
@@ -1821,9 +1835,10 @@ else {
 														else {
 															print $rowEntry["comment"] ;
 														}
-														if ($rowEntry["response"]!="") {
-															print "<a title='Uploaded Response' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowEntry["response"] . "'>Uploaded Response</a><br/>" ;
-														}
+														print "<br/>" ;
+													}
+													if ($rowEntry["response"]!="") {
+														print "<a title='Uploaded Response' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowEntry["response"] . "'>Uploaded Response</a><br/>" ;
 													}
 												print "</td>" ;
 											}

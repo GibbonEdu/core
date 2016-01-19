@@ -20,15 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 function getTagCloud($guid, $connection2, $tagCount=50) {
 	$output="" ;
 	
-	//Set styles
-	$output.="<style type='text/css'>" ;
-		$output.=".tag_cloud { padding: 3px; text-decoration: none; }" ;
-		$output.=".tag_cloud:link { color: #6799CF; text-decoration: none }" ;
-		$output.=".tag_cloud:visited { color: #1C528C; text-decoration: none }" ;
-		$output.=".tag_cloud { background: none }" ;
-		$output.=".tag_cloud:hover { background: #1C528C; color: #fff }" ;
-	$output.="</style>" ;
-	
 	//Get array of top $tagCount tags
 	$tags=array() ;
 	$count=0 ;

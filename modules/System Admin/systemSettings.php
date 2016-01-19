@@ -124,7 +124,7 @@ else {
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Presence);
 						<?php print $row["name"] ?>.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
-					 </script> 
+					</script> 
 				</td>
 			</tr>
 			<tr>
@@ -149,7 +149,7 @@ else {
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Presence);
-					 </script> 
+					</script> 
 				</td>
 			</tr>
 			<tr>
@@ -174,7 +174,7 @@ else {
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Presence);
-					 </script> 
+					</script> 
 				</td>
 			</tr>
 			<tr>
@@ -199,7 +199,7 @@ else {
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Presence);
-					 </script> 
+					</script> 
 				</td>
 			</tr>
 			<tr>
@@ -314,7 +314,7 @@ else {
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Presence);
-					 </script> 
+					</script> 
 				</td>
 			</tr>
 			<tr>
@@ -339,7 +339,7 @@ else {
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Presence);
-					 </script> 
+					</script> 
 				</td>
 			</tr>
 			<tr>
@@ -364,7 +364,7 @@ else {
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Email);
-					 </script> 
+					</script> 
 				</td>
 			</tr>
 			<tr>
@@ -389,14 +389,15 @@ else {
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Presence);
-					 </script> 
+					</script> 
 				</td>
 			</tr>
+			
 			<tr>
 				<?php
 				try {
 					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationAdministratorName'" ;
+					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationAdministrator'" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
 				}
@@ -410,18 +411,36 @@ else {
 					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
-					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<?php
+						print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+						try {
+							$dataSelect=array(); 
+							$sqlSelect="SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName" ;
+							$resultSelect=$connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						}
+						catch(PDOException $e) { }	
+						while ($rowSelect=$resultSelect->fetch()) {
+							$selected="" ;
+							if ($row["value"]==$rowSelect["gibbonPersonID"]) {
+								$selected="selected" ;
+							}
+							print "<option $selected value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName(htmlPrep($rowSelect["title"]), ($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]),"Staff", true, true) . "</option>" ;
+						}
+						?>
+					</select>
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-						<?php print $row["name"] ?>.add(Validate.Presence);
-					 </script> 
+						<?php print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+					</script>
 				</td>
 			</tr>
 			<tr>
 				<?php
 				try {
 					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationAdministratorEmail'" ;
+					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationDBA'" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
 				}
@@ -435,19 +454,36 @@ else {
 					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
-					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<?php
+						print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+						try {
+							$dataSelect=array(); 
+							$sqlSelect="SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName" ;
+							$resultSelect=$connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						}
+						catch(PDOException $e) { }	
+						while ($rowSelect=$resultSelect->fetch()) {
+							$selected="" ;
+							if ($row["value"]==$rowSelect["gibbonPersonID"]) {
+								$selected="selected" ;
+							}
+							print "<option $selected value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName(htmlPrep($rowSelect["title"]), ($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]),"Staff", true, true) . "</option>" ;
+						}
+						?>
+					</select>
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-						<?php print $row["name"] ?>.add(Validate.Email);
-						<?php print $row["name"] ?>.add(Validate.Presence);
-					 </script> 
+						<?php print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+					</script>
 				</td>
 			</tr>
 			<tr>
 				<?php
 				try {
 					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationDBAName'" ;
+					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationAdmissions'" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
 				}
@@ -461,88 +497,29 @@ else {
 					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right">
-					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<?php
+						print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+						try {
+							$dataSelect=array(); 
+							$sqlSelect="SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName" ;
+							$resultSelect=$connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						}
+						catch(PDOException $e) { }	
+						while ($rowSelect=$resultSelect->fetch()) {
+							$selected="" ;
+							if ($row["value"]==$rowSelect["gibbonPersonID"]) {
+								$selected="selected" ;
+							}
+							print "<option $selected value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName(htmlPrep($rowSelect["title"]), ($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]),"Staff", true, true) . "</option>" ;
+						}
+						?>
+					</select>
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-						<?php print $row["name"] ?>.add(Validate.Presence);
-					 </script> 
-				</td>
-			</tr>
-			<tr>
-				<?php
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationDBAEmail'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { 
-					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-				}
-				$row=$result->fetch() ;
-				?>
-				<td> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
-				</td>
-				<td class="right">
-					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
-					<script type="text/javascript">
-						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-						<?php print $row["name"] ?>.add(Validate.Email);
-						<?php print $row["name"] ?>.add(Validate.Presence);
-					 </script> 
-				</td>
-			</tr>
-			<tr>
-				<?php
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationAdmissionsName'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { 
-					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-				}
-				$row=$result->fetch() ;
-				?>
-				<td> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
-				</td>
-				<td class="right">
-					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
-					<script type="text/javascript">
-						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-						<?php print $row["name"] ?>.add(Validate.Presence);
-					 </script> 
-				</td>
-			</tr>
-			<tr>
-				<?php
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationAdmissionsEmail'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { 
-					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-				}
-				$row=$result->fetch() ;
-				?>
-				<td> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
-				</td>
-				<td class="right">
-					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
-					<script type="text/javascript">
-						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-						<?php print $row["name"] ?>.add(Validate.Email);
-						<?php print $row["name"] ?>.add(Validate.Presence);
-					 </script> 
+						<?php print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+					</script>
 				</td>
 			</tr>
 			
@@ -704,7 +681,7 @@ else {
 						<?php print $row["name"] ?>.add(Validate.Numericality);
 						<?php print $row["name"] ?>.add( Validate.Numericality, { minimum: 1200 } );
 						<?php print $row["name"] ?>.add(Validate.Presence);
-					 </script> 
+					</script> 
 				</td>
 			</tr>
 			<tr>
@@ -846,7 +823,7 @@ else {
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Presence);
-					 </script> 
+					</script> 
 				</td>
 			</tr>
 			<tr>
@@ -894,11 +871,17 @@ else {
 							<option <?php if ($row["value"]=="USD $") { print "selected" ; } ?> value='USD $'>U.S. Dollar ($)</option>
 						</optgroup>
 						<optgroup label='--<?php print _('OTHERS') ?>--'/>
+							<option <?php if ($row["value"]=="BDT ó") { print "selected" ; } ?> value='BDT ó'>Bangladeshi Taka (ó)</option>
 							<option <?php if ($row["value"]=="BTC") { print "selected" ; } ?> value='BTC'>Bitcoin</option>
+							<option <?php if ($row["value"]=="XAF FCFA") { print "selected" ; } ?> value='XAF FCFA'>Central African Francs (FCFA)</option>
+							<option <?php if ($row["value"]=="EGP £") { print "selected" ; } ?> value='EGP £'>Egyptian Pound (£)</option>
 							<option <?php if ($row["value"]=="INR ₹") { print "selected" ; } ?> value='INR ₹'>Indian Rupee (₹)</option>
 							<option <?php if ($row["value"]=="IDR Rp") { print "selected" ; } ?> value='IDR Rp'>Indonesian Rupiah (Rp)</option>
-							<option <?php if ($row["value"]=="NGN ₦") { print "selected" ; } ?> value='NGN ₦'>Nigerian Naira (₦)</option>
 							<option <?php if ($row["value"]=="KES KSh") { print "selected" ; } ?> value='KES KSh'>Kenyan Shilling (KSh)</option>
+							<option <?php if ($row["value"]=="NPR ₨") { print "selected" ; } ?> value='NPR ₨'>Nepalese Rupee (₨)</option>
+							<option <?php if ($row["value"]=="NGN ₦") { print "selected" ; } ?> value='NGN ₦'>Nigerian Naira (₦)</option>
+							<option <?php if ($row["value"]=="SAR ﷼‎") { print "selected" ; } ?> value='SAR ﷼‎'>Saudi Riyal (﷼‎)</option>
+							<option <?php if ($row["value"]=="VND ₫‎") { print "selected" ; } ?> value='VND ₫‎'>Vietnamese Dong (₫‎)</option>
 						</optgroup>
 					</select>
 				</td>
@@ -982,7 +965,7 @@ else {
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Numericality);
 						<?php print $row["name"] ?>.add(Validate.Presence);
-					 </script> 
+					</script> 
 				</td>
 			</tr>
 			<tr>
@@ -1049,7 +1032,7 @@ else {
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-					 </script>
+					</script>
 				</td>
 			</tr>
 			

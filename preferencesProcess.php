@@ -54,16 +54,16 @@ $gibboni18nIDPersonal=$_POST["gibboni18nIDPersonal"] ;
 if ($gibboni18nIDPersonal=="") {
 	$gibboni18nIDPersonal=NULL ;
 }
-$receiveNoticiationEmails=$_POST["receiveNoticiationEmails"] ;
-if ($receiveNoticiationEmails=="") {
-	$receiveNoticiationEmails=NULL ;
+$receiveNotificationEmails=$_POST["receiveNotificationEmails"] ;
+if ($receiveNotificationEmails=="") {
+	$receiveNotificationEmails=NULL ;
 }
 
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=preferences.php" ;
 
 try {
-	$data=array("calendarFeedPersonal"=>$calendarFeedPersonal, "personalBackground"=>$personalBackground, "gibbonThemeIDPersonal"=>$gibbonThemeIDPersonal, "gibboni18nIDPersonal"=>$gibboni18nIDPersonal, "receiveNoticiationEmails"=>$receiveNoticiationEmails, "username"=>$_SESSION[$guid]["username"]); 
-	$sql="UPDATE gibbonPerson SET calendarFeedPersonal=:calendarFeedPersonal, personalBackground=:personalBackground, gibbonThemeIDPersonal=:gibbonThemeIDPersonal, gibboni18nIDPersonal=:gibboni18nIDPersonal, receiveNoticiationEmails=:receiveNoticiationEmails WHERE (username=:username)" ;
+	$data=array("calendarFeedPersonal"=>$calendarFeedPersonal, "personalBackground"=>$personalBackground, "gibbonThemeIDPersonal"=>$gibbonThemeIDPersonal, "gibboni18nIDPersonal"=>$gibboni18nIDPersonal, "receiveNotificationEmails"=>$receiveNotificationEmails, "username"=>$_SESSION[$guid]["username"]); 
+	$sql="UPDATE gibbonPerson SET calendarFeedPersonal=:calendarFeedPersonal, personalBackground=:personalBackground, gibbonThemeIDPersonal=:gibbonThemeIDPersonal, gibboni18nIDPersonal=:gibboni18nIDPersonal, receiveNotificationEmails=:receiveNotificationEmails WHERE (username=:username)" ;
 	$result=$connection2->prepare($sql);
 	$result->execute($data);
 }
@@ -78,7 +78,7 @@ $_SESSION[$guid]["calendarFeedPersonal"]=$calendarFeedPersonal ;
 $_SESSION[$guid]["personalBackground"]=$personalBackground ;
 $_SESSION[$guid]["gibbonThemeIDPersonal"]=$gibbonThemeIDPersonal ;
 $_SESSION[$guid]["gibboni18nIDPersonal"]=$gibboni18nIDPersonal ;
-$_SESSION[$guid]["receiveNoticiationEmails"]=$receiveNoticiationEmails ;
+$_SESSION[$guid]["receiveNotificationEmails"]=$receiveNotificationEmails ;
 
 //Update language settings in session (to personal preference if set, or system default if not)
 if (!is_null($gibboni18nIDPersonal)) {

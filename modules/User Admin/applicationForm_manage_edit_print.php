@@ -229,8 +229,13 @@ else {
 				print "</tr>" ;
 				print "<tr>" ;
 					print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>" . _('Home Language') . "</span><br/>" ;
-						print "<i>" . htmlPrep($row["languageHome"]). "</i>" ;
+						print "<span style='font-size: 115%; font-weight: bold'>" . _('Home Languages') . "</span><br/>" ;
+						if ($row["languageHomePrimary"]!="") {
+							print "<i>" . htmlPrep($row["languageHomePrimary"]). "</i><br/>" ;
+						}
+						if ($row["languageHomeSecondary"]!="") {
+							print "<i>" . htmlPrep($row["languageHomeSecondary"]). "</i><br/>" ;
+						}
 					print "</td>" ;
 					print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 						print "<span style='font-size: 115%; font-weight: bold'>" . _('First Language') . "</span><br/>" ;
@@ -463,7 +468,7 @@ else {
 							print "</td>" ;
 							print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 								print "<span style='font-size: 115%; font-weight: bold'>" . sprintf(_('Parent %1$s Phone'), $i) . "</span><br/>" ;
-								if ($row["parent" . $i . "phone1"]!="" OR $row["parent" . $i . "phone2"]!="" OR $row["parent" . $i . "phone3"]!="" OR $row["parent" . $i . "phone4"]!="") {
+								if ($row["parent" . $i . "phone1"]!="" OR $row["parent" . $i . "phone2"]!="") {
 									for ($n=1; $n<3; $n++) {
 										if ($row["parent" . $i . "phone" . $n]!="") {
 											if ($row["parent" . $i . "phone" . $n . "Type"]!="") {
@@ -479,7 +484,7 @@ else {
 							print "</td>" ;
 							print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 								print "<span style='font-size: 115%; font-weight: bold'>" . sprintf(_('Parent %1$s Email'), $i) . "</span><br/>" ;
-								if ($row["parent" . $i . "email"]!="" OR $row["parent" . $i . "emailAlternate"]!="") {
+								if ($row["parent" . $i . "email"]!="") {
 									if ($row["parent" . $i . "email"]!="") {
 										print "Email: <a href='mailto:" . $row["parent" . $i . "email"] . "'>" . $row["parent" . $i . "email"] . "</a><br/>" ;
 									}

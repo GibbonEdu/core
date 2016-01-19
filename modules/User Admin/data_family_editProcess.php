@@ -99,10 +99,16 @@ else {
 					$set.="gibbonFamily.homeAddressCountry=:homeAddressCountry, " ;
 				}
 			}
-			if (isset($_POST["newlanguageHomeOn"])) {
-				if ($_POST["newlanguageHomeOn"]=="on") {
-					$data["languageHome"]=$_POST["newlanguageHome"] ;
-					$set.="gibbonFamily.languageHome=:languageHome, " ;
+			if (isset($_POST["newlanguageHomePrimaryOn"])) {
+				if ($_POST["newlanguageHomePrimaryOn"]=="on") {
+					$data["languageHomePrimary"]=$_POST["newlanguageHomePrimary"] ;
+					$set.="gibbonFamily.languageHomePrimary=:languageHomePrimary, " ;
+				}
+			}
+			if (isset($_POST["newlanguageHomeSecondaryOn"])) {
+				if ($_POST["newlanguageHomeSecondaryOn"]=="on") {
+					$data["languageHomeSecondary"]=$_POST["newlanguageHomeSecondary"] ;
+					$set.="gibbonFamily.languageHomeSecondary=:languageHomeSecondary, " ;
 				}
 			}
 			

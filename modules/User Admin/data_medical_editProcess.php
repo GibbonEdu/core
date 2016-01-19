@@ -157,8 +157,10 @@ else {
 					}
 					if (isset($_POST["gibbonAlertLevelIDOn$i"])) {
 						if ($_POST["gibbonAlertLevelIDOn$i"]=="on") {
-							$dataCond["gibbonAlertLevelID"]=$_POST["gibbonAlertLevelID$i"] ;
-							$sqlSetCond.="gibbonAlertLevelID=:gibbonAlertLevelID, " ; 
+							if ($_POST["gibbonAlertLevelID$i"]!="") {
+								$dataCond["gibbonAlertLevelID"]=$_POST["gibbonAlertLevelID$i"] ;
+								$sqlSetCond.="gibbonAlertLevelID=:gibbonAlertLevelID, " ; 
+							}
 						}
 					}
 					if (isset($_POST["triggersOn$i"])) {
@@ -227,7 +229,7 @@ else {
 					$count2=$_POST["count2"] ;
 				}
 				for ($i=($count+1); $i<=($count+$count2); $i++) {
-					if ($_POST["nameOn$i"]=="on" AND $_POST["gibbonAlertLevelIDOn$i"]=="on" AND $_POST["gibbonPersonMedicalConditionUpdateID$i"]!="") {
+					if ($_POST["nameOn$i"]=="on" AND $_POST["gibbonPersonMedicalConditionUpdateID$i"]!="") {
 						$dataCond=array() ;
 						$sqlSetCond="" ;
 						if (isset($_POST["nameOn$i"])) {
@@ -238,8 +240,10 @@ else {
 						}
 						if (isset($_POST["gibbonAlertLevelIDOn$i"])) {
 							if ($_POST["gibbonAlertLevelIDOn$i"]=="on") {
-								$dataCond["gibbonAlertLevelID"]=$_POST["gibbonAlertLevelID$i"] ;
-								$sqlSetCond.="gibbonAlertLevelID=:gibbonAlertLevelID, " ; 
+								if ($_POST["gibbonAlertLevelID$i"]!="") {
+									$dataCond["gibbonAlertLevelID"]=$_POST["gibbonAlertLevelID$i"] ;
+									$sqlSetCond.="gibbonAlertLevelID=:gibbonAlertLevelID, " ; 
+								}
 							}
 						}
 						if (isset($_POST["triggersOn$i"])) {
@@ -384,8 +388,10 @@ else {
 						}
 						if (isset($_POST["gibbonAlertLevelIDOn$i"])) {
 							if ($_POST["gibbonAlertLevelIDOn$i"]=="on") {
-								$dataCond["gibbonAlertLevelID"]=$_POST["gibbonAlertLevelID$i"] ;
-								$sqlSetCond.="gibbonAlertLevelID=:gibbonAlertLevelID, " ; 
+								if ($_POST["gibbonAlertLevelID$i"]!="") {
+									$dataCond["gibbonAlertLevelID"]=$_POST["gibbonAlertLevelID$i"] ;
+									$sqlSetCond.="gibbonAlertLevelID=:gibbonAlertLevelID, " ; 
+								}
 							}
 						}
 						if (isset($_POST["triggersOn$i"])) {

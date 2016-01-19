@@ -79,7 +79,7 @@ else {
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Presence);
-					 </script> 
+					</script> 
 				</td>
 			</tr>
 			<tr>
@@ -102,7 +102,7 @@ else {
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Presence);
-					 </script> 
+					</script> 
 				</td>
 			</tr>
 			<tr>

@@ -16,9 +16,169 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
+v11.0.00
+--------
+	Headlines
+		New Tracking modules adds longitudinal graphing and data exports of student assessment data
+		New Formal Assessment module facilitates teacher-inputted, school-wide Internal Assessments, and incorporates old External Assessment module
+		New custom fields feature allows easy creation of new user fields for use in User Admin, Application Form, Data Updater and Students modules
+		Improved user import functionality allows operation in both sync and import modes
+		Additional parent interfaces give access to Behaviour and Finance information
+		Improved Class overview page within the Departments module
+
+	Changes With Important Notices
+		System: generalised stars, so that they are all in one table, with common methods, usable to additional modules. 
+			NOTE: RESETS STARS/LIKES TO ZERO
+		System admin: changed administrator, DBA and admissions contacts to system users, not addresses. 
+			NOTE: THIS MEANS ADMINS NEED TO BE RESET UNLESS THEY HAVE gibbonPersonID=1
+		Google: migrated OAuth authentication to use main Google libraries. 
+			NOTE: REQUIRES REDIRECT URL RESET IN BOTH GOOGLE DEV CONSOLE AND IN GIBBON
+		
+	Significant Changes
+		System: added module actions to Fast Finder, in order to allow quick access to any functionality in the system
+		System: set all current users, and future users, to have email notifications on by default (makes notifications more obvious)
+		Activities: enabled generation of Finance invoices, based on activity enrolment
+		Behaviour: added automated sending of pre-defined letters for behaviour
+		Individual Needs: added descriptors states to archive
+		Library: added ability, in Browse Library, to search all fields
+		Library: added a CLI script for notifying users with overdue loans
+		Rubrics: added ability to duplicate rubrics
+		School Admin: added logo field to houses and displayed it for users in house
+		School Admin: added ability to set a default grade for a grade scale, and applied across system
+		School Admin: added ability to copy all form/roll groups in a year, into the following year
+		Timetable Admin: added more visual editing to individual timetable, allowing quicker changes of spaces, exceptions, etc
+		Timetable Admin: added ability to copy all courses and classes to the next school year
+		Timetable Admin: added teacher and student enrolment rollover for courses
+		Timetable: added ability for those with coordinator/assistant coordinator permissions within a department to manage student enrolment. Off by default.
+		User Admin: enhanced granularity on login controles, so that roles can be prevented from logging into past and/or future years
+		User Admin: added option to automatically assign newly accepted students to a house
+		
+	Security
+		Messenger: fixed reply-to bug causing multiple reply addresses
+		System: added system log of logins, both failed and successful
+		System: increased max password length to 30 characters (for the paranoid amongst us ; )
+		
+	Tweaks & Bug Fixes
+		System Admin: added Saudi Riyal to the list of currencies
+		System: added Nepalese Rupee as currency option
+		System: added notification archive as default action, rather than deletion
+		System: improved notification icon in minor links area
+		System: improved star icon in minor links area
+		System: added Central African Francs as a currency
+		System: fixed broken links to gibbonedu.org
+		System: removed config-sample.php as it is a throw back to pre-installer days
+		System: added Romanian as active language (thanks to Iulian Ghetau for his translation)
+		System: migrated from email notifications to system notifications
+		System: migrated CLI notifications from email to system notifications
+		System: added classes to Fast Finder
+		System: updated jquery, jquery-ui and tinymce libraries
+		System: fixed date swap bug in homepage Parental Dashboard TT
+		System: removed white space before </script> across system
+		System: switched notification emails to HTML
+		System: added super and sub script to Visual text editor
+		System: added mysql fix to stop bug where actions appear multiple times in the database
+		System: fixed notification PHP notice error
+		System: fixed deprecation notice in Google Calendar integration
+		System: updated Google library to latest Version
+		System: added new library for export to Excel, not loaded by default (old functions have been deprecated)
+		System: fixed birthday alert bug causing leap year issues
+		System: fixed page expiry on back issue 
+		System: increased lowest-upgrade-version to v8.3.00 to reduce file size
+		System: added new visualisation library (not loaded by default)
+		System: added Bangladeshi Taka as currency option
+		System: added minor link back to school home page when not logged in
+		System: added Russian and Ukranian as development languages (thanks to Oleg at Info Web for his offer of translation)
+		System: fixed typo in database field name and interface strings
+		System: made Gibbon logo in footer theme dependent
+		System: added Bangla as development language (thanks to Tarul Ahsan for his offer of translation)
+		System Admin: added extra section for settings in module installer, to avoid having to use module table bit as hack
+		System: fixed super/subscript bug relating to allowableHTML setting
+		System: added Egyptian Pound as new currency
+		System: cleaned up old tdOdd.png image from Default theme
+		System: improved layout and usability of the changelog (at last!)
+		System: set Romanian as an active language (75% complete)
+		Activities: UX improvements to parent sign ups
+		Activities: added Waiting List column to manage view
+		Activities: fixed bug preventing Activity add when type field is not in use
+		Activities: adjusted cost display and fixed PHP Notice errors
+		Activities: change attendance to only show accepted students (e.g. not kids on waiting list)
+		Activities: added waiting list to staff full view of an activity
+		Application Form: fixed bug causing failed PayPal payments to be marked as successful
+		Application Form: added JavaScript alert to give clear feedback when a form is accepted
+		Attendance: added absence count for each student when taking roll group attendance
+		Attendance: fixed SQL error in roll group attendance taking view
+		Attendance: added links from roll group attendance taking view to individual student profiles
+		Attendance: fixed PHP Notice issue in student report
+		Attendance: fixed interface string bug
+		Behaviour: added tutor notification for negative behaviour comments
+		Behaviour: made second step in behaviour record add optional, to reduce likelihood of record not being completely added
+		Data Updater: improved UX for adding medical conditions
+		Data Updater: added username to drop down to distinguish between students with same names
+		Finance: added switch to prevent adding expenses without going through the request procedure
+		Finance: added option to prevent request being counted against a budget
+		Finance: stopped filters from reseting themselves all the time
+		Finance: added ability for all involved parties to comment on an expense request
+		Finance: made expense approval request notification self destructing, when approval is carried out (in case notification was bypassed)
+		Finance: added ability to record partial payments, as well as a log to record payment
+		Finance: added ability to remove itemisation from invoices and receipts
+		Finance: made certain invoicee fields compulsory for company payment
+		Finance: fixed bug causing failed PayPal payments to be marked as successful
+		Formal Assessment: changed name of module External Assessment, getting ready to add formal Internal Assessments too
+		Formal Assessment: fixed error stopping categories from displaying correctly when no _ in the name
+		Library: fixed bug preventing library images from showing up in catalog browsing
+		Library: tweaked lending log view to include current borrower if item on loan
+		Library: added ability to edit overdue loans from the overdue report
+		Markbook: made access to Add Multiple Records one click quicker for admins with no classes
+		Messenger: added ability to Like messages
+		Messenger: added View Message Wall Link to homepage widget
+		Planner: added persistence to filter
+		Planner: improved reliability of lesson plan bumping
+		Planner: added ability to duplicate lesson plan to another year
+		Planner: changed "Manage Units" to "Unit Planner"
+		Planner: fixed chat box width issue in lesson plan Unit Overview
+		Planner: fixed bug in birthday title popup in class full view
+		Planner: fixed issue with duplicate lesson plans causing TT issues
+		Resources: fixed PHP Notice issue when adding a resource
+		Resources: slight tweak to UX for inserting images via editor
+		Resources: improved themability of resource tag cloud
+		School Admin: added interface to control ebabling/disabling of descriptors and levels in Behaviour
+		School Admin: changed External Assessment Settings to Formal Assessment Settings
+		School Admin: fixed issue preventing editing of current school year
+		School Admin: added custom space type setting to allow for flexible space typing
+		Students: fixed bug preventing module hooks from showing when there are multiple hooks present in the system
+		Students: added ability to add/edit/delete notes for students who have not yet reached their start date
+		Students: fixed bug preventing adding/editing/deleted a student note for a left/expected student
+		System Admin: fixed minor install bug relating to old manifests, not having category permissions set
+		System Admin: added feature to allow staff to confirm receipt of alarm, with report on current alarm for admins
+		System Admin: added custom alarm sound file as a setting in Sound Alarm
+		System Admin: added option to remove database tables/views when uninstalling module
+		System Admin: added "Lockdown" to Fast Finder as a shortcut to "Sound Alarm"
+		System Admin: added Vietnamese Dong as a currency
+		System Admin: increased size of alarm confirmation link text
+		Timetable: fixed a US-date bug which caused TT to jump to future date from Space Booking state clicked to change
+		Timetable: homepage timetable not showing multiple timetables correctly
+		Timetable: added View Master Timetable to allow all teachers and rooms to be seen in one go
+		Timetable: improved display of short time slots, and of tooltip on hover
+		Timetable: prevented deleted, improved ordering, labelling and linking of student enrolment editing
+		Timetable Admin: added order field to Courses, to allow them to be ordered in reports
+		Timetable Admin: added current student number beside class name in student enrolment view
+		Timetable Admin: improved ordering, labelling and linking of class enrolment editing
+		User Admin: added username to student selection list to help differentiate students with same name
+		User Admin: removed thumbnail image size (75 x 100px) to simplify image management, leaving browser to do resizing
+		User Admin: greater flexibility in acceptable image size for User Photo
+		User Admin: fixed date bug caused by erroneous data import
+		User Admin: fixed instances of gibbonAlertID set to 000 in data updates
+		User Admin: changed individual languages from text input to dropdown selection
+		User Admin: changed home language from text input to dropdown selection, added secondary home language
+		User Admin: added ability to specify password in user import
+		User Admin: improved acceptance of applications to us student note title
+		User Admin: added roll order field to student enrolment import
+		User Admin: fixed application status display bug in application form edit
+		
+		
 v10.0.00
 --------
-i18n: added Urdu as inactive development language
+System: added Urdu as inactive development language
 	Added value to table gibboni18n
 
 School Admin: added form checking to make sure sequence number is unique
@@ -27,7 +187,7 @@ School Admin: added form checking to make sure sequence number is unique
 Students: added timetable to Summary view, which is now called Overview...for fewer clicks
 	Edited file /modules/Timetable/moduleFunctions.php
 	Edited file /modules/Students/student_view_details.php
-	
+
 Staff: added timetable to Summary view, which is now called Overview...for fewer clicks
 	Edited file /modules/Staff/staff_view_details.php
 
@@ -47,14 +207,14 @@ Students: added transport notes field
 Timetable: fixed PHP notice issue when viewing individual with all users option on
 	Edited file /modules/Timetable/tt_view.php
 
-General: improved Quick File Upload experience in rich text editor
+System: improved Quick File Upload experience in rich text editor
 	Edited file /functions.php
 	Edited files /modules/Resources/resources_addQuick_ajax*.php
-	
+
 System Admin: improved translatability of Y/N files in system settings
 	Edited file /modules/System Admin/systemSettings.php
-	
-General: improved translatability of Y/N files in preferences
+
+System: improved translatability of Y/N files in preferences
 	Edited file /preferences.php
 
 Messenger: added publish dates to manage listing
@@ -82,11 +242,11 @@ Planner: fixed shonky wonky alignment of loading gif in resources loaders
 	Edited file /modules/Resources/resources_add_ajax.php
 	Edited file /modules/Resources/resources_addQuick_ajax.php
 
-General: fixed table layout issue in sidebar, caused by classes with longer names
+System: fixed table layout issue in sidebar, caused by classes with longer names
 	Edited file /functions.php
 	Edited file /modules/Markbook/moduleFunctions.php
 
-General: adjusted failure return message caused by non-unique value to make feedback more useable
+System: adjusted failure return message caused by non-unique value to make feedback more useable
 	Edited various files across the system
 
 Individual Needs: added ability to archive and view old IENs
@@ -96,7 +256,7 @@ Individual Needs: added ability to archive and view old IENs
 	New files /modules/Individual Needs/in_archive*.php
 	Edited file /modules/Individual Needs/in_edit.php
 
-General: made notification count update periodically
+System: made notification count update periodically
 	Edited file /functions.php
 	New file /index_notification_ajax.php
 
@@ -117,7 +277,7 @@ Students: added switch to turn Student Notes feature on and off
 Behaviour: added field to record follow up details
 	Edited table gibbonBehaviour
 
-General: added date and time to notification emails to prevent Gmail turning them into conversations and autohiding content.
+System: added date and time to notification emails to prevent Gmail turning them into conversations and autohiding content.
 	Edited file /functions.php
 
 Behaviour: prevented parents, students and others accidentally getting permission to view all behaviour records
@@ -139,7 +299,7 @@ Finance: added ability to define who can approve expenses
 	New value in tables gibbonSetting, gibbonAction, gibbonPermission
 	Edited files /modules/School Admin/financeSettings*.php
 	New files /modules/Finance/expenseApprovers_manage.php
-	
+
 Finance: added ability define budget cycles
 	New table gibbonFinanceBudgetCycle
 	New value in tables gibbonAction, gibbonPermission
@@ -151,7 +311,7 @@ Finance: added ability to make expense requests
 	Edited files /modules/School Admin/financeSettings*.php
 	New files /modules/Finance/expenseRequest_manage.php
 	Edited file /modules/Finance/moduleFunctions.php
-	
+
 Behaviour: added shortcut to add behaviour record from Student profile Behaviour Record page
 	Edited file /modules/Students/student_view_details.php
 	Edited file /modules/Students/behaviour_manage_add.php, moduleFunctions.php
@@ -233,19 +393,19 @@ Markbook: fixed fake-link to lesson plan issue.
 Students: made student profile menu dynamically reflect ordering in main menu (where categories can be changed)
 	Edited file /modules/Students/student_view_details.php
 
-General: added ability to issue General and Lockdown alarms via Gibobn
+System: added ability to issue General and Lockdown alarms via Gibobn
 	Edited files /functions, index_notification_ajax.php, login.php
 	Edited values in table gibbonAction
 	New values in tables gibbonAction, gibbonPermission, gibbonSetting
 	New folder /audio
 
-General: added new hook into Parental Dashboard
+System: added new hook into Parental Dashboard
 	Edited table gibbonHook
 
 Messenger: fixed bug stopping US English from displaying messages properly
 	Edited file /modules/Messenger/messageWall_view.php
 
-General: fixed US-date bug across the system
+System: fixed US-date bug across the system
 	Edited files /modules/Behaviour/behaviour_manage_add.php, behaviour_manage_addMulti.php
 	Edited file /modules/Messenger/messageWall_view.php
 	Edited files /modules/Timetable/report_viewAvailableSpaces.php, report_viewAvailableTeachers.php
@@ -254,7 +414,7 @@ General: fixed US-date bug across the system
 Students: fixed minor display error in New Students report
 	Edited file /modules/Students/report_students_new.php
 
-General: minor table layout fixes
+System: minor table layout fixes
 	Edited file /modules/Library/library_manage_catalog.php
 	Edited file /modules/Activities/activities_manage.php
 
@@ -264,7 +424,7 @@ Activities: made it possible to add any user as "Staff" for an activity.
 Markbook: fixed column span display issue when no student data exists in a column
 	Edited file /modules/Markbook/markbook_view.php
 
-General: made public registration save email (duh!)
+System: made public registration save email (duh!)
 	Edited file /publicRegistrationProcess.php
 
 Messenger: fixed bubble Read All link to prevent thickbox issue
@@ -282,31 +442,31 @@ Installer: fixed PHP Notice issue in Step 3 when database connection details fro
 Installer: fixed pernicious column wobble in field table in Step 3
 	Edited file /installer/install.php
 
-i18n: added Swahili as a development language
+System: added Swahili as a development language
 	New values in table gibboni18n
 	New folder /i18n/sw_KE
 
-General: added custom content loading to top of logged in homepage (index_custom.php) and top of logged in homepage sidebar (index_customSidebar.php)
+System: added custom content loading to top of logged in homepage (index_custom.php) and top of logged in homepage sidebar (index_customSidebar.php)
 	Edited files /index.php, functions.php
 
-General: added Kenyan Shilling as currency option
+System: added Kenyan Shilling as currency option
 	Edited file /modules/System Admin/systemSettings.php
 	Edited file /installer/install.php
 
-General: fixed bug causing issues with special characters in mysql password, for new installs
+System: fixed bug causing issues with special characters in mysql password, for new installs
 	Edited file /installer/install.php
 
 Application Form: fixed issue preventing some details being added to email/website creation request email on application accept
 	Edited file /modules/User Admin/applicationForm_manage_accept.php
 
-General: preparing themes for responsiveness in v11
+System: preparing themes for responsiveness in v11
 	Edited file /themes/Default/manifest.php
 
-i18n: added Portugese as a development language
+System: added Portugese as a development language
 	New values in table gibboni18n
 	New folder /i18n/pt_PT
 
-General: fixed PHP Notice issues that where flooding logs
+System: fixed PHP Notice issues that where flooding logs
 	Edited file /modules/Library/library_lending_item_signout.php
 	Edited file /index_notification_ajax.php
 
@@ -315,11 +475,11 @@ Messenger: fixed fatal error when composing messages on Windows servers
 
 Planner: added Submit button to top of homework tracking list for students, to save scrolling to bottom of long, long list.
 	Edited file /modules/Planner/planner_deadlines.php
-	
-General: fixed outstanding US-style date issues across the system
+
+System: fixed outstanding US-style date issues across the system
 	Edited various files
 
-General: added Nigerian Naira as currency option
+System: added Nigerian Naira as currency option
 	Edited file /modules/System Admin/systemSettings.php
 	Edited file /installer/install.php
 
@@ -345,17 +505,17 @@ Timetable: fixed issue with incorrect current period highlighting on homepage ti
 
 User Admin: fixed i18n gettext issue in rollover
 	Edited file /modules/User Admin/rollover.php
-	
-i18n: fixed non-translatable string in Markbook
+
+System: fixed non-translatable string in Markbook
 	Edited file /modules/Markbook/markbook_edit_addMulti.php
 
 Markbook: fixed incorrect default class (when none specified) in Markbook edit
 	Edited file /modules/Markbook/markbook_edit.php
 
-i18n: set Portuguese to active
+System: set Portuguese to active
 	Edited value in table gibboni18n
 
-General: added username to select box listings of all users, in some people have the same name
+System: added username to select box listings of all users, in some people have the same name
 	Edited file /modules/Activities/activities_manage_enrolment_add.php
 	Edited files /modules/Library/library_manage_catalog_add.php, library_manage_catalog_edit.php
 	Edited file /modules/Timetable Admin/courseEnrolment_manage_class_edit.php
@@ -364,7 +524,7 @@ General: added username to select box listings of all users, in some people have
 Finance: fixed expense management filter issue
 	Edited files /modules/Finance/expenses_manage.php, moduleFunctions.php
 
-General: fixed database engine
+System: fixed database engine
 	Edited table gibbonFinanceBudgetCycleAllocation
 
 Students: fixed missing non-enroled students
@@ -373,1225 +533,22 @@ Students: fixed missing non-enroled students
 Timetable Admin: fixed minor display issue in report
 	Edited file /modules/Timetable Admin/report_classEnrolment_byRollGroup.php
 
-General: added trailing full stop to formal staff names in reverse
+System: added trailing full stop to formal staff names in reverse
 	Edited file /functions.php
 
 Individual Needs: fixed bug preventing switch back form archive view to current view
 	Edited file /modules/Individual Needs/in_edit.php
 
-i18n: set Arabic (Saudi Arabia) to active
+System: set Arabic (Saudi Arabia) to active
 	Edited value in table gibboni18n
 
-i18n: set Portuguese to inactive (due to bugs)
+System: set Portuguese to inactive (due to bugs)
 	Edited value in table gibboni18n
 
 User Admin: fixed mixing space in Name Address field on Application Form accept
 	Edited file /modules/User Admin/applicationForm_manage_accept.php
 
-v9.1.00
--------
-Installer: removed orphaned debug output
-	Edited /installer/install.php
-	
-System Admin: added database update script that does not require login
-	New file /update.php
 
-Library: added replacement cost and year as fields (useful for budget control)
-	Edited table gibbonLibraryItem
-	Edited files /modules/Library/library_manage_catalog_add*.php, library_manage_catalog_edit*.php
-
-User Admin: fixed typo in import interface
-	Edited file /modules/User Admin/import_users.php
-
-Messenger: added new options for the display of the homepage message bubble
-	Edited values in table gibbonAction
-	New values in table gibbonSetting
-	Renamed files /modules/School Admin/smsSettings*.php to messengerSettings*.php
-	Edited files /modules/School Admin/messengerSettings*.php
-	Edited files /index.php, functions.php
-
-Messenger: added quick add function for message wall, goes out to all school members
-	New files /modules/Messenger/messenger_postQuickWall*.php
-	New values in tables gibbonAction, gibbonPermission
-	Edited file /function.php
-	
-Planner: added Unit Overview link to lesson plan edit screen
-	Edited file /modules/Planner/planner_edit.php	
-	
-General: updated TinyMCE to v4.1.7
-	Edited files /lib/tinymce/*
-
-System Admin: made theme version number self-updating based on manifest file
-	Edited file /modules/System Admin/theme_manage.php
-
-User Admin: fixed bug with citizenship field saving, but not showing, when using standard country list
-	Edited file /modules/User Admin/user_manage_edit.php
-	
-Planner: added import for outcomes
-	New values in tables gibbonAction, gibbonPermission
-	New file /modules/Planner/outcomes_import.php
-
-Planner: added ability to star/fav smart blocks for reuse
-	New table gibbonUnitBlockStar
-	Edited file /modules/Planner/moduleFunctions.php
-	New file /modules/Planner/units_edit_starAjax.php
-	Edited files /modules/Planner/units_edit_working.php, units_edit_deploy.php
-
-School Admin: fixed bug preventing Special Days from working with US-style dates
-	Edited files /modules/School Admin/schoolYearSpecialDay_manage.php, specialDay_manage_add.php
-	
-Messenger: made message manage screen full width, improved usability of columns
-	Edited values in table gibbonAction
-	Edited files /messenger_manage*.php
-
-General: tweaked alignment of table header text to improve appearance
-	Edited file /themes/Default/css/main.css
-
-Messenger: added subject/body search
-	Edited files /messenger_manage*.php
-
-User Admin: removed trailing spaces from title values (this was a very bad decision made very early on ; )
-	Edited values in table gibbonPerson, gibbonPersonUpdate, gibbonApplicationForm
-	Edited file /functions.php
-	Edited file /modules/User Admin/applicationForm_manage_edit.php 
-	Edited files /modules/User Admin/applicationForm_manage_edit.php, user_manage_add.php, user_manage_edit.php
-	Edited file /modules/Data Updater/data_personal.php
-
-System Admin: added support for all currencies (although not all will work with PayPal
-	Updated value in table gibbonSetting
-	Edited file /lib/paypal/expresscheckout.php
-	Edited files /modules/Application Form/applicationForm*.php
-	Edited file /modules/System Admin/systemSettings.php
-	Edited file /installer/install.php
-	Edited files /modules/Finance/invoices_payOnline*.php
-
-Finance: minor cosmetic enhancement to button layout
-	Edited file /modules/Finance/invoices_manage.php
-
-Planner: minor cosmetic enhancement to button layout
-	Edited file /modules/Planner/units.php
-
-User Admin: changed rules to make home language compulsory across the system
-	Edited table gibbonFamilyUpdate
-	Edited files /modules/Data Updater/data_family*.php
-	Edited files /modules/User Admin/data_family_edit*.php
-
-General: improved themeability of chat boxes in Planner and Crowd Assessment
-	Edited file /modules/Planner/moduleFunctions.php
-	Edited file /modules/Crowd Assessment/moduleFunctions.php
-	Edited file /themes/Default/css/main.css
-
-Library: added storage type field to Computer type
-	Edited value in table gibbonLibraryType
-
-Library: minor cosmetic enhancement to button layout
-	Edited file /modules/Library/library_manage_catalog.php
-
-School Admin: added database locking to Special Day creation, to prevent accidental duplicate creation
-	Edited file /modules/School Admin/schoolYearSpecialDay_manage_addProcess.php	
-
-System Admin: added SQL error messages to module update fail information for user
-	Edited files /modules/System Admin/module_manage_update*.php
-
-System Admin: added SQL error messages to system update fail information for user
-	Edited files /modules/System Admin/_update*.php
-
-User Admin: minor cosmetic enhancement to button layout in Manage Districts
-	Edited file /modules/User Admin/district_manage.php
-
-Library: minor cosmetic enhancement to button layout
-	Edited file /modules/Library/library_lending_item.php
-
-i18n: set French to active language
-	Edited value in table gibboni18n
-	Edited file /installer/install.php
-
-Planner: fixed bug in lesson plan view that always showed student recorded homework as Yes for parents.
-	Edited file /modules/Planner/planner_view_full.php
-
-Planner: fixed bug preventing parent from viewing homework deadlines full view
-	Edited file /modules/Planner/planner_deadlines.php
-
-i18n: fixed bug preventing home page timetable from being translated
-	Edited file /index_tt_ajax.php
-
-Notifications: minor cosmetic enhancement to button layout
-	Edited file /notifications.php
-
-Planner: fixed bug prevening Unit Overview from opening for many teachers from lesson plan view
-	Edited file /modules/Planner/planner_unitOverview.php
-
-Notifications: improved uniqueness test for notifications, to avoid fake duplicates
-	Edited file /functions.php
-
-Notifications: fixed security bug which leaks notifications without login
-	Edited file /notifications.php
-
-
-v9.0.00
--------
-i18n: fixed name details of Spanish translator
-	Edited value in table gibboni18n
-
-Students: added title field to Student Notes
-	Edited table gibbonStudentNote
-	Edited files /modules/Students/student_view_details*.php
-
-Students: added category filter to Student Notes
-	Edited files /modules/Students/student_view_details*.php
-
-User Admin: adjusted Actions column width in Manage Roles to fit icons
-	Edited file /modules/User Admin/role_manage.php
-
-i18n: added French as non-active language for development
-	Added value to table gibboni18n
-	Added folder /i18n/fr_FR
-
-External Assessments: added ability to allow file upload of student results
-	Edited tables gibbonExternalAssessment, gibbonExternalAssessmentStudent
-	Edited files /modules/School Admin/externalAssessments_manage*.php
-	Edited files /modules/External Assessment/moduleFunctions.php, externalAssessment_details*.php
-
-CLI: added new cronable script to check who has not taken attendance, and email them a reminder
-	New file /cli/attendance_dailyIncompleteEmail.php
-
-Outcomes: fixed outcome edit view for users with department-only editing rights
-	Edited file /modules/Planner/outcomes_edit.php
-
-User Admin: added Roll Order field to Roll Group admin
-	Edited table gibbonStudentEnrolment
-	Edited files /modules/User Admin/studentEnrolment_manage*.php
-
-General: replaced $URL=$URL . with $URL.=
-	Edited many files across the system
-	
-Behaviour: added ability to add multiple records in one go
-	Edited file /modules/Behaviour/behaviour_manage.php 
-	Added files /modules/Behaviour/behaviour_manage_addMulti*.php
-
-General: applied new roll order field to index page, attendance and roll group information
-	Edited files /index.php, functions.php
-	Edited file /modules/Roll Groups/rollGroups_details.php
-	Edited file /modules/Attendance/attendance_take_byRollGroup.php
-
-Markbook: increased length of description column to 1000 chars
-	Edited table gibbonMarkbookColumn
-	Edited files /modules/Markbook/markbook_edit_add.php, markbook_edit_addMulti.php, markbook_edit_edit.php
-
-Default Theme: upgraded to new look and feel, removing old legacy themes.
-	Edited values in table gibbonSetting
-	Deleted values in table gibbonTheme
-	Deleted folders /themes/Default, Olden
-	New value in table gibbonTheme
-	New folder /themes/Default
-	Edited files /index.php, functions.php
-	Edited file /installer/install.php
-
-Markbook: made target grade visible in student, parent and student profile views
-	Edited file /modules/Markbook/markbook_view.php
-	Edited file /modules/Students/student_view_details.php
-
-Departments: added the ability to show department information to members of the public video the Gibbon front page. Useful for sharing curriculum documentation.
-	Added value to table gibbonSetting
-	Edited file /modules/School Admin/department_manage.php
-	New file /modules/School Admin/department_manageProcess.php
-	Edited files /modules/Departments/department*.php
-	Edited file /index.php
-
-Data Updater: changed to show only current year, instead of all updates
-	Edited tables gibbonFamilyUpdate, gibbonFinanceInvoiceeUpdate, gibbonPersonMedicalUpdate, gibbonPersonUpdate
-	Edited values in tables gibbonFamilyUpdate, gibbonFinanceInvoiceeUpdate, gibbonPersonMedicalUpdate, gibbonPersonUpdate
-	Edited files /modules/User Admin/data_family.php, data_finance.php, data_medical.php, data_personal.php
-	Edited files /modules/Data Updater/data_*.php
-	
-System Admin: improved ease-of-use for installing modules and themes
-	Edited files /modules/System Admin/module_manage.php, module_manage_installProcess.php
-	Deleted file /modules/System Admin/module_manage_install.php
-	Edited files /modules/System Admin/theme_manage.php, theme_manage_installProcess.php
-	Deleted file /modules/System Admin/theme_manage_install.php
-
-General: added caching to fast student and staff finder to reduce repeated reloading of same content
-	Edited files /index.php, functions.php
-
-General: fixed Google Calendar integration issue
-	Edited file /modules/Timetable/moduleFunctions.php
-	Edited file /lib/googleOAuth/index.php
-	Edited file /index.php, functions.php, preferences.php
-	New folder /lib/google
-	Edited values in tables gibbonPerson, gibbonSetting
-	Edited files /modules/System Admin/systemSettings*.php
-	Edited files /modules/User Admin/userSettings*.php
-
-User Admin: fixed bug related to short Ethnicity storage field for users
-	Edited tables gibbonPerson, gibbonPersonUpdate
-
-General: fixed no focus resource insert bug in tinyMCE editor instances
-	Edited file /functions.php
-
-User Admin: added fields to store ID Card scan and passport scan
-	Edited table gibbonPerson
-	Edited files /modules/User Admin/user_manage_add*.php, user_manage_edit*.php, user_manage_edit_photoDeleteProcess.php
-
-Markbook: added ability for creator of multiple columns to edit them, even if they are no the class teacher (useful for heads of department)
-	Edited file /modules/Markbook/markbook_edit_edit.php
-
-General: added JS timeout warning system before session expires
-	New folder /lib/jquery-sessionTimeout
-	New file /keepAlive.php
-	Edited files /index.php, logout.php
-	New value in table gibbonSetting
-	Edited files /modules/System Admin/systemSettings*.php
-	Edited file /themes/Default/css/main.css
-
-Timetable: added bulk-add functionality for tying days to dates
-	New file /modules/Timetable Admin/ttDates_addMultiProcess.php
-	Edited file /modules/Timetable Admin/ttDates.php
-
-Rubrics: added name search to rubric manage view
-	Edited files /modules/Rubrics/*
-
-General: added theme credits to footer, where theme is not Default
-	Edited file /index.php
-
-System Admin: added display and removal of orphaned themes and modules
-	Edited files /modules/System Admin/theme_manage.php, module_manage.php, theme_manage_uninstall*.php, module_manage_uninstall*.php
-
-Timetable: made index timetable display for staff and students, even if blank, as it is useful for calendar, room bookings, etc.
-	Edited file /index.php
-
-General: updated logo from jpg to png in default theme
-	Edited value in table gibbonSetting
-	Delete file /themes/Default/img/logo.jpg
-	New file /themes/Default/img/logo.png
-
-Library: improved usability of duplicate screen
-	Edited file /modules/Library/library_manage_catalog_duplicate.php
-
-General: fixed potential infinite loop code
-	Edited various process files across the system
-
-General: added option (set to No by default) to email user for system-wide notifications
-	New value in table gibbonSetting
-	Edited files /preferences*.php, functions.php, login.php
-	Edited file /lib/googleOAuth/index.php
-
-Installer: added ability to install demo data
-	New file /gibbon_demo.sql
-	Edited file /installer/install.php
-	
-Crowd Assessment: added fields to listing to make it more usable
-	Edited file /modules/Crowd Assessment/crowdAssess_view.php, crowdAssess_view_discuss.php
-
-Installer: added ability to join mailing list and request support team welcome email
-	Edited file /installer/install.php
-
-Installer: added ability to create database if it does not exist
-	Edited file /installer/install.php
-
-Installer: added check of gibbonedu.org services to see if code is development or otherwise: set's Cutting Edge Code automatically on result
-	Edited file /installer/install.php
-
-Planner: added public listing of units
-	New value in table gibbonSetting
-	Edited table gibbonUnit
-	Edited files /modules/School Admin/plannerSettings.php
-	Edited files /modules/Planner/units_edit*.php, units_add*.php
-	Edited file /index.php
-	New files /modules/Planner/units_public*.php
-
-Timetable: fixed bug with timetable display during the holidays
-	Edited file /modules/Timetable/moduleFunctions.php
-
-Library: fixed item duplication issue for items on loan or for some other reason not available
-	Edited file /modules/Library/library_manage_catalog_duplicateProcess.php
-	
-Students: adjusted minor sidebar menu link display issue
-	Edited file /modules/Students/student_view_details.php
-
-System Admin: fixed bug preventing module version number for additional modules from displaying
-	Edited file /core/modules/System Admin/module_manage.php
-
-General: added new hook to allow an additional module to insert content into the public home page
-	Edited table gibbonHook
-	Edited /index.php
-
-Attendance: added function to calculate late days for a student
-	Edited file /modules/Attendance/moduleFunctions.php
-
-System Admin: made module installer aware of sidebarEntry paramater
-	Edited file /modules/System Admin/module_manage_installProcess.php
-
-Markbook: added filter based on markbook type
-	Edited file /modules/Students/student_view_details.php
-	Edited file /modules/Markbook/markbook_view.php
-
-General: added floating top-right module menu to full width pages
-	Edited file /index.php
-
-General: fixed minor display issue in max file size display
-	Edited file /functions.php
-
-Tinymce: removed annoying popup which covers part of editing menu
-	Edited file /lib/tinymce/tinymce.min.js
-
-Planner: fixed double update confirm on homepage when starring a lesson plan
-	Edited file /index.php
-
-General: reduced risk of XSS attack launched by student user of system
-	Edited file /index.php
-	Edited value in table gibbonSetting
-	Edited files /modules/Planner/planner_view_full_postProcess.php, /Applications/MAMP/htdocs/github_gibbonEdu/core/modules/Planner/planner_view_full_myHomeworkProcess.php
-	Edited files /modules/Crowd Assessment/crowdAssess_view_discuss_postProcess.php
-
-System Admin: added cache refresh on active theme change to make new theme active immediately for changing user
-	Edited file /modules/System Admin/theme_manageProcess.php
-
-General: fixed WebKit (Chrome/Safari/etc) issue with floating drop down menu on full screen pages
-	Edited file /index.php
-	
-i18n: Chinese Traditional complete and set to active
-	Edited value in table gibboni18n
-
-Installer: fixed issue which prevented all demo data from being installed
-	Edited file /installer/install.php
-
-
-v8.3.00
--------
-General: added footer link to credits on Gibbon website
-	Edited file /index.php
-
-General: improved Parental Dashboard to make it more useful for schools not using Planner and Markbook
-	Edited files /index.php, function.php
-	Edited file /modules/Timetable/moduleFunctions.php
-
-Roll Groups: added ability to store and show a website for the group
-	Edited files /modules/School Admin/rollGroup_manage*.php
-	Edited files /modules/Roll Groups/rollGroups*.php
-	Edited file /index.php
-
-Messenger: set email to "Yes" by default, to avoid messages being send to no targets
-	Edited file /modules/Messenger/messenger_post.php
-
-Library: set to allow 0-day loan length as default (e.g. same day return)
-	Edited files /modules/Library/library_lending_item_*.php
-	Edited file /modules/School Admin/librarySettings.php
-
-Timetable: improvements to timetable selector
-	Edited files /modules/Timetable/moduleFunctions.php, tt_view.php
-	Edited file /modules/Staff/staff_view_details.php
-
-Staff: added filter to allow display of all staff, irrespective of status
-	Edited files /modules/Staff/staff_view*.php
-
-Messenger: fixed bug preventing message deletion for those with access to manage only their own messages
-	Edited files /modules/Messenger/messenger_manage_delete*.php
-
-System Admin: added cache reset on successful update to force top menu reload
-	Edited file /modules/System Admin/updateProcess.php
-
-General: changed "Add Record" to "Add", etc, throughout the system.
-	Edited various files
-
-i18n: added Bahasa Indonesian as non-active language for development
-	Added value to table gibboni18n
-	Added folder /i18n/id_ID
-
-Planner: added unit overview page, accessible from within a lesson plan, to act as VLE-style overview
-	Edited values in table gibbonAction
-	New file /modules/Planner/planner_unitOverview.php
-	Edited file /themes/Olden/css/main.css
-	Edited file /themes/Default/css/main.css
-
-User Admin: fixed issue preventing some staff from showing in the Manage Staff > Add Staff list of staff
-	Edited file /modules/User Admin/staff_manage_add.php
-
-Library: added import function to make setting up a library/inventory system easier
-	New values in gibbonAction, gibbonPermission
-	New file /modules/Library/library_import.php
-
-Timetable: fixed bug causing space booking to show in every space, not just specified space
-	Edited file /modules/Timetable/moduleFunctions.php
-
-Roll Groups: fixed bug preventing main tutor's image from showing when there are multiple tutors
-	Edited file /modules/Roll Groups/rollGroups_details.php
-
-Planner: added option to show behaviour information in weekly planner summary email to parents
-	New value in table gibbonSetting
-	Edited file /cli/planner_parentWeeklyEmailSummary.php
-	Edited files /modules/School Admin/plannerSettings.php
-
-Planner: fixed PHP Notice errors in homework view
-	Edited file /modules/Planner/planner_deadlines.php 
-
-Default: improved tabler header alignment
-	Edited file /themes/Default/css/main.css
-
-Planner: added ability for students to delete homework submissions, if deadline has not expired
-	Edited file /modules/Planner/planner_view_full.php
-	New file /modules/Planner/planner_view_full_submit_studentDeleteProcess.php
-
-User Admin: fixed colspan problem when max vars exceeded in permission management
-	Edited file /modules/User Admin/permission_manage.php
-
-Library: added new software type for Software
-	New value in table gibbonLibraryType
-
-General: made sure that every icon in a linkTop div has matching text label
-	Edited various files across the system
-
-Timetable Admin: made teacher error more user friendly when importing a TT.
-	Edited file /modules/Timetable Admin/tt_import.php	
-
-Rubrics: fixed filter in student view
-	Edited file /modules/Rubrics/rubrics_view.php
-
-Planner: fixed long-link overflow issue in chat and homework submission
-	Edited files /modules/Planner/moduleFunctions.php, planner_view_full.php
-
-Planner: moved Outcomes nearer to top of page when planning units
-	Edited files /modules/Planner/units_add.php, units_edit.php
-
-System Admin: allowed for editing of core modules, including category rename and active status control
-	Edited file /modules/System Admin/module_manage.php
-
-General: shortened longer module category names
-	Edited values in gibbonModule
-
-Tinymce: upgrade to 4.1.6 for minor bug fixes
-	New files in /lib/tinymce
-
-Planner: improved SQL efficiency of outcomes listing
-	Edited file /modules/Planner/outcomes.php
-
-Planner: added ability to specify outcomes in blocks, and have these carry over to become lesson outcomes
-	Edited table gibbonUnitBlock
-	Edited various files in /modules/Planner
-
-i18n: added support for RTL languages
-	Edited table gibboni18n
-	Edited file /function.php, index.php, fullscreen.php, report.php
-	New file /themes/Default/css/main_rtl.css
-
-i18n: added Arabic (العربية) - Saudi Arabia (المملكة العربية السعودية) as a non-active language choice for development
-	New value in gibboni18n
-	Added new folder /i18n/ar_SA
-
-Planner: added ability to view outcomes by classes in a course
-	New values in tables gibbonAction, gibbonPermission
-	New file /modules/Planner/curriculumMapping_outcomesByCourse.php
-
-Google OAuth: added size to image to make display more graceful
-	Edited file /lib/googleOAuth/index.php
-
-General: added library to allow auto-resizing textareas, and put it to use in Markbook data entry
-	New folder /lib/jquery-autosize
-	Edited file /modules/Markbook/markbook_edit_data.php
-	Edited file /index.php
-
-Planner: fixed issue when a long lesson name obscures the Previous Lesson link in the planner view
-	Edited file /modules/Planner/planner_view_full.php
-
-Finance: moved Finance Settings from Finance module to School Admin module, to keep in line with other settings pages
-	Edited values in table gibbonAction
-	Moved files /modules/Finance/invoiceReceiptSettings*.php to /modules/School Admin/financeSettings*.php
-	Edited files /modules/School Admin/financeSettings*.php
-
-Finance: enabled online payment using existing online payment gateway (setup in System Settings)
-	New values in table gibbonSetting
-	Edited files /modules/School Admin/financeSettings*.php
-	Edited table gibbonFinanceInvoice
-	New files /modules/Finance/invoices_payOnline*.php
-	
-Planner: fixed missing Submit button in working unit edit view
-	Edited file /modules/Planner/units_edit_working.php	
-
-Planner: added resources to Unit export
-	Edited file /modules/Planner/units_dump.php
-
-
-v8.2.00
--------
-General: added system-wide notifications, which can be utilised by any module
-	New table gibbonNotification
-	Edited files /functions.php, /index.php
-	New files /themes/Default/img/notifications_off.png, notifications_on.png
-	New files /themes/Olden/img/notifications_off.png, notifications_on.png
-	Edited file /themes/Default/img/like_off.png
-	New files /notifications*.php
-	Edited files /modules/Crowd Assessment/crowdAssess*.php
-
-Planner: gave students auto-set homework due date and time, just like teachers have
-	Edited file /modules/Planner/planner_view_full.php
-
-Students: added student ID to summary page
-	Edited file /modules/Students/student_view_details.php
-
-General: updated to latest tinymce
-	Replaced files in /lib/tinymce
-	Edited files /index.php, functions.php
-
-Roll Groups: added ability to reverse ordering of students
-	Edited file /modules/Roll Group/rollGroups_details.php
-	Edited file /functions.php
-
-Activities: added per-activity control to determine whether or not registration is allowed
-	Edited table gibbonActivity
-	Edited files /modules/Activities/activities_manage_add*.php, activities_manage_edit*.php, activities_view.php, activities_view_register*.php
-
-Messenger: added ability to target role categories
-	Edited table gibbonMessengerTarget
-	Edited files /modules/Messenger/messenger_post.php
-
-Students: added parents vehicle registration field to Family section
-	Edited file /modules/Students/student_view_details.php
-
-General: fixed post-TinyMCE upgrade issue with the height of textareas.
-	Edited file /functions.php
-
-User Admin: added setting and interface to allow tracking of student agreement signing (such as ICT Policy)
-	New value in table gibbonSetting
-	Edited files /modules/School Admin/studentsSettings*.php
-	Edited files /User Admin/user_manage_add*.php, user_manage_edit*.php
-	
-Planner: added file uploads to lesson chat, in order to allow richer conversations
-	Edited file /modules/Planner/planner_view_full_post.php
-
-Students: removed sidebar from Age & Gender Summary report
-	Edited value in table gibbonAction
-
-General: wrapped some strings for translation that had been previously been missed
-	Edited various files
-
-Rubrics: added outcome description as on-hover pop-up title in first column
-	Edited files /modules/Rubrics/moduleFunctions.php
-
-Rubrics: made outcomes pre-filtered based on matching year for outcome with year for rubric
-	Edited file /modules/Rubrics/rubrics_edit_editRowsColumns.php
-
-Markbook: added ability to change, school-wide, the headings "Attainment" and "Effort" as markbook columns
-	New values in table gibbonSetting
-	Edited files /modules/Markbook/markbookSettings*.php
-	Edited various Markbook-related files
-
-CLI: added new script to check user status relative to start and end date and fix any issues, including family member left status
-	New file /cli/userAdmin_statusCheckAndFix.php
-
-External Assessment: added ability to import external assessment results from CSV
-	New values in tables gibbonAction, gibbonPermission
-	Edited value in table gibbonAction 
-	New file /modules/External Assessment/import_results.php
-
-Activities: fixed bug in activity spread by roll group report
-	Edited file /modules/Activities/report_activitySpread_rollGroup.php
-
-Students: added field to show student agreements signed
-	Edited file /modules/Students/student_view_details.php
-	
-School Admin: fixed maxlength of category field in external assessment management field edit/add
-	Edited files /modules/School Admin/externalAssessments_manage_edit_field_add.php, externalAssessments_manage_edit_field_edit.php
-
-External Assessment: added ability to work on students who are not 'Full' and enrolled in the current year.
-	Edited files /modules/External Assessment/externalAssessment.php
-
-Resources: added loading graphic when uploading a file view ajax in editor
-	Edited files /modules/Resources/resources_addQuick_ajax.php, resources_add_ajax.php
-
-General: improved UX when using editor to insert resources by placing resource insert UI above editor, not below
-	Edited file /functions.php
-
-General: increased Homework listing on homepage sidebar from 3 to 5 items.
-	Edited file /functions.php
-
-Finance: fixed year selection x filter issue in invoice view
-	Edited file /modules/Finance/invoices_manage.php 
-
-Finance: added roll group to invoice and receipt
-	Edited file /modules/Finance/moduleFunctions.php
-
-School Admin: fixed PHP Notice bug
-	Edited file /modules/School Admin/space_manage.php
-
-Timetable: fixed PHP Notice bug
-	Edited file /modules/Timetable/tt_space.php
-
-Timetable: added room change functionality
-	New table gibbonTTSpaceChange
-	New values in tables gibbonAction, gibbonPersmissions
-	Edited files /modules/Timetable/moduleFunctions.php, report_viewAvailableSpaces.php
-	New files /modules/Timetable/spaceChange_manage.php
-
-Timetable: added room booking functionality
-	New table gibbonTTSpaceBooking
-	Edited table gibbonPerson
-	Edited file /lib/googleOAuth/index.php
-	Edited file /login.php, index.php, index_tt_ajax.php
-	Edited file /themes/Default/css/main.css
-	Edited file /themes/Olden/css/main.css
-	Edited file /modules/Timetable/report_viewAvailableSpaces.php, moduleFunctions.php, tt_space_view.php
-	New files /modules/Timetable/spaceBooking_manage*.php
-	New values in tables gibbonAction, gibbonPersmissions
-
-General: fixed non-highlighting of student recorded homework on index page sidebar
-	Edited file /functions.php
-
-Lib: upgrade jQuery to v1.11.1
-	Edited file /lib/jquery/jquery.js
-
-Planner: fixed drag and drop issue with smart content blocks, due to tinymce update
-	Edited file /modules/Planner/moduleFunctions.php
-	
-Planner: changed default homework deadline time from 23:59:59 to 21:00:00 if not specified
-	Edited files /modules/Planner/planner_addProcess.php, planner_editProcess.php, planner_view_full_myHomeworkProcess.php
-
-Roll Groups: added column showing number of students in each roll group
-	Edited file /modules/Roll Groups/rollGroups.php
-
-General: increased size of message wall icon to draw attention to messages
-	Edited file /index.php
-	Edited file /themes/Default/css/main.css
-	Edited files /themes/Default/img/messageWall_none.png, messageWall.png
-
-Lib: rolled back jQuery to v1.8, but manually fixed JS errors caused by deprecation
-	Edited file /lib/jquery/jquery.js
-
-General: updated icon set
-	Edited files /themes/Default/img/*.png
-
-i18n: added Spanish (Mexico) as active language, 96% translated
-	Added new folder /i18n/es_MX
-	New values in table gibboni18n
-	Edited file /installer/install.php
-
-Activities: removed broken date display
-	Edited files /modules/Activities/report_payment.php, report_participants.php, report_attendance.php
-
-i18n: changed Spanish (Mexico) to just Spanish
-	Deleted value in table gibboni18n
-	Edited value in table gibboni18n
-	Moved /i18n/es_MX to es
-	Deleted /i18n/es_ES
-	Edited /i18n/es/LC_MESSAGES/gibbon.po, gibbon.mo
-
-Planner: added lesson chats and improved layout of unit export
-	Edited files /modules/Planner/modulesFunction.php, units_dump.php, units_php
-
-Timetable: made timetable choose appear for users with multiple timetables
-	Edited files /modules/Timetable/moduleFunctions.php, tt_space_view.php
-
-Messenger: added auto signature to the bottom of new messages
-	Edited files /modules/Messenger/messenger_post.php, moduleFunctions.php
-
-Messenger: added ability to email from alternate email
-	Edited file /login.php, index.php
-	Edited file /modules/Messenger/messenger_post.php
-
-i18n: fixed blank string translation issue
-	Edited file /modules/User Admin/data_medical_edit.php
-
-External Assessment: added month to assessment date in assessment header
-	Edited file /modules/External Assessment/moduleFunctions.php
-
-Students: added list of current teachers plus email address to Summary view.
-	Edited file /modules/Students/student_view_details.php
-
-Timetable: adjusted display of periods less than 45px high
-	Edited file /modules/Timetable/moduleFunctions.php
-
-School Admin: fixed interface display bug in edit screen
-	Edited file /modules/School Admin/department_manage_edit.php
-
-General: fixed password force reset lockout scenario when using Google Apps to authenticate
-	Edited file /lib/googleOAuth/index.php
-	
-v8.1.00
--------
-General: added dev indicator in footer, when running cuttingEdge
-	Edited file /index.php
-
-Planner: added ability for students to add their own homework tasks
-	New table gibbonPlannerEntryStudentHomework
-	Edited files /modules/Planner/planner_view_full.php, planner.php, planner_deadlines*.php
-	New file /modules/Planner/planner_view_full_myHomeworkProcess.php
-	Edited files /index.php, function.php
-	Edited file /modules/Students/student_view_details.php
-
-User Admin: improved Rollover to allow preset of student year group and roll group when re-enrolling a student who has already been pre-enrolled. Means individual roll group changes can be set in advance
-	Edited file /modules/User Admin/rollover.php
-
-Olden: fixed black lesson planner content
-	Edited file /themes/Olden/css/main.css
-
-Timetable Admin: removed duplicate student entries in class count report
-	Edited file /modules/Timetable Admin/report_classEnrolment_byRollGroup.php
-
-i18n: fixed issue preventing JavaScript date validation in US language
-	Edited value in table gibboni18n
-	
-Students: fixed icon error in Summary page
-	Edited file /modules/Students/student_view_details.php
-
-Individual Needs: minor changes to interface language and field order
-	Edited file /modules/Individual Needs/in_edit.php
-	Edited file /modules/Students/student_view_details.php
-
-Planner: added new feature to allow weekly email update to parents, giving details of homework and behaviour
-	New table gibbonPlannerParentWeeklyEmailSummary
-	New values in tables gibbonAction, gibbonPermission
-	New folder /cli
-	New file /cli/planner_parentWeeklyEmailSummary.php
-	New files /modules/Planner/planner_parentWeeklyEmailSummaryConfirm.php, report_parentWeeklyEmailSummaryConfirmation.php
-
-General: added Italian language support, with partially complete translation
-	New value in table gibboni18n
-	New folder /i18n/it_IT
-
-Planner: improved year-switching in units, so course does not get dropped
-	Edited file /modules/Planner/units.php
-
-Planner: allowed unit duplicate to copy to and from same year/course (e.g. duplicate in place)
-	Edited files /modules/Planner/units_duplicate*.php 
-
-Students: added ability to include Left students in search
-	Edited files /modules/Students/student_view*.php
-	Edited file /modules/Attendance/moduleFunctions.php
-
-Application Form: fixed PHP short open tag issue (e.g. <?)
-	Edited file /modules/Application Form/applicationForm.php
-
-Planner: dropped Twitter search integration due to changes to Twitter API
-	Edited table gibbonPlannerEntry
-	Removed file /modules/Planner/twitter.php
-	Edited files /modules/Planner/planner_*.php	
-
-Markbook: fixed (embarrassing) issue preventing new Markbook columns from being added when none exist
-	Edited file /modules/Markbook/markbook_view.php
-
-Planner: changed Bump Forward to Bump, adding backwards bumping option
-	Edited files /modules/Planner/planner_bump*.php, planner.php
-
-General: unified length of username at 20 char (some areas were 20, some 50)
-	Edited table gibbonPerson
-	Edited file /modules/User Admin/applicationForm_manage_accept.php
-
-Application Form: added ability to automatically set website and email of student on accept, based on pattern
-	New values in table gibbonSetting
-	Edited files /modules/User Admin/applicationFormSettings*.php
-	Edited file /modules/User Admin/applicationForm_manage_accept.php
-
-General: removed underscore and hyphen from random password generator
-	Edited file  /functions.php
-	
-System Admin: improved text when system files are up to date
-	Edited file /modules/System Admin/moduleFunctions.php
-
-Installer: enabled Italian language selection
-	Edited file /installer/install.php
-
-v8.0.06
--------
-User Admin: added size checking to image upload in user add and edit
-	Edited files /modules/User Admin/user_manage_add*.php, user_manage_edit*.php
-
-Staff: fixed issue preventing staff image showing up in brief profile
-	Edited file /modules/Staff/staff_view_details.php
-
-Planner: fixed transparent block issue for smart blocks and outcomes
-	Edited file /modules/Planner/moduleFunctions.php, planner_view_full.php
-	Edited file /themes/Default/img/plus.png
-	
-Finance: fixed transparent block issue for invoice fee blocks
-	Edited file /modules/Finance/moduleFunctions.php
-
-User Admin: fixed Student Enrolment search bug, which causes loss of school year choice
-	Edited file /modules/User Admin/studentEnrolment_manage.php
-
-v8.0.05
--------
-General: added high quality favicon
-	Edited file /favicon.ico
-
-Markbook: added whole-class Markbook export
-	Edited file /modules/Markbook/markbook_view.php
-	New files /modules/Markbook/markbook_viewExportAll*.php
-
-Attendance: added ability to set future absences across multiple days
-	Edited files /modules/Attendance/attendance_future_byPerson*.php
-
-Attendance: added ability to remove future absence records
-	Edited files /modules/Attendance/attendance_future_byPerson
-	New file /modules/Attendance/attendance_future_byPersonDeleteProcess.php
-
-User Admin: fixed permission loss error in Manage Permissions
-	Edited file /modules/User Admin/permission_manage.php
-
-User Admin: removed sidebar in Manage Permissions
-	Edited value in table gibbonAction
-
-User Admin: added ability to duplicate a role, complete with permissions
-	Edited value in table gibbonAction
-	Edited file /modules/User Admin/role_manage.php
-	New files /modules/User Admin/role_manage_duplicate*.php
-
-
-
-v8.0.04
--------
-Timetable Admin: fixed I18N issue with blank strings
-	Edited file /modules/Timetable Admin/courseEnrolment_manage_byPerson.php
-	Edited file /modules/Timetable/tt_view.php
-
-General: added interface for parents to upload a profile image
-	Edited file /index.php
-	New files /index_parentPhotoDeleteProcess.php, index_parentPhotoUploadProcess.php
-	Edited file /modules/Students/student_view_details.php
-	
-General: fixed redirect error if session times out and user uses student/staff fast finder
-	Edited file /indexFindRedirect.php
-
-Students: improved interface string consistency
-	Edited file /modules/Students/student_view_details.php
-
-Markbook: minor theme-ability tweaks
-	Edited file /modules/Markbook/markbook_view.php
-
-v8.0.03
--------
-General: improved theme-ability
-	Edited file /themes/Default/css/main.css
-	Edited file /themes/Olden/css/main.css
-	Edited various module files
-
-v8.0.02
--------
-Installer: fixed PHP shortcode which stopped installation in some environments
-	Edited file /installer/install.php
-
-v8.0.01
--------
-General: fixed intermittent login notice issue
-	Edited login.php
-
-Planner: fixed PHP notice issue in unit edit
-	Edited file /modules/Planner/units_editProcess.php
-
-Planner: improved unit dump to show lessons in all classes
-	Edited file /modules/Planner/units_dump.php
-
-General: fixed cutting edge update code to work between versions (within versions seemed to be working fine)
-	Edited files /modules/System Admin/update*.php
-
-User Admin: fixed blank string translation issue
-	Edited file /modules/User Admin/user_manage.php
-
-Resources: regular user search issue fixed
-	Edited file /modules/Resources/resources_manage.php
-
-General: improved top menu so Other category appears last
-	Edited file /functions.php
-
-Markbook: potential SQL-injection security fix
-	Edited files /modules/Markbook/markbook_view.php
-	Edited files /modules/Students/student_view_details.php
-
-General: potential SQL-injection security fixes
-	Edited file /modules/Timetable Admin/tt_import.php
-	Edited files /modules/Planner/plannerProcess.php, planner_view_full.php
-	Edited file /index.php
-
-v8.0.00
--------
-User Admin: exposed hidden-by-default Manage Districts setting
-	New values in table gibbonPermission
-	
-Database: fixed issue leading to some tables becoming InnoDB instead of MyISAM
-	Edited table gibbonDistrict
-	Edited dev database environment engine setting
-	
-i18n: Rationalised standard strings across the system
-	Edited various files
-
-i18n: added localisation folder for jqueryUI datepicker
-	New folder /lib/jquery-ui/i18n
-	Removed file /lib/jquery-ui/jquery.ui.datepicker-en-GB.js
-	Edited files /index.php, fullscreen.php
-
-i18n: added folders for store localisation data
-	New folders /i18n, /i18n/en-US, /i18n/en-GB, /i18n/es, l18n/zh-CN
-
-i18n: added system for storing and managing localisations and system defaults
-	New table gibboni18n
-	Added values to tables gibbonAction, gibbonPermission
-	New files /modules/System Admin/i18n_manageProcess*.php
-	Edited file /functions.php
-
-i18n: added ability to choose language on login
-	Edited file /functions.php, /login.php
-
-i18n: added ability for a user to choose language preference
-	Edited table gibbonPerson
-	Edited files /preferences*.php, login.php 
-	Edited file /lib/googleOAuth/index.php
-
-User Admin: added Name In Characters to user sync,
-	Edited file /modules/User Admin/import_users.php
-
-i18n: adjusted jQueryUI datePicker loading to account for language selection
-	Edited file /index.php
-
-Planner: fixed PHP Notice error
-	Edited file /modules/Planner/planner_editProcess.php
-
-i18n: adjusted internal date conversion functions to account for language
-	Edited file /functions.php
-	Edited various files across the system
-
-i18n: added folder and database record for Traditional Chinese - Hong Kong
-	New folder /l18n/zh-HK
-	Added values in table gibboni18n
-
-i18n: adjusted display of date format and date format error messages to account for language
-	Edited table gibboni18n
-	Edited various files across the system
-
-Markbook: added ability to set personalised targets for students by class
-	New table gibbonMarkbookTarget
-	New values in table gibbonSetting
-	Edited table gibbonMarkbookEntry
-	Edited values in table gibbonAction
-	New file /themes/Default/target.png
-	New files /modules/Markbook/markbook_edit_targets*.php
-	Edited file /modules/Markbook/markbook*.php
-	Edited fies /modules/School Admin/markbookSettings*.php
-	Edited files /index.php
-	Edited files /modules/Students/student_view_details.php
-
-Activities: fixed issue preventing internal locations from being saved
-	Edited files /modules/Activities/activities_manage_editProcess.php, activities_manage_addProcess.php
-	
-Activities: added field to track whether activity is run in school or by outside provider , with setting to block sign up for external activities
-	Edited table gibbonActivity
-	New values in table gibbonSetting
-	Edited files /modules/Activities/*
-	Edited files /modules/School Admin/activitySettings*.php
-
-Activities: added setting to hide cost for external activities
-	New values in table gibbonSetting
-	Edited files /modules/School Admin/activitySettings*.php
-	Edited files /modules/Activities/activities_view.php
-
-Students: created a new report to show privacy choices for students
-	New values in tables gibbonAction, gibbonPermission
-	New file /modules/Students/report_privacy_student.php
-
-Planner: fixed Edit Lesson link, which prevented edit page from working, when viewing from a date having used Previous/Next liks
-	Edited file /modules/Planner/planner_view_full.php
-
-Data Updater: fixed i18n issue which stopped page loading
-	Edited file /modules/Data Updater/data_personal.php
-
-i18n: fixed Library issue which stopped page loading for specific types
-	Edited file /modules/Library/library_manage_catalog_duplicate.php
-
-i18n: added environment setting to get ready for gettext calls
-	Edited file /index.php, fullscreen.php, report.php
-
-i18n: wrapped translatable text in _()
-	Edited file /*.php
-
-Attendance: improved display of student absentee record to remove days before student joined school, and days after they left
-	Edited files /modules/Attendance/moduleFunctions.php, report_studentHistory.php
-	Edited file /modules/Students/student_view_details.php
-
-Themes: added refresh.png to Olden theme
-	Edited file /themes/Olden/img/refresh.png
-
-i18n: improvements to allow better functioning on more servers
-	Edited values in table gibboni18n
-	Edited folder names in /i18n
-
-Planner: fixed PHP notice errors
-	Edited file /modules/Planner/planner_add.php
-
-Messenger: made sending from school email address cleaner and more logical
-	Edited file /modules/Messenger/messenger_postProcess.php
-
-Markbook: suppressed PHP notices to do with WP comment push
-	Edited file /modules/Markbook/markbook_edit_dataAjax.php
-
-Behaviour: fixed PHP notice issue when landing on behaviour add
-	Edited file index.php
-
-Markbook: added clear delineation between columns in teacher overview
-	Edited files /modules/Markbook/markbook_view.php, markbook_view_full.php
-
-i18n: fixed issue with date validation in en_US
-	Update values in gibboni18n
-
-Index: changed Quick Student Finder to Find Staff & Students
-	Edited file /functions.php
-	New filed /indexFindRedirect.php
-
-Functions: delete deprecated function conditional_escape
-	Edited file /functions.php
-
-School Admin: deleted orphan file
-	Deleted file /modules/School Admin/index.php
-
-User Admin: added new status "Waiting List"
-	Edited table gibbonApplicationForm
-	Edited files /modules/User Admin/applicationForm_manage*.php
-
-User Admin: added phone and vehicle registration search to user admin
-	Edited file /modules/User Admin/user_manage.php
-
-Messenger: added ability for priviledged users to set replyto address in outgoing emails
-	Edited files /modules/Messenger/messenger_post*.php
-
-User Admin: moved Student Enrolment into User Management category
-	Edited values in table gibbonAction
-
-General: changed appearance of main menu
-	Edited values in table gibbonModule
-	Edited file /themes/Default/css/main.css
-
-General: added ability for system to update with cutting edge code from GitHub (rather than finished versions)
-	New values in gibbonSetting
-	Edited files /modules/System Admin/systemSettings*.php, update*.php
-
-Students: added roll group to student leavers report
-	Edited file /modules/Students/report_students_left.php
-
-General: higher quality favicon
-	Edited file /favicon.ico
-
-Lib: upgraded PHPMaier to latest version to solve random white space issue
-	Edited files /lib/PHPMailer/*
-
-gibbonedu.com: added settings to allow integration of services from gibbonedu.com
-	New values in table gibbonSetting
-	Edited files /modules/System Admin/systemSettings*.php
-
-Timetable Admin: added new field "reportable" to gibbonCourseClassPerson to say whether this person's presence in a class should carry through to academic reports
-	Edited table gibbonCourseClassPerson
-	Edited files /modules/Timetable Admin/courseEnrolment_manage_class_edit_edit*.php, courseEnrolment_manage_class_edit.php, courseEnrolment_manage_byPerson_edit.php, courseEnrolment_manage_byPerson_edit_edit*.php
-	
-Default: added new icon run.png to default theme
-	New file /themes/Default/img/run.png, help.png
-
-Library: fixed bug stopping images from displaying
-	Edited file /modules/Library/moduleFunctions.php
-
-Students: fixed access check error in Left Students report
-	Edited file /modules/Students/report_students_left.php
-	
-General: replaced all PHP short tags (<?) with full tags (<?php)
-	Edited every file in the system
-
-Activities: fixed ordering of Staff in edit screen
-	Edited file /modules/Activities/activities_manage_edit.php
-
-General: moved CC payment storage from application form to general system wide table
-	New table gibbonPayment
-	Edited table gibbonApplicationForm
-	Edited files /modules/User Admin/applicationForm_manage*.php
-	Edited files /modules/Application Form/applicationForm*.php
-
-Timetable: added new report to show available teachers
-	New values in tables gibbonAction, gibbonPermission
-	New file /modules/Timetable/report_viewAvailableTeachers.php
-
-i18n: added Active field to hide under-development languages. Hid all extra languages by default.
-	Edited table gibboni18n
-	Edited values in table gibboni18n
-	Edited files /functions.php, login.php, preferences.php
-	Edited file /lib/googleOAuth/index.php 
-	Edited file /modules/System Admin/i18n_manage.php
-
-i18n: added file for storing database strings for translation and tested it with main menu
-	New file /i18n/dbStringsForTranslation.php
-	Edited file /functions.php
-
-General: added .htaccess to hide certain file types, including .sql files 
-	New file /.htaccess
-
-General: changed links to http://gibbonedu.org/ to https://gibbonedu.org/ (secure)
-	Edited various files
-
-User Admin: changed user edit so that status changes no longer reset start and end dates, but instead just issue a reminder
-	Edited file /modules/User Admin/user_manage_edit.php
-
-Messenger: improved output when 0 sms credits remain:
-	Edited file /modules/Messenger/messenger_post.php
-	
-Activities: added action to copy all activities, slots and staff from the current school year to a specified school year.
-	New valies in tables gibbonAction, gibbonPermissions
-	New files /modules/Activities/activities_copy.php
-
-Markbook: removed full screen view for teachers, and added older/newer links to regular view
-	Edited file /modules/Markbook/markbook_view.php
-	Removed file /modules/Markbook/markbook_view_full.php
-
-General: adjusted main menu style
-	Edited file /index.php
-	Edited file /themes/Default/css/main.css
-
-General: tweaked appearance of warning, error and success messages:
-	Edited file /themes/Default/css/main.css
-
-Timetable: tweaked school timetable colour to match other system colours
-	Edited file /modules/Timetable/moduleFunctions.php
-
-System Admin: added inbuilt version checking against gibbonedu.org. One step closer to automatic updates!
-	Edited files /modules/System Admin/updates.php, systemSettings.php
-
-Application Form: added payment error emailing to admissions officer
-	Edited file /modules/Application Form/applicationFormProcess.php
-
-Messenger: updated message manage listing to show both SMS and Email reports, if both exist
-	Edited file /modules/Messenger/messenger_manage.php
-
-General: fixed sidebar module menu incorrect highlighting
-	Edited file /functions.php
-
-General: added striping of non-numerics to phone numbers across the system (not include some old-style ones which have area code in number field), as well as number formatting for nicer display
-	Edited various files
-
-General: fixed random white spaces in outgoing emails (encoding!)
-	Edited files /modules/Finance/invoices_manage*.php
-	Edited file /modules/Messenger/messenger_postProcess.php
-
-General: converted gif icons to png, add missing icons to Olden theme
-	Edited various files
-
-General: trimmed Change Log and Change DB as they were getting a litte too bushy
-	Edited files /CHANGELOG.TXT, CHANGEDB.PHP
-
-General: created installer for easy setup of Gibbon...woohoo!
-	Edited file /index.php
-	New folder /installer
-
-General: fixed Stars hover count bug
-	Edited file /index.php
-
-Planner: fixed Twitter integration typo
-	Edited files /modules/Planner/planner_edit.php, planner_add.php
-
-Resources: fixed resource insert-by-ajax tag field error
-	Edited file /modules/Resources/resources_add_ajax.php
-
-Activities: fixed slot location saving issue
-	Edited file /modules/Activities/activities_manage_addProcess.php, activities_manage_editProcess.php
-
-General: deprecated and replaced printUserPhoto
-	Edited /function.php and various other files
-
-Activities: brought currency display into line with the rest of the system
-	Edited /modules/Activities/activities*.php
-
-User Admin: removed End Date from user import
-	Edited /modules/User Admin/import_user.php
-
-v7.1.02 and earlier
+v9.1.00 and earlier
 -------------------
 Removed to reduce file size

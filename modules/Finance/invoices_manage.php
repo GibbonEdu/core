@@ -209,6 +209,11 @@ else {
 							}
 							print "<option $selected value='Paid'>" . _('Paid') . "</option>" ;
 							$selected="" ;
+							if ($status=="Paid - Partial") {
+								$selected="selected" ;
+							}
+							print "<option $selected value='Paid - Partial'>" . _('Paid - Partial') . "</option>" ;
+							$selected="" ;
 							if ($status=="Paid - Late") {
 								$selected="selected" ;
 							}
@@ -365,6 +370,14 @@ else {
 					$data["status2"]="Paid" ;
 					$whereAdHoc.=" AND gibbonFinanceInvoice.status=:status2 AND gibbonFinanceInvoice.invoiceDueDate>=paidDate" ;
 					$data["status3"]="Paid" ;
+					$whereNotPending.=" AND gibbonFinanceInvoice.status=:status3 AND gibbonFinanceInvoice.invoiceDueDate>=paidDate" ;
+				}
+				else if ($status=="Paid - Partial") {
+					$data["status1"]="Paid - Partial" ;
+					$whereSched.=" AND gibbonFinanceInvoice.status=:status1 AND gibbonFinanceInvoice.invoiceDueDate>=paidDate" ;
+					$data["status2"]="Paid - Partial" ;
+					$whereAdHoc.=" AND gibbonFinanceInvoice.status=:status2 AND gibbonFinanceInvoice.invoiceDueDate>=paidDate" ;
+					$data["status3"]="Paid - Partial" ;
 					$whereNotPending.=" AND gibbonFinanceInvoice.status=:status3 AND gibbonFinanceInvoice.invoiceDueDate>=paidDate" ;
 				}
 				else if ($status=="Paid - Late") {

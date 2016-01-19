@@ -177,10 +177,10 @@ else {
 					</td>
 					<td class="right">
 						<select name="sort" style="width: 300px">
-							<option value="surname, preferredName" <?php if($sort == 'surname, preferredName'){echo("selected");}?>>Surname</option>
-							<option value="preferredName" <?php if($sort == 'preferredName'){echo("selected");}?>>Given Name</option>
-							<option value="rollGroup" <?php if($sort == "rollGroup"){echo("selected");}?>>Roll Group</option>
-							<option value="yearGroup" <?php if($sort == 'yearGroup'){echo("selected");}?>>Year Group</option>
+							<option value="surname, preferredName" <?php if($sort == 'surname, preferredName'){echo("selected");}?>><?php print _('Surname') ; ?></option>
+							<option value="preferredName" <?php if($sort == 'preferredName'){echo("selected");}?>><?php print _('Given Name') ; ?></option>
+							<option value="rollGroup" <?php if($sort == "rollGroup"){echo("selected");}?>><?php print _('Roll Group') ; ?></option>
+							<option value="yearGroup" <?php if($sort == 'yearGroup'){echo("selected");}?>><?php print _('Year Group') ; ?></option>
 						</select>
 					</td>
 				</tr>
@@ -195,7 +195,7 @@ else {
 							<?php
 								$checked="" ;
 								if ($allStudents=="on") {
-								$checked="checked" ;
+									$checked="checked" ;
 								}
 								print "<input $checked name=\"allStudents\" id=\"allStudents\" type=\"checkbox\">" ;
 							?>

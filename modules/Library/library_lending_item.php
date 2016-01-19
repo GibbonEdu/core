@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 
-if (isActionAccessible($guid, $connection2, "/modules/Library/library_manage_catalog_edit.php")==FALSE) {
+if (isActionAccessible($guid, $connection2, "/modules/Library/library_lending_item.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
 		print _("You do not have access to this action.") ;
@@ -190,7 +190,7 @@ else {
 			}
 			else {
 				if ($resultEvent->rowCount()>$_SESSION[$guid]["pagination"]) {
-					printPagination($guid, $resultEvent->rowCount(), $page, $_SESSION[$guid]["pagination"], "top", "search=$search") ;
+					printPagination($guid, $resultEvent->rowCount(), $page, $_SESSION[$guid]["pagination"], "top", "") ;
 				}
 			
 				print "<table cellspacing='0' style='width: 100%'>" ;
@@ -239,7 +239,7 @@ else {
 							if ($rowEvent["gibbonPersonIDStatusResponsible"]!="") {
 								try {
 									$dataPerson=array("gibbonPersonID"=>$rowEvent["gibbonPersonIDStatusResponsible"]); 
-									$sqlPerson="SELECT title, preferredName, surname, image_75 FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
+									$sqlPerson="SELECT title, preferredName, surname, image_240 FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
 									$resultPerson=$connection2->prepare($sqlPerson);
 									$resultPerson->execute($dataPerson);
 								}
@@ -252,7 +252,7 @@ else {
 							}
 							print "<td>" ;
 								if (is_array($rowPerson)) {
-									print getUserPhoto($guid, $rowPerson["image_75"], 75) ;
+									print getUserPhoto($guid, $rowPerson["image_240"], 75) ;
 								}
 								if (is_array($rowPerson)) {
 									print "<div style='margin-top: 3px; font-weight: bold'>" . formatName($rowPerson["title"], $rowPerson["preferredName"], $rowPerson["surname"], "Staff", FALSE, TRUE) . "</div>" ;
@@ -283,7 +283,7 @@ else {
 								if ($rowEvent["gibbonPersonIDOut"]!="") {
 									try {
 										$dataPerson=array("gibbonPersonID"=>$rowEvent["gibbonPersonIDOut"]); 
-										$sqlPerson="SELECT title, preferredName, surname, image_75 FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
+										$sqlPerson="SELECT title, preferredName, surname, image_240 FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
 										$resultPerson=$connection2->prepare($sqlPerson);
 										$resultPerson->execute($dataPerson);
 									}
@@ -298,7 +298,7 @@ else {
 								if ($rowEvent["gibbonPersonIDIn"]!="") {
 									try {
 										$dataPerson=array("gibbonPersonID"=>$rowEvent["gibbonPersonIDIn"]); 
-										$sqlPerson="SELECT title, preferredName, surname, image_75 FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
+										$sqlPerson="SELECT title, preferredName, surname, image_240 FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
 										$resultPerson=$connection2->prepare($sqlPerson);
 										$resultPerson->execute($dataPerson);
 									}
@@ -323,7 +323,7 @@ else {
 				print "</table>" ;
 				
 				if ($result->rowCount()>$_SESSION[$guid]["pagination"]) {
-					printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "bottom", "search=$search") ;
+					printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "bottom", "") ;
 				}
 			}
 			

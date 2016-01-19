@@ -31,12 +31,12 @@ if (isActionAccessible($guid, $connection2, "/modules/Planner/report_goldStars_s
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Staff Gold Stars') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Staff Like') . "</div>" ;
 	print "</div>" ;
 	
 	try {
-		$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonSchoolYearID2"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-		$sql="SELECT gibbonPerson.gibbonPersonID AS personID, surname, preferredName, (COUNT(*)/(SELECT COUNT(*) FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonPersonID=personID AND gibbonSchoolYearID=:gibbonSchoolYearID AND date<='" . date("Y-m-d") . "')) as 'stars' FROM gibbonPlannerEntryLike JOIN gibbonPlannerEntry ON (gibbonPlannerEntryLike.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE role='Teacher' AND status='Full' AND gibbonSchoolYearID=:gibbonSchoolYearID2 GROUP BY gibbonPerson.gibbonPersonID ORDER BY stars DESC" ;
+		$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
+		$sql="SELECT gibbonPerson.gibbonPersonID AS personID, surname, preferredName, COUNT(*) as likes FROM gibbonLike JOIN gibbonPerson ON (gibbonLike.gibbonPersonIDRecipient=gibbonPerson.gibbonPersonID) JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND gibbonSchoolYearID=:gibbonSchoolYearID GROUP BY gibbonPerson.gibbonPersonID ORDER BY likes DESC" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}
@@ -46,14 +46,14 @@ else {
 
 	print "<table cellspacing=\"0\"style='width: 100%'>" ;
 		print "<tr class='head'>" ;
-			print "<th>" ;
+			print "<th style='width: 100px'>" ;
 				print _("Position") ;
 			print "</th>" ;
 			print "<th>" ;
 				print _("Teacher") ;
 			print "</th>" ;
 			print "<th>" ;
-				print _("Stars/Lesson") ;
+				print _("Likes") ;
 			print "</th>" ;
 			print "</th>" ;
 		print "</tr>" ;
@@ -78,7 +78,7 @@ else {
 					print formatName("", $row["preferredName"], $row["surname"], "Staff", false, true) ;
 				print "</td>" ;
 				print "<td>" ;
-					print $row["stars"] ;
+					print $row["likes"] ;
 				print "</td>" ;
 			print "</tr>" ;
 		}

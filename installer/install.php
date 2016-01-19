@@ -37,6 +37,7 @@ include "../functions.php" ;
 		<link rel='stylesheet' type='text/css' href='../themes/Default/css/main.css' />
 		<script type='text/javascript' src='../themes/Default/js/common.js'></script>
 		<script type="text/javascript" src="../lib/jquery/jquery.js"></script>
+		<script type="text/javascript" src="../lib/jquery/jquery-migrate.min.js"></script>
 	</head>
 	<body>
 		<div id="wrapOuter">
@@ -131,6 +132,7 @@ include "../functions.php" ;
 															<option value='es_ES'>Español</option>
 															<option value='fr_FR'>Français - France</option>
 															<option value='it_IT'>Italiano - Italia</option>
+															<option value='ro_RO'>Română</option>
 															<option value='zh_HK'>體字 - 香港</option>
 															<option value='ar_SA'>العربية - المملكة العربية السعودية</option>
 														</select>
@@ -178,7 +180,7 @@ include "../functions.php" ;
 												<script type="text/javascript">
 													var databaseServer=new LiveValidation('databaseServer');
 													databaseServer.add(Validate.Presence);
-												 </script>
+												</script>
 											</td>
 										</tr>
 										<tr>
@@ -191,7 +193,7 @@ include "../functions.php" ;
 												<script type="text/javascript">
 													var databaseName=new LiveValidation('databaseName');
 													databaseName.add(Validate.Presence);
-												 </script>
+												</script>
 											</td>
 										</tr>
 										<tr>
@@ -203,7 +205,7 @@ include "../functions.php" ;
 												<script type="text/javascript">
 													var databaseUsername=new LiveValidation('databaseUsername');
 													databaseUsername.add(Validate.Presence);
-												 </script>
+												</script>
 											</td>
 										</tr>
 										<tr>
@@ -215,7 +217,7 @@ include "../functions.php" ;
 												<script type="text/javascript">
 													var databasePassword=new LiveValidation('databasePassword');
 													databasePassword.add(Validate.Presence);
-												 </script>
+												</script>
 											</td>
 										</tr>
 										
@@ -256,7 +258,7 @@ include "../functions.php" ;
 								//Estabish db connection without database name
 								$connected1=TRUE ;
 								try {
-									$connection2=new PDO("mysql:host=$databaseServer;charset=utf8", $databaseUsername, $databasePassword);
+									@$connection2=new PDO("mysql:host=$databaseServer;charset=utf8", $databaseUsername, $databasePassword);
 									$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 									$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 								}
@@ -414,6 +416,8 @@ include "../functions.php" ;
 																	$connection2->query($sql) ;
 																}
 																catch(PDOException $e) {
+																	print $sql . "<br/>" ;
+																	print $e->getMessage() . "<br/><br/>" ;
 																	$demoFail=TRUE ;
 																}
 															}
@@ -477,7 +481,7 @@ include "../functions.php" ;
 																	<script type="text/javascript">
 																		var surname=new LiveValidation('surname');
 																		surname.add(Validate.Presence);
-																	 </script>
+																	</script>
 																</td>
 															</tr>
 															<tr>
@@ -490,7 +494,7 @@ include "../functions.php" ;
 																	<script type="text/javascript">
 																		var firstName=new LiveValidation('firstName');
 																		firstName.add(Validate.Presence);
-																	 </script>
+																	</script>
 																</td>
 															</tr>
 															<tr>
@@ -503,7 +507,7 @@ include "../functions.php" ;
 																		var email=new LiveValidation('email');
 																		email.add(Validate.Email);
 																		email.add(Validate.Presence);
-																	 </script>
+																	</script>
 																</td>
 															</tr>
 															<tr>
@@ -538,7 +542,7 @@ include "../functions.php" ;
 																	<script type="text/javascript">
 																		var username=new LiveValidation('username');
 																		username.add(Validate.Presence);
-																	 </script>
+																	</script>
 																</td>
 															</tr>
 															<tr>
@@ -559,7 +563,7 @@ include "../functions.php" ;
 																	<span style="font-size: 90%"><i></i></span>
 																</td>
 																<td class="right">
-																	<input name="password" id="password" maxlength=20 value="" type="password" style="width: 300px">
+																	<input name="password" id="password" maxlength=30 value="" type="password" style="width: 300px">
 																	<script type="text/javascript">
 																		var password=new LiveValidation('password');
 																		password.add(Validate.Presence);
@@ -581,7 +585,7 @@ include "../functions.php" ;
 																			print "password.add( Validate.Length, { minimum: " . $minLength . "} );" ;
 																		}
 																		?>
-																	 </script>
+																	</script>
 																</td>
 															</tr>
 															<tr>
@@ -595,7 +599,7 @@ include "../functions.php" ;
 																		var passwordConfirm=new LiveValidation('passwordConfirm');
 																		passwordConfirm.add(Validate.Presence);
 																		passwordConfirm.add(Validate.Confirmation, { match: 'password' } );
-																	 </script>
+																	</script>
 																</td>
 															</tr>
 														
@@ -628,7 +632,7 @@ include "../functions.php" ;
 																		var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 																		<?php print $row["name"] ?>.add(Validate.Presence);
 																		<?php print $row["name"] ?>.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
-																	 </script> 
+																	</script> 
 																</td>
 															</tr>
 															<tr>
@@ -653,7 +657,7 @@ include "../functions.php" ;
 																	<script type="text/javascript">
 																		var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 																		<?php print $row["name"] ?>.add(Validate.Presence);
-																	 </script> 
+																	</script> 
 																</td>
 															</tr>
 															<tr>
@@ -678,7 +682,7 @@ include "../functions.php" ;
 																	<script type="text/javascript">
 																		var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 																		<?php print $row["name"] ?>.add(Validate.Presence);
-																	 </script> 
+																	</script> 
 																</td>
 															</tr>
 															<tr>
@@ -738,12 +742,13 @@ include "../functions.php" ;
 																	<span style="font-size: 90%"><i><?php print _($row["description"]) ?>. <?php print "<b>" . _('Not recommended for non-experts!.') . "<b>" ?></i></span>
 																</td>
 																<td class="right">
-																	<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+																	<select disabled name="<?php print $row["name"] ?>Disabled" id="<?php print $row["name"] ?>" style="width: 302px">
 																		<?php
 																		print "<option selected value='N'>" . ynExpander('N') . "</option>" ;
 																		print "<option value='Y'>" . ynExpander('Y') . "</option>" ;
 																		?>			
 																	</select>
+																	<input type='hidden' name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>Hidden" value="N">
 																</td>
 															</tr>
 															<?php
@@ -762,6 +767,7 @@ include "../functions.php" ;
 																			print "else {" ;
 																				print "$(\"#status\").html('" . _('Cutting Edge Code check successful.') . "') ;" ;
 																				print "$(\"#cuttingEdgeCode\").val('Y');" ;
+																				print "$(\"#cuttingEdgeCodeHidden\").val('Y');" ;
 																			print "}" ;
 																		print "}," ;
 																		print "error: function (data, textStatus, errorThrown) {" ;
@@ -827,7 +833,7 @@ include "../functions.php" ;
 																	<script type="text/javascript">
 																		var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 																		<?php print $row["name"] ?>.add(Validate.Presence);
-																	 </script> 
+																	</script> 
 																</td>
 															</tr>
 															<tr>
@@ -852,7 +858,7 @@ include "../functions.php" ;
 																	<script type="text/javascript">
 																		var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 																		<?php print $row["name"] ?>.add(Validate.Presence);
-																	 </script> 
+																	</script> 
 																</td>
 															</tr>
 															<tr>
@@ -900,11 +906,17 @@ include "../functions.php" ;
 																		<option value='USD $'>U.S. Dollar ($)</option>
 																	</optgroup>
 																	<optgroup label='--<?php print _('OTHERS') ?>--'/>
+																		<option value='BDT ó'>Bangladeshi Taka (ó)</option>
 																		<option value='BTC'>Bitcoin</option>
+																		<option value='XAF FCFA'>Central African Francs (FCFA)</option>
+																		<option value='EGP £'>Egyptian Pound (£)</option>
 																		<option value='INR ₹'>Indian Rupee (₹)</option>
 																		<option value='IDR Rp'>Indonesian Rupiah (Rp)</option>
-																		<option value='NGN ₦'>Nigerian Naira (₦)</option>
 																		<option value='KES KSh'>Kenyan Shilling (KSh)</option>
+																		<option value='NPR ₨'>Nepalese Rupee (₨)</option>
+																		<option value='NGN ₦'>Nigerian Naira (₦)</option>
+																		<option value='SAR ﷼‎'>Saudi Riyal (﷼‎)</option>
+																		<option value='VND ₫‎'>Vietnamese Dong (₫‎)</option>
 																	</optgroup>
 																</select>
 															</td>
@@ -1001,7 +1013,7 @@ include "../functions.php" ;
 																	<script type="text/javascript">
 																		var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 																		<?php print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-																	 </script>
+																	</script>
 																</td>
 															</tr>
 															<tr>
@@ -1026,7 +1038,7 @@ include "../functions.php" ;
 																	<script type="text/javascript">
 																		var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 																		<?php print $row["name"] ?>.add(Validate.Presence);
-																	 </script> 
+																	</script> 
 																</td>
 															</tr>
 															<tr>
@@ -1067,7 +1079,7 @@ include "../functions.php" ;
 																	<script type="text/javascript">
 																		var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 																		<?php print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-																	 </script>
+																	</script>
 																</td>
 															</tr>
 			
@@ -1167,9 +1179,17 @@ include "../functions.php" ;
 											catch(PDOException $e) { 
 												$userFail=true ;
 												print "<div class='error'>" ;
-													print _("Errors occurred in populating the database; empty your database, remove ../config.php and try again.") ;
+													print sprintf(_('Errors occurred in populating the database; empty your database, remove ../config.php and %1$stry again%2$s.'), "<a href='./install.php'>", "</a>") ;
 												print "</div>" ;
 											}
+											
+											try {
+												$dataStaff=array("gibbonPersonID"=>1, "type"=>'Teaching') ;
+												$sqlStaff="INSERT INTO gibbonStaff SET gibbonPersonID=1, type='Teaching'" ;
+												$resultStaff=$connection2->prepare($sqlStaff);
+												$resultStaff->execute($dataStaff);
+											}
+											catch(PDOException $e) { }
 											
 											if ($userFail==false) {
 												$settingsFail=FALSE ;		
@@ -1234,65 +1254,35 @@ include "../functions.php" ;
 												}
 	
 												try {
-													$data=array("organisationAdministratorName"=>$preferredName . " " . $surname); 
-													$sql="UPDATE gibbonSetting SET value=:organisationAdministratorName WHERE scope='System' AND name='organisationAdministratorName'" ;
+													$data=array("organisationAdministrator"=>1); 
+													$sql="UPDATE gibbonSetting SET value=:organisationAdministrator WHERE scope='System' AND name='organisationAdministrator'" ;
 													$result=$connection2->prepare($sql);
 													$result->execute($data);
 												}
 												catch(PDOException $e) { 
 													$settingsFail=TRUE ;
 												}
-	
+												
 												try {
-													$data=array("organisationAdministratorEmail"=>$email); 
-													$sql="UPDATE gibbonSetting SET value=:organisationAdministratorEmail WHERE scope='System' AND name='organisationAdministratorEmail'" ;
+													$data=array("organisationDBA"=>1); 
+													$sql="UPDATE gibbonSetting SET value=:organisationDBA WHERE scope='System' AND name='organisationDBA'" ;
 													$result=$connection2->prepare($sql);
 													$result->execute($data);
 												}
 												catch(PDOException $e) { 
 													$settingsFail=TRUE ;
 												}
-	
+												
 												try {
-													$data=array("organisationDBAName"=>$preferredName . " " . $surname); 
-													$sql="UPDATE gibbonSetting SET value=:organisationDBAName WHERE scope='System' AND name='organisationDBAName'" ;
+													$data=array("organisationAdmissions"=>1); 
+													$sql="UPDATE gibbonSetting SET value=:organisationAdmissions WHERE scope='System' AND name='organisationAdmissions'" ;
 													$result=$connection2->prepare($sql);
 													$result->execute($data);
 												}
 												catch(PDOException $e) { 
 													$settingsFail=TRUE ;
 												}
-	
-												try {
-													$data=array("organisationDBAEmail"=>$email); 
-													$sql="UPDATE gibbonSetting SET value=:organisationDBAEmail WHERE scope='System' AND name='organisationDBAEmail'" ;
-													$result=$connection2->prepare($sql);
-													$result->execute($data);
-												}
-												catch(PDOException $e) { 
-													$settingsFail=TRUE ;
-												}
-	
-												try {
-													$data=array("organisationAdmissionsName"=>$preferredName . " " . $surname); 
-													$sql="UPDATE gibbonSetting SET value=:organisationAdmissionsName WHERE scope='System' AND name='organisationAdmissionsName'" ;
-													$result=$connection2->prepare($sql);
-													$result->execute($data);
-												}
-												catch(PDOException $e) { 
-													$settingsFail=TRUE ;
-												}
-	
-												try {
-													$data=array("organisationAdmissionsEmail"=>$email); 
-													$sql="UPDATE gibbonSetting SET value=:organisationAdmissionsEmail WHERE scope='System' AND name='organisationAdmissionsEmail'" ;
-													$result=$connection2->prepare($sql);
-													$result->execute($data);
-												}
-												catch(PDOException $e) { 
-													$settingsFail=TRUE ;
-												}
-	
+												
 												try {
 													$data=array("country"=>$country); 
 													$sql="UPDATE gibbonSetting SET value=:country WHERE scope='System' AND name='country'" ;
@@ -1400,10 +1390,10 @@ include "../functions.php" ;
 													catch(PDOException $e) { }
 													
 													foreach ($sqlTokens AS $sqlToken) {
-														if ($tokenCount<=$versionMaxLinesMax) {
-															if (trim($sqlToken)!="") { //Decide whether this has been run or not
+														if ($tokenCount<=$versionMaxLinesMax) { //Decide whether this has been run or not
+															if (trim($sqlToken)!="") { 
 																try {
-																	$result=$connection2->query($sqlToken);   
+																	$result=$connection2->query($sqlToken);
 																}
 																catch(PDOException $e) { 
 																	$partialFail=TRUE;

@@ -121,8 +121,8 @@ else {
 		else {
 			//UPDATE
 			try {
-				$data=array("gibbonPersonID"=>$gibbonPersonID, "attachment1"=>$attachment1, "attachment2"=>$attachment1); 
-				$sql="UPDATE gibbonPerson SET image_240=:attachment1, image_75=:attachment2 WHERE gibbonPersonID=:gibbonPersonID" ;
+				$data=array("gibbonPersonID"=>$gibbonPersonID, "attachment1"=>$attachment1); 
+				$sql="UPDATE gibbonPerson SET image_240=:attachment1 WHERE gibbonPersonID=:gibbonPersonID" ;
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
 			}
@@ -135,7 +135,6 @@ else {
 		
 			//Update session variables
 			$_SESSION[$guid]["image_240"]=$attachment1 ;
-			$_SESSION[$guid]["image_75"]=$attachment1 ;
 			
 			//Clear cusotm sidebar
 			unset($_SESSION[$guid]["index_customSidebar.php"]) ;

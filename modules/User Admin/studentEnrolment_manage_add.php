@@ -119,20 +119,20 @@ else {
 							print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 							try {
 								$dataSelect=array(); 
-								$sqlSelect="SELECT gibbonPersonID, preferredName, surname FROM gibbonPerson WHERE gibbonPerson.status='Full' ORDER BY surname, preferredName" ;
+								$sqlSelect="SELECT gibbonPersonID, preferredName, surname, username FROM gibbonPerson WHERE gibbonPerson.status='Full' ORDER BY surname, preferredName" ;
 								$resultSelect=$connection2->prepare($sqlSelect);
 								$resultSelect->execute($dataSelect);
 							}
 							catch(PDOException $e) { }
 							while ($rowSelect=$resultSelect->fetch()) {
-								print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . "</option>" ;
+								print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . " (" . $rowSelect["username"] . ")</option>" ;
 							}
 							?>				
 						</select>
 						<script type="text/javascript">
 							var gibbonPersonID=new LiveValidation('gibbonPersonID');
 							gibbonPersonID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-						 </script>
+						</script>
 					</td>
 				</tr>
 				<tr>
@@ -159,7 +159,7 @@ else {
 						<script type="text/javascript">
 							var gibbonYearGroupID=new LiveValidation('gibbonYearGroupID');
 							gibbonYearGroupID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-						 </script>
+						</script>
 					</td>
 				</tr>
 				<tr>
@@ -186,7 +186,7 @@ else {
 						<script type="text/javascript">
 							var gibbonRollGroupID=new LiveValidation('gibbonRollGroupID');
 							gibbonRollGroupID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-						 </script>
+						</script>
 					</td>
 				</tr>
 				<tr>

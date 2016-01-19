@@ -103,7 +103,7 @@ else {
 		else {
 			while ($row=$result->fetch()) {
 				print "<h3>" ;
-					print $row["name"] ;
+					print $row["nameShort"] . " (" . $row["name"] . ")" ;
 				print "</h3>" ;
 				
 				try {

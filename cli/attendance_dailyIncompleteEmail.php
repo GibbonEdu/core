@@ -58,11 +58,8 @@ if (php_sapi_name()!="cli") {
 else {
 	$currentDate=date("Y-m-d") ;
 	
-	if (isSchoolOpen($guid, $currentDate, $connection2, TRUE)==FALSE) {
-		print _('School is not open on the specified day.') ;
-	}
-	else {
-		$emails="" ;
+	if (isSchoolOpen($guid, $currentDate, $connection2, TRUE)) {
+		$ids=array() ;
 		$report="" ;
 		$reportInner="" ;
 	
@@ -74,8 +71,7 @@ else {
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
-			$report=_("Your request failed due to a database error.") ;
-			print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+			$report=_("Your request failed due to a database error.") ; 
 		}
 	
 		$log=array() ;
@@ -85,74 +81,62 @@ else {
 
 		try {
 			$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"] ); 
-			$sql="SELECT gibbonRollGroupID, name, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, tutor1.email AS tutor1Email, tutor2.email AS tutor2Email, tutor3.email AS tutor3Email FROM gibbonRollGroup LEFT JOIN gibbonPerson AS tutor1 ON (gibbonRollGroup.gibbonPersonIDTutor=tutor1.gibbonPersonID) LEFT JOIN gibbonPerson AS tutor2 ON (gibbonRollGroup.gibbonPersonIDTutor2=tutor2.gibbonPersonID) LEFT JOIN gibbonPerson AS tutor3 ON (gibbonRollGroup.gibbonPersonIDTutor3=tutor3.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name" ;
+			$sql="SELECT gibbonRollGroupID, name, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3 FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
 			$report=_("Your request failed due to a database error.") ;
-			print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 		}
 	
 		if ($result->rowCount()<1) {
-			print "<div class='error'>" ;
-				print _("There are no records to display.") ;
-			print "</div>" ;
 			$report=_("There are no records to display.") ;
 		}
 		else {
 			$count=0 ;
+			$countInner=0 ;
 			while ($row=$result->fetch()) {
 				if (isset($log[$row["gibbonRollGroupID"]])==FALSE) {
 					$count++ ;
 					$reportInner.=$row["name"] ."<br/>" ;
-					if ($row["tutor1Email"]!="") {
-						$emails.=$row["tutor1Email"] ."," ;
+					if ($row["gibbonPersonIDTutor"]!="") {
+						$ids[$countInner][0]=$row["gibbonRollGroupID"] ;
+						$ids[$countInner][1]=$row["gibbonPersonIDTutor"] ;
+						$countInner++ ;
 					}
-					if ($row["tutor2Email"]!="") {
-						$emails.=$row["tutor2Email"] ."," ;
+					if ($row["gibbonPersonIDTutor2"]!="") {
+						$ids[$countInner][0]=$row["gibbonRollGroupID"] ;
+						$ids[$countInner][1]=$row["gibbonPersonIDTutor2"] ;
+						$countInner++ ;
 					}
-					if ($row["tutor3Email"]!="") {
-						$emails.=$row["tutor3Email"] ."," ;
+					if ($row["gibbonPersonIDTutor3"]!="") {
+						$ids[$countInner][0]=$row["gibbonRollGroupID"] ;
+						$ids[$countInner][1]=$row["gibbonPersonIDTutor3"] ;
+						$countInner++ ;
 					}
 				}
 			}
 		}
 		if (isset($count)) {
 			if ($count==0) {
-				$report=sorintf(_('All form groups have been registered today (%1$s).'), dateConvertBack($guid, $currentDate)) ;
+				$report=sprintf(_('All form groups have been registered today (%1$s).'), dateConvertBack($guid, $currentDate)) ;
 			}
 			else {
 				$report=sprintf(_('%1$s form groups have not been registered today  (%2$s).'), $count, dateConvertBack($guid, $currentDate)) . "<br/><br/>" . $reportInner ;
 			}
 		}
+		
+		print $report ;
 	
-		//Send confirmation email to admin and non-completing tutors
-		$emails=explode(",",substr($emails,0,-1)) ;
-		$emails=array_unique($emails) ;
-		natcasesort($emails) ;
-	
-		$body=$report . "<br/><br/>" ;	
-		$body.="<p style='font-style: italic;'>" . sprintf(_('Email sent via %1$s at %2$s.'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationName"]) ."</p>" ;
-		$bodyPlain=preg_replace('#<br\s*/?>#i', "\n", $body) ;
-		$bodyPlain=str_replace("</p>", "\n\n", $bodyPlain) ;
-		$bodyPlain=str_replace("</div>", "\n\n", $bodyPlain) ;
-		$bodyPlain=preg_replace("#\<a.+href\=[\"|\'](.+)[\"|\'].*\>.*\<\/a\>#U","$1",$bodyPlain); 
-		$bodyPlain=strip_tags($bodyPlain, '<a>');
-
-		$mail=new PHPMailer;
-		$mail->AddAddress($_SESSION[$guid]["organisationAdministratorEmail"], $_SESSION[$guid]["organisationAdministratorName"]);
-		$mail->SetFrom($_SESSION[$guid]["organisationEmail"], $_SESSION[$guid]["organisationName"]);
-		foreach ($emails AS $address) {
-			$mail->AddBCC($address);
+		//Notify non-completing tutors
+		foreach ($ids AS $id) {
+			$notificationText=_('You have not taken attendance yet today. Please do so as soon as possible.') ;
+			setNotification($connection2, $guid, $id[1], $notificationText, "Attendance", "/index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID=" . $id[0] . "&currentDate=" . dateConvertBack($guid, date('Y-m-d'))) ;
 		}
-		$mail->CharSet="UTF-8"; 
-		$mail->Encoding="base64" ;
-		$mail->IsHTML(true);                            
-		$mail->Subject=_('Incomplete Attendance Report') ;
-		$mail->Body=$body ;
-		$mail->AltBody=$bodyPlain ;
-		$mail->Send() ;
+		
+		//Notify admin {
+		$notificationText=_('An Attendance CLI script has run.') . " " . $report ;
+		setNotification($connection2, $guid, $_SESSION[$guid]["organisationAdministrator"], $notificationText, "Attendance", "/index.php?q=/modules/Attendance/report_rollGroupsNotRegistered_byDate.php") ;
 	}
 }
 

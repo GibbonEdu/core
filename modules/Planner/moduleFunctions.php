@@ -284,7 +284,7 @@ function makeBlock($guid, $connection2, $i, $mode="masterAdd", $title="", $type=
 	}
 }
 
-function getThread($guid, $connection2, $gibbonPlannerEntryID, $parent, $level, $self, $viewBy, $subView, $date, $class, $gibbonCourseClassID, $search, $role, $links=TRUE) {
+function getThread($guid, $connection2, $gibbonPlannerEntryID, $parent, $level, $self, $viewBy, $subView, $date, $class, $gibbonCourseClassID, $search, $role, $links=TRUE, $narrow=FALSE) {
 	$output="" ;
 	
 	try {
@@ -315,7 +315,11 @@ function getThread($guid, $connection2, $gibbonPlannerEntryID, $parent, $level, 
 				$classExtra="chatBoxFirst" ;
 			}
 			$output.="<a name='" . $rowDiscuss["gibbonPlannerEntryDiscussID"] . "'></a>" ; 
-			$output.="<table class='noIntBorder chatBox $classExtra' cellspacing='0' style='width: " . (755-($level*15)) . "px; margin-left: " . ($level*15) . "px'>" ;
+			$width=(752-($level*15)) ;
+			if ($narrow) {
+				$width=(705-($level*15)) ;
+			}
+			$output.="<table class='noIntBorder chatBox $classExtra' cellspacing='0' style='width: " . $width . "px; margin-left: " . ($level*15) . "px'>" ;
 				$output.="<tr>" ;
 					$output.="<td><i>". formatName($rowDiscuss["title"], $rowDiscuss["preferredName"], $rowDiscuss["surname"], $rowDiscuss["category"]) . " " . _('said') . "</i>:</td>" ;
 					$output.="<td style='text-align: right'><i>" . _('Posted at') . " <b>" . substr($rowDiscuss["timestamp"],11,5) . "</b> on <b>" . dateConvertBack($guid, substr($rowDiscuss["timestamp"],0,10)) . "</b></i></td>" ;
@@ -332,8 +336,6 @@ function getThread($guid, $connection2, $gibbonPlannerEntryID, $parent, $level, 
 						$output.="</td>" ;
 					}
 				$output.="</tr>" ;
-				
-				
 			$output.="</table>" ; 
 			
 			//Get any replies
@@ -687,11 +689,11 @@ function sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYe
 						$output.="<select name='gibbonCourseID' id='gibbonCourseID' style='width:161px'>" ;
 							$output.="<option value=''></option>" ;
 							try {
-								if ($highestAction=="Manage Units_all") {
+								if ($highestAction=="Unit Planner_all") {
 									$dataSelect=array("gibbonSchoolYearID"=>$gibbonSchoolYearID); 
 									$sqlSelect="SELECT gibbonCourse.nameShort AS course, gibbonSchoolYear.name AS year, gibbonCourseID FROM gibbonCourse JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY nameShort" ;
 								}
-								else if ($highestAction=="Manage Units_learningAreas") {
+								else if ($highestAction=="Unit Planner_learningAreas") {
 									$dataSelect=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
 									$sqlSelect="SELECT gibbonCourse.nameShort AS course, gibbonSchoolYear.name AS year, gibbonCourseID FROM gibbonCourse JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY gibbonCourse.nameShort" ;
 								}

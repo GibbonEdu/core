@@ -54,6 +54,10 @@ else {
 			else if ($addReturn=="fail2") {
 				$addReturnMessage=_("Your request failed due to a database error.") ;	
 			}
+			else if ($addReturn=="fail2a") {
+				$addReturnMessage=_("Your optional extra data failed to save.") ;	
+				$class="warning" ;
+			}
 			else if ($addReturn=="fail3") {
 				$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
 			}
@@ -65,6 +69,10 @@ else {
 			}
 			else if ($addReturn=="success0") {
 				$addReturnMessage=_("Your request was completed successfully. You can now add another record if you wish.") ;	
+				$class="success" ;
+			}
+			else if ($addReturn=="success1") {
+				$addReturnMessage=_("Your request was completed successfully. You can now add extra information below if you wish.") ;	
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;
@@ -79,9 +87,13 @@ else {
 		if ($step!=1 AND $step!=2) {
 			$step=1 ;
 		}
+		$gibbonBehaviourID=NULL ;
+		if (isset($_GET["gibbonBehaviourID"])) {
+			$gibbonBehaviourID=$_GET["gibbonBehaviourID"] ;
+		}
 		
 		//Step 1
-		if ($step==1) {
+		if ($step==1 OR $gibbonBehaviourID==NULL) {
 			print "<div class='linkTop'>" ;
 				$policyLink=getSettingByScope($connection2, "Behaviour", "policyLink") ;
 				if ($policyLink!="") {
@@ -96,7 +108,7 @@ else {
 			print "</div>" ;
 			?>
 		
-			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/behaviour_manage_add.php&step=2&gibbonPersonID=" . $_GET["gibbonPersonID"] . "&gibbonRollGroupID=" . $_GET["gibbonRollGroupID"] . "&gibbonYearGroupID=" . $_GET["gibbonYearGroupID"] . "&type=" .$_GET["type"] ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/behaviour_manage_addProcess.php?step=1&gibbonPersonID=" . $_GET["gibbonPersonID"] . "&gibbonRollGroupID=" . $_GET["gibbonRollGroupID"] . "&gibbonYearGroupID=" . $_GET["gibbonYearGroupID"] . "&type=" .$_GET["type"] ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr class='break'>
 						<td colspan=2> 
@@ -153,7 +165,7 @@ else {
 							<script type="text/javascript">
 								var date=new LiveValidation('date');
 								date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-							 </script>
+							</script>
 							 <script type="text/javascript">
 								$(function() {
 									$( "#date" ).datepicker();
@@ -220,7 +232,7 @@ else {
 										<script type="text/javascript">
 											var descriptor=new LiveValidation('descriptor');
 											descriptor.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-										 </script>
+										</script>
 										 <script type="text/javascript">
 											$("#descriptor").chainedTo("#type");
 										</script>
@@ -286,161 +298,122 @@ else {
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<?php print _('Next') ?>">
+							<input type="submit" value="<?php print _('Submit') ?>">
 						</td>
 					</tr>
 				</table>
 			</form>
 			<?php
 		}
-		else {
-			print "<div class='linkTop'>" ;
-				$policyLink=getSettingByScope($connection2, "Behaviour", "policyLink") ;
-				if ($policyLink!="") {
-					print "<a target='_blank' href='$policyLink'>" . _('View Behaviour Policy') . "</a>" ;
-				}
-				if ($_GET["gibbonPersonID"]!="" OR $_GET["gibbonRollGroupID"]!="" OR $_GET["gibbonYearGroupID"]!="" OR $_GET["type"]!="") {
-					if ($policyLink!="") {
-						print " | " ;
-					}
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage.php&gibbonPersonID=" . $_GET["gibbonPersonID"] . "&gibbonRollGroupID=" . $_GET["gibbonRollGroupID"] . "&gibbonYearGroupID=" . $_GET["gibbonYearGroupID"] . "&type=" .$_GET["type"] . "'>" . _('Back to Search Results') . "</a>" ;
-				}
-			print "</div>" ;
-		
-			
-			$gibbonPersonID=$_POST["gibbonPersonID"] ; 
-			$date=$_POST["date"] ; 
-			$type=$_POST["type"] ; 
-			$descriptor=NULL ;
-			if (isset($_POST["descriptor"])) {
-				$descriptor=$_POST["descriptor"] ; 
-			}
-			$level=NULL ;
-			if (isset($_POST["level"])) {
-				$level=$_POST["level"] ; 
-			}
-			$comment=$_POST["comment"] ; 
-			$followup=$_POST["followup"] ; 
-			
-			if ($gibbonPersonID=="" OR $date=="" OR $type=="" OR ($descriptor=="" AND $enableDescriptors=="Y")) {
+		else if ($step==2 AND $gibbonBehaviourID!=NULL) {
+			if ($gibbonBehaviourID=="") {
 				print "<div class='error'>" ;
 					print _("You have not specified one or more required parameters.") ;
 				print "</div>" ;
 			}
 			else {
-				?>
-				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/behaviour_manage_addProcess.php?gibbonPersonID=" . $_GET["gibbonPersonID"] . "&gibbonRollGroupID=" . $_GET["gibbonRollGroupID"] . "&gibbonYearGroupID=" . $_GET["gibbonYearGroupID"] . "&type=" .$_GET["type"] ?>">
-					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
-						<tr class='break'>
-							<td colspan=2> 
-								<h3><?php print _('Step 2') ?></h3>
-							</td>
-						</tr>
-						<tr>
-							<td> 
-								<b><?php print _('Student') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
-							</td>
-							<td class="right">
-								<?php
-								try {
-									$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID"=>$_POST["gibbonPersonID"]); 
-									$sqlSelect="SELECT * FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName" ;
-									$resultSelect=$connection2->prepare($sqlSelect);
-									$resultSelect->execute($dataSelect);
-								}
-								catch(PDOException $e) { 
-									print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-								}
-								if ($resultSelect->rowCount()==1) {
-									$rowSelect=$resultSelect->fetch() ;
-								}
-								
-								?>
-								<input type="hidden" name="gibbonPersonID" value="<?php print $gibbonPersonID ?>">
-								<input readonly name="name" id="name" value="<?php print formatName("", $rowSelect["preferredName"], $rowSelect["surname"], "Student") ?>" type="text" style="width: 300px">
-							</td>
-						</tr>
-						<tr>
-							<td> 
-								<b><?php print _('Date') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print _('Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
-							</td>
-							<td class="right">
-								<input readonly name="date" id="date" maxlength=10 value="<?php print $date ?>" type="text" style="width: 300px">
-							</td>
-						</tr>
-						<tr>
-							<td> 
-								<b><?php print _('Link To Lesson?') ?></b><br/>
-								<span style="font-size: 90%"><i><?php print _('From last 30 days') ?></i></span>
-							</td>
-							<td class="right">
-								<select name="gibbonPlannerEntryID" id="gibbonPlannerEntryID" style="width: 302px">
-									<option value=""></option>
-									<?php
-									$minDate=date("Y-m-d", (time()-(24*60*60*30))) ;
-									try {
-										$dataSelect=array("date1"=>date("Y-m-d", time()), "date2"=>$minDate, "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID"=>$gibbonPersonID); 
-										$sqlSelect="SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.gibbonCourseClassID, gibbonPlannerEntry.name AS lesson, gibbonPlannerEntryID, date, homework, homeworkSubmission FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonPlannerEntry ON (gibbonCourseClass.gibbonCourseClassID=gibbonPlannerEntry.gibbonCourseClassID) WHERE (date<=:date1 AND date>=:date2) AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Student' ORDER BY course, class, date, timeStart" ;
-										$resultSelect=$connection2->prepare($sqlSelect);
-										$resultSelect->execute($dataSelect);
-									}
-									catch(PDOException $e) { }
-									while ($rowSelect=$resultSelect->fetch()) {
-										$show=TRUE ;
-										if ($highestAction=="Manage Behaviour Records_my") {
-											try {
-												$dataShow=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonCourseClassID"=>$rowSelect["gibbonCourseClassID"]); 
-												$sqlShow="SELECT * FROM gibbonCourseClassPerson WHERE gibbonPersonID=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND role='Teacher'" ;
-												$resultShow=$connection2->prepare($sqlShow);
-												$resultShow->execute($dataShow);
-											}
-											catch(PDOException $e) { 
-												print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-											}
-											if ($resultShow->rowCount()!=1) {
-												$show=FALSE ;
-											}
+				//Check for existence of behaviour record
+				try {
+					$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonBehaviourID"=>$gibbonBehaviourID); 
+					$sql="SELECT * FROM gibbonBehaviour JOIN gibbonPerson ON (gibbonBehaviour.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonBehaviourID=:gibbonBehaviourID" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+				if ($result->rowCount()!=1) {
+					print "<div class='error'>" ;
+						print _("The specified record cannot be found.") ;
+					print "</div>" ; 
+				}
+				else {
+					$row=$result->fetch() ;
+					
+					?>
+					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/behaviour_manage_addProcess.php?step=2&gibbonPersonID=" . $_GET["gibbonPersonID"] . "&gibbonRollGroupID=" . $_GET["gibbonRollGroupID"] . "&gibbonYearGroupID=" . $_GET["gibbonYearGroupID"] . "&type=" .$_GET["type"] ?>">
+						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+							<tr class='break'>
+								<td colspan=2> 
+									<h3><?php print _('Step 2 (Optional)') ?></h3>
+								</td>
+							</tr>
+							<tr>
+								<td> 
+									<b><?php print _('Student') ?> *</b><br/>
+									<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+								</td>
+								<td class="right">
+									<input type="hidden" name="gibbonPersonID" value="<?php print $row["gibbonPersonID"] ?>">
+									<input readonly name="name" id="name" value="<?php print formatName("", $row["preferredName"], $row["surname"], "Student") ?>" type="text" style="width: 300px">
+								</td>
+							</tr>
+							<tr>
+								<td> 
+									<b><?php print _('Link To Lesson?') ?></b><br/>
+									<span style="font-size: 90%"><i><?php print _('From last 30 days') ?></i></span>
+								</td>
+								<td class="right">
+									<select name="gibbonPlannerEntryID" id="gibbonPlannerEntryID" style="width: 302px">
+										<option value=""></option>
+										<?php
+										$minDate=date("Y-m-d", (time()-(24*60*60*30))) ;
+										try {
+											$dataSelect=array("date1"=>date("Y-m-d", time()), "date2"=>$minDate, "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID"=>$row["gibbonPersonID"]); 
+											$sqlSelect="SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.gibbonCourseClassID, gibbonPlannerEntry.name AS lesson, gibbonPlannerEntryID, date, homework, homeworkSubmission FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonPlannerEntry ON (gibbonCourseClass.gibbonCourseClassID=gibbonPlannerEntry.gibbonCourseClassID) WHERE (date<=:date1 AND date>=:date2) AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Student' ORDER BY course, class, date, timeStart" ;
+											$resultSelect=$connection2->prepare($sqlSelect);
+											$resultSelect->execute($dataSelect);
 										}
-										if ($show==TRUE) {
-											$submission="" ;
-											if ($rowSelect["homework"]=="Y") {
-												$submission="HW" ;
-												if ($rowSelect["homeworkSubmission"]=="Y") {
-													$submission.="+OS" ;
+										catch(PDOException $e) { }
+										while ($rowSelect=$resultSelect->fetch()) {
+											$show=TRUE ;
+											if ($highestAction=="Manage Behaviour Records_my") {
+												try {
+													$dataShow=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonCourseClassID"=>$rowSelect["gibbonCourseClassID"]); 
+													$sqlShow="SELECT * FROM gibbonCourseClassPerson WHERE gibbonPersonID=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND role='Teacher'" ;
+													$resultShow=$connection2->prepare($sqlShow);
+													$resultShow->execute($dataShow);
+												}
+												catch(PDOException $e) { 
+													print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+												}
+												if ($resultShow->rowCount()!=1) {
+													$show=FALSE ;
 												}
 											}
-											if ($submission!="") {
-												$submission=" - " . $submission ;
+											if ($show==TRUE) {
+												$submission="" ;
+												if ($rowSelect["homework"]=="Y") {
+													$submission="HW" ;
+													if ($rowSelect["homeworkSubmission"]=="Y") {
+														$submission.="+OS" ;
+													}
+												}
+												if ($submission!="") {
+													$submission=" - " . $submission ;
+												}
+												print "<option value='" . $rowSelect["gibbonPlannerEntryID"] . "'>" . htmlPrep($rowSelect["course"]) . "." . htmlPrep($rowSelect["class"]) . " " . htmlPrep($rowSelect["lesson"]) . " - " . substr(dateConvertBack($guid, $rowSelect["date"]),0,5) . "$submission</option>" ;
 											}
-											print "<option value='" . $rowSelect["gibbonPlannerEntryID"] . "'>" . htmlPrep($rowSelect["course"]) . "." . htmlPrep($rowSelect["class"]) . " " . htmlPrep($rowSelect["lesson"]) . " - " . substr(dateConvertBack($guid, $rowSelect["date"]),0,5) . "$submission</option>" ;
 										}
-									}
-									?>			
-								</select>
-							</td>
-						</tr>
+										?>			
+									</select>
+								</td>
+							</tr>
 						
-						<tr>
-							<td>
-								<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
-							</td>
-							<td class="right">
-								<input type="hidden" name="type" value="<?php print $type ?>">
-								<input type="hidden" name="descriptor" value="<?php print $descriptor ?>">
-								<input type="hidden" name="level" value="<?php print $level ?>">
-								<input type="hidden" name="comment" value="<?php print $comment ?>">
-								<input type="hidden" name="followup" value="<?php print $followup ?>">
-								
-							
-								<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-								<input type="submit" value="<?php print _("Submit") ; ?>">
-							</td>
-						</tr>
-					</table>
-				</form>
-				<?php
+							<tr>
+								<td>
+									<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+								</td>
+								<td class="right">
+									<input type="hidden" name="gibbonBehaviourID" value="<?php print $gibbonBehaviourID ?>">
+									<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+									<input type="submit" value="<?php print _("Submit") ; ?>">
+								</td>
+							</tr>
+						</table>
+					</form>
+					<?php
+				}
 			}
 		}
 	}

@@ -55,7 +55,7 @@ if (($username=="") OR ($password=="")) {
 else {			
 	try {
 		$data=array("username"=>$username); 
-		$sql="SELECT gibbonPerson.*, nonCurrentYearLogin FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE ((username=:username) AND (status='Full') AND (canLogin='Y'))" ;
+		$sql="SELECT gibbonPerson.*, futureYearsLogin, pastYearsLogin FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE ((username=:username) AND (status='Full') AND (canLogin='Y'))" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}
@@ -63,6 +63,7 @@ else {
 	
 	//Test to see if username exists and is unique
 	if ($result->rowCount()!=1) {
+		setLog($connection2, $_SESSION[$guid]["gibbonSchoolYearIDCurrent"], NULL, NULL, "Login - Failed", array("username"=>$username, "reason"=>"Username does not exist"), $_SERVER["REMOTE_ADDR"]) ;
 		$URL.="?loginReturn=fail1" ;
 		header("Location: {$URL}");
 	}
@@ -80,13 +81,11 @@ else {
 			catch(PDOException $e) { }
 		
 			if ($row["failCount"]==3) {
-				$to=getSettingByScope($connection2, "System", "organisationAdministratorEmail") ;
-				$subject=$_SESSION[$guid]["organisationNameShort"] . " Failed Login Notification";
-				$body="Please note that someone has failed to login to account \"$username\" 3 times in a row.\n\n" . $_SESSION[$guid]["systemName"] . " Administrator";
-				$headers="From: " . $to ;
-				mail($to, $subject, $body, $headers) ;
+				$notificationText=sprintf(_('Someone failed to login to account "%1$s" 3 times in a row.'), $username) ;
+				setNotification($connection2, $guid, $_SESSION[$guid]["organisationAdministrator"], $notificationText, "System", "/index.php?q=/modules/User Admin/user_manage.php&search=$username") ;
 			}
 		
+			setLog($connection2, $_SESSION[$guid]["gibbonSchoolYearIDCurrent"], NULL, $row["gibbonPersonID"], "Login - Failed", array("username"=>$username, "reason"=>"Too many failed logins"), $_SERVER["REMOTE_ADDR"]) ;
 			$URL.="?loginReturn=fail6" ;
 			header("Location: {$URL}");
 		}
@@ -134,24 +133,28 @@ else {
 					$passwordTest=false ; 
 				}
 			
+				setLog($connection2, $_SESSION[$guid]["gibbonSchoolYearIDCurrent"], NULL, $row["gibbonPersonID"], "Login - Failed", array("username"=>$username, "reason"=>"Incorrect password"), $_SERVER["REMOTE_ADDR"]) ;
 				$URL.="?loginReturn=fail1" ;
 				header("Location: {$URL}");
 			}
 			else {			
 				if ($row["gibbonRoleIDPrimary"]=="" OR count(getRoleList($row["gibbonRoleIDAll"], $connection2))==0) {
 					//FAILED TO SET ROLES
+					setLog($connection2, $_SESSION[$guid]["gibbonSchoolYearIDCurrent"], NULL, $row["gibbonPersonID"], "Login - Failed", array("username"=>$username, "reason"=>"Failed to set role(s)"), $_SERVER["REMOTE_ADDR"]) ;
 					$URL.="?loginReturn=fail2" ;
 					header("Location: {$URL}");
 				}
 				else {
 					//Allow for non-current school years to be specified
 					if ($_POST["gibbonSchoolYearID"]!=$_SESSION[$guid]["gibbonSchoolYearID"]) {
-						if ($row["nonCurrentYearLogin"]!="Y") { //NOT ALLOWED DUE TO CONTROLS ON ROLE, KICK OUT!
+						if ($row["futureYearsLogin"]!="Y" AND $row["pastYearsLogin"]!="Y") { //NOT ALLOWED DUE TO CONTROLS ON ROLE, KICK OUT!
+							setLog($connection2, $_SESSION[$guid]["gibbonSchoolYearIDCurrent"], NULL, $row["gibbonPersonID"], "Login - Failed", array("username"=>$username, "reason"=>"Not permitted to access non-current school year"), $_SERVER["REMOTE_ADDR"]) ;
 							$URL.="?loginReturn=fail9" ;
 							header("Location: {$URL}");
 							exit() ;
 						}
-						else { //ALLOWED
+						else {
+							//Get details on requested school year
 							try {
 								$dataYear=array("gibbonSchoolYearID"=>$_POST["gibbonSchoolYearID"]); 
 								$sqlYear="SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID" ;
@@ -165,12 +168,26 @@ else {
 							if (!($resultYear->rowCount()==1)) {
 								die("Configuration Error: there is a problem accessing the current Academic Year from the database.") ;
 							}
-							//Else get schoolYearID
+							//Else get year details
 							else {
 								$rowYear=$resultYear->fetch() ;
-								$_SESSION[$guid]["gibbonSchoolYearID"]=$rowYear["gibbonSchoolYearID"] ;
-								$_SESSION[$guid]["gibbonSchoolYearName"]=$rowYear["name"] ;
-								$_SESSION[$guid]["gibbonSchoolYearSequenceNumber"]=$rowYear["sequenceNumber"] ;
+								if ($row["futureYearsLogin"]!="Y" AND $_SESSION[$guid]["gibbonSchoolYearSequenceNumber"]<$rowYear["sequenceNumber"]) { //POSSIBLY NOT ALLOWED DUE TO CONTROLS ON ROLE, CHECK YEAR
+									setLog($connection2, $_SESSION[$guid]["gibbonSchoolYearIDCurrent"], NULL, $row["gibbonPersonID"], "Login - Failed", array("username"=>$username, "reason"=>"Not permitted to access non-current school year"), $_SERVER["REMOTE_ADDR"]) ;
+									$URL.="?loginReturn=fail9" ;
+									header("Location: {$URL}");
+									exit() ;
+								}
+								else if ($row["pastYearsLogin"]!="Y" AND $_SESSION[$guid]["gibbonSchoolYearSequenceNumber"]>$rowYear["sequenceNumber"]) { //POSSIBLY NOT ALLOWED DUE TO CONTROLS ON ROLE, CHECK YEAR
+									setLog($connection2, $_SESSION[$guid]["gibbonSchoolYearIDCurrent"], NULL, $row["gibbonPersonID"], "Login - Failed", array("username"=>$username, "reason"=>"Not permitted to access non-current school year"), $_SERVER["REMOTE_ADDR"]) ;
+									$URL.="?loginReturn=fail9" ;
+									header("Location: {$URL}");
+									exit() ;
+								}
+								else { //ALLOWED
+									$_SESSION[$guid]["gibbonSchoolYearID"]=$rowYear["gibbonSchoolYearID"] ;
+									$_SESSION[$guid]["gibbonSchoolYearName"]=$rowYear["name"] ;
+									$_SESSION[$guid]["gibbonSchoolYearSequenceNumber"]=$rowYear["sequenceNumber"] ;
+								}
 							}
 						}
 					}
@@ -195,7 +212,6 @@ else {
 					$_SESSION[$guid]["gibbonRoleIDCurrentCategory"]=getRoleCategory($row["gibbonRoleIDPrimary"], $connection2)  ;
 					$_SESSION[$guid]["gibbonRoleIDAll"]=getRoleList($row["gibbonRoleIDAll"], $connection2) ;
 					$_SESSION[$guid]["image_240"]=$row["image_240"] ;
-					$_SESSION[$guid]["image_75"]=$row["image_75"] ;
 					$_SESSION[$guid]["lastTimestamp"]=$row["lastTimestamp"] ;
 					$_SESSION[$guid]["calendarFeedPersonal"]=$row["calendarFeedPersonal"] ;
 					$_SESSION[$guid]["viewCalendarSchool"]=$row["viewCalendarSchool"] ;
@@ -208,7 +224,8 @@ else {
 					$_SESSION[$guid]["gibboni18nIDPersonal"]=$row["gibboni18nIDPersonal"] ;
 					$_SESSION[$guid]["googleAPIRefreshToken"]=$row["googleAPIRefreshToken"] ;
 					$_SESSION[$guid]['googleAPIAccessToken']=NULL ; //Set only when user logs in with Google
-					$_SESSION[$guid]['receiveNoticiationEmails']=$row["receiveNoticiationEmails"] ;
+					$_SESSION[$guid]['receiveNotificationEmails']=$row["receiveNotificationEmails"] ;
+					$_SESSION[$guid]['gibbonHouseID']=$row["gibbonHouseID"] ;
 					
 					
 					//Allow for non-system default language to be specified from login form
@@ -263,6 +280,7 @@ else {
 					else {
 						$URL="./index.php" ;
 					}		
+					setLog($connection2, $_SESSION[$guid]["gibbonSchoolYearIDCurrent"], NULL, $row["gibbonPersonID"], "Login - Success", array("username"=>$username), $_SERVER["REMOTE_ADDR"]) ;
 					header("Location: {$URL}");		
 				}
 			}

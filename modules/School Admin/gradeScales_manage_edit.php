@@ -114,7 +114,7 @@ else {
 						<script type="text/javascript">
 							var name2=new LiveValidation('name');
 							name2.add(Validate.Presence);
-						 </script>
+						</script>
 					</td>
 				</tr>
 				<tr>
@@ -127,7 +127,7 @@ else {
 						<script type="text/javascript">
 							var nameShort=new LiveValidation('nameShort');
 							nameShort.add(Validate.Presence);
-						 </script>
+						</script>
 					</td>
 				</tr>
 				<tr>
@@ -140,7 +140,7 @@ else {
 						<script type="text/javascript">
 							var usage=new LiveValidation('usage');
 							usage.add(Validate.Presence);
-						 </script>
+						</script>
 					</td>
 				</tr>
 				<tr>
@@ -244,6 +244,9 @@ else {
 							print _("Sequence Number") ;
 						print "</th>" ;
 						print "<th>" ;
+							print _("Is Default?") ;
+						print "</th>" ;
+						print "<th>" ;
 							print _("Actions") ;
 						print "</th>" ;
 					print "</tr>" ;
@@ -268,6 +271,9 @@ else {
 							print "</td>" ;
 							print "<td>" ;
 								print $row["sequenceNumber"] ;
+							print "</td>" ;
+							print "<td>" ;
+								print ynExpander($row["isDefault"]) ;
 							print "</td>" ;
 							print "<td>" ;
 								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/gradeScales_manage_edit_grade_edit.php&gibbonScaleGradeID=" . $row["gibbonScaleGradeID"] . "&gibbonScaleID=$gibbonScaleID'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;

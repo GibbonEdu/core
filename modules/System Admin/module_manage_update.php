@@ -121,7 +121,7 @@ else {
 				print "</h3>" ;
 				print "<ol>" ;
 					print "<li>" . sprintf(_('You are currently using %1$s v%2$s.'),  htmlPrep($row["name"]), $versionCode) . "</i></li>" ;
-					print "<li>" . sprintf(_('Check %1$s for a newer version of this module.'), "<a target='_blank' href='http://www.gibbonedu.org'>gibbonedu.org</a>") . "</li>" ;
+					print "<li>" . sprintf(_('Check %1$s for a newer version of this module.'), "<a target='_blank' href='http://gibbonedu.org/extend'>gibbonedu.org</a>") . "</li>" ;
 					print "<li>" . _('Download the latest version, and unzip it on your computer.') . "</li>" ;
 					print "<li>" . _('Use an FTP client to upload the new files to your server\'s modules folder.') . "</li>" ;
 					print "<li>" . _('Reload this page and follow the instructions to update your database to the latest version.') . "</li>" ;

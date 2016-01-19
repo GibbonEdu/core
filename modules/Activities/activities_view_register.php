@@ -369,7 +369,7 @@ else {
 															<script type="text/javascript">
 																var gibbonActivityIDBackup=new LiveValidation('gibbonActivityIDBackup');
 																gibbonActivityIDBackup.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-															 </script>
+															</script>
 														</td>
 													</tr>
 													<?php

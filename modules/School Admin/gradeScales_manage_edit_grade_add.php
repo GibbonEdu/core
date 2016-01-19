@@ -106,7 +106,7 @@ else {
 							<script type="text/javascript">
 								var value=new LiveValidation('value');
 								value.add(Validate.Presence);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -119,7 +119,7 @@ else {
 							<script type="text/javascript">
 								var descriptor=new LiveValidation('descriptor');
 								descriptor.add(Validate.Presence);
-							 </script>
+							</script>
 						</td>
 					</tr>
 					<tr>
@@ -132,7 +132,19 @@ else {
 							<script type="text/javascript">
 								var sequenceNumber=new LiveValidation('sequenceNumber');
 								sequenceNumber.add(Validate.Presence);
-							 </script>
+							</script>
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<b><?php print _('Is Default?') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print _('Preselects this option when using this grade scale in appropriate contexts.') ?><br/></i></span>
+						</td>
+						<td class="right">
+							<select name="isDefault" id="isDefault" style="width: 302px">
+								<option value="N"><?php print ynExpander('N') ?></option>
+								<option value="Y"><?php print ynExpander('Y') ?></option>
+							</select>
 						</td>
 					</tr>
 					<tr>

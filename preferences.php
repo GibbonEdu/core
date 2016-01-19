@@ -130,11 +130,11 @@ if ($result->rowCount()==1) {
 				<span style="font-size: 90%"><i></i></span>
 			</td>
 			<td class="right">
-				<input name="password" id="password" maxlength=20 value="" type="password" style="width: 300px">
+				<input name="password" id="password" maxlength=30 value="" type="password" style="width: 300px">
 				<script type="text/javascript">
 					var password=new LiveValidation('password');
 					password.add(Validate.Presence);
-				 </script>
+				</script>
 			</td>
 		</tr>
 		<tr>
@@ -143,7 +143,7 @@ if ($result->rowCount()==1) {
 				<span style="font-size: 90%"><i></i></span>
 			</td>
 			<td class="right">
-				<input name="passwordNew" id="passwordNew" maxlength=20 value="" type="password" style="width: 300px">
+				<input name="passwordNew" id="passwordNew" maxlength=30 value="" type="password" style="width: 300px">
 				<script type="text/javascript">
 					var passwordNew=new LiveValidation('passwordNew');
 					passwordNew.add(Validate.Presence);
@@ -165,7 +165,7 @@ if ($result->rowCount()==1) {
 						print "passwordNew.add( Validate.Length, { minimum: " . $minLength . "} );" ;
 					}
 					?>
-				 </script>
+				</script>
 			</td>
 		</tr>
 		<tr>
@@ -174,12 +174,12 @@ if ($result->rowCount()==1) {
 				<span style="font-size: 90%"><i></i></span>
 			</td>
 			<td class="right">
-				<input name="passwordConfirm" id="passwordConfirm" maxlength=20 value="" type="password" style="width: 300px">
+				<input name="passwordConfirm" id="passwordConfirm" maxlength=30 value="" type="password" style="width: 300px">
 				<script type="text/javascript">
 					var passwordConfirm=new LiveValidation('passwordConfirm');
 					passwordConfirm.add(Validate.Presence);
 					passwordConfirm.add(Validate.Confirmation, { match: 'passwordNew' } );
-				 </script>
+				</script>
 			</td>
 		</tr>
 		<tr>
@@ -310,15 +310,15 @@ if ($result->rowCount()==1) {
 				<span style="font-size: 90%"><i><?php print _("Notifications can always be viewed on screen.") ; ?></i></span>
 			</td>
 			<td class="right">
-				<select name="receiveNoticiationEmails" id="receiveNoticiationEmails" style="width: 302px">
+				<select name="receiveNotificationEmails" id="receiveNotificationEmails" style="width: 302px">
 					<?php
 					print "<option " ;
-					if ($_SESSION[$guid]["receiveNoticiationEmails"]=="N") {
+					if ($_SESSION[$guid]["receiveNotificationEmails"]=="N") {
 						print " selected " ;
 					}
 					print "value='N'>" . ynExpander('N') . "</option>" ;
 					print "<option " ;
-					if ($_SESSION[$guid]["receiveNoticiationEmails"]=="Y") {
+					if ($_SESSION[$guid]["receiveNotificationEmails"]=="Y") {
 						print " selected " ;
 					}
 					print "value='Y'>" . ynExpander('Y') . "</option>" ;

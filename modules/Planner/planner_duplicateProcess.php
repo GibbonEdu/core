@@ -42,8 +42,12 @@ if ($viewBy!="date" AND $viewBy!="class") {
 	$viewBy="date" ;
 }
 $gibbonCourseClassID=$_POST["gibbonCourseClassID"] ;
+$gibbonSchoolYearID=$_POST["gibbonSchoolYearID"] ;
+$gibbonPlannerEntryID_org=$_POST["gibbonPlannerEntryID_org"] ;
 $date=dateConvert($guid, $_POST["date"]) ;
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/planner_duplicate.php&gibbonPlannerEntryID=$gibbonPlannerEntryID" ;
+$duplicateReturnYear="current" ;
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/planner_duplicate.php&gibbonPlannerEntryID=$gibbonPlannerEntryID_org" ;
+
 
 //Params to pass back (viewBy + date or classID)
 if ($viewBy=="date") {
@@ -67,8 +71,8 @@ else {
 	}
 	else {
 		//Proceed!
-		//Check if school year specified
-		if ($gibbonPlannerEntryID=="" OR ($viewBy=="class" AND $gibbonCourseClassID=="Y")) {
+		//Check if legitimate year/class selected
+		if ($gibbonPlannerEntryID=="" OR $gibbonSchoolYearID=="" OR $gibbonCourseClassID=="" OR ($viewBy=="class" AND $gibbonCourseClassID=="Y")) {
 			//Fail1
 			$URL.="&updateReturn=fail1$params" ;
 			header("Location: {$URL}");
@@ -76,12 +80,12 @@ else {
 		else {
 			try {
 				if ($highestAction=="Lesson Planner_viewEditAllClasses" ) {
-					$data=array("gibbonPlannerEntryID"=>$gibbonPlannerEntryID); 
-					$sql="SELECT *, gibbonPlannerEntry.description AS description FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID" ;
+					$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPlannerEntryID"=>$gibbonPlannerEntryID_org); 
+					$sql="SELECT *, gibbonPlannerEntry.description AS description FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID" ;
 				}
 				else {
-					$data=array("gibbonPlannerEntryID"=>$gibbonPlannerEntryID, "gibbonPersonID"=> $_SESSION[$guid]["gibbonPersonID"]); 
-					$sql="SELECT *, gibbonPlannerEntry.description AS description FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonPlannerEntryID=:gibbonPlannerEntryID" ;
+					$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPlannerEntryID"=>$gibbonPlannerEntryID_org, "gibbonPersonID"=> $_SESSION[$guid]["gibbonPersonID"]); 
+					$sql="SELECT *, gibbonPlannerEntry.description AS description FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID" ;
 				}
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
@@ -107,6 +111,30 @@ else {
 				$timeEnd=$_POST["timeEnd"] ;
 				$summary=$row["summary"] ;
 				$description=$row["description"] ;
+				//Add to smart blocks to description if copying to another year
+				if ($gibbonSchoolYearID!=$_SESSION[$guid]["gibbonSchoolYearID"] OR @$_POST["keepUnit"]!="Y") {
+					try {
+						$dataBlocks=array("gibbonPlannerEntryID"=>$gibbonPlannerEntryID); 
+						$sqlBlocks="SELECT * FROM gibbonUnitClassBlock WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPlannerEntryID IS NOT NULL" ;
+						$resultBlocks=$connection2->prepare($sqlBlocks);
+						$resultBlocks->execute($dataBlocks);
+					}
+					catch(PDOException $e) { 
+						$partialFail=true ;
+					}
+					while ($rowBlocks=$resultBlocks->fetch()) {
+						$description.="<h2>" . $rowBlocks["title"] . "</h2>" ;
+						$description.=$rowBlocks["contents"] ;
+					 }
+					 
+					try {
+						$dataPlannerUpdate=array("gibbonPlannerEntryID"=>$gibbonPlannerEntryID, "description"=>$description); 
+						$sqlPlannerUpdate="UPDATE gibbonPlannerEntry SET description=:description WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID" ;
+						$resultPlannerUpdate=$connection2->prepare($sqlPlannerUpdate);
+						$resultPlannerUpdate->execute($dataPlannerUpdate);
+					}
+					catch(PDOException $e) { }
+				}
 				
 				$keepUnit=NULL ;
 				$gibbonUnitClassID=NULL ;
@@ -299,7 +327,13 @@ else {
 					}
 					else {
 						//Success 0
-						$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/planner_edit.php&gibbonPlannerEntryID=$AI" ;
+						if ($gibbonSchoolYearID==$_SESSION[$guid]["gibbonSchoolYearID"]) {
+							$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/planner_edit.php&gibbonPlannerEntryID=$AI" ;
+							$URL.="&duplicateReturn=success0$params" ;
+						}
+						else {
+							$URL.="&updateReturn=success0$params" ;
+						}
 						$URL.="&duplicateReturn=success0$params" ;
 						header("Location: {$URL}");
 					}

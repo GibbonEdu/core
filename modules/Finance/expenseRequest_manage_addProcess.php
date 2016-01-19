@@ -41,12 +41,14 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 $gibbonFinanceBudgetCycleID=$_POST["gibbonFinanceBudgetCycleID"] ;
 $gibbonFinanceBudgetID=$_POST["gibbonFinanceBudgetID"] ;
 $status=$_POST["status"] ;
+$gibbonFinanceBudgetID2=$_POST["gibbonFinanceBudgetID2"] ;
+$status2=$_POST["status2"] ;
 		
-if ($gibbonFinanceBudgetCycleID=="" OR $gibbonFinanceBudgetID=="" OR $status=="") {
+if ($gibbonFinanceBudgetCycleID=="" OR $gibbonFinanceBudgetID=="" OR $status=="" OR $status!="Requested") {
 	print "Fatal error loading this page!" ;
 }
 else {
-	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/expenseRequest_manage_add.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&gibbonFinanceBudgetID=$gibbonFinanceBudgetID&status=$status" ;
+	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/expenseRequest_manage_add.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2&status2=$status2" ;
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Finance/expenseRequest_manage_add.php")==FALSE) {
 		//Fail 0
@@ -57,10 +59,11 @@ else {
 		$title=$_POST["title"] ;
 		$body=$_POST["body"] ;
 		$cost=$_POST["cost"] ;
+		$countAgainstBudget=$_POST["countAgainstBudget"] ;
 		$purchaseBy=$_POST["purchaseBy"] ;
 		$purchaseDetails=$_POST["purchaseDetails"] ;
 			
-		if ($title=="" OR $body=="" OR $cost=="" OR $purchaseBy=="") {
+		if ($title=="" OR $cost=="" OR $purchaseBy=="" OR $countAgainstBudget=="") {
 			//Fail 3
 			$URL.="&addReturn=fail3" ;
 			header("Location: {$URL}");
@@ -91,8 +94,8 @@ else {
 			
 			//Write to database
 			try {
-				$data=array("gibbonFinanceBudgetCycleID"=>$gibbonFinanceBudgetCycleID, "gibbonFinanceBudgetID"=>$gibbonFinanceBudgetID, "title"=>$title, "body"=>$body, "status"=>$status, "statusApprovalBudgetCleared"=>$statusApprovalBudgetCleared, "cost"=>$cost, "purchaseBy"=>$purchaseBy, "purchaseDetails"=>$purchaseDetails, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"]); 
-				$sql="INSERT INTO gibbonFinanceExpense SET gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID, gibbonFinanceBudgetID=:gibbonFinanceBudgetID, title=:title, body=:body, status=:status, statusApprovalBudgetCleared=:statusApprovalBudgetCleared, cost=:cost, purchaseBy=:purchaseBy, purchaseDetails=:purchaseDetails, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestampCreator='" . date("Y-m-d H:i:s") . "'" ;
+				$data=array("gibbonFinanceBudgetCycleID"=>$gibbonFinanceBudgetCycleID, "gibbonFinanceBudgetID"=>$gibbonFinanceBudgetID, "title"=>$title, "body"=>$body, "status"=>$status, "statusApprovalBudgetCleared"=>$statusApprovalBudgetCleared, "cost"=>$cost, "countAgainstBudget"=>$countAgainstBudget, "purchaseBy"=>$purchaseBy, "purchaseDetails"=>$purchaseDetails, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"]); 
+				$sql="INSERT INTO gibbonFinanceExpense SET gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID, gibbonFinanceBudgetID=:gibbonFinanceBudgetID, title=:title, body=:body, status=:status, statusApprovalBudgetCleared=:statusApprovalBudgetCleared, cost=:cost, countAgainstBudget=:countAgainstBudget, purchaseBy=:purchaseBy, purchaseDetails=:purchaseDetails, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestampCreator='" . date("Y-m-d H:i:s") . "'" ;
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
 			}
@@ -103,7 +106,7 @@ else {
 				break ;
 			}
 			
-			$gibbonFinanceExpenseID=$connection2->lastInsertID() ;
+			$gibbonFinanceExpenseID=str_pad($connection2->lastInsertID(), 14, "0", STR_PAD_LEFT) ;
 			
 			//Add log entry
 			try {

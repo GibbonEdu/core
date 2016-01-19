@@ -109,7 +109,7 @@ else {
 							if ($highestAction=="Update Medical Data_any") {
 								try {
 									$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-									$sqlSelect="SELECT surname, preferredName, gibbonPerson.gibbonPersonID FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' ORDER BY surname, preferredName" ;
+									$sqlSelect="SELECT username, surname, preferredName, gibbonPerson.gibbonPersonID FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' ORDER BY surname, preferredName" ;
 									$resultSelect=$connection2->prepare($sqlSelect);
 									$resultSelect->execute($dataSelect);
 								}
@@ -117,10 +117,10 @@ else {
 								print "<option value=''></option>" ;
 								while ($rowSelect=$resultSelect->fetch()) {
 									if ($gibbonPersonID==$rowSelect["gibbonPersonID"]) {
-										print "<option selected value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . "</option>" ;
+										print "<option selected value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . " (" . $rowSelect["username"] . ")</option>" ;
 									}
 									else {
-										print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . "</option>" ;
+										print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . " (" . $rowSelect["username"] . ")</option>" ;
 									}
 								}
 							}
@@ -386,7 +386,7 @@ else {
 												<script type="text/javascript">
 													var name<?php print $count ?>=new LiveValidation('name<?php print $count ?>');
 													name<?php print $count ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-												 </script>	
+												</script>	
 											</td>
 										</tr>
 										<tr>
@@ -417,7 +417,7 @@ else {
 												<script type="text/javascript">
 													var gibbonAlertLevelID<?php print $count ?>=new LiveValidation('gibbonAlertLevelID<?php print $count ?>');
 													gibbonAlertLevelID<?php print $count ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
-												 </script>	
+												</script>	
 											</td>
 										</tr>
 										<tr>
@@ -462,7 +462,7 @@ else {
 												<script type="text/javascript">
 													var lastEpisode<?php print $count ?>=new LiveValidation('lastEpisode<?php print $count ?>');
 													lastEpisode<?php print $count ?>.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-												 </script>
+												</script>
 												 <script type="text/javascript">
 													$(function() {
 														$( "#lastEpisode<?php print $count ?>" ).datepicker();
@@ -501,11 +501,33 @@ else {
 									</td>
 								</tr>
 								<tr>
+									<td class='right' colspan=2> 
+										<script type="text/javascript">
+											/* Advanced Options Control */
+											$(document).ready(function(){
+												$("#addCondition").click(function(){
+													if ($('input[name=addCondition]:checked').val()=="Yes" ) {
+														$(".addConditionRow").slideDown("fast", $(".addConditionRow").css("display","table-row"));	
+														namex.enable();
+														gibbonAlertLevelIDx.enable();
+													} 
+													else {
+														$(".addConditionRow").slideUp("fast"); 	
+														namex.disable();
+														gibbonAlertLevelIDx.disable();
+													}
+												 });
+											});
+										</script>
+										<span style='font-weight: bold; font-style: italic'><?php print _('Check the box to add a new medical condition') ?> <input id='addCondition' name='addCondition' type='checkbox' value='Yes'/></span>
+									</td>
+								</tr>
+								<tr style='display: none' class='addConditionRow'>
 									<td> 
 										<b><?php print _('Condition Name') ?> *</b><br/>
 									</td>
 									<td class="right">
-										<select style="width: 302px" name="name" id="name">
+										<select style="width: 302px" name="name" id="namex">
 											<?php
 											try {
 												$dataSelect=array(); 
@@ -514,7 +536,7 @@ else {
 												$resultSelect->execute($dataSelect);
 											}
 											catch(PDOException $e) { }
-											print "<option value=''>Please select...</option>" ;
+											print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
 											while ($rowSelect=$resultSelect->fetch()) {
 												 if ($rowCond["name"]==$rowSelect["name"]) {
 													print "<option selected value='" . htmlPrep($rowSelect["name"]) . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
@@ -525,74 +547,82 @@ else {
 											}
 											?>				
 										</select>
+										<script type="text/javascript">
+											var name2=new LiveValidation('name2');
+											name2.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+										</script>
 									</td>
 								</tr>
-								<tr>
+								<tr style='display: none' class='addConditionRow'>
 									<td> 
 										<b><?php print _('Risk') ?> *</b><br/>
 									</td>
 									<td class="right">
-										<select name="gibbonAlertLevelID" id="gibbonAlertLevelID" style="width: 302px">
-										<option value='Please select...'><?php print _('Please select...') ?></option>
-										<?php
-										try {
-											$dataSelect=array(); 
-											$sqlSelect="SELECT * FROM gibbonAlertLevel ORDER BY sequenceNumber" ;
-											$resultSelect=$connection2->prepare($sqlSelect);
-											$resultSelect->execute($dataSelect);
-										}
-										catch(PDOException $e) { }
+										<select name="gibbonAlertLevelID" id="gibbonAlertLevelIDx" style="width: 302px">
+											<option value='Please select...'><?php print _('Please select...') ?></option>
+											<?php
+											try {
+												$dataSelect=array(); 
+												$sqlSelect="SELECT * FROM gibbonAlertLevel ORDER BY sequenceNumber" ;
+												$resultSelect=$connection2->prepare($sqlSelect);
+												$resultSelect->execute($dataSelect);
+											}
+											catch(PDOException $e) { }
 										
-										while ($rowSelect=$resultSelect->fetch()) {
-											print "<option value='" . $rowSelect["gibbonAlertLevelID"] . "'>" . _($rowSelect["name"]) . "</option>" ; 
-										}
-										?>
-									</select>
+											while ($rowSelect=$resultSelect->fetch()) {
+												print "<option value='" . $rowSelect["gibbonAlertLevelID"] . "'>" . _($rowSelect["name"]) . "</option>" ; 
+											}
+											?>
+										</select>
+										<script type="text/javascript">
+											var gibbonAlertLevelID=new LiveValidation('gibbonAlertLevelID');
+											gibbonAlertLevelID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+										</script>
 									</td>
 								</tr>
-								<tr>
+								<tr style='display: none' class='addConditionRow'>
 									<td> 
 										<b><?php print _('Triggers') ?></b><br/>
 									</td>
 									<td class="right">
-										<input name="triggers" id="triggers" maxlength=255 value="<?php print htmlPrep($rowCond["triggers"]) ?>" type="text" style="width: 300px">
+										<input name="triggers" id="triggers" maxlength=255 value="" type="text" style="width: 300px">
 									</td>
 								</tr>
-								<tr>
+								<tr style='display: none' class='addConditionRow'>
 									<td> 
 										<b><?php print _('Reaction') ?></b><br/>
 									</td>
 									<td class="right">
-										<input name="reaction" id="reaction" maxlength=255 value="<?php print htmlPrep($rowCond["reaction"]) ?>" type="text" style="width: 300px">
+										<input name="reaction" id="reaction" maxlength=255 value="" type="text" style="width: 300px">
 									</td>
 								</tr>
-								<tr>
+								<tr style='display: none' class='addConditionRow'>
 									<td> 
 										<b><?php print _('Response') ?></b><br/>
 									</td>
 									<td class="right">
-										<input name="response" id="response" maxlength=255 value="<?php print htmlPrep($rowCond["response"]) ?>" type="text" style="width: 300px">
+										<input name="response" id="response" maxlength=255 value="" type="text" style="width: 300px">
 									</td>
 								</tr>
-								<tr>
+								<tr style='display: none' class='addConditionRow'>
 									<td> 
 										<b><?php print _('Medication') ?></b><br/>
 									</td>
 									<td class="right">
-										<input name="medication" id="medication" maxlength=255 value="<?php print htmlPrep($rowCond["medication"]) ?>" type="text" style="width: 300px">
+										<input name="medication" id="medication" maxlength=255 value="" type="text" style="width: 300px">
 									</td>
 								</tr>
-								<tr>
+								<tr style='display: none' class='addConditionRow'>
 									<td> 
 										<b><?php print _('Last Episode Date') ?></b><br/>
 										<span style="font-size: 90%"><i><?php print _('Format:') . " " . $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 									</td>
 									<td class="right">
-										<input name="lastEpisode" id="lastEpisode" maxlength=10 value="<?php print dateConvertBack($guid, $rowCond["lastEpisode"]) ?>" type="text" style="width: 300px">
+										<input name="lastEpisode" id="lastEpisode" maxlength=10 value="" type="text" style="width: 300px">
 										<script type="text/javascript">
 											var lastEpisode=new LiveValidation('lastEpisode');
 											lastEpisode.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-										 </script>
+										</script>
 										 <script type="text/javascript">
 											$(function() {
 												$( "#lastEpisode" ).datepicker();
@@ -600,20 +630,20 @@ else {
 										</script>
 									</td>
 								</tr>
-								<tr>
+								<tr style='display: none' class='addConditionRow'>
 									<td> 
 										<b><?php print _('Last Episode Treatment') ?></b><br/>
 									</td>
 									<td class="right">
-										<input name="lastEpisodeTreatment" id="lastEpisodeTreatment" maxlength=255 value="<?php print htmlPrep($rowCond["lastEpisodeTreatment"]) ?>" type="text" style="width: 300px">
+										<input name="lastEpisodeTreatment" id="lastEpisodeTreatment" maxlength=255 value="" type="text" style="width: 300px">
 									</td>
 								</tr>
-								<tr>
+								<tr style='display: none' class='addConditionRow'>
 									<td> 
 										<b><?php print _('Comment') ?></b><br/>
 									</td>
 									<td class="right">
-										<textarea name="comment" id="comment" rows=8 style="width: 300px"><?php print $rowCond["comment"] ?></textarea>
+										<textarea name="comment" id="comment" rows=8 style="width: 300px"></textarea>
 									</td>
 								</tr>
 								<tr>

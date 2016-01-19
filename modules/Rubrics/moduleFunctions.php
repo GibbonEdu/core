@@ -277,7 +277,6 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 				}
 			}
 			
-			
 			if ($mark==TRUE) {
 				print "<p>" ;
 					print _("Click on any of the cells below to highlight them. Data is saved automatically after each click.") ;

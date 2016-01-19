@@ -198,8 +198,8 @@ else {
 					
 					//Confirm access to this student
 					try {
-						$dataChild=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-						$sqlChild="SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonFamilyChild.gibbonPersonID=$gibbonPersonID AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'" ;
+						$dataChild=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonID"=>$gibbonPersonID); 
+						$sqlChild="SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'" ;
 						$resultChild=$connection2->prepare($sqlChild);
 						$resultChild->execute($dataChild);
 					}
@@ -359,16 +359,8 @@ else {
 														}
 													print "</td>" ;
 													print "<td>" ;
-														try {
-															$dataLike=array(); 
-															$sqlLike="SELECT * FROM gibbonPlannerEntryLike WHERE gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . " AND gibbonPersonID=" . $_SESSION[$guid]["gibbonPersonID"] ;
-															$resultLike=$connection2->prepare($sqlLike);
-															$resultLike->execute($dataLike);
-														}
-														catch(PDOException $e) { 
-															print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-														}
-														if ($resultLike->rowCount()!=1) {
+														$likesGiven=countLikesByContextAndGiver($connection2, "Planner", "gibbonPlannerEntryID", $row["gibbonPlannerEntryID"], $_SESSION[$guid]["gibbonPersonID"]) ;
+														if ($likesGiven!=1) {
 															print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/plannerProcess.php?gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&address=" . $_GET["q"] . "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date&gibbonPersonID=$gibbonPersonID'><img src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_off.png'></a>" ;
 														}
 														else {
@@ -546,16 +538,8 @@ else {
 															}
 														print "</td>" ;
 														print "<td>" ;
-															try {
-																$dataLike=array(); 
-																$sqlLike="SELECT * FROM gibbonPlannerEntryLike WHERE gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . " AND gibbonPersonID=" . $_SESSION[$guid]["gibbonPersonID"] ;
-																$resultLike=$connection2->prepare($sqlLike);
-																$resultLike->execute($dataLike);
-															}
-															catch(PDOException $e) { 
-																print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-															}
-															if ($resultLike->rowCount()!=1) {
+															$likesGiven=countLikesByContextAndGiver($connection2, "Planner", "gibbonPlannerEntryID", $row["gibbonPlannerEntryID"], $_SESSION[$guid]["gibbonPersonID"]) ;
+															if ($likesGiven!=1) {
 																print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/plannerProcess.php?gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&address=" . $_GET["q"] . "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date&gibbonPersonID=$gibbonPersonID'><img src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_off.png'></a>" ;
 															}
 															else {
@@ -645,7 +629,7 @@ else {
 					try {
 						if ($highestAction=="Lesson Planner_viewEditAllClasses" ) {
 							$data=array("date"=>$date); 
-							$sql="SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, NULL AS role, homeworkSubmission, homeworkCrowdAssess, date, gibbonPlannerEntry.gibbonCourseClassID, NULL AS myHomeworkDueDateTime FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE date=:date ORDER BY date, timeStart" ; 
+							$sql="SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, 'Teacher' AS role, homeworkSubmission, homeworkCrowdAssess, date, gibbonPlannerEntry.gibbonCourseClassID, NULL AS myHomeworkDueDateTime FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE date=:date ORDER BY date, timeStart" ; 
 						}
 						else if ($highestAction=="Lesson Planner_viewMyClasses" OR $highestAction=="Lesson Planner_viewAllEditMyClasses") {
 							$data=array("date1"=>$date, "gibbonPersonID1"=>$gibbonPersonID, "date2"=>$date, "gibbonPersonID2"=>$gibbonPersonID); 
@@ -769,26 +753,11 @@ else {
 										print "</td>" ;
 										print "<td>" ;
 											if ($row["role"]=="Teacher") {
-												try {
-													$dataLike=array("gibbonPlannerEntryID"=>$row["gibbonPlannerEntryID"]); 
-													$sqlLike="SELECT * FROM gibbonPlannerEntryLike WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID" ;
-													$resultLike=$connection2->prepare($sqlLike);
-													$resultLike->execute($dataLike);
-												}
-												catch(PDOException $e) { 
-													print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-												}
-												print $resultLike->rowCount() ;
+												print countLikesByContext($connection2, "Planner", "gibbonPlannerEntryID", $row["gibbonPlannerEntryID"]) ;
 											}
 											else {
-												try {
-													$dataLike=array("gibbonPlannerEntryID"=>$row["gibbonPlannerEntryID"], "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-													$sqlLike="SELECT * FROM gibbonPlannerEntryLike WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID" ;
-													$resultLike=$connection2->prepare($sqlLike);
-													$resultLike->execute($dataLike);
-												}
-												catch(PDOException $e) { }
-												if ($resultLike->rowCount()!=1) {
+												$likesGiven=countLikesByContextAndGiver($connection2, "Planner", "gibbonPlannerEntryID", $row["gibbonPlannerEntryID"], $_SESSION[$guid]["gibbonPersonID"]) ;
+												if ($likesGiven!=1) {
 													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/plannerProcess.php?gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&address=" . $_GET["q"] . "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date'><img src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_off.png'></a>" ;
 												}
 												else {
@@ -927,7 +896,7 @@ else {
 							if ($highestAction=="Lesson Planner_viewEditAllClasses" OR $highestAction=="Lesson Planner_viewAllEditMyClasses") {
 								if ($subView=="lesson" OR $subView=="") {
 									$data=array("gibbonCourseClassID"=>$gibbonCourseClassID); 
-									$sql="SELECT gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, date, timeStart, timeEnd, viewableStudents, viewableParents, homework, NULL as role, homeworkSubmission, homeworkCrowdAssess, gibbonPlannerEntry.gibbonCourseClassID, NULL AS myHomeworkDueDateTime FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID ORDER BY date DESC, timeStart DESC" ; 
+									$sql="SELECT gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, date, timeStart, timeEnd, viewableStudents, viewableParents, homework, 'Teacher' as role, homeworkSubmission, homeworkCrowdAssess, gibbonPlannerEntry.gibbonCourseClassID, NULL AS myHomeworkDueDateTime FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID ORDER BY date DESC, timeStart DESC" ; 
 								}
 								else {
 									$data=array("gibbonCourseClassID"=>$gibbonCourseClassID); 
@@ -1081,26 +1050,11 @@ else {
 												print "</td>" ;
 												print "<td>" ;
 													if ($row["role"]=="Teacher") {
-														try {
-															$dataLike=array("gibbonPlannerEntryID"=>$row["gibbonPlannerEntryID"]); 
-															$sqlLike="SELECT * FROM gibbonPlannerEntryLike WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID" ;
-															$resultLike=$connection2->prepare($sqlLike);
-															$resultLike->execute($dataLike);
-														}
-														catch(PDOException $e) { 
-															print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-														}
-														print $resultLike->rowCount() ;
+														print countLikesByContext($connection2, "Planner", "gibbonPlannerEntryID", $row["gibbonPlannerEntryID"]) ;
 													}
 													else {
-														try {
-															$dataLike=array("gibbonPlannerEntryID"=>$row["gibbonPlannerEntryID"], "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-															$sqlLike="SELECT * FROM gibbonPlannerEntryLike WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID" ;
-															$resultLike=$connection2->prepare($sqlLike);
-															$resultLike->execute($dataLike);
-														}
-														catch(PDOException $e) { }
-														if ($resultLike->rowCount()!=1) {
+														$likesGiven=countLikesByContextAndGiver($connection2, "Planner", "gibbonPlannerEntryID", $row["gibbonPlannerEntryID"], $_SESSION[$guid]["gibbonPersonID"]) ;
+														if ($likesGiven!=1) {
 															print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/plannerProcess.php?gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&address=" . $_GET["q"] . "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date'><img src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_off.png'></a>" ;
 														}
 														else {
