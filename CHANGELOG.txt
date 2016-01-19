@@ -96,6 +96,7 @@ v11.0.00
 		System: added Egyptian Pound as new currency
 		System: cleaned up old tdOdd.png image from Default theme
 		System: improved layout and usability of the changelog (at last!)
+		System: set Romanian as an active language (75% complete)
 		Activities: UX improvements to parent sign ups
 		Activities: added Waiting List column to manage view
 		Activities: fixed bug preventing Activity add when type field is not in use

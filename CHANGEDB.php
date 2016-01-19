@@ -446,6 +446,7 @@ UPDATE gibbonAction SET category='Manage Messages' WHERE name LIKE 'Manage Messa
 UPDATE gibbonAction SET category='Manage Messages' WHERE name LIKE 'New Message%' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Messenger');end
 UPDATE gibbonAction SET category='Manage Messages' WHERE name LIKE 'New Quick Wall Message%' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Messenger');end
 UPDATE gibbonAction SET name='Attendance By Roll Group' WHERE name='Attendance By Roll' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Attendance');end
+UPDATE `gibboni18n` SET `active` = 'Y' WHERE `code` = 'RO_ro';end
 ";
 
 ?>
