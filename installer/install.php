@@ -132,6 +132,7 @@ include "../functions.php" ;
 															<option value='es_ES'>Español</option>
 															<option value='fr_FR'>Français - France</option>
 															<option value='it_IT'>Italiano - Italia</option>
+															<option value='ro_RO'>Română</option>
 															<option value='zh_HK'>體字 - 香港</option>
 															<option value='ar_SA'>العربية - المملكة العربية السعودية</option>
 														</select>
