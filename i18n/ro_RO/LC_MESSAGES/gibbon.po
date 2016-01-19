@@ -36916,7 +36916,7 @@ msgstr "Participarea pe persoană"
 #: i18n/dbStringsForTranslation.php:67 i18n/dbStringsForTranslation.php:56
 #: i18n/dbStringsForTranslation.php:58 i18n/dbStringsForTranslation.php:63
 #: i18n/dbStringsForTranslation.php:72 i18n/dbStringsForTranslation.php:72
-msgid "Attendance By Roll Group"
+msgid "Attendance By Roll"
 msgstr "Participarea pe Rol"
 
 #: i18n/dbStringsForTranslation.php:58 modules/Library/library_browse.php:34
@@ -65972,5 +65972,344 @@ msgstr ""
 
 #: modules/User Admin/import_families.php:142
 msgid "The submitted <b><u>family file</u></b> must have the following fields in the following order (* denotes required field)."
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:57 i18n/dbStringsForTranslation.php:66
+#: i18n/dbStringsForTranslation.php:67 i18n/dbStringsForTranslation.php:56
+#: i18n/dbStringsForTranslation.php:58 i18n/dbStringsForTranslation.php:63
+#: i18n/dbStringsForTranslation.php:72 i18n/dbStringsForTranslation.php:72
+msgid "Attendance By Roll Group"
+msgstr ""
+
+#: cli/beahviour_letters.php:250 cli/beahviour_letters.php:319
+#: cli/beahviour_letters.php:250 cli/beahviour_letters.php:319
+msgid "A student (%1$s) in your form group has received a behaviour letter."
+msgstr ""
+
+#: cli/beahviour_letters.php:371 cli/beahviour_letters.php:371
+msgid "Behaviour Letter for %1$s via %2$s at %3$s"
+msgstr ""
+
+#: cli/beahviour_letters.php:403 cli/beahviour_letters.php:403
+msgid "The Behaviour Letter CLI script has run: no emails were sent."
+msgstr ""
+
+#: cli/beahviour_letters.php:407 cli/beahviour_letters.php:407
+msgid "The Behaviour Letter CLI script has run: %1$s emails were sent, of which %2$s failed."
+msgstr ""
+
+#: cli/library_overdueNotification.php:72
+#: cli/library_overdueNotification.php:72
+msgid "You have an overdue loan item that needs to be returned (%1$s)."
+msgstr ""
+
+#: modules/Behaviour/behaviour_letters.php:33
+#: i18n/dbStringsForTranslation.php:268
+#: modules/Behaviour/behaviour_letters.php:33
+msgid "View Behaviour Letters"
+msgstr ""
+
+#: modules/Behaviour/behaviour_letters.php:92
+#: modules/Behaviour/behaviour_letters.php:92
+msgid "This interface displays automated behaviour letters that have been issued within the current school year."
+msgstr ""
+
+#: modules/Behaviour/behaviour_letters.php:142
+#: modules/Behaviour/behaviour_letters.php:142
+msgid "Letter"
+msgstr ""
+
+#: modules/Behaviour/behaviour_letters.php:201
+#: modules/Behaviour/behaviour_letters.php:201
+msgid "Letter Body"
+msgstr ""
+
+#: modules/Finance/invoices_view.php:31 i18n/dbStringsForTranslation.php:275
+#: modules/Finance/invoices_view.php:31
+msgid "View Invoices"
+msgstr ""
+
+#: modules/Finance/invoices_view.php:35 modules/Finance/invoices_view.php:35
+msgid "This section allows you to view and invoices for children within your family."
+msgstr ""
+
+#: modules/Library/report_viewOverdueItems.php:54
+#: modules/Library/report_viewOverdueItems.php:54
+msgid "Include all studenusersts, regardless of status and current enrolment."
+msgstr ""
+
+#: modules/School Admin/behaviourSettings.php:225
+#: modules/School Admin/behaviourSettings.php:225
+msgid "Behaviour Letters"
+msgstr ""
+
+#: modules/School Admin/behaviourSettings.php:226
+#: modules/School Admin/behaviourSettings.php:226
+msgid "By using an %1$sincluded CLI script%2$s, %3$s can be configured to automatically generate and email behaviour letters to parents and tutors, once certain negative behaviour threshold levels have been reached. In your letter text you may use the following fields: %4$s"
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:33
+msgid "Analyse"
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:36
+msgid "Behaviour Tracking"
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:42
+msgid "Edit Timetables"
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:67
+msgid "Visualise"
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:106
+msgid "Generate Invoices"
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:154
+msgid "Manage Internal Assessments"
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:180
+msgid "Manage Space Settings"
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:189
+msgid "Manage User Custom Fields"
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:237
+msgid "Staff Likes"
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:272 i18n/dbStringsForTranslation.php:273
+#: i18n/dbStringsForTranslation.php:274
+msgid "View Internal Assessments"
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:305
+msgid "Allows a departmental Coordinator or Assistant Coordinator to manage student enrolment within their department."
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:311
+msgid "Allows a user to create, edit and delete custom fields for users."
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:312
+msgid "Allows a user to export certain key assessment data points to a spreadsheet."
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:314
+msgid "Allows a user to manage settings for the Tracking module."
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:316
+msgid "Allows a user to see all days, periods, teachers and rooms in a timetable."
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:317
+msgid "Allows a user to see progress tracking graphs for all students in school."
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:318
+msgid "Allows a user to view automated behaviour letters sent out by the system."
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:337
+msgid "Allows parents to view invoices issued to members of their family."
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:339
+msgid "Allows parents to view their childrens' Internal Assessment results."
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:341
+msgid "Allows privileged users to create and manage Internal Assessment columns."
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:342
+msgid "Allows privileged users to enter Internal Assessment assessment data to columns in all classes."
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:343
+msgid "Allows privileged users to manage settings for spaces."
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:344
+msgid "Allows privileged users to move enrolments from the current year to the next year."
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:345
+msgid "Allows staff to see Internal Assessment results for all children."
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:347
+msgid "Allows students to view their own Internal Assessment results."
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:348
+msgid "Allows teachers to enter Internal Assessment assessment data to columns in their classes."
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:492
+msgid "View behaviour records for students within a family."
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:1045
+msgid "Tracking"
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:1066
+msgid "Provides visual graphing of student progress, as recorded in the Markbook and Internal Assessment."
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:1739
+msgid "Admissions Administrator"
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:1742
+msgid "Allow Expense Add"
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:1750
+msgid "Auto House Assign"
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:1761
+msgid "Custom Alarm Sound"
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:1774
+msgid "Enable Behaviour Letters"
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:1775
+msgid "Enable Descriptors"
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:1777
+msgid "Enable Levels"
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:1787
+msgid "External Assessment Data Points"
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:1797
+msgid "Hide Itemisation"
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:1801
+msgid "Internal Assessment Data Points"
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:1802
+msgid "Internal Assessment Types"
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:1811
+msgid "Letter 1 Count"
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:1812
+msgid "Letter 1 Text"
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:1813
+msgid "Letter 2 Count"
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:1814
+msgid "Letter 2 Text"
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:1815
+msgid "Letter 3 Count"
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:1816
+msgid "Letter 3 Text"
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:1892
+msgid "Space Types"
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:1908
+msgid "A comma-separated list of types for spaces."
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:1909
+msgid "A custom alarm sound file."
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:1919
+msgid "After how many negative records should letter 1 be sent?"
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:1920
+msgid "After how many negative records should letter 2 be sent?"
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:1921
+msgid "After how many negative records should letter 3 be sent?"
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:1930
+msgid "Allows privileged users to add expenses without going through request process."
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:1937
+msgid "Attempt to automatically place student in a house?"
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:1952
+msgid "Comma-separated list of types to make available in Internal Assessments."
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:1966
+msgid "Hide fee and payment details in receipts?"
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:1995
+msgid "Setting to No reduces complexity of behaviour tracking."
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:1998
+msgid "Should automated behaviour letter functionality be enabled?"
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:2025
+msgid "Stores the external assessment choices for data points output in tracking."
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:2026
+msgid "Stores the internal assessment choices for data points output in tracking."
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:2044
+msgid "The contents of letter 1, as HTML."
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:2045
+msgid "The contents of letter 2, as HTML."
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:2046
+msgid "The contents of letter 3, as HTML."
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:2057
+msgid "The staff member who receives notifications for admissions events."
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:2058
+msgid "The staff member who receives notifications for data events."
+msgstr ""
+
+#: i18n/dbStringsForTranslation.php:2059
+msgid "The staff member who receives notifications for system events."
 msgstr ""
 
