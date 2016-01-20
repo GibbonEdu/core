@@ -449,4 +449,10 @@ UPDATE gibbonAction SET name='Attendance By Roll Group' WHERE name='Attendance B
 UPDATE `gibboni18n` SET `active` = 'Y' WHERE `code` = 'RO_ro';end
 ";
 
+//v12.0.00
+$count++ ;
+$sql[$count][0]="12.0.00" ;
+$sql[$count][1]="
+
+" ;
 ?>
