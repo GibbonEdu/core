@@ -32,6 +32,8 @@ v12.0.00
 	
 	Tweaks & Bug Fixes
 		Added Danish as a development language
+		Improved version comparison in module updater
+		Improved version comparison in non-login database updater
 
 	
 v11.0.00

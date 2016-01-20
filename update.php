@@ -69,7 +69,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 			$versionCode=$version ;
 
 			//Validate Inputs
-			if ($versionDB=="" OR $versionCode=="" OR $versionDB>=$versionCode) {
+			if ($versionDB=="" OR $versionCode=="" OR (float)$versionDB>=(float)$versionCode) {
 				print "<div class='error'>" ;
 					print _("Your request failed because your inputs were invalid, or no update was required.") ;
 				print "</div>" ;
