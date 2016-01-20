@@ -31,7 +31,7 @@ v12.0.00
 		...
 	
 	Tweaks & Bug Fixes
-		...
+		Added Danish as a development language
 
 	
 v11.0.00
