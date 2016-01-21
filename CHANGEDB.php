@@ -454,6 +454,7 @@ $count++ ;
 $sql[$count][0]="12.0.00" ;
 $sql[$count][1]="
 INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('da_DK', 'Dansk - Danmark', 'N', 'N', 'Jørgen Mortensen', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\d\\\d$/i', 'd/m/Y', 'N');end
+ALTER TABLE `gibbonActivity` CHANGE `payment` `payment` DECIMAL(8,2) NULL DEFAULT NULL;end
 
 " ;
 ?>

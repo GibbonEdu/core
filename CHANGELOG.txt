@@ -35,7 +35,7 @@ v12.0.00
 		System: improved MIME type checking on CSV import
 		System Admin: Improved version comparison in module updater
 		System Admin: Improved version comparison in non-login database updater
-		
+		Activities: fixed error in adding and editing activities when payment is turned off
 	
 v11.0.00
 --------

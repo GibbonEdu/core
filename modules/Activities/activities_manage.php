@@ -56,6 +56,11 @@ else {
 		$search=$_GET["search"] ;
 	}
 	
+	$paymentOn=TRUE ;
+	if (getSettingByScope($connection2, "Activities", "payment")=="None" OR getSettingByScope($connection2, "Activities", "payment")=="Single") {
+		$paymentOn=FALSE ;
+	}
+	
 	?>
 	<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
 		<table class='noIntBorder' cellspacing='0' style="width: 100%">
@@ -160,10 +165,12 @@ else {
 							print _("Dates") ;
 						}
 					print "</th>" ;
-					print "<th>" ;
-						print _("Cost") . "<br/>" ;
-						print "<span style='font-style: italic; font-size: 85%'>" . $_SESSION[$guid]["currency"] . "</span>" ;
-					print "</th>" ;
+					if ($paymentOn) {
+						print "<th>" ;
+							print _("Cost") . "<br/>" ;
+							print "<span style='font-style: italic; font-size: 85%'>" . $_SESSION[$guid]["currency"] . "</span>" ;
+						print "</th>" ;
+					}
 					print "<th>" ;
 						print _("Provider") ;
 					print "</th>" ;
@@ -257,17 +264,19 @@ else {
 									}
 								}
 							print "</td>" ;
-							print "<td>" ;
-								if ($row["payment"]==0) {
-									print "<i>" . _('None') . "</i>" ;
-								}
-								else {
-									if (substr($_SESSION[$guid]["currency"],4)!="") {
-										print substr($_SESSION[$guid]["currency"],4) ;
+							if ($paymentOn) {
+								print "<td>" ;
+									if ($row["payment"]==0) {
+										print "<i>" . _('None') . "</i>" ;
 									}
-									print number_format($row["payment"],2) ;
-								}
-							print "</td>" ;
+									else {
+										if (substr($_SESSION[$guid]["currency"],4)!="") {
+											print substr($_SESSION[$guid]["currency"],4) ;
+										}
+										print number_format($row["payment"],2) ;
+									}
+								print "</td>" ;
+							}
 							print "<td>" ;
 								if ($row["provider"]=="School") { print $_SESSION[$guid]["organisationNameShort"] ; } else { print _("External") ; }
 							print "</td>" ;
