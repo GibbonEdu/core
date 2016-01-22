@@ -36,7 +36,9 @@ v12.0.00
 		System Admin: Improved version comparison in module updater
 		System Admin: Improved version comparison in non-login database updater
 		Activities: fixed error in adding and editing activities when payment is turned off
-	
+		Students: added year group to New Students report when using Date Range setting 
+		
+		
 v11.0.00
 --------
 	Headlines

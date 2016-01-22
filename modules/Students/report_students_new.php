@@ -172,11 +172,11 @@ else {
 				if ($type=="Date Range") {
 					if ($ignoreEnrolment!="on") {
 						$data=array("startDateFrom"=>dateConvert($guid, $startDateFrom), "startDateTo"=>dateConvert($guid, $startDateTo)); 
-						$sql="SELECT DISTINCT gibbonPerson.gibbonPersonID, surname, preferredName, username, dateStart, lastSchool FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE dateStart>=:startDateFrom AND dateStart<=:startDateTo AND status='Full' ORDER BY dateStart, surname, preferredName" ;
+						$sql="SELECT DISTINCT gibbonPerson.gibbonPersonID, surname, preferredName, username, dateStart, lastSchool, (SELECT nameShort FROM gibbonRollGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID ORDER BY gibbonSchoolYear.sequenceNumber LIMIT 0, 1) AS rollGroup FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE dateStart>=:startDateFrom AND dateStart<=:startDateTo AND status='Full' ORDER BY dateStart, surname, preferredName" ;
 					}
 					else {
 						$data=array("startDateFrom"=>dateConvert($guid, $startDateFrom), "startDateTo"=>dateConvert($guid, $startDateTo)); 
-						$sql="SELECT DISTINCT gibbonPerson.gibbonPersonID, surname, preferredName, username, dateStart, lastSchool FROM gibbonPerson WHERE dateStart>=:startDateFrom AND dateStart<=:startDateTo AND status='Full' ORDER BY dateStart, surname, preferredName" ;
+						$sql="SELECT DISTINCT gibbonPerson.gibbonPersonID, surname, preferredName, username, dateStart, lastSchool, (SELECT nameShort FROM gibbonRollGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID ORDER BY gibbonSchoolYear.sequenceNumber LIMIT 0, 1) AS rollGroup FROM gibbonPerson WHERE dateStart>=:startDateFrom AND dateStart<=:startDateTo AND status='Full' ORDER BY dateStart, surname, preferredName" ;
 					}
 				}
 				else if ($type=="Current School Year") {
@@ -316,6 +316,9 @@ else {
 								print _("Name") ;
 							print "</th>" ;
 							print "<th>" ;
+								print _("Roll Group") ;
+							print "</th>" ;
+							print "<th>" ;
 								print _("Username") ;
 							print "</th>" ;
 							print "<th>" ;
@@ -346,6 +349,9 @@ else {
 								print "</td>" ;
 								print "<td>" ;
 									print formatName("", $row["preferredName"], $row["surname"], "Student", TRUE) ;
+								print "</td>" ;
+								print "<td>" ;
+									print $row["rollGroup"] ;
 								print "</td>" ;
 								print "<td>" ;
 									print $row["username"] ;
