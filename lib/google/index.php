@@ -125,7 +125,7 @@ print '</div>';
 	if ($result->rowCount()!=1) {
 		unset($_SESSION[$guid]['googleAPIAccessToken'] );
 		unset($_SESSION[$guid]['gplusuer']);
-		session_destroy();
+		@session_destroy();
 		$_SESSION[$guid]=NULL ;
 	}
 	else {
