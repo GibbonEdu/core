@@ -34,6 +34,7 @@ v12.0.00
 		System: Added Danish as a development language
 		System: improved MIME type checking on CSV import
 		System: fixed Google login PHP warning
+		System: fixed login PHP warning
 		System Admin: Improved version comparison in module updater
 		System Admin: Improved version comparison in non-login database updater
 		Activities: fixed error in adding and editing activities when payment is turned off
