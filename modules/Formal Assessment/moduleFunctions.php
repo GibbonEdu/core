@@ -244,23 +244,25 @@ function sidebarExtra($guid, $connection2, $gibbonCourseClassID, $mode="manage")
 							}
 						$output.="</optgroup>" ;
 						
-						try {
-							$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-							$sqlSelect="SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClass.reportable='Y' ORDER BY course, class" ;
-							$resultSelect=$connection2->prepare($sqlSelect);
-							$resultSelect->execute($dataSelect);
-						}
-						catch(PDOException $e) { }
-						$output.="<optgroup label='--" . _('All Classes') . "--'>" ;
-							while ($rowSelect=$resultSelect->fetch()) {
-								$selected="" ;
-								if ($rowSelect["gibbonCourseClassID"]==$gibbonCourseClassID AND $selectCount==0) {
-									$selected="selected" ;
-									$selectCount++ ;
-								}
-								$output.="<option $selected value='" . $rowSelect["gibbonCourseClassID"] . "'>" . htmlPrep($rowSelect["course"]) . "." . htmlPrep($rowSelect["class"]) . "</option>" ;
+						if ($mode=="manage" OR ($mode=="write" AND getHighestGroupedAction($guid, "/modules/Formal Assessment/internalAssessment_write_data.php", $connection2)=="Write Internal Assessments_all")) {
+							try {
+								$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
+								$sqlSelect="SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClass.reportable='Y' ORDER BY course, class" ;
+								$resultSelect=$connection2->prepare($sqlSelect);
+								$resultSelect->execute($dataSelect);
 							}
-						$output.="</optgroup>" ;
+							catch(PDOException $e) { }
+							$output.="<optgroup label='--" . _('All Classes') . "--'>" ;
+								while ($rowSelect=$resultSelect->fetch()) {
+									$selected="" ;
+									if ($rowSelect["gibbonCourseClassID"]==$gibbonCourseClassID AND $selectCount==0) {
+										$selected="selected" ;
+										$selectCount++ ;
+									}
+									$output.="<option $selected value='" . $rowSelect["gibbonCourseClassID"] . "'>" . htmlPrep($rowSelect["course"]) . "." . htmlPrep($rowSelect["class"]) . "</option>" ;
+								}
+							$output.="</optgroup>" ;
+						}
 					 $output.="</select>" ;
 				$output.="</td>" ;
 				$output.="<td class='right'>" ;
