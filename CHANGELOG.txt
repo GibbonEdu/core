@@ -39,7 +39,7 @@ v12.0.00
 		System Admin: Improved version comparison in non-login database updater
 		Activities: fixed error in adding and editing activities when payment is turned off
 		Students: added year group to New Students report when using Date Range setting 
-				
+		User Admin: added notification to form tutor(s) when a student's privacy options change (via Edit or Data Update).		
 		
 v11.0.00
 --------

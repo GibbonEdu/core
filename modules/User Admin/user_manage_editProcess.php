@@ -307,6 +307,7 @@ else {
 			else {
 				$privacy=NULL ;
 			}
+			$privacy_old=$row["privacy"] ;
 			$studentAgreements=NULL ;
 			$agreements="" ;
 			if (isset($_POST["studentAgreements"])) {
@@ -515,6 +516,33 @@ else {
 							$URL.="&updateReturn=fail2" ;
 							header("Location: {$URL}");
 							break ;
+						}
+						
+						//Notify tutors of change to pruvacy settings
+						if ($student AND getSettingByScope( $connection2, "User Admin", "privacy")=="Y") {
+							if ($privacy_old!=$privacy) {
+								try {
+									$dataDetail=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID"=>$gibbonPersonID); 
+									$sqlDetail="SELECT gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3 FROM gibbonRollGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID" ;
+									$resultDetail=$connection2->prepare($sqlDetail);
+									$resultDetail->execute($dataDetail);
+								}
+								catch(PDOException $e) { }
+								if ($resultDetail->rowCount()==1) {
+									$rowDetail=$resultDetail->fetch() ;
+									$name=formatName("", $preferredName, $surname, "Student", false) ;
+									$notificationText=sprintf(_('Your tutee, %1$s, has had their privacy settings altered.'), $name) ;
+									if ($rowDetail["gibbonPersonIDTutor"]!=NULL AND $rowDetail["gibbonPersonIDTutor"]!=$_SESSION[$guid]["gibbonPersonID"]) {
+										setNotification($connection2, $guid, $rowDetail["gibbonPersonIDTutor"], $notificationText, "Students", "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=") ;
+									}
+									if ($rowDetail["gibbonPersonIDTutor2"]!=NULL AND $rowDetail["gibbonPersonIDTutor2"]!=$_SESSION[$guid]["gibbonPersonID"]) {
+										setNotification($connection2, $guid, $rowDetail["gibbonPersonIDTutor2"], $notificationText, "Students", "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=") ;
+									}
+									if ($rowDetail["gibbonPersonIDTutor3"]!=NULL AND $rowDetail["gibbonPersonIDTutor3"]!=$_SESSION[$guid]["gibbonPersonID"]) {
+										setNotification($connection2, $guid, $rowDetail["gibbonPersonIDTutor3"], $notificationText, "Students", "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=") ;
+									}
+								}
+							}
 						}
 					
 						//Update matching addresses
