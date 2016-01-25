@@ -41,6 +41,8 @@ v12.0.00
 		Formal Assessment: fixed issue with View Classes menu not appearing for a user with no classes (e.g. admin)
 		Students: added year group to New Students report when using Date Range setting 
 		User Admin: added notification to form tutor(s) when a student's privacy options change (via Edit or Data Update).		
+		User Admin: made max_input_vars test a little more generous
+		
 		
 v11.0.00
 --------
