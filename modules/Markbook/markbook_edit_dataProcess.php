@@ -148,28 +148,44 @@ else {
 						catch(PDOException $e) { 
 							$partialFail=TRUE ;
 						}
+						
 						//With personal warnings
 						if ($personalisedWarnings=="Y" AND $resultTarget->rowCount()==1 AND $attainmentValue!="") {
 							$attainmentConcern="N" ;
 							$attainmentDescriptor="" ;
 							$rowTarget=$resultTarget->fetch() ;
-							//Test against target grade and set values accordingly	
-							//On target
-							if ($rowTarget["value"]==$attainmentValue) {
-								$attainmentConcern="N" ;
-								$attainmentDescriptor="Attainment is on personalised target" ;
+							
+							//Get details of attainment grade (sequenceNumber)
+							$scaleAttainment=$_POST["scaleAttainment"] ;
+							try {
+								$dataScale=array("attainmentValue"=>$attainmentValue, "scaleAttainment"=>$scaleAttainment); 
+								$sqlScale="SELECT * FROM gibbonScaleGrade JOIN gibbonScale ON (gibbonScaleGrade.gibbonScaleID=gibbonScale.gibbonScaleID) WHERE value=:attainmentValue AND gibbonScaleGrade.gibbonScaleID=:scaleAttainment" ;
+								$resultScale=$connection2->prepare($sqlScale);
+								$resultScale->execute($dataScale);
 							}
-							//Below target
-							else if ($rowTarget["value"]>$attainmentValue) {
-								$attainmentConcern="Y" ;
-								$attainmentDescriptor="Attainment is below personalised target of " . $rowTarget["value"] ;
+							catch(PDOException $e) { 
+								$partialFail=TRUE ;
 							}
-							//Above target
-							else if ($rowTarget["value"]<$attainmentValue) {
-								$attainmentConcern="P" ;
-								$attainmentDescriptor="Attainment is above personalised target of " . $rowTarget["value"] ;
+							if ($resultScale->rowCount()!=1) {
+								$partialFail=TRUE ;
 							}
-					
+							else {
+								$rowScale=$resultScale->fetch() ;
+								$target=$rowTarget["sequenceNumber"] ;
+								$attainmentSequence=$rowScale["sequenceNumber"] ;
+							
+								//Test against target grade and set values accordingly	
+								//Below target
+								if ($attainmentSequence>$target) {
+									$attainmentConcern="Y" ;
+									$attainmentDescriptor=sprintf(_('Below personalised target of %1$s'), $rowTarget["value"]) ;
+								}
+								//Above target
+								else if ($attainmentSequence<=$target) {
+									$attainmentConcern="P" ;
+									$attainmentDescriptor=sprintf(_('Equal to or above personalised target of %1$s'), $rowTarget["value"]) ;
+								}
+							}
 						}
 						//Without personal warnings
 						else {

@@ -39,6 +39,7 @@ v12.0.00
 		System Admin: Improved version comparison in non-login database updater
 		Activities: fixed error in adding and editing activities when payment is turned off
 		Formal Assessment: fixed issue with View Classes menu not appearing for a user with no classes (e.g. admin)
+		Markbook: fixed issue causing mis-evaluation of personalised targets, for some edge cases
 		Students: added year group to New Students report when using Date Range setting 
 		User Admin: added notification to form tutor(s) when a student's privacy options change (via Edit or Data Update).		
 		User Admin: made max_input_vars test a little more generous
