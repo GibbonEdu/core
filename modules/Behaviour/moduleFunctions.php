@@ -81,26 +81,26 @@ function getBehaviourRecord($guid, $gibbonPersonID, $connection2) {
 			else {
 				print "<table cellspacing='0' style='width: 100%'>" ;
 					print "<tr class='head'>" ;
-						print "<th>" ;
+						print "<th style='width: 10%'>" ;
 							print _("Date") ;
 						print "</th>" ;
-						print "<th>" ;
+						print "<th style='width: 7%'>" ;
 							print _("Type") ;
 						print "</th>" ;
 						if ($enableDescriptors=="Y") {
-							print "<th>" ;
+							print "<th style='width: 18%'>" ;
 								print _("Descriptor") ;
 							print "</th>" ;
 						}
 						if ($enableLevels=="Y") {
-							print "<th>" ;
+							print "<th style='width: 18%'>" ;
 								print _("Level") ;
 							print "</th>" ;
 						}
-						print "<th>" ;
+						print "<th style='width: 17%'>" ;
 							print _("Teacher") ;
 						print "</th>" ;
-						print "<th>" ;
+						print "<th style='width: 10%'>" ;
 							print _("Actions") ;
 						print "</th>" ;
 					print "</tr>" ;

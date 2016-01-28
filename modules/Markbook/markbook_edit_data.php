@@ -532,7 +532,7 @@ else {
 															print "<div style='width: 330px; float: right'><a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowEntry["response"] . "'>" . _('Uploaded Response') . "</a> <a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Markbook/markbook_edit_data_responseDeleteProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonPersonID=" . $rowStudents["gibbonPersonID"] . "' onclick='return confirm(\"" . _('Are you sure you want to delete this record? Unsaved changes will be lost.') . "\")'><img style='margin-bottom: -8px' id='image_240_delete' title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a><br/></div>" ;
 														}
 														else {
-															print "<input style='margin-top: 5px' type='file' name='response$count' id='response$count'>" ;														
+															print "<input style='max-width: 228px; margin-top: 5px' type='file' name='response$count' id='response$count'>" ;														
 															?>
 															<script type="text/javascript">
 																var <?php print "response$count" ?>=new LiveValidation('<?php print "response$count" ?>');

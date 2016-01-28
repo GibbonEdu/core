@@ -327,9 +327,9 @@ else {
 						$subpage="Overview" ;
 					}
 					
-					if ($search!="") {
+					if ($search!="" OR $allStudents!="") {
 						print "<div class='linkTop'>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/student_view.php&search=" . $search . "'>" . _('Back to Search Results') . "</a>" ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/student_view.php&search=" . $search . "&allStudents=$allStudents'>" . _('Back to Search Results') . "</a>" ;
 						print "</div>" ;
 					}
 					
