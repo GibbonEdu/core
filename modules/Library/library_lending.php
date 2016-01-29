@@ -267,7 +267,10 @@ else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print _("School ID") ;
+					print _("Number") ;
+				print "</th>" ;
+				print "<th>" ;
+					print _("ID") ;
 				print "</th>" ;
 				print "<th style='width: 250px'>" ;
 					print _("Name") . "<br/>" ;
@@ -311,6 +314,9 @@ else {
 				
 				//COLOR ROW BY STATUS!
 				print "<tr class=$rowNum>" ;
+						print "<td>" ;
+						print ($count+1) ;
+					print "</td>" ;
 					print "<td>" ;
 						print "<b>" . $row["id"] . "</b>" ;
 					print "</td>" ;
