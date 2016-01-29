@@ -10,6 +10,9 @@ try {
 }
 catch(PDOException $e) { }
 
+//Set timezone from session variable
+date_default_timezone_set($_SESSION[$guid]["timezone"]);
+
 setCurrentSchoolYear($guid, $connection2) ;
 
 //The current/actual school year info, just in case we are working in a different year
