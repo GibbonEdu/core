@@ -253,10 +253,6 @@ else {
 		$page=1 ;
 	}
 	
-	print "<h3>" ;
-		print _("View") ;
-	print "</h3>" ;
-	
 	//Search with filters applied
 	try {
 		$data=array(); 
@@ -308,11 +304,22 @@ else {
 	print "</div>" ;
 	
 	if ($result->rowCount()<1) {
+		print "<h3>" ;
+		print _("View") ;
+		print "</h3>" ;
+	
+	
 		print "<div class='error'>" ;
 		print _("There are no records to display.") ;
 		print "</div>" ;
 	}
 	else {
+		print "<h3>" ;
+			print _("View") ;
+			print "<span style='font-weight: normal; font-style: italic; font-size: 55%'> " . sprintf(_('%1$s record(s) in current view'), $result->rowCount()) . "</span>" ;
+		print "</h3>" ;
+		
+		
 		if ($result->rowCount()>$_SESSION[$guid]["pagination"]) {
 			printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top", "name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status") ;
 		}

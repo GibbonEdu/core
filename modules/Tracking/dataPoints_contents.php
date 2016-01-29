@@ -89,7 +89,7 @@ else {
 			$internalResults=array() ;
 			try {
 				$data=array();
-				$sql="SELECT gibbonStudentEnrolment.gibbonYearGroupID, gibbonCourse.nameShort AS course, gibbonInternalAssessmentColumn.type, gibbonPersonIDStudent, attainmentValue, completeDate FROM gibbonInternalAssessmentEntry JOIN gibbonPerson ON (gibbonInternalAssessmentEntry.gibbonPersonIDStudent=gibbonPerson.gibbonPersonID) JOIN gibbonInternalAssessmentColumn ON (gibbonInternalAssessmentEntry.gibbonInternalAssessmentColumnID=gibbonInternalAssessmentColumn.gibbonInternalAssessmentColumnID) JOIN gibbonCourseClass ON (gibbonInternalAssessmentColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=gibbonCourse.gibbonSchoolYearID) WHERE NOT completeDate IS NULL AND completeDate<=CURDATE() ORDER BY gibbonCourse.nameShort, gibbonPersonIDStudent, completeDate DESC" ;
+				$sql="SELECT gibbonStudentEnrolment.gibbonYearGroupID, gibbonCourse.nameShort AS course, gibbonInternalAssessmentColumn.type, gibbonPersonIDStudent, attainmentValue, completeDate FROM gibbonInternalAssessmentEntry JOIN gibbonPerson ON (gibbonInternalAssessmentEntry.gibbonPersonIDStudent=gibbonPerson.gibbonPersonID) JOIN gibbonInternalAssessmentColumn ON (gibbonInternalAssessmentEntry.gibbonInternalAssessmentColumnID=gibbonInternalAssessmentColumn.gibbonInternalAssessmentColumnID) JOIN gibbonCourseClass ON (gibbonInternalAssessmentColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=gibbonCourse.gibbonSchoolYearID) WHERE NOT completeDate IS NULL AND completeDate<=CURDATE() ORDER BY gibbonCourse.nameShort, gibbonInternalAssessmentColumn.name, gibbonPersonIDStudent, completeDate DESC" ;
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
 			}
@@ -98,6 +98,9 @@ else {
 				$internalIndex=$row["gibbonYearGroupID"] . "-" . $row["course"] . "-" . $row["type"] . "-" . $row["gibbonPersonIDStudent"] ;
 				if (isset($internalResults[$internalIndex])==FALSE) {
 					$internalResults[$internalIndex]=$row["attainmentValue"] ;
+				}
+				else {
+					$internalResults[$internalIndex].=" / " . $row["attainmentValue"] ;
 				}
 			}
 

@@ -472,7 +472,7 @@ else {
 		else {
 			print "<h3>" ;
 			print _("View") ;
-			print "<span style='font-weight: normal; font-style: italic; font-size: 55%'> " . sprintf(_('%1$s invoice(s) in current view'), $result->rowCount()) . "</span>" ;
+			print "<span style='font-weight: normal; font-style: italic; font-size: 55%'> " . sprintf(_('%1$s records(s) in current view'), $result->rowCount()) . "</span>" ;
 			print "</h3>" ;
 
 			print "<form onsubmit='return confirm(\"" ._('Are you sure you wish to process this action? It cannot be undone.') . "\")' method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_processBulk.php?gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'>" ;
