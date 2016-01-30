@@ -455,6 +455,11 @@ $sql[$count][0]="12.0.00" ;
 $sql[$count][1]="
 INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('da_DK', 'Dansk - Danmark', 'N', 'N', 'Jørgen Mortensen', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\d\\\d$/i', 'd/m/Y', 'N');end
 ALTER TABLE `gibbonActivity` CHANGE `payment` `payment` DECIMAL(8,2) NULL DEFAULT NULL;end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'Markbook', 'enableColumnWeighting', 'Enable Column Weighting', 'Should column weighting and total scores be enabled in the Markbook?', 'N');end
+ALTER TABLE `gibbonMarkbookColumn` ADD `attainmentWeighting` INT(3) NULL DEFAULT NULL AFTER `gibbonScaleIDAttainment`;end
+UPDATE gibbonAction SET entrySidebar='N', category='Markbook' WHERE name LIKE 'View Markbook%' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Markbook');end
+UPDATE gibbonAction SET name='View Markbook_viewMyChildrensClasses' WHERE name='Markbook_viewMyChildrensClasses' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Markbook');end
+UPDATE gibbonAction SET category='Markbook' WHERE name LIKE 'Edit Markbook%' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Markbook');end
 
 " ;
 ?>

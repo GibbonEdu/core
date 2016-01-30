@@ -202,7 +202,7 @@ else {
 						
 						//Work out details for external assessment display
 						$externalAssessment=FALSE ; 
-						if (isActionAccessible($guid, $connection2, "/modules/External Assessment/externalAssessment_details.php")) {
+						if (isActionAccessible($guid, $connection2, "/modules/Formal Assessment/externalAssessment_details.php")) {
 							$gibbonYearGroupIDListArray=(explode(",", $gibbonYearGroupIDList)) ;
 							if (count($gibbonYearGroupIDListArray)==1) {
 								$primaryExternalAssessmentByYearGroup=unserialize(getSettingByScope($connection2, "School Admin", "primaryExternalAssessmentByYearGroup")) ;

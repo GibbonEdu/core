@@ -160,7 +160,7 @@ else {
 						print "</select>" ;
 					print "</td>" ;
 					print "<td>" ;
-						print "<select style='float: none; width: 270px' name='category[]' id='category$count'>" ;
+						print "<select style='float: none; width: 270px' name='category$count' id='category$count'>" ;
 							try {
 								$dataSelect=array(); 
 								$sqlSelect="SELECT DISTINCT gibbonExternalAssessment.gibbonExternalAssessmentID, category FROM gibbonExternalAssessment JOIN gibbonExternalAssessmentField ON (gibbonExternalAssessmentField.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) WHERE active='Y' ORDER BY gibbonExternalAssessmentID, category" ;

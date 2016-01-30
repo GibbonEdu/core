@@ -23,6 +23,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 
 //Get alternative header names
+$enableColumnWeighting=getSettingByScope($connection2, "Markbook", "enableColumnWeighting") ;
 $attainmentAlternativeName=getSettingByScope($connection2, "Markbook", "attainmentAlternativeName") ;
 $attainmentAlternativeNameAbrev=getSettingByScope($connection2, "Markbook", "attainmentAlternativeNameAbrev") ;
 $effortAlternativeName=getSettingByScope($connection2, "Markbook", "effortAlternativeName") ;
@@ -246,12 +247,15 @@ else {
 								 $(".attainment").click(function(){
 									if ($('input[name=attainment]:checked').val()=="Y" ) {
 										$("#gibbonScaleIDAttainmentRow").slideDown("fast", $("#gibbonScaleIDAttainmentRow").css("display","table-row")); 
-										$("#gibbonRubricIDAttainmentRow").slideDown("fast", $("#gibbonRubricIDAttainmentRow").css("display","table-row")); 
-
+										$("#attainmentWeightingRow").slideDown("fast", $("#attainmentWeightingRow").css("display","table-row")); 
+										$("#gibbonRubricIDAttainmentRow").slideDown("fast", $("#gibbonRubricIDAttainmentRow").css("display","table-row"));
+			
 									} else {
 										$("#gibbonScaleIDAttainmentRow").css("display","none");
+										$("#attainmentWeightingRow").css("display","none");
 										$("#gibbonRubricIDAttainmentRow").css("display","none");
 									}
+									
 								 });
 							});
 						</script>
@@ -290,7 +294,25 @@ else {
 								</select>
 							</td>
 						</tr>
-						<tr id="gibbonRubricIDAttainment">
+						<?php
+						if ($enableColumnWeighting=="Y") {
+							?>
+							<tr id="attainmentWeightingRow">
+								<td> 
+									<b><?php if ($attainmentAlternativeName!="") { print $attainmentAlternativeName . " " . _('Weighting') ; } else { print _('Attainment Weighting') ; } ?></b><br/>
+								</td>
+								<td class="right">
+									<input name="attainmentWeighting" id="attainmentWeighting" maxlength=3 value="0" type="text" style="width: 300px">
+									<script type="text/javascript">
+										var attainmentWeighting=new LiveValidation('attainmentWeighting');
+										attainmentWeighting.add(Validate.Numericality);
+									</script>
+								</td>
+							</tr>
+							<?php
+						}
+						?>
+						<tr id="gibbonRubricIDAttainmentRow">
 							<td> 
 								<b><?php if ($attainmentAlternativeName!="") { print $attainmentAlternativeName . " " . _('Rubric') ; } else { print _('Attainment Rubric') ; } ?></b><br/>
 								<span style="font-size: 90%"><i><?php print _('Choose predefined rubric, if desired.') ?></i></span>
@@ -558,7 +580,5 @@ else {
 			}	
 		}
 	}
-	//Print sidebar
-	$_SESSION[$guid]["sidebarExtra"]=sidebarExtra($guid, $connection2, $gibbonCourseClassID) ;
 }
 ?>

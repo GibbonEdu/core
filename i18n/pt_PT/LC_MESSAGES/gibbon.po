@@ -59639,7 +59639,7 @@ msgid "Manage Units_learningAreas"
 msgstr "Gerenciar Units_learningAreas"
 
 #: i18n/dbStringsForTranslation.php:249
-msgid "Markbook_viewMyChildrensClasses"
+msgid "ViewMarkbook_viewMyChildrensClasses"
 msgstr "Markbook"
 
 #: i18n/dbStringsForTranslation.php:257

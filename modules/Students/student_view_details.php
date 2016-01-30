@@ -2093,7 +2093,7 @@ else {
 										try {
 											$dataEntry["gibbonPersonID"]=$gibbonPersonID ;
 											$dataEntry["gibbonCourseClassID"]=$rowList["gibbonCourseClassID"] ;
-											if ($highestAction=="Markbook_viewMyChildrensClasses") {
+											if ($highestAction=="View Markbook_viewMyChildrensClasses") {
 												$sqlEntry="SELECT *, gibbonMarkbookColumn.comment AS commentOn, gibbonMarkbookColumn.uploadedResponse AS uploadedResponseOn, gibbonMarkbookEntry.comment AS comment FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) WHERE gibbonPersonIDStudent=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND complete='Y' AND completeDate<='" . date("Y-m-d") . "' AND viewableParents='Y' $and2 ORDER BY completeDate" ;
 											}
 											else {
@@ -2546,13 +2546,13 @@ else {
 						}
 					}
 					else if ($subpage=="External Assessment") {
-						if (isActionAccessible($guid, $connection2, "/modules/External Assessment/externalAssessment_details.php")==FALSE) {
+						if (isActionAccessible($guid, $connection2, "/modules/Formal Assessment/externalAssessment_details.php")==FALSE) {
 							print "<div class='error'>" ;
 								print _("Your request failed because you do not have access to this action.");
 							print "</div>" ;
 						}
 						else {
-							include "./modules/External Assessment/moduleFunctions.php" ;
+							include "./modules/Formal Assessment/moduleFunctions.php" ;
 							
 							//Print assessments
 							$gibbonYearGroupID="" ;
