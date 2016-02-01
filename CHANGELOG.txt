@@ -49,6 +49,7 @@ v12.0.00
 		School Admin: fixed bug preventing non-contiguous primary external assessment settings from being saved in Formal Assessment settings
 		Students: added year group to New Students report when using Date Range setting 
 		Students: added All Students filter persistence to Back To Search link on student details page
+		Students: made more fields searchable in full profile
 		Tracking: adjusted Data Points export to combine multiple column internal assessments for one subject into a column
 		User Admin: added notification to form tutor(s) when a student's privacy options change (via Edit or Data Update).		
 		User Admin: made max_input_vars test a little more generous

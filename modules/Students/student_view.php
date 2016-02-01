@@ -165,7 +165,14 @@ else {
 				<tr>
 					<td>
 						<b><?php print _('Search For') ?></b><br/>
-						<span style="font-size: 90%"><i><?php print _('Preferred, surname, username.') ?></i></span>
+						<?php
+							if ($highestAction=="View Student Profile_full") {
+								print "<span style=\"font-size: 90%\"><i>" . _('Preferred, surname, username, email, phone number, vehicle registration') . "</i></span>" ;
+							}
+							else {
+								print "<span style=\"font-size: 90%\"><i>" . _('Preferred, surname, username.') . "</i></span>" ;
+							}	
+						?>
 					</td>
 					<td class="right">
 						<input name="search" id="search" maxlength=20 value="<?php print $search ?>" type="text" style="width: 300px">
@@ -239,8 +246,14 @@ else {
 
 					$searchSql="" ;
 					if ($search!="") {
-						$data+=array("search1"=>"%$search%", "search2"=>"%$search%", "search3"=>"%$search%");
-						$searchSql=" AND (preferredName LIKE :search1 OR surname LIKE :search2 OR username LIKE :search3)";
+						if ($highestAction=="View Student Profile_full") {
+							$data+=array("search1"=>"%$search%", "search2"=>"%$search%", "search3"=>"%$search%", "search4"=>"%$search%", "search5"=>"%$search%", "search6"=>"%$search%", "search7"=>"%$search%", "search8"=>"%$search%", "search9"=>"%$search%", "search10"=>"%$search%");
+							$searchSql=" AND (preferredName LIKE :search1 OR surname LIKE :search2 OR username LIKE :search3 OR email LIKE :search4 OR emailAlternate LIKE :search5 OR phone1 LIKE :search6 OR phone2 LIKE :search7 OR phone3 LIKE :search8 OR phone4 LIKE :search9 OR vehicleRegistration LIKE :search10)";
+						}
+						else {
+							$data+=array("search1"=>"%$search%", "search2"=>"%$search%", "search3"=>"%$search%");
+							$searchSql=" AND (preferredName LIKE :search1 OR surname LIKE :search2 OR username LIKE :search3)";
+						}	
 					}
 
 					if ($sort!="surname, preferredName" && $sort!="preferredName" && $sort!="rollGroup" && $sort!="yearGroup") {
