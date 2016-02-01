@@ -89,21 +89,16 @@ else {
 			$internalResults=array() ;
 			try {
 				$data=array();
-				$sql="SELECT gibbonStudentEnrolment.gibbonYearGroupID, gibbonCourse.nameShort AS course, gibbonInternalAssessmentColumn.type, gibbonPersonIDStudent, attainmentValue, completeDate FROM gibbonInternalAssessmentEntry JOIN gibbonPerson ON (gibbonInternalAssessmentEntry.gibbonPersonIDStudent=gibbonPerson.gibbonPersonID) JOIN gibbonInternalAssessmentColumn ON (gibbonInternalAssessmentEntry.gibbonInternalAssessmentColumnID=gibbonInternalAssessmentColumn.gibbonInternalAssessmentColumnID) JOIN gibbonCourseClass ON (gibbonInternalAssessmentColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=gibbonCourse.gibbonSchoolYearID) WHERE NOT completeDate IS NULL AND completeDate<=CURDATE() ORDER BY gibbonCourse.nameShort, gibbonInternalAssessmentColumn.name, gibbonPersonIDStudent, completeDate DESC" ;
+				$sql="SELECT gibbonStudentEnrolment.gibbonYearGroupID, gibbonCourse.nameShort AS course, gibbonInternalAssessmentColumn.type, gibbonPersonIDStudent, attainmentValue, completeDate, gibbonInternalAssessmentColumn.name AS assessment FROM gibbonInternalAssessmentEntry JOIN gibbonPerson ON (gibbonInternalAssessmentEntry.gibbonPersonIDStudent=gibbonPerson.gibbonPersonID) JOIN gibbonInternalAssessmentColumn ON (gibbonInternalAssessmentEntry.gibbonInternalAssessmentColumnID=gibbonInternalAssessmentColumn.gibbonInternalAssessmentColumnID) JOIN gibbonCourseClass ON (gibbonInternalAssessmentColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=gibbonCourse.gibbonSchoolYearID) ORDER BY gibbonCourse.nameShort, gibbonInternalAssessmentColumn.name, gibbonPersonIDStudent, completeDate DESC" ;
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
 			}
 			catch(PDOException $e) { }
 			while ($row=$result->fetch()) {
-				$internalIndex=$row["gibbonYearGroupID"] . "-" . $row["course"] . "-" . $row["type"] . "-" . $row["gibbonPersonIDStudent"] ;
-				if (isset($internalResults[$internalIndex])==FALSE) {
-					$internalResults[$internalIndex]=$row["attainmentValue"] ;
-				}
-				else {
-					$internalResults[$internalIndex].=" / " . $row["attainmentValue"] ;
-				}
+				$internalIndex=$row["gibbonYearGroupID"] . "-" . $row["course"] . "-" . $row["type"] . "-" . $row["gibbonPersonIDStudent"] . "-" . $row["assessment"] ;
+				$internalResults[$internalIndex]=$row["attainmentValue"] ;
 			}
-
+			
 			//GET ALL EXTERNAL ASSESSMENT RESULTS FOR ALL STUDENTS, AND CACHE THEM FOR USE LATER
 			$externalResults=array() ;
 			try {
@@ -191,7 +186,7 @@ else {
 				//GET INTERNAL ASSESSMENTS AND CREATE HEADERS
 				try {
 					$data=array("gibbonYearGroupID"=>$yearGroups[$i]);
-					$sql="SELECT DISTINCT gibbonYearGroup.gibbonYearGroupID, gibbonYearGroup.name AS yearGroup, sequenceNumber, gibbonCourse.nameShort AS course FROM gibbonYearGroup JOIN gibbonCourse ON (gibbonCourse.gibbonYearGroupIDList LIKE concat('%', gibbonYearGroup.gibbonYearGroupID, '%')) WHERE sequenceNumber<=(SELECT sequenceNumber FROM gibbonYearGroup AS year WHERE year.gibbonYearGroupID=:gibbonYearGroupID) ORDER BY sequenceNumber, gibbonCourse.nameShort" ;
+					$sql="SELECT DISTINCT gibbonYearGroup.gibbonYearGroupID, gibbonYearGroup.name AS yearGroup, sequenceNumber, gibbonCourse.nameShort AS course, gibbonInternalAssessmentColumn.name AS assessment FROM gibbonYearGroup JOIN gibbonCourse ON (gibbonCourse.gibbonYearGroupIDList LIKE concat('%', gibbonYearGroup.gibbonYearGroupID, '%')) JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonInternalAssessmentColumn ON (gibbonInternalAssessmentColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE sequenceNumber<=(SELECT sequenceNumber FROM gibbonYearGroup AS year WHERE year.gibbonYearGroupID=:gibbonYearGroupID) ORDER BY sequenceNumber, gibbonCourse.nameShort" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
 				}
@@ -203,7 +198,7 @@ else {
 								if (!(strpos($point["gibbonYearGroupIDList"],$row["gibbonYearGroupID"])===FALSE)) {
 									//Output data
 									$excel->getActiveSheet()->setCellValue(num2alpha($activeColumn) . '1', $row["yearGroup"]);
-									$excel->getActiveSheet()->setCellValue(num2alpha($activeColumn) . '2', $type);
+									$excel->getActiveSheet()->setCellValue(num2alpha($activeColumn) . '2', $type . "\n" . $row["assessment"]);
 									$excel->getActiveSheet()->setCellValue(num2alpha($activeColumn) . '3', $row["course"]);
 									$excel->getActiveSheet()->getStyle(num2alpha($activeColumn) . "1")->applyFromArray($style_border);
 									$excel->getActiveSheet()->getStyle(num2alpha($activeColumn) . "1")->applyFromArray($style_head_fill4) ;
@@ -211,6 +206,7 @@ else {
 									$excel->getActiveSheet()->getStyle(num2alpha($activeColumn) . "2")->applyFromArray($style_border);
 									$excel->getActiveSheet()->getStyle(num2alpha($activeColumn) . "2")->applyFromArray($style_head_fill3) ;
 									$excel->getActiveSheet()->getStyle(num2alpha($activeColumn) . "2")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+									$excel->getActiveSheet()->getStyle(num2alpha($activeColumn) . "2")->getAlignment()->setWrapText(true);
 									$excel->getActiveSheet()->getStyle(num2alpha($activeColumn) . "3")->applyFromArray($style_border);
 									$excel->getActiveSheet()->getStyle(num2alpha($activeColumn) . "3")->applyFromArray($style_head_fill2) ;
 									$excel->getActiveSheet()->getStyle(num2alpha($activeColumn) . "3")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
@@ -223,6 +219,7 @@ else {
 									$columns[($activeColumn-6)]["yearGroup"]=$row["yearGroup"] ;
 									$columns[($activeColumn-6)]["type"]=$type ;
 									$columns[($activeColumn-6)]["course"]=$row["course"] ;
+									$columns[($activeColumn-6)]["assessment"]=$row["assessment"] ;
 
 									$activeColumn++ ;
 								}
@@ -274,7 +271,7 @@ else {
 								}
 							}
 							else { //Output internal assessment data
-								$internalIndex=$column["gibbonYearGroupID"] . "-" . $column["course"] . "-" . $column["type"] . "-" . $row["gibbonPersonID"] ;
+								$internalIndex=$column["gibbonYearGroupID"] . "-" . $column["course"] . "-" . $column["type"] . "-" . $row["gibbonPersonID"] . "-" . $column["assessment"] ;
 								if (isset($internalResults[$internalIndex])) {
 									$excel->getActiveSheet()->setCellValue(num2alpha($column["count"]+6) . $activeRow, $internalResults[$internalIndex]) ;
 								}
