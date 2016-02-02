@@ -32,7 +32,7 @@ else {
 	print "</div>" ;
 
 	print "<p>" ;
-		print _("This section allows you to view and invoices for children within your family.") . "<br/>" ;
+		print _("This section allows you to view invoices for children within your family.") . "<br/>" ;
 	print "</p>" ;
 	
 	//Test data access field for permission

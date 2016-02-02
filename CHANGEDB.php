@@ -460,6 +460,7 @@ ALTER TABLE `gibbonMarkbookColumn` ADD `attainmentWeighting` INT(3) NULL DEFAULT
 UPDATE gibbonAction SET entrySidebar='N', category='Markbook' WHERE name LIKE 'View Markbook%' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Markbook');end
 UPDATE gibbonAction SET name='View Markbook_viewMyChildrensClasses' WHERE name='Markbook_viewMyChildrensClasses' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Markbook');end
 UPDATE gibbonAction SET category='Markbook' WHERE name LIKE 'Edit Markbook%' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Markbook');end
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Individual Needs'), 'View Individual Education Plans_myChildren', 0, 'Individual Needs', 'Allows parents to view individual needs plans for members of their family.', 'iep_view_myChildren.php', 'iep_view_myChildren.php', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'Y', 'N') ;end
 
 " ;
 ?>

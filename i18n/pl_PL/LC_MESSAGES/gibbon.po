@@ -67809,7 +67809,7 @@ msgstr ""
 
 #: modules/Finance/invoices_view.php:35 modules/Finance/invoices_view.php:35
 msgid ""
-"This section allows you to view and invoices for children within your family."
+"This section allows you to view invoices for children within your family."
 msgstr ""
 
 #: modules/Library/report_viewOverdueItems.php:54
