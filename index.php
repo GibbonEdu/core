@@ -1075,7 +1075,7 @@ else {
 					<div id="footer">
 						<?php print _("Powered by") ?> <a target='_blank' href="http://gibbonedu.org">Gibbon</a> v<?php print $version ?><?php if ($_SESSION[$guid]["cuttingEdgeCode"]=="Y") { print "dev" ; }?> | &#169; <a target='_blank' href="http://rossparker.org">Ross Parker</a> 2010-<?php print date("Y") ?><br/>
 						<span style='font-size: 90%; '>
-							<?php print _("Created under the") ?> <a target='_blank' href="http://www.gnu.org/licenses/gpl.html">GNU GPL</a> at <a target='_blank' href='http://www.ichk.edu.hk'>ICHK</a> | <a target='_blank' href='https://gibbonedu.org/contribute/'><?php print _("Credits") ; ?></a><br/>
+							<?php print _("Created under the") ?> <a target='_blank' href="https://www.gnu.org/licenses/gpl.html">GNU GPL</a> at <a target='_blank' href='http://www.ichk.edu.hk'>ICHK</a> | <a target='_blank' href='https://gibbonedu.org/contribute/'><?php print _("Credits") ; ?></a><br/>
 							<?php
 								$seperator=FALSE ;
 								$thirdLine=FALSE ;

@@ -28,7 +28,7 @@ v12.0.00
 		Individual Needs: new interface for parents to view individual education plans for their children (off by default)
 	
 	Security
-		...
+		System: converted links to GNU GPL to HTTPS
 	
 	Tweaks & Bug Fixes
 		System: Added Danish as a development language
