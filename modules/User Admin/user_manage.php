@@ -102,7 +102,25 @@ else {
 	catch(PDOException $e) { 
 		print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 	}
-
+	
+	//Build cache of families for use below
+	$families=array() ;
+	try {
+		$dataFamily=array(); 
+		$sqlFamily="(SELECT gibbonFamilyAdult.gibbonFamilyID, gibbonFamilyAdult.gibbonPersonID, 'adult' AS role, gibbonFamily.name, dob FROM gibbonFamily JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID)) UNION (SELECT gibbonFamilyChild.gibbonFamilyID, gibbonFamilyChild.gibbonPersonID, 'child' AS role, gibbonFamily.name, dob FROM gibbonFamily JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID)) ORDER BY gibbonFamilyID, role, dob DESC, gibbonPersonID" ; 
+		$resultFamily=$connection2->prepare($sqlFamily);
+		$resultFamily->execute($dataFamily);
+	}
+	catch(PDOException $e) { }
+	$countFamily=0 ;
+	while ($rowFamily=$resultFamily->fetch()) {
+		$families[$countFamily][0]=$rowFamily["gibbonFamilyID"] ;
+		$families[$countFamily][1]=$rowFamily["gibbonPersonID"] ;
+		$families[$countFamily][2]=$rowFamily["role"] ;
+		$families[$countFamily][3]=$rowFamily["name"] ;
+		$countFamily++ ;
+	}
+	
 	print "<div class='linkTop'>" ;
 	print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/user_manage_add.php&search=$search'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
 	print "</div>" ;
@@ -132,9 +150,12 @@ else {
 					print _("Primary Role") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Username") ;
+					print _("Family") ;
 				print "</th>" ;
 				print "<th>" ;
+					print _("Username") ;
+				print "</th>" ;
+				print "<th style='width: 100px'>" ;
 					print _("Actions") ;
 				print "</th>" ;
 			print "</tr>" ;
@@ -171,6 +192,24 @@ else {
 					print "<td>" ;
 						if ($row["name"]!="") {
 							print _($row["name"]) ;
+						}
+					print "</td>" ;
+					print "<td>" ;
+						$childCount=0 ;
+						foreach ($families AS $family) {
+							if ($family[1]==$row["gibbonPersonID"]) {
+								if ($family[2]=="child") { //Link child to self
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $family[1] . "&search=&allStudents=on&sort=surname, preferredName&subpage=Family'>" . $family[3] . "</a><br/>" ;
+								}
+								else { //Link adult to eldest child in family
+									foreach ($families AS $family2) {
+										if ($family[0]==$family2[0] AND $family2[2]=="child" AND $childCount==0) {
+											print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $family2[1] . "&search=&allStudents=on&sort=surname, preferredName&subpage=Family'>" . $family[3] . "</a><br/>" ;
+											$childCount++ ;
+										}
+									}
+								}
+							}
 						}
 					print "</td>" ;
 					print "<td>" ;

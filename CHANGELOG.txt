@@ -54,6 +54,7 @@ v12.0.00
 		Tracking: adjusted Data Points export to combine multiple column internal assessments for one subject into a column
 		User Admin: added notification to form tutor(s) when a student's privacy options change (via Edit or Data Update).		
 		User Admin: made max_input_vars test a little more generous
+		User Admin: added link to family for each user in User Admin screen, making it easier to find students based on parents
 		
 		
 v11.0.00
