@@ -56248,16 +56248,6 @@ msgstr "Alți cursanți"
 msgid "Other Teachers"
 msgstr "Alți Profesori"
 
-#: modules/Planner/planner_add.php:849 modules/Planner/planner_add.php:841
-#: modules/Planner/planner_add.php:841
-msgid "Submitter\\'s Parents"
-msgstr "Emițători\\'s Părinți"
-
-#: modules/Planner/planner_add.php:857 modules/Planner/planner_add.php:849
-#: modules/Planner/planner_add.php:849
-msgid "Classmates\\'s Parents"
-msgstr "Colegii de clasă\\'s Părinți"
-
 #: modules/Planner/planner_add.php:865 modules/Planner/planner_edit.php:1034
 #: modules/Planner/planner_edit.php:1037 modules/Planner/planner_add.php:857
 #: modules/Planner/planner_add.php:857 modules/Planner/planner_edit.php:1037

@@ -838,7 +838,7 @@ else {
 									print "</tr>" ;
 									print "<tr class='even'>" ;
 										print "<td style='text-align: left'>" ;
-											print _("Submitter\'s Parents") ;
+											print _("Submitter's Parents") ;
 										print "</td>" ;
 										print "<td style='text-align: center'>" ;
 											print "<input type='checkbox' name='homeworkCrowdAssessSubmitterParentsRead' />" ;
@@ -846,7 +846,7 @@ else {
 									print "</tr>" ;
 									print "<tr class='odd'>" ;
 										print "<td style='text-align: left'>" ;
-											print _("Classmates\'s Parents") ;
+											print _("Classmates's Parents") ;
 										print "</td>" ;
 										print "<td style='text-align: center'>" ;
 											print "<input type='checkbox' name='homeworkCrowdAssessClassmatesParentsRead' />" ;

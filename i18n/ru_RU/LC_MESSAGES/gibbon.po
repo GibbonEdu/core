@@ -55452,16 +55452,6 @@ msgstr ""
 msgid "Other Teachers"
 msgstr ""
 
-#: modules/Planner/planner_add.php:849 modules/Planner/planner_add.php:841
-#: modules/Planner/planner_add.php:841
-msgid "Submitter\\'s Parents"
-msgstr ""
-
-#: modules/Planner/planner_add.php:857 modules/Planner/planner_add.php:849
-#: modules/Planner/planner_add.php:849
-msgid "Classmates\\'s Parents"
-msgstr ""
-
 #: modules/Planner/planner_add.php:865 modules/Planner/planner_edit.php:1034
 #: modules/Planner/planner_edit.php:1037 modules/Planner/planner_add.php:857
 #: modules/Planner/planner_add.php:857 modules/Planner/planner_edit.php:1037

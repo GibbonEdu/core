@@ -56336,16 +56336,6 @@ msgstr "Autres élèves"
 msgid "Other Teachers"
 msgstr "Autres enseignants"
 
-#: modules/Planner/planner_add.php:849 modules/Planner/planner_add.php:841
-#: modules/Planner/planner_add.php:841
-msgid "Submitter\\'s Parents"
-msgstr "Parents de l'envoyeur"
-
-#: modules/Planner/planner_add.php:857 modules/Planner/planner_add.php:849
-#: modules/Planner/planner_add.php:849
-msgid "Classmates\\'s Parents"
-msgstr "Parents du Classemates"
-
 #: modules/Planner/planner_add.php:865 modules/Planner/planner_edit.php:1034
 #: modules/Planner/planner_edit.php:1037 modules/Planner/planner_add.php:857
 #: modules/Planner/planner_add.php:857 modules/Planner/planner_edit.php:1037

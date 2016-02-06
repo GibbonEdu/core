@@ -56696,16 +56696,6 @@ msgstr "其他學生"
 msgid "Other Teachers"
 msgstr "其他老師"
 
-#: modules/Planner/planner_add.php:849 modules/Planner/planner_add.php:841
-#: modules/Planner/planner_add.php:841
-msgid "Submitter\\'s Parents"
-msgstr "提交者\\的家長"
-
-#: modules/Planner/planner_add.php:857 modules/Planner/planner_add.php:849
-#: modules/Planner/planner_add.php:849
-msgid "Classmates\\'s Parents"
-msgstr "同學\\的家長"
-
 #: modules/Planner/planner_add.php:865 modules/Planner/planner_edit.php:1034
 #: modules/Planner/planner_edit.php:1037 modules/Planner/planner_add.php:857
 #: modules/Planner/planner_add.php:857 modules/Planner/planner_edit.php:1037
