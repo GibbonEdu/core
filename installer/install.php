@@ -912,6 +912,7 @@ include "../functions.php" ;
 																		<option value='EGP £'>Egyptian Pound (£)</option>
 																		<option value='INR ₹'>Indian Rupee (₹)</option>
 																		<option value='IDR Rp'>Indonesian Rupiah (Rp)</option>
+																		<option value='JMD $'>Jamaican Dollar ($)</option>
 																		<option value='KES KSh'>Kenyan Shilling (KSh)</option>
 																		<option value='NPR ₨'>Nepalese Rupee (₨)</option>
 																		<option value='NGN ₦'>Nigerian Naira (₦)</option>

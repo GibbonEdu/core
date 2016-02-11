@@ -877,6 +877,7 @@ else {
 							<option <?php if ($row["value"]=="EGP £") { print "selected" ; } ?> value='EGP £'>Egyptian Pound (£)</option>
 							<option <?php if ($row["value"]=="INR ₹") { print "selected" ; } ?> value='INR ₹'>Indian Rupee (₹)</option>
 							<option <?php if ($row["value"]=="IDR Rp") { print "selected" ; } ?> value='IDR Rp'>Indonesian Rupiah (Rp)</option>
+							<option <?php if ($row["value"]=="JMD $") { print "selected" ; } ?> value='JMD $'>Jamaican Dollar ($)</option>
 							<option <?php if ($row["value"]=="KES KSh") { print "selected" ; } ?> value='KES KSh'>Kenyan Shilling (KSh)</option>
 							<option <?php if ($row["value"]=="NPR ₨") { print "selected" ; } ?> value='NPR ₨'>Nepalese Rupee (₨)</option>
 							<option <?php if ($row["value"]=="NGN ₦") { print "selected" ; } ?> value='NGN ₦'>Nigerian Naira (₦)</option>
