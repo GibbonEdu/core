@@ -73,6 +73,9 @@ else {
 						}
 						catch(PDOException $e) { }
 						while ($rowSelect=$resultSelect->fetch()) {
+							if ($resultSelect->rowCount()==1) {
+								$gibbonTTID=$rowSelect["gibbonTTID"] ;
+							}
 							$selected="" ;
 							if ($gibbonTTID==$rowSelect["gibbonTTID"]) {
 								$selected="selected" ;
