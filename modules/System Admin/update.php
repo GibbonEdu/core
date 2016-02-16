@@ -88,7 +88,7 @@ else {
 				print "<b>" . _('You seem to be all up to date, good work buddy!') . "</b>" ;
 			print "</p>" ;
 		}
-		else if ((float)$versionDB==(float)$versionCode) {
+		else if (version_compare($versionDB, $versionCode, "=")) {
 			//Instructions on how to update
 			print "<h3>" ;
 				print _("Update Instructions") ;
@@ -101,13 +101,13 @@ else {
 				print "<li>" . _('Reload this page and follow the instructions to update your database to the latest version.') . "</li>" ;
 			print "</ol>" ;
 		}
-		else if ((float)$versionDB>(float)$versionCode) {
+		else if (version_compare($versionDB, $versionCode, ">")) {
 			//Error
 			print "<div class='error'>" ;
 				print _("An error has occurred determining the version of the system you are using.") ;
 			print "</div>" ;
 		}
-		else if ((float)$versionDB<(float)$versionCode) {
+		else if (version_compare($versionDB, $versionCode, "<")) {
 			//Time to update
 			print "<h3>" ;
 				print _("Datebase Update") ;
@@ -143,7 +143,7 @@ else {
 		$sqlTokens=explode(";end", $sql[(count($sql))][1]) ;
 		$versionMaxLinesMax=(count($sqlTokens)-1) ;	
 		$update=FALSE ;
-		if ((float)$versionMax>(float)$versionDB) {
+		if (version_compare($versionMax, $versionDB, ">")) {
 			$update=TRUE ;
 		}
 		else {

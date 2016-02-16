@@ -77,9 +77,9 @@ else {
 			
 			$versionDB=$_POST["versionDB"] ;
 			$versionCode=$_POST["versionCode"] ;
-
+			
 			//Validate Inputs
-			if ($versionDB=="" OR $versionCode=="" OR (float)$versionDB>=(float)$versionCode) {
+			if ($versionDB=="" OR $versionCode=="" OR version_compare($versionDB, $versionCode)!=-1) {
 				//Fail 3
 				$URL.="&updateReturn=fail3" ;
 				header("Location: {$URL}");
@@ -89,7 +89,7 @@ else {
 				
 				$partialFail=FALSE;
 				foreach ($sql AS $version) {
-					if ((float)$version[0]>(float)$versionDB AND (float)$version[0]<=(float)$versionCode) {
+					if (version_compare($version[0], $versionDB, ">") AND version_compare($version[0], $versionCode, "<=")) {
 						$sqlTokens=explode(";end", $version[1]) ;
 						foreach ($sqlTokens AS $sqlToken) {
 							if (trim($sqlToken)!="") {

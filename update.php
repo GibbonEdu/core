@@ -69,7 +69,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 			$versionCode=$version ;
 
 			//Validate Inputs
-			if ($versionDB=="" OR $versionCode=="" OR (float)$versionDB>=(float)$versionCode) {
+			if ($versionDB=="" OR $versionCode=="" OR version_compare($versionDB, $versionCode)!=-1) {
 				print "<div class='error'>" ;
 					print _("Your request failed because your inputs were invalid, or no update was required.") ;
 				print "</div>" ;
@@ -78,7 +78,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 				include "./CHANGEDB.php" ;
 
 				foreach ($sql AS $version) {
-					if ((float)$version[0]>(float)$versionDB AND (float)$version[0]<=(float)$versionCode) {
+					if (version_compare($version[0], $versionDB, ">") AND version_compare($version[0], $versionCode, "<=")) {
 						$sqlTokens=explode(";end", $version[1]) ;
 						foreach ($sqlTokens AS $sqlToken) {
 							if (trim($sqlToken)!="") {
@@ -129,7 +129,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 			$sqlTokens=explode(";end", $sql[(count($sql))][1]) ;
 			$versionMaxLinesMax=(count($sqlTokens)-1) ;	
 			$update=FALSE ;
-			if ((float)$versionMax>(float)$versionDB) {
+			if (version_compare($versionMax, $versionDB, ">")) {
 				$update=TRUE ;
 			}
 			else {
@@ -145,10 +145,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 				exit ;
 			}
 			else { //Let's do it
-				if ((float)$versionMax>(float)$versionDB) { //At least one whole verison needs to be done
+				if (version_compare($versionMax, $versionDB, ">")) { //At least one whole verison needs to be done
 					foreach ($sql AS $version) {
 						$tokenCount=0 ;		
-						if ((float)$version[0]>=(float)$versionDB AND (float)$version[0]<=(float)$versionCode) {
+						if (version_compare($version[0], $versionDB, ">=") AND version_compare($version[0], $versionCode, "<=")) {
 							$sqlTokens=explode(";end", $version[1]) ;
 							if ($version[0]==$versionDB) { //Finish current version
 								foreach ($sqlTokens AS $sqlToken) {
@@ -184,7 +184,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 					//Get up to speed in max version
 					foreach ($sql AS $version) {
 						$tokenCount=0 ;
-						if ((float)$version[0]>=(float)$versionDB AND (float)$version[0]<=(float)$versionCode) {
+						if (version_compare($version[0], $versionDB, ">=") AND version_compare($version[0], $versionCode, "<=")) {
 							$sqlTokens=explode(";end", $version[1]) ;
 							foreach ($sqlTokens AS $sqlToken) {
 								if ($tokenCount>=$cuttingEdgeCodeLine) {
