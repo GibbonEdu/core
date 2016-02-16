@@ -2726,28 +2726,28 @@ else {
 							print "</h4>" ;
 							
 							try {
-								$data=array("gibbonPersonID"=>$gibbonPersonID, "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-								$sql="
+								$dataDeadlines=array("gibbonPersonID"=>$gibbonPersonID, "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
+								$sqlDeadlines="
 								(SELECT 'teacherRecorded' AS type, gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, date, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkDueDateTime, role FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND homework='Y' AND (role='Teacher' OR (role='Student' AND viewableStudents='Y')) AND homeworkDueDateTime>'" . date("Y-m-d H:i:s") . "' AND ((date<'" . date("Y-m-d") . "') OR (date='" . date("Y-m-d") . "' AND timeEnd<='" . date("H:i:s") . "')))
 								UNION
 								(SELECT 'studentRecorded' AS type, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, date, timeStart, timeEnd, 'Y' AS viewableStudents, 'Y' AS viewableParents, 'Y' AS homework, gibbonPlannerEntryStudentHomework.homeworkDueDateTime, role FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonPlannerEntryStudentHomework ON (gibbonPlannerEntryStudentHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID AND gibbonPlannerEntryStudentHomework.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND (role='Teacher' OR (role='Student' AND viewableStudents='Y')) AND gibbonPlannerEntryStudentHomework.homeworkDueDateTime>'" . date("Y-m-d H:i:s") . "' AND ((date<'" . date("Y-m-d") . "') OR (date='" . date("Y-m-d") . "' AND timeEnd<='" . date("H:i:s") . "')))
-								 ORDER BY homeworkDueDateTime, type" ;
-								 $result=$connection2->prepare($sql);
-								$result->execute($data);
+								ORDER BY homeworkDueDateTime, type" ;
+								$resultDeadlines=$connection2->prepare($sqlDeadlines);
+								$resultDeadlines->execute($dataDeadlines);
 							}
 							catch(PDOException $e) { 
 								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 							}
 							
-							if ($result->rowCount()<1) {
+							if ($resultDeadlines->rowCount()<1) {
 								print "<div class='success'>" ;
 									print _("No upcoming deadlines!") ;
 								print "</div>" ;
 							}
 							else {
 								print "<ol>" ;
-								while ($row=$result->fetch()) {
-									$diff=(strtotime(substr($row["homeworkDueDateTime"],0,10)) - strtotime(date("Y-m-d")))/86400 ;
+								while ($rowDeadlines=$resultDeadlines->fetch()) {
+									$diff=(strtotime(substr($rowDeadlines["homeworkDueDateTime"],0,10)) - strtotime(date("Y-m-d")))/86400 ;
 									$style="style='padding-right: 3px;'" ;
 									if ($diff<2) {
 										$style="style='padding-right: 3px; border-right: 10px solid #cc0000'" ;	
@@ -2756,8 +2756,8 @@ else {
 										$style="style='padding-right: 3px; border-right: 10px solid #D87718'" ;	
 									}
 									print "<li $style>" ;
-									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&search=$gibbonPersonID&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=date&date=" . $row["date"] . "&width=1000&height=550'>" . $row["course"] . "." . $row["class"] . "</a><br/>" ;
-									print "<span style='font-style: italic'>" . sprintf(_('Due at %1$s on %2$s'), substr($row["homeworkDueDateTime"],11,5), dateConvertBack($guid, substr($row["homeworkDueDateTime"],0,10))) ;
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&search=$gibbonPersonID&gibbonPlannerEntryID=" . $rowDeadlines["gibbonPlannerEntryID"] . "&viewBy=date&date=" . $rowDeadlines["date"] . "&width=1000&height=550'>" . $rowDeadlines["course"] . "." . $rowDeadlines["class"] . "</a><br/>" ;
+									print "<span style='font-style: italic'>" . sprintf(_('Due at %1$s on %2$s'), substr($rowDeadlines["homeworkDueDateTime"],11,5), dateConvertBack($guid, substr($rowDeadlines["homeworkDueDateTime"],0,10))) ;
 									print "</li>" ;
 								}
 								print "</ol>" ;
@@ -2775,30 +2775,30 @@ else {
 							if (isset($_GET["gibbonCourseClassIDFilter"])) {
 								$gibbonCourseClassIDFilter=$_GET["gibbonCourseClassIDFilter"] ;
 							}
-							$data=array() ;
+							$dataHistory=array() ;
 							if ($gibbonCourseClassIDFilter!="") {
-								$data["gibbonCourseClassIDFilter"]=$gibbonCourseClassIDFilter ;
-								$data["gibbonCourseClassIDFilter2"]=$gibbonCourseClassIDFilter ;
+								$dataHistory["gibbonCourseClassIDFilter"]=$gibbonCourseClassIDFilter ;
+								$dataHistory["gibbonCourseClassIDFilter2"]=$gibbonCourseClassIDFilter ;
 								$filter=" AND gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassIDFilter" ;
 								$filte2=" AND gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassIDFilte2" ;
 							}
 							
 							try {
-								$data["gibbonPersonID"]=$gibbonPersonID;
-								$data["gibbonSchoolYearID"]=$_SESSION[$guid]["gibbonSchoolYearID"] ;
-								$sql="
+								$dataHistory["gibbonPersonID"]=$gibbonPersonID;
+								$dataHistory["gibbonSchoolYearID"]=$_SESSION[$guid]["gibbonSchoolYearID"] ;
+								$sqlHistory="
 								(SELECT 'teacherRecorded' AS type, gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, date, timeStart, timeEnd, viewableStudents, viewableParents, homework, role, homeworkDueDateTime, homeworkDetails, homeworkSubmission, homeworkSubmissionRequired FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND homework='Y' AND gibbonSchoolYearID=:gibbonSchoolYearID AND (date<'" . date("Y-m-d") . "' OR (date='" . date("Y-m-d") . "' AND timeEnd<='" . date("H:i:s") . "')) $filter)
 								UNION
 								(SELECT 'studentRecorded' AS type, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, date, timeStart, timeEnd, 'Y' AS viewableStudents, 'Y' AS viewableParents, 'Y' AS homework, role, gibbonPlannerEntryStudentHomework.homeworkDueDateTime AS homeworkDueDateTime, gibbonPlannerEntryStudentHomework.homeworkDetails AS homeworkDetails, 'N' AS homeworkSubmission, '' AS homeworkSubmissionRequired FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonPlannerEntryStudentHomework ON (gibbonPlannerEntryStudentHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID AND gibbonPlannerEntryStudentHomework.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND gibbonSchoolYearID=:gibbonSchoolYearID AND (date<'" . date("Y-m-d") . "' OR (date='" . date("Y-m-d") . "' AND timeEnd<='" . date("H:i:s") . "')) $filter)
 								ORDER BY date DESC, timeStart DESC" ; 
-								$result=$connection2->prepare($sql);
-								$result->execute($data);
+								$resultHistory=$connection2->prepare($sqlHistory);
+								$resultHistory->execute($dataHistory);
 							}
 							catch(PDOException $e) { 
 								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 							}
 							
-							if ($result->rowCount()<1) {
+							if ($resultHistory->rowCount()<1) {
 								print "<div class='error'>" ;
 								print _("There are no records to display.") ;
 								print "</div>" ;
@@ -2864,8 +2864,8 @@ else {
 									
 									$count=0;
 									$rowNum="odd" ;
-									while ($row=$result->fetch()) {
-										if (!($row["role"]=="Student" AND $row["viewableParents"]=="N")) {
+									while ($rowHistory=$resultHistory->fetch()) {
+										if (!($rowHistory["role"]=="Student" AND $rowHistory["viewableParents"]=="N")) {
 											if ($count%2==0) {
 												$rowNum="even" ;
 											}
@@ -2875,22 +2875,22 @@ else {
 											$count++ ;
 											
 											//Highlight class in progress
-											if ((date("Y-m-d")==$row["date"]) AND (date("H:i:s")>$row["timeStart"]) AND (date("H:i:s")<$row["timeEnd"])) {
+											if ((date("Y-m-d")==$rowHistory["date"]) AND (date("H:i:s")>$rowHistory["timeStart"]) AND (date("H:i:s")<$rowHistory["timeEnd"])) {
 												$rowNum="current" ;
 											}
 											
 											//COLOR ROW BY STATUS!
 											print "<tr class=$rowNum>" ;
 												print "<td>" ;
-													print "<b>" . $row["course"] . "." . $row["class"] . "</b></br>" ;
-													print "<span style='font-size: 85%; font-style: italic'>" . dateConvertBack($guid, $row["date"]) . "</span>" ;
+													print "<b>" . $rowHistory["course"] . "." . $rowHistory["class"] . "</b></br>" ;
+													print "<span style='font-size: 85%; font-style: italic'>" . dateConvertBack($guid, $rowHistory["date"]) . "</span>" ;
 												print "</td>" ;
 												print "<td>" ;
-													print "<b>" . $row["name"] . "</b><br/>" ;
+													print "<b>" . $rowHistory["name"] . "</b><br/>" ;
 													print "<span style='font-size: 85%; font-style: italic'>" ;
-														if ($row["gibbonUnitID"]!="") {
+														if ($rowHistory["gibbonUnitID"]!="") {
 															try {
-																$dataUnit=array("gibbonUnitID"=>$row["gibbonUnitID"]); 
+																$dataUnit=array("gibbonUnitID"=>$rowHistory["gibbonUnitID"]); 
 																$sqlUnit="SELECT * FROM gibbonUnit WHERE gibbonUnitID=:gibbonUnitID" ;
 																$resultUnit=$connection2->prepare($sqlUnit);
 																$resultUnit->execute($dataUnit);
@@ -2906,7 +2906,7 @@ else {
 													print "</span>" ;
 												print "</td>" ;
 												print "<td>" ;
-													if ($row["type"]=="teacherRecorded") {
+													if ($rowHistory["type"]=="teacherRecorded") {
 														print "Teacher Recorded" ;
 													}
 													else {
@@ -2914,25 +2914,25 @@ else {
 													}
 													print  "<br/>" ;
 													print "<span style='font-size: 85%; font-style: italic'>" ;
-														if ($row["homeworkDetails"]!="") {
-															if (strlen(strip_tags($row["homeworkDetails"]))<21) {
-																print strip_tags($row["homeworkDetails"]) ;
+														if ($rowHistory["homeworkDetails"]!="") {
+															if (strlen(strip_tags($rowHistory["homeworkDetails"]))<21) {
+																print strip_tags($rowHistory["homeworkDetails"]) ;
 															}
 															else {
-																print "<span $style title='" . htmlPrep(strip_tags($row["homeworkDetails"])) . "'>" . substr(strip_tags($row["homeworkDetails"]), 0, 20) . "...</span>" ;
+																print "<span $style title='" . htmlPrep(strip_tags($rowHistory["homeworkDetails"])) . "'>" . substr(strip_tags($rowHistory["homeworkDetails"]), 0, 20) . "...</span>" ;
 															}
 														}
 													print "</span>" ;
 												print "</td>" ;
 												print "<td>" ;
-													print dateConvertBack($guid, substr($row["homeworkDueDateTime"],0,10)) ;
+													print dateConvertBack($guid, substr($rowHistory["homeworkDueDateTime"],0,10)) ;
 												print "</td>" ;
 												print "<td>" ;
-													if ($row["homeworkSubmission"]=="Y") {
-														print "<b>" . $row["homeworkSubmissionRequired"] . "<br/></b>" ;
-														if ($row["role"]=="Student") {
+													if ($rowHistory["homeworkSubmission"]=="Y") {
+														print "<b>" . $rowHistory["homeworkSubmissionRequired"] . "<br/></b>" ;
+														if ($rowHistory["role"]=="Student") {
 															try {
-																$dataVersion=array("gibbonPlannerEntryID"=>$row["gibbonPlannerEntryID"], "gibbonPersonID"=>$gibbonPersonID); 
+																$dataVersion=array("gibbonPlannerEntryID"=>$rowHistory["gibbonPlannerEntryID"], "gibbonPersonID"=>$gibbonPersonID); 
 																$sqlVersion="SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC" ;
 																$resultVersion=$connection2->prepare($sqlVersion);
 																$resultVersion->execute($dataVersion);
@@ -2942,16 +2942,16 @@ else {
 															}
 															if ($resultVersion->rowCount()<1) {
 																//Before deadline
-																if (date("Y-m-d H:i:s")<$row["homeworkDueDateTime"]) {
+																if (date("Y-m-d H:i:s")<$rowHistory["homeworkDueDateTime"]) {
 																	print "<span title='" . _('Pending') . "'>" . _('Pending') . "</span>" ;
 																}
 																//After
 																else {
-																	if (@$row["dateStart"]>@$rowSub["date"]) {
+																	if (@$rowHistory["dateStart"]>@$rowSub["date"]) {
 																		print "<span title='" . _('Student joined school after assessment was given.') . "' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>" . _('NA') . "</span>" ;
 																	}
 																	else {
-																		if ($row["homeworkSubmissionRequired"]=="Compulsory") {
+																		if ($rowHistory["homeworkSubmissionRequired"]=="Compulsory") {
 																			print "<div style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px; margin: 2px 0px'>" . _('Incomplete') . "</div>" ;
 																		}
 																		else {
@@ -2966,7 +2966,7 @@ else {
 																	print $rowVersion["status"] ;
 																} 
 																else {
-																	if ($row["homeworkSubmissionRequired"]=="Compulsory") {
+																	if ($rowHistory["homeworkSubmissionRequired"]=="Compulsory") {
 																		print "<div style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px; margin: 2px 0px'>" . $rowVersion["status"] . "</div>" ;
 																	}
 																	else {
@@ -2978,7 +2978,7 @@ else {
 													}
 												print "</td>" ;
 												print "<td>" ;
-													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&search=$gibbonPersonID&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=class&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&width=1000&height=550'><img title='" . _('View Details') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
+													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&search=$gibbonPersonID&gibbonPlannerEntryID=" . $rowHistory["gibbonPlannerEntryID"] . "&viewBy=class&gibbonCourseClassID=" . $rowHistory["gibbonCourseClassID"] . "&width=1000&height=550'><img title='" . _('View Details') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 												print "</td>" ;
 											print "</tr>" ;
 										}
