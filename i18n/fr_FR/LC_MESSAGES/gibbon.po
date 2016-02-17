@@ -64577,7 +64577,7 @@ msgstr "Commande de liste"
 #: modules/User Admin/import_studentEnrolment.php:135
 #: modules/User Admin/studentEnrolment_manage_add.php:195
 #: modules/User Admin/studentEnrolment_manage_edit.php:211
-msgid "Must be unique to roll gorup if set."
+msgid "Must be unique to roll group if set."
 msgstr "Doit être unique pour un groupe de liste si défini."
 
 #: preferences.php:214 preferences.php:214

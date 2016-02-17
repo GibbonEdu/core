@@ -64513,8 +64513,8 @@ msgstr "Turma"
 #: modules/User Admin/import_studentEnrolment.php:135
 #: modules/User Admin/studentEnrolment_manage_add.php:195
 #: modules/User Admin/studentEnrolment_manage_edit.php:211
-msgid "Must be unique to roll gorup if set."
-msgstr "Deve ser exclusivo para rolar gorup se definir."
+msgid "Must be unique to roll group if set."
+msgstr "Deve ser exclusivo para rolar group se definir."
 
 #: preferences.php:214 preferences.php:214
 msgid "Personal Google Calendar ID"

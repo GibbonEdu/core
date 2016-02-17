@@ -132,7 +132,7 @@ else {
 					<li><b><?php print _('Username') ?></b> - <?php print _('Must be unique.') ?></li>
 					<li><b><?php print _('Roll Group') ?></b> - <?php print _('Roll group short name, as set in School Admim. Must already exist.') ?></li>
 					<li><b><?php print _('Year Group') ?></b> - <?php print _('Year group short name, as set in School Admin. Must already exist') ?></li>
-					<li><b><?php print _('Roll Order') ?></b> - <?php print _('Must be unique to roll gorup if set.') ?></li>
+					<li><b><?php print _('Roll Order') ?></b> - <?php print _('Must be unique to roll group if set.') ?></li>
 				</ol>
 			</li>
 			<li><?php print _('Do not include a header row in the CSV files.') ?></li>

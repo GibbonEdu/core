@@ -64416,7 +64416,7 @@ msgstr "Comandă rol"
 #: modules/User Admin/import_studentEnrolment.php:135
 #: modules/User Admin/studentEnrolment_manage_add.php:195
 #: modules/User Admin/studentEnrolment_manage_edit.php:211
-msgid "Must be unique to roll gorup if set."
+msgid "Must be unique to roll group if set."
 msgstr "Trebuie să fie unic dacă  dacă este setaă clasa."
 
 #: preferences.php:214 preferences.php:214

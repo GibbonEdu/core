@@ -192,7 +192,7 @@ else {
 				<tr>
 					<td> 
 						<b><?php print _('Roll Order') ?></b><br/>
-						<span style="font-size: 90%"><i><?php print _('Must be unique to roll gorup if set.') ?></i></span>
+						<span style="font-size: 90%"><i><?php print _('Must be unique to roll group if set.') ?></i></span>
 					</td>
 					<td class="right">
 						<input name="rollOrder" id="rollOrder" maxlength=2 value="" type="text" style="width: 300px">
