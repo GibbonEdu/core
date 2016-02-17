@@ -148,7 +148,7 @@ else {
 				//Homework
 				if (isActionAccessible($guid, $connection2, "/modules/Planner/planner_deadlines.php")) {
 					$menu[$menuCount][0]="Homework" ;
-					$menu[$menuCount][1]="<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_deadlines.php&gibbonCourseClassID=$gibbonCourseClassID'><img style='margin-bottom: 10px'  style='margin-left: 5px' title='" . _('Markbook') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/homework_large.png'/><br/><b>" . _('Homework') . "</b></a>" ;
+					$menu[$menuCount][1]="<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_deadlines.php&gibbonCourseClassIDFilter=$gibbonCourseClassID'><img style='margin-bottom: 10px'  style='margin-left: 5px' title='" . _('Markbook') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/homework_large.png'/><br/><b>" . _('Homework') . "</b></a>" ;
 					$menuCount++ ;
 				}
 				
