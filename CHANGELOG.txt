@@ -36,12 +36,14 @@ v12.0.00
 		System: improved MIME type checking on CSV import
 		System: fixed Google login PHP warnings
 		System: fixed login PHP warning
+		System: fixed typo in name of behaviour CLI script
 		System: added Pakistani Rupee (₨) and Jamaican Dollar as currenciess
 		System Admin: Improved version comparison in module updater
 		System Admin: Improved version comparison in non-login database updater
 		Activities: fixed error in adding and editing activities when payment is turned off
 		Attendance: added client side warning in case attendance is taken for a day in the past (happens when user not logged out over night)
 		Behaviour: made column widths consistent when viewing behaviour log
+		Departments: fixed filter in Homework link from Class view page
 		Formal Assessment: fixed issue with View Classes menu not appearing for a user with no classes (e.g. admin)
 		Formal Assessment: fixed uploaded response file selector gigantism issue
 		Library: added item count column to lending log
