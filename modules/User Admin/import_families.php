@@ -256,7 +256,7 @@ else {
 							$families[$familySuccessCount]["homeAddressDistrict"]=$data[4] ;
 							$families[$familySuccessCount]["homeAddressCountry"]=$data[5] ;
 							$families[$familySuccessCount]["status"]=$data[6] ;
-							$families[$familySuccessCount]["languageHome"]=$data[7] ;
+							$families[$familySuccessCount]["languageHomePrimary"]=$data[7] ;
 							$familySuccessCount++ ;
 						}
 						else {
@@ -410,8 +410,8 @@ else {
 								//UPDATE FAMILY
 								$updateFamilyFail=FALSE ;
 								try {
-									$data=array("name"=>$family["name"],  "nameAddress"=>$family["nameAddress"],  "homeAddress"=>$family["homeAddress"],  "homeAddressDistrict"=>$family["homeAddressDistrict"],  "homeAddressCountry"=>$family["homeAddressCountry"],  "status"=>$family["status"],  "languageHome"=>$family["languageHome"], "familySync"=>$family["familySync"]); 
-									$sql="UPDATE gibbonFamily SET name=:name, nameAddress=:nameAddress, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry, status=:status, languageHome=:languageHome WHERE familySync=:familySync" ;
+									$data=array("name"=>$family["name"],  "nameAddress"=>$family["nameAddress"],  "homeAddress"=>$family["homeAddress"],  "homeAddressDistrict"=>$family["homeAddressDistrict"],  "homeAddressCountry"=>$family["homeAddressCountry"],  "status"=>$family["status"],  "languageHomePrimary"=>$family["languageHomePrimary"], "familySync"=>$family["familySync"]); 
+									$sql="UPDATE gibbonFamily SET name=:name, nameAddress=:nameAddress, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry, status=:status, languageHomePrimary=:languageHomePrimary WHERE familySync=:familySync" ;
 									$result=$connection2->prepare($sql);
 									$result->execute($data);
 								}
@@ -435,8 +435,8 @@ else {
 								//ADD FAMILY
 								$addFamilyFail=FALSE ;
 								try {
-									$data=array("name"=>$family["name"],  "nameAddress"=>$family["nameAddress"],  "homeAddress"=>$family["homeAddress"],  "homeAddressDistrict"=>$family["homeAddressDistrict"],  "homeAddressCountry"=>$family["homeAddressCountry"],  "status"=>$family["status"],  "languageHome"=>$family["languageHome"], "familySync"=>$family["familySync"]); 
-									$sql="INSERT INTO gibbonFamily SET name=:name, nameAddress=:nameAddress, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry, status=:status, languageHome=:languageHome, familySync=:familySync" ;
+									$data=array("name"=>$family["name"],  "nameAddress"=>$family["nameAddress"],  "homeAddress"=>$family["homeAddress"],  "homeAddressDistrict"=>$family["homeAddressDistrict"],  "homeAddressCountry"=>$family["homeAddressCountry"],  "status"=>$family["status"],  "languageHomePrimary"=>$family["languageHomePrimary"], "familySync"=>$family["familySync"]); 
+									$sql="INSERT INTO gibbonFamily SET name=:name, nameAddress=:nameAddress, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry, status=:status, languageHomePrimary=:languageHomePrimary, languageHomeSecondary=NULL, familySync=:familySync" ;
 									$result=$connection2->prepare($sql);
 									$result->execute($data);
 								}
