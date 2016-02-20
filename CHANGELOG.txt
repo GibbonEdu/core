@@ -50,6 +50,7 @@ v12.0.00
 		Library: added count of records to Manage Catalog
 		Markbook: fixed issue causing mis-evaluation of personalised targets, for some edge cases
 		Markbook: fixed uploaded response file selector gigantism issue
+		Markbook: added line break display to full comment in various viewing locations
 		Planner: fixed surplus slash issue in Crowd Assessment settings in Lesson Planner add page
 		School Admin: fixed bug preventing non-contiguous primary external assessment settings from being saved in Formal Assessment settings
 		Students: added year group to New Students report when using Date Range setting 

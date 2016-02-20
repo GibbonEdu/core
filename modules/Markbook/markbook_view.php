@@ -1266,7 +1266,7 @@ else {
 								else {
 									print "<td>" ;
 										if ($rowEntry["comment"]!="") {
-											if (strlen($rowEntry["comment"])>50) {
+											if (strlen($rowEntry["comment"])>200) {
 												print "<script type='text/javascript'>" ;	
 													print "$(document).ready(function(){" ;
 														print "\$(\".comment-$entryCount\").hide();" ;
@@ -1276,11 +1276,11 @@ else {
 														print "});" ;
 													print "});" ;
 												print "</script>" ;
-												print "<span>" . substr($rowEntry["comment"], 0, 50) . "...<br/>" ;
+												print "<span>" . substr($rowEntry["comment"], 0, 200) . "...<br/>" ;
 												print "<a title='" . _('View Description') . "' class='show_hide-$entryCount' onclick='return false;' href='#'>" . _('Read more') . "</a></span><br/>" ;
 											}
 											else {
-												print $rowEntry["comment"] ;
+												print nl2br($rowEntry["comment"]) ;
 											}
 											print "<br/>" ;
 										}
@@ -1377,10 +1377,10 @@ else {
 									}
 								}
 							print "</tr>" ;
-							if (strlen($rowEntry["comment"])>50) {
+							if (strlen($rowEntry["comment"])>200) {
 								print "<tr class='comment-$entryCount' id='comment-$entryCount'>" ;
 									print "<td colspan=6>" ;
-										print $rowEntry["comment"] ;
+										print nl2br($rowEntry["comment"]) ;
 									print "</td>" ;
 								print "</tr>" ;
 							}
@@ -1866,7 +1866,7 @@ else {
 											else {
 												print "<td>" ;
 													if ($rowEntry["comment"]!="") {
-														if (strlen($rowEntry["comment"])>50) {
+														if (strlen($rowEntry["comment"])>200) {
 															print "<script type='text/javascript'>" ;	
 																print "$(document).ready(function(){" ;
 																	print "\$(\".comment-$entryCount\").hide();" ;
@@ -1876,11 +1876,11 @@ else {
 																	print "});" ;
 																print "});" ;
 															print "</script>" ;
-															print "<span>" . substr($rowEntry["comment"], 0, 50) . "...<br/>" ;
+															print "<span>" . substr($rowEntry["comment"], 0, 200) . "...<br/>" ;
 															print "<a title='" . _('View Description') . "' class='show_hide-$entryCount' onclick='return false;' href='#'>Read more</a></span><br/>" ;
 														}
 														else {
-															print $rowEntry["comment"] ;
+															print nl2br($rowEntry["comment"]) ;
 														}
 														print "<br/>" ;
 													}
@@ -1977,10 +1977,10 @@ else {
 												}
 											}
 										print "</tr>" ;
-										if (strlen($rowEntry["comment"])>50) {
+										if (strlen($rowEntry["comment"])>200) {
 											print "<tr class='comment-$entryCount' id='comment-$entryCount'>" ;
 												print "<td colspan=6>" ;
-													print $rowEntry["comment"] ;
+													print nl2br($rowEntry["comment"]) ;
 												print "</td>" ;
 											print "</tr>" ;
 										}

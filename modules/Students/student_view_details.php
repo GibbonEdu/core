@@ -2189,8 +2189,8 @@ else {
 														print "</span><br/>" ;
 													print "</td>" ;
 													if ($rowEntry["attainment"]=="N" OR ($rowEntry["gibbonScaleIDAttainment"]=="" AND $rowEntry["gibbonRubricIDAttainment"]=="")) {
-														print "<td class='dull' style='text-align: center'>" ;
-														
+														print "<td class='dull' style='color: #bbb; text-align: center'>" ;
+															print _('N/A') ;
 														print "</td>" ;
 													}
 													else {
@@ -2227,8 +2227,8 @@ else {
 														print "</td>" ;
 													}
 													if ($rowEntry["effort"]=="N" OR ($rowEntry["gibbonScaleIDEffort"]=="" AND $rowEntry["gibbonRubricIDEffort"]=="")) {
-														print "<td class='dull' style='text-align: center'>" ;
-														
+														print "<td class='dull' style='color: #bbb; text-align: center'>" ;
+															print _('N/A') ;
 														print "</td>" ;
 													}
 													else {
@@ -2263,8 +2263,8 @@ else {
 														print "</td>" ;
 													}
 													if ($rowEntry["commentOn"]=="N" AND $rowEntry["uploadedResponseOn"]=="N") {
-														print "<td class='dull' style='text-align: center'>" ;
-	
+														print "<td class='dull' style='color: #bbb; text-align: center'>" ;
+															print _('N/A') ;
 														print "</td>" ;
 													}
 													else {
@@ -2284,7 +2284,7 @@ else {
 																	print "<a title='" . _('View Description') . "' class='show_hide-$entryCount' onclick='return false;' href='#'>" . _('Read more') . "</a></span><br/>" ;
 																}
 																else {
-																	print $rowEntry["comment"] ;
+																	print nl2br($rowEntry["comment"]) ;
 																}
 																if ($rowEntry["response"]!="") {
 																	print "<a title='Uploaded Response' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowEntry["response"] . "'>" . _('Uploaded Response') . "</a><br/>" ;
@@ -2293,8 +2293,8 @@ else {
 														print "</td>" ;
 													}
 													if ($rowEntry["gibbonPlannerEntryID"]==0) {
-														print "<td class='dull' style='text-align: center'>" ;
-	
+														print "<td class='dull' style='color: #bbb; text-align: center'>" ;
+															print _('N/A') ;
 														print "</td>" ;
 													}
 													else {
@@ -2308,8 +2308,8 @@ else {
 															print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 														}
 														if ($resultSub->rowCount()!=1) {
-															print "<td class='dull' style='text-align: center'>" ;
-	
+															print "<td class='dull' style='color: #bbb; text-align: center'>" ;
+																print _('N/A') ;
 															print "</td>" ;
 														}
 														else {
@@ -2383,7 +2383,7 @@ else {
 												if (strlen($rowEntry["comment"])>50) {
 													print "<tr class='comment-$entryCount' id='comment-$entryCount'>" ;
 														print "<td colspan=6>" ;
-															print $rowEntry["comment"] ;
+															print nl2br($rowEntry["comment"]) ;
 														print "</td>" ;
 													print "</tr>" ;
 												}
