@@ -1456,7 +1456,7 @@ include "../functions.php" ;
 					<br style="clear: both">
 				</div>
 				<div id="footer">
-					<?php print _("Powered by") ?> <a href="http://gibbonedu.org">Gibbon</a> v<?php print $version ?> &#169; <a href="http://rossparker.org">Ross Parker</a> 2010-<?php print date("Y") ?><br/>
+					<?php print _("Powered by") ?> <a href="https://gibbonedu.org">Gibbon</a> v<?php print $version ?> &#169; <a href="http://rossparker.org">Ross Parker</a> 2010-<?php print date("Y") ?><br/>
 					<span style='font-size: 90%; '>
 						<?php print _("Created under the") ?> <a href="https://www.gnu.org/licenses/gpl.html">GNU GPL</a> at <a href='http://www.ichk.edu.hk'>ICHK</a>
 					</span><br/>

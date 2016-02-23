@@ -1259,10 +1259,12 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 											catch(PDOException $e) {
 												$output.="<div class='error'>" . $e->getMessage() . "</div>" ;
 											}
-
 											if ($resultPlan->rowCount()==1) {
 												$rowPlan=$resultPlan->fetch() ;
 												$output.="<a style='pointer-events: auto' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID=" . $rowPeriods["gibbonCourseClassID"] . "&gibbonPlannerEntryID=" . $rowPlan["gibbonPlannerEntryID"] . "&search=$gibbonPersonID'><img style='float: right; margin: " . (substr($height,0,-2)-27) . "px 2px 0 0' title='" . _('View lesson:') . " " . htmlPrep($rowPlan["name"]) . "' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a>" ;
+											}
+											else if ($resultPlan->rowCount()>1) {
+												$output.="<div style='float: right; margin: " . (substr($height,0,-2)-17) . "px 5px 0 0'>" . _('Error') . "</div>" ;
 											}
 										$output.="</div>" ;
 										$zCount++ ;

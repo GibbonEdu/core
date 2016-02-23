@@ -30,6 +30,7 @@ v12.0.00
 		
 	Security
 		System: converted links to GNU GPL to HTTPS
+		System: converted links to Gibbon website to HTTPS
 	
 	Tweaks & Bug Fixes
 		System: Added Danish as a development language

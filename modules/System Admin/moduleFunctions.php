@@ -56,7 +56,7 @@ function getCurrentVersion($guid, $connection2, $version) {
 						$output.="}" ;
 						$output.="else {" ;
 							$output.="$(\"#status\").attr(\"class\",\"warning\");" ;
-							$output.="$(\"#status\").html('" . sprintf(_('Version check successful. Your Gibbon installation is out of date. Please visit %1$s to download the latest version.'), "<a target=\"blank\" href=\'http://gibbonedu.org/download\'>the Gibbon download page</a>") . "') ;" ;
+							$output.="$(\"#status\").html('" . sprintf(_('Version check successful. Your Gibbon installation is out of date. Please visit %1$s to download the latest version.'), "<a target=\"blank\" href=\'https://gibbonedu.org/download\'>the Gibbon download page</a>") . "') ;" ;
 						$output.="}" ;
 					$output.="}" ;
 				$output.="}," ;

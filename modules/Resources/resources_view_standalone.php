@@ -97,6 +97,6 @@ print "<link rel='stylesheet' type='text/css' href='" . $_SESSION[$guid]["absolu
 		</div>
 	</div>
 	<div id="footer">
-		<a href="http://gibbonedu.org">Gibbon</a> v<?php print $version ?> | &#169; 2011, <a href="http://rossparker.org">Ross Parker</a> at <a href="http://www.ichk.edu.hk">International College Hong Kong</a> | Created under the <a href="https://www.gnu.org/licenses/gpl.html">GNU General Public License</a>
+		<a href="https://gibbonedu.org">Gibbon</a> v<?php print $version ?> | &#169; 2011, <a href="http://rossparker.org">Ross Parker</a> at <a href="http://www.ichk.edu.hk">International College Hong Kong</a> | Created under the <a href="https://www.gnu.org/licenses/gpl.html">GNU General Public License</a>
 	</div>
 </div>
