@@ -1982,7 +1982,7 @@ else {
 						}
 						if ($resultClassGroup->rowCount()>0) {
 							$_SESSION[$guid]["sidebarExtra"].="<span style='font-size: 115%; font-weight: bold; padding-top: 21px'>" . _('Guests') . "<br/></span>" ;
-							$_SESSION[$guid]["sidebarExtra"].="<table cellspacing='0' style='width:260px; float: right'>" ;
+							$_SESSION[$guid]["sidebarExtra"].="<table class='noIntBorder' cellspacing='0' style='width:260px; float: right'>" ;
 								$count2=0 ;
 								$count2Students=0 ;
 								while ($rowClassGroup=$resultClassGroup->fetch()) {
