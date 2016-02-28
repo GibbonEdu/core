@@ -38,6 +38,7 @@ v12.0.00
 		System: fixed Google login PHP warnings
 		System: fixed login PHP warning
 		System: fixed typo in name of behaviour CLI script
+		System: fixed non-standard port bug in installer (caused incorrect value to be set for absoluteURL)
 		System: added Pakistani Rupee (₨) and Jamaican Dollar as currenciess
 		System Admin: Improved version comparison in module updater
 		System Admin: Improved version comparison in non-login database updater

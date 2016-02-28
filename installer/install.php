@@ -626,8 +626,14 @@ include "../functions.php" ;
 																	<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
 																</td>
 																<td stclass="right">
-																	<?php $pageURL = (@$_SERVER["HTTPS"] == "on") ? "https://" : "http://"; ?>
-																	<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print substr(($pageURL.$_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"]),0,-29) ?>" type="text" style="width: 300px">
+																	<?php 
+																		$pageURL = (@$_SERVER["HTTPS"] == "on") ? "https://" : "http://"; 
+																		$port="" ;
+																		if ($_SERVER["SERVER_PORT"]!="80") {
+																			$port=":" . $_SERVER["SERVER_PORT"] ;
+																		}
+																	?>
+																	<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print substr(($pageURL . $_SERVER["SERVER_NAME"] . $port . $_SERVER["REQUEST_URI"]),0,-29) ?>" type="text" style="width: 300px">
 																	<script type="text/javascript">
 																		var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 																		<?php print $row["name"] ?>.add(Validate.Presence);
