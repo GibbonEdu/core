@@ -1930,7 +1930,7 @@ else {
 											$_SESSION[$guid]["sidebarExtra"].="<div style='padding-top: 5px'><b><a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $rowClassGroup["gibbonPersonID"] . "'>" . formatName("", $rowClassGroup["preferredName"], $rowClassGroup["surname"], "Student") . "</a></b><br/>" ;
 										}
 										else {
-											$_SESSION[$guid]["sidebarExtra"].="<div style='padding-top: 35px'><b>" . formatName($rowClassGroup["title"], $rowClassGroup["preferredName"], $rowClassGroup["surname"], "Staff") . "</b><br/>" ;
+											$_SESSION[$guid]["sidebarExtra"].="<div style='padding-top: 5px'><b>" . formatName($rowClassGroup["title"], $rowClassGroup["preferredName"], $rowClassGroup["surname"], "Staff") . "</b><br/>" ;
 										}
 									
 										$_SESSION[$guid]["sidebarExtra"].="<i>" . $rowClassGroup["role"] . "</i><br/><br/></div>" ;

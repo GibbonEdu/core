@@ -56,6 +56,7 @@ v12.0.00
 		Markbook: added line break display to full comment in various viewing locations
 		Planner: fixed surplus slash issue in Crowd Assessment settings in Lesson Planner add page
 		Planner: fixed style mismatch in Guest section of lesson planner full view
+		Planner: attendance alignment tweak
 		School Admin: fixed bug preventing non-contiguous primary external assessment settings from being saved in Formal Assessment settings
 		Students: added year group to New Students report when using Date Range setting 
 		Students: added All Students filter persistence to Back To Search link on student details page
