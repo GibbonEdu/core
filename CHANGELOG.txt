@@ -33,7 +33,7 @@ v12.0.00
 		System: converted links to Gibbon website to HTTPS
 	
 	Tweaks & Bug Fixes
-		System: Added Danish as a development language
+		System: Added Danish, Persian & Brazilian Portugese as a development language
 		System: improved MIME type checking on CSV import
 		System: fixed Google login PHP warnings
 		System: fixed login PHP warning
