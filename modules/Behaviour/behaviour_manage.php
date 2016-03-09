@@ -294,7 +294,7 @@ else {
 					print "<th>" ;
 						print _("Teacher") ;
 					print "</th>" ;
-					print "<th style='min-width: 70px'>" ;
+					print "<th style='min-width: 90px'>" ;
 						print _("Actions") ;
 					print "</th>" ;
 				print "</tr>" ;

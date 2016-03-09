@@ -45,6 +45,7 @@ v12.0.00
 		Activities: fixed error in adding and editing activities when payment is turned off
 		Attendance: added client side warning in case attendance is taken for a day in the past (happens when user not logged out over night)
 		Behaviour: made column widths consistent when viewing behaviour log
+		Behaviour: increased min-width for Action column
 		Departments: fixed filter in Homework link from Class view page
 		Formal Assessment: fixed issue with View Classes menu not appearing for a user with no classes (e.g. admin)
 		Formal Assessment: fixed uploaded response file selector gigantism issue
