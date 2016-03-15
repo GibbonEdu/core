@@ -304,7 +304,7 @@ else {
 						<?php
 						for ($i=1; $i<=20; $i++) {
 							?>
-							<option <? if ($i==$row["value"]) { print "selected" ; } ?> value="<?php print $i ?>"><?php print $i ?></option>
+							<option <?php if ($i==$row["value"]) { print "selected" ; } ?> value="<?php print $i ?>"><?php print $i ?></option>
 						<?php
 						}
 						?>
@@ -361,7 +361,7 @@ else {
 						<?php
 						for ($i=1; $i<=20; $i++) {
 							?>
-							<option <? if ($i==$row["value"]) { print "selected" ; } ?> value="<?php print $i ?>"><?php print $i ?></option>
+							<option <?php if ($i==$row["value"]) { print "selected" ; } ?> value="<?php print $i ?>"><?php print $i ?></option>
 						<?php
 						}
 						?>
@@ -418,7 +418,7 @@ else {
 						<?php
 						for ($i=1; $i<=20; $i++) {
 							?>
-							<option <? if ($i==$row["value"]) { print "selected" ; } ?> value="<?php print $i ?>"><?php print $i ?></option>
+							<option <?php if ($i==$row["value"]) { print "selected" ; } ?> value="<?php print $i ?>"><?php print $i ?></option>
 						<?php
 						}
 						?>

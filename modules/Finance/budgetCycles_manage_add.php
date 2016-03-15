@@ -150,7 +150,7 @@ else {
 					<h3><?php print _('Budget Allocations') ?></h3>
 				</td>
 			</tr>
-			<?
+			<?php
 			try {
 				$dataBudget=array(); 
 				$sqlBudget="SELECT * FROM gibbonFinanceBudget ORDER BY name" ; 
