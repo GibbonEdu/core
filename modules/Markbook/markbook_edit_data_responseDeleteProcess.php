@@ -68,7 +68,7 @@ else {
 			//Fail 2
 			$URL.="&deleteReturn=fail2" ;
 			header("Location: {$URL}");
-			break ;
+			exit() ;
 		}
 		
 		$URL.="&deleteReturn=success0" ;

@@ -163,7 +163,7 @@ else {
 									//Fail 2
 									$URL.="&issueReturn=fail2" ;
 									header("Location: {$URL}");
-									break ;
+									exit() ;
 								}
 	
 								//Read & Organise Fees

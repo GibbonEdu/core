@@ -136,7 +136,7 @@ if (isset($_SESSION[$guid]["passwordForceReset"])) {
 		$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=preferences.php" ;
 		$URL=$URL. "&forceReset=Y" ;
 		header("Location: {$URL}") ;
-		break ;
+		exit() ;
 	}
 }
 
@@ -397,7 +397,9 @@ else {
 								if ($cacheLoad) {
 									$_SESSION[$guid]["mainMenu"]=mainMenu($connection2, $guid) ;
 								}
-								print $_SESSION[$guid]["mainMenu"] ;
+								if (isset($_SESSION[$guid]["mainMenu"])) {
+									print $_SESSION[$guid]["mainMenu"] ;
+								}
 							?>
 						</div>
 					</div>

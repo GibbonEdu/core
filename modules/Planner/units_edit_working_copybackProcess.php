@@ -83,7 +83,7 @@ else {
 				//Fail 2
 				$URL.="&copyReturn=fail2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 			
 			if ($result->rowCount()!=1) {
@@ -103,7 +103,7 @@ else {
 					//Fail 2
 					$URL.="&copyReturn=fail2" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 				
 				if ($result->rowCount()!=1) {

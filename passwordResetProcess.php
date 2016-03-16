@@ -67,7 +67,7 @@ else {
 	catch(PDOException $e) { 
 		$URL=$URL. "&editReturn=fail1" ;
 		header("Location: {$URL}");
-		break ;
+		exit() ;
 	}
 
 	if ($result->rowCount()!=1) {
@@ -89,7 +89,7 @@ else {
 		catch(PDOException $e) { 
 			$URL=$URL. "&editReturn=fail1" ;
 			header("Location: {$URL}");
-			break ;
+			exit() ;
 		}
 		
 		if ($result->rowCount()!=1) {

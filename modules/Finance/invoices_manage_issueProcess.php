@@ -77,7 +77,7 @@ else {
 				//Fail 2
 				$URL.="&issueReturn=fail2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 			
 			try {
@@ -90,7 +90,7 @@ else {
 				//Fail2
 				$URL.="&issueReturn=fail2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 			
 			if ($result->rowCount()!=1) {
@@ -128,7 +128,7 @@ else {
 						//Fail 2
 						$URL.="&issueReturn=fail2" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 				
 					$partialFail=FALSE ;

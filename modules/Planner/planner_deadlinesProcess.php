@@ -94,7 +94,7 @@ else {
 			//Fail2
 			$URL.="&updateReturn=fail2$params" ;
 			header("Location: {$URL}");
-			break ;
+			exit() ;
 		}
 		
 		while ($rowCompletion=$resultCompletion->fetch()) {

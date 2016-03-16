@@ -105,7 +105,7 @@ else {
 						//Fail2
 						$URL.="&editReturn=fail2" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 
 					if ($result->rowCount()!=1) {
@@ -145,7 +145,7 @@ else {
 							//Fail 5
 							$URL.="&editReturn=fail5" ;
 							header("Location: {$URL}");
-							break ;
+							exit() ;
 						}
 						
 						//Write back to gibbonFinanceExpense
@@ -159,7 +159,7 @@ else {
 							//Fail2
 							$URL.="&editReturn=fail2" ;
 							header("Location: {$URL}");
-							break ;
+							exit() ;
 						}
 						
 						//Notify reimbursement officer that action is required
@@ -180,7 +180,7 @@ else {
 							//Fail2
 							$URL.="&editReturn=fail2" ;
 							header("Location: {$URL}");
-							break ;
+							exit() ;
 						}
 						
 						//Write reimbursement request change to log
@@ -194,7 +194,7 @@ else {
 							//Fail2
 							$URL.="&editReturn=fail2" ;
 							header("Location: {$URL}");
-							break ;
+							exit() ;
 						}
 						
 						//Success 0

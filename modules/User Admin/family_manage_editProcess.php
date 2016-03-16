@@ -71,13 +71,13 @@ else {
 			//Fail 2
 			$URL.="&updateReturn=fail2" ;
 			header("Location: {$URL}");
-			break ;
+			exit() ;
 		}
 		
 		//Success 0
 		$URL.="&updateReturn=success0" ;
 		header("Location: {$URL}");
-		break ;
+		exit() ;
 	}
 }
 ?>

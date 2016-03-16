@@ -144,7 +144,7 @@ else {
 								//Fail2
 								$URL.="&approveReturn=fail2" ;
 								header("Location: {$URL}");
-								break ;
+								exit() ;
 							}
 		
 							if ($result->rowCount()!=1) {
@@ -177,7 +177,7 @@ else {
 											//Fail 0
 											$URL.="&approveReturn=fail0" ;
 											header("Location: {$URL}");
-											break ;
+											exit() ;
 										}
 									}
 								}
@@ -200,7 +200,7 @@ else {
 										//Fail2
 										$URL.="&approveReturn=fail2" ;
 										header("Location: {$URL}");
-										break ;
+										exit() ;
 									}
 									
 									//Attempt to archive notification
@@ -218,7 +218,7 @@ else {
 											//Fail2
 											$URL.="&approveReturn=fail2" ;
 											header("Location: {$URL}");
-											break ;
+											exit() ;
 										}
 										
 										//Write rejection to log
@@ -232,7 +232,7 @@ else {
 											//Fail2
 											$URL.="&approveReturn=fail2" ;
 											header("Location: {$URL}");
-											break ;
+											exit() ;
 										}
 										
 										//Notify original creator that it is rejected
@@ -255,7 +255,7 @@ else {
 											//Fail2
 											$URL.="&approveReturn=fail2" ;
 											header("Location: {$URL}");
-											break ;
+											exit() ;
 										}
 										
 										//Notify original creator that it is commented upon
@@ -284,7 +284,7 @@ else {
 												//Fail2
 												$URL.="&approveReturn=fail2" ;
 												header("Location: {$URL}");
-												break ;
+												exit() ;
 											}
 											
 											if ($approval="Approval - Partial - Budget") { //If budget-level approval, write that budget passed to expense record 
@@ -298,7 +298,7 @@ else {
 													//Fail2
 													$URL.="&approveReturn=fail2" ;
 													header("Location: {$URL}");
-													break ;
+													exit() ;
 												}
 											}
 										
@@ -309,13 +309,13 @@ else {
 												//Fail2
 												$URL.="&approveReturn=fail2" ;
 												header("Location: {$URL}");
-												break ;
+												exit() ;
 											}
 											else if ($completion=="none") { //If none
 												//Fail2
 												$URL.="&approveReturn=fail2" ;
 												header("Location: {$URL}");
-												break ;
+												exit() ;
 											}
 											else if ($completion=="budget") { //If budget completion met
 												//Issue Notifications
@@ -334,7 +334,7 @@ else {
 													//Fail2
 													$URL.="&approveReturn=fail2" ;
 													header("Location: {$URL}");
-													break ;
+													exit() ;
 												}
 										
 												if ($partialFail==TRUE) {
@@ -360,7 +360,7 @@ else {
 													//Fail2
 													$URL.="&approveReturn=fail2" ;
 													header("Location: {$URL}");
-													break ;
+													exit() ;
 												}
 												
 												//Write back to gibbonFinanceExpense
@@ -374,7 +374,7 @@ else {
 													//Fail2
 													$URL.="&approveReturn=fail2" ;
 													header("Location: {$URL}");
-													break ;
+													exit() ;
 												}
 												
 												$notificationExtra="" ;

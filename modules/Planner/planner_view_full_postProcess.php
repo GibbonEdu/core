@@ -73,7 +73,7 @@ else {
 				//Fail2
 				$URL.="&postReturn=fail2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 
 			if ($result->rowCount()!=1) {
@@ -103,7 +103,7 @@ else {
 					//Fail2
 					$URL.="&postReturn=fail2" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 				
 				//Work out who we are replying too

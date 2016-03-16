@@ -93,7 +93,7 @@ else {
 				//Fail 2
 				$URL.="&deployReturn=fail2a" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 			
 			if ($result->rowCount()!=1) {
@@ -114,7 +114,7 @@ else {
 						//Fail 2
 						$URL.="&deployReturn=fail2b" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 				}
 				else {
@@ -128,7 +128,7 @@ else {
 						//Fail 2
 						$URL.="&deployReturn=fail2c" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 					if ($resultHooks->rowCount()==1) {
 						$rowHooks=$resultHooks->fetch() ;
@@ -144,7 +144,7 @@ else {
 								//Fail 2
 								$URL.="&deployReturn=fail2d" ;
 								header("Location: {$URL}");
-								break ;
+								exit() ;
 							}									
 						}
 					}
@@ -174,7 +174,7 @@ else {
 						//Fail 2
 						$URL.="&deployReturn=fail2e" ;
 						header("Location: {$URL}");
-						break ; 
+						exit() ; 
 					}	
 					
 					//Get next autoincrement
@@ -186,7 +186,7 @@ else {
 						//Fail 2
 						$URL.="&deployReturn=fail2f" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}	
 					
 					$rowAI=$resultAI->fetch();

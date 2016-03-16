@@ -156,7 +156,7 @@ else {
 					//Fail 2
 					$URL.="&updateReturn=fail2$params" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 				
 				if ($result->rowCount()!=1) {

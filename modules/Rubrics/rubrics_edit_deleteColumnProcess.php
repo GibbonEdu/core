@@ -92,7 +92,7 @@ else {
 					//Fail2
 					$URL.="&columnDeleteReturn=fail2" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 				
 				if ($result->rowCount()!=1) {
@@ -112,7 +112,7 @@ else {
 						//Fail2
 						$URL.="&columnDeleteReturn=fail2" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 					
 					if ($resultColumn->rowCount()!=1) {
@@ -132,7 +132,7 @@ else {
 							//Fail 2
 							$URL.="&columnDeleteReturn=fail2" ;
 							header("Location: {$URL}");
-							break ;
+							exit() ;
 						}
 						
 						try {

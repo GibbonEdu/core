@@ -115,7 +115,7 @@ else {
 			//Fail 2
 			$URL.="&addReturn=fail2" ;
 			header("Location: {$URL}");
-			break ; 
+			exit() ; 
 		}
 		
 		//Last insert ID

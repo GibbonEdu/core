@@ -85,7 +85,7 @@ else {
 				//Fail 2
 				$URL.="&duplicateReturn=fail2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}	
 					
 			$failCount=0 ;

@@ -66,7 +66,7 @@ else {
 			//Fail2
 			$URL.="&updateReturn=fail2" ;
 			header("Location: {$URL}");
-			break ;
+			exit() ;
 		}
 		
 		if ($result->rowCount()!=1) {
@@ -85,7 +85,7 @@ else {
 				//Fail2
 				$URL.="&updateReturn=fail2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 		
 			if ($result2->rowCount()!=1) {
@@ -475,7 +475,7 @@ else {
 						//Fail 2
 						$URL.="&updateReturn=fail2" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 			
 					//Write to database
@@ -489,7 +489,7 @@ else {
 						//Fail 2
 						$URL.="&updateReturn=success1" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 					
 					//Notify tutors of change to pruvacy settings
@@ -536,7 +536,7 @@ else {
 						//Fail 2
 						$URL.="&updateReturn=fail2" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 					
 					//Write to database
@@ -550,7 +550,7 @@ else {
 						//Fail 2
 						$URL.="&updateReturn=success1" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 					
 					//Success 0

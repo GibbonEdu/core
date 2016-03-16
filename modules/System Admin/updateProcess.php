@@ -99,7 +99,7 @@ else {
 					//Fail 2
 					$URL.="&updateReturn=fail2" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 			
 				//Success 0
@@ -131,7 +131,7 @@ else {
 			//Fail 3
 			$URL.="&updateReturn=fail2" ;
 			header("Location: {$URL}");
-			break ;
+			exit() ;
 		}
 		else { //Let's do it
 			if (version_compare($versionMax, $versionDB, ">")) { //At least one whole verison needs to be done
@@ -212,7 +212,7 @@ else {
 					//Fail 2
 					$URL.="&updateReturn=fail2" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 				
 				//Update DB line count
@@ -226,7 +226,7 @@ else {
 					//Fail 2
 					$URL.="&updateReturn=fail2" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 				
 				//Reset cache to force top-menu reload

@@ -26,6 +26,7 @@ v12.0.00
 	
 	Significant Changes
 		System: replaced float with version_compare, fixing cases where minor (system and module) updates could not be installed.
+		System: PHP 7 compatibility improved (not 100% guaranteed, but getting there).
 		System Admin: added system setting to allow choice of Sunday or Monday as first day of the week
 		Individual Needs: new interface for parents to view individual education plans for their children (off by default)
 		

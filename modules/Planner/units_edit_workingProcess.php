@@ -93,7 +93,7 @@ else {
 				//Fail 2
 				$URL.="&addReturn=fail2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 			
 			if ($result->rowCount()!=1) {
@@ -114,7 +114,7 @@ else {
 						//Fail 2
 						$URL.="&deployReturn=fail2" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 				}
 				else {
@@ -128,7 +128,7 @@ else {
 						//Fail 2
 						$URL.="&deployReturn=fail2" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 					if ($resultHooks->rowCount()==1) {
 						$rowHooks=$resultHooks->fetch() ;
@@ -144,7 +144,7 @@ else {
 								//Fail 2
 								$URL.="&deployReturn=fail2" ;
 								header("Location: {$URL}");
-								break ;
+								exit() ;
 							}									
 						}
 					}
@@ -175,7 +175,7 @@ else {
 						//Fail 2
 						$URL.="&updateReturn=fail2" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 					
 					$partialFail=false;

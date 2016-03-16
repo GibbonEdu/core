@@ -112,7 +112,7 @@ else {
 							//Fail2
 							$URL.="&editReturn=fail2" ;
 							header("Location: {$URL}");
-							break ;
+							exit() ;
 						}
 	
 						if ($result->rowCount()!=1) {
@@ -165,7 +165,7 @@ else {
 										//Fail2
 										$URL.="&editReturn=fail2" ;
 										header("Location: {$URL}");
-										break ;
+										exit() ;
 									}
 								}
 							}
@@ -181,7 +181,7 @@ else {
 								//Fail2
 								$URL.="&editReturn=fail2" ;
 								header("Location: {$URL}");
-								break ;
+								exit() ;
 							}
 							
 							if ($statusOld!=$status) {
@@ -222,7 +222,7 @@ else {
 									//Fail2
 									$URL.="&editReturn=fail2" ;
 									header("Location: {$URL}");
-									break ;
+									exit() ;
 								}
 							}
 							

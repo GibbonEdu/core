@@ -95,7 +95,7 @@ else {
 					//Fail2
 					$URL.="&updateReturn=fail2$params" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 				
 				if ($result->rowCount()!=1) {
@@ -371,7 +371,7 @@ else {
 							//Fail2
 							$URL.="&updateReturn=fail2" ;
 							header("Location: {$URL}");
-							break ;
+							exit() ;
 						}
 						//Insert outcomes
 						$count=0 ;
@@ -408,7 +408,7 @@ else {
 							//Fail 2
 							$URL.="&addReturn=fail2$params" ;
 							header("Location: {$URL}");
-							break ;
+							exit() ;
 						}
 						
 						if ($partialFail==TRUE) {

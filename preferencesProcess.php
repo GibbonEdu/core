@@ -70,7 +70,7 @@ try {
 catch(PDOException $e) { 
 	$URL.="&editReturn=fail1" ;
 	header("Location: {$URL}");
-	break ;
+	exit() ;
 }
 
 //Update personal preferences in session

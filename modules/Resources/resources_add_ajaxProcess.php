@@ -119,7 +119,7 @@ else {
 				print "<span style='font-weight: bold; color: #ff0000'>" ;
 					print _("Your request failed due to a database error.") ;
 				print "</span>" ;
-				break ;
+				exit() ;
 			}		
 
 			//Update tag counts
@@ -176,7 +176,7 @@ else {
 				print "<span style='font-weight: bold; color: #ff0000'>" ;
 					print _("Your request failed due to a database error.") ;
 				print "</span>" ;
-				break ;
+				exit() ;
 			}		
 			
 			//Write to database
@@ -191,7 +191,7 @@ else {
 				print "<span style='font-weight: bold; color: #ff0000'>" ;
 					print $e->getMessage() ;
 				print "</span>" ;
-				break ;
+				exit() ;
 			}
 			
 			if ($partialFail==TRUE) {

@@ -56,7 +56,7 @@ else {
 		//Fail 0
 		$URL.="&exportReturn=fail0" ;
 		header("Location: {$URL}");
-		break ;
+		exit() ;
 	}
 	
 	if ($result->rowCount()!=1) {

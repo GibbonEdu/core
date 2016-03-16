@@ -72,7 +72,7 @@ else {
 					//Fail 2
 					$URL.="&updateReturn=fail2$params" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 				$checkCount=$resultSelect->rowCount() ;
 			}
@@ -87,7 +87,7 @@ else {
 					//Fail 2
 					$URL.="&updateReturn=fail2$params" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 				while ($rowCheck=$resultCheck->fetch()) {
 					try {
@@ -100,7 +100,7 @@ else {
 						//Fail 2
 						$URL.="&updateReturn=fail2$params" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 					while ($rowCheck2=$resultCheck2->fetch()) {
 						if ($gibbonPersonID==$rowCheck2["gibbonPersonID"]) {
@@ -129,7 +129,7 @@ else {
 						//Fail 2
 						$URL.="&addReturn=fail2" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}	
 				
 					//Get next autoincrement
@@ -141,7 +141,7 @@ else {
 						//Fail 2
 						$URL.="&addReturn=fail2" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 					
 					$rowAI=$resultAI->fetch();
@@ -305,7 +305,7 @@ else {
 					//Fail 2
 					$URL.="&updateReturn=fail2" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 
 				if ($existing=="N") {

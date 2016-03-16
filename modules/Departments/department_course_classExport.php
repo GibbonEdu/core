@@ -80,7 +80,7 @@ else {
 				//Fail 2
 				$URL.="&exportReturn=fail2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 			
 			$exp=new ExportToExcel();
