@@ -466,6 +466,6 @@ UPDATE gibbonLibraryType SET fields='a:20:{i:0;a:6:{s:4:\"name\";s:6:\"Format\";
 INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('fa_IR', 'فارسی', 'N', 'N', 'CR Robotic', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\d\\\d$/i', 'd/m/Y', 'Y');end
 INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('pt_BR', 'Português - Brasil', 'N', 'N', 'Rodrigo Magalhães ', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\d\\\d$/i', 'd/m/Y', 'N');end
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'System', 'firstDayOfTheWeek', 'First Day Of The Week', 'On which day should the week begin?', 'Monday');end
-
+ALTER TABLE `gibbonStaff` CHANGE `type` `type` VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
 " ;
 ?>

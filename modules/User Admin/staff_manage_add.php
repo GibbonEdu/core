@@ -143,9 +143,25 @@ else {
 				</td>
 				<td class="right">
 					<select name="type" id="type" style="width: 302px">
-						<option value="Please select..."><?php print _('Please select...') ?></option>
-						<option value="Teaching">Teaching</option>
-						<option value="Support">Support</option>
+						<?php
+						print "<option value=\"Please select...\">" . _('Please select...') . "</option>" ;
+						print "<optgroup label='--" . _('Basic') . "--'>" ;
+							print "<option value=\"Teaching\">" . _('Teaching') . "</option>" ;
+							print "<option value=\"Support\">" . _('Support') . "</option>" ;
+						print "</optgroup>" ;
+						print "<optgroup label='--" . _('System Roles') . "--'>" ;
+							try {
+								$dataSelect=array(); 
+								$sqlSelect="SELECT * FROM gibbonRole WHERE category='Staff' ORDER BY name" ;
+								$resultSelect=$connection2->prepare($sqlSelect);
+								$resultSelect->execute($dataSelect);
+							}
+							catch(PDOException $e) { }
+							while ($rowSelect=$resultSelect->fetch()) {
+								print "<option value=\"" . $rowSelect["name"] . "\">" . _($rowSelect["name"]) . "</option>" ;
+							}
+						print "</optgroup>" ;
+						?>
 					</select>
 					<script type="text/javascript">
 						var type=new LiveValidation('type');

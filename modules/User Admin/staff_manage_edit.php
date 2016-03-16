@@ -150,9 +150,37 @@ else {
 						</td>
 						<td class="right">
 							<select name="type" id="type" style="width: 302px">
-								<option value="Please select..."><?php print _('Please select...') ?></option>
-								<option <?php if ($row["type"]=="Teaching") { print "selected " ;} ?>value="Teaching">Teaching</option>
-								<option <?php if ($row["type"]=="Support") { print "selected " ;}?>value="Support">Support</option>
+								<?php
+								print "<option value=\"Please select...\">" . _('Please select...') . "</option>" ;
+								print "<optgroup label='--" . _('Basic') . "--'>" ;
+									$selected="" ;
+									if ($row["type"]=="Teaching") {
+										$selected="selected" ;
+									}
+									print "<option $selected value=\"Teaching\">" . _('Teaching') . "</option>" ;
+									$selected="" ;
+									if ($row["type"]=="Support") {
+										$selected="selected" ;
+									}
+									print "<option $selected value=\"Support\">" . _('Support') . "</option>" ;
+								print "</optgroup>" ;
+								print "<optgroup label='--" . _('System Roles') . "--'>" ;
+									try {
+										$dataSelect=array(); 
+										$sqlSelect="SELECT * FROM gibbonRole WHERE category='Staff' ORDER BY name" ;
+										$resultSelect=$connection2->prepare($sqlSelect);
+										$resultSelect->execute($dataSelect);
+									}
+									catch(PDOException $e) { }
+									while ($rowSelect=$resultSelect->fetch()) {
+										$selected="" ;
+										if ($rowSelect["name"]==$row["type"]) {
+											$selected="selected" ;
+										}
+										print "<option $selected value=\"" . $rowSelect["name"] . "\">" . _($rowSelect["name"]) . "</option>" ;
+									}
+								print "</optgroup>" ;
+								?>
 							</select>
 							<script type="text/javascript">
 								var type=new LiveValidation('type');

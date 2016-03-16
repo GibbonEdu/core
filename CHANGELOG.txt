@@ -64,6 +64,7 @@ v12.0.00
 		Planner: attendance alignment tweak
 		Planner: fixed bug preventing parent access to lesson listings
 		School Admin: fixed bug preventing non-contiguous primary external assessment settings from being saved in Formal Assessment settings
+		Staff: adjusted role drop down to offer all Staff roles (from gibbonRole), not just Teaching & Support
 		Students: added year group to New Students report when using Date Range setting 
 		Students: added All Students filter persistence to Back To Search link on student details page
 		Students: made more fields searchable in full profile
