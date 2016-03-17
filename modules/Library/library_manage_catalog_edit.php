@@ -538,6 +538,21 @@ else {
 							</script>
 						</td>
 					</tr>
+					<tr id='physicalConditionRow'>
+						<td> 
+							<b><?php print __($guid, 'Physical Condition') ?></b><br/>
+						</td>
+						<td class="right">
+							<select name="physicalCondition" id="physicalCondition" style="width: 302px">
+								<option <?php if ($row["physicalCondition"]=="") { print "selected" ; } ?> value="" />
+								<option <?php if ($row["physicalCondition"]=="As New") { print "selected" ; } ?> value="As New" /> <?php print __($guid, 'As New') ?>
+								<option <?php if ($row["physicalCondition"]=="Lightly Worn") { print "selected" ; } ?> value="Lightly Worn" /> <?php print __($guid, 'Lightly Worn') ?>
+								<option <?php if ($row["physicalCondition"]=="Moderately Worn") { print "selected" ; } ?> value="Moderately Worn" /> <?php print __($guid, 'Moderately Worn') ?>
+								<option <?php if ($row["physicalCondition"]=="Damaged") { print "selected" ; } ?> value="Damaged" /> <?php print __($guid, 'Damaged') ?>
+								<option <?php if ($row["physicalCondition"]=="Unusable") { print "selected" ; } ?> value="Unusable" /> <?php print __($guid, 'Unusable') ?>
+							</select>
+						</td>
+					</tr>
 					
 					
 					<tr id='commentRow'>

@@ -100,6 +100,7 @@ else {
 							$("#statusRow").slideDown("fast", $("#statusRow").css("display","table-row"));
 							$("#gibbonSchoolYearIDReplacement").slideDown("fast", $("#gibbonSchoolYearIDReplacement").css("display","table-row"));
 							$("#replacementCostRow").slideDown("fast", $("#replacementCostRow").css("display","table-row"));
+							$("#physicalConditionRow").slideDown("fast", $("#physicalConditionRow").css("display","table-row"));
 							$("#commentRow").slideDown("fast", $("#commentRow").css("display","table-row"));
 							$("#entryDisplayTitleRow").slideDown("fast", $("#entryDisplayTitleRow").css("display","table-row"));
 							$("#entryDisplayRow").slideDown("fast", $("#entryDisplayRow").css("display","table-row"));
@@ -302,7 +303,7 @@ else {
 			
 			<tr id="locationRow" style='display: none'>
 				<td> 
-					<b><?php print __($guid, 'Location') ?> *</b><br/>
+					<b><?php print __($guid, 'Location') ?></b><br/>
 				</td>
 				<td class="right">
 					<select name="gibbonSpaceID" id="gibbonSpaceID" style="width: 302px">
@@ -511,6 +512,21 @@ else {
 						var replacementCost=new LiveValidation('replacementCost');
 						replacementCost.add(Validate.Format, { pattern: /^(?:\d*\.\d{1,2}|\d+)$/, failureMessage: "Invalid number format!" } );
 					</script>
+				</td>
+			</tr>
+			<tr id='physicalConditionRow' style='display: none'>
+				<td> 
+					<b><?php print __($guid, 'Physical Condition') ?></b><br/>
+				</td>
+				<td class="right">
+					<select name="physicalCondition" id="physicalCondition" style="width: 302px">
+						<option value="" />
+						<option value="As New" /> <?php print __($guid, 'As New') ?>
+						<option value="Lightly Worn" /> <?php print __($guid, 'Lightly Worn') ?>
+						<option value="Moderately Worn" /> <?php print __($guid, 'Moderately Worn') ?>
+						<option value="Damaged" /> <?php print __($guid, 'Damaged') ?>
+						<option value="Unusable" /> <?php print __($guid, 'Unusable') ?>
+					</select>
 				</td>
 			</tr>
 			
