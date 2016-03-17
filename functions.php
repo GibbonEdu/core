@@ -2997,7 +2997,7 @@ function getHighestMedicalRisk( $gibbonPersonID, $connection2 ) {
 }
 
 //Gets age from date of birth, in days and months, from Unix timestamp
-function getAge($stamp, $short=FALSE, $yearsOnly=FALSE) {
+function getAge($guid, $stamp, $short=FALSE, $yearsOnly=FALSE) {
 	$output="" ;
 	$diff=time()-$stamp ;
 	$years=floor($diff/31556926);

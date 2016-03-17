@@ -462,7 +462,7 @@ else {
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Age') . "</span><br/>" ;
 									if (is_null($row["dob"])==FALSE AND $row["dob"]!="0000-00-00") {
-										print getAge(dateConvertToTimestamp($row["dob"])) ;
+										print getAge($guid, dateConvertToTimestamp($row["dob"])) ;
 									}
 								print "</td>" ;
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
@@ -496,7 +496,25 @@ else {
 									}
 								print "</td>" ;
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-
+									print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'School History') . "</span><br/>" ;
+									if ($row["dateStart"]!="") {
+										print "<u>" . __($guid, 'Start Date') . "</u>: " . dateConvertBack($guid, $row["dateStart"]) . "</br>" ;
+									}
+									try {
+										$dataSelect=array("gibbonPersonID"=>$row["gibbonPersonID"]); 
+										$sqlSelect="SELECT gibbonRollGroup.name AS rollGroup, gibbonSchoolYear.name AS schoolYear FROM gibbonStudentEnrolment JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY gibbonStudentEnrolment.gibbonSchoolYearID" ;
+										$resultSelect=$connection2->prepare($sqlSelect);
+										$resultSelect->execute($dataSelect);
+									}
+									catch(PDOException $e) { 
+										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+									}
+									while ($rowSelect=$resultSelect->fetch()) {
+										print "<u>" . $rowSelect["schoolYear"] . "</u>: " . $rowSelect["rollGroup"] . "<br/>" ;
+									}
+									if ($row["dateEnd"]!="") {
+										print "<u>" . __($guid, 'End Date') . "</u>: " . dateConvertBack($guid, $row["dateEnd"]) . "</br>" ;
+									}
 								print "</td>" ;
 							print "</tr>" ;
 							print "<tr>" ;
@@ -652,7 +670,7 @@ else {
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
 									print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Age') . "</span><br/>" ;
 									if (is_null($row["dob"])==FALSE AND $row["dob"]!="0000-00-00") {
-										print getAge(dateConvertToTimestamp($row["dob"])) ;
+										print getAge($guid, dateConvertToTimestamp($row["dob"])) ;
 									}
 								print "</td>" ;
 							print "</tr>" ;

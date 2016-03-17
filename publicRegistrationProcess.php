@@ -130,7 +130,7 @@ else {
 				if ($publicRegistrationMinimumAge=="") {
 					$ageFail=TRUE ;
 				}
-				else if ($publicRegistrationMinimumAge>0 AND $publicRegistrationMinimumAge>getAge(dateConvertToTimestamp($dob), TRUE, TRUE)) {
+				else if ($publicRegistrationMinimumAge>0 AND $publicRegistrationMinimumAge>getAge($guid, dateConvertToTimestamp($dob), TRUE, TRUE)) {
 					$ageFail=TRUE ;
 				}
 			

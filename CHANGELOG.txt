@@ -70,6 +70,7 @@ v12.0.00
 		Students: added All Students filter persistence to Back To Search link on student details page
 		Students: made more fields searchable in full profile
 		Students: fixed bug preventing student images from showing up on History tab of student profile
+		Students: added Student History into Overview page of full student profile
 		Timetable: fixed rendering to allow Sunday as first day or the week, according to values in gibbonDaysOfWeek
 		Tracking: adjusted Data Points export to combine multiple column internal assessments for one subject into a column
 		User Admin: added notification to form tutor(s) when a student's privacy options change (via Edit or Data Update).		

@@ -211,7 +211,7 @@ else {
 					print "</td>" ;
 					print "<td>" ;
 						if (is_null($row["dob"])==FALSE AND $row["dob"]!="0000-00-00") {
-							print getAge(dateConvertToTimestamp($row["dob"]), TRUE) . "<br/>" ;
+							print getAge($guid, dateConvertToTimestamp($row["dob"]), TRUE) . "<br/>" ;
 							print "<span style='font-style: italic; font-size: 85%'>" . dateConvertBack($guid, $row["dob"]) . "</span>" ;
 						}
 					print "</td>" ;
