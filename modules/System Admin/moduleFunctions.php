@@ -130,22 +130,22 @@ function getCurrentVersion($guid, $connection2, $version) {
 				$output.="success: function(data) {" ;
 					$output.="if (data['version']==='false') {" ;
 						$output.="$(\"#status\").attr(\"class\",\"error\");" ;
-						$output.="$(\"#status\").html('" . _('Version check failed') . ".') ;" ;
+						$output.="$(\"#status\").html('" . __($guid, 'Version check failed') . ".') ;" ;
 					$output.="}" ;
 					$output.="else {" ;
 						$output.="if (parseFloat(data['version'])<=parseFloat('" . $version . "')) {" ;
 							$output.="$(\"#status\").attr(\"class\",\"success\");" ;
-							$output.="$(\"#status\").html('" . sprintf(_('Version check successful. Your Gibbon installation is up to date at %1$s.'), $version) . " " . sprintf(_('If you have recently updated your system files, please check that your database is up to date in %1$sUpdates%2$s.'), "<a href=\'" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/System Admin/update.php\'>", "</a>") . "') ;" ;
+							$output.="$(\"#status\").html('" . sprintf(__($guid, 'Version check successful. Your Gibbon installation is up to date at %1$s.'), $version) . " " . sprintf(__($guid, 'If you have recently updated your system files, please check that your database is up to date in %1$sUpdates%2$s.'), "<a href=\'" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/System Admin/update.php\'>", "</a>") . "') ;" ;
 						$output.="}" ;
 						$output.="else {" ;
 							$output.="$(\"#status\").attr(\"class\",\"warning\");" ;
-							$output.="$(\"#status\").html('" . sprintf(_('Version check successful. Your Gibbon installation is out of date. Please visit %1$s to download the latest version.'), "<a target=\"blank\" href=\'https://gibbonedu.org/download\'>the Gibbon download page</a>") . "') ;" ;
+							$output.="$(\"#status\").html('" . sprintf(__($guid, 'Version check successful. Your Gibbon installation is out of date. Please visit %1$s to download the latest version.'), "<a target=\"blank\" href=\'https://gibbonedu.org/download\'>the Gibbon download page</a>") . "') ;" ;
 						$output.="}" ;
 					$output.="}" ;
 				$output.="}," ;
 				$output.="error: function (data, textStatus, errorThrown) {" ;
 					$output.="$(\"#status\").attr(\"class\",\"error\");" ;
-					$output.="$(\"#status\").html('" . _('Version check failed') . ".') ;" ;
+					$output.="$(\"#status\").html('" . __($guid, 'Version check failed') . ".') ;" ;
 				$output.="}" ;
 			$output.="});" ;
 		$output.="});" ;
@@ -156,7 +156,7 @@ function getCurrentVersion($guid, $connection2, $version) {
 		$output.="<div id='status' class='warning'>" ;
 			$output.="<div style='width: 100%; text-align: center'>" ;
 				$output.="<img style='margin: 10px 0 5px 0' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/loading.gif' alt='Loading'/><br/>" ;
-				$output.=_("Checking for Gibbon updates.") ;
+				$output.=__($guid, "Checking for Gibbon updates.") ;
 			$output.="</div>" ;
 		$output.="</div>" ;
 	}

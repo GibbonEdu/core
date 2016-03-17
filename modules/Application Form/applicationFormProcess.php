@@ -731,7 +731,7 @@ else {
 			
 				//Attempt to notify admissions administrator
 				if ($_SESSION[$guid]["organisationAdmissions"]) {
-					$notificationText=sprintf(_('An application form has submitted for %1$s.'), formatName("", $preferredName, $surname, "Student")) ;
+					$notificationText=sprintf(__($guid, 'An application form has submitted for %1$s.'), formatName("", $preferredName, $surname, "Student")) ;
 					setNotification($connection2, $guid, $_SESSION[$guid]["organisationAdmissions"], $notificationText, "Application Form", "/index.php?q=/modules/User Admin/applicationForm_manage_edit.php&gibbonApplicationFormID=$AI&gibbonSchoolYearID=$gibbonSchoolYearIDEntry&search=") ;
 				}
 		
@@ -786,7 +786,7 @@ else {
 				
 		//Check return values to see if we can proceed
 		if ($paymentToken=="" OR $gibbonApplicationFormID=="" OR $applicationFee=="") {
-			$body=_('Payment via PayPal may or may not have been successful, but has not been recorded either way due to a system error. Please check your PayPal account for details. The following may be useful:') . "\n\nPayment Token: $paymentToken\n\nPayer ID: $paymentPayerID\n\nApplication Form ID: $gibbonApplicationFormID\n\nApplication Fee: $applicationFee\n\n" . $_SESSION[$guid]["systemName"] . " " . _('Administrator');
+			$body=__($guid, 'Payment via PayPal may or may not have been successful, but has not been recorded either way due to a system error. Please check your PayPal account for details. The following may be useful:') . "\n\nPayment Token: $paymentToken\n\nPayer ID: $paymentPayerID\n\nApplication Form ID: $gibbonApplicationFormID\n\nApplication Fee: $applicationFee\n\n" . $_SESSION[$guid]["systemName"] . " " . __($guid, 'Administrator');
 			mail($to, $subject, $body, $headers) ;
 			
 			//Success 2
@@ -829,7 +829,7 @@ else {
 				}
 				
 				if ($updateFail==true) {
-					$body=_('Payment via PayPal was successful, but has not been recorded due to a system error. Please check your PayPal account for details. The following may be useful:') . "\n\nPayment Token: $paymentToken\n\nPayer ID: $paymentPayerID\n\nApplication Form ID: $gibbonApplicationFormID\n\nApplication Fee: $applicationFee\n\n" . $_SESSION[$guid]["systemName"] . " " . _('Administrator');
+					$body=__($guid, 'Payment via PayPal was successful, but has not been recorded due to a system error. Please check your PayPal account for details. The following may be useful:') . "\n\nPayment Token: $paymentToken\n\nPayer ID: $paymentPayerID\n\nApplication Form ID: $gibbonApplicationFormID\n\nApplication Fee: $applicationFee\n\n" . $_SESSION[$guid]["systemName"] . " " . __($guid, 'Administrator');
 					mail($to, $subject, $body, $headers) ;
 			
 					//Success 3
@@ -865,7 +865,7 @@ else {
 				}
 				
 				if ($updateFail==true) {
-					$body=_('Payment via PayPal was unsuccessful, and has also not been recorded due to a system error. Please check your PayPal account for details. The following may be useful:') . "\n\nPayment Token: $paymentToken\n\nPayer ID: $paymentPayerID\n\nApplication Form ID: $gibbonApplicationFormID\n\nApplication Fee: $applicationFee\n\n" . $_SESSION[$guid]["systemName"] . " " . _('Administrator');
+					$body=__($guid, 'Payment via PayPal was unsuccessful, and has also not been recorded due to a system error. Please check your PayPal account for details. The following may be useful:') . "\n\nPayment Token: $paymentToken\n\nPayer ID: $paymentPayerID\n\nApplication Form ID: $gibbonApplicationFormID\n\nApplication Fee: $applicationFee\n\n" . $_SESSION[$guid]["systemName"] . " " . __($guid, 'Administrator');
 					mail($to, $subject, $body, $headers) ;
 			
 					//Success 2

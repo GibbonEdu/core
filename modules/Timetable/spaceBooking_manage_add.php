@@ -26,7 +26,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Timetable/spaceBooking_manage_add.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -34,13 +34,13 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print _("The highest grouped action cannot be determined.") ;
+		print __($guid, "The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
 		//Proceed!
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/spaceBooking_manage.php'>" . _('Manage Space Bookings') . "</a> > </div><div class='trailEnd'>" . _('Add Space Booking') . "</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/spaceBooking_manage.php'>" . __($guid, 'Manage Space Bookings') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Add Space Booking') . "</div>" ;
 		print "</div>" ;
 	
 		if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -48,22 +48,22 @@ else {
 		$class="error" ;
 		if (!($addReturn=="")) {
 			if ($addReturn=="fail0") {
-				$addReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+				$addReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 			}
 			else if ($addReturn=="fail2") {
-				$addReturnMessage=_("Your request failed due to a database error.") ;	
+				$addReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 			}
 			else if ($addReturn=="fail3") {
-				$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+				$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($addReturn=="fail4") {
-				$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+				$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($addReturn=="fail5") {
-				$addReturnMessage=_("Your request was successful, but some data was not properly saved.") ;	
+				$addReturnMessage=__($guid, "Your request was successful, but some data was not properly saved.") ;	
 			}
 			else if ($addReturn=="success0") {
-				$addReturnMessage=_("Your request was completed successfully. You can now add another record if you wish.") ;	
+				$addReturnMessage=__($guid, "Your request was completed successfully. You can now add another record if you wish.") ;	
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;
@@ -82,18 +82,18 @@ else {
 		//Step 1
 		if ($step==1) {
 			print "<h2>" ;
-				print _("Step 1 - Choose Space") ;
+				print __($guid, "Step 1 - Choose Space") ;
 			print "</h2>" ;
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/spaceBooking_manage_add.php&step=2" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b><?php print _('Space') ?> *</b><br/>
+							<b><?php print __($guid, 'Space') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select name="gibbonSpaceID" id="gibbonSpaceID" style="width: 302px">
-								<option value='Please select...'><?php print _('Please select...') ?></option>
+								<option value='Please select...'><?php print __($guid, 'Please select...') ?></option>
 								<?php
 								try {
 									$dataSelect=array(); 
@@ -109,13 +109,13 @@ else {
 							</select>
 							<script type="text/javascript">
 								var gibbonSpaceID=new LiveValidation('gibbonSpaceID');
-								gibbonSpaceID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+								gibbonSpaceID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 							</script>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Date') ?> *</b><br/>
+							<b><?php print __($guid, 'Date') ?> *</b><br/>
 							<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 						</td>
 						<td class="right">
@@ -134,8 +134,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Start Time') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('Format: hh:mm (24hr)') ?><br/></i></span>
+							<b><?php print __($guid, 'Start Time') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Format: hh:mm (24hr)') ?><br/></i></span>
 						</td>
 						<td class="right">
 							<input name="timeStart" id="timeStart" maxlength=5 value="" type="text" style="width: 300px">
@@ -148,8 +148,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('End Time') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('Format: hh:mm (24hr)') ?><br/></i></span>
+							<b><?php print __($guid, 'End Time') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Format: hh:mm (24hr)') ?><br/></i></span>
 						</td>
 						<td class="right">
 							<input name="timeEnd" id="timeEnd" maxlength=5 value="" type="text" style="width: 300px">
@@ -192,19 +192,19 @@ else {
 					
 					<tr id="repeatRow">
 						<td> 
-							<b><?php print _('Repeat?') ?> *</b><br/>
+							<b><?php print __($guid, 'Repeat?') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
-							<input checked type="radio" name="repeat" value="No" class="repeat" /> <?php print _('No') ?>
-							<input type="radio" name="repeat" value="Daily" class="repeat" /> <?php print _('Daily') ?>
-							<input type="radio" name="repeat" value="Weekly" class="repeat" /> <?php print _('Weekly') ?>
+							<input checked type="radio" name="repeat" value="No" class="repeat" /> <?php print __($guid, 'No') ?>
+							<input type="radio" name="repeat" value="Daily" class="repeat" /> <?php print __($guid, 'Daily') ?>
+							<input type="radio" name="repeat" value="Weekly" class="repeat" /> <?php print __($guid, 'Weekly') ?>
 						</td>
 					</tr>
 					<tr id="repeatDailyRow">
 						<td> 
-							<b><?php print _('Repeat Daily') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('Repeat daily for this many days.') . "<br/>" . _('Does not include non-school days.') ?></i></span>
+							<b><?php print __($guid, 'Repeat Daily') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Repeat daily for this many days.') . "<br/>" . __($guid, 'Does not include non-school days.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="repeatDaily" id="repeatDaily" maxlength=2 value="2" type="text" style="width: 300px">
@@ -218,8 +218,8 @@ else {
 					</tr>
 					<tr id="repeatWeeklyRow">
 						<td> 
-							<b><?php print _('Repeat Weekly') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print _('Repeat weekly for this many days.') . "<br/>" . _('Does not include non-school days.') ?></i></span>
+							<b><?php print __($guid, 'Repeat Weekly') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Repeat weekly for this many days.') . "<br/>" . __($guid, 'Does not include non-school days.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="repeatWeekly" id="repeatWeekly" maxlength=2 value="2" type="text" style="width: 300px">
@@ -234,11 +234,11 @@ else {
 					
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<?php print _("Submit") ; ?>">
+							<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
@@ -247,7 +247,7 @@ else {
 		}
 		else if ($step==2) {
 			print "<h2>" ;
-				print _("Step 2 - Availability Check") ;
+				print __($guid, "Step 2 - Availability Check") ;
 			print "</h2>" ;
 			
 			$gibbonSpaceID=NULL ;
@@ -275,13 +275,13 @@ else {
 			}
 			catch(PDOException $e) { 
 				print "<div class='error'>" ;
-					print _("Your request failed due to a database error.") ;
+					print __($guid, "Your request failed due to a database error.") ;
 				print "</div>" ;
 			}
 			
 			if ($resultSelect->rowCount()!=1) {
 				print "<div class='error'>" ;
-					print _("Your request failed due to a database error.") ;
+					print __($guid, "Your request failed due to a database error.") ;
 				print "</div>" ;
 			}
 			else {
@@ -289,7 +289,7 @@ else {
 				//Check for required fields
 				if ($gibbonSpaceID=="" OR $date=="" OR $timeStart=="" OR $timeEnd=="" OR $repeat=="") {
 					print "<div class='error'>" ;
-						print _("Your request failed because your inputs were invalid.") ;
+						print __($guid, "Your request failed because your inputs were invalid.") ;
 					print "</div>" ;
 				}
 				else {
@@ -309,7 +309,7 @@ else {
 											<tr class='current'>
 												<td> 
 													<b><?php print dateConvertBack($guid, $date) ?></b><br/>
-													<span style="font-size: 90%"><i><?php print _('Available') ?></i></span>
+													<span style="font-size: 90%"><i><?php print __($guid, 'Available') ?></i></span>
 												</td>
 												<td class="right">
 													<input checked type='checkbox' name='dates[]' value='<?php print $date ?>'>
@@ -322,7 +322,7 @@ else {
 											<tr class='error'>
 												<td> 
 													<b><?php print dateConvertBack($guid, $date) ?></b><br/>
-													<span style="font-size: 90%"><i><?php print _('Not Available') ?></i></span>
+													<span style="font-size: 90%"><i><?php print __($guid, 'Not Available') ?></i></span>
 												</td>
 												<td class="right">
 													<input disabled type='checkbox' name='dates[]' value='<?php print $date ?>'>
@@ -368,7 +368,7 @@ else {
 											<tr class='error'>
 												<td> 
 													<b><?php print dateConvertBack($guid, $dateTemp) ?></b><br/>
-													<span style="font-size: 90%"><i><?php print _('Not Available') ?></i></span>
+													<span style="font-size: 90%"><i><?php print __($guid, 'Not Available') ?></i></span>
 												</td>
 												<td class="right">
 													<input disabled type='checkbox' name='dates[]' value='<?php print $dateTemp ?>'>
@@ -419,7 +419,7 @@ else {
 											<tr class='error'>
 												<td> 
 													<b><?php print dateConvertBack($guid, $dateTemp) ?></b><br/>
-													<span style="font-size: 90%"><i><?php print _('Not Available') ?></i></span>
+													<span style="font-size: 90%"><i><?php print __($guid, 'Not Available') ?></i></span>
 												</td>
 												<td class="right">
 													<input disabled type='checkbox' name='dates[]' value='<?php print $dateTemp ?>'>
@@ -439,7 +439,7 @@ else {
 							}
 							else {
 								print "<div class='error'>" ;
-									print _("Your request failed because your inputs were invalid.") ;
+									print __($guid, "Your request failed because your inputs were invalid.") ;
 								print "</div>" ;
 							}
 							?>
@@ -459,12 +459,12 @@ else {
 										<input type="hidden" name="repeatDaily" value="<?php print $repeatDaily ; ?>">
 										<input type="hidden" name="repeatWeekly" value="<?php print $repeatWeekly ; ?>">
 										<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-										<input type="submit" value="<?php print _("Submit") ; ?>">
+										<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 										<?php
 									}
 									else {
 										print "<div class='error'>" ;
-											print _('There are no sessions available, and so this form cannot be submitted.') ;
+											print __($guid, 'There are no sessions available, and so this form cannot be submitted.') ;
 										print "</div>" ;
 									}
 									?>

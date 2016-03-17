@@ -25,7 +25,7 @@ include "./modules/Rubrics/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_view.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("Your request failed because you do not have access to this action.") ;
+		print __($guid, "Your request failed because you do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -37,7 +37,7 @@ else {
 	$gibbonRubricID=$_GET["gibbonRubricID"] ;
 	if ($gibbonCourseClassID=="" OR $gibbonMarkbookColumnID=="" OR $gibbonPersonID=="" OR $gibbonRubricID=="") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -73,7 +73,7 @@ else {
 		
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print _("The selected record does not exist, or you do not have access to it.") ;
+				print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 			print "</div>" ;
 		}
 		else {
@@ -89,7 +89,7 @@ else {
 
 			if ($result2->rowCount()!=1) {
 				print "<div class='error'>" ;
-					print _("The selected record does not exist, or you do not have access to it.") ;
+					print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 				print "</div>" ;
 			}
 			else {
@@ -105,7 +105,7 @@ else {
 			
 				if ($result3->rowCount()!=1) {
 					print "<div class='error'>" ;
-						print _("The specified record does not exist.") ;
+						print __($guid, "The specified record does not exist.") ;
 					print "</div>" ;
 				}
 				else {
@@ -121,7 +121,7 @@ else {
 
 					if ($result4->rowCount()!=1) {
 						print "<div class='error'>" ;
-							print _("The selected record does not exist, or you do not have access to it.") ;
+							print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 						print "</div>" ;
 					}
 					else {

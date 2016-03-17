@@ -22,13 +22,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/Finance/invoices_manage.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Manage Invoices') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Manage Invoices') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["issueReturn"])) { $issueReturn=$_GET["issueReturn"] ; } else { $issueReturn="" ; }
@@ -36,11 +36,11 @@ else {
 	$class="error" ;
 	if (!($issueReturn=="")) {
 		if ($issueReturn=="success0") {
-			$issueReturnMessage=_("Your request was completed successfully.") ;	
+			$issueReturnMessage=__($guid, "Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		if ($issueReturn=="success1") {
-			$issueReturnMessage=_("Your request was completed successfully, but one or more requested emails could not be sent.") ;	
+			$issueReturnMessage=__($guid, "Your request was completed successfully, but one or more requested emails could not be sent.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -53,7 +53,7 @@ else {
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="success0") {
-			$deleteReturnMessage=_("Your request was completed successfully.") ;		
+			$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;		
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -66,23 +66,23 @@ else {
 	$class="error" ;
 	if (!($bulkReturn=="")) {
 		if ($bulkReturn=="fail0") {
-			$bulkReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+			$bulkReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($bulkReturn=="fail2") {
-			$bulkReturnMessage=_("Your request failed due to a database error.") ;	
+			$bulkReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 		}
 		else if ($bulkReturn=="fail3") {
-			$bulkReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$bulkReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($bulkReturn=="fail5") {
-			$bulkReturnMessage=_("Some elements of your request failed, but others were successful.") ;	
+			$bulkReturnMessage=__($guid, "Some elements of your request failed, but others were successful.") ;	
 		}
 		else if ($bulkReturn=="success0") {
-			$bulkReturnMessage=_("Your request was completed successfully.") ;		
+			$bulkReturnMessage=__($guid, "Your request was completed successfully.") ;		
 			$class="success" ;
 		}
 		if ($bulkReturn=="success1") {
-			$issueReturnMessage=_("Your request was completed successfully, but one or more requested emails could not be sent.") ;	
+			$issueReturnMessage=__($guid, "Your request was completed successfully, but one or more requested emails could not be sent.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -91,9 +91,9 @@ else {
 	}
 	
 	print "<p>" ;
-		print _("This section allows you to generate, view, edit and delete invoices, either for an individual or in bulk. You can use the filters below to pick up certain invoices types (e.g. those that are overdue) or view all invoices for a particular user. Invoices, reminders and receipts can be sent out using the Email function, shown in the right-hand side menu.") . "<br/>" ;
+		print __($guid, "This section allows you to generate, view, edit and delete invoices, either for an individual or in bulk. You can use the filters below to pick up certain invoices types (e.g. those that are overdue) or view all invoices for a particular user. Invoices, reminders and receipts can be sent out using the Email function, shown in the right-hand side menu.") . "<br/>" ;
 		print "<br/>" ;
-		print _("When you create invoices using the billing schedule or pre-defined fee features, the invoice will remain linked to these areas whilst pending. Thus, changes made to the billing schedule and pre-defined fees will be reflected in any pending invoices. Once invoices are issued, this link is removed, and the values are fixed at the levels when the invoice was issued.") ;
+		print __($guid, "When you create invoices using the billing schedule or pre-defined fee features, the invoice will remain linked to these areas whilst pending. Thus, changes made to the billing schedule and pre-defined fees will be reflected in any pending invoices. Once invoices are issued, this link is removed, and the values are fixed at the levels when the invoice was issued.") ;
 	print "</p>" ;
 	
 	$gibbonSchoolYearID="" ;
@@ -117,7 +117,7 @@ else {
 		}
 		if ($result->rowcount()!=1) {
 			print "<div class='error'>" ;
-				print _("The specified record does not exist.") ;
+				print __($guid, "The specified record does not exist.") ;
 			print "</div>" ;
 		}
 		else {
@@ -135,17 +135,17 @@ else {
 		print "<div class='linkTop'>" ;
 			//Print year picker
 			if (getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)!=FALSE) {
-				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage.php&gibbonSchoolYearID=" . getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) . "'>" . _('Previous Year') . "</a> " ;
+				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage.php&gibbonSchoolYearID=" . getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) . "'>" . __($guid, 'Previous Year') . "</a> " ;
 			}
 			else {
-				print _("Previous Year") . " " ;
+				print __($guid, "Previous Year") . " " ;
 			}
 			print " | " ;
 			if (getNextSchoolYearID($gibbonSchoolYearID, $connection2)!=FALSE) {
-				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage.php&gibbonSchoolYearID=" . getNextSchoolYearID($gibbonSchoolYearID, $connection2) . "'>" . _('Next Year') . "</a> " ;
+				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage.php&gibbonSchoolYearID=" . getNextSchoolYearID($gibbonSchoolYearID, $connection2) . "'>" . __($guid, 'Next Year') . "</a> " ;
 			}
 			else {
-				print _("Next Year") . " " ;
+				print __($guid, "Next Year") . " " ;
 			}
 		print "</div>" ;
 	
@@ -170,14 +170,14 @@ else {
 		}
 		
 		print "<h3>" ;
-			print _("Filters") ;
+			print __($guid, "Filters") ;
 		print "</h3>" ;
 		print "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoices_manage.php'>" ;
 			print "<table class='noIntBorder' cellspacing='0' style='width: 100%'>" ;
 				?>
 				<tr>
 					<td> 
-						<b><?php print _('Status') ?></b><br/>
+						<b><?php print __($guid, 'Status') ?></b><br/>
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
@@ -187,54 +187,54 @@ else {
 							if ($status=="%") {
 								$selected="selected" ;
 							}
-							print "<option $selected value='%'>" . _('All') . "</option>" ;
+							print "<option $selected value='%'>" . __($guid, 'All') . "</option>" ;
 							$selected="" ;
 							if ($status=="Pending") {
 								$selected="selected" ;
 							}
-							print "<option $selected value='Pending'>" . _('Pending') . "</option>" ;
+							print "<option $selected value='Pending'>" . __($guid, 'Pending') . "</option>" ;
 							$selected="" ;
 							if ($status=="Issued") {
 								$selected="selected" ;
 							}
-							print "<option $selected value='Issued'>" . _('Issued') . "</option>" ;
+							print "<option $selected value='Issued'>" . __($guid, 'Issued') . "</option>" ;
 							$selected="" ;
 							if ($status=="Issued - Overdue") {
 								$selected="selected" ;
 							}
-							print "<option $selected value='Issued - Overdue'>" . _('Issued - Overdue') . "</option>" ;
+							print "<option $selected value='Issued - Overdue'>" . __($guid, 'Issued - Overdue') . "</option>" ;
 							$selected="" ;
 							if ($status=="Paid") {
 								$selected="selected" ;
 							}
-							print "<option $selected value='Paid'>" . _('Paid') . "</option>" ;
+							print "<option $selected value='Paid'>" . __($guid, 'Paid') . "</option>" ;
 							$selected="" ;
 							if ($status=="Paid - Partial") {
 								$selected="selected" ;
 							}
-							print "<option $selected value='Paid - Partial'>" . _('Paid - Partial') . "</option>" ;
+							print "<option $selected value='Paid - Partial'>" . __($guid, 'Paid - Partial') . "</option>" ;
 							$selected="" ;
 							if ($status=="Paid - Late") {
 								$selected="selected" ;
 							}
-							print "<option $selected value='Paid - Late'>" . _('Paid - Late') . "</option>" ;
+							print "<option $selected value='Paid - Late'>" . __($guid, 'Paid - Late') . "</option>" ;
 							$selected="" ;
 							if ($status=="Cancelled") {
 								$selected="selected" ;
 							}
-							print "<option $selected value='Cancelled'>" . _('Cancelled') . "</option>" ;
+							print "<option $selected value='Cancelled'>" . __($guid, 'Cancelled') . "</option>" ;
 							$selected="" ;
 							if ($status=="Refunded") {
 								$selected="selected" ;
 							}
-							print "<option $selected value='Refunded'>" . _('Refunded') . "</option>" ;
+							print "<option $selected value='Refunded'>" . __($guid, 'Refunded') . "</option>" ;
 						print "</select>" ;
 						?>
 					</td>
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('Student') ?></b><br/>
+						<b><?php print __($guid, 'Student') ?></b><br/>
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
@@ -262,7 +262,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('Month of Issue') ?></b><br/>
+						<b><?php print __($guid, 'Month of Issue') ?></b><br/>
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
@@ -282,7 +282,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('Billing Schedule') ?></b><br/>
+						<b><?php print __($guid, 'Billing Schedule') ?></b><br/>
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
@@ -308,7 +308,7 @@ else {
 							if ($gibbonFinanceBillingScheduleID=="Ad Hoc") {
 								$selected="selected" ;
 							}
-							print "<option $selected value='Ad Hoc'>" . _('Ad Hoc') . "</option>" ;
+							print "<option $selected value='Ad Hoc'>" . __($guid, 'Ad Hoc') . "</option>" ;
 						print "</select>" ;
 						?>
 					</td>
@@ -319,8 +319,8 @@ else {
 					print "<td class='right' colspan=2>" ;
 						print "<input type='hidden' name='gibbonSchoolYearID' value='$gibbonSchoolYearID'>" ;
 						print "<input type='hidden' name='q' value='" . $_GET["q"] . "'>" ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoices_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID'>" . _('Clear Filters') . "</a> " ;
-						print "<input type='submit' value='" . _('Go') . "'>" ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoices_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID'>" . __($guid, 'Clear Filters') . "</a> " ;
+						print "<input type='submit' value='" . __($guid, 'Go') . "'>" ;
 					print "</td>" ;
 				print "</tr>" ;
 			print "</table>" ;
@@ -458,47 +458,47 @@ else {
 		
 		if ($result->rowCount()<1) {
 			print "<h3>" ;
-			print _("View") ;
+			print __($guid, "View") ;
 			print "</h3>" ;
 			
 			print "<div class='linkTop' style='text-align: right'>" ;
-				print "<a style='margin-right: 3px' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new_multi.png'/></a><br/>" ;
+				print "<a style='margin-right: 3px' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'>" .  __($guid, 'Add') . "<img style='margin-left: 5px' title='" . __($guid, 'Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new_multi.png'/></a><br/>" ;
 			print "</div>" ;
 			
 			print "<div class='error'>" ;
-			print _("There are no records to display.") ;
+			print __($guid, "There are no records to display.") ;
 			print "</div>" ;
 		}
 		else {
 			print "<h3>" ;
-			print _("View") ;
-			print "<span style='font-weight: normal; font-style: italic; font-size: 55%'> " . sprintf(_('%1$s records(s) in current view'), $result->rowCount()) . "</span>" ;
+			print __($guid, "View") ;
+			print "<span style='font-weight: normal; font-style: italic; font-size: 55%'> " . sprintf(__($guid, '%1$s records(s) in current view'), $result->rowCount()) . "</span>" ;
 			print "</h3>" ;
 
-			print "<form onsubmit='return confirm(\"" ._('Are you sure you wish to process this action? It cannot be undone.') . "\")' method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_processBulk.php?gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'>" ;
+			print "<form onsubmit='return confirm(\"" .__($guid, 'Are you sure you wish to process this action? It cannot be undone.') . "\")' method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_processBulk.php?gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'>" ;
 				print "<fieldset style='border: none'>" ;
 					print "<div class='linkTop' style='text-align: right; margin-bottom: 40px'>" ;
 						print "<div style='margin: 0 0 3px 0'>" ;
-							print "<a style='margin-right: 3px' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new_multi.png'/></a><br/>" ;
+							print "<a style='margin-right: 3px' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'>" .  __($guid, 'Add') . "<img style='margin-left: 5px' title='" . __($guid, 'Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new_multi.png'/></a><br/>" ;
 						print "</div>" ;
 						?>
-						<input style='margin-top: 0px; float: right' type='submit' value='<?php print _('Go') ?>'>
+						<input style='margin-top: 0px; float: right' type='submit' value='<?php print __($guid, 'Go') ?>'>
 						<select name="action" id="action" style='width:120px; float: right; margin-right: 1px;'>
-							<option value="Select action"><?php print _('Select action') ?></option>
+							<option value="Select action"><?php print __($guid, 'Select action') ?></option>
 							<?php
 							if ($status=="Pending") {
-								print "<option value=\"delete\">" . _('Delete') . "</option>" ;
-								print "<option value=\"issue\">" . _('Issue') . "</option>" ;
+								print "<option value=\"delete\">" . __($guid, 'Delete') . "</option>" ;
+								print "<option value=\"issue\">" . __($guid, 'Issue') . "</option>" ;
 							}
 							if ($status=="Issued - Overdue") {
-								print "<option value=\"reminders\">" . _('Issue Reminders') . "</option>" ;
+								print "<option value=\"reminders\">" . __($guid, 'Issue Reminders') . "</option>" ;
 							}
-							print "<option value=\"export\">" . _('Export') . "</option>" ;
+							print "<option value=\"export\">" . __($guid, 'Export') . "</option>" ;
 							?>
 						</select>
 						<script type="text/javascript">
 							var action=new LiveValidation('action');
-							action.add(Validate.Exclusion, { within: ['Select action'], failureMessage: "<?php print _('Select something!') ?>"});
+							action.add(Validate.Exclusion, { within: ['Select action'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 						</script>
 						<?php
 					print "</div>" ;	
@@ -506,28 +506,28 @@ else {
 					print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th style='width: 110px'>" ;
-								print _("Student") . "<br/>" ;
-								print "<span style='font-style: italic; font-size: 85%'>" . _('Invoice To') . "</span>" ;
+								print __($guid, "Student") . "<br/>" ;
+								print "<span style='font-style: italic; font-size: 85%'>" . __($guid, 'Invoice To') . "</span>" ;
 							print "</th>" ;
 							print "<th style='width: 110px'>" ;
-								print _("Roll Group") ;
+								print __($guid, "Roll Group") ;
 							print "</th>" ;
 							print "<th style='width: 100px'>" ;
-								print _("Status") ;
+								print __($guid, "Status") ;
 							print "</th>" ;
 							print "<th style='width: 90px'>" ;
-								print _("Schedule") ;
+								print __($guid, "Schedule") ;
 							print "</th>" ;
 							print "<th style='width: 120px'>" ;
-								print _("Total") . " <span style='font-style: italic; font-size: 75%'>(" . $_SESSION[$guid]["currency"] . ")</span><br/>" ;
-								print "<span style='font-style: italic; font-size: 75%'>" . _('Paid') . " (" . $_SESSION[$guid]["currency"] . ")</span>" ;
+								print __($guid, "Total") . " <span style='font-style: italic; font-size: 75%'>(" . $_SESSION[$guid]["currency"] . ")</span><br/>" ;
+								print "<span style='font-style: italic; font-size: 75%'>" . __($guid, 'Paid') . " (" . $_SESSION[$guid]["currency"] . ")</span>" ;
 							print "</th>" ;
 							print "<th style='width: 80px'>" ;
-								print _("Issue Date") . "<br/>" ;
-								print "<span style='font-style: italic; font-size: 75%'>" . _('Due Date') . "</span>" ;
+								print __($guid, "Issue Date") . "<br/>" ;
+								print "<span style='font-style: italic; font-size: 75%'>" . __($guid, 'Due Date') . "</span>" ;
 							print "</th>" ;
 							print "<th style='width: 140px'>" ;
-								print _("Actions") ;
+								print __($guid, "Actions") ;
 							print "</th>" ;
 							print "<th>" ;
 								?>
@@ -646,11 +646,11 @@ else {
 								print "</td>" ;
 								print "<td>" ;
 									if ($row["status"]!="Cancelled" AND $row["status"]!="Refunded") {
-										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_edit.php&gibbonFinanceInvoiceID=" . $row["gibbonFinanceInvoiceID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_edit.php&gibbonFinanceInvoiceID=" . $row["gibbonFinanceInvoiceID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'><img title='" . __($guid, 'Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 									}
 									if ($row["status"]=="Pending") {
 										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_issue.php&gibbonFinanceInvoiceID=" . $row["gibbonFinanceInvoiceID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'><img title='Issue' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_right.png'/></a><br/>" ;
-										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_delete.php&gibbonFinanceInvoiceID=" . $row["gibbonFinanceInvoiceID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
+										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_delete.php&gibbonFinanceInvoiceID=" . $row["gibbonFinanceInvoiceID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'><img title='" . __($guid, 'Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
 										print "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_print_print.php&type=invoice&gibbonFinanceInvoiceID=" . $row["gibbonFinanceInvoiceID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID&preview=true'><img title='Preview Invoice' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
 									}
 									if ($row["status"]!="Pending") {
@@ -666,7 +666,7 @@ else {
 										print "});" ;
 									print "</script>" ;
 									if ($row["notes"]!="") {
-										print "<a title='View Notes' class='show_hide-$count' onclick='false' href='#'><img style='margin-left: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='" . _('Show Comment') . "' onclick='return false;' /></a>" ;
+										print "<a title='View Notes' class='show_hide-$count' onclick='false' href='#'><img style='margin-left: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='" . __($guid, 'Show Comment') . "' onclick='return false;' /></a>" ;
 									}
 								print "</td>" ;
 								print "<td>" ;

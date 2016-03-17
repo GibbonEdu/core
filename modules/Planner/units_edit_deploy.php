@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Planner/units_edit_deploy.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -33,7 +33,7 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print _("The highest grouped action cannot be determined.") ;
+		print __($guid, "The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
@@ -50,7 +50,7 @@ else {
 		
 		//Proceed!
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>" . _('Unit Planner') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units_edit.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonUnitID=" . $_GET["gibbonUnitID"] . "'>" . _('Edit Unit') . "</a> > </div><div class='trailEnd'>" . _('Deploy Working Copy') . "</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>" . __($guid, 'Unit Planner') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units_edit.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonUnitID=" . $_GET["gibbonUnitID"] . "'>" . __($guid, 'Edit Unit') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Deploy Working Copy') . "</div>" ;
 		print "</div>" ;
 		
 		if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -58,25 +58,25 @@ else {
 		$class="error" ;
 		if (!($updateReturn=="")) {
 			if ($updateReturn=="fail0") {
-				$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+				$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 			}
 			else if ($updateReturn=="fail1") {
-				$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+				$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($updateReturn=="fail2") {
-				$updateReturnMessage=_("Your request failed due to a database error.") ;	
+				$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 			}
 			else if ($updateReturn=="fail3") {
-				$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+				$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($updateReturn=="fail4") {
-				$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+				$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($updateReturn=="fail5") {
-				$updateReturnMessage=_("Your request failed due to an attachment error.") ;	
+				$updateReturnMessage=__($guid, "Your request failed due to an attachment error.") ;	
 			}
 			else if ($updateReturn=="success0") {
-				$updateReturnMessage=_("Your request was completed successfully.") ;	
+				$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;
@@ -91,7 +91,7 @@ else {
 		$gibbonUnitClassID=$_GET["gibbonUnitClassID"]; 
 		if ($gibbonCourseID=="" OR $gibbonSchoolYearID=="" OR $gibbonCourseClassID=="" OR $gibbonUnitClassID=="") {
 			print "<div class='error'>" ;
-				print _("You have not specified one or more required parameters.") ;
+				print __($guid, "You have not specified one or more required parameters.") ;
 			print "</div>" ;
 		}
 		else {
@@ -113,7 +113,7 @@ else {
 
 			if ($result->rowCount()!=1) {
 				print "<div class='error'>" ;
-					print _("The selected record does not exist, or you do not have access to it.") ;
+					print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 				print "</div>" ;
 			}
 			else {
@@ -125,7 +125,7 @@ else {
 				//Check if unit specified
 				if ($gibbonUnitID=="") {
 					print "<div class='error'>" ;
-						print _("You have not specified one or more required parameters.") ;
+						print __($guid, "You have not specified one or more required parameters.") ;
 					print "</div>" ;
 				}
 				else {
@@ -165,7 +165,7 @@ else {
 					
 					if ($result->rowCount()!=1) {
 						print "<div class='error'>" ;
-							print _("The specified record cannot be found.") ;
+							print __($guid, "The specified record cannot be found.") ;
 						print "</div>" ;
 					}
 					else {
@@ -183,15 +183,15 @@ else {
 						print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 34%; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>" . _('School Year') . "</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'School Year') . "</span><br/>" ;
 									print "<i>" . $year . "</i>" ;
 									print "</td>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>" . _('Class') . "</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Class') . "</span><br/>" ;
 									print "<i>" . $course . "." . $class . "</i>" ;
 								print "</td>" ;
 								print "<td style='width: 34%; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>" . _('Unit') . "</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Unit') . "</span><br/>" ;
 									print "<i>" . $row["name"] . "</i>" ;
 								print "</td>" ;
 							print "</tr>" ;
@@ -200,10 +200,10 @@ else {
 						//Step 1
 						if ($step==1) {
 							print "<h3>" ;
-							print _("Step 1 - Select Lessons") ;
+							print __($guid, "Step 1 - Select Lessons") ;
 							print "</h3>" ;
 							print "<p>" ;
-							print _("Use the table below to select the lessons you wish to deploy this unit to. Only lessons without existing plans can be included in the deployment.") ;
+							print __($guid, "Use the table below to select the lessons you wish to deploy this unit to. Only lessons without existing plans can be included in the deployment.") ;
 							print "</p>" ;
 							
 							//Find all unplanned slots for this class.
@@ -277,7 +277,7 @@ else {
 							
 							if (count($lessons)<1) {
 								print "<div class='error'>" ;
-								print _("There are no records to display.") ;
+								print __($guid, "There are no records to display.") ;
 								print "</div>" ;
 							}
 							else {
@@ -352,25 +352,25 @@ else {
 									print "<table cellspacing='0' style='width: 100%'>" ;
 										print "<tr class='head'>" ;
 											print "<th>" ;
-												print sprintf(_('Lesson%1$sNumber'), "<br/>") ;
+												print sprintf(__($guid, 'Lesson%1$sNumber'), "<br/>") ;
 											print "</th>" ;
 											print "<th>" ;
-												print _("Date") ;
+												print __($guid, "Date") ;
 											print "</th>" ;
 											print "<th>" ;
-												print _("Day") ;
+												print __($guid, "Day") ;
 											print "</th>" ;
 											print "<th>" ;
-												print _("Month") ;
+												print __($guid, "Month") ;
 											print "</th>" ;
 											print "<th>" ;
-												print _("TT Period") . "/<br/>" . _('Time') ;
+												print __($guid, "TT Period") . "/<br/>" . __($guid, 'Time') ;
 											print "</th>" ;
 											print "<th>" ;
-												print sprintf(_('Planned%1$sLesson'), "<br/>") ;
+												print sprintf(__($guid, 'Planned%1$sLesson'), "<br/>") ;
 											print "</th>" ;
 											print "<th>" ;
-												print _("Include?") ;
+												print __($guid, "Include?") ;
 											print "</th>" ;
 										print "</tr>" ;
 										
@@ -510,10 +510,10 @@ else {
 						//Step 2
 						if ($step==2) {
 							print "<h3>" ;
-							print _("Step 2 - Distribute Blocks") ;
+							print __($guid, "Step 2 - Distribute Blocks") ;
 							print "</h3>" ;
 							print "<p>" ;
-							print _("You can now add your unit blocks using the dropdown menu in each lesson. Blocks can be dragged from one lesson to another.") ;
+							print __($guid, "You can now add your unit blocks using the dropdown menu in each lesson. Blocks can be dragged from one lesson to another.") ;
 							print "</p>" ;
 							
 							//Store UNIT BLOCKS in array
@@ -588,7 +588,7 @@ else {
 									$lessonCount=$_POST["count"] ;
 									if ($lessonCount<1) {
 										print "<div class='error'>" ;
-										print _("There are no records to display.") ;
+										print __($guid, "There are no records to display.") ;
 										print "</div>" ;
 									}
 									else {
@@ -609,7 +609,7 @@ else {
 										$cells=count($lessons) ;
 										if ($cells<1) {
 											print "<div class='error'>" ;
-											print _("There are no records to display.") ;
+											print __($guid, "There are no records to display.") ;
 											print "</div>" ;
 										}
 										else {
@@ -627,7 +627,7 @@ else {
 															print "<input type='hidden' name='timeStart$i' value='" . $lessons[$i][1] . "' >" ;
 															print "<input type='hidden' name='timeEnd$i' value='" . $lessons[$i][2] . "' >" ;
 															print "<div style='text-align: right; float: right; margin-top: -17px; margin-right: 3px'>" ;
-																print "<span style='font-size: 80%'><i>" . _('Add Block:') . "</i></span><br/>" ; 
+																print "<span style='font-size: 80%'><i>" . __($guid, 'Add Block:') . "</i></span><br/>" ; 
 																print "<script type='text/javascript'>" ;
 																	print "$(document).ready(function(){" ;
 																		print "$(\"#blockAdd$i\").change(function(){" ;
@@ -641,14 +641,14 @@ else {
 																print "</script>" ;
 																print "<select name='blockAdd$i' id='blockAdd$i' style='width: 150px'>" ;
 																	print "<option value=''></option>" ;
-																	print "<optgroup label='--" . _('Unit Blocks') . "--'>" ;
+																	print "<optgroup label='--" . __($guid, 'Unit Blocks') . "--'>" ;
 																		$blockSelectCount=0 ;
 																		foreach ($blocks AS $block) {
 																			print "<option value='" . $block[0] . "'>" . ($blockSelectCount+1) . ") " . htmlPrep($block[1]) . "</option>" ;
 																			$blockSelectCount++ ;
 																		}
 																	print "</optgroup>" ;
-																	print "<optgroup label='--" . _('Star Blocks') . "--'>" ;
+																	print "<optgroup label='--" . __($guid, 'Star Blocks') . "--'>" ;
 																		foreach ($blocks2 AS $block2) {
 																			print "<option value='" . $block2[0] . "'>" . htmlPrep($block2[1]) . "</option>" ;
 																		}
@@ -698,11 +698,11 @@ else {
 									}
 									
 									?>
-									<b><?php print _('Access') ?></b><br/>
+									<b><?php print __($guid, 'Access') ?></b><br/>
 									<table cellspacing='0' style="width: 100%">	
 										<tr id="accessRowStudents">
 											<td> 
-												<b><?php print _('Viewable to Students') ?> *</b><br/>
+												<b><?php print __($guid, 'Viewable to Students') ?> *</b><br/>
 												<span style="font-size: 90%"><i></i></span>
 											</td>
 											<td class="right">
@@ -710,14 +710,14 @@ else {
 												$sharingDefaultStudents=getSettingByScope( $connection2, "Planner", "sharingDefaultStudents" ) ;
 												?>
 												<select name="viewableStudents" id="viewableStudents" style="width: 302px">
-													<option <?php if ($sharingDefaultStudents=="Y") { print "selected" ; } ?> value="Y"><?php print _('Yes') ?></option>
-													<option <?php if ($sharingDefaultStudents=="N") { print "selected" ; } ?> value="N"><?php print _('No') ?></option>
+													<option <?php if ($sharingDefaultStudents=="Y") { print "selected" ; } ?> value="Y"><?php print __($guid, 'Yes') ?></option>
+													<option <?php if ($sharingDefaultStudents=="N") { print "selected" ; } ?> value="N"><?php print __($guid, 'No') ?></option>
 												</select>
 											</td>
 										</tr>
 										<tr id="accessRowParents">
 											<td> 
-												<b><?php print _('Viewable to Parents') ?> *</b><br/>
+												<b><?php print __($guid, 'Viewable to Parents') ?> *</b><br/>
 												<span style="font-size: 90%"><i></i></span>
 											</td>
 											<td class="right">
@@ -725,8 +725,8 @@ else {
 												$sharingDefaultParents=getSettingByScope( $connection2, "Planner", "sharingDefaultParents" ) ;
 												?>
 												<select name="viewableParents" id="viewableParents" style="width: 302px">
-													<option <?php if ($sharingDefaultParents=="Y") { print "selected" ; } ?> value="Y"><?php print _('Yes') ?></option>
-													<option <?php if ($sharingDefaultParents=="N") { print "selected" ; } ?> value="N"><?php print _('No') ?></option>
+													<option <?php if ($sharingDefaultParents=="Y") { print "selected" ; } ?> value="Y"><?php print __($guid, 'Yes') ?></option>
+													<option <?php if ($sharingDefaultParents=="N") { print "selected" ; } ?> value="N"><?php print __($guid, 'No') ?></option>
 												</select>
 											</td>
 										</tr>

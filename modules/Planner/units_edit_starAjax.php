@@ -43,7 +43,7 @@ $gibbonUnitBlockID=$_POST["gibbonUnitBlockID"] ;
 $i=$_POST["i"] ; 
 	
 if ($gibbonPersonID=="" OR $action=="" OR $gibbonUnitBlockID=="" OR $i=="") {
-	print _("Error") ;
+	print __($guid, "Error") ;
 }
 else {
 	if ($action=="star") {

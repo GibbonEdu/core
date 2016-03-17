@@ -68,13 +68,13 @@ function renderCustomFieldRow($connection2, $guid, $row, $value=NULL, $fieldName
 	
 	$return.="<tr class='$rowClass'>" ;
 		$return.="<td>" ;
-			$return.="<b>" . _($row["name"]) . "</b>" ;
+			$return.="<b>" . __($guid, $row["name"]) . "</b>" ;
 			if ($row["required"]=="Y" AND $ignoreRequired==FALSE) {
 				$return.=" *" ;
 			}
 			if ($row["description"]=="Y") {
 				$return.="<br/>" ;
-				$return.="<span style='font-size: 90%'><i>" . _($row["description"]) . "<br/>" ;
+				$return.="<span style='font-size: 90%'><i>" . __($guid, $row["description"]) . "<br/>" ;
 				$return.="</i></span>" ;
 			}
 		$return.="</td>" ;
@@ -128,7 +128,7 @@ function renderCustomFieldRow($connection2, $guid, $row, $value=NULL, $fieldName
 			else if ($row["type"]=="select") {
 				$return.="<select style=\"width: 302px\" name=\"" . $fieldNameSuffix . "custom" . $row["gibbonPersonFieldID"] . "\" id=\"" . $fieldNameSuffix . "custom" . $row["gibbonPersonFieldID"] . "\">" ;
 					if ($row["required"]=="Y" AND $ignoreRequired==FALSE) { //is required
-						$return.="<option value=\"Please select...\">" . _('Please select...') . "</option>" ;
+						$return.="<option value=\"Please select...\">" . __($guid, 'Please select...') . "</option>" ;
 					}
 					else {
 						$return.="<option value=\"\"></option>" ;
@@ -146,7 +146,7 @@ function renderCustomFieldRow($connection2, $guid, $row, $value=NULL, $fieldName
 				if ($row["required"]=="Y" AND $ignoreRequired==FALSE) { //is required
 					$return.="<script type=\"text/javascript\">" ;
 						$return.="var " . $fieldNameSuffix . "custom" . $row["gibbonPersonFieldID"] . "=new LiveValidation('" . $fieldNameSuffix . "custom" . $row["gibbonPersonFieldID"] . "');" ;
-						$return.=$fieldNameSuffix . "custom" . $row["gibbonPersonFieldID"] . ".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"" .  _('Select something!') . "\"});" ;
+						$return.=$fieldNameSuffix . "custom" . $row["gibbonPersonFieldID"] . ".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"" .  __($guid, 'Select something!') . "\"});" ;
 					$return.="</script>" ;
 				}
 			}

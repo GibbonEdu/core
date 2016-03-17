@@ -43,7 +43,7 @@ function printINStatusTable($connection2, $gibbonPersonID, $mode="", $archive=""
 	
 	if ($resultDescriptors->rowCount()<1 OR $resultSeverity->rowCount()<1) {
 		$output.="<div class='error'>" ;
-		$output.=_("Individual needs descriptors or severity levels have not been set.") ;
+		$output.=__($guid, "Individual needs descriptors or severity levels have not been set.") ;
 		$output.="</div>" ;
 	}
 	else {
@@ -61,9 +61,9 @@ function printINStatusTable($connection2, $gibbonPersonID, $mode="", $archive=""
 		$count=0 ;
 		while ($rowSeverity=$resultSeverity->fetch()) {
 			$severity[$count][0]=$rowSeverity["gibbonAlertLevelID"] ;
-			$severity[$count][1]=_($rowSeverity["name"]) ;
+			$severity[$count][1]=__($guid, $rowSeverity["name"]) ;
 			$severity[$count][2]=$rowSeverity["nameShort"] ;
-			$severity[$count][3]=_($rowSeverity["description"]) ;
+			$severity[$count][3]=__($guid, $rowSeverity["description"]) ;
 			$severity[$count][4]=$rowSeverity["color"] ;
 			$count++ ;
 		}
@@ -102,7 +102,7 @@ function printINStatusTable($connection2, $gibbonPersonID, $mode="", $archive=""
 		$output.="<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 			$output.="<tr class='head'>" ;
 				$output.="<th>" ;
-					$output.=_("Descriptor") ;
+					$output.=__($guid, "Descriptor") ;
 				$output.="<th>" ;
 				for ($i=0 ; $i<count($severity); $i++) {
 					$output.="<th>" ;
@@ -120,7 +120,7 @@ function printINStatusTable($connection2, $gibbonPersonID, $mode="", $archive=""
 			
 				$output.="<tr class=$rowNum>" ;
 					$output.="<td>" ;
-						$output.="<span title='" . _($descriptors[$n][3]) . "'>" . _($descriptors[$n][1]) . "</span>" ;
+						$output.="<span title='" . __($guid, $descriptors[$n][3]) . "'>" . __($guid, $descriptors[$n][1]) . "</span>" ;
 					$output.="<td>" ;
 					for ($i=0 ; $i<count($severity); $i++) {
 						$output.="<td style='width: 10%'>" ;

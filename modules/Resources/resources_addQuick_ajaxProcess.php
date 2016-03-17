@@ -54,7 +54,7 @@ else {
 	if ($id=="") {
 		//Fail 3
 		print "<span style='font-weight: bold; color: #ff0000'>" ;
-			print _("Your request failed because your inputs were invalid.") ;
+			print __($guid, "Your request failed because your inputs were invalid.") ;
 		print "</span>" ;
 	}
 	else {

@@ -25,12 +25,12 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_letters.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('View Behaviour Letters') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'View Behaviour Letters') . "</div>" ;
 	print "</div>" ;
 	
 	$gibbonPersonID=NULL ;
@@ -39,14 +39,14 @@ else {
 	}	
 	
 	print "<h3>" ;
-		print _("Filter") ;
+		print __($guid, "Filter") ;
 	print "</h3>" ;
 	print "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_letters.php'>" ;
 		print "<table class='noIntBorder' cellspacing='0' style='width: 100%'>" ;
 			?>
 			<tr>
 				<td> 
-					<b><?php print _('Student') ?></b><br/>
+					<b><?php print __($guid, 'Student') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
@@ -77,8 +77,8 @@ else {
 			print "<tr>" ;
 				print "<td class='right' colspan=2>" ;
 					print "<input type='hidden' name='q' value='" . $_GET["q"] . "'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_letters.php'>" . _('Clear Filters') . "</a> " ;
-					print "<input type='submit' value='" . _('Go') . "'>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_letters.php'>" . __($guid, 'Clear Filters') . "</a> " ;
+					print "<input type='submit' value='" . __($guid, 'Go') . "'>" ;
 				print "</td>" ;
 			print "</tr>" ;
 		print "</table>" ;
@@ -86,10 +86,10 @@ else {
 	
 	
 	print "<h3>" ;
-		print _("Behaviour Records") ;
+		print __($guid, "Behaviour Records") ;
 	print "</h3>" ;
 	print "<p>" ;
-		print _("This interface displays automated behaviour letters that have been issued within the current school year.") ;
+		print __($guid, "This interface displays automated behaviour letters that have been issued within the current school year.") ;
 	print "</p>" ;
 	//Set pagination variable
 	$page=1 ; if (isset($_GET["page"])) { $page=$_GET["page"] ; }
@@ -124,7 +124,7 @@ else {
 	
 	if ($result->rowCount()<1) {
 		print "<div class='error'>" ;
-		print _("There are no records to display.") ;
+		print __($guid, "There are no records to display.") ;
 		print "</div>" ;
 	}
 	else {
@@ -135,17 +135,17 @@ else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print _("Student") . "<br/>" ;
-					print "<span style='font-size: 85%; font-style: italic'>" . _('Date') . "<span>" ;
+					print __($guid, "Student") . "<br/>" ;
+					print "<span style='font-size: 85%; font-style: italic'>" . __($guid, 'Date') . "<span>" ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Letter") ;
+					print __($guid, "Letter") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Status") ;
+					print __($guid, "Status") ;
 				print "</th>" ;
 				print "<th style='min-width: 70px'>" ;
-					print _("Actions") ;
+					print __($guid, "Actions") ;
 				print "</th>" ;
 			print "</tr>" ;
 			
@@ -190,7 +190,7 @@ else {
 							print "});" ;
 						print "</script>" ;
 						if ($row["body"]!="" OR $row["recipientList"]!="") {
-							print "<a title='" . _('View Details') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='" . _('View Details') . "' onclick='return false;' /></a>" ;
+							print "<a title='" . __($guid, 'View Details') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='" . __($guid, 'View Details') . "' onclick='return false;' /></a>" ;
 						}
 					print "</td>" ;
 				print "</tr>" ;
@@ -198,11 +198,11 @@ else {
 					print "<tr class='comment-$count' id='comment-$count'>" ;
 						print "<td colspan=4>" ;
 							if ($row["body"]!="") {
-								print "<b>" . _('Letter Body') . "</b><br/>" ;
+								print "<b>" . __($guid, 'Letter Body') . "</b><br/>" ;
 								print nl2brr($row["body"]) . "<br/><br/>" ;
 							}
 							if ($row["recipientList"]!="") {
-								print "<b>" . _('Recipients') . "</b><br/>" ;
+								print "<b>" . __($guid, 'Recipients') . "</b><br/>" ;
 								$reipients=explode(',', $row["recipientList"]) ;
 								foreach ($reipients AS $reipient) {
 									print trim($reipient) . "<br/>" ;

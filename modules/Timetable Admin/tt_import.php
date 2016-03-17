@@ -22,13 +22,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/tt_delete.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . _('Manage Timetables') . "</a> > </div><div class='trailEnd'>" . _('Import Timetable Data') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . __($guid, 'Manage Timetables') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Import Timetable Data') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["importReturn"])) { $importReturn=$_GET["importReturn"] ; } else { $importReturn="" ; }
@@ -36,16 +36,16 @@ else {
 	$class="error" ;
 	if (!($importReturn=="")) {
 		if ($importReturn=="fail0") {
-			$importReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+			$importReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($importReturn=="fail1") {
-			$importReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$importReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($importReturn=="fail2") {
-			$importReturnMessage=_("Your request failed due to a database error.") ;	
+			$importReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 		}
 		else if ($importReturn=="fail3") {
-			$importReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$importReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		print "<div class='$class'>" ;
 			print $importReturnMessage;
@@ -57,7 +57,7 @@ else {
 	$gibbonSchoolYearID=$_GET["gibbonSchoolYearID"] ;
 	if ($gibbonTTID=="" OR $gibbonSchoolYearID=="") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -73,7 +73,7 @@ else {
 
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print _("The specified record cannot be found.") ;
+				print __($guid, "The specified record cannot be found.") ;
 			print "</div>" ;
 		}
 		else {
@@ -94,17 +94,17 @@ else {
 			if ($step==1) {
 				?>
 				<h2>
-					<?php print _('Step 1 - Select CSV Files') ?>
+					<?php print __($guid, 'Step 1 - Select CSV Files') ?>
 				</h2>
 				<p>
-					<?php print _('This page allows you to import timetable data from a CSV file. The import includes all classes and their teachers. There is no support for importing students: these need to be entered manually into the relavent classes. The system will do its best to keep existing data in tact, whilst updating what is necessary (note: you will lose student exceptions from timetabled classes). Select the CSV files you wish to use for the synchronise operation.') ?><br/>
+					<?php print __($guid, 'This page allows you to import timetable data from a CSV file. The import includes all classes and their teachers. There is no support for importing students: these need to be entered manually into the relavent classes. The system will do its best to keep existing data in tact, whilst updating what is necessary (note: you will lose student exceptions from timetabled classes). Select the CSV files you wish to use for the synchronise operation.') ?><br/>
 				</p>
 				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/tt_import.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&step=2" ?>" enctype="multipart/form-data">
 					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 						<tr>
 							<td style='width: 275px'> 
-								<b><?php print _('CSV File') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print _('See Notes below for specification.') ?></i></span>
+								<b><?php print __($guid, 'CSV File') ?> *</b><br/>
+								<span style="font-size: 90%"><i><?php print __($guid, 'See Notes below for specification.') ?></i></span>
 							</td>
 							<td class="right">
 								<input type="file" name="file" id="file" size="chars">
@@ -116,7 +116,7 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b><?php print _('Field Delimiter') ?> *</b><br/>
+								<b><?php print __($guid, 'Field Delimiter') ?> *</b><br/>
 								<span style="font-size: 90%"><i></i></span>
 							</td>
 							<td class="right">
@@ -129,7 +129,7 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b><?php print _('String Enclosure') ?> *</b><br/>
+								<b><?php print __($guid, 'String Enclosure') ?> *</b><br/>
 								<span style="font-size: 90%"><i></i></span>
 							</td>
 							<td class="right">
@@ -142,12 +142,12 @@ else {
 						</tr>
 						<tr>
 							<td>
-								<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+								<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
 							</td>
 							<td class='right'>
 								<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php print $gibbonSchoolYearID ?>" type="hidden">
 								<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-								<input type="submit" value="<?php print _("Submit") ; ?>">
+								<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 							</td>
 						</tr>
 					</table>
@@ -156,31 +156,31 @@ else {
 				
 				
 				<h4>
-					<?php print _('Notes') ?>
+					<?php print __($guid, 'Notes') ?>
 				</h4>
 				<ol>
-					<li><?php print _('You may only submit CSV files.') ?></li>
-					<li><?php print _('Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).') ?></li>
-					<li><?php print _('The import includes course, class, period, teacher and room information: the structure of the target timetable must already be in place.') ?></li>
-					<li><?php print _('The import does not include student lists.') ?></li>
-					<li><?php print _('The submitted file must have the following fields in the following order:') ?></li> 
+					<li><?php print __($guid, 'You may only submit CSV files.') ?></li>
+					<li><?php print __($guid, 'Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).') ?></li>
+					<li><?php print __($guid, 'The import includes course, class, period, teacher and room information: the structure of the target timetable must already be in place.') ?></li>
+					<li><?php print __($guid, 'The import does not include student lists.') ?></li>
+					<li><?php print __($guid, 'The submitted file must have the following fields in the following order:') ?></li> 
 						<ol>
-							<li><b><?php print _('Course Short Name</b> - e.g. DR10 for Year 10 Drama') ?></li>
-							<li><b><?php print _('Class Short Name</b> - e.g 1 for DR10.1') ?></li>
-							<li><b><?php print _('Day Name</b> - as used in the target timetable') ?></li>
-							<li><b><?php print _('Row Long Name</b> - as used in the target timetable') ?></li>
-							<li><b><?php print _('Teacher Username</b> - comma-separated list of Gibbon usernames for teacher(s) of the lesson. Alternatively, give each teacher their own row.') ?></li>
-							<li><b><?php print _('Space Name</b> - the Gibbon name for the room the lesson takes place in.') ?></li>
+							<li><b><?php print __($guid, 'Course Short Name</b> - e.g. DR10 for Year 10 Drama') ?></li>
+							<li><b><?php print __($guid, 'Class Short Name</b> - e.g 1 for DR10.1') ?></li>
+							<li><b><?php print __($guid, 'Day Name</b> - as used in the target timetable') ?></li>
+							<li><b><?php print __($guid, 'Row Long Name</b> - as used in the target timetable') ?></li>
+							<li><b><?php print __($guid, 'Teacher Username</b> - comma-separated list of Gibbon usernames for teacher(s) of the lesson. Alternatively, give each teacher their own row.') ?></li>
+							<li><b><?php print __($guid, 'Space Name</b> - the Gibbon name for the room the lesson takes place in.') ?></li>
 						</ol>
 					</li>
-					<li><?php print _('Do not include a header row in the CSV files.') ?></li>
+					<li><?php print __($guid, 'Do not include a header row in the CSV files.') ?></li>
 				</ol>
 			<?php
 			}
 			else if ($step==2) {
 				?>
 				<h2>
-					<?php print _('Step 2 - Data Check & Confirm') ?>
+					<?php print __($guid, 'Step 2 - Data Check & Confirm') ?>
 				</h2>
 				<?php
 				
@@ -188,14 +188,14 @@ else {
 				if (($_FILES['file']['type']!="text/csv") AND ($_FILES['file']['type']!="text/comma-separated-values") AND ($_FILES['file']['type']!="text/x-comma-separated-values") AND ($_FILES['file']['type']!="application/vnd.ms-excel") AND ($_FILES['file']['type']!="application/csv")) {
 					?>
 					<div class='error'>
-						<?php print sprintf(_('Import cannot proceed, as the submitted file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['file']['type']) ?><br/>
+						<?php print sprintf(__($guid, 'Import cannot proceed, as the submitted file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['file']['type']) ?><br/>
 					</div>
 					<?php
 				}
 				else if (($_POST["fieldDelimiter"]=="") OR ($_POST["stringEnclosure"]=="")) {
 					?>
 					<div class='error'>
-						<?php print _('Import cannot proceed, as the "Field Delimiter" and/or "String Enclosure" fields have been left blank.') ?><br/>
+						<?php print __($guid, 'Import cannot proceed, as the "Field Delimiter" and/or "String Enclosure" fields have been left blank.') ?><br/>
 					</div>
 					<?php
 				}
@@ -204,7 +204,7 @@ else {
 					
 					//PREPARE TABLES
 					print "<h4>" ;
-						print _("Prepare Database Tables") ;
+						print __($guid, "Prepare Database Tables") ;
 					print "</h4>" ;
 					//Lock tables
 					$lockFail=false ;
@@ -229,12 +229,12 @@ else {
 					}
 					if ($lockFail==true) {
 						print "<div class='error'>" ;
-							print _("The database could not be locked for use.") ;
+							print __($guid, "The database could not be locked for use.") ;
 						print "</div>" ;	
 					}
 					else if ($lockFail==false) {
 						print "<div class='success'>" ;
-							print _("The database was successfully locked.") ;
+							print __($guid, "The database was successfully locked.") ;
 						print "</div>" ;	
 					}		
 					//Empty table gibbonTTImport
@@ -249,12 +249,12 @@ else {
 					}			
 					if ($emptyFail==true) {
 						print "<div class='error'>" ;
-							print _("The database tables could not be emptied.") ;
+							print __($guid, "The database tables could not be emptied.") ;
 						print "</div>" ;
 					}
 					else if ($emptyFail==false) {
 						print "<div class='success'>" ;
-							print _("The database tables were successfully emptied.") ;
+							print __($guid, "The database tables were successfully emptied.") ;
 						print "</div>" ;	
 					}		
 					
@@ -262,7 +262,7 @@ else {
 					//TURN IMPORT FILE INTO gibbonTTImport
 					if ($proceed==true) {
 						print "<h4>" ;
-							print _("File Import") ;
+							print __($guid, "File Import") ;
 						print "</h4>" ;
 						$importFail=false ;
 						$csvFile=$_FILES['file']['tmp_name'] ;
@@ -283,12 +283,12 @@ else {
 						fclose($handle);
 						if ($importFail==true) {
 							print "<div class='error'>" ;
-								print _("The import file could not be temporarily stored in the database for analysis.") ;
+								print __($guid, "The import file could not be temporarily stored in the database for analysis.") ;
 							print "</div>" ;
 						}
 						else if ($importFail==false) {
 							print "<div class='success'>" ;
-								print _("The import file was successfully stored in the database for analysis.") ;
+								print __($guid, "The import file was successfully stored in the database for analysis.") ;
 							print "</div>" ;
 						}
 					}
@@ -344,12 +344,12 @@ else {
 						}
 						if ($staffCheckFail==true) {
 							print "<div class='error'>" ;
-								print sprintf(_('Staff check failed. The following staff were in the import file but could not be found in Gibbon: %1$s. Add the staff into Gibbon and then try the import again.') , substr($errorList, 0, -2)) ;
+								print sprintf(__($guid, 'Staff check failed. The following staff were in the import file but could not be found in Gibbon: %1$s. Add the staff into Gibbon and then try the import again.') , substr($errorList, 0, -2)) ;
 							print "</div>" ;
 						}
 						else if ($staffCheckFail==false) {
 							print "<div class='success'>" ;
-								print _("The staff check was successfully completed: all staff in the import file were found in Gibbon.") ;
+								print __($guid, "The staff check was successfully completed: all staff in the import file were found in Gibbon.") ;
 							print "</div>" ;
 						}
 					}
@@ -393,12 +393,12 @@ else {
 						}
 						if ($spaceCheckFail==true) {
 							print "<div class='error'>" ;
-								print sprintf(_('Space check failed. The following spaces were in the import file but could not be found in Gibbon: %1$s. Add the spaces into Gibbon and then try the import again.'), substr($errorList, 0, -2)) ;
+								print sprintf(__($guid, 'Space check failed. The following spaces were in the import file but could not be found in Gibbon: %1$s. Add the spaces into Gibbon and then try the import again.'), substr($errorList, 0, -2)) ;
 							print "</div>" ;
 						}
 						else if ($spaceCheckFail==false) {
 							print "<div class='success'>" ;
-								print _("The space check was successfully completed: all spaces in the import file were found in Gibbon.") ;
+								print __($guid, "The space check was successfully completed: all spaces in the import file were found in Gibbon.") ;
 							print "</div>" ;
 						}
 					}
@@ -442,12 +442,12 @@ else {
 						}
 						if ($dayCheckFail==true) {
 							print "<div class='error'>" ;
-								print sprintf(_('Day check failed. The following days were in the import file but could not be found in Gibbon: %1$s. Add the days into Gibbon and then try the import again.'), substr($errorList, 0, -2)) ;
+								print sprintf(__($guid, 'Day check failed. The following days were in the import file but could not be found in Gibbon: %1$s. Add the days into Gibbon and then try the import again.'), substr($errorList, 0, -2)) ;
 							print "</div>" ;
 						}
 						else if ($dayCheckFail==false) {
 							print "<div class='success'>" ;
-								print _("The day check was successfully completed: all days in the import file were found in Gibbon in the specified timetable.") ;
+								print __($guid, "The day check was successfully completed: all days in the import file were found in Gibbon in the specified timetable.") ;
 							print "</div>" ;
 						}
 					}
@@ -491,12 +491,12 @@ else {
 						}
 						if ($rowCheckFail==true) {
 							print "<div class='error'>" ;
-								print sprintf(_('Row check failed. The following rows were in the import file but could not be found in Gibbon: %1$s. Add the rows into Gibbon and then try the import again.'), substr($errorList, 0, -2)) ;
+								print sprintf(__($guid, 'Row check failed. The following rows were in the import file but could not be found in Gibbon: %1$s. Add the rows into Gibbon and then try the import again.'), substr($errorList, 0, -2)) ;
 							print "</div>" ;
 						}
 						else if ($rowCheckFail==false) {
 							print "<div class='success'>" ;
-								print _("The row check was successfully completed: all rows in the import file were found in Gibbon in the specified timetable on the specified days.") ;
+								print __($guid, "The row check was successfully completed: all rows in the import file were found in Gibbon in the specified timetable on the specified days.") ;
 							print "</div>" ;
 						}
 					}
@@ -556,14 +556,14 @@ else {
 						}
 						if ($courseCheckFail==true) {
 							print "<div class='error'>" ;
-								print sprintf(_('Course check failed. The following courses were in the import file but could not be found or made in Gibbon: %1$s. Add the courses into Gibbon and then try the import again.'), substr($errorList, 0, -2)) ;
+								print sprintf(__($guid, 'Course check failed. The following courses were in the import file but could not be found or made in Gibbon: %1$s. Add the courses into Gibbon and then try the import again.'), substr($errorList, 0, -2)) ;
 							print "</div>" ;
 						}
 						else if ($courseCheckFail==false) {
 							print "<div class='success'>" ;
-								print _("The course check was successfully completed: all courses in the import file were found in or added to Gibbon.") ;
+								print __($guid, "The course check was successfully completed: all courses in the import file were found in or added to Gibbon.") ;
 								if ($makeList!="") {
-									print " " . sprintf(_('The following courses were added to Gibbon: %1$s.'), substr($makeList, 0, -2)) ;
+									print " " . sprintf(__($guid, 'The following courses were added to Gibbon: %1$s.'), substr($makeList, 0, -2)) ;
 								}
 							print "</div>" ;
 						}
@@ -624,14 +624,14 @@ else {
 						}
 						if ($classCheckFail==true) {
 							print "<div class='error'>" ;
-								print sprintf(_('Class check failed. The following classes were in the import file but could not be found or made in Gibbon: %1$s. Add the classes into Gibbon and then try the import again.'), substr($errorList, 0, -2)) ;
+								print sprintf(__($guid, 'Class check failed. The following classes were in the import file but could not be found or made in Gibbon: %1$s. Add the classes into Gibbon and then try the import again.'), substr($errorList, 0, -2)) ;
 							print "</div>" ;
 						}
 						else if ($classCheckFail==false) {
 							print "<div class='success'>" ;
-								print _("The class check was successfully completed: all classes in the import file were found in or added to Gibbon.") ;
+								print __($guid, "The class check was successfully completed: all classes in the import file were found in or added to Gibbon.") ;
 								if ($makeList!="") {
-									print " " . sprintf(_('The following classes were added to Gibbon: %1$s.'), substr($makeList, 0, -2)) ;
+									print " " . sprintf(__($guid, 'The following classes were added to Gibbon: %1$s.'), substr($makeList, 0, -2)) ;
 								}
 							print "</div>" ;
 						}
@@ -641,7 +641,7 @@ else {
 					//TEACHER SYNC
 					if ($proceed==true) {
 						print "<h4>" ;
-							print _("Teacher Sync") ;
+							print __($guid, "Teacher Sync") ;
 						print "</h4>" ;
 						$teacherSyncFail=false ;
 						//Get list of classes from import
@@ -765,12 +765,12 @@ else {
 						}
 						if ($teacherSyncFail==true) {
 							print "<div class='error'>" ;
-								print sprintf(_('Teacher sync failed. The following classes/teachers (and possibly some others) had problems: %1$s.'), substr($errorList, 0, -2)) ;
+								print sprintf(__($guid, 'Teacher sync failed. The following classes/teachers (and possibly some others) had problems: %1$s.'), substr($errorList, 0, -2)) ;
 							print "</div>" ;
 						}
 						else if ($teacherSyncFail==false) {
 							print "<div class='success'>" ;
-								print _("The teacher sync was successfully completed: all teachers in the import file were added to the relevant classes in Gibbon.") ;
+								print __($guid, "The teacher sync was successfully completed: all teachers in the import file were added to the relevant classes in Gibbon.") ;
 							print "</div>" ;
 						}
 					}
@@ -786,16 +786,16 @@ else {
 					
 					//SPIT OUT RESULT
 					print "<h4>" ;
-						print _("Final Decision") ;
+						print __($guid, "Final Decision") ;
 					print "</h4>" ;
 					if ($proceed==false) {
 						print "<div class='error'>" ;
-							print "<b><u>" . _('You cannot proceed. Fix the issues listed above and try again.') . "</u></b>" ;
+							print "<b><u>" . __($guid, 'You cannot proceed. Fix the issues listed above and try again.') . "</u></b>" ;
 						print "</div>" ;
 					}		
 					else if ($proceed==true) {
 						print "<div class='success'>" ;
-							print "<b><u>" . sprintf(_('You are ready to go. %1$sClick here to import the timetable. Your old timetable will be obliterated%2$s.'), "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/tt_import.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&step=3'>", "</a>") . "</u></b>" ;
+							print "<b><u>" . sprintf(__($guid, 'You are ready to go. %1$sClick here to import the timetable. Your old timetable will be obliterated%2$s.'), "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/tt_import.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&step=3'>", "</a>") . "</u></b>" ;
 						print "</div>" ;
 					}	
 				}
@@ -803,7 +803,7 @@ else {
 			else if ($step==3) {
 				?>
 				<h2>
-					<?php print _('Step 3 - Import') ?>
+					<?php print __($guid, 'Step 3 - Import') ?>
 				</h2>
 				<?php	
 				
@@ -813,7 +813,7 @@ else {
 				$ttSyncRemoveFail=false ;
 				if ($proceed==true) {
 					print "<h4>" ;
-						print _("Remove Old Periods") ;
+						print __($guid, "Remove Old Periods") ;
 					print "</h4>" ;
 					try {
 						$dataDays=array("gibbonTTID"=>$gibbonTTID); 
@@ -871,12 +871,12 @@ else {
 					
 					if ($ttSyncRemoveFail==true) {
 						print "<div class='error'>" ;
-							print _("Removal of old periods failed.") ;
+							print __($guid, "Removal of old periods failed.") ;
 						print "</div>" ;
 					}
 					else if ($ttSyncRemoveFail==false) {
 						print "<div class='success'>" ;
-							print _("Removal of old periods was successful.") ;
+							print __($guid, "Removal of old periods was successful.") ;
 						print "</div>" ;
 					}
 				}
@@ -884,7 +884,7 @@ else {
 				//ADD PERIODS
 				if ($proceed==true) {
 					print "<h4>" ;
-						print _("Add Periods") ;
+						print __($guid, "Add Periods") ;
 					print "</h4>" ;
 					if ($ttSyncRemoveFail==false) {
 						$ttSyncFail=false ;
@@ -1024,12 +1024,12 @@ else {
 						
 						if ($ttSyncFail==true) {
 							print "<div class='error'>" ;
-								print _("Add/update of periods from import failed. Parts of your timetable may display correctly, but others may be missing, incomplete or incorrect.") ;
+								print __($guid, "Add/update of periods from import failed. Parts of your timetable may display correctly, but others may be missing, incomplete or incorrect.") ;
 							print "</div>" ;
 						}
 						else if ($ttSyncFail==false) {
 							print "<div class='success'>" ;
-								print _("Add/update of periods from import was successful. You may now wish to set long name, learning area and year groups for any new courses created in Step 2.") ;
+								print __($guid, "Add/update of periods from import was successful. You may now wish to set long name, learning area and year groups for any new courses created in Step 2.") ;
 							print "</div>" ;
 						}
 					}
@@ -1038,16 +1038,16 @@ else {
 				
 				//SPIT OUT RESULT
 				print "<h4>" ;
-					print _("Final Result") ;
+					print __($guid, "Final Result") ;
 				print "</h4>" ;
 				if ($proceed==false) {
 					print "<div class='error'>" ;
-						print "<b><u>" . _('Your input was partially or entirely unsuccessful.') . "</u></b>" ;
+						print "<b><u>" . __($guid, 'Your input was partially or entirely unsuccessful.') . "</u></b>" ;
 					print "</div>" ;
 				}		
 				else if ($proceed==true) {
 					print "<div class='success'>" ;
-						print "<b><u>" . _('Success! Your new timetable is in place.') . "</u></b>" ;
+						print "<b><u>" . __($guid, 'Success! Your new timetable is in place.') . "</u></b>" ;
 					print "</div>" ;
 				}	
 			}

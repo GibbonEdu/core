@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/Students/student_view.php")==FALSE) {
     //Acess denied
     print "<div class='error'>" ;
-    	print _("You do not have access to this action.") ;
+    	print __($guid, "You do not have access to this action.") ;
     print "</div>" ;
 }
 else {
@@ -30,13 +30,13 @@ else {
     $highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
     if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-			print _("The highest grouped action cannot be determined.") ;
+			print __($guid, "The highest grouped action cannot be determined.") ;
 		print "</div>" ;
     }
     else {
 	if ($highestAction=="View Student Profile_myChildren") {
 	    print "<div class='trail'>" ;
-	    	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('View Student Profiles') . "</div>" ;
+	    	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'View Student Profiles') . "</div>" ;
 	    print "</div>" ;
 		
 	    //Test data access field for permission
@@ -51,7 +51,7 @@ else {
 	    }
 	    if ($result->rowCount()<1) {
 			print "<div class='error'>" ;
-			print _("Access denied.") ;
+			print __($guid, "Access denied.") ;
 			print "</div>" ;
 	    }
 	    else {
@@ -81,23 +81,23 @@ else {
 
 		if ($count==0) {
 		    print "<div class='error'>" ;
-		    print _("Access denied.") ;
+		    print __($guid, "Access denied.") ;
 		    print "</div>" ;
 		}
 		else {
 		    print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
 					print "<th>" ;
-						print _("Name") ;
+						print __($guid, "Name") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Year Group") ;
+						print __($guid, "Year Group") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Roll Group") ;
+						print __($guid, "Roll Group") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Actions") ;
+						print __($guid, "Actions") ;
 					print "</th>" ;
 				print "</tr>" ;
 
@@ -115,13 +115,13 @@ else {
 					print formatName("", $students[$i][1], $students[$i][0], "Student", true) ;
 					print "</td>" ;
 					print "<td>" ;
-					print _($students[$i][2]) ;
+					print __($guid, $students[$i][2]) ;
 					print "</td>" ;
 					print "<td>" ;
 					print $students[$i][3] ;
 					print "</td>" ;
 					print "<td>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/student_view_details.php&gibbonPersonID=" . $students[$i][4] . "'><img title='" . _('View Details') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/student_view_details.php&gibbonPersonID=" . $students[$i][4] . "'><img title='" . __($guid, 'View Details') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 					print "</td>" ;
 					print "</tr>" ;
 		   		}
@@ -134,11 +134,11 @@ else {
 	else {
 	    //Proceed!
 	    print "<div class='trail'>" ;
-	    	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('View Student Profiles') . "</div>" ;
+	    	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'View Student Profiles') . "</div>" ;
 	    print "</div>" ;
 
 	    print "<h2>" ;
-	    	print _("Filter") ;
+	    	print __($guid, "Filter") ;
 	    print "</h2>" ;
 
 	    $gibbonPersonID=NULL;
@@ -164,13 +164,13 @@ else {
 				<tr><td style="width: 30%"></td><td></td></tr>
 				<tr>
 					<td>
-						<b><?php print _('Search For') ?></b><br/>
+						<b><?php print __($guid, 'Search For') ?></b><br/>
 						<?php
 							if ($highestAction=="View Student Profile_full") {
-								print "<span style=\"font-size: 90%\"><i>" . _('Preferred, surname, username, email, phone number, vehicle registration') . "</i></span>" ;
+								print "<span style=\"font-size: 90%\"><i>" . __($guid, 'Preferred, surname, username, email, phone number, vehicle registration') . "</i></span>" ;
 							}
 							else {
-								print "<span style=\"font-size: 90%\"><i>" . _('Preferred, surname, username.') . "</i></span>" ;
+								print "<span style=\"font-size: 90%\"><i>" . __($guid, 'Preferred, surname, username.') . "</i></span>" ;
 							}	
 						?>
 					</td>
@@ -180,14 +180,14 @@ else {
 				</tr>
 				<tr>
 					<td>
-						<b><?php print _('Sort By') ?></b><br/>
+						<b><?php print __($guid, 'Sort By') ?></b><br/>
 					</td>
 					<td class="right">
 						<select name="sort" style="width: 300px">
-							<option value="surname, preferredName" <?php if($sort == 'surname, preferredName'){echo("selected");}?>><?php print _('Surname') ; ?></option>
-							<option value="preferredName" <?php if($sort == 'preferredName'){echo("selected");}?>><?php print _('Given Name') ; ?></option>
-							<option value="rollGroup" <?php if($sort == "rollGroup"){echo("selected");}?>><?php print _('Roll Group') ; ?></option>
-							<option value="yearGroup" <?php if($sort == 'yearGroup'){echo("selected");}?>><?php print _('Year Group') ; ?></option>
+							<option value="surname, preferredName" <?php if($sort == 'surname, preferredName'){echo("selected");}?>><?php print __($guid, 'Surname') ; ?></option>
+							<option value="preferredName" <?php if($sort == 'preferredName'){echo("selected");}?>><?php print __($guid, 'Given Name') ; ?></option>
+							<option value="rollGroup" <?php if($sort == "rollGroup"){echo("selected");}?>><?php print __($guid, 'Roll Group') ; ?></option>
+							<option value="yearGroup" <?php if($sort == 'yearGroup'){echo("selected");}?>><?php print __($guid, 'Year Group') ; ?></option>
 						</select>
 					</td>
 				</tr>
@@ -195,8 +195,8 @@ else {
 				<?php if ($highestAction=="View Student Profile_full") { ?>
 					<tr>
 						<td>
-							<b><?php print _('All Students') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print _('Include all students, regardless of status and current enrolment. Some data may not display.') ?></i></span>
+							<b><?php print __($guid, 'All Students') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Include all students, regardless of status and current enrolment. Some data may not display.') ?></i></span>
 						</td>
 						<td class="right">
 							<?php
@@ -214,16 +214,16 @@ else {
 								<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/student_view.php">
 								<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 								<?php
-									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/student_view.php'>" . _('Clear Search') . "</a>" ;
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/student_view.php'>" . __($guid, 'Clear Search') . "</a>" ;
 								?>
-								<input type="submit" value="<?php print _("Submit") ; ?>">
+								<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 							</td>
 						</tr>
 					</table>
 				</form>
 
 				<h2>
-					<?php print _("Choose A Student"); ?>
+					<?php print __($guid, "Choose A Student"); ?>
 				</h2>
 
 				<?php
@@ -271,7 +271,7 @@ else {
 
 				if ($result->rowcount()<1) {
 					print "<div class='error'>" ;
-						print _("There are no records to display.") ;
+						print __($guid, "There are no records to display.") ;
 					print "</div>" ;
 				}
 				else {
@@ -282,16 +282,16 @@ else {
 					print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th>" ;
-								print _("Name") ;
+								print __($guid, "Name") ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("Year Group") ;
+								print __($guid, "Year Group") ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("Roll Group") ;
+								print __($guid, "Roll Group") ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("Actions") ;
+								print __($guid, "Actions") ;
 							print "</th>" ;
 						print "</tr>" ;
 
@@ -323,14 +323,14 @@ else {
 								print "</td>" ;
 								print "<td>" ;
 									if ($row["yearGroup"]!="") {
-										print _($row["yearGroup"]) ;
+										print __($guid, $row["yearGroup"]) ;
 									}
 								print "</td>" ;
 								print "<td>" ;
 									print $row["rollGroup"] ;
 								print "</td>" ;
 								print "<td>" ;
-									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/student_view_details.php&gibbonPersonID=" . $row["gibbonPersonID"] . "&search=$search&allStudents=$allStudents&sort=$sort'><img title='" . _('View Details') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/student_view_details.php&gibbonPersonID=" . $row["gibbonPersonID"] . "&search=$search&allStudents=$allStudents&sort=$sort'><img title='" . __($guid, 'View Details') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 								print "</td>" ;
 							print "</tr>" ;
 						}

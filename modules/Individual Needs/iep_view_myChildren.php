@@ -22,17 +22,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/Individual Needs/iep_view_myChildren.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	$entryCount=0; 
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('View Individual Education Plans') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'View Individual Education Plans') . "</div>" ;
 	print "</div>" ;
 
 	print "<p>" ;
-		print _("This section allows you to view individual education plans, where they exist, for children within your family.") . "<br/>" ;
+		print __($guid, "This section allows you to view individual education plans, where they exist, for children within your family.") . "<br/>" ;
 	print "</p>" ;
 	
 	//Test data access field for permission
@@ -48,7 +48,7 @@ else {
 
 	if ($result->rowCount()<1) {
 		print "<div class='error'>" ;
-		print _("Access denied.") ;
+		print __($guid, "Access denied.") ;
 		print "</div>" ;
 	}
 	else {
@@ -81,7 +81,7 @@ else {
 		
 		if ($count==0) {
 			print "<div class='error'>" ;
-			print _("Access denied.") ;
+			print __($guid, "Access denied.") ;
 			print "</div>" ;
 		}
 		else if ($count==1) {
@@ -98,7 +98,7 @@ else {
 					<tr><td style="width: 30%"></td><td></td></tr>
 					<tr>
 						<td> 
-							<b><?php print _('Search For') ?></b><br/>
+							<b><?php print __($guid, 'Search For') ?></b><br/>
 							<span style="font-size: 90%"><i>Preferred, surname, username.</i></span>
 						</td>
 						<td class="right">
@@ -113,9 +113,9 @@ else {
 							<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/iep_view_myChildren.php">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 							<?php
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/iep_view_myChildren.php'>" . _('Clear Search') . "</a>" ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/iep_view_myChildren.php'>" . __($guid, 'Clear Search') . "</a>" ;
 							?>
-							<input type="submit" value="<?php print _("Submit") ; ?>">
+							<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
@@ -141,7 +141,7 @@ else {
 			}
 			if ($resultChild->rowCount()<1) {
 				print "<div class='error'>" ;
-				print _("The selected record does not exist, or you do not have access to it.") ;
+				print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 				print "</div>" ;
 			}
 			else {
@@ -159,16 +159,16 @@ else {
 
 				if ($result->rowCount()!=1) {
 					print "<h3>" ;
-					print _("View") ;
+					print __($guid, "View") ;
 					print "</h3>" ;
 	
 					print "<div class='error'>" ;
-					print _("There are no records to display.") ;
+					print __($guid, "There are no records to display.") ;
 					print "</div>" ;
 				}
 				else {
 					print "<h3>" ;
-					print _("View") ;
+					print __($guid, "View") ;
 					print "</h3>" ;
 
 					$row=$result->fetch() ;
@@ -176,7 +176,7 @@ else {
 					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 						<tr>
 							<td colspan=2 style='padding-top: 25px'> 
-								<span style='font-weight: bold; font-size: 135%'><?php print _('Targets') ?></span><br/>
+								<span style='font-weight: bold; font-size: 135%'><?php print __($guid, 'Targets') ?></span><br/>
 								<?php
 								print "<p>" . $row["targets"] . "</p>" ;
 								?>
@@ -184,7 +184,7 @@ else {
 						</tr>
 						<tr>
 							<td colspan=2> 
-								<span style='font-weight: bold; font-size: 135%'><?php print _('Teaching Strategies') ?></span><br/>
+								<span style='font-weight: bold; font-size: 135%'><?php print __($guid, 'Teaching Strategies') ?></span><br/>
 								<?php
 								print "<p>" . $row["strategies"] . "</p>" ;
 								?>
@@ -192,7 +192,7 @@ else {
 						</tr>
 						<tr>
 							<td colspan=2 style='padding-top: 25px'> 
-								<span style='font-weight: bold; font-size: 135%'><?php print _('Notes & Review') ?></span><br/>
+								<span style='font-weight: bold; font-size: 135%'><?php print __($guid, 'Notes & Review') ?></span><br/>
 								<?php
 								print "<p>" . $row["notes"] . "</p>" ;
 								?>

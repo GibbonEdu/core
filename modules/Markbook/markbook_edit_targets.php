@@ -25,14 +25,14 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit_targets.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print _("The highest grouped action cannot be determined.") ;
+		print __($guid, "The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
@@ -40,7 +40,7 @@ else {
 		$gibbonCourseClassID=$_GET["gibbonCourseClassID"] ;
 		if ($gibbonCourseClassID=="") {
 			print "<div class='error'>" ;
-				print _("You have not specified one or more required parameters.") ;
+				print __($guid, "You have not specified one or more required parameters.") ;
 			print "</div>" ;
 		}
 		else {
@@ -62,7 +62,7 @@ else {
 		
 			if ($result->rowCount()!=1) {
 				print "<div class='error'>" ;
-					print _("The selected record does not exist, or you do not have access to it.") ;
+					print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 				print "</div>" ;
 			}
 			else {
@@ -70,7 +70,7 @@ else {
 				$row=$result->fetch() ;
 				
 				print "<div class='trail'>" ;
-				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/markbook_view.php&gibbonCourseClassID=" . $_GET["gibbonCourseClassID"] . "'>" . _('View') . " " . $row["course"] . "." . $row["class"] . " " . _('Markbook') . "</a> > </div><div class='trailEnd'>" . _('Set Personalised Attainment Targets') . "</div>" ;
+				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/markbook_view.php&gibbonCourseClassID=" . $_GET["gibbonCourseClassID"] . "'>" . __($guid, 'View') . " " . $row["course"] . "." . $row["class"] . " " . __($guid, 'Markbook') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Set Personalised Attainment Targets') . "</div>" ;
 				print "</div>" ;
 			
 				if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -78,19 +78,19 @@ else {
 				$class="error" ;
 				if (!($updateReturn=="")) {
 					if ($updateReturn=="fail0") {
-						$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+						$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 					}
 					else if ($updateReturn=="fail1") {
-						$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+						$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 					}
 					else if ($updateReturn=="fail2") {
-						$updateReturnMessage=_("Your request failed due to a database error.") ;	
+						$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 					}
 					else if ($updateReturn=="fail3") {
-						$updateReturnMessage=_("Some updates failed due to a database error.") ;	
+						$updateReturnMessage=__($guid, "Some updates failed due to a database error.") ;	
 					}
 					else if ($updateReturn=="success0") {
-						$updateReturnMessage=_("Your request was completed successfully.") ;	
+						$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
 						$class="success" ;
 					}
 					print "<div class='$class'>" ;
@@ -103,10 +103,10 @@ else {
 					print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th>" ;
-								print _("Student") ;
+								print __($guid, "Student") ;
 							print "</th>" ;
 							print "<th style='width:302px'>" ;
-								print _("Attainment Target") ;
+								print __($guid, "Attainment Target") ;
 							print "</th>" ;
 						print "</tr>" ;
 					
@@ -125,7 +125,7 @@ else {
 						if ($resultStudents->rowCount()<1) {
 							print "<tr>" ;
 								print "<td colspan=2>" ;
-									print "<i>" . _('There are no records to display.') . "</i>" ;
+									print "<i>" . __($guid, 'There are no records to display.') . "</i>" ;
 								print "</td>" ;
 							print "</tr>" ;
 						}
@@ -182,7 +182,7 @@ else {
 														$selected="selected" ;
 													}
 												}
-												print "<option $selected value='" . $rowSelect["gibbonScaleGradeID"] . "'>" . htmlPrep(_($rowSelect["value"])) . "</option>" ;
+												print "<option $selected value='" . $rowSelect["gibbonScaleGradeID"] . "'>" . htmlPrep(__($guid, $rowSelect["value"])) . "</option>" ;
 											}			
 										print "</select>" ;
 									print "</td>" ;
@@ -192,7 +192,7 @@ else {
 						<tr>
 							<td colspan=2 class="right">
 								<input name="count" id="count" value="<?php print $count ?>" type="hidden">
-								<input type="submit" value="<?php print _("Submit") ; ?>">
+								<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 							</td>
 						</tr>
 						<?php

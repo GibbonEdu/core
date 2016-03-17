@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/Library/library_lending_item_renew.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -31,7 +31,7 @@ else {
 	$gibbonLibraryItemID=$_GET["gibbonLibraryItemID"] ;
 	if ($gibbonLibraryItemEventID=="" OR $gibbonLibraryItemID=="") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -47,7 +47,7 @@ else {
 		
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print _("The specified record cannot be found.") ;
+				print __($guid, "The specified record cannot be found.") ;
 			print "</div>" ;
 		}
 		else {
@@ -55,7 +55,7 @@ else {
 			$row=$result->fetch() ;
 			
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/library_lending.php'>" . _('Lending & Activity Log') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/library_lending_item.php&gibbonLibraryItemID=$gibbonLibraryItemID'>" . _('View Item') . "</a> > </div><div class='trailEnd'>" . _('Renew Item') . "</div>" ;
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/library_lending.php'>" . __($guid, 'Lending & Activity Log') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/library_lending_item.php&gibbonLibraryItemID=$gibbonLibraryItemID'>" . __($guid, 'View Item') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Renew Item') . "</div>" ;
 			print "</div>" ;
 			
 			if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -63,22 +63,22 @@ else {
 			$class="error" ;
 			if (!($updateReturn=="")) {
 				if ($updateReturn=="fail0") {
-					$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+					$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 				}
 				else if ($updateReturn=="fail1") {
-					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($updateReturn=="fail2") {
-					$updateReturnMessage=_("Your request failed due to a database error.") ;	
+					$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 				}
 				else if ($updateReturn=="fail3") {
-					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($updateReturn=="fail4") {
-					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;
+					$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;
 				}
 				else if ($updateReturn=="success0") {
-					$updateReturnMessage=_("Your request was successful.") ;	
+					$updateReturnMessage=__($guid, "Your request was successful.") ;	
 					$class="success" ;
 				}
 				print "<div class='$class'>" ;
@@ -88,7 +88,7 @@ else {
 			
 			if ($_GET["name"]!="" OR $_GET["gibbonLibraryTypeID"]!="" OR $_GET["gibbonSpaceID"]!="" OR $_GET["status"]!="") {
 				print "<div class='linkTop'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Library/library_lending_item.php&name=" . $_GET["name"] . "&gibbonLibraryItemEventID=$gibbonLibraryItemEventID&gibbonLibraryItemID=$gibbonLibraryItemID&gibbonLibraryTypeID=" . $_GET["gibbonLibraryTypeID"] . "&gibbonSpaceID=" . $_GET["gibbonSpaceID"] . "&status=" . $_GET["status"] . "'>" . _('Back') . "</a>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Library/library_lending_item.php&name=" . $_GET["name"] . "&gibbonLibraryItemEventID=$gibbonLibraryItemEventID&gibbonLibraryItemID=$gibbonLibraryItemID&gibbonLibraryTypeID=" . $_GET["gibbonLibraryTypeID"] . "&gibbonSpaceID=" . $_GET["gibbonSpaceID"] . "&status=" . $_GET["status"] . "'>" . __($guid, 'Back') . "</a>" ;
 				print "</div>" ;
 			}
 			
@@ -97,8 +97,8 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td style='width: 275px'> 
-							<b><?php print _('ID') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+							<b><?php print __($guid, 'ID') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
 							<input readonly name="id" id="id" value="<?php print $row["id"] ?>" type="text" style="width: 300px">
@@ -106,8 +106,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Name') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+							<b><?php print __($guid, 'Name') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
 							<input readonly name="name" id="name" value="<?php print $row["name"] ?>" type="text" style="width: 300px">
@@ -115,8 +115,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Status') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+							<b><?php print __($guid, 'Status') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
 							<input readonly name="statusCurrent" id="statusCurrent" value="<?php print $row["status"] ?>" type="text" style="width: 300px">
@@ -124,8 +124,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Responsible User') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+							<b><?php print __($guid, 'Responsible User') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
 							<?php
@@ -152,8 +152,8 @@ else {
 						}
 						?>
 						<td> 
-							<b><?php print _('Expected Return Date') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print sprintf(_('Default renew length is today plus %1$s day(s)'), $loanLength) ?>.</i></span>
+							<b><?php print __($guid, 'Expected Return Date') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print sprintf(__($guid, 'Default renew length is today plus %1$s day(s)'), $loanLength) ?>.</i></span>
 						</td>
 						<td class="right">
 							<input name="returnExpected" id="returnExpected" maxlength=10 value="<?php print date($_SESSION[$guid]["i18n"]["dateFormatPHP"], time()+($loanLength*60*60*24)) ?>" type="text" style="width: 300px">
@@ -171,7 +171,7 @@ else {
 					
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
 							<input name="gibbonLibraryItemID" id="gibbonLibraryItemID" value="<?php print $gibbonLibraryItemID ?>" type="hidden">

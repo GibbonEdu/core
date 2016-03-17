@@ -26,12 +26,12 @@ $makeUnitsPublic=getSettingByScope($connection2, "Planner", "makeUnitsPublic" ) 
 if ($makeUnitsPublic!="Y") {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("Your request failed because you do not have access to this action.") ;
+		print __($guid, "Your request failed because you do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/units_public.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . _("Learn With Us") . "</a> > </div><div class='trailEnd'>" . _('View Unit') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/units_public.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . __($guid, "Learn With Us") . "</a> > </div><div class='trailEnd'>" . __($guid, 'View Unit') . "</div>" ;
 	print "</div>" ;
 	
 	//Check if courseschool year specified
@@ -39,7 +39,7 @@ else {
 	$gibbonUnitID=$_GET["gibbonUnitID"]; 
 	if ($gibbonUnitID=="" OR $gibbonSchoolYearID=="") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -55,7 +55,7 @@ else {
 		
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print _("The specified record cannot be found.") ;
+				print __($guid, "The specified record cannot be found.") ;
 			print "</div>" ;
 		}
 		else {
@@ -94,20 +94,20 @@ else {
 				
 				//Tab links
 				print "<ul>" ;
-					print "<li><a href='#tabs1'>" . _('Overview') . "</a></li>" ;
-					print "<li><a href='#tabs2'>" . _('Content') . "</a></li>" ;
-					print "<li><a href='#tabs3'>" . _('Resources') . "</a></li>" ;
-					print "<li><a href='#tabs4'>" . _('Outcomes') . "</a></li>" ;
+					print "<li><a href='#tabs1'>" . __($guid, 'Overview') . "</a></li>" ;
+					print "<li><a href='#tabs2'>" . __($guid, 'Content') . "</a></li>" ;
+					print "<li><a href='#tabs3'>" . __($guid, 'Resources') . "</a></li>" ;
+					print "<li><a href='#tabs4'>" . __($guid, 'Outcomes') . "</a></li>" ;
 				print "</ul>" ;
 			
 				//Tabs
 				print "<div id='tabs1'>" ;
 					print "<h4>" ;
-						print _("Description") ;
+						print __($guid, "Description") ;
 					print "</h4>" ;
 					if ($row["description"]=="") {
 						print "<div class='error'>" ;
-							print _("There are no records to display.") ;
+							print __($guid, "There are no records to display.") ;
 						print "</div>" ;
 					}
 					else {
@@ -118,10 +118,10 @@ else {
 					
 					if ($row["license"]!="") {
 						print "<h4>" ;
-							print _("License") ;
+							print __($guid, "License") ;
 						print "</h4>" ;
 						print "<p>" ;
-							print _("This work is shared under the following license:") . " " . $row["license"] ;
+							print __($guid, "This work is shared under the following license:") . " " . $row["license"] ;
 						print "</p>" ;
 					}
 				print "</div>" ;
@@ -269,7 +269,7 @@ else {
 					//No resources!
 					if ($noReosurces) {
 						print "<div class='error'>" ;
-							print _("There are no records to display.") ;
+							print __($guid, "There are no records to display.") ;
 						print "</div>" ;
 					}
 				print "</div>" ;
@@ -288,19 +288,19 @@ else {
 						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr class='head'>" ;
 								print "<th>" ;
-									print _("Scope") ;
+									print __($guid, "Scope") ;
 								print "</th>" ;
 								print "<th>" ;
-									print _("Category") ;
+									print __($guid, "Category") ;
 								print "</th>" ;
 								print "<th>" ;
-									print _("Name") ;
+									print __($guid, "Name") ;
 								print "</th>" ;
 								print "<th>" ;
-									print _("Year Groups") ;
+									print __($guid, "Year Groups") ;
 								print "</th>" ;
 								print "<th>" ;
-									print _("Actions") ;
+									print __($guid, "Actions") ;
 								print "</th>" ;
 							print "</tr>" ;
 				
@@ -340,7 +340,7 @@ else {
 											print "});" ;
 										print "</script>" ;
 										if ($rowBlocks["content"]!="") {
-											print "<a title='" . _('View Description') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-left: 0px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='" . _('Show Comment') . "' onclick='return false;' /></a>" ;
+											print "<a title='" . __($guid, 'View Description') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-left: 0px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='" . __($guid, 'Show Comment') . "' onclick='return false;' /></a>" ;
 										}
 									print "</td>" ;
 								print "</tr>" ;

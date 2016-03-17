@@ -34,7 +34,7 @@ catch(PDOException $e) {
 if (isActionAccessible($guid, $connection2, "/modules/Library/report_catalogSummary.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -45,7 +45,7 @@ else {
 	$status=trim($_GET["status"]) ;
 	
 	print "<h1>" ;
-	print _("Catalog Summary") ;
+	print __($guid, "Catalog Summary") ;
 	print "</h1>" ;
 	
 	try {
@@ -84,32 +84,32 @@ else {
 	print "<table cellspacing='0' style='width: 100%'>" ;
 		print "<tr class='head'>" ;
 			print "<th>" ;
-				print _("School ID") ;
+				print __($guid, "School ID") ;
 			print "</th>" ;
 			print "<th>" ;
-				print _("Name") . "<br/>" ;
-				print "<span style='font-size: 85%; font-style: italic'>" . _('Producer') . "</span>" ;
+				print __($guid, "Name") . "<br/>" ;
+				print "<span style='font-size: 85%; font-style: italic'>" . __($guid, 'Producer') . "</span>" ;
 			print "</th>" ;
 			print "<th>" ;
-				print _("Type") ;
+				print __($guid, "Type") ;
 			print "</th>" ;
 			print "<th>" ;
-				print _("Location") ;
+				print __($guid, "Location") ;
 			print "</th>" ;
 			print "<th>" ;
-				print _("Ownership") . "<br/>" ;
-				print "<span style='font-size: 85%; font-style: italic'>" . _('User/Owner') . "</span>" ;
+				print __($guid, "Ownership") . "<br/>" ;
+				print "<span style='font-size: 85%; font-style: italic'>" . __($guid, 'User/Owner') . "</span>" ;
 			print "</th>" ;
 			print "<th>" ;
-				print _("Status") . "<br/>" ;
-				print "<span style='font-size: 85%; font-style: italic'>" . _('Borrowable') . "</span>" ;
+				print __($guid, "Status") . "<br/>" ;
+				print "<span style='font-size: 85%; font-style: italic'>" . __($guid, 'Borrowable') . "</span>" ;
 			print "</th>" ;
 			print "<th>" ;
-				print _("Purchase Date") . "<br/>" ;
-				print "<span style='font-size: 85%; font-style: italic'>" . _('Vendor') . "</span>" ;
+				print __($guid, "Purchase Date") . "<br/>" ;
+				print "<span style='font-size: 85%; font-style: italic'>" . __($guid, 'Vendor') . "</span>" ;
 			print "</th>" ;
 			print "<th>" ;
-				print _("Details") . "<br/>" ;
+				print __($guid, "Details") . "<br/>" ;
 			print "</th>" ;
 		print "</tr>" ;
 		
@@ -147,7 +147,7 @@ else {
 					}
 					if ($resultType->rowCount()==1) {
 						$rowType=$resultType->fetch() ;
-						print _($rowType["name"]) ;
+						print __($guid, $rowType["name"]) ;
 					}
 				print "</td>" ;
 				print "<td>" ;
@@ -199,7 +199,7 @@ else {
 				print "</td>" ;
 				print "<td>" ;
 					if ($row["purchaseDate"]=="") {
-						print "<i>" . _('Unknown') . "</i>" ;
+						print "<i>" . __($guid, 'Unknown') . "</i>" ;
 					}
 					else {
 						print dateConvertBack($guid, $row["purchaseDate"]) . " ; " ;
@@ -214,7 +214,7 @@ else {
 					foreach ($typeFields as $typeField) {
 						if (isset($fields[$typeField["name"]])) {
 							if ($fields[$typeField["name"]]!="") {
-								print "<b>" . _($typeField["name"]) . ": </b>" ;
+								print "<b>" . __($guid, $typeField["name"]) . ": </b>" ;
 								if (isset($fields[$typeField["name"]])) {
 									print $fields[$typeField["name"]] . " ; " ;
 								}
@@ -227,7 +227,7 @@ else {
 		if ($count==0) {
 			print "<tr class=$rowNum>" ;
 				print "<td colspan=2>" ;
-					print _("There are no records to display.") ;
+					print __($guid, "There are no records to display.") ;
 				print "</td>" ;
 			print "</tr>" ;
 		}

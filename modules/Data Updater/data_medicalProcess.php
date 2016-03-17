@@ -284,7 +284,7 @@ else {
 				
 				//Attempt to notify to DBA
 				if ($_SESSION[$guid]["organisationDBA"]!="") {
-					$notificationText=sprintf(_('A medical data update request has been submitted.')) ;
+					$notificationText=sprintf(__($guid, 'A medical data update request has been submitted.')) ;
 					setNotification($connection2, $guid, $_SESSION[$guid]["organisationDBA"], $notificationText, "Data Updater", "/index.php?q=/modules/User Admin/data_medical.php") ;
 				}
 				

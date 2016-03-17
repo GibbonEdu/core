@@ -131,7 +131,7 @@ else {
 						catch(PDOException $e) { }
 						if ($result->rowCount()==1) {
 							$row=$result->fetch() ;
-							$notificationText=sprintf(_('Someone has added a note ("%1$s") about your tutee, %2$s.'), $title, $name) ;
+							$notificationText=sprintf(__($guid, 'Someone has added a note ("%1$s") about your tutee, %2$s.'), $title, $name) ;
 							if ($row["tutor1gibbonPersonID"]!="") {
 								if ($row["tutor1gibbonPersonID"]!=$_SESSION[$guid]["gibbonPersonID"]) {
 									setNotification($connection2, $guid, $row["tutor1gibbonPersonID"], $notificationText, "Students", "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=$subpage&category=" . $_GET["category"]) ;

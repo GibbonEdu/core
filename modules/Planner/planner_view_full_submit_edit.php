@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Planner/planner_view_full_submit_edit.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -33,7 +33,7 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print _("The highest grouped action cannot be determined.") ;
+		print __($guid, "The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
@@ -66,7 +66,7 @@ else {
 		
 		if ($gibbonPlannerEntryID=="") {
 			print "<div class='warning'>" ;
-				print _("The selected record does not exist, or you do not have access to it.") ;
+				print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 			print "</div>" ;
 		}
 		//Check existence of and access to this class.
@@ -89,7 +89,7 @@ else {
 			
 			if ($result->rowCount()!=1) {
 				print "<div class='warning'>" ;
-					print _("The selected record does not exist, or you do not have access to it.") ;
+					print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 				print "</div>" ;
 			}
 			else {
@@ -117,7 +117,7 @@ else {
 												
 												
 				print "<div class='trail'>" ;
-				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner.php$params'>" . _('Planner') . " $extra</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner_view_full.php$params&gibbonPlannerEntryID=$gibbonPlannerEntryID'>" . _('View Lesson Plan') . "</a> > </div><div class='trailEnd'>" . _('Add Comment') . "</div>" ;
+				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner.php$params'>" . __($guid, 'Planner') . " $extra</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner_view_full.php$params&gibbonPlannerEntryID=$gibbonPlannerEntryID'>" . __($guid, 'View Lesson Plan') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Add Comment') . "</div>" ;
 				print "</div>" ;
 				
 				if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -125,25 +125,25 @@ else {
 				$class="error" ;
 				if (!($updateReturn=="")) {
 					if ($updateReturn=="fail0") {
-						$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+						$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 					}
 					else if ($updateReturn=="fail1") {
-						$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+						$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 					}
 					else if ($updateReturn=="fail2") {
-						$updateReturnMessage=_("Your request failed due to a database error.") ;	
+						$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 					}
 					else if ($updateReturn=="fail3") {
-						$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+						$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 					}
 					else if ($updateReturn=="fail4") {
-						$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+						$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 					}
 					if ($updateReturn=="fail5") {
-						$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+						$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 					}
 					else if ($updateReturn=="success0") {
-						$updateReturnMessage=_("Your request was completed successfully.") ;	
+						$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
 						$class="success" ;
 					}
 					print "<div class='$class'>" ;
@@ -153,7 +153,7 @@ else {
 		
 				if ($_GET["submission"]!="true" AND $_GET["submission"]!="false") {
 					print "<div class='warning'>" ;
-						print _("You have not specified one or more required parameters.") ;
+						print __($guid, "You have not specified one or more required parameters.") ;
 					print "</div>" ;
 				}
 				else {
@@ -168,13 +168,13 @@ else {
 					
 					if (($submission==true AND $gibbonPlannerEntryHomeworkID=="") OR ($submission==false AND $gibbonPersonID=="")) {
 						print "<div class='warning'>" ;
-							print _("You have not specified one or more required parameters.") ;
+							print __($guid, "You have not specified one or more required parameters.") ;
 						print "</div>" ;
 					}
 					else {
 						if ($submission==true) {
 							print "<h2>" ;
-							print _("Update Submission") ;
+							print __($guid, "Update Submission") ;
 							print "</h2>" ;
 							
 							try {
@@ -189,7 +189,7 @@ else {
 							
 							if ($resultSubmission->rowCount()!=1) {
 								print "<div class='warning'>" ;
-									print _("The selected record does not exist, or you do not have access to it.") ;
+									print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 								print "</div>" ;
 							}
 							else {
@@ -199,8 +199,8 @@ else {
 									<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 										<tr>
 											<td style='width: 275px'> 
-												<b><?php print _('Student') ?> *</b><br/>
-												<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+												<b><?php print __($guid, 'Student') ?> *</b><br/>
+												<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
 											</td>
 											<td class="right">
 												<input readonly name="courseName" id="courseName" maxlength=20 value="<?php print formatName("", htmlPrep($rowSubmission["preferredName"]), htmlPrep($rowSubmission["surname"]), "Student") ?>" type="text" style="width: 300px">
@@ -208,12 +208,12 @@ else {
 										</tr>
 										<tr>
 											<td> 
-												<b><?php print _('Status') ?> *</b><br/>
+												<b><?php print __($guid, 'Status') ?> *</b><br/>
 											</td>
 											<td class="right">
 												<select style="width: 302px" name="status">
-													<option <?php if ($rowSubmission["status"]=="On Time") { print "selected ";} ?>value="On Time"><?php print _('On Time') ?></option>
-													<option <?php if ($rowSubmission["status"]=="Late") { print "selected ";} ?>value="Late"><?php print _('Late') ?></option>
+													<option <?php if ($rowSubmission["status"]=="On Time") { print "selected ";} ?>value="On Time"><?php print __($guid, 'On Time') ?></option>
+													<option <?php if ($rowSubmission["status"]=="Late") { print "selected ";} ?>value="Late"><?php print __($guid, 'Late') ?></option>
 												</select>
 											</td>
 										</tr>
@@ -228,7 +228,7 @@ else {
 												print "<input type='hidden' name='address' value='" . $_SESSION[$guid]["address"] . "'>" ;
 												?>
 												
-												<input type="submit" value="<?php print _("Submit") ; ?>">
+												<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 											</td>
 										</tr>
 									</table>
@@ -238,7 +238,7 @@ else {
 						}
 						else {
 							print "<h2>" ;
-							print _("Add Submission") ;
+							print __($guid, "Add Submission") ;
 							print "</h2>" ;
 							
 							try {
@@ -264,8 +264,8 @@ else {
 									<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 										<tr>
 											<td style='width: 275px'> 
-												<b><?php print _('Student') ?> *</b><br/>
-												<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+												<b><?php print __($guid, 'Student') ?> *</b><br/>
+												<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
 											</td>
 											<td class="right">
 												<input readonly name="courseName" id="courseName" maxlength=20 value="<?php print formatName("", htmlPrep($rowSubmission["preferredName"]), htmlPrep($rowSubmission["surname"]), "Student") ?>" type="text" style="width: 300px">
@@ -273,27 +273,27 @@ else {
 										</tr>
 										<tr>
 											<td> 
-												<b><?php print _('Type') ?> *</b><br/>
+												<b><?php print __($guid, 'Type') ?> *</b><br/>
 											</td>
 											<td class="right">
 												<?php
 												if ($row["homeworkSubmissionType"]=="Link") {
 													?>
-													<input checked type="radio" id="type" name="type" class="type" value="Link" /> <?php print _('Link') ?>
-													<input type="radio" id="type" name="type" class="type" value="None" /> <?php print _('None') ?>
+													<input checked type="radio" id="type" name="type" class="type" value="Link" /> <?php print __($guid, 'Link') ?>
+													<input type="radio" id="type" name="type" class="type" value="None" /> <?php print __($guid, 'None') ?>
 													<?php
 												}
 												else if ($row["homeworkSubmissionType"]=="File") {
 													?>
-													<input checked type="radio" id="type" name="type" class="type" value="File" /> <?php print _('File') ?>
-													<input type="radio" id="type" name="type" class="type" value="None" /> <?php print _('None') ?>
+													<input checked type="radio" id="type" name="type" class="type" value="File" /> <?php print __($guid, 'File') ?>
+													<input type="radio" id="type" name="type" class="type" value="None" /> <?php print __($guid, 'None') ?>
 													<?php
 												}
 												else {
 													?>
-													<input type="radio" id="type" name="type" class="type" value="Link" /> <?php print _('Link') ?>
-													<input type="radio" id="type" name="type" class="type" value="File" /> <?php print _('File') ?>
-													<input checked type="radio" id="type" name="type" class="type" value="None" /> <?php print _('None') ?>
+													<input type="radio" id="type" name="type" class="type" value="Link" /> <?php print __($guid, 'Link') ?>
+													<input type="radio" id="type" name="type" class="type" value="File" /> <?php print __($guid, 'File') ?>
+													<input checked type="radio" id="type" name="type" class="type" value="None" /> <?php print __($guid, 'None') ?>
 													<?php
 												}
 												?>
@@ -301,15 +301,15 @@ else {
 										</tr>
 										<tr>
 											<td> 
-												<b><?php print _('Version') ?> *</b><br/>
+												<b><?php print __($guid, 'Version') ?> *</b><br/>
 											</td>
 											<td class="right">
 												<?php
 												print "<select style='float: none; width: 302px' name='version'>" ;
 													if ($row["homeworkSubmissionDrafts"]>0 AND $status!="Late" AND $resultVersion->rowCount()<$row["homeworkSubmissionDrafts"]) {
-														print "<option value='Draft'>" . _('Draft') . "</option>" ;
+														print "<option value='Draft'>" . __($guid, 'Draft') . "</option>" ;
 													}
-													print "<option value='Final'>" . _('Final') . "</option>" ;
+													print "<option value='Final'>" . __($guid, 'Final') . "</option>" ;
 												print "</select>" ;
 												?>
 											</td>
@@ -354,7 +354,7 @@ else {
 									
 										<tr id="fileRow">
 											<td> 
-												<b><?php print _('Submit File') ?> *</b><br/>
+												<b><?php print __($guid, 'Submit File') ?> *</b><br/>
 											</td>
 											<td class="right">
 												<input type="file" name="file" id="file"><br/><br/>
@@ -383,7 +383,7 @@ else {
 										</tr>
 										<tr id="linkRow">
 											<td> 
-												<b><?php print _('Submit Link') ?> *</b><br/>
+												<b><?php print __($guid, 'Submit Link') ?> *</b><br/>
 											</td>
 											<td class="right">
 												<input name="link" id="link" maxlength=255 value="" type="text" style="width: 300px">
@@ -397,13 +397,13 @@ else {
 										</tr>
 										<tr>
 											<td> 
-												<b><?php print _('Status') ?> *</b><br/>
+												<b><?php print __($guid, 'Status') ?> *</b><br/>
 											</td>
 											<td class="right">
 												<select style="width: 302px" name="status">
-													<option value="On Time"><?php print _('On Time') ?></option>
-													<option value="Late"><?php print _('Late') ?></option>
-													<option value="Exemption"><?php print _('Exemption') ?></option>
+													<option value="On Time"><?php print __($guid, 'On Time') ?></option>
+													<option value="Late"><?php print __($guid, 'Late') ?></option>
+													<option value="Exemption"><?php print __($guid, 'Exemption') ?></option>
 												</select>
 											</td>
 										</tr>
@@ -448,7 +448,7 @@ else {
 												print "<input type='hidden' name='address' value='" . $_SESSION[$guid]["address"] . "'>" ;
 												?>
 											
-												<input type="submit" value="<?php print _("Submit") ; ?>">
+												<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 											</td>
 										</tr>
 									</table>

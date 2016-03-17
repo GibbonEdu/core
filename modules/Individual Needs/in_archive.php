@@ -25,12 +25,12 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Individual Needs/in_archive.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Archive Records') . "</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Archive Records') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -38,25 +38,25 @@ else {
 	$class="error" ;
 	if (!($updateReturn=="")) {
 		if ($updateReturn=="fail0") {
-			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($updateReturn=="fail1") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail2") {
-			$updateReturnMessage=_("Your request failed due to a database error.") ;	
+			$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 		}
 		else if ($updateReturn=="fail3") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail4") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail5") {
-			$updateReturnMessage=_("Your request was successful, but some data was not properly saved.") ;
+			$updateReturnMessage=__($guid, "Your request was successful, but some data was not properly saved.") ;
 		}
 		else if ($updateReturn=="success0") {
-			$updateReturnMessage=_("Your request was completed successfully.") ;	
+			$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -69,19 +69,19 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td> 
-					<b><?php print _('Delete Current Plans?') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _('Deletes Individual Education Plan fields only, not Individual Needs Status fields.') ?></i></span>
+					<b><?php print __($guid, 'Delete Current Plans?') ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print __($guid, 'Deletes Individual Education Plan fields only, not Individual Needs Status fields.') ?></i></span>
 				</td>
 				<td class="right">
 					<select name="deleteCurrentPlans" id="deleteCurrentPlans" style="width: 302px">
-						<option value="N"><?php print ynExpander('N') ?></option>
-						<option value="Y"><?php print ynExpander('Y') ?></option>
+						<option value="N"><?php print ynExpander($guid, 'N') ?></option>
+						<option value="Y"><?php print ynExpander($guid, 'Y') ?></option>
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Archive Title') ?> *</b><br/>
+					<b><?php print __($guid, 'Archive Title') ?> *</b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
@@ -94,7 +94,7 @@ else {
 			</tr>
 			<tr>
 				<td style='width: 275px; vertical-align: top'> 
-					<b><?php print _('Students') ?> *</b><br/>
+					<b><?php print __($guid, 'Students') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<?php
@@ -119,9 +119,9 @@ else {
 							print $e->getMessage();
 						print "</div>" ;
 					}
-					print _("All/None") . " <input type='checkbox' class='checkall'><br/>" ;
+					print __($guid, "All/None") . " <input type='checkbox' class='checkall'><br/>" ;
 					if ($resultSelect->rowCount()<1) {
-						print "<i>" . _('No year groups available.') . "</i>" ;
+						print "<i>" . __($guid, 'No year groups available.') . "</i>" ;
 					}
 					else {
 						while ($rowSelect=$resultSelect->fetch()) {
@@ -135,11 +135,11 @@ else {
 			
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+					<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 				</td>
 			</tr>
 		</table>

@@ -108,6 +108,12 @@ if (isset($_SESSION[$guid]["i18n"]["code"])) {
 	}
 }
 
+//Grab and store custom string replacement list
+if (isset($_SESSION[$guid]['stringReplacement'])==FALSE) {
+	setStringReplacementList($connection2, $guid) ;
+}					
+					
+
 //Try to autoset user's calendar feed if not set already
 if (isset($_SESSION[$guid]["calendarFeedPersonal"]) AND isset($_SESSION[$guid]['googleAPIAccessToken'])) {
 	if ($_SESSION[$guid]["calendarFeedPersonal"]=="" AND $_SESSION[$guid]['googleAPIAccessToken']!=NULL) {
@@ -155,7 +161,7 @@ if ($_SESSION[$guid]["address"]!="" AND $sidebar!=true) {
 
 //If still false, show warning, otherwise display page
 if ($_SESSION[$guid]["systemSettingsSet"]==FALSE) {
-	print _("System Settings are not set: the system cannot be displayed") ;
+	print __($guid, "System Settings are not set: the system cannot be displayed") ;
 }
 else {
 	?>
@@ -168,7 +174,7 @@ else {
 				if ($_SESSION[$guid]["address"]!="") {
 					if (strstr($_SESSION[$guid]["address"],"..")==FALSE) {
 						if (getModuleName($_SESSION[$guid]["address"])!="") {
-							print " - " . _(getModuleName($_SESSION[$guid]["address"])) ;
+							print " - " . __($guid, getModuleName($_SESSION[$guid]["address"])) ;
 						}
 					}
 				}
@@ -221,7 +227,7 @@ else {
 				<script type="text/javascript">
 					$(document).ready(function(){
 						$.sessionTimeout({
-							message: '<?php print _("Your session is about to expire: you will be logged out shortly.") ?>',
+							message: '<?php print __($guid, "Your session is about to expire: you will be logged out shortly.") ?>',
 							keepAliveUrl: 'keepAlive.php' ,
 							redirUrl: 'logout.php?timeout=true', 
 							logoutUrl: 'logout.php' , 
@@ -356,7 +362,7 @@ else {
 			if (isset($_SESSION[$guid]["username"])) {
 				if ($_SESSION[$guid]["gibbonSchoolYearID"]!=$_SESSION[$guid]["gibbonSchoolYearIDCurrent"]) {
 					print "<div style='margin: 10px auto; width:1101px;' class='warning'>" ;
-						print "<b><u>" . sprintf(_('Warning: you are logged into the system in school year %1$s, which is not the current year.'), $_SESSION[$guid]["gibbonSchoolYearName"]) . "</b></u>" . _('Your data may not look quite right (for example, students who have left the school will not appear in previous years), but you should be able to edit information from other years which is not available in the current year.') ;
+						print "<b><u>" . sprintf(__($guid, 'Warning: you are logged into the system in school year %1$s, which is not the current year.'), $_SESSION[$guid]["gibbonSchoolYearName"]) . "</b></u>" . __($guid, 'Your data may not look quite right (for example, students who have left the school will not appear in previous years), but you should be able to edit information from other years which is not available in the current year.') ;
 					print "</div>" ;
 				}
 			}
@@ -439,21 +445,21 @@ else {
 			
 												$currentCategory=$row["category"] ;
 												if (strpos($row["name"],"_")>0) {
-													$currentName=_(substr($row["name"],0,strpos($row["name"],"_"))) ;
+													$currentName=__($guid, substr($row["name"],0,strpos($row["name"],"_"))) ;
 												}
 												else {
-													$currentName=_($row["name"]) ;
+													$currentName=__($guid, $row["name"]) ;
 												}
 					
 												if ($currentName!=$lastName) {
 													if ($currentCategory!=$lastCategory) {
-														$menu.="<optgroup label='--" .  _($currentCategory) . "--'/>" ;
+														$menu.="<optgroup label='--" .  __($guid, $currentCategory) . "--'/>" ;
 													}
 													$selected="" ;
 													if ($_GET["q"]=="/modules/" . $row["moduleName"] . "/" . $row["entryURL"]) {
 														$selected="selected" ;
 													}
-													$menu.="<option value='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "' $selected>" . _($currentName) . "</option>" ;
+													$menu.="<option value='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "' $selected>" . __($guid, $currentName) . "</option>" ;
 													$links++ ;
 												}
 												$lastCategory=$currentCategory ;
@@ -473,7 +479,7 @@ else {
 														print $menu ;
 													print "</select>" ;
 													print "<div style='float: right; padding-top: 10px'>" ;
-														print _("Module Menu") ;
+														print __($guid, "Module Menu") ;
 													print "</div>" ;
 												print "</div>" ;
 											}
@@ -495,13 +501,13 @@ else {
 									if (isset($_GET["timeout"])) {
 										if ($_GET["timeout"]=="true") {
 											print "<div class='warning'>" ;
-												print _('Your session expired, so you were automatically logged out of the system.');
+												print __($guid, 'Your session expired, so you were automatically logged out of the system.');
 											print "</div>" ;
 										}
 									}
 											
 									print "<h2>" ;
-									print _("Welcome") ;
+									print __($guid, "Welcome") ;
 									print "</h2>" ;
 									print "<p>" ;
 									print $_SESSION[$guid]["indexText"] ;
@@ -511,10 +517,10 @@ else {
 									$enablePublicRegistration=getSettingByScope($connection2, "User Admin", "enablePublicRegistration") ;
 									if ($enablePublicRegistration=="Y") {
 										print "<h2 style='margin-top: 30px'>" ;
-											print _("Register") ;
+											print __($guid, "Register") ;
 										print "</h2>" ;
 										print "<p>" ;
-											print sprintf(_('%1$sRegister now%2$s to join our online learning community.'), "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/publicRegistration.php'>", "</a>") . " " . _("It's free!") ;
+											print sprintf(__($guid, '%1$sRegister now%2$s to join our online learning community.'), "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/publicRegistration.php'>", "</a>") . " " . __($guid, "It's free!") ;
 										print "</p>" ;
 									}
 								
@@ -522,10 +528,10 @@ else {
 									$publicApplications=getSettingByScope($connection2, "Application Form", "publicApplications" ) ; 
 									if ($publicApplications=="Y") {
 										print "<h2 style='margin-top: 30px'>" ;
-											print _("Applications") ;
+											print __($guid, "Applications") ;
 										print "</h2>" ;
 										print "<p>" ;
-											print sprintf(_('Parents of students interested in study at %1$s may use our %2$s online form%3$s to initiate the application process.'), $_SESSION[$guid]["organisationName"], "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/?q=/modules/Application Form/applicationForm.php'>", "</a>") ;
+											print sprintf(__($guid, 'Parents of students interested in study at %1$s may use our %2$s online form%3$s to initiate the application process.'), $_SESSION[$guid]["organisationName"], "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/?q=/modules/Application Form/applicationForm.php'>", "</a>") ;
 										print "</p>" ;
 									}
 									
@@ -533,10 +539,10 @@ else {
 									$makeDepartmentsPublic=getSettingByScope($connection2, "Departments", "makeDepartmentsPublic" ) ; 
 									if ($makeDepartmentsPublic=="Y") {
 										print "<h2 style='margin-top: 30px'>" ;
-											print _("Departments") ;
+											print __($guid, "Departments") ;
 										print "</h2>" ;
 										print "<p>" ;
-											print sprintf(_('Please feel free to %1$sbrowse our departmental information%2$s, to learn more about %3$s.'), "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/?q=/modules/Departments/departments.php'>", "</a>", $_SESSION[$guid]["organisationName"]) ;
+											print sprintf(__($guid, 'Please feel free to %1$sbrowse our departmental information%2$s, to learn more about %3$s.'), "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/?q=/modules/Departments/departments.php'>", "</a>", $_SESSION[$guid]["organisationName"]) ;
 										print "</p>" ;
 									}
 									
@@ -544,10 +550,10 @@ else {
 									$makeUnitsPublic=getSettingByScope($connection2, "Planner", "makeUnitsPublic" ) ; 
 									if ($makeUnitsPublic=="Y") {
 										print "<h2 style='margin-top: 30px'>" ;
-											print _("Learn With Us") ;
+											print __($guid, "Learn With Us") ;
 										print "</h2>" ;
 										print "<p>" ;
-											print sprintf(_('We are sharing some of our units of study with members of the public, so you can learn with us. Feel free to %1$sbrowse our public units%2$s.'), "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/?q=/modules/Planner/units_public.php&sidebar=false'>", "</a>", $_SESSION[$guid]["organisationName"]) ;
+											print sprintf(__($guid, 'We are sharing some of our units of study with members of the public, so you can learn with us. Feel free to %1$sbrowse our public units%2$s.'), "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/?q=/modules/Planner/units_public.php&sidebar=false'>", "</a>", $_SESSION[$guid]["organisationName"]) ;
 										print "</p>" ;
 									}
 									
@@ -590,7 +596,7 @@ else {
 									$category=getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2) ;
 									if ($category==FALSE) {
 										print "<div class='error'>" ;
-										print _("Your current role type cannot be determined.") ;
+										print __($guid, "Your current role type cannot be determined.") ;
 										print "</div>" ;
 									}
 									//Display Parental Dashboard
@@ -638,7 +644,7 @@ else {
 										
 										if ($count>0) {
 											print "<h2>" ;
-												print _("Parental Dashboard") ;
+												print __($guid, "Parental Dashboard") ;
 											print "</h2>" ;
 											include "./modules/Timetable/moduleFunctions.php" ;
 											
@@ -651,12 +657,12 @@ else {
 													print getUserPhoto($guid, $students[$i][5], 75) ;
 													print "<div style='height: 5px'></div>" ;
 													print "<span style='font-size: 70%'>" ;
-														print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $students[$i][4] . "'>" . _('Student Profile') . "</a><br/>" ;
+														print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $students[$i][4] . "'>" . __($guid, 'Student Profile') . "</a><br/>" ;
 														if (isActionAccessible($guid, $connection2, "/modules/Roll Groups/rollGroups_details.php")) {
-															print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Roll Groups/rollGroups_details.php&gibbonRollGroupID=" . $students[$i][7] . "'>" . _('Roll Group') . " (" . $students[$i][3] . ")</a><br/>" ;
+															print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Roll Groups/rollGroups_details.php&gibbonRollGroupID=" . $students[$i][7] . "'>" . __($guid, 'Roll Group') . " (" . $students[$i][3] . ")</a><br/>" ;
 														}
 														if ($students[$i][8]!="") {
-															print "<a target='_blank' href='" . $students[$i][8] . "'>" . $students[$i][3] . " " . _('Website') . "</a>" ;
+															print "<a target='_blank' href='" . $students[$i][8] . "'>" . $students[$i][3] . " " . __($guid, 'Website') . "</a>" ;
 														}
 														
 													print "</span>" ;
@@ -665,7 +671,7 @@ else {
 													$dashboardContents=getParentalDashboardContents($connection2, $guid, $students[$i][4]) ;
 													if ($dashboardContents==FALSE) {
 														print "<div class='error'>" ;
-															print _("There are no records to display.") ;
+															print __($guid, "There are no records to display.") ;
 														print "</div>" ;
 													}
 													else {
@@ -697,7 +703,7 @@ else {
 											}
 											if ($result->rowCount()>0) {
 												print "<h2>" ;
-													print _("Today's Lessons") ;
+													print __($guid, "Today's Lessons") ;
 												print "</h2>" ;
 												
 												if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -705,16 +711,16 @@ else {
 												$class="error" ;
 												if (!($updateReturn=="")) {
 													if ($updateReturn=="fail0") {
-														$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+														$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 													}
 													else if ($updateReturn=="fail1") {
-														$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+														$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 													}
 													else if ($updateReturn=="fail2") {
-														$updateReturnMessage=_("Your request failed due to a database error.") ;	
+														$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 													}
 													else if ($updateReturn=="success0") {
-														$updateReturnMessage=_("Your request was completed successfully.") ;	
+														$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
 														$class="success" ;
 													}
 													print "<div class='$class'>" ;
@@ -723,29 +729,29 @@ else {
 												} 
 												
 												print "<div class='linkTop'>" ;
-													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner.php'>" . _('View Planner') . "</a>" ;
+													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner.php'>" . __($guid, 'View Planner') . "</a>" ;
 												print "</div>" ;
 												
 												print "<table cellspacing='0' style='width: 100%'>" ;
 													print "<tr class='head'>" ;
 														print "<th>" ;
-															print _("Class") . "<br/>" ;
+															print __($guid, "Class") . "<br/>" ;
 														print "</th>" ;
 														print "<th>" ;
-															print _("Lesson") . "</br>" ;
-															print "<span style='font-size: 85%; font-style: italic'>" . _('Unit') . "</span>" ;
+															print __($guid, "Lesson") . "</br>" ;
+															print "<span style='font-size: 85%; font-style: italic'>" . __($guid, 'Unit') . "</span>" ;
 														print "</th>" ;
 														print "<th>" ;
-															print _("Homework") ;
+															print __($guid, "Homework") ;
 														print "</th>" ;
 														print "<th>" ;
-															print _("Summary") ;
+															print __($guid, "Summary") ;
 														print "</th>" ;
 														print "<th>" ;
-															print _("Like") ;
+															print __($guid, "Like") ;
 														print "</th>" ;
 														print "<th>" ;
-															print _("Action") ;
+															print __($guid, "Action") ;
 														print "</th>" ;
 													print "</tr>" ;
 													
@@ -779,27 +785,27 @@ else {
 																		if (isset($unit[0])) {
 																			print $unit[0] ;
 																			if ($unit[1]!="") {
-																				print "<br/><i>" . $unit[1] . " " . _('Unit') . "</i>" ;
+																				print "<br/><i>" . $unit[1] . " " . __($guid, 'Unit') . "</i>" ;
 																			}
 																		}
 																	print "</span>" ;
 																print "</td>" ;
 																print "<td>" ;
 																	if ($row["homework"]=="N" AND $row["myHomeworkDueDateTime"]=="") {
-																		print _("No") ;
+																		print __($guid, "No") ;
 																	}
 																	else {
 																		if ($row["homework"]=="Y") {
-																			print _("Yes") . ": " . _("Teacher Recorded") . "<br/>" ;
+																			print __($guid, "Yes") . ": " . __($guid, "Teacher Recorded") . "<br/>" ;
 																			if ($row["homeworkSubmission"]=="Y") {
-																				print "<span style='font-size: 85%; font-style: italic'>+" . _("Submission") . "</span><br/>" ;
+																				print "<span style='font-size: 85%; font-style: italic'>+" . __($guid, "Submission") . "</span><br/>" ;
 																				if ($row["homeworkCrowdAssess"]=="Y") {
-																					print "<span style='font-size: 85%; font-style: italic'>+" . _("Crowd Assessment") . "</span><br/>" ;
+																					print "<span style='font-size: 85%; font-style: italic'>+" . __($guid, "Crowd Assessment") . "</span><br/>" ;
 																				}
 																			}
 																		}
 																		if ($row["myHomeworkDueDateTime"]!="") {
-																			print _("Yes") . ": " . _("Student Recorded") . "</br>" ;
+																			print __($guid, "Yes") . ": " . __($guid, "Student Recorded") . "</br>" ;
 																		}
 																	}
 																print "</td>" ;
@@ -821,7 +827,7 @@ else {
 																	}
 																print "</td>" ;
 																print "<td>" ;
-																	print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "'><img title='" . _('View') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a>" ;
+																	print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "'><img title='" . __($guid, 'View') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a>" ;
 																print "</td>" ;
 															print "</tr>" ;
 														}
@@ -839,9 +845,9 @@ else {
 												});
 											</script>
 											<?php
-											print "<h2>" . _("My Timetable") . "</h2>" ;
+											print "<h2>" . __($guid, "My Timetable") . "</h2>" ;
 											print "<div id='tt' name='tt' style='width: 100%; min-height: 40px; text-align: center'>" ;
-												print "<img style='margin: 10px 0 5px 0' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/loading.gif' alt='" . _('Loading') . "' onclick='return false;' /><br/><p style='text-align: center'>" . _('Loading') . "</p>" ;
+												print "<img style='margin: 10px 0 5px 0' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/loading.gif' alt='" . __($guid, 'Loading') . "' onclick='return false;' /><br/><p style='text-align: center'>" . __($guid, 'Loading') . "</p>" ;
 											print "</div>" ;
 										}
 										
@@ -854,7 +860,7 @@ else {
 														error: function( xhr, status, index, anchor ) {
 															$( anchor.hash ).html(
 																"<?php
-																print _("Couldn't load this tab.") ; 
+																print __($guid, "Couldn't load this tab.") ; 
 																?>"
 															);
 														}
@@ -874,9 +880,9 @@ else {
 											print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 										}
 										
-										$h2=_("My Roll Groups") ;
+										$h2=__($guid, "My Roll Groups") ;
 										if ($result->rowCount()==1) {
-											$h2=_("My Roll Group") ;
+											$h2=__($guid, "My Roll Group") ;
 										}
 										if ($result->rowCount()>0) {
 											print "<h2>" ;
@@ -886,8 +892,8 @@ else {
 											?>
 											<div id="tabs" style='margin: 10px 0 20px 0'>
 												<ul>
-													<li><a href="#tabs-1"><?php print _('Students') ?></a></li>
-													<li><a href="#tabs-2"><?php print _('Behaviour') ?></a></li>
+													<li><a href="#tabs-1"><?php print __($guid, 'Students') ?></a></li>
+													<li><a href="#tabs-2"><?php print __($guid, 'Behaviour') ?></a></li>
 												</ul>
 												<div id="tabs-1">
 													<?php
@@ -901,8 +907,8 @@ else {
 															print "</h4>" ;
 														}
 														print "<div class='linkTop' style='margin-top: 0px'>" ;
-														print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "'>" . _('Take Attendance') . "<img style='margin-left: 5px' title='" . _('Take Attendance') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.png'/></a> | " ;
-														print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/indexExport.php?gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "'>" . _('Export to Excel') . "<img style='margin-left: 5px' title='" . _('Export to Excel') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/download.png'/></a>" ;
+														print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "'>" . __($guid, 'Take Attendance') . "<img style='margin-left: 5px' title='" . __($guid, 'Take Attendance') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.png'/></a> | " ;
+														print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/indexExport.php?gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "'>" . __($guid, 'Export to Excel') . "<img style='margin-left: 5px' title='" . __($guid, 'Export to Excel') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/download.png'/></a>" ;
 														print "</div>" ;
 														
 														printRollGroupTable($guid, $row["gibbonRollGroupID"],5,$connection2) ;
@@ -928,39 +934,39 @@ else {
 													
 													if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_manage_add.php")) {
 														print "<div class='linkTop'>" ;
-															print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage_add.php&gibbonPersonID=&gibbonRollGroupID=&gibbonYearGroupID=&type='>" . _('Add') . "<img style='margin: 0 0 -4px 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+															print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage_add.php&gibbonPersonID=&gibbonRollGroupID=&gibbonYearGroupID=&type='>" . __($guid, 'Add') . "<img style='margin: 0 0 -4px 5px' title='" . __($guid, 'Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
 															$policyLink=getSettingByScope($connection2, "Behaviour", "policyLink") ;
 															if ($policyLink!="") {
-																print " | <a target='_blank' href='$policyLink'>" . _('View Behaviour Policy') . "</a>" ;
+																print " | <a target='_blank' href='$policyLink'>" . __($guid, 'View Behaviour Policy') . "</a>" ;
 															}
 														print "</div>" ;
 													}
 													
 													if ($result->rowCount()<1) {
 														print "<div class='error'>" ;
-														print _("There are no records to display.") ;
+														print __($guid, "There are no records to display.") ;
 														print "</div>" ;
 													}
 													else {
 														print "<table cellspacing='0' style='width: 100%'>" ;
 															print "<tr class='head'>" ;
 																print "<th>" ;
-																	print _("Student & Date") ;
+																	print __($guid, "Student & Date") ;
 																print "</th>" ;
 																print "<th>" ;
-																	print _("Type") ;
+																	print __($guid, "Type") ;
 																print "</th>" ;
 																print "<th>" ;
-																	print _("Descriptor") ;
+																	print __($guid, "Descriptor") ;
 																print "</th>" ;
 																print "<th>" ;
-																	print _("Level") ;
+																	print __($guid, "Level") ;
 																print "</th>" ;
 																print "<th>" ;
-																	print _("Teacher") ;
+																	print __($guid, "Teacher") ;
 																print "</th>" ;
 																print "<th>" ;
-																	print _("Action") ;
+																	print __($guid, "Action") ;
 																print "</th>" ;
 															print "</tr>" ;
 															
@@ -980,8 +986,8 @@ else {
 																	print "<td>" ;
 																		print "<b>" . formatName("", $row["preferredNameStudent"], $row["surnameStudent"], "Student", false ) . "</b><br/>" ;
 																		if (substr($row["timestamp"],0,10)>$row["date"]) {
-																			print _("Date Updated") . ": " . dateConvertBack($guid, substr($row["timestamp"],0,10)) . "<br/>" ;
-																			print _("Incident Date") . ": " . dateConvertBack($guid, $row["date"]) . "<br/>" ;
+																			print __($guid, "Date Updated") . ": " . dateConvertBack($guid, substr($row["timestamp"],0,10)) . "<br/>" ;
+																			print __($guid, "Incident Date") . ": " . dateConvertBack($guid, $row["date"]) . "<br/>" ;
 																		}
 																		else {
 																			print dateConvertBack($guid, $row["date"]) . "<br/>" ;
@@ -989,10 +995,10 @@ else {
 																	print "</td>" ;
 																	print "<td style='text-align: center'>" ;
 																		if ($row["type"]=="Negative") {
-																			print "<img title='" . _('Negative') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/> " ;
+																			print "<img title='" . __($guid, 'Negative') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/> " ;
 																		}
 																		else if ($row["type"]=="Positive") {
-																			print "<img title='" . _('Position') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
+																			print "<img title='" . __($guid, 'Position') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
 																		}
 																	print "</td>" ;
 																	print "<td>" ;
@@ -1015,7 +1021,7 @@ else {
 																			print "});" ;
 																		print "</script>" ;
 																		if ($row["comment"]!="") {
-																			print "<a title='" . _('View Description') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='" . _('Show Comment') . "' onclick='return false;' /></a>" ;
+																			print "<a title='" . __($guid, 'View Description') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='" . __($guid, 'Show Comment') . "' onclick='return false;' /></a>" ;
 																		}
 																	print "</td>" ;
 																print "</tr>" ;
@@ -1048,7 +1054,7 @@ else {
 							else {
 								if (strstr($_SESSION[$guid]["address"],"..")==TRUE OR strstr($_SESSION[$guid]["address"],"installer")==TRUE OR strstr($_SESSION[$guid]["address"],"uploads")==TRUE) {
 									print "<div class='error'>" ;
-									print _("Illegal address detected: access denied.") ;
+									print __($guid, "Illegal address detected: access denied.") ;
 									print "</div>" ;
 								}
 								else {
@@ -1075,18 +1081,18 @@ else {
 						?>
 					</div>
 					<div id="footer">
-						<?php print _("Powered by") ?> <a target='_blank' href="https://gibbonedu.org">Gibbon</a> v<?php print $version ?><?php if ($_SESSION[$guid]["cuttingEdgeCode"]=="Y") { print "dev" ; }?> | &#169; <a target='_blank' href="http://rossparker.org">Ross Parker</a> 2010-<?php print date("Y") ?><br/>
+						<?php print __($guid, "Powered by") ?> <a target='_blank' href="https://gibbonedu.org">Gibbon</a> v<?php print $version ?><?php if ($_SESSION[$guid]["cuttingEdgeCode"]=="Y") { print "dev" ; }?> | &#169; <a target='_blank' href="http://rossparker.org">Ross Parker</a> 2010-<?php print date("Y") ?><br/>
 						<span style='font-size: 90%; '>
-							<?php print _("Created under the") ?> <a target='_blank' href="https://www.gnu.org/licenses/gpl.html">GNU GPL</a> at <a target='_blank' href='http://www.ichk.edu.hk'>ICHK</a> | <a target='_blank' href='https://gibbonedu.org/contribute/'><?php print _("Credits") ; ?></a><br/>
+							<?php print __($guid, "Created under the") ?> <a target='_blank' href="https://www.gnu.org/licenses/gpl.html">GNU GPL</a> at <a target='_blank' href='http://www.ichk.edu.hk'>ICHK</a> | <a target='_blank' href='https://gibbonedu.org/contribute/'><?php print __($guid, "Credits") ; ?></a><br/>
 							<?php
 								$seperator=FALSE ;
 								$thirdLine=FALSE ;
 								if ($_SESSION[$guid]["i18n"]["maintainerName"]!="" AND $_SESSION[$guid]["i18n"]["maintainerName"]!="Gibbon") {
 									if ($_SESSION[$guid]["i18n"]["maintainerWebsite"]!="") {
-										print _("Translation led by") . " <a target='_blank' href='" . $_SESSION[$guid]["i18n"]["maintainerWebsite"] . "'>" . $_SESSION[$guid]["i18n"]["maintainerName"] . "</a>" ;
+										print __($guid, "Translation led by") . " <a target='_blank' href='" . $_SESSION[$guid]["i18n"]["maintainerWebsite"] . "'>" . $_SESSION[$guid]["i18n"]["maintainerName"] . "</a>" ;
 									}
 									else {
-										print _("Translation led by") . " " . $_SESSION[$guid]["i18n"]["maintainerName"] ;
+										print __($guid, "Translation led by") . " " . $_SESSION[$guid]["i18n"]["maintainerName"] ;
 									}
 									$seperator=TRUE ;
 									$thirdLine=TRUE ;
@@ -1096,10 +1102,10 @@ else {
 										print " | " ;
 									}
 									if ($_SESSION[$guid]["gibbonThemeURL"]!="") {
-										print _("Theme by") . " <a target='_blank' href='" . $_SESSION[$guid]["gibbonThemeURL"] . "'>" . $_SESSION[$guid]["gibbonThemeAuthor"] . "</a>" ;
+										print __($guid, "Theme by") . " <a target='_blank' href='" . $_SESSION[$guid]["gibbonThemeURL"] . "'>" . $_SESSION[$guid]["gibbonThemeAuthor"] . "</a>" ;
 									}
 									else {
-										print _("Theme by") . " " . $_SESSION[$guid]["gibbonThemeAuthor"] ;
+										print __($guid, "Theme by") . " " . $_SESSION[$guid]["gibbonThemeAuthor"] ;
 									}
 									$thirdLine=TRUE ;
 								}

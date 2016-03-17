@@ -53,7 +53,7 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
 //Check for CLI, so this cannot be run through browser
 if (php_sapi_name()!="cli") { 
-	print _("This script cannot be run from a browser, only via CLI.") . "\n\n" ;
+	print __($guid, "This script cannot be run from a browser, only via CLI.") . "\n\n" ;
 }
 else {
 	$count=0 ;	
@@ -146,7 +146,7 @@ else {
 	}
 	
 	//Notify admin
-	$notificationText=sprintf(_('A User Admin CLI script has run, updating %1$s users.'), $count) ;
+	$notificationText=sprintf(__($guid, 'A User Admin CLI script has run, updating %1$s users.'), $count) ;
 	setNotification($connection2, $guid, $_SESSION[$guid]["organisationAdministrator"], $notificationText, "User Admin", "/index.php?q=/modules/User Admin/user_manage.php") ;
 }
 

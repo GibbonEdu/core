@@ -25,20 +25,20 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Planner/curriculumMapping_outcomesByCourse.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Outcomes By Course') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Outcomes By Course') . "</div>" ;
 	print "</div>" ;
 	print "<p>" ;
-	print _("This view gives an overview of which whole school and learning area outcomes are covered by classes in a given course, allowing for curriculum mapping by outcome and course.") ;
+	print __($guid, "This view gives an overview of which whole school and learning area outcomes are covered by classes in a given course, allowing for curriculum mapping by outcome and course.") ;
 	print "</p>" ;
 	
 	print "<h2>" ;
-	print _("Choose Course") ;
+	print __($guid, "Choose Course") ;
 	print "</h2>" ;
 	
 	$gibbonCourseID=NULL ;
@@ -51,7 +51,7 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td style='width: 275px'> 
-					<b><?php print _('Course') ?> *</b><br/>
+					<b><?php print __($guid, 'Course') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select style="width: 302px" name="gibbonCourseID">
@@ -88,7 +88,7 @@ else {
 			<tr>
 				<td colspan=2 class="right">
 					<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/curriculumMapping_outcomesByCourse.php">
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
@@ -97,7 +97,7 @@ else {
 	
 	if ($gibbonCourseID!="") {
 		print "<h2>" ;
-		print _("Outcomes") ;
+		print __($guid, "Outcomes") ;
 		print "</h2>" ;
 		
 		//Check course exists
@@ -113,7 +113,7 @@ else {
 		
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print _("The selected record does not exist, or you do not have access to it.") ;
+				print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 			print "</div>" ;
 		}
 		else {
@@ -131,7 +131,7 @@ else {
 			
 			if ($resultClasses->rowCount()<1) {
 				print "<div class='error'>" ;
-					print _("The selected record does not exist, or you do not have access to it.") ;
+					print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 				print "</div>" ;
 			}
 			else {
@@ -157,14 +157,14 @@ else {
 				print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 					print "<tr class='head'>" ;
 						print "<th>" ;
-							print _("Category") ;
+							print __($guid, "Category") ;
 						print "</th>" ;
 						print "<th>" ;
-							print _("Outcome") ;
+							print __($guid, "Outcome") ;
 						print "</th>" ;
 						foreach ($classes AS $class) {
 							print "<th colspan=2>" ;
-								print $row["nameShort"] . "." . _($class["nameShort"]) ;
+								print $row["nameShort"] . "." . __($guid, $class["nameShort"]) ;
 							print "</th>" ;
 						}
 					print "</tr>" ;
@@ -177,10 +177,10 @@ else {
 						print "</th>" ;
 						foreach ($classes AS $class) {
 							print "<th>" ;
-								print "<span style='font-style: italic; font-size: 85%'>" . _('Unit') . "</span>" ;
+								print "<span style='font-style: italic; font-size: 85%'>" . __($guid, 'Unit') . "</span>" ;
 							print "</th>" ;
 							print "<th>" ;
-								print "<span style='font-style: italic; font-size: 85%'>" . _('Lesson') . "</span>" ;
+								print "<span style='font-style: italic; font-size: 85%'>" . __($guid, 'Lesson') . "</span>" ;
 							print "</th>" ;
 						}
 					print "</tr>" ;
@@ -195,7 +195,7 @@ else {
 					//SCHOOL OUTCOMES
 					print "<tr class='break'>" ;
 						print "<td colspan=" . (($classCount*2)+2) . ">" ; 
-							print "<h4>" . _('School Outcomes') . "</h4>" ;
+							print "<h4>" . __($guid, 'School Outcomes') . "</h4>" ;
 						print "</td>" ;
 					print "</tr>" ;
 					try {
@@ -215,7 +215,7 @@ else {
 					if ($resultOutcomes->rowCount()<1) {
 						print "<tr>" ;
 							print "<td colspan=" . (($classCount*2)+2) . ">" ; 
-								print "<div class='error'>" . _("There are no records to display.") . "</div>" ; 
+								print "<div class='error'>" . __($guid, "There are no records to display.") . "</div>" ; 
 							print "</td>" ;
 						print "</tr>" ;
 					}
@@ -279,7 +279,7 @@ else {
 					//LEARNING AREA OUTCOMES
 					print "<tr class='break'>" ;
 						print "<td colspan=" . (($classCount*2)+2) . ">" ; 
-							print "<h4>" . sprintf(_('%1$s Outcomes'), $row["department"]) . "</h4>" ;
+							print "<h4>" . sprintf(__($guid, '%1$s Outcomes'), $row["department"]) . "</h4>" ;
 						print "</td>" ;
 					print "</tr>" ;
 					try {
@@ -299,7 +299,7 @@ else {
 					if ($resultOutcomes->rowCount()<1) {
 						print "<tr>" ;
 							print "<td colspan=" . (($classCount*2)+2) . ">" ; 
-								print "<div class='error'>" . _("There are no records to display.") . "</div>" ; 
+								print "<div class='error'>" . __($guid, "There are no records to display.") . "</div>" ; 
 							print "</td>" ;
 						print "</tr>" ;
 					}

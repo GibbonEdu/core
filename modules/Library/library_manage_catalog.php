@@ -22,13 +22,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/Library/library_manage_catalog.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Manage Catalog') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Manage Catalog') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -36,7 +36,7 @@ else {
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="success0") {
-			$deleteReturnMessage=_("Your request was completed successfully.") ;		
+			$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;		
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -45,7 +45,7 @@ else {
 	} 
 	
 	print "<h3>" ;
-		print _("Search & Filter") ;
+		print __($guid, "Search & Filter") ;
 	print "</h3>" ;
 	
 	//Get current filter values
@@ -111,7 +111,7 @@ else {
 			?>
 			<tr>
 				<td> 
-					<b><?php print _('ID/Name/Producer') ?></b><br/>
+					<b><?php print __($guid, 'ID/Name/Producer') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
@@ -122,7 +122,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Type') ?></b><br/>
+					<b><?php print __($guid, 'Type') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
@@ -143,7 +143,7 @@ else {
 							if ($rowType["gibbonLibraryTypeID"]==$gibbonLibraryTypeID) {
 								$selected="selected" ;
 							}
-							print "<option $selected value='" . $rowType["gibbonLibraryTypeID"] . "'>" . _($rowType["name"]) . "</option>" ;
+							print "<option $selected value='" . $rowType["gibbonLibraryTypeID"] . "'>" . __($guid, $rowType["name"]) . "</option>" ;
 						}
 					print "</select>" ;
 					?>
@@ -151,7 +151,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Location') ?> *</b><br/>
+					<b><?php print __($guid, 'Location') ?> *</b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
@@ -180,27 +180,27 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Status') ?></b><br/>
+					<b><?php print __($guid, 'Status') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
 					<?php
 					print "<select name='status' id='status' style='width:302px'>" ;
 						print "<option value=''></option>" ;
-						print "<option " ; if ($status=="Available") { print "selected " ; } print "value='Available'>" . _('Available') . "</option>" ;
-						print "<option " ; if ($status=="Decommissioned") { print "selected " ; } print "value='Decommissioned'>" . _('Decommissioned') . "</option>" ;
-						print "<option " ; if ($status=="In Use") { print "selected " ; } print "value='In Use'>" . _('In Use') . "</option>" ;
-						print "<option " ; if ($status=="Lost") { print "selected " ; } print "value='Lost'>" . _('Lost') . "</option>" ;
-						print "<option " ; if ($status=="On Loan") { print "selected " ; } print "value='On Loan'>" . _('On Loan') . "</option>" ;
-						print "<option " ; if ($status=="Repair") { print "selected " ; } print "value='Repair'>" . _('Repair') . "</option>" ;
-						print "<option " ; if ($status=="Reserved") { print "selected " ; } print "value='Reserved'>" . _('Reserved') . "</option>" ;
+						print "<option " ; if ($status=="Available") { print "selected " ; } print "value='Available'>" . __($guid, 'Available') . "</option>" ;
+						print "<option " ; if ($status=="Decommissioned") { print "selected " ; } print "value='Decommissioned'>" . __($guid, 'Decommissioned') . "</option>" ;
+						print "<option " ; if ($status=="In Use") { print "selected " ; } print "value='In Use'>" . __($guid, 'In Use') . "</option>" ;
+						print "<option " ; if ($status=="Lost") { print "selected " ; } print "value='Lost'>" . __($guid, 'Lost') . "</option>" ;
+						print "<option " ; if ($status=="On Loan") { print "selected " ; } print "value='On Loan'>" . __($guid, 'On Loan') . "</option>" ;
+						print "<option " ; if ($status=="Repair") { print "selected " ; } print "value='Repair'>" . __($guid, 'Repair') . "</option>" ;
+						print "<option " ; if ($status=="Reserved") { print "selected " ; } print "value='Reserved'>" . __($guid, 'Reserved') . "</option>" ;
 					print "</select>" ;
 					?>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Owner/User') ?></b><br/>
+					<b><?php print __($guid, 'Owner/User') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
@@ -227,8 +227,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Type-Specific Fields') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('For example, a computer\'s MAC address or a book\'s ISBN.') ?></i></span>
+					<b><?php print __($guid, 'Type-Specific Fields') ?></b><br/>
+					<span style="font-size: 90%"><i><?php print __($guid, 'For example, a computer\'s MAC address or a book\'s ISBN.') ?></i></span>
 				</td>
 				<td class="right">
 					<?php
@@ -240,8 +240,8 @@ else {
 			print "<tr>" ;
 				print "<td class='right' colspan=2>" ;
 					print "<input type='hidden' name='q' value='" . $_GET["q"] . "'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Library/library_manage_catalog.php'>" . _('Clear Filters') . "</a> " ;
-					print "<input type='submit' value='" . _('Go') . "'>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Library/library_manage_catalog.php'>" . __($guid, 'Clear Filters') . "</a> " ;
+					print "<input type='submit' value='" . __($guid, 'Go') . "'>" ;
 				print "</td>" ;
 			print "</tr>" ;
 		print "</table>" ;
@@ -300,23 +300,23 @@ else {
 	}
 		
 	print "<div class='linkTop'>" ;
-	print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/library_manage_catalog_add.php&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status&gibbonPersonIDOwnership=$gibbonPersonIDOwnership&typeSpecificFields=" . urlencode($typeSpecificFields) . "'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+	print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/library_manage_catalog_add.php&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status&gibbonPersonIDOwnership=$gibbonPersonIDOwnership&typeSpecificFields=" . urlencode($typeSpecificFields) . "'>" .  __($guid, 'Add') . "<img style='margin-left: 5px' title='" . __($guid, 'Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
 	print "</div>" ;
 	
 	if ($result->rowCount()<1) {
 		print "<h3>" ;
-		print _("View") ;
+		print __($guid, "View") ;
 		print "</h3>" ;
 	
 	
 		print "<div class='error'>" ;
-		print _("There are no records to display.") ;
+		print __($guid, "There are no records to display.") ;
 		print "</div>" ;
 	}
 	else {
 		print "<h3>" ;
-			print _("View") ;
-			print "<span style='font-weight: normal; font-style: italic; font-size: 55%'> " . sprintf(_('%1$s record(s) in current view'), $result->rowCount()) . "</span>" ;
+			print __($guid, "View") ;
+			print "<span style='font-weight: normal; font-style: italic; font-size: 55%'> " . sprintf(__($guid, '%1$s record(s) in current view'), $result->rowCount()) . "</span>" ;
 		print "</h3>" ;
 		
 		
@@ -327,26 +327,26 @@ else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th style='width: 80px'>" ;
-					print _("School ID") . "<br/>" ;
-					print "<span style='font-size: 85%; font-style: italic'>" . _('Type') . "</span>" ;
+					print __($guid, "School ID") . "<br/>" ;
+					print "<span style='font-size: 85%; font-style: italic'>" . __($guid, 'Type') . "</span>" ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Name") . "<br/>" ;
-					print "<span style='font-size: 85%; font-style: italic'>" . _('Producer') . "</span>" ;
+					print __($guid, "Name") . "<br/>" ;
+					print "<span style='font-size: 85%; font-style: italic'>" . __($guid, 'Producer') . "</span>" ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Location") ;
+					print __($guid, "Location") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Ownership") . "<br/>" ;
-					print "<span style='font-size: 85%; font-style: italic'>" . _('User/Owner') . "</span>" ;
+					print __($guid, "Ownership") . "<br/>" ;
+					print "<span style='font-size: 85%; font-style: italic'>" . __($guid, 'User/Owner') . "</span>" ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Status") . "<br/>" ;
-					print "<span style='font-size: 85%; font-style: italic'>" . _('Borrowable') . "</span>" ;
+					print __($guid, "Status") . "<br/>" ;
+					print "<span style='font-size: 85%; font-style: italic'>" . __($guid, 'Borrowable') . "</span>" ;
 				print "</th>" ;
 				print "<th style='width: 125px'>" ;
-					print _("Actions") ;
+					print __($guid, "Actions") ;
 				print "</th>" ;
 			print "</tr>" ;
 			
@@ -382,7 +382,7 @@ else {
 						}
 						if ($resultType->rowCount()==1) {
 							$rowType=$resultType->fetch() ;
-							print "<span style='font-size: 85%; font-style: italic'>" . _($rowType["name"]) . "</span>" ;
+							print "<span style='font-size: 85%; font-style: italic'>" . __($guid, $rowType["name"]) . "</span>" ;
 						}
 					print "</td>" ;
 					print "<td>" ;
@@ -437,10 +437,10 @@ else {
 						print "<span style='font-size: 85%; font-style: italic'>" . $row["borrowable"] . "</span>" ;
 					print "</td>" ;
 					print "<td>" ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/library_manage_catalog_edit.php&gibbonLibraryItemID=" . $row["gibbonLibraryItemID"] . "&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status&gibbonPersonIDOwnership=$gibbonPersonIDOwnership&typeSpecificFields=" . urlencode($typeSpecificFields) . "'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/library_lending_item.php&gibbonLibraryItemID=" . $row["gibbonLibraryItemID"] . "&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status&gibbonPersonIDOwnership=$gibbonPersonIDOwnership&typeSpecificFields=" . urlencode($typeSpecificFields) . "'><img title='" . _('Lending') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.png'/></a> " ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/library_manage_catalog_delete.php&gibbonLibraryItemID=" . $row["gibbonLibraryItemID"] . "&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status&gibbonPersonIDOwnership=$gibbonPersonIDOwnership&typeSpecificFields=" . urlencode($typeSpecificFields) . "'><img style='margin-right: 2px' title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/library_manage_catalog_duplicate.php&gibbonLibraryItemID=" . $row["gibbonLibraryItemID"] . "&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status&gibbonPersonIDOwnership=$gibbonPersonIDOwnership&typeSpecificFields=" . urlencode($typeSpecificFields) . "'><img title='" . _('Duplicate') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/copy.png'/></a>" ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/library_manage_catalog_edit.php&gibbonLibraryItemID=" . $row["gibbonLibraryItemID"] . "&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status&gibbonPersonIDOwnership=$gibbonPersonIDOwnership&typeSpecificFields=" . urlencode($typeSpecificFields) . "'><img title='" . __($guid, 'Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/library_lending_item.php&gibbonLibraryItemID=" . $row["gibbonLibraryItemID"] . "&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status&gibbonPersonIDOwnership=$gibbonPersonIDOwnership&typeSpecificFields=" . urlencode($typeSpecificFields) . "'><img title='" . __($guid, 'Lending') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.png'/></a> " ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/library_manage_catalog_delete.php&gibbonLibraryItemID=" . $row["gibbonLibraryItemID"] . "&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status&gibbonPersonIDOwnership=$gibbonPersonIDOwnership&typeSpecificFields=" . urlencode($typeSpecificFields) . "'><img style='margin-right: 2px' title='" . __($guid, 'Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/library_manage_catalog_duplicate.php&gibbonLibraryItemID=" . $row["gibbonLibraryItemID"] . "&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status&gibbonPersonIDOwnership=$gibbonPersonIDOwnership&typeSpecificFields=" . urlencode($typeSpecificFields) . "'><img title='" . __($guid, 'Duplicate') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/copy.png'/></a>" ;
 					print "</td>" ;
 				print "</tr>" ;
 				

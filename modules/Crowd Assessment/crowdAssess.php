@@ -25,12 +25,12 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Crowd Assessment/crowdAssess.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('View All Assessments') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'View All Assessments') . "</div>" ;
 	print "</div>" ;
 	
 	$sql=getLessons($guid, $connection2) ;
@@ -44,29 +44,29 @@ else {
 	}
 	
 	print "<p>" ;
-		print _("The list below shows all lessons in which there is work that you can crowd assess.") ;
+		print __($guid, "The list below shows all lessons in which there is work that you can crowd assess.") ;
 	print "</p>" ;
 	
 	if ($result->rowCount()<1) {
 		print "<div class='error'>" ;
-		print _("There are currently no lessons to for you to crowd asess.") ;
+		print __($guid, "There are currently no lessons to for you to crowd asess.") ;
 		print "</div>" ;
 	}
 	else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print _("Class") ;
+					print __($guid, "Class") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Lesson") . "</br>" ;
-					print "<span style='font-size: 85%; font-style: italic'>" . _('Unit') . "</span>" ;
+					print __($guid, "Lesson") . "</br>" ;
+					print "<span style='font-size: 85%; font-style: italic'>" . __($guid, 'Unit') . "</span>" ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Date") ;
+					print __($guid, "Date") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Actions") ;
+					print __($guid, "Actions") ;
 				print "</th>" ;
 			print "</tr>" ;
 			
@@ -108,7 +108,7 @@ else {
 						print dateConvertBack($guid, $row["date"]) ;
 					print "</td>" ;
 					print "<td>" ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/crowdAssess_view.php&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "'><img title='" . _('View Details') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/crowdAssess_view.php&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "'><img title='" . __($guid, 'View Details') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 					print "</td>" ;
 				print "</tr>" ;
 			}

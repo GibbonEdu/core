@@ -41,7 +41,7 @@ if ($_SESSION[$guid]["systemSettingsSet"]==FALSE) {
 }
 //If still false, show warning, otherwise display page
 if ($_SESSION[$guid]["systemSettingsSet"]==FALSE) {
-	print _("System Settings are not set: the system cannot be displayed") ;
+	print __($guid, "System Settings are not set: the system cannot be displayed") ;
 }
 else {
 	?>
@@ -141,13 +141,13 @@ else {
 			$_SESSION[$guid]["action"]=getActionName($_SESSION[$guid]["address"]) ;
 			if ($_SESSION[$guid]["address"]=="") {
 				print "<h1>" ;
-				print _("There is no content to display") ;
+				print __($guid, "There is no content to display") ;
 				print "</h1>" ;
 			}
 			else {
 				if (strstr($_SESSION[$guid]["address"],"..")!=FALSE) {
 					print "<div class='error'>" ;
-					print _("Illegal address detected: access denied.") ;
+					print __($guid, "Illegal address detected: access denied.") ;
 					print "</div>" ;
 				}
 				else {

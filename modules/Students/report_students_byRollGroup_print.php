@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Students/report_students_byRollGroup_print.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -33,7 +33,7 @@ else {
 	
 	//Proceed!
 	print "<h2>" ;
-	print _("Students by Roll Group") ;
+	print __($guid, "Students by Roll Group") ;
 	print "</h2>" ;
 	
 	if ($gibbonRollGroupID!="") {
@@ -50,7 +50,7 @@ else {
 			
 			if ($result->rowCount()==1) {
 				$row=$result->fetch() ;
-				print "<p style='margin-bottom: 0px'><b>" . _('Roll Group') . "</b>: " . $row["name"] . "</p>" ;
+				print "<p style='margin-bottom: 0px'><b>" . __($guid, 'Roll Group') . "</b>: " . $row["name"] . "</p>" ;
 				
 				//Show Tutors
 				try {
@@ -64,7 +64,7 @@ else {
 				}
 				if ($resultDetail->rowCount()>0) {
 					$tutorCount=0 ;
-					print "<p style=''><b>" . _('Tutors') . "</b>: " ;
+					print "<p style=''><b>" . __($guid, 'Tutors') . "</b>: " ;
 					while ($rowDetail=$resultDetail->fetch()) {
 						print formatName($rowDetail["title"], $rowDetail["preferredName"], $rowDetail["surname"], "Staff") ;
 						$tutorCount++ ;
@@ -95,38 +95,38 @@ else {
 		}
 		
 		print "<div class='linkTop'>" ;
-		print "<a href='javascript:window.print()'>" .  _('Print') . "<img style='margin-left: 5px' title='" . _('Print') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
+		print "<a href='javascript:window.print()'>" .  __($guid, 'Print') . "<img style='margin-left: 5px' title='" . __($guid, 'Print') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
 		print "</div>" ;
 	
 		print "<table class='mini' cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print _("Roll Group") ;
+					print __($guid, "Roll Group") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Student") ;
+					print __($guid, "Student") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Gender") ;
+					print __($guid, "Gender") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Age") . "<br/>" ;
-					print "<span style='font-style: italic; font-size: 85%'>" . _('DOB') . "</span>" ;
+					print __($guid, "Age") . "<br/>" ;
+					print "<span style='font-style: italic; font-size: 85%'>" . __($guid, 'DOB') . "</span>" ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Nationality") ;
+					print __($guid, "Nationality") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Transport") ;
+					print __($guid, "Transport") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("House") ;
+					print __($guid, "House") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Locker") ;
+					print __($guid, "Locker") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Medical") ;
+					print __($guid, "Medical") ;
 				print "</th>" ;
 			print "</tr>" ;
 			
@@ -203,7 +203,7 @@ else {
 						if ($resultForm->rowCount()==1) {
 							$rowForm=$resultForm->fetch() ;
 							if ($rowForm["longTermMedication"]=='Y') {
-								print "<b><i>" . _('Long Term Medication') . "</i></b>: " . $rowForm["longTermMedicationDetails"] . "<br/>" ;
+								print "<b><i>" . __($guid, 'Long Term Medication') . "</i></b>: " . $rowForm["longTermMedicationDetails"] . "<br/>" ;
 							}
 							$condCount=1 ;
 							try {
@@ -217,12 +217,12 @@ else {
 							}
 	
 							while ($rowConditions=$resultConditions->fetch()) {
-								print "<b><i>" . _('Condition') . " $condCount</i></b> " ;
-								print ": " . _($rowConditions["name"]) ;
+								print "<b><i>" . __($guid, 'Condition') . " $condCount</i></b> " ;
+								print ": " . __($guid, $rowConditions["name"]) ;
 								
 								$alert=getAlert($connection2, $rowConditions["gibbonAlertLevelID"]) ;
 								if ($alert!=FALSE) {
-									print " <span style='color: #" . $alert["color"] . "; font-weight: bold'>(" . _($alert["name"]) . " " . _('Risk') . ")</span>" ;
+									print " <span style='color: #" . $alert["color"] . "; font-weight: bold'>(" . __($guid, $alert["name"]) . " " . __($guid, 'Risk') . ")</span>" ;
 									print "<br/>" ;									
 									$condCount++ ;
 								}
@@ -238,7 +238,7 @@ else {
 			if ($count==0) {
 				print "<tr class=$rowNum>" ;
 					print "<td colspan=2>" ;
-						print _("There are no records to display.") ;
+						print __($guid, "There are no records to display.") ;
 					print "</td>" ;
 				print "</tr>" ;
 			}

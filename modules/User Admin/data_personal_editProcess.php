@@ -505,7 +505,7 @@ else {
 							if ($resultDetail->rowCount()==1) {
 								$rowDetail=$resultDetail->fetch() ;
 								$name=formatName("", $row2["preferredName"], $row2["surname"], "Student", false) ;
-								$notificationText=sprintf(_('Your tutee, %1$s, has had their privacy settings altered.'), $name) ;
+								$notificationText=sprintf(__($guid, 'Your tutee, %1$s, has had their privacy settings altered.'), $name) ;
 								if ($rowDetail["gibbonPersonIDTutor"]!=NULL AND $rowDetail["gibbonPersonIDTutor"]!=$_SESSION[$guid]["gibbonPersonID"]) {
 									setNotification($connection2, $guid, $rowDetail["gibbonPersonIDTutor"], $notificationText, "Students", "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=") ;
 								}

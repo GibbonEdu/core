@@ -25,13 +25,13 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Planner/report_goldStars_staff.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Staff Like') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Staff Like') . "</div>" ;
 	print "</div>" ;
 	
 	try {
@@ -47,13 +47,13 @@ else {
 	print "<table cellspacing=\"0\"style='width: 100%'>" ;
 		print "<tr class='head'>" ;
 			print "<th style='width: 100px'>" ;
-				print _("Position") ;
+				print __($guid, "Position") ;
 			print "</th>" ;
 			print "<th>" ;
-				print _("Teacher") ;
+				print __($guid, "Teacher") ;
 			print "</th>" ;
 			print "<th>" ;
-				print _("Likes") ;
+				print __($guid, "Likes") ;
 			print "</th>" ;
 			print "</th>" ;
 		print "</tr>" ;
@@ -85,7 +85,7 @@ else {
 		if ($count==0) {
 			print "<tr class=$rowNum>" ;
 				print "<td colspan=3>" ;
-					print _("There are no records to display.") ;
+					print __($guid, "There are no records to display.") ;
 				print "</td>" ;
 			print "</tr>" ;
 		}

@@ -22,13 +22,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/daysOfWeek_manage.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Manage Days of the Week') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Manage Days of the Week') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -36,22 +36,22 @@ else {
 	$class="error" ;
 	if (!($updateReturn=="")) {
 		if ($updateReturn=="fail0") {
-			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($updateReturn=="fail1") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail2") {
-			$updateReturnMessage=_("Your request failed due to a database error.") ;	
+			$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 		}
 		else if ($updateReturn=="fail3") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail4") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="success0") {
-			$updateReturnMessage=_("Your request was completed successfully.") ;	
+			$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -71,7 +71,7 @@ else {
 
 	if ($result->rowCount()!=7) {
 		print "<div class='error'>" ;
-			print _("There is a problem with your database information for school days.") ;
+			print __($guid, "There is a problem with your database information for school days.") ;
 		print "</div>" ;
 	}
 	else {
@@ -84,24 +84,24 @@ else {
 				?>
 				<tr class='break'>
 					<td colspan=2> 
-						<h3><?php print _($row["name"]) . " (" . _($row["nameShort"]) . ")" ?></h3>
+						<h3><?php print __($guid, $row["name"]) . " (" . __($guid, $row["nameShort"]) . ")" ?></h3>
 					</td>
 				</tr>
 				<input name="<?php print $row["name"]?>sequenceNumber" id="<?php print $row["name"]?>sequenceNumber" maxlength=2 value="<?php print $row["sequenceNumber"] ?>" type="hidden" style="width: 300px">
 				<tr>
 					<td style='width: 275px'> 
-						<b><?php print _('School Day') ?> *</b>
+						<b><?php print __($guid, 'School Day') ?> *</b>
 					</td>
 					<td class="right">
 						<select style="width: 302px" name="<?php print $row["name"]?>schoolDay" id="<?php print $row["name"]?>schoolDay">
 							<?php
 							if ($row["schoolDay"]=="Y") {
-								print "<option selected value='Y'>" . _('Yes') . "</option>" ;
-								print "<option value='N'>" . _('No') . "</option>" ;
+								print "<option selected value='Y'>" . __($guid, 'Yes') . "</option>" ;
+								print "<option value='N'>" . __($guid, 'No') . "</option>" ;
 							}
 							else {
-								print "<option value='Y'>" . _('Yes') . "</option>" ;
-								print "<option selected value='N'>" . _('No') . "</option>" ;
+								print "<option value='Y'>" . __($guid, 'Yes') . "</option>" ;
+								print "<option selected value='N'>" . __($guid, 'No') . "</option>" ;
 							}
 							?>				
 						</select>
@@ -109,12 +109,12 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('School Opens') ?></b>
+						<b><?php print __($guid, 'School Opens') ?></b>
 					</td>
 					<td class="right">
 						<select style="width:100px" name="<?php print $row["name"]?>schoolOpenM" id="<?php print $row["name"]?>schoolOpenM">
 							<?php
-							print "<option value='Minutes'>" . _('Minutes') . "</option>" ;
+							print "<option value='Minutes'>" . __($guid, 'Minutes') . "</option>" ;
 							for ($i=0;$i<60;$i++) {
 								$iPrint=$i;
 								if (strlen($i)==1) {
@@ -132,7 +132,7 @@ else {
 						</select>
 						<select style="width:100px" name="<?php print $row["name"]?>schoolOpenH" id="<?php print $row["name"]?>schoolOpenH">
 							<?php
-							print "<option value='Hours'>" . _('Hours') . "</option>" ;
+							print "<option value='Hours'>" . __($guid, 'Hours') . "</option>" ;
 							for ($i=0;$i<24;$i++) {
 								$iPrint=$i;
 								if (strlen($i)==1) {
@@ -152,12 +152,12 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('School Starts') ?></b>
+						<b><?php print __($guid, 'School Starts') ?></b>
 					</td>
 					<td class="right">
 						<select style="width:100px" name="<?php print $row["name"]?>schoolStartM" id="<?php print $row["name"]?>schoolStartM">
 							<?php
-							print "<option value='Minutes'>" . _('Minutes') . "</option>" ;
+							print "<option value='Minutes'>" . __($guid, 'Minutes') . "</option>" ;
 							for ($i=0;$i<60;$i++) {
 								$iPrint=$i;
 								if (strlen($i)==1) {
@@ -175,7 +175,7 @@ else {
 						</select>
 						<select style="width:100px" name="<?php print $row["name"]?>schoolStartH" id="<?php print $row["name"]?>schoolStartH">
 							<?php
-							print "<option value='Hours'>" . _('Hours') . "</option>" ;
+							print "<option value='Hours'>" . __($guid, 'Hours') . "</option>" ;
 							for ($i=0;$i<24;$i++) {
 								$iPrint=$i;
 								if (strlen($i)==1) {
@@ -195,12 +195,12 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('School Ends') ?></b>
+						<b><?php print __($guid, 'School Ends') ?></b>
 					</td>
 					<td class="right">
 						<select style="width:100px" name="<?php print $row["name"]?>schoolEndM" id="<?php print $row["name"]?>schoolEndM">
 							<?php
-							print "<option value='Minutes'>" . _('Minutes') . "</option>" ;
+							print "<option value='Minutes'>" . __($guid, 'Minutes') . "</option>" ;
 							for ($i=0;$i<60;$i++) {
 								$iPrint=$i;
 								if (strlen($i)==1) {
@@ -218,7 +218,7 @@ else {
 						</select>
 						<select style="width:100px" name="<?php print $row["name"]?>schoolEndH" id="<?php print $row["name"]?>schoolEndH">
 							<?php
-							print "<option value='Hours'>" . _('Hours') . "</option>" ;
+							print "<option value='Hours'>" . __($guid, 'Hours') . "</option>" ;
 							for ($i=0;$i<24;$i++) {
 								$iPrint=$i;
 								if (strlen($i)==1) {
@@ -238,12 +238,12 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('School Closes') ?></b>
+						<b><?php print __($guid, 'School Closes') ?></b>
 					</td>
 					<td class="right">
 						<select style="width:100px" name="<?php print $row["name"]?>schoolCloseM" id="<?php print $row["name"]?>schoolCloseM">
 							<?php
-							print "<option value='Minutes'>" . _('Minutes') . "</option>" ;
+							print "<option value='Minutes'>" . __($guid, 'Minutes') . "</option>" ;
 							for ($i=0;$i<60;$i++) {
 								$iPrint=$i;
 								if (strlen($i)==1) {
@@ -261,7 +261,7 @@ else {
 						</select>
 						<select style="width:100px" name="<?php print $row["name"]?>schoolCloseH" id="<?php print $row["name"]?>schoolCloseH">
 							<?php
-							print "<option value='Hours'>" . _('Hours') . "</option>" ;
+							print "<option value='Hours'>" . __($guid, 'Hours') . "</option>" ;
 							for ($i=0;$i<24;$i++) {
 								$iPrint=$i;
 								if (strlen($i)==1) {
@@ -285,11 +285,11 @@ else {
 			?>
 				<tr>
 					<td>
-						<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+						<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
 					</td>
 					<td class="right">
 						<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-						<input type="submit" value="<?php print _("Submit") ; ?>">
+						<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 					</td>
 				</tr>
 			</table>

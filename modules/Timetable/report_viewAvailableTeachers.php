@@ -25,16 +25,16 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Timetable/report_viewAvailableTeachers.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('View Available Teachers') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'View Available Teachers') . "</div>" ;
 	print "</div>" ;
 	
 	print "<h2>" ;
-	print _("Choose Options") ;
+	print __($guid, "Choose Options") ;
 	print "</h2>" ;
 	
 	$gibbonTTID=NULL ;
@@ -55,11 +55,11 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td style='width: 275px'> 
-					<b><?php print _('Timetable') ?></b><br/>
+					<b><?php print __($guid, 'Timetable') ?></b><br/>
 				</td>
 				<td class="right">
 					<select name="gibbonTTID" id="gibbonTTID" style="width: 302px">
-						<option value='Please select...'><?php print _('Please select...') ?></option>
+						<option value='Please select...'><?php print __($guid, 'Please select...') ?></option>
 						<?php
 						try {
 							$dataSelect=array(); 
@@ -83,13 +83,13 @@ else {
 					</select>
 					<script type="text/javascript">
 						var gibbonTTID=new LiveValidation('gibbonTTID');
-						gibbonTTID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+						gibbonTTID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 					</script>	
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Date') ?></b><br/>
+					<b><?php print __($guid, 'Date') ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="ttDate" id="ttDate" maxlength=10 value="<?php print $ttDate ?>" type="text" style="width: 300px">
@@ -109,7 +109,7 @@ else {
 			<tr>
 				<td colspan=2 class="right">
 					<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/report_viewAvailableTeachers.php">
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
@@ -118,7 +118,7 @@ else {
 	
 	if ($gibbonTTID!="") {
 		print "<h2>" ;
-		print _("Report Data") ;
+		print __($guid, "Report Data") ;
 		print "</h2>" ;
 		
 		try {
@@ -133,7 +133,7 @@ else {
 
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-			print _("The selected record does not exist, or you do not have access to it.") ;
+			print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 			print "</div>" ;
 		}
 		else {
@@ -224,16 +224,16 @@ else {
 						//Calculate week number
 						$week=getWeekNumber ($startDayStamp, $connection2, $guid) ;
 						if ($week!=false) {
-							print _("Week") . " " . $week ."<br/>" ;
+							print __($guid, "Week") . " " . $week ."<br/>" ;
 						}
-						print "<span style='font-weight: normal; font-style: italic;'>" . _('Time') . "<span>" ;
+						print "<span style='font-weight: normal; font-style: italic;'>" . __($guid, 'Time') . "<span>" ;
 					print "</th>" ;
 					foreach ($days AS $day) {
 						if ($day["schoolDay"]=="Y") {
 							$dateCorrection=($day["sequenceNumber"]-1) ;
 						
 							print "<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-								print _($day["nameShort"]) . "<br/>" ;
+								print __($guid, $day["nameShort"]) . "<br/>" ;
 								print "<span style='font-size: 80%; font-style: italic'>". date($_SESSION[$guid]["i18n"]["dateFormatPHP"], ($startDayStamp+(86400*$dateCorrection))) . "</span><br/>" ;
 							print "</th>" ;
 						}
@@ -491,7 +491,7 @@ else {
 									$dayOut.="<div style='position: relative'>" ;
 										$dayOut.="<div style='z-index: $zCount; position: absolute; top: 0; width: $width ; border: 1px solid rgba(136,136,136,$ttAlpha); height: " . ceil($diffTime/60) . "px; margin: 0px; padding: 0px; background-color: rgba(255,196,202,$ttAlpha)'>" ;
 											$dayOut.="<div style='position: relative; top: 50%'>" ;
-												$dayOut.="<span style='color: rgba(255,0,0,$ttAlpha);'>" . _('School Closed') . "</span>" ;
+												$dayOut.="<span style='color: rgba(255,0,0,$ttAlpha);'>" . __($guid, 'School Closed') . "</span>" ;
 											$dayOut.="</div>" ;
 										$dayOut.="</div>" ;
 									$dayOut.="</div>" ;

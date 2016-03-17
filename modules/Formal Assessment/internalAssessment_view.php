@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Formal Assessment/internalAssessment_view.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("Your request failed because you do not have access to this action.") ;
+		print __($guid, "Your request failed because you do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -33,13 +33,13 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print _("The highest grouped action cannot be determined.") ;
+		print __($guid, "The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
 		if ($highestAction=="View Internal Assessments_all") { //ALL STUDENTS
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" ._('View All Internal Assessments') . "</div>" ;
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" .__($guid, 'View All Internal Assessments') . "</div>" ;
 			print "</div>" ;
 			
 			$gibbonPersonID=NULL ;
@@ -48,14 +48,14 @@ else {
 			}	
 	
 			print "<h3>" ;
-				print _("Choose A Student") ;
+				print __($guid, "Choose A Student") ;
 			print "</h3>" ;
 			print "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage.php'>" ;
 				print "<table class='noIntBorder' cellspacing='0' style='width: 100%'>" ;
 					?>
 					<tr>
 						<td> 
-							<b><?php print _('Student') ?></b><br/>
+							<b><?php print __($guid, 'Student') ?></b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
@@ -86,8 +86,8 @@ else {
 					print "<tr>" ;
 						print "<td class='right' colspan=2>" ;
 							print "<input type='hidden' name='q' value='" . $_GET["q"] . "'>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Formal Assessment/internalAssessment_view.php'>" . _('Clear Filters') . "</a> " ;
-							print "<input type='submit' value='" . _('Go') . "'>" ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Formal Assessment/internalAssessment_view.php'>" . __($guid, 'Clear Filters') . "</a> " ;
+							print "<input type='submit' value='" . __($guid, 'Go') . "'>" ;
 						print "</td>" ;
 					print "</tr>" ;
 				print "</table>" ;
@@ -95,7 +95,7 @@ else {
 			
 			if ($gibbonPersonID) {
 				print "<h3>" ;
-					print _("Internal Assessments") ;
+					print __($guid, "Internal Assessments") ;
 				print "</h3>" ;
 				
 				//Check for access
@@ -111,7 +111,7 @@ else {
 				
 				if ($resultCheck->rowCount()!=1) {
 					print "<div class='error'>" ;
-						print _("The selected record does not exist, or you do not have access to it.") ;
+						print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 					print "</div>" ;
 				}
 				else {
@@ -121,7 +121,7 @@ else {
 		}
 		else if ($highestAction=="View Internal Assessments_myChildrens") { //MY CHILDREN
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" ._('View My Childrens\'s Internal Assessments') . "</div>" ;
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" .__($guid, 'View My Childrens\'s Internal Assessments') . "</div>" ;
 			print "</div>" ;
 			
 			//Test data access field for permission
@@ -137,7 +137,7 @@ else {
 
 			if ($result->rowCount()<1) {
 				print "<div class='error'>" ;
-				print _("Access denied.") ;
+				print __($guid, "Access denied.") ;
 				print "</div>" ;
 			}
 			else {
@@ -170,7 +170,7 @@ else {
 				
 				if ($count==0) {
 					print "<div class='error'>" ;
-					print _("Access denied.") ;
+					print __($guid, "Access denied.") ;
 					print "</div>" ;
 				}
 				else if ($count==1) {
@@ -186,7 +186,7 @@ else {
 							?>
 							<tr>
 								<td> 
-									<b><?php print _('Student') ?></b><br/>
+									<b><?php print __($guid, 'Student') ?></b><br/>
 								</td>
 								<td class="right">
 									<select name="search" id="search" style="width: 302px">
@@ -200,9 +200,9 @@ else {
 									<input type="hidden" name="q" value="/modules/Formal Assessment/internalAssessment_view.php">
 									<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 									<?php
-									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Formal Assessment/internalAssessment_view.php'>" . _('Clear Search') . "</a>" ;
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Formal Assessment/internalAssessment_view.php'>" . __($guid, 'Clear Search') . "</a>" ;
 									?>
-									<input type="submit" value="<?php print _("Submit") ; ?>">
+									<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 								</td>
 							</tr>
 						</table>
@@ -230,7 +230,7 @@ else {
 					}
 					if ($resultChild->rowCount()<1) {
 						print "<div class='error'>" ;
-						print _("The selected record does not exist, or you do not have access to it.") ;
+						print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 						print "</div>" ;
 					}
 					else {
@@ -243,11 +243,11 @@ else {
 		}
 		else { //MY Internal Assessments
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" ._('View My Internal Assessments') . "</div>" ;
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" .__($guid, 'View My Internal Assessments') . "</div>" ;
 			print "</div>" ;
 			
 			print "<h3>" ;
-				print _("Internal Assessments") ;
+				print __($guid, "Internal Assessments") ;
 			print "</h3>" ;
 			
 			print getInternalAssessmentRecord($guid, $connection2, $_SESSION[$guid]["gibbonPersonID"], "student") ;

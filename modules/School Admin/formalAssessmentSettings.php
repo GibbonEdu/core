@@ -22,13 +22,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/formalAssessmentSettings.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Formal Assessment Settings') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Formal Assessment Settings') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -36,22 +36,22 @@ else {
 	$class="error" ;
 	if (!($updateReturn=="")) {
 		if ($updateReturn=="fail0") {
-			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($updateReturn=="fail1") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail2") {
-			$updateReturnMessage=_("Your request failed due to a database error.") ;	
+			$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 		}
 		else if ($updateReturn=="fail3") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail4") {
-			$updateReturnMessage=_("Your request was successful, but some data was not properly saved.") ;
+			$updateReturnMessage=__($guid, "Your request was successful, but some data was not properly saved.") ;
 		}
 		else if ($updateReturn=="success0") {
-			$updateReturnMessage=_("Your request was completed successfully.") ;	
+			$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -64,7 +64,7 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr class='break'>
 				<td colspan=3> 
-					<h3><?php print _('Internal Assessment Settings') ; ?></h3>
+					<h3><?php print __($guid, 'Internal Assessment Settings') ; ?></h3>
 				</td>
 			</tr>
 			<tr>
@@ -79,8 +79,8 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td style='width: 275px'> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
 				</td>
 				<td class="right" colspan=2>
 					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" type="text" style="width: 300px" rows=4><?php if (isset($row["value"])) { print $row["value"] ; } ?></textarea>
@@ -93,8 +93,8 @@ else {
 			
 			<tr class='break'>
 				<td colspan=3> 
-					<h3><?php print _('Primary External Assessement') ; ?></h3>
-					<?php print _('These settings allow a particular type of external assessment to be associated with each year group. The selected assessment will be used as the primary assessment to be used as a baseline for comparison (for example, within the Markbook). In addition, a particular field category can be chosen from which to draw data (if no category is chosen, the system will try to pick the best data automatically).') ; ?>
+					<h3><?php print __($guid, 'Primary External Assessement') ; ?></h3>
+					<?php print __($guid, 'These settings allow a particular type of external assessment to be associated with each year group. The selected assessment will be used as the primary assessment to be used as a baseline for comparison (for example, within the Markbook). In addition, a particular field category can be chosen from which to draw data (if no category is chosen, the system will try to pick the best data automatically).') ; ?>
 				</td>
 			</tr>
 			
@@ -114,13 +114,13 @@ else {
 
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print _("Year Group") ;
+					print __($guid, "Year Group") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("External Assessment") ;
+					print __($guid, "External Assessment") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Field Set") ;
+					print __($guid, "Field Set") ;
 				print "</th>" ;
 			print "</tr>" ;
 			
@@ -137,7 +137,7 @@ else {
 				//COLOR ROW BY STATUS!
 				print "<tr class=$rowNum>" ;
 					print "<td>" ;
-						print _($row["name"]) ;
+						print __($guid, $row["name"]) ;
 						print "<input type='hidden' name='gibbonYearGroupID[]' value='" . $row["gibbonYearGroupID"] . "'>" ;
 					print "</td>" ;
 					print "<td>" ;
@@ -155,7 +155,7 @@ else {
 								if ($rowSelect["gibbonExternalAssessmentID"]==substr($primaryExternalAssessmentByYearGroup[$row["gibbonYearGroupID"]],0,strpos($primaryExternalAssessmentByYearGroup[$row["gibbonYearGroupID"]],"-"))) {
 									$selected="selected" ;
 								}
-								print "<option $selected value='" . $rowSelect["gibbonExternalAssessmentID"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
+								print "<option $selected value='" . $rowSelect["gibbonExternalAssessmentID"] . "'>" . htmlPrep(__($guid, $rowSelect["name"])) . "</option>" ;
 							}			
 						print "</select>" ;
 					print "</td>" ;
@@ -174,7 +174,7 @@ else {
 								if ($rowSelect["gibbonExternalAssessmentID"]==substr($primaryExternalAssessmentByYearGroup[$row["gibbonYearGroupID"]],0,strpos($primaryExternalAssessmentByYearGroup[$row["gibbonYearGroupID"]],"-")) AND $rowSelect["category"]==substr($primaryExternalAssessmentByYearGroup[$row["gibbonYearGroupID"]],(strpos($primaryExternalAssessmentByYearGroup[$row["gibbonYearGroupID"]],"-")+1))) {
 									$selected="selected" ;
 								}
-								print "<option $selected class='" . $rowSelect["gibbonExternalAssessmentID"] . "' value='" . $rowSelect["category"] . "'>" . htmlPrep(_(substr($rowSelect["category"], (strpos($rowSelect["category"],"_")+1)))) . "</option>" ;
+								print "<option $selected class='" . $rowSelect["gibbonExternalAssessmentID"] . "' value='" . $rowSelect["category"] . "'>" . htmlPrep(__($guid, substr($rowSelect["category"], (strpos($rowSelect["category"],"_")+1)))) . "</option>" ;
 							}			
 						print "</select>" ;
 						?>
@@ -190,11 +190,11 @@ else {
 			?>
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+					<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
 				</td>
 				<td class="right" colspan=2>
 					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 				</td>
 			</tr>
 			<?php

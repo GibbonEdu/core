@@ -34,13 +34,13 @@ if ($included==FALSE) {
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_postQuickWall.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('New Quick Wall Message') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'New Quick Wall Message') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -48,22 +48,22 @@ else {
 	$class="error" ;
 	if (!($addReturn=="")) {
 		if ($addReturn=="fail0") {
-			$addReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+			$addReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($addReturn=="fail2") {
-			$addReturnMessage=_("Your request failed due to a database error.") ;	
+			$addReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 		}
 		else if ($addReturn=="fail3") {
-			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail4") {
-			$addReturnMessage=_("Your request was completed successfully, but some or all messages could not be delivered.") ;	
+			$addReturnMessage=__($guid, "Your request was completed successfully, but some or all messages could not be delivered.") ;	
 		}
 		else if ($addReturn=="fail5") {
-			$addReturnMessage=_("Your request failed due to an attachment error.") ;	
+			$addReturnMessage=__($guid, "Your request failed due to an attachment error.") ;	
 		}
 		else if ($addReturn=="success0") {
-			$addReturnMessage=_("Your request was completed successfully.") ;
+			$addReturnMessage=__($guid, "Your request was completed successfully.") ;
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -72,7 +72,7 @@ else {
 	} 
 	
 	print "<div class='warning'>" ;
-		print _('This page allows you to quick post a message wall entry to all users, without needing to set a range of options, making it a quick wal to post to the Message Wall.') ;
+		print __($guid, 'This page allows you to quick post a message wall entry to all users, without needing to set a range of options, making it a quick wal to post to the Message Wall.') ;
 	print "</div>" ;
 			
 	?>
@@ -80,22 +80,22 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><?php print _('Delivery Mode') ?></h3>
+					<h3><?php print __($guid, 'Delivery Mode') ?></h3>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Message Wall') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _('Place this message on user\'s message wall?') ?><br/></i></span>
+					<b><?php print __($guid, 'Message Wall') ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print __($guid, 'Place this message on user\'s message wall?') ?><br/></i></span>
 				</td>
 				<td class="right">
-					<input type="hidden" name="messageWall" class="messageWall" value="Y"/> <?php print _('Yes') ?>
+					<input type="hidden" name="messageWall" class="messageWall" value="Y"/> <?php print __($guid, 'Yes') ?>
 				</td>
 			</tr>
 			<tr id="messageWallRow">
 				<td> 
-					<b><?php print _('Publication Dates') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _('Select up to three individual dates.') ?></br>Format <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>.<br/></i></span>
+					<b><?php print __($guid, 'Publication Dates') ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print __($guid, 'Select up to three individual dates.') ?></br>Format <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>.<br/></i></span>
 				</td>
 				<td class="right">
 					<input name="date1" id="date1" maxlength=10 value="<?php print dateConvertBack($guid, date("Y-m-d")) ; ?>" type="text" style="width: 300px">
@@ -135,12 +135,12 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><?php print _('Message Details') ?></h3>
+					<h3><?php print __($guid, 'Message Details') ?></h3>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Subject') ?> *</b><br/>
+					<b><?php print __($guid, 'Subject') ?> *</b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
@@ -153,7 +153,7 @@ else {
 			</tr>
 			<tr>
 				<td colspan=2> 
-					<b><?php print _('Body') ?> *</b>
+					<b><?php print __($guid, 'Body') ?> *</b>
 					<?php 
 					//Attempt to build a signature for the user
 					$signature=getSignature($guid, $connection2, $_SESSION[$guid]["gibbonPersonID"]) ;
@@ -172,17 +172,17 @@ else {
 				}
 				catch(PDOException $e) { }
 				while ($rowSelect=$resultSelect->fetch()) {
-					print "<option selected value='" . $rowSelect["category"] . "'>" . htmlPrep(_($rowSelect["category"])) . "</option>" ;
+					print "<option selected value='" . $rowSelect["category"] . "'>" . htmlPrep(__($guid, $rowSelect["category"])) . "</option>" ;
 				}
 				?>
 			</select>
 						
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+					<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
 				</td>
 				<td class="right">
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 				</td>
 			</tr>
 		</table>

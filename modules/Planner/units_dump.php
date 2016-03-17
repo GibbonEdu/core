@@ -25,19 +25,19 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Planner/units_dump.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("Your request failed because you do not have access to this action.") ;
+		print __($guid, "Your request failed because you do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print _("The highest grouped action cannot be determined.") ;
+		print __($guid, "The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>" . _('Unit Planner') . "</a> > </div><div class='trailEnd'>" . _('Dump Unit') . "</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>" . __($guid, 'Unit Planner') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Dump Unit') . "</div>" ;
 		print "</div>" ;
 		
 		//Check if courseschool year specified
@@ -46,7 +46,7 @@ else {
 		$gibbonUnitID=$_GET["gibbonUnitID"]; 
 		if ($gibbonCourseID=="" OR $gibbonSchoolYearID=="") {
 			print "<div class='error'>" ;
-				print _("You have not specified one or more required parameters.") ;
+				print __($guid, "You have not specified one or more required parameters.") ;
 			print "</div>" ;
 		}
 		else {
@@ -68,7 +68,7 @@ else {
 	
 			if ($result->rowCount()!=1) {
 				print "<div class='error'>" ;
-					print _("The selected record does not exist, or you do not have access to it.") ;
+					print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 				print "</div>" ;
 			}
 			else {
@@ -79,13 +79,13 @@ else {
 				//Check if unit specified
 				if ($gibbonUnitID=="") {
 					print "<div class='error'>" ;
-						print _("You have not specified one or more required parameters.") ;
+						print __($guid, "You have not specified one or more required parameters.") ;
 					print "</div>" ;
 				}
 				else {
 					if ($gibbonUnitID=="") {
 						print "<div class='error'>" ;
-							print _("You have not specified one or more required parameters.") ;
+							print __($guid, "You have not specified one or more required parameters.") ;
 						print "</div>" ;
 					}
 					else {
@@ -101,7 +101,7 @@ else {
 						
 						if ($result->rowCount()!=1) {
 							print "<div class='error'>" ;
-								print _("The specified record cannot be found.") ;
+								print __($guid, "The specified record cannot be found.") ;
 							print "</div>" ;
 						}
 						else {
@@ -109,7 +109,7 @@ else {
 							$row=$result->fetch() ;
 							
 							print "<p>" ;
-							print sprintf(_('This page allows you to view all of the content of a selected unit (%1$s). If you wish to take this unit out of Gibbon, simply copy and paste the contents into a word processing application.'), "<b><u>" . $row["courseName"] . " - " . $row["name"] . "</u></b>") ;
+							print sprintf(__($guid, 'This page allows you to view all of the content of a selected unit (%1$s). If you wish to take this unit out of Gibbon, simply copy and paste the contents into a word processing application.'), "<b><u>" . $row["courseName"] . " - " . $row["name"] . "</u></b>") ;
 							print "</p>" ;
 							
 							?>
@@ -142,10 +142,10 @@ else {
 								
 								//Tab links
 								print "<ul>" ;
-									print "<li><a href='#tabs1'>" . _('Unit Overview') . "</a></li>" ;
-									print "<li><a href='#tabs2'>" . _('Smart Blocks') . "</a></li>" ;
-									print "<li><a href='#tabs3'>" . _('Resources') . "</a></li>" ;
-									print "<li><a href='#tabs4'>" . _('Outcomes') . "</a></li>" ;
+									print "<li><a href='#tabs1'>" . __($guid, 'Unit Overview') . "</a></li>" ;
+									print "<li><a href='#tabs2'>" . __($guid, 'Smart Blocks') . "</a></li>" ;
+									print "<li><a href='#tabs3'>" . __($guid, 'Resources') . "</a></li>" ;
+									print "<li><a href='#tabs4'>" . __($guid, 'Outcomes') . "</a></li>" ;
 									$classes=array() ;
 									$classCount=0 ;
 									while ($rowClass=$resultClass->fetch()) {
@@ -160,7 +160,7 @@ else {
 								print "<div id='tabs1'>" ;
 									if ($row["details"]=="") {
 										print "<div class='error'>" ;
-											print _("There are no records to display.") ;
+											print __($guid, "There are no records to display.") ;
 										print "</div>" ;
 									}
 									else {
@@ -218,7 +218,7 @@ else {
 											$resourceContents.=$rowBlocks["contents"] ;
 										}
 										if ($rowBlocks["teachersNotes"]!="") {
-											print "<div style='background-color: #F6CECB; padding: 0px 3px 10px 3px; width: 98%; text-align: justify; border-bottom: 1px solid #ddd'><p style='margin-bottom: 0px'><b>" . _("Teacher's Notes") . ":</b></p> " . $rowBlocks["teachersNotes"] . "</div>" ;
+											print "<div style='background-color: #F6CECB; padding: 0px 3px 10px 3px; width: 98%; text-align: justify; border-bottom: 1px solid #ddd'><p style='margin-bottom: 0px'><b>" . __($guid, "Teacher's Notes") . ":</b></p> " . $rowBlocks["teachersNotes"] . "</div>" ;
 											$resourceContents.=$rowBlocks["teachersNotes"] ;
 										}
 									}
@@ -317,7 +317,7 @@ else {
 									//No resources!
 									if ($noReosurces) {
 										print "<div class='error'>" ;
-											print _("There are no records to display.") ;
+											print __($guid, "There are no records to display.") ;
 										print "</div>" ;
 									}
 								print "</div>" ;
@@ -336,19 +336,19 @@ else {
 										print "<table cellspacing='0' style='width: 100%'>" ;
 											print "<tr class='head'>" ;
 												print "<th>" ;
-													print _("Scope") ;
+													print __($guid, "Scope") ;
 												print "</th>" ;
 												print "<th>" ;
-													print _("Category") ;
+													print __($guid, "Category") ;
 												print "</th>" ;
 												print "<th>" ;
-													print _("Name") ;
+													print __($guid, "Name") ;
 												print "</th>" ;
 												print "<th>" ;
-													print _("Year Groups") ;
+													print __($guid, "Year Groups") ;
 												print "</th>" ;
 												print "<th>" ;
-													print _("Actions") ;
+													print __($guid, "Actions") ;
 												print "</th>" ;
 											print "</tr>" ;
 								
@@ -403,7 +403,7 @@ else {
 															print "});" ;
 														print "</script>" ;
 														if ($rowBlocks["content"]!="") {
-															print "<a title='" . _('View Description') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-left: 0px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='" . _('Show Comment') . "' onclick='return false;' /></a>" ;
+															print "<a title='" . __($guid, 'View Description') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-left: 0px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='" . __($guid, 'Show Comment') . "' onclick='return false;' /></a>" ;
 														}
 													print "</td>" ;
 												print "</tr>" ;
@@ -427,7 +427,7 @@ else {
 									print "<div id='tabs" . ($classCount+5) . "'>" ;
 										
 										//Print Lessons
-										print "<h2>" . _("Lessons") . "</h2>" ;
+										print "<h2>" . __($guid, "Lessons") . "</h2>" ;
 										try {
 											$dataLessons=array("gibbonCourseClassID"=>$class[1], "gibbonUnitID"=>$gibbonUnitID); 
 											$sqlLessons="SELECT * FROM gibbonPlannerEntry WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonUnitID=:gibbonUnitID" ;
@@ -440,7 +440,7 @@ else {
 								
 										if ($resultLessons->rowCount()<1) {
 											print "<div class='warning'>" ;
-											print _("There are no records to display.") ;
+											print __($guid, "There are no records to display.") ;
 											print "</div>" ;
 										}
 										else {
@@ -448,7 +448,7 @@ else {
 												print "<h3>" . $rowLessons["name"] . "</h3>" ;
 												print $rowLessons["description"] . "<br/>" ;
 												if ($rowLessons["teachersNotes"]!="") {
-													print "<div style='background-color: #F6CECB; padding: 0px 3px 10px 3px; width: 98%; text-align: justify; border-bottom: 1px solid #ddd'><p style='margin-bottom: 0px'><b>" . _("Teacher's Notes") . ":</b></p> " . $rowLessons["teachersNotes"] . "</div>" ;
+													print "<div style='background-color: #F6CECB; padding: 0px 3px 10px 3px; width: 98%; text-align: justify; border-bottom: 1px solid #ddd'><p style='margin-bottom: 0px'><b>" . __($guid, "Teacher's Notes") . ":</b></p> " . $rowLessons["teachersNotes"] . "</div>" ;
 												}
 												
 												try {
@@ -464,17 +464,17 @@ else {
 												while ($rowBlock=$resultBlock->fetch()) {
 													print "<h5 style='font-size: 85%'>" . $rowBlock["title"] . "</h5>" ;
 													print "<p>" ;
-													print "<b>" . _('Type') . "</b>: " . $rowBlock["type"] . "<br/>" ;
-													print "<b>" . _('Length') . "</b>: " . $rowBlock["length"] . "<br/>" ;
-													print "<b>" . _('Contents') . "</b>: " . $rowBlock["contents"] . "<br/>" ;
+													print "<b>" . __($guid, 'Type') . "</b>: " . $rowBlock["type"] . "<br/>" ;
+													print "<b>" . __($guid, 'Length') . "</b>: " . $rowBlock["length"] . "<br/>" ;
+													print "<b>" . __($guid, 'Contents') . "</b>: " . $rowBlock["contents"] . "<br/>" ;
 													if ($rowBlock["teachersNotes"]!="") {
-														print "<div style='background-color: #F6CECB; padding: 0px 3px 10px 3px; width: 98%; text-align: justify; border-bottom: 1px solid #ddd'><p style='margin-bottom: 0px'><b>" . _("Teacher's Notes") . ":</b></p> " . $rowBlock["teachersNotes"] . "</div>" ;
+														print "<div style='background-color: #F6CECB; padding: 0px 3px 10px 3px; width: 98%; text-align: justify; border-bottom: 1px solid #ddd'><p style='margin-bottom: 0px'><b>" . __($guid, "Teacher's Notes") . ":</b></p> " . $rowBlock["teachersNotes"] . "</div>" ;
 													}
 													print "</p>" ;
 												}
 												
 												//Print chats
-												print "<h5 style='font-size: 85%'>" . _("Chat") . "</h5>" ;
+												print "<h5 style='font-size: 85%'>" . __($guid, "Chat") . "</h5>" ;
 												print getThread($guid, $connection2, $rowLessons["gibbonPlannerEntryID"], NULL, 0, NULL, NULL, NULL, NULL, NULL, $class[1], $_SESSION[$guid]["gibbonPersonID"], "Teacher", FALSE) ;
 											}
 										}

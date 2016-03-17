@@ -25,17 +25,17 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Students/report_students_new")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('New Students') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'New Students') . "</div>" ;
 	print "</div>" ;
 	
 	print "<h2>" ;
-	print _("Choose Options") ;
+	print __($guid, "Choose Options") ;
 	print "</h2>" ;
 	
 	$type=NULL ;
@@ -74,21 +74,21 @@ else {
 			</script>
 			<tr>
 				<td style='width: 275px'> 
-					<b><?php print _('Type') ?> *</b><br/>
+					<b><?php print __($guid, 'Type') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select style="width: 302px" name="type" id="type" class="type">
 						<?php
-						print "<option" ; if ($type=="Current School Year") { print " selected" ; } print " value='Current School Year'>" . _('Current School Year') . "</option>" ;
-						print "<option" ; if ($type=="Date Range") { print " selected" ; } print " value='Date Range'>" . _('Date Range') . "</option>" ;
+						print "<option" ; if ($type=="Current School Year") { print " selected" ; } print " value='Current School Year'>" . __($guid, 'Current School Year') . "</option>" ;
+						print "<option" ; if ($type=="Date Range") { print " selected" ; } print " value='Date Range'>" . __($guid, 'Date Range') . "</option>" ;
 						?>
 					</select>
 				</td>
 			</tr>
 			<tr id='startDateFromRow' <?php if ($type!="Date Range") { print "style='display: none'" ; } ?>>
 				<td> 
-					<b><?php print _('From Date') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('Earliest student start date to include.') ?><br/><?php print _('Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
+					<b><?php print __($guid, 'From Date') ?></b><br/>
+					<span style="font-size: 90%"><i><?php print __($guid, 'Earliest student start date to include.') ?><br/><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
 				</td>
 				<td class="right">
 					<input name="startDateFrom" id="startDateFrom" maxlength=10 value="<?php print $startDateFrom ?>" type="text" style="width: 300px">
@@ -105,8 +105,8 @@ else {
 			</tr>
 			<tr id='startDateToRow' <?php if ($type!="Date Range") { print "style='display: none'" ; } ?>>
 				<td> 
-					<b><?php print _('To Date') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('Latest student start date to include.') ?><br/><?php print _('Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
+					<b><?php print __($guid, 'To Date') ?></b><br/>
+					<span style="font-size: 90%"><i><?php print __($guid, 'Latest student start date to include.') ?><br/><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
 				</td>
 				<td class="right">
 					<input name="startDateTo" id="startDateTo" maxlength=10 value="<?php print $startDateTo ?>" type="text" style="width: 300px">
@@ -123,8 +123,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Ignore Enrolment') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('This is useful for picking up students who are set to Full, have a start date but are not yet enroled.') ?></span>
+					<b><?php print __($guid, 'Ignore Enrolment') ?></b><br/>
+					<span style="font-size: 90%"><i><?php print __($guid, 'This is useful for picking up students who are set to Full, have a start date but are not yet enroled.') ?></span>
 				</td>
 				<td class="right">
 					<input <?php if ($ignoreEnrolment=="on") { print "checked" ; } ?> name="ignoreEnrolment" id="ignoreEnrolment" type="checkbox">
@@ -133,7 +133,7 @@ else {
 			<tr>
 				<td colspan=2 class="right">
 					<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/report_students_new.php">
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
@@ -142,13 +142,13 @@ else {
 	
 	if ($type!="") {
 		print "<h2>" ;
-		print _("Report Data") ;
+		print __($guid, "Report Data") ;
 		print "</h2>" ;
 		
 		$proceed=TRUE ;
 		if ($type=="Date Range") {
 			print "<p>" ;
-				print _("This report shows all students whose Start Date is on or between the indicated dates.") ;
+				print __($guid, "This report shows all students whose Start Date is on or between the indicated dates.") ;
 			print "</p>" ;
 			
 			if ($startDateFrom=="" OR $startDateTo=="") {
@@ -157,14 +157,14 @@ else {
 		}
 		else if ($type=="Current School Year") {
 			print "<p>" ;
-				print _("This report shows all students who are newly arrived in the school during the current academic year (e.g. they were not enroled in the previous academic year).") ;
+				print __($guid, "This report shows all students who are newly arrived in the school during the current academic year (e.g. they were not enroled in the previous academic year).") ;
 			print "</p>" ;
 		}
 	
 		
 		if ($proceed==FALSE) {
 			print "<div class='error'>" ;
-				print _("Your request failed because your inputs were invalid.") ;
+				print __($guid, "Your request failed because your inputs were invalid.") ;
 			print "</div>" ;
 		}
 		else {
@@ -192,25 +192,25 @@ else {
 					print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th>" ;
-								print _("Count") ;
+								print __($guid, "Count") ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("Name") ;
+								print __($guid, "Name") ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("Roll Group") ;
+								print __($guid, "Roll Group") ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("Username") ;
+								print __($guid, "Username") ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("Start Date") ;
+								print __($guid, "Start Date") ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("Last School") ;
+								print __($guid, "Last School") ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("Parents") ;
+								print __($guid, "Parents") ;
 							print "</th>" ;
 						print "</tr>" ;
 	
@@ -313,22 +313,22 @@ else {
 								print "Count" ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("Name") ;
+								print __($guid, "Name") ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("Roll Group") ;
+								print __($guid, "Roll Group") ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("Username") ;
+								print __($guid, "Username") ;
 							print "</th>" ;
 							print "<th>" ;
 								print "Start Date" ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("Last School") ;
+								print __($guid, "Last School") ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("Parents") ;
+								print __($guid, "Parents") ;
 							print "</th>" ;
 						print "</tr>" ;
 
@@ -419,7 +419,7 @@ else {
 			}
 			else {
 				print "<div class='warning'>" ;
-					print _("There are no records to display.") ;
+					print __($guid, "There are no records to display.") ;
 				print "</div>" ;
 			}
 		}

@@ -25,12 +25,12 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/course_rollover.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Course Enrolment Rollover') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Course Enrolment Rollover') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -38,19 +38,19 @@ else {
 	$class="error" ;
 	if (!($addReturn=="")) {
 		if ($addReturn=="fail0") {
-			$addReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+			$addReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($addReturn=="fail2") {
-			$addReturnMessage=_("Your request failed due to a database error.") ;	
+			$addReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 		}
 		else if ($addReturn=="fail3") {
-			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail5") {
-			$updateReturnMessage=_("Your request was successful, but some data was not properly saved.") ;
+			$updateReturnMessage=__($guid, "Your request was successful, but some data was not properly saved.") ;
 		}
 		else if ($addReturn=="success0") {
-			$addReturnMessage=_("Your request was completed successfully. You can now add another record if you wish.") ;	
+			$addReturnMessage=__($guid, "Your request was completed successfully. You can now add another record if you wish.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -69,13 +69,13 @@ else {
 	//Step 1
 	if ($step==1) {
 		print "<h3>" ;
-		print _("Step 1") ;
+		print __($guid, "Step 1") ;
 		print "</h3>" ;
 		
 		$nextYear=getNextSchoolYearID($_SESSION[$guid]["gibbonSchoolYearID"], $connection2) ;
 		if ($nextYear==FALSE) {
 			print "<div class='error'>" ;
-			print _("The next school year cannot be determined, so this action cannot be performed.") ;
+			print __($guid, "The next school year cannot be determined, so this action cannot be performed.") ;
 			print "</div>" ;
 			}
 		else {
@@ -94,7 +94,7 @@ else {
 			$nameNext=$rowNext["name"] ;
 			if ($nameNext=="") {
 				print "<div class='error'>" ;
-				print _("The next school year cannot be determined, so this action cannot be performed.") ;
+				print __($guid, "The next school year cannot be determined, so this action cannot be performed.") ;
 				print "</div>" ;
 			}
 			else {
@@ -104,7 +104,7 @@ else {
 						<tr>
 							<td colspan=2 style='text-align: justify'> 
 								<?php
-								print sprintf(_('By clicking the "Proceed" button below you will initiate the course enrolment rollover from %1$s to %2$s. In a big school this operation may take some time to complete. %3$sYou are really, very strongly advised to backup all data before you proceed%4$s.'), "<b>" . $_SESSION[$guid]["gibbonSchoolYearName"] . "</b>", "<b>" . $nameNext. "</b>", "<span style=\"color: #cc0000\"><i>", "</i></span>") ;
+								print sprintf(__($guid, 'By clicking the "Proceed" button below you will initiate the course enrolment rollover from %1$s to %2$s. In a big school this operation may take some time to complete. %3$sYou are really, very strongly advised to backup all data before you proceed%4$s.'), "<b>" . $_SESSION[$guid]["gibbonSchoolYearName"] . "</b>", "<b>" . $nameNext. "</b>", "<span style=\"color: #cc0000\"><i>", "</i></span>") ;
 								?>
 							</td>
 						</tr>
@@ -121,13 +121,13 @@ else {
 	}
 	else if ($step==2) {
 		print "<h3>" ;
-		print _("Step 2") ;
+		print __($guid, "Step 2") ;
 		print "</h3>" ;
 		
 		$nextYear=$_POST["nextYear"] ;
 		if ($nextYear=="" OR $nextYear!=getNextSchoolYearID($_SESSION[$guid]["gibbonSchoolYearID"], $connection2)) {
 			print "<div class='error'>" ;
-			print _("The next school year cannot be determined, so this action cannot be performed.") ;
+			print __($guid, "The next school year cannot be determined, so this action cannot be performed.") ;
 			print "</div>" ;
 		}
 		else {
@@ -147,23 +147,23 @@ else {
 			$sequenceNext=$rowNext["sequenceNumber"] ;
 			if ($nameNext=="" OR $sequenceNext=="") {
 				print "<div class='error'>" ;
-				print _("The next school year cannot be determined, so this action cannot be performed.") ;
+				print __($guid, "The next school year cannot be determined, so this action cannot be performed.") ;
 				print "</div>" ;
 				}
 			else {
 				print "<p>" ;
-				print sprintf(_('In rolling over to %1$s, the following actions will take place. You may need to adjust some fields below to get the result you desire.'), $nameNext) ;
+				print sprintf(__($guid, 'In rolling over to %1$s, the following actions will take place. You may need to adjust some fields below to get the result you desire.'), $nameNext) ;
 				print "</p>" ;
 				
 				print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/course_rollover.php&step=3'>" ;
 					print "<h4>" ;
-					print sprintf(_('Options'), $nameNext) ;
+					print sprintf(__($guid, 'Options'), $nameNext) ;
 					print "</h4>" ;
 					?>
 					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 						<tr>
 							<td style='width: 275px'> 
-								<b><?php print _('Include Students') ?> *</b><br/>
+								<b><?php print __($guid, 'Include Students') ?> *</b><br/>
 							</td>
 							<td class="right">
 								<input checked type='checkbox' name='rollStudents'>
@@ -171,7 +171,7 @@ else {
 						</tr>
 						<tr>
 							<td style='width: 275px'> 
-								<b><?php print _('Include Teachers') ?> *</b><br/>
+								<b><?php print __($guid, 'Include Teachers') ?> *</b><br/>
 							</td>
 							<td class="right">
 								<input type='checkbox' name='rollTeachers'>
@@ -181,10 +181,10 @@ else {
 					<?php
 					
 					print "<h4>" ;
-					print _("Map Classess") ;
+					print __($guid, "Map Classess") ;
 					print "</h4>" ;
 					print "<p>" ;
-					print _("Determine which classes from this year roll to which classes in next year, and which not to rollover at all.") ;
+					print __($guid, "Determine which classes from this year roll to which classes in next year, and which not to rollover at all.") ;
 					print "</p>" ;
 					
 					$students=array() ;
@@ -231,17 +231,17 @@ else {
 					
 					if ($resultEnrol->rowCount()<1) {
 						print "<div class='error'>" ;
-						print _("There are no records to display.") ;
+						print __($guid, "There are no records to display.") ;
 						print "</div>" ;
 					}
 					else {
 						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr class='head'>" ;
 								print "<th>" ;
-									print _("Class") ;
+									print __($guid, "Class") ;
 								print "</th>" ;
 								print "<th>" ;
-									print _("New Class") ;
+									print __($guid, "New Class") ;
 								print "</th>" ;
 							print "</tr>" ;
 							
@@ -290,7 +290,7 @@ else {
 					print "<table cellspacing='0' style='width: 100%'>" ;	
 						print "<tr>" ;
 							print "<td>" ;
-								print "<span style='font-size: 90%'><i>* " . _("denotes a required field") . "</i></span>" ;
+								print "<span style='font-size: 90%'><i>* " . __($guid, "denotes a required field") . "</i></span>" ;
 							print "</td>" ;
 							print "<td class='right'>" ;
 								print "<input type='hidden' name='nextYear' value='$nextYear'>" ;
@@ -306,7 +306,7 @@ else {
 		$nextYear=$_POST["nextYear"] ;
 		if ($nextYear=="" OR $nextYear!=getNextSchoolYearID($_SESSION[$guid]["gibbonSchoolYearID"], $connection2)) {
 			print "<div class='error'>" ;
-			print _("The next school year cannot be determined, so this action cannot be performed.") ;
+			print __($guid, "The next school year cannot be determined, so this action cannot be performed.") ;
 			print "</div>" ;
 		}
 		else {
@@ -326,12 +326,12 @@ else {
 			$sequenceNext=$rowNext["sequenceNumber"] ;
 			if ($nameNext=="" OR $sequenceNext=="") {
 				print "<div class='error'>" ;
-				print _("The next school year cannot be determined, so this action cannot be performed.") ;
+				print __($guid, "The next school year cannot be determined, so this action cannot be performed.") ;
 				print "</div>" ;
 			}
 			else {
 				print "<h3>" ;
-				print _("Step 3") ;
+				print __($guid, "Step 3") ;
 				print "</h3>" ;
 				
 				$partialFail=FALSE ;
@@ -348,7 +348,7 @@ else {
 				
 				if ($rollStudents!="on" AND $rollTeachers!="on") {
 					print "<div class='error'>" ;
-						print _("Your request failed because your inputs were invalid.") ;
+						print __($guid, "Your request failed because your inputs were invalid.") ;
 					print "</div>" ;
 				}
 				else {
@@ -398,12 +398,12 @@ else {
 					//Feedback result!
 					if ($partialFail==TRUE) {
 						print "<div class='error'>" ;
-						print _("Your request was successful, but some data was not properly saved.") ;
+						print __($guid, "Your request was successful, but some data was not properly saved.") ;
 						print "</div>" ;
 					}
 					else {
 						print "<div class='success'>" ;
-						print _("Your request was completed successfully.") ;
+						print __($guid, "Your request was completed successfully.") ;
 						print "</div>" ;
 					}
 				}				

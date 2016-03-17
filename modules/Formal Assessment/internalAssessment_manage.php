@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Formal Assessment/internalAssessment_manage.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("Your request failed because you do not have access to this action.") ;
+		print __($guid, "Your request failed because you do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -54,7 +54,7 @@ else {
 			print "Manage Internal Assessment" ;
 		print "</h1>" ;
 		print "<div class='warning'>" ;
-			print _("Use the class listing on the right to choose a Internal Assessment to edit.") ;
+			print __($guid, "Use the class listing on the right to choose a Internal Assessment to edit.") ;
 		print "</div>" ;
 	}
 	//Check existence of and access to this class.
@@ -71,16 +71,16 @@ else {
 
 		if ($result->rowCount()!=1) {
 			print "<h1>" ;
-				print _("Manage Internal Assessment") ;
+				print __($guid, "Manage Internal Assessment") ;
 			print "</h1>" ;
 			print "<div class='error'>" ;
-				print _("The selected record does not exist, or you do not have access to it.") ;
+				print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 			print "</div>" ;	
 		}
 		else {
 			$row=$result->fetch() ;
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Manage') . " " . $row["course"] . "." . $row["class"] . " " . _('Internal Assessments') . "</div>" ;
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Manage') . " " . $row["course"] . "." . $row["class"] . " " . __($guid, 'Internal Assessments') . "</div>" ;
 			print "</div>" ;
 			
 			if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -88,7 +88,7 @@ else {
 			$class="error" ;
 			if (!($deleteReturn=="")) {
 				if ($deleteReturn=="success0") {
-					$deleteReturnMessage=_("Your request was completed successfully.") ;		
+					$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;		
 					$class="success" ;
 				}
 				print "<div class='$class'>" ;
@@ -98,7 +98,7 @@ else {
 		
 			//Add multiple columns
 			print "<div class='linkTop'>" ;
-				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/internalAssessment_manage_add.php&gibbonCourseClassID=$gibbonCourseClassID'>" . _('Add Multiple Columns') . "<img style='margin-left: 5px' title='" . _('Add Multiple Columns') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new_multi.png'/></a>" ;
+				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/internalAssessment_manage_add.php&gibbonCourseClassID=$gibbonCourseClassID'>" . __($guid, 'Add Multiple Columns') . "<img style='margin-left: 5px' title='" . __($guid, 'Add Multiple Columns') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new_multi.png'/></a>" ;
 			print "</div>" ;
 		
 			//Get teacher list
@@ -114,7 +114,7 @@ else {
 			}
 			if ($result->rowCount()>0) {
 				print "<h3>" ;
-					print _("Teachers") ;
+					print __($guid, "Teachers") ;
 				print "</h3>" ;	
 				print "<ul>" ;
 					while ($row=$result->fetch()) {
@@ -128,7 +128,7 @@ else {
 		
 			//Print mark
 			print "<h3>" ;
-				print _("Internal Assessment Columns") ;
+				print __($guid, "Internal Assessment Columns") ;
 			print "</h3>" ;	
 		
 			//Set pagination variable
@@ -149,21 +149,21 @@ else {
 
 			if ($result->rowCount()<1) {
 				print "<div class='error'>" ;
-				print _("There are no records to display.") ;
+				print __($guid, "There are no records to display.") ;
 				print "</div>" ;
 			}
 			else {
 				print "<table cellspacing='0' style='width: 100%'>" ;
 					print "<tr class='head'>" ;
 						print "<th>" ;
-							print _("Name") . "<br/>" ;
-							print "<span style='font-size: 85%; font-style: italic'>" . _("Type") . "</span>" ;
+							print __($guid, "Name") . "<br/>" ;
+							print "<span style='font-size: 85%; font-style: italic'>" . __($guid, "Type") . "</span>" ;
 						print "</th>" ;
 						print "<th>" ;
-							print _("Date<br/>Complete") ;
+							print __($guid, "Date<br/>Complete") ;
 						print "</th>" ;
 						print "<th>" ;
-							print _("Actions") ;
+							print __($guid, "Actions") ;
 						print "</th>" ;
 					print "</tr>" ;
 				
@@ -189,9 +189,9 @@ else {
 								}
 							print "</td>" ;
 							print "<td>" ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/internalAssessment_manage_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonInternalAssessmentColumnID=" . $row["gibbonInternalAssessmentColumnID"] . "'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/internalAssessment_manage_delete.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonInternalAssessmentColumnID=" . $row["gibbonInternalAssessmentColumnID"] . "'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/internalAssessment_write_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonInternalAssessmentColumnID=" . $row["gibbonInternalAssessmentColumnID"] . "'><img title='" . _('Enter Data') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/markbook.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/internalAssessment_manage_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonInternalAssessmentColumnID=" . $row["gibbonInternalAssessmentColumnID"] . "'><img title='" . __($guid, 'Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/internalAssessment_manage_delete.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonInternalAssessmentColumnID=" . $row["gibbonInternalAssessmentColumnID"] . "'><img title='" . __($guid, 'Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/internalAssessment_write_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonInternalAssessmentColumnID=" . $row["gibbonInternalAssessmentColumnID"] . "'><img title='" . __($guid, 'Enter Data') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/markbook.png'/></a> " ;
 							print "</td>" ;
 						print "</tr>" ;
 					

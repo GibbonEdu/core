@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/Planner/outcomes.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -30,13 +30,13 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print _("The highest grouped action cannot be determined.") ;
+		print __($guid, "The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
 		//Proceed!
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Manage Outcomes') . "</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Manage Outcomes') . "</div>" ;
 		print "</div>" ;
 		
 		//Get Smart Workflow help message
@@ -53,7 +53,7 @@ else {
 		$class="error" ;
 		if (!($deleteReturn=="")) {
 			if ($deleteReturn=="success0") {
-				$deleteReturnMessage=_("Your request was completed successfully.") ;		
+				$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;		
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;
@@ -89,20 +89,20 @@ else {
 		}
 	
 		print "<h3>" ;
-		print _("Filter") ;
+		print __($guid, "Filter") ;
 		print "</h3>" ;
 		print "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "'>" ;
 			print"<table class='noIntBorder' cellspacing='0' style='width: 100%'>" ;	
 				?>
 				<tr>
 					<td> 
-						<b><?php print _('Learning Areas') ?></b><br/>
+						<b><?php print __($guid, 'Learning Areas') ?></b><br/>
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
 						<?php
 						print "<select name='filter2' id='filter2' style='width:302px'>" ;
-							print "<option value=''>" . _('All Learning Areas') . "</option>" ;
+							print "<option value=''>" . __($guid, 'All Learning Areas') . "</option>" ;
 							try {
 								$dataSelect=array(); 
 								$sqlSelect="SELECT * FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name" ;
@@ -125,8 +125,8 @@ else {
 				print "<tr>" ;
 					print "<td class='right' colspan=2>" ;
 						print "<input type='hidden' name='q' value='" . $_GET["q"] . "'>" ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/outcomes.php'>" . _('Clear Filters') . "</a> " ;
-						print "<input type='submit' value='" . _('Go') . "'>" ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/outcomes.php'>" . __($guid, 'Clear Filters') . "</a> " ;
+						print "<input type='submit' value='" . __($guid, 'Go') . "'>" ;
 					print "</td>" ;
 				print "</tr>" ;
 			print"</table>" ;
@@ -134,17 +134,17 @@ else {
 		
 		
 		print "<h3>" ;
-		print _("Outcomes") ;
+		print __($guid, "Outcomes") ;
 		print "</h3>" ;
 		
 		if ($highestAction=="Manage Outcomes_viewEditAll" OR $highestAction=="Manage Outcomes_viewAllEditLearningArea") {
 			print "<div class='linkTop'>" ;
-			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/outcomes_add.php&filter2=$filter2'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/outcomes_add.php&filter2=$filter2'>" .  __($guid, 'Add') . "<img style='margin-left: 5px' title='" . __($guid, 'Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
 			print "</div>" ;
 		}
 		if ($result->rowCount()<1) {
 			print "<div class='error'>" ;
-			print _("There are no records to display.") ;
+			print __($guid, "There are no records to display.") ;
 			print "</div>" ;
 		}
 		else {
@@ -155,22 +155,22 @@ else {
 			print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
 					print "<th>" ;
-						print _("Scope") ;
+						print __($guid, "Scope") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Category") ;
+						print __($guid, "Category") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Name") ;
+						print __($guid, "Name") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Year Groups") ;
+						print __($guid, "Year Groups") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Active") ;
+						print __($guid, "Active") ;
 					print "</th>" ;
 					print "<th style='width: 100px'>" ;
-						print _("Actions") ;
+						print __($guid, "Actions") ;
 					print "</th>" ;
 				print "</tr>" ;
 				
@@ -215,7 +215,7 @@ else {
 							print getYearGroupsFromIDList($connection2, $row["gibbonYearGroupIDList"]) ;
 						print "</td>" ;
 						print "<td>" ;
-							print ynExpander($row["active"]) ;
+							print ynExpander($guid, $row["active"]) ;
 						print "</td>" ;
 						print "<td>" ;
 							print "<script type='text/javascript'>" ;	
@@ -229,8 +229,8 @@ else {
 							print "</script>" ;
 							
 							if ($highestAction=="Manage Outcomes_viewEditAll") {
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/outcomes_edit.php&gibbonOutcomeID=" . $row["gibbonOutcomeID"] . "&filter2=$filter2'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/outcomes_delete.php&gibbonOutcomeID=" . $row["gibbonOutcomeID"] . "&filter2=$filter2'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/outcomes_edit.php&gibbonOutcomeID=" . $row["gibbonOutcomeID"] . "&filter2=$filter2'><img title='" . __($guid, 'Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/outcomes_delete.php&gibbonOutcomeID=" . $row["gibbonOutcomeID"] . "&filter2=$filter2'><img title='" . __($guid, 'Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
 							}
 							else if ($highestAction=="Manage Outcomes_viewAllEditLearningArea") {
 								if ($row["scope"]=="Learning Area" AND $row["gibbonDepartmentID"]!="") {
@@ -244,13 +244,13 @@ else {
 										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 									}
 									if ($resultLearningAreaStaff->rowCount()>0) {
-										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/outcomes_edit.php&gibbonOutcomeID=" . $row["gibbonOutcomeID"] . "&filter2=$filter2'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/outcomes_delete.php&gibbonOutcomeID=" . $row["gibbonOutcomeID"] . "&filter2=$filter2'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
+										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/outcomes_edit.php&gibbonOutcomeID=" . $row["gibbonOutcomeID"] . "&filter2=$filter2'><img title='" . __($guid, 'Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/outcomes_delete.php&gibbonOutcomeID=" . $row["gibbonOutcomeID"] . "&filter2=$filter2'><img title='" . __($guid, 'Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
 									}
 								}
 							}
 							if ($row["description"]!="") {
-								print "<a title='" . _('View Description') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-left: 0px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' ' onclick='return false;' /></a>" ;
+								print "<a title='" . __($guid, 'View Description') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-left: 0px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' ' onclick='return false;' /></a>" ;
 							}
 						print "</td>" ;
 					print "</tr>" ;

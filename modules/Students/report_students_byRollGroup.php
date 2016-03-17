@@ -25,17 +25,17 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Students/report_students_byRollGroup.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Students by Roll Group') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Students by Roll Group') . "</div>" ;
 	print "</div>" ;
 	
 	print "<h2>" ;
-	print _("Choose Roll Group") ;
+	print __($guid, "Choose Roll Group") ;
 	print "</h2>" ;
 	
 	$gibbonRollGroupID=NULL ;
@@ -48,17 +48,17 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td style='width: 275px'> 
-					<b><?php print _('Roll Group') ?> *</b><br/>
+					<b><?php print __($guid, 'Roll Group') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select style="width: 302px" name="gibbonRollGroupID">
 						<?php
 						print "<option value=''></option>" ;
 						if ($gibbonRollGroupID=="*") {
-							print "<option selected value='*'>" . _('All') . "</option>" ;
+							print "<option selected value='*'>" . __($guid, 'All') . "</option>" ;
 						}
 						else {
-							print "<option value='*'>" . _('All') . "</option>" ;
+							print "<option value='*'>" . __($guid, 'All') . "</option>" ;
 						}
 						try {
 							$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -82,7 +82,7 @@ else {
 			<tr>
 				<td colspan=2 class="right">
 					<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/report_students_byRollGroup.php">
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
@@ -91,7 +91,7 @@ else {
 	
 	if ($gibbonRollGroupID!="") {
 		print "<h2>" ;
-		print _("Report Data") ;
+		print __($guid, "Report Data") ;
 		print "</h2>" ;
 		
 		if ($gibbonRollGroupID!="*") {
@@ -107,7 +107,7 @@ else {
 			
 			if ($result->rowCount()==1) {
 				$row=$result->fetch() ;
-				print "<p style='margin-bottom: 0px'><b>" . _('Roll Group') . "</b>: " . $row["name"] . "</p>" ;
+				print "<p style='margin-bottom: 0px'><b>" . __($guid, 'Roll Group') . "</b>: " . $row["name"] . "</p>" ;
 				
 				//Show Tutors
 				try {
@@ -121,7 +121,7 @@ else {
 				}
 				if ($resultDetail->rowCount()>0) {
 					$tutorCount=0 ;
-					print "<p style=''><b>" . _('Tutors') . "</b>: " ;
+					print "<p style=''><b>" . __($guid, 'Tutors') . "</b>: " ;
 					while ($rowDetail=$resultDetail->fetch()) {
 						print formatName($rowDetail["title"], $rowDetail["preferredName"], $rowDetail["surname"], "Staff") ;
 						$tutorCount++ ;
@@ -152,38 +152,38 @@ else {
 		}
 		
 		print "<div class='linkTop'>" ;
-		print "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_students_byRollGroup_print.php&gibbonRollGroupID=$gibbonRollGroupID'>" .  _('Print') . "<img style='margin-left: 5px' title='" . _('Print') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
+		print "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_students_byRollGroup_print.php&gibbonRollGroupID=$gibbonRollGroupID'>" .  __($guid, 'Print') . "<img style='margin-left: 5px' title='" . __($guid, 'Print') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
 		print "</div>" ;
 	
 		print "<table class='mini' cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print _("Roll Group") ;
+					print __($guid, "Roll Group") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Student") ;
+					print __($guid, "Student") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Gender") ;
+					print __($guid, "Gender") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Age") . "<br/>" ;
-					print "<span style='font-style: italic; font-size: 85%'>" . _('DOB') . "</span>" ;
+					print __($guid, "Age") . "<br/>" ;
+					print "<span style='font-style: italic; font-size: 85%'>" . __($guid, 'DOB') . "</span>" ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Nationality") ;
+					print __($guid, "Nationality") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Transport") ;
+					print __($guid, "Transport") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("House") ;
+					print __($guid, "House") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Locker") ;
+					print __($guid, "Locker") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Medical") ;
+					print __($guid, "Medical") ;
 				print "</th>" ;
 			print "</tr>" ;
 			
@@ -260,7 +260,7 @@ else {
 						if ($resultForm->rowCount()==1) {
 							$rowForm=$resultForm->fetch() ;
 							if ($rowForm["longTermMedication"]=='Y') {
-								print "<b><i>" . _('Long Term Medication') . "</i></b>: " . $rowForm["longTermMedicationDetails"] . "<br/>" ;
+								print "<b><i>" . __($guid, 'Long Term Medication') . "</i></b>: " . $rowForm["longTermMedicationDetails"] . "<br/>" ;
 							}
 							$condCount=1 ;
 							try {
@@ -274,19 +274,19 @@ else {
 							}
 	
 							while ($rowConditions=$resultConditions->fetch()) {
-								print "<b><i>" . _('Condition') . " $condCount</i></b> " ;
-								print ": " . _($rowConditions["name"]) ;
+								print "<b><i>" . __($guid, 'Condition') . " $condCount</i></b> " ;
+								print ": " . __($guid, $rowConditions["name"]) ;
 								
 								$alert=getAlert($connection2, $rowConditions["gibbonAlertLevelID"]) ;
 								if ($alert!=FALSE) {
-									print " <span style='color: #" . $alert["color"] . "; font-weight: bold'>(" . _($alert["name"]) . " " . _('Risk') . ")</span>" ;
+									print " <span style='color: #" . $alert["color"] . "; font-weight: bold'>(" . __($guid, $alert["name"]) . " " . __($guid, 'Risk') . ")</span>" ;
 									print "<br/>" ;									
 									$condCount++ ;
 								}
 							}
 						}
 						else {
-							print "<i>" . _('No medical data') . "</i>" ;
+							print "<i>" . __($guid, 'No medical data') . "</i>" ;
 						}
 						
 					print "</td>" ;
@@ -295,7 +295,7 @@ else {
 			if ($count==0) {
 				print "<tr class=$rowNum>" ;
 					print "<td colspan=2>" ;
-						print _("There are no records to display.") ;
+						print __($guid, "There are no records to display.") ;
 					print "</td>" ;
 				print "</tr>" ;
 			}

@@ -22,13 +22,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/medicalForm_manage_edit.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/medicalForm_manage.php'>" . _('Manage Medical Forms') . "</a> > </div><div class='trailEnd'>" . _('Edit Medical Form') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/medicalForm_manage.php'>" . __($guid, 'Manage Medical Forms') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Edit Medical Form') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -36,19 +36,19 @@ else {
 	$class="error" ;
 	if (!($updateReturn=="")) {
 		if ($updateReturn=="fail0") {
-			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($updateReturn=="fail1") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail2") {
-			$updateReturnMessage=_("Your request failed due to a database error.") ;	
+			$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 		}
 		else if ($updateReturn=="fail3") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="success0") {
-			$updateReturnMessage=_("Your request was completed successfully.") ;	
+			$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -61,7 +61,7 @@ else {
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="success0") {
-			$deleteReturnMessage=_("Your request was completed successfully.") ;		
+			$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;		
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -77,7 +77,7 @@ else {
 	}
 	if ($gibbonPersonMedicalID=="") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -93,7 +93,7 @@ else {
 
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print _("The specified record cannot be found.") ;
+				print __($guid, "The specified record cannot be found.") ;
 			print "</div>" ;
 		}
 		else {
@@ -102,7 +102,7 @@ else {
 			
 			if ($search!="") {
 				print "<div class='linkTop'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/medicalForm_manage.php&search=$search'>" . _('Back to Search Results') . "</a>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/medicalForm_manage.php&search=$search'>" . __($guid, 'Back to Search Results') . "</a>" ;
 				print "</div>" ;
 			}
 			?>
@@ -110,8 +110,8 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td style='width: 275px'> 
-							<b><?php print _('Person') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+							<b><?php print __($guid, 'Person') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
 							<?php
@@ -129,7 +129,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Blood Type') ?></b><br/>
+							<b><?php print __($guid, 'Blood Type') ?></b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
@@ -148,7 +148,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Long-Term Medication?') ?></b><br/>
+							<b><?php print __($guid, 'Long-Term Medication?') ?></b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
@@ -161,7 +161,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Medication Details') ?></b><br/>
+							<b><?php print __($guid, 'Medication Details') ?></b><br/>
 						</td>
 						<td class="right">
 							<textarea name="longTermMedicationDetails" id="longTermMedicationDetails" rows=8 style="width: 300px"><?php print $row["longTermMedicationDetails"] ?></textarea>
@@ -169,24 +169,24 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Tetanus Within Last 10 Years?') ?></b><br/>
+							<b><?php print __($guid, 'Tetanus Within Last 10 Years?') ?></b><br/>
 						</td>
 						<td class="right">
 							<select style="width: 302px" name="tetanusWithin10Years">
 								<option <?php if ($row["tetanusWithin10Years"]=="") {print "selected ";}?>value=""></option>
-								<option <?php if ($row["tetanusWithin10Years"]=="Y") {print "selected ";}?>value="Y"><?php print _('Yes') ?></option>
-								<option <?php if ($row["tetanusWithin10Years"]=="N") {print "selected ";}?>value="N"><?php print _('No') ?></option>
+								<option <?php if ($row["tetanusWithin10Years"]=="Y") {print "selected ";}?>value="Y"><?php print __($guid, 'Yes') ?></option>
+								<option <?php if ($row["tetanusWithin10Years"]=="N") {print "selected ";}?>value="N"><?php print __($guid, 'No') ?></option>
 							</select>
 						</td>
 					</tr>						
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="gibbonPersonMedicalID" value="<?php print $row["gibbonPersonMedicalID"] ?>">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<?php print _("Submit") ; ?>">
+							<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
@@ -194,7 +194,7 @@ else {
 			<?php
 			
 			print "<h2>" ;
-			print _("Medical Conditions") ;
+			print __($guid, "Medical Conditions") ;
 			print "</h2>" ;
 			
 			try {
@@ -208,34 +208,34 @@ else {
 			}
 			
 			print "<div class='linkTop'>" ;
-			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/medicalForm_manage_condition_add.php&gibbonPersonMedicalID=" . $row["gibbonPersonMedicalID"] . "&search=$search'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/medicalForm_manage_condition_add.php&gibbonPersonMedicalID=" . $row["gibbonPersonMedicalID"] . "&search=$search'>" .  __($guid, 'Add') . "<img style='margin-left: 5px' title='" . __($guid, 'Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
 			print "</div>" ;
 			
 			if ($result->rowCount()<1) {
 				print "<div class='error'>" ;
-				print _("There are no records to display.") ;
+				print __($guid, "There are no records to display.") ;
 				print "</div>" ;
 			}
 			else {
 				print "<table cellspacing='0' style='width: 100%'>" ;
 					print "<tr class='head'>" ;
 						print "<th>" ;
-							print _("Name") ;
+							print __($guid, "Name") ;
 						print "</th>" ;
 						print "<th>" ;
-							print _("Risk") ;
+							print __($guid, "Risk") ;
 						print "</th>" ;
 						print "<th>" ;
-							print _("Details") ;
+							print __($guid, "Details") ;
 						print "</th>" ;
 						print "<th>" ;
-							print _("Medication") ;
+							print __($guid, "Medication") ;
 						print "</th>" ;
 						print "<th>" ;
-							print _("Comment") ;
+							print __($guid, "Comment") ;
 						print "</th>" ;
 						print "<th>" ;
-							print _("Actions") ;
+							print __($guid, "Actions") ;
 						print "</th>" ;
 					print "</tr>" ;
 					
@@ -253,26 +253,26 @@ else {
 						//COLOR ROW BY STATUS!
 						print "<tr class=$rowNum>" ;
 							print "<td>" ;
-								print _($row["name"]) ;
+								print __($guid, $row["name"]) ;
 							print "</td>" ;
 							print "<td>" ;
-								print _($row["risk"]) ;
+								print __($guid, $row["risk"]) ;
 							print "</td>" ;
 							print "<td>" ;
 								if ($row["triggers"]!="") {
-									print "<b>" . _('Triggers') . ":</b> " . $row["triggers"] . "<br/>" ;
+									print "<b>" . __($guid, 'Triggers') . ":</b> " . $row["triggers"] . "<br/>" ;
 								}
 								if ($row["reaction"]!="") {
-									print "<b>" . _('Reaction') . ":</b> " . $row["reaction"] . "<br/>" ;
+									print "<b>" . __($guid, 'Reaction') . ":</b> " . $row["reaction"] . "<br/>" ;
 								}
 								if ($row["response"]!="") {
-									print "<b>" . _('Response') . ":</b> " . $row["response"] . "<br/>" ;
+									print "<b>" . __($guid, 'Response') . ":</b> " . $row["response"] . "<br/>" ;
 								}
 								if ($row["lastEpisode"]!="") {
-									print "<b>" . _('Last Episode') . ":</b> " . dateConvertBack($guid, $row["lastEpisode"]) . "<br/>" ;
+									print "<b>" . __($guid, 'Last Episode') . ":</b> " . dateConvertBack($guid, $row["lastEpisode"]) . "<br/>" ;
 								}
 								if ($row["lastEpisodeTreatment"]!="") {
-									print "<b>" . _('Last Episode Treatment') . ":</b> " . $row["lastEpisodeTreatment"] . "<br/>" ;
+									print "<b>" . __($guid, 'Last Episode Treatment') . ":</b> " . $row["lastEpisodeTreatment"] . "<br/>" ;
 								}
 							print "</td>" ;
 							print "<td>" ;
@@ -282,8 +282,8 @@ else {
 								print $row["comment"] ;
 							print "</td>" ;
 							print "<td>" ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/medicalForm_manage_condition_edit.php&gibbonPersonMedicalID=" . $row["gibbonPersonMedicalID"] . "&gibbonPersonMedicalConditionID=" . $row["gibbonPersonMedicalConditionID"] . "&search=$search'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/medicalForm_manage_condition_delete.php&gibbonPersonMedicalID=" . $row["gibbonPersonMedicalID"] . "&gibbonPersonMedicalConditionID=" . $row["gibbonPersonMedicalConditionID"] . "&search=$search'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/medicalForm_manage_condition_edit.php&gibbonPersonMedicalID=" . $row["gibbonPersonMedicalID"] . "&gibbonPersonMedicalConditionID=" . $row["gibbonPersonMedicalConditionID"] . "&search=$search'><img title='" . __($guid, 'Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/medicalForm_manage_condition_delete.php&gibbonPersonMedicalID=" . $row["gibbonPersonMedicalID"] . "&gibbonPersonMedicalConditionID=" . $row["gibbonPersonMedicalConditionID"] . "&search=$search'><img title='" . __($guid, 'Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 							print "</td>" ;
 						print "</tr>" ;
 					}

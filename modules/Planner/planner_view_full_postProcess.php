@@ -124,14 +124,14 @@ else {
 				$resultClassGroup->execute($dataClassGroup);
 				while ($rowClassGroup=$resultClassGroup->fetch()) {
 					if ($rowClassGroup["gibbonPersonID"]!=$_SESSION[$guid]["gibbonPersonID"] AND $rowClassGroup["gibbonPersonID"]!=$replyToID) {
-						$notificationText=sprintf(_('Someone has commented on your lesson plan "%1$s".'), $row["name"]) ;
+						$notificationText=sprintf(__($guid, 'Someone has commented on your lesson plan "%1$s".'), $row["name"]) ;
 						setNotification($connection2, $guid, $rowClassGroup["gibbonPersonID"], $notificationText, "Planner", "/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=date&date=" . $row["date"] . "&gibbonCourseClassID=&search=#chat") ;
 					} 
 				}
 				
 				//Create notification to person I am replying to
 				if (is_null($replyToID)==FALSE) {
-					$notificationText=sprintf(_('Someone has replied to a comment you made on lesson plan "%1$s".'), $row["name"]) ;
+					$notificationText=sprintf(__($guid, 'Someone has replied to a comment you made on lesson plan "%1$s".'), $row["name"]) ;
 					setNotification($connection2, $guid, $replyToID, $notificationText, "Planner", "/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=date&date=" . $row["date"] . "&gibbonCourseClassID=&search=#chat") ;
 				}
 						

@@ -22,13 +22,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/permission_manage.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Manage Permissions') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Manage Permissions') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -36,16 +36,16 @@ else {
 	$class="error" ;
 	if (!($updateReturn=="")) {
 		if ($updateReturn=="fail0") {
-			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($updateReturn=="fail2") {
-			$updateReturnMessage=_("Your request failed due to a database error.") ;	
+			$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 		}
 		else if ($updateReturn=="fail3") {
-			$updateReturnMessage=sprintf(_('Your PHP environment cannot handle all of the fields in this form (the current limit is %1$s). Ask your web host or system administrator to increase the value of the max_input_vars in php.ini.'), ini_get("max_input_vars")) ;	
+			$updateReturnMessage=sprintf(__($guid, 'Your PHP environment cannot handle all of the fields in this form (the current limit is %1$s). Ask your web host or system administrator to increase the value of the max_input_vars in php.ini.'), ini_get("max_input_vars")) ;	
 		}
 		else if ($updateReturn=="success0") {
-			$updateReturnMessage=_("Your request was completed successfully.") ;	
+			$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -85,7 +85,7 @@ else {
 	
 	if ($resultRoles->rowCount()<1 OR $resultModules->rowCount()<1) {
 		print "<div class='error'>" ;
-		print _("Your request failed due to a database error.") ;	
+		print __($guid, "Your request failed due to a database error.") ;	
 		print "</div>" ;
 	}
 	else {
@@ -116,7 +116,7 @@ else {
 			while ($rowModules=$resultModules->fetch()) {
 				print "<tr class='break'>" ;
 					print "<td colspan=" . ($resultRoles->rowCount()+1) . ">" ;
-						print "<h3>" . _($rowModules["name"]) . "</h3>";
+						print "<h3>" . __($guid, $rowModules["name"]) . "</h3>";
 					print "</td>" ;
 				print "</tr>" ;
 				
@@ -134,12 +134,12 @@ else {
 					print "<tr class='head'>" ;
 						print "<th class='width: 60px!important'>Action</td>";
 						for ($i=0;$i<count($roleArray);$i++) {
-							print "<th style='padding: 0!important'><span title='" . htmlPrep(_($roleArray[$i][3])) . "'>" . _($roleArray[$i][1]) . "</span></th>";
+							print "<th style='padding: 0!important'><span title='" . htmlPrep(__($guid, $roleArray[$i][3])) . "'>" . __($guid, $roleArray[$i][1]) . "</span></th>";
 						}
 					print "</tr>" ;
 					while ($rowActions=$resultActions->fetch()) {
 						print "<tr>" ;
-						print "<td><span title='" . htmlPrep(_($rowActions["description"])) . "'>" . _($rowActions["name"]) . "</span></td>";
+						print "<td><span title='" . htmlPrep(__($guid, $rowActions["description"])) . "'>" . __($guid, $rowActions["name"]) . "</span></td>";
 							for ($i=0;$i<$resultRoles->rowCount();$i++) {
 								print "<td>" ;
 									$checked="" ;
@@ -192,8 +192,8 @@ else {
 					print "<td colspan=" . ($resultRoles->rowCount()+1) . ">" ;
 						print "<div class='error'>" ;
 						print "php.ini max_input_vars=" . $max_input_vars . "<br />";
-						print _("Number of inputs on this page") . "=" . $total_vars . "<br/>";
-						print sprintf(_('This form is very large and data will be truncated unless you edit php.ini. Add the line <i>max_input_vars=%1$s</i> to your php.ini file on your server.'), $total_vars_rounded) ;
+						print __($guid, "Number of inputs on this page") . "=" . $total_vars . "<br/>";
+						print sprintf(__($guid, 'This form is very large and data will be truncated unless you edit php.ini. Add the line <i>max_input_vars=%1$s</i> to your php.ini file on your server.'), $total_vars_rounded) ;
 						print "</div>" ;	
 					print "</td>" ;
 				print "</tr>" ;

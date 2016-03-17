@@ -25,16 +25,16 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Students/report_student_dataUpdaterHistory.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Student ID Cards') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Student ID Cards') . "</div>" ;
 	print "</div>" ;
 	print "<p>" ;
-	print _("This report allows a user to select a range of students and create ID cards for those students.") ;
+	print __($guid, "This report allows a user to select a range of students and create ID cards for those students.") ;
 	print "</p>" ;
 	
 	print "<h2>" ;
@@ -47,12 +47,12 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td style='width: 275px'> 
-					<b><?php print _('Students') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
+					<b><?php print __($guid, 'Students') ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></i></span>
 				</td>
 				<td class="right">
 					<select name="Members[]" id="Members[]" multiple style="width: 302px; height: 150px">
-						<optgroup label='--<?php print _('Students by Roll Group') ?>--'>
+						<optgroup label='--<?php print __($guid, 'Students by Roll Group') ?>--'>
 							<?php
 							try {
 								$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -66,7 +66,7 @@ else {
 							}
 							?>
 						</optgroup>
-						<optgroup label='--<?php print _('Students by Name') ?>--'>
+						<optgroup label='--<?php print __($guid, 'Students by Name') ?>--'>
 							<?php
 							try {
 								$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -85,8 +85,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Card Background') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('.png or .jpg file, 448 x 268px.') ?></i></span>
+					<b><?php print __($guid, 'Card Background') ?></b><br/>
+					<span style="font-size: 90%"><i><?php print __($guid, '.png or .jpg file, 448 x 268px.') ?></i></span>
 				</td>
 				<td class="right">
 					<input type="file" name="file" id="file"><br/><br/>
@@ -111,7 +111,7 @@ else {
 			</tr>
 			<tr>
 				<td colspan=2 class="right">
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
@@ -126,7 +126,7 @@ else {
 	if (count($choices)>0) {
 		
 		print "<h2>" ;
-		print _("Report Data") ;
+		print __($guid, "Report Data") ;
 		print "</h2>" ;
 		
 		try {
@@ -153,7 +153,7 @@ else {
 		}
 		else {
 			print "<p>" ;
-			print _("These cards are designed to be printed to credit-card size, however, they will look bigger on screen. To print in high quality (144dpi) and at true size, save the cards as an image, and print to 50% scale.") ;
+			print __($guid, "These cards are designed to be printed to credit-card size, however, they will look bigger on screen. To print in high quality (144dpi) and at true size, save the cards as an image, and print to 50% scale.") ;
 			print "</p>" ;
 			
 			//Get background image
@@ -205,10 +205,10 @@ else {
 								print "<td style='padding: 15px 0 0 0 ; text-align: left; width: 280px; vertical-align: top; font-size: 22px'>" ;
 									print "<div style='padding: 5px; background-color: rgba(255,255,255,0.3); min-height: 200px'>" ;
 										print "<div style='font-weight: bold; font-size: 30px'>" .$row["officialName"] . "</div><br/>" ;
-										print "<b>" . _('DOB') . "</b>: <span style='float: right'><i>" . dateConvertBack($guid, $row["dob"]) . "</i></span><br/>" ;
-										print "<b>" . $_SESSION[$guid]["organisationNameShort"] . " " . _('ID') . "</b>: <span style='float: right'><i>" . $row["studentID"] . "</i></span><br/>" ;
-										print "<b>" . _('Year/Roll') . "</b>: <span style='float: right'><i>" . _($row["year"]) . " / " . $row["roll"] . "</i></span><br/>" ;
-										print "<b>" . _('School Year') . "</b>: <span style='float: right'><i>" . $_SESSION[$guid]["gibbonSchoolYearName"] . "</i></span><br/>" ;
+										print "<b>" . __($guid, 'DOB') . "</b>: <span style='float: right'><i>" . dateConvertBack($guid, $row["dob"]) . "</i></span><br/>" ;
+										print "<b>" . $_SESSION[$guid]["organisationNameShort"] . " " . __($guid, 'ID') . "</b>: <span style='float: right'><i>" . $row["studentID"] . "</i></span><br/>" ;
+										print "<b>" . __($guid, 'Year/Roll') . "</b>: <span style='float: right'><i>" . __($guid, $row["year"]) . " / " . $row["roll"] . "</i></span><br/>" ;
+										print "<b>" . __($guid, 'School Year') . "</b>: <span style='float: right'><i>" . $_SESSION[$guid]["gibbonSchoolYearName"] . "</i></span><br/>" ;
 									print "</div>" ;
 								print "</td>" ;
 							print "</tr>" ;

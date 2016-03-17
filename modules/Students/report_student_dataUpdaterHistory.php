@@ -25,20 +25,20 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Students/report_student_dataUpdaterHistory.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Student Data Updater History') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Student Data Updater History') . "</div>" ;
 	print "</div>" ;
 	print "<p>" ;
-	print _("This report allows a user to select a range of students and check whether or not they have had their personal and medical data updated after a specified date.") ;
+	print __($guid, "This report allows a user to select a range of students and check whether or not they have had their personal and medical data updated after a specified date.") ;
 	print "</p>" ;
 	
 	print "<h2>" ;
-	print _("Choose Students") ;
+	print __($guid, "Choose Students") ;
 	print "</h2>" ;
 	
 	$nonCompliant=NULL ;
@@ -55,12 +55,12 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td style='width: 275px'> 
-					<b><?php print _('Students') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
+					<b><?php print __($guid, 'Students') ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></i></span>
 				</td>
 				<td class="right">
 					<select name="Members[]" id="Members[]" multiple style="width: 302px; height: 150px">
-						<optgroup label='--<?php print _('Students by Roll Group') ?>--'>
+						<optgroup label='--<?php print __($guid, 'Students by Roll Group') ?>--'>
 							<?php
 							try {
 								$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -74,7 +74,7 @@ else {
 							}
 							?>
 						</optgroup>
-						<optgroup label='--<?php print _('Students by Name') ?>--'>
+						<optgroup label='--<?php print __($guid, 'Students by Name') ?>--'>
 							<?php
 							try {
 								$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -93,8 +93,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Date') ?> *</b><br/>
-					<span style="font-size: 85%"><i><?php print _('Earliest acceptable update') ?><br/><?php print _('Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
+					<b><?php print __($guid, 'Date') ?> *</b><br/>
+					<span style="font-size: 85%"><i><?php print __($guid, 'Earliest acceptable update') ?><br/><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
 				</td>
 				<td class="right">
 					<input name="date" id="date" maxlength=10 value="<?php if ($date!="") { print $date ; } else { print date($_SESSION[$guid]["i18n"]["dateFormatPHP"], (time()-(604800*26))) ; } ?>" type="text" style="width: 300px">
@@ -112,8 +112,8 @@ else {
 			</tr>
 			<tr>
 			<td> 
-				<b><?php print _('Show Only Non-Compliant?') ?></b><br/>
-				<span style="font-size: 85%"><i><?php print _('If not checked, show all. If checked, show only non-compliant students.') ?></i><br/>
+				<b><?php print __($guid, 'Show Only Non-Compliant?') ?></b><br/>
+				<span style="font-size: 85%"><i><?php print __($guid, 'If not checked, show all. If checked, show only non-compliant students.') ?></i><br/>
 				</i></span>
 			</td>
 			<td class="right">
@@ -122,7 +122,7 @@ else {
 		</tr>
 			<tr>
 				<td colspan=2 class="right">
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
@@ -137,7 +137,7 @@ else {
 	if (count($choices)>0) {
 		
 		print "<h2>" ;
-		print _("Report Data") ;
+		print __($guid, "Report Data") ;
 		print "</h2>" ;
 		
 		try {
@@ -163,19 +163,19 @@ else {
 					
 				print "</th>" ;
 				print "<th>" ;
-					print _("Student") ;
+					print __($guid, "Student") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Roll Group") ;
+					print __($guid, "Roll Group") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Personal Data") ;
+					print __($guid, "Personal Data") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Medical Data") ;
+					print __($guid, "Medical Data") ;
 				print "</th>" ;
 					print "<th>" ;
-						print _("Parent Emails") ;
+						print __($guid, "Parent Emails") ;
 					print "</th>" ;
 			print "</tr>" ;
 			
@@ -203,7 +203,7 @@ else {
 					}
 				}
 				else {
-					$personal="<span style='color: #ff0000; font-weight: bold'>" . _("No data") . "</span>" ;
+					$personal="<span style='color: #ff0000; font-weight: bold'>" . __($guid, "No data") . "</span>" ;
 					$personalFail=TRUE ;
 				}
 				
@@ -230,7 +230,7 @@ else {
 					}
 				}
 				else {
-					$medical="<span style='color: #ff0000; font-weight: bold'>" . _("No data") . "</span>" ;
+					$medical="<span style='color: #ff0000; font-weight: bold'>" . __($guid, "No data") . "</span>" ;
 					$medicalFail=TRUE ;
 				}
 			
@@ -305,7 +305,7 @@ else {
 			if ($count==0) {
 				print "<tr class=$rowNum>" ;
 					print "<td colspan=5>" ;
-						print _("There are no records to display.") ;
+						print __($guid, "There are no records to display.") ;
 					print "</td>" ;
 				print "</tr>" ;
 			}

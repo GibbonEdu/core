@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/gradeScales_manage_edit_grade_add.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -31,7 +31,7 @@ else {
 	
 	if ($gibbonScaleID=="") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -47,14 +47,14 @@ else {
 
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print _("The specified record does not exist.") ;
+				print __($guid, "The specified record does not exist.") ;
 			print "</div>" ;
 		}
 		else {
 			$row=$result->fetch() ;
 			
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/gradeScales_manage.php'>" . _('Manage Grade Scales') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/gradeScales_manage_edit.php&gibbonScaleID=$gibbonScaleID'>" . _('Edit Grade Scale') . "</a> > </div><div class='trailEnd'>" . _('Add Grade') . "</div>" ;
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/gradeScales_manage.php'>" . __($guid, 'Manage Grade Scales') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/gradeScales_manage_edit.php&gibbonScaleID=$gibbonScaleID'>" . __($guid, 'Edit Grade Scale') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Add Grade') . "</div>" ;
 			print "</div>" ;
 			
 			if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -62,22 +62,22 @@ else {
 			$class="error" ;
 			if (!($addReturn=="")) {
 				if ($addReturn=="fail0") {
-					$addReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+					$addReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 				}
 				else if ($addReturn=="fail2") {
-					$addReturnMessage=_("Your request failed due to a database error.") ;	
+					$addReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 				}
 				else if ($addReturn=="fail3") {
-					$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($addReturn=="fail4") {
-					$addReturnMessage=_("Your request failed because some inputs did not meet a requirement for uniqueness.") ;	
+					$addReturnMessage=__($guid, "Your request failed because some inputs did not meet a requirement for uniqueness.") ;	
 				}
 				else if ($addReturn=="fail5") {
-					$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($addReturn=="success0") {
-					$addReturnMessage=_("Your request was completed successfully.") ;	
+					$addReturnMessage=__($guid, "Your request was completed successfully.") ;	
 					$class="success" ;
 				}
 				print "<div class='$class'>" ;
@@ -89,17 +89,17 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td style='width: 275px'> 
-							<b><?php print _('Grade Scale') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+							<b><?php print __($guid, 'Grade Scale') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
-							<input readonly name="name" id="name" maxlength=20 value="<?php print _($row["name"]) ?>" type="text" style="width: 300px">
+							<input readonly name="name" id="name" maxlength=20 value="<?php print __($guid, $row["name"]) ?>" type="text" style="width: 300px">
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Value') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('Must be unique for this grade scale.') ?></i></span>
+							<b><?php print __($guid, 'Value') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique for this grade scale.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="value" id="value" maxlength=10 value="" type="text" style="width: 300px">
@@ -111,7 +111,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Descriptor') ?> *</b><br/>
+							<b><?php print __($guid, 'Descriptor') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
@@ -124,8 +124,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Sequence Number') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('Must be unique for this grade scale.') ?><br/></i></span>
+							<b><?php print __($guid, 'Sequence Number') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique for this grade scale.') ?><br/></i></span>
 						</td>
 						<td class="right">
 							<input name="sequenceNumber" id="sequenceNumber" maxlength=5 value="" type="text" style="width: 300px">
@@ -137,24 +137,24 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Is Default?') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('Preselects this option when using this grade scale in appropriate contexts.') ?><br/></i></span>
+							<b><?php print __($guid, 'Is Default?') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Preselects this option when using this grade scale in appropriate contexts.') ?><br/></i></span>
 						</td>
 						<td class="right">
 							<select name="isDefault" id="isDefault" style="width: 302px">
-								<option value="N"><?php print ynExpander('N') ?></option>
-								<option value="Y"><?php print ynExpander('Y') ?></option>
+								<option value="N"><?php print ynExpander($guid, 'N') ?></option>
+								<option value="Y"><?php print ynExpander($guid, 'Y') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
 							<input name="gibbonScaleID" id="gibbonScaleID" value="<?php print $gibbonScaleID ?>" type="hidden">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<?php print _("Submit") ; ?>">
+							<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 						</td>
 					</tr>
 				</table>

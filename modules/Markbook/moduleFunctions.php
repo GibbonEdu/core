@@ -21,7 +21,7 @@ function classChooser($guid, $connection2, $gibbonCourseClassID) {
 	$output="" ;
 	
 	$output.="<h3 style='margin-top: 0px'>" ;
-		$output.=_("Choose Class") ;
+		$output.=__($guid, "Choose Class") ;
 	$output.="</h3>" ;	
 	$output.="<table cellspacing='0' class='noIntBorder' style='width: 100%; margin: 10px 0 10px 0'>" ;
 		$output.="<tr>" ;
@@ -41,7 +41,7 @@ function classChooser($guid, $connection2, $gibbonCourseClassID) {
 							$resultSelect->execute($dataSelect);
 						}
 						catch(PDOException $e) { }
-						$output.="<optgroup label='--" . _('My Classes') . "--'>" ;
+						$output.="<optgroup label='--" . __($guid, 'My Classes') . "--'>" ;
 						while ($rowSelect=$resultSelect->fetch()) {
 							$selected="" ;
 							if ($rowSelect["gibbonCourseClassID"]==$gibbonCourseClassID) {
@@ -58,7 +58,7 @@ function classChooser($guid, $connection2, $gibbonCourseClassID) {
 							$resultSelect->execute($dataSelect);
 						}
 						catch(PDOException $e) { }
-						$output.="<optgroup label='--" . _('All Classes') . "--'>" ;
+						$output.="<optgroup label='--" . __($guid, 'All Classes') . "--'>" ;
 						while ($rowSelect=$resultSelect->fetch()) {
 							$selected="" ;
 							if ($rowSelect["gibbonCourseClassID"]==$gibbonCourseClassID AND $selectCount==0) {
@@ -69,7 +69,7 @@ function classChooser($guid, $connection2, $gibbonCourseClassID) {
 						}
 						$output.="</optgroup>" ;
 					$output.="</select>" ;
-					$output.="<input type='submit' value='" . _('Go') . "'>" ;
+					$output.="<input type='submit' value='" . __($guid, 'Go') . "'>" ;
 				$output.="</form>" ;
 			$output.="</td>" ;
 		$output.="</tr>" ;

@@ -26,13 +26,13 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/department_manage_edit.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/department_manage.php'>" . _('Manage Departments') . "</a> > </div><div class='trailEnd'>" . _('Edit Department') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/department_manage.php'>" . __($guid, 'Manage Departments') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Edit Department') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -40,25 +40,25 @@ else {
 	$class="error" ;
 	if (!($updateReturn=="")) {
 		if ($updateReturn=="fail0") {
-			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($updateReturn=="fail1") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail2") {
-			$updateReturnMessage=_("Your request failed due to a database error.") ;	
+			$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 		}
 		else if ($updateReturn=="fail3") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail4") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail5") {
-			$updateReturnMessage=_("Your request failed due to an attachment error.") ;	
+			$updateReturnMessage=__($guid, "Your request failed due to an attachment error.") ;	
 		}
 		else if ($updateReturn=="success0") {
-			$updateReturnMessage=_("Your request was completed successfully.") ;	
+			$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -71,19 +71,19 @@ else {
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="fail0") {
-			$deleteReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+			$deleteReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($deleteReturn=="fail1") {
-			$deleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$deleteReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($deleteReturn=="fail2") {
-			$deleteReturnMessage=_("Your request failed due to a database error.") ;	
+			$deleteReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 		}
 		else if ($deleteReturn=="fail3") {
-			$deleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$deleteReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($deleteReturn=="success0") {
-			$deleteReturnMessage=_("Your request was completed successfully.") ;		
+			$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;		
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -95,7 +95,7 @@ else {
 	$gibbonDepartmentID=$_GET["gibbonDepartmentID"];
 	if ($gibbonDepartmentID=="Y") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -111,7 +111,7 @@ else {
 
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print _("The selected record does not exist, or you do not have access to it.") ;
+				print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 			print "</div>" ;
 		}
 		else {
@@ -122,13 +122,13 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr class='break'>
 						<td colspan=2>
-							<h3><?php print _('General Information') ?></h3>
+							<h3><?php print __($guid, 'General Information') ?></h3>
 						</td>
 					</tr>
 					<tr>
 						<td style='width: 275px'> 
-							<b><?php print _('Type') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i><br/></span>
+							<b><?php print __($guid, 'Type') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i><br/></span>
 						</td>
 						<td class="right">
 							<?php $type=$row["type"] ; ?>
@@ -137,7 +137,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Name') ?> *</b><br/>
+							<b><?php print __($guid, 'Name') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<input name="name" id="name" maxlength=40 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
@@ -149,7 +149,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Short Name') ?> *</b><br/>
+							<b><?php print __($guid, 'Short Name') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<input name="nameShort" id="nameShort" maxlength=4 value="<?php print $row["nameShort"] ?>" type="text" style="width: 300px">
@@ -161,7 +161,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Subject Listing') ?></b><br/>
+							<b><?php print __($guid, 'Subject Listing') ?></b><br/>
 						</td>
 						<td class="right">
 							<input name="subjectListing" id="subjectListing" maxlength=255 value="<?php print $row["subjectListing"] ?>" type="text" style="width: 300px">
@@ -169,22 +169,22 @@ else {
 					</tr>
 					<tr>
 						<td colspan=2> 
-							<b><?php print _('Blurb') ?></b> 
+							<b><?php print __($guid, 'Blurb') ?></b> 
 							<?php print getEditor($guid,  TRUE, "blurb", $row["blurb"], 20 ) ?>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Logo') ?></b><br/>
+							<b><?php print __($guid, 'Logo') ?></b><br/>
 							<span style="font-size: 90%"><i>125x125px jpg/png/gif</i><br/></span>
 							<?php if ($row["logo"]!="") { ?>
-							<span style="font-size: 90%"><i><?php print _('Will overwrite existing attachment.') ?></i></span>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Will overwrite existing attachment.') ?></i></span>
 							<?php } ?>
 						</td>
 						<td class="right">
 							<?php
 							if ($row["logo"]!="") {
-								print _("Current attachment:") . " <a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["logo"] . "'>" . $row["logo"] . "</a><br/><br/>" ;
+								print __($guid, "Current attachment:") . " <a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["logo"] . "'>" . $row["logo"] . "</a><br/><br/>" ;
 							}
 							?>
 							<input type="file" name="file" id="file"><br/><br/>
@@ -195,13 +195,13 @@ else {
 							
 							<script type="text/javascript">
 								var file=new LiveValidation('file');
-								file.add( Validate.Inclusion, { within: [<?php print $ext ;?>], failureMessage: "<?php print _('Illegal file type!') ?>", partialMatch: true, caseSensitive: false } );
+								file.add( Validate.Inclusion, { within: [<?php print $ext ;?>], failureMessage: "<?php print __($guid, 'Illegal file type!') ?>", partialMatch: true, caseSensitive: false } );
 							</script>
 						</td>
 					</tr>
 					<tr class='break'>
 						<td colspan=2> 
-							<h3><?php print _('Current Staff') ?></h3>
+							<h3><?php print __($guid, 'Current Staff') ?></h3>
 						</td>
 					</tr>
 					<tr>
@@ -219,7 +219,7 @@ else {
 
 							if ($result->rowCount()<1) {
 								print "<div class='error'>" ;
-								print _("There are no records to display.") ;
+								print __($guid, "There are no records to display.") ;
 								print "</div>" ;
 							}
 							else {
@@ -227,13 +227,13 @@ else {
 								print "<table cellspacing='0' style='width: 100%'>" ;
 									print "<tr class='head'>" ;
 										print "<th>" ;
-											print _("Name") ;
+											print __($guid, "Name") ;
 										print "</th>" ;
 										print "<th>" ;
-											print _("Role") ;
+											print __($guid, "Role") ;
 										print "</th>" ;
 										print "<th>" ;
-											print _("Action") ;
+											print __($guid, "Action") ;
 										print "</th>" ;
 									print "</tr>" ;
 									
@@ -257,7 +257,7 @@ else {
 												print $row["role"] ;
 											print "</td>" ;
 											print "<td>" ;
-												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/department_manage_edit_staff_deleteProcess.php?address=" . $_GET["q"] . "&gibbonDepartmentStaffID=" . $row["gibbonDepartmentStaffID"] . "&gibbonDepartmentID=$gibbonDepartmentID'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/department_manage_edit_staff_deleteProcess.php?address=" . $_GET["q"] . "&gibbonDepartmentStaffID=" . $row["gibbonDepartmentStaffID"] . "&gibbonDepartmentID=$gibbonDepartmentID'><img title='" . __($guid, 'Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 											print "</td>" ;
 										print "</tr>" ;
 									}
@@ -268,13 +268,13 @@ else {
 					</tr>
 					<tr class='break'>
 						<td colspan=2> 
-							<h3><?php print _('New Staff') ?></h3>
+							<h3><?php print __($guid, 'New Staff') ?></h3>
 						</td>
 					</tr>
 					<tr>
 					<td> 
 						<b>Staff</b><br/>
-						<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
+						<span style="font-size: 90%"><i><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></i></span>
 					</td>
 					<td class="right">
 						<select name="staff[]" id="staff[]" multiple style="width: 302px; height: 150px">
@@ -295,31 +295,31 @@ else {
 					
 					<tr id='roleLARow'>
 						<td> 
-							<b><?php print _('Role') ?></b><br/>
+							<b><?php print __($guid, 'Role') ?></b><br/>
 						</td>
 						<td class="right">
 							<select name="role" id="role" style="width: 302px">
 								<?php
 								if ($type=="Learning Area") {
 									?>
-									<option value="Coordinator"><?php print _('Coordinator') ?></option>
-									<option value="Assistant Coordinator"><?php print _('Assistant Coordinator') ?></option>
-									<option value="Teacher (Curriculum)"><?php print _('Teacher (Curriculum)') ?></option>
-									<option value="Teacher"><?php print _('Teacher') ?></option>
-									<option value="Other"><?php print _('Other') ?></option>
+									<option value="Coordinator"><?php print __($guid, 'Coordinator') ?></option>
+									<option value="Assistant Coordinator"><?php print __($guid, 'Assistant Coordinator') ?></option>
+									<option value="Teacher (Curriculum)"><?php print __($guid, 'Teacher (Curriculum)') ?></option>
+									<option value="Teacher"><?php print __($guid, 'Teacher') ?></option>
+									<option value="Other"><?php print __($guid, 'Other') ?></option>
 									<?php
 								}
 								else if ($type=="Administration") {
 									?>
-									<option value="Director"><?php print _('Director') ?></option>
-									<option value="Manager"><?php print _('Manager') ?></option>
-									<option value="Administrator"><?php print _('Administrator') ?></option>
-									<option value="Other"><?php print _('Other') ?></option>
+									<option value="Director"><?php print __($guid, 'Director') ?></option>
+									<option value="Manager"><?php print __($guid, 'Manager') ?></option>
+									<option value="Administrator"><?php print __($guid, 'Administrator') ?></option>
+									<option value="Other"><?php print __($guid, 'Other') ?></option>
 									<?php
 								}
 								else {
 									?>
-									<option value="Other"><?php print _('Other') ?></option>
+									<option value="Other"><?php print __($guid, 'Other') ?></option>
 									<?php
 								}
 								?>
@@ -329,10 +329,10 @@ else {
 					
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
-							<input type="submit" value="<?php print _("Submit") ; ?>">
+							<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 						</td>
 					</tr>
 				</table>

@@ -29,7 +29,7 @@ function getBorrowingRecord($guid, $connection2, $gibbonPersonID) {
 	catch(PDOException $e) { $output.="<div class='error'>" . $e->getMessage() . "</div>" ; }
 	if ($result->rowCount()<1) {
 		$output.="<div class='error'>" ;
-			$output.=_("There are no records to display.") ;
+			$output.=__($guid, "There are no records to display.") ;
 		$output.="</div>" ;
 	}
 	else {
@@ -39,21 +39,21 @@ function getBorrowingRecord($guid, $connection2, $gibbonPersonID) {
 						
 				$output.="</th>" ;
 				$output.="<th>" ;
-					$output.=_("Name") . "<br/>" ;
-					$output.="<span style='font-size: 85%; font-style: italic'>" . _('Author/Producer') . "</span>" ;
+					$output.=__($guid, "Name") . "<br/>" ;
+					$output.="<span style='font-size: 85%; font-style: italic'>" . __($guid, 'Author/Producer') . "</span>" ;
 				$output.="</th>" ;
 				$output.="<th>" ;
-					$output.=_("ID") ;
+					$output.=__($guid, "ID") ;
 				$output.="</th>" ;
 				$output.="<th>" ;
-					$output.=_("Location") ;
+					$output.=__($guid, "Location") ;
 				$output.="</th>" ;
 				$output.="<th>" ;
-					$output.=_("Borrow Date") . "<br/>" ;
-					$output.="<span style='font-size: 85%; font-style: italic'>" . _('Return Date') ."</span>" ;
+					$output.=__($guid, "Borrow Date") . "<br/>" ;
+					$output.="<span style='font-size: 85%; font-style: italic'>" . __($guid, 'Return Date') ."</span>" ;
 				$output.="</th>" ;
 				$output.="<th>" ;
-					$output.=_("Actions") ;
+					$output.=__($guid, "Actions") ;
 				$output.="</th>" ;
 			$output.="</tr>" ;
 			
@@ -119,7 +119,7 @@ function getBorrowingRecord($guid, $connection2, $gibbonPersonID) {
 							$output.="});" ;
 						$output.="</script>" ;
 						if ($row["fields"]!="") {
-							$output.="<a title='" . _('View Description') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='Show Details' onclick='return false;' /></a>" ;
+							$output.="<a title='" . __($guid, 'View Description') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='Show Details' onclick='return false;' /></a>" ;
 						}
 					$output.="</td>" ;
 				$output.="</tr>" ;
@@ -133,7 +133,7 @@ function getBorrowingRecord($guid, $connection2, $gibbonPersonID) {
 									if($fields[$typeField["name"]]!="") {
 										$output.="<tr>" ;
 											$output.="<td style='vertical-align: top; width: 200px'>" ;
-												$output.="<b>" . _($typeField["name"]) . "</b>" ;
+												$output.="<b>" . __($guid, $typeField["name"]) . "</b>" ;
 											$output.="</td>" ;
 											$output.="<td style='vertical-align: top'>" ;
 												if ($typeField["type"]=="URL") {

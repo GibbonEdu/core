@@ -53,7 +53,7 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
 //Check for CLI, so this cannot be run through browser
 if (php_sapi_name()!="cli") { 
-	print _("This script cannot be run from a browser, only via CLI.") . "\n\n" ;
+	print __($guid, "This script cannot be run from a browser, only via CLI.") . "\n\n" ;
 }
 else {
 	$emailSendCount=0 ;							
@@ -228,7 +228,7 @@ else {
 							$body=str_replace('[rollGroup]', $rollGroup, $body);
 							$body=str_replace('[behaviourCount]', $behaviourCount, $body);
 							$body=str_replace('[behaviourRecord]', $behaviourRecord, $body);
-							$body=str_replace('[systemEmailSignature]', "<i>" . sprintf(_('Email sent via %1$s at %2$s.'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationName"]) ."</i>", $body);
+							$body=str_replace('[systemEmailSignature]', "<i>" . sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationName"]) ."</i>", $body);
 						}
 						
 						if ($issueExistingLetter) { //Issue existing letter
@@ -247,7 +247,7 @@ else {
 								$email=TRUE; 
 							
 								//Notify tutor(s)
-								$notificationText=sprintf(_('A student (%1$s) in your form group has received a behaviour letter.'), $studentName) ;
+								$notificationText=sprintf(__($guid, 'A student (%1$s) in your form group has received a behaviour letter.'), $studentName) ;
 								if ($row["gibbonPersonIDTutor"]!="") {
 									setNotification($connection2, $guid, $row["gibbonPersonIDTutor"], $notificationText, "Behaviour", "/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID=" . $row["gibbonPersonID"]) ;
 								}
@@ -274,7 +274,7 @@ else {
 									$gibbonBehaviourLetterID=$connection2->lastInsertID() ;
 									
 									//Notify tutor(s)
-									$notificationText=sprintf(__('A warning has been issued for a student (%1$s) in your form group, pending a behaviour letter.'), $studentName) ;
+									$notificationText=sprintf(___($guid, 'A warning has been issued for a student (%1$s) in your form group, pending a behaviour letter.'), $studentName) ;
 									if ($row["gibbonPersonIDTutor"]!="") {
 										setNotification($connection2, $guid, $row["gibbonPersonIDTutor"], $notificationText, "Behaviour", "/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID=" . $row["gibbonPersonID"]) ;
 									}
@@ -286,7 +286,7 @@ else {
 									}
 									
 									//Notify teachers
-									$notificationText=sprintf(__('A warning has been issued for a student (%1$s) in one of your classes, pending a behaviour letter.'), $studentName) ;
+									$notificationText=sprintf(___($guid, 'A warning has been issued for a student (%1$s) in one of your classes, pending a behaviour letter.'), $studentName) ;
 									try {
 										$dataTeachers=array("gibbonPersonID"=>$row["gibbonPersonID"]); 
 										$sqlTeachers="SELECT DISTINCT teacher.gibbonPersonID FROM gibbonPerson AS teacher JOIN gibbonCourseClassPerson AS teacherClass ON (teacherClass.gibbonPersonID=teacher.gibbonPersonID)  JOIN gibbonCourseClassPerson AS studentClass ON (studentClass.gibbonCourseClassID=teacherClass.gibbonCourseClassID) JOIN gibbonPerson AS student ON (studentClass.gibbonPersonID=student.gibbonPersonID) JOIN gibbonCourseClass ON (studentClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE teacher.status='Full' AND teacherClass.role='Teacher' AND studentClass.role='Student' AND student.gibbonPersonID=:gibbonPersonID AND gibbonCourse.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') ORDER BY teacher.preferredName, teacher.surname, teacher.email ;" ;
@@ -316,7 +316,7 @@ else {
 									$gibbonBehaviourLetterID=$connection2->lastInsertID() ;
 							
 									//Notify tutor(s)
-									$notificationText=sprintf(_('A student (%1$s) in your form group has received a behaviour letter.'), $studentName) ;
+									$notificationText=sprintf(__($guid, 'A student (%1$s) in your form group has received a behaviour letter.'), $studentName) ;
 									if ($row["gibbonPersonIDTutor"]!="") {
 										setNotification($connection2, $guid, $row["gibbonPersonIDTutor"], $notificationText, "Behaviour", "/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID=" . $row["gibbonPersonID"]) ;
 									}
@@ -350,7 +350,7 @@ else {
 									$recipientList.=$rowMember["email"] . ", " ;
 								
 									//Prep message
-									$body.="<br/><br/><i>" . sprintf(_('Email sent via %1$s at %2$s.'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationName"]) . "</i>" ;
+									$body.="<br/><br/><i>" . sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationName"]) . "</i>" ;
 									$bodyPlain=preg_replace('#<br\s*/?>#i', "\n", $body) ;
 									$bodyPlain=str_replace("</p>", "\n\n", $bodyPlain) ;
 									$bodyPlain=str_replace("</div>", "\n\n", $bodyPlain) ;
@@ -368,7 +368,7 @@ else {
 									$mail->CharSet="UTF-8";
 									$mail->Encoding="base64" ;
 									$mail->IsHTML(true);
-									$mail->Subject=sprintf(_('Behaviour Letter for %1$s via %2$s at %3$s'), $row["surname"] . ", " . $row["preferredName"] . " (" . $row["rollGroup"] . ")", $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationName"]) ;
+									$mail->Subject=sprintf(__($guid, 'Behaviour Letter for %1$s via %2$s at %3$s'), $row["surname"] . ", " . $row["preferredName"] . " (" . $row["rollGroup"] . ")", $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationName"]) ;
 									$mail->Body=$body ;
 									$mail->AltBody=$bodyPlain ;
 
@@ -400,11 +400,11 @@ else {
 	
 	//Notify admin
 	if ($email==FALSE) {
-		$notificationText=_('The Behaviour Letter CLI script has run: no emails were sent.') ;
+		$notificationText=__($guid, 'The Behaviour Letter CLI script has run: no emails were sent.') ;
 		setNotification($connection2, $guid, $_SESSION[$guid]["organisationAdministrator"], $notificationText, "Behaviour", "/index.php?q=/modules/Behaviour/behaviour_letters.php") ;
 	}
 	else {
-		$notificationText=sprintf(_('The Behaviour Letter CLI script has run: %1$s emails were sent, of which %2$s failed.'), $emailSendCount, $emailFailCount) ;
+		$notificationText=sprintf(__($guid, 'The Behaviour Letter CLI script has run: %1$s emails were sent, of which %2$s failed.'), $emailSendCount, $emailFailCount) ;
 		setNotification($connection2, $guid, $_SESSION[$guid]["organisationAdministrator"], $notificationText, "User Admin", "/index.php?q=/modules/Behaviour/behaviour_letters.php") ;
 	}	
 }

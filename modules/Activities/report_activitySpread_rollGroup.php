@@ -25,17 +25,17 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Activities/report_activitySpread_rollGroup.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Activity Spread by Roll Group') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Activity Spread by Roll Group') . "</div>" ;
 	print "</div>" ;
 	
 	print "<h2>" ;
-	print _("Choose Roll Group") ;
+	print __($guid, "Choose Roll Group") ;
 	print "</h2>" ;
 	
 	$gibbonRollGroupID=NULL ;
@@ -48,7 +48,7 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td style='width: 275px'> 
-					<b><?php print _('Roll Group') ?> *</b><br/>
+					<b><?php print __($guid, 'Roll Group') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select style="width: 302px" name="gibbonRollGroupID">
@@ -75,17 +75,17 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Status') ?> *</b><br/>
+					<b><?php print __($guid, 'Status') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select style="width: 302px" name="status">
 						<?php
-						print "<option value='Accepted'>" . _('Accepted') . "</option>" ;
+						print "<option value='Accepted'>" . __($guid, 'Accepted') . "</option>" ;
 						$selected="" ;
 						if ($_GET["status"]=="Registered") {
 							$selected="selected" ;
 						}
-						print "<option $selected value='Registered'>" . _('Registered') . "</option>" ;
+						print "<option $selected value='Registered'>" . __($guid, 'Registered') . "</option>" ;
 						?>				
 					</select>
 				</td>
@@ -93,7 +93,7 @@ else {
 			<tr>
 				<td colspan=2 class="right">
 					<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/report_activitySpread_rollGroup.php">
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
@@ -103,7 +103,7 @@ else {
 	if ($gibbonRollGroupID!="") {
 		$output="" ;
 		print "<h2>" ;
-		print _("Report Data") ;
+		print __($guid, "Report Data") ;
 		print "</h2>" ;
 		
 		try {
@@ -118,17 +118,17 @@ else {
 
 		if ($result->rowCount()<1) {
 			print "<div class='error'>" ;
-				print _("There are no records to display.") ;
+				print __($guid, "There are no records to display.") ;
 			print "</div>" ;
 		}
 		else {
 			print "<table class='mini' cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
 					print "<th rowspan=2>" ;
-						print _("Roll Group") ;
+						print __($guid, "Roll Group") ;
 					print "</th>" ;
 					print "<th rowspan=2>" ;
-						print _("Student") ;
+						print __($guid, "Student") ;
 					print "</th>" ;
 					//Get terms and days of week
 					$terms=getTerms($connection2, $_SESSION[$guid]["gibbonSchoolYearID"]) ;
@@ -166,7 +166,7 @@ else {
 					for ($i=0; $i<count($terms); $i=$i+2) {
 						for ($j=0; $j<count($days); $j=$j+2) {
 							print "<th>" ;
-								print _($days[($j+1)]) ;
+								print __($guid, $days[($j+1)]) ;
 								$columns[$columnCount][0]=$terms[$i] ;
 								$columns[$columnCount][1]=$days[$j] ;
 								$columnCount++ ;
@@ -237,14 +237,14 @@ else {
 									}
 								}
 								if ($title=="") {
-									$title=_("There are no records to display.") ;
+									$title=__($guid, "There are no records to display.") ;
 								}
 								else {
 									$title=substr($title,0,-2) ;
 								}
 								print "<span title='" . htmlPrep($title) . "'>" . $resultReg->rowCount() . "<span>" ;
 								if ($notAccepted==TRUE AND $_GET["status"]=="Registered") {
-									print "<span style='color: #cc0000' title='" . _('Some activities not accepted.') . "'> *</span>" ;
+									print "<span style='color: #cc0000' title='" . __($guid, 'Some activities not accepted.') . "'> *</span>" ;
 								}
 							print "</td>" ;
 						}
@@ -254,7 +254,7 @@ else {
 				if ($count==0) {
 					print "<tr class=$rowNum>" ;
 						print "<td colspan=2>" ;
-							print _("There are no records to display.") ;
+							print __($guid, "There are no records to display.") ;
 						print "</td>" ;
 					print "</tr>" ;
 				}

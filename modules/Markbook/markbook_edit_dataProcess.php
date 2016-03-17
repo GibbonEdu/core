@@ -178,12 +178,12 @@ else {
 								//Below target
 								if ($attainmentSequence>$target) {
 									$attainmentConcern="Y" ;
-									$attainmentDescriptor=sprintf(_('Below personalised target of %1$s'), $rowTarget["value"]) ;
+									$attainmentDescriptor=sprintf(__($guid, 'Below personalised target of %1$s'), $rowTarget["value"]) ;
 								}
 								//Above target
 								else if ($attainmentSequence<=$target) {
 									$attainmentConcern="P" ;
-									$attainmentDescriptor=sprintf(_('Equal to or above personalised target of %1$s'), $rowTarget["value"]) ;
+									$attainmentDescriptor=sprintf(__($guid, 'Equal to or above personalised target of %1$s'), $rowTarget["value"]) ;
 								}
 							}
 						}

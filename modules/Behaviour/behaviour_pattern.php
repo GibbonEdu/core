@@ -28,12 +28,12 @@ $enableLevels=getSettingByScope($connection2, "Behaviour", "enableLevels") ;
 if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_manage.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Find Behaviour Patterns') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Find Behaviour Patterns') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -41,7 +41,7 @@ else {
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="success0") {
-			$deleteReturnMessage=_("Your request was completed successfully.") ;		
+			$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;		
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -80,7 +80,7 @@ else {
 	}
 	
 	print "<h3>" ;
-		print _("Filter") ;
+		print __($guid, "Filter") ;
 	print "</h3>" ;
 	print "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/2Fbehaviour_pattern.php'>" ;
 		print "<table class='noIntBorder' cellspacing='0' style='width: 100%'>" ;
@@ -88,7 +88,7 @@ else {
 				?>
 				<tr>
 					<td> 
-						<b><?php print _('Descriptor') ?></b><br/>
+						<b><?php print __($guid, 'Descriptor') ?></b><br/>
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
@@ -124,7 +124,7 @@ else {
 				?>
 				<tr>
 					<td> 
-						<b><?php print _('Level') ?></b><br/>
+						<b><?php print __($guid, 'Level') ?></b><br/>
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
@@ -151,8 +151,8 @@ else {
 			
 			<tr>
 				<td> 
-					<b><?php print _('From Date') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _("Format:") . " " . $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+					<b><?php print __($guid, 'From Date') ?></b><br/>
+					<span style="font-size: 90%"><i><?php print __($guid, "Format:") . " " . $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 				</td>
 				<td class="right">
 					<input name="fromDate" id="fromDate" maxlength=10 value="<?php if ($fromDate!="") { print $fromDate ; } ?>" type="text" style="width: 300px">
@@ -169,7 +169,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Roll Group') ?></b><br/>
+					<b><?php print __($guid, 'Roll Group') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
@@ -197,7 +197,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Year Group') ?></b><br/>
+					<b><?php print __($guid, 'Year Group') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
@@ -217,7 +217,7 @@ else {
 							if ($rowPurpose["gibbonYearGroupID"]==$gibbonYearGroupID) {
 								$selected="selected" ;
 							}
-							print "<option $selected value='" . $rowPurpose["gibbonYearGroupID"] . "'>" . _($rowPurpose["name"]) . "</option>" ;
+							print "<option $selected value='" . $rowPurpose["gibbonYearGroupID"] . "'>" . __($guid, $rowPurpose["name"]) . "</option>" ;
 						}
 					print "</select>" ;
 					?>
@@ -225,7 +225,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Minimum Count') ?></b><br/>
+					<b><?php print __($guid, 'Minimum Count') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
@@ -246,8 +246,8 @@ else {
 			print "<tr>" ;
 				print "<td class='right' colspan=2>" ;
 					print "<input type='hidden' name='q' value='" . $_GET["q"] . "'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_pattern.php'>" . _('Clear Filters') . "</a> " ;
-					print "<input type='submit' value='" . _('Go') . "'>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_pattern.php'>" . __($guid, 'Clear Filters') . "</a> " ;
+					print "<input type='submit' value='" . __($guid, 'Go') . "'>" ;
 				print "</td>" ;
 			print "</tr>" ;
 			?>
@@ -256,10 +256,10 @@ else {
 	print "</form>" ;
 	
 	print "<h3>" ;
-		print _("Behaviour Records") ;
+		print __($guid, "Behaviour Records") ;
 	print "</h3>" ;
 	print "<p>" ;
-	print _("The students listed below match the criteria above, for negative behaviour records in the current school year. The count is updated according to the criteria above.") ;
+	print __($guid, "The students listed below match the criteria above, for negative behaviour records in the current school year. The count is updated according to the criteria above.") ;
 	print "</p>" ;
 	
 	//Set pagination variable
@@ -326,7 +326,7 @@ else {
 
 	if ($result->rowCount()<1) {
 		print "<div class='error'>" ;
-		print _("There are no records to display.") ;
+		print __($guid, "There are no records to display.") ;
 		print "</div>" ;
 	}
 	else {
@@ -337,20 +337,20 @@ else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print _("Name") ;
+					print __($guid, "Name") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Negative Count") . "<br/>" ;
-					print "<span style='font-size: 75%; font-style: italic'>" . _('(Current Year Only)') . "</span>" ;
+					print __($guid, "Negative Count") . "<br/>" ;
+					print "<span style='font-size: 75%; font-style: italic'>" . __($guid, '(Current Year Only)') . "</span>" ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Year Group") ;
+					print __($guid, "Year Group") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Roll Group") ;
+					print __($guid, "Roll Group") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Actions") ;
+					print __($guid, "Actions") ;
 				print "</th>" ;
 			print "</tr>" ;
 			
@@ -386,13 +386,13 @@ else {
 						print $row["count"] ;
 					print "</td>" ;
 					print "<td>" ;
-						print _($row["yearGroup"]) ;
+						print __($guid, $row["yearGroup"]) ;
 					print "</td>" ;
 					print "<td>" ;
 						print $row["rollGroup"] ;
 					print "</td>" ;
 					print "<td>" ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/behaviour_view_details.php&gibbonPersonID=" . $row["gibbonPersonID"] . "&descriptor=$descriptor&level=$level&fromDate=$fromDate&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID&minimumCount=$minimumCount&source=pattern&search='><img title='" . _('View Details') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/behaviour_view_details.php&gibbonPersonID=" . $row["gibbonPersonID"] . "&descriptor=$descriptor&level=$level&fromDate=$fromDate&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID&minimumCount=$minimumCount&source=pattern&search='><img title='" . __($guid, 'View Details') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 					print "</td>" ;
 				print "</tr>" ;
 			}

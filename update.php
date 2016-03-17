@@ -61,7 +61,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 		if ($type!="regularRelease" AND $type!="cuttingEdge") {
 			print "<div class='error'>" ;
-				print _("Your request failed because your inputs were invalid.") ;
+				print __($guid, "Your request failed because your inputs were invalid.") ;
 			print "</div>" ;
 		}
 		else if ($type=="regularRelease") { //Do regular release update
@@ -71,7 +71,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 			//Validate Inputs
 			if ($versionDB=="" OR $versionCode=="" OR version_compare($versionDB, $versionCode)!=-1) {
 				print "<div class='error'>" ;
-					print _("Your request failed because your inputs were invalid, or no update was required.") ;
+					print __($guid, "Your request failed because your inputs were invalid, or no update was required.") ;
 				print "</div>" ;
 			}
 			else {	
@@ -95,7 +95,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 				if ($partialFail==TRUE) {
 					print "<div class='error'>" ;
-						print _("Some aspects of your update failed.") ;
+						print __($guid, "Some aspects of your update failed.") ;
 					print "</div>" ;
 				}
 				else {
@@ -108,13 +108,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 					}
 					catch(PDOException $e) { 
 						print "<div class='error'>" ;
-							print _("Some aspects of your update failed.") ;
+							print __($guid, "Some aspects of your update failed.") ;
 						print "</div>" ;
 						exit ;
 					}
 	
 					print "<div class='success'>" ;
-						print _("Your request was completed successfully.") ;
+						print __($guid, "Your request was completed successfully.") ;
 					print "</div>" ;
 				}
 			}
@@ -140,7 +140,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 			if ($update==FALSE) { //Something went wrong...abandon!
 				print "<div class='error'>" ;
-					print _("Some aspects of your update failed.") ;
+					print __($guid, "Some aspects of your update failed.") ;
 				print "</div>" ;
 				exit ;
 			}
@@ -205,7 +205,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 	
 				if ($partialFail==TRUE) {
 					print "<div class='error'>" ;
-						print _("Some aspects of your update failed.") ;
+						print __($guid, "Some aspects of your update failed.") ;
 					print "</div>" ;
 				}
 				else {
@@ -218,7 +218,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 					}
 					catch(PDOException $e) { 
 						print "<div class='error'>" ;
-							print _("Some aspects of your update failed.") ;
+							print __($guid, "Some aspects of your update failed.") ;
 						print "</div>" ;
 						exit ;
 					}
@@ -232,13 +232,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 					}
 					catch(PDOException $e) { 
 						print "<div class='error'>" ;
-							print _("Some aspects of your update failed.") ;
+							print __($guid, "Some aspects of your update failed.") ;
 						print "</div>" ;
 						exit ;
 					}
 		
 					print "<div class='success'>" ;
-						print _("Your request was completed successfully.") ;
+						print __($guid, "Your request was completed successfully.") ;
 					print "</div>" ;
 				}
 			}

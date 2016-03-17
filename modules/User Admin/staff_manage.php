@@ -22,13 +22,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/staff_manage.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Manage Staff') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Manage Staff') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -36,7 +36,7 @@ else {
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="success0") {
-			$deleteReturnMessage=_("Your request was completed successfully.") ;		
+			$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;		
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -54,7 +54,7 @@ else {
 	}
 
 	print "<h2>" ;
-	print _("Search & Filter") ;
+	print __($guid, "Search & Filter") ;
 	print "</h2>" ;
 	?>
 	<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
@@ -62,8 +62,8 @@ else {
 			<tr><td style="width: 30%"></td><td></td></tr>
 			<tr>
 				<td> 
-					<b><?php print _('Search For') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('Preferred, surname, username.') ?></i></span>
+					<b><?php print __($guid, 'Search For') ?></b><br/>
+					<span style="font-size: 90%"><i><?php print __($guid, 'Preferred, surname, username.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="search" id="search" maxlength=20 value="<?php if (isset($_GET["search"])) { print $_GET["search"] ; } ?>" type="text" style="width: 300px">
@@ -71,8 +71,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('All Staff') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('Include Expected and Left.') ?></i></span>
+					<b><?php print __($guid, 'All Staff') ?></b><br/>
+					<span style="font-size: 90%"><i><?php print __($guid, 'Include Expected and Left.') ?></i></span>
 				</td>
 				<td class="right">
 					<?php
@@ -89,9 +89,9 @@ else {
 					<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/staff_manage.php">
 					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 					<?php
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/staff_manage.php'>" . _('Clear Search') . "</a>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/staff_manage.php'>" . __($guid, 'Clear Search') . "</a>" ;
 					?>
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
@@ -99,7 +99,7 @@ else {
 	<?php
 	
 	print "<h2>" ;
-	print _("View") ;
+	print __($guid, "View") ;
 	print "</h2>" ;
 	
 	//Set pagination variable
@@ -131,12 +131,12 @@ else {
 	}
 	
 	print "<div class='linkTop'>" ;
-		print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/staff_manage_add.php&search=$search&allStaff=$allStaff'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+		print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/staff_manage_add.php&search=$search&allStaff=$allStaff'>" .  __($guid, 'Add') . "<img style='margin-left: 5px' title='" . __($guid, 'Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
 	print "</div>" ;
 
 	if ($result->rowCount()<1) {
 		print "<div class='error'>" ;
-		print _("There are no records to display.") ;
+		print __($guid, "There are no records to display.") ;
 		print "</div>" ;
 	}
 	else {
@@ -147,20 +147,20 @@ else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print _("Name") . "<br/>" ;
-					print "<span style='font-size: 85%; font-style: italic'>" . _('Initials') . "</span>" ;
+					print __($guid, "Name") . "<br/>" ;
+					print "<span style='font-size: 85%; font-style: italic'>" . __($guid, 'Initials') . "</span>" ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Type") ;
+					print __($guid, "Type") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Status") ;
+					print __($guid, "Status") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Job Title") ;
+					print __($guid, "Job Title") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Actions") ;
+					print __($guid, "Actions") ;
 				print "</th>" ;
 			print "</tr>" ;
 			
@@ -201,8 +201,8 @@ else {
 						print $row["jobTitle"] ;
 					print "</td>" ;
 					print "<td>" ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/staff_manage_edit.php&gibbonStaffID=" . $row["gibbonStaffID"] . "&search=$search&allStaff=$allStaff'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/staff_manage_delete.php&gibbonStaffID=" . $row["gibbonStaffID"] . "&search=$search&allStaff=$allStaff'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/staff_manage_edit.php&gibbonStaffID=" . $row["gibbonStaffID"] . "&search=$search&allStaff=$allStaff'><img title='" . __($guid, 'Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/staff_manage_delete.php&gibbonStaffID=" . $row["gibbonStaffID"] . "&search=$search&allStaff=$allStaff'><img title='" . __($guid, 'Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 					print "</td>" ;
 				print "</tr>" ;
 			}

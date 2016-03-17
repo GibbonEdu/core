@@ -22,13 +22,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/Rubrics/rubrics_view.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('View Rubrics') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'View Rubrics') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -36,7 +36,7 @@ else {
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="success0") {
-			$deleteReturnMessage=_("Your request was completed successfully.") ;		
+			$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;		
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -97,20 +97,20 @@ else {
 	}
 		
 	print "<h3>" ;
-	print _("Filter") ;
+	print __($guid, "Filter") ;
 	print "</h3>" ;
 	print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "'>" ;
 		print"<table class='noIntBorder' cellspacing='0' style='width: 100%'>" ;	
 			?>
 			<tr>
 				<td> 
-					<b><?php print _('Learning Areas') ?></b><br/>
+					<b><?php print __($guid, 'Learning Areas') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
 					<?php
 					print "<select name='filter2' id='filter2' style='width:302px'>" ;
-						print "<option value=''>" . _('All Learning Areas') . "</option>" ;
+						print "<option value=''>" . __($guid, 'All Learning Areas') . "</option>" ;
 						try {
 							$dataSelect=array(); 
 							$sqlSelect="SELECT * FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name" ;
@@ -133,7 +133,7 @@ else {
 			print "<tr>" ;
 				print "<td class='right' colspan=2>" ;
 					print "<input type='hidden' name='q' value='" . $_GET["q"] . "'>" ;
-					print "<input type='submit' value='" . _('Go') . "'>" ;
+					print "<input type='submit' value='" . __($guid, 'Go') . "'>" ;
 				print "</td>" ;
 			print "</tr>" ;
 		print"</table>" ;
@@ -141,11 +141,11 @@ else {
 	
 	
 	print "<h3>" ;
-	print _("Rubrics") ;
+	print __($guid, "Rubrics") ;
 	print "</h3>" ;
 	if ($result->rowCount()<1) {
 		print "<div class='error'>" ;
-		print _("There are no records to display.") ;
+		print __($guid, "There are no records to display.") ;
 		print "</div>" ;
 	}
 	else {
@@ -156,19 +156,19 @@ else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print _("Scope") ;
+					print __($guid, "Scope") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Category") ;
+					print __($guid, "Category") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Name") ;
+					print __($guid, "Name") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Year Groups") ;
+					print __($guid, "Year Groups") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Actions") ;
+					print __($guid, "Actions") ;
 				print "</th>" ;
 			print "</tr>" ;
 			
@@ -229,7 +229,7 @@ else {
 							print "});" ;
 						print "</script>" ;
 						
-						print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rubrics_view_full.php&gibbonRubricID=" . $row["gibbonRubricID"] . "&width=1100&height=550'><img title='" . _('View') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;	
+						print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rubrics_view_full.php&gibbonRubricID=" . $row["gibbonRubricID"] . "&width=1100&height=550'><img title='" . __($guid, 'View') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;	
 					print "</td>" ;
 				print "</tr>" ;
 				if ($row["description"]!="") {

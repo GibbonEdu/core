@@ -160,7 +160,7 @@ else {
 					if ($status=="Pending Approval") {
 						//Attempt to notify Admissions
 						if ($_SESSION[$guid]["organisationAdmissions"]) {
-							$notificationText=sprintf(_('An new public registration, for %1$s, is pending approval.'), formatName("", $preferredName, $surname, "Student")) ;
+							$notificationText=sprintf(__($guid, 'An new public registration, for %1$s, is pending approval.'), formatName("", $preferredName, $surname, "Student")) ;
 							setNotification($connection2, $guid, $_SESSION[$guid]["organisationAdmissions"], $notificationText, "User Admin", "/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID&search=") ;
 						}
 						

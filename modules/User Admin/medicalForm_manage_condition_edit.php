@@ -22,13 +22,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/medicalForm_manage_condition_edit.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/medicalForm_manage.php'>" . _('Manage Medical Forms') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/medicalForm_manage_edit.php&&gibbonPersonMedicalID=" . $_GET["gibbonPersonMedicalID"] . "'>" . _('Edit Medical Form') . "</a> > </div><div class='trailEnd'>" . _('Edit Condition') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/medicalForm_manage.php'>" . __($guid, 'Manage Medical Forms') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/medicalForm_manage_edit.php&&gibbonPersonMedicalID=" . $_GET["gibbonPersonMedicalID"] . "'>" . __($guid, 'Edit Medical Form') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Edit Condition') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -36,22 +36,22 @@ else {
 	$class="error" ;
 	if (!($updateReturn=="")) {
 		if ($updateReturn=="fail0") {
-			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($updateReturn=="fail1") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail2") {
-			$updateReturnMessage=_("Your request failed due to a database error.") ;	
+			$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 		}
 		else if ($updateReturn=="fail3") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail4") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="success0") {
-			$updateReturnMessage=_("Your request was completed successfully.") ;	
+			$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -65,7 +65,7 @@ else {
 	$search=$_GET["search"] ;
 	if ($gibbonPersonMedicalID=="" OR $gibbonPersonMedicalConditionID=="") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -81,7 +81,7 @@ else {
 		
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print _("The specified record cannot be found.") ;
+				print __($guid, "The specified record cannot be found.") ;
 			print "</div>" ;
 		}
 		else {
@@ -90,7 +90,7 @@ else {
 			
 			if ($search!="") {
 				print "<div class='linkTop'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/medicalForm_manage_edit.php&search=$search&gibbonPersonMedicalID=$gibbonPersonMedicalID'>" . _('Back') . "</a>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/medicalForm_manage_edit.php&search=$search&gibbonPersonMedicalID=$gibbonPersonMedicalID'>" . __($guid, 'Back') . "</a>" ;
 				print "</div>" ;
 			}
 			?>
@@ -98,8 +98,8 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td style='width: 275px'> 
-							<b><?php print _('Person') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+							<b><?php print __($guid, 'Person') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
 							<?php
@@ -117,12 +117,12 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Condition Name') ?> *</b><br/>
+							<b><?php print __($guid, 'Condition Name') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select style="width: 302px" name="name" id="name">
 								<?php
-								print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+								print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
 								try {
 									$dataSelect=array(); 
 									$sqlSelect="SELECT * FROM gibbonMedicalCondition ORDER BY name" ;
@@ -132,23 +132,23 @@ else {
 								catch(PDOException $e) { }
 								while ($rowSelect=$resultSelect->fetch()) {
 									 if ($row["name"]==$rowSelect["name"]) {
-										print "<option selected value='" . htmlPrep($rowSelect["name"]) . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
+										print "<option selected value='" . htmlPrep($rowSelect["name"]) . "'>" . htmlPrep(__($guid, $rowSelect["name"])) . "</option>" ;
 									}
 									 else {
-										print "<option value='" . htmlPrep($rowSelect["name"]) . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
+										print "<option value='" . htmlPrep($rowSelect["name"]) . "'>" . htmlPrep(__($guid, $rowSelect["name"])) . "</option>" ;
 									}
 								}
 								?>				
 							</select>
 							<script type="text/javascript">
 								var name2=new LiveValidation('name');
-								name.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+								name.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 							</script>	
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Risk') ?> *</b><br/>
+							<b><?php print __($guid, 'Risk') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select name="gibbonAlertLevelID" id="gibbonAlertLevelID" style="width: 302px">
@@ -167,19 +167,19 @@ else {
 									if ($row["gibbonAlertLevelID"]==$rowSelect["gibbonAlertLevelID"]) {
 										$selected="selected" ;
 									}	
-									print "<option $selected value='" . $rowSelect["gibbonAlertLevelID"] . "'>" . _($rowSelect["name"]) . "</option>" ; 
+									print "<option $selected value='" . $rowSelect["gibbonAlertLevelID"] . "'>" . __($guid, $rowSelect["name"]) . "</option>" ; 
 								}
 								?>
 							</select>
 							<script type="text/javascript">
 								var gibbonAlertLevelID=new LiveValidation('gibbonAlertLevelID');
-								gibbonAlertLevelID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+								gibbonAlertLevelID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 							</script>	
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Triggers') ?></b><br/>
+							<b><?php print __($guid, 'Triggers') ?></b><br/>
 						</td>
 						<td class="right">
 							<input name="triggers" id="triggers" maxlength=255 value="<?php print htmlPrep($row["triggers"]) ?>" type="text" style="width: 300px">
@@ -187,7 +187,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Reaction') ?></b><br/>
+							<b><?php print __($guid, 'Reaction') ?></b><br/>
 						</td>
 						<td class="right">
 							<input name="reaction" id="reaction" maxlength=255 value="<?php print htmlPrep($row["reaction"]) ?>" type="text" style="width: 300px">
@@ -195,7 +195,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Response') ?></b><br/>
+							<b><?php print __($guid, 'Response') ?></b><br/>
 						</td>
 						<td class="right">
 							<input name="response" id="response" maxlength=255 value="<?php print htmlPrep($row["response"]) ?>" type="text" style="width: 300px">
@@ -203,7 +203,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Medication') ?></b><br/>
+							<b><?php print __($guid, 'Medication') ?></b><br/>
 						</td>
 						<td class="right">
 							<input name="medication" id="medication" maxlength=255 value="<?php print htmlPrep($row["medication"]) ?>" type="text" style="width: 300px">
@@ -211,7 +211,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Last Episode Date') ?></b><br/>
+							<b><?php print __($guid, 'Last Episode Date') ?></b><br/>
 							<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 						</td>
 						<td class="right">
@@ -229,7 +229,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Last Episode Treatment') ?></b><br/>
+							<b><?php print __($guid, 'Last Episode Treatment') ?></b><br/>
 						</td>
 						<td class="right">
 							<input name="lastEpisodeTreatment" id="lastEpisodeTreatment" maxlength=255 value="<?php print htmlPrep($row["lastEpisodeTreatment"]) ?>" type="text" style="width: 300px">
@@ -237,7 +237,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Comment') ?></b><br/>
+							<b><?php print __($guid, 'Comment') ?></b><br/>
 						</td>
 						<td class="right">
 							<textarea name="comment" id="comment" rows=8 style="width: 300px"><?php print $row["comment"] ?></textarea>
@@ -245,12 +245,12 @@ else {
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
 							<input name="gibbonPersonMedicalID" id="gibbonPersonMedicalID" value="<?php print $gibbonPersonMedicalID ?>" type="hidden">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<?php print _("Submit") ; ?>">
+							<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 						</td>
 					</tr>
 				</table>

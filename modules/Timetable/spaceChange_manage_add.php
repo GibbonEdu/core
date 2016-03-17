@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/Timetable/spaceChange_manage_add.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -30,13 +30,13 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print _("The highest grouped action cannot be determined.") ;
+		print __($guid, "The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
 		//Proceed!
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/spaceChange_manage.php'>" . _('Manage Space Changes') . "</a> > </div><div class='trailEnd'>" . _('Add Space Change') . "</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/spaceChange_manage.php'>" . __($guid, 'Manage Space Changes') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Add Space Change') . "</div>" ;
 		print "</div>" ;
 	
 		if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -44,19 +44,19 @@ else {
 		$class="error" ;
 		if (!($addReturn=="")) {
 			if ($addReturn=="fail0") {
-				$addReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+				$addReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 			}
 			else if ($addReturn=="fail2") {
-				$addReturnMessage=_("Your request failed due to a database error.") ;	
+				$addReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 			}
 			else if ($addReturn=="fail3") {
-				$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+				$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($addReturn=="fail4") {
-				$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+				$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($addReturn=="success0") {
-				$addReturnMessage=_("Your request was completed successfully. You can now add another record if you wish.") ;	
+				$addReturnMessage=__($guid, "Your request was completed successfully. You can now add another record if you wish.") ;	
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;
@@ -75,18 +75,18 @@ else {
 		//Step 1
 		if ($step==1) {
 			print "<h2>" ;
-				print _("Step 1 - Choose Class") ;
+				print __($guid, "Step 1 - Choose Class") ;
 			print "</h2>" ;
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/spaceChange_manage_add.php&step=2" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b><?php print _('Class') ?> *</b><br/>
+							<b><?php print __($guid, 'Class') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select name="gibbonCourseClassID" id="gibbonCourseClassID" style="width: 302px">
-								<option value='Please select...'><?php print _('Please select...') ?></option>
+								<option value='Please select...'><?php print __($guid, 'Please select...') ?></option>
 								<?php
 								try {
 									if ($highestAction=="Manage Space Changes_allClasses") {
@@ -108,17 +108,17 @@ else {
 							</select>
 							<script type="text/javascript">
 								var gibbonCourseClassID=new LiveValidation('gibbonCourseClassID');
-								gibbonCourseClassID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+								gibbonCourseClassID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 							</script>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<?php print _("Submit") ; ?>">
+							<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
@@ -127,10 +127,10 @@ else {
 		}
 		else if ($step==2) {
 			print "<h2>" ;
-				print _("Step 2 - Choose Options") ;
+				print __($guid, "Step 2 - Choose Options") ;
 			print "</h2>" ;
 			print "<p>" ;
-				print _("When choosing a space, remember that they are not mutually exclusive: you can change two classes into one space, change one class to join another class in their normal roolm, or assign no space at all. The spaces listed below are not necessarily free at the requested time: please use the View Available Spaces report to check availability.") ;
+				print __($guid, "When choosing a space, remember that they are not mutually exclusive: you can change two classes into one space, change one class to join another class in their normal roolm, or assign no space at all. The spaces listed below are not necessarily free at the requested time: please use the View Available Spaces report to check availability.") ;
 			print "</p>" ;
 			
 			$gibbonCourseClassID=NULL ;
@@ -152,13 +152,13 @@ else {
 			}
 			catch(PDOException $e) { 
 				print "<div class='error'>" ;
-					print _("Your request failed due to a database error.") ;
+					print __($guid, "Your request failed due to a database error.") ;
 				print "</div>" ;
 			}
 			
 			if ($resultSelect->rowCount()!=1) {
 				print "<div class='error'>" ;
-					print _("Your request failed due to a database error.") ;
+					print __($guid, "Your request failed due to a database error.") ;
 				print "</div>" ;
 			}
 			else {
@@ -168,8 +168,8 @@ else {
 					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 						<tr>
 							<td style='width: 275px'> 
-								<b><?php print _('Class') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+								<b><?php print __($guid, 'Class') ?> *</b><br/>
+								<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
 							</td>
 							<td class="right">
 								<input readonly name="class" id="class" value="<?php print $rowSelect["course"] . "." . $rowSelect["class"] ?>" type="text" style="width: 300px">
@@ -177,11 +177,11 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b><?php print _('Upcoming Class Slots') ?> *</b><br/>
+								<b><?php print __($guid, 'Upcoming Class Slots') ?> *</b><br/>
 							</td>
 							<td class="right">
 								<select name="gibbonTTDayRowClassID" id="gibbonTTDayRowClassID" style="width: 302px">
-									<option value='Please select...'><?php print _('Please select...') ?></option>
+									<option value='Please select...'><?php print __($guid, 'Please select...') ?></option>
 									<?php
 									try {
 										$dataSelect=array("gibbonCourseClassID"=>$gibbonCourseClassID, "date1"=>date("Y-m-d"), "date2"=>date("Y-m-d"), "time"=>date("H:i:s")); 
@@ -199,13 +199,13 @@ else {
 								</select>
 								<script type="text/javascript">
 									var gibbonCourseClassID=new LiveValidation('gibbonCourseClassID');
-									gibbonCourseClassID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+									gibbonCourseClassID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 								</script>
 							</td>
 						</tr>
 						<tr>
 							<td> 
-								<b><?php print _('Space') ?></b><br/>
+								<b><?php print __($guid, 'Space') ?></b><br/>
 							</td>
 							<td class="right">
 								<select name="gibbonSpaceID" id="gibbonSpaceID" style="width: 302px">
@@ -227,11 +227,11 @@ else {
 						</tr>
 						<tr>
 							<td>
-								<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+								<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
 							</td>
 							<td class="right">
 								<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-								<input type="submit" value="<?php print _("Submit") ; ?>">
+								<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 							</td>
 						</tr>
 					</table>

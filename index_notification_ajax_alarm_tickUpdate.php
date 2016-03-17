@@ -42,7 +42,7 @@ $gibbonPersonID=$_POST["gibbonPersonID"] ;
 //Proceed!
 if ($gibbonAlarmID=="" OR $gibbonPersonID=="") {
 	print "<div class='error'>" ;
-		print _("An error has occurred.") ;
+		print __($guid, "An error has occurred.") ;
 	print "</div>" ;
 }
 else {	
@@ -57,7 +57,7 @@ else {
 	
 	if ($resultConfirm->rowCount()!=1) {
 		print "<div class='error'>" ;
-			print _("An error has occurred.") ;
+			print __($guid, "An error has occurred.") ;
 		print "</div>" ;
 	}
 	else {
@@ -68,7 +68,7 @@ else {
 		print "</td>" ;
 		print "<td style='color: #fff'>" ;
 			if ($rowConfirm["sounder"]==$rowConfirm["confirmer"]) {
-				print _("NA") ;
+				print __($guid, "NA") ;
 			}
 			else {
 				if ($rowConfirm["gibbonAlarmConfirmID"]!="") {
@@ -79,7 +79,7 @@ else {
 		print "<td style='color: #fff'>" ;
 			if ($rowConfirm["sounder"]!=$rowConfirm["confirmer"]) {
 				if ($rowConfirm["gibbonAlarmConfirmID"]=="") {
-					print "<a target='_parent' href='" . $_SESSION[$guid]["absoluteURL"] . "/index_notification_ajax_alarmConfirmProcess.php?gibbonPersonID=" . $rowConfirm["confirmer"] . "&gibbonAlarmID=$gibbonAlarmID'><img title='" . _('Confirm') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick_light.png'/></a> " ;
+					print "<a target='_parent' href='" . $_SESSION[$guid]["absoluteURL"] . "/index_notification_ajax_alarmConfirmProcess.php?gibbonPersonID=" . $rowConfirm["confirmer"] . "&gibbonAlarmID=$gibbonAlarmID'><img title='" . __($guid, 'Confirm') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick_light.png'/></a> " ;
 				}
 			}
 		print "</td>" ;

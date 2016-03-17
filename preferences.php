@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 print "<div class='trail'>" ;
-print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > </div><div class='trailEnd'>Preferences</div>" ;
+print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > </div><div class='trailEnd'>Preferences</div>" ;
 print "</div>" ;
 	
 if (isset($_GET["forceReset"])) {
@@ -66,7 +66,7 @@ if (!($editReturn=="")) {
 		$editReturnMessage="Required fields not set." ;	
 	}
 	else if ($editReturn=="fail1") {
-		$editReturnMessage=_("Your request failed due to a database error.") ;	
+		$editReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 	}
 	else if ($editReturn=="fail2") {
 		$editReturnMessage="Your request failed due to non-matching passwords." ;	
@@ -81,7 +81,7 @@ if (!($editReturn=="")) {
 		$editReturnMessage="Your request failed because your new password is the same as your current password." ;	
 	}	
 	else if ($editReturn=="success0") {
-		$editReturnMessage=_("Your request was completed successfully.") ;	
+		$editReturnMessage=__($guid, "Your request was completed successfully.") ;	
 		$class="success" ;
 	}
 	print "<div class='$class'>" ;
@@ -108,7 +108,7 @@ if ($result->rowCount()==1) {
 		<tr class='break'>
 			<td colspan=2>
 				<h3>
-					<?php print _("Reset Password") ; ?>
+					<?php print __($guid, "Reset Password") ; ?>
 				</h3>
 			</td>
 		</tr>
@@ -126,7 +126,7 @@ if ($result->rowCount()==1) {
 		</tr>
 		<tr>
 			<td> 
-				<b><?php print _("Current Password") ; ?> *</b><br/>
+				<b><?php print __($guid, "Current Password") ; ?> *</b><br/>
 				<span style="font-size: 90%"><i></i></span>
 			</td>
 			<td class="right">
@@ -139,7 +139,7 @@ if ($result->rowCount()==1) {
 		</tr>
 		<tr>
 			<td style='width: 275px'> 
-				<b><?php print _("New Password") ; ?> *</b><br/>
+				<b><?php print __($guid, "New Password") ; ?> *</b><br/>
 				<span style="font-size: 90%"><i></i></span>
 			</td>
 			<td class="right">
@@ -170,7 +170,7 @@ if ($result->rowCount()==1) {
 		</tr>
 		<tr>
 			<td> 
-				<b><?php print _("Confirm New Password") ; ?> *</b><br/>
+				<b><?php print __($guid, "Confirm New Password") ; ?> *</b><br/>
 				<span style="font-size: 90%"><i></i></span>
 			</td>
 			<td class="right">
@@ -184,7 +184,7 @@ if ($result->rowCount()==1) {
 		</tr>
 		<tr>
 			<td>
-				<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+				<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
 			</td>
 			<td class="right">
 				<?php
@@ -193,7 +193,7 @@ if ($result->rowCount()==1) {
 				}
 				?>
 				<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-				<input type="submit" value="<?php print _("Submit") ; ?>">
+				<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 			</td>
 		</tr>
 	</table>
@@ -205,14 +205,14 @@ if ($result->rowCount()==1) {
 		<tr class='break'>
 			<td colspan=2>
 				<h3>
-					<?php print _("Settings") ; ?>
+					<?php print __($guid, "Settings") ; ?>
 				</h3>
 			</td>
 		</tr>
 		<tr>
 			<td> 
-				<b><?php print _("Personal Google Calendar ID") ; ?></b><br/>
-				<span style="font-size: 90%"><i><?php print _("Google Calendar ID for your personal calendar.") . "<br/>" . _("Only enables timetable integration when logging in via Google.") ; ?></i></span>
+				<b><?php print __($guid, "Personal Google Calendar ID") ; ?></b><br/>
+				<span style="font-size: 90%"><i><?php print __($guid, "Google Calendar ID for your personal calendar.") . "<br/>" . __($guid, "Only enables timetable integration when logging in via Google.") ; ?></i></span>
 			</td>
 			<td class="right">
 				<input name="calendarFeedPersonal" id="calendarFeedPersonal" value="<?php print $row["calendarFeedPersonal"] ?>" type="text" style="width: 300px">
@@ -225,8 +225,8 @@ if ($result->rowCount()==1) {
 			?>
 			<tr>
 				<td> 
-					<b><?php print _("Personal Background") ; ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _("Set your own custom background image.") . "<br/>" . _("Please provide URL to image.") ; ?></i></span>
+					<b><?php print __($guid, "Personal Background") ; ?></b><br/>
+					<span style="font-size: 90%"><i><?php print __($guid, "Set your own custom background image.") . "<br/>" . __($guid, "Please provide URL to image.") ; ?></i></span>
 				</td>
 				<td class="right">
 					<input name="personalBackground" id="personalBackground" value="<?php print $row["personalBackground"] ?>" type="text" style="width: 300px">
@@ -242,8 +242,8 @@ if ($result->rowCount()==1) {
 		
 		<tr>
 			<td> 
-				<b><?php print _("Personal Theme") ; ?></b><br/>
-				<span style="font-size: 90%"><i><?php print _("Override the system theme.") ; ?></i></span>
+				<b><?php print __($guid, "Personal Theme") ; ?></b><br/>
+				<span style="font-size: 90%"><i><?php print __($guid, "Override the system theme.") ; ?></i></span>
 			</td>
 			<td class="right">
 				<select name="gibbonThemeIDPersonal" id="gibbonThemeIDPersonal" style="width: 302px">
@@ -274,8 +274,8 @@ if ($result->rowCount()==1) {
 		
 		<tr>
 			<td> 
-				<b><?php print _("Personal Language") ; ?></b><br/>
-				<span style="font-size: 90%"><i><?php print _("Override the system default language.") ; ?></i></span>
+				<b><?php print __($guid, "Personal Language") ; ?></b><br/>
+				<span style="font-size: 90%"><i><?php print __($guid, "Override the system default language.") ; ?></i></span>
 			</td>
 			<td class="right">
 				<select name="gibboni18nIDPersonal" id="gibboni18nIDPersonal" style="width: 302px">
@@ -306,8 +306,8 @@ if ($result->rowCount()==1) {
 		
 		<tr>
 			<td> 
-				<b><?php print _("Receive Email Notifications?") ; ?></b><br/>
-				<span style="font-size: 90%"><i><?php print _("Notifications can always be viewed on screen.") ; ?></i></span>
+				<b><?php print __($guid, "Receive Email Notifications?") ; ?></b><br/>
+				<span style="font-size: 90%"><i><?php print __($guid, "Notifications can always be viewed on screen.") ; ?></i></span>
 			</td>
 			<td class="right">
 				<select name="receiveNotificationEmails" id="receiveNotificationEmails" style="width: 302px">
@@ -316,12 +316,12 @@ if ($result->rowCount()==1) {
 					if ($_SESSION[$guid]["receiveNotificationEmails"]=="N") {
 						print " selected " ;
 					}
-					print "value='N'>" . ynExpander('N') . "</option>" ;
+					print "value='N'>" . ynExpander($guid, 'N') . "</option>" ;
 					print "<option " ;
 					if ($_SESSION[$guid]["receiveNotificationEmails"]=="Y") {
 						print " selected " ;
 					}
-					print "value='Y'>" . ynExpander('Y') . "</option>" ;
+					print "value='Y'>" . ynExpander($guid, 'Y') . "</option>" ;
 					?>				
 				</select>
 			</td>
@@ -330,11 +330,11 @@ if ($result->rowCount()==1) {
 		
 		<tr>
 			<td>
-				<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+				<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
 			</td>
 			<td class='right'>
 				<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-				<input type="submit" value="<?php print _("Submit") ; ?>">
+				<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 			</td>
 		</tr>
 	</table>

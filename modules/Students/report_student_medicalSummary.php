@@ -27,20 +27,20 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Students/report_student_medicalSummary.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Student Medical Data Summary') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Student Medical Data Summary') . "</div>" ;
 	print "</div>" ;
 	print "<p>" ;
-	print _("This report prints a summary of medical data for the selected students.") ;
+	print __($guid, "This report prints a summary of medical data for the selected students.") ;
 	print "</p>" ;
 	
 	print "<h2>" ;
-	print _("Choose Students") ;
+	print __($guid, "Choose Students") ;
 	print "</h2>" ;
 	
 	?>
@@ -49,12 +49,12 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td style='width: 275px'> 
-					<b><?php print _('Students') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
+					<b><?php print __($guid, 'Students') ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></i></span>
 				</td>
 				<td class="right">
 					<select name="Members[]" id="Members[]" multiple style="width: 302px; height: 150px">
-						<optgroup label='--<?php print _('Students by Roll Group') ?>--'>
+						<optgroup label='--<?php print __($guid, 'Students by Roll Group') ?>--'>
 							<?php
 							try {
 								$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -68,7 +68,7 @@ else {
 							}
 							?>
 						</optgroup>
-						<optgroup label='--<?php print _('Students by Name') ?>--'>
+						<optgroup label='--<?php print __($guid, 'Students by Name') ?>--'>
 							<?php
 							try {
 								$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -87,7 +87,7 @@ else {
 			</tr>
 			<tr>
 				<td colspan=2 class="right">
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
@@ -103,7 +103,7 @@ else {
 		$_SESSION[$guid]["report_student_medicalSummary.php_choices"]=$choices ;
 		
 		print "<h2>" ;
-		print _("Report Data") ;
+		print __($guid, "Report Data") ;
 		print "</h2>" ;
 		
 		try {
@@ -124,26 +124,26 @@ else {
 		}
 		
 		print "<div class='linkTop'>" ;
-		print "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_student_medicalSummary_print.php'>" .  _('Print') . "<img style='margin-left: 5px' title='" . _('Print') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
+		print "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_student_medicalSummary_print.php'>" .  __($guid, 'Print') . "<img style='margin-left: 5px' title='" . __($guid, 'Print') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
 		print "</div>" ;
 	
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print _("Student") ;
+					print __($guid, "Student") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Medical Form?") ;
+					print __($guid, "Medical Form?") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Blood Type") ;
+					print __($guid, "Blood Type") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Tetanus") . "<br/>" ;
-					print "<span style='font-size: 80%'><i>" . _('10 Years') . "</i></span>" ;
+					print __($guid, "Tetanus") . "<br/>" ;
+					print "<span style='font-size: 80%'><i>" . __($guid, '10 Years') . "</i></span>" ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Last Update") ;
+					print __($guid, "Last Update") ;
 				print "</th>" ;
 			print "</tr>" ;
 			
@@ -175,7 +175,7 @@ else {
 							print formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student", true) ;
 						print "</td>" ;
 						print "<td>" ;
-							print _("Yes") ;
+							print __($guid, "Yes") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $rowForm["bloodType"] ;
@@ -205,7 +205,7 @@ else {
 								}
 							}
 							else {
-								print "<span style='color: #ff0000; font-weight: bold'>" . _('NA') . "</span>" ;
+								print "<span style='color: #ff0000; font-weight: bold'>" . __($guid, 'NA') . "</span>" ;
 							}
 						print "</td>" ;
 					print "</tr>" ;
@@ -215,8 +215,8 @@ else {
 						print "<tr class=$rowNum>" ;
 							print "<td></td>" ;
 							print "<td colspan=4 style='border-top: 1px solid #aaa'>" ;
-								print "<b><i>" . _('Long Term Medication') . "</i></b>: " . $rowForm["longTermMedication"] . "<br/>" ;
-								print "<u><i>" . _('Details') . "</i></u>: " . $rowForm["longTermMedicationDetails"] . "<br/>" ;
+								print "<b><i>" . __($guid, 'Long Term Medication') . "</i></b>: " . $rowForm["longTermMedication"] . "<br/>" ;
+								print "<u><i>" . __($guid, 'Details') . "</i></u>: " . $rowForm["longTermMedicationDetails"] . "<br/>" ;
 							print "</td>" ;
 						print "</tr>" ;
 					}
@@ -240,22 +240,22 @@ else {
 							print "<tr class=$rowNum>" ;
 								print "<td></td>" ;
 								print "<td colspan=4 $conditionStyle>" ;
-									print "<b><i>" . _('Condition') . " $condCount</i></b>: " . _($rowConditions["name"]) . "<br/>" ;
-									print "<u><i>" . _('Risk') . "</i></u>: <span style='color: #" . $alert["color"] . "; font-weight: bold'>" . _($alert["name"]) . "</span><br/>" ;
+									print "<b><i>" . __($guid, 'Condition') . " $condCount</i></b>: " . __($guid, $rowConditions["name"]) . "<br/>" ;
+									print "<u><i>" . __($guid, 'Risk') . "</i></u>: <span style='color: #" . $alert["color"] . "; font-weight: bold'>" . __($guid, $alert["name"]) . "</span><br/>" ;
 									if ($rowConditions["triggers"]!="") {
-										print "<u><i>" . _('Triggers') . "</i></u>: " . $rowConditions["triggers"] . "<br/>" ;
+										print "<u><i>" . __($guid, 'Triggers') . "</i></u>: " . $rowConditions["triggers"] . "<br/>" ;
 									}
 									if ($rowConditions["reaction"]!="") {
-										print "<u><i>" . _('Reaction') . "</i></u>: " . $rowConditions["reaction"] . "<br/>" ;
+										print "<u><i>" . __($guid, 'Reaction') . "</i></u>: " . $rowConditions["reaction"] . "<br/>" ;
 									}
 									if ($rowConditions["response"]!="") {
-										print "<u><i>" . _('Response') . "</i></u>: " . $rowConditions["response"] . "<br/>" ;
+										print "<u><i>" . __($guid, 'Response') . "</i></u>: " . $rowConditions["response"] . "<br/>" ;
 									}
 									if ($rowConditions["medication"]!="") {
-										print "<u><i>" . _('Medication') . "</i></u>: " . $rowConditions["medication"] . "<br/>" ;
+										print "<u><i>" . __($guid, 'Medication') . "</i></u>: " . $rowConditions["medication"] . "<br/>" ;
 									}
 									if ($rowConditions["lastEpisode"]!="" OR $rowConditions["lastEpisodeTreatment"]!="") {
-											print "<u><i>" . _('Last Episode') . "</i></u>: " ;
+											print "<u><i>" . __($guid, 'Last Episode') . "</i></u>: " ;
 										if ($rowConditions["lastEpisode"]!="") {
 											 print dateConvertBack($guid, $rowConditions["lastEpisode"]) ;
 										}
@@ -269,7 +269,7 @@ else {
 									}
 									
 									if ($rowConditions["comment"]!="") {
-										print "<u><i>" . _('Comment') . "</i></u>: " . $rowConditions["comment"] . "<br/>" ;
+										print "<u><i>" . __($guid, 'Comment') . "</i></u>: " . $rowConditions["comment"] . "<br/>" ;
 									}
 								print "</td>" ;
 							print "</tr>" ;
@@ -283,7 +283,7 @@ else {
 							print formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student", true) ;
 						print "</td>" ;
 						print "<td colspan=4>" ;
-							print "<span style='color: #ff0000; font-weight: bold'>" . _('No') . "</span>" ;
+							print "<span style='color: #ff0000; font-weight: bold'>" . __($guid, 'No') . "</span>" ;
 						print "</td>" ;
 					print "</tr>" ;
 				}
@@ -291,7 +291,7 @@ else {
 			if ($count==0) {
 				print "<tr class=$rowNum>" ;
 					print "<td colspan=2>" ;
-						print _("There are no records to display.") ;
+						print __($guid, "There are no records to display.") ;
 					print "</td>" ;
 				print "</tr>" ;
 			}

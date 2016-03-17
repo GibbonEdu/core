@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/Timetable/studentEnrolment_manage_edit.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -31,7 +31,7 @@ else {
 	$gibbonCourseID=$_GET["gibbonCourseID"] ;
 	if ($gibbonCourseClassID=="" OR $gibbonCourseID=="") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -47,14 +47,14 @@ else {
 		
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print _("The specified record cannot be found.") ;
+				print __($guid, "The specified record cannot be found.") ;
 			print "</div>" ;
 		}
 		else {
 			//Let's go!
 			$row=$result->fetch() ;
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/studentEnrolment_manage.php'>" . _('Manage Student Enrolment') . "</a> > </div><div class='trailEnd'>" . sprintf(_('Edit %1$s.%2$s Enrolment'), $row["courseNameShort"], $row["name"]) . "</div>" ;
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/studentEnrolment_manage.php'>" . __($guid, 'Manage Student Enrolment') . "</a> > </div><div class='trailEnd'>" . sprintf(__($guid, 'Edit %1$s.%2$s Enrolment'), $row["courseNameShort"], $row["name"]) . "</div>" ;
 			print "</div>" ;
 
 			if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -62,25 +62,25 @@ else {
 			$class="error" ;
 			if (!($updateReturn=="")) {
 				if ($updateReturn=="fail0") {
-					$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+					$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 				}
 				else if ($updateReturn=="fail1") {
-					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($updateReturn=="fail2") {
-					$updateReturnMessage=_("Your request failed due to a database error.") ;	
+					$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 				}
 				else if ($updateReturn=="fail3") {
-					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($updateReturn=="fail4") {
-					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($updateReturn=="fail5") {
-					$updateReturnMessage=_("Your request was successful, but some data was not properly saved. You may have tried to mark as left people who are not students or teachers in this class.") ;	
+					$updateReturnMessage=__($guid, "Your request was successful, but some data was not properly saved. You may have tried to mark as left people who are not students or teachers in this class.") ;	
 				}
 				else if ($updateReturn=="success0") {
-					$updateReturnMessage=_("Your request was completed successfully.") ;	
+					$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
 					$class="success" ;
 				}
 				print "<div class='$class'>" ;
@@ -89,15 +89,15 @@ else {
 			} 
 			
 			print "<h2>" ;
-			print _("Add Participants") ;
+			print __($guid, "Add Participants") ;
 			print "</h2>" ;
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/studentEnrolment_manage_edit_addProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td style='width: 275px'> 
-							<b><?php print _('Enrolable Students') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
+							<b><?php print __($guid, 'Enrolable Students') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="Members[]" id="Members[]" multiple style="width: 302px; height: 150px">
@@ -139,21 +139,21 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Role') ?> *</b><br/>
+							<b><?php print __($guid, 'Role') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select style="width: 302px" name="role">
-								<option value="Student"><?php print _('Student') ?></option>
+								<option value="Student"><?php print __($guid, 'Student') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<?php print _("Submit") ; ?>">
+							<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
@@ -161,7 +161,7 @@ else {
 
 			<?php	
 			print "<h2>" ;
-			print _("Current Participants") ;
+			print __($guid, "Current Participants") ;
 			print "</h2>" ;
 			
 			try {
@@ -176,7 +176,7 @@ else {
 			
 			if ($result->rowCount()<1) {
 				print "<div class='error'>" ;
-				print _("There are no records to display.") ;
+				print __($guid, "There are no records to display.") ;
 				print "</div>" ;
 			}
 			else {
@@ -184,14 +184,14 @@ else {
 					print "<fieldset style='border: none'>" ;
 					print "<div class='linkTop' style='height: 27px'>" ;
 						?>
-						<input style='margin-top: 0px; float: right' type='submit' value='<?php print _('Go') ?>'>
+						<input style='margin-top: 0px; float: right' type='submit' value='<?php print __($guid, 'Go') ?>'>
 						<select name="action" id="action" style='width:120px; float: right; margin-right: 1px;'>
-							<option value="Select action"><?php print _('Select action') ?></option>
-							<option value="Mark as left"><?php print _('Mark as left') ?></option>
+							<option value="Select action"><?php print __($guid, 'Select action') ?></option>
+							<option value="Mark as left"><?php print __($guid, 'Mark as left') ?></option>
 						</select>
 						<script type="text/javascript">
 							var action=new LiveValidation('action');
-							action.add(Validate.Exclusion, { within: ['<?php print _('Select action') ?>'], failureMessage: "<?php print _('Select something!') ?>"});
+							action.add(Validate.Exclusion, { within: ['<?php print __($guid, 'Select action') ?>'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 						</script>
 						<?php
 					print "</div>" ;
@@ -199,16 +199,16 @@ else {
 					print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th>" ;
-								print _("Name") ;
+								print __($guid, "Name") ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("Email") ;
+								print __($guid, "Email") ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("Role") ;
+								print __($guid, "Role") ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("Actions") ;
+								print __($guid, "Actions") ;
 							print "</th>" ;
 							print "<th>" ;
 								?>
@@ -253,7 +253,7 @@ else {
 								print "</td>" ;
 								print "<td>" ;
 									if ($row["role"]=="Student") {
-										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/studentEnrolment_manage_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonPersonID=" . $row["gibbonPersonID"] . "'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/studentEnrolment_manage_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonPersonID=" . $row["gibbonPersonID"] . "'><img title='" . __($guid, 'Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 									}
 								print "</td>" ;
 								print "<td>" ;
@@ -276,7 +276,7 @@ else {
 			}
 			
 			print "<h2>" ;
-			print _("Former Students") ;
+			print __($guid, "Former Students") ;
 			print "</h2>" ;
 			
 			try {
@@ -291,7 +291,7 @@ else {
 			
 			if ($result->rowCount()<1) {
 				print "<div class='error'>" ;
-				print _("There are no records to display.") ;
+				print __($guid, "There are no records to display.") ;
 				print "</div>" ;
 			}
 			else {
@@ -299,16 +299,16 @@ else {
 					print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th>" ;
-								print _("Name") ;
+								print __($guid, "Name") ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("Email") ;
+								print __($guid, "Email") ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("Class Role") ;
+								print __($guid, "Class Role") ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("Actions") ;
+								print __($guid, "Actions") ;
 							print "</th>" ;
 						print "</tr>" ;
 						
@@ -340,7 +340,7 @@ else {
 									print $row["role"] ;
 								print "</td>" ;
 								print "<td>" ;
-									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/studentEnrolment_manage_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonPersonID=" . $row["gibbonPersonID"] . "'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/studentEnrolment_manage_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonPersonID=" . $row["gibbonPersonID"] . "'><img title='" . __($guid, 'Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 								print "</td>" ;
 							print "</tr>" ;
 						}

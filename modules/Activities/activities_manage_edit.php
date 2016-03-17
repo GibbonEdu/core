@@ -26,13 +26,13 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Activities/activities_manage_edit.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Activities/activities_manage.php'>" . _('Manage Activities') . "</a> > </div><div class='trailEnd'>" . _('Edit Activity') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Activities/activities_manage.php'>" . __($guid, 'Manage Activities') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Edit Activity') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -40,25 +40,25 @@ else {
 	$class="error" ;
 	if (!($updateReturn=="")) {
 		if ($updateReturn=="fail0") {
-			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($updateReturn=="fail1") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail2") {
-			$updateReturnMessage=_("Your request failed due to a database error.") ;	
+			$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 		}
 		else if ($updateReturn=="fail3") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail4") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail5") {
-			$updateReturnMessage=_("Your request failed due to an attachment error.") ;	
+			$updateReturnMessage=__($guid, "Your request failed due to an attachment error.") ;	
 		}
 		else if ($updateReturn=="success0") {
-			$updateReturnMessage=_("Your request was completed successfully.") ;	
+			$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -71,19 +71,19 @@ else {
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="fail0") {
-			$deleteReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+			$deleteReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($deleteReturn=="fail1") {
-			$deleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$deleteReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($deleteReturn=="fail2") {
-			$deleteReturnMessage=_("Your request failed due to a database error.") ;	
+			$deleteReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 		}
 		else if ($deleteReturn=="fail3") {
-			$deleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$deleteReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($deleteReturn=="success0") {
-			$deleteReturnMessage=_("Your request was completed successfully.") ;		
+			$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;		
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -95,7 +95,7 @@ else {
 	$gibbonActivityID=$_GET["gibbonActivityID"];
 	if ($gibbonActivityID=="Y") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -111,7 +111,7 @@ else {
 		
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print _("The selected record does not exist, or you do not have access to it.") ;
+				print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 			print "</div>" ;
 		}
 		else {
@@ -119,7 +119,7 @@ else {
 			$row=$result->fetch() ;
 			if ($_GET["search"]!="") {
 				print "<div class='linkTop'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Activities/activities_manage.php&search=" .$_GET["search"] . "'>" . _('Back to Search Results') . "</a>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Activities/activities_manage.php&search=" .$_GET["search"] . "'>" . __($guid, 'Back to Search Results') . "</a>" ;
 				print "</div>" ;
 			}
 			?>
@@ -127,12 +127,12 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr class='break'>
 						<td colspan=2> 
-							<h3><?php print _('Basic Information') ?></h3>
+							<h3><?php print __($guid, 'Basic Information') ?></h3>
 						</td>
 					</tr>
 					<tr>
 						<td style='width: 275px'> 
-							<b><?php print _('Name') ?> *</b><br/>
+							<b><?php print __($guid, 'Name') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<input name="name" id="name" maxlength=40 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
@@ -145,13 +145,13 @@ else {
 					
 					<tr>
 						<td> 
-							<b><?php print _('Provider') ?> *</b><br/>
+							<b><?php print __($guid, 'Provider') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
 							<select name="provider" id="provider" style="width: 302px">
 								<option <?php if ($row["provider"]=="School") {print "selected ";}?>value="School"><?php print $_SESSION[$guid]["organisationNameShort"] ?></option>
-								<option <?php if ($row["provider"]=="External") {print "selected ";}?>value="External"><?php print _('External') ?></option>
+								<option <?php if ($row["provider"]=="External") {print "selected ";}?>value="External"><?php print __($guid, 'External') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -174,7 +174,7 @@ else {
 							?>
 							<tr>
 								<td> 
-									<b><?php print _('Type') ?></b><br/>
+									<b><?php print __($guid, 'Type') ?></b><br/>
 									<span style="font-size: 90%"><i></i></span>
 								</td>
 								<td class="right">
@@ -197,26 +197,26 @@ else {
 					
 					<tr>
 						<td> 
-							<b><?php print _('Active') ?> *</b><br/>
+							<b><?php print __($guid, 'Active') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
 							<select name="active" id="active" style="width: 302px">
-								<option <?php if ($row["active"]=="Y") {print "selected ";}?>value="Y"><?php print _('Yes') ?></option>
-								<option <?php if ($row["active"]=="N") {print "selected ";}?>value="N"><?php print _('No') ?></option>
+								<option <?php if ($row["active"]=="Y") {print "selected ";}?>value="Y"><?php print __($guid, 'Yes') ?></option>
+								<option <?php if ($row["active"]=="N") {print "selected ";}?>value="N"><?php print __($guid, 'No') ?></option>
 							</select>
 						</td>
 					</tr>
 					
 					<tr>
 						<td> 
-							<b><?php print _('Registration') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('Assuming system-wide registration is open, should this activity be open for registration?') ?></i></span>
+							<b><?php print __($guid, 'Registration') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Assuming system-wide registration is open, should this activity be open for registration?') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="registration" id="registration" style="width: 302px">
-								<option <?php if ($row["registration"]=="Y") {print "selected ";}?>value="Y"><?php print _('Yes') ?></option>
-								<option <?php if ($row["registration"]=="N") {print "selected ";}?>value="N"><?php print _('No') ?></option>
+								<option <?php if ($row["registration"]=="Y") {print "selected ";}?>value="Y"><?php print __($guid, 'Yes') ?></option>
+								<option <?php if ($row["registration"]=="N") {print "selected ";}?>value="N"><?php print __($guid, 'No') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -231,14 +231,14 @@ else {
 						?>
 						<tr>
 							<td> 
-								<b><?php print _('Terms') ?></b><br/>
-								<span style="font-size: 90%"><i><?php print _('Terms in which the activity will run.') ?><br/></i></span>
+								<b><?php print __($guid, 'Terms') ?></b><br/>
+								<span style="font-size: 90%"><i><?php print __($guid, 'Terms in which the activity will run.') ?><br/></i></span>
 							</td>
 							<td class="right">
 								<?php 
 								$terms=getTerms($connection2, $_SESSION[$guid]["gibbonSchoolYearID"]) ;
 								if ($terms=="") {
-									print "<i>" . _('No terms available.') . "</i>" ;
+									print "<i>" . __($guid, 'No terms available.') . "</i>" ;
 								}
 								else {
 									for ($i=0; $i<count($terms); $i=$i+2) {
@@ -258,8 +258,8 @@ else {
 						?>
 						<tr>
 							<td> 
-								<b><?php print _('Listing Start Date') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print _('Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/><?php print _('Default: 2 weeks before the end of the current term.') ?></i></span>
+								<b><?php print __($guid, 'Listing Start Date') ?> *</b><br/>
+								<span style="font-size: 90%"><i><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/><?php print __($guid, 'Default: 2 weeks before the end of the current term.') ?></i></span>
 							</td>
 							<td class="right">
 								<input name="listingStart" id="listingStart" maxlength=10 value="<?php print dateConvertBack($guid, $row["listingStart"]) ?>" type="text" style="width: 300px">
@@ -276,8 +276,8 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b><?php print _('Listing End Date') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print _('Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/><?php print _('Default: 2 weeks after the start of next term.') ?></i></span>
+								<b><?php print __($guid, 'Listing End Date') ?> *</b><br/>
+								<span style="font-size: 90%"><i><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/><?php print __($guid, 'Default: 2 weeks after the start of next term.') ?></i></span>
 							</td>
 							<td class="right">
 								<input name="listingEnd" id="listingEnd" maxlength=10 value="<?php print dateConvertBack($guid, $row["listingEnd"]) ?>" type="text" style="width: 300px">
@@ -294,8 +294,8 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b><?php print _('Program Start Date') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print _('Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/><?php print _('Default: first day of next term.') ?></i></span>
+								<b><?php print __($guid, 'Program Start Date') ?> *</b><br/>
+								<span style="font-size: 90%"><i><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/><?php print __($guid, 'Default: first day of next term.') ?></i></span>
 							</td>
 							<td class="right">
 								<input name="programStart" id="programStart" maxlength=10 value="<?php print dateConvertBack($guid, $row["programStart"]) ?>" type="text" style="width: 300px">
@@ -312,8 +312,8 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b><?php print _('Program End Date') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print _('Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/><?php print _('Default: last day of the next term.') ?></i></span>
+								<b><?php print __($guid, 'Program End Date') ?> *</b><br/>
+								<span style="font-size: 90%"><i><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/><?php print __($guid, 'Default: last day of the next term.') ?></i></span>
 							</td>
 							<td class="right">
 								<input name="programEnd" id="programEnd" maxlength=10 value="<?php print dateConvertBack($guid, $row["programEnd"]) ?>" type="text" style="width: 300px">
@@ -336,13 +336,13 @@ else {
 					
 					<tr>
 						<td> 
-							<b><?php print _('Year Groups') ?></b><br/>
+							<b><?php print __($guid, 'Year Groups') ?></b><br/>
 						</td>
 						<td class="right">
 							<?php 
 							$yearGroups=getYearGroups($connection2, $_SESSION[$guid]["gibbonSchoolYearID"]) ;
 							if ($yearGroups=="") {
-								print "<i>" . _('No year groups available.') . "</i>" ;
+								print "<i>" . __($guid, 'No year groups available.') . "</i>" ;
 							}
 							else {
 								for ($i=0; $i<count($yearGroups); $i=$i+2) {
@@ -350,7 +350,7 @@ else {
 									if (is_numeric(strpos($row["gibbonYearGroupIDList"], $yearGroups[$i]))) {
 										$checked="checked " ;
 									}
-									print _($yearGroups[($i+1)]) . " <input $checked type='checkbox' name='gibbonYearGroupIDCheck" . ($i)/2 . "'><br/>" ; 
+									print __($guid, $yearGroups[($i+1)]) . " <input $checked type='checkbox' name='gibbonYearGroupIDCheck" . ($i)/2 . "'><br/>" ; 
 									print "<input type='hidden' name='gibbonYearGroupID" . ($i)/2 . "' value='" . $yearGroups[$i] . "'>" ;
 								}
 							}
@@ -360,7 +360,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Max Participants') ?> *</b><br/>
+							<b><?php print __($guid, 'Max Participants') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<input name="maxParticipants" id="maxParticipants" maxlength=4 value="<?php print $row["maxParticipants"] ?>" type="text" style="width: 300px">
@@ -373,14 +373,14 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Cost') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('For entire programme') . ". " . $_SESSION[$guid]["currency"] . "." ?><br/></i></span>
+							<b><?php print __($guid, 'Cost') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'For entire programme') . ". " . $_SESSION[$guid]["currency"] . "." ?><br/></i></span>
 						</td>
 						<td class="right">
 							<?php
 								if (getSettingByScope($connection2, "Activities", "payment")=="None" OR getSettingByScope($connection2, "Activities", "payment")=="Single") {
 									?>
-									<input readonly name="paymentNote" id="paymentNote" maxlength=100 value="<?php print _('Per Activty payment is switched off') ?>" type="text" style="width: 300px">
+									<input readonly name="paymentNote" id="paymentNote" maxlength=100 value="<?php print __($guid, 'Per Activty payment is switched off') ?>" type="text" style="width: 300px">
 									<?php
 								}
 								else {
@@ -399,14 +399,14 @@ else {
 					</tr>
 					<tr>
 						<td colspan=2> 
-							<b><?php print _('Description') ?></b> 
+							<b><?php print __($guid, 'Description') ?></b> 
 							<?php print getEditor($guid,  TRUE, "description", $row["description"], 10, TRUE ) ?>
 						</td>
 					</tr>
 					
 					<tr class='break'>
 						<td colspan=2> 
-							<h3><?php print _('Current Time Slots') ?></h3>
+							<h3><?php print __($guid, 'Current Time Slots') ?></h3>
 						</td>
 					</tr>
 					<tr>
@@ -424,7 +424,7 @@ else {
 
 							if ($result->rowCount()<1) {
 								print "<div class='error'>" ;
-								print _("There are no records to display.") ;
+								print __($guid, "There are no records to display.") ;
 								print "</div>" ;
 							}
 							else {
@@ -432,16 +432,16 @@ else {
 								print "<table cellspacing='0' style='width: 100%'>" ;
 									print "<tr class='head'>" ;
 										print "<th>" ;
-											print _("Name") ;
+											print __($guid, "Name") ;
 										print "</th>" ;
 										print "<th>" ;
-											print _("Time") ;
+											print __($guid, "Time") ;
 										print "</th>" ;
 										print "<th>" ;
-											print _("Location") ;
+											print __($guid, "Location") ;
 										print "</th>" ;
 										print "<th>" ;
-											print _("Actions") ;
+											print __($guid, "Actions") ;
 										print "</th>" ;
 									print "</tr>" ;
 									
@@ -459,7 +459,7 @@ else {
 										//COLOR ROW BY STATUS!
 										print "<tr class=$rowNum>" ;
 											print "<td>" ;
-												print _($row["name"]) ;
+												print __($guid, $row["name"]) ;
 											print "</td>" ;
 											print "<td>" ;
 												print substr($row["timeStart"],0,5) . " - " . substr($row["timeEnd"],0,5) ;
@@ -486,7 +486,7 @@ else {
 												}
 											print "</td>" ;
 											print "<td>" ;
-												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_edit_slot_deleteProcess.php?address=" . $_GET["q"] . "&gibbonActivitySlotID=" . $row["gibbonActivitySlotID"] . "&gibbonActivityID=$gibbonActivityID&search=" . $_GET["search"] . "'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_edit_slot_deleteProcess.php?address=" . $_GET["q"] . "&gibbonActivitySlotID=" . $row["gibbonActivitySlotID"] . "&gibbonActivityID=$gibbonActivityID&search=" . $_GET["search"] . "'><img title='" . __($guid, 'Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 											print "</td>" ;
 										print "</tr>" ;
 									}
@@ -498,7 +498,7 @@ else {
 					
 					<tr class='break'>
 						<td colspan=2> 
-							<h3><?php print _('New Time Slots') ?></h3>
+							<h3><?php print __($guid, 'New Time Slots') ?></h3>
 						</td>
 					</tr>
 					
@@ -562,12 +562,12 @@ else {
 						?>
 						<tr id="slot<?php print $i ?>Row">
 							<td colspan=2> 
-								<h4><?php print sprintf(_('Slot %1$s'), $i) ?></h4>
+								<h4><?php print sprintf(__($guid, 'Slot %1$s'), $i) ?></h4>
 							</td>
 						</tr>
 						<tr id="slot<?php print $i ?>DayRow">
 							<td> 
-								<b><?php print sprintf(_('Slot %1$s Day'), $i) ?></b><br/>
+								<b><?php print sprintf(__($guid, 'Slot %1$s Day'), $i) ?></b><br/>
 							</td>
 							<td class="right">
 								<select name="gibbonDaysOfWeekID<?php print $i ?>" id="gibbonDaysOfWeekID<?php print $i ?>" style="width: 302px">
@@ -582,7 +582,7 @@ else {
 									catch(PDOException $e) { }
 									
 									while ($rowSelect=$resultSelect->fetch()) {
-										print "<option value='" . $rowSelect["gibbonDaysOfWeekID"] . "'>" . _($rowSelect["name"]) . "</option>" ; 
+										print "<option value='" . $rowSelect["gibbonDaysOfWeekID"] . "'>" . __($guid, $rowSelect["name"]) . "</option>" ; 
 									}
 									?>
 								</select>
@@ -590,8 +590,8 @@ else {
 						</tr>
 						<tr id="slot<?php print $i ?>StartRow">
 							<td> 
-								<b><?php print sprintf(_('Slot %1$s Start Time'), $i) ?></b><br/>
-								<span style="font-size: 90%"><i><?php print _('Format: hh:mm') ?></i></span>
+								<b><?php print sprintf(__($guid, 'Slot %1$s Start Time'), $i) ?></b><br/>
+								<span style="font-size: 90%"><i><?php print __($guid, 'Format: hh:mm') ?></i></span>
 							</td>
 							<td class="right">
 								<input name="timeStart<?php print $i ?>" id="timeStart<?php print $i ?>" maxlength=5 value="" type="text" style="width: 300px">
@@ -618,8 +618,8 @@ else {
 						</tr>
 						<tr id="slot<?php print $i ?>EndRow">
 							<td> 
-								<b><?php print sprintf(_('Slot %1$s End Time'), $i) ?></b><br/>
-								<span style="font-size: 90%"><i><?php print _('Format: hh:mm') ?></i></span>
+								<b><?php print sprintf(__($guid, 'Slot %1$s End Time'), $i) ?></b><br/>
+								<span style="font-size: 90%"><i><?php print __($guid, 'Format: hh:mm') ?></i></span>
 							</td>
 							<td class="right">
 								<input name="timeEnd<?php print $i ?>" id="timeEnd<?php print $i ?>" maxlength=5 value="" type="text" style="width: 300px">
@@ -646,7 +646,7 @@ else {
 						</tr>
 						<tr id="slot<?php print $i ?>LocationRow">
 							<td> 
-								<b><?php print sprintf(_('Slot %1$s Location'), $i) ?></b><br/>
+								<b><?php print sprintf(__($guid, 'Slot %1$s Location'), $i) ?></b><br/>
 							</td>
 							<td class="right">
 								<input type="radio" name="slot<?php print $i ?>Location" value="Internal" class="slot<?php print $i ?>Location" /> Internal
@@ -697,7 +697,7 @@ else {
 							
 					<tr class='break'>
 						<td colspan=2> 
-							<h3><?php print _('Current Staff') ?></h3>
+							<h3><?php print __($guid, 'Current Staff') ?></h3>
 						</td>
 					</tr>
 					<tr>
@@ -714,7 +714,7 @@ else {
 							}
 							if ($result->rowCount()<1) {
 								print "<div class='error'>" ;
-								print _("There are no records to display.") ;
+								print __($guid, "There are no records to display.") ;
 								print "</div>" ;
 							}
 							else {
@@ -722,13 +722,13 @@ else {
 								print "<table cellspacing='0' style='width: 100%'>" ;
 									print "<tr class='head'>" ;
 										print "<th>" ;
-											print _("Name") ;
+											print __($guid, "Name") ;
 										print "</th>" ;
 										print "<th>" ;
-											print _("Role") ;
+											print __($guid, "Role") ;
 										print "</th>" ;
 										print "<th>" ;
-											print _("Actions") ;
+											print __($guid, "Actions") ;
 										print "</th>" ;
 									print "</tr>" ;
 									
@@ -752,7 +752,7 @@ else {
 												print $row["role"] ;
 											print "</td>" ;
 											print "<td>" ;
-												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_edit_staff_deleteProcess.php?address=" . $_GET["q"] . "&gibbonActivityStaffID=" . $row["gibbonActivityStaffID"] . "&gibbonActivityID=$gibbonActivityID&search=" . $_GET["search"] . "'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_edit_staff_deleteProcess.php?address=" . $_GET["q"] . "&gibbonActivityStaffID=" . $row["gibbonActivityStaffID"] . "&gibbonActivityID=$gibbonActivityID&search=" . $_GET["search"] . "'><img title='" . __($guid, 'Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 											print "</td>" ;
 										print "</tr>" ;
 									}
@@ -763,18 +763,18 @@ else {
 					</tr>
 					<tr class='break'>
 						<td colspan=2> 
-							<h3><?php print _('New Staff') ?></h3>
+							<h3><?php print __($guid, 'New Staff') ?></h3>
 						</td>
 					</tr>
 					<tr>
 					<td> 
-						<b><?php print _('Staff') ?></b><br/>
-						<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
+						<b><?php print __($guid, 'Staff') ?></b><br/>
+						<span style="font-size: 90%"><i><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></i></span>
 					</td>
 					<td class="right">
 						<select name="staff[]" id="staff[]" multiple style="width: 302px; height: 150px">
 							<?php
-							print "<optgroup label='--" . _('Staff') . "--'>" ;
+							print "<optgroup label='--" . __($guid, 'Staff') . "--'>" ;
 							try {
 								$dataSelect=array(); 
 								$sqlSelect="SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName" ;
@@ -786,7 +786,7 @@ else {
 								print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName(htmlPrep($rowSelect["title"]), ($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]),"Staff", true, true) . "</option>" ;
 							}
 							print "</optgroup>" ;
-							print "<optgroup label='--" . _('All Users') . "--'>" ;
+							print "<optgroup label='--" . __($guid, 'All Users') . "--'>" ;
 							try {
 								$dataSelect=array(); 
 								$sqlSelect="SELECT gibbonPersonID, surname, preferredName, status FROM gibbonPerson WHERE status='Full' ORDER BY surname, preferredName" ;
@@ -807,25 +807,25 @@ else {
 					</td>
 					<tr>
 						<td> 
-							<b><?php print _('Role') ?></b><br/>
+							<b><?php print __($guid, 'Role') ?></b><br/>
 						</td>
 						<td class="right">
 							<select name="role" id="role" style="width: 302px">
-								<option value="Organiser"><?php print _('Organiser') ?></option>
-								<option value="Coach"><?php print _('Coach') ?></option>
-								<option value="Assistant"><?php print _('Assistant') ?></option>
-								<option value="Other"><?php print _('Other') ?></option>
+								<option value="Organiser"><?php print __($guid, 'Organiser') ?></option>
+								<option value="Coach"><?php print __($guid, 'Coach') ?></option>
+								<option value="Assistant"><?php print __($guid, 'Assistant') ?></option>
+								<option value="Other"><?php print __($guid, 'Other') ?></option>
 							</select>
 						</td>
 					</tr>
 					
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<?php print _("Submit") ; ?>">
+							<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
