@@ -206,7 +206,7 @@ else {
 			<tr>
 				<td colspan=2>
 					<?php
-					$policy=getPasswordPolicy($connection2) ;
+					$policy=getPasswordPolicy($guid, $connection2) ;
 					if ($policy!=FALSE) {
 						print "<div class='warning'>" ;
 							print $policy ;
@@ -221,28 +221,46 @@ else {
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
-					<input name="password" id="password" maxlength=30 value="" type="password" style="width: 300px">
+					<input type='button' class="generatePassword" value="<?php print __($guid, "Generate Password") ?>"/>
+					<input name="passwordNew" id="passwordNew" maxlength=20 value="" type="password" style="width: 300px"><br/>
+					
 					<script type="text/javascript">
-						var password=new LiveValidation('password');
-						password.add(Validate.Presence);
+						var passwordNew=new LiveValidation('passwordNew');
+						passwordNew.add(Validate.Presence);
 						<?php
 						$alpha=getSettingByScope( $connection2, "System", "passwordPolicyAlpha" ) ;
-						if ($alpha=="Y") {
-							print "password.add( Validate.Format, { pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: \"" . __($guid, 'Does not meet password policy.') . "\" } );" ;
-						}
 						$numeric=getSettingByScope( $connection2, "System", "passwordPolicyNumeric" ) ;
-						if ($numeric=="Y") {
-							print "password.add( Validate.Format, { pattern: /.*[0-9]/, failureMessage: \"" . __($guid, 'Does not meet password policy.') . "\" } );" ;
-						}
 						$punctuation=getSettingByScope( $connection2, "System", "passwordPolicyNonAlphaNumeric" ) ;
-						if ($punctuation=="Y") {
-							print "password.add( Validate.Format, { pattern: /[^a-zA-Z0-9]/, failureMessage: \"" . __($guid, 'Does not meet password policy.') . "\" } );" ;
-						}
 						$minLength=getSettingByScope( $connection2, "System", "passwordPolicyMinLength" ) ;
+						if ($alpha=="Y") {
+							print "passwordNew.add( Validate.Format, { pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: \"" . __($guid, 'Does not meet password policy.') . "\" } );" ;
+						}
+						if ($numeric=="Y") {
+							print "passwordNew.add( Validate.Format, { pattern: /.*[0-9]/, failureMessage: \"" . __($guid, 'Does not meet password policy.') . "\" } );" ;
+						}
+						if ($punctuation=="Y") {
+							print "passwordNew.add( Validate.Format, { pattern: /[^a-zA-Z0-9]/, failureMessage: \"" . __($guid, 'Does not meet password policy.') . "\" } );" ;
+						}
 						if (is_numeric($minLength)) {
-							print "password.add( Validate.Length, { minimum: " . $minLength . "} );" ;
+							print "passwordNew.add( Validate.Length, { minimum: " . $minLength . "} );" ;
 						}
 						?>
+						
+						$(".generatePassword").click(function(){
+							var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789![]{}()%&*$#^<>~@|';
+							var text = '';
+							for(var i=0; i < <?php print ($minLength+4) ?>; i++) {
+								for(var i=0; i < <?php print ($minLength+4) ?>; i++) {
+									if (i==0) { text += chars.charAt(Math.floor(Math.random() * 26)); }
+									else if (i==1) { text += chars.charAt(Math.floor(Math.random() * 26)+26); }
+									else if (i==2) { text += chars.charAt(Math.floor(Math.random() * 10)+52); }
+									else if (i==3) { text += chars.charAt(Math.floor(Math.random() * 19)+62); }
+									else { text += chars.charAt(Math.floor(Math.random() * chars.length)); }
+								}
+							}
+							$('input[name="passwordNew"]').val(text);
+							alert('<?php print __($guid, "Copy this password if required:") ?>' + '\n\n' + text) ;
+						});
 					</script>
 				</td>
 			</tr>

@@ -21,13 +21,13 @@ v12.0.00
 	Headlines
 		New markbook configuration to allow weighting and total score calculation for all suitable columns in class
 		New interface for defining interface string substitutions, along for custom language tweaks
+		PHP 7 compatible
 	
 	Changes With Important Notices
 		...
 	
 	Significant Changes
 		System: replaced float with version_compare, fixing cases where minor (system and module) updates could not be installed.
-		System: PHP 7 compatibility improved (not 100% guaranteed, but getting there).
 		System Admin: added system setting to allow choice of Sunday or Monday as first day of the week
 		Individual Needs: new interface for parents to view individual education plans for their children (off by default)
 		
@@ -43,6 +43,7 @@ v12.0.00
 		System: fixed typo in name of behaviour CLI script
 		System: fixed non-standard port bug in installer (caused incorrect value to be set for absoluteURL)
 		System: added Pakistani Rupee (₨) and Jamaican Dollar as currenciess
+		System: added a password generator to new password setting fields
 		System Admin: Improved version comparison in module updater
 		System Admin: Improved version comparison in non-login database updater
 		Activities: fixed error in adding and editing activities when payment is turned off
@@ -78,6 +79,7 @@ v12.0.00
 		User Admin: made max_input_vars test a little more generous
 		User Admin: added link to family for each user in User Admin screen, making it easier to find students based on parents
 		User Admin: fixed bug preventing family import
+		
 		
 v11.0.00
 --------

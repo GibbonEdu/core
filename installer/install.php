@@ -19,6 +19,39 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include "../version.php" ;
 include "../functions.php" ;
+
+//Get and set step
+$step=0 ;
+if (isset($_GET["step"])) {
+	$step=$_GET["step"] ;
+}
+
+//Deal with $guid setup
+if ($step==0) {
+	$charList="abcdefghijkmnopqrstuvwxyz023456789";
+	$guid="" ;
+	for ($i=0;$i<36;$i++) {
+		if ($i==9 OR $i==14 OR $i==19 OR $i==24) {
+			$guid.="-" ;
+		}
+		else {
+			$guid.=substr($charList, rand(1,strlen($charList)),1);
+		}
+	}
+}
+else {
+	if (isset($_GET["guid"])) {
+		$guid=$_GET["guid"] ;
+	}
+	else {
+		$guid="" ;
+	}
+}
+		
+//Deal with no-existent stringReplacement session					
+@session_start() ;
+$_SESSION[$guid]["stringReplacement"]=array() ;
+
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -78,11 +111,6 @@ include "../functions.php" ;
 								$demoData=$_POST["demoData"] ;
 							}
 							
-							//Get and set step
-							$step=0 ;
-							if (isset($_GET["step"])) {
-								$step=$_GET["step"] ;
-							}
 							print "<h2>" . sprintf(__($guid, 'Installation - Step %1$s'), ($step+1)) . "</h2>" ;
 							
 							//Set language
@@ -114,7 +142,7 @@ include "../functions.php" ;
 										
 										//Set language options
 										?>
-										<form method="post" action="./install.php?step=1">
+										<form method="post" action="./install.php?step=1&guid=<?php print $guid ?>">
 											<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 												<tr class='break'>
 													<td colspan=2> 
@@ -154,7 +182,7 @@ include "../functions.php" ;
 							}
 							if ($step==1) { //Set database options
 								?>
-								<form method="post" action="./install.php?step=2">
+								<form method="post" action="./install.php?step=2&guid=<?php print $guid ?>">
 									<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 										<tr class='break'>
 											<td colspan=2> 
@@ -307,18 +335,6 @@ include "../functions.php" ;
 											print __($guid, "Your database connection was successful, so the installation may proceed.") ;
 										print "</div>" ;
 									
-										//Set up GUID
-										$charList="abcdefghijkmnopqrstuvwxyz023456789";
-										$guid="" ;
-										for ($i=0;$i<36;$i++) {
-											if ($i==9 OR $i==14 OR $i==19 OR $i==24) {
-												$guid.="-" ;
-											}
-											else {
-												$guid.=substr($charList, rand(1,strlen($charList)),1);
-											}
-										}
-								
 										//Set up config.php
 										$config="" ;
 										$config.="<?php\n" ;
@@ -449,7 +465,7 @@ include "../functions.php" ;
 										
 													//Let's gather some more information
 													?>
-													<form method="post" action="./install.php?step=3">
+													<form method="post" action="./install.php?step=3&guid=<?php print $guid ?>">
 														<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 															<tr class='break'>
 																<td colspan=2> 
@@ -548,7 +564,7 @@ include "../functions.php" ;
 															<tr>
 																<td colspan=2>
 																	<?php
-																	$policy=getPasswordPolicy($connection2) ;
+																	$policy=getPasswordPolicy($guid, $connection2) ;
 																	if ($policy!=FALSE) {
 																		print "<div class='warning'>" ;
 																			print $policy ;
@@ -563,28 +579,45 @@ include "../functions.php" ;
 																	<span style="font-size: 90%"><i></i></span>
 																</td>
 																<td class="right">
-																	<input name="password" id="password" maxlength=30 value="" type="password" style="width: 300px">
+																	<input type='button' class="generatePassword" value="<?php print __($guid, "Generate Password") ?>"/>
+																	<input name="passwordNew" id="passwordNew" maxlength=20 value="" type="password" style="width: 300px"><br/>
+							
 																	<script type="text/javascript">
-																		var password=new LiveValidation('password');
-																		password.add(Validate.Presence);
+																		var passwordNew=new LiveValidation('passwordNew');
+																		passwordNew.add(Validate.Presence);
 																		<?php
 																		$alpha=getSettingByScope( $connection2, "System", "passwordPolicyAlpha" ) ;
-																		if ($alpha=="Y") {
-																			print "password.add( Validate.Format, { pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: \"" . __($guid, 'Does not meet password policy.') . "\" } );" ;
-																		}
 																		$numeric=getSettingByScope( $connection2, "System", "passwordPolicyNumeric" ) ;
-																		if ($numeric=="Y") {
-																			print "password.add( Validate.Format, { pattern: /.*[0-9]/, failureMessage: \"" . __($guid, 'Does not meet password policy.') . "\" } );" ;
-																		}
 																		$punctuation=getSettingByScope( $connection2, "System", "passwordPolicyNonAlphaNumeric" ) ;
-																		if ($punctuation=="Y") {
-																			print "password.add( Validate.Format, { pattern: /[^a-zA-Z0-9]/, failureMessage: \"" . __($guid, 'Does not meet password policy.') . "\" } );" ;
-																		}
 																		$minLength=getSettingByScope( $connection2, "System", "passwordPolicyMinLength" ) ;
+																		if ($alpha=="Y") {
+																			print "passwordNew.add( Validate.Format, { pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: \"" . __($guid, 'Does not meet password policy.') . "\" } );" ;
+																		}
+																		if ($numeric=="Y") {
+																			print "passwordNew.add( Validate.Format, { pattern: /.*[0-9]/, failureMessage: \"" . __($guid, 'Does not meet password policy.') . "\" } );" ;
+																		}
+																		if ($punctuation=="Y") {
+																			print "passwordNew.add( Validate.Format, { pattern: /[^a-zA-Z0-9]/, failureMessage: \"" . __($guid, 'Does not meet password policy.') . "\" } );" ;
+																		}
 																		if (is_numeric($minLength)) {
-																			print "password.add( Validate.Length, { minimum: " . $minLength . "} );" ;
+																			print "passwordNew.add( Validate.Length, { minimum: " . $minLength . "} );" ;
 																		}
 																		?>
+								
+																		$(".generatePassword").click(function(){
+																			var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789![]{}()%&*$#^<>~@|';
+																			var text = '';
+																			for(var i=0; i < <?php print ($minLength+4) ?>; i++) {
+																				if (i==0) { text += chars.charAt(Math.floor(Math.random() * 26)); }
+																				else if (i==1) { text += chars.charAt(Math.floor(Math.random() * 26)+26); }
+																				else if (i==2) { text += chars.charAt(Math.floor(Math.random() * 10)+52); }
+																				else if (i==3) { text += chars.charAt(Math.floor(Math.random() * 19)+62); }
+																				else { text += chars.charAt(Math.floor(Math.random() * chars.length)); }
+																			}
+																			$('input[name="passwordNew"]').val(text);
+																			$('input[name="passwordConfirm"]').val(text);
+																			alert('<?php print __($guid, "Copy this password if required:") ?>' + '\n\n' + text) ;
+																		});
 																	</script>
 																</td>
 															</tr>
@@ -632,8 +665,9 @@ include "../functions.php" ;
 																		if ($_SERVER["SERVER_PORT"]!="80") {
 																			$port=":" . $_SERVER["SERVER_PORT"] ;
 																		}
+																		$uri_parts=explode('?', $_SERVER['REQUEST_URI'], 2);
 																	?>
-																	<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print substr(($pageURL . $_SERVER["SERVER_NAME"] . $port . $_SERVER["REQUEST_URI"]),0,-29) ?>" type="text" style="width: 300px">
+																	<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print $pageURL . $_SERVER["SERVER_NAME"] . $port . substr($uri_parts[0], 0, -22) ?>" type="text" style="width: 300px">
 																	<script type="text/javascript">
 																		var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 																		<?php print $row["name"] ?>.add(Validate.Presence);
@@ -1134,7 +1168,7 @@ include "../functions.php" ;
 									$firstName=$_POST["firstName"] ;
 									$preferredName=$_POST["firstName"] ;
 									$username=$_POST["username"] ;
-									$password=$_POST["password"] ;
+									$password=$_POST["passwordNew"] ;
 									$passwordConfirm=$_POST["passwordConfirm"] ;
 									$email=$_POST["email"] ;
 									$support=FALSE ;

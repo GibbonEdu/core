@@ -52,7 +52,7 @@ else {
 	$nameInCharacters=$_POST["nameInCharacters"] ;
 	$gender=$_POST["gender"] ;
 	$username=$_POST["username"] ;
-	$password=$_POST["password"] ;
+	$password=$_POST["passwordNew"] ;
 	$passwordConfirm=$_POST["passwordConfirm"] ;
 	$status=$_POST["status"] ;
 	$canLogin=$_POST["canLogin"] ;

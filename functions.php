@@ -1435,7 +1435,7 @@ function doesPasswordMatchPolicy($connection2, $passwordNew) {
 	return $output ;
 }
 
-function getPasswordPolicy($connection2) {
+function getPasswordPolicy($guid, $connection2) {
 	$output=FALSE ;
 
 	$alpha=getSettingByScope( $connection2, "System", "passwordPolicyAlpha" ) ;

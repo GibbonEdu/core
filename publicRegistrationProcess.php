@@ -81,7 +81,7 @@ else {
 	}
 	$email=$_POST["email"] ;
 	$username=$_POST["username"] ;
-	$password=$_POST["password"] ;
+	$password=$_POST["passwordNew"] ;
 	$salt=getSalt() ;
 	$passwordStrong=hash("sha256", $salt.$password) ;
 	$status=getSettingByScope($connection2, 'User Admin', 'publicRegistrationDefaultStatus') ;
