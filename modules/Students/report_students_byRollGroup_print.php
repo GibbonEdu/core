@@ -220,7 +220,7 @@ else {
 								print "<b><i>" . __($guid, 'Condition') . " $condCount</i></b> " ;
 								print ": " . __($guid, $rowConditions["name"]) ;
 								
-								$alert=getAlert($connection2, $rowConditions["gibbonAlertLevelID"]) ;
+								$alert=getAlert($guid, $connection2, $rowConditions["gibbonAlertLevelID"]) ;
 								if ($alert!=FALSE) {
 									print " <span style='color: #" . $alert["color"] . "; font-weight: bold'>(" . __($guid, $alert["name"]) . " " . __($guid, 'Risk') . ")</span>" ;
 									print "<br/>" ;									

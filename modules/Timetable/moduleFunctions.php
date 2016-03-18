@@ -274,6 +274,7 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
 
 
 //TIMETABLE FOR INDIVIUDAL
+//Narrow can be FALSE (full width), TRUE (narrow) or trim (a little skinnier than usual)
 function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", $startDayStamp="", $q="", $params="", $narrow=FALSE, $edit=FALSE) {
 	$zCount=0 ;
 	$output="" ;
@@ -654,7 +655,10 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 			//Final calc
 			$diffTime=strtotime($timeEnd)-strtotime($timeStart) ;
 
-			if ($narrow) {
+			if ($narrow=="trim") {
+				$width=(ceil(640/$daysInWeek)-20) . "px" ;
+			}
+			else if ($narrow==TRUE) {
 				$width=(ceil(515/$daysInWeek)-20) . "px" ;
 			}
 			else {
@@ -663,7 +667,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 
 			$count=0;
 
-			$output.="<table cellspacing='0' class='mini' cellspacing='0' style='width: " ; if ($narrow) { $output.="575px" ; } else { $output.="750px" ; } $output.="; margin: 0px 0px 30px 0px;'>" ;
+			$output.="<table cellspacing='0' class='mini' cellspacing='0' style='width: " ; if ($narrow=="trim") { $output.="700px" ; } else if ($narrow) { $output.="575px" ; } else { $output.="750px" ; } $output.="; margin: 0px 0px 30px 0px;'>" ;
 				//Spit out controls for displaying calendars
 				if ($self==TRUE AND ($_SESSION[$guid]["calendarFeed"]!="" OR $_SESSION[$guid]["calendarFeedPersonal"]!="" OR $_SESSION[$guid]["viewCalendarSpaceBooking"]!="")) {
 					$output.="<tr class='head' style='height: 37px;'>" ;
@@ -720,7 +724,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 						if ($day["schoolDay"]=="Y") {
 							$dateCorrection=($day["sequenceNumber"]-1) ;
 						
-							$output.="<th style='vertical-align: top; text-align: center; width: " ; if ($narrow) { $output.=(375/$daysInWeek) ; } else { $output.=(550/$daysInWeek) ; } $output.="px'>" ;
+							$output.="<th style='vertical-align: top; text-align: center; width: " ; if ($narrow=="trim") { $output.=(550/$daysInWeek) ; } else if ($narrow) { $output.=(375/$daysInWeek) ; } else { $output.=(550/$daysInWeek) ; } $output.="px'>" ;
 								$output.=__($guid, $day["nameShort"]) . "<br/>" ;
 								$output.="<span style='font-size: 80%; font-style: italic'>". date($_SESSION[$guid]["i18n"]["dateFormatPHP"], ($startDayStamp+(86400*$dateCorrection))) . "</span><br/>" ;
 								try {
@@ -855,7 +859,10 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 		$roleCategory=getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2) ;
 	}
 
-	if ($narrow) {
+	if ($narrow=="trim") { 
+		$width=(ceil(640/$daysInWeek)-20) . "px" ;
+	} 
+	else if ($narrow) {
 		$width=(ceil(515/$daysInWeek)-20) . "px" ;
 	}
 	else {
@@ -1133,7 +1140,10 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 							}
 
 							$blank=FALSE ;
-							if ($narrow) {
+							if ($narrow=="trim") { 
+								$width=(ceil(640/$daysInWeek)-20) . "px" ;
+							} 
+							else if ($narrow) {
 								$width=(ceil(515/$daysInWeek)-20) . "px" ;
 							}
 							else {

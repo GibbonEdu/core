@@ -22,6 +22,7 @@ v12.0.00
 		New markbook configuration to allow weighting and total score calculation for all suitable columns in class
 		New interface for defining interface string substitutions, along for custom language tweaks
 		PHP 7 compatible
+		Dashboards, with hooks, for staff and students
 	
 	Changes With Important Notices
 		...

@@ -43,7 +43,7 @@ else {
 		print "</div>" ;
 	}
 	else {
-		$alert=getAlert($connection2, 002) ;
+		$alert=getAlert($guid, $connection2, 002) ;
 		
 		//Proceed!
 		//Get class variable

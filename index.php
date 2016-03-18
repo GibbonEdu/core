@@ -592,6 +592,7 @@ else {
 										print $_SESSION[$guid]["index_custom.php"] ;
 									}
 									
+									//DASHBOARDS!
 									//Get role category
 									$category=getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2) ;
 									if ($category==FALSE) {
@@ -599,8 +600,7 @@ else {
 										print __($guid, "Your current role type cannot be determined.") ;
 										print "</div>" ;
 									}
-									//Display Parental Dashboard
-									else if ($category=="Parent") {
+									else if ($category=="Parent") { //Display Parent Dashboard
 										$count=0 ;
 										try {
 											$data=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
@@ -644,7 +644,7 @@ else {
 										
 										if ($count>0) {
 											print "<h2>" ;
-												print __($guid, "Parental Dashboard") ;
+												print __($guid, "Parent Dashboard") ;
 											print "</h2>" ;
 											include "./modules/Timetable/moduleFunctions.php" ;
 											
@@ -668,7 +668,7 @@ else {
 													print "</span>" ;
 												print "</div>" ;
 												print "<div style='margin-bottom: 30px; margin-left: 1%; float: left; width: 83%'>" ;
-													$dashboardContents=getParentalDashboardContents($connection2, $guid, $students[$i][4]) ;
+													$dashboardContents=getParentDashboardContents($connection2, $guid, $students[$i][4]) ;
 													if ($dashboardContents==FALSE) {
 														print "<div class='error'>" ;
 															print __($guid, "There are no records to display.") ;
@@ -681,374 +681,44 @@ else {
 											}
 										}
 									}
-									else if ($category=="Student" OR $category=="Staff") {
-										//Get Smart Workflow help message
-										if ($category=="Staff") {
-											$smartWorkflowHelp=getSmartWorkflowHelp($connection2, $guid) ;
-											if ($smartWorkflowHelp!=false) {
-												print $smartWorkflowHelp ;
-											}
-										}
-										//Display planner
-										$date=date("Y-m-d") ;
-										if (isSchoolOpen($guid, $date, $connection2)==TRUE AND isActionAccessible($guid, $connection2, "/modules/Planner/planner.php") AND $_SESSION[$guid]["username"]!="") {			
-											try {
-												$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"],"date"=>$date,"gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"],"gibbonSchoolYearID2"=>$_SESSION[$guid]["gibbonSchoolYearID"],"date2"=>$date,"gibbonPersonID2"=>$_SESSION[$guid]["gibbonPersonID"]); 
-												$sql="(SELECT gibbonCourseClass.gibbonCourseClassID, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkSubmission, homeworkCrowdAssess, role, date, summary, gibbonPlannerEntryStudentHomework.homeworkDueDateTime AS myHomeworkDueDateTime FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) LEFT JOIN gibbonPlannerEntryStudentHomework ON (gibbonPlannerEntryStudentHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID AND gibbonPlannerEntryStudentHomework.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND date=:date AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left') UNION (SELECT gibbonCourseClass.gibbonCourseClassID, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkSubmission, homeworkCrowdAssess,  role, date, summary, NULL AS myHomeworkDueDateTime FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonPlannerEntryGuest ON (gibbonPlannerEntryGuest.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID2 AND date=:date2 AND gibbonPlannerEntryGuest.gibbonPersonID=:gibbonPersonID2) ORDER BY date, timeStart, course, class" ; 
-												$result=$connection2->prepare($sql);
-												$result->execute($data);
-											}
-											catch(PDOException $e) {
-												print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-											}
-											if ($result->rowCount()>0) {
-												print "<h2>" ;
-													print __($guid, "Today's Lessons") ;
-												print "</h2>" ;
-												
-												if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-												$updateReturnMessage="" ;
-												$class="error" ;
-												if (!($updateReturn=="")) {
-													if ($updateReturn=="fail0") {
-														$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-													}
-													else if ($updateReturn=="fail1") {
-														$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-													}
-													else if ($updateReturn=="fail2") {
-														$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-													}
-													else if ($updateReturn=="success0") {
-														$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
-														$class="success" ;
-													}
-													print "<div class='$class'>" ;
-														print $updateReturnMessage;
-													print "</div>" ;
-												} 
-												
-												print "<div class='linkTop'>" ;
-													print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner.php'>" . __($guid, 'View Planner') . "</a>" ;
+									else if ($category=="Student") { //Display Student Dashboard
+										print "<h2>" ;
+											print __($guid, "Student Dashboard") ;
+										print "</h2>" ;
+										print "<div style='margin-bottom: 30px; margin-left: 1%; float: left; width: 100%'>" ;
+											$dashboardContents=getStudentDashboardContents($connection2, $guid, $_SESSION[$guid]["gibbonPersonID"]) ;
+											if ($dashboardContents==FALSE) {
+												print "<div class='error'>" ;
+													print __($guid, "There are no records to display.") ;
 												print "</div>" ;
-												
-												print "<table cellspacing='0' style='width: 100%'>" ;
-													print "<tr class='head'>" ;
-														print "<th>" ;
-															print __($guid, "Class") . "<br/>" ;
-														print "</th>" ;
-														print "<th>" ;
-															print __($guid, "Lesson") . "</br>" ;
-															print "<span style='font-size: 85%; font-style: italic'>" . __($guid, 'Unit') . "</span>" ;
-														print "</th>" ;
-														print "<th>" ;
-															print __($guid, "Homework") ;
-														print "</th>" ;
-														print "<th>" ;
-															print __($guid, "Summary") ;
-														print "</th>" ;
-														print "<th>" ;
-															print __($guid, "Like") ;
-														print "</th>" ;
-														print "<th>" ;
-															print __($guid, "Action") ;
-														print "</th>" ;
-													print "</tr>" ;
-													
-													$count=0;
-													$rowNum="odd" ;
-													while ($row=$result->fetch()) {
-														if (!($row["role"]=="Student" AND $row["viewableStudents"]=="N")) {
-															if ($count%2==0) {
-																$rowNum="even" ;
-															}
-															else {
-																$rowNum="odd" ;
-															}
-															$count++ ;
-															
-															//Highlight class in progress
-															if ((date("H:i:s")>$row["timeStart"]) AND (date("H:i:s")<$row["timeEnd"]) AND ($date)==date("Y-m-d")) {
-																$rowNum="current" ;
-															}
-															
-															//COLOR ROW BY STATUS!
-															print "<tr class=$rowNum>" ;
-																print "<td>" ;
-																	print $row["course"] . "." . $row["class"] . "<br/>" ;
-																	print "<span style='font-style: italic; font-size: 75%'>" . substr($row["timeStart"],0,5) . "-" . substr($row["timeEnd"],0,5) . "</span>" ;
-																print "</td>" ;
-																print "<td>" ;
-																	print "<b>" . $row["name"] . "</b><br/>" ;
-																	print "<span style='font-size: 85%; font-style: italic'>" ;
-																		$unit=getUnit($connection2, $row["gibbonUnitID"], $row["gibbonHookID"], $row["gibbonCourseClassID"]) ;
-																		if (isset($unit[0])) {
-																			print $unit[0] ;
-																			if ($unit[1]!="") {
-																				print "<br/><i>" . $unit[1] . " " . __($guid, 'Unit') . "</i>" ;
-																			}
-																		}
-																	print "</span>" ;
-																print "</td>" ;
-																print "<td>" ;
-																	if ($row["homework"]=="N" AND $row["myHomeworkDueDateTime"]=="") {
-																		print __($guid, "No") ;
-																	}
-																	else {
-																		if ($row["homework"]=="Y") {
-																			print __($guid, "Yes") . ": " . __($guid, "Teacher Recorded") . "<br/>" ;
-																			if ($row["homeworkSubmission"]=="Y") {
-																				print "<span style='font-size: 85%; font-style: italic'>+" . __($guid, "Submission") . "</span><br/>" ;
-																				if ($row["homeworkCrowdAssess"]=="Y") {
-																					print "<span style='font-size: 85%; font-style: italic'>+" . __($guid, "Crowd Assessment") . "</span><br/>" ;
-																				}
-																			}
-																		}
-																		if ($row["myHomeworkDueDateTime"]!="") {
-																			print __($guid, "Yes") . ": " . __($guid, "Student Recorded") . "</br>" ;
-																		}
-																	}
-																print "</td>" ;
-																print "<td>" ;
-																	print $row["summary"] ;
-																print "</td>" ;
-																print "<td>" ;
-																	if ($row["role"]=="Teacher") {
-																		print countLikesByContext($connection2, "Planner", "gibbonPlannerEntryID", $row["gibbonPlannerEntryID"]) ;
-																	}
-																	else {
-																		$likesGiven=countLikesByContextAndGiver($connection2, "Planner", "gibbonPlannerEntryID", $row["gibbonPlannerEntryID"], $_SESSION[$guid]["gibbonPersonID"]) ;
-																		if ($likesGiven!=1) {
-																			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/plannerProcess.php?gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&address=/modules/Planner/planner.php&viewBy=Class&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&date=&returnToIndex=Y'><img src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_off.png'></a>" ;
-																		}
-																		else {
-																			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/plannerProcess.php?gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&address=/modules/Planner/planner.php&viewBy=Class&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&date=&returnToIndex=Y'><img src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_on.png'></a>" ;
-																		}
-																	}
-																print "</td>" ;
-																print "<td>" ;
-																	print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "'><img title='" . __($guid, 'View') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a>" ;
-																print "</td>" ;
-															print "</tr>" ;
-														}
-													}
-												print "</table>" ;
 											}
-										}
-										
-										//Display TT
-										if (isActionAccessible($guid, $connection2, "/modules/Timetable/tt.php") AND $_SESSION[$guid]["username"]!="" AND (getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2)=="Staff" OR getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2)=="Student")) {			
-											?>
-											<script type="text/javascript">
-												$(document).ready(function(){
-													$("#tt").load("<?php print $_SESSION[$guid]["absoluteURL"] ?>/index_tt_ajax.php",{"gibbonTTID": "<?php print @$_GET["gibbonTTID"] ?>", "ttDate": "<?php print @$_POST["ttDate"] ?>", "fromTT": "<?php print @$_POST["fromTT"] ?>", "personalCalendar": "<?php print @$_POST["personalCalendar"] ?>", "schoolCalendar": "<?php print @$_POST["schoolCalendar"] ?>", "spaceBookingCalendar": "<?php print @$_POST["spaceBookingCalendar"] ?>"});
-												});
-											</script>
-											<?php
-											print "<h2>" . __($guid, "My Timetable") . "</h2>" ;
-											print "<div id='tt' name='tt' style='width: 100%; min-height: 40px; text-align: center'>" ;
-												print "<img style='margin: 10px 0 5px 0' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/loading.gif' alt='" . __($guid, 'Loading') . "' onclick='return false;' /><br/><p style='text-align: center'>" . __($guid, 'Loading') . "</p>" ;
-											print "</div>" ;
-										}
-										
-										//Display "My Roll Groups"
-										?>
-										<script type='text/javascript'>
-											$(function() {
-												$( "#tabs" ).tabs({
-													ajaxOptions: {
-														error: function( xhr, status, index, anchor ) {
-															$( anchor.hash ).html(
-																"<?php
-																print __($guid, "Couldn't load this tab.") ; 
-																?>"
-															);
-														}
-													}
-												});
-											});
-										</script>
-	
-										<?php
-										try {
-											$data=array("gibbonPersonIDTutor"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonIDTutor2"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonIDTutor3"=>$_SESSION[$guid]["gibbonPersonID"],"gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-											$sql="SELECT * FROM gibbonRollGroup WHERE (gibbonPersonIDTutor=:gibbonPersonIDTutor OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3) AND gibbonSchoolYearID=:gibbonSchoolYearID" ;
-											$result=$connection2->prepare($sql);
-											$result->execute($data);
-										}
-										catch(PDOException $e) { 
-											print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-										}
-										
-										$h2=__($guid, "My Roll Groups") ;
-										if ($result->rowCount()==1) {
-											$h2=__($guid, "My Roll Group") ;
-										}
-										if ($result->rowCount()>0) {
-											print "<h2>" ;
-												print $h2 ;
-											print "</h2>" ;
-											
-											?>
-											<div id="tabs" style='margin: 10px 0 20px 0'>
-												<ul>
-													<li><a href="#tabs-1"><?php print __($guid, 'Students') ?></a></li>
-													<li><a href="#tabs-2"><?php print __($guid, 'Behaviour') ?></a></li>
-												</ul>
-												<div id="tabs-1">
-													<?php
-													//Students
-													$sqlWhere="" ;
-													while ($row=$result->fetch()) {
-														$sqlWhere.="gibbonRollGroupID=" . $row["gibbonRollGroupID"] . " OR " ;
-														if ($result->fetch()>1) {
-															print "<h4>" ;
-																print $row["name"] ;
-															print "</h4>" ;
-														}
-														print "<div class='linkTop' style='margin-top: 0px'>" ;
-														print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "'>" . __($guid, 'Take Attendance') . "<img style='margin-left: 5px' title='" . __($guid, 'Take Attendance') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.png'/></a> | " ;
-														print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/indexExport.php?gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "'>" . __($guid, 'Export to Excel') . "<img style='margin-left: 5px' title='" . __($guid, 'Export to Excel') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/download.png'/></a>" ;
-														print "</div>" ;
-														
-														printRollGroupTable($guid, $row["gibbonRollGroupID"],5,$connection2) ;
-													}
-													$sqlWhere=substr($sqlWhere,0,-4) ;
-													?>
-												</div>
-												<div id="tabs-2">
-													<?php
-													$plural="s" ;
-													if ($result->rowCount()==1) {
-														$plural="" ;
-													}
-													try {
-														$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonSchoolYearID2"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-														$sql="SELECT gibbonBehaviour.*, student.surname AS surnameStudent, student.preferredName AS preferredNameStudent, creator.surname AS surnameCreator, creator.preferredName AS preferredNameCreator, creator.title FROM gibbonBehaviour JOIN gibbonPerson AS student ON (gibbonBehaviour.gibbonPersonID=student.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=student.gibbonPersonID) JOIN gibbonPerson AS creator ON (gibbonBehaviour.gibbonPersonIDCreator=creator.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonBehaviour.gibbonSchoolYearID=:gibbonSchoolYearID2 AND ($sqlWhere) ORDER BY timestamp DESC" ; 
-														$result=$connection2->prepare($sql);
-														$result->execute($data);
-													}
-													catch(PDOException $e) { 
-														print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-													}
-													
-													if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_manage_add.php")) {
-														print "<div class='linkTop'>" ;
-															print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage_add.php&gibbonPersonID=&gibbonRollGroupID=&gibbonYearGroupID=&type='>" . __($guid, 'Add') . "<img style='margin: 0 0 -4px 5px' title='" . __($guid, 'Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
-															$policyLink=getSettingByScope($connection2, "Behaviour", "policyLink") ;
-															if ($policyLink!="") {
-																print " | <a target='_blank' href='$policyLink'>" . __($guid, 'View Behaviour Policy') . "</a>" ;
-															}
-														print "</div>" ;
-													}
-													
-													if ($result->rowCount()<1) {
-														print "<div class='error'>" ;
-														print __($guid, "There are no records to display.") ;
-														print "</div>" ;
-													}
-													else {
-														print "<table cellspacing='0' style='width: 100%'>" ;
-															print "<tr class='head'>" ;
-																print "<th>" ;
-																	print __($guid, "Student & Date") ;
-																print "</th>" ;
-																print "<th>" ;
-																	print __($guid, "Type") ;
-																print "</th>" ;
-																print "<th>" ;
-																	print __($guid, "Descriptor") ;
-																print "</th>" ;
-																print "<th>" ;
-																	print __($guid, "Level") ;
-																print "</th>" ;
-																print "<th>" ;
-																	print __($guid, "Teacher") ;
-																print "</th>" ;
-																print "<th>" ;
-																	print __($guid, "Action") ;
-																print "</th>" ;
-															print "</tr>" ;
-															
-															$count=0;
-															$rowNum="odd" ;
-															while ($row=$result->fetch()) {
-																if ($count%2==0) {
-																	$rowNum="even" ;
-																}
-																else {
-																	$rowNum="odd" ;
-																}
-																$count++ ;
-																
-																//COLOR ROW BY STATUS!
-																print "<tr class=$rowNum>" ;
-																	print "<td>" ;
-																		print "<b>" . formatName("", $row["preferredNameStudent"], $row["surnameStudent"], "Student", false ) . "</b><br/>" ;
-																		if (substr($row["timestamp"],0,10)>$row["date"]) {
-																			print __($guid, "Date Updated") . ": " . dateConvertBack($guid, substr($row["timestamp"],0,10)) . "<br/>" ;
-																			print __($guid, "Incident Date") . ": " . dateConvertBack($guid, $row["date"]) . "<br/>" ;
-																		}
-																		else {
-																			print dateConvertBack($guid, $row["date"]) . "<br/>" ;
-																		}
-																	print "</td>" ;
-																	print "<td style='text-align: center'>" ;
-																		if ($row["type"]=="Negative") {
-																			print "<img title='" . __($guid, 'Negative') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/> " ;
-																		}
-																		else if ($row["type"]=="Positive") {
-																			print "<img title='" . __($guid, 'Position') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
-																		}
-																	print "</td>" ;
-																	print "<td>" ;
-																		print trim($row["descriptor"]) ;
-																	print "</td>" ;
-																	print "<td>" ;
-																		print trim($row["level"]) ;
-																	print "</td>" ;
-																	print "<td>" ;
-																		print formatName($row["title"], $row["preferredNameCreator"], $row["surnameCreator"], "Staff", false ) . "<br/>" ;
-																	print "</td>" ;
-																	print "<td>" ;
-																		print "<script type='text/javascript'>" ;	
-																			print "$(document).ready(function(){" ;
-																				print "\$(\".comment-$count\").hide();" ;
-																				print "\$(\".show_hide-$count\").fadeIn(1000);" ;
-																				print "\$(\".show_hide-$count\").click(function(){" ;
-																				print "\$(\".comment-$count\").fadeToggle(1000);" ;
-																				print "});" ;
-																			print "});" ;
-																		print "</script>" ;
-																		if ($row["comment"]!="") {
-																			print "<a title='" . __($guid, 'View Description') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='" . __($guid, 'Show Comment') . "' onclick='return false;' /></a>" ;
-																		}
-																	print "</td>" ;
-																print "</tr>" ;
-																if ($row["comment"]!="") {
-																	if ($row["type"]=="Positive") {
-																		$bg="background-color: #D4F6DC;" ;
-																	}
-																	else {
-																		$bg="background-color: #F6CECB;" ;
-																	}
-																	print "<tr class='comment-$count' id='comment-$count'>" ;
-																		print "<td style='$bg' colspan=6>" ;
-																			print $row["comment"] ;
-																		print "</td>" ;
-																	print "</tr>" ;
-																}
-																print "</tr>" ;
-																print "</tr>" ;
-															}
-														print "</table>" ;
-													}
-													?>
-												</div>
-											</div>
-											<?php
-										}
+											else {
+												print $dashboardContents ;
+											}
+										print "</div>" ;
 									}
+									else if ($category=="Staff") { //Display Staff Dashboard
+										$smartWorkflowHelp=getSmartWorkflowHelp($connection2, $guid) ;
+										if ($smartWorkflowHelp!=false) {
+											print $smartWorkflowHelp ;
+										}
+										
+										print "<h2>" ;
+											print __($guid, "Staff Dashboard") ;
+										print "</h2>" ;
+										print "<div style='margin-bottom: 30px; margin-left: 1%; float: left; width: 100%'>" ;
+											$dashboardContents=getStaffDashboardContents($connection2, $guid, $_SESSION[$guid]["gibbonPersonID"]) ;
+											if ($dashboardContents==FALSE) {
+												print "<div class='error'>" ;
+													print __($guid, "There are no records to display.") ;
+												print "</div>" ;
+											}
+											else {
+												print $dashboardContents ;
+											}
+										print "</div>" ;
+									
+									}	
 								}
 							}
 							else {

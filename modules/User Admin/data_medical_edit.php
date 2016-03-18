@@ -314,7 +314,7 @@ else {
 									print __($guid, "Risk") ;
 								print "</td>" ;
 								print "<td>" ;
-									$alert=getAlert($connection2, $rowCond2["gibbonAlertLevelID"]) ;
+									$alert=getAlert($guid, $connection2, $rowCond2["gibbonAlertLevelID"]) ;
 									if ($alert!=FALSE) {
 										$style="" ;
 										if ($rowCond2["gibbonAlertLevelID"]!=$rowCond["gibbonAlertLevelID"]) {
@@ -325,7 +325,7 @@ else {
 									}
 								print "</td>" ;
 								print "<td>" ;
-									$alert=getAlert($connection2, $rowCond["gibbonAlertLevelID"]) ;
+									$alert=getAlert($guid, $connection2, $rowCond["gibbonAlertLevelID"]) ;
 									if ($alert!=FALSE) {
 										$style="" ;
 										if ($rowCond2["gibbonAlertLevelID"]!=$rowCond["gibbonAlertLevelID"]) {
@@ -533,7 +533,7 @@ else {
 									print $rowCond2["gibbonAlertLevelID"] ;
 								print "</td>" ;
 								print "<td>" ;
-									$alert=getAlert($connection2, $rowCond["gibbonAlertLevelID"]) ;
+									$alert=getAlert($guid, $connection2, $rowCond["gibbonAlertLevelID"]) ;
 									if ($alert!=FALSE) {
 										$style="" ;
 										if ($rowCond2["gibbonAlertLevelID"]!=$rowCond["gibbonAlertLevelID"]) {

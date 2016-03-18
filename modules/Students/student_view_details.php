@@ -1645,7 +1645,7 @@ else {
 							
 							while ($rowCondition=$resultCondition->fetch()) {
 								print "<h4>" ;
-								$alert=getAlert($connection2, $rowCondition["gibbonAlertLevelID"]) ;
+								$alert=getAlert($guid, $connection2, $rowCondition["gibbonAlertLevelID"]) ;
 								if ($alert!=FALSE) {
 									print __($guid, $rowCondition["name"]) . " <span style='color: #" . $alert["color"] . "'>(" . __($guid, $alert["name"]) . " " . __($guid, 'Risk') . ")</span>" ;
 								}
@@ -1923,7 +1923,7 @@ else {
 								$effortAlternativeName=getSettingByScope($connection2, "Markbook", "effortAlternativeName") ;
 								$effortAlternativeNameAbrev=getSettingByScope($connection2, "Markbook", "effortAlternativeNameAbrev") ;
 
-								$alert=getAlert($connection2, 002) ;
+								$alert=getAlert($guid, $connection2, 002) ;
 								$role=getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2) ;
 								if ($role=="Parent") {
 									$showParentAttainmentWarning=getSettingByScope($connection2, "Markbook", "showParentAttainmentWarning" ) ; 

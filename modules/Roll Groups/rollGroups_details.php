@@ -156,7 +156,7 @@ else {
 			print "<h3>" ;
 				print __($guid, "Students") ;
 			print "</h3>" ;
-			printRollGroupTable($guid, $gibbonRollGroupID, 5, $connection2, FALSE, $orderBy) ;
+			print getRollGroupTable($guid, $gibbonRollGroupID, 5, $connection2, FALSE, $orderBy) ;
 		
 			//Set sidebar
 			$_SESSION[$guid]["sidebarExtra"]=getUserPhoto($guid, $primaryTutor240, 240) ;

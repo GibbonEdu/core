@@ -91,8 +91,7 @@ else {
 			$_SESSION[$guid]["viewCalendarSpaceBooking"]="N" ;
 		}
 	}
-	
-	$tt=renderTT($guid, $connection2, $_SESSION[$guid]["gibbonPersonID"], $id, FALSE, $ttDate) ;
+	$tt=renderTT($guid, $connection2, $_SESSION[$guid]["gibbonPersonID"], $id, FALSE, $ttDate, "", "", "trim") ;
 	if ($tt!=FALSE) {
 		$output.=$tt ;
 	}

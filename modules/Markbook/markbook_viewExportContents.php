@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_view.php
 	print "</div>" ;
 }
 else {
-	$alert=getAlert($connection2, 002) ;
+	$alert=getAlert($guid, $connection2, 002) ;
 	
 	//Proceed!
 	print "<table cellspacing='0'>" ;

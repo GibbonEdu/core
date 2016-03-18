@@ -272,6 +272,7 @@ CREATE TABLE `gibbonString` (  `gibbonStringID` int(8) unsigned zerofill NOT NUL
 INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='System Admin'), 'String Replacement', 0, 'Settings', 'Allows for interface strings to be replaced with custom values.', 'stringReplacement_manage.php, stringReplacement_manage_add.php, stringReplacement_manage_edit.php, stringReplacement_manage_delete.php', 'stringReplacement_manage.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N') ;end
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='System Admin' AND gibbonAction.name='String Replacement'));end
 ALTER TABLE `gibbonLibraryItem` ADD `physicalCondition` ENUM('','As New','Lightly Worn','Moderately Worn','Damaged','Unusable') NOT NULL AFTER `gibbonSchoolYearIDReplacement`;end
+ALTER TABLE `gibbonHook` CHANGE `type` `type` ENUM('Public Home Page','Student Profile','Unit','Parental Dashboard','Staff Dashboard','Student Dashboard') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
 
 " ;
 ?>

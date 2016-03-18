@@ -26,7 +26,7 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
 	$attainmentAlternativeNameAbrev=getSettingByScope($connection2, "Markbook", "attainmentAlternativeNameAbrev") ;
 	$effortAlternativeName=getSettingByScope($connection2, "Markbook", "effortAlternativeName") ;
 	$effortAlternativeNameAbrev=getSettingByScope($connection2, "Markbook", "effortAlternativeNameAbrev") ;
-	$alert=getAlert($connection2, 002) ;	
+	$alert=getAlert($guid, $connection2, 002) ;	
 		
 	//Get school years in reverse order
 	try {

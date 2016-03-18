@@ -854,19 +854,19 @@ a img.resource, img.resource {
 	border: none!important;
 }	
 .ui-tabs-panel {
-	border: 1px solid rgb(238, 238, 238)!important;
+	border: 1px solid rgb(155, 155, 155)!important;
+	background: rgba(255,255,255,0.75)!important;
 }	
 .ui-tabs {
 	padding: 0px!important;	
 }
 .ui-tabs-active {
-	background: rgba(0,0,0,0.1)!important;
+	border: 1px solid rgb(155, 155, 155)!important;
+	border-bottom: none!important ;
+	background: rgba(255,255,255,1)!important;
 }
 ul.ui-tabs-nav li.ui-state-default {
 	background: rgba(0,0,0,0.04);
-}
-.ui-tabs-panel {
-	background: rgba(0,0,0,0.1)!important;
 }
 ul.ui-tabs-nav li.ui-state-default a {
 	color: rgba(0,0,0,1);

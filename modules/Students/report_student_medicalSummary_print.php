@@ -165,7 +165,7 @@ else {
 					}
 
 					while ($rowConditions=$resultConditions->fetch()) {
-						$alert=getAlert($connection2, $rowConditions["gibbonAlertLevelID"]) ;
+						$alert=getAlert($guid, $connection2, $rowConditions["gibbonAlertLevelID"]) ;
 						if ($alert!=FALSE) {
 							$conditionStyle="style='border-top: 2px solid #" . $alert["color"] . "'" ;
 							print "<tr class=$rowNum>" ;
