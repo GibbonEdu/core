@@ -578,6 +578,7 @@ function getStaffDashboardContents($connection2, $guid, $gibbonPersonID) {
 	//GET ROLL GROUPS
 	$rollGroups=array() ;
 	$rollGroupCount=0 ;
+	$count=0 ;
 	try {
 		$dataRollGroups=array("gibbonPersonIDTutor"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonIDTutor2"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonIDTutor3"=>$_SESSION[$guid]["gibbonPersonID"],"gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
 		$sqlRollGroups="SELECT * FROM gibbonRollGroup WHERE (gibbonPersonIDTutor=:gibbonPersonIDTutor OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3) AND gibbonSchoolYearID=:gibbonSchoolYearID" ;
@@ -594,137 +595,140 @@ function getStaffDashboardContents($connection2, $guid, $gibbonPersonID) {
 		
 		//Roll group table
 		$rollGroups[$count][2]="<div class='linkTop' style='margin-top: 0px'>" ;
-		$rollGroups[$count][2].="<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "'>" . __($guid, 'Take Attendance') . "<img style='margin-left: 5px' title='" . __($guid, 'Take Attendance') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.png'/></a> | " ;
+		$rollGroups[$count][2].="<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID=" . $rowRollGroups["gibbonRollGroupID"] . "'>" . __($guid, 'Take Attendance') . "<img style='margin-left: 5px' title='" . __($guid, 'Take Attendance') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.png'/></a> | " ;
 		$rollGroups[$count][2].="<a href='" . $_SESSION[$guid]["absoluteURL"] . "/indexExport.php?gibbonRollGroupID=" . $rowRollGroups["gibbonRollGroupID"] . "'>" . __($guid, 'Export to Excel') . "<img style='margin-left: 5px' title='" . __($guid, 'Export to Excel') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/download.png'/></a>" ;
 		$rollGroups[$count][2].="</div>" ;
 		$rollGroups[$count][2].=getRollGroupTable($guid, $rowRollGroups["gibbonRollGroupID"], 5, $connection2) ;
-				
-		//Behaviour
-		$rollGroups[$count][3]="" ;
-		$plural="s" ;
-		if ($result->rowCount()==1) {
-			$plural="" ;
-		}
-		try {
-			$dataBehaviour=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonSchoolYearID2"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonRollGroupID"=>$rollGroups[$count][0]); 
-			$sqlBehaviour="SELECT gibbonBehaviour.*, student.surname AS surnameStudent, student.preferredName AS preferredNameStudent, creator.surname AS surnameCreator, creator.preferredName AS preferredNameCreator, creator.title FROM gibbonBehaviour JOIN gibbonPerson AS student ON (gibbonBehaviour.gibbonPersonID=student.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=student.gibbonPersonID) JOIN gibbonPerson AS creator ON (gibbonBehaviour.gibbonPersonIDCreator=creator.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonBehaviour.gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonRollGroupID=:gibbonRollGroupID ORDER BY timestamp DESC" ; 
-			$resultBehaviour=$connection2->prepare($sqlBehaviour);
-			$resultBehaviour->execute($dataBehaviour);
-		}
-		catch(PDOException $e) { 
-			$rollGroups[$count][3].="<div class='error'>" . $e->getMessage() . "</div>" ; 
-		}
-
-		if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_manage_add.php")) {
-			$rollGroups[$count][3].="<div class='linkTop'>" ;
-				$rollGroups[$count][3].="<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage_add.php&gibbonPersonID=&gibbonRollGroupID=&gibbonYearGroupID=&type='>" . __($guid, 'Add') . "<img style='margin: 0 0 -4px 5px' title='" . __($guid, 'Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
-				$policyLink=getSettingByScope($connection2, "Behaviour", "policyLink") ;
-				if ($policyLink!="") {
-					$rollGroups[$count][3].=" | <a target='_blank' href='$policyLink'>" . __($guid, 'View Behaviour Policy') . "</a>" ;
-				}
-			$rollGroups[$count][3].="</div>" ;
-		}
-
-		if ($resultBehaviour->rowCount()<1) {
-			$rollGroups[$count][3].="<div class='error'>" ;
-			$rollGroups[$count][3].=__($guid, "There are no records to display.") ;
-			$rollGroups[$count][3].="</div>" ;
-		}
-		else {
-			$rollGroups[$count][3].="<table cellspacing='0' style='width: 100%'>" ;
-				$rollGroups[$count][3].="<tr class='head'>" ;
-					$rollGroups[$count][3].="<th>" ;
-						$rollGroups[$count][3].=__($guid, "Student & Date") ;
-					$rollGroups[$count][3].="</th>" ;
-					$rollGroups[$count][3].="<th>" ;
-						$rollGroups[$count][3].=__($guid, "Type") ;
-					$rollGroups[$count][3].="</th>" ;
-					$rollGroups[$count][3].="<th>" ;
-						$rollGroups[$count][3].=__($guid, "Descriptor") ;
-					$rollGroups[$count][3].="</th>" ;
-					$rollGroups[$count][3].="<th>" ;
-						$rollGroups[$count][3].=__($guid, "Level") ;
-					$rollGroups[$count][3].="</th>" ;
-					$rollGroups[$count][3].="<th>" ;
-						$rollGroups[$count][3].=__($guid, "Teacher") ;
-					$rollGroups[$count][3].="</th>" ;
-					$rollGroups[$count][3].="<th>" ;
-						$rollGroups[$count][3].=__($guid, "Action") ;
-					$rollGroups[$count][3].="</th>" ;
-				$rollGroups[$count][3].="</tr>" ;
 		
-				$count2=0;
-				$rowNum="odd" ;
-				while ($rowBehaviour=$resultBehaviour->fetch()) {
-					if ($count2%2==0) {
-						$rowNum="even" ;
+		$behaviourView=isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_view.php") ;
+		if ($behaviourView) {		
+			//Behaviour
+			$rollGroups[$count][3]="" ;
+			$plural="s" ;
+			if ($resultRollGroups->rowCount()==1) {
+				$plural="" ;
+			}
+			try {
+				$dataBehaviour=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonSchoolYearID2"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonRollGroupID"=>$rollGroups[$count][0]); 
+				$sqlBehaviour="SELECT gibbonBehaviour.*, student.surname AS surnameStudent, student.preferredName AS preferredNameStudent, creator.surname AS surnameCreator, creator.preferredName AS preferredNameCreator, creator.title FROM gibbonBehaviour JOIN gibbonPerson AS student ON (gibbonBehaviour.gibbonPersonID=student.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=student.gibbonPersonID) JOIN gibbonPerson AS creator ON (gibbonBehaviour.gibbonPersonIDCreator=creator.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonBehaviour.gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonRollGroupID=:gibbonRollGroupID ORDER BY timestamp DESC" ; 
+				$resultBehaviour=$connection2->prepare($sqlBehaviour);
+				$resultBehaviour->execute($dataBehaviour);
+			}
+			catch(PDOException $e) { 
+				$rollGroups[$count][3].="<div class='error'>" . $e->getMessage() . "</div>" ; 
+			}
+
+			if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_manage_add.php")) {
+				$rollGroups[$count][3].="<div class='linkTop'>" ;
+					$rollGroups[$count][3].="<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage_add.php&gibbonPersonID=&gibbonRollGroupID=&gibbonYearGroupID=&type='>" . __($guid, 'Add') . "<img style='margin: 0 0 -4px 5px' title='" . __($guid, 'Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+					$policyLink=getSettingByScope($connection2, "Behaviour", "policyLink") ;
+					if ($policyLink!="") {
+						$rollGroups[$count][3].=" | <a target='_blank' href='$policyLink'>" . __($guid, 'View Behaviour Policy') . "</a>" ;
 					}
-					else {
-						$rowNum="odd" ;
-					}
-					$count2++ ;
-			
-					//COLOR ROW BY STATUS!
-					$rollGroups[$count][3].="<tr class=$rowNum>" ;
-						$rollGroups[$count][3].="<td>" ;
-							$rollGroups[$count][3].="<b>" . formatName("", $rowBehaviour["preferredNameStudent"], $rowBehaviour["surnameStudent"], "Student", false ) . "</b><br/>" ;
-							if (substr($rowBehaviour["timestamp"],0,10)>$rowBehaviour["date"]) {
-								$rollGroups[$count][3].=__($guid, "Date Updated") . ": " . dateConvertBack($guid, substr($rowBehaviour["timestamp"],0,10)) . "<br/>" ;
-								$rollGroups[$count][3].=__($guid, "Incident Date") . ": " . dateConvertBack($guid, $rowBehaviour["date"]) . "<br/>" ;
-							}
-							else {
-								$rollGroups[$count][3].=dateConvertBack($guid, $rowBehaviour["date"]) . "<br/>" ;
-							}
-						$rollGroups[$count][3].="</td>" ;
-						$rollGroups[$count][3].="<td style='text-align: center'>" ;
-							if ($rowBehaviour["type"]=="Negative") {
-								$rollGroups[$count][3].="<img title='" . __($guid, 'Negative') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/> " ;
-							}
-							else if ($rowBehaviour["type"]=="Positive") {
-								$rollGroups[$count][3].="<img title='" . __($guid, 'Position') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
-							}
-						$rollGroups[$count][3].="</td>" ;
-						$rollGroups[$count][3].="<td>" ;
-							$rollGroups[$count][3].=trim($rowBehaviour["descriptor"]) ;
-						$rollGroups[$count][3].="</td>" ;
-						$rollGroups[$count][3].="<td>" ;
-							$rollGroups[$count][3].=trim($rowBehaviour["level"]) ;
-						$rollGroups[$count][3].="</td>" ;
-						$rollGroups[$count][3].="<td>" ;
-							$rollGroups[$count][3].=formatName($rowBehaviour["title"], $rowBehaviour["preferredNameCreator"], $rowBehaviour["surnameCreator"], "Staff", false ) . "<br/>" ;
-						$rollGroups[$count][3].="</td>" ;
-						$rollGroups[$count][3].="<td>" ;
-							$rollGroups[$count][3].="<script type='text/javascript'>" ;	
-								$rollGroups[$count][3].="$(document).ready(function(){" ;
-									$rollGroups[$count][3].="\$(\".comment-$count2\").hide();" ;
-									$rollGroups[$count][3].="\$(\".show_hide-$count2\").fadeIn(1000);" ;
-									$rollGroups[$count][3].="\$(\".show_hide-$count2\").click(function(){" ;
-									$rollGroups[$count][3].="\$(\".comment-$count2\").fadeToggle(1000);" ;
-									$rollGroups[$count][3].="});" ;
-								$rollGroups[$count][3].="});" ;
-							$rollGroups[$count][3].="</script>" ;
-							if ($rowBehaviour["comment"]!="") {
-								$rollGroups[$count][3].="<a title='" . __($guid, 'View Description') . "' class='show_hide-$count2' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='" . __($guid, 'Show Comment') . "' onclick='return false;' /></a>" ;
-							}
-						$rollGroups[$count][3].="</td>" ;
+				$rollGroups[$count][3].="</div>" ;
+			}
+
+			if ($resultBehaviour->rowCount()<1) {
+				$rollGroups[$count][3].="<div class='error'>" ;
+				$rollGroups[$count][3].=__($guid, "There are no records to display.") ;
+				$rollGroups[$count][3].="</div>" ;
+			}
+			else {
+				$rollGroups[$count][3].="<table cellspacing='0' style='width: 100%'>" ;
+					$rollGroups[$count][3].="<tr class='head'>" ;
+						$rollGroups[$count][3].="<th>" ;
+							$rollGroups[$count][3].=__($guid, "Student & Date") ;
+						$rollGroups[$count][3].="</th>" ;
+						$rollGroups[$count][3].="<th>" ;
+							$rollGroups[$count][3].=__($guid, "Type") ;
+						$rollGroups[$count][3].="</th>" ;
+						$rollGroups[$count][3].="<th>" ;
+							$rollGroups[$count][3].=__($guid, "Descriptor") ;
+						$rollGroups[$count][3].="</th>" ;
+						$rollGroups[$count][3].="<th>" ;
+							$rollGroups[$count][3].=__($guid, "Level") ;
+						$rollGroups[$count][3].="</th>" ;
+						$rollGroups[$count][3].="<th>" ;
+							$rollGroups[$count][3].=__($guid, "Teacher") ;
+						$rollGroups[$count][3].="</th>" ;
+						$rollGroups[$count][3].="<th>" ;
+							$rollGroups[$count][3].=__($guid, "Action") ;
+						$rollGroups[$count][3].="</th>" ;
 					$rollGroups[$count][3].="</tr>" ;
-					if ($rowBehaviour["comment"]!="") {
-						if ($rowBehaviour["type"]=="Positive") {
-							$bg="background-color: #D4F6DC;" ;
+		
+					$count2=0;
+					$rowNum="odd" ;
+					while ($rowBehaviour=$resultBehaviour->fetch()) {
+						if ($count2%2==0) {
+							$rowNum="even" ;
 						}
 						else {
-							$bg="background-color: #F6CECB;" ;
+							$rowNum="odd" ;
 						}
-						$rollGroups[$count][3].="<tr class='comment-$count2' id='comment-$count2'>" ;
-							$rollGroups[$count][3].="<td style='$bg' colspan=6>" ;
-								$rollGroups[$count][3].=$rowBehaviour["comment"] ;
+						$count2++ ;
+			
+						//COLOR ROW BY STATUS!
+						$rollGroups[$count][3].="<tr class=$rowNum>" ;
+							$rollGroups[$count][3].="<td>" ;
+								$rollGroups[$count][3].="<b>" . formatName("", $rowBehaviour["preferredNameStudent"], $rowBehaviour["surnameStudent"], "Student", false ) . "</b><br/>" ;
+								if (substr($rowBehaviour["timestamp"],0,10)>$rowBehaviour["date"]) {
+									$rollGroups[$count][3].=__($guid, "Date Updated") . ": " . dateConvertBack($guid, substr($rowBehaviour["timestamp"],0,10)) . "<br/>" ;
+									$rollGroups[$count][3].=__($guid, "Incident Date") . ": " . dateConvertBack($guid, $rowBehaviour["date"]) . "<br/>" ;
+								}
+								else {
+									$rollGroups[$count][3].=dateConvertBack($guid, $rowBehaviour["date"]) . "<br/>" ;
+								}
+							$rollGroups[$count][3].="</td>" ;
+							$rollGroups[$count][3].="<td style='text-align: center'>" ;
+								if ($rowBehaviour["type"]=="Negative") {
+									$rollGroups[$count][3].="<img title='" . __($guid, 'Negative') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/> " ;
+								}
+								else if ($rowBehaviour["type"]=="Positive") {
+									$rollGroups[$count][3].="<img title='" . __($guid, 'Position') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
+								}
+							$rollGroups[$count][3].="</td>" ;
+							$rollGroups[$count][3].="<td>" ;
+								$rollGroups[$count][3].=trim($rowBehaviour["descriptor"]) ;
+							$rollGroups[$count][3].="</td>" ;
+							$rollGroups[$count][3].="<td>" ;
+								$rollGroups[$count][3].=trim($rowBehaviour["level"]) ;
+							$rollGroups[$count][3].="</td>" ;
+							$rollGroups[$count][3].="<td>" ;
+								$rollGroups[$count][3].=formatName($rowBehaviour["title"], $rowBehaviour["preferredNameCreator"], $rowBehaviour["surnameCreator"], "Staff", false ) . "<br/>" ;
+							$rollGroups[$count][3].="</td>" ;
+							$rollGroups[$count][3].="<td>" ;
+								$rollGroups[$count][3].="<script type='text/javascript'>" ;	
+									$rollGroups[$count][3].="$(document).ready(function(){" ;
+										$rollGroups[$count][3].="\$(\".comment-$count2\").hide();" ;
+										$rollGroups[$count][3].="\$(\".show_hide-$count2\").fadeIn(1000);" ;
+										$rollGroups[$count][3].="\$(\".show_hide-$count2\").click(function(){" ;
+										$rollGroups[$count][3].="\$(\".comment-$count2\").fadeToggle(1000);" ;
+										$rollGroups[$count][3].="});" ;
+									$rollGroups[$count][3].="});" ;
+								$rollGroups[$count][3].="</script>" ;
+								if ($rowBehaviour["comment"]!="") {
+									$rollGroups[$count][3].="<a title='" . __($guid, 'View Description') . "' class='show_hide-$count2' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='" . __($guid, 'Show Comment') . "' onclick='return false;' /></a>" ;
+								}
 							$rollGroups[$count][3].="</td>" ;
 						$rollGroups[$count][3].="</tr>" ;
+						if ($rowBehaviour["comment"]!="") {
+							if ($rowBehaviour["type"]=="Positive") {
+								$bg="background-color: #D4F6DC;" ;
+							}
+							else {
+								$bg="background-color: #F6CECB;" ;
+							}
+							$rollGroups[$count][3].="<tr class='comment-$count2' id='comment-$count2'>" ;
+								$rollGroups[$count][3].="<td style='$bg' colspan=6>" ;
+									$rollGroups[$count][3].=$rowBehaviour["comment"] ;
+								$rollGroups[$count][3].="</td>" ;
+							$rollGroups[$count][3].="</tr>" ;
+						}
+						$rollGroups[$count][3].="</tr>" ;
+						$rollGroups[$count][3].="</tr>" ;
 					}
-					$rollGroups[$count][3].="</tr>" ;
-					$rollGroups[$count][3].="</tr>" ;
-				}
-			$rollGroups[$count][3].="</table>" ;
+				$rollGroups[$count][3].="</table>" ;
+			}
 		}
 		
 		$count++ ;		
@@ -799,9 +803,10 @@ function getStaffDashboardContents($connection2, $guid, $gibbonPersonID) {
 					foreach ($rollGroups AS $rollGroup) {
 						$return.="<li><a href='#tabs" . $tabCount . "'>" . $rollGroup[1] . "</a></li>" ;
 						$tabCount++ ;
-						
-						$return.="<li><a href='#tabs" . $tabCount . "'>" . $rollGroup[1] . " " . __($guid, 'Behaviour') . "</a></li>" ;
-						$tabCount++ ;
+						if ($behaviourView) {		
+							$return.="<li><a href='#tabs" . $tabCount . "'>" . $rollGroup[1] . " " . __($guid, 'Behaviour') . "</a></li>" ;
+							$tabCount++ ;
+						}
 					}
 				}
 				
@@ -825,11 +830,13 @@ function getStaffDashboardContents($connection2, $guid, $gibbonPersonID) {
 						$return.=$rollGroup[2] ;
 					$return.="</div>" ;
 					$tabCount++ ;
-					
-					$return.="<div id='tabs" . $tabCount. "'>" ;
-						$return.=$rollGroup[3] ;
-					$return.="</div>" ;
-					$tabCount++ ;
+
+					if ($behaviourView) {		
+						$return.="<div id='tabs" . $tabCount. "'>" ;
+							$return.=$rollGroup[3] ;
+						$return.="</div>" ;
+						$tabCount++ ;
+					}
 				}
 			}
 			foreach ($hooks AS $hook) {
@@ -1043,7 +1050,7 @@ function getStudentDashboardContents($connection2, $guid, $gibbonPersonID) {
 			//Check for permission to hook
 			try {
 				$dataHook=array("gibbonRoleIDCurrent"=>$_SESSION[$guid]["gibbonRoleIDCurrent"], "sourceModuleName"=>$options["sourceModuleName"]);
-				$sqlHook="SELECT gibbonHook.name, gibbonModule.name AS module, gibbonAction.name AS action FROM gibbonHook JOIN gibbonModule ON (gibbonHook.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) WHERE gibbonAction.gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE gibbonPermission.gibbonRoleID=:gibbonRoleIDCurrent AND name=:sourceModuleName) AND gibbonHook.type='Student Dashboard'  AND gibbonAction.name='" . $options["sourceModuleAction"] . "' AND gibbonModule.name='" . $options["sourceModuleName"] . "' ORDER BY name" ;
+				$sqlHook="SELECT gibbonHook.name, gibbonModule.name AS module, gibbonAction.name AS action FROM gibbonHook JOIN gibbonModule ON (gibbonHook.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) WHERE gibbonAction.gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:sourceModuleName) AND gibbonPermission.gibbonRoleID=:gibbonRoleIDCurrent AND gibbonHook.type='Student Dashboard' AND gibbonAction.name='" . $options["sourceModuleAction"] . "' AND gibbonModule.name='" . $options["sourceModuleName"] . "' ORDER BY name" ;
 				$resultHook=$connection2->prepare($sqlHook);
 				$resultHook->execute($dataHook);
 			}
@@ -3692,7 +3699,7 @@ function htmlPrep($str) {
 
 
 //Returns the risk level of the highest-risk condition for an individual
-function getHighestMedicalRisk( $gibbonPersonID, $connection2 ) {
+function getHighestMedicalRisk($guid, $gibbonPersonID, $connection2) {
 	$output=FALSE ;
 
 	try {
@@ -4144,7 +4151,7 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy="", $divExtr
 		}
 
 		//Medical
-		$alert=getHighestMedicalRisk( $gibbonPersonID, $connection2 ) ;
+		$alert=getHighestMedicalRisk($guid,  $gibbonPersonID, $connection2 ) ;
 		if ($alert!=FALSE) {
 			$highestLevel=$alert[1] ;
 			$highestColour=$alert[3] ;

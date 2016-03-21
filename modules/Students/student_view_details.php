@@ -354,7 +354,7 @@ else {
 						print "</h4>" ;
 					
 						//Medical alert!
-						$alert=getHighestMedicalRisk( $gibbonPersonID, $connection2 ) ;
+						$alert=getHighestMedicalRisk($guid,  $gibbonPersonID, $connection2 ) ;
 						if ($alert!=FALSE) {
 							$highestLevel=$alert[1] ;
 							$highestColour=$alert[3] ;
@@ -1580,7 +1580,7 @@ else {
 							}
 						
 							//Medical alert!
-							$alert=getHighestMedicalRisk( $gibbonPersonID, $connection2 ) ;
+							$alert=getHighestMedicalRisk($guid,  $gibbonPersonID, $connection2 ) ;
 							if ($alert!=FALSE) {
 								$highestLevel=$alert[1] ;
 								$highestColour=$alert[3] ;

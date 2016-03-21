@@ -1221,7 +1221,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 							$output.="</div>" ;
 							$zCount++ ;
 
-							if ($narrow==FALSE) {
+							if ($narrow==FALSE OR $narrow=="trim") {
 								if ($edit==FALSE) {
 									//Add planner link icons for staff looking at own TT.
 									if ($self==TRUE AND $roleCategory=="Staff") {
