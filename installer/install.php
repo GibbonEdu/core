@@ -631,7 +631,7 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 																	<script type="text/javascript">
 																		var passwordConfirm=new LiveValidation('passwordConfirm');
 																		passwordConfirm.add(Validate.Presence);
-																		passwordConfirm.add(Validate.Confirmation, { match: 'password' } );
+																		passwordConfirm.add(Validate.Confirmation, { match: 'passwordNew' } );
 																	</script>
 																</td>
 															</tr>
