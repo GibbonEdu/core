@@ -46,6 +46,7 @@ v12.0.00
 		System: fixed non-standard port bug in installer (caused incorrect value to be set for absoluteURL)
 		System: added Pakistani Rupee (₨) and Jamaican Dollar as currenciess
 		System: added a password generator to new password setting fields
+		System: updated jquery autosize library, to fix Chrome's disappearing textareas
 		System Admin: Improved version comparison in module updater
 		System Admin: Improved version comparison in non-login database updater
 		Activities: fixed error in adding and editing activities when payment is turned off

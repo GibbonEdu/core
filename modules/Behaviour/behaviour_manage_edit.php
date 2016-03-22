@@ -307,6 +307,11 @@ else {
 							}
 						}
 						?>
+						<script type='text/javascript'>
+							$(document).ready(function(){
+								autosize($('textarea'));
+							});
+						</script>
 						<tr>
 							<td colspan=2> 
 								<b><?php print __($guid, 'Incident') ?></b><br/>

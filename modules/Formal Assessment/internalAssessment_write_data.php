@@ -28,6 +28,12 @@ $attainmentAlternativeNameAbrev=getSettingByScope($connection2, "Markbook", "att
 $effortAlternativeName=getSettingByScope($connection2, "Markbook", "effortAlternativeName") ;
 $effortAlternativeNameAbrev=getSettingByScope($connection2, "Markbook", "effortAlternativeNameAbrev") ;
 
+print "<script type='text/javascript'>" ;
+	print "$(document).ready(function(){" ;
+		print "autosize($('textarea'));" ;   
+	print "});" ;
+print "</script>" ;
+
 if (isActionAccessible($guid, $connection2, "/modules/Formal Assessment/internalAssessment_write_data.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
@@ -458,12 +464,6 @@ else {
 											if ($row2["comment"]=="Y" OR $row2["uploadedResponse"]=="Y") {
 												print "<td style='text-align: right'>" ;
 													if ($row2["comment"]=="Y") {
-														print "<script type='text/javascript'>" ;
-															print "$(document).ready(function(){" ;
-																print "$('textarea').autosize();" ;    
-															print "});" ;
-														print "</script>" ;
-												
 														print "<textarea name='comment" . $count . "' id='comment" . $count . "' rows=6 style='width: 330px'>" . $rowEntry["comment"] . "</textarea>" ;
 													}
 													if ($row2["uploadedResponse"]=="Y") {
