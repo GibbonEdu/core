@@ -262,11 +262,11 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 			if ($contextDBTable!="" AND $contextDBTableIDField!="" AND $contextDBTableID!="" AND $contextDBTableGibbonRubricIDField!="" AND $contextDBTableNameField!="" AND $contextDBTableDateField!="") { 
 				try {
 					$dataContext=array("gibbonPersonID"=>$gibbonPersonID); 
-					$sqlContext="SELECT *, gibbonCourse.nameShort AS course, gibbonCourseClass.nameshort AS class FROM gibbonRubricEntry JOIN $contextDBTable ON (gibbonRubricEntry.contextDBTableID=$contextDBTable.$contextDBTableIDField AND gibbonRubricEntry.gibbonRubricID=$contextDBTable.$contextDBTableGibbonRubricIDField) JOIN gibbonRubricCell ON (gibbonRubricEntry.gibbonRubricCellID=gibbonRubricCell.gibbonRubricCellID) LEFT JOIN gibbonCourseClass ON ($contextDBTable.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) LEFT JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE contextDBTable='$contextDBTable' AND gibbonRubricEntry.gibbonPersonID=:gibbonPersonID AND NOT $contextDBTableDateField IS NULL ORDER BY $contextDBTableDateField DESC" ;
+					$sqlContext="SELECT gibbonRubricEntry.*, $contextDBTable.*, gibbonRubricEntry.*, gibbonRubricCell.*, gibbonCourse.nameShort AS course, gibbonCourseClass.nameshort AS class FROM gibbonRubricEntry JOIN $contextDBTable ON (gibbonRubricEntry.contextDBTableID=$contextDBTable.$contextDBTableIDField AND gibbonRubricEntry.gibbonRubricID=$contextDBTable.$contextDBTableGibbonRubricIDField) JOIN gibbonRubricCell ON (gibbonRubricEntry.gibbonRubricCellID=gibbonRubricCell.gibbonRubricCellID) LEFT JOIN gibbonCourseClass ON ($contextDBTable.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) LEFT JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE contextDBTable='$contextDBTable' AND gibbonRubricEntry.gibbonPersonID=:gibbonPersonID AND NOT $contextDBTableDateField IS NULL ORDER BY $contextDBTableDateField DESC" ;
 					$resultContext=$connection2->prepare($sqlContext);
 					$resultContext->execute($dataContext);
 				}
-				catch(PDOException $e) { print $e->getMessage() ; }
+				catch(PDOException $e) { }
 				while ($rowContext=$resultContext->fetch()) {
 					if (isset($cells[$rowContext["gibbonRubricRowID"]][$rowContext["gibbonRubricColumnID"]][2])) {
 						$cells[$rowContext["gibbonRubricRowID"]][$rowContext["gibbonRubricColumnID"]][2].=$rowContext["course"] . "." . $rowContext["class"] . " - " . $rowContext[$contextDBTableNameField] . " (" . dateConvertBack($guid, $rowContext[$contextDBTableDateField]) . ")<br/>" ;
