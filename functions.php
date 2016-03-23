@@ -3781,7 +3781,7 @@ function getRoleCategory($gibbonRoleID, $connection2) {
 }
 
 //Converts a specified date (YYYY-MM-DD) into a UNIX timestamp
-function dateConvertToTimestamp( $date ) {
+function dateConvertToTimestamp($date) {
 	list($dateYear, $dateMonth, $dateDay)=explode('-', $date);
 	$timestamp=mktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);
 
