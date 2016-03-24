@@ -98,8 +98,7 @@ else {
 							$("#gibbonDepartmentIDRow").slideDown("fast", $("#gibbonDepartmentIDRow").css("display","table-row"));
 							$("#borrowableRow").slideDown("fast", $("#borrowableRow").css("display","table-row"));
 							$("#statusRow").slideDown("fast", $("#statusRow").css("display","table-row"));
-							$("#gibbonSchoolYearIDReplacement").slideDown("fast", $("#gibbonSchoolYearIDReplacement").css("display","table-row"));
-							$("#replacementCostRow").slideDown("fast", $("#replacementCostRow").css("display","table-row"));
+							$("#replacementRow").slideDown("fast", $("#replacementRow").css("display","table-row"));
 							$("#physicalConditionRow").slideDown("fast", $("#physicalConditionRow").css("display","table-row"));
 							$("#commentRow").slideDown("fast", $("#commentRow").css("display","table-row"));
 							$("#entryDisplayTitleRow").slideDown("fast", $("#entryDisplayTitleRow").css("display","table-row"));
@@ -467,7 +466,33 @@ else {
 					</select>
 				</td>
 			</tr>
-			<tr id='gibbonSchoolYearIDReplacement' style='display: none'>
+			
+			<script type="text/javascript">
+				$(document).ready(function(){
+					$("#replacement").change(function(){
+						if ($('#replacement option:selected').val()=="Y" ) {
+							$("#gibbonSchoolYearIDReplacementRow").slideDown("fast", $("#gibbonSchoolYearIDReplacementRow").css("display","table-row")); 
+							$("#replacementCostRow").slideDown("fast", $("#replacementCostRow").css("display","table-row")); 
+						}
+						else {
+							$("#gibbonSchoolYearIDReplacementRow").css("display","none");
+							$("#replacementCostRow").css("display","none");
+						}
+					 });
+				});
+			</script>
+			<tr id='replacementRow' style='display: none'>
+				<td> 
+					<b><?php print __($guid, 'Plan Replacement?') ?> *</b><br/>
+				</td>
+				<td class="right">
+					<select name="replacement" id="replacement" style="width: 302px">
+						<option value="N"><?php print ynExpander($guid, 'N') ?></option>
+						<option value="Y"><?php print ynExpander($guid, 'Y') ?></option>
+					</select>
+				</td>
+			</tr>
+			<tr id='gibbonSchoolYearIDReplacementRow' style='display: none'>
 				<td> 
 					<b><?php print __($guid, "Replacement Year") ; ?></b><br/>
 					<span style="font-size: 90%"><i><?php print __($guid, 'When is this item scheduled for replacement.') ?></i></span>

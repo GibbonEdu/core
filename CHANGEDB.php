@@ -277,6 +277,7 @@ INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, 
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='User Admin' AND gibbonAction.name='Import User Photos'));end
 INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('ke_GE', 'ქართული ენა', 'N', 'N', 'Giorgi Beria', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\d\\\d$/i', 'd/m/Y', 'N');end
 INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('nl_NL', 'Dutch - Nederland', 'N', 'N', 'Vic Mortelmans', '', 'dd-mm-yyyy', '/^(0[1-9]|[12][0-9]|3[01])[-](0[1-9]|1[012])[-](19|20)\\\d\\\d$/i', 'd-m-Y', 'N');end
-
+ALTER TABLE `gibbonLibraryItem` ADD `replacement` ENUM('Y','N') NOT NULL DEFAULT 'Y' AFTER `gibbonDepartmentID`;end
+UPDATE `gibbonLibraryItem` SET `replacement`='N' WHERE gibbonSchoolYearIDReplacement IS NULL AND replacementCost IS NULL;end
 " ;
 ?>
