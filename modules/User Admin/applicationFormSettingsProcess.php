@@ -65,6 +65,7 @@ else {
 	$studentDefaultEmail=$_POST["studentDefaultEmail"] ; 
 	$studentDefaultWebsite=$_POST["studentDefaultWebsite"] ;
 	$autoHouseAssign=$_POST["autoHouseAssign"] ;
+	$usernameFormat=$_POST["usernameFormat"] ;
 	
 	//Write to database
 	$fail=FALSE ;
@@ -272,6 +273,16 @@ else {
 	try {
 		$data=array("value"=>$autoHouseAssign); 
 		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Application Form' AND name='autoHouseAssign'" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { 
+		$fail=TRUE ; 
+	}
+	
+	try {
+		$data=array("value"=>$usernameFormat); 
+		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Application Form' AND name='usernameFormat'" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}

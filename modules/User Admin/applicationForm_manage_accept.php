@@ -231,7 +231,17 @@ else {
 						$gibbonPersonID=str_pad($rowAI['Auto_increment'], 10, "0", STR_PAD_LEFT) ;
 					
 						//Set username & password
-						$username=substr(str_replace(" ", "", preg_replace("/[^A-Za-z ]/", '', strtolower(substr($row["preferredName"],0,1) . $row["surname"]))), 0, 12);
+						$username="" ;
+						$usernameFormat=getSettingByScope( $connection2, "Application Form", "usernameFormat") ;
+						if ($usernameFormat=="") {
+							$username=substr(str_replace(" ", "", preg_replace("/[^A-Za-z ]/", '', strtolower(substr($row["preferredName"],0,1) . $row["surname"]))), 0, 12);
+						}
+						else {
+							$username=$usernameFormat ;
+							$username=str_replace('[preferredNameInitial]', strtolower(substr($row["preferredName"],0,1)), $username);
+							$username=str_replace('[preferredName]', strtolower($row["preferredName"]), $username);
+							$username=str_replace('[surname]', strtolower($row["surname"]), $username);
+						}
 						$usernameBase=$username ;
 						$count=1 ;
 						$continueLoop=TRUE ;
@@ -914,7 +924,16 @@ else {
 										$gibbonPersonIDParent1=str_pad($rowAI['Auto_increment'], 10, "0", STR_PAD_LEFT) ;
 									
 										//Set username & password
-										$username=substr(str_replace(" ", "", preg_replace("/[^A-Za-z ]/", '', strtolower(substr($row["parent1preferredName"],0,1) . $row["parent1surname"]))), 0, 12);
+										$username="" ;
+										if ($usernameFormat=="") {
+											$username=substr(str_replace(" ", "", preg_replace("/[^A-Za-z ]/", '', strtolower(substr($row["parent1preferredName"],0,1) . $row["parent1surname"]))), 0, 12);
+										}
+										else {
+											$username=$usernameFormat ;
+											$username=str_replace('[preferredNameInitial]', strtolower(substr($row["parent1preferredName"],0,1)), $username);
+											$username=str_replace('[preferredName]', strtolower($row["parent1preferredName"]), $username);
+											$username=str_replace('[surname]', strtolower($row["parent1surname"]), $username);
+										}
 										$usernameBase=$username ;
 										$count=1 ;
 										$continueLoop=TRUE ;
@@ -1077,7 +1096,16 @@ else {
 										$gibbonPersonIDParent2=str_pad($rowAI['Auto_increment'], 10, "0", STR_PAD_LEFT) ;
 									
 										//Set username & password
-										$username=substr(str_replace(" ", "", preg_replace("/[^A-Za-z ]/", '', strtolower(substr($row["parent2preferredName"],0,1) . $row["parent2surname"]))), 0, 12);
+										$username="" ;
+										if ($usernameFormat=="") {
+											$username=substr(str_replace(" ", "", preg_replace("/[^A-Za-z ]/", '', strtolower(substr($row["parent2preferredName"],0,1) . $row["parent2surname"]))), 0, 12);
+										}
+										else {
+											$username=$usernameFormat ;
+											$username=str_replace('[preferredNameInitial]', strtolower(substr($row["parent2preferredName"],0,1)), $username);
+											$username=str_replace('[preferredName]', strtolower($row["parent2preferredName"]), $username);
+											$username=str_replace('[surname]', strtolower($row["parent2surname"]), $username);
+										}
 										$usernameBase=$username ;
 										$count=1 ;
 										$continueLoop=TRUE ;

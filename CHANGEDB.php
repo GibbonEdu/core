@@ -279,5 +279,7 @@ INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainer
 INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('nl_NL', 'Dutch - Nederland', 'N', 'N', 'Vic Mortelmans', '', 'dd-mm-yyyy', '/^(0[1-9]|[12][0-9]|3[01])[-](0[1-9]|1[012])[-](19|20)\\\d\\\d$/i', 'd-m-Y', 'N');end
 ALTER TABLE `gibbonLibraryItem` ADD `replacement` ENUM('Y','N') NOT NULL DEFAULT 'Y' AFTER `gibbonDepartmentID`;end
 UPDATE `gibbonLibraryItem` SET `replacement`='N' WHERE gibbonSchoolYearIDReplacement IS NULL AND replacementCost IS NULL;end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'Application Form', 'usernameFormat', 'Username Format', 'How should usernames be formated? Choose from [preferredName], [preferredNameInitial], [surname].', '[preferredNameInitial][surname]');end
+
 " ;
 ?>

@@ -397,6 +397,27 @@ else {
 				<?php
 				try {
 					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='usernameFormat'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+				</td>
+				<td class="right">
+					<input type='text' name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 300px" value='<?php print htmlPrep($row["value"]) ?>'>
+				</td>
+			</tr>
+			<tr>
+				<?php
+				try {
+					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='notificationStudentMessage'" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
