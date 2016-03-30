@@ -390,7 +390,7 @@ else {
 														print "<span style='font-size: 75%; font-style: italic'>" . $rowBlocks["name"] . "</span>" ;
 													print "</td>" ;
 													print "<td>" ;
-														print getYearGroupsFromIDList($connection2, $rowBlocks["gibbonYearGroupIDList"]) ;
+														print getYearGroupsFromIDList($guid, $connection2, $rowBlocks["gibbonYearGroupIDList"]) ;
 													print "</td>" ;
 													print "<td>" ;
 														print "<script type='text/javascript'>" ;	

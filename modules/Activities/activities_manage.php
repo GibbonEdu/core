@@ -237,7 +237,7 @@ else {
 								}
 							print "</td>" ;
 							print "<td>" ;
-								print getYearGroupsFromIDList($connection2, $row["gibbonYearGroupIDList"]) ;
+								print getYearGroupsFromIDList($guid, $connection2, $row["gibbonYearGroupIDList"]) ;
 							print "</td>" ;
 							print "<td>" ;
 								if ($dateType!="Date") {

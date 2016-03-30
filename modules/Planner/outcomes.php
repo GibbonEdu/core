@@ -212,7 +212,7 @@ else {
 							print "<span style='font-size: 75%; font-style: italic'>" . $row["name"] . "</span>" ;
 						print "</td>" ;
 						print "<td>" ;
-							print getYearGroupsFromIDList($connection2, $row["gibbonYearGroupIDList"]) ;
+							print getYearGroupsFromIDList($guid, $connection2, $row["gibbonYearGroupIDList"]) ;
 						print "</td>" ;
 						print "<td>" ;
 							print ynExpander($guid, $row["active"]) ;

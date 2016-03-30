@@ -492,7 +492,7 @@ else {
 									print "</span>" ;
 								print "</td>" ;
 								print "<td>" ;
-									print getYearGroupsFromIDList($connection2, $row["gibbonYearGroupIDList"]) ;
+									print getYearGroupsFromIDList($guid, $connection2, $row["gibbonYearGroupIDList"]) ;
 								print "</td>" ;
 								print "<td>" ;
 									if ($hideExternalProviderCost=="Y" AND $row["provider"]=="External") {

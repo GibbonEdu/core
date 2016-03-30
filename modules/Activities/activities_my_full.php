@@ -111,7 +111,7 @@ else {
 						}
 						print "<td style='width: 33%; vertical-align: top'>" ;
 							print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Year Groups') . "</span><br/>" ;
-							print getYearGroupsFromIDList($connection2, $row["gibbonYearGroupIDList"]) ;
+							print getYearGroupsFromIDList($guid, $connection2, $row["gibbonYearGroupIDList"]) ;
 						print "</td>" ;
 					print "</tr>" ;
 					print "<tr>" ;

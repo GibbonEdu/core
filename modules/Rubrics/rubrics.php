@@ -243,7 +243,7 @@ else {
 							print "<b>" . $row["name"] . "</b><br/>" ;
 						print "</td>" ;
 						print "<td>" ;
-							print getYearGroupsFromIDList($connection2, $row["gibbonYearGroupIDList"]) ;
+							print getYearGroupsFromIDList($guid, $connection2, $row["gibbonYearGroupIDList"]) ;
 						print "</td>" ;
 						print "<td>" ;
 							print ynExpander($guid, $row["active"]) ;

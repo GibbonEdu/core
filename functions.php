@@ -2769,7 +2769,7 @@ function getYearGroups( $connection2 ) {
 	return $output ;
 }
 
-function getYearGroupsFromIDList ( $connection2, $ids, $vertical=false, $translated=true ) {
+function getYearGroupsFromIDList($guid, $connection2, $ids, $vertical=false, $translated=true) {
 	$output=FALSE ;
 
 	try {
