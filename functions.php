@@ -1596,7 +1596,7 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID) {
 		if ($classes!=FALSE OR $grades!=FALSE OR $deadlines!=FALSE) {
 			$params="&tab=1" ;
 		}
-		$timetableOutputTemp=renderTT($guid, $connection2, $gibbonPersonID, NULL, NULL, dateConvertToTimestamp($date), "", $params, TRUE) ;
+		$timetableOutputTemp=renderTT($guid, $connection2, $gibbonPersonID, NULL, NULL, dateConvertToTimestamp($date), "", $params, "narrow") ;
 		if ($timetableOutputTemp!=FALSE) {
 			$timetable=TRUE ;
 			$timetableOutput.=$timetableOutputTemp ;
