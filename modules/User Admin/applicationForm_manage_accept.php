@@ -241,6 +241,7 @@ else {
 							$username=str_replace('[preferredNameInitial]', strtolower(substr($row["preferredName"],0,1)), $username);
 							$username=str_replace('[preferredName]', strtolower($row["preferredName"]), $username);
 							$username=str_replace('[surname]', strtolower($row["surname"]), $username);
+							$username=substr($username, 0, 12);
 						}
 						$usernameBase=$username ;
 						$count=1 ;
@@ -933,6 +934,7 @@ else {
 											$username=str_replace('[preferredNameInitial]', strtolower(substr($row["parent1preferredName"],0,1)), $username);
 											$username=str_replace('[preferredName]', strtolower($row["parent1preferredName"]), $username);
 											$username=str_replace('[surname]', strtolower($row["parent1surname"]), $username);
+											$username=substr($username, 0, 12);
 										}
 										$usernameBase=$username ;
 										$count=1 ;
@@ -1105,6 +1107,7 @@ else {
 											$username=str_replace('[preferredNameInitial]', strtolower(substr($row["parent2preferredName"],0,1)), $username);
 											$username=str_replace('[preferredName]', strtolower($row["parent2preferredName"]), $username);
 											$username=str_replace('[surname]', strtolower($row["parent2surname"]), $username);
+											$username=substr($username, 0, 12);
 										}
 										$usernameBase=$username ;
 										$count=1 ;
