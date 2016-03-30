@@ -91,7 +91,7 @@ else {
 			
 			try {
 				$dataUnit=array("gibbonCourseID"=>$gibbonCourseID); 
-				$sqlUnit="SELECT gibbonUnitID, gibbonUnit.name, gibbonUnit.description, attachment FROM gibbonUnit JOIN gibbonCourse ON (gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonUnit.gibbonCourseID=:gibbonCourseID ORDER BY name" ;
+				$sqlUnit="SELECT gibbonUnitID, gibbonUnit.name, gibbonUnit.description, attachment FROM gibbonUnit JOIN gibbonCourse ON (gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonUnit.gibbonCourseID=:gibbonCourseID ORDER BY ordering, name" ;
 				$resultUnit=$connection2->prepare($sqlUnit);
 				$resultUnit->execute($dataUnit);
 			}

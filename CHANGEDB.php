@@ -280,6 +280,7 @@ INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainer
 ALTER TABLE `gibbonLibraryItem` ADD `replacement` ENUM('Y','N') NOT NULL DEFAULT 'Y' AFTER `gibbonDepartmentID`;end
 UPDATE `gibbonLibraryItem` SET `replacement`='N' WHERE gibbonSchoolYearIDReplacement IS NULL AND replacementCost IS NULL;end
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'Application Form', 'usernameFormat', 'Username Format', 'How should usernames be formated? Choose from [preferredName], [preferredNameInitial], [surname].', '[preferredNameInitial][surname]');end
+ALTER TABLE `gibbonUnit` ADD `ordering` INT(2) NOT NULL DEFAULT '0' AFTER `description`;end
 
 " ;
 ?>

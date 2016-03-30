@@ -158,7 +158,7 @@ else {
 										file.add( Validate.Inclusion, { within: [<?php print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 									</script>	
 									<?php
-									print getMaxUpload() ;
+									print getMaxUpload($guid) ;
 									?>
 								</td>
 							</tr>

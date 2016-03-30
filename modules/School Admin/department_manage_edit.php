@@ -189,7 +189,7 @@ else {
 							?>
 							<input type="file" name="file" id="file"><br/><br/>
 							<?php
-							print getMaxUpload() ;
+							print getMaxUpload($guid) ;
 							$ext="'.png','.jpeg','.jpg','.gif'" ;
 							?>
 							

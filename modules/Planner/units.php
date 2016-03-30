@@ -224,7 +224,7 @@ else {
 					//Fetch units
 					try {
 						$data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "gibbonCourseID"=>$gibbonCourseID); 
-						$sql="SELECT gibbonUnitID, gibbonUnit.gibbonCourseID, nameShort, gibbonUnit.name, gibbonUnit.description FROM gibbonUnit JOIN gibbonCourse ON gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonUnit.gibbonCourseID=:gibbonCourseID ORDER BY nameShort, name" ; 
+						$sql="SELECT gibbonUnitID, gibbonUnit.gibbonCourseID, nameShort, gibbonUnit.name, gibbonUnit.description FROM gibbonUnit JOIN gibbonCourse ON gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonUnit.gibbonCourseID=:gibbonCourseID ORDER BY ordering, name" ; 
 						$result=$connection2->prepare($sql);
 						$result->execute($data);
 					}

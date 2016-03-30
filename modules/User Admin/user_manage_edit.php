@@ -1686,7 +1686,7 @@ else {
 						<td>
 							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i><br/>
 							<?php
-							print getMaxUpload(TRUE) ;				
+							print getMaxUpload($guid, TRUE) ;				
 							?>
 							</span>
 						</td>

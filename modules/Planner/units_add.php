@@ -181,6 +181,20 @@ else {
 								</tr>
 								<tr>
 									<td> 
+										<b><?php print __($guid, 'Ordering') ?> *</b><br/>
+										<span style="font-size: 90%"><i><?php print __($guid, "Units are arranged form lowest to highest ordering value, then alphabetically.") ; ?></i></span>
+									</td>
+									<td class="right">
+										<input name="ordering" id="ordering" maxlength=4 value="0" type="text" style="width: 300px">
+										<script type="text/javascript">
+											var ordering=new LiveValidation('ordering');
+											ordering.add(Validate.Presence);
+											ordering.add(Validate.Numericality);
+										</script>
+									</td>
+								</tr>
+								<tr>
+									<td> 
 										<b><?php print __($guid, "License") ?></b><br/>
 										<span style="font-size: 90%"><i><?php print __($guid, "Under what conditions can this work be reused?") ; ?></i></span>
 									</td>
@@ -485,7 +499,7 @@ else {
 									<td class="right">
 										<input type="file" name="file" id="file"><br/><br/>
 										<?php
-										print getMaxUpload() ;
+										print getMaxUpload($guid) ;
 										
 										//Get list of acceptable file extensions
 										try {

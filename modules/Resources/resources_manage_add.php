@@ -164,7 +164,7 @@ else {
 							file.disable();
 						</script>	
 						<?php
-						print getMaxUpload() ;
+						print getMaxUpload($guid) ;
 						?>
 					</td>
 				</tr>

@@ -3664,7 +3664,7 @@ function addressFormat( $address, $addressDistrict, $addressCountry ) {
 }
 
 //Print out, preformatted indicator of max file upload size
-function getMaxUpload( $multiple="" ) {
+function getMaxUpload($guid, $multiple="") {
 	$output="" ;
 	$post=substr(ini_get("post_max_size"),0,(strlen(ini_get("post_max_size"))-1)) ;
 	$file=substr(ini_get("upload_max_filesize"),0,(strlen(ini_get("upload_max_filesize"))-1)) ;

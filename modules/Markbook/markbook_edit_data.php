@@ -581,7 +581,7 @@ else {
 							<tr>
 								<?php
 								print "<td style='text-align: left'>" ;
-									print getMaxUpload(TRUE) ;
+									print getMaxUpload($guid, TRUE) ;
 								print "</td>" ;
 								print "<td class='right' colspan=" . ($span-1) . ">" ;
 								?>

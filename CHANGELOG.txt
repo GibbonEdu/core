@@ -71,6 +71,7 @@ v12.0.00
 		Planner: fixed style mismatch in Guest section of lesson planner full view
 		Planner: attendance alignment tweak
 		Planner: fixed bug preventing parent access to lesson listings
+		Planner: added ordering field to units to control the order in which they display
 		Rubrics: added course/class name to historical view result listing
 		School Admin: fixed bug preventing non-contiguous primary external assessment settings from being saved in Formal Assessment settings
 		Staff: adjusted role drop down to offer all Staff roles (from gibbonRole), not just Teaching & Support

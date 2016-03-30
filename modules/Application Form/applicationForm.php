@@ -2051,7 +2051,7 @@ else {
 				?>
 				<tr>
 					<td colspan=2> 
-						<?php print getMaxUpload() ; ?>
+						<?php print getMaxUpload($guid) ; ?>
 						<input type="hidden" name="fileCount" value="<?php print $count ?>">
 					</td>
 				</tr>

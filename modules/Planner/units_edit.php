@@ -244,7 +244,7 @@ else {
 											<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
 										</td>
 										<td class="right">
-											<input readonly name="courseName" id="courseName" maxlength=20 value="<?php print $row["courseName"] ?>" type="text" style="width: 300px">
+											<input readonly name="courseName" id="courseName" maxlength=20 value="<?php print htmlPrep($row["courseName"]) ?>" type="text" style="width: 300px">
 										</td>
 									</tr>
 									<tr>
@@ -253,7 +253,7 @@ else {
 											<span style="font-size: 90%"><i></i></span>
 										</td>
 										<td class="right">
-											<input name="name" id="name" maxlength=40 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
+											<input name="name" id="name" maxlength=40 value="<?php print htmlPrep($row["name"]) ?>" type="text" style="width: 300px">
 											<script type="text/javascript">
 												var name2=new LiveValidation('name');
 												name2.add(Validate.Presence);
@@ -263,14 +263,27 @@ else {
 									<tr>
 										<td colspan=2> 
 											<b><?php print __($guid, 'Blurb') ?> *</b> 
-											<textarea name='description' id='description' rows=5 style='width: 300px'><?php print $row["description"] ?></textarea>
+											<textarea name='description' id='description' rows=5 style='width: 300px'><?php print htmlPrep($row["description"]) ?></textarea>
 											<script type="text/javascript">
 												var description=new LiveValidation('description');
 												description.add(Validate.Presence);
 											</script>
 										</td>
 									</tr>
-									
+									<tr>
+										<td> 
+											<b><?php print __($guid, 'Ordering') ?> *</b><br/>
+											<span style="font-size: 90%"><i><?php print __($guid, "Units are arranged form lowest to highest ordering value, then alphabetically.") ; ?></i></span>
+										</td>
+										<td class="right">
+											<input name="ordering" id="ordering" maxlength=4 value="<?php print htmlPrep($row["ordering"]) ?>" type="text" style="width: 300px">
+											<script type="text/javascript">
+												var ordering=new LiveValidation('ordering');
+												ordering.add(Validate.Presence);
+												ordering.add(Validate.Numericality);
+											</script>
+										</td>
+									</tr>
 									<tr>
 										<td> 
 											<b><?php print __($guid, "License") ?></b><br/>
@@ -704,7 +717,7 @@ else {
 											?>
 											<input type="file" name="file" id="file"><br/><br/>
 											<?php
-											print getMaxUpload() ;
+											print getMaxUpload($guid) ;
 										
 											//Get list of acceptable file extensions
 											try {

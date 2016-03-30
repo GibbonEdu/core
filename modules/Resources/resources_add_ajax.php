@@ -184,7 +184,7 @@ else {
 										$output.=$id . "file.add(Validate.Presence);" ;
 										$output.=$id . "file.disable();" ;
 									$output.="</script>" ;
-									$output.=getMaxUpload() ;
+									$output.=getMaxUpload($guid) ;
 								$output.="</td>" ;
 							$output.="</tr>" ;
 							$output.="<tr id='" . $id . "resourceLink'>" ;

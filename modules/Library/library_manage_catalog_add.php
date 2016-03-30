@@ -281,7 +281,7 @@ else {
 						imageFile.disable();
 					</script>	
 					<?php
-					print getMaxUpload() ;
+					print getMaxUpload($guid) ;
 					?>
 				</td>
 			</tr>

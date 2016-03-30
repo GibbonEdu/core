@@ -111,7 +111,7 @@ $output.="<table cellspacing='0' style='width: 100%'>" ;
 					
 					$output.="<tr>" ;
 						$output.="<td>" ;
-							$output.=getMaxUpload(TRUE) ;
+							$output.=getMaxUpload($guid, TRUE) ;
 						$output.="</td>" ;
 						$output.="<td class='right'>" ;
 							$output.="<input type='hidden' name='id' value='" . $id . "'>" ;

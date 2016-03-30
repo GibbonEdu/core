@@ -355,7 +355,7 @@ else {
 								<td class="right">
 									<input type="file" name="file" id="file"><br/><br/>
 										<?php
-										print getMaxUpload() ;
+										print getMaxUpload($guid) ;
 										$ext="'.png','.jpeg','.jpg','.gif','.pdf'" ;
 										?>
 										<script type="text/javascript">
