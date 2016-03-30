@@ -292,6 +292,63 @@ else {
 						<h3><?php print __($guid, 'Message Details') ?></h3>
 					</td>
 				</tr>
+				<?php
+				try {
+					$dataSelect=array(); 
+					$sqlSelect="SELECT * FROM gibbonMessengerCannedResponse ORDER BY subject" ; 
+					$resultSelect=$connection2->prepare($sqlSelect);
+					$resultSelect->execute($dataSelect);
+				}
+				catch(PDOException $e) { }
+				if ($resultSelect->rowCount()>0) {
+					$cannedResponses=$resultSelect->fetchAll() ;
+					
+					//Set up JS to deal with canned response selection
+					print "<script type=\"text/javascript\">" ;
+						print "$(document).ready(function(){" ;
+							print "$(\"#cannedResponse\").change(function(){" ;
+								print "if (confirm(\"Are you sure you want to insert these records.\")==1) {" ;
+									print "if ($('#cannedResponse option:selected').val()==\"\" ) {" ;
+										print "$('#subject').val('');" ;
+										print "tinyMCE.execCommand('mceRemoveEditor', false, 'body') ;" ;
+										print "$('#body').val('');" ;
+										print "tinyMCE.execCommand('mceAddEditor', false, 'body') ;" ;
+									print "}" ;
+									foreach ($cannedResponses AS $rowSelect) {
+										print "if ($('#cannedResponse option:selected').val()==\"" . $rowSelect["gibbonMessengerCannedResponseID"] . "\" ) {" ;
+											print "$('#subject').val('" . htmlPrep($rowSelect["subject"]) . "');" ;
+											print "tinyMCE.execCommand('mceRemoveEditor', false, 'body') ;" ;
+											print "$('#body').val('" . $rowSelect["body"] . "');" ;
+											print "tinyMCE.execCommand('mceAddEditor', false, 'body') ;" ;
+										print "}" ;
+									}
+								print "}" ;
+								print "else {" ;
+									print "$('#cannedResponse').val('')" ;
+								print "}" ;
+							print "});" ;
+						print "});" ;
+					print "</script>" ;					
+					?>
+					<tr>
+						<td> 
+							<b><?php print __($guid, 'Canned Response') ?></b><br/>
+						</td>
+						<td class="right">
+							<select name="cannedResponse" id="cannedResponse" style="width: 302px">
+								<option value=''></option>
+								<?php
+								foreach ($cannedResponses AS $rowSelect) {
+									print "<option value='" . $rowSelect["gibbonMessengerCannedResponseID"] . "'>" . $rowSelect["subject"] . "</option>" ; 
+								}
+								?>
+							</select>
+						</td>
+					</tr>
+					<?php
+				}
+				?>
+				
 				<tr>
 					<td> 
 						<b><?php print __($guid, 'Subject') ?> *</b><br/>

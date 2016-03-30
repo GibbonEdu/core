@@ -98,7 +98,7 @@ else {
 									<?php
 									try {
 										$dataSelect=array(); 
-										$sqlSelect="SELECT * FROM gibbonSpace ORDER by name" ; 
+										$sqlSelect="SELECT * FROM gibbonSpace ORDER BY name" ; 
 										$resultSelect=$connection2->prepare($sqlSelect);
 										$resultSelect->execute($dataSelect);
 									}
@@ -112,7 +112,7 @@ else {
 									<?php
 									try {
 										$dataSelect=array(); 
-										$sqlSelect="SELECT * FROM gibbonLibraryItem WHERE bookable='Y' ORDER by name" ; 
+										$sqlSelect="SELECT * FROM gibbonLibraryItem WHERE bookable='Y' ORDER BY name" ; 
 										$resultSelect=$connection2->prepare($sqlSelect);
 										$resultSelect->execute($dataSelect);
 									}
