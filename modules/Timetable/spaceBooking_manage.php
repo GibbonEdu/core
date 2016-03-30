@@ -36,14 +36,14 @@ else {
 	else {
 		//Proceed!
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Manage Space Bookings') . "</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Manage Facility Bookings') . "</div>" ;
 		print "</div>" ;
 		
-		if ($highestAction=="Manage Space Bookings_allBookings") {
-			print "<p>" . __($guid, "This page allows you to create room and location bookings, whilst managing bookings created by all users. Only current and future bookings are shown: past bookings are hidden.") . "</p>" ;
+		if ($highestAction=="Manage Facility Bookings_allBookings") {
+			print "<p>" . __($guid, "This page allows you to create facility and library bookings, whilst managing bookings created by all users. Only current and future bookings are shown: past bookings are hidden.") . "</p>" ;
 		}
 		else {
-			print "<p>" . __($guid, "This page allows you to create and manage room and location bookings. Only current and future changes are shown: past bookings are hidden.") . "</p>" ;
+			print "<p>" . __($guid, "This page allows you to create and manage facility and library bookings. Only current and future changes are shown: past bookings are hidden.") . "</p>" ;
 		}
 	
 		if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -66,13 +66,13 @@ else {
 		}
 	
 		try {
-			if ($highestAction=="Manage Space Bookings_allBookings") {
+			if ($highestAction=="Manage Facility Bookings_allBookings") {
 				$data=array("date"=>date("Y-m-d")); 
-				$sql="SELECT gibbonTTSpaceBooking.*, gibbonSpace.name, surname, preferredName FROM gibbonTTSpaceBooking JOIN gibbonSpace ON (gibbonTTSpaceBooking.gibbonSpaceID=gibbonSpace.gibbonSpaceID) JOIN gibbonPerson ON (gibbonTTSpaceBooking.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE date>=:date ORDER BY date, gibbonSpace.name" ; 
+				$sql="(SELECT gibbonTTSpaceBooking.*, gibbonSpace.name AS name, surname, preferredName FROM gibbonTTSpaceBooking JOIN gibbonSpace ON (gibbonTTSpaceBooking.foreignKeyID=gibbonSpace.gibbonSpaceID) JOIN gibbonPerson ON (gibbonTTSpaceBooking.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignKey='gibbonSpaceID' AND date>=:date) UNION (SELECT gibbonTTSpaceBooking.*, gibbonLibraryItem.name AS name, surname, preferredName FROM gibbonTTSpaceBooking JOIN gibbonLibraryItem ON (gibbonTTSpaceBooking.foreignKeyID=gibbonLibraryItem.gibbonLibraryItemID) JOIN gibbonPerson ON (gibbonTTSpaceBooking.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignKey='gibbonLibraryItemID' AND date>=:date) ORDER BY date, name" ; 
 			}
 			else {
 				$data=array("date"=>date("Y-m-d"), "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-				$sql="SELECT gibbonTTSpaceBooking.*, gibbonSpace.name, surname, preferredName FROM gibbonTTSpaceBooking JOIN gibbonSpace ON (gibbonTTSpaceBooking.gibbonSpaceID=gibbonSpace.gibbonSpaceID) JOIN gibbonPerson ON (gibbonTTSpaceBooking.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE date>=:date AND gibbonTTSpaceBooking.gibbonPersonID=:gibbonPersonID ORDER BY date, gibbonSpace.name" ; 
+				$sql="(SELECT gibbonTTSpaceBooking.*, gibbonSpace.name AS name, surname, preferredName FROM gibbonTTSpaceBooking JOIN gibbonSpace ON (gibbonTTSpaceBooking.foreignKeyID=gibbonSpace.gibbonSpaceID) JOIN gibbonPerson ON (gibbonTTSpaceBooking.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignKey='gibbonSpaceID' AND date>=:date AND gibbonTTSpaceBooking.gibbonPersonID=:gibbonPersonID) UNION (SELECT gibbonTTSpaceBooking.*, gibbonLibraryItem.name AS name, surname, preferredName FROM gibbonTTSpaceBooking JOIN gibbonLibraryItem ON (gibbonTTSpaceBooking.foreignKeyID=gibbonLibraryItem.gibbonLibraryItemID) JOIN gibbonPerson ON (gibbonTTSpaceBooking.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignKey='gibbonLibraryItemID' AND date>=:date AND gibbonTTSpaceBooking.gibbonPersonID=:gibbonPersonID) ORDER BY date, name" ; 
 			}
 			$sqlPage=$sql . " LIMIT " . $_SESSION[$guid]["pagination"] . " OFFSET " . (($page-1)*$_SESSION[$guid]["pagination"]) ;
 			$result=$connection2->prepare($sql);
@@ -102,9 +102,9 @@ else {
 						print __($guid, "Date") ;
 					print "</th>" ;
 					print "<th>" ;
-						print __($guid, "Space") ;
+						print __($guid, "Facility") ;
 					print "</th>" ;
-					if ($highestAction=="Manage Space Bookings_allBookings") {
+					if ($highestAction=="Manage Facility Bookings_allBookings") {
 						print "<th>" ;
 							print __($guid, "Person") ;
 						print "</th>" ;
@@ -143,7 +143,7 @@ else {
 						print "<td>" ;
 							print $row["name"] ;
 						print "</td>" ;
-						if ($highestAction=="Manage Space Bookings_allBookings") {
+						if ($highestAction=="Manage Facility Bookings_allBookings") {
 							print "<td>" ;
 								print formatName("", $row["preferredName"], $row["surname"], "Student", false) ;
 							print "</td>" ;

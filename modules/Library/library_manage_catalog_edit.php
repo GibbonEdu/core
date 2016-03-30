@@ -435,6 +435,18 @@ else {
 							</select>
 						</td>
 					</tr>
+					<tr id='bookableRow'>
+						<td> 
+							<b><?php print __($guid, 'Bookable As Facility?') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Can item be booked via Facility Booking in Timetable? Useful for laptop carts, etc.') ?></i></span>
+						</td>
+						<td class="right">
+							<select name="bookable" id="bookable" style="width: 302px">
+								<option <?php if ($row["bookable"]=="N") { print "selected" ; } ?> value="N" /> <?php print __($guid, 'No') ?>
+								<option <?php if ($row["bookable"]=="Y") { print "selected" ; } ?> value="Y" /> <?php print __($guid, 'Yes') ?>
+							</select>
+						</td>
+					</tr>
 					<tr id='borrowableRow'>
 						<td> 
 							<b><?php print __($guid, 'Borrowable?') ?> *</b><br/>

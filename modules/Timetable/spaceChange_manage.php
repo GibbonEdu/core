@@ -36,7 +36,7 @@ else {
 	else {
 		//Proceed!
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Manage Space Changes') . "</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Manage Facility Changes') . "</div>" ;
 		print "</div>" ;
 		
 		if ($highestAction=="Manage Space Changes_allClasses") {
@@ -105,10 +105,10 @@ else {
 						print __($guid, "Class") ;
 					print "</th>" ;
 					print "<th>" ;
-						print __($guid, "Original Space") ;
+						print __($guid, "Original Facility") ;
 					print "</th>" ;
 					print "<th>" ;
-						print __($guid, "New Space") ;
+						print __($guid, "New Facility") ;
 					print "</th>" ;
 					print "<th>" ;
 						print __($guid, "Actions") ;

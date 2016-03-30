@@ -40,7 +40,7 @@ else {
 	else {
 		//Proceed!
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/spaceBooking_manage.php'>" . __($guid, 'Manage Space Bookings') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Add Space Booking') . "</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/spaceBooking_manage.php'>" . __($guid, 'Manage Facility Bookings') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Add Facility Booking') . "</div>" ;
 		print "</div>" ;
 	
 		if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -82,30 +82,46 @@ else {
 		//Step 1
 		if ($step==1) {
 			print "<h2>" ;
-				print __($guid, "Step 1 - Choose Space") ;
+				print __($guid, "Step 1 - Choose Facility") ;
 			print "</h2>" ;
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/spaceBooking_manage_add.php&step=2" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b><?php print __($guid, 'Space') ?> *</b><br/>
+							<b><?php print __($guid, 'Facility') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<select name="gibbonSpaceID" id="gibbonSpaceID" style="width: 302px">
+							<select name="foreignKeyID" id="foreignKeyID" style="width: 302px">
 								<option value='Please select...'><?php print __($guid, 'Please select...') ?></option>
-								<?php
-								try {
-									$dataSelect=array(); 
-									$sqlSelect="SELECT * FROM gibbonSpace ORDER by name" ; 
-									$resultSelect=$connection2->prepare($sqlSelect);
-									$resultSelect->execute($dataSelect);
-								}
-								catch(PDOException $e) { }
-								while ($rowSelect=$resultSelect->fetch()) {
-									print "<option value='" . $rowSelect["gibbonSpaceID"] . "'>" . $rowSelect["name"] . "</option>" ; 
-								}
-								?>
+								<optgroup label='--<?php print __($guid, "Facilities") ?>--'/>" ;
+									<?php
+									try {
+										$dataSelect=array(); 
+										$sqlSelect="SELECT * FROM gibbonSpace ORDER by name" ; 
+										$resultSelect=$connection2->prepare($sqlSelect);
+										$resultSelect->execute($dataSelect);
+									}
+									catch(PDOException $e) { }
+									while ($rowSelect=$resultSelect->fetch()) {
+										print "<option value='gibbonSpaceID-" . $rowSelect["gibbonSpaceID"] . "'>" . $rowSelect["name"] . "</option>" ; 
+									}
+									?>
+								</optgroup>
+								<optgroup label='--<?php print __($guid, "Library") ?>--'/>" ;
+									<?php
+									try {
+										$dataSelect=array(); 
+										$sqlSelect="SELECT * FROM gibbonLibraryItem WHERE bookable='Y' ORDER by name" ; 
+										$resultSelect=$connection2->prepare($sqlSelect);
+										$resultSelect->execute($dataSelect);
+									}
+									catch(PDOException $e) { }
+									while ($rowSelect=$resultSelect->fetch()) {
+										print "<option value='gibbonLibraryItemID-" . $rowSelect["gibbonLibraryItemID"] . "'>" . $rowSelect["name"] . "</option>" ; 
+									}
+									?>
+								</optgroup>
 							</select>
 							<script type="text/javascript">
 								var gibbonSpaceID=new LiveValidation('gibbonSpaceID');
@@ -250,9 +266,17 @@ else {
 				print __($guid, "Step 2 - Availability Check") ;
 			print "</h2>" ;
 			
-			$gibbonSpaceID=NULL ;
-			if (isset($_POST["gibbonSpaceID"])) {
-				$gibbonSpaceID=$_POST["gibbonSpaceID"] ;
+			$foreignKey=NULL ;
+			$foreignKeyID=NULL ;
+			if (isset($_POST["foreignKeyID"])) {
+				if (substr($_POST["foreignKeyID"], 0, 13)=="gibbonSpaceID") { //It's a facility
+					$foreignKey="gibbonSpaceID" ;
+					$foreignKeyID=substr($_POST["foreignKeyID"], 14) ;
+				}
+				else if (substr($_POST["foreignKeyID"], 0, 19)=="gibbonLibraryItemID") { //It's a library item
+					$foreignKey="gibbonLibraryItemID" ;
+					$foreignKeyID=substr($_POST["foreignKeyID"], 20) ;
+				}
 			}
 			$date=dateConvert($guid, $_POST["date"]) ;
 			$timeStart=$_POST["timeStart"] ;
@@ -267,32 +291,40 @@ else {
 				$repeatWeekly=$_POST["repeatWeekly"] ;
 			}
 			
-			try {
-				$dataSelect=array("gibbonSpace"=>$gibbonSpaceID); 
-				$sqlSelect="SELECT * FROM gibbonSpace WHERE gibbonSpace.gibbonSpaceID=:gibbonSpace" ; 
-				$resultSelect=$connection2->prepare($sqlSelect);
-				$resultSelect->execute($dataSelect);
-			}
-			catch(PDOException $e) { 
-				print "<div class='error'>" ;
-					print __($guid, "Your request failed due to a database error.") ;
-				print "</div>" ;
-			}
 			
-			if ($resultSelect->rowCount()!=1) {
+			//Check for required fields
+			if ($foreignKey==NULL OR $foreignKeyID==NULL OR $foreignKey=="" OR $foreignKeyID=="" OR $date=="" OR $timeStart=="" OR $timeEnd=="" OR $repeat=="") {
 				print "<div class='error'>" ;
-					print __($guid, "Your request failed due to a database error.") ;
+					print __($guid, "Your request failed because your inputs were invalid.") ;
 				print "</div>" ;
 			}
 			else {
-				$rowSelect=$resultSelect->fetch() ;
-				//Check for required fields
-				if ($gibbonSpaceID=="" OR $date=="" OR $timeStart=="" OR $timeEnd=="" OR $repeat=="") {
+				try {
+					if ($foreignKey=="gibbonSpaceID") {
+						$dataSelect=array("gibbonSpace"=>$foreignKeyID); 
+						$sqlSelect="SELECT * FROM gibbonSpace WHERE gibbonSpaceID=:gibbonSpace" ;
+					} 
+					else if ($foreignKey=="gibbonLibraryItemID") {
+						$dataSelect=array("gibbonLibraryItemID"=>$foreignKeyID); 
+						$sqlSelect="SELECT * FROM gibbonLibraryItem WHERE gibbonLibraryItemID=:gibbonLibraryItemID" ;
+					}
+					$resultSelect=$connection2->prepare($sqlSelect);
+					$resultSelect->execute($dataSelect);
+				}
+				catch(PDOException $e) { 
 					print "<div class='error'>" ;
-						print __($guid, "Your request failed because your inputs were invalid.") ;
+						print __($guid, "Your request failed due to a database error.") ;
+					print "</div>" ;
+				}
+			
+				if ($resultSelect->rowCount()!=1) {
+					print "<div class='error'>" ;
+						print __($guid, "Your request failed due to a database error.") ;
 					print "</div>" ;
 				}
 				else {
+					$rowSelect=$resultSelect->fetch() ;
+					
 					$available=FALSE ;
 					?>
 					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/spaceBooking_manage_addProcess.php" ?>">
@@ -303,7 +335,7 @@ else {
 								<tr>
 									<td colspan=2>
 										<?php
-										$available=isSpaceFree($guid, $connection2, $gibbonSpaceID, $date, $timeStart, $timeEnd) ;
+										$available=isSpaceFree($guid, $connection2, $foreignKey, $foreignKeyID, $date, $timeStart, $timeEnd) ;
 										if ($available==TRUE) {
 											?>
 											<tr class='current'>
@@ -350,7 +382,7 @@ else {
 											$continue=FALSE ;
 										}
 										//Print days
-										if (isSpaceFree($guid, $connection2, $gibbonSpaceID, $dateTemp, $timeStart, $timeEnd)==TRUE) {
+										if (isSpaceFree($guid, $connection2, $foreignKey, $foreignKeyID, $dateTemp, $timeStart, $timeEnd)==TRUE) {
 											?>
 											<tr class='current'>
 												<td> 
@@ -401,7 +433,7 @@ else {
 											$continue=FALSE ;
 										}
 										//Print days
-										if (isSpaceFree($guid, $connection2, $gibbonSpaceID, $dateTemp, $timeStart, $timeEnd)==TRUE) {
+										if (isSpaceFree($guid, $connection2, $foreignKey, $foreignKeyID, $dateTemp, $timeStart, $timeEnd)==TRUE) {
 											?>
 											<tr class='current'>
 												<td> 
@@ -443,15 +475,14 @@ else {
 								print "</div>" ;
 							}
 							?>
-							
-							
-							
+						
 							<tr>
 								<td colspan=2 class="right">
 									<?php
 									if ($available==TRUE) {
 										?>
-										<input type="hidden" name="gibbonSpaceID" value="<?php print $gibbonSpaceID ; ?>">
+										<input type="hidden" name="foreignKey" value="<?php print $foreignKey ; ?>">
+										<input type="hidden" name="foreignKeyID" value="<?php print $foreignKeyID ; ?>">
 										<input type="hidden" name="date" value="<?php print $date ; ?>">
 										<input type="hidden" name="timeStart" value="<?php print $timeStart ; ?>">
 										<input type="hidden" name="timeEnd" value="<?php print $timeEnd ; ?>">

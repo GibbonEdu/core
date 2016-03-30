@@ -96,6 +96,7 @@ else {
 							$("#locationDetailRow").slideDown("fast", $("#locationDetailRow").css("display","table-row"));
 							$("#ownershipTypeRow").slideDown("fast", $("#ownershipTypeRow").css("display","table-row"));
 							$("#gibbonDepartmentIDRow").slideDown("fast", $("#gibbonDepartmentIDRow").css("display","table-row"));
+							$("#bookableRow").slideDown("fast", $("#bookableRow").css("display","table-row"));
 							$("#borrowableRow").slideDown("fast", $("#borrowableRow").css("display","table-row"));
 							$("#statusRow").slideDown("fast", $("#statusRow").css("display","table-row"));
 							$("#replacementRow").slideDown("fast", $("#replacementRow").css("display","table-row"));
@@ -435,6 +436,18 @@ else {
 							print "<option value='" . $rowSelect["gibbonDepartmentID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
 						}
 						?>
+					</select>
+				</td>
+			</tr>
+			<tr id='bookableRow' style='display: none'>
+				<td> 
+					<b><?php print __($guid, 'Bookable As Facility?') ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print __($guid, 'Can item be booked via Facility Booking in Timetable? Useful for laptop carts, etc.') ?></i></span>
+				</td>
+				<td class="right">
+					<select name="bookable" id="bookable" style="width: 302px">
+						<option value="N" /> <?php print __($guid, 'No') ?>
+						<option value="Y" /> <?php print __($guid, 'Yes') ?>
 					</select>
 				</td>
 			</tr>

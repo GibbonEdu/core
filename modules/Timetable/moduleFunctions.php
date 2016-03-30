@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Checks whether or not a space is free over a given period of time, returning true or false accordingly.
-function isSpaceFree($guid, $connection2, $gibbonSpaceID, $date, $timeStart, $timeEnd) {
+function isSpaceFree($guid, $connection2, $foreignKey, $foreignKeyID, $date, $timeStart, $timeEnd) {
 	$return=TRUE ;
 
 	//Check if school is open
@@ -26,60 +26,74 @@ function isSpaceFree($guid, $connection2, $gibbonSpaceID, $date, $timeStart, $ti
 		$return=FALSE ;
 	}
 	else {
-
-		//Check timetable inc classes moved out
-		$ttClear=FALSE ;
-		try {
-			$dataSpace=array("gibbonSpaceID"=>$gibbonSpaceID, "date"=>$date, "timeStart1"=>$timeStart, "timeStart2"=>$timeStart, "timeStart3"=>$timeStart, "timeEnd1"=>$timeEnd, "timeStart4"=>$timeStart, "timeEnd2"=>$timeEnd);
-			$sqlSpace="SELECT gibbonTTDayRowClass.gibbonSpaceID, gibbonTTDayDate.date, timeStart, timeEnd, gibbonTTSpaceChangeID FROM gibbonTTDayRowClass JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) JOIN gibbonTTDay ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) LEFT JOIN gibbonTTSpaceChange ON (gibbonTTSpaceChange.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonTTSpaceChange.date=gibbonTTDayDate.date) WHERE gibbonTTDayRowClass.gibbonSpaceID=:gibbonSpaceID AND gibbonTTDayDate.date=:date AND ((timeStart<=:timeStart1 AND timeEnd>:timeStart2) OR (timeStart>=:timeStart3 AND timeEnd<:timeEnd1) OR (timeStart>=:timeStart4 AND timeStart<:timeEnd2))" ;
-			$resultSpace=$connection2->prepare($sqlSpace);
-			$resultSpace->execute($dataSpace);
-		}
-		catch(PDOException $e) { $return=FALSE ; }
-		if ($resultSpace->rowCount()<1) {
-			$ttClear=TRUE ;
-		}
-		else {
-			$ttClashFixed=TRUE ;
-
-			while ($rowSpace=$resultSpace->fetch()) {
-				if ($rowSpace["gibbonTTSpaceChangeID"]=="") {
-					$ttClashFixed=FALSE ;
-				}
-			}
-			if ($ttClashFixed==TRUE) {
-				$ttClear=TRUE ;
-			}
-		}
-
-		if ($ttClear==FALSE) {
-			$return=FALSE ;
-		}
-		else {
-			//Check room changes moving in
+		if ($foreignKey=="gibbonSpaceID") {
+			//Check timetable including classes moved out
+			$ttClear=FALSE ;
 			try {
-				$dataSpace=array("gibbonSpaceID"=>$gibbonSpaceID, "date1"=>$date, "date2"=>$date, "timeStart1"=>$timeStart, "timeStart2"=>$timeStart, "timeStart3"=>$timeStart, "timeEnd1"=>$timeEnd, "timeStart4"=>$timeStart, "timeEnd2"=>$timeEnd);
-				$sqlSpace="SELECT * FROM gibbonTTSpaceChange JOIN gibbonTTDayRowClass ON (gibbonTTSpaceChange.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID) JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) JOIN gibbonTTDay ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) WHERE gibbonTTSpaceChange.gibbonSpaceID=:gibbonSpaceID AND gibbonTTSpaceChange.date=:date1 AND gibbonTTDayDate.date=:date2 AND ((timeStart<=:timeStart1 AND timeEnd>:timeStart2) OR (timeStart>=:timeStart3 AND timeEnd<:timeEnd1) OR (timeStart>=:timeStart4 AND timeStart<:timeEnd2))" ;
+				$dataSpace=array("gibbonSpaceID"=>$foreignKeyID, "date"=>$date, "timeStart1"=>$timeStart, "timeStart2"=>$timeStart, "timeStart3"=>$timeStart, "timeEnd1"=>$timeEnd, "timeStart4"=>$timeStart, "timeEnd2"=>$timeEnd);
+				$sqlSpace="SELECT gibbonTTDayRowClass.gibbonSpaceID, gibbonTTDayDate.date, timeStart, timeEnd, gibbonTTSpaceChangeID FROM gibbonTTDayRowClass JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) JOIN gibbonTTDay ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) LEFT JOIN gibbonTTSpaceChange ON (gibbonTTSpaceChange.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonTTSpaceChange.date=gibbonTTDayDate.date) WHERE gibbonTTDayRowClass.gibbonSpaceID=:gibbonSpaceID AND gibbonTTDayDate.date=:date AND ((timeStart<=:timeStart1 AND timeEnd>:timeStart2) OR (timeStart>=:timeStart3 AND timeEnd<:timeEnd1) OR (timeStart>=:timeStart4 AND timeStart<:timeEnd2))" ;
 				$resultSpace=$connection2->prepare($sqlSpace);
 				$resultSpace->execute($dataSpace);
 			}
 			catch(PDOException $e) { $return=FALSE ; }
+			if ($resultSpace->rowCount()<1) {
+				$ttClear=TRUE ;
+			}
+			else {
+				$ttClashFixed=TRUE ;
 
-			if ($resultSpace->rowCount()>0) {
+				while ($rowSpace=$resultSpace->fetch()) {
+					if ($rowSpace["gibbonTTSpaceChangeID"]=="") {
+						$ttClashFixed=FALSE ;
+					}
+				}
+				if ($ttClashFixed==TRUE) {
+					$ttClear=TRUE ;
+				}
+			}
+
+			if ($ttClear==FALSE) {
 				$return=FALSE ;
 			}
 			else {
-				//Check room bookings
+				//Check room changes moving in
 				try {
-					$dataSpace=array("gibbonSpaceID"=>$gibbonSpaceID, "date"=>$date, "timeStart1"=>$timeStart, "timeStart2"=>$timeStart, "timeStart3"=>$timeStart, "timeEnd1"=>$timeEnd, "timeStart4"=>$timeStart, "timeEnd2"=>$timeEnd);
-					$sqlSpace="SELECT * FROM gibbonTTSpaceBooking WHERE gibbonSpaceID=:gibbonSpaceID AND date=:date AND ((timeStart<=:timeStart1 AND timeEnd>:timeStart2) OR (timeStart>=:timeStart3 AND timeEnd<:timeEnd1) OR (timeStart>=:timeStart4 AND timeStart<:timeEnd2))" ;
+					$dataSpace=array("gibbonSpaceID"=>$foreignKeyID, "date1"=>$date, "date2"=>$date, "timeStart1"=>$timeStart, "timeStart2"=>$timeStart, "timeStart3"=>$timeStart, "timeEnd1"=>$timeEnd, "timeStart4"=>$timeStart, "timeEnd2"=>$timeEnd);
+					$sqlSpace="SELECT * FROM gibbonTTSpaceChange JOIN gibbonTTDayRowClass ON (gibbonTTSpaceChange.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID) JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) JOIN gibbonTTDay ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) WHERE gibbonTTSpaceChange.gibbonSpaceID=:gibbonSpaceID AND gibbonTTSpaceChange.date=:date1 AND gibbonTTDayDate.date=:date2 AND ((timeStart<=:timeStart1 AND timeEnd>:timeStart2) OR (timeStart>=:timeStart3 AND timeEnd<:timeEnd1) OR (timeStart>=:timeStart4 AND timeStart<:timeEnd2))" ;
 					$resultSpace=$connection2->prepare($sqlSpace);
 					$resultSpace->execute($dataSpace);
 				}
 				catch(PDOException $e) { $return=FALSE ; }
+
 				if ($resultSpace->rowCount()>0) {
 					$return=FALSE ;
 				}
+				else {
+					//Check bookings
+					try {
+						$dataSpace=array("foreignKeyID"=>$foreignKeyID, "date"=>$date, "timeStart1"=>$timeStart, "timeStart2"=>$timeStart, "timeStart3"=>$timeStart, "timeEnd1"=>$timeEnd, "timeStart4"=>$timeStart, "timeEnd2"=>$timeEnd);
+						$sqlSpace="SELECT * FROM gibbonTTSpaceBooking WHERE foreignKey='gibbonSpaceID' AND foreignKeyID=:foreignKeyID AND date=:date AND ((timeStart<=:timeStart1 AND timeEnd>:timeStart2) OR (timeStart>=:timeStart3 AND timeEnd<:timeEnd1) OR (timeStart>=:timeStart4 AND timeStart<:timeEnd2))" ;
+						$resultSpace=$connection2->prepare($sqlSpace);
+						$resultSpace->execute($dataSpace);
+					}
+					catch(PDOException $e) { $return=FALSE ; }
+					if ($resultSpace->rowCount()>0) {
+						$return=FALSE ;
+					}
+				}
+			}
+		}
+		else if ($foreignKey=="gibbonLibraryItemID") {
+			//Check bookings
+			try {
+				$dataSpace=array("foreignKeyID"=>$foreignKeyID, "date"=>$date, "timeStart1"=>$timeStart, "timeStart2"=>$timeStart, "timeStart3"=>$timeStart, "timeEnd1"=>$timeEnd, "timeStart4"=>$timeStart, "timeEnd2"=>$timeEnd);
+				$sqlSpace="SELECT * FROM gibbonTTSpaceBooking WHERE foreignKey='gibbonLibraryItemID' AND foreignKeyID=:foreignKeyID AND date=:date AND ((timeStart<=:timeStart1 AND timeEnd>:timeStart2) OR (timeStart>=:timeStart3 AND timeEnd<:timeEnd1) OR (timeStart>=:timeStart4 AND timeStart<:timeEnd2))" ;
+				$resultSpace=$connection2->prepare($sqlSpace);
+				$resultSpace->execute($dataSpace);
+			}
+			catch(PDOException $e) { $return=FALSE ; }
+			if ($resultSpace->rowCount()>0) {
+				$return=FALSE ;
 			}
 		}
 	}
@@ -93,12 +107,12 @@ function getSpaceBookingEvents($guid, $connection2, $startDayStamp, $gibbonPerso
 
 	try {
 		if ($gibbonPersonID!="") {
-			$dataSpaceBooking=array("gibbonPersonID"=>$gibbonPersonID);
-			$sqlSpaceBooking="SELECT gibbonTTSpaceBooking.*, name, title, surname, preferredName FROM gibbonTTSpaceBooking JOIN gibbonSpace ON (gibbonTTSpaceBooking.gibbonSpaceID=gibbonSpace.gibbonSpaceID) JOIN gibbonPerson ON (gibbonTTSpaceBooking.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonTTSpaceBooking.gibbonPersonID=:gibbonPersonID AND date>='" . date("Y-m-d", $startDayStamp) . "' AND  date<='" . date("Y-m-d", ($startDayStamp+(7*24*60*60))) . "' ORDER BY date, timeStart, name" ;
+			$dataSpaceBooking=array("gibbonPersonID1"=>$gibbonPersonID, "gibbonPersonID2"=>$gibbonPersonID);
+			$sqlSpaceBooking="(SELECT gibbonTTSpaceBooking.*, name, title, surname, preferredName FROM gibbonTTSpaceBooking JOIN gibbonSpace ON (gibbonTTSpaceBooking.foreignKeyID=gibbonSpace.gibbonSpaceID) JOIN gibbonPerson ON (gibbonTTSpaceBooking.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignKey='gibbonSpaceID' AND gibbonTTSpaceBooking.gibbonPersonID=:gibbonPersonID1 AND date>='" . date("Y-m-d", $startDayStamp) . "' AND  date<='" . date("Y-m-d", ($startDayStamp+(7*24*60*60))) . "') UNION (SELECT gibbonTTSpaceBooking.*, name, title, surname, preferredName FROM gibbonTTSpaceBooking JOIN gibbonLibraryItem ON (gibbonTTSpaceBooking.foreignKeyID=gibbonLibraryItem.gibbonLibraryItemID) JOIN gibbonPerson ON (gibbonTTSpaceBooking.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignKey='gibbonLibraryItemID' AND gibbonTTSpaceBooking.gibbonPersonID=:gibbonPersonID2 AND date>='" . date("Y-m-d", $startDayStamp) . "' AND  date<='" . date("Y-m-d", ($startDayStamp+(7*24*60*60))) . "') ORDER BY date, timeStart, name" ;
 		}
 		else {
 			$dataSpaceBooking=array();
-			$sqlSpaceBooking="SELECT gibbonTTSpaceBooking.*, name, title, surname, preferredName FROM gibbonTTSpaceBooking JOIN gibbonSpace ON (gibbonTTSpaceBooking.gibbonSpaceID=gibbonSpace.gibbonSpaceID) JOIN gibbonPerson ON (gibbonTTSpaceBooking.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE date>='" . date("Y-m-d", $startDayStamp) . "' AND  date<='" . date("Y-m-d", ($startDayStamp+(7*24*60*60))) . "' ORDER BY date, timeStart, name" ;
+			$sqlSpaceBooking="(SELECT gibbonTTSpaceBooking.*, name, title, surname, preferredName FROM gibbonTTSpaceBooking JOIN gibbonSpace ON (gibbonTTSpaceBooking.foreignKeyID=gibbonSpace.gibbonSpaceID) JOIN gibbonPerson ON (gibbonTTSpaceBooking.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignKey='gibbonSpaceID' AND  date>='" . date("Y-m-d", $startDayStamp) . "' AND  date<='" . date("Y-m-d", ($startDayStamp+(7*24*60*60))) . "') UNION (SELECT gibbonTTSpaceBooking.*, name, title, surname, preferredName FROM gibbonTTSpaceBooking JOIN gibbonLibraryItem ON (gibbonTTSpaceBooking.foreignKeyID=gibbonLibraryItem.gibbonLibraryItemID) JOIN gibbonPerson ON (gibbonTTSpaceBooking.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignKey='gibbonLibraryItem' AND  date>='" . date("Y-m-d", $startDayStamp) . "' AND  date<='" . date("Y-m-d", ($startDayStamp+(7*24*60*60))) . "') ORDER BY date, timeStart, name" ;
 		}
 		$resultSpaceBooking=$connection2->prepare($sqlSpaceBooking);
 		$resultSpaceBooking->execute($dataSpaceBooking);
@@ -697,7 +711,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 										if ($_SESSION[$guid]["viewCalendarSpaceBooking"]=="Y") {
 											$checked="checked" ;
 										}
-										$output.="<span class='ttSpaceBookingCalendar' style='opacity: $schoolCalendarAlpha'>" . __($guid, 'Space Booking') . " " ;
+										$output.="<span class='ttSpaceBookingCalendar' style='opacity: $schoolCalendarAlpha'><a style='color: #fff' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable/spaceBooking_manage.php'>" . __($guid, 'Bookings') . "</a> " ;
 										$output.="<input $checked style='margin-left: 3px' type='checkbox' name='spaceBookingCalendar' onclick='submit();'/>" ;
 										$output.="</span>" ;
 									}
@@ -1664,7 +1678,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 								if ($_SESSION[$guid]["viewCalendarSpaceBooking"]=="Y") {
 									$checked="checked" ;
 								}
-								$output.="<span class='ttSpaceBookingCalendar' style='opacity: $schoolCalendarAlpha'>" . __($guid, 'Space Booking') . " " ;
+								$output.="<span class='ttSpaceBookingCalendar' style='opacity: $schoolCalendarAlpha'>" . __($guid, 'Bookings') . " " ;
 								$output.="<input $checked style='margin-left: 3px' type='checkbox' name='spaceBookingCalendar' onclick='submit();'/>" ;
 								$output.="</span>" ;
 							}
@@ -1763,6 +1777,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 
 				//Run through days of the week
 				foreach ($days AS $day) {
+					$dayOut="" ;
 					if ($day["schoolDay"]=="Y") {
 						$dateCorrection=($day["sequenceNumber"]-1) ;
 						
@@ -1797,30 +1812,38 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 							if ($resultClosure->rowCount()==1) {
 								$rowClosure=$resultClosure->fetch() ;
 								if ($rowClosure["type"]=="School Closure") {
-									$day.="<td style='text-align: center; vertical-align: top; font-size: 11px'>" ;
-										$day.="<div style='position: relative'>" ;
-											$day.="<div class='ttClosure' style='z-index: $zCount; position: absolute; width: $width ; height: " . ceil($diffTime/60) . "px; margin: 0px; padding: 0px; opacity: $ttAlpha'>" ;
-												$day.="<div style='position: relative; top: 50%'>" ;
-													$day.="<span>" . $rowClosure["name"] . "</span>" ;
-												$day.="</div>" ;
-											$day.="</div>" ;
-										$day.="</div>" ;
-									$day.="</td>" ;
+									$dayOut.="<td style='text-align: center; vertical-align: top; font-size: 11px'>" ;
+										$dayOut.="<div style='position: relative'>" ;
+											$dayOut.="<div class='ttClosure' style='z-index: $zCount; position: absolute; width: $width ; height: " . ceil($diffTime/60) . "px; margin: 0px; padding: 0px; opacity: $ttAlpha'>" ;
+												$dayOut.="<div style='position: relative; top: 50%'>" ;
+													$dayOut.="<span>" . $rowClosure["name"] . "</span>" ;
+												$dayOut.="</div>" ;
+											$dayOut.="</div>" ;
+										$dayOut.="</div>" ;
+									$dayOut.="</td>" ;
 								}
 								else if ($rowClosure["type"]=="Timing Change") {
-									$day=renderTTSpaceDay($guid, $connection2, $row["gibbonTTID"], $startDayStamp, $dateCorrection, $daysInWeek, $gibbonSpaceID, $timeStart, $diffTime, $eventsSpaceBooking, $rowClosure["schoolStart"], $rowClosure["schoolEnd"]) ;
+									$dayOut=renderTTSpaceDay($guid, $connection2, $row["gibbonTTID"], $startDayStamp, $dateCorrection, $daysInWeek, $gibbonSpaceID, $timeStart, $diffTime, $eventsSpaceBooking, $rowClosure["schoolStart"], $rowClosure["schoolEnd"]) ;
 								}
 							}
 							else {
-								$day=renderTTSpaceDay($guid, $connection2, $row["gibbonTTID"], $startDayStamp, $dateCorrection, $daysInWeek, $gibbonSpaceID, $timeStart, $diffTime, $eventsSpaceBooking) ;
+								$dayOut=renderTTSpaceDay($guid, $connection2, $row["gibbonTTID"], $startDayStamp, $dateCorrection, $daysInWeek, $gibbonSpaceID, $timeStart, $diffTime, $eventsSpaceBooking) ;
 							}
 						}
 
-						if ($day=="") {
-							$day.="<td style='text-align: center; vertical-align: top; font-size: 11px'></td>" ;
+						if ($dayOut=="") {
+							$dayOut.="<td style='text-align: center; vertical-align: top; font-size: 11px'>" ;
+								$dayOut.="<div style='position: relative'>" ;
+									$dayOut.="<div class='ttClosure' style='z-index: $zCount; position: absolute; width: $width ; height: " . ceil($diffTime/60) . "px; margin: 0px; padding: 0px; opacity: $ttAlpha'>" ;
+										$dayOut.="<div style='position: relative; top: 50%'>" ;
+											$dayOut.="<span style='color: rgba(255,0,0,$ttAlpha);'>" . __($guid, 'School Closed') . "</span>" ;
+										$dayOut.="</div>" ;
+									$dayOut.="</div>" ;
+								$dayOut.="</div>" ;
+							$dayOut.="</td>" ;
 						}
 
-						$output.=$day ;
+						$output.=$dayOut ;
 					}
 				}
 

@@ -128,6 +128,7 @@ else {
 			if ($_POST["gibbonDepartmentID"]!="") {
 				$gibbonDepartmentID=$_POST["gibbonDepartmentID"];
 			}
+			$bookable=$_POST["bookable"] ;
 			$borrowable=$_POST["borrowable"] ;
 			if ($borrowable=="Y") {
 				$status=$_POST["statusBorrowable"] ;
@@ -162,7 +163,7 @@ else {
 				}
 			}
 			
-			if ($gibbonLibraryTypeID=="" OR $name=="" OR $id=="" OR $producer=="" OR $borrowable=="" OR $replacement=="") {
+			if ($gibbonLibraryTypeID=="" OR $name=="" OR $id=="" OR $producer=="" OR $bookable=="" OR $borrowable=="" OR $replacement=="") {
 				//Fail 3
 				$URL.="&updateReturn=fail3" ;
 				header("Location: {$URL}");
@@ -222,8 +223,8 @@ else {
 			
 					//Write to database
 					try {
-						$data=array("id"=>$id, "name"=>$name, "producer"=>$producer, "fields"=>serialize($fieldsOut), "vendor"=>$vendor, "purchaseDate"=>$purchaseDate, "invoiceNumber"=>$invoiceNumber, "imageType"=>$imageType, "imageLocation"=>$imageLocation, "replacement"=>$replacement, "gibbonSchoolYearIDReplacement"=>$gibbonSchoolYearIDReplacement, "replacementCost"=>$replacementCost, "comment"=>$comment, "gibbonSpaceID"=>$gibbonSpaceID, "locationDetail"=>$locationDetail, "ownershipType"=>$ownershipType, "gibbonPersonIDOwnership"=>$gibbonPersonIDOwnership, "gibbonDepartmentID"=>$gibbonDepartmentID, "borrowable"=>$borrowable, "status"=>$status, "physicalCondition"=>$physicalCondition, "gibbonPersonIDUpdate"=>$_SESSION[$guid]["gibbonPersonID"], "timestampUpdate"=>date('Y-m-d H:i:s', time()), "gibbonLibraryItemID"=>$gibbonLibraryItemID) ; 
-						$sql="UPDATE gibbonLibraryItem SET id=:id, name=:name, producer=:producer, fields=:fields, vendor=:vendor, purchaseDate=:purchaseDate, invoiceNumber=:invoiceNumber, imageType=:imageType, imageLocation=:imageLocation, replacement=:replacement, gibbonSchoolYearIDReplacement=:gibbonSchoolYearIDReplacement, replacementCost=:replacementCost, comment=:comment, gibbonSpaceID=:gibbonSpaceID, locationDetail=:locationDetail, ownershipType=:ownershipType, gibbonPersonIDOwnership=:gibbonPersonIDOwnership, gibbonDepartmentID=:gibbonDepartmentID, borrowable=:borrowable, status=:status, physicalCondition=:physicalCondition, gibbonPersonIDUpdate=:gibbonPersonIDUpdate, timestampUpdate=:timestampUpdate WHERE gibbonLibraryItemID=:gibbonLibraryItemID" ;
+						$data=array("id"=>$id, "name"=>$name, "producer"=>$producer, "fields"=>serialize($fieldsOut), "vendor"=>$vendor, "purchaseDate"=>$purchaseDate, "invoiceNumber"=>$invoiceNumber, "imageType"=>$imageType, "imageLocation"=>$imageLocation, "replacement"=>$replacement, "gibbonSchoolYearIDReplacement"=>$gibbonSchoolYearIDReplacement, "replacementCost"=>$replacementCost, "comment"=>$comment, "gibbonSpaceID"=>$gibbonSpaceID, "locationDetail"=>$locationDetail, "ownershipType"=>$ownershipType, "gibbonPersonIDOwnership"=>$gibbonPersonIDOwnership, "gibbonDepartmentID"=>$gibbonDepartmentID, "bookable"=>$bookable, "borrowable"=>$borrowable, "status"=>$status, "physicalCondition"=>$physicalCondition, "gibbonPersonIDUpdate"=>$_SESSION[$guid]["gibbonPersonID"], "timestampUpdate"=>date('Y-m-d H:i:s', time()), "gibbonLibraryItemID"=>$gibbonLibraryItemID) ; 
+						$sql="UPDATE gibbonLibraryItem SET id=:id, name=:name, producer=:producer, fields=:fields, vendor=:vendor, purchaseDate=:purchaseDate, invoiceNumber=:invoiceNumber, imageType=:imageType, imageLocation=:imageLocation, replacement=:replacement, gibbonSchoolYearIDReplacement=:gibbonSchoolYearIDReplacement, replacementCost=:replacementCost, comment=:comment, gibbonSpaceID=:gibbonSpaceID, locationDetail=:locationDetail, ownershipType=:ownershipType, gibbonPersonIDOwnership=:gibbonPersonIDOwnership, gibbonDepartmentID=:gibbonDepartmentID, bookable=:bookable, borrowable=:borrowable, status=:status, physicalCondition=:physicalCondition, gibbonPersonIDUpdate=:gibbonPersonIDUpdate, timestampUpdate=:timestampUpdate WHERE gibbonLibraryItemID=:gibbonLibraryItemID" ;
 						$result=$connection2->prepare($sql);
 						$result->execute($data);
 					}

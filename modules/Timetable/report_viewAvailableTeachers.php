@@ -489,7 +489,7 @@ else {
 							else {
 								$dayOut.="<td style='text-align: center; vertical-align: top; font-size: 11px'>" ;
 									$dayOut.="<div style='position: relative'>" ;
-										$dayOut.="<div style='z-index: $zCount; position: absolute; top: 0; width: $width ; border: 1px solid rgba(136,136,136,$ttAlpha); height: " . ceil($diffTime/60) . "px; margin: 0px; padding: 0px; background-color: rgba(255,196,202,$ttAlpha)'>" ;
+										$dayOut.="<div style='position: absolute; top: 0; width: $width ; border: 1px solid rgba(136,136,136,$ttAlpha); height: " . ceil($diffTime/60) . "px; margin: 0px; padding: 0px; background-color: rgba(255,196,202,$ttAlpha)'>" ;
 											$dayOut.="<div style='position: relative; top: 50%'>" ;
 												$dayOut.="<span style='color: rgba(255,0,0,$ttAlpha);'>" . __($guid, 'School Closed') . "</span>" ;
 											$dayOut.="</div>" ;

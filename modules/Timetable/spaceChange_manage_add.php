@@ -36,7 +36,7 @@ else {
 	else {
 		//Proceed!
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/spaceChange_manage.php'>" . __($guid, 'Manage Space Changes') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Add Space Change') . "</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/spaceChange_manage.php'>" . __($guid, 'Manage Facility Changes') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Add Facility Change') . "</div>" ;
 		print "</div>" ;
 	
 		if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -130,7 +130,7 @@ else {
 				print __($guid, "Step 2 - Choose Options") ;
 			print "</h2>" ;
 			print "<p>" ;
-				print __($guid, "When choosing a space, remember that they are not mutually exclusive: you can change two classes into one space, change one class to join another class in their normal roolm, or assign no space at all. The spaces listed below are not necessarily free at the requested time: please use the View Available Spaces report to check availability.") ;
+				print __($guid, "When choosing a facility, remember that they are not mutually exclusive: you can change two classes into one facility, change one class to join another class in their normal room, or assign no facility at all. The facilities listed below are not necessarily free at the requested time: please use the View Available Facilities report to check availability.") ;
 			print "</p>" ;
 			
 			$gibbonCourseClassID=NULL ;
@@ -205,7 +205,7 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b><?php print __($guid, 'Space') ?></b><br/>
+								<b><?php print __($guid, 'Facility') ?></b><br/>
 							</td>
 							<td class="right">
 								<select name="gibbonSpaceID" id="gibbonSpaceID" style="width: 302px">

@@ -38,7 +38,7 @@ else {
 	}
 	else {
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'View Timetable by Space') . "</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'View Timetable by Facility') . "</div>" ;
 		print "</div>" ;
 		
 		print "<h2>" ;
@@ -61,7 +61,7 @@ else {
 				<tr>
 					<td> 
 						<b><?php print __($guid, 'Search For') ?></b><br/>
-						<span style="font-size: 90%"><i><?php print __($guid, 'Space name.') ?></i></span>
+						<span style="font-size: 90%"><i><?php print __($guid, 'Facility name.') ?></i></span>
 					</td>
 					<td class="right">
 						<input name="search" id="search" maxlength=20 value="<?php print $search ?>" type="text" style="width: 300px">
@@ -82,7 +82,7 @@ else {
 		<?php
 		
 		print "<h2>" ;
-		print __($guid, "Choose A Space") ;
+		print __($guid, "Choose A Facility") ;
 		print "</h2>" ;
 		
 		//Set pagination variable

@@ -43,14 +43,14 @@ if (isActionAccessible($guid, $connection2, "/modules/School Admin/spaceSettings
 	header("Location: {$URL}");
 }
 else {
-	$spaceTypes="" ; 
-	foreach (explode(",", $_POST["spaceTypes"]) as $type) {
-		$spaceTypes.=trim($type) . "," ;
+	$facilityTypes="" ; 
+	foreach (explode(",", $_POST["facilityTypes"]) as $type) {
+		$facilityTypes.=trim($type) . "," ;
 	}
-	$spaceTypes=substr($spaceTypes,0,-1) ;
+	$facilityTypes=substr($facilityTypes,0,-1) ;
 
 	//Validate Inputs
-	if ($spaceTypes=="") {
+	if ($facilityTypes=="") {
 		//Fail 3
 		$URL.="&updateReturn=fail3" ;
 		header("Location: {$URL}");
@@ -61,8 +61,8 @@ else {
 		
 		//Update internal assessment fields
 		try {
-			$data=array("value"=>$spaceTypes); 
-			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='School Admin' AND name='spaceTypes'" ;
+			$data=array("value"=>$facilityTypes); 
+			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='School Admin' AND name='facilityTypes'" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}

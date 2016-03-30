@@ -281,6 +281,19 @@ ALTER TABLE `gibbonLibraryItem` ADD `replacement` ENUM('Y','N') NOT NULL DEFAULT
 UPDATE `gibbonLibraryItem` SET `replacement`='N' WHERE gibbonSchoolYearIDReplacement IS NULL AND replacementCost IS NULL;end
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'Application Form', 'usernameFormat', 'Username Format', 'How should usernames be formated? Choose from [preferredName], [preferredNameInitial], [surname].', '[preferredNameInitial][surname]');end
 ALTER TABLE `gibbonUnit` ADD `ordering` INT(2) NOT NULL DEFAULT '0' AFTER `description`;end
+UPDATE gibbonAction SET name='Manage Facilities' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='School Admin') AND name='Manage Spaces';end
+UPDATE gibbonAction SET name='View Timetable by Facility' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Timetable') AND name='View Timetable by Space';end
+UPDATE gibbonAction SET name='View Available Facilities' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Timetable') AND name='View Available Spaces';end
+UPDATE gibbonAction SET name='Manage Facility Changes_allClasses' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Timetable') AND name='Manage Space Changes_allClasses';end
+UPDATE gibbonAction SET name='Manage Facility Changes_myClasses' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Timetable') AND name='Manage Space Changes_myClasses';end
+UPDATE gibbonAction SET name='Manage Facility Bookings_allBookings' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Timetable') AND name='Manage Space Bookings_allBookings';end
+UPDATE gibbonAction SET name='Manage Facility Bookings_myBookings' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Timetable') AND name='Manage Space Bookings_myBookings';end
+UPDATE gibbonAction SET name='Manage Facility Settings' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='School Admin') AND name='Manage Space Settings';end
+UPDATE gibbonSetting SET name='facilityTypes', nameDisplay='FacilityTypes', description='A comma-separated list of types for facilities.' WHERE scope='School Admin' AND name='spaceTypes';end
+ALTER TABLE `gibbonSpace` CHANGE `gibbonSpaceID` `gibbonSpaceID` INT(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;end
+ALTER TABLE `gibbonTTSpaceBooking` ADD `foreignKey` ENUM('gibbonSpaceID','gibbonLibraryItemID') NOT NULL DEFAULT 'gibbonSpaceID' AFTER `gibbonTTSpaceBookingID`;end
+ALTER TABLE `gibbonTTSpaceBooking` CHANGE `gibbonSpaceID` `foreignKeyID` INT(10) UNSIGNED ZEROFILL NOT NULL;end
+ALTER TABLE `gibbonLibraryItem` ADD `bookable` ENUM('N','Y') NOT NULL DEFAULT 'N' AFTER `physicalCondition`;end
 
 " ;
 ?>
