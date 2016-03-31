@@ -77,8 +77,7 @@ else {
 					<b><?php print __($guid, 'Body') ?> *</b>
 					<?php 
 					//Attempt to build a signature for the user
-					$signature=getSignature($guid, $connection2, $_SESSION[$guid]["gibbonPersonID"]) ;
-					print getEditor($guid,  TRUE, "body", $signature, 20, true, true, false, true ) ;
+					print getEditor($guid,  TRUE, "body", "", 20, true, true, false, true ) ;
 					?>
 				</td>
 			</tr>

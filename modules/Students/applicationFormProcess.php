@@ -41,7 +41,7 @@ include "../Finance/moduleFunctions.php" ;
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Application Form/applicationForm.php" ;
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/applicationForm.php" ;
 
 $proceed=FALSE ;
 $public=FALSE ;
@@ -55,7 +55,7 @@ if (isset($_SESSION[$guid]["username"])==FALSE) {
 	}
 }
 else {
-	if (isActionAccessible($guid, $connection2, "/modules/Application Form/applicationForm.php")!=FALSE) {
+	if (isActionAccessible($guid, $connection2, "/modules/Students/applicationForm.php")!=FALSE) {
 		$proceed=TRUE ;
 	}
 }
@@ -743,8 +743,8 @@ else {
 				$paypalAPISignature=getSettingByScope($connection2, "System", "paypalAPISignature") ;
 	
 				if ($applicationFee>0 AND is_numeric($applicationFee) AND $enablePayments=="Y" AND $paypalAPIUsername!="" AND $paypalAPIPassword!="" AND $paypalAPISignature!="") {
-					$_SESSION[$guid]["gatewayCurrencyNoSupportReturnURL"]=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Application Form/applicationForm.php&addReturn=success4&id=$AI" ;
-					$URL=$_SESSION[$guid]["absoluteURL"] . "/lib/paypal/expresscheckout.php?Payment_Amount=$applicationFee&return=" . urlencode("modules/Application Form/applicationFormProcess.php?addReturn=success1&id=$AI&applicationFee=$applicationFee") . "&fail=" . urlencode("modules/Application Form/applicationFormProcess.php?addReturn=success2&id=$AI&applicationFee=$applicationFee") ;
+					$_SESSION[$guid]["gatewayCurrencyNoSupportReturnURL"]=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/applicationForm.php&addReturn=success4&id=$AI" ;
+					$URL=$_SESSION[$guid]["absoluteURL"] . "/lib/paypal/expresscheckout.php?Payment_Amount=$applicationFee&return=" . urlencode("modules/Students/applicationFormProcess.php?addReturn=success1&id=$AI&applicationFee=$applicationFee") . "&fail=" . urlencode("modules/Students/applicationFormProcess.php?addReturn=success2&id=$AI&applicationFee=$applicationFee") ;
 					header("Location: {$URL}");
 				}
 				else {

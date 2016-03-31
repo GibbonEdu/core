@@ -304,6 +304,7 @@ else {
 					$cannedResponses=$resultSelect->fetchAll() ;
 					
 					//Set up JS to deal with canned response selection
+					$signature=getSignature($guid, $connection2, $_SESSION[$guid]["gibbonPersonID"]) ;
 					print "<script type=\"text/javascript\">" ;
 						print "$(document).ready(function(){" ;
 							print "$(\"#cannedResponse\").change(function(){" ;
@@ -311,14 +312,14 @@ else {
 									print "if ($('#cannedResponse option:selected').val()==\"\" ) {" ;
 										print "$('#subject').val('');" ;
 										print "tinyMCE.execCommand('mceRemoveEditor', false, 'body') ;" ;
-										print "$('#body').val('');" ;
+										print "$('#body').val('" . addSlashes($signature) . "');" ;
 										print "tinyMCE.execCommand('mceAddEditor', false, 'body') ;" ;
 									print "}" ;
 									foreach ($cannedResponses AS $rowSelect) {
 										print "if ($('#cannedResponse option:selected').val()==\"" . $rowSelect["gibbonMessengerCannedResponseID"] . "\" ) {" ;
 											print "$('#subject').val('" . htmlPrep($rowSelect["subject"]) . "');" ;
 											print "tinyMCE.execCommand('mceRemoveEditor', false, 'body') ;" ;
-											print "$('#body').val('" . $rowSelect["body"] . "');" ;
+											print "$('#body').val('" . $rowSelect["body"] . addSlashes($signature) . "');" ;
 											print "tinyMCE.execCommand('mceAddEditor', false, 'body') ;" ;
 										print "}" ;
 									}

@@ -297,7 +297,7 @@ ALTER TABLE `gibbonLibraryItem` ADD `bookable` ENUM('N','Y') NOT NULL DEFAULT 'N
 INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Messenger'), 'Canned Response', 0, 'Manage Messages', 'Allows for the creation of message templates.', 'cannedResponse_manage.php, cannedResponse_manage_add.php, cannedResponse_manage_edit.php, cannedResponse_manage_delete.php', 'cannedResponse_manage.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N') ;end
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Messenger' AND gibbonAction.name='Canned Response'));end
 CREATE TABLE `gibbonMessengerCannedResponse` (  `gibbonMessengerCannedResponseID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,  `subject` varchar(30) NOT NULL,  `body` text NOT NULL,  `timestampCreator` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,  `gibbonPersonIDCreator` int(11) unsigned zerofill NOT NULL,  PRIMARY KEY (`gibbonMessengerCannedResponseID`)) ENGINE=MyISAM DEFAULT CHARSET=utf8;end
-
-
+UPDATE gibbonAction SET name='Application Form', category='Admissions', gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Students') WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Application Form') AND name='Apply';end
+DELETE FROM gibbonModule WHERE name='Application Form';end
 " ;
 ?>

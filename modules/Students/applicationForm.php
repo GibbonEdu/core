@@ -35,7 +35,7 @@ if (isset($_SESSION[$guid]["username"])==FALSE) {
 	}
 }
 else {
-	if (isActionAccessible($guid, $connection2, "/modules/Application Form/applicationForm.php")!=FALSE) {
+	if (isActionAccessible($guid, $connection2, "/modules/Students/applicationForm.php")!=FALSE) {
 		$proceed=TRUE ;
 	}
 }
@@ -76,7 +76,7 @@ else {
 		if ($intro!="") {
 			print "<br/><br/>" ;
 		}
-		print "<p style='font-weight: bold; text-decoration: none; color: #c00'><i><u>" . sprintf(__($guid, 'If you have an %1$s %2$s account, please log in now to prevent creation of duplicate data about you! Once logged in, you can find the form under People > Data in the main menu.'), $_SESSION[$guid]["organisationNameShort"], $_SESSION[$guid]["systemName"]) . "</u></i> " . sprintf(__($guid, 'If you do not have an %1$s %2$s account, please use the form below.'), $_SESSION[$guid]["organisationNameShort"], $_SESSION[$guid]["systemName"]) . "</p>" ;
+		print "<div class='warning' style='font-weight: bold'>" . sprintf(__($guid, 'If you already have an account for %1$s %2$s, please log in now to prevent creation of duplicate data about you! Once logged in, you can find the form under People > Students in the main menu.'), $_SESSION[$guid]["organisationNameShort"], $_SESSION[$guid]["systemName"]) . " " . sprintf(__($guid, 'If you do not have an account for %1$s %2$s, please use the form below.'), $_SESSION[$guid]["organisationNameShort"], $_SESSION[$guid]["systemName"]) . "</div>" ;
 	}
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -1546,7 +1546,7 @@ else {
 											print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 										}
 										while ($rowRelationships=$resultRelationships->fetch()) {
-											print "<div style='width: 100%'>" ;
+											print "<div style='width: 100%; height: 20px; vertical-align: middle'>" ;
 												print formatName($rowRelationships["title"], $rowRelationships["preferredName"], $rowRelationships["surname"], "Parent") ;
 												?>
 												<select name="<?php print $rowSelect["gibbonFamilyID"] ?>-relationships[]" id="relationships[]" style="width: 200px">

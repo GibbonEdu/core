@@ -531,7 +531,7 @@ else {
 											print __($guid, "Applications") ;
 										print "</h2>" ;
 										print "<p>" ;
-											print sprintf(__($guid, 'Parents of students interested in study at %1$s may use our %2$s online form%3$s to initiate the application process.'), $_SESSION[$guid]["organisationName"], "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/?q=/modules/Application Form/applicationForm.php'>", "</a>") ;
+											print sprintf(__($guid, 'Parents of students interested in study at %1$s may use our %2$s online form%3$s to initiate the application process.'), $_SESSION[$guid]["organisationName"], "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/?q=/modules/Students/applicationForm.php'>", "</a>") ;
 										print "</p>" ;
 									}
 									
