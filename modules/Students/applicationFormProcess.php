@@ -33,7 +33,7 @@ catch(PDOException $e) {
 @session_start() ;
 
 //Module includes from User Admin (for custom fields)
-include "../User Admin/moduleFunctions.php" ;
+include "../Students/moduleFunctions.php" ;
 
 //Module includes from Finance (for setting payment log)
 include "../Finance/moduleFunctions.php" ;
@@ -732,7 +732,7 @@ else {
 				//Attempt to notify admissions administrator
 				if ($_SESSION[$guid]["organisationAdmissions"]) {
 					$notificationText=sprintf(__($guid, 'An application form has submitted for %1$s.'), formatName("", $preferredName, $surname, "Student")) ;
-					setNotification($connection2, $guid, $_SESSION[$guid]["organisationAdmissions"], $notificationText, "Application Form", "/index.php?q=/modules/User Admin/applicationForm_manage_edit.php&gibbonApplicationFormID=$AI&gibbonSchoolYearID=$gibbonSchoolYearIDEntry&search=") ;
+					setNotification($connection2, $guid, $_SESSION[$guid]["organisationAdmissions"], $notificationText, "Application Form", "/index.php?q=/modules/Students/applicationForm_manage_edit.php&gibbonApplicationFormID=$AI&gibbonSchoolYearID=$gibbonSchoolYearIDEntry&search=") ;
 				}
 		
 				//Attempt payment if everything is set up for it

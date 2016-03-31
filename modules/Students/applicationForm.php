@@ -73,9 +73,6 @@ else {
 	}
 	
 	if (isset($_SESSION[$guid]["username"])==false) {
-		if ($intro!="") {
-			print "<br/><br/>" ;
-		}
 		print "<div class='warning' style='font-weight: bold'>" . sprintf(__($guid, 'If you already have an account for %1$s %2$s, please log in now to prevent creation of duplicate data about you! Once logged in, you can find the form under People > Students in the main menu.'), $_SESSION[$guid]["organisationNameShort"], $_SESSION[$guid]["systemName"]) . " " . sprintf(__($guid, 'If you do not have an account for %1$s %2$s, please use the form below.'), $_SESSION[$guid]["organisationNameShort"], $_SESSION[$guid]["systemName"]) . "</div>" ;
 	}
 	

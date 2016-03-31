@@ -35,37 +35,37 @@ catch(PDOException $e) {
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
-$gibbonApplicationFormID=$_POST["gibbonApplicationFormID"] ;
-$gibbonSchoolYearID=$_POST["gibbonSchoolYearID"] ;
-$search=$_GET["search"] ;
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/applicationForm_manage_delete.php&gibbonApplicationFormID=$gibbonApplicationFormID&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search" ;
-$URLDelete=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/applicationForm_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search" ;
+$gibbonStaffJobOpeningID=$_GET["gibbonStaffJobOpeningID"] ;
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/jobOpenings_manage_delete.php&gibbonStaffJobOpeningID=" . $gibbonStaffJobOpeningID ;
+$URLDelete=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/jobOpenings_manage.php" ;
 
-if (isActionAccessible($guid, $connection2, "/modules/User Admin/applicationForm_manage_delete.php")==FALSE) {
+if (isActionAccessible($guid, $connection2, "/modules/Staff/jobOpenings_manage_delete.php")==FALSE) {
 	//Fail 0
 	$URL.="&deleteReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
 	//Proceed!
-	if ($gibbonApplicationFormID=="" OR $gibbonSchoolYearID=="") {
+	//Check if role specified
+	if ($gibbonStaffJobOpeningID=="") {
 		//Fail1
 		$URL.="&deleteReturn=fail1" ;
 		header("Location: {$URL}");
 	}
 	else {
 		try {
-			$data=array("gibbonApplicationFormID"=>$gibbonApplicationFormID); 
-			$sql="SELECT * FROM gibbonApplicationForm WHERE gibbonApplicationFormID=:gibbonApplicationFormID" ;
+			$data=array("gibbonStaffJobOpeningID"=>$gibbonStaffJobOpeningID); 
+			$sql="SELECT * FROM gibbonStaffJobOpening WHERE gibbonStaffJobOpeningID=:gibbonStaffJobOpeningID" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
 			//Fail2
-			$URL.="&deleteReturn=fail2" ;
+			$URL.="&updateReturn=fail2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
+		
 		if ($result->rowCount()!=1) {
 			//Fail 2
 			$URL.="&deleteReturn=fail2" ;
@@ -74,14 +74,14 @@ else {
 		else {
 			//Write to database
 			try {
-				$data=array("gibbonApplicationFormID"=>$gibbonApplicationFormID); 
-				$sql="DELETE FROM gibbonApplicationForm WHERE gibbonApplicationFormID=:gibbonApplicationFormID" ;
+				$data=array("gibbonStaffJobOpeningID"=>$gibbonStaffJobOpeningID); 
+				$sql="DELETE FROM gibbonStaffJobOpening WHERE gibbonStaffJobOpeningID=:gibbonStaffJobOpeningID" ;
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
 				//Fail2
-				$URL.="&deleteReturn=fail2" ;
+				$URL.="&updateReturn=fail2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}

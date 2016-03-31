@@ -41,7 +41,7 @@ $search=$_GET["search"] ;
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/applicationForm_manage_reject.php&gibbonApplicationFormID=$gibbonApplicationFormID&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search" ;
 $URLReject=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/applicationForm_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search" ;
 
-if (isActionAccessible($guid, $connection2, "/modules/User Admin/applicationForm_manage_reject.php")==FALSE) {
+if (isActionAccessible($guid, $connection2, "/modules/Students/applicationForm_manage_reject.php")==FALSE) {
 	//Fail 0
 	$URL.="&rejectReturn=fail0" ;
 	header("Location: {$URL}");

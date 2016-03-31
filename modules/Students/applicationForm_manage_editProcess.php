@@ -43,7 +43,7 @@ $gibbonSchoolYearID=$_POST["gibbonSchoolYearID"] ;
 $search=$_GET["search"] ;
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/applicationForm_manage_edit.php&gibbonApplicationFormID=$gibbonApplicationFormID&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search" ;
 
-if (isActionAccessible($guid, $connection2, "/modules/User Admin/applicationForm_manage_edit.php")==FALSE) {
+if (isActionAccessible($guid, $connection2, "/modules/Students/applicationForm_manage_edit.php")==FALSE) {
 	//Fail 0
 	$URL.="&updateReturn=fail0" ;
 	header("Location: {$URL}");
