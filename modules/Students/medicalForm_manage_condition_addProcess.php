@@ -35,45 +35,45 @@ catch(PDOException $e) {
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
-$gibbonPersonMedicalID=$_GET["gibbonPersonMedicalID"] ;
-$gibbonPersonMedicalConditionID=$_GET["gibbonPersonMedicalConditionID"] ;
+$gibbonPersonMedicalID=$_POST["gibbonPersonMedicalID"] ;
 $search=$_GET["search"] ;
-if ($gibbonPersonMedicalID=="" OR $gibbonPersonMedicalConditionID=="") {
+
+if ($gibbonPersonMedicalID=="") {
 	print "Fatal error loading this page!" ;
 }
 else {
-	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/medicalForm_manage_condition_edit.php&gibbonPersonMedicalID=$gibbonPersonMedicalID&gibbonPersonMedicalConditionID=$gibbonPersonMedicalConditionID&search=$search" ;
+	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/medicalForm_manage_condition_add.php&gibbonPersonMedicalID=$gibbonPersonMedicalID&search=$search" ;
 	
-	if (isActionAccessible($guid, $connection2, "/modules/User Admin/medicalForm_manage_condition_edit.php")==FALSE) {
+	if (isActionAccessible($guid, $connection2, "/modules/Students/medicalForm_manage_condition_add.php")==FALSE) {
 		//Fail 0
-		$URL.="&updateReturn=fail0" ;
+		$URL.="&addReturn=fail0" ;
 		header("Location: {$URL}");
 	}
 	else {
 		//Proceed!
 		//Check if person specified
-		if ($gibbonPersonMedicalConditionID=="") {
+		if ($gibbonPersonMedicalID=="") {
 			//Fail1
-			$URL.="&updateReturn=fail1" ;
+			$URL.="&addReturn=fail1" ;
 			header("Location: {$URL}");
 		}
 		else {
 			try {
-				$data=array("gibbonPersonMedicalConditionID"=>$gibbonPersonMedicalConditionID); 
-				$sql="SELECT * FROM gibbonPersonMedicalCondition WHERE gibbonPersonMedicalConditionID=:gibbonPersonMedicalConditionID" ;
+				$data=array("gibbonPersonMedicalID"=>$gibbonPersonMedicalID); 
+				$sql="SELECT * FROM gibbonPersonMedical WHERE gibbonPersonMedicalID=:gibbonPersonMedicalID" ;
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
 				//Fail2
-				$URL.="&deleteReturn=fail2" ;
+				$URL.="&addReturn=fail2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
 			
 			if ($result->rowCount()!=1) {
 				//Fail 2
-				$URL.="&updateReturn=fail2" ;
+				$URL.="&addReturn=fail2" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -95,26 +95,26 @@ else {
 				
 				if ($name=="" OR $gibbonAlertLevelID=="") {
 					//Fail 3
-					$URL.="&updateReturn=fail3" ;
+					$URL.="&addReturn=fail3" ;
 					header("Location: {$URL}");
 				}
 				else {
 					//Write to database
 					try {
-						$data=array("gibbonPersonMedicalID"=>$gibbonPersonMedicalID, "name"=>$name, "gibbonAlertLevelID"=>$gibbonAlertLevelID, "triggers"=>$triggers, "reaction"=>$reaction, "response"=>$response, "medication"=>$medication, "lastEpisode"=>$lastEpisode, "lastEpisodeTreatment"=>$lastEpisodeTreatment, "comment"=>$comment, "gibbonPersonMedicalConditionID"=>$gibbonPersonMedicalConditionID); 
-						$sql="UPDATE gibbonPersonMedicalCondition SET gibbonPersonMedicalID=:gibbonPersonMedicalID, name=:name, gibbonAlertLevelID=:gibbonAlertLevelID, triggers=:triggers, reaction=:reaction, response=:response, medication=:medication, lastEpisode=:lastEpisode, lastEpisodeTreatment=:lastEpisodeTreatment, comment=:comment WHERE gibbonPersonMedicalConditionID=:gibbonPersonMedicalConditionID" ;
+						$data=array("gibbonPersonMedicalID"=>$gibbonPersonMedicalID, "name"=>$name, "gibbonAlertLevelID"=>$gibbonAlertLevelID, "triggers"=>$triggers, "reaction"=>$reaction, "response"=>$response, "medication"=>$medication, "lastEpisode"=>$lastEpisode, "lastEpisodeTreatment"=>$lastEpisodeTreatment, "comment"=>$comment); 
+						$sql="INSERT INTO gibbonPersonMedicalCondition SET gibbonPersonMedicalID=:gibbonPersonMedicalID, name=:name, gibbonAlertLevelID=:gibbonAlertLevelID, triggers=:triggers, reaction=:reaction, response=:response, medication=:medication, lastEpisode=:lastEpisode, lastEpisodeTreatment=:lastEpisodeTreatment, comment=:comment" ;
 						$result=$connection2->prepare($sql);
 						$result->execute($data);
 					}
 					catch(PDOException $e) { 
 						//Fail 2
-						$URL.="&updateReturn=fail2" ;
+						$URL.="&addReturn=fail2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
 					
 					//Success 0
-					$URL.="&updateReturn=success0" ;
+					$URL.="&addReturn=success0" ;
 					header("Location: {$URL}");
 				}
 			}

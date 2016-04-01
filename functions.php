@@ -4235,6 +4235,19 @@ function getSystemSettings($guid, $connection2) {
 		$_SESSION[$guid]["organisationAdmissionsName"]=formatName("", $row["preferredName"], $row["surname"], "Staff", FALSE, TRUE) ;
 		$_SESSION[$guid]["organisationAdmissionsEmail"]=$row["email"] ;
 	}
+	//HR Administraotr
+	try {
+		$data=array("gibbonPersonID"=>$_SESSION[$guid]["organisationHR"]);
+		$sql="SELECT surname, preferredName, email FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { }
+	if ($result->rowCount()==1) {
+		$row=$result->fetch() ;
+		$_SESSION[$guid]["organisationHRName"]=formatName("", $row["preferredName"], $row["surname"], "Staff", FALSE, TRUE) ;
+		$_SESSION[$guid]["organisationHREmail"]=$row["email"] ;
+	}
 
 
 	//Language settings from gibboni18n

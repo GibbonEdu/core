@@ -1316,6 +1316,16 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 												}
 												
 												try {
+													$data=array("organisationHR"=>1); 
+													$sql="UPDATE gibbonSetting SET value=:organisationHR WHERE scope='System' AND name='organisationHR'" ;
+													$result=$connection2->prepare($sql);
+													$result->execute($data);
+												}
+												catch(PDOException $e) { 
+													$settingsFail=TRUE ;
+												}
+												
+												try {
 													$data=array("organisationAdmissions"=>1); 
 													$sql="UPDATE gibbonSetting SET value=:organisationAdmissions WHERE scope='System' AND name='organisationAdmissions'" ;
 													$result=$connection2->prepare($sql);

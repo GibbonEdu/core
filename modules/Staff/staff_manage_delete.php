@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start() ;
 
-if (isActionAccessible($guid, $connection2, "/modules/User Admin/staff_manage_delete.php")==FALSE) {
+if (isActionAccessible($guid, $connection2, "/modules/Staff/staff_manage_delete.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
 		print __($guid, "You do not have access to this action.") ;
@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/User Admin/staff_manage_de
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/staff_manage.php'>" . __($guid, 'Manage Staff') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Delete Staff') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Staff/staff_manage.php'>" . __($guid, 'Manage Staff') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Delete Staff') . "</div>" ;
 	print "</div>" ;
 	
 	$allStaff="" ;
@@ -89,7 +89,7 @@ else {
 			$row=$result->fetch() ;
 			if ($search!="" OR $allStaff!="") {
 				print "<div class='linkTop'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/staff_manage.php&search=$search&allStaff=$allStaff'>" . __($guid, 'Back to Search Results') . "</a>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Staff/staff_manage.php&search=$search&allStaff=$allStaff'>" . __($guid, 'Back to Search Results') . "</a>" ;
 				print "</div>" ;
 			}
 			?>

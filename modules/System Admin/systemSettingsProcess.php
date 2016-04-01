@@ -57,6 +57,7 @@ else {
 	$organisationLogo=$_POST["organisationLogo"] ;
 	$organisationAdministrator=$_POST["organisationAdministrator"] ;
 	$organisationDBA=$_POST["organisationDBA"] ;
+	$organisationHR=$_POST["organisationHR"] ;
 	$organisationAdmissions=$_POST["organisationAdmissions"] ;
 	$pagination=$_POST["pagination"] ;
 	$timezone=$_POST["timezone"] ;
@@ -80,7 +81,7 @@ else {
 	
 	
 	//Validate Inputs
-	if ($absoluteURL=="" OR $systemName=="" OR $organisationLogo=="" OR $indexText=="" OR $organisationName=="" OR $organisationNameShort=="" OR $organisationAdministrator=="" OR $organisationDBA=="" OR $organisationAdmissions=="" OR $pagination=="" OR (!(is_numeric($pagination))) OR $timezone=="" OR $installType=="" OR $statsCollection=="" OR $passwordPolicyMinLength=="" OR $passwordPolicyAlpha=="" OR $passwordPolicyNumeric=="" OR $passwordPolicyNonAlphaNumeric=="" OR $firstDayOfTheWeek=="" OR ($firstDayOfTheWeek!="Monday" AND $firstDayOfTheWeek!="Sunday") OR $currency=="") {
+	if ($absoluteURL=="" OR $systemName=="" OR $organisationLogo=="" OR $indexText=="" OR $organisationName=="" OR $organisationNameShort=="" OR $organisationAdministrator=="" OR $organisationDBA=="" OR $organisationHR=="" OR $organisationAdmissions=="" OR $pagination=="" OR (!(is_numeric($pagination))) OR $timezone=="" OR $installType=="" OR $statsCollection=="" OR $passwordPolicyMinLength=="" OR $passwordPolicyAlpha=="" OR $passwordPolicyNumeric=="" OR $passwordPolicyNonAlphaNumeric=="" OR $firstDayOfTheWeek=="" OR ($firstDayOfTheWeek!="Monday" AND $firstDayOfTheWeek!="Sunday") OR $currency=="") {
 		//Fail 3
 		$URL.="&updateReturn=fail3" ;
 		header("Location: {$URL}");
@@ -231,6 +232,35 @@ else {
 			$row=$result->fetch() ;
 			$_SESSION[$guid]["organisationDBAName"]=formatName("", $row["preferredName"], $row["surname"], "Staff", FALSE, TRUE) ;
 			$_SESSION[$guid]["organisationDBAEmail"]=$row["email"] ;
+		}
+		
+		
+		try {
+			$data=array("organisationHR"=>$organisationHR); 
+			$sql="UPDATE gibbonSetting SET value=:organisationHR WHERE scope='System' AND name='organisationHR'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ;
+		}
+		//Update session variables
+		try {
+			$data=array("gibbonPersonID"=>$organisationHR); 
+			$sql="SELECT surname, preferredName, email FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ;
+		}
+		if ($result->rowCount()!=1) {
+			$fail=TRUE ;
+		}
+		else {
+			$row=$result->fetch() ;
+			$_SESSION[$guid]["organisationHRName"]=formatName("", $row["preferredName"], $row["surname"], "Staff", FALSE, TRUE) ;
+			$_SESSION[$guid]["organisationHREmail"]=$row["email"] ;
 		}
 		
 		

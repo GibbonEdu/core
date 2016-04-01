@@ -94,7 +94,9 @@ else {
 		}
 		else if ($addReturn=="success0" OR $addReturn=="success1" OR $addReturn=="success2"  OR $addReturn=="success4") {
 			print "<script type='text/javascript'>" ;
-				print "alert('Your application was successfully submitted. Please read the information in the green box above the application form for additional information.') ;" ;
+				print "$(document).ready(function(){" ;
+					print "alert('Your application was successfully submitted. Please read the information in the green box above the application form for additional information.') ;" ;
+				print "});" ;
 			print "</script>" ;
 			if ($addReturn=="success0") {
 				$addReturnMessage=__($guid, "Your application was successfully submitted. Our admissions team will review your application and be in touch in due course.") ;
@@ -1995,7 +1997,7 @@ else {
 							print "<p>" ;
 								print $requiredDocumentsText . " " ;
 								if ($requiredDocumentsCompulsory=="Y") {
-									print __($guid, "These documents must all be included before the application can be submitted.") ;
+									print __($guid, "All documents must all be included before the application can be submitted.") ;
 								}
 								else {
 									print __($guid, "These documents are all required, but can be submitted separately to this form if preferred. Please note, however, that your application will be processed faster if the documents are included here.") ;

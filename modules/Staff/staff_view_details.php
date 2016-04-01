@@ -647,7 +647,7 @@ else {
 					
 					//PERSONAL DATA MENU ITEMS
 					$_SESSION[$guid]["sidebarExtra"].="<h4>Personal</h4>" ;
-					$_SESSION[$guid]["sidebarExtra"].="<ul>" ;
+					$_SESSION[$guid]["sidebarExtra"].="<ul class='moduleMenu'>" ;
 					$style="" ;
 					if ($subpage=="Overview") {
 						$style="style='font-weight: bold'" ;

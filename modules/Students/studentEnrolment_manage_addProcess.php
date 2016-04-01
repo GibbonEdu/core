@@ -45,7 +45,7 @@ if ($gibbonSchoolYearID=="") {
 else {
 	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/studentEnrolment_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search" ;
 	
-	if (isActionAccessible($guid, $connection2, "/modules/User Admin/studentEnrolment_manage_add.php")==FALSE) {
+	if (isActionAccessible($guid, $connection2, "/modules/Students/studentEnrolment_manage_add.php")==FALSE) {
 		//Fail 0
 		$URL.="&addReturn=fail0" ;
 		header("Location: {$URL}");

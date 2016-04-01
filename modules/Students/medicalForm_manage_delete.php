@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start() ;
 
-if (isActionAccessible($guid, $connection2, "/modules/User Admin/medicalForm_manage_condition_delete.php")==FALSE) {
+if (isActionAccessible($guid, $connection2, "/modules/Students/medicalForm_manage_delete.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
 		print __($guid, "You do not have access to this action.") ;
@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, "/modules/User Admin/medicalForm_man
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/medicalForm_manage.php'>" . __($guid, 'Manage Medical Forms') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/medicalForm_manage_edit.php&&gibbonPersonMedicalID=" . $_GET["gibbonPersonMedicalID"] . "'>" . __($guid, 'Edit Medical Form') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Delete Condition') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/medicalForm_manage.php'>" . __($guid, 'Manage Medical Forms') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Delete Medical Form') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -45,7 +45,7 @@ else {
 			$deleteReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 		}
 		else if ($deleteReturn=="fail3") {
-			$deleteReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
+			$deleteReturnMessage=__($guid, "Your request removed the medical form but failed to remove associated conditions.") ;	
 		}
 		print "<div class='$class'>" ;
 			print $deleteReturnMessage;
@@ -54,24 +54,23 @@ else {
 	
 	//Check if school year specified
 	$gibbonPersonMedicalID=$_GET["gibbonPersonMedicalID"] ;
-	$gibbonPersonMedicalConditionID=$_GET["gibbonPersonMedicalConditionID"] ;
 	$search=$_GET["search"] ;
-	if ($gibbonPersonMedicalID=="" OR $gibbonPersonMedicalConditionID=="") {
+	if ($gibbonPersonMedicalID=="") {
 		print "<div class='error'>" ;
 			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
 		try {
-			$data=array("gibbonPersonMedicalConditionID"=>$gibbonPersonMedicalConditionID); 
-			$sql="SELECT * FROM gibbonPersonMedicalCondition WHERE gibbonPersonMedicalConditionID=:gibbonPersonMedicalConditionID" ;
+			$data=array("gibbonPersonMedicalID"=>$gibbonPersonMedicalID); 
+			$sql="SELECT gibbonPersonMedicalID, surname, preferredName FROM gibbonPersonMedical JOIN gibbonPerson ON (gibbonPersonMedical.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPersonMedicalID=:gibbonPersonMedicalID" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
 			print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 		}
-	
+		
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
 				print __($guid, "The specified record cannot be found.") ;
@@ -80,13 +79,15 @@ else {
 		else {
 			//Let's go!
 			$row=$result->fetch() ;
+			
 			if ($search!="") {
 				print "<div class='linkTop'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/medicalForm_manage_edit.php&search=$search&gibbonPersonMedicalID=$gibbonPersonMedicalID'>" . __($guid, 'Back') . "</a>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/medicalForm_manage.php&search=$search'>" . __($guid, 'Back to Search Results') . "</a>" ;
 				print "</div>" ;
 			}
+		
 			?>
-			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/medicalForm_manage_condition_deleteProcess.php?gibbonPersonMedicalID=$gibbonPersonMedicalID&gibbonPersonMedicalConditionID=$gibbonPersonMedicalConditionID&search=$search" ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/medicalForm_manage_deleteProcess.php?gibbonPersonMedicalID=$gibbonPersonMedicalID&search=$search" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 

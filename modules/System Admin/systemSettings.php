@@ -523,6 +523,50 @@ else {
 				</td>
 			</tr>
 			
+			<tr>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationHR'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+				</td>
+				<td class="right">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+						<?php
+						print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
+						try {
+							$dataSelect=array(); 
+							$sqlSelect="SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName" ;
+							$resultSelect=$connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						}
+						catch(PDOException $e) { }	
+						while ($rowSelect=$resultSelect->fetch()) {
+							$selected="" ;
+							if ($row["value"]==$rowSelect["gibbonPersonID"]) {
+								$selected="selected" ;
+							}
+							print "<option $selected value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName(htmlPrep($rowSelect["title"]), ($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]),"Staff", true, true) . "</option>" ;
+						}
+						?>
+					</select>
+					<script type="text/javascript">
+						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+						<?php print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
+					</script>
+				</td>
+			</tr>
+			
 			<tr class='break'>
 				<td colspan=2> 
 					<h3><?php print __($guid, 'Security Settings') ?></h3>

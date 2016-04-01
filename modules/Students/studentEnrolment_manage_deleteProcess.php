@@ -35,34 +35,34 @@ catch(PDOException $e) {
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
-//Check if school year specified
-$gibbonPersonMedicalID=$_GET["gibbonPersonMedicalID"] ;
-$gibbonPersonMedicalConditionID=$_GET["gibbonPersonMedicalConditionID"] ;
+$gibbonSchoolYearID=$_GET["gibbonSchoolYearID"] ;
+$gibbonStudentEnrolmentID=$_POST["gibbonStudentEnrolmentID"] ;
 $search=$_GET["search"] ;
-if ($gibbonPersonMedicalID=="" OR $gibbonPersonMedicalConditionID=="") {
+
+if ($gibbonStudentEnrolmentID=="" OR $gibbonSchoolYearID=="") {
 	print "Fatal error loading this page!" ;
 }
 else {
-	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/medicalForm_manage_condition_delete.php&gibbonPersonMedicalID=$gibbonPersonMedicalID&gibbonPersonMedicalConditionID=$gibbonPersonMedicalConditionID&search=$search" ;
-	$URLDelete=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/medicalForm_manage_edit.php&gibbonPersonMedicalID=$gibbonPersonMedicalID&search=$search" ;
+	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/studentEnrolment_manage_delete.php&gibbonStudentEnrolmentID=$gibbonStudentEnrolmentID&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search" ;
+	$URLDelete=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/studentEnrolment_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search" ;
 	
-	if (isActionAccessible($guid, $connection2, "/modules/User Admin/medicalForm_manage_condition_delete.php")==FALSE) {
+	if (isActionAccessible($guid, $connection2, "/modules/Students/studentEnrolment_manage_delete.php")==FALSE) {
 		//Fail 0
 		$URL.="&deleteReturn=fail0" ;
 		header("Location: {$URL}");
 	}
 	else {
 		//Proceed!
-		//Check if condition specified
-		if ($gibbonPersonMedicalConditionID=="") {
+		//Check if person specified
+		if ($gibbonStudentEnrolmentID=="") {
 			//Fail1
 			$URL.="&deleteReturn=fail1" ;
 			header("Location: {$URL}");
 		}
 		else {
 			try {
-				$data=array("gibbonPersonMedicalConditionID"=>$gibbonPersonMedicalConditionID); 
-				$sql="SELECT * FROM gibbonPersonMedicalCondition WHERE gibbonPersonMedicalConditionID=:gibbonPersonMedicalConditionID" ;
+				$data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "gibbonStudentEnrolmentID"=>$gibbonStudentEnrolmentID); 
+				$sql="SELECT gibbonRollGroup.gibbonRollGroupID, gibbonYearGroup.gibbonYearGroupID,gibbonStudentEnrolmentID, surname, preferredName, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonRollGroup WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID ORDER BY surname, preferredName" ; 
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
 			}
@@ -72,7 +72,7 @@ else {
 				header("Location: {$URL}");
 				exit() ;
 			}
-			
+		
 			if ($result->rowCount()!=1) {
 				//Fail 2
 				$URL.="&deleteReturn=fail2" ;
@@ -81,8 +81,8 @@ else {
 			else {
 				//Write to database
 				try {
-					$data=array("gibbonPersonMedicalConditionID"=>$gibbonPersonMedicalConditionID); 
-					$sql="DELETE FROM gibbonPersonMedicalCondition WHERE gibbonPersonMedicalConditionID=:gibbonPersonMedicalConditionID" ;
+					$data=array("gibbonStudentEnrolmentID"=>$gibbonStudentEnrolmentID); 
+					$sql="DELETE FROM gibbonStudentEnrolment WHERE gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
 				}

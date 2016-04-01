@@ -49842,7 +49842,7 @@ msgstr "Enviar Futuro Facturas Para"
 #: Form/applicationForm.php:1924 Form/applicationForm.php:2006
 #: Form/applicationForm.php:1998
 #: modules/Application Form/applicationForm.php:1998
-msgid "These documents must all be included before the application can be submitted."
+msgid "All documents must all be included before the application can be submitted."
 msgstr "Estos documentos deben ser incluidos antes de poder presentar la solicitud."
 
 #: modules/Application Form/applicationForm.php:1922
@@ -65191,7 +65191,7 @@ msgstr "Otros campos"
 
 #: modules/Application Form/applicationFormProcess.php:734
 #: modules/Application Form/applicationFormProcess.php:734
-msgid "An application form has submitted for %1$s."
+msgid "An application form has been submitted for %1$s."
 msgstr "Un formulario de solicitud se ha presentado %1$s"
 
 #: modules/Behaviour/behaviour_manage_addMultiProcess.php:123

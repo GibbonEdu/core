@@ -39,7 +39,7 @@ $gibbonPersonMedicalID=$_GET["gibbonPersonMedicalID"] ;
 $search=$_GET["search"] ;
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/medicalForm_manage_edit.php&gibbonPersonMedicalID=$gibbonPersonMedicalID&search=$search" ;
 
-if (isActionAccessible($guid, $connection2, "/modules/User Admin/medicalForm_manage_edit.php")==FALSE) {
+if (isActionAccessible($guid, $connection2, "/modules/Students/medicalForm_manage_edit.php")==FALSE) {
 	//Fail 0
 	$URL.="&updateReturn=fail0" ;
 	header("Location: {$URL}");

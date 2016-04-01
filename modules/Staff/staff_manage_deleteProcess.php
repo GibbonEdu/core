@@ -35,66 +35,68 @@ catch(PDOException $e) {
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
-$search=$_GET["search"] ;
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/medicalForm_manage_add.php&search=$search" ;
+$gibbonStaffID=$_GET["gibbonStaffID"] ;
+$allStaff="" ;
+if (isset($_GET["allStaff"])) {
+	$allStaff=$_GET["allStaff"] ;
+}
+$search="" ;
+if (isset($_GET["search"])) {
+	$search=$_GET["search"] ;
+}
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/staff_manage_delete.php&gibbonStaffID=$gibbonStaffID&search=$search&allStaff=$allStaff" ;
+$URLDelete=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/staff_manage.php&search=$search&allStaff=$allStaff" ;
 
-if (isActionAccessible($guid, $connection2, "/modules/User Admin/medicalForm_manage_add.php")==FALSE) {
+if (isActionAccessible($guid, $connection2, "/modules/Staff/staff_manage_delete.php")==FALSE) {
 	//Fail 0
-	$URL.="&addReturn=fail0" ;
+	$URL.="&deleteReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
 	//Proceed!
-	$gibbonPersonID=$_POST["gibbonPersonID"] ; 	
-	$bloodType=$_POST["bloodType"] ; 	
-	$longTermMedication=$_POST["longTermMedication"] ; 	
-	$longTermMedicationDetails=$_POST["longTermMedicationDetails"] ; 	
-	$tetanusWithin10Years=$_POST["tetanusWithin10Years"] ;
-	
-	//Validate Inputs
-	if ($gibbonPersonID=="") {
-		//Fail 3
-		$URL.="&addReturn=fail3" ;
+	//Check if school year specified
+	if ($gibbonStaffID=="") {
+		//Fail1
+		$URL.="&deleteReturn=fail1" ;
 		header("Location: {$URL}");
 	}
 	else {
-		//Check unique inputs for uniquness
 		try {
-			$data=array("gibbonPersonID"=>$gibbonPersonID); 
-			$sql="SELECT * FROM gibbonPersonMedical WHERE gibbonPersonID=:gibbonPersonID" ;
+			$data=array("gibbonStaffID"=>$gibbonStaffID); 
+			$sql="SELECT * FROM gibbonStaff WHERE gibbonStaffID=:gibbonStaffID" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
-			//Fail 2
-			$URL.="&addReturn=fail2" ;
+			//Fail2
+			$URL.="&deleteReturn=fail2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
 		
-		if ($result->rowCount()>0) {
-			//Fail 4
-			$URL.="&addReturn=fail4" ;
+		if ($result->rowCount()!=1) {
+			//Fail 2
+			$URL.="&deleteReturn=fail2" ;
 			header("Location: {$URL}");
 		}
 		else {
 			//Write to database
 			try {
-				$data=array("gibbonPersonID"=>$gibbonPersonID, "bloodType"=>$bloodType, "longTermMedication"=>$longTermMedication, "longTermMedicationDetails"=>$longTermMedicationDetails, "tetanusWithin10Years"=>$tetanusWithin10Years); 
-				$sql="INSERT INTO gibbonPersonMedical SET gibbonPersonID=:gibbonPersonID, bloodType=:bloodType, longTermMedication=:longTermMedication, longTermMedicationDetails=:longTermMedicationDetails, tetanusWithin10Years=:tetanusWithin10Years" ;
+				$data=array("gibbonStaffID"=>$gibbonStaffID); 
+				$sql="DELETE FROM gibbonStaff WHERE gibbonStaffID=:gibbonStaffID" ;
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-				//Fail 2
-				$URL.="&addReturn=fail2" ;
+				//Fail2
+				$URL.="&deleteReturn=fail2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
 			
 			//Success 0
-			$URL.="&addReturn=success0" ;
-			header("Location: {$URL}");
+			$URLDelete=$URLDelete . "&deleteReturn=success0" ;
+			header("Location: {$URLDelete}");
 		}
 	}
 }

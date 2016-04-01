@@ -23,9 +23,13 @@ v12.0.00
 		New interface for defining interface string substitutions, along for custom language tweaks
 		PHP 7 compatible
 		Dashboards, with hooks, for staff and students
+		New workflows for advertising job openings, accepting and processing applications and managing staff
 	
 	Changes With Important Notices
+		Students: moved student application form from its own module into Students
 		Students: moved application form management from User Admin to Students module
+		Students: moved student enrolment from User Admin to Students module
+		Students: moved medical form management from User Admin to Students module
 	
 	Significant Changes
 		System: replaced float with version_compare, fixing cases where minor (system and module) updates could not be installed.
@@ -34,7 +38,7 @@ v12.0.00
 		Messenger: added Canned Response functionality for defining commonly sent messages.
 		School Admin: changed "Spaces" to "Facilities" and integrated borrowable Library items into Booking (to support laptop carts)
 		Staff: added Recruitment section with job vacancies and applications
-		Students: moved student application form from its own module into Students
+	
 		User Admin: added bulk import of user photos from a zip file
 		
 	Security

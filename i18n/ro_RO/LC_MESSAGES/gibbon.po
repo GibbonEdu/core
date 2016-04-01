@@ -51343,7 +51343,7 @@ msgstr "Trimiteți următoarele facturi la "
 #: Form/applicationForm.php:1998
 #: modules/Application Form/applicationForm.php:2001
 msgid ""
-"These documents must all be included before the application can be submitted."
+"All documents must all be included before the application can be submitted."
 msgstr ""
 "Aceste documente trebuie să fie incluse toate înainte de depunerea cererii "
 "pentu a putea fi transmise."
@@ -68396,7 +68396,7 @@ msgstr ""
 #: modules/Application Form/applicationFormProcess.php:734
 #: modules/Application Form/applicationFormProcess.php:734
 #, php-format
-msgid "An application form has submitted for %1$s."
+msgid "An application form has been submitted for %1$s."
 msgstr ""
 
 #: modules/Behaviour/behaviour_manage_addMultiProcess.php:123
