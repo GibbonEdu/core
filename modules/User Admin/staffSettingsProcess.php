@@ -44,10 +44,32 @@ if (isActionAccessible($guid, $connection2, "/modules/User Admin/staffSettings.p
 }
 else {
 	//Proceed!
+	$salaryScalePositions=$_POST["salaryScalePositions"] ; 
+	$responsibilityPosts=$_POST["responsibilityPosts"] ; 
 	$jobOpeningDescriptionTemplate=$_POST["jobOpeningDescriptionTemplate"] ; 
 	
 	//Write to database
 	$fail=FALSE ;
+	
+	try {
+		$data=array("value"=>$salaryScalePositions); 
+		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Staff' AND name='salaryScalePositions'" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { 
+		$fail=TRUE ; 
+	}
+	
+	try {
+		$data=array("value"=>$responsibilityPosts); 
+		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Staff' AND name='responsibilityPosts'" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { 
+		$fail=TRUE ; 
+	}
 	
 	try {
 		$data=array("value"=>$jobOpeningDescriptionTemplate); 

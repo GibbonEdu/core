@@ -68,6 +68,52 @@ else {
 				<?php
 				try {
 					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='Staff' AND name='salaryScalePositions'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+				$row=$result->fetch() ;
+				?>
+				<td style='width: 275px'> 
+					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+				</td>
+				<td class="right">
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=12 style="width: 300px"><?php print $row["value"] ?></textarea>
+				</td>
+			</tr>
+			
+			
+			<tr>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='Staff' AND name='responsibilityPosts'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+				$row=$result->fetch() ;
+				?>
+				<td style='width: 275px'> 
+					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
+					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+				</td>
+				<td class="right">
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=12 style="width: 300px"><?php print $row["value"] ?></textarea>
+				</td>
+			</tr>
+			
+			
+			<tr>
+				<?php
+				try {
+					$data=array(); 
 					$sql="SELECT * FROM gibbonSetting WHERE scope='Staff' AND name='jobOpeningDescriptionTemplate'" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);

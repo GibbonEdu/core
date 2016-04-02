@@ -86,6 +86,20 @@ else {
 			}
 			$type=$_POST["type"] ;
 			$jobTitle=$_POST["jobTitle"] ;
+			$dateStart=$_POST["dateStart"] ;
+			if ($dateStart=="") {
+				$dateStart=NULL ;
+			}
+			else {
+				$dateStart=dateConvert($guid, $dateStart) ;
+			}
+			$dateEnd=$_POST["dateEnd"] ;
+			if ($dateEnd=="") {
+				$dateEnd=NULL ;
+			}
+			else {
+				$dateEnd=dateConvert($guid, $dateEnd) ;
+			}
 			$firstAidQualified=$_POST["firstAidQualified"] ;
 			$firstAidExpiry=NULL ;
 			if ($firstAidQualified=="Y" AND $_POST["firstAidExpiry"]!="") {
@@ -124,8 +138,8 @@ else {
 				else {	
 					//Write to database
 					try {
-						$data=array("initials"=>$initials, "type"=>$type, "jobTitle"=>$jobTitle, "firstAidQualified"=>$firstAidQualified, "firstAidExpiry"=>$firstAidExpiry, "countryOfOrigin"=>$countryOfOrigin, "qualifications"=>$qualifications, "biographicalGrouping"=>$biographicalGrouping, "biographicalGroupingPriority"=>$biographicalGroupingPriority, "biography"=>$biography, "gibbonStaffID"=>$gibbonStaffID); 
-						$sql="UPDATE gibbonStaff SET initials=:initials, type=:type, jobTitle=:jobTitle, firstAidQualified=:firstAidQualified, firstAidExpiry=:firstAidExpiry, countryOfOrigin=:countryOfOrigin, qualifications=:qualifications, biographicalGrouping=:biographicalGrouping, biographicalGroupingPriority=:biographicalGroupingPriority, biography=:biography WHERE gibbonStaffID=:gibbonStaffID" ;
+						$data=array("initials"=>$initials, "type"=>$type, "jobTitle"=>$jobTitle, "dateStart"=>$dateStart, "dateEnd"=>$dateEnd, "firstAidQualified"=>$firstAidQualified, "firstAidExpiry"=>$firstAidExpiry, "countryOfOrigin"=>$countryOfOrigin, "qualifications"=>$qualifications, "biographicalGrouping"=>$biographicalGrouping, "biographicalGroupingPriority"=>$biographicalGroupingPriority, "biography"=>$biography, "gibbonStaffID"=>$gibbonStaffID); 
+						$sql="UPDATE gibbonStaff JOIN gibbonPerson ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) SET initials=:initials, type=:type, gibbonStaff.jobTitle=:jobTitle, dateStart=:dateStart, dateEnd=:dateEnd, firstAidQualified=:firstAidQualified, firstAidExpiry=:firstAidExpiry, countryOfOrigin=:countryOfOrigin, qualifications=:qualifications, biographicalGrouping=:biographicalGrouping, biographicalGroupingPriority=:biographicalGroupingPriority, biography=:biography WHERE gibbonStaffID=:gibbonStaffID" ;
 						$result=$connection2->prepare($sql);
 						$result->execute($data);
 					}

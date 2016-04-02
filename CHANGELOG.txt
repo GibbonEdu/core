@@ -37,8 +37,7 @@ v12.0.00
 		Individual Needs: new interface for parents to view individual education plans for their children (off by default)
 		Messenger: added Canned Response functionality for defining commonly sent messages.
 		School Admin: changed "Spaces" to "Facilities" and integrated borrowable Library items into Booking (to support laptop carts)
-		Staff: added Recruitment section with job vacancies and applications
-	
+		Staff: added ability to manage contract information	
 		User Admin: added bulk import of user photos from a zip file
 		
 	Security
