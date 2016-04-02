@@ -138,7 +138,7 @@ else {
 							<span style="font-size: 90%"><i><?php print __($guid, 'School-unique ID or barcode.') ?></i></span>
 						</td>
 						<td class="right">
-							<input name="id" id="id" maxlength=255 value="<?php print $row["id"] ?>" type="text" style="width: 300px">
+							<input name="id" id="idCheck" maxlength=255 value="<?php print $row["id"] ?>" type="text" style="width: 300px">
 							<?php
 							//Get list of all ids already in use
 							$idList="" ;
@@ -154,9 +154,9 @@ else {
 							}
 							?>
 							<script type="text/javascript">
-								var id=new LiveValidation('id');
-								id.add( Validate.Exclusion, { within: [<?php print $idList ;?>], failureMessage: "ID already in use!", partialMatch: false, caseSensitive: false } );
-								id.add(Validate.Presence);
+								var idCheck=new LiveValidation('idCheck');
+								idCheck.add( Validate.Exclusion, { within: [<?php print $idList ;?>], failureMessage: "ID already in use!", partialMatch: false, caseSensitive: false } );
+								idCheck.add(Validate.Presence);
 							</script>
 						</td>
 					</tr>

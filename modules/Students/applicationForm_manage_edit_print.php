@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/applicationForm_m
 }
 else {
 	print "<h2>" ;
-	print __($guid, "Application Form Printout") ;
+	print __($guid, "Student Application Form Printout") ;
 	print "</h2>" ;
 		
 	$gibbonApplicationFormID=$_GET["gibbonApplicationFormID"] ;

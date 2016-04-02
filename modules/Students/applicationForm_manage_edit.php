@@ -996,7 +996,7 @@ else {
 						</tr>
 						<?php
 						while ($rowFields=$resultFields->fetch()) {
-							print renderCustomFieldRow($connection2, $guid, $rowFields, $fields[$rowFields["gibbonPersonFieldID"]]) ;
+							print renderCustomFieldRow($connection2, $guid, $rowFields, @$fields[$rowFields["gibbonPersonFieldID"]]) ;
 						}
 					}
 

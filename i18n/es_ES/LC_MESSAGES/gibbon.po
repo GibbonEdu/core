@@ -53,7 +53,7 @@ msgid "Error"
 msgstr "Error"
 
 #: error.php:25 error.php:27 error.php:27
-msgid "An error has occurred. This could mean a number of different things, but generally indicates that you have a misspelt an address, or are trying to access a page that you are not permitted to access."
+msgid "An error has occurred. This could mean a number of different things, but generally indicates that you have a misspelt address, or are trying to access a page that you are not permitted to access."
 msgstr "Se ha producido un error. Esto podría significar una serie de cosas diferentes, pero por lo general indica que tienes una dirección mal escrita, o est&aacute intentando acceder a una página a la que no está permitida el acceso."
 
 #: error.php:27 error.php:27

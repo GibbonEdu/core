@@ -59,50 +59,110 @@ if ($proceed==FALSE) {
 }
 else {
 	//Proceed!
-	//GET STUDENT FIELDS
 	$gibbonStaffJobOpeningIDs=$_POST["gibbonStaffJobOpeningID"] ;
 	$questions="" ;
 	if (isset($_POST["questions"])) {
 		$questions=$_POST["questions"] ;
 	}
-	$surname=$_POST["surname"] ;
-	$firstName=$_POST["firstName"] ;
-	$preferredName=$_POST["preferredName"] ;
-	$officialName=$_POST["officialName"] ;
-	$nameInCharacters=$_POST["nameInCharacters"] ;
-	$gender=$_POST["gender"] ;
-	$dob=$_POST["dob"] ;
-	if ($dob=="") {
-		$dob=NULL ;
+	$gibbonPersonID=NULL ;
+	if (isset($_POST["gibbonPersonID"])) {
+		$gibbonPersonID=$_POST["gibbonPersonID"] ;
 	}
-	else {
-		$dob=dateConvert($guid, $dob) ;
+	$surname=NULL ;
+	if (isset($_POST["surname"])) {
+		$surname=$_POST["surname"] ;
 	}
-	$languageFirst=$_POST["languageFirst"] ;
-	$languageSecond=$_POST["languageSecond"] ;
-	$languageThird=$_POST["languageThird"] ;
-	$countryOfBirth=$_POST["countryOfBirth"] ;
-	$citizenship1=$_POST["citizenship1"] ;
-	$citizenship1Passport=$_POST["citizenship1Passport"] ;
-	$nationalIDCardNumber=$_POST["nationalIDCardNumber"] ;
-	$residencyStatus=$_POST["residencyStatus"] ;
-	$visaExpiryDate=$_POST["visaExpiryDate"] ;
-	if ($visaExpiryDate=="") {
-		$visaExpiryDate=NULL ;
+	$firstName=NULL ;
+	if (isset($_POST["firstName"])) {
+		$firstName=$_POST["firstName"] ;
 	}
-	else {
+	$preferredName=NULL ;
+	if (isset($_POST["preferredName"])) {
+		$preferredName=$_POST["preferredName"] ;
+	}
+	$officialName=NULL ;
+	if (isset($_POST["officialName"])) {
+		$officialName=$_POST["officialName"] ;
+	}
+	$nameInCharacters=NULL ;
+	if (isset($_POST["nameInCharacters"])) {
+		$nameInCharacters=$_POST["nameInCharacters"] ;
+	}
+	$gender=NULL ;
+	if (isset($_POST["gender"])) {
+		$gender=$_POST["gender"] ;
+	}
+	$dob=NULL ;
+	if (isset($_POST["dob"])) {
+		$dob=dateConvert($guid, $_POST["dob"]) ;
+	}
+	$languageFirst=NULL ;
+	if (isset($_POST["languageFirst"])) {
+		$languageFirst=$_POST["languageFirst"] ;
+	}
+	$languageSecond=NULL ;
+	if (isset($_POST["languageSecond"])) {
+		$languageSecond=$_POST["languageSecond"] ;
+	}
+	$languageThird=NULL ;
+	if (isset($_POST["languageThird"])) {
+		$languageThird=$_POST["languageThird"] ;
+	}
+	$countryOfBirth=NULL ;
+	if (isset($_POST["countryOfBirth"])) {
+		$countryOfBirth=$_POST["countryOfBirth"] ;
+	}
+	$citizenship1=NULL ;
+	if (isset($_POST["citizenship1"])) {
+		$citizenship1=$_POST["citizenship1"] ;
+	}
+	$citizenship1Passport=NULL ;
+	if (isset($_POST["citizenship1Passport"])) {
+		$citizenship1Passport=$_POST["citizenship1Passport"] ;
+	}
+	$nationalIDCardNumber=NULL ;
+	if (isset($_POST["nationalIDCardNumber"])) {
+		$nationalIDCardNumber=$_POST["nationalIDCardNumber"] ;
+	}
+	$residencyStatus=NULL ;
+	if (isset($_POST["residencyStatus"])) {
+		$residencyStatus=$_POST["residencyStatus"] ;
+	}
+	$visaExpiryDate=NULL ;
+	if (isset($_POST["visaExpiryDate"]) AND $_POST["visaExpiryDate"]!="") {
 		$visaExpiryDate=dateConvert($guid, $visaExpiryDate) ;
 	}
-	$email=$_POST["email"] ;
-	$phone1Type=$_POST["phone1Type"] ; 
-	if ($_POST["phone1"]!="" AND $phone1Type=="") {
-		$phone1Type="Other" ;
+	$email=NULL ;
+	if (isset($_POST["email"])) {
+		$email=$_POST["email"] ;
 	}
-	$phone1CountryCode=$_POST["phone1CountryCode"] ; 
-	$phone1=preg_replace('/[^0-9+]/', '', $_POST["phone1"]) ; 
-	$homeAddress=$_POST["homeAddress"] ;
-	$homeAddressDistrict=$_POST["homeAddressDistrict"] ;
-	$homeAddressCountry=$_POST["homeAddressCountry"] ;
+	$phone1Type=NULL ;
+	if (isset($_POST["phone1Type"])) {
+		$phone1Type=$_POST["phone1Type"] ;
+		if ($_POST["phone1"]!="" AND $phone1Type=="") {
+			$phone1Type="Other" ;
+		}	
+	} 
+	$phone1CountryCode=NULL ;
+	if (isset($_POST["phone1CountryCode"])) {
+		$phone1CountryCode=$_POST["phone1CountryCode"] ; 
+	}
+	$phone1=NULL ;
+	if (isset($_POST["phone1"])) {
+		$phone1=preg_replace('/[^0-9+]/', '', $_POST["phone1"]) ; 
+	}
+	$homeAddress=NULL ;
+	if (isset($_POST["homeAddress"])) {
+		$homeAddress=$_POST["homeAddress"] ;
+	}
+	$homeAddressDistrict=NULL ;
+	if (isset($_POST["homeAddressDistrict"])) {
+		$homeAddressDistrict=$_POST["homeAddressDistrict"] ;
+	}
+	$homeAddressCountry=NULL ;
+	if (isset($_POST["homeAddressCountry"])) {
+		$homeAddressCountry=$_POST["homeAddressCountry"] ;
+	}
 	$agreement=NULL ;
 	if (isset($_POST["agreement"])) {
 		if ($_POST["agreement"]=="on") {
@@ -114,7 +174,7 @@ else {
 	}
 
 	//VALIDATE INPUTS
-	if (count($gibbonStaffJobOpeningIDs)<1 OR $surname=="" OR $firstName=="" OR $preferredName=="" OR $officialName=="" OR $gender=="" OR $dob=="" OR $languageFirst=="" OR $email=="" OR $homeAddress=="" OR $homeAddressDistrict=="" OR $homeAddressCountry=="" OR $phone1=="" OR (isset($_POST["agreement"]) AND $agreement!="Y")) {
+	if (count($gibbonStaffJobOpeningIDs)<1 OR ($gibbonPersonID==NULL AND ($surname=="" OR $firstName=="" OR $preferredName=="" OR $officialName=="" OR $gender=="" OR $dob=="" OR $languageFirst=="" OR $email=="" OR $homeAddress=="" OR $homeAddressDistrict=="" OR $homeAddressCountry=="" OR $phone1=="")) OR (isset($_POST["agreement"]) AND $agreement!="Y")) {
 		//Fail 3
 		$URL.="&addReturn=fail3" ;
 		header("Location: {$URL}");
@@ -162,12 +222,13 @@ else {
 				
 				//Write to database
 				try {
-					$data=array("gibbonStaffJobOpeningID"=>$gibbonStaffJobOpeningID, "questions"=>$questions, "surname"=>$surname, "firstName"=>$firstName, "preferredName"=>$preferredName, "officialName"=>$officialName, "nameInCharacters"=>$nameInCharacters, "gender"=>$gender, "dob"=>$dob, "languageFirst"=>$languageFirst, "languageSecond"=>$languageSecond, "languageThird"=>$languageThird, "countryOfBirth"=>$countryOfBirth, "citizenship1"=>$citizenship1, "citizenship1Passport"=>$citizenship1Passport, "nationalIDCardNumber"=>$nationalIDCardNumber, "residencyStatus"=>$residencyStatus, "visaExpiryDate"=>$visaExpiryDate, "email"=>$email, "homeAddress"=>$homeAddress, "homeAddressDistrict"=>$homeAddressDistrict, "homeAddressCountry"=>$homeAddressCountry, "phone1Type"=>$phone1Type, "phone1CountryCode"=>$phone1CountryCode, "phone1"=>$phone1, "agreement"=>$agreement, "fields"=>$fields, "timestamp"=>date("Y-m-d H:i:s")); 
-					$sql="INSERT INTO gibbonStaffApplicationForm SET gibbonStaffJobOpeningID=:gibbonStaffJobOpeningID, questions=:questions, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, dob=:dob, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, citizenship1=:citizenship1, citizenship1Passport=:citizenship1Passport, nationalIDCardNumber=:nationalIDCardNumber, residencyStatus=:residencyStatus, visaExpiryDate=:visaExpiryDate, email=:email, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, agreement=:agreement, fields=:fields, timestamp=:timestamp" ;
+					$data=array("gibbonStaffJobOpeningID"=>$gibbonStaffJobOpeningID, "questions"=>$questions, "gibbonPersonID"=>$gibbonPersonID, "surname"=>$surname, "firstName"=>$firstName, "preferredName"=>$preferredName, "officialName"=>$officialName, "nameInCharacters"=>$nameInCharacters, "gender"=>$gender, "dob"=>$dob, "languageFirst"=>$languageFirst, "languageSecond"=>$languageSecond, "languageThird"=>$languageThird, "countryOfBirth"=>$countryOfBirth, "citizenship1"=>$citizenship1, "citizenship1Passport"=>$citizenship1Passport, "nationalIDCardNumber"=>$nationalIDCardNumber, "residencyStatus"=>$residencyStatus, "visaExpiryDate"=>$visaExpiryDate, "email"=>$email, "homeAddress"=>$homeAddress, "homeAddressDistrict"=>$homeAddressDistrict, "homeAddressCountry"=>$homeAddressCountry, "phone1Type"=>$phone1Type, "phone1CountryCode"=>$phone1CountryCode, "phone1"=>$phone1, "agreement"=>$agreement, "fields"=>$fields, "timestamp"=>date("Y-m-d H:i:s")); 
+					$sql="INSERT INTO gibbonStaffApplicationForm SET gibbonStaffJobOpeningID=:gibbonStaffJobOpeningID, questions=:questions, gibbonPersonID=:gibbonPersonID, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, dob=:dob, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, citizenship1=:citizenship1, citizenship1Passport=:citizenship1Passport, nationalIDCardNumber=:nationalIDCardNumber, residencyStatus=:residencyStatus, visaExpiryDate=:visaExpiryDate, email=:email, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, agreement=:agreement, fields=:fields, timestamp=:timestamp" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
+					print $e->getMessage() ; exit() ;
 					$partialFail=TRUE ;
 					$thisFail=TRUE ;
 				}

@@ -60,7 +60,7 @@ msgstr "錯誤"
 #: error.php:25 error.php:27 error.php:27
 msgid ""
 "An error has occurred. This could mean a number of different things, but "
-"generally indicates that you have a misspelt an address, or are trying to "
+"generally indicates that you have a misspelt address, or are trying to "
 "access a page that you are not permitted to access."
 msgstr ""
 "發生了錯誤. 這可能預示到無數不同的事情, 但是通常表示你拼寫錯了地址或在嘗試進"

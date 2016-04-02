@@ -88,9 +88,11 @@ else {
 		else if ($addReturn=="success0" OR $addReturn=="success1") {
 			if ($addReturn=="success0") {
 				$addReturnMessage=__($guid, "Your application was successfully submitted. Our Human Resources team will review your application and be in touch in due course.") ;
+				$class="success" ;
 			}
 			else if ($addReturn=="success1") {
 				$addReturnMessage=__($guid, "Your application was submitted, but some errors occured. We recommend you contact our Human Resources team to review your application.") ;
+				$class="warning" ;
 			}
 			
 			if (isset($_GET["id"])) {
@@ -101,7 +103,6 @@ else {
 			if ($_SESSION[$guid]["organisationHRName"]!="" AND $_SESSION[$guid]["organisationHREmail"]!="") {
 				$addReturnMessage=$addReturnMessage . "<br/><br/>Please contact <a href='mailto:" . $_SESSION[$guid]["organisationHREmail"] . "'>" . $_SESSION[$guid]["organisationHRName"] . "</a> if you have any questions, comments or complaints." ;	
 			}
-			$class="success" ;
 		}
 		print "<div class='$class'>" ;
 			print $addReturnMessage;
@@ -173,212 +174,213 @@ else {
 						<h3><?php print __($guid, 'Personal Data') ?></h3>
 					</td>
 				</tr>
-				<tr>
-					<td style='width: 275px'> 
-						<b><?php print __($guid, 'Surname') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print __($guid, 'Family name as shown in ID documents.') ?></i></span>
-					</td>
-					<td class="right">
-						<input name="surname" id="surname" maxlength=30 value="" type="text" style="width: 300px">
-						<script type="text/javascript">
-							var surname=new LiveValidation('surname');
-							surname.add(Validate.Presence);
-						</script>
-					</td>
-				</tr>
-				<tr>
-					<td> 
-						<b><?php print __($guid, 'First Name') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print __($guid, 'First name as shown in ID documents.') ?></i></span>
-					</td>
-					<td class="right">
-						<input name="firstName" id="firstName" maxlength=30 value="" type="text" style="width: 300px">
-						<script type="text/javascript">
-							var firstName=new LiveValidation('firstName');
-							firstName.add(Validate.Presence);
-						</script>
-					</td>
-				</tr>
-				<tr>
-					<td> 
-						<b><?php print __($guid, 'Preferred Name') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print __($guid, 'Most common name, alias, nickname, etc.') ?></i></span>
-					</td>
-					<td class="right">
-						<input name="preferredName" id="preferredName" maxlength=30 value="" type="text" style="width: 300px">
-						<script type="text/javascript">
-							var preferredName=new LiveValidation('preferredName');
-							preferredName.add(Validate.Presence);
-						</script>
-					</td>
-				</tr>
-				<tr>
-					<td> 
-						<b><?php print __($guid, 'Official Name') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print __($guid, 'Full name as shown in ID documents.') ?></i></span>
-					</td>
-					<td class="right">
-						<input title='Please enter full name as shown in ID documents' name="officialName" id="officialName" maxlength=150 value="" type="text" style="width: 300px">
-						<script type="text/javascript">
-							var officialName=new LiveValidation('officialName');
-							officialName.add(Validate.Presence);
-						</script>
-					</td>
-				</tr>
-				<tr>
-					<td> 
-						<b><?php print __($guid, 'Name In Characters') ?></b><br/>
-						<span style="font-size: 90%"><i><?php print __($guid, 'Chinese or other character-based name.') ?></i></span>
-					</td>
-					<td class="right">
-						<input name="nameInCharacters" id="nameInCharacters" maxlength=20 value="" type="text" style="width: 300px">
-					</td>
-				</tr>
-				<tr>
-					<td> 
-						<b><?php print __($guid, 'Gender') ?> *</b><br/>
-					</td>
-					<td class="right">
-						<select name="gender" id="gender" style="width: 302px">
-							<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
-							<option value="F"><?php print __($guid, 'Female') ?></option>
-							<option value="M"><?php print __($guid, 'Male') ?></option>
-						</select>
-						<script type="text/javascript">
-							var gender=new LiveValidation('gender');
-							gender.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
-						</script>
-					</td>
-				</tr>
-				<tr>
-					<td> 
-						<b><?php print __($guid, 'Date of Birth') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print __($guid, 'Format:') . " " . $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
-					</td>
-					<td class="right">
-						<input name="dob" id="dob" maxlength=10 value="" type="text" style="width: 300px">
-						<script type="text/javascript">
-							var dob=new LiveValidation('dob');
-							dob.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-							dob.add(Validate.Presence);
-						</script>
-						 <script type="text/javascript">
-							$(function() {
-								$( "#dob" ).datepicker();
-							});
-						</script>
-					</td>
-				</tr>
+				<?php
+				if ($gibbonPersonID!=NULL) {
+					?>
+					<input name="gibbonPersonID" id="gibbonPersonID" maxlength=10 value="<?php print htmlPrep($_SESSION[$guid]["gibbonPersonID"]) ?>" type="hidden" style="width: 300px">
+					<tr>
+						<td style='width: 275px'> 
+							<b><?php print __($guid, 'Surname') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+						</td>
+						<td class="right">
+							<input readonly name="surname" id="surname" maxlength=30 value="<?php print htmlPrep($_SESSION[$guid]["surname"]) ?>" type="text" style="width: 300px">
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<b><?php print __($guid, 'Preferred Name') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+						</td>
+						<td class="right">
+							<input readonly name="preferredName" id="preferredName" maxlength=30 value="<?php print htmlPrep($_SESSION[$guid]["preferredName"]) ?>" type="text" style="width: 300px">
+						</td>
+					</tr>
+					<?php
+				}
+				else {
+					?>
+					<tr>
+						<td style='width: 275px'> 
+							<b><?php print __($guid, 'Surname') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Family name as shown in ID documents.') ?></i></span>
+						</td>
+						<td class="right">
+							<input name="surname" id="surname" maxlength=30 value="" type="text" style="width: 300px">
+							<script type="text/javascript">
+								var surname=new LiveValidation('surname');
+								surname.add(Validate.Presence);
+							</script>
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<b><?php print __($guid, 'First Name') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'First name as shown in ID documents.') ?></i></span>
+						</td>
+						<td class="right">
+							<input name="firstName" id="firstName" maxlength=30 value="" type="text" style="width: 300px">
+							<script type="text/javascript">
+								var firstName=new LiveValidation('firstName');
+								firstName.add(Validate.Presence);
+							</script>
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<b><?php print __($guid, 'Preferred Name') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Most common name, alias, nickname, etc.') ?></i></span>
+						</td>
+						<td class="right">
+							<input name="preferredName" id="preferredName" maxlength=30 value="" type="text" style="width: 300px">
+							<script type="text/javascript">
+								var preferredName=new LiveValidation('preferredName');
+								preferredName.add(Validate.Presence);
+							</script>
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<b><?php print __($guid, 'Official Name') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Full name as shown in ID documents.') ?></i></span>
+						</td>
+						<td class="right">
+							<input title='Please enter full name as shown in ID documents' name="officialName" id="officialName" maxlength=150 value="" type="text" style="width: 300px">
+							<script type="text/javascript">
+								var officialName=new LiveValidation('officialName');
+								officialName.add(Validate.Presence);
+							</script>
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<b><?php print __($guid, 'Name In Characters') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Chinese or other character-based name.') ?></i></span>
+						</td>
+						<td class="right">
+							<input name="nameInCharacters" id="nameInCharacters" maxlength=20 value="" type="text" style="width: 300px">
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<b><?php print __($guid, 'Gender') ?> *</b><br/>
+						</td>
+						<td class="right">
+							<select name="gender" id="gender" style="width: 302px">
+								<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
+								<option value="F"><?php print __($guid, 'Female') ?></option>
+								<option value="M"><?php print __($guid, 'Male') ?></option>
+							</select>
+							<script type="text/javascript">
+								var gender=new LiveValidation('gender');
+								gender.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
+							</script>
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<b><?php print __($guid, 'Date of Birth') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Format:') . " " . $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+						</td>
+						<td class="right">
+							<input name="dob" id="dob" maxlength=10 value="" type="text" style="width: 300px">
+							<script type="text/javascript">
+								var dob=new LiveValidation('dob');
+								dob.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+								dob.add(Validate.Presence);
+							</script>
+							 <script type="text/javascript">
+								$(function() {
+									$( "#dob" ).datepicker();
+								});
+							</script>
+						</td>
+					</tr>
 			
 			
-				<tr class='break'>
-					<td colspan=2> 
-						<h3><?php print __($guid, 'Background Data') ?></h3>
-					</td>
-				</tr>
-				<tr>
-					<td> 
-						<b><?php print __($guid, 'First Language') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print __($guid, 'Student\'s native/first/mother language.') ?></i></span>
-					</td>
-					<td class="right">
-						<select name="languageFirst" id="languageFirst" style="width: 302px">
-							<?php
-							print "<option value='Please select...'>Please select...</option>" ;
-							try {
-								$dataSelect=array(); 
-								$sqlSelect="SELECT name FROM gibbonLanguage ORDER BY name" ;
-								$resultSelect=$connection2->prepare($sqlSelect);
-								$resultSelect->execute($dataSelect);
-							}
-							catch(PDOException $e) { }
-							while ($rowSelect=$resultSelect->fetch()) {
-								print "<option value='" . $rowSelect["name"] . "'>" . htmlPrep(__($guid, $rowSelect["name"])) . "</option>" ;
-							}
-							?>				
-						</select>
-						<script type="text/javascript">
-							var languageFirst=new LiveValidation('languageFirst');
-							languageFirst.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
-						</script>
-					</td>
-				</tr>
-				<tr>
-					<td> 
-						<b><?php print __($guid, 'Second Language') ?></b><br/>
-					</td>
-					<td class="right">
-						<select name="languageSecond" id="languageSecond" style="width: 302px">
-							<?php
-							print "<option value=''></option>" ;
-							try {
-								$dataSelect=array(); 
-								$sqlSelect="SELECT name FROM gibbonLanguage ORDER BY name" ;
-								$resultSelect=$connection2->prepare($sqlSelect);
-								$resultSelect->execute($dataSelect);
-							}
-							catch(PDOException $e) { }
-							while ($rowSelect=$resultSelect->fetch()) {
-								print "<option value='" . $rowSelect["name"] . "'>" . htmlPrep(__($guid, $rowSelect["name"])) . "</option>" ;
-							}
-							?>				
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td> 
-						<b><?php print __($guid, 'Third Language') ?></b><br/>
-					</td>
-					<td class="right">
-						<select name="languageThird" id="languageThird" style="width: 302px">
-							<?php
-							print "<option value=''></option>" ;
-							try {
-								$dataSelect=array(); 
-								$sqlSelect="SELECT name FROM gibbonLanguage ORDER BY name" ;
-								$resultSelect=$connection2->prepare($sqlSelect);
-								$resultSelect->execute($dataSelect);
-							}
-							catch(PDOException $e) { }
-							while ($rowSelect=$resultSelect->fetch()) {
-								print "<option value='" . $rowSelect["name"] . "'>" . htmlPrep(__($guid, $rowSelect["name"])) . "</option>" ;
-							}
-							?>				
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td> 
-						<b><?php print __($guid, 'Country of Birth') ?></b><br/>
-					</td>
-					<td class="right">
-						<select name="countryOfBirth" id="countryOfBirth" style="width: 302px">
-							<?php
-							try {
-								$dataSelect=array(); 
-								$sqlSelect="SELECT printable_name FROM gibbonCountry ORDER BY printable_name" ;
-								$resultSelect=$connection2->prepare($sqlSelect);
-								$resultSelect->execute($dataSelect);
-							}
-							catch(PDOException $e) { }
-							print "<option value=''></option>" ;
-							while ($rowSelect=$resultSelect->fetch()) {
-								print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(__($guid, $rowSelect["printable_name"])) . "</option>" ;
-							}
-							?>				
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td> 
-						<b><?php print __($guid, 'Citizenship') ?></b><br/>
-					</td>
-					<td class="right">
-						<select name="citizenship1" id="citizenship1" style="width: 302px">
-							<?php
-							print "<option value=''></option>" ;
-							$nationalityList=getSettingByScope($connection2, "User Admin", "nationality") ;
-							if ($nationalityList=="") {
+					<tr class='break'>
+						<td colspan=2> 
+							<h3><?php print __($guid, 'Background Data') ?></h3>
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<b><?php print __($guid, 'First Language') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Student\'s native/first/mother language.') ?></i></span>
+						</td>
+						<td class="right">
+							<select name="languageFirst" id="languageFirst" style="width: 302px">
+								<?php
+								print "<option value='Please select...'>Please select...</option>" ;
+								try {
+									$dataSelect=array(); 
+									$sqlSelect="SELECT name FROM gibbonLanguage ORDER BY name" ;
+									$resultSelect=$connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								}
+								catch(PDOException $e) { }
+								while ($rowSelect=$resultSelect->fetch()) {
+									print "<option value='" . $rowSelect["name"] . "'>" . htmlPrep(__($guid, $rowSelect["name"])) . "</option>" ;
+								}
+								?>				
+							</select>
+							<script type="text/javascript">
+								var languageFirst=new LiveValidation('languageFirst');
+								languageFirst.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
+							</script>
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<b><?php print __($guid, 'Second Language') ?></b><br/>
+						</td>
+						<td class="right">
+							<select name="languageSecond" id="languageSecond" style="width: 302px">
+								<?php
+								print "<option value=''></option>" ;
+								try {
+									$dataSelect=array(); 
+									$sqlSelect="SELECT name FROM gibbonLanguage ORDER BY name" ;
+									$resultSelect=$connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								}
+								catch(PDOException $e) { }
+								while ($rowSelect=$resultSelect->fetch()) {
+									print "<option value='" . $rowSelect["name"] . "'>" . htmlPrep(__($guid, $rowSelect["name"])) . "</option>" ;
+								}
+								?>				
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<b><?php print __($guid, 'Third Language') ?></b><br/>
+						</td>
+						<td class="right">
+							<select name="languageThird" id="languageThird" style="width: 302px">
+								<?php
+								print "<option value=''></option>" ;
+								try {
+									$dataSelect=array(); 
+									$sqlSelect="SELECT name FROM gibbonLanguage ORDER BY name" ;
+									$resultSelect=$connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								}
+								catch(PDOException $e) { }
+								while ($rowSelect=$resultSelect->fetch()) {
+									print "<option value='" . $rowSelect["name"] . "'>" . htmlPrep(__($guid, $rowSelect["name"])) . "</option>" ;
+								}
+								?>				
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<b><?php print __($guid, 'Country of Birth') ?></b><br/>
+						</td>
+						<td class="right">
+							<select name="countryOfBirth" id="countryOfBirth" style="width: 302px">
+								<?php
 								try {
 									$dataSelect=array(); 
 									$sqlSelect="SELECT printable_name FROM gibbonCountry ORDER BY printable_name" ;
@@ -386,227 +388,253 @@ else {
 									$resultSelect->execute($dataSelect);
 								}
 								catch(PDOException $e) { }
+								print "<option value=''></option>" ;
 								while ($rowSelect=$resultSelect->fetch()) {
 									print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(__($guid, $rowSelect["printable_name"])) . "</option>" ;
 								}
+								?>				
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<b><?php print __($guid, 'Citizenship') ?></b><br/>
+						</td>
+						<td class="right">
+							<select name="citizenship1" id="citizenship1" style="width: 302px">
+								<?php
+								print "<option value=''></option>" ;
+								$nationalityList=getSettingByScope($connection2, "User Admin", "nationality") ;
+								if ($nationalityList=="") {
+									try {
+										$dataSelect=array(); 
+										$sqlSelect="SELECT printable_name FROM gibbonCountry ORDER BY printable_name" ;
+										$resultSelect=$connection2->prepare($sqlSelect);
+										$resultSelect->execute($dataSelect);
+									}
+									catch(PDOException $e) { }
+									while ($rowSelect=$resultSelect->fetch()) {
+										print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(__($guid, $rowSelect["printable_name"])) . "</option>" ;
+									}
+								}
+								else {
+									$nationalities=explode(",", $nationalityList) ;
+									foreach ($nationalities as $nationality) {
+										print "<option value='" . trim($nationality) . "'>" . trim($nationality) . "</option>" ;
+									}
+								}
+								?>				
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<b><?php print __($guid, 'Citizenship Passport Number') ?></b><br/>
+						</td>
+						<td class="right">
+							<input name="citizenship1Passport" id="citizenship1Passport" maxlength=30 value="" type="text" style="width: 300px">
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<?php
+							if ($_SESSION[$guid]["country"]=="") {
+								print "<b>" . __($guid, 'National ID Card Number') . "</b><br/>" ;
 							}
 							else {
-								$nationalities=explode(",", $nationalityList) ;
-								foreach ($nationalities as $nationality) {
-									print "<option value='" . trim($nationality) . "'>" . trim($nationality) . "</option>" ;
-								}
+								print "<b>" . $_SESSION[$guid]["country"] . " " . __($guid, 'ID Card Number') . "</b><br/>" ;
 							}
-							?>				
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td> 
-						<b><?php print __($guid, 'Citizenship Passport Number') ?></b><br/>
-					</td>
-					<td class="right">
-						<input name="citizenship1Passport" id="citizenship1Passport" maxlength=30 value="" type="text" style="width: 300px">
-					</td>
-				</tr>
-				<tr>
-					<td> 
-						<?php
-						if ($_SESSION[$guid]["country"]=="") {
-							print "<b>" . __($guid, 'National ID Card Number') . "</b><br/>" ;
-						}
-						else {
-							print "<b>" . $_SESSION[$guid]["country"] . " " . __($guid, 'ID Card Number') . "</b><br/>" ;
-						}
-						?>
-					</td>
-					<td class="right">
-						<input name="nationalIDCardNumber" id="nationalIDCardNumber" maxlength=30 value="" type="text" style="width: 300px">
-					</td>
-				</tr>
-				<tr>
-					<td> 
-						<?php
-						if ($_SESSION[$guid]["country"]=="") {
-							print "<b>" . __($guid, 'Residency/Visa Type') . "</b><br/>" ;
-						}
-						else {
-							print "<b>" . $_SESSION[$guid]["country"] . " " . __($guid, 'Residency/Visa Type') . "</b><br/>" ;
-						}
-						?>
-					</td>
-					<td class="right">
-						<?php
-						$residencyStatusList=getSettingByScope($connection2, "User Admin", "residencyStatus") ;
-						if ($residencyStatusList=="") {
-							print "<input name='residencyStatus' id='residencyStatus' maxlength=30 value='' type='text' style='width: 300px'>" ;
-						}
-						else {
-							print "<select name='residencyStatus' id='residencyStatus' style='width: 302px'>" ;
-								print "<option value=''></option>" ;
-								$residencyStatuses=explode(",", $residencyStatusList) ;
-								foreach ($residencyStatuses as $residencyStatus) {
-									print "<option value='" . trim($residencyStatus) . "'>" . trim($residencyStatus) . "</option>" ;
-								}
-							print "</select>" ;
-						}
-						?>
-					</td>
-				</tr>
-				<tr>
-					<td> 
-						<?php
-						if ($_SESSION[$guid]["country"]=="") {
-							print "<b>" . __($guid, 'Visa Expiry Date') . "</b><br/>" ;
-						}
-						else {
-							print "<b>" . $_SESSION[$guid]["country"] . " " . __($guid, 'Visa Expiry Date') . "</b><br/>" ;
-						}
-						print "<span style='font-size: 90%'><i>Format: " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } print ". " . __($guid, 'If relevant.') . "</i></span>" ;
-						?>
-					</td>
-					<td class="right">
-						<input name="visaExpiryDate" id="visaExpiryDate" maxlength=10 value="" type="text" style="width: 300px">
-						<script type="text/javascript">
-							var visaExpiryDate=new LiveValidation('visaExpiryDate');
-							visaExpiryDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-						</script>
-						 <script type="text/javascript">
-							$(function() {
-								$( "#visaExpiryDate" ).datepicker();
-							});
-						</script>
-					</td>
-				</tr>
-			
-			
-				<tr class='break'>
-					<td colspan=2> 
-						<h3><?php print __($guid, 'Contacts') ?></h3>
-					</td>
-				</tr>
-				<tr>
-					<td> 
-						<b><?php print __($guid, 'Email') ?> *</b><br/>
-					</td>
-					<td class="right">
-						<input name="email" id="email" maxlength=50 value="" type="text" style="width: 300px">
-						<script type="text/javascript">
-							var email=new LiveValidation('email');
-							email.add(Validate.Email);
-							email.add(Validate.Presence);
-						</script>
-					</td>
-				</tr>
-				<tr>
-					<td> 
-						<b><?php print __($guid, 'Phone') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print __($guid, 'Type, country code, number.') ?></i></span>
-					</td>
-					<td class="right">
-						<input name="phone1" id="phone1" maxlength=20 value="" type="text" style="width: 160px">
-						<script type="text/javascript">
-							var phone1=new LiveValidation('phone1');
-							phone1.add(Validate.Presence);
-						</script>
-						<select name="phone1CountryCode" id="phone1CountryCode" style="width: 60px">
+							?>
+						</td>
+						<td class="right">
+							<input name="nationalIDCardNumber" id="nationalIDCardNumber" maxlength=30 value="" type="text" style="width: 300px">
+						</td>
+					</tr>
+					<tr>
+						<td> 
 							<?php
-							print "<option value=''></option>" ;
-							try {
-								$dataSelect=array(); 
-								$sqlSelect="SELECT * FROM gibbonCountry ORDER BY printable_name" ;
-								$resultSelect=$connection2->prepare($sqlSelect);
-								$resultSelect->execute($dataSelect);
+							if ($_SESSION[$guid]["country"]=="") {
+								print "<b>" . __($guid, 'Residency/Visa Type') . "</b><br/>" ;
 							}
-							catch(PDOException $e) { }
-							while ($rowSelect=$resultSelect->fetch()) {
-								print "<option value='" . $rowSelect["iddCountryCode"] . "'>" . htmlPrep($rowSelect["iddCountryCode"]) . " - " .  htmlPrep(__($guid, $rowSelect["printable_name"])) . "</option>" ;
+							else {
+								print "<b>" . $_SESSION[$guid]["country"] . " " . __($guid, 'Residency/Visa Type') . "</b><br/>" ;
 							}
-							?>				
-						</select>
-						<select style="width: 70px" name="phone1Type">
-							<option value=""></option>
-							<option value="Mobile"><?php print __($guid, 'Mobile') ?></option>
-							<option value="Home"><?php print __($guid, 'Home') ?></option>
-							<option value="Work"><?php print __($guid, 'Work') ?></option>
-							<option value="Fax"><?php print __($guid, 'Fax') ?></option>
-							<option value="Pager"><?php print __($guid, 'Pager') ?></option>
-							<option value="Other"><?php print __($guid, 'Other') ?></option>
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td> 
-						<b><?php print __($guid, 'Home Address') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print __($guid, 'Unit, Building, Street') ?></i></span>
-					</td>
-					<td class="right">
-						<input name="homeAddress" id="homeAddress" maxlength=255 value="" type="text" style="width: 300px">
-						<script type="text/javascript">
-							var homeAddress=new LiveValidation('homeAddress');
-							homeAddress.add(Validate.Presence);
-						</script>
-					</td>
-				</tr>
-				<tr>
-					<td> 
-						<b><?php print __($guid, 'Home Address (District)') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print __($guid, 'County, State, District') ?></i></span>
-					</td>
-					<td class="right">
-						<input name="homeAddressDistrict" id="homeAddressDistrict" maxlength=30 value="" type="text" style="width: 300px">
-					</td>
-					<script type="text/javascript">
-						$(function() {
-							var availableTags=[
+							?>
+						</td>
+						<td class="right">
+							<?php
+							$residencyStatusList=getSettingByScope($connection2, "User Admin", "residencyStatus") ;
+							if ($residencyStatusList=="") {
+								print "<input name='residencyStatus' id='residencyStatus' maxlength=30 value='' type='text' style='width: 300px'>" ;
+							}
+							else {
+								print "<select name='residencyStatus' id='residencyStatus' style='width: 302px'>" ;
+									print "<option value=''></option>" ;
+									$residencyStatuses=explode(",", $residencyStatusList) ;
+									foreach ($residencyStatuses as $residencyStatus) {
+										print "<option value='" . trim($residencyStatus) . "'>" . trim($residencyStatus) . "</option>" ;
+									}
+								print "</select>" ;
+							}
+							?>
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<?php
+							if ($_SESSION[$guid]["country"]=="") {
+								print "<b>" . __($guid, 'Visa Expiry Date') . "</b><br/>" ;
+							}
+							else {
+								print "<b>" . $_SESSION[$guid]["country"] . " " . __($guid, 'Visa Expiry Date') . "</b><br/>" ;
+							}
+							print "<span style='font-size: 90%'><i>Format: " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } print ". " . __($guid, 'If relevant.') . "</i></span>" ;
+							?>
+						</td>
+						<td class="right">
+							<input name="visaExpiryDate" id="visaExpiryDate" maxlength=10 value="" type="text" style="width: 300px">
+							<script type="text/javascript">
+								var visaExpiryDate=new LiveValidation('visaExpiryDate');
+								visaExpiryDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+							</script>
+							 <script type="text/javascript">
+								$(function() {
+									$( "#visaExpiryDate" ).datepicker();
+								});
+							</script>
+						</td>
+					</tr>
+			
+			
+					<tr class='break'>
+						<td colspan=2> 
+							<h3><?php print __($guid, 'Contacts') ?></h3>
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<b><?php print __($guid, 'Email') ?> *</b><br/>
+						</td>
+						<td class="right">
+							<input name="email" id="email" maxlength=50 value="" type="text" style="width: 300px">
+							<script type="text/javascript">
+								var email=new LiveValidation('email');
+								email.add(Validate.Email);
+								email.add(Validate.Presence);
+							</script>
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<b><?php print __($guid, 'Phone') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Type, country code, number.') ?></i></span>
+						</td>
+						<td class="right">
+							<input name="phone1" id="phone1" maxlength=20 value="" type="text" style="width: 160px">
+							<script type="text/javascript">
+								var phone1=new LiveValidation('phone1');
+								phone1.add(Validate.Presence);
+							</script>
+							<select name="phone1CountryCode" id="phone1CountryCode" style="width: 60px">
 								<?php
+								print "<option value=''></option>" ;
 								try {
-									$dataAuto=array(); 
-									$sqlAuto="SELECT DISTINCT name FROM gibbonDistrict ORDER BY name" ;
-									$resultAuto=$connection2->prepare($sqlAuto);
-									$resultAuto->execute($dataAuto);
+									$dataSelect=array(); 
+									$sqlSelect="SELECT * FROM gibbonCountry ORDER BY printable_name" ;
+									$resultSelect=$connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
 								}
 								catch(PDOException $e) { }
-								while ($rowAuto=$resultAuto->fetch()) {
-									print "\"" . $rowAuto["name"] . "\", " ;
+								while ($rowSelect=$resultSelect->fetch()) {
+									print "<option value='" . $rowSelect["iddCountryCode"] . "'>" . htmlPrep($rowSelect["iddCountryCode"]) . " - " .  htmlPrep(__($guid, $rowSelect["printable_name"])) . "</option>" ;
 								}
-								?>
-							];
-							$( "#homeAddressDistrict" ).autocomplete({source: availableTags});
-						});
-					</script>
-					<script type="text/javascript">
-						var homeAddressDistrict=new LiveValidation('homeAddressDistrict');
-						homeAddressDistrict.add(Validate.Presence);
-					</script>
-				</tr>
-				<tr>
-					<td> 
-						<b><?php print __($guid, 'Home Address (Country)') ?> *</b><br/>
-					</td>
-					<td class="right">
-						<select name="homeAddressCountry" id="homeAddressCountry" style="width: 302px">
-							<?php
-							try {
-								$dataSelect=array(); 
-								$sqlSelect="SELECT printable_name FROM gibbonCountry ORDER BY printable_name" ;
-								$resultSelect=$connection2->prepare($sqlSelect);
-								$resultSelect->execute($dataSelect);
-							}
-							catch(PDOException $e) { }
-							print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
-							while ($rowSelect=$resultSelect->fetch()) {
-								print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(__($guid, $rowSelect["printable_name"])) . "</option>" ;
-							}
-							?>				
-						</select>
+								?>				
+							</select>
+							<select style="width: 70px" name="phone1Type">
+								<option value=""></option>
+								<option value="Mobile"><?php print __($guid, 'Mobile') ?></option>
+								<option value="Home"><?php print __($guid, 'Home') ?></option>
+								<option value="Work"><?php print __($guid, 'Work') ?></option>
+								<option value="Fax"><?php print __($guid, 'Fax') ?></option>
+								<option value="Pager"><?php print __($guid, 'Pager') ?></option>
+								<option value="Other"><?php print __($guid, 'Other') ?></option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<b><?php print __($guid, 'Home Address') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Unit, Building, Street') ?></i></span>
+						</td>
+						<td class="right">
+							<input name="homeAddress" id="homeAddress" maxlength=255 value="" type="text" style="width: 300px">
+							<script type="text/javascript">
+								var homeAddress=new LiveValidation('homeAddress');
+								homeAddress.add(Validate.Presence);
+							</script>
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<b><?php print __($guid, 'Home Address (District)') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'County, State, District') ?></i></span>
+						</td>
+						<td class="right">
+							<input name="homeAddressDistrict" id="homeAddressDistrict" maxlength=30 value="" type="text" style="width: 300px">
+						</td>
 						<script type="text/javascript">
-							var homeAddressCountry=new LiveValidation('homeAddressCountry');
-							homeAddressCountry.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
+							$(function() {
+								var availableTags=[
+									<?php
+									try {
+										$dataAuto=array(); 
+										$sqlAuto="SELECT DISTINCT name FROM gibbonDistrict ORDER BY name" ;
+										$resultAuto=$connection2->prepare($sqlAuto);
+										$resultAuto->execute($dataAuto);
+									}
+									catch(PDOException $e) { }
+									while ($rowAuto=$resultAuto->fetch()) {
+										print "\"" . $rowAuto["name"] . "\", " ;
+									}
+									?>
+								];
+								$( "#homeAddressDistrict" ).autocomplete({source: availableTags});
+							});
 						</script>
-					</td>
-				</tr>
-			
+						<script type="text/javascript">
+							var homeAddressDistrict=new LiveValidation('homeAddressDistrict');
+							homeAddressDistrict.add(Validate.Presence);
+						</script>
+					</tr>
+					<tr>
+						<td> 
+							<b><?php print __($guid, 'Home Address (Country)') ?> *</b><br/>
+						</td>
+						<td class="right">
+							<select name="homeAddressCountry" id="homeAddressCountry" style="width: 302px">
+								<?php
+								try {
+									$dataSelect=array(); 
+									$sqlSelect="SELECT printable_name FROM gibbonCountry ORDER BY printable_name" ;
+									$resultSelect=$connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								}
+								catch(PDOException $e) { }
+								print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
+								while ($rowSelect=$resultSelect->fetch()) {
+									print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(__($guid, $rowSelect["printable_name"])) . "</option>" ;
+								}
+								?>				
+							</select>
+							<script type="text/javascript">
+								var homeAddressCountry=new LiveValidation('homeAddressCountry');
+								homeAddressCountry.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
+							</script>
+						</td>
+					</tr>
 				<?php
+				}
+				
 				//CUSTOM FIELDS FOR STAFF
 				$resultFields=getCustomFields($connection2, $guid, FALSE, TRUE, FALSE, FALSE, TRUE, NULL) ;
 				if ($resultFields->rowCount()>0) {
@@ -623,19 +651,19 @@ else {
 				}	
 			
 				
-				$requiredDocuments=getSettingByScope($connection2, "Staff", "staffApplicationFormRequiredDocuments") ;
-				$requiredDocumentsText=getSettingByScope($connection2, "Staff", "staffApplicationFormRequiredDocumentsText") ;
-				$requiredDocumentsCompulsory=getSettingByScope($connection2, "Staff", "staffApplicationFormRequiredDocumentsCompulsory") ;
-				if ($requiredDocuments!="" AND $requiredDocuments!=FALSE) {
+				$staffApplicationFormRequiredDocuments=getSettingByScope($connection2, "Staff", "staffApplicationFormRequiredDocuments") ;
+				$staffApplicationFormRequiredDocumentsText=getSettingByScope($connection2, "Staff", "staffApplicationFormRequiredDocumentsText") ;
+				$staffApplicationFormRequiredDocumentsCompulsory=getSettingByScope($connection2, "Staff", "staffApplicationFormRequiredDocumentsCompulsory") ;
+				if ($staffApplicationFormRequiredDocuments!="" AND $staffApplicationFormRequiredDocuments!=FALSE) {
 					?>
 					<tr class='break'>
 						<td colspan=2> 
 							<h3><?php print __($guid, 'Supporting Documents') ?></h3>
 							<?php 
-							if ($requiredDocumentsText!="" OR $requiredDocumentsCompulsory!="") {
+							if ($staffApplicationFormRequiredDocumentsText!="" OR $staffApplicationFormRequiredDocumentsCompulsory!="") {
 								print "<p>" ;
-									print $requiredDocumentsText . " " ;
-									if ($requiredDocumentsCompulsory=="Y") {
+									print $staffApplicationFormRequiredDocumentsText . " " ;
+									if ($staffApplicationFormRequiredDocumentsCompulsory=="Y") {
 										print __($guid, "All documents must all be included before the application can be submitted.") ;
 									}
 									else {
@@ -661,19 +689,19 @@ else {
 						$ext=$ext . "'." . $rowExt["extension"] . "'," ;
 					}
 							
-					$requiredDocumentsList=explode(",", $requiredDocuments) ;
+					$staffApplicationFormRequiredDocumentsList=explode(",", $staffApplicationFormRequiredDocuments) ;
 					$count=0 ;
-					foreach ($requiredDocumentsList AS $document) {
+					foreach ($staffApplicationFormRequiredDocumentsList AS $document) {
 						?>
 						<tr>
 							<td> 
-								<b><?php print $document ; if ($requiredDocumentsCompulsory=="Y") { print " *" ; } ?></b><br/>
+								<b><?php print $document ; if ($staffApplicationFormRequiredDocumentsCompulsory=="Y") { print " *" ; } ?></b><br/>
 							</td>
 							<td class="right">
 								<?php
 								print "<input type='file' name='file$count' id='file$count'><br/>" ;
 								print "<input type='hidden' name='fileName$count' id='filefileName$count' value='$document'>" ;
-								if ($requiredDocumentsCompulsory=="Y") {
+								if ($staffApplicationFormRequiredDocumentsCompulsory=="Y") {
 									print "<script type='text/javascript'>" ;
 										print "var file$count=new LiveValidation('file$count');" ;
 										print "file$count.add( Validate.Inclusion, { within: [" . $ext . "], failureMessage: 'Illegal file type!', partialMatch: true, caseSensitive: false } );" ;

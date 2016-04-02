@@ -23,7 +23,7 @@ v12.0.00
 		New interface for defining interface string substitutions, along for custom language tweaks
 		PHP 7 compatible
 		Dashboards, with hooks, for staff and students
-		New workflows for advertising job openings, accepting and processing applications and managing staff
+		New workflows for advertising job openings, accepting and processing applications
 	
 	Changes With Important Notices
 		Students: moved student application form from its own module into Students
@@ -72,6 +72,7 @@ v12.0.00
 		Library: removed required status from ISBN10 field in Print Publication
 		Library: added Condition field to allow tracking of the physical state of an asset
 		Library: added field to indicate whether an item will be replaced or not
+		Library: fixed bug preventing ID clash check from working properly
 		Markbook: fixed issue causing mis-evaluation of personalised targets, for some edge cases
 		Markbook: fixed uploaded response file selector gigantism issue
 		Markbook: added line break display to full comment in various viewing locations
