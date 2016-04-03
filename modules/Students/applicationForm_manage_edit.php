@@ -872,8 +872,51 @@ else {
 					}
 					?>
 					<tr>
-						<td colspan=2>
-							<h4><?php print __($guid, 'Student Medical & Development') ?></h4>
+						<td colspan=2> 
+							<h4><?php print __($guid, 'Special Educational Needs & Medical') ?></h4>
+							<?php
+							$applicationFormSENText=getSettingByScope($connection2, 'Students', 'applicationFormSENText') ;
+							if ($applicationFormSENText!="") {
+								print "<p>" ;
+									print $applicationFormSENText ;
+								print "</p>" ;
+							}
+							?>
+						</td>
+					</tr>
+					<script type="text/javascript">
+						$(document).ready(function(){
+							$(".sen").change(function(){
+								if ($('select.sen option:selected').val()=="Y" ) {
+									$("#senDetailsRow").slideDown("fast", $("#senDetailsRow").css("display","table-row")); 
+								} else {
+									$("#senDetailsRow").css("display","none");
+								}
+							 });
+						});
+					</script>
+					<tr>
+						<td> 
+							<b><?php print __($guid, 'Special Educational Needs (SEN)') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Are there any known or suspected SEN concerns, or previous SEN assessments?') ?></i></span><br/>
+						</td>
+						<td class="right">
+							<select name="sen" id="sen" class='sen' style="width: 302px">
+								<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
+								<option <?php if ($row["sen"]=="Y") { print "selected" ; } ?> value="Y" /> <?php print ynExpander($guid, 'Y') ?>
+								<option <?php if ($row["sen"]=="N") { print "selected" ; } ?> value="N" /> <?php print ynExpander($guid, 'N') ?>
+							</select>
+							<script type="text/javascript">
+								var sen=new LiveValidation('sen');
+								sen.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
+							</script>
+						</td>
+					</tr>
+					<tr id='senDetailsRow' <?php if ($row["sen"]=="N") { print "style='display: none'" ; } ?>>
+						<td colspan=2 style='padding-top: 15px'> 
+							<b><?php print __($guid, 'SEN Details') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Provide any comments or information concerning your child\'s development and SEN history.') ?></i></span><br/> 					
+							<textarea name="senDetails" id="senDetails" rows=5 style="width:738px; margin: 5px 0px 0px 0px"><?php print htmlPrep($row["senDetails"]) ?></textarea>
 						</td>
 					</tr>
 					<tr>
@@ -883,14 +926,6 @@ else {
 							<textarea name="medicalInformation" id="medicalInformation" rows=5 style="width:738px; margin: 5px 0px 0px 0px"><?php print htmlPrep($row["medicalInformation"]) ?></textarea>
 						</td>
 					</tr>
-					<tr>
-						<td colspan=2 style='padding-top: 15px'>
-							<b><?php print __($guid, 'Development Information') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Provide any comments or information concerning your child\'s development that may be relevant to your child’s performance in the classroom or elsewhere? (Incorrect or withheld information may affect continued enrolment).') ?></i></span><br/>
-							<textarea name="developmentInformation" id="developmentInformation" rows=5 style="width:738px; margin: 5px 0px 0px 0px"><?php print htmlPrep($row["developmentInformation"]) ?></textarea>
-						</td>
-					</tr>
-
 
 
 					<tr>
@@ -899,6 +934,27 @@ else {
 							<p><?php print __($guid, 'Please give information on the last two schools attended by the applicant.') ?></p>
 						</td>
 					</tr>
+					<?php
+					$applicationFormRefereeLink=getSettingByScope($connection2, 'Students', 'applicationFormRefereeLink') ;
+					if ($applicationFormRefereeLink!="") {
+						?>
+						<tr>
+							<td> 
+								<b><?php print __($guid, 'Current School Reference Email') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'An email address for a referee at the applicant\'s current school.') ?></i></span>
+							</td>
+							<td class="right">
+								<input name="referenceEmail" id="referenceEmail" maxlength=100 value="<?php print htmlPrep($row["referenceEmail"]) ?>" type="text" style="width: 300px">
+								<script type="text/javascript">
+									var referenceEmail=new LiveValidation('referenceEmail');
+									referenceEmail.add(Validate.Presence);
+									referenceEmail.add(Validate.Email);
+								</script>
+							</td>
+						</tr>
+						<?php
+					}
+					?>
 					<tr>
 						<td colspan=2>
 							<?php

@@ -316,19 +316,19 @@ else {
 						
 					print "</td>" ;
 				print "</tr>" ;
+				if ($row["sen"]=="Y") {
+					print "<tr>" ;
+						print "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=3>" ;
+							print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Special Educational Needs') . "</span><br/>" ;
+							print "<i>" . $row["senDetails"] . "</i>" ;
+						print "</td>" ;
+					print "</tr>" ;
+				}
 				if ($row["medicalInformation"]!="") {
 					print "<tr>" ;
 						print "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=3>" ;
 							print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Medical Information') . "</span><br/>" ;
 							print "<i>" . $row["medicalInformation"] . "</i>" ;
-						print "</td>" ;
-					print "</tr>" ;
-				}
-				if ($row["developmentInformation"]!="") {
-					print "<tr>" ;
-						print "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=3>" ;
-							print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Development Information') . "</span><br/>" ;
-							print "<i>" . $row["developmentInformation"] . "</i>" ;
 						print "</td>" ;
 					print "</tr>" ;
 				}
