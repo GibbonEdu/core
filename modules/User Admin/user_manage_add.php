@@ -843,15 +843,14 @@ else {
 					<b><?php print __($guid, 'Religion') ?></b><br/>
 				</td>
 				<td class="right">
-					<select name="religion" id="religion" style="width: 302px">
+					<select name="religions" id="religions" style="width: 302px">
 						<option value=""></option>
-						<option value="Nonreligious/Agnostic/Atheist"><?php print __($guid, 'Nonreligious/Agnostic/Atheist') ?></option>
-						<option value="Buddhism"><?php print __($guid, 'Buddhism') ?></option>
-						<option value="Christianity"><?php print __($guid, 'Christianity') ?></option>
-						<option value="Hinduism"><?php print __($guid, 'Hinduism') ?></option>
-						<option value="Islam"><?php print __($guid, 'Islam') ?></option>
-						<option value="Judaism"><?php print __($guid, 'Judaism') ?></option>
-						<option value="Other"><?php print __($guid, 'Other') ?></option>	
+						<?php
+						$religions=explode(",", getSettingByScope($connection2, "User Admin", "religions")) ;
+						foreach ($religions as $religion) {
+							print "<option value='" . trim($religion) . "'>" . trim($religion) . "</option>" ;
+						}
+						?>
 					</select>
 				</td>
 			</tr>

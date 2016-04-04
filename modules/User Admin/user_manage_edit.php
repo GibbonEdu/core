@@ -1108,13 +1108,16 @@ else {
 						<td class="right">
 							<select name="religion" id="religion" style="width: 302px">
 								<option <?php if ($row["religion"]=="") {print "selected ";}?>value=""></option>
-								<option <?php if ($row["religion"]=="Nonreligious/Agnostic/Atheist") {print "selected ";}?>value="Nonreligious/Agnostic/Atheist"><?php print __($guid, 'Nonreligious/Agnostic/Atheist') ?></option>
-								<option <?php if ($row["religion"]=="Buddhism") {print "selected ";}?>value="Buddhism"><?php print __($guid, 'Buddhism') ?></option>
-								<option <?php if ($row["religion"]=="Christianity") {print "selected ";}?>value="Christianity"><?php print __($guid, 'Christianity') ?></option>
-								<option <?php if ($row["religion"]=="Hinduism") {print "selected ";}?>value="Hinduism"><?php print __($guid, 'Hinduism') ?></option>
-								<option <?php if ($row["religion"]=="Islam") {print "selected ";}?>value="Islam"><?php print __($guid, 'Islam') ?></option>
-								<option <?php if ($row["religion"]=="Judaism") {print "selected ";}?>value=""><?php print __($guid, 'Judaism') ?></option>
-								<option <?php if ($row["religion"]=="Other") {print "selected ";}?>value="Other"><?php print __($guid, 'Other') ?></option>	
+								<?php
+								$religions=explode(",", getSettingByScope($connection2, "User Admin", "religions")) ;
+								foreach ($religions as $religion) {
+									$selected="" ;
+									if (trim($religion)==$row["religion"]) {
+										$selected="selected" ;
+									}
+									print "<option $selected value='" . trim($religion) . "'>" . trim($religion) . "</option>" ;
+								}
+								?>
 							</select>
 						</td>
 					</tr>

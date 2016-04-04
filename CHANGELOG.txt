@@ -96,6 +96,7 @@ v12.0.00
 		User Admin: added link to family for each user in User Admin screen, making it easier to find students based on parents
 		User Admin: fixed bug preventing family import
 		User Admin: added ability to allow control over formatting of usernames
+		User Admin: made list of religions settable via a comma-separated list in User Settings
 		
 v11.0.00
 --------
