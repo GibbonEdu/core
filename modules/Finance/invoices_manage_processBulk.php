@@ -286,11 +286,11 @@ else {
 									$emailsInner=explode(",", $rowCompany["companyEmail"]) ;
 									for ($n=0 ; $n<count($emailsInner); $n++) {
 										if ($n==0) {
-											$emails[$emailsCount]=$emailsInner[$n] ;
+											$emails[$emailsCount]=trim($emailsInner[$n]) ;
 											$emailsCount++ ;
 										}
 										else {
-											array_push($emails, $emailsInner[$n]) ;
+											array_push($emails, trim($emailsInner[$n])) ;
 											$emailsCount++ ;
 										}
 									}

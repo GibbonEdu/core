@@ -222,10 +222,10 @@ else {
 								$emailsInner=explode(",", $emails[$i]) ;
 								for ($n=0 ; $n<count($emailsInner); $n++) {
 									if ($n==0) {
-										$emails[$i]=$emailsInner[$n] ;
+										$emails[$i]=trim($emailsInner[$n]) ;
 									}
 									else {
-										array_push($emails, $emailsInner[$n]) ;
+										array_push($emails, trim($emailsInner[$n])) ;
 									}
 								}
 							}

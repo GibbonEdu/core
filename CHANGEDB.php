@@ -345,9 +345,10 @@ ALTER TABLE `gibbonApplicationForm` CHANGE `companyEmail` `companyEmail` TEXT CH
 ALTER TABLE `gibbonFinanceInvoicee` CHANGE `companyEmail` `companyEmail` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
 ALTER TABLE `gibbonFinanceInvoiceeUpdate` CHANGE `companyEmail` `companyEmail` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
 UPDATE gibbonAction SET category='Staff Management' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='User Admin') AND name='Manage Staff Settings';end
+UPDATE gibbonAction SET category='Request Updates' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Data Updater') AND name LIKE 'Update Family Data_%';end
+UPDATE gibbonAction SET category='Request Updates' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Data Updater') AND name LIKE 'Update Finance Data_%';end
+UPDATE gibbonAction SET category='Request Updates' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Data Updater') AND name LIKE 'Update Medical Data_%';end
+UPDATE gibbonAction SET category='Request Updates' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Data Updater') AND name LIKE 'Update Personal Data_%';end
 
-
-
-
-" ;
+";
 ?>
