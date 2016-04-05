@@ -208,7 +208,7 @@ else {
 						<tr>
 							<td> 
 								<b><?php print __($guid, 'Start Date') ?></b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, 'Users\'s first day at school.') ?><br/> Format <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
+								<span style="font-size: 90%"><i><?php print __($guid, 'Users\'s first day at school.') ?><br/> <?php print __($guid, "Format:") . " " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } ?></i></span>
 							</td>
 							<td class="right">
 								<input name="dateStart" id="dateStart" maxlength=10 value="<?php print dateConvertBack($guid, $row["dateStart"]) ?>" type="text" style="width: 300px">
@@ -226,7 +226,7 @@ else {
 						<tr>
 							<td> 
 								<b><?php print __($guid, 'End Date') ?></b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, 'Users\'s last day at school.') ?><br/> Format <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
+								<span style="font-size: 90%"><i><?php print __($guid, 'Users\'s last day at school.') ?><br/> <?php print __($guid, "Format:") . " " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } ?></i></span>
 							</td>
 							<td class="right">
 								<input name="dateEnd" id="dateEnd" maxlength=10 value="<?php print dateConvertBack($guid, $row["dateEnd"]) ?>" type="text" style="width: 300px">
@@ -275,7 +275,7 @@ else {
 						<tr id='firstAidExpiryRow' <?php if ($row["firstAidQualified"]!="Y") { print "style='display: none'" ; } ?>>
 							<td> 
 								<b><?php print __($guid, 'First Aid Expiry') ?></b><br/>
-								<span style="font-size: 90%"><i>Format <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
+								<span style="font-size: 90%"><i><?php print __($guid, "Format:") . " " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } ?></i></span>
 							</td>
 							<td class="right">
 								<input name="firstAidExpiry" id="firstAidExpiry" maxlength=10 value="<?php print dateConvertBack($guid, $row["firstAidExpiry"]) ?>" type="text" style="width: 300px">

@@ -211,7 +211,7 @@ else {
 			<tr id='firstAidExpiryRow' style='display: none'>
 				<td> 
 					<b><?php print __($guid, 'First Aid Expiry') ?></b><br/>
-					<span style="font-size: 90%"><i>Format <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
+					<span style="font-size: 90%"><i><?php print __($guid, "Format:") . " " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } ?></i></span>
 				</td>
 				<td class="right">
 					<input name="firstAidExpiry" id="firstAidExpiry" maxlength=10 value="<?php print dateConvertBack($guid, $row["firstAidExpiry"]) ?>" type="text" style="width: 300px">

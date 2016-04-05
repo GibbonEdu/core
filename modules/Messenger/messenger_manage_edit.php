@@ -163,7 +163,7 @@ else {
 							<tr id="messageWallRow" <?php if ($row["messageWall"]=="N") { print "style='display: none'" ; } ?>>
 								<td> 
 									<b><?php print __($guid, 'Publication Dates') ?> *</b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'Select up to three individual dates.') ?></br>Format <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>.<br/></i></span>
+									<span style="font-size: 90%"><i><?php print __($guid, 'Select up to three individual dates.') ?></br><?php print __($guid, "Format:") . " " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } ?>.<br/></i></span>
 								</td>
 								<td class="right">
 									<input name="date1" id="date1" maxlength=10 value="<?php print dateConvertBack($guid, $row["messageWall_date1"]) ?>" type="text" style="width: 300px">

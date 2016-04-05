@@ -138,7 +138,7 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Date') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, "Format:") . " " . $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+					<span style="font-size: 90%"><i><?php print __($guid, "Format:") . " " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } ?></i></span>
 				</td>
 				<td class="right">
 					<input name="currentDate" id="currentDate" maxlength=10 value="<?php print dateConvertBack($guid, $currentDate) ?>" type="text" style="width: 300px">

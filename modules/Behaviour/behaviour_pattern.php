@@ -152,7 +152,7 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'From Date') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, "Format:") . " " . $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+					<span style="font-size: 90%"><i><?php print __($guid, "Format:") . " " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } ?></i></span>
 				</td>
 				<td class="right">
 					<input name="fromDate" id="fromDate" maxlength=10 value="<?php if ($fromDate!="") { print $fromDate ; } ?>" type="text" style="width: 300px">

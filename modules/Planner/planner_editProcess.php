@@ -82,11 +82,11 @@ else {
 				try {
 					if ($highestAction=="Lesson Planner_viewEditAllClasses" ) {
 						$data=array("gibbonPlannerEntryID"=>$gibbonPlannerEntryID); 
-						$sql="SELECT gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID" ;
+						$sql="SELECT gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, summary FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID" ;
 					}
 					else {
 						$data=array("gibbonPlannerEntryID"=>$gibbonPlannerEntryID, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-						$sql="SELECT gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, role FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonPlannerEntryID=:gibbonPlannerEntryID" ;
+						$sql="SELECT gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, summary, role FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonPlannerEntryID=:gibbonPlannerEntryID" ;
 					}
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
@@ -164,6 +164,7 @@ else {
 					}
 					$name=$_POST["name"] ;
 					$summary=$_POST["summary"] ;
+					$summaryBlocks="" ;
 					$description=$_POST["description"] ;
 					$teachersNotes=$_POST["teachersNotes"] ;
 					$homeworkSubmissionDateOpen=NULL ;
@@ -328,6 +329,7 @@ else {
 							foreach ($order as $i) {
 								$id=$_POST["gibbonUnitClassBlockID$i"] ;
 								$title=$_POST["title$i"] ;
+								$summaryBlocks.=$title . ", " ;
 								$type=$_POST["type$i"] ;
 								$length=$_POST["length$i"] ;
 								$contents=$_POST["contents$i"] ;
@@ -395,6 +397,13 @@ else {
 							}
 						}
 						
+						$summaryBlocks=substr($summaryBlocks,0,-2) ;
+						if (strlen($summaryBlocks)>75) {
+							$summaryBlocks=substr($summaryBlocks,0, 72) . "..." ;	
+						}
+						if ($summaryBlocks) {
+							$summary=$summaryBlocks ;
+						}
 						
 						//Write to database
 						try {
@@ -404,7 +413,6 @@ else {
 							$result->execute($data);
 						}
 						catch(PDOException $e) { 
-							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 							//Fail 2
 							$URL.="&addReturn=fail2$params" ;
 							header("Location: {$URL}");
