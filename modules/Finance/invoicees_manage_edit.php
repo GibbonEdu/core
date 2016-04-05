@@ -235,14 +235,14 @@ else {
 					</tr>
 					<tr id="companyEmailRow">
 						<td> 
-							<b><?php print __($guid, 'Company Email') ?> *</b><br/>
+							<b><?php print __($guid, 'Company Emails') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Comma-separated list of email address.') ?></i></span>
 						</td>
 						<td class="right">
-							<input name="companyEmail" id="companyEmail" maxlength=255 value="<?php print $row["companyEmail"] ?>" type="text" style="width: 300px">
+							<input name="companyEmail" id="companyEmail" value="<?php print $row["companyEmail"] ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var companyEmail=new LiveValidation('companyEmail');
 								companyEmail.add(Validate.Presence);
-								companyEmail.add(Validate.Email);
 							</script>
 						</td>
 					</tr>

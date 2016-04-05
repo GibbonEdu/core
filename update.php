@@ -26,7 +26,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 		</title>
 		<meta charset="utf-8"/>
 		<meta name="author" content="Ross Parker, International College Hong Kong"/>
-		<meta name="ROBOTS" content="none"/>
+		<meta name="robots" content="none"/>
 		
 		<link rel="shortcut icon" type="image/x-icon" href="./favicon.ico"/>
 		<link rel='stylesheet' type='text/css' href='./themes/Default/css/main.css' />

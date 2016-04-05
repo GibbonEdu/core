@@ -283,9 +283,17 @@ else {
 							else {
 								$rowCompany=$resultCompany->fetch() ;
 								if ($rowCompany["companyEmail"]!="" AND $rowCompany["companyContact"]!="" AND $rowCompany["companyName"]!="") {
-									$emails[$emailsCount]=$rowCompany["companyEmail"] ;
-									$emailsCount++ ;
-									$rowCompany["companyCCFamily"] ;
+									$emailsInner=explode(",", $rowCompany["companyEmail"]) ;
+									for ($n=0 ; $n<count($emailsInner); $n++) {
+										if ($n==0) {
+											$emails[$emailsCount]=$emailsInner[$n] ;
+											$emailsCount++ ;
+										}
+										else {
+											array_push($emails, $emailsInner[$n]) ;
+											$emailsCount++ ;
+										}
+									}
 									if ($rowCompany["companyCCFamily"]=="Y") {
 										try {
 											$dataParents=array("gibbonFinanceInvoiceeID"=>$row["gibbonFinanceInvoiceeID"]); 

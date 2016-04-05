@@ -182,7 +182,7 @@ else {
 			</title>
 			<meta charset="utf-8"/>
 			<meta name="author" content="Ross Parker, International College Hong Kong"/>
-			<meta name="ROBOTS" content="none"/>
+			<meta name="robots" content="none"/>
 			
 			<link rel="shortcut icon" type="image/x-icon" href="./favicon.ico"/>
 			<script type="text/javascript" src="./lib/LiveValidation/livevalidation_standalone.compressed.js"></script>

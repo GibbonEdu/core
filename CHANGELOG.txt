@@ -64,6 +64,7 @@ v12.0.00
 		Behaviour: fixed <? bug
 		Departments: fixed filter in Homework link from Class view page
 		Finance: fixed <? bug
+		Finance: added ability to provide multiple company email addresses
 		Formal Assessment: fixed issue with View Classes menu not appearing for a user with no classes (e.g. admin)
 		Formal Assessment: fixed uploaded response file selector gigantism issue
 		Library: added item count column to lending log

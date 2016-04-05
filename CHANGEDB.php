@@ -341,6 +341,13 @@ INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDis
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'Students', 'applicationFormRefereeLink', 'Application Form Referee Link', 'Link to an external form that will be emailed to a referee of the applicant\'s choosing.', '');end
 ALTER TABLE `gibbonApplicationForm` ADD `referenceEmail` VARCHAR(100) NULL DEFAULT NULL AFTER `dayType`;end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('User Admin', 'religions', 'Religions', 'Comma-separated list of ethnicities available in system', ',Nonreligious/Agnostic/Atheist,Buddhism,Christianity,Hinduism,Islam,Judaism,Other');end
+ALTER TABLE `gibbonApplicationForm` CHANGE `companyEmail` `companyEmail` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
+ALTER TABLE `gibbonFinanceInvoicee` CHANGE `companyEmail` `companyEmail` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
+ALTER TABLE `gibbonFinanceInvoiceeUpdate` CHANGE `companyEmail` `companyEmail` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
+UPDATE gibbonAction SET category='Staff Management' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='User Admin') AND name='Manage Staff Settings';end
+
+
+
 
 " ;
 ?>

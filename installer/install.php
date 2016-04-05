@@ -63,7 +63,7 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 		<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
 		<meta http-equiv="content-language" content="en"/>
 		<meta name="author" content="Ross Parker, International College Hong Kong"/>
-		<meta name="ROBOTS" content="none"/>
+		<meta name="robots" content="none"/>
 		
 		<link rel="shortcut icon" type="image/x-icon" href="../favicon.ico"/>
 		<script type="text/javascript" src="../lib/LiveValidation/livevalidation_standalone.compressed.js"></script>
