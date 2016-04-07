@@ -780,7 +780,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title="", 
 							$output.="</div>" ;
 							$time=date("H:i:s", strtotime($time)+3600) ;
 							$spinControl=0 ;
-							while ($time<=$timeEnd AND $spinControl<@(23-date("H",$timeStart))) {
+							while ($time<=$timeEnd AND $spinControl<(23-substr($timeStart,0,5))) {
 								$countTime++ ;
 								$output.="<div $title style='z-index: $zCount; position: absolute; top:" . (($countTime*60)-5) . "px ; width: 71px ; border: none; height: 60px; margin: 0px; padding: 0px; font-size: 92%'>" ;
 									$output.=substr($time,0,5) . "<br/>" ;
@@ -1735,7 +1735,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title=
 						$output.="</div>" ;
 						$time=date("H:i:s", strtotime($time)+3600) ;
 						$spinControl=0 ;
-						while ($time<=$timeEnd AND $spinControl<@(23-date("H",$timeStart))) {
+						while ($time<=$timeEnd AND $spinControl<(23-substr($timeStart,0,5))) {
 							$countTime++ ;
 							$output.="<div $title style='position: absolute; top:" . (($countTime*60)-5) . "px ; width: 71px ; border: none; height: 60px; margin: 0px; padding: 0px; font-size: 92%'>" ;
 								$output.=substr($time,0,5) . "<br/>" ;

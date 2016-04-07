@@ -93,6 +93,7 @@ v12.0.00
 		Students: improved SEN options, and ability to have a referee, in application form
 		Students: added parent email to search in View Student Profile
 		Timetable: fixed rendering to allow Sunday as first day or the week, according to values in gibbonDaysOfWeek
+		Timetable: fixed rendering bug preventing some time labels from being displayed
 		Tracking: adjusted Data Points export to combine multiple column internal assessments for one subject into a column
 		User Admin: added notification to form tutor(s) when a student's privacy options change (via Edit or Data Update).		
 		User Admin: made max_input_vars test a little more generous
