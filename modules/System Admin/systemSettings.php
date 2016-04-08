@@ -951,6 +951,7 @@ else {
 							<option <?php if ($row["value"]=="NGN ₦") { print "selected" ; } ?> value='NGN ₦'>Nigerian Naira (₦)</option>
 							<option <?php if ($row["value"]=="PKR ₨") { print "selected" ; } ?> value='PKR ₨'>Pakistani Rupee (₨)</option>
 							<option <?php if ($row["value"]=="SAR ﷼‎") { print "selected" ; } ?> value='SAR ﷼‎'>Saudi Riyal (﷼‎)</option>
+							<option <?php if ($row["value"]=="TZS TSh") { print "selected" ; } ?> value='TZS TSh'>Tanzania Shilling (TSh)</option>
 							<option <?php if ($row["value"]=="VND ₫‎") { print "selected" ; } ?> value='VND ₫‎'>Vietnamese Dong (₫‎)</option>
 						</optgroup>
 					</select>

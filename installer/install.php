@@ -958,6 +958,7 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 																		<option value='NGN ₦'>Nigerian Naira (₦)</option>
 																		<option value='PKR ₨'>Pakistani Rupee (₨)</option>
 																		<option value='SAR ﷼‎'>Saudi Riyal (﷼‎)</option>
+																		<option value='TZS TSh'>Tanzania Shillings (TSh)</option>
 																		<option value='VND ₫‎'>Vietnamese Dong (₫‎)</option>
 																	</optgroup>
 																</select>
