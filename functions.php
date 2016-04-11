@@ -148,7 +148,16 @@ function getMinorLinks($connection2, $guid, $cacheLoad) {
 		}
 	}
 	else {
-		$return.=$_SESSION[$guid]["preferredName"] . " " . $_SESSION[$guid]["surname"] . " . " ;
+		$name = $_SESSION[$guid]["preferredName"] . " " . $_SESSION[$guid]["surname"];
+		if (isset($_SESSION[$guid]["gibbonRoleIDCurrentCategory"])) {
+			if ($_SESSION[$guid]["gibbonRoleIDCurrentCategory"]=="Student") {
+				$highestAction=getHighestGroupedAction($guid, "/modules/Students/student_view_details.php", $connection2) ;
+				if ($highestAction == "View Student Profile_brief") {
+					$name = "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $_SESSION[$guid]["gibbonPersonID"] . "'>" . $name . "</a>";
+				}
+			}
+		}
+		$return.= $name . " . ";
 		$return.="<a href='./logout.php'>" . __($guid, "Logout") . "</a> . <a href='./index.php?q=preferences.php'>" . __($guid, 'Preferences') . "</a>" ;
 		if ($_SESSION[$guid]["emailLink"]!="") {
 			$return.=" . <a target='_blank' href='" . $_SESSION[$guid]["emailLink"] . "'>" . __($guid, 'Email') . "</a>" ;
