@@ -954,6 +954,7 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 																		<option value='IDR Rp'>Indonesian Rupiah (Rp)</option>
 																		<option value='JMD $'>Jamaican Dollar ($)</option>
 																		<option value='KES KSh'>Kenyan Shilling (KSh)</option>
+																		<option value='MOP MOP$'>Macanese Pataca (MOP$)</option>
 																		<option value='NPR ₨'>Nepalese Rupee (₨)</option>
 																		<option value='NGN ₦'>Nigerian Naira (₦)</option>
 																		<option value='PKR ₨'>Pakistani Rupee (₨)</option>

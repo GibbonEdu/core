@@ -51,7 +51,7 @@ v12.0.00
 		System: fixed login PHP warning
 		System: fixed typo in name of behaviour CLI script
 		System: fixed non-standard port bug in installer (caused incorrect value to be set for absoluteURL)
-		System: added Pakistani Rupee, Tanzania Shilling and Jamaican Dollar as currencies
+		System: added Pakistani Rupee, Tanzania Shilling, Jamaican Dollar and Macanese Pataca as currencies
 		System: added a password generator to new password setting fields
 		System: updated jquery autosize library, to fix Chrome's disappearing textareas
 		System Admin: Improved version comparison in module updater
