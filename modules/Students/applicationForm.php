@@ -385,7 +385,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print __($guid, 'Country of Birth') ?></b><br/>
+					<b><?php print __($guid, 'Country of Birth') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select name="countryOfBirth" id="countryOfBirth" style="width: 302px">
@@ -397,22 +397,26 @@ else {
 							$resultSelect->execute($dataSelect);
 						}
 						catch(PDOException $e) { }
-						print "<option value=''></option>" ;
+						print "<option value='Please select...'>" . _("Please select...") . "</option>" ;
 						while ($rowSelect=$resultSelect->fetch()) {
 							print "<option value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(__($guid, $rowSelect["printable_name"])) . "</option>" ;
 						}
 						?>				
 					</select>
+					<script type="text/javascript">
+						var countryOfBirth=new LiveValidation('countryOfBirth');
+						countryOfBirth.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
+					</script>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print __($guid, 'Citizenship') ?></b><br/>
+					<b><?php print __($guid, 'Citizenship') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select name="citizenship1" id="citizenship1" style="width: 302px">
 						<?php
-						print "<option value=''></option>" ;
+						print "<option value='Please select...'>" . _("Please select...") . "</option>" ;
 						$nationalityList=getSettingByScope($connection2, "User Admin", "nationality") ;
 						if ($nationalityList=="") {
 							try {
@@ -434,6 +438,10 @@ else {
 						}
 						?>				
 					</select>
+					<script type="text/javascript">
+						var citizenship1=new LiveValidation('citizenship1');
+						citizenship1.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
+					</script>
 				</td>
 			</tr>
 			<tr>

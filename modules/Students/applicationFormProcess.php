@@ -559,7 +559,7 @@ else {
 				}
 			}
 		}
-		if ($surname=="" OR $firstName=="" OR $preferredName=="" OR $officialName=="" OR $gender=="" OR $dob=="" OR $languageHomePrimary=="" OR $languageFirst=="" OR $gibbonSchoolYearIDEntry=="" OR $dateStart=="" OR $gibbonYearGroupIDEntry=="" OR $sen=="" OR $howDidYouHear=="" OR (isset($_POST["agreement"]) AND $agreement!="Y") OR $familyFail) {
+		if ($surname=="" OR $firstName=="" OR $preferredName=="" OR $officialName=="" OR $gender=="" OR $dob=="" OR $languageHomePrimary=="" OR $languageFirst=="" OR $countryOfBirth=="" OR $citizenship1="" OR $gibbonSchoolYearIDEntry=="" OR $dateStart=="" OR $gibbonYearGroupIDEntry=="" OR $sen=="" OR $howDidYouHear=="" OR (isset($_POST["agreement"]) AND $agreement!="Y") OR $familyFail) {
 			//Fail 3
 			$URL.="&addReturn=fail3" ;
 			header("Location: {$URL}");
