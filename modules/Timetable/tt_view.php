@@ -142,7 +142,7 @@ else {
 				}
 			}
 			
-			$tt=renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, FALSE, $ttDate, "/modules/Timetable/tt_view.php", "&gibbonPersonID=$gibbonPersonID&allUsers=$allUsers") ;
+			$tt=renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, FALSE, $ttDate, "/modules/Timetable/tt_view.php", "&gibbonPersonID=$gibbonPersonID&allUsers=$allUsers&search=$search") ;
 			if ($tt!=FALSE) {
 				print $tt ;
 			}
