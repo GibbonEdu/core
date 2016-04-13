@@ -364,7 +364,7 @@ else {
 				$ttDate=dateConvertToTimestamp(dateConvert($guid, $_POST["ttDate"]));
 			}
 			
-			$tt=renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, FALSE, $ttDate, "/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php", "&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=$gibbonSchoolYearID&type=$type#tt", FALSE, TRUE) ;
+			$tt=renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, FALSE, $ttDate, "/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php", "&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=$gibbonSchoolYearID&type=$type#tt", "full", TRUE) ;
 			if ($tt!=FALSE) {
 				print $tt ;
 			}
