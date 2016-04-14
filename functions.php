@@ -3236,6 +3236,7 @@ function sidebar($connection2, $guid) {
 
 										//Text
 										print "<div style='margin-top: 5px'>" ;
+											$message=preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', "", $message);
 											if (strlen(strip_tags($message["details"]))<=40) {
 												print strip_tags($message["details"]) . "<br/>" ;
 											}
