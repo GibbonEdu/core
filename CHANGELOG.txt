@@ -83,6 +83,7 @@ v12.0.00
 		Planner: fixed bug preventing parent access to lesson listings
 		Planner: added ordering field to units to control the order in which they display
 		Planner: lesson summary now scraped from Smart Block titles
+		Planner: fixed lesson ordering bug in unit dump
 		Rubrics: added course/class name to historical view result listing
 		School Admin: fixed bug preventing non-contiguous primary external assessment settings from being saved in Formal Assessment settings
 		Staff: adjusted role drop down to offer all Staff roles (from gibbonRole), not just Teaching & Support

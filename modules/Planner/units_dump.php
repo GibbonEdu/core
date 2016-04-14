@@ -430,7 +430,7 @@ else {
 										print "<h2>" . __($guid, "Lessons") . "</h2>" ;
 										try {
 											$dataLessons=array("gibbonCourseClassID"=>$class[1], "gibbonUnitID"=>$gibbonUnitID); 
-											$sqlLessons="SELECT * FROM gibbonPlannerEntry WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonUnitID=:gibbonUnitID" ;
+											$sqlLessons="SELECT * FROM gibbonPlannerEntry WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonUnitID=:gibbonUnitID ORDER BY date" ;
 											$resultLessons=$connection2->prepare($sqlLessons) ;
 											$resultLessons->execute($dataLessons) ;
 										}
