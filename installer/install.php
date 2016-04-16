@@ -326,7 +326,7 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 									}
 									
 									if ($connected2==FALSE) {
-										
+										print "<div class='error'>" ;
 											print sprintf(__($guid, 'A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", "</a>") ;
 										print "</div>" ;
 									}
