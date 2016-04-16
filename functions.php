@@ -5032,6 +5032,20 @@ function countLikesByRecipient($connection2, $gibbonPersonIDRecipient, $mode="co
 	return $return ;
 }
 
+/*
+Easy Return Display Processing.
+Arguments:
+	$return: This should be the return value of the process.
+	$editLink: (Optional) This should be a link. The link will appended to the end of a success0 return.
+	$customReturns: (Optional) This should be an array. The array allows you to set custom return checks and messages. Set the array key to the return name and the value to the return message.
+Default returns:
+	success0: This is a default success message for adding a new record.
+	error0: This is a default error message for invalid permission for an action.
+	error1: This is a default error message for invalid inputs.
+	error2: This is a defualt error message for a database error.
+	warning0: This is a default warning message for a extra data failing to save.
+	warning1: This is a default warning message for a successful request, where certain data was not save properly.
+*/
 function returnProcess($return, $editLink = null, $customReturns=null) {
 	$class="error";
 	$returnMessage = "Unknown Return";
@@ -5041,6 +5055,8 @@ function returnProcess($return, $editLink = null, $customReturns=null) {
 	$returns["error1"] = "Your request failed because your inputs were invalid.";
 	$returns["error2"] = "Your request failed due to a database error.";
 	$returns["warning0"] = "Your optional extra data failed to save.";
+	$returns["warning1"] = "Your request was successful, but some data was not properly saved.";
+
 	if($customReturns != null) {
 		if(is_array($customReturns)) {
 			$customReturnKeys = array_keys($customReturns);
