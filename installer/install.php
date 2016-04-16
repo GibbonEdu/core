@@ -326,14 +326,29 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 									}
 									
 									if ($connected2==FALSE) {
-										print "<div class='error'>" ;
+										
 											print sprintf(__($guid, 'A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", "</a>") ;
 										print "</div>" ;
 									}
 									else {
-										print "<div class='success'>" ;
-											print __($guid, "Your database connection was successful, so the installation may proceed.") ;
-										print "</div>" ;
+										//Check for strict Mode in mySQL
+										$sqlMode="SELECT @@sql_mode;";
+										$resultMode=$connection2->prepare($sqlMode);
+										$resultMode->execute();
+										$rows = $resultMode->fetchAll();
+										$rowsString=serialize($rows);
+										
+										$pos = strpos($rowsString, "STRICT_TRANS_TABLES");
+										if ($pos == false) {
+											print "<div class='success'>" ;
+												print __($guid, "Your database connection was successful, so the installation may proceed.") ;		
+											print "</div>" ;
+										} else {
+											print "<div class='error'>" ;
+												print sprintf(__($guid, 'mySQL is set to strict mode you will need to remove STRICT_TRANS_TABLES from your my.cnf file' ), "<a href='./install.php'>", "</a>") ;
+											print "</div>" ;
+										}
+											
 									
 										//Set up config.php
 										$config="" ;
