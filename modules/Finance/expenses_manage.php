@@ -42,23 +42,8 @@ else {
 		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Manage Expenses') . "</div>" ;
 		print "</div>" ;
 		
-		if (isset($_GET["approveReturn"])) { $approveReturn=$_GET["approveReturn"] ; } else { $approveReturn="" ; }
-		$approveReturnMessage="" ;
-		$class="error" ;
-		if (!($approveReturn=="")) {
-			if ($approveReturn=="success0") {
-				$approveReturnMessage=__($guid, "Your request was completed successfully.") ;	
-				$class="success" ;
-			}
-			else if ($approveReturn=="success1") {
-				$approveReturnMessage=__($guid, "Your request was completed successfully, but notifications could not be sent out.") ;	
-				$class="success" ;
-			}
-			print "<div class='$class'>" ;
-				print $approveReturnMessage;
-			print "</div>" ;
-		}
-	
+		if (isset($_GET["return"])) { returnProcess($_GET["return"], null, array("success0" => "Your request was completed successfully.", "success1" => "Your request was completed successfully, but notifications could not be sent out.")); }
+
 		print "<p>" ;
 			if ($highestAction=="Manage Expenses_all") {
 				print __($guid, "This action allows you to manage all expenses for all budgets, regardless of your access rights to individual budgets.") . "<br/>" ;

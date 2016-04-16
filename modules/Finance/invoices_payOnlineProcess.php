@@ -58,7 +58,7 @@ if ($paid!="Y") { //IF PAID IS NOT Y, LET'S REDIRECT TO MAKE PAYMENT
 	//Check variables
 	if ($gibbonFinanceInvoiceID=="" OR $key=="") {
 		//Fail 3
-		$URL.="&addReturn=fail3" ;
+		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -72,14 +72,14 @@ if ($paid!="Y") { //IF PAID IS NOT Y, LET'S REDIRECT TO MAKE PAYMENT
 		}
 		catch(PDOException $e) { 
 			//Fail 2
-			$URL.="&addReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
 
 		if ($resultKeyRead->rowCount()!=1) { //If not exists, report error
 			//Fail 2
-			$URL.="&addReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
@@ -97,7 +97,7 @@ if ($paid!="Y") { //IF PAID IS NOT Y, LET'S REDIRECT TO MAKE PAYMENT
 			catch(PDOException $e) { 
 				$feeOK=FALSE ;
 				//Fail 2
-				$URL.="&addReturn=fail2" ;
+				$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
@@ -120,27 +120,27 @@ if ($paid!="Y") { //IF PAID IS NOT Y, LET'S REDIRECT TO MAKE PAYMENT
 					if ($financeOnlinePaymentEnabled=="Y") {
 						if  ($financeOnlinePaymentThreshold=="" OR $financeOnlinePaymentThreshold>=$feeTotal) {
 							//Let's call for the payment to be done!
-							$_SESSION[$guid]["gatewayCurrencyNoSupportReturnURL"]=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoices_payOnline.php&addReturn=fail5" ;
-							$URL=$_SESSION[$guid]["absoluteURL"] . "/lib/paypal/expresscheckout.php?Payment_Amount=$feeTotal&return=" . urlencode("modules/Finance/invoices_payOnlineProcess.php?addReturn=success1&paid=Y&feeTotal=$feeTotal&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&key=$key") . "&fail=" . urlencode("modules/Finance/invoices_payOnlineProcess?addReturn=success2&paid=N&feeTotal=$feeTotal&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&key=$key") ;
+							$_SESSION[$guid]["gatewayCurrencyNoSupportReturnURL"]=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoices_payOnline.php&return=error3" ;
+							$URL=$_SESSION[$guid]["absoluteURL"] . "/lib/paypal/expresscheckout.php?Payment_Amount=$feeTotal&return=" . urlencode("modules/Finance/invoices_payOnlineProcess.php?return=success1&paid=Y&feeTotal=$feeTotal&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&key=$key") . "&fail=" . urlencode("modules/Finance/invoices_payOnlineProcess?return=success2&paid=N&feeTotal=$feeTotal&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&key=$key") ;
 							header("Location: {$URL}");
 						}
 						else {
 							//Fail 2
-							$URL.="&addReturn=fail2" ;
+							$URL.="&return=error2" ;
 							header("Location: {$URL}");
 							exit() ;
 						}
 					}
 					else {
 						//Fail 2
-						$URL.="&addReturn=fail2" ;
+						$URL.="&return=error2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
 				}
 				else {
 					//Fail 2
-					$URL.="&addReturn=fail2" ;
+					$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
@@ -151,7 +151,7 @@ if ($paid!="Y") { //IF PAID IS NOT Y, LET'S REDIRECT TO MAKE PAYMENT
 else { //IF PAID IS Y WE ARE JUST RETURNING TO FINALISE PAYMENT AND RECORD OF PAYMENT, SO LET'S DO IT.
 	//Get returned paypal tokens, ids, etc
 	$paymentMade='N' ;
-	if ($_GET["addReturn"]=="success1") {
+	if ($_GET["return"]=="success1") {
 		$paymentMade='Y' ;
 	}
 	$paymentToken=NULL ;
@@ -344,7 +344,7 @@ else { //IF PAID IS Y WE ARE JUST RETURNING TO FINALISE PAYMENT AND RECORD OF PA
 			}
 			
 			//Success 1
-			$URL.="&addReturn=success1&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&key=$key" ;
+			$URL.="&return=success1&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&key=$key" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -371,13 +371,13 @@ else { //IF PAID IS Y WE ARE JUST RETURNING TO FINALISE PAYMENT AND RECORD OF PA
 			
 			if ($updateFail==true) {
 				//Success 2
-				$URL.="&addReturn=success2&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&key=$key" ;
+				$URL.="&return=success2&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&key=$key" ;
 				header("Location: {$URL}");
 				exit ;
 			}
 			
 			//Success 2
-			$URL.="&addReturn=success2&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&key=$key" ;
+			$URL.="&return=success2&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&key=$key" ;
 			header("Location: {$URL}");
 		}
 	}

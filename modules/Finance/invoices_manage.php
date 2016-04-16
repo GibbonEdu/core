@@ -31,64 +31,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Manage Invoices') . "</div>" ;
 	print "</div>" ;
 	
-	if (isset($_GET["issueReturn"])) { $issueReturn=$_GET["issueReturn"] ; } else { $issueReturn="" ; }
-	$issueReturnMessage="" ;
-	$class="error" ;
-	if (!($issueReturn=="")) {
-		if ($issueReturn=="success0") {
-			$issueReturnMessage=__($guid, "Your request was completed successfully.") ;	
-			$class="success" ;
-		}
-		if ($issueReturn=="success1") {
-			$issueReturnMessage=__($guid, "Your request was completed successfully, but one or more requested emails could not be sent.") ;	
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $issueReturnMessage;
-		print "</div>" ;
-	} 
-	
-	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-	$deleteReturnMessage="" ;
-	$class="error" ;
-	if (!($deleteReturn=="")) {
-		if ($deleteReturn=="success0") {
-			$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;		
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $deleteReturnMessage;
-		print "</div>" ;
-	} 
-	
-	if (isset($_GET["bulkReturn"])) { $bulkReturn=$_GET["bulkReturn"] ; } else { $bulkReturn="" ; }
-	$bulkReturnMessage="" ;
-	$class="error" ;
-	if (!($bulkReturn=="")) {
-		if ($bulkReturn=="fail0") {
-			$bulkReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-		}
-		else if ($bulkReturn=="fail2") {
-			$bulkReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-		}
-		else if ($bulkReturn=="fail3") {
-			$bulkReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($bulkReturn=="fail5") {
-			$bulkReturnMessage=__($guid, "Some elements of your request failed, but others were successful.") ;	
-		}
-		else if ($bulkReturn=="success0") {
-			$bulkReturnMessage=__($guid, "Your request was completed successfully.") ;		
-			$class="success" ;
-		}
-		if ($bulkReturn=="success1") {
-			$issueReturnMessage=__($guid, "Your request was completed successfully, but one or more requested emails could not be sent.") ;	
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $bulkReturnMessage;
-		print "</div>" ;
-	}
+	if (isset($_GET["return"])) { returnProcess($_GET["return"], null, array("success0" => "Your request was completed successfully.", "success1" => "Your request was completed successfully, but one or more requested emails could not be sent.", "error3" => "Some elements of your request failed, but others were successful.")); }
 	
 	print "<p>" ;
 		print __($guid, "This section allows you to generate, view, edit and delete invoices, either for an individual or in bulk. You can use the filters below to pick up certain invoices types (e.g. those that are overdue) or view all invoices for a particular user. Invoices, reminders and receipts can be sent out using the Email function, shown in the right-hand side menu.") . "<br/>" ;

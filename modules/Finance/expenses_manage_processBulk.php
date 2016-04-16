@@ -49,13 +49,13 @@ else {
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Finance/expenses_manage.php")==FALSE) {
 		//Fail 0
-		$URL.="&bulkReturn=fail0" ;
+		$URL.="&return=error0" ;
 		header("Location: {$URL}");
 	}
 	else {
 		$gibbonFinanceExpenseIDs=$_POST["gibbonFinanceExpenseIDs"] ;
 		if (count($gibbonFinanceExpenseIDs)<1) {
-			$URL.="&bulkReturn=fail3" ;
+			$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -73,7 +73,7 @@ else {
 				//header("Location: {$URL}");
 			}
 			else {
-				$URL.="&bulkReturn=fail3" ;
+				$URL.="&return=error1" ;
 				header("Location: {$URL}");
 			}
 		}

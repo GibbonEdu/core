@@ -44,32 +44,8 @@ else {
 		print "<div class='warning'>" ;
 			print __($guid, "Expenses added here do not require authorisation: this is for pre-authorised, or recurring expenses only.") ;
 		print "</div>" ;
-	
-		if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
-		$addReturnMessage="" ;
-		$class="error" ;
-		if (!($addReturn=="")) {
-			if ($addReturn=="fail0") {
-				$addReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-			}
-			else if ($addReturn=="fail2") {
-				$addReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-			}
-			else if ($addReturn=="fail3") {
-				$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-			}
-			else if ($addReturn=="success1") {
-				$addReturnMessage=__($guid, "Your request was completed successfully, but notifications could not be sent out.") ;	
-				$class="success" ;
-			}
-			else if ($addReturn=="success0") {
-				$addReturnMessage=__($guid, "Your request was completed successfully.") ;	
-				$class="success" ;
-			}
-			print "<div class='$class'>" ;
-				print $addReturnMessage;
-			print "</div>" ;
-		}
+
+		if (isset($_GET["return"])) { returnProcess($_GET["return"], null, null); }
 	
 		//Check if school year specified
 		$gibbonFinanceBudgetCycleID=$_GET["gibbonFinanceBudgetCycleID"] ;

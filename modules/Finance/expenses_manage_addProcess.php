@@ -50,14 +50,14 @@ else {
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Finance/expenses_manage_add.php", "Manage Expenses_all")==FALSE) {
 		//Fail 0
-		$URL.="&addReturn=fail0" ;
+		$URL.="&return=error0" ;
 		header("Location: {$URL}");
 	}
 	else {
 		$allowExpenseAdd=getSettingByScope($connection2, "Finance", "allowExpenseAdd") ;
 		if ($allowExpenseAdd!="Y") {
 			//Fail 0
-			$URL.="&addReturn=fail0" ;
+			$URL.="&return=error0" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -86,7 +86,7 @@ else {
 			
 			if ($status=="" OR $title=="" OR $cost=="" OR $countAgainstBudget=="" OR $purchaseBy=="" OR ($status=="Paid" AND ($paymentDate=="" OR $paymentAmount=="" OR $gibbonPersonIDPayment=="" OR $paymentMethod==""))) {
 				//Fail 3
-				$URL.="&addReturn=fail3" ;
+				$URL.="&return=error1" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -99,7 +99,7 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail2
-					$URL.="&addReturn=fail2" ;
+					$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
@@ -115,7 +115,7 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail2
-					$URL.="&addReturn=fail2" ;
+					$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
@@ -130,14 +130,14 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail2
-						$URL.="&addReturn=fail2" ;
+						$URL.="&return=error2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
 				}
 			
 				//Success 0
-				$URL.="&addReturn=success0" ;
+				$URL.="&return=success0" ;
 				header("Location: {$URL}");
 			}
 		}
