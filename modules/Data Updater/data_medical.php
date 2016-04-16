@@ -52,6 +52,16 @@ else {
 			print __($guid, "This page allows any adult with data access permission to request medical data updates for any member of their family.") ;
 			print "</p>" ;
 		}
+
+		$customResponces = array();
+
+		$success0=__($guid, "Your request was completed successfully. An administrator will process your request as soon as possible. You will not see the updated data in the system until it has been processed and approved.") ; 
+		if ($_SESSION[$guid]["organisationDBAEmail"]!="" AND $_SESSION[$guid]["organisationDBAName"]!="") {
+			$success0.=" " . sprintf(__($guid, 'Please contact %1$s if you have any questions.'), "<a href='mailto:" . $_SESSION[$guid]["organisationDBAEmail"] . "'>" . $_SESSION[$guid]["organisationDBAName"] . "</a>") ;	
+		}
+		$customResponces["success0"] = $success0;
+
+		if (isset($_GET["return"])) { returnProcess($_GET["return"], null, $customResponces); }
 		
 		if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 		$updateReturnMessage="" ;

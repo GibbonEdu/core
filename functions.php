@@ -5032,5 +5032,44 @@ function countLikesByRecipient($connection2, $gibbonPersonIDRecipient, $mode="co
 	return $return ;
 }
 
+function returnProcess($return, $editLink = null, $customReturns=null) {
+	$class="error";
+	$returnMessage = "Unknown Return";
+	$returns = array();
+	$returns["success0"] = "Your request was completed successfully. You can now add another record if you wish.";
+	$returns["error0"] = "Your request failed because you do not have access to this action.";
+	$returns["error1"] = "Your request failed because your inputs were invalid.";
+	$returns["error2"] = "Your request failed due to a database error.";
+	$returns["warning0"] = "Your optional extra data failed to save.";
+	if($customReturns != null) {
+		if(is_array($customReturns)) {
+			$customReturnKeys = array_keys($customReturns);
+			for($i = 0 ; $i < count($customReturns); $i++){
+				$customReturnKey = $customReturnKeys[$i];
+				$customReturn = $customReturns[$i];
+				$returns[$customReturnKey] = $customReturn;
+			}
+		}
+	}
+	if($return!="") {
+		$returnKeys = array_keys($returns);
+		foreach($returnKeys as $returnKey) {
+			$returnData = $returns[$returnKey];
+			if($return == $returnKey) {
+				$returnMessage = $returnData;
+				if(stripos($return, "error") !== false) $class = "error";
+				else if(stripos($return, "warning") !== false) $class = "warning";
+				else if(stripos($return, "success") !== false) $class = "success";
+				break;
+			}
+		}
+		if($return == "success0" && $editLink != null) {
+			$returnMessage .= " You can edit your record <a href='$editLink'>here</a>.";
+		}
 
+		print "<div class='$class'>" ;
+			print __($guid, $returnMessage);
+		print "</div>" ;
+	}
+}
 ?>

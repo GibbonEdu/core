@@ -46,7 +46,7 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byRollGroup.php")==FALSE) {
 	//Fail 0
-	$URL.="&updateReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -54,7 +54,7 @@ else {
 	//Check if school year specified
 	if ($gibbonRollGroupID=="" AND $currentDate=="") {
 		//Fail1
-		$URL.="&updateReturn=fail1" ;
+		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -66,28 +66,28 @@ else {
 		}
 		catch(PDOException $e) { 
 			//Fail2
-			$URL.="&updateReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
 		
 		if ($result->rowCount()!=1) {
 			//Fail 2
-			$URL.="&updateReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 		}
 		else {	
 			//Check that date is not in the future
 			if ($currentDate>$today) {
 				//Fail 4
-				$URL.="&updateReturn=fail4" ;
+				$URL.="&return=error3" ;
 				header("Location: {$URL}");
 			}
 			else {
 				//Check that date is a school day
 				if (isSchoolOpen($guid, $currentDate, $connection2)==FALSE) {
 					//Fail 5
-					$URL.="&updateReturn=fail5" ;
+					$URL.="&return=error3" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -100,7 +100,7 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail 2
-						$URL.="&updateReturn=fail2" ;
+						$URL.="&return=error2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
@@ -127,7 +127,7 @@ else {
 						}
 						catch(PDOException $e) { 
 							//Fail 2
-							$URL.="&updateReturn=fail2" ;
+							$URL.="&return=error2" ;
 							header("Location: {$URL}");
 							exit() ; 
 						}
@@ -176,12 +176,12 @@ else {
 				
 					if ($partialFail==TRUE) {
 						//Fail 3
-						$URL.="&updateReturn=fail3" ;
+						$URL.="&return=warning1" ;
 						header("Location: {$URL}");
 					}
 					else {
 						//Success 0
-						$URL.="&updateReturn=success0&time=" . date("H-i-s") ;
+						$URL.="&return=success0&time=" . date("H-i-s") ;
 						header("Location: {$URL}");
 					}
 				}

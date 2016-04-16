@@ -43,14 +43,14 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_manage_edit.php")==FALSE) {
 	//Fail 0
-	$URL.="&updateReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, $_POST["address"], $connection2) ;
 	if ($highestAction==FALSE) {
 		//Fail 0
-		$URL.="&updateReturn=fail0$params" ;
+		$URL.="&return=error0$params" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -58,7 +58,7 @@ else {
 		//Check if school year specified
 		if ($gibbonBehaviourID=="") {
 			//Fail1
-			$URL.="&updateReturn=fail1" ;
+			$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -76,14 +76,14 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail2
-				$URL.="&updateReturn=fail2" ;
+				$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
 		
 			if ($result->rowCount()!=1) {
 				//Fail 2
-				$URL.="&updateReturn=fail2" ;
+				$URL.="&return=error2" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -109,7 +109,7 @@ else {
 				
 				if ($gibbonPersonID=="" OR $date=="" OR $type=="" OR ($descriptor=="" AND $enableDescriptors=="Y")) {
 					//Fail 3
-					$URL.="&updateReturn=fail3" ;
+					$URL.="&return=error1" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -121,13 +121,13 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail 2
-						$URL.="&updateReturn=fail2" ;
+						$URL.="&return=error2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
 			
 					//Success 0
-					$URL.="&updateReturn=success0" ;
+					$URL.="&return=success0" ;
 					header("Location: {$URL}");			
 				}
 			}

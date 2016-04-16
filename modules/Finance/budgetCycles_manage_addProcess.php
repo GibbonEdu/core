@@ -39,7 +39,7 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/Finance/budgetCycles_manage_add.php")==FALSE) {
 	//Fail 0
-	$URL.="&addReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -53,7 +53,7 @@ else {
 	
 	if ($name=="" OR $status=="" OR $sequenceNumber=="" OR is_numeric($sequenceNumber)==FALSE OR $dateStart=="" OR $dateEnd=="") {
 		//Fail 3
-		$URL.="&addReturn=fail3" ;
+		$URL.="&addReturn=error1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -66,14 +66,14 @@ else {
 		}
 		catch(PDOException $e) { 
 			//Fail 2
-			$URL.="&addReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
 		
 		if ($result->rowCount()>0) {
 			//Fail 4
-			$URL.="&addReturn=fail4" ;
+			$URL.="&return=error3" ;
 			header("Location: {$URL}");
 		}
 		else {	
@@ -87,7 +87,7 @@ else {
 			catch(PDOException $e) { 
 				//Fail 2
 				print $e->getMessage() ; exit() ;
-				$URL.="&addReturn=fail2" ;
+				$URL.="&return=error2" ;
 				header("Location: {$URL}");
 			}
 			
@@ -115,12 +115,12 @@ else {
 			
 			if ($partialFail==TRUE) {
 				//Fail 5
-				$URL.="&addReturn=fail5" ;
+				$URL.="&return=warning1" ;
 				header("Location: {$URL}");
 			}
 			else {
 				//Success 0
-				$URL.="&addReturn=success0" ;
+				$URL.="&return=success0" ;
 				header("Location: {$URL}");
 			}
 		}

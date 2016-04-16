@@ -46,7 +46,7 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 								
 if (isActionAccessible($guid, $connection2, "/modules/Crowd Assessment/crowdAssess_view_discuss_post.php")==FALSE) {
 	//Fail 0
-	$URL.="&updateReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -54,7 +54,7 @@ else {
 	//Check if school year specified
 	if ($gibbonPlannerEntryID=="" OR $gibbonPlannerEntryHomeworkID=="" OR $gibbonPersonID=="") {
 		//Fail1
-		$URL.="&updateReturn=fail1" ;
+		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -66,14 +66,14 @@ else {
 		}
 		catch(PDOException $e) { 
 			//Fail2
-			$URL.="&updateReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
 		
 		if ($result->rowCount()!=1) {
 			//Fail 5
-			$URL.="&updateReturn=fail5" ;
+			$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -83,7 +83,7 @@ else {
 			
 			if ($role=="") {
 				//Fail2
-				$URL.="&updateReturn=fail2" ;
+				$URL.="&return=error2" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -96,14 +96,14 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail2
-						$URL.="&updateReturn=fail2" ;
+						$URL.="&return=erorr2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
 					
 					if ($resultList->rowCount()!=1) {
 						//Fail2
-						$URL.="&updateReturn=fail2" ;
+						$URL.="&return=error2" ;
 						header("Location: {$URL}");
 					}
 					else {
@@ -125,7 +125,7 @@ else {
 						}
 						catch(PDOException $e) { 
 							//Fail 2
-							$URL.="&updateReturn=fail2" ;
+							$URL.="&return=erorr2" ;
 							header("Location: {$URL}");
 							exit() ;
 						}
@@ -168,7 +168,7 @@ else {
 						}
 						
 						//Success 0
-						$URL.="&updateReturn=success0$hash" ;
+						$URL.="&return=success0$hash" ;
 						header("Location: {$URL}");
 					}
 				}

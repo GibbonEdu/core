@@ -44,7 +44,7 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/Activities/activities_manage_enrolment_add.php")==FALSE) {
 	//Fail 0
-	$URL.="&addReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -54,7 +54,7 @@ else {
 	
 	if ($gibbonActivityID=="" OR $status=="") {
 		//Fail 3
-		$URL.="&addReturn=fail3" ;
+		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -67,7 +67,7 @@ else {
 		
 		if (count($choices)<1) {
 			//Fail 1
-			$URL.="&addReturn=fail1" ;
+			$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -99,12 +99,12 @@ else {
 			//Write to database
 			if ($update==FALSE) {
 				//Fail 2
-				$URL.="&addReturn=fail2" ;
+				$URL.="&return=error2" ;
 				header("Location: {$URL}");
 			}
 			else {
 				//Success 0
-				$URL.="&addReturn=success0" ;
+				$URL.="&return=success0" ;
 				header("Location: {$URL}");
 			}
 		}

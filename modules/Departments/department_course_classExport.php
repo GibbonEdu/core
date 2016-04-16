@@ -43,13 +43,13 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/Departments/department_course_class.php")==FALSE OR getHighestGroupedAction($guid, "/modules/Students/student_view_details.php", $connection2)!="View Student Profile_full") {
 	//Fail 0
-	$URL.="&exportReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
 	if ($gibbonCourseClassID=="") {
 		//Fail 1
-		$URL.="&exportReturn=fail1" ;
+		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -64,7 +64,7 @@ else {
 		}
 		if ($result->rowCount()<1) {
 			//Fail 3
-			$URL.="&exportReturn=fail3" ;
+			$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -78,7 +78,7 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail 2
-				$URL.="&exportReturn=fail2" ;
+				$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}

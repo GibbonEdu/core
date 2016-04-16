@@ -40,7 +40,7 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/Activities/activities_manage_edit.php")==FALSE) {
 	//Fail 0
-	$URL.="&updateReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -48,7 +48,7 @@ else {
 	//Check if school year specified
 	if ($gibbonActivityID=="") {
 		//Fail1
-		$URL.="&updateReturn=fail1" ;
+		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -60,14 +60,14 @@ else {
 		}
 		catch(PDOException $e) { 
 			//Fail2
-			$URL.="&deleteReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ; 
 		}
 		
 		if ($result->rowCount()!=1) {
 			//Fail 2
-			$URL.="&updateReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -116,7 +116,7 @@ else {
 			
 			if ($dateType=="" OR $name=="" OR $provider=="" OR $active=="" OR $registration=="" OR $maxParticipants=="" OR ($paymentOn AND $payment=="") OR ($dateType=="Date" AND ($listingStart=="" OR $listingEnd=="" OR $programStart=="" OR $programEnd==""))) {
 				//Fail 3
-				$URL.="&updateReturn=fail3" ;
+				$URL.="&return=error1" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -212,19 +212,19 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail 2
-					$URL.="&addReturn=fail2" ;
+					$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ; 
 				}
 
 				if ($partialFail==TRUE) {
 					//Fail 5
-					$URL.="&updateReturn=fail5" ;
+					$URL.="&return=error3" ;
 					header("Location: {$URL}");
 				}
 				else {
 					//Success 0
-					$URL.="&updateReturn=success0" ;
+					$URL.="&return=success0" ;
 					header("Location: {$URL}");
 				}
 			}
