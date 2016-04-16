@@ -349,6 +349,6 @@ UPDATE gibbonAction SET category='Request Updates' WHERE gibbonModuleID=(SELECT 
 UPDATE gibbonAction SET category='Request Updates' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Data Updater') AND name LIKE 'Update Finance Data_%';end
 UPDATE gibbonAction SET category='Request Updates' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Data Updater') AND name LIKE 'Update Medical Data_%';end
 UPDATE gibbonAction SET category='Request Updates' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Data Updater') AND name LIKE 'Update Personal Data_%';end
-
+UPDATE gibbonSetting SET description='Default HTML contents for the Job Opening Description field.' WHERE name='jobOpeningDescriptionTemplate' AND scope='Staff';end
 ";
 ?>
