@@ -106,7 +106,7 @@ function makeBlock($guid, $connection2, $i, $mode="masterAdd", $title="", $type=
 				<?php } ?>
 			
 				$('#delete<?php print $i ?>').unbind('click').click(function() {
-					if (confirm("<?php print _('Are you sure you want to delete this record?') ?>")) {
+					if (confirm("<?php print __($guid, 'Are you sure you want to delete this record?') ?>")) {
 						$('#block<?php print $i ?>').fadeOut(600, function(){ $('#block<?php print $i ?>').remove(); });
 					}
 				});
@@ -128,9 +128,9 @@ function makeBlock($guid, $connection2, $i, $mode="masterAdd", $title="", $type=
 			<tr>
 				<td style='width: 50%'>
 					<input name='order[]' type='hidden' value='<?php print $i ?>'>
-					<input <?php if ($mode=="embed") { print "readonly" ; } ?> maxlength=100 id='title<?php print $i ?>' name='title<?php print $i ?>' type='text' style='float: left; border: 1px dotted #aaa; background: none; margin-left: 3px; <?php if ($mode=="masterAdd") { print "color: #999;" ;} ?> margin-top: 0px; font-size: 140%; font-weight: bold; width: 350px' value='<?php if ($mode=="masterAdd") { print sprintf(_('Block %1$s'), $i) ;} else { print htmlPrep($title) ;} ?>'><br/>
-					<input <?php if ($mode=="embed") { print "readonly" ; } ?> maxlength=50 id='type<?php print $i ?>' name='type<?php print $i ?>' type='text' style='float: left; border: 1px dotted #aaa; background: none; margin-left: 3px; <?php if ($mode=="masterAdd") { print "color: #999;" ;} ?> margin-top: 2px; font-size: 110%; font-style: italic; width: 250px' value='<?php if ($mode=="masterAdd") { print _("type (e.g. discussion, outcome)") ;} else { print htmlPrep($type) ;} ?>'>
-					<input <?php if ($mode=="embed") { print "readonly" ; } ?> maxlength=3 id='length<?php print $i ?>' name='length<?php print $i ?>' type='text' style='float: left; border: 1px dotted #aaa; background: none; margin-left: 3px; <?php if ($mode=="masterAdd") { print "color: #999;" ;} ?> margin-top: 2px; font-size: 110%; font-style: italic; width: 95px' value='<?php if ($mode=="masterAdd") { print _("length (min)") ;} else { print htmlPrep($length) ;} ?>'>
+					<input <?php if ($mode=="embed") { print "readonly" ; } ?> maxlength=100 id='title<?php print $i ?>' name='title<?php print $i ?>' type='text' style='float: left; border: 1px dotted #aaa; background: none; margin-left: 3px; <?php if ($mode=="masterAdd") { print "color: #999;" ;} ?> margin-top: 0px; font-size: 140%; font-weight: bold; width: 350px' value='<?php if ($mode=="masterAdd") { print sprintf(__($guid, 'Block %1$s'), $i) ;} else { print htmlPrep($title) ;} ?>'><br/>
+					<input <?php if ($mode=="embed") { print "readonly" ; } ?> maxlength=50 id='type<?php print $i ?>' name='type<?php print $i ?>' type='text' style='float: left; border: 1px dotted #aaa; background: none; margin-left: 3px; <?php if ($mode=="masterAdd") { print "color: #999;" ;} ?> margin-top: 2px; font-size: 110%; font-style: italic; width: 250px' value='<?php if ($mode=="masterAdd") { print __($guid, "type (e.g. discussion, outcome)") ;} else { print htmlPrep($type) ;} ?>'>
+					<input <?php if ($mode=="embed") { print "readonly" ; } ?> maxlength=3 id='length<?php print $i ?>' name='length<?php print $i ?>' type='text' style='float: left; border: 1px dotted #aaa; background: none; margin-left: 3px; <?php if ($mode=="masterAdd") { print "color: #999;" ;} ?> margin-top: 2px; font-size: 110%; font-style: italic; width: 95px' value='<?php if ($mode=="masterAdd") { print __($guid, "length (min)") ;} else { print htmlPrep($length) ;} ?>'>
 				</td>
 				<td style='text-align: right; width: 50%'>
 					<div style='margin-bottom: 5px'>
@@ -145,14 +145,14 @@ function makeBlock($guid, $connection2, $i, $mode="masterAdd", $title="", $type=
 							}
 							catch(PDOException $e) { }
 							if ($resultCheck->rowCount()==1) {
-								print "<div style='float: right; margin-top: -2px' id='starBox$i'><img id='unstar$i' title='" . _('Unstar') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_on.png'/></div> " ;
+								print "<div style='float: right; margin-top: -2px' id='starBox$i'><img id='unstar$i' title='" . __($guid, 'Unstar') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_on.png'/></div> " ;
 							}
 							else {
-								print "<div style='float: right; margin-top: -2px' id='starBox$i'><img id='star$i' title='" . _('Star') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_off.png'/></div> " ;
+								print "<div style='float: right; margin-top: -2px' id='starBox$i'><img id='star$i' title='" . __($guid, 'Star') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_off.png'/></div> " ;
 							}
 						}
 						if ($mode!="plannerEdit" AND $mode!="embed") {
-							print "<img style='margin-top: 2px' id='delete$i' title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/> " ;
+							print "<img style='margin-top: 2px' id='delete$i' title='" . __($guid, 'Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/> " ;
 						}
 						if ($mode=="workingEdit") {
 							//Check that block is still connected to master (poor design in original smart units means that they might be disconnected, and so copyback will not work.
@@ -168,15 +168,15 @@ function makeBlock($guid, $connection2, $i, $mode="masterAdd", $title="", $type=
 							if ($resultCheck->rowCount()==1) {
 								$rowCheck=$resultCheck->fetch() ;
 								if (is_null($rowCheck["gibbonUnitBlockStarID"])) {
-									print "<a onclick='return confirm(\"" . _('Are you sure you want to leave this page? Any unsaved changes will be lost.') . "\")' style='margin-right: 2px; font-weight: normal; font-style: normal; color: #fff' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/units_edit_working_copyback.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonCourseClassID=" . $_GET["gibbonCourseClassID"] . "&gibbonUnitID=" . $_GET["gibbonUnitID"] . "&gibbonUnitBlockID=$gibbonUnitBlockID&gibbonUnitClassBlockID=$gibbonUnitClassBlockID&gibbonUnitClassID=" . $_GET["gibbonUnitClassID"] . "'><img id='copyback$i' title='Copy Back' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/copyback.png'/></a>" ;
+									print "<a onclick='return confirm(\"" . __($guid, 'Are you sure you want to leave this page? Any unsaved changes will be lost.') . "\")' style='margin-right: 2px; font-weight: normal; font-style: normal; color: #fff' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/units_edit_working_copyback.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonCourseClassID=" . $_GET["gibbonCourseClassID"] . "&gibbonUnitID=" . $_GET["gibbonUnitID"] . "&gibbonUnitBlockID=$gibbonUnitBlockID&gibbonUnitClassBlockID=$gibbonUnitClassBlockID&gibbonUnitClassID=" . $_GET["gibbonUnitClassID"] . "'><img id='copyback$i' title='Copy Back' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/copyback.png'/></a>" ;
 								}
 								else {
-									print "<img style='margin-left: -2px; margin-right: 2px' title='" . _('This is a Star Block') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_on.png'/> " ;
+									print "<img style='margin-left: -2px; margin-right: 2px' title='" . __($guid, 'This is a Star Block') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/like_on.png'/> " ;
 								}
 							}
 						}
 						if ($mode!="embed") {
-							print "<div title='" . _('Show/Hide Details') . "' id='show$i' style='margin-right: 3px; margin-top: 3px; margin-left: 3px; padding-right: 1px; float: right; width: 25px; height: 25px; background-image: url(\"" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png\"); background-repeat: no-repeat'></div></br>" ;
+							print "<div title='" . __($guid, 'Show/Hide Details') . "' id='show$i' style='margin-right: 3px; margin-top: 3px; margin-left: 3px; padding-right: 1px; float: right; width: 25px; height: 25px; background-image: url(\"" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png\"); background-repeat: no-repeat'></div></br>" ;
 						}
 						?>
 					</div>
@@ -200,7 +200,7 @@ function makeBlock($guid, $connection2, $i, $mode="masterAdd", $title="", $type=
 					if ($mode=="masterAdd") { 
 						$contents=getSettingByScope($connection2, "Planner", "smartBlockTemplate" ) ; 
 					}
-					print "<div style='text-align: left; font-weight: bold; margin-top: 15px'>" . _('Block Contents') . "</div>" ;
+					print "<div style='text-align: left; font-weight: bold; margin-top: 15px'>" . __($guid, 'Block Contents') . "</div>" ;
 					//Block Contents
 					if ($mode!="embed") {
 						print getEditor($guid, FALSE, "contents$i", $contents, 20, true, false, false, true) ;
@@ -211,38 +211,38 @@ function makeBlock($guid, $connection2, $i, $mode="masterAdd", $title="", $type=
 					
 					//Teacher's Notes
 					if ($mode!="embed") {
-						print "<div style='text-align: left; font-weight: bold; margin-top: 15px'>" . _('Teacher\'s Notes') . "</div>" ;
+						print "<div style='text-align: left; font-weight: bold; margin-top: 15px'>" . __($guid, 'Teacher\'s Notes') . "</div>" ;
 						print getEditor($guid, FALSE, "teachersNotes$i", $teachersNotes, 20, true, false, false, true) ;
 					}
 					else if ($teachersNotes!="") {
-						print "<div style='text-align: left; font-weight: bold; margin-top: 15px'>" . _('Teacher\'s Notes') . "</div>" ;
+						print "<div style='text-align: left; font-weight: bold; margin-top: 15px'>" . __($guid, 'Teacher\'s Notes') . "</div>" ;
 						print "<div style='max-width: 595px; margin-right: 0!important; padding: 5px!important; background-color: #F6CECB'><p>$teachersNotes</p></div>" ;
 					}
 					
 					//Outcomes
 					if ($mode=="masterAdd") { 
-						print "<div style='text-align: left; font-weight: bold; margin-top: 15px'>" . _('Outcomes') . "</div>" ;
-						print "<div class='warning'>" . _("After creating this unit, you will be able to edit the unit and assign unit outcomes to individual blocks. These will then become lesson outcomes when you deploy a unit.") . "</div>" ;
+						print "<div style='text-align: left; font-weight: bold; margin-top: 15px'>" . __($guid, 'Outcomes') . "</div>" ;
+						print "<div class='warning'>" . __($guid, "After creating this unit, you will be able to edit the unit and assign unit outcomes to individual blocks. These will then become lesson outcomes when you deploy a unit.") . "</div>" ;
 					}
 					else if ($mode=="masterEdit" OR $mode=="workingDeploy" OR $mode=="workingEdit" OR $mode=="plannerEdit") { 
-						print "<div style='text-align: left; font-weight: bold; margin-top: 15px'>" . _('Outcomes') . "</div>" ;
+						print "<div style='text-align: left; font-weight: bold; margin-top: 15px'>" . __($guid, 'Outcomes') . "</div>" ;
 						if (count($unitOutcomes)<1) {
-							print "<div class='warning'>" . _("There are no records to display.") . "</div>" ;
+							print "<div class='warning'>" . __($guid, "There are no records to display.") . "</div>" ;
 						}
 						else {				
 							print "<table cellspacing='0' style='width:100%'>" ;
 								print "<tr class='head'>" ;
 									print "<th>" ;
-										print _("Scope") ;
+										print __($guid, "Scope") ;
 									print "</th>" ;
 									print "<th>" ;
-										print _("Category") ;
+										print __($guid, "Category") ;
 									print "</th>" ;
 									print "<th>" ;
-										print _("Name") ;
+										print __($guid, "Name") ;
 									print "</th>" ;
 									print "<th>" ;
-										print _("Include") ;
+										print __($guid, "Include") ;
 									print "</th>" ;
 								print "</tr>" ;
 							
@@ -305,7 +305,7 @@ function getThread($guid, $connection2, $gibbonPlannerEntryID, $parent, $level, 
 
 	if ($level==0 AND $resultDiscuss->rowCount()==0) {
 		$output.="<div class='error'>" ;
-			$output.=_("There are no records to display.") ;
+			$output.=__($guid, "There are no records to display.") ;
 		$output.="</div>" ;
 	}
 	else {
@@ -321,8 +321,8 @@ function getThread($guid, $connection2, $gibbonPlannerEntryID, $parent, $level, 
 			}
 			$output.="<table class='noIntBorder chatBox $classExtra' cellspacing='0' style='width: " . $width . "px; margin-left: " . ($level*15) . "px'>" ;
 				$output.="<tr>" ;
-					$output.="<td><i>". formatName($rowDiscuss["title"], $rowDiscuss["preferredName"], $rowDiscuss["surname"], $rowDiscuss["category"]) . " " . _('said') . "</i>:</td>" ;
-					$output.="<td style='text-align: right'><i>" . _('Posted at') . " <b>" . substr($rowDiscuss["timestamp"],11,5) . "</b> on <b>" . dateConvertBack($guid, substr($rowDiscuss["timestamp"],0,10)) . "</b></i></td>" ;
+					$output.="<td><i>". formatName($rowDiscuss["title"], $rowDiscuss["preferredName"], $rowDiscuss["surname"], $rowDiscuss["category"]) . " " . __($guid, 'said') . "</i>:</td>" ;
+					$output.="<td style='text-align: right'><i>" . __($guid, 'Posted at') . " <b>" . substr($rowDiscuss["timestamp"],11,5) . "</b> on <b>" . dateConvertBack($guid, substr($rowDiscuss["timestamp"],0,10)) . "</b></i></td>" ;
 				$output.="</tr>" ;
 				$output.="<tr>" ;
 					$output.="<td style='max-width: " . (700-($level*15)) . "px;' colspan=2><b>" . $rowDiscuss["comment"] . "</b></td>" ;
@@ -366,13 +366,13 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		$output="<div class='error'>" ;
-		$output.=_("The highest grouped action cannot be determined.") ;
+		$output.=__($guid, "The highest grouped action cannot be determined.") ;
 		$output.="</div>" ;
 	}
 	else {
 		//Show date picker in sidebar
 		$output="<h2 class='sidebar'>" ;
-		$output.=_("Choose A Date") ;
+		$output.=__($guid, "Choose A Date") ;
 		$output.="</h2>" ;
 			
 		//Count back to first Monday before first day
@@ -432,25 +432,25 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
 		$output.="<table class='mini' cellspacing='0' style='width: 250px; margin-bottom: 0px'>" ;
 			$output.="<tr class='head'>" ;
 				$output.="<th style='width: 35px; text-align: center'>" ;
-					$output.=_("Mon") ;
+					$output.=__($guid, "Mon") ;
 				$output.="</th>" ;
 				$output.="<th style='width: 35px; text-align: center'>" ;
-					$output.=_("Tue") ;
+					$output.=__($guid, "Tue") ;
 				$output.="</th>" ;
 				$output.="<th style='width: 35px; text-align: center'>" ;
-					$output.=_("Wed") ;
+					$output.=__($guid, "Wed") ;
 				$output.="</th>" ;
 				$output.="<th style='width: 35px; text-align: center'>" ;
-					$output.=_("Thu") ;
+					$output.=__($guid, "Thu") ;
 				$output.="</th>" ;
 				$output.="<th style='width: 35px; text-align: center'>" ;
-					$output.=_("Fri") ;
+					$output.=__($guid, "Fri") ;
 				$output.="</th>" ;
 				$output.="<th style='width: 35px; text-align: center'>" ;
-					$output.=_("Sat") ;
+					$output.=__($guid, "Sat") ;
 				$output.="</th>" ;
 				$output.="<th style='width: 35px; text-align: center'>" ;
-					$output.=_("Sun") ;
+					$output.=__($guid, "Sun") ;
 				$output.="</th>" ;
 			$output.="</tr>" ;
 			
@@ -532,7 +532,7 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
 						$output.="</script>" ;
 					$output.="</td>" ;
 					$output.="<td class='right'>" ;
-						$output.="<input type='submit' value='" . _('Go') . "'>" ;
+						$output.="<input type='submit' value='" . __($guid, 'Go') . "'>" ;
 					$output.="</td>" ;
 				$output.="</tr>" ;
 			$output.="</table>" ;
@@ -541,7 +541,7 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
 		
 		//Show class picker in sidebar
 		$output.="<h2>" ;
-		$output.=_("Choose A Class") ;
+		$output.=__($guid, "Choose A Class") ;
 		$output.="</h2>" ;
 		
 		$selectCount=0 ;
@@ -563,7 +563,7 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
 							}
 							catch(PDOException $e) { }
 							if ($highestAction=="Lesson Planner_viewEditAllClasses" OR $highestAction=="Lesson Planner_viewAllEditMyClasses") {
-								$output.="<optgroup label='--" . _('My Classes') . "--'>" ;
+								$output.="<optgroup label='--" . __($guid, 'My Classes') . "--'>" ;
 							}
 							while ($rowSelect=$resultSelect->fetch()) {
 								$selected="" ;
@@ -584,7 +584,7 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
 									$resultSelect->execute($dataSelect);
 								}
 								catch(PDOException $e) { }
-								$output.="<optgroup label='--" . _('All Classes') . "--'>" ;
+								$output.="<optgroup label='--" . __($guid, 'All Classes') . "--'>" ;
 								while ($rowSelect=$resultSelect->fetch()) {
 									$selected="" ;
 									if ($rowSelect["gibbonCourseClassID"]==$gibbonCourseClassID AND $selectCount==0) {
@@ -598,7 +598,7 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
 						 $output.="</select>" ;
 					$output.="</td>" ;
 					$output.="<td class='right'>" ;
-						$output.="<input type='submit' value='" . _('Go') . "'>" ;
+						$output.="<input type='submit' value='" . __($guid, 'Go') . "'>" ;
 					$output.="</td>" ;
 				$output.="</tr>" ;
 			$output.="</table>" ;
@@ -608,7 +608,7 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
 		if ($_GET["q"]!="/modules/Planner/planner_deadlines.php") {
 			//Show upcoming deadlines
 			$output.="<h2>" ;
-			$output.=_("Homework & Deadlines") ;
+			$output.=__($guid, "Homework & Deadlines") ;
 			$output.="</h2>" ;
 			
 			
@@ -629,7 +629,7 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
 			}
 			if ($result->rowCount()<1) {
 				$output.="<div class='success'>" ;
-					$output.=_("No upcoming deadlines!") ;
+					$output.=__($guid, "No upcoming deadlines!") ;
 				$output.="</div>" ;
 			}
 			else {
@@ -670,13 +670,13 @@ function sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYe
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		$output="<div class='error'>" ;
-		$output.=_("The highest grouped action cannot be determined.") ;
+		$output.=__($guid, "The highest grouped action cannot be determined.") ;
 		$output.="</div>" ;
 	}
 	else {
 		//Show class picker in sidebar
 		$output.="<h2>" ;
-		$output.=_("Choose A Course") ;
+		$output.=__($guid, "Choose A Course") ;
 		$output.="</h2>" ;
 		
 		$selectCount=0 ;
@@ -712,7 +712,7 @@ function sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYe
 						 $output.="</select>" ;
 					$output.="</td>" ;
 					$output.="<td class='right'>" ;
-						$output.="<input type='submit' value='" . _('Go') . "'>" ;
+						$output.="<input type='submit' value='" . __($guid, 'Go') . "'>" ;
 					$output.="</td>" ;
 				$output.="</tr>" ;
 			$output.="</table>" ;
@@ -798,8 +798,8 @@ function makeBlockOutcome($guid,  $i, $type="", $gibbonOutcomeID="", $title="", 
 					<td style='text-align: right; width: 50%'>
 						<div style='margin-bottom: 25px'>
 							<?php
-							print "<img id='" . $type  . "delete$i' title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/> " ;
-							print "<div id='" . $type . "show$i' title='" . _('Show/Hide Details') . "' style='margin-right: 3px; margin-left: 3px; padding-right: 1px; float: right; width: 25px; height: 25px; background-image: url(\"" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png\"); background-repeat: no-repeat'></div>" ;
+							print "<img id='" . $type  . "delete$i' title='" . __($guid, 'Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/> " ;
+							print "<div id='" . $type . "show$i' title='" . __($guid, 'Show/Hide Details') . "' style='margin-right: 3px; margin-left: 3px; padding-right: 1px; float: right; width: 25px; height: 25px; background-image: url(\"" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png\"); background-repeat: no-repeat'></div>" ;
 							?>
 						</div>
 						<input type='hidden' name='id<?php print $i ?>' value='<?php print $id ?>'>

@@ -23,6 +23,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 
 //Get alternative header names
+$enableColumnWeighting=getSettingByScope($connection2, "Markbook", "enableColumnWeighting") ;
 $attainmentAlternativeName=getSettingByScope($connection2, "Markbook", "attainmentAlternativeName") ;
 $attainmentAlternativeNameAbrev=getSettingByScope($connection2, "Markbook", "attainmentAlternativeNameAbrev") ;
 $effortAlternativeName=getSettingByScope($connection2, "Markbook", "effortAlternativeName") ;
@@ -31,7 +32,7 @@ $effortAlternativeNameAbrev=getSettingByScope($connection2, "Markbook", "effortA
 if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_view.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("Your request failed because you do not have access to this action.") ;
+		print __($guid, "Your request failed because you do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -40,11 +41,11 @@ else {
 	$highestAction2=getHighestGroupedAction($guid, "/modules/Markbook/markbook_edit.php", $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print _("The highest grouped action cannot be determined.") ;
+		print __($guid, "The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
-		$alert=getAlert($connection2, 002) ;
+		$alert=getAlert($guid, $connection2, 002) ;
 		
 		//VIEW ACCESS TO ALL MARKBOOK DATA
 		if ($highestAction=="View Markbook_allClassesAllData") {
@@ -90,17 +91,16 @@ else {
 			}
 			if ($gibbonCourseClassID=="") {
 				print "<div class='trail'>" ;
-				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" ._('View Markbook') . "</div>" ;
+				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" .__($guid, 'View Markbook') . "</div>" ;
 				print "</div>" ;
 				//Add multiple columns
 				if ($multiAdd) {
 					print "<div class='linkTop'>" ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_addMulti.php&gibbonCourseClassID=$gibbonCourseClassID'>" . _('Add Multiple Records') . "<img style='margin-left: 5px' title='" . _('Add Multiple Records') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new_multi.png'/></a>" ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_addMulti.php&gibbonCourseClassID=$gibbonCourseClassID'>" . __($guid, 'Add Multiple Records') . "<img style='margin-left: 5px' title='" . __($guid, 'Add Multiple Records') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new_multi.png'/></a>" ;
 					print "</div>" ;
 				}
-				print "<div class='warning'>" ;
-					print "Use the class listing on the right to choose a Markbook to view." ;
-				print "</div>" ;
+				//Get class chooser
+				print classChooser($guid, $connection2, $gibbonCourseClassID) ;
 			}
 			//Check existence of and access to this class.
 			else {
@@ -115,10 +115,10 @@ else {
 				}
 				if ($result->rowCount()!=1) {
 					print "<div class='trail'>" ;
-					print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('View Markbook') . "</div>" ;
+					print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'View Markbook') . "</div>" ;
 					print "</div>" ;
 					print "<div class='error'>" ;
-						print _("The specified record does not exist.") ;
+						print __($guid, "The specified record does not exist.") ;
 					print "</div>" ;	
 				}
 				else {
@@ -126,7 +126,7 @@ else {
 					$courseName=$row["courseName"] ;
 					$gibbonYearGroupIDList=$row["gibbonYearGroupIDList"] ;
 					print "<div class='trail'>" ;
-					print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>View " . $row["course"] . "." . $row["class"] . " Markbook</div>" ;
+					print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>View " . $row["course"] . "." . $row["class"] . " Markbook</div>" ;
 					print "</div>" ;
 					
 					if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -134,7 +134,7 @@ else {
 					$class="error" ;
 					if (!($deleteReturn=="")) {
 						if ($deleteReturn=="success0") {
-							$deleteReturnMessage=_("Your request was completed successfully.") ;		
+							$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;		
 							$class="success" ;
 						}
 						print "<div class='$class'>" ;
@@ -154,12 +154,16 @@ else {
 					//Add multiple columns
 					if ($multiAdd) {
 						print "<div class='linkTop'>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_addMulti.php&gibbonCourseClassID=$gibbonCourseClassID'>" . _('Add Multiple Records') . "<img style='margin-left: 5px' title='" . _('Add Multiple Records') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new_multi.png'/></a>" ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_addMulti.php&gibbonCourseClassID=$gibbonCourseClassID'>" . __($guid, 'Add Multiple Records') . "<img style='margin-left: 5px' title='" . __($guid, 'Add Multiple Records') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new_multi.png'/></a>" ;	
 						print "</div>" ;
 					}
 					
+					//Get class chooser
+					print classChooser($guid, $connection2, $gibbonCourseClassID) ;
+					
 					//Get teacher list
 					$teaching=FALSE ;
+					$teachers="" ;
 					try {
 						$data=array("gibbonCourseClassID"=>$gibbonCourseClassID); 
 						$sql="SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Teacher' AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY surname, preferredName" ;
@@ -169,25 +173,14 @@ else {
 					catch(PDOException $e) { 
 						print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 					}
-
 					if ($result->rowCount()>0) {
-						print "<h3 style='margin-top: 0px'>" ;
-							print _("Teachers") ;
-						print "</h3>" ;	
-						print "<ul>" ;
-							while ($row=$result->fetch()) {
-								print "<li>" . formatName($row["title"], $row["preferredName"], $row["surname"], "Staff") . "</li>" ;
-								if ($row["gibbonPersonID"]==$_SESSION[$guid]["gibbonPersonID"]) {
-									$teaching=TRUE ;
-								}
-							}							
-						print "</ul>" ;
+						while ($row=$result->fetch()) {
+							$teachers.=formatName($row["title"], $row["preferredName"], $row["surname"], "Staff", FALSE, TRUE) . ", " ;
+							if ($row["gibbonPersonID"]==$_SESSION[$guid]["gibbonPersonID"]) {
+								$teaching=TRUE ;
+							}
+						}					
 					}
-					
-					//Print marks
-					print "<h3>" ;
-						print _("Marks") ;
-					print "</h3>" ;	
 					
 					//Count number of columns
 					try {
@@ -203,12 +196,12 @@ else {
 					if ($columns<1) {
 						print "<div class='linkTop'>" ;
 							if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_view.php") AND $teaching) {
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID'>" . _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID'>" . __($guid, 'Add') . "<img style='margin-left: 5px' title='" . __($guid, 'Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
 							}
 						print "</div>" ;
 						
 						print "<div class='warning'>" ;
-							print _("There are no records to display.") ;
+							print __($guid, "There are no records to display.") ;
 						print "</div>" ;
 					}
 					else {
@@ -219,153 +212,125 @@ else {
 						if ($x=="") {
 							$x=0 ;
 						}
-						$columnsPerPage=3 ;
-						$columnsThisPage=3 ;
-				
-						if ($columns<1) {
-							print "<div class='linkTop'>" ;
-								if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_view.php") AND $teaching) {
-									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID'><img style='margin-right: 3px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
-								}
-							print "</div>" ;
+						$columnsPerPage=4 ;
+						$columnsThisPage=4 ;
 						
-							print "<div class='warning'>" ;
-								print _("There are no records to display.") ;
-							print "</div>" ;	
+						if ($columns<4) {
+							$columnsThisPage=$columns ;
 						}
-						else {
-							if ($columns<3) {
-								$columnsThisPage=$columns ;
-							}
-							if ($columns-($x*$columnsPerPage)<3) {
-								$columnsThisPage=$columns-($x*$columnsPerPage) ;
-							}
-							try {
-								$data=array("gibbonCourseClassID"=>$gibbonCourseClassID); 
-								$sql="SELECT * FROM gibbonMarkbookColumn WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY complete, completeDate DESC LIMIT " . ($x*$columnsPerPage) . ", " . $columnsPerPage ;
-								$result=$connection2->prepare($sql);
-								$result->execute($data);
-							}
-							catch(PDOException $e) { 
-								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-							}
-							
-							//Work out details for external assessment display
-							$externalAssessment=FALSE ; 
-							if (isActionAccessible($guid, $connection2, "/modules/External Assessment/externalAssessment_details.php")) {
-								$gibbonYearGroupIDListArray=(explode(",", $gibbonYearGroupIDList)) ;
-								if (count($gibbonYearGroupIDListArray)==1) {
-									$primaryExternalAssessmentByYearGroup=unserialize(getSettingByScope($connection2, "School Admin", "primaryExternalAssessmentByYearGroup")) ;
-									if ($primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]]!="" AND $primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]]!="-") {
-										$gibbonExternalAssessmentID=substr($primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]],0,strpos($primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]],"-")) ;
-										$gibbonExternalAssessmentIDCategory=substr($primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]],(strpos($primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]],"-")+1)) ;
-									
-										try {
-											$dataExternalAssessment=array("gibbonExternalAssessmentID"=>$gibbonExternalAssessmentID, "category"=>$gibbonExternalAssessmentIDCategory); 
-											$courseNameTokens=explode(" ", $courseName) ;
-											$courseWhere=" AND (" ;
-											$whereCount=1 ;
-											foreach ($courseNameTokens AS $courseNameToken) {
-												if (strlen($courseNameToken)>3) {
-													$dataExternalAssessment["token" . $whereCount]="%" . $courseNameToken . "%" ;
-													$courseWhere.="gibbonExternalAssessmentField.name LIKE :token$whereCount OR " ;
-													$whereCount++ ;
-												}
+						if ($columns-($x*$columnsPerPage)<4) {
+							$columnsThisPage=$columns-($x*$columnsPerPage) ;
+						}
+						try {
+							$data=array("gibbonCourseClassID"=>$gibbonCourseClassID); 
+							$sql="SELECT * FROM gibbonMarkbookColumn WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY complete, completeDate DESC LIMIT " . ($x*$columnsPerPage) . ", " . $columnsPerPage ;
+							$result=$connection2->prepare($sql);
+							$result->execute($data);
+						}
+						catch(PDOException $e) { 
+							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+						}
+						
+						//Work out details for external assessment display
+						$externalAssessment=FALSE ; 
+						if (isActionAccessible($guid, $connection2, "/modules/Formal Assessment/externalAssessment_details.php")) {
+							$gibbonYearGroupIDListArray=(explode(",", $gibbonYearGroupIDList)) ;
+							if (count($gibbonYearGroupIDListArray)==1) {
+								$primaryExternalAssessmentByYearGroup=unserialize(getSettingByScope($connection2, "School Admin", "primaryExternalAssessmentByYearGroup")) ;
+								if ($primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]]!="" AND $primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]]!="-") {
+									$gibbonExternalAssessmentID=substr($primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]],0,strpos($primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]],"-")) ;
+									$gibbonExternalAssessmentIDCategory=substr($primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]],(strpos($primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]],"-")+1)) ;
+								
+									try {
+										$dataExternalAssessment=array("gibbonExternalAssessmentID"=>$gibbonExternalAssessmentID, "category"=>$gibbonExternalAssessmentIDCategory); 
+										$courseNameTokens=explode(" ", $courseName) ;
+										$courseWhere=" AND (" ;
+										$whereCount=1 ;
+										foreach ($courseNameTokens AS $courseNameToken) {
+											if (strlen($courseNameToken)>3) {
+												$dataExternalAssessment["token" . $whereCount]="%" . $courseNameToken . "%" ;
+												$courseWhere.="gibbonExternalAssessmentField.name LIKE :token$whereCount OR " ;
+												$whereCount++ ;
 											}
-											if ($whereCount<1) {
-												$courseWhere="" ;
-											}
-											else {
-												$courseWhere=substr($courseWhere,0,-4) . ")" ;
-											}
-											$sqlExternalAssessment="SELECT gibbonExternalAssessment.name AS assessment, gibbonExternalAssessmentField.name, gibbonExternalAssessmentFieldID, category FROM gibbonExternalAssessmentField JOIN gibbonExternalAssessment ON (gibbonExternalAssessmentField.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) WHERE gibbonExternalAssessmentField.gibbonExternalAssessmentID=:gibbonExternalAssessmentID AND category=:category $courseWhere ORDER BY name" ;
-											$resultExternalAssessment=$connection2->prepare($sqlExternalAssessment);
-											$resultExternalAssessment->execute($dataExternalAssessment);
 										}
-										catch(PDOException $e) { 
-											print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+										if ($whereCount<1) {
+											$courseWhere="" ;
 										}
-										if ($resultExternalAssessment->rowCount()>=1) {
-											$rowExternalAssessment=$resultExternalAssessment->fetch() ;
-											$externalAssessment=TRUE ;
-											$externalAssessmentFields=array() ;
-											$externalAssessmentFields[0]=$rowExternalAssessment["gibbonExternalAssessmentFieldID"] ;
-											$externalAssessmentFields[1]=$rowExternalAssessment["name"] ;
-											$externalAssessmentFields[2]=$rowExternalAssessment["assessment"] ;
-											$externalAssessmentFields[3]=$rowExternalAssessment["category"] ;
+										else {
+											$courseWhere=substr($courseWhere,0,-4) . ")" ;
 										}
+										$sqlExternalAssessment="SELECT gibbonExternalAssessment.name AS assessment, gibbonExternalAssessmentField.name, gibbonExternalAssessmentFieldID, category FROM gibbonExternalAssessmentField JOIN gibbonExternalAssessment ON (gibbonExternalAssessmentField.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) WHERE gibbonExternalAssessmentField.gibbonExternalAssessmentID=:gibbonExternalAssessmentID AND category=:category $courseWhere ORDER BY name" ;
+										$resultExternalAssessment=$connection2->prepare($sqlExternalAssessment);
+										$resultExternalAssessment->execute($dataExternalAssessment);
+									}
+									catch(PDOException $e) { 
+										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+									}
+									if ($resultExternalAssessment->rowCount()>=1) {
+										$rowExternalAssessment=$resultExternalAssessment->fetch() ;
+										$externalAssessment=TRUE ;
+										$externalAssessmentFields=array() ;
+										$externalAssessmentFields[0]=$rowExternalAssessment["gibbonExternalAssessmentFieldID"] ;
+										$externalAssessmentFields[1]=$rowExternalAssessment["name"] ;
+										$externalAssessmentFields[2]=$rowExternalAssessment["assessment"] ;
+										$externalAssessmentFields[3]=$rowExternalAssessment["category"] ;
 									}
 								}
 							}
-					
-							//Print table header
-							print "<p>" ;
-								print _("To see more detail on an item (such as a comment or a grade), hover your mouse over it.") ;
-								if ($externalAssessment==TRUE) {
-									print " " . _('The Baseline column is populated based on student performance in external assessments, and can be used as a reference point for the grades in the markbook.') ;
-								}
-							print "</p>" ;
+						}
+				
 						
-							print "<div class='linkTop'>" ;
-								if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit.php")) {
-									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID'>" . _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a> | " ;
-									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_targets.php&gibbonCourseClassID=$gibbonCourseClassID'>" . _('Targets') . "<img style='margin-left: 5px' title='" . _('Set Personalised Attainment Targets') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/target.png'/></a> | " ;
-									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Markbook/markbook_viewExportAll.php?gibbonCourseClassID=$gibbonCourseClassID&return=markbook_view.php'>" . _('Export to Excel') . "<img style='margin-left: 5px' title='" . _('Export to Excel') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/download.png'/></a> | " ;
-								}
-								print "<div style='padding-top: 12px; margin-left: 10px; float: right'>" ;
+						print "<h3>" ;
+							print __($guid, "Results") ;
+						print "</h3>" ;	
+					
+						//Print table header
+						print "<p>" ;
+							if ($teachers!="") {
+								print sprintf(__($guid, 'Class taught by %1$s'), substr($teachers, 0, -2)) . ". " ;
+							}
+							print __($guid, "To see more detail on an item (such as a comment or a grade), hover your mouse over it. To see more columns, using the Newer and Older links.") ;
+							if ($externalAssessment==TRUE) {
+								print " " . __($guid, 'The Baseline column is populated based on student performance in external assessments, and can be used as a reference point for the grades in the markbook.') ;
+							}
+						print "</p>" ;
+					
+						print "<div class='linkTop'>" ;
+							if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit.php")) {
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID'>" . __($guid, 'Add') . "<img style='margin-left: 5px' title='" . __($guid, 'Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a> | " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_targets.php&gibbonCourseClassID=$gibbonCourseClassID'>" . __($guid, 'Targets') . "<img style='margin-left: 5px' title='" . __($guid, 'Set Personalised Attainment Targets') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/target.png'/></a> | " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Markbook/markbook_viewExportAll.php?gibbonCourseClassID=$gibbonCourseClassID&return=markbook_view.php'>" . __($guid, 'Export to Excel') . "<img style='margin-left: 5px' title='" . __($guid, 'Export to Excel') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/download.png'/></a> | " ;
+								print "<div style='padding-top: 16px; margin-left: 10px; float: right'>" ;
 									if ($x<=0) {
-										print _("Newer") ;
+										print __($guid, "Newer") ;
 									}
 									else {
-										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_view.php&gibbonCourseClassID=$gibbonCourseClassID&page=" . ($x-1) . "'>" . _('Newer') . "</a>" ;
+										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_view.php&gibbonCourseClassID=$gibbonCourseClassID&page=" . ($x-1) . "'>" . __($guid, 'Newer') . "</a>" ;
 									}
 									print " | " ;
 									if ((($x+1)*$columnsPerPage)>=$columns) {
-										print _("Older") ;
+										print __($guid, "Older") ;
 									}
 									else {
-										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_view.php&gibbonCourseClassID=$gibbonCourseClassID&page=" . ($x+1) . "'>" . _('Older') . "</a>" ;
+										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_view.php&gibbonCourseClassID=$gibbonCourseClassID&page=" . ($x+1) . "'>" . __($guid, 'Older') . "</a>" ;
 									}
 								print "</div>" ;
-							print "</div>" ;
-				
-							print "<table class='mini' cellspacing='0' style='width: 100%; margin-top: 0px'>" ;
-								print "<tr class='head' style='height: 120px'>" ;
-									print "<th style='width: 150px; max-width: 200px'rowspan=2>" ;
-										print _("Student") ;
-									print "</th>" ;
+							}
+						print "</div>" ;
+						
+        				print "<table id='myTable' class='mini' cellspacing='0' style='width: 100%; margin-top: 0px'>" ;
+							print "<tr class='head' style='height: 120px'>" ;
+								print "<th style='width: 120px; min-width: 120px; max-width: 120px' rowspan=2>" ;
+									print __($guid, "Student") ;
+								print "</th>" ;
+						
+								//Show Baseline data header
+								if ($externalAssessment==TRUE) {
+									print "<th style='width: 40px; min-width: 40px; max-width: 40px' rowspan=2>" ;
+										$title=__($guid, $externalAssessmentFields[2]) . " | " ;
+										$title.=__($guid, substr($externalAssessmentFields[3], (strpos($externalAssessmentFields[3],"_")+1))) . " | " ;
+										$title.=__($guid, $externalAssessmentFields[1]) ;
 								
-									//Show Baseline data header
-									if ($externalAssessment==TRUE) {
-										print "<th rowspan=2 style='width: 20px'>" ;
-											$title=_($externalAssessmentFields[2]) . " | " ;
-											$title.=_(substr($externalAssessmentFields[3], (strpos($externalAssessmentFields[3],"_")+1))) . " | " ;
-											$title.=_($externalAssessmentFields[1]) ;
-										
-											//Get PAS
-											$PAS=getSettingByScope($connection2, 'System', 'primaryAssessmentScale') ;
-											try {
-												$dataPAS=array("gibbonScaleID"=>$PAS); 
-												$sqlPAS="SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID" ;
-												$resultPAS=$connection2->prepare($sqlPAS);
-												$resultPAS->execute($dataPAS);
-											}
-											catch(PDOException $e) { }
-											if ($resultPAS->rowCount()==1) {
-												$rowPAS=$resultPAS->fetch() ;
-												$title.=" | " . $rowPAS["name"] . " " . _('Scale') . " " ;
-											}
-										
-											print "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);' title='$title'>" ;
-												print _("Baseline") . "<br/>" ;
-											print "</div>" ;
-										print "</th>" ;
-									}
-								
-									//Show target grade header
-									print "<th rowspan=2 style='width: 20px'>" ;
-										$title=_("Personalised attainment target grade") ;
-									
 										//Get PAS
 										$PAS=getSettingByScope($connection2, 'System', 'primaryAssessmentScale') ;
 										try {
@@ -377,272 +342,316 @@ else {
 										catch(PDOException $e) { }
 										if ($resultPAS->rowCount()==1) {
 											$rowPAS=$resultPAS->fetch() ;
-											$title.=" | " . $rowPAS["name"] . " Scale " ;
+											$title.=" | " . $rowPAS["name"] . " " . __($guid, 'Scale') . " " ;
 										}
-									
+								
 										print "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);' title='$title'>" ;
-											print _("Target") . "<br/>" ;
+											print __($guid, "Baseline") . "<br/>" ;
 										print "</div>" ;
 									print "</th>" ;
-								
-									$columnID=array() ;
-									$attainmentID=array() ;
-									$effortID=array() ;
-									for ($i=0; $i<$columnsThisPage; $i++) {
-										$row=$result->fetch() ;
-										if ($row===FALSE) {
-											$columnID[$i]=FALSE ;
+								}
+							
+								//Show target grade header
+							print "<th style='width: 40px; min-width: 40px; max-width: 40px' rowspan=2>" ;
+									$title=__($guid, "Personalised attainment target grade") ;
+							
+									//Get PAS
+									$PAS=getSettingByScope($connection2, 'System', 'primaryAssessmentScale') ;
+									try {
+										$dataPAS=array("gibbonScaleID"=>$PAS); 
+										$sqlPAS="SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID" ;
+										$resultPAS=$connection2->prepare($sqlPAS);
+										$resultPAS->execute($dataPAS);
+									}
+									catch(PDOException $e) { }
+									if ($resultPAS->rowCount()==1) {
+										$rowPAS=$resultPAS->fetch() ;
+										$title.=" | " . $rowPAS["name"] . " Scale " ;
+									}
+							
+									print "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);' title='$title'>" ;
+										print __($guid, "Target") . "<br/>" ;
+									print "</div>" ;
+								print "</th>" ;
+							
+								//Show weighted scrore
+								if ($enableColumnWeighting=="Y") {
+									print "<th style='width: 40px; min-width: 40px; max-width: 40px' rowspan=2>" ;
+										if ($attainmentAlternativeName!="" AND $attainmentAlternativeNameAbrev!="") {
+											$title=sprintf(__($guid, 'Weighted mean of all marked columns using Primary Assessment Scale for %1$s, if numeric'), $attainmentAlternativeName) ;
 										}
 										else {
-											$columnID[$i]=$row["gibbonMarkbookColumnID"];
-											$attainmentOn[$i]=$row["attainment"];
-											$attainmentID[$i]=$row["gibbonScaleIDAttainment"];
-											$effortOn[$i]=$row["effort"];
-											$effortID[$i]=$row["gibbonScaleIDEffort"];
-											$gibbonPlannerEntryID[$i]=$row["gibbonPlannerEntryID"] ;
-											$gibbonRubricIDAttainment[$i]=$row["gibbonRubricIDAttainment"] ;
-											$gibbonRubricIDEffort[$i]=$row["gibbonRubricIDEffort"] ;
-											$comment[$i]=$row["comment"];
-											$uploadedResponse[$i]=$row["uploadedResponse"];
-											$submission[$i]=FALSE ;
-												
-											//WORK OUT IF THERE IS SUBMISSION
-											if (is_null($row["gibbonPlannerEntryID"])==FALSE) {
+											$title=sprintf(__($guid, 'Weighted mean of all marked columns using Primary Assessment Scale for %1$s, if numeric'), "Attainment") ;
+										}
+										
+										print "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);' title='$title'>" ;
+											print __($guid, "Total") . "<br/>" ;
+										print "</div>" ;
+									print "</th>" ;
+									
+									//Cache all weighting data for efficient use below
+									$weightings=array() ;
+									$weightingsCount=0 ;
+									try {
+										$dataWeighting=array("gibbonCourseClassID"=>$gibbonCourseClassID) ;
+										$sqlWeighting="SELECT attainmentWeighting, attainmentValue, gibbonPersonIDStudent FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonScale ON (gibbonMarkbookColumn.gibbonScaleIDAttainment=gibbonScale.gibbonScaleID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonScale.numeric='Y' AND gibbonScaleID=(SELECT value FROM gibbonSetting WHERE scope='System' AND name='primaryAssessmentScale') AND complete='Y' AND NOT attainmentValue='' ORDER BY gibbonPersonIDStudent" ;
+										$resultWeighting=$connection2->prepare($sqlWeighting);
+										$resultWeighting->execute($dataWeighting);
+									}
+									catch(PDOException $e) { }
+									while ($rowWeightings=$resultWeighting->fetch()) {
+										$weightings[$weightingsCount][0]=$rowWeightings["attainmentWeighting"] ;
+										$weightings[$weightingsCount][1]=$rowWeightings["attainmentValue"] ;
+										$weightings[$weightingsCount][2]=$rowWeightings["gibbonPersonIDStudent"] ;
+										$weightingsCount++ ;
+									}
+								}
+			
+								$columnID=array() ;
+								$attainmentID=array() ;
+								$effortID=array() ;
+								for ($i=0; $i<$columnsThisPage; $i++) {
+									$row=$result->fetch() ;
+								
+									if ($row===FALSE) {
+										$columnID[$i]=FALSE ;
+									}
+									else {
+										$columnID[$i]=$row["gibbonMarkbookColumnID"];
+										$attainmentOn[$i]=$row["attainment"];
+										$attainmentID[$i]=$row["gibbonScaleIDAttainment"];
+										$effortOn[$i]=$row["effort"];
+										$effortID[$i]=$row["gibbonScaleIDEffort"];
+										$gibbonPlannerEntryID[$i]=$row["gibbonPlannerEntryID"] ;
+										$gibbonRubricIDAttainment[$i]=$row["gibbonRubricIDAttainment"] ;
+										$gibbonRubricIDEffort[$i]=$row["gibbonRubricIDEffort"] ;
+										$comment[$i]=$row["comment"];
+										$uploadedResponse[$i]=$row["uploadedResponse"];
+										$submission[$i]=FALSE ;
+										
+										//WORK OUT IF THERE IS SUBMISSION
+										if (is_null($row["gibbonPlannerEntryID"])==FALSE) {
+											try {
+												$dataSub=array("gibbonPlannerEntryID"=>$row["gibbonPlannerEntryID"]); 
+												$sqlSub="SELECT * FROM gibbonPlannerEntry WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND homeworkSubmission='Y'" ;
+												$resultSub=$connection2->prepare($sqlSub);
+												$resultSub->execute($dataSub);
+											}
+											catch(PDOException $e) { 
+												print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+											}
+
+											if ($resultSub->rowCount()==1) {
+												$submission[$i]=TRUE ;
+												$rowSub=$resultSub->fetch() ;
+												$homeworkDueDateTime[$i]=$rowSub["homeworkDueDateTime"] ;
+												$lessonDate[$i]=$rowSub["date"] ;
+											}
+										}
+									}
+							
+								
+									//Column count
+									$span=0 ;
+									$contents=TRUE ;
+									if ($submission[$i]==TRUE) {
+										$span++ ;
+									}
+									if ($attainmentOn[$i]=="Y" AND ($attainmentID[$i]!="" OR $gibbonRubricIDAttainment[$i]!="")) {
+										$span++ ;
+									}
+									if ($effortOn[$i]=="Y" AND ($effortID[$i]!="" OR $gibbonRubricIDEffort[$i]!="")) {
+										$span++ ;
+									}
+									if ($comment[$i]=="Y") {
+										$span++ ;
+									}
+									if ($uploadedResponse[$i]=="Y") {
+										$span++ ;
+									}
+									if ($span==0) {
+										$contents=FALSE ;
+									}
+								
+									print "<th style='margin-left: 100px; text-align: center; min-width: 140px' colspan=$span>" ;
+										print "<span title='" . htmlPrep($row["description"]) . "'>" . $row["name"] . "</span><br/>" ;
+										print "<span style='font-size: 90%; font-style: italic; font-weight: normal'>" ;
+										$unit=getUnit($connection2, $row["gibbonUnitID"], "", $row["gibbonCourseClassID"]) ;
+										if (isset($unit[0])) {
+											print $unit[0] . "<br/>" ;
+										}
+										else {
+											print "<br/>" ;
+										}
+										if ($row["completeDate"]!="") {
+											print __($guid, "Marked on") . " " . dateConvertBack($guid, $row["completeDate"]) . "<br/>" ;
+										}
+										else {
+											print __($guid, "Unmarked") . "<br/>" ;
+										}
+										print $row["type"] ;
+										if ($enableColumnWeighting=="Y" AND $row["attainmentWeighting"]!=NULL AND $row["attainmentWeighting"]!=0) {
+											print " . " . __($guid, 'Weighting') . " " . $row["attainmentWeighting"] ;
+										}
+										if ($row["attachment"]!="" AND file_exists($_SESSION[$guid]["absolutePath"] . "/" . $row["attachment"])) {
+											print " | <a 'title='" . __($guid, 'Download more information') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["attachment"] . "'>More info</a>"; 
+										}
+										print "</span><br/>" ;
+										if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit.php")) {
+											print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $row["gibbonMarkbookColumnID"] . "'><img style='margin-top: 3px' title='" . __($guid, 'Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+											print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $row["gibbonMarkbookColumnID"] . "'><img style='margin-top: 3px' title='" . __($guid, 'Enter Data') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/markbook.png'/></a> " ;
+											print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_delete.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $row["gibbonMarkbookColumnID"] . "'><img title='" . __($guid, 'Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
+											print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Markbook/markbook_viewExport.php?gibbonMarkbookColumnID=" . $row["gibbonMarkbookColumnID"] . "&gibbonCourseClassID=$gibbonCourseClassID&return=markbook_view.php'><img title='" . __($guid, 'Export to Excel') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/download.png'/></a>" ;
+										}
+									print "</th>" ;
+								}
+							print "</tr>" ;
+					
+							print "<tr class='head'>" ;
+								for ($i=0; $i<$columnsThisPage; $i++) {
+									if ($columnID[$i]==FALSE OR $contents==FALSE) {
+										print "<th style='text-align: center' colspan=$span>" ;
+								
+										print "</th>" ;
+									}
+									else {
+										$leftBorder=FALSE ;
+										if ($attainmentOn[$i]=="Y" AND ($attainmentID[$i]!="" OR $gibbonRubricIDAttainment[$i]!="")) {
+											$leftBorder=TRUE ;
+											print "<th style='border-left: 2px solid #666; text-align: center; width: 40px'>" ;
 												try {
-													$dataSub=array("gibbonPlannerEntryID"=>$row["gibbonPlannerEntryID"]); 
-													$sqlSub="SELECT * FROM gibbonPlannerEntry WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND homeworkSubmission='Y'" ;
-													$resultSub=$connection2->prepare($sqlSub);
-													$resultSub->execute($dataSub);
+													$dataScale=array("gibbonScaleID"=>$attainmentID[$i]); 
+													$sqlScale="SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID" ;
+													$resultScale=$connection2->prepare($sqlScale);
+													$resultScale->execute($dataScale);
 												}
 												catch(PDOException $e) { 
 													print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 												}
-
-												if ($resultSub->rowCount()==1) {
-													$submission[$i]=TRUE ;
-													$rowSub=$resultSub->fetch() ;
-													$homeworkDueDateTime[$i]=$rowSub["homeworkDueDateTime"] ;
-													$lessonDate[$i]=$rowSub["date"] ;
+												$scale="" ;
+												if ($resultScale->rowCount()==1) {
+													$rowScale=$resultScale->fetch() ;
+													$scale=" - " . $rowScale["name"] ;
+													if ($rowScale["usage"]!="") {
+														$scale=$scale . ": " . $rowScale["usage"] ;
+													}
 												}
-											}
-										}
-									
-										
-										//Column count
-										$span=0 ;
-										$contents=TRUE ;
-										if ($submission[$i]==TRUE) {
-											$span++ ;
-										}
-										if ($attainmentOn[$i]=="Y" AND ($attainmentID[$i]!="" OR $gibbonRubricIDAttainment[$i]!="")) {
-											$span++ ;
-										}
-										if ($effortOn[$i]=="Y" AND ($effortID[$i]!="" OR $gibbonRubricIDEffort[$i]!="")) {
-											$span++ ;
-										}
-										if ($comment[$i]=="Y") {
-											$span++ ;
-										}
-										if ($uploadedResponse[$i]=="Y") {
-											$span++ ;
-										}
-										if ($span==0) {
-											$contents=FALSE ;
-										}
-										
-										print "<th style='text-align: center; min-width: 140px' colspan=$span>" ;
-											print "<span title='" . htmlPrep($row["description"]) . "'>" . $row["name"] . "</span><br/>" ;
-											print "<span style='font-size: 90%; font-style: italic; font-weight: normal'>" ;
-											$unit=getUnit($connection2, $row["gibbonUnitID"], "", $row["gibbonCourseClassID"]) ;
-											if (isset($unit[0])) {
-												print $unit[0] . "<br/>" ;
-											}
-											else {
-												print "<br/>" ;
-											}
-											if ($row["completeDate"]!="") {
-												print _("Marked on") . " " . dateConvertBack($guid, $row["completeDate"]) . "<br/>" ;
-											}
-											else {
-												print _("Unmarked") . "<br/>" ;
-											}
-											print $row["type"] ;
-											if ($row["attachment"]!="" AND file_exists($_SESSION[$guid]["absolutePath"] . "/" . $row["attachment"])) {
-												print " | <a 'title='" . _('Download more information') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["attachment"] . "'>More info</a>"; 
-											}
-											print "</span><br/>" ;
-											if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit.php")) {
-												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $row["gibbonMarkbookColumnID"] . "'><img style='margin-top: 3px' title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $row["gibbonMarkbookColumnID"] . "'><img style='margin-top: 3px' title='" . _('Enter Data') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/markbook.png'/></a> " ;
-												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_delete.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $row["gibbonMarkbookColumnID"] . "'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
-												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Markbook/markbook_viewExport.php?gibbonMarkbookColumnID=" . $row["gibbonMarkbookColumnID"] . "&gibbonCourseClassID=$gibbonCourseClassID&return=markbook_view.php'><img title='" . _('Export to Excel') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/download.png'/></a>" ;
-											}
-										print "</th>" ;
-									}
-								print "</tr>" ;
-							
-								print "<tr class='head'>" ;
-									for ($i=0; $i<$columnsThisPage; $i++) {
-										if ($columnID[$i]==FALSE OR $contents==FALSE) {
-											print "<th style='text-align: center' colspan=$span>" ;
-										
+												if ($attainmentAlternativeName!="" AND $attainmentAlternativeNameAbrev!="") {
+													print "<span title='" . $attainmentAlternativeName . htmlPrep($scale) . "'>" . $attainmentAlternativeNameAbrev . "</span>" ;
+												}
+												else {
+													print "<span title='" . __($guid, 'Attainment') . htmlPrep($scale) . "'>" . __($guid, 'Att') . "</span>" ;
+												}
 											print "</th>" ;
 										}
-										else {
-											$leftBorder=FALSE ;
-											if ($attainmentOn[$i]=="Y" AND ($attainmentID[$i]!="" OR $gibbonRubricIDAttainment[$i]!="")) {
+										if ($effortOn[$i]=="Y" AND ($effortID[$i]!="" OR $gibbonRubricIDEffort[$i]!="")) {
+											$leftBorderStyle='' ;
+											if ($leftBorder==FALSE) {
 												$leftBorder=TRUE ;
-												print "<th style='border-left: 2px solid #666; text-align: center; width: 40px'>" ;
-													try {
-														$dataScale=array("gibbonScaleID"=>$attainmentID[$i]); 
-														$sqlScale="SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID" ;
-														$resultScale=$connection2->prepare($sqlScale);
-														$resultScale->execute($dataScale);
-													}
-													catch(PDOException $e) { 
-														print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-													}
-													$scale="" ;
-													if ($resultScale->rowCount()==1) {
-														$rowScale=$resultScale->fetch() ;
-														$scale=" - " . $rowScale["name"] ;
-														if ($rowScale["usage"]!="") {
-															$scale=$scale . ": " . $rowScale["usage"] ;
-														}
-													}
-													if ($attainmentAlternativeName!="" AND $attainmentAlternativeNameAbrev!="") {
-														print "<span title='" . $attainmentAlternativeName . htmlPrep($scale) . "'>" . $attainmentAlternativeNameAbrev . "</span>" ;
-													}
-													else {
-														print "<span title='" . _('Attainment') . htmlPrep($scale) . "'>" . _('Att') . "</span>" ;
-													}
-												print "</th>" ;
+												$leftBorderStyle="border-left: 2px solid #666;" ;
 											}
-											if ($effortOn[$i]=="Y" AND ($effortID[$i]!="" OR $gibbonRubricIDEffort[$i]!="")) {
-												$leftBorderStyle='' ;
-												if ($leftBorder==FALSE) {
-													$leftBorder=TRUE ;
-													$leftBorderStyle="border-left: 2px solid #666;" ;
+											print "<th style='$leftBorderStyle text-align: center; width: 40px'>" ;
+												try {
+													$dataScale=array("gibbonScaleID"=>$effortID[$i]); 
+													$sqlScale="SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID" ;
+													$resultScale=$connection2->prepare($sqlScale);
+													$resultScale->execute($dataScale);
 												}
-												print "<th style='$leftBorderStyle text-align: center; width: 40px'>" ;
-													try {
-														$dataScale=array("gibbonScaleID"=>$effortID[$i]); 
-														$sqlScale="SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID" ;
-														$resultScale=$connection2->prepare($sqlScale);
-														$resultScale->execute($dataScale);
-													}
-													catch(PDOException $e) { 
-														print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-													}
-													$scale="" ;
-													if ($resultScale->rowCount()==1) {
-														$rowScale=$resultScale->fetch() ;
-														$scale=" - " . $rowScale["name"] ;
-														if ($rowScale["usage"]!="") {
-															$scale=$scale . ": " . $rowScale["usage"] ;
-														}
-													}
-													if ($effortAlternativeName!="" AND $effortAlternativeNameAbrev!="") {
-														print "<span title='" . $effortAlternativeName . htmlPrep($scale) . "'>" . $effortAlternativeNameAbrev . "</span>" ;
-													}
-													else {
-														print "<span title='" . _('Effort') . htmlPrep($scale) . "'>" . _('Eff') . "</span>" ;
-													}
-												print "</th>" ;
-											}
-											if ($comment[$i]=="Y") {
-												$leftBorderStyle='' ;
-												if ($leftBorder==FALSE) {
-													$leftBorder=TRUE ;
-													$leftBorderStyle="border-left: 2px solid #666;" ;
+												catch(PDOException $e) { 
+													print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 												}
-												print "<th style='$leftBorderStyle text-align: center; width: 80px'>" ;
-													print "<span title='" . _('Comment') . "'>" . _('Com') . "</span>" ;
-												print "</th>" ;
+												$scale="" ;
+												if ($resultScale->rowCount()==1) {
+													$rowScale=$resultScale->fetch() ;
+													$scale=" - " . $rowScale["name"] ;
+													if ($rowScale["usage"]!="") {
+														$scale=$scale . ": " . $rowScale["usage"] ;
+													}
+												}
+												if ($effortAlternativeName!="" AND $effortAlternativeNameAbrev!="") {
+													print "<span title='" . $effortAlternativeName . htmlPrep($scale) . "'>" . $effortAlternativeNameAbrev . "</span>" ;
+												}
+												else {
+													print "<span title='" . __($guid, 'Effort') . htmlPrep($scale) . "'>" . __($guid, 'Eff') . "</span>" ;
+												}
+											print "</th>" ;
+										}
+										if ($comment[$i]=="Y") {
+											$leftBorderStyle='' ;
+											if ($leftBorder==FALSE) {
+												$leftBorder=TRUE ;
+												$leftBorderStyle="border-left: 2px solid #666;" ;
 											}
-											if ($uploadedResponse[$i]=="Y") {
+											print "<th style='$leftBorderStyle text-align: center; width: 80px'>" ;
+												print "<span title='" . __($guid, 'Comment') . "'>" . __($guid, 'Com') . "</span>" ;
+											print "</th>" ;
+										}
+										if ($uploadedResponse[$i]=="Y") {
+											$leftBorderStyle='' ;
+											if ($leftBorder==FALSE) {
+												$leftBorder=TRUE ;
+												$leftBorderStyle="border-left: 2px solid #666;" ;
+											}
+											print "<th style='$leftBorderStyle text-align: center; width: 30px'>" ;
+												print "<span title='" . __($guid, 'Uploaded Response') . "'>" . __($guid, 'Upl') . "</span>" ;
+											print "</th>" ;
+										}
+										if (isset($submission[$i])) {
+											if ($submission[$i]==TRUE) {
 												$leftBorderStyle='' ;
 												if ($leftBorder==FALSE) {
 													$leftBorder=TRUE ;
 													$leftBorderStyle="border-left: 2px solid #666;" ;
 												}
 												print "<th style='$leftBorderStyle text-align: center; width: 30px'>" ;
-													print "<span title='" . _('Uploaded Response') . "'>" . _('Upl') . "</span>" ;
+													print "<span title='" . __($guid, 'Submitted Work') . "'>" . __($guid, 'Sub') . "</span>" ;
 												print "</th>" ;
 											}
-											if (isset($submission[$i])) {
-												if ($submission[$i]==TRUE) {
-													$leftBorderStyle='' ;
-													if ($leftBorder==FALSE) {
-														$leftBorder=TRUE ;
-														$leftBorderStyle="border-left: 2px solid #666;" ;
-													}
-													print "<th style='$leftBorderStyle text-align: center; width: 30px'>" ;
-														print "<span title='" . _('Submitted Work') . "'>" . _('Sub') . "</span>" ;
-													print "</th>" ;
-												}
-											}
 										}
 									}
-								print "</tr>" ;
+								}
+							print "</tr>" ;
+				
+						$count=0;
+						$rowNum="odd" ;
+				
+						try {
+							$dataStudents=array("gibbonCourseClassID"=>$gibbonCourseClassID); 
+							$sqlStudents="SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') ORDER BY surname, preferredName" ;
+							$resultStudents=$connection2->prepare($sqlStudents);
+							$resultStudents->execute($dataStudents);
+						}
+						catch(PDOException $e) { 
+							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+						}
+						if ($resultStudents->rowCount()<1) {
+							print "<tr>" ;
+								print "<td colspan=" . ($columns+1) . ">" ;
+									print "<i>" . __($guid, 'There are no records to display.') . "</i>" ;
+								print "</td>" ;
+							print "</tr>" ;
+						}
+						else {
+							while ($rowStudents=$resultStudents->fetch()) {
+								if ($count%2==0) {
+									$rowNum="even" ;
+								}
+								else {
+									$rowNum="odd" ;
+								}
+								$count++ ;
 						
-							$count=0;
-							$rowNum="odd" ;
-						
-							try {
-								$dataStudents=array("gibbonCourseClassID"=>$gibbonCourseClassID); 
-								$sqlStudents="SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') ORDER BY surname, preferredName" ;
-								$resultStudents=$connection2->prepare($sqlStudents);
-								$resultStudents->execute($dataStudents);
-							}
-							catch(PDOException $e) { 
-								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-							}
-							if ($resultStudents->rowCount()<1) {
-								print "<tr>" ;
-									print "<td colspan=" . ($columns+1) . ">" ;
-										print "<i>" . _('There are no records to display.') . "</i>" ;
+								//COLOR ROW BY STATUS!
+								print "<tr class=$rowNum>" ;
+									print "<td>" ;
+										print "<div style='padding: 2px 0px'><b><a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $rowStudents["gibbonPersonID"] . "&subpage=Markbook#" . $gibbonCourseClassID . "'>" . formatName("", $rowStudents["preferredName"], $rowStudents["surname"], "Student", true) . "</a><br/></div>" ;
 									print "</td>" ;
-								print "</tr>" ;
-							}
-							else {
-								while ($rowStudents=$resultStudents->fetch()) {
-									if ($count%2==0) {
-										$rowNum="even" ;
-									}
-									else {
-										$rowNum="odd" ;
-									}
-									$count++ ;
-								
-									//COLOR ROW BY STATUS!
-									print "<tr class=$rowNum>" ;
-										print "<td>" ;
-											print "<div style='padding: 2px 0px'><b><a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $rowStudents["gibbonPersonID"] . "&subpage=Markbook#" . $gibbonCourseClassID . "'>" . formatName("", $rowStudents["preferredName"], $rowStudents["surname"], "Student", true) . "</a><br/></div>" ;
-										print "</td>" ;
-									
-										if ($externalAssessment==TRUE) {
-											print "<td style='text-align: center'>" ;
-												try {
-													$dataEntry=array("gibbonPersonID"=>$rowStudents["gibbonPersonID"], "gibbonExternalAssessmentFieldID"=>$externalAssessmentFields[0]); 
-													$sqlEntry="SELECT gibbonScaleGrade.value, gibbonScaleGrade.descriptor, gibbonExternalAssessmentStudent.date FROM gibbonExternalAssessmentStudentEntry JOIN gibbonExternalAssessmentStudent ON (gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentStudentID=gibbonExternalAssessmentStudent.gibbonExternalAssessmentStudentID) JOIN gibbonScaleGrade ON (gibbonExternalAssessmentStudentEntry.gibbonScaleGradeIDPrimaryAssessmentScale=gibbonScaleGrade.gibbonScaleGradeID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonExternalAssessmentFieldID=:gibbonExternalAssessmentFieldID AND NOT gibbonScaleGradeIDPrimaryAssessmentScale='' ORDER BY date DESC" ;
-													$resultEntry=$connection2->prepare($sqlEntry);
-													$resultEntry->execute($dataEntry);
-												}
-												catch(PDOException $e) { 
-													print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-												}
-												if ($resultEntry->rowCount()>=1) {
-													$rowEntry=$resultEntry->fetch() ;
-													print "<a title='" . _($rowEntry["descriptor"]) . " | " . _('Test taken on') . " " . dateConvertBack($guid, $rowEntry["date"]) . "' href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $rowStudents["gibbonPersonID"] . "&subpage=External Assessment'>" . _($rowEntry["value"]) . "</a>" ;
-												}	
-											print "</td>" ;
-										}
-									
+							
+									if ($externalAssessment==TRUE) {
 										print "<td style='text-align: center'>" ;
 											try {
-												$dataEntry=array("gibbonPersonIDStudent"=>$rowStudents["gibbonPersonID"], "gibbonCourseClassID"=>$gibbonCourseClassID); 
-												$sqlEntry="SELECT * FROM gibbonMarkbookTarget JOIN gibbonScaleGrade ON (gibbonMarkbookTarget.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID) WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent AND gibbonCourseClassID=:gibbonCourseClassID" ;
+												$dataEntry=array("gibbonPersonID"=>$rowStudents["gibbonPersonID"], "gibbonExternalAssessmentFieldID"=>$externalAssessmentFields[0]); 
+												$sqlEntry="SELECT gibbonScaleGrade.value, gibbonScaleGrade.descriptor, gibbonExternalAssessmentStudent.date FROM gibbonExternalAssessmentStudentEntry JOIN gibbonExternalAssessmentStudent ON (gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentStudentID=gibbonExternalAssessmentStudent.gibbonExternalAssessmentStudentID) JOIN gibbonScaleGrade ON (gibbonExternalAssessmentStudentEntry.gibbonScaleGradeIDPrimaryAssessmentScale=gibbonScaleGrade.gibbonScaleGradeID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonExternalAssessmentFieldID=:gibbonExternalAssessmentFieldID AND NOT gibbonScaleGradeIDPrimaryAssessmentScale='' ORDER BY date DESC" ;
 												$resultEntry=$connection2->prepare($sqlEntry);
 												$resultEntry->execute($dataEntry);
 											}
@@ -651,221 +660,259 @@ else {
 											}
 											if ($resultEntry->rowCount()>=1) {
 												$rowEntry=$resultEntry->fetch() ;
-												print _($rowEntry["value"]) ;
+												print "<a title='" . __($guid, $rowEntry["descriptor"]) . " | " . __($guid, 'Test taken on') . " " . dateConvertBack($guid, $rowEntry["date"]) . "' href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $rowStudents["gibbonPersonID"] . "&subpage=External Assessment'>" . __($guid, $rowEntry["value"]) . "</a>" ;
 											}	
 										print "</td>" ;
-									
-										for ($i=0; $i<$columnsThisPage; $i++) {
-											$row=$result->fetch() ;
-												try {
-													$dataEntry=array("gibbonMarkbookColumnID"=>$columnID[($i)], "gibbonPersonIDStudent"=>$rowStudents["gibbonPersonID"]); 
-													$sqlEntry="SELECT * FROM gibbonMarkbookEntry WHERE gibbonMarkbookColumnID=:gibbonMarkbookColumnID AND gibbonPersonIDStudent=:gibbonPersonIDStudent" ;
-													$resultEntry=$connection2->prepare($sqlEntry);
-													$resultEntry->execute($dataEntry);
+									}
+							
+									print "<td style='text-align: center'>" ;
+										try {
+											$dataEntry=array("gibbonPersonIDStudent"=>$rowStudents["gibbonPersonID"], "gibbonCourseClassID"=>$gibbonCourseClassID); 
+											$sqlEntry="SELECT * FROM gibbonMarkbookTarget JOIN gibbonScaleGrade ON (gibbonMarkbookTarget.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID) WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent AND gibbonCourseClassID=:gibbonCourseClassID" ;
+											$resultEntry=$connection2->prepare($sqlEntry);
+											$resultEntry->execute($dataEntry);
+										}
+										catch(PDOException $e) { 
+											print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+										}
+										if ($resultEntry->rowCount()>=1) {
+											$rowEntry=$resultEntry->fetch() ;
+											print __($guid, $rowEntry["value"]) ;
+										}	
+									print "</td>" ;
+								
+									//Calculate and output weighted totals
+									if ($enableColumnWeighting=="Y") {
+										print "<td style='text-align: center'>" ;
+											$totalWeight=0 ;
+											$cummulativeWeightedScore=0 ;
+											$percent=FALSE ;
+											foreach ($weightings AS $weighting) {
+												if ($weighting[2]==$rowStudents["gibbonPersonID"]) {
+													$totalWeight+=$weighting[0] ;
+													if (strpos($weighting[1],'%')!==0) {
+														$weighting[1]=str_replace('%','', $weighting[1]) ;
+														$percent=TRUE ;
+													}
+													$cummulativeWeightedScore+=($weighting[1]*$weighting[0]) ;
 												}
-												catch(PDOException $e) { 
-													print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+											}
+											if ($totalWeight>0) {
+												print round($cummulativeWeightedScore/$totalWeight, 0) ;
+												if ($percent) {
+													print "%" ;
 												}
-												if ($resultEntry->rowCount()==1) {
-													$rowEntry=$resultEntry->fetch() ;
-													$leftBorder=FALSE ;
-													
-													if ($attainmentOn[$i]=="Y" AND ($attainmentID[$i]!="" OR $gibbonRubricIDAttainment[$i]!="")) {
-														$leftBorder=TRUE ;
-														print "<td style='border-left: 2px solid #666; text-align: center'>" ;
-															if ($attainmentID[$i]!="") {
-																$styleAttainment="" ;
-																if ($rowEntry["attainmentConcern"]=="Y") {
-																	$styleAttainment="style='color: #" . $alert["color"] . "; font-weight: bold; border: 2px solid #" . $alert["color"] . "; padding: 2px 4px; background-color: #" . $alert["colorBG"] . "'" ;
-																}
-																else if ($rowEntry["attainmentConcern"]=="P") {
-																	$styleAttainment="style='color: #390; font-weight: bold; border: 2px solid #390; padding: 2px 4px; background-color: #D4F6DC'" ;
-																}
-																$attainment="" ;
-																if ($rowEntry["attainmentValue"]!="") {
-																	$attainment=_($rowEntry["attainmentValue"]) ;
-																}
-																if ($rowEntry["attainmentValue"]=="Complete") {
-																	$attainment=_("Com") ;
-																}
-																else if ($rowEntry["attainmentValue"]=="Incomplete") {
-																	$attainment=_("Inc") ;
-																}
-																print "<div $styleAttainment title='" . htmlPrep($rowEntry["attainmentDescriptor"]) . "'>$attainment" ;
+											}
+										print "</td>" ;
+									}
+							
+									for ($i=0; $i<$columnsThisPage; $i++) {
+										$row=$result->fetch() ;
+											try {
+												$dataEntry=array("gibbonMarkbookColumnID"=>$columnID[($i)], "gibbonPersonIDStudent"=>$rowStudents["gibbonPersonID"]); 
+												$sqlEntry="SELECT * FROM gibbonMarkbookEntry WHERE gibbonMarkbookColumnID=:gibbonMarkbookColumnID AND gibbonPersonIDStudent=:gibbonPersonIDStudent" ;
+												$resultEntry=$connection2->prepare($sqlEntry);
+												$resultEntry->execute($dataEntry);
+											}
+											catch(PDOException $e) { 
+												print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+											}
+											if ($resultEntry->rowCount()==1) {
+												$rowEntry=$resultEntry->fetch() ;
+												$leftBorder=FALSE ;
+											
+												if ($attainmentOn[$i]=="Y" AND ($attainmentID[$i]!="" OR $gibbonRubricIDAttainment[$i]!="")) {
+													$leftBorder=TRUE ;
+													print "<td style='border-left: 2px solid #666; text-align: center'>" ;
+														if ($attainmentID[$i]!="") {
+															$styleAttainment="" ;
+															if ($rowEntry["attainmentConcern"]=="Y") {
+																$styleAttainment="style='color: #" . $alert["color"] . "; font-weight: bold; border: 2px solid #" . $alert["color"] . "; padding: 2px 4px; background-color: #" . $alert["colorBG"] . "'" ;
 															}
-															if ($gibbonRubricIDAttainment[$i]!="") {
-																print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_view_rubric.php&gibbonRubricID=" . $gibbonRubricIDAttainment[$i] . "&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $columnID[$i] . "&gibbonPersonID=" . $rowStudents["gibbonPersonID"] . "&mark=FALSE&type=attainment&width=1100&height=550'><img style='margin-bottom: -3px; margin-left: 3px' title='" . _('View Rubric') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/rubric.png'/></a>" ;
+															else if ($rowEntry["attainmentConcern"]=="P") {
+																$styleAttainment="style='color: #390; font-weight: bold; border: 2px solid #390; padding: 2px 4px; background-color: #D4F6DC'" ;
 															}
-															if ($attainmentID[$i]!="") {
-																print "</div>" ;
+															$attainment="" ;
+															if ($rowEntry["attainmentValue"]!="") {
+																$attainment=__($guid, $rowEntry["attainmentValue"]) ;
 															}
-														print "</td>" ;
-													}
-													
-													if ($effortOn[$i]=="Y" AND ($effortID[$i]!="" OR $gibbonRubricIDEffort[$i]!="")) {
-														$leftBorderStyle='' ;
-														if ($leftBorder==FALSE) {
-															$leftBorder=TRUE ;
-															$leftBorderStyle="border-left: 2px solid #666;" ;
+															if ($rowEntry["attainmentValue"]=="Complete") {
+																$attainment=__($guid, "Com") ;
+															}
+															else if ($rowEntry["attainmentValue"]=="Incomplete") {
+																$attainment=__($guid, "Inc") ;
+															}
+															print "<div $styleAttainment title='" . htmlPrep($rowEntry["attainmentDescriptor"]) . "'>$attainment" ;
 														}
-														print "<td style='$leftBorderStyle text-align: center;'>" ;
-															if ($effortID[$i]!="") {
-																$styleEffort="" ;
-																if ($rowEntry["effortConcern"]=="Y") {
-																	$styleEffort="style='color: #" . $alert["color"] . "; font-weight: bold; border: 2px solid #" . $alert["color"] . "; padding: 2px 4px; background-color: #" . $alert["colorBG"] . "'" ;
-																}
-																$effort="" ;
-																if ($rowEntry["effortValue"]!="") {
-																	$effort=_($rowEntry["effortValue"]) ;
-																}
-																if ($rowEntry["effortValue"]=="Complete") {
-																	$effort=_("Com") ;
-																}
-																else if ($rowEntry["effortValue"]=="Incomplete") {
-																	$effort=_("Inc") ;
-																}
-																print "<div $styleEffort title='" . htmlPrep($rowEntry["effortDescriptor"]) . "'>$effort" ;
-															}	
-															if ($gibbonRubricIDEffort[$i]!="") {
-																print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_view_rubric.php&gibbonRubricID=" . $gibbonRubricIDEffort[$i] . "&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $columnID[$i] . "&gibbonPersonID=" . $rowStudents["gibbonPersonID"] . "&mark=FALSE&type=effort&width=1100&height=550'><img style='margin-bottom: -3px; margin-left: 3px' title='" . _('View Rubric') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/rubric.png'/></a>" ;
-															}
-															if ($effortID[$i]!="") {
-																print "</div>" ;
-															}
-														print "</td>" ;
-													}
-													if ($comment[$i]=="Y") {
-														$leftBorderStyle='' ;
-														if ($leftBorder==FALSE) {
-															$leftBorder=TRUE ;
-															$leftBorderStyle="border-left: 2px solid #666;" ;
+														if ($gibbonRubricIDAttainment[$i]!="") {
+															print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_view_rubric.php&gibbonRubricID=" . $gibbonRubricIDAttainment[$i] . "&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $columnID[$i] . "&gibbonPersonID=" . $rowStudents["gibbonPersonID"] . "&mark=FALSE&type=attainment&width=1100&height=550'><img style='margin-bottom: -3px; margin-left: 3px' title='" . __($guid, 'View Rubric') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/rubric.png'/></a>" ;
 														}
-														print "<td style='$leftBorderStyle text-align: center;'>" ;
-															$style="" ;
-															if ($rowEntry["comment"]!="") {
-																if (strlen($rowEntry["comment"])<11) {
-																	print htmlPrep($rowEntry["comment"]) ;
-																}
-																else {
-																	print "<span $style title='" . htmlPrep($rowEntry["comment"]) . "'>" . substr($rowEntry["comment"], 0, 10) . "...</span>" ;
-																}
-															}
-														print "</td>" ;
-													}
-													if ($uploadedResponse[$i]=="Y") {
-														$leftBorderStyle='' ;
-														if ($leftBorder==FALSE) {
-															$leftBorder=TRUE ;
-															$leftBorderStyle="border-left: 2px solid #666;" ;
+														if ($attainmentID[$i]!="") {
+															print "</div>" ;
 														}
-														print "<td style='$leftBorderStyle text-align: center;'>" ;
-														if ($rowEntry["response"]!="") {
-															print "<a title='" . _('Uploaded Response') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowEntry["response"] . "'>Up</a><br/>" ;
-														}
-													}
 													print "</td>" ;
 												}
-												else {
-													$emptySpan=0 ;
-													if ($attainmentOn[$i]=="Y" AND ($attainmentID[$i]!="" OR $gibbonRubricIDAttainment[$i]!="")) {
-														$emptySpan++ ;
+											
+												if ($effortOn[$i]=="Y" AND ($effortID[$i]!="" OR $gibbonRubricIDEffort[$i]!="")) {
+													$leftBorderStyle='' ;
+													if ($leftBorder==FALSE) {
+														$leftBorder=TRUE ;
+														$leftBorderStyle="border-left: 2px solid #666;" ;
 													}
-													if ($effortOn[$i]=="Y" AND ($effortID[$i]!="" OR $gibbonRubricIDEffort[$i]!="")) {
-														$emptySpan++ ;
-													}
-													if ($comment[$i]=="Y") {
-														$emptySpan++ ;
-													}
-													if ($uploadedResponse[$i]=="Y") {
-														$emptySpan++ ;
-													}
-													if ($emptySpan>0) {
-														print "<td style='border-left: 2px solid #666; text-align: center' colspan=$emptySpan></td>" ;
-													}
-												}
-												if (isset($submission[$i])) {
-													if ($submission[$i]==TRUE) {
-														$leftBorderStyle='' ;
-														if ($leftBorder==FALSE) {
-															$leftBorder=TRUE ;
-															$leftBorderStyle="border-left: 2px solid #666;" ;
+													print "<td style='$leftBorderStyle text-align: center;'>" ;
+														if ($effortID[$i]!="") {
+															$styleEffort="" ;
+															if ($rowEntry["effortConcern"]=="Y") {
+																$styleEffort="style='color: #" . $alert["color"] . "; font-weight: bold; border: 2px solid #" . $alert["color"] . "; padding: 2px 4px; background-color: #" . $alert["colorBG"] . "'" ;
+															}
+															$effort="" ;
+															if ($rowEntry["effortValue"]!="") {
+																$effort=__($guid, $rowEntry["effortValue"]) ;
+															}
+															if ($rowEntry["effortValue"]=="Complete") {
+																$effort=__($guid, "Com") ;
+															}
+															else if ($rowEntry["effortValue"]=="Incomplete") {
+																$effort=__($guid, "Inc") ;
+															}
+															print "<div $styleEffort title='" . htmlPrep($rowEntry["effortDescriptor"]) . "'>$effort" ;
+														}	
+														if ($gibbonRubricIDEffort[$i]!="") {
+															print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_view_rubric.php&gibbonRubricID=" . $gibbonRubricIDEffort[$i] . "&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $columnID[$i] . "&gibbonPersonID=" . $rowStudents["gibbonPersonID"] . "&mark=FALSE&type=effort&width=1100&height=550'><img style='margin-bottom: -3px; margin-left: 3px' title='" . __($guid, 'View Rubric') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/rubric.png'/></a>" ;
 														}
-														print "<td style='$leftBorderStyle text-align: center;'>" ;
-															try {
-																$dataWork=array("gibbonPlannerEntryID"=>$gibbonPlannerEntryID[$i], "gibbonPersonID"=>$rowStudents["gibbonPersonID"]); 
-																$sqlWork="SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC" ;
-																$resultWork=$connection2->prepare($sqlWork);
-																$resultWork->execute($dataWork);
-															}
-															catch(PDOException $e) { 
-																print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-															}
-															if ($resultWork->rowCount()>0) {
-																$rowWork=$resultWork->fetch() ;
-														
-																if ($rowWork["status"]=="Exemption") {
-																	$linkText=_("Exe") ;
-																}
-																else if ($rowWork["version"]=="Final") {
-																	$linkText=_("Fin") ;
-																}
-																else {
-																	$linkText=_("Dra") . $rowWork["count"] ;
-																}
-														
-																$style="" ;
-																$status="On Time" ;
-																	if ($rowWork["status"]=="Exemption") {
-																	$status=_("Exemption") ;
-																}
-																else if ($rowWork["status"]=="Late") {
-																	$style="style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'" ;
-																	$status=_("Late") ;
-																}
-														
-																if ($rowWork["type"]=="File") {
-																	print "<span title='" . $rowWork["version"] . ". $status. " . _('Submitted at') . " " . substr($rowWork["timestamp"],11,5) . " " . _('on') . " " . dateConvertBack($guid, substr($rowWork["timestamp"],0,10)) . "' $style><a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowWork["location"] ."'>$linkText</a></span>" ;
-																}
-																else if ($rowWork["type"]=="Link") {
-																	print "<span title='" . $rowWork["version"] . ". $status. " . _('Submitted at') . " " . substr($rowWork["timestamp"],11,5) . " " . _('on') . " " . dateConvertBack($guid, substr($rowWork["timestamp"],0,10)) . "' $style><a target='_blank' href='" . $rowWork["location"] ."'>$linkText</a></span>" ;
-																}
-																else {
-																	print "<span title='$status. " . _('Recorded at') . " " . substr($rowWork["timestamp"],11,5) . " " . _('on') . " " . dateConvertBack($guid, substr($rowWork["timestamp"],0,10)) . "' $style>$linkText</span>" ;
-																}
+														if ($effortID[$i]!="") {
+															print "</div>" ;
+														}
+													print "</td>" ;
+												}
+												if ($comment[$i]=="Y") {
+													$leftBorderStyle='' ;
+													if ($leftBorder==FALSE) {
+														$leftBorder=TRUE ;
+														$leftBorderStyle="border-left: 2px solid #666;" ;
+													}
+													print "<td style='$leftBorderStyle text-align: center;'>" ;
+														$style="" ;
+														if ($rowEntry["comment"]!="") {
+															if (strlen($rowEntry["comment"])<11) {
+																print htmlPrep($rowEntry["comment"]) ;
 															}
 															else {
-																if (date("Y-m-d H:i:s")<$homeworkDueDateTime[$i]) {
-																	print "<span title='" . _('Pending') . "'>Pen</span>" ;
+																print "<span $style title='" . htmlPrep($rowEntry["comment"]) . "'>" . substr($rowEntry["comment"], 0, 10) . "...</span>" ;
+															}
+														}
+													print "</td>" ;
+												}
+												if ($uploadedResponse[$i]=="Y") {
+													$leftBorderStyle='' ;
+													if ($leftBorder==FALSE) {
+														$leftBorder=TRUE ;
+														$leftBorderStyle="border-left: 2px solid #666;" ;
+													}
+													print "<td style='$leftBorderStyle text-align: center;'>" ;
+													if ($rowEntry["response"]!="") {
+														print "<a title='" . __($guid, 'Uploaded Response') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowEntry["response"] . "'>Up</a><br/>" ;
+													}
+												}
+												print "</td>" ;
+											}
+											else {
+												$emptySpan=0 ;
+												if ($attainmentOn[$i]=="Y" AND ($attainmentID[$i]!="" OR $gibbonRubricIDAttainment[$i]!="")) {
+													$emptySpan++ ;
+												}
+												if ($effortOn[$i]=="Y" AND ($effortID[$i]!="" OR $gibbonRubricIDEffort[$i]!="")) {
+													$emptySpan++ ;
+												}
+												if ($comment[$i]=="Y") {
+													$emptySpan++ ;
+												}
+												if ($uploadedResponse[$i]=="Y") {
+													$emptySpan++ ;
+												}
+												if ($emptySpan>0) {
+													print "<td style='border-left: 2px solid #666; text-align: center' colspan=$emptySpan></td>" ;
+												}
+											}
+											if (isset($submission[$i])) {
+												if ($submission[$i]==TRUE) {
+													$leftBorderStyle='' ;
+													if ($leftBorder==FALSE) {
+														$leftBorder=TRUE ;
+														$leftBorderStyle="border-left: 2px solid #666;" ;
+													}
+													print "<td style='$leftBorderStyle text-align: center;'>" ;
+														try {
+															$dataWork=array("gibbonPlannerEntryID"=>$gibbonPlannerEntryID[$i], "gibbonPersonID"=>$rowStudents["gibbonPersonID"]); 
+															$sqlWork="SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC" ;
+															$resultWork=$connection2->prepare($sqlWork);
+															$resultWork->execute($dataWork);
+														}
+														catch(PDOException $e) { 
+															print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+														}
+														if ($resultWork->rowCount()>0) {
+															$rowWork=$resultWork->fetch() ;
+												
+															if ($rowWork["status"]=="Exemption") {
+																$linkText=__($guid, "Exe") ;
+															}
+															else if ($rowWork["version"]=="Final") {
+																$linkText=__($guid, "Fin") ;
+															}
+															else {
+																$linkText=__($guid, "Dra") . $rowWork["count"] ;
+															}
+												
+															$style="" ;
+															$status="On Time" ;
+																if ($rowWork["status"]=="Exemption") {
+																$status=__($guid, "Exemption") ;
+															}
+															else if ($rowWork["status"]=="Late") {
+																$style="style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'" ;
+																$status=__($guid, "Late") ;
+															}
+												
+															if ($rowWork["type"]=="File") {
+																print "<span title='" . $rowWork["version"] . ". $status. " . __($guid, 'Submitted at') . " " . substr($rowWork["timestamp"],11,5) . " " . __($guid, 'on') . " " . dateConvertBack($guid, substr($rowWork["timestamp"],0,10)) . "' $style><a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowWork["location"] ."'>$linkText</a></span>" ;
+															}
+															else if ($rowWork["type"]=="Link") {
+																print "<span title='" . $rowWork["version"] . ". $status. " . __($guid, 'Submitted at') . " " . substr($rowWork["timestamp"],11,5) . " " . __($guid, 'on') . " " . dateConvertBack($guid, substr($rowWork["timestamp"],0,10)) . "' $style><a target='_blank' href='" . $rowWork["location"] ."'>$linkText</a></span>" ;
+															}
+															else {
+																print "<span title='$status. " . __($guid, 'Recorded at') . " " . substr($rowWork["timestamp"],11,5) . " " . __($guid, 'on') . " " . dateConvertBack($guid, substr($rowWork["timestamp"],0,10)) . "' $style>$linkText</span>" ;
+															}
+														}
+														else {
+															if (date("Y-m-d H:i:s")<$homeworkDueDateTime[$i]) {
+																print "<span title='" . __($guid, 'Pending') . "'>Pen</span>" ;
+															}
+															else {
+																if ($rowStudents["dateStart"]>$lessonDate[$i]) {
+																	print "<span title='" . __($guid, 'Student joined school after assessment was given.') . "' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>" . __($guid, 'NA') . "</span>" ;
 																}
 																else {
-																	if ($rowStudents["dateStart"]>$lessonDate[$i]) {
-																		print "<span title='" . _('Student joined school after assessment was given.') . "' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>" . _('NA') . "</span>" ;
+																	if ($rowSub["homeworkSubmissionRequired"]=="Compulsory") {
+																		print "<span title='" . __($guid, 'Incomplete') . "' style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'>" . __($guid, 'Inc') . "</span>" ;
 																	}
 																	else {
-																		if ($rowSub["homeworkSubmissionRequired"]=="Compulsory") {
-																			print "<span title='" . _('Incomplete') . "' style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'>" . _('Inc') . "</span>" ;
-																		}
-																		else {
-																			print "<span title='" . _('Not submitted online') . "'>" . _('NA') . "</span>" ;
-																		}
+																		print "<span title='" . __($guid, 'Not submitted online') . "'>" . __($guid, 'NA') . "</span>" ;
 																	}
 																}
 															}
-														print "</td>" ;
-													}
+														}
+													print "</td>" ;
 												}
-										}
-									print "</tr>" ;
-								}
+											}
+									}
+								print "</tr>" ;
 							}
-						print "</table>" ;
 						}
+						print "</table>" ;
 					}
 				}
 			}
-			
-			//Print sidebar
-			$_SESSION[$guid]["sidebarExtra"]=sidebarExtra($guid, $connection2, $gibbonCourseClassID) ;
 		}
 		//VIEW ACCESS TO MY OWN MARKBOOK DATA
 		else if ($highestAction=="View Markbook_myMarks") {
@@ -874,10 +921,10 @@ else {
 			
 			$entryCount=0 ;
 			print "<div class='trail'>" ;
-					print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('View Markbook') . "</div>" ;
+					print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'View Markbook') . "</div>" ;
 			print "</div>" ;
 			print "<p>" ;
-				print _("This page shows you your academic results throughout your school career. Only subjects with published results are shown.") ;
+				print __($guid, "This page shows you your academic results throughout your school career. Only subjects with published results are shown.") ;
 			print "</p>" ;
 			
 			$and="" ;
@@ -920,13 +967,13 @@ else {
 					?>
 					<tr>
 						<td> 
-							<b><?php print _('Learning Area') ?></b><br/>
+							<b><?php print __($guid, 'Learning Area') ?></b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
 							<?php
 							print "<select name='filter2' id='filter2' style='width:302px'>" ;
-								print "<option value=''>" . _('All Learning Areas') . "</option>" ;
+								print "<option value=''>" . __($guid, 'All Learning Areas') . "</option>" ;
 								try {
 									$dataSelect=array(); 
 									$sqlSelect="SELECT * FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name" ;
@@ -947,13 +994,13 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('School Year') ?></b><br/>
+							<b><?php print __($guid, 'School Year') ?></b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
 							<?php
 							print "<select name='filter' id='filter' style='width:302px'>" ;
-								print "<option value='*'>" . _('All Years') . "</option>" ;
+								print "<option value='*'>" . __($guid, 'All Years') . "</option>" ;
 								try {
 									$dataSelect=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
 									$sqlSelect="SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonSchoolYear.name AS year, gibbonYearGroup.name AS yearGroup FROM gibbonStudentEnrolment JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY gibbonSchoolYear.sequenceNumber" ;
@@ -968,7 +1015,7 @@ else {
 									if ($rowSelect["gibbonSchoolYearID"]==$filter) {
 										$selected="selected" ;
 									}
-									print "<option $selected value='" . $rowSelect["gibbonSchoolYearID"] . "'>" . $rowSelect["year"] . " (" . _($rowSelect["yearGroup"]) . ")</option>" ;
+									print "<option $selected value='" . $rowSelect["gibbonSchoolYearID"] . "'>" . $rowSelect["year"] . " (" . __($guid, $rowSelect["yearGroup"]) . ")</option>" ;
 								}
 							print "</select>" ;
 							?>
@@ -981,7 +1028,7 @@ else {
 						?>
 						<tr>
 							<td> 
-								<b><?php print _('Type') ?></b><br/>
+								<b><?php print __($guid, 'Type') ?></b><br/>
 								<span style="font-size: 90%"><i></i></span>
 							</td>
 							<td class="right">
@@ -1007,7 +1054,7 @@ else {
 						print "<td class='right' colspan=2>" ;
 							print "<input type='hidden' name='q' value='" . $_GET["q"] . "'>" ;
 							print "<input checked type='checkbox' name='details' class='details' value='Yes' />" ;
-							print "<span style='font-size: 85%; font-weight: normal; font-style: italic'> " . _('Show/Hide Details') . "</span>" ;
+							print "<span style='font-size: 85%; font-weight: normal; font-style: italic'> " . __($guid, 'Show/Hide Details') . "</span>" ;
 							?>
 							<script type="text/javascript">
 								/* Show/Hide detail control */
@@ -1023,7 +1070,7 @@ else {
 								});
 							</script>
 							<?php
-							print "<input type='submit' value='" . _('Go') . "'>" ;
+							print "<input type='submit' value='" . __($guid, 'Go') . "'>" ;
 						print "</td>" ;
 					print "</tr>" ;
 				print"</table>" ;
@@ -1065,7 +1112,7 @@ else {
 							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 						}
 
-						$teachers="<p><b>" . _('Taught by:') . "</b> " ;
+						$teachers="<p><b>" . __($guid, 'Taught by:') . "</b> " ;
 						while ($rowTeachers=$resultTeachers->fetch()) {
 							$teachers=$teachers . $rowTeachers["title"] . " " . $rowTeachers["surname"] . ", " ;
 						}
@@ -1075,26 +1122,26 @@ else {
 						
 						if ($rowList["target"]!="") {
 							print "<div style='font-weight: bold' class='linkTop'>" ;
-								print _("Target") . ": " . $rowList["target"] ;
+								print __($guid, "Target") . ": " . $rowList["target"] ;
 							print "</div>" ; 
 						}
 	
 						print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th style='width: 120px'>" ;
-								print _("Assessment") ;
+								print __($guid, "Assessment") ;
 							print "</th>" ;
 							print "<th style='width: 75px; text-align: center'>" ;
-								if ($attainmentAlternativeName!="") { print $attainmentAlternativeName ; } else { print _('Attainment') ; }
+								if ($attainmentAlternativeName!="") { print $attainmentAlternativeName ; } else { print __($guid, 'Attainment') ; }
 							print "</th>" ;
 							print "<th style='width: 75px; text-align: center'>" ;
-								if ($effortAlternativeName!="") { print $effortAlternativeName ; } else { print _('Effort') ; }
+								if ($effortAlternativeName!="") { print $effortAlternativeName ; } else { print __($guid, 'Effort') ; }
 							print "</th>" ;
 							print "<th>" ;
-								print _("Comment") ;
+								print __($guid, "Comment") ;
 							print "</th>" ;
 							print "<th style='width: 75px'>" ;
-								print _("Submission") ;
+								print __($guid, "Submission") ;
 							print "</th>" ;
 						print "</tr>" ;
 						
@@ -1118,24 +1165,24 @@ else {
 									if (isset($unit[0])) {
 										print $unit[0] . "<br/>" ;
 										if ($unit[1]!="") {
-											print "<i>" . $unit[1] . " " . _('Unit') . "</i><br/>" ;
+											print "<i>" . $unit[1] . " " . __($guid, 'Unit') . "</i><br/>" ;
 										}
 									}
 									if ($rowEntry["completeDate"]!="") {
-										print _('Marked on') . " " . dateConvertBack($guid, $rowEntry["completeDate"]) . "<br/>" ;
+										print __($guid, 'Marked on') . " " . dateConvertBack($guid, $rowEntry["completeDate"]) . "<br/>" ;
 									}
 									else {
-										print _("Unmarked") . "<br/>" ;
+										print __($guid, "Unmarked") . "<br/>" ;
 									}
 									print $rowEntry["type"] ;
 									if ($rowEntry["attachment"]!="" AND file_exists($_SESSION[$guid]["absolutePath"] . "/" . $rowEntry["attachment"])) {
-										print " | <a 'title='" . _('Download more information') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowEntry["attachment"] . "'>" . _('More info') . "</a>"; 
+										print " | <a 'title='" . __($guid, 'Download more information') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowEntry["attachment"] . "'>" . __($guid, 'More info') . "</a>"; 
 									}
 									print "</span><br/>" ;
 								print "</td>" ;
 								if ($rowEntry["attainment"]=="N" OR ($rowEntry["gibbonScaleIDAttainment"]=="" AND $rowEntry["gibbonRubricIDAttainment"]=="")) {
 									print "<td class='dull' style='color: #bbb; text-align: center'>" ;
-										print _('N/A') ;
+										print __($guid, 'N/A') ;
 									print "</td>" ;
 								}
 								else {
@@ -1152,7 +1199,7 @@ else {
 										}
 										if ($resultAttainment->rowCount()==1) {
 											$rowAttainment=$resultAttainment->fetch() ;
-											$attainmentExtra="<br/>" . _($rowAttainment["usage"]) ;
+											$attainmentExtra="<br/>" . __($guid, $rowAttainment["usage"]) ;
 										}
 										$styleAttainment="style='font-weight: bold'" ;
 										if ($rowEntry["attainmentConcern"]=="Y" AND $showStudentAttainmentWarning=="Y") {
@@ -1163,17 +1210,17 @@ else {
 										}
 										print "<div $styleAttainment>" . $rowEntry["attainmentValue"] ;
 											if ($rowEntry["gibbonRubricIDAttainment"]!="") {
-												print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/Markbook/markbook_view_rubric.php&gibbonRubricID=" . $rowEntry["gibbonRubricIDAttainment"] . "&gibbonCourseClassID=" . $rowEntry["gibbonCourseClassID"] . "&gibbonMarkbookColumnID=" . $rowEntry["gibbonMarkbookColumnID"] . "&gibbonPersonID=" . $_SESSION[$guid]["gibbonPersonID"] . "&mark=FALSE&type=attainment&width=1100&height=550'><img style='margin-bottom: -3px; margin-left: 3px' title='" . _('View Rubric') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/rubric.png'/></a>" ;
+												print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/Markbook/markbook_view_rubric.php&gibbonRubricID=" . $rowEntry["gibbonRubricIDAttainment"] . "&gibbonCourseClassID=" . $rowEntry["gibbonCourseClassID"] . "&gibbonMarkbookColumnID=" . $rowEntry["gibbonMarkbookColumnID"] . "&gibbonPersonID=" . $_SESSION[$guid]["gibbonPersonID"] . "&mark=FALSE&type=attainment&width=1100&height=550'><img style='margin-bottom: -3px; margin-left: 3px' title='" . __($guid, 'View Rubric') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/rubric.png'/></a>" ;
 											}
 										print "</div>" ;
 										if ($rowEntry["attainmentValue"]!="") {
-											print "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><b>" . htmlPrep(_($rowEntry["attainmentDescriptor"])) . "</b>" . _($attainmentExtra) . "</div>" ;
+											print "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><b>" . htmlPrep(__($guid, $rowEntry["attainmentDescriptor"])) . "</b>" . __($guid, $attainmentExtra) . "</div>" ;
 										}
 									print "</td>" ;
 								}
 								if ($rowEntry["effort"]=="N" OR ($rowEntry["gibbonScaleIDEffort"]=="" AND $rowEntry["gibbonRubricIDEffort"]=="")) {
 									print "<td class='dull' style='color: #bbb; text-align: center'>" ;
-										print _('N/A') ;
+										print __($guid, 'N/A') ;
 									print "</td>" ;
 								}
 								else {
@@ -1190,7 +1237,7 @@ else {
 										}
 										if ($resultEffort->rowCount()==1) {
 											$rowEffort=$resultEffort->fetch() ;
-											$effortExtra="<br/>" . _($rowEffort["usage"]) ;
+											$effortExtra="<br/>" . __($guid, $rowEffort["usage"]) ;
 										}
 										$styleEffort="style='font-weight: bold'" ;
 										if ($rowEntry["effortConcern"]=="Y" AND $showStudentEffortWarning=="Y") {
@@ -1198,14 +1245,14 @@ else {
 										}
 										print "<div $styleEffort>" . $rowEntry["effortValue"] ;
 											if ($rowEntry["gibbonRubricIDEffort"]!="") {
-												print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/Markbook/markbook_view_rubric.php&gibbonRubricID=" . $rowEntry["gibbonRubricIDEffort"] . "&gibbonCourseClassID=" . $rowEntry["gibbonCourseClassID"] . "&gibbonMarkbookColumnID=" . $rowEntry["gibbonMarkbookColumnID"] . "&gibbonPersonID=" . $_SESSION[$guid]["gibbonPersonID"] . "&mark=FALSE&type=effort&width=1100&height=550'><img style='margin-bottom: -3px; margin-left: 3px' title='" . _('View Rubric') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/rubric.png'/></a>" ;
+												print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/Markbook/markbook_view_rubric.php&gibbonRubricID=" . $rowEntry["gibbonRubricIDEffort"] . "&gibbonCourseClassID=" . $rowEntry["gibbonCourseClassID"] . "&gibbonMarkbookColumnID=" . $rowEntry["gibbonMarkbookColumnID"] . "&gibbonPersonID=" . $_SESSION[$guid]["gibbonPersonID"] . "&mark=FALSE&type=effort&width=1100&height=550'><img style='margin-bottom: -3px; margin-left: 3px' title='" . __($guid, 'View Rubric') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/rubric.png'/></a>" ;
 											}
 										print "</div>" ;
 										if ($rowEntry["effortValue"]!="") {
 											print "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'>" ;
-												print "<b>" . htmlPrep(_($rowEntry["effortDescriptor"])) . "</b>" ;
+												print "<b>" . htmlPrep(__($guid, $rowEntry["effortDescriptor"])) . "</b>" ;
 												if ($effortExtra!="") {
-													print _($effortExtra) ;
+													print __($guid, $effortExtra) ;
 												}
 											print "</div>" ;
 										}
@@ -1213,13 +1260,13 @@ else {
 								}
 								if ($rowEntry["commentOn"]=="N" AND $rowEntry["uploadedResponseOn"]=="N") {
 									print "<td class='dull' style='color: #bbb; text-align: left'>" ;
-										print _('N/A') ;
+										print __($guid, 'N/A') ;
 									print "</td>" ;
 								}
 								else {
 									print "<td>" ;
 										if ($rowEntry["comment"]!="") {
-											if (strlen($rowEntry["comment"])>50) {
+											if (strlen($rowEntry["comment"])>200) {
 												print "<script type='text/javascript'>" ;	
 													print "$(document).ready(function(){" ;
 														print "\$(\".comment-$entryCount\").hide();" ;
@@ -1229,22 +1276,22 @@ else {
 														print "});" ;
 													print "});" ;
 												print "</script>" ;
-												print "<span>" . substr($rowEntry["comment"], 0, 50) . "...<br/>" ;
-												print "<a title='" . _('View Description') . "' class='show_hide-$entryCount' onclick='return false;' href='#'>" . _('Read more') . "</a></span><br/>" ;
+												print "<span>" . substr($rowEntry["comment"], 0, 200) . "...<br/>" ;
+												print "<a title='" . __($guid, 'View Description') . "' class='show_hide-$entryCount' onclick='return false;' href='#'>" . __($guid, 'Read more') . "</a></span><br/>" ;
 											}
 											else {
-												print $rowEntry["comment"] ;
+												print nl2br($rowEntry["comment"]) ;
 											}
 											print "<br/>" ;
 										}
 										if ($rowEntry["response"]!="") {
-											print "<a title='" . _('Uploaded Response') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowEntry["response"] . "'>" . _('Uploaded Response') . "</a><br/>" ;
+											print "<a title='" . __($guid, 'Uploaded Response') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowEntry["response"] . "'>" . __($guid, 'Uploaded Response') . "</a><br/>" ;
 										}
 									print "</td>" ;
 								}
 								if ($rowEntry["gibbonPlannerEntryID"]==0) {
 									print "<td class='dull' style='color: #bbb; text-align: left'>" ;
-										print _('N/A') ;
+										print __($guid, 'N/A') ;
 									print "</td>" ;
 								}
 								else {
@@ -1259,7 +1306,7 @@ else {
 									}
 									if ($resultSub->rowCount()!=1) {
 										print "<td class='dull' style='color: #bbb; text-align: left'>" ;
-											print _('N/A') ;
+											print __($guid, 'N/A') ;
 										print "</td>" ;
 									}
 									else {
@@ -1279,49 +1326,49 @@ else {
 												$rowWork=$resultWork->fetch() ;
 												
 												if ($rowWork["status"]=="Exemption") {
-													$linkText=_("Exemption") ;
+													$linkText=__($guid, "Exemption") ;
 												}
 												else if ($rowWork["version"]=="Final") {
-													$linkText=_("Final") ;
+													$linkText=__($guid, "Final") ;
 												}
 												else {
-													$linkText=_("Draft") . " " . $rowWork["count"] ;
+													$linkText=__($guid, "Draft") . " " . $rowWork["count"] ;
 												}
 												
 												$style="" ;
 												$status="On Time" ;
 												if ($rowWork["status"]=="Exemption") {
-													$status=_("Exemption") ;
+													$status=__($guid, "Exemption") ;
 												}
 												else if ($rowWork["status"]=="Late") {
 													$style="style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'" ;
-													$status=_("Late") ;
+													$status=__($guid, "Late") ;
 												}
 												
 												if ($rowWork["type"]=="File") {
-													print "<span title='" . $rowWork["version"] . ". $status. " . sprintf(_('Submitted at %1$s on %2$s'), substr($rowWork["timestamp"],11,5), dateConvertBack($guid, substr($rowWork["timestamp"],0,10))) . "' $style><a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowWork["location"] ."'>$linkText</a></span>" ;
+													print "<span title='" . $rowWork["version"] . ". $status. " . sprintf(__($guid, 'Submitted at %1$s on %2$s'), substr($rowWork["timestamp"],11,5), dateConvertBack($guid, substr($rowWork["timestamp"],0,10))) . "' $style><a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowWork["location"] ."'>$linkText</a></span>" ;
 												}
 												else if ($rowWork["type"]=="Link") {
-													print "<span title='" . $rowWork["version"] . ". $status. " . sprintf(_('Submitted at %1$s on %2$s'), substr($rowWork["timestamp"],11,5), dateConvertBack($guid, substr($rowWork["timestamp"],0,10))) . "' $style><a target='_blank' href='" . $rowWork["location"] ."'>$linkText</a></span>" ;
+													print "<span title='" . $rowWork["version"] . ". $status. " . sprintf(__($guid, 'Submitted at %1$s on %2$s'), substr($rowWork["timestamp"],11,5), dateConvertBack($guid, substr($rowWork["timestamp"],0,10))) . "' $style><a target='_blank' href='" . $rowWork["location"] ."'>$linkText</a></span>" ;
 												}
 												else {
-													print "<span title='$status. " . sprintf(_('Recorded at %1$s on %2$s'), substr($rowWork["timestamp"],11,5), dateConvertBack($guid, substr($rowWork["timestamp"],0,10))) . "' $style>$linkText</span>" ;
+													print "<span title='$status. " . sprintf(__($guid, 'Recorded at %1$s on %2$s'), substr($rowWork["timestamp"],11,5), dateConvertBack($guid, substr($rowWork["timestamp"],0,10))) . "' $style>$linkText</span>" ;
 												}
 											}
 											else {
 												if (date("Y-m-d H:i:s")<$rowSub["homeworkDueDateTime"]) {
-													print "<span title='Pending'>" . _('Pending') . "</span>" ;
+													print "<span title='Pending'>" . __($guid, 'Pending') . "</span>" ;
 												}
 												else {
 													if ($row["dateStart"]>$rowSub["date"]) {
-														print "<span title='" . _('Student joined school after assessment was given.') . "' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>" . _('NA') . "</span>" ;
+														print "<span title='" . __($guid, 'Student joined school after assessment was given.') . "' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>" . __($guid, 'NA') . "</span>" ;
 													}
 													else {
 														if ($rowSub["homeworkSubmissionRequired"]=="Compulsory") {
-															print "<div style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px; margin: 2px 0px'>" . _('Incomplete') . "</div>" ;
+															print "<div style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px; margin: 2px 0px'>" . __($guid, 'Incomplete') . "</div>" ;
 														}
 														else {
-															print _("Not submitted online") ;
+															print __($guid, "Not submitted online") ;
 														}
 													}
 												}
@@ -1330,10 +1377,10 @@ else {
 									}
 								}
 							print "</tr>" ;
-							if (strlen($rowEntry["comment"])>50) {
+							if (strlen($rowEntry["comment"])>200) {
 								print "<tr class='comment-$entryCount' id='comment-$entryCount'>" ;
 									print "<td colspan=6>" ;
-										print $rowEntry["comment"] ;
+										print nl2br($rowEntry["comment"]) ;
 									print "</td>" ;
 								print "</tr>" ;
 							}
@@ -1351,10 +1398,10 @@ else {
 			}
 		}
 		//VIEW ACCESS TO MY CHILDREN'S MARKBOOK DATA
-		else if ($highestAction=="Markbook_viewMyChildrensClasses") {
+		else if ($highestAction=="View Markbook_viewMyChildrensClasses") {
 			$entryCount=0; 
 			print "<div class='trail'>" ;
-				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>View Markbook</div>" ;
+				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>View Markbook</div>" ;
 			print "</div>" ;
 			print "<p>" ;
 				print "This page shows your children's academic results throughout your school career. Only subjects with published results are shown." ;
@@ -1373,7 +1420,7 @@ else {
 
 			if ($result->rowCount()<1) {
 				print "<div class='error'>" ;
-				print _("Access denied.") ;
+				print __($guid, "Access denied.") ;
 				print "</div>" ;
 			}
 			else {
@@ -1406,7 +1453,7 @@ else {
 				
 				if ($count==0) {
 					print "<div class='error'>" ;
-					print _("Access denied.") ;
+					print __($guid, "Access denied.") ;
 					print "</div>" ;
 				}
 				else if ($count==1) {
@@ -1423,7 +1470,7 @@ else {
 							<tr><td style="width: 30%"></td><td></td></tr>
 							<tr>
 								<td> 
-									<b><?php print _('Search For') ?></b><br/>
+									<b><?php print __($guid, 'Search For') ?></b><br/>
 									<span style="font-size: 90%"><i>Preferred, surname, username.</i></span>
 								</td>
 								<td class="right">
@@ -1438,9 +1485,9 @@ else {
 									<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/markbook_view.php">
 									<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 									<?php
-									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_view.php'>" . _('Clear Search') . "</a>" ;
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_view.php'>" . __($guid, 'Clear Search') . "</a>" ;
 									?>
-									<input type="submit" value="<?php print _("Submit") ; ?>">
+									<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 								</td>
 							</tr>
 						</table>
@@ -1468,7 +1515,7 @@ else {
 					}
 					if ($resultChild->rowCount()<1) {
 						print "<div class='error'>" ;
-						print _("The selected record does not exist, or you do not have access to it.") ;
+						print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 						print "</div>" ;
 					}
 					else {
@@ -1548,7 +1595,7 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b><?php print _('School Year') ?></b><br/>
+										<b><?php print __($guid, 'School Year') ?></b><br/>
 										<span style="font-size: 90%"><i></i></span>
 									</td>
 									<td class="right">
@@ -1569,7 +1616,7 @@ else {
 												if ($rowSelect["gibbonSchoolYearID"]==$filter) {
 													$selected="selected" ;
 												}
-												print "<option $selected value='" . $rowSelect["gibbonSchoolYearID"] . "'>" . $rowSelect["year"] . " (" . _($rowSelect["yearGroup"]) . ")</option>" ;
+												print "<option $selected value='" . $rowSelect["gibbonSchoolYearID"] . "'>" . $rowSelect["year"] . " (" . __($guid, $rowSelect["yearGroup"]) . ")</option>" ;
 											}
 										print "</select>" ;
 										?>
@@ -1582,7 +1629,7 @@ else {
 									?>
 									<tr>
 										<td> 
-											<b><?php print _('Type') ?></b><br/>
+											<b><?php print __($guid, 'Type') ?></b><br/>
 											<span style="font-size: 90%"><i></i></span>
 										</td>
 										<td class="right">
@@ -1624,7 +1671,7 @@ else {
 											});
 										</script>
 										<?php
-										print "<input type='submit' value='" . _('Go') . "'>" ;
+										print "<input type='submit' value='" . __($guid, 'Go') . "'>" ;
 									print "</td>" ;
 								print "</tr>" ;
 							print"</table>" ;
@@ -1676,7 +1723,7 @@ else {
 									
 									if ($rowList["target"]!="") {
 										print "<div style='font-weight: bold' class='linkTop'>" ;
-											print _("Target") . ": " . $rowList["target"] ;
+											print __($guid, "Target") . ": " . $rowList["target"] ;
 										print "</div>" ; 
 									}
 				
@@ -1686,10 +1733,10 @@ else {
 											print "Assessment" ;
 										print "</th>" ;
 										print "<th style='width: 75px; text-align: center'>" ;
-											if ($attainmentAlternativeName!="") { print $attainmentAlternativeName ; } else { print _('Attainment') ; }
+											if ($attainmentAlternativeName!="") { print $attainmentAlternativeName ; } else { print __($guid, 'Attainment') ; }
 										print "</th>" ;
 										print "<th style='width: 75px; text-align: center'>" ;
-											if ($effortAlternativeName!="") { print $effortAlternativeName ; } else { print _('Effort') ; }
+											if ($effortAlternativeName!="") { print $effortAlternativeName ; } else { print __($guid, 'Effort') ; }
 										print "</th>" ;
 										print "<th>" ;
 											print "Comment" ;
@@ -1735,7 +1782,7 @@ else {
 											print "</td>" ;
 											if ($rowEntry["attainment"]=="N" OR ($rowEntry["gibbonScaleIDAttainment"]=="" AND $rowEntry["gibbonRubricIDAttainment"]=="")) {
 												print "<td class='dull' style='color: #bbb; text-align: center'>" ;
-													print _('N/A') ;
+													print __($guid, 'N/A') ;
 												print "</td>" ;
 											}
 											else {
@@ -1752,7 +1799,7 @@ else {
 													}
 													if ($resultAttainment->rowCount()==1) {
 														$rowAttainment=$resultAttainment->fetch() ;
-														$attainmentExtra="<br/>" . _($rowAttainment["usage"]) ;
+														$attainmentExtra="<br/>" . __($guid, $rowAttainment["usage"]) ;
 													}
 													$styleAttainment="style='font-weight: bold'" ;
 													if ($rowEntry["attainmentConcern"]=="Y" AND $showParentAttainmentWarning=="Y") {
@@ -1767,13 +1814,13 @@ else {
 														}
 													print "</div>" ;
 													if ($rowEntry["attainmentValue"]!="") {
-														print "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><b>" . htmlPrep(_($rowEntry["attainmentDescriptor"])) . "</b>" . _($attainmentExtra) . "</div>" ;
+														print "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><b>" . htmlPrep(__($guid, $rowEntry["attainmentDescriptor"])) . "</b>" . __($guid, $attainmentExtra) . "</div>" ;
 													}
 												print "</td>" ;
 											}
 											if ($rowEntry["effort"]=="N" OR ($rowEntry["gibbonScaleIDEffort"]=="" AND $rowEntry["gibbonRubricIDEffort"]=="")) {
 												print "<td class='dull' style='color: #bbb; text-align: center'>" ;
-													print _('N/A') ;
+													print __($guid, 'N/A') ;
 												print "</td>" ;
 											}
 											else {
@@ -1790,7 +1837,7 @@ else {
 													}
 													if ($resultEffort->rowCount()==1) {
 														$rowEffort=$resultEffort->fetch() ;
-														$effortExtra="<br/>" . _($rowEffort["usage"]) ;
+														$effortExtra="<br/>" . __($guid, $rowEffort["usage"]) ;
 													}
 													$styleEffort="style='font-weight: bold'" ;
 													if ($rowEntry["effortConcern"]=="Y" AND $showParentEffortWarning=="Y") {
@@ -1803,9 +1850,9 @@ else {
 													print "</div>" ;
 													if ($rowEntry["effortValue"]!="") {
 														print "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'>" ;
-															print "<b>" . htmlPrep(_($rowEntry["effortDescriptor"])) . "</b>" ;
+															print "<b>" . htmlPrep(__($guid, $rowEntry["effortDescriptor"])) . "</b>" ;
 															if ($effortExtra!="") {
-																print _($effortExtra) ;
+																print __($guid, $effortExtra) ;
 															}
 														print "</div>" ;
 													}
@@ -1813,13 +1860,13 @@ else {
 											}
 											if ($rowEntry["commentOn"]=="N" AND $rowEntry["uploadedResponseOn"]=="N") {
 												print "<td class='dull' style='color: #bbb; text-align: left'>" ;
-													print _('N/A') ;
+													print __($guid, 'N/A') ;
 												print "</td>" ;
 											}
 											else {
 												print "<td>" ;
 													if ($rowEntry["comment"]!="") {
-														if (strlen($rowEntry["comment"])>50) {
+														if (strlen($rowEntry["comment"])>200) {
 															print "<script type='text/javascript'>" ;	
 																print "$(document).ready(function(){" ;
 																	print "\$(\".comment-$entryCount\").hide();" ;
@@ -1829,11 +1876,11 @@ else {
 																	print "});" ;
 																print "});" ;
 															print "</script>" ;
-															print "<span>" . substr($rowEntry["comment"], 0, 50) . "...<br/>" ;
-															print "<a title='" . _('View Description') . "' class='show_hide-$entryCount' onclick='return false;' href='#'>Read more</a></span><br/>" ;
+															print "<span>" . substr($rowEntry["comment"], 0, 200) . "...<br/>" ;
+															print "<a title='" . __($guid, 'View Description') . "' class='show_hide-$entryCount' onclick='return false;' href='#'>Read more</a></span><br/>" ;
 														}
 														else {
-															print $rowEntry["comment"] ;
+															print nl2br($rowEntry["comment"]) ;
 														}
 														print "<br/>" ;
 													}
@@ -1844,7 +1891,7 @@ else {
 											}
 											if ($rowEntry["gibbonPlannerEntryID"]==0) {
 												print "<td class='dull' style='color: #bbb; text-align: left'>" ;
-													print _('N/A') ;
+													print __($guid, 'N/A') ;
 												print "</td>" ;
 											}
 											else {
@@ -1859,7 +1906,7 @@ else {
 												}
 												if ($resultSub->rowCount()!=1) {
 													print "<td class='dull' style='color: #bbb; text-align: left'>" ;
-														print _('N/A') ;
+														print __($guid, 'N/A') ;
 													print "</td>" ;
 												}
 												else {
@@ -1879,49 +1926,49 @@ else {
 															$rowWork=$resultWork->fetch() ;
 															
 															if ($rowWork["status"]=="Exemption") {
-																$linkText=_("Exemption") ;
+																$linkText=__($guid, "Exemption") ;
 															}
 															else if ($rowWork["version"]=="Final") {
-																$linkText=_("Final") ;
+																$linkText=__($guid, "Final") ;
 															}
 															else {
-																$linkText=_("Draft") . " " . $rowWork["count"] ;
+																$linkText=__($guid, "Draft") . " " . $rowWork["count"] ;
 															}
 															
 															$style="" ;
 															$status="On Time" ;
 															if ($rowWork["status"]=="Exemption") {
-																$status=_("Exemption") ;
+																$status=__($guid, "Exemption") ;
 															}
 															else if ($rowWork["status"]=="Late") {
 																$style="style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'" ;
-																$status=_("Late") ;
+																$status=__($guid, "Late") ;
 															}
 															
 															if ($rowWork["type"]=="File") {
-																print "<span title='" . $rowWork["version"] . ". $status. " . sprintf(_('Submitted at %1$s on %2$s'), substr($rowWork["timestamp"],11,5), dateConvertBack($guid, substr($rowWork["timestamp"],0,10))) . "' $style><a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowWork["location"] ."'>$linkText</a></span>" ;
+																print "<span title='" . $rowWork["version"] . ". $status. " . sprintf(__($guid, 'Submitted at %1$s on %2$s'), substr($rowWork["timestamp"],11,5), dateConvertBack($guid, substr($rowWork["timestamp"],0,10))) . "' $style><a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowWork["location"] ."'>$linkText</a></span>" ;
 															}
 															else if ($rowWork["type"]=="Link") {
-																print "<span title='" . $rowWork["version"] . ". $status. " . sprintf(_('Submitted at %1$s on %2$s'), substr($rowWork["timestamp"],11,5), dateConvertBack($guid, substr($rowWork["timestamp"],0,10))) . "' $style><a target='_blank' href='" . $rowWork["location"] ."'>$linkText</a></span>" ;
+																print "<span title='" . $rowWork["version"] . ". $status. " . sprintf(__($guid, 'Submitted at %1$s on %2$s'), substr($rowWork["timestamp"],11,5), dateConvertBack($guid, substr($rowWork["timestamp"],0,10))) . "' $style><a target='_blank' href='" . $rowWork["location"] ."'>$linkText</a></span>" ;
 															}
 															else {
-																print "<span title='$status. " . sprintf(_('Recorded at %1$s on %2$s'), substr($rowWork["timestamp"],11,5), dateConvertBack($guid, substr($rowWork["timestamp"],0,10))) . "' $style>$linkText</span>" ;
+																print "<span title='$status. " . sprintf(__($guid, 'Recorded at %1$s on %2$s'), substr($rowWork["timestamp"],11,5), dateConvertBack($guid, substr($rowWork["timestamp"],0,10))) . "' $style>$linkText</span>" ;
 															}
 														}
 														else {
 															if (date("Y-m-d H:i:s")<$rowSub["homeworkDueDateTime"]) {
-																print "<span title='Pending'>" . _('Pending') . "</span>" ;
+																print "<span title='Pending'>" . __($guid, 'Pending') . "</span>" ;
 															}
 															else {
 																if ($row["dateStart"]>$rowSub["date"]) {
-																	print "<span title='" . _('Student joined school after assessment was given.') . "' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>" . _('NA') . "</span>" ;
+																	print "<span title='" . __($guid, 'Student joined school after assessment was given.') . "' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>" . __($guid, 'NA') . "</span>" ;
 																}
 																else {
 																	if ($rowSub["homeworkSubmissionRequired"]=="Compulsory") {
-																		print "<div style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px; margin: 2px 0px'>" . _('Incomplete') . "</div>" ;
+																		print "<div style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px; margin: 2px 0px'>" . __($guid, 'Incomplete') . "</div>" ;
 																	}
 																	else {
-																		print _("Not submitted online") ;
+																		print __($guid, "Not submitted online") ;
 																	}
 																}
 															}
@@ -1930,10 +1977,10 @@ else {
 												}
 											}
 										print "</tr>" ;
-										if (strlen($rowEntry["comment"])>50) {
+										if (strlen($rowEntry["comment"])>200) {
 											print "<tr class='comment-$entryCount' id='comment-$entryCount'>" ;
 												print "<td colspan=6>" ;
-													print $rowEntry["comment"] ;
+													print nl2br($rowEntry["comment"]) ;
 												print "</td>" ;
 											print "</tr>" ;
 										}
@@ -1952,7 +1999,7 @@ else {
 									}
 									if ($resultEntry2->rowCount()>0) {
 										$_SESSION[$guid]["sidebarExtra"]="<h2 class='sidebar'>" ;
-										$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . _("Recent Marks") ;
+										$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . __($guid, "Recent Marks") ;
 										$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</h2>" ;
 										
 										$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<ol>" ;
@@ -1973,7 +2020,7 @@ else {
 			}
 			if ($entryCount<1) {
 				print "<div class='error'>" ;
-					print _('There are no records to display.') ;
+					print __($guid, 'There are no records to display.') ;
 				print "</div>" ;
 			}
 		}

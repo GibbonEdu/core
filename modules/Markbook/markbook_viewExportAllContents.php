@@ -41,11 +41,11 @@ $gibbonCourseClassID=$_SESSION[$guid]["exportToExcelParams"] ;
 if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_view.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
-	$alert=getAlert($connection2, 002) ;
+	$alert=getAlert($guid, $connection2, 002) ;
 	
 	//Count number of columns
 	try {
@@ -60,7 +60,7 @@ else {
 	$columns=$result->rowCount() ;
 	if ($columns<1) {
 		print "<div class='warning'>" ;
-			print _("There are no records to display.") ;
+			print __($guid, "There are no records to display.") ;
 		print "</div>" ;	
 	}
 	else {
@@ -68,7 +68,7 @@ else {
 		print "<table class='mini' cellspacing='0' style='width: 100%; margin-top: 0px'>" ;
 			print "<tr class='head'>" ;
 				print "<th style='width: 150px; max-width: 200px'rowspan=2>" ;
-					print _("Student") ;
+					print __($guid, "Student") ;
 				print "</th>" ;
 			
 				$span=3 ;
@@ -112,13 +112,13 @@ else {
 					}
 					else {
 						print "<th style='border-left: 2px solid #666; text-align: center; width: 40px'>" ;
-							print "<b>" ; if ($attainmentAlternativeNameAbrev!="") { print $attainmentAlternativeNameAbrev ; } else { print _('Att') ; } print "</b>" ;
+							print "<b>" ; if ($attainmentAlternativeNameAbrev!="") { print $attainmentAlternativeNameAbrev ; } else { print __($guid, 'Att') ; } print "</b>" ;
 						print "</th>" ;
 						print "<th style='text-align: center; width: 40px'>" ;
-							print "<b>" ; if ($effortAlternativeNameAbrev!="") { print $effortAlternativeNameAbrev ; } else { print _('Eff') ; } print "</b>" ;
+							print "<b>" ; if ($effortAlternativeNameAbrev!="") { print $effortAlternativeNameAbrev ; } else { print __($guid, 'Eff') ; } print "</b>" ;
 						print "</th>" ;
 						print "<th style='text-align: center; width: 80px'>" ;
-							print "<span title='" . _('Comment') . "'>" . _('Com') . "</span>" ;
+							print "<span title='" . __($guid, 'Comment') . "'>" . __($guid, 'Com') . "</span>" ;
 						print "</th>" ;
 					}
 				}
@@ -139,7 +139,7 @@ else {
 		if ($resultStudents->rowCount()<1) {
 			print "<tr>" ;
 				print "<td colspan=" . ($columns+1) . ">" ;
-					print "<i>" . _('There are no records to display.') . "</i>" ;
+					print "<i>" . __($guid, 'There are no records to display.') . "</i>" ;
 				print "</td>" ;
 			print "</tr>" ;
 		}
@@ -182,13 +182,13 @@ else {
 								print "<td style='border-left: 2px solid #666; text-align: center'>" ;
 									$attainment="" ;
 									if ($rowEntry["attainmentValue"]!="") {
-										$attainment=_($rowEntry["attainmentValue"]) ;
+										$attainment=__($guid, $rowEntry["attainmentValue"]) ;
 									}
 									if ($rowEntry["attainmentValue"]=="Complete") {
-										$attainment=_("Com") ;
+										$attainment=__($guid, "Com") ;
 									}
 									else if ($rowEntry["attainmentValue"]=="Incomplete") {
-										$attainment=_("Inc") ;
+										$attainment=__($guid, "Inc") ;
 									}
 									print "<div $styleAttainment title='" . htmlPrep($rowEntry["attainmentDescriptor"]) . "'>$attainment" ;
 									print "</div>" ;
@@ -199,13 +199,13 @@ else {
 								}
 								$effort="" ;
 								if ($rowEntry["effortValue"]!="") {
-									$effort=_($rowEntry["effortValue"]) ;
+									$effort=__($guid, $rowEntry["effortValue"]) ;
 								}
 								if ($rowEntry["effortValue"]=="Complete") {
-									$effort=_("Com") ;
+									$effort=__($guid, "Com") ;
 								}
 								else if ($rowEntry["effortValue"]=="Incomplete") {
-									$effort=_("Inc") ;
+									$effort=__($guid, "Inc") ;
 								}
 								print "<td style='text-align: center;'>" ;
 									print "<div $styleEffort title='" . htmlPrep($rowEntry["effortDescriptor"]) . "'>$effort" ;

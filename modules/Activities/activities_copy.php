@@ -25,13 +25,13 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Activities/activities_copy.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Copy Activities') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Copy Activities') . "</div>" ;
 	print "</div>" ;
 	
 	
@@ -40,19 +40,19 @@ else {
 	$class="error" ;
 	if (!($copyReturn=="")) {
 		if ($copyReturn=="fail0") {
-			$copyReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+			$copyReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($copyReturn=="fail1") {
-			$copyReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$copyReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($copyReturn=="fail2") {
-			$copyReturnMessage=_("Your request failed due to a database error.") ;	
+			$copyReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 		}
 		else if ($copyReturn=="fail3") {
-			$copyReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$copyReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($copyReturn=="success0") {
-			$copyReturnMessage=_("Your request was completed successfully.") ;		
+			$copyReturnMessage=__($guid, "Your request was completed successfully.") ;		
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -62,13 +62,13 @@ else {
 	
 	?>
 	<p>
-		<?php print _('This action copies all current activities, slots and staff into a specified year.') . " " . _("Copied activities will be added to any existing activities in the target year.") ; ?>
+		<?php print __($guid, 'This action copies all current activities, slots and staff into a specified year.') . " " . __($guid, "Copied activities will be added to any existing activities in the target year.") ; ?>
 	</p>
 	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/activities_copyProcess.php" ?>">
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td style='width: 275px'> 
-					<b><?php print _('Current School Year') ?> *</b><br/>
+					<b><?php print __($guid, 'Current School Year') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<input readonly name="gibbonSchoolYearName" id="gibbonSchoolYearName" value="<?php print $_SESSION[$guid]["gibbonSchoolYearName"] ?>" type="text" style="width: 300px">
@@ -77,11 +77,11 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Target School Year') ?> *</b><br/>
+					<b><?php print __($guid, 'Target School Year') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select name="gibbonSchoolYearIDTarget" id="gibbonSchoolYearIDTarget" style="width: 302px">
-						<option value='Please select...'><?php print _('Please select...') ?></option>
+						<option value='Please select...'><?php print __($guid, 'Please select...') ?></option>
 						<?php
 						try {
 							$dataSelect=array(); 
@@ -97,17 +97,17 @@ else {
 					</select>
 					<script type="text/javascript">
 						var gibbonSchoolYearIDTarget=new LiveValidation('gibbonSchoolYearIDTarget');
-						gibbonSchoolYearIDTarget.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+						gibbonSchoolYearIDTarget.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 					</script>	
 				</td>
 			</tr>
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+					<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 				</td>
 			</tr>
 		</table>

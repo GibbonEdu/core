@@ -59,7 +59,7 @@ else {
 			//Fail 2
 			$URL.="&updateReturn=fail2" ;
 			header("Location: {$URL}");
-			break ;
+			exit() ;
 		}
 		
 		$insertFail=FALSE ;

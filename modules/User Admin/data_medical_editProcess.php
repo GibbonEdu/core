@@ -63,7 +63,7 @@ else {
 			//Fail2
 			$URL.="&updateReturn=fail2" ;
 			header("Location: {$URL}");
-			break ;
+			exit() ;
 		}
 		
 		if ($result->rowCount()!=1) {
@@ -84,7 +84,7 @@ else {
 				//Fail 2
 				$URL.="&addReturn=fail2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 			
 			//Get next autoincrement
@@ -96,7 +96,7 @@ else {
 				//Fail 2
 				$URL.="&addReturn=fail2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 			
 			$rowAI=$resultAI->fetch();
@@ -328,7 +328,7 @@ else {
 					//Fail 2
 					$URL.="&updateReturn=fail2" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 				
 				//Unlock module table
@@ -340,7 +340,7 @@ else {
 					//Fail 2
 					$URL.="&addReturn=fail2" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 
 				if ($partialFail==TRUE) {
@@ -359,7 +359,7 @@ else {
 						//Fail 2
 						$URL.="&updateReturn=success1" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 
 					//Success 0
@@ -480,7 +480,7 @@ else {
 					//Fail 2
 					$URL.="&updateReturn=fail2" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 
 				//Unlock module table
@@ -492,7 +492,7 @@ else {
 					//Fail 2
 					$URL.="&updateReturn=fail2" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 				
 				if ($partialFail==TRUE) {
@@ -511,7 +511,7 @@ else {
 						//Fail 2
 						$URL.="&updateReturn=success1" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 					
 					//Success 0

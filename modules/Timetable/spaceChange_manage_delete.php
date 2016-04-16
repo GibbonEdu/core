@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/Timetable/spaceChange_manage_delete.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -30,13 +30,13 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print _("The highest grouped action cannot be determined.") ;
+		print __($guid, "The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
 		//Proceed!
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/spaceChange_manage.php'>" . _('Manage Space Changes') . "</a> > </div><div class='trailEnd'>" . _('Delete Space Change') . "</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/spaceChange_manage.php'>" . __($guid, 'Manage Facility Changes') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Delete Facility Change') . "</div>" ;
 		print "</div>" ;
 	
 		if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -44,16 +44,16 @@ else {
 		$class="error" ;
 		if (!($deleteReturn=="")) {
 			if ($deleteReturn=="fail0") {
-				$deleteReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+				$deleteReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 			}
 			else if ($deleteReturn=="fail1") {
-				$deleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+				$deleteReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($deleteReturn=="fail2") {
-				$deleteReturnMessage=_("Your request failed due to a database error.") ;	
+				$deleteReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 			}
 			else if ($deleteReturn=="fail3") {
-				$deleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+				$deleteReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 			}
 			print "<div class='$class'>" ;
 				print $deleteReturnMessage;
@@ -64,7 +64,7 @@ else {
 		$gibbonTTSpaceChangeID=$_GET["gibbonTTSpaceChangeID"] ;
 		if ($gibbonTTSpaceChangeID=="") {
 			print "<div class='error'>" ;
-				print _("You have not specified one or more required parameters.") ;
+				print __($guid, "You have not specified one or more required parameters.") ;
 			print "</div>" ;
 		}
 		else {
@@ -86,7 +86,7 @@ else {
 		
 			if ($result->rowCount()!=1) {
 				print "<div class='error'>" ;
-					print _("The specified record cannot be found.") ;
+					print __($guid, "The specified record cannot be found.") ;
 				print "</div>" ;
 			}
 			else {
@@ -97,8 +97,8 @@ else {
 					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 						<tr>
 							<td> 
-								<b><?php print _('Are you sure you want to delete this record?') ; ?></b><br/>
-								<span style="font-size: 90%; color: #cc0000"><i><?php print _('This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!') ; ?></i></span>
+								<b><?php print __($guid, 'Are you sure you want to delete this record?') ; ?></b><br/>
+								<span style="font-size: 90%; color: #cc0000"><i><?php print __($guid, 'This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!') ; ?></i></span>
 							</td>
 							<td class="right">
 							
@@ -107,7 +107,7 @@ else {
 						<tr>
 							<td> 
 								<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-								<input type="submit" value="<?php print _('Yes') ; ?>">
+								<input type="submit" value="<?php print __($guid, 'Yes') ; ?>">
 							</td>
 							<td class="right">
 							

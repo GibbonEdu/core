@@ -97,7 +97,7 @@ else {
 					//Fail2
 					$URL.="&updateReturn=fail2" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 						
 				if ($result->rowCount()!=1) {
@@ -120,7 +120,7 @@ else {
 							//Fail 2
 							$URL.="&updateReturn=fail2" ;
 							header("Location: {$URL}");
-							break ;
+							exit() ;
 						}
 								
 						if ($resultReg->rowCount()>0) {
@@ -157,7 +157,7 @@ else {
 									//Fail 2
 									$URL.="&updateReturn=fail2" ;
 									header("Location: {$URL}");
-									break ;
+									exit() ;
 								}		
 								
 								if ($enrolment=="Selection") {
@@ -195,7 +195,7 @@ else {
 									//Fail 2
 									$URL.="&updateReturn=fail2" ;
 									header("Location: {$URL}");
-									break ;
+									exit() ;
 								}
 								
 								//Unlock locked database tables
@@ -229,7 +229,7 @@ else {
 							//Fail 2
 							$URL.="&updateReturn=fail2" ;
 							header("Location: {$URL}");
-							break ;
+							exit() ;
 						}
 						
 						if ($resultReg->rowCount()<1) {
@@ -249,7 +249,7 @@ else {
 								//Fail 2
 								$URL.="&updateReturn=fail2" ;
 								header("Location: {$URL}");
-								break ;
+								exit() ;
 							}
 	
 							//Bump up any waiting in competitive selection, to fill spaces available
@@ -264,7 +264,7 @@ else {
 									//Fail 2
 									$URL.="&updateReturn=fail2" ;
 									header("Location: {$URL}");
-									break ;
+									exit() ;
 								}		
 								
 								//Count spaces

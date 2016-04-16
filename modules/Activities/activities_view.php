@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Activities/activities_view.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -33,12 +33,12 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print _("The highest grouped action cannot be determined.") ;
+		print __($guid, "The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('View Activities') . "</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'View Activities') . "</div>" ;
 		print "</div>" ;
 		
 		if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -46,15 +46,15 @@ else {
 		$class="error" ;
 		if (!($updateReturn=="")) {
 			if ($updateReturn=="success0") {
-				$updateReturnMessage=_("Registration was successful.") ;	
+				$updateReturnMessage=__($guid, "Registration was successful.") ;	
 				$class="success" ;
 			}
 			if ($updateReturn=="success1") {
-				$updateReturnMessage=_("Unregistration was successful.") ;	
+				$updateReturnMessage=__($guid, "Unregistration was successful.") ;	
 				$class="success" ;
 			}
 			if ($updateReturn=="success2") {
-				$updateReturnMessage=_("Registration was successful, but the activity is full, so you are on the waiting list.") ;	
+				$updateReturnMessage=__($guid, "Registration was successful, but the activity is full, so you are on the waiting list.") ;	
 				$class="warning" ;
 			}
 			print "<div class='$class'>" ;
@@ -71,20 +71,20 @@ else {
 		
 		if (!($access=="View" OR $access=="Register")) {
 			print "<div class='error'>" ;
-				print _("Activity listing is currently closed.") ;
+				print __($guid, "Activity listing is currently closed.") ;
 			print "</div>" ;
 		}
 		else {
 			if ($access=="View") {
 				print "<div class='warning'>" ;
-					print _("Registration is currently closed, but you can still view activities.") ;
+					print __($guid, "Registration is currently closed, but you can still view activities.") ;
 				print "</div>" ;
 			}
 			
 			$disableExternalProviderSignup=getSettingByScope( $connection2, "Activities", "disableExternalProviderSignup" ) ;
 			if ($disableExternalProviderSignup=="Y") {
 				print "<div class='warning'>" ;
-					print _("Registration for activities offered by outside providers is disabled. Check activity details for instructions on how to register for such acitvities.") ;
+					print __($guid, "Registration for activities offered by outside providers is disabled. Check activity details for instructions on how to register for such acitvities.") ;
 				print "</div>" ;
 			}
 			
@@ -111,7 +111,7 @@ else {
 	
 				if ($result->rowCount()<1) {
 					print "<div class='error'>" ;
-					print _("Access denied.") ;
+					print __($guid, "Access denied.") ;
 					print "</div>" ;
 				}
 				else {
@@ -150,14 +150,14 @@ else {
 					
 					if ($countChild==0) {
 						print "<div class='error'>" ;
-						print _("There are no records to display.") ;
+						print __($guid, "There are no records to display.") ;
 						print "</div>" ;
 					}
 				}
 			}
 			
 			print "<h2>" ;
-			print _("Filter & Search") ;
+			print __($guid, "Filter & Search") ;
 			print "</h2>" ;
 			
 			$search=NULL ;
@@ -173,8 +173,8 @@ else {
 						?>
 						<tr>
 							<td> 
-								<b><?php print _('Child') ?></b><br/>
-								<span style="font-size: 90%"><i><?php print _('Choose the child you are registering for.') ?></i></span>
+								<b><?php print __($guid, 'Child') ?></b><br/>
+								<span style="font-size: 90%"><i><?php print __($guid, 'Choose the child you are registering for.') ?></i></span>
 							</td>
 							<td class="right">
 								<select name="gibbonPersonID" id="gibbonPersonID" style="width: 302px">
@@ -193,8 +193,8 @@ else {
 					
 					<tr>
 						<td> 
-							<b><?php print _('Search For Activity') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print _('Activity name.') ?></i></span>
+							<b><?php print __($guid, 'Search For Activity') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Activity name.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="search" id="search" maxlength=20 value="<?php print $search ?>" type="text" style="width: 300px">
@@ -205,9 +205,9 @@ else {
 							<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/activities_view.php">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 							<?php
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_view.php'>" . _('Clear Search') . "</a>" ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_view.php'>" . __($guid, 'Clear Search') . "</a>" ;
 							?>
-							<input type="submit" value="<?php print _("Submit") ; ?>">
+							<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
@@ -215,7 +215,7 @@ else {
 			<?php
 			
 			print "<h2>" ;
-			print _("Activities") ;
+			print __($guid, "Activities") ;
 			print "</h2>" ;
 			
 			//Set pagination variable
@@ -287,7 +287,7 @@ else {
 			
 			if ($continue==FALSE) {
 				print "<div class='error'>" ;
-				print _("Your request failed due to a database error.") ;
+				print __($guid, "Your request failed due to a database error.") ;
 				print "</div>" ;
 			}
 			else {
@@ -327,7 +327,7 @@ else {
 			
 				if ($result->rowCount()<1) {
 					print "<div class='error'>" ;
-					print _("There are no records to display.") ;
+					print __($guid, "There are no records to display.") ;
 					print "</div>" ;
 				}
 				else {
@@ -337,7 +337,7 @@ else {
 					
 					if ($dateType=="Term" AND $maxPerTerm>0 AND (($roleCategory=="Student" AND $highestAction=="View Activities_studentRegister") OR ($roleCategory=="Parent" AND $highestAction=="View Activities_studentRegisterByParent" AND $gibbonPersonID!="" AND $countChild>0))) {
 						print "<div class='warning'>" ;
-							print _("Remember, each student can register for no more than $maxPerTerm activities per term. Your current registration count by term is:") ;
+							print __($guid, "Remember, each student can register for no more than $maxPerTerm activities per term. Your current registration count by term is:") ;
 							$terms=getTerms($connection2, $_SESSION[$guid]["gibbonSchoolYearID"]) ;
 							print "<ul>" ;
 								for ($i=0; $i<count($terms); $i=$i+2) {
@@ -366,36 +366,36 @@ else {
 					print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th>" ;
-								print _("Activity") ;
+								print __($guid, "Activity") ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("Provider") ;
+								print __($guid, "Provider") ;
 							print "</th>" ;
 							print "<th>" ;
 								if ($dateType!="Date") {
-									print _("Terms"). "<br/>" ;
+									print __($guid, "Terms"). "<br/>" ;
 								}
 								else {
-									print _("Dates") . "<br/>" ;
+									print __($guid, "Dates") . "<br/>" ;
 								}
 								print "<span style='font-style: italic; font-size: 85%'>" ;
-									print _("Days") ;
+									print __($guid, "Days") ;
 								print "</span>" ;
 							print "</th>" ;
 							print "<th style='width: 100px'>" ;
-								print _("Years") ;
+								print __($guid, "Years") ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("Cost") . "<br/>" ;
+								print __($guid, "Cost") . "<br/>" ;
 								print "<span style='font-style: italic; font-size: 85%'>" . $_SESSION[$guid]["currency"] . "</span>" ;
 							print "</th>" ;
 							if (($roleCategory=="Student" AND $highestAction=="View Activities_studentRegister") OR ($roleCategory=="Parent" AND $highestAction=="View Activities_studentRegisterByParent" AND $gibbonPersonID!="" AND $countChild>0)) {
 								print "<th>" ;
-									print _("Enrolment") ;
+									print __($guid, "Enrolment") ;
 								print "</th>" ;
 							}
 							print "<th style='width: 80px'>" ;
-								print _("Actions") ;
+								print __($guid, "Actions") ;
 							print "</th>" ;
 						print "</tr>" ;
 						
@@ -483,24 +483,24 @@ else {
 											if ($count2>0) {
 												print ", " ;
 											}
-											print _($rowSlots["nameShort"]) ;
+											print __($guid, $rowSlots["nameShort"]) ;
 											$count2++ ;
 										}
 										if ($count2==0) {
-											print "<i>" . _('None') . "</i>" ;
+											print "<i>" . __($guid, 'None') . "</i>" ;
 										}
 									print "</span>" ;
 								print "</td>" ;
 								print "<td>" ;
-									print getYearGroupsFromIDList($connection2, $row["gibbonYearGroupIDList"]) ;
+									print getYearGroupsFromIDList($guid, $connection2, $row["gibbonYearGroupIDList"]) ;
 								print "</td>" ;
 								print "<td>" ;
 									if ($hideExternalProviderCost=="Y" AND $row["provider"]=="External") {
-										print "<i>" . _('See activity details') . "</i>" ;
+										print "<i>" . __($guid, 'See activity details') . "</i>" ;
 									}
 									else {
 										if ($row["payment"]==0) {
-											print "<i>" . _('None') . "</i>" ;
+											print "<i>" . __($guid, 'None') . "</i>" ;
 										}
 										else {
 											if (substr($_SESSION[$guid]["currency"],4)!="") {
@@ -513,10 +513,10 @@ else {
 								if (($roleCategory=="Student" AND $highestAction=="View Activities_studentRegister") OR ($roleCategory=="Parent" AND $highestAction=="View Activities_studentRegisterByParent" AND $gibbonPersonID!="" AND $countChild>0)) {
 									print "<td>" ;
 										if ($row["provider"]=="External" AND $disableExternalProviderSignup=="Y") {
-											print "<i>" . _('See activity details') . "</i>" ;
+											print "<i>" . __($guid, 'See activity details') . "</i>" ;
 										}
 										else if ($row["registration"]=="N") {
-											print _('Closed') . "<br/>" ;
+											print __($guid, 'Closed') . "<br/>" ;
 										}
 										else {
 											print $rowEnrol["status"] ;
@@ -524,7 +524,7 @@ else {
 									print "</td>" ;
 								}
 								print "<td>" ;
-									print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_view_full.php&gibbonActivityID=" . $row["gibbonActivityID"] . "&width=1000&height=550'><img title='" . _('View Details') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
+									print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_view_full.php&gibbonActivityID=" . $row["gibbonActivityID"] . "&width=1000&height=550'><img title='" . __($guid, 'View Details') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 									$signup=TRUE ;
 									if ($row["registration"]=="N") {
 										$signup=FALSE ;
@@ -535,10 +535,10 @@ else {
 									if ($signup) {
 										if (($roleCategory=="Student" AND $highestAction=="View Activities_studentRegister") OR ($roleCategory=="Parent" AND $highestAction=="View Activities_studentRegisterByParent" AND $gibbonPersonID!="" AND $countChild>0)) {
 											if ($resultEnrol->rowCount()<1) {
-												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_view_register.php&gibbonPersonID=$gibbonPersonID&search=" . $search . "&mode=register&gibbonActivityID=" . $row["gibbonActivityID"] . "'><img title='" . _('Register') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.png'/></a> " ;
+												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_view_register.php&gibbonPersonID=$gibbonPersonID&search=" . $search . "&mode=register&gibbonActivityID=" . $row["gibbonActivityID"] . "'><img title='" . __($guid, 'Register') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.png'/></a> " ;
 											}
 											else {
-												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_view_register.php&gibbonPersonID=$gibbonPersonID&search=" . $search . "&mode=unregister&gibbonActivityID=" . $row["gibbonActivityID"] . "'><img title='" . _('Unregister') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
+												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_view_register.php&gibbonPersonID=$gibbonPersonID&search=" . $search . "&mode=unregister&gibbonActivityID=" . $row["gibbonActivityID"] . "'><img title='" . __($guid, 'Unregister') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
 											}
 										}
 									}

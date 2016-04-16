@@ -96,7 +96,7 @@ else {
 				
 				//Attempt to send email to DBA
 				if ($_SESSION[$guid]["organisationDBA"]!="") {
-					$notificationText=sprintf(_('A family data update request has been submitted.')) ;
+					$notificationText=sprintf(__($guid, 'A family data update request has been submitted.')) ;
 					setNotification($connection2, $guid, $_SESSION[$guid]["organisationDBA"], $notificationText, "Data Updater", "/index.php?q=/modules/User Admin/data_family.php") ;
 				}
 				
@@ -119,7 +119,7 @@ else {
 					//Fail 2
 					$URL.="&updateReturn=fail2" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 				
 				//Success 0

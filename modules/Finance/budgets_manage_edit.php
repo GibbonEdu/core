@@ -26,13 +26,13 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Finance/budgets_manage_edit.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/budgets_manage.php'>" . _('Manage Budgets') . "</a> > </div><div class='trailEnd'>" . _('Edit Budget') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/budgets_manage.php'>" . __($guid, 'Manage Budgets') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Edit Budget') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -40,25 +40,25 @@ else {
 	$class="error" ;
 	if (!($updateReturn=="")) {
 		if ($updateReturn=="fail0") {
-			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($updateReturn=="fail1") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail2") {
-			$updateReturnMessage=_("Your request failed due to a database error.") ;	
+			$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 		}
 		else if ($updateReturn=="fail3") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail4") {
-			$updateReturnMessage=_("Your request failed because some inputs did not meet a requirement for uniqueness.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because some inputs did not meet a requirement for uniqueness.") ;	
 		}
 		else if ($updateReturn=="fail5") {
-			$updateReturnMessage=_("Your request failed due to an attachment error.") ;	
+			$updateReturnMessage=__($guid, "Your request failed due to an attachment error.") ;	
 		}
 		else if ($updateReturn=="success0") {
-			$updateReturnMessage=_("Your request was completed successfully.") ;	
+			$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -70,7 +70,7 @@ else {
 	$gibbonFinanceBudgetID=$_GET["gibbonFinanceBudgetID"];
 	if ($gibbonFinanceBudgetID=="") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -86,7 +86,7 @@ else {
 		
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print _("The specified record does not exist.") ;
+				print __($guid, "The specified record does not exist.") ;
 			print "</div>" ;
 		}
 		else {
@@ -97,13 +97,13 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr class='break'>
 						<td colspan=2> 
-							<h3><?php print _('General Settings') ?></h3>
+							<h3><?php print __($guid, 'General Settings') ?></h3>
 						</td>
 					</tr>
 					<tr>
 						<td style='width: 275px'> 
-							<b><?php print _('Name') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('Must be unique.') ?></i></span>
+							<b><?php print __($guid, 'Name') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="name" id="name" maxlength=100 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
@@ -115,8 +115,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Short Name') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('Must be unique.') ?></i></span>
+							<b><?php print __($guid, 'Short Name') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="nameShort" id="nameShort" maxlength=14 value="<?php print $row["nameShort"] ?>" type="text" style="width: 300px">
@@ -128,13 +128,13 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Active') ?> *</b><br/>
+							<b><?php print __($guid, 'Active') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
 							<select name="active" id="active" style="width: 302px">
-								<option <?php if ($row["active"]=="Y") { print "selected" ; } ?> value="Y"><?php print _('Yes') ?></option>
-								<option <?php if ($row["active"]=="N") { print "selected" ; } ?> value="N"><?php print _('No') ?></option>
+								<option <?php if ($row["active"]=="Y") { print "selected" ; } ?> value="Y"><?php print __($guid, 'Yes') ?></option>
+								<option <?php if ($row["active"]=="N") { print "selected" ; } ?> value="N"><?php print __($guid, 'No') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -145,12 +145,12 @@ else {
 						?>
 						<tr>
 							<td> 
-								<b><?php print _('Category') ?> *</b><br/>
+								<b><?php print __($guid, 'Category') ?> *</b><br/>
 								<span style="font-size: 90%"><i></i></span>
 							</td>
 							<td class="right">
 								<select name="category" id="category" style="width: 302px">
-									<option value="Please select..."><?php print _('Please select...') ?></option>
+									<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
 									<?php
 									for ($i=0; $i<count($categories); $i++) {
 										$selected="" ;
@@ -163,7 +163,7 @@ else {
 								</select>
 								<script type="text/javascript">
 									var category=new LiveValidation('category');
-									category.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+									category.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 								</script>
 							</td>
 						</tr>
@@ -173,7 +173,7 @@ else {
 						?>
 						<tr>
 							<td> 
-								<b><?php print _('Category') ?> *</b><br/>
+								<b><?php print __($guid, 'Category') ?> *</b><br/>
 								<span style="font-size: 90%"><i></i></span>
 							</td>
 							<td class="right">
@@ -185,7 +185,7 @@ else {
 					?>
 					<tr class='break'>
 						<td colspan=2> 
-							<h3><?php print _('Current Staff') ?></h3>
+							<h3><?php print __($guid, 'Current Staff') ?></h3>
 						</td>
 					</tr>
 					<tr>
@@ -203,7 +203,7 @@ else {
 
 							if ($result->rowCount()<1) {
 								print "<div class='error'>" ;
-								print _("There are no records to display.") ;
+								print __($guid, "There are no records to display.") ;
 								print "</div>" ;
 							}
 							else {
@@ -211,13 +211,13 @@ else {
 								print "<table cellspacing='0' style='width: 100%'>" ;
 									print "<tr class='head'>" ;
 										print "<th>" ;
-											print _("Name") ;
+											print __($guid, "Name") ;
 										print "</th>" ;
 										print "<th>" ;
-											print _("Access") ;
+											print __($guid, "Access") ;
 										print "</th>" ;
 										print "<th>" ;
-											print _("Action") ;
+											print __($guid, "Action") ;
 										print "</th>" ;
 									print "</tr>" ;
 									
@@ -241,7 +241,7 @@ else {
 												print $row["access"] ;
 											print "</td>" ;
 											print "<td>" ;
-												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/budgets_manage_edit_staff_deleteProcess.php?address=" . $_GET["q"] . "&gibbonFinanceBudgetPersonID=" . $row["gibbonFinanceBudgetPersonID"] . "&gibbonFinanceBudgetID=$gibbonFinanceBudgetID'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+												print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/budgets_manage_edit_staff_deleteProcess.php?address=" . $_GET["q"] . "&gibbonFinanceBudgetPersonID=" . $row["gibbonFinanceBudgetPersonID"] . "&gibbonFinanceBudgetID=$gibbonFinanceBudgetID'><img title='" . __($guid, 'Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 											print "</td>" ;
 										print "</tr>" ;
 									}
@@ -252,13 +252,13 @@ else {
 					</tr>
 					<tr class='break'>
 						<td colspan=2> 
-							<h3><?php print _('New Staff') ?></h3>
+							<h3><?php print __($guid, 'New Staff') ?></h3>
 						</td>
 					</tr>
 					<tr>
 					<td> 
 						<b>Staff</b><br/>
-						<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
+						<span style="font-size: 90%"><i><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></i></span>
 					</td>
 					<td class="right">
 						<select name="staff[]" id="staff[]" multiple style="width: 302px; height: 150px">
@@ -279,23 +279,23 @@ else {
 					
 					<tr id='roleLARow'>
 						<td> 
-							<b><?php print _('Role') ?></b><br/>
+							<b><?php print __($guid, 'Role') ?></b><br/>
 						</td>
 						<td class="right">
 							<select name="access" id="access" style="width: 302px">
-								<option value="Full"><?php print _('Full') ?></option>
-								<option value="Write"><?php print _('Write') ?></option>
-								<option value="Read"><?php print _('Read') ?></option>
+								<option value="Full"><?php print __($guid, 'Full') ?></option>
+								<option value="Write"><?php print __($guid, 'Write') ?></option>
+								<option value="Read"><?php print __($guid, 'Read') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<?php print _("Submit") ; ?>">
+							<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 						</td>
 					</tr>
 				</table>

@@ -93,7 +93,7 @@ else {
 					//Fail2
 					$URL.="&deleteReturn=fail2" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 				
 				if ($result->rowCount()!=1) {
@@ -114,8 +114,10 @@ else {
 					$description=$_POST["description"] ;
 					$gibbonYearGroupIDList="" ;
 					for ($i=0; $i<$_POST["count"]; $i++) {
-						if ($_POST["gibbonYearGroupIDCheck$i"]=="on") {
-							$gibbonYearGroupIDList=$gibbonYearGroupIDList . $_POST["gibbonYearGroupID$i"] . "," ;
+						if (isset($_POST["gibbonYearGroupIDCheck$i"])) {
+							if ($_POST["gibbonYearGroupIDCheck$i"]=="on") {
+								$gibbonYearGroupIDList=$gibbonYearGroupIDList . $_POST["gibbonYearGroupID$i"] . "," ;
+							}
 						}
 					}
 					$gibbonYearGroupIDList=substr($gibbonYearGroupIDList,0,(strlen($gibbonYearGroupIDList)-1)) ;
@@ -141,7 +143,7 @@ else {
 							//Fail 2
 							$URL.="&updateReturn=fail2" ;
 							header("Location: {$URL}");
-							break ;
+							exit() ;
 						}
 
 						//Success 0

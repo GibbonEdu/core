@@ -40,7 +40,7 @@ if ($_SESSION[$guid]["systemSettingsSet"]==FALSE) {
 }
 //If still false, show warning, otherwise display page
 if ($_SESSION[$guid]["systemSettingsSet"]==FALSE) {
-	print _("System Settings are not set: the system cannot be displayed") ;
+	print __($guid, "System Settings are not set: the system cannot be displayed") ;
 }
 else {
 	?>
@@ -51,7 +51,7 @@ else {
 			<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
 			<meta http-equiv="content-language" content="en"/>
 			<meta name="author" content="Ross Parker, International College Hong Kong"/>
-			<meta name="ROBOTS" content="none"/>
+			<meta name="robots" content="none"/>
 			
 			<?php
 			//Set up for i18n via gettext
@@ -120,7 +120,7 @@ else {
 						<?php
 						print "<div style='padding-top: 10px'>" ;
 							print "<p style='margin-bottom: 0; padding-bottom: 0'>" ;
-								print sprintf(_('This printout contains information that is the property of %1$s. If you find this report, and do not have permission to read it, please return it to %2$s (%3$s). In the event that it cannot be returned, please destroy it.'), $_SESSION[$guid]["organisationName"], $_SESSION[$guid]["organisationAdministratorName"], $_SESSION[$guid]["organisationAdministratorEmail"]) ;
+								print sprintf(__($guid, 'This printout contains information that is the property of %1$s. If you find this report, and do not have permission to read it, please return it to %2$s (%3$s). In the event that it cannot be returned, please destroy it.'), $_SESSION[$guid]["organisationName"], $_SESSION[$guid]["organisationAdministratorName"], $_SESSION[$guid]["organisationAdministratorEmail"]) ;
 							print "</p>" ;
 						print "</div>" ;
 						?>
@@ -138,7 +138,7 @@ else {
 					
 					if (strstr($_SESSION[$guid]["address"],"..")!=FALSE) {
 						print "<div class='error'>" ;
-						print _("Illegal address detected: access denied.") ;
+						print __($guid, "Illegal address detected: access denied.") ;
 						print "</div>" ;
 					}
 					else {
@@ -152,7 +152,7 @@ else {
 					?>
 				</div>
 				<div id="footer-report">
-					<?php print sprintf(_('Created by %1$s (%2$s) at %3$s on %4$s.'), $_SESSION[$guid]["username"], $_SESSION[$guid]["organisationNameShort"], date("H:i"), date($_SESSION[$guid]["i18n"]["dateFormatPHP"])) ; ?>
+					<?php print sprintf(__($guid, 'Created by %1$s (%2$s) at %3$s on %4$s.'), $_SESSION[$guid]["username"], $_SESSION[$guid]["organisationNameShort"], date("H:i"), date($_SESSION[$guid]["i18n"]["dateFormatPHP"])) ; ?>
 				</div>
 			</div>
 		</body>

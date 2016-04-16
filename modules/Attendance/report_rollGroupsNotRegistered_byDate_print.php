@@ -25,38 +25,48 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Attendance/report_rollGroupsNotRegistered_byDate_print.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
-	if ($_GET["currentDate"]=="") {
-	 	$currentDate=date("Y-m-d");
+	if (isset($_GET["dateStart"])==FALSE) {
+	 	$dateStart=date("Y-m-d");
 	}
 	else {
-		$currentDate=dateConvert($guid, $_GET["currentDate"]) ;	 
+		$dateStart=dateConvert($guid, $_GET["dateStart"]) ;	 
+	}
+	if (isset($_GET["dateEnd"])==FALSE) {
+	 	$dateEnd=date("Y-m-d");
+	}
+	else {
+		$dateEnd=dateConvert($guid, $_GET["dateEnd"]) ;	 
 	}
 	
 	//Proceed!
 	print "<h2>" ;
-	print _("Roll Groups Not Registered") . ", " . dateConvertBack($guid, $currentDate) ;
+		if ($dateStart!=$dateEnd) {
+			print __($guid, "Roll Groups Not Registered") . ", " . dateConvertBack($guid, $dateStart) . "-" . dateConvertBack($guid, $dateEnd) ;
+		}
+		else {
+			print __($guid, "Roll Groups Not Registered") . ", " . dateConvertBack($guid, $dateStart) ;
+		}
 	print "</h2>" ;
 	
 	//Produce array of attendance data
 	try {
-		$data=array("date"=>$currentDate); 
-		$sql="SELECT gibbonRollGroupID FROM gibbonAttendanceLogRollGroup WHERE date=:date" ;
+		$data=array("dateStart"=>$dateStart, "dateEnd"=>$dateEnd); 
+		$sql="SELECT date, gibbonRollGroupID FROM gibbonAttendanceLogRollGroup WHERE date>=:dateStart AND date<=:dateEnd ORDER BY date" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}
 	catch(PDOException $e) { 
 		print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 	}
-	
 	$log=array() ;
 	while ($row=$result->fetch()) {
-		$log[$row["gibbonRollGroupID"]]=TRUE ;
+		$log[$row["date"]][$row["gibbonRollGroupID"]]=TRUE ;
 	}
-	
+
 	try {
 		$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"] ); 
 		$sql="SELECT gibbonRollGroupID, name, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3 FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name" ;
@@ -69,69 +79,88 @@ else {
 	
 	if ($result->rowCount()<1) {
 		print "<div class='error'>" ;
-			print _("There are no records to display.") ;
+			print __($guid, "There are no records to display.") ;
 		print "</div>" ;
 	}
 	else {
+		//Produce array of roll groups
+		$rollGroups=$result->fetchAll() ;
+	
 		print "<div class='linkTop'>" ;
-		print "<a href='javascript:window.print()'>" .  _('Print') . "<img style='margin-left: 5px' title='" . _('Print') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
+		print "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_rollGroupsNotRegistered_byDate_print.php&dateStart=" . dateConvertBack($guid, $dateStart) . "'>" .  __($guid, 'Print') . "<img style='margin-left: 5px' title='" . __($guid, 'Print') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
 		print "</div>" ;
 	
-		print "<table class='mini' cellspacing='0' style='width: 100%'>" ;
+		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print _("Roll Group") ;
+					print __($guid, "Roll Group") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Tutor") ;
+					print __($guid, "Date") ;
+				print "</th>" ;
+				print "<th>" ;
+					print __($guid, "Tutor") ;
 				print "</th>" ;
 			print "</tr>" ;
 			
 			$count=0;
 			$rowNum="odd" ;
-			while ($row=$result->fetch()) {
-				$row["gibbonRollGroupID"] ;
-				if (isset($log[$row["gibbonRollGroupID"]])==FALSE) {
-					if ($count%2==0) {
-						$rowNum="even" ;
-					}
-					else {
-						$rowNum="odd" ;
-					}
-					$count++ ;
-					
-					//COLOR ROW BY STATUS!
-					print "<tr class=$rowNum>" ;
-						print "<td>" ;
-							print $row["name"] ;
-						print "</td>" ;
-						print "<td>" ;
-							if ($row["gibbonPersonIDTutor"]=="" AND $row["gibbonPersonIDTutor2"]=="" AND $row["gibbonPersonIDTutor3"]=="") {
-								print "<i>Not set</i>" ;
+			
+			//Loop through each date
+			$timestampStart=dateConvertToTimestamp($dateStart) ;
+			$timestampEnd=dateConvertToTimestamp($dateEnd) ;
+			for ($i=$timestampStart; $i<=$timestampEnd; $i=($i+(60*60*24))) {
+				if (isSchoolOpen($guid, date("Y-m-d", $i), $connection2, TRUE)) {
+					//Loop through each roll group
+					foreach ($rollGroups AS $row) {
+						//Output row only if not registered on specified date
+						if (isset($log[date("Y-m-d", $i)][$row["gibbonRollGroupID"]])==FALSE) {
+							if ($count%2==0) {
+								$rowNum="even" ;
 							}
 							else {
-								try {
-									$dataTutor=array("gibbonPersonID1"=>$row["gibbonPersonIDTutor"], "gibbonPersonID2"=>$row["gibbonPersonIDTutor2"], "gibbonPersonID3"=>$row["gibbonPersonIDTutor3"]); 
-									$sqlTutor="SELECT surname, preferredName FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID1 OR gibbonPersonID=:gibbonPersonID2 OR gibbonPersonID=:gibbonPersonID3" ;
-									$resultTutor=$connection2->prepare($sqlTutor);
-									$resultTutor->execute($dataTutor);
-								}
-								catch(PDOException $e) { 
-									print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-								}
-								
-								while ($rowTutor=$resultTutor->fetch()) {
-									print formatName("", $rowTutor["preferredName"], $rowTutor["surname"], "Staff", true, true) . "<br/>" ;
-								}
+								$rowNum="odd" ;
 							}
-						print "</td>" ;
-					print "</tr>" ;
+							$count++ ;
+					
+							//COLOR ROW BY STATUS!
+							print "<tr class=$rowNum>" ;
+								print "<td>" ;
+									print $row["name"] ;
+								print "</td>" ;
+								print "<td>" ;
+									print dateConvertBack($guid, date("Y-m-d", $i)) ;
+								print "</td>" ;
+								print "<td>" ;
+									if ($row["gibbonPersonIDTutor"]=="" AND $row["gibbonPersonIDTutor2"]=="" AND $row["gibbonPersonIDTutor3"]=="") {
+										print "<i>Not set</i>" ;
+									}
+									else {
+										try {
+											$dataTutor=array("gibbonPersonID1"=>$row["gibbonPersonIDTutor"], "gibbonPersonID2"=>$row["gibbonPersonIDTutor2"], "gibbonPersonID3"=>$row["gibbonPersonIDTutor3"]); 
+											$sqlTutor="SELECT surname, preferredName FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID1 OR gibbonPersonID=:gibbonPersonID2 OR gibbonPersonID=:gibbonPersonID3" ;
+											$resultTutor=$connection2->prepare($sqlTutor);
+											$resultTutor->execute($dataTutor);
+										}
+										catch(PDOException $e) { 
+											print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+										}
+								
+										while ($rowTutor=$resultTutor->fetch()) {
+											print formatName("", $rowTutor["preferredName"], $rowTutor["surname"], "Staff", true, true) . "<br/>" ;
+										}
+									}
+								print "</td>" ;
+							print "</tr>" ;
+						}
+					}
 				}
-			}
+			}					
+
 			if ($count==0) {
 				print "<tr class=$rowNum>" ;
 					print "<td colspan=2>" ;
-						print _("All roll groups have been registered.") ;
+						print __($guid, "All roll groups have been registered.") ;
 					print "</td>" ;
 				print "</tr>" ;
 			}

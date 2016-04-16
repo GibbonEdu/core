@@ -75,7 +75,7 @@ else {
 				//Fail2
 				$URL.="&addReturn=fail2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 			else {
 				if ($budgetLevelExpenseApproval=="N") { //Skip budget-level approval
@@ -103,7 +103,7 @@ else {
 				//Fail2
 				$URL.="&addReturn=fail2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 			
 			$gibbonFinanceExpenseID=str_pad($connection2->lastInsertID(), 14, "0", STR_PAD_LEFT) ;
@@ -120,7 +120,7 @@ else {
 				print $e->getMessage() ;
 				$URL.="&addReturn=fail2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 			
 			//Do notifications

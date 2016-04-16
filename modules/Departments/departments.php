@@ -26,12 +26,12 @@ $makeDepartmentsPublic=getSettingByScope($connection2, "Departments", "makeDepar
 if (isActionAccessible($guid, $connection2, "/modules/Departments/departments.php")==FALSE AND $makeDepartmentsPublic!="Y") {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Departments/departments.php'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('View All') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Departments/departments.php'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'View All') . "</div>" ;
 	print "</div>" ;
 	
 	$departments=FALSE ;
@@ -49,7 +49,7 @@ else {
 	if ($resultLA->rowCount()>0) {
 		$departments=TRUE ;
 		print "<h2>" ;
-			print _("Learning Areas") ;
+			print __($guid, "Learning Areas") ;
 		print "</h2>" ;
 		print "<table class='blank' cellspacing='0' style='width:100%; margin-top: 20px'>" ;
 		$count=0 ;
@@ -98,7 +98,7 @@ else {
 	if ($resultLA->rowCount()>0) {
 		$departments=TRUE ;
 		print "<h2>" ;
-			print _("Administration") ;
+			print __($guid, "Administration") ;
 		print "</h2>" ;
 		print "<table class='blank' cellspacing='0' style='width:100%; margin-top: 20px'>" ;
 		$count=0 ;
@@ -136,7 +136,7 @@ else {
 	
 	if ($departments==FALSE) {
 		print "<div class='warning'>" ;
-			print _("There are no records to display.") ;
+			print __($guid, "There are no records to display.") ;
 		print "</div>" ;
 	}
 	
@@ -157,7 +157,7 @@ else {
 	
 		if ($result->rowCount()>0) {
 			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<h2 class='sidebar'>" ;
-			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . _("My Classes") ;
+			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . __($guid, "My Classes") ;
 			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "</h2>" ;
 		
 			$_SESSION[$guid]["sidebarExtra"]=$_SESSION[$guid]["sidebarExtra"] . "<ul>" ;

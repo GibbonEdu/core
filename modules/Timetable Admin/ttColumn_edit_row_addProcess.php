@@ -70,7 +70,7 @@ else {
 			//Fail 2
 			$URL.="&addReturn=fail2" ;
 			header("Location: {$URL}");
-			break ;
+			exit() ;
 		}
 
 		if ($result->rowCount()>0) {
@@ -90,7 +90,7 @@ else {
 				//Fail 2
 				$URL.="&addReturn=fail2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 
 			//Success 0

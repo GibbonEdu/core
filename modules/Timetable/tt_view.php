@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Timetable/tt_view.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -33,7 +33,7 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print _("The highest grouped action cannot be determined.") ;
+		print __($guid, "The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
@@ -72,14 +72,14 @@ else {
 
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-			print _("The selected record does not exist, or you do not have access to it.") ;
+			print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 			print "</div>" ;
 		}
 		else {
 			$row=$result->fetch() ;
 			
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt.php&allUsers=$allUsers'>" . _('View Timetable by Person') . "</a> > </div><div class='trailEnd'>" . formatName($row["title"], $row["preferredName"], $row["surname"], $row["type"]) . "</div>" ;
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt.php&allUsers=$allUsers'>" . __($guid, 'View Timetable by Person') . "</a> > </div><div class='trailEnd'>" . formatName($row["title"], $row["preferredName"], $row["surname"], $row["type"]) . "</div>" ;
 			print "</div>" ;
 			
 			if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php")==TRUE) {
@@ -88,13 +88,13 @@ else {
 					print "<div class='linkTop'>" ;
 					
 						if ($search!="") {
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable/tt.php&search=" . $search . "&allUsers=$allUsers'>" . _('Back to Search Results') . "</a>" ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable/tt.php&search=" . $search . "&allUsers=$allUsers'>" . __($guid, 'Back to Search Results') . "</a>" ;
 						}
 						if ($role=="Student" OR $role=="Staff" OR $allUsers=="on") {
 							if ($search!="") {
 								print " | " ;
 							}
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=" . $_SESSION[$guid]["gibbonSchoolYearID"] . "&type=$role&allUsers=$allUsers'>" . _('Edit') . "<img style='margin: 0 0 -4px 5px' title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=" . $_SESSION[$guid]["gibbonSchoolYearID"] . "&type=$role&allUsers=$allUsers'>" . __($guid, 'Edit') . "<img style='margin: 0 0 -4px 5px' title='" . __($guid, 'Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 						}
 					print "</div>" ;
 				}
@@ -103,17 +103,17 @@ else {
 			print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 				print "<tr>" ;
 					print "<td style='width: 34%; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>" . _('Name') . "</span><br/>" ;
+						print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Name') . "</span><br/>" ;
 						print formatName( $row["title"], $row["preferredName"], $row["surname"], $row["type"], false ) ;
 						print "</td>" ;
 					print "<td style='width: 33%; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>" . _('Year Group') . "</span><br/>" ;
+						print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Year Group') . "</span><br/>" ;
 						if ($row["yearGroup"]!="") {
-							print "<i>" . _($row["yearGroup"]) . "</i>" ;
+							print "<i>" . __($guid, $row["yearGroup"]) . "</i>" ;
 						}
 					print "</td>" ;
 					print "<td style='width: 34%; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>" . _('Roll Group') . "</span><br/>" ;
+						print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Roll Group') . "</span><br/>" ;
 						print "<i>" . $row["rollGroup"] . "</i>" ;
 					print "</td>" ;
 				print "</tr>" ;
@@ -142,13 +142,13 @@ else {
 				}
 			}
 			
-			$tt=renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, FALSE, $ttDate, "/modules/Timetable/tt_view.php", "&gibbonPersonID=$gibbonPersonID&allUsers=$allUsers") ;
+			$tt=renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, FALSE, $ttDate, "/modules/Timetable/tt_view.php", "&gibbonPersonID=$gibbonPersonID&allUsers=$allUsers&search=$search") ;
 			if ($tt!=FALSE) {
 				print $tt ;
 			}
 			else {
 				print "<div class='error'>" ;
-					print _("There are no records to display.") ;
+					print __($guid, "There are no records to display.") ;
 				print "</div>" ;
 			}
 			

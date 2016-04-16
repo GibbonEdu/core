@@ -31,7 +31,7 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_view_details.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -39,14 +39,14 @@ else {
     $highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
     if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-			print _("The highest grouped action cannot be determined.") ;
+			print __($guid, "The highest grouped action cannot be determined.") ;
 		print "</div>" ;
     }
     else {
 		$gibbonPersonID=$_GET["gibbonPersonID"] ;
 	
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_view.php'>" . _('View Behaviour Records') . "</a> > </div><div class='trailEnd'>" . _('View Student Record') . "</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_view.php'>" . __($guid, 'View Behaviour Records') . "</a> > </div><div class='trailEnd'>" . __($guid, 'View Student Record') . "</div>" ;
 		print "</div>" ;
 	
 		try {
@@ -67,7 +67,7 @@ else {
 
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-			print _("The selected record does not exist, or you do not have access to it.") ;
+			print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 			print "</div>" ;
 		}
 		else {
@@ -75,23 +75,23 @@ else {
 		
 			if ($_GET["search"]!="") {
 				print "<div class='linkTop'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_view.php&search=" . $_GET["search"] . "'>" . _('Back to Search Results') . "</a>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_view.php&search=" . $_GET["search"] . "'>" . __($guid, 'Back to Search Results') . "</a>" ;
 				print "</div>" ;
 			}
 	
 			print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 				print "<tr>" ;
 					print "<td style='width: 34%; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>" . _('Name') . "</span><br/>" ;
+						print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Name') . "</span><br/>" ;
 						print formatName("", $row["preferredName"], $row["surname"], "Student") ;
 					print "</td>" ;
 					print "<td style='width: 33%; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>" . _('Year Group') . "</span><br/>" ;
-						print "<i>" . _($row["yearGroup"]) . "</i>" ;
+						print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Year Group') . "</span><br/>" ;
+						print "<i>" . __($guid, $row["yearGroup"]) . "</i>" ;
 					print "</td>" ;
 					print "<td style='width: 34%; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>" . _('Roll Group') . "</span><br/>" ;
-						print "<i>" . _($row["rollGroup"]) . "</i>" ;
+						print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Roll Group') . "</span><br/>" ;
+						print "<i>" . __($guid, $row["rollGroup"]) . "</i>" ;
 					print "</td>" ;
 				print "</tr>" ;
 			print "</table>" ;

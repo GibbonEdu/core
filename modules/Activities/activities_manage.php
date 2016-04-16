@@ -25,13 +25,13 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Activities/activities_manage.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Set returnTo point for upcoming pages
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Manage Activities') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Manage Activities') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -39,7 +39,7 @@ else {
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="success0") {
-			$deleteReturnMessage=_("Your request was completed successfully.") ;		
+			$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;		
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -48,12 +48,17 @@ else {
 	} 
 	
 	print "<h2>" ;
-	print _("Search") ;
+	print __($guid, "Search") ;
 	print "</h2>" ;
 	
 	$search=NULL ;
 	if (isset($_GET["search"])) {
 		$search=$_GET["search"] ;
+	}
+	
+	$paymentOn=TRUE ;
+	if (getSettingByScope($connection2, "Activities", "payment")=="None" OR getSettingByScope($connection2, "Activities", "payment")=="Single") {
+		$paymentOn=FALSE ;
 	}
 	
 	?>
@@ -62,8 +67,8 @@ else {
 			<tr><td style="width: 30%"></td><td></td></tr>
 			<tr>
 				<td> 
-					<b><?php print _('Search For Activity') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('Activity name.') ?></i></span>
+					<b><?php print __($guid, 'Search For Activity') ?></b><br/>
+					<span style="font-size: 90%"><i><?php print __($guid, 'Activity name.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="search" id="search" maxlength=20 value="<?php print $search ?>" type="text" style="width: 300px">
@@ -74,9 +79,9 @@ else {
 					<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/activities_manage.php">
 					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 					<?php
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_manage.php'>" . _('Clear Search') . "</a>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_manage.php'>" . __($guid, 'Clear Search') . "</a>" ;
 					?>
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
@@ -84,7 +89,7 @@ else {
 	<?php
 	
 	print "<h2>" ;
-	print _("Activities") ;
+	print __($guid, "Activities") ;
 	print "</h2>" ;
 	
 	//Set pagination variable
@@ -122,18 +127,18 @@ else {
 	}
 	catch(PDOException $e) { 
 		print "<div class='error'>" ;
-		print _("Your request failed due to a database error.") ;
+		print __($guid, "Your request failed due to a database error.") ;
 		print "</div>" ;
 	}
 	
 	if ($result) {
 		print "<div class='linkTop'>" ;
-		print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_add.php&search=" . $search . "'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+		print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_add.php&search=" . $search . "'>" .  __($guid, 'Add') . "<img style='margin-left: 5px' title='" . __($guid, 'Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
 		print "</div>" ;
 		
 		if ($result->rowCount()<1) {
 			print "<div class='error'>" ;
-			print _("There are no records to display.") ;
+			print __($guid, "There are no records to display.") ;
 			print "</div>" ;
 		}
 		else {
@@ -144,34 +149,36 @@ else {
 			print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
 					print "<th>" ;
-						print _("Activity") ;
+						print __($guid, "Activity") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Days") ;
+						print __($guid, "Days") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Years") ;
+						print __($guid, "Years") ;
 					print "</th>" ;
 					print "<th>" ;
 						if ($dateType!="Date") {
-							print _("Term") ;
+							print __($guid, "Term") ;
 						}
 						else {
-							print _("Dates") ;
+							print __($guid, "Dates") ;
 						}
 					print "</th>" ;
+					if ($paymentOn) {
+						print "<th>" ;
+							print __($guid, "Cost") . "<br/>" ;
+							print "<span style='font-style: italic; font-size: 85%'>" . $_SESSION[$guid]["currency"] . "</span>" ;
+						print "</th>" ;
+					}
 					print "<th>" ;
-						print _("Cost") . "<br/>" ;
-						print "<span style='font-style: italic; font-size: 85%'>" . $_SESSION[$guid]["currency"] . "</span>" ;
+						print __($guid, "Provider") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Provider") ;
-					print "</th>" ;
-					print "<th>" ;
-						print _("Waiting") ;
+						print __($guid, "Waiting") ;
 					print "</th>" ;
 					print "<th style='width: 100px'>" ;
-						print _("Actions") ;
+						print __($guid, "Actions") ;
 					print "</th>" ;
 				print "</tr>" ;
 				
@@ -184,7 +191,7 @@ else {
 				}
 				catch(PDOException $e) { 
 					print "<div class='error'>" ;
-					print _("Your request failed due to a database error.") ;
+					print __($guid, "Your request failed due to a database error.") ;
 					print "</div>" ;
 				}
 	
@@ -222,15 +229,15 @@ else {
 									if ($count2>0) {
 										print ", " ;
 									}
-									print _($rowSlots["nameShort"]) ;
+									print __($guid, $rowSlots["nameShort"]) ;
 									$count2++ ;
 								}
 								if ($count2==0) {
-									print "<i>" . _('None') . "</i>" ;
+									print "<i>" . __($guid, 'None') . "</i>" ;
 								}
 							print "</td>" ;
 							print "<td>" ;
-								print getYearGroupsFromIDList($connection2, $row["gibbonYearGroupIDList"]) ;
+								print getYearGroupsFromIDList($guid, $connection2, $row["gibbonYearGroupIDList"]) ;
 							print "</td>" ;
 							print "<td>" ;
 								if ($dateType!="Date") {
@@ -257,27 +264,29 @@ else {
 									}
 								}
 							print "</td>" ;
-							print "<td>" ;
-								if ($row["payment"]==0) {
-									print "<i>" . _('None') . "</i>" ;
-								}
-								else {
-									if (substr($_SESSION[$guid]["currency"],4)!="") {
-										print substr($_SESSION[$guid]["currency"],4) ;
+							if ($paymentOn) {
+								print "<td>" ;
+									if ($row["payment"]==0) {
+										print "<i>" . __($guid, 'None') . "</i>" ;
 									}
-									print number_format($row["payment"],2) ;
-								}
-							print "</td>" ;
+									else {
+										if (substr($_SESSION[$guid]["currency"],4)!="") {
+											print substr($_SESSION[$guid]["currency"],4) ;
+										}
+										print number_format($row["payment"],2) ;
+									}
+								print "</td>" ;
+							}
 							print "<td>" ;
-								if ($row["provider"]=="School") { print $_SESSION[$guid]["organisationNameShort"] ; } else { print _("External") ; }
+								if ($row["provider"]=="School") { print $_SESSION[$guid]["organisationNameShort"] ; } else { print __($guid, "External") ; }
 							print "</td>" ;
 							print "<td>" ;
 								print $row["waiting"] ;
 							print "</td>" ;
 							print "<td>" ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_edit.php&gibbonActivityID=" . $row["gibbonActivityID"] . "&search=" . $search . "'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_delete.php&gibbonActivityID=" . $row["gibbonActivityID"] . "&search=" . $search . "'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_enrolment.php&gibbonActivityID=" . $row["gibbonActivityID"] . "&search=" . $search . "'><img title='" . _('Enrolment') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_edit.php&gibbonActivityID=" . $row["gibbonActivityID"] . "&search=" . $search . "'><img title='" . __($guid, 'Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_delete.php&gibbonActivityID=" . $row["gibbonActivityID"] . "&search=" . $search . "'><img title='" . __($guid, 'Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_enrolment.php&gibbonActivityID=" . $row["gibbonActivityID"] . "&search=" . $search . "'><img title='" . __($guid, 'Enrolment') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.png'/></a> " ;
 							print "</td>" ;
 						print "</tr>" ;
 					}

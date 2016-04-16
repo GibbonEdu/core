@@ -40,7 +40,7 @@ if (isset($_GET["gibbonPersonIDParent"])) {
 //Check variables
 if ($gibbonSchoolYearID=="" OR $key=="" OR $gibbonPersonIDStudent=="" OR $gibbonPersonIDParent=="") {
 	print "<div class='error'>" ;
-		print _("You have not specified one or more required parameters.") ;
+		print __($guid, "You have not specified one or more required parameters.") ;
 	print "</div>" ;
 }
 else {
@@ -54,13 +54,13 @@ else {
 	}
 	catch(PDOException $e) { 
 		print "<div class='error'>" ;
-			print _("Your request failed due to a database error.") ;
+			print __($guid, "Your request failed due to a database error.") ;
 		print "</div>" ;
 	}
 	
 	if ($resultKeyRead->rowCount()!=1) { //If not exists, report error
 		print "<div class='error'>" ;
-			print _("The selected record does not exist, or you do not have access to it.") ;
+			print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 		print "</div>" ;
 	}
 	else { 	//If exists check confirmed
@@ -68,7 +68,7 @@ else {
 		
 		if ($rowKeyRead["confirmed"]=="Y") { //If already confirmed, report success
 			print "<div class='success'>" ;
-				print _("Thank you for confirmed receipt and reading of this email.") ;
+				print __($guid, "Thank you for confirmed receipt and reading of this email.") ;
 			print "</div>" ;
 		}
 		else { //If not confirmed, confirm
@@ -85,12 +85,12 @@ else {
 			
 			if ($keyWriteFail==TRUE) { //Report error
 				print "<div class='error'>" ;
-					print _("Your request failed due to a database error.") ;
+					print __($guid, "Your request failed due to a database error.") ;
 				print "</div>" ;
 			}
 			else { //Report success
 				print "<div class='success'>" ;
-					print _("Thank you for confirmed receipt and reading of this email.") ;
+					print __($guid, "Thank you for confirmed receipt and reading of this email.") ;
 				print "</div>" ;
 			}
 		}	

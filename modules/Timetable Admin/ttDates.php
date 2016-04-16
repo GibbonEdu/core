@@ -22,13 +22,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/ttDates.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Tie Days to Dates') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Tie Days to Dates') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -36,25 +36,25 @@ else {
 	$class="error" ;
 	if (!($addReturn=="")) {
 		if ($addReturn=="fail0") {
-			$addReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+			$addReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($addReturn=="fail2") {
-			$addReturnMessage=_("Your request failed due to a database error.") ;	
+			$addReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 		}
 		else if ($addReturn=="fail3") {
-			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail4") {
-			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail5") {
-			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail6") {
-			$addReturnMessage=_("Your request was successful, but some data was not properly saved.") ;	
+			$addReturnMessage=__($guid, "Your request was successful, but some data was not properly saved.") ;	
 		}
 		else if ($addReturn=="success0") {
-			$addReturnMessage=_("Your request was completed successfully.") ;	
+			$addReturnMessage=__($guid, "Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -67,7 +67,7 @@ else {
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="success0") {
-			$deleteReturnMessage=_("Your request was completed successfully.") ;		
+			$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;		
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -96,7 +96,7 @@ else {
 		}
 		if ($result->rowcount()!=1) {
 			print "<div class='error'>" ;
-				print _("The specified record does not exist.") ;
+				print __($guid, "The specified record does not exist.") ;
 			print "</div>" ;
 		}
 		else {
@@ -111,23 +111,23 @@ else {
 			print $gibbonSchoolYearName ;
 		print "</h2>" ;
 		print "<p>" ;
-			print _("To multi-add a single timetable day to multiple dates, use the checkboxes in the relevant dates, and then press the Submit button at the bottom of the page.") ;
+			print __($guid, "To multi-add a single timetable day to multiple dates, use the checkboxes in the relevant dates, and then press the Submit button at the bottom of the page.") ;
 		print "</p>" ;
 		
 		print "<div class='linkTop'>" ;
 			//Print year picker
 			if (getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)!=FALSE) {
-				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/ttDates.php&gibbonSchoolYearID=" . getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) . "'>" . _('Previous Year') . "</a> " ;
+				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/ttDates.php&gibbonSchoolYearID=" . getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) . "'>" . __($guid, 'Previous Year') . "</a> " ;
 			}
 			else {
-				print _("Previous Year") . " " ;
+				print __($guid, "Previous Year") . " " ;
 			}
 			print " | " ;
 			if (getNextSchoolYearID($gibbonSchoolYearID, $connection2)!=FALSE) {
-				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/ttDates.php&gibbonSchoolYearID=" . getNextSchoolYearID($gibbonSchoolYearID, $connection2) . "'>" . _('Next Year') . "</a> " ;
+				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/ttDates.php&gibbonSchoolYearID=" . getNextSchoolYearID($gibbonSchoolYearID, $connection2) . "'>" . __($guid, 'Next Year') . "</a> " ;
 			}
 			else {
-				print _("Next Year") . " " ;
+				print __($guid, "Next Year") . " " ;
 			}
 		print "</div>" ;
 		
@@ -143,7 +143,7 @@ else {
 
 		if ($result->rowCount()<1) {
 			print "<div class='error'>" ;
-				print _("There are no records to display.") ;
+				print __($guid, "There are no records to display.") ;
 			print "</div>" ;
 		}
 		else {
@@ -235,7 +235,7 @@ else {
 								print "<th style='width: 14px; text-align: center'>" ;
 									$dowLong=date('l', strtotime("Sunday +$i days"));
 									$dowShort=date('D', strtotime("Sunday +$i days"));
-									print _($dowLong) . "<br/>" ;
+									print __($guid, $dowLong) . "<br/>" ;
 									print "<script type=\"text/javascript\">" ;
 										print "$(function () {" ;
 											print "$('.checkall" . $dowShort . "').click(function () {" ;
@@ -281,17 +281,17 @@ else {
 								else {
 									print "<td style='vertical-align: top; text-align: center; background-color: #eeeeee; font-size: 10px'>" ;
 										if ($i==$specialDayStamp AND $rowSpecial["type"]=="Timing Change") {
-											 print "<span style='color: #000000'>" . date($_SESSION[$guid]["i18n"]["dateFormatPHP"],$i) . "<br/></span><span style='color: #f00'>" . _('Timing Change') . "</span>" ;
+											 print "<span style='color: #000000'>" . date($_SESSION[$guid]["i18n"]["dateFormatPHP"],$i) . "<br/></span><span style='color: #f00'>" . __($guid, 'Timing Change') . "</span>" ;
 										}
 										else {
-											print "<span style='color: #000000'>" . date($_SESSION[$guid]["i18n"]["dateFormatPHP"],$i) . "<br/>" . _('School Day') . "</span>" ;
+											print "<span style='color: #000000'>" . date($_SESSION[$guid]["i18n"]["dateFormatPHP"],$i) . "<br/>" . __($guid, 'School Day') . "</span>" ;
 										}
 										print "<br/>" ;
 										print "<fieldset class='" . date("D",$i) . "' style='border: none'>" ;
 											print "<input name='dates[]' value='$i' type='checkbox'/>" ;
 										print "</fieldset>" ;
 										print "<br/>" ;
-										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/ttDates_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=" . $i . "'><img style='margin-top: 3px' title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a><br/>" ;
+										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/ttDates_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=" . $i . "'><img style='margin-top: 3px' title='" . __($guid, 'Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a><br/>" ;
 									
 										try {
 											$dataDay=array("date"=>date("Y-m-d",$i)); 
@@ -320,13 +320,13 @@ else {
 			}
 			
 			print "<h3>" ;
-				print _('Multi Add') ;
+				print __($guid, 'Multi Add') ;
 			print "</h3>" ;
 			
 			print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 				print "<tr>" ;
 					print "<td> " ;
-						print "<b>" . _('Day') . "</b><br/>" ;
+						print "<b>" . __($guid, 'Day') . "</b><br/>" ;
 					print "</td>" ;
 					print "<td class=\"right\">" ;
 						print "<select style=\"width: 202px\" name=\"gibbonTTDayID\">" ;
@@ -361,7 +361,7 @@ else {
 				print "<tr>" ;
 					print "<td colspan=2 class=\"right\">" ;
 						print "<input type=\"hidden\" name=\"q\" value=\"/modules/" . $_SESSION[$guid]["module"] . "/ttDates.php\">" ;
-						print "<input type=\"submit\" value=\"" . _("Submit") . "\">" ;
+						print "<input type=\"submit\" value=\"" . __($guid, "Submit") . "\">" ;
 					print "</td>" ;
 				print "</tr>" ;
 			print "</table>" ;

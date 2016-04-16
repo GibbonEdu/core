@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Planner/units_edit_working_add.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -33,7 +33,7 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print _("The highest grouped action cannot be determined.") ;
+		print __($guid, "The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
@@ -50,7 +50,7 @@ else {
 		
 		//Proceed!
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>" . _('Unit Planner') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units_edit.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonUnitID=" . $_GET["gibbonUnitID"] . "'>" . _('Edit Unit') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units_edit_working.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonUnitID=" . $_GET["gibbonUnitID"] . "&gibbonCourseClassID=" . $_GET["gibbonCourseClassID"] . "'>" . _('Edit Working Copy') . "</a> > </div><div class='trailEnd'>" . _('Add Lessons') . "</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>" . __($guid, 'Unit Planner') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units_edit.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonUnitID=" . $_GET["gibbonUnitID"] . "'>" . __($guid, 'Edit Unit') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units_edit_working.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonUnitID=" . $_GET["gibbonUnitID"] . "&gibbonCourseClassID=" . $_GET["gibbonCourseClassID"] . "'>" . __($guid, 'Edit Working Copy') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Add Lessons') . "</div>" ;
 		print "</div>" ;
 		
 		if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -58,25 +58,25 @@ else {
 		$class="error" ;
 		if (!($updateReturn=="")) {
 			if ($updateReturn=="fail0") {
-				$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+				$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 			}
 			else if ($updateReturn=="fail1") {
-				$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+				$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($updateReturn=="fail2") {
-				$updateReturnMessage=_("Your request failed due to a database error.") ;	
+				$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 			}
 			else if ($updateReturn=="fail3") {
-				$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+				$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($updateReturn=="fail4") {
-				$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+				$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($updateReturn=="fail5") {
-				$updateReturnMessage=_("Your request failed due to an attachment error.") ;	
+				$updateReturnMessage=__($guid, "Your request failed due to an attachment error.") ;	
 			}
 			else if ($updateReturn=="success0") {
-				$updateReturnMessage=_("Your request was completed successfully.") ;	
+				$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;
@@ -92,7 +92,7 @@ else {
 		$gibbonUnitClassID=$_GET["gibbonUnitClassID"]; 
 		if ($gibbonCourseID=="" OR $gibbonSchoolYearID=="" OR $gibbonCourseClassID=="" OR $gibbonUnitClassID=="") {
 			print "<div class='error'>" ;
-				print _("You have not specified one or more required parameters.") ;
+				print __($guid, "You have not specified one or more required parameters.") ;
 			print "</div>" ;
 		}
 		else {
@@ -114,7 +114,7 @@ else {
 
 			if ($result->rowCount()!=1) {
 				print "<div class='error'>" ;
-					print _("The selected record does not exist, or you do not have access to it.") ;
+					print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 				print "</div>" ;
 			}
 			else {
@@ -126,7 +126,7 @@ else {
 				//Check if unit specified
 				if ($gibbonUnitID=="") {
 					print "<div class='error'>" ;
-						print _("You have not specified one or more required parameters.") ;
+						print __($guid, "You have not specified one or more required parameters.") ;
 					print "</div>" ;
 				}
 				else {
@@ -166,7 +166,7 @@ else {
 					
 					if ($result->rowCount()!=1) {
 						print "<div class='error'>" ;
-							print _("The specified record cannot be found.") ;
+							print __($guid, "The specified record cannot be found.") ;
 						print "</div>" ;
 					}
 					else {
@@ -176,15 +176,15 @@ else {
 						print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 34%; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>" . _('School Year') . "</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'School Year') . "</span><br/>" ;
 									print "<i>" . $year . "</i>" ;
 									print "</td>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>" . _('Class') . "</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Class') . "</span><br/>" ;
 									print "<i>" . $course . "." . $class . "</i>" ;
 								print "</td>" ;
 								print "<td style='width: 34%; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>" . _('Unit') . "</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Unit') . "</span><br/>" ;
 									print "<i>" . $row["name"] . "</i>" ;
 								print "</td>" ;
 							print "</tr>" ;
@@ -192,10 +192,10 @@ else {
 						
 						
 						print "<h3>" ;
-						print _("Choose Lessons") ;
+						print __($guid, "Choose Lessons") ;
 						print "</h3>" ;
 						print "<p>" ;
-						print _("Use the table below to select the lessons you wish to deploy this unit to. Only lessons without existing plans can be included in the deployment.") ;
+						print __($guid, "Use the table below to select the lessons you wish to deploy this unit to. Only lessons without existing plans can be included in the deployment.") ;
 						print "</p>" ;
 						
 						//Find all unplanned slots for this class.
@@ -270,7 +270,7 @@ else {
 						
 						if (count($lessons)<1) {
 							print "<div class='error'>" ;
-							print _("There are no records to display.") ;
+							print __($guid, "There are no records to display.") ;
 							print "</div>" ;
 						}
 						else {
@@ -288,10 +288,10 @@ else {
 							}
 							while ($rowTerms=$resultTerms->fetch()) {
 								$terms[$termCount][0]=$rowTerms["firstDay"] ;
-								$terms[$termCount][1]=_("Start of") . " " . $rowTerms["nameShort"] ;
+								$terms[$termCount][1]=__($guid, "Start of") . " " . $rowTerms["nameShort"] ;
 								$termCount++ ;
 								$terms[$termCount][0]=$rowTerms["lastDay"] ;
-								$terms[$termCount][1]=_("End of") . " " . $rowTerms["nameShort"] ;
+								$terms[$termCount][1]=__($guid, "End of") . " " . $rowTerms["nameShort"] ;
 								$termCount++ ;
 							}
 							//Get school closure special days
@@ -341,25 +341,25 @@ else {
 								print "<table cellspacing='0' style='width: 100%'>" ;
 									print "<tr class='head'>" ;
 										print "<th>" ;
-											print sprintf(_('Lesson%1$sNumber'), "<br/>") ;
+											print sprintf(__($guid, 'Lesson%1$sNumber'), "<br/>") ;
 										print "</th>" ;
 										print "<th>" ;
-											print _("Date") ;
+											print __($guid, "Date") ;
 										print "</th>" ;
 										print "<th>" ;
-											print _("Day") ;
+											print __($guid, "Day") ;
 										print "</th>" ;
 										print "<th>" ;
-											print _("Month") ;
+											print __($guid, "Month") ;
 										print "</th>" ;
 										print "<th>" ;
-											print sprintf(_('TT Period%1$sTime'), "<br/>") ;
+											print sprintf(__($guid, 'TT Period%1$sTime'), "<br/>") ;
 										print "</th>" ;
 										print "<th>" ;
-											print sprintf(_('Planned%1$sLesson'), "<br/>") ;
+											print sprintf(__($guid, 'Planned%1$sLesson'), "<br/>") ;
 										print "</th>" ;
 										print "<th>" ;
-											print _("Include?") ;
+											print __($guid, "Include?") ;
 										print "</th>" ;
 									print "</tr>" ;
 									

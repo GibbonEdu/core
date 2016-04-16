@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -30,13 +30,13 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print _("The highest grouped action cannot be determined.") ;
+		print __($guid, "The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
 		//Proceed!
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Manage Messages') . "</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Manage Messages') . "</div>" ;
 		print "</div>" ;
 		
 		if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -44,7 +44,7 @@ else {
 		$class="error" ;
 		if (!($deleteReturn=="")) {
 			if ($deleteReturn=="success0") {
-				$deleteReturnMessage=_("Your request was completed successfully.") ;		
+				$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;		
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;
@@ -53,7 +53,7 @@ else {
 		} 
 		
 		print "<h2>" ;
-		print _("Search") ;
+		print __($guid, "Search") ;
 		print "</h2>" ;
 		
 		$search=NULL;
@@ -67,8 +67,8 @@ else {
 				<tr><td style="width: 30%"></td><td></td></tr>
 				<tr>
 					<td> 
-						<b><?php print _('Search In') ?></b><br/>
-						<span style="font-size: 90%"><i><?php print _('Subject, body.') ?></i></span>
+						<b><?php print __($guid, 'Search In') ?></b><br/>
+						<span style="font-size: 90%"><i><?php print __($guid, 'Subject, body.') ?></i></span>
 					</td>
 					<td class="right">
 						<input name="search" id="search" maxlength=20 value="<?php print $search ?>" type="text" style="width: 300px">
@@ -79,9 +79,9 @@ else {
 						<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/messenger_manage.php">
 						<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 						<?php
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage.php'>" . _('Clear Search') . "</a>" ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage.php'>" . __($guid, 'Clear Search') . "</a>" ;
 						?>
-						<input type="submit" value="<?php print _("Submit") ; ?>">
+						<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 					</td>
 				</tr>
 			</table>
@@ -89,7 +89,7 @@ else {
 		<?php
 		
 		print "<h2>" ;
-		print _("Messages") ;
+		print __($guid, "Messages") ;
 		print "</h2>" ;
 		
 		//Set pagination variable
@@ -131,20 +131,20 @@ else {
 		if (isActionAccessible($guid, $connection2,"/modules/Messenger/messenger_post.php")==TRUE OR isActionAccessible($guid, $connection2,"/modules/Messenger/messenger_postQuickWall.php")==TRUE) {
 			print "<div class='linkTop'>" ;
 				if (isActionAccessible($guid, $connection2,"/modules/Messenger/messenger_post.php")==TRUE) {
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_post.php'>" .  _('New Message') . "<img style='margin-left: 5px' title='" . _('New Message') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_post.php'>" .  __($guid, 'New Message') . "<img style='margin-left: 5px' title='" . __($guid, 'New Message') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
 				}
 				if (isActionAccessible($guid, $connection2,"/modules/Messenger/messenger_postQuickWall.php")==TRUE) {
 					if (isActionAccessible($guid, $connection2,"/modules/Messenger/messenger_post.php")==TRUE) {
 						print " | " ;
 					}
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_postQuickWall.php'>" .  _('New Quick Wall Message') . "<img style='margin-left: 5px' title='" . _('New Quick Wall Message') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_postQuickWall.php'>" .  __($guid, 'New Quick Wall Message') . "<img style='margin-left: 5px' title='" . __($guid, 'New Quick Wall Message') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
 				}
 			print "</div>" ;
 		}
 		
 		if ($result->rowCount()<1) {
 			print "<div class='error'>" ;
-			print _("There are no records to display.") ;
+			print __($guid, "There are no records to display.") ;
 			print "</div>" ;
 		}
 		else {
@@ -155,29 +155,29 @@ else {
 			print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
 					print "<th>" ;
-						print _("Subject") ;
+						print __($guid, "Subject") ;
 					print "</th>" ;
 					print "<th style='width: 100px'>" ;
-						print _('Date Sent'). "<br/>" ;
-						print "<span style='font-style: italic; font-size: 85%'>" . _('Dates Published') . "</span>" ;
+						print __($guid, 'Date Sent'). "<br/>" ;
+						print "<span style='font-style: italic; font-size: 85%'>" . __($guid, 'Dates Published') . "</span>" ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Author") ;
+						print __($guid, "Author") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Recipients") ;
+						print __($guid, "Recipients") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Email") ;
+						print __($guid, "Email") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Wall") ;
+						print __($guid, "Wall") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("SMS") ;
+						print __($guid, "SMS") ;
 					print "</th>" ;
 					print "<th style='width: 120px'>" ;
-						print _("Actions") ;
+						print __($guid, "Actions") ;
 					print "</th>" ;
 				print "</tr>" ;
 				
@@ -247,7 +247,7 @@ else {
 									}
 									if ($resultTarget->rowCount()==1) {
 										$rowTarget=$resultTarget->fetch() ;
-										$targets.="<b>" . _($rowTargets["type"]) . "</b> - " . $rowTarget["name"] . "<br/>" ;
+										$targets.="<b>" . __($guid, $rowTargets["type"]) . "</b> - " . $rowTarget["name"] . "<br/>" ;
 									}
 								}
 								else if ($rowTargets["type"]=="Class") {
@@ -262,7 +262,7 @@ else {
 									}
 									if ($resultTarget->rowCount()==1) {
 										$rowTarget=$resultTarget->fetch() ;
-										$targets.="<b>" . _($rowTargets["type"]) . "</b> - " . $rowTarget["course"] . "." . $rowTarget["class"] . "<br/>" ;
+										$targets.="<b>" . __($guid, $rowTargets["type"]) . "</b> - " . $rowTarget["course"] . "." . $rowTarget["class"] . "<br/>" ;
 									}
 								}
 								else if ($rowTargets["type"]=="Course") {
@@ -277,7 +277,7 @@ else {
 									}
 									if ($resultTarget->rowCount()==1) {
 										$rowTarget=$resultTarget->fetch() ;
-										$targets.="<b>" . _($rowTargets["type"]) . "</b> - " . $rowTarget["name"] . "<br/>" ;
+										$targets.="<b>" . __($guid, $rowTargets["type"]) . "</b> - " . $rowTarget["name"] . "<br/>" ;
 									}
 								}
 								else if ($rowTargets["type"]=="Role") {
@@ -292,11 +292,11 @@ else {
 									}
 									if ($resultTarget->rowCount()==1) {
 										$rowTarget=$resultTarget->fetch() ;
-										$targets.="<b>" . _($rowTargets["type"]) . "</b> - " . _($rowTarget["name"]) . "<br/>" ;
+										$targets.="<b>" . __($guid, $rowTargets["type"]) . "</b> - " . __($guid, $rowTarget["name"]) . "<br/>" ;
 									}
 								}
 								else if ($rowTargets["type"]=="Role Category") {
-									$targets.="<b>" . _($rowTargets["type"]) . "</b> - " . _($rowTargets["id"]) . "<br/>" ;
+									$targets.="<b>" . __($guid, $rowTargets["type"]) . "</b> - " . __($guid, $rowTargets["id"]) . "<br/>" ;
 								}
 								else if ($rowTargets["type"]=="Roll Group") {
 									try {
@@ -310,7 +310,7 @@ else {
 									}
 									if ($resultTarget->rowCount()==1) {
 										$rowTarget=$resultTarget->fetch() ;
-										$targets.="<b>" . _($rowTargets["type"]) . "</b> - " . $rowTarget["name"] . "<br/>" ;
+										$targets.="<b>" . __($guid, $rowTargets["type"]) . "</b> - " . $rowTarget["name"] . "<br/>" ;
 									}
 								}
 								else if ($rowTargets["type"]=="Year Group") {
@@ -325,7 +325,7 @@ else {
 									}
 									if ($resultTarget->rowCount()==1) {
 										$rowTarget=$resultTarget->fetch() ;
-										$targets.="<b>" . _($rowTargets["type"]) . "</b> - " . _($rowTarget["name"]) . "<br/>" ;
+										$targets.="<b>" . __($guid, $rowTargets["type"]) . "</b> - " . __($guid, $rowTarget["name"]) . "<br/>" ;
 									}
 								}
 								else if ($rowTargets["type"]=="Applicants") {
@@ -340,7 +340,7 @@ else {
 									}
 									if ($resultTarget->rowCount()==1) {
 										$rowTarget=$resultTarget->fetch() ;
-										$targets.="<b>" . _($rowTargets["type"]) . "</b> - " . $rowTarget["name"] . "<br/>" ;
+										$targets.="<b>" . __($guid, $rowTargets["type"]) . "</b> - " . $rowTarget["name"] . "<br/>" ;
 									}
 								}
 								else if ($rowTargets["type"]=="Houses") {
@@ -355,7 +355,7 @@ else {
 									}
 									if ($resultTarget->rowCount()==1) {
 										$rowTarget=$resultTarget->fetch() ;
-										$targets.="<b>" . _($rowTargets["type"]) . "</b> - " . $rowTarget["name"] . "<br/>" ;
+										$targets.="<b>" . __($guid, $rowTargets["type"]) . "</b> - " . $rowTarget["name"] . "<br/>" ;
 									}
 								}
 								else if ($rowTargets["type"]=="Individuals") {
@@ -370,7 +370,7 @@ else {
 									}
 									if ($resultTarget->rowCount()==1) {
 										$rowTarget=$resultTarget->fetch() ;
-										$targets.="<b>" . _($rowTargets["type"]) . "</b> - " . formatName("", $rowTarget["preferredName"], $rowTarget["surname"], "Student", true) . "<br/>" ;
+										$targets.="<b>" . __($guid, $rowTargets["type"]) . "</b> - " . formatName("", $rowTarget["preferredName"], $rowTarget["surname"], "Student", true) . "<br/>" ;
 									}
 								}
 							}
@@ -378,31 +378,31 @@ else {
 						print "</td>" ;
 						print "<td>" ;
 							if ($row["email"]=="Y") {
-								print "<img title='" . _('Sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
+								print "<img title='" . __($guid, 'Sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
 							}
 							else {
-								print "<img title='" . _('Not sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/> " ;
+								print "<img title='" . __($guid, 'Not sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/> " ;
 							}
 						print "</td>" ;
 						print "<td>" ;
 							if ($row["messageWall"]=="Y") {
-								print "<img title='" . _('Sent by message wall.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
+								print "<img title='" . __($guid, 'Sent by message wall.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
 							}
 							else {
-								print "<img title='" . _('Not sent by message wall.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/> " ;
+								print "<img title='" . __($guid, 'Not sent by message wall.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/> " ;
 							}
 						print "</td>" ;
 						print "<td>" ;
 							if ($row["sms"]=="Y") {
-								print "<img title='" . _('Sent by sms.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
+								print "<img title='" . __($guid, 'Sent by sms.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
 							}
 							else {
-								print "<img title='" . _('Not sent by sms.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/> " ;
+								print "<img title='" . __($guid, 'Not sent by sms.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/> " ;
 							}
 						print "</td>" ;
 						print "<td>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_edit.php&gibbonMessengerID=" . $row["gibbonMessengerID"] . "&sidebar=true&search=$search'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_delete.php&gibbonMessengerID=" . $row["gibbonMessengerID"] . "&sidebar=true&search=$search'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_edit.php&gibbonMessengerID=" . $row["gibbonMessengerID"] . "&sidebar=true&search=$search'><img title='" . __($guid, 'Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_delete.php&gibbonMessengerID=" . $row["gibbonMessengerID"] . "&sidebar=true&search=$search'><img title='" . __($guid, 'Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
 							print "<script type='text/javascript'>" ;	
 								print "$(document).ready(function(){" ;
 									print "\$(\".comment-$count\").hide();" ;
@@ -413,7 +413,7 @@ else {
 								print "});" ;
 							print "</script>" ;
 							if ($row["smsReport"]!="" OR $row["emailReport"]!="") {
-								print "<a title='" . _('View Send Report') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='" . _('Show Comment') . "' onclick='return false;' /></a>" ;
+								print "<a title='" . __($guid, 'View Send Report') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='" . __($guid, 'Show Comment') . "' onclick='return false;' /></a>" ;
 							}
 						print "</td>" ;
 					print "</tr>" ;

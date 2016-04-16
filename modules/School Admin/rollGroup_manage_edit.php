@@ -22,13 +22,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/rollGroup_manage_edit.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/rollGroup_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . _('Manage Roll Groups') . "</a> > </div><div class='trailEnd'>" . _('Edit Roll Group') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/rollGroup_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . __($guid, 'Manage Roll Groups') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Edit Roll Group') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -36,22 +36,22 @@ else {
 	$class="error" ;
 	if (!($updateReturn=="")) {
 		if ($updateReturn=="fail0") {
-			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($updateReturn=="fail1") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail2") {
-			$updateReturnMessage=_("Your request failed due to a database error.") ;	
+			$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 		}
 		else if ($updateReturn=="fail3") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail4") {
-			$updateReturnMessage=_("Your request failed because some inputs did not meet a requirement for uniqueness.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because some inputs did not meet a requirement for uniqueness.") ;	
 		}
 		else if ($updateReturn=="success0") {
-			$updateReturnMessage=_("Your request was completed successfully.") ;	
+			$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -64,7 +64,7 @@ else {
 	$gibbonSchoolYearID=$_GET["gibbonSchoolYearID"] ;
 	if ($gibbonRollGroupID=="" OR $gibbonSchoolYearID=="") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -80,7 +80,7 @@ else {
 
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print _("The specified record cannot be found.") ;
+				print __($guid, "The specified record cannot be found.") ;
 			print "</div>" ;
 		}
 		else {
@@ -91,8 +91,8 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td style='width: 275px'> 
-							<b><?php print _('School Year') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+							<b><?php print __($guid, 'School Year') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
 							<input readonly name="schoolYearName" id="schoolYearName" maxlength=20 value="<?php print $row["yearName"] ?>" type="text" style="width: 300px">
@@ -104,8 +104,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Name') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('Must be unique.') ?></i></span>
+							<b><?php print __($guid, 'Name') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="name" id="name" maxlength=10 value="<?php print htmlPrep($row["name"]) ?>" type="text" style="width: 300px">
@@ -117,8 +117,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Short Name') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('Must be unique.') ?></i></span>
+							<b><?php print __($guid, 'Short Name') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="nameShort" id="nameShort" maxlength=5 value="<?php print htmlPrep($row["nameShort"]) ?>" type="text" style="width: 300px">
@@ -130,8 +130,8 @@ else {
 					</tr>
 					<tr>
 						<td rowspan=3> 
-							<b><?php print _('Tutors') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print _('Up to 3 per roll group. The first-listed will be marked as "Main Tutor".') ?></i></span>
+							<b><?php print __($guid, 'Tutors') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Up to 3 per roll group. The first-listed will be marked as "Main Tutor".') ?></i></span>
 						</td>
 						<td class="right">
 							<select style="width: 302px" name="gibbonPersonIDTutor">
@@ -206,7 +206,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Location') ?> *</b><br/>
+							<b><?php print __($guid, 'Location') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
@@ -233,8 +233,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Next Roll Group') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print _('Sets student progression on rollover.') ?></i></span>
+							<b><?php print __($guid, 'Next Roll Group') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Sets student progression on rollover.') ?></i></span>
 						</td>
 						<td class="right">
 							<?php
@@ -270,8 +270,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Website') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print _('Include http://') ?></i></span>
+							<b><?php print __($guid, 'Website') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Include http://') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="website" id="website" maxlength=255 value="<?php print htmlPrep($row["website"]) ?>" type="text" style="width: 300px">
@@ -283,12 +283,12 @@ else {
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
 							<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php print $gibbonSchoolYearID ?>" type="hidden">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<?php print _("Submit") ; ?>">
+							<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 						</td>
 					</tr>
 				</table>

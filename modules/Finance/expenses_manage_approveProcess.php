@@ -144,7 +144,7 @@ else {
 								//Fail2
 								$URL.="&approveReturn=fail2" ;
 								header("Location: {$URL}");
-								break ;
+								exit() ;
 							}
 		
 							if ($result->rowCount()!=1) {
@@ -177,7 +177,7 @@ else {
 											//Fail 0
 											$URL.="&approveReturn=fail0" ;
 											header("Location: {$URL}");
-											break ;
+											exit() ;
 										}
 									}
 								}
@@ -200,7 +200,7 @@ else {
 										//Fail2
 										$URL.="&approveReturn=fail2" ;
 										header("Location: {$URL}");
-										break ;
+										exit() ;
 									}
 									
 									//Attempt to archive notification
@@ -218,7 +218,7 @@ else {
 											//Fail2
 											$URL.="&approveReturn=fail2" ;
 											header("Location: {$URL}");
-											break ;
+											exit() ;
 										}
 										
 										//Write rejection to log
@@ -232,11 +232,11 @@ else {
 											//Fail2
 											$URL.="&approveReturn=fail2" ;
 											header("Location: {$URL}");
-											break ;
+											exit() ;
 										}
 										
 										//Notify original creator that it is rejected
-										$notificationText=sprintf(_('Your expense request for "%1$s" in budget "%2$s" has been rejected.'), $row["title"], $row["budget"]) ;
+										$notificationText=sprintf(__($guid, 'Your expense request for "%1$s" in budget "%2$s" has been rejected.'), $row["title"], $row["budget"]) ;
 										setNotification($connection2, $guid, $row["gibbonPersonIDCreator"], $notificationText, "Finance", "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=" . $row["gibbonFinanceBudgetID"]) ;
 										
 										//Success 0
@@ -255,11 +255,11 @@ else {
 											//Fail2
 											$URL.="&approveReturn=fail2" ;
 											header("Location: {$URL}");
-											break ;
+											exit() ;
 										}
 										
 										//Notify original creator that it is commented upon
-										$notificationText=sprintf(_('Someone has commented on your expense request for "%1$s" in budget "%2$s".'), $row["title"], $row["budget"]) ;
+										$notificationText=sprintf(__($guid, 'Someone has commented on your expense request for "%1$s" in budget "%2$s".'), $row["title"], $row["budget"]) ;
 										setNotification($connection2, $guid, $row["gibbonPersonIDCreator"], $notificationText, "Finance", "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=" . $row["gibbonFinanceBudgetID"]) ;
 										
 										//Success 0
@@ -284,7 +284,7 @@ else {
 												//Fail2
 												$URL.="&approveReturn=fail2" ;
 												header("Location: {$URL}");
-												break ;
+												exit() ;
 											}
 											
 											if ($approval="Approval - Partial - Budget") { //If budget-level approval, write that budget passed to expense record 
@@ -298,7 +298,7 @@ else {
 													//Fail2
 													$URL.="&approveReturn=fail2" ;
 													header("Location: {$URL}");
-													break ;
+													exit() ;
 												}
 											}
 										
@@ -309,13 +309,13 @@ else {
 												//Fail2
 												$URL.="&approveReturn=fail2" ;
 												header("Location: {$URL}");
-												break ;
+												exit() ;
 											}
 											else if ($completion=="none") { //If none
 												//Fail2
 												$URL.="&approveReturn=fail2" ;
 												header("Location: {$URL}");
-												break ;
+												exit() ;
 											}
 											else if ($completion=="budget") { //If budget completion met
 												//Issue Notifications
@@ -334,7 +334,7 @@ else {
 													//Fail2
 													$URL.="&approveReturn=fail2" ;
 													header("Location: {$URL}");
-													break ;
+													exit() ;
 												}
 										
 												if ($partialFail==TRUE) {
@@ -360,7 +360,7 @@ else {
 													//Fail2
 													$URL.="&approveReturn=fail2" ;
 													header("Location: {$URL}");
-													break ;
+													exit() ;
 												}
 												
 												//Write back to gibbonFinanceExpense
@@ -374,20 +374,20 @@ else {
 													//Fail2
 													$URL.="&approveReturn=fail2" ;
 													header("Location: {$URL}");
-													break ;
+													exit() ;
 												}
 												
 												$notificationExtra="" ;
 												//Notify purchasing officer, if a school purchase, and officer set
 												$purchasingOfficer=getSettingByScope($connection2, "Finance", "purchasingOfficer") ;
 												if ($purchasingOfficer!=FALSE AND $purchasingOfficer!="" AND $row["purchaseBy"]=="School") {
-													$notificationText=sprintf(_('A newly approved expense (%1$s) needs to be purchased from budget "%2$s".'), $row["title"], $row["budget"]) ;
+													$notificationText=sprintf(__($guid, 'A newly approved expense (%1$s) needs to be purchased from budget "%2$s".'), $row["title"], $row["budget"]) ;
 													setNotification($connection2, $guid, $purchasingOfficer, $notificationText, "Finance", "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=" . $row["gibbonFinanceBudgetID"]) ;
-													$notificationExtra=". " . _("The Purchasing Officer has been alerted, and will purchase the item on your behalf.") ;
+													$notificationExtra=". " . __($guid, "The Purchasing Officer has been alerted, and will purchase the item on your behalf.") ;
 												}
 												
 												//Notify original creator that it is approved
-												$notificationText=sprintf(_('Your expense request for "%1$s" in budget "%2$s" has been fully approved.') . $notificationExtra, $row["title"], $row["budget"]) ;
+												$notificationText=sprintf(__($guid, 'Your expense request for "%1$s" in budget "%2$s" has been fully approved.') . $notificationExtra, $row["title"], $row["budget"]) ;
 												setNotification($connection2, $guid, $row["gibbonPersonIDCreator"], $notificationText, "Finance", "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=" . $row["gibbonFinanceBudgetID"]) ;
 										
 												

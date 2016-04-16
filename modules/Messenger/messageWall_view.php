@@ -25,7 +25,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messageWall_view.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("Your request failed because you do not have access to this action.") ;
+		print __($guid, "Your request failed because you do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -38,13 +38,13 @@ else {
 	
 	$extra="" ;
 	if ($date==date($_SESSION[$guid]["i18n"]["dateFormatPHP"])) {
-		$extra=_("Today's Messages") . " (" . $date . ")" ;
+		$extra=__($guid, "Today's Messages") . " (" . $date . ")" ;
 	}
 	else {
-		$extra=_("View Messages") . " (" . $date . ")" ;
+		$extra=__($guid, "View Messages") . " (" . $date . ")" ;
 	}
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>$extra</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>$extra</div>" ;
 	print "</div>" ;
 	
 	print "<div class='linkTop' style='height: 27px'>" ;
@@ -76,7 +76,7 @@ else {
 						$( "#date" ).datepicker();
 					});
 				</script>
-				<input style='min-width: 30px; margin-top: 0px; float: right' type='submit' value='<?php print _('Go') ?>'>
+				<input style='min-width: 30px; margin-top: 0px; float: right' type='submit' value='<?php print __($guid, 'Go') ?>'>
 				<?php	
 			print "</form>" ;
 		print "</div>" ;

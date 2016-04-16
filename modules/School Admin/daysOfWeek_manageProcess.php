@@ -54,7 +54,7 @@ else {
 		//Fail2
 		$URL.="&updateReturn=fail2" ;
 		header("Location: {$URL}");
-		break ;
+		exit() ;
 	}
 
 	if ($result->rowCount()!=7) {

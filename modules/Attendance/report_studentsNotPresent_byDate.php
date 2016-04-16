@@ -25,17 +25,17 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Attendance/report_studentsNotPresent_byDate.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Students Not Present') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Students Not Present') . "</div>" ;
 	print "</div>" ;
 	
 	print "<h2>" ;
-	print _("Choose Date") ;
+	print __($guid, "Choose Date") ;
 	print "</h2>" ;
 	
 	if (isset($_GET["currentDate"])==FALSE) {
@@ -50,8 +50,8 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td style='width: 275px'> 
-					<b><?php print _('Date') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _("Format:") . " " . $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+					<b><?php print __($guid, 'Date') ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print __($guid, "Format:") . " " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } ?></i></span>
 				</td>
 				<td class="right">
 					<input name="currentDate" id="currentDate" maxlength=10 value="<?php print dateConvertBack($guid, $currentDate) ?>" type="text" style="width: 300px">
@@ -70,7 +70,7 @@ else {
 			<tr>
 				<td colspan=2 class="right">
 					<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/report_studentsNotPresent_byDate.php">
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
@@ -79,7 +79,7 @@ else {
 	
 	if ($currentDate!="") {
 		print "<h2>" ;
-		print _("Report Data") ;
+		print __($guid, "Report Data") ;
 		print "</h2>" ;
 		
 		//Produce array of attendance data
@@ -95,7 +95,7 @@ else {
 
 		if ($result->rowCount()<1) {
 			print "<div class='error'>" ;
-				print _("There are no records to display.") ;
+				print __($guid, "There are no records to display.") ;
 			print "</div>" ;
 		}
 		else {
@@ -122,12 +122,12 @@ else {
 			
 			if ($result->rowCount()<1) {
 				print "<div class='error'>" ;
-					print _("There are no records to display.") ;
+					print __($guid, "There are no records to display.") ;
 				print "</div>" ;
 			}
 			else {
 				print "<div class='linkTop'>" ;
-				print "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_studentsNotPresent_byDate_print.php&currentDate=" . dateConvertBack($guid, $currentDate) . "'>" .  _('Print') . "<img style='margin-left: 5px' title='" . _('Print') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
+				print "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_studentsNotPresent_byDate_print.php&currentDate=" . dateConvertBack($guid, $currentDate) . "'>" .  __($guid, 'Print') . "<img style='margin-left: 5px' title='" . __($guid, 'Print') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
 				print "</div>" ;
 			
 				$lastPerson="" ;
@@ -135,19 +135,19 @@ else {
 				print "<table cellspacing='0' style='width: 100%'>" ;
 					print "<tr class='head'>" ;
 						print "<th>" ;
-							print _("Roll Group") ;
+							print __($guid, "Roll Group") ;
 						print "</th>" ;
 						print "<th>" ;
-							print _("Name") ;
+							print __($guid, "Name") ;
 						print "</th>" ;
 						print "<th>" ;
-							print _("Status") ;
+							print __($guid, "Status") ;
 						print "</th>" ;
 						print "<th>" ;
-							print _("Reason") ;
+							print __($guid, "Reason") ;
 						print "</th>" ;
 						print "<th>" ;
-							print _("Comment") ;
+							print __($guid, "Comment") ;
 						print "</th>" ;
 					print "</tr>" ;
 					
@@ -176,7 +176,7 @@ else {
 										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 									}
 									if ($resultRollGroup->rowCount()<1) {
-										print "<i>" . _('Unknown') . "</i>" ;
+										print "<i>" . __($guid, 'Unknown') . "</i>" ;
 									}
 									else {
 										$rowRollGroup=$resultRollGroup->fetch() ;
@@ -220,7 +220,7 @@ else {
 					if ($count==0) {
 						print "<tr class=$rowNum>" ;
 							print "<td colspan=5>" ;
-								print _("All students are present.") ;
+								print __($guid, "All students are present.") ;
 							print "</td>" ;
 						print "</tr>" ;
 					}

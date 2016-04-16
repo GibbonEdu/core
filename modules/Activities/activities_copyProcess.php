@@ -62,7 +62,7 @@ else {
 			//Fail2
 			$URL.="&copyReturn=fail2" ;
 			header("Location: {$URL}");
-			break ; 
+			exit() ; 
 		}
 		
 		if ($result->rowCount()!=1) {

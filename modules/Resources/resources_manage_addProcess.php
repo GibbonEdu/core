@@ -124,7 +124,7 @@ else {
 					//Fail 2
 					$URL.="&addReturn=fail2" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}		
 
 				//Update tag counts
@@ -180,7 +180,7 @@ else {
 					//Fail 2
 					$URL.="&addReturn=fail2" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}		
 				
 				//Write to database
@@ -194,7 +194,7 @@ else {
 					//Fail 2
 					$URL.="&addReturn=fail2" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 				
 				if ($partialFail==TRUE) {

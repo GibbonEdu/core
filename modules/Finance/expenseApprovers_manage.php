@@ -22,13 +22,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/Finance/expenseApprovers_manage.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Manage Expense Approvers') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Manage Expense Approvers') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -36,7 +36,7 @@ else {
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="success0") {
-			$deleteReturnMessage=_("Your request was completed successfully.") ;		
+			$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;		
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -70,55 +70,55 @@ else {
 	print "<p>" ;
 		if ($expenseApprovalType=="One Of") {
 			if ($budgetLevelExpenseApproval=="Y") {
-				print _("Expense approval has been set as 'One Of', which means that only one of the people listed below (as well as someone with Full budget access) needs to approve an expense before it can go ahead.") ;
+				print __($guid, "Expense approval has been set as 'One Of', which means that only one of the people listed below (as well as someone with Full budget access) needs to approve an expense before it can go ahead.") ;
 			}
 			else {
-				print _("Expense approval has been set as 'One Of', which means that only one of the people listed below needs to approve an expense before it can go ahead.") ;
+				print __($guid, "Expense approval has been set as 'One Of', which means that only one of the people listed below needs to approve an expense before it can go ahead.") ;
 			}
 		}
 		else if ($expenseApprovalType=="One Of") {
 			if ($budgetLevelExpenseApproval=="Y") {
-				print _("Expense approval has been set as 'Two Of', which means that only two of the people listed below (as well as someone with Full budget access) need to approve an expense before it can go ahead.") ;
+				print __($guid, "Expense approval has been set as 'Two Of', which means that only two of the people listed below (as well as someone with Full budget access) need to approve an expense before it can go ahead.") ;
 			}
 			else {
-				print _("Expense approval has been set as 'Two Of', which means that only two of the people listed below need to approve an expense before it can go ahead.") ;
+				print __($guid, "Expense approval has been set as 'Two Of', which means that only two of the people listed below need to approve an expense before it can go ahead.") ;
 			}
 		}
 		else if ($expenseApprovalType=="Chain Of All") {
 			if ($budgetLevelExpenseApproval=="Y") {
-				print _("Expense approval has been set as 'Chain Of All', which means that all of the people listed below (as well as someone with Full budget access) need to approve an expense, in order from lowest to highest, before it can go ahead.") ;
+				print __($guid, "Expense approval has been set as 'Chain Of All', which means that all of the people listed below (as well as someone with Full budget access) need to approve an expense, in order from lowest to highest, before it can go ahead.") ;
 			}
 			else {
-				print _("Expense approval has been set as 'Chain Of All', which means that all of the people listed below need to approve an expense, in order from lowest to highest, before it can go ahead.") ;
+				print __($guid, "Expense approval has been set as 'Chain Of All', which means that all of the people listed below need to approve an expense, in order from lowest to highest, before it can go ahead.") ;
 			}
 		}
 		else {
-			print _("Expense Approval policies have not been set up: this should be done under Admin > School Admin > Manage Finance Settings.") ;
+			print __($guid, "Expense Approval policies have not been set up: this should be done under Admin > School Admin > Manage Finance Settings.") ;
 		}
 	print "</p>" ;
 	
 	print "<div class='linkTop'>" ;
-	print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/expenseApprovers_manage_add.php'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+	print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/expenseApprovers_manage_add.php'>" .  __($guid, 'Add') . "<img style='margin-left: 5px' title='" . __($guid, 'Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
 	print "</div>" ;
 	
 	if ($result->rowCount()<1) {
 		print "<div class='error'>" ;
-		print _("There are no records to display.") ;
+		print __($guid, "There are no records to display.") ;
 		print "</div>" ;
 	}
 	else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print _("Name") ;
+					print __($guid, "Name") ;
 				print "</th>" ;
 				if ($expenseApprovalType=="Chain Of All") {
 					print "<th>" ;
-						print _("Sequence Number") ;
+						print __($guid, "Sequence Number") ;
 					print "</th>" ;
 				}
 				print "<th>" ;
-					print _("Actions") ;
+					print __($guid, "Actions") ;
 				print "</th>" ;
 			print "</tr>" ;
 			
@@ -141,13 +141,13 @@ else {
 					if ($expenseApprovalType=="Chain Of All") {
 						print "<td>" ;
 							if ($row["sequenceNumber"]!="") {
-								print _($row["sequenceNumber"]) ;
+								print __($guid, $row["sequenceNumber"]) ;
 							}
 						print "</td>" ;
 					}
 					print "<td>" ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/expenseApprovers_manage_edit.php&gibbonFinanceExpenseApproverID=" . $row["gibbonFinanceExpenseApproverID"] . "'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/expenseApprovers_manage_delete.php&gibbonFinanceExpenseApproverID=" . $row["gibbonFinanceExpenseApproverID"] . "'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/expenseApprovers_manage_edit.php&gibbonFinanceExpenseApproverID=" . $row["gibbonFinanceExpenseApproverID"] . "'><img title='" . __($guid, 'Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/expenseApprovers_manage_delete.php&gibbonFinanceExpenseApproverID=" . $row["gibbonFinanceExpenseApproverID"] . "'><img title='" . __($guid, 'Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
 					print "</td>" ;
 				print "</tr>" ;
 				

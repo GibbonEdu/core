@@ -57,7 +57,7 @@ msgstr "Erreur"
 #: error.php:25 error.php:27 error.php:27
 msgid ""
 "An error has occurred. This could mean a number of different things, but "
-"generally indicates that you have a misspelt an address, or are trying to "
+"generally indicates that you have a misspelt address, or are trying to "
 "access a page that you are not permitted to access."
 msgstr ""
 "Une erreur se est produite. Cela pourrait signifier un certain nombre de "
@@ -26575,7 +26575,7 @@ msgid ""
 "Dear %1$s,\\n\\nWelcome to %2$s, %3$s's system for managing school "
 "information. You can access the system by going to %4$s and logging in with "
 "your new username (%5$s) and password (%6$s). You can learn more about using "
-"%7$s on the official support website (http://gibbonedu.org/support/parents)."
+"%7$s on the official support website (https://gibbonedu.org/support/parents)."
 "\\n\\nIn order to maintain the security of your data, we highly recommend "
 "you change your password to something easy to remember but hard to guess. "
 "This can be done by using the Preferences page after logging in (top-right "
@@ -26585,7 +26585,7 @@ msgstr ""
 "d'information scolaire. Vous pouvez accéder au système en naviguant à %4$s "
 "et vous connectez avec votre votre nouveau login (%5$s) et votre votre mot "
 "de passe (%6$s). Vous pouvez en apprendre d'avantages en utilisant %7$s sur "
-"le site officiel du support (http://gibbonedu.org/support/parents). \\n"
+"le site officiel du support (https://gibbonedu.org/support/parents). \\n"
 "\\nDans le but de maintenir la sécurité de vos données, il est fortement "
 "recommandé de modifier votre mot de passe par quelques chose de facile à "
 "retenir mais difficile à déchiffrer. Ceci peut être fait en utilisant la "
@@ -51423,7 +51423,7 @@ msgstr "Envoyer les prochaines factures à"
 #: Form/applicationForm.php:1998
 #: modules/Application Form/applicationForm.php:2001
 msgid ""
-"These documents must all be included before the application can be submitted."
+"All documents must all be included before the application can be submitted."
 msgstr ""
 "Ces documents doivent tous être inclus avant que la demande ne soit envoyée"
 
@@ -56336,16 +56336,6 @@ msgstr "Autres élèves"
 msgid "Other Teachers"
 msgstr "Autres enseignants"
 
-#: modules/Planner/planner_add.php:849 modules/Planner/planner_add.php:841
-#: modules/Planner/planner_add.php:841
-msgid "Submitter\\'s Parents"
-msgstr "Parents de l'envoyeur"
-
-#: modules/Planner/planner_add.php:857 modules/Planner/planner_add.php:849
-#: modules/Planner/planner_add.php:849
-msgid "Classmates\\'s Parents"
-msgstr "Parents du Classemates"
-
 #: modules/Planner/planner_add.php:865 modules/Planner/planner_edit.php:1034
 #: modules/Planner/planner_edit.php:1037 modules/Planner/planner_add.php:857
 #: modules/Planner/planner_add.php:857 modules/Planner/planner_edit.php:1037
@@ -59646,7 +59636,7 @@ msgid "Manage Units_learningAreas"
 msgstr "Gérer les unités_learningAreas"
 
 #: i18n/dbStringsForTranslation.php:249
-msgid "Markbook_viewMyChildrensClasses"
+msgid "ViewMarkbook_viewMyChildrensClasses"
 msgstr "Régistre de note_viewMyChildrensClasses"
 
 #: i18n/dbStringsForTranslation.php:257
@@ -64587,7 +64577,7 @@ msgstr "Commande de liste"
 #: modules/User Admin/import_studentEnrolment.php:135
 #: modules/User Admin/studentEnrolment_manage_add.php:195
 #: modules/User Admin/studentEnrolment_manage_edit.php:211
-msgid "Must be unique to roll gorup if set."
+msgid "Must be unique to roll group if set."
 msgstr "Doit être unique pour un groupe de liste si défini."
 
 #: preferences.php:214 preferences.php:214
@@ -68476,7 +68466,7 @@ msgstr ""
 #: modules/Application Form/applicationFormProcess.php:734
 #: modules/Application Form/applicationFormProcess.php:734
 #, php-format
-msgid "An application form has submitted for %1$s."
+msgid "An application form has been submitted for %1$s."
 msgstr ""
 
 #: modules/Behaviour/behaviour_manage_addMultiProcess.php:123
@@ -69383,7 +69373,7 @@ msgstr ""
 
 #: modules/Finance/invoices_view.php:35 modules/Finance/invoices_view.php:35
 msgid ""
-"This section allows you to view and invoices for children within your family."
+"This section allows you to view invoices for children within your family."
 msgstr ""
 
 #: modules/Library/report_viewOverdueItems.php:54

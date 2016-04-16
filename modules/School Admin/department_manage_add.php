@@ -25,12 +25,12 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/department_manage_add.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/department_manage.php'>" . _('Manage Departments') . "</a> > </div><div class='trailEnd'>" . _('Add Learning Area') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/department_manage.php'>" . __($guid, 'Manage Departments') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Add Learning Area') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -38,22 +38,22 @@ else {
 	$class="error" ;
 	if (!($addReturn=="")) {
 		if ($addReturn=="fail0") {
-			$addReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+			$addReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($addReturn=="fail2") {
-			$addReturnMessage=_("Your request failed due to a database error.") ;	
+			$addReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 		}
 		else if ($addReturn=="fail3") {
-			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail4") {
-			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail5") {
-			$addReturnMessage=_("Your request failed due to an attachment error.") ;	
+			$addReturnMessage=__($guid, "Your request failed due to an attachment error.") ;	
 		}
 		else if ($addReturn=="success0") {
-			$addReturnMessage=_("Your request was completed successfully. You can now add another record if you wish.") ;	
+			$addReturnMessage=__($guid, "Your request was completed successfully. You can now add another record if you wish.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -80,7 +80,7 @@ else {
 			</script>
 			<tr>
 				<td style='width: 275px'> 
-					<b><?php print _('Type') ?> *</b><br/>
+					<b><?php print __($guid, 'Type') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select name="type" id="type" class='type' style="width: 300px">
@@ -91,7 +91,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Name') ?> *</b><br/>
+					<b><?php print __($guid, 'Name') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<input name="name" id="name" maxlength=40 value="" type="text" style="width: 300px">
@@ -103,7 +103,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Short Name') ?> *</b><br/>
+					<b><?php print __($guid, 'Short Name') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<input name="nameShort" id="nameShort" maxlength=4 value="" type="text" style="width: 300px">
@@ -115,7 +115,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Subject Listing') ?></b><br/>
+					<b><?php print __($guid, 'Subject Listing') ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="subjectListing" id="subjectListing" maxlength=255 value="" type="text" style="width: 300px">
@@ -123,19 +123,19 @@ else {
 			</tr>
 			<tr>
 				<td colspan=2> 
-					<b><?php print _('Blurb') ?></b> 
+					<b><?php print __($guid, 'Blurb') ?></b> 
 					<?php print getEditor($guid,  TRUE, "blurb", "", 20 ) ?>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Logo') ?></b><br/>
+					<b><?php print __($guid, 'Logo') ?></b><br/>
 					<span style="font-size: 90%"><i>125x125px jpg/png/gif</i></span>
 				</td>
 				<td class="right">
 					<input type="file" name="file" id="file"><br/><br/>
 					<?php
-					print getMaxUpload() ;
+					print getMaxUpload($guid) ;
 					$ext="'.png','.jpeg','.jpg','.gif'" ;
 					?>
 					
@@ -147,8 +147,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Staff') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
+					<b><?php print __($guid, 'Staff') ?></b><br/>
+					<span style="font-size: 90%"><i><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></i></span>
 				</td>
 				<td class="right">
 					<select name="staff[]" id="staff[]" multiple style="width: 302px; height: 150px">
@@ -169,15 +169,15 @@ else {
 			</tr>
 			<tr id='roleLARow'>
 				<td> 
-					<b><?php print _('Role') ?></b><br/>
+					<b><?php print __($guid, 'Role') ?></b><br/>
 				</td>
 				<td class="right">
 					<select name="roleLA" id="roleLA" style="width: 302px">
-						<option value="Coordinator"><?php print _('Coordinator') ?></option>
-						<option value="Assistant Coordinator"><?php print _('Assistant Coordinator') ?></option>
-						<option value="Teacher (Curriculum)"><?php print _('Teacher (Curriculum)') ?></option>
-						<option value="Teacher"><?php print _('Teacher') ?></option>
-						<option value="Other"><?php print _('Other') ?></option>
+						<option value="Coordinator"><?php print __($guid, 'Coordinator') ?></option>
+						<option value="Assistant Coordinator"><?php print __($guid, 'Assistant Coordinator') ?></option>
+						<option value="Teacher (Curriculum)"><?php print __($guid, 'Teacher (Curriculum)') ?></option>
+						<option value="Teacher"><?php print __($guid, 'Teacher') ?></option>
+						<option value="Other"><?php print __($guid, 'Other') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -187,19 +187,19 @@ else {
 				</td>
 				<td class="right">
 					<select name="roleAdmin" id="roleAdmin" style="width: 302px">
-						<option value="Director"><?php print _('Director') ?></option>
-						<option value="Manager"><?php print _('Manager') ?></option>
-						<option value="Administrator"><?php print _('Administrator') ?></option>
-						<option value="Other"><?php print _('Other') ?></option>
+						<option value="Director"><?php print __($guid, 'Director') ?></option>
+						<option value="Manager"><?php print __($guid, 'Manager') ?></option>
+						<option value="Administrator"><?php print __($guid, 'Administrator') ?></option>
+						<option value="Other"><?php print __($guid, 'Other') ?></option>
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+					<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
 				</td>
 				<td class="right">
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 				</td>
 			</tr>
 		</table>

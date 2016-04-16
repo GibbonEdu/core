@@ -24,13 +24,13 @@ include "./modules/System Admin/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/System Admin/theme_manage.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Manage Themes') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Manage Themes') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -38,11 +38,11 @@ else {
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="success0") {
-			$deleteReturnMessage=_("Uninstall was successful. You will still need to remove the theme's files yourself.") ;	
+			$deleteReturnMessage=__($guid, "Uninstall was successful. You will still need to remove the theme's files yourself.") ;	
 			$class="success" ;
 		}
 		if ($deleteReturn=="success1") {
-			$deleteReturnMessage=_("Uninstall was successful.") ;	
+			$deleteReturnMessage=__($guid, "Uninstall was successful.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -55,19 +55,19 @@ else {
 	$class="error" ;
 	if (!($addReturn=="")) {
 		if ($addReturn=="fail0") {
-			$addReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+			$addReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($addReturn=="fail2") {
-			$addReturnMessage=_("Your request failed due to a database error.") ;	
+			$addReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 		}
 		else if ($addReturn=="fail3") {
-			$addReturnMessage=_("Your request failed because your manifest file was invalid.") ;	
+			$addReturnMessage=__($guid, "Your request failed because your manifest file was invalid.") ;	
 		}
 		else if ($addReturn=="fail4") {
-			$addReturnMessage=_("Your request failed because a theme with the same name is already installed.") ;	
+			$addReturnMessage=__($guid, "Your request failed because a theme with the same name is already installed.") ;	
 		}
 		else if ($addReturn=="success0") {
-			$addReturnMessage=_("Your request was successful. You can now add another record if you wish.") ;	
+			$addReturnMessage=__($guid, "Your request was successful. You can now add another record if you wish.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -80,19 +80,19 @@ else {
 	$class="error" ;
 	if (!($updateReturn=="")) {
 		if ($updateReturn=="fail0") {
-			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($updateReturn=="fail1") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail2") {
-			$updateReturnMessage=_("Your request failed due to a database error.") ;	
+			$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 		}
 		else if ($updateReturn=="fail4") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="success0") {
-			$updateReturnMessage=_("Your request was completed successfully.") ;	
+			$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -121,12 +121,12 @@ else {
 	$themesFS=glob($_SESSION[$guid]["absolutePath"] . "/themes/*" , GLOB_ONLYDIR);
 	
 	print "<div class='warning'>" ;
-		print sprintf(_('To install a theme, upload the theme folder to %1$s on your server and then refresh this page. After refresh, the theme should appear in the list below: use the install button in the Actions column to set it up.'), "<b><u>" . $_SESSION[$guid]["absolutePath"] . "/modules/</u></b>") ;
+		print sprintf(__($guid, 'To install a theme, upload the theme folder to %1$s on your server and then refresh this page. After refresh, the theme should appear in the list below: use the install button in the Actions column to set it up.'), "<b><u>" . $_SESSION[$guid]["absolutePath"] . "/modules/</u></b>") ;
 	print "</div>" ;
 	
 	if (count($themesFS)<1) {
 		print "<div class='error'>" ;
-		print _("There are no records to display.") ;
+		print __($guid, "There are no records to display.") ;
 		print "</div>" ;
 	}
 	else {
@@ -134,25 +134,25 @@ else {
 			print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
 					print "<th>" ;
-						print _("Name") ;
+						print __($guid, "Name") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Status") ;
+						print __($guid, "Status") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Description") ;
+						print __($guid, "Description") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Version") ;
+						print __($guid, "Version") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Author") ;
+						print __($guid, "Author") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Active") ;
+						print __($guid, "Active") ;
 					print "</th>" ;
 					print "<th style='width: 50px'>" ;
-						print _("Action") ;
+						print __($guid, "Action") ;
 					print "</th>" ;
 				print "</tr>" ;
 				
@@ -180,11 +180,11 @@ else {
 					//COLOR ROW BY STATUS!
 					print "<tr class=$rowNum>" ;
 						print "<td>" ;
-							print _($themeName) ;
+							print __($guid, $themeName) ;
 						print "</td>" ;
 						if ($installed) {
 							print "<td>" ;
-								print _("Installed") ;
+								print __($guid, "Installed") ;
 							print "</td>" ;
 						}
 						else {
@@ -199,12 +199,12 @@ else {
 							}
 							if ($manifestOK) {
 								print "<td colspan=5>" ;
-									print _("Not Installed") ;
+									print __($guid, "Not Installed") ;
 								print "</td>" ;
 							}
 							else {
 								print "<td colspan=6>" ;
-									print _("Theme Error") ;
+									print __($guid, "Theme Error") ;
 								print "</td>" ;
 							}
 						}
@@ -257,14 +257,14 @@ else {
 							print "</td>" ;
 							print "<td>" ;
 								if ($themesSQL[$themeName][0]["name"]!="Default") {
-									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/theme_manage_uninstall.php&gibbonThemeID=" . $themesSQL[$themeName][0]["gibbonThemeID"] . "'><img title='" . _('Remove Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/theme_manage_uninstall.php&gibbonThemeID=" . $themesSQL[$themeName][0]["gibbonThemeID"] . "'><img title='" . __($guid, 'Remove Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 								}
 							print "</td>" ;
 						}
 						else {
 							if ($manifestOK) {
 								print "<td>" ;
-									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/theme_manage_installProcess.php?name=" . urlencode($themeName) . "'><img title='" . _('Install') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/theme_manage_installProcess.php?name=" . urlencode($themeName) . "'><img title='" . __($guid, 'Install') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
 								print "</td>" ;
 							}
 						}
@@ -274,7 +274,7 @@ else {
 					print "<td colspan=7 class='right'>" ;
 						?>
 						<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-						<input type="submit" value="<?php print _("Submit") ; ?>">
+						<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 						<?php
 					print "</td>" ;
 				print "</tr>" ;
@@ -293,19 +293,19 @@ else {
 	
 	if ($orphans) {
 		print "<h2 style='margin-top: 40px'>" ;
-			print _("Orphaned Themes") ;
+			print __($guid, "Orphaned Themes") ;
 		print "</h2>" ;
 		print "<p>" ;
-			print _("These themes are installed in the database, but are missing from within the file system.") ;
+			print __($guid, "These themes are installed in the database, but are missing from within the file system.") ;
 		print "</p>" ;
 		
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print _("Name") ;
+					print __($guid, "Name") ;
 				print "</th>" ;
 				print "<th style='width: 50px'>" ;
-					print _("Action") ;
+					print __($guid, "Action") ;
 				print "</th>" ;
 			print "</tr>" ;
 			
@@ -327,10 +327,10 @@ else {
 					//COLOR ROW BY STATUS!
 					print "<tr class=$rowNum>" ;
 						print "<td>" ;
-							print _($themeName) ;
+							print __($guid, $themeName) ;
 						print "</td>" ;
 						print "<td>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/theme_manage_uninstall.php&gibbonThemeID=" . $themesSQL[$themeName][0]["gibbonThemeID"] . "&orphaned=true'><img title='" . _('Remove Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/theme_manage_uninstall.php&gibbonThemeID=" . $themesSQL[$themeName][0]["gibbonThemeID"] . "&orphaned=true'><img title='" . __($guid, 'Remove Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 						print "</td>" ;
 					print "</tr>" ;
 				}
@@ -339,7 +339,7 @@ else {
 				print "<td colspan=7 class='right'>" ;
 					?>
 					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 					<?php
 				print "</td>" ;
 			print "</tr>" ;

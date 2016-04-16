@@ -32,6 +32,9 @@ catch(PDOException $e) {
   echo $e->getMessage();
 }
 
+//Set timezone from session variable
+date_default_timezone_set($_SESSION[$guid]["timezone"]);
+			
 setCurrentSchoolYear($guid, $connection2) ;
 
 //The current/actual school year info, just in case we are working in a different year
@@ -81,7 +84,7 @@ else {
 			catch(PDOException $e) { }
 		
 			if ($row["failCount"]==3) {
-				$notificationText=sprintf(_('Someone failed to login to account "%1$s" 3 times in a row.'), $username) ;
+				$notificationText=sprintf(__($guid, 'Someone failed to login to account "%1$s" 3 times in a row.'), $username) ;
 				setNotification($connection2, $guid, $_SESSION[$guid]["organisationAdministrator"], $notificationText, "System", "/index.php?q=/modules/User Admin/user_manage.php&search=$username") ;
 			}
 		

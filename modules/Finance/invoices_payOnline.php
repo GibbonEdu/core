@@ -34,29 +34,29 @@ $addReturnMessage="" ;
 $class="error" ;
 if (!($addReturn=="")) {
 	if ($addReturn=="fail0") {
-		$addReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+		$addReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 	}
 	else if ($addReturn=="fail2") {
-		$addReturnMessage=_("Your request failed due to a database error.") ;	
+		$addReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 	}
 	else if ($addReturn=="fail3") {
-		$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+		$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 	}
 	else if ($addReturn=="fail4") {
-		$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+		$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 	}
 	else if ($addReturn=="fail5") {
-		$addReturnMessage=_("Your payment could not be made as the payment gateway does not support the system's currency.") ;	
+		$addReturnMessage=__($guid, "Your payment could not be made as the payment gateway does not support the system's currency.") ;	
 	}
 	else if ($addReturn=="success1") {
 		$class="success" ;
-		$addReturnMessage=_("Your payment has been successfully made to your credit card. A receipt has been emailed to you.") ;
+		$addReturnMessage=__($guid, "Your payment has been successfully made to your credit card. A receipt has been emailed to you.") ;
 	}
 	else if ($addReturn=="success2") {
-		$addReturnMessage=_("Your payment could not be made to your credit card. Please try an alternative payment method.") ;
+		$addReturnMessage=__($guid, "Your payment could not be made to your credit card. Please try an alternative payment method.") ;
 	}
 	else if ($addReturn=="success3") {
-		$addReturnMessage=sprintf(_('Your payment has been successfully made to your credit card, but there has been an error recording your payment in %1$s. Please print this screen and contact the school ASAP, quoting code %2$s.'), $_SESSION[$guid]["systemName"], $gibbonFinanceInvoiceID) ;
+		$addReturnMessage=sprintf(__($guid, 'Your payment has been successfully made to your credit card, but there has been an error recording your payment in %1$s. Please print this screen and contact the school ASAP, quoting code %2$s.'), $_SESSION[$guid]["systemName"], $gibbonFinanceInvoiceID) ;
 	}	
 	print "<div class='$class'>" ;
 		print $addReturnMessage;
@@ -67,7 +67,7 @@ if ($addReturnMessage=="") { //No return message, so must just be landing to mak
 	//Check variables
 	if ($gibbonFinanceInvoiceID=="" OR $key=="") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -81,13 +81,13 @@ if ($addReturnMessage=="") { //No return message, so must just be landing to mak
 		}
 		catch(PDOException $e) { 
 			print "<div class='error'>" ;
-				print _("Your request failed due to a database error.") ;
+				print __($guid, "Your request failed due to a database error.") ;
 			print "</div>" ;
 		}
 	
 		if ($resultKeyRead->rowCount()!=1) { //If not exists, report error
 			print "<div class='error'>" ;
-				print _("The selected record does not exist, or you do not have access to it.") ;
+				print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 			print "</div>" ;
 		}
 		else { 	//If exists check confirmed
@@ -103,7 +103,7 @@ if ($addReturnMessage=="") { //No return message, so must just be landing to mak
 			}
 			catch(PDOException $e) { 
 				print "<div class='error'>" ;
-					print _("Your request failed due to a database error.") ;
+					print __($guid, "Your request failed due to a database error.") ;
 				print "</div>" ;
 				$feeOK=FALSE ;
 			}
@@ -125,11 +125,11 @@ if ($addReturnMessage=="") { //No return message, so must just be landing to mak
 					$financeOnlinePaymentThreshold=getSettingByScope($connection2, "Finance", "financeOnlinePaymentThreshold" ) ; 
 					if ($financeOnlinePaymentEnabled=="Y") {
 						print "<h3 style='margin-top: 40px'>" ;
-							print _("Online Payment") ;
+							print __($guid, "Online Payment") ;
 						print "</h3>" ;
 						print "<p>" ;
 							if  ($financeOnlinePaymentThreshold=="" OR $financeOnlinePaymentThreshold>=$feeTotal) {
-								print sprintf(_('Payment can be made by credit card, using our secure PayPal payment gateway. When you press Pay Online Now, you will be directed to PayPal in order to make payment. During this process we do not see or store your credit card details. Once the transaction is complete you will be returned to %1$s.'), $_SESSION[$guid]["systemName"]) . " " ;
+								print sprintf(__($guid, 'Payment can be made by credit card, using our secure PayPal payment gateway. When you press Pay Online Now, you will be directed to PayPal in order to make payment. During this process we do not see or store your credit card details. Once the transaction is complete you will be returned to %1$s.'), $_SESSION[$guid]["systemName"]) . " " ;
 								print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/invoices_payOnlineProcess.php'>" ;
 									print "<input type='hidden' name='gibbonFinanceInvoiceID' value='$gibbonFinanceInvoiceID'>" ;
 									print "<input type='hidden' name='key' value='$key'>" ;
@@ -139,19 +139,19 @@ if ($addReturnMessage=="") { //No return message, so must just be landing to mak
 								print "</form>" ;
 							}
 							else {
-								print "<div class='error'>" . _("Payment is not permitted for this invoice, as the total amount is greater than the permitted online payment threshold.") . "</div>" ;
+								print "<div class='error'>" . __($guid, "Payment is not permitted for this invoice, as the total amount is greater than the permitted online payment threshold.") . "</div>" ;
 							}
 						print "</p>" ;
 					}
 					else {
 						print "<div class='error'>" ;
-							print _("Your request failed due to a database error.") ;
+							print __($guid, "Your request failed due to a database error.") ;
 						print "</div>" ;
 					}
 				}
 				else {
 					print "<div class='error'>" ;
-						print _("Your request failed due to a database error.") ;
+						print __($guid, "Your request failed due to a database error.") ;
 					print "</div>" ;
 				}
 			}

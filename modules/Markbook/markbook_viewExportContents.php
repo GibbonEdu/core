@@ -42,11 +42,11 @@ $gibbonMarkbookColumnID=$_SESSION[$guid]["exportToExcelParams"] ;
 if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_view.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
-	$alert=getAlert($connection2, 002) ;
+	$alert=getAlert($guid, $connection2, 002) ;
 	
 	//Proceed!
 	print "<table cellspacing='0'>" ;
@@ -69,7 +69,7 @@ else {
 		}
 		if ($resultStudents->rowCount()<1) {
 			print "<div class='error'>" ;
-				print _("There are no records to display.") ;
+				print __($guid, "There are no records to display.") ;
 			print "</div>" ;
 		}
 		else {
@@ -78,10 +78,10 @@ else {
 					print "<b>Student</b>" ;
 				print "</td>" ;
 				print "<td>" ;
-					print "<b>" ; if ($attainmentAlternativeName!="") { print $attainmentAlternativeName ; } else { print _('Attainment') ; } print "</b>" ;
+					print "<b>" ; if ($attainmentAlternativeName!="") { print $attainmentAlternativeName ; } else { print __($guid, 'Attainment') ; } print "</b>" ;
 				print "</td>" ;
 				print "<td>" ;
-					print "<b>" ; if ($effortAlternativeName!="") { print $effortAlternativeName ; } else { print _('Effort') ; } print "</b>" ;
+					print "<b>" ; if ($effortAlternativeName!="") { print $effortAlternativeName ; } else { print __($guid, 'Effort') ; } print "</b>" ;
 				print "</td>" ;
 				print "<td>" ;
 					print "<b>Comment</b>" ;

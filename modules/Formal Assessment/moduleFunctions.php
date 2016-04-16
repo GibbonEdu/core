@@ -26,7 +26,7 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
 	$attainmentAlternativeNameAbrev=getSettingByScope($connection2, "Markbook", "attainmentAlternativeNameAbrev") ;
 	$effortAlternativeName=getSettingByScope($connection2, "Markbook", "effortAlternativeName") ;
 	$effortAlternativeNameAbrev=getSettingByScope($connection2, "Markbook", "effortAlternativeNameAbrev") ;
-	$alert=getAlert($connection2, 002) ;	
+	$alert=getAlert($guid, $connection2, 002) ;	
 		
 	//Get school years in reverse order
 	try {
@@ -41,7 +41,7 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
 	
 	if ($resultYears->rowCount()<1) {
 		$output.="<div class='error'>" ;
-			$output.=_("There are no records to display.") ;
+			$output.=__($guid, "There are no records to display.") ;
 		$output.="</div>" ;
 	}
 	else {
@@ -77,10 +77,10 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
 							$output.="Assessment" ;
 						$output.="</th>" ;
 						$output.="<th style='width: 75px; text-align: center'>" ;
-							if ($attainmentAlternativeName!="") { $output.=$attainmentAlternativeName ; } else { $output.=_('Attainment') ; }
+							if ($attainmentAlternativeName!="") { $output.=$attainmentAlternativeName ; } else { $output.=__($guid, 'Attainment') ; }
 						$output.="</th>" ;
 						$output.="<th style='width: 75px; text-align: center'>" ;
-							if ($effortAlternativeName!="") { $output.=$effortAlternativeName ; } else { $output.=_('Effort') ; }
+							if ($effortAlternativeName!="") { $output.=$effortAlternativeName ; } else { $output.=__($guid, 'Effort') ; }
 						$output.="</th>" ;
 						$output.="<th>" ;
 							$output.="Comment" ;
@@ -115,7 +115,7 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
 							$output.="</td>" ;
 							if ($rowInternalAssessment["attainment"]=="N" OR $rowInternalAssessment["gibbonScaleIDAttainment"]=="") {
 								$output.="<td class='dull' style='color: #bbb; text-align: center'>" ;
-									$output.=_('N/A') ;
+									$output.=__($guid, 'N/A') ;
 								$output.="</td>" ;
 							}
 							else {
@@ -132,18 +132,18 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
 									}
 									if ($resultAttainment->rowCount()==1) {
 										$rowAttainment=$resultAttainment->fetch() ;
-										$attainmentExtra="<br/>" . _($rowAttainment["usage"]) ;
+										$attainmentExtra="<br/>" . __($guid, $rowAttainment["usage"]) ;
 									}
 									$styleAttainment="style='font-weight: bold'" ;					
 									$output.="<div $styleAttainment>" . $rowInternalAssessment["attainmentValue"] . "</div>" ;
 									if ($rowInternalAssessment["attainmentValue"]!="") {
-										$output.="<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><b>" . htmlPrep(_($rowInternalAssessment["attainmentDescriptor"])) . "</b>" . _($attainmentExtra) . "</div>" ;
+										$output.="<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><b>" . htmlPrep(__($guid, $rowInternalAssessment["attainmentDescriptor"])) . "</b>" . __($guid, $attainmentExtra) . "</div>" ;
 									}
 								$output.="</td>" ;
 							}
 							if ($rowInternalAssessment["effort"]=="N" OR $rowInternalAssessment["gibbonScaleIDEffort"]=="") {
 								$output.="<td class='dull' style='color: #bbb; text-align: center'>" ;
-									$output.=_('N/A') ;
+									$output.=__($guid, 'N/A') ;
 								$output.="</td>" ;
 							}
 							else {
@@ -160,16 +160,16 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
 									}
 									if ($resultEffort->rowCount()==1) {
 										$rowEffort=$resultEffort->fetch() ;
-										$effortExtra="<br/>" . _($rowEffort["usage"]) ;
+										$effortExtra="<br/>" . __($guid, $rowEffort["usage"]) ;
 									}
 									$styleEffort="style='font-weight: bold'" ;
 									$output.="<div $styleEffort>" . $rowInternalAssessment["effortValue"] ;
 									$output.="</div>" ;
 									if ($rowInternalAssessment["effortValue"]!="") {
 										$output.="<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'>" ;
-											$output.="<b>" . htmlPrep(_($rowInternalAssessment["effortDescriptor"])) . "</b>" ;
+											$output.="<b>" . htmlPrep(__($guid, $rowInternalAssessment["effortDescriptor"])) . "</b>" ;
 											if ($effortExtra!="") {
-												$output.=_($effortExtra) ;
+												$output.=__($guid, $effortExtra) ;
 											}
 										$output.="</div>" ;
 									}
@@ -177,7 +177,7 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
 							}
 							if ($rowInternalAssessment["comment"]=="N" AND $rowInternalAssessment["uploadedResponse"]=="N") {
 								print "<td class='dull' style='color: #bbb; text-align: left'>" ;
-									print _('N/A') ;
+									print __($guid, 'N/A') ;
 								print "</td>" ;
 							}
 							else {
@@ -186,7 +186,7 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
 										$output.=$rowInternalAssessment["comment"] . "<br/>" ;
 									}
 									if ($rowInternalAssessment["response"]!="") {
-										$output.="<a title='" . _('Uploaded Response') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowInternalAssessment["response"] . "'>" . _('Uploaded Response') . "</a><br/>" ;
+										$output.="<a title='" . __($guid, 'Uploaded Response') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowInternalAssessment["response"] . "'>" . __($guid, 'Uploaded Response') . "</a><br/>" ;
 									}
 								$output.="</td>" ;
 							}
@@ -198,7 +198,7 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
 		}
 		if ($results==FALSE) {
 			$output.="<div class='error'>" ;
-				$output.=_("There are no records to display.") ;
+				$output.=__($guid, "There are no records to display.") ;
 			$output.="</div>" ;
 		}
 	}
@@ -210,7 +210,7 @@ function sidebarExtra($guid, $connection2, $gibbonCourseClassID, $mode="manage")
 	$output="" ;
 	
 	$output.="<h2>" ;
-	$output.=_("View Classes") ;
+	$output.=__($guid, "View Classes") ;
 	$output.="</h2>" ;
 	
 	$selectCount=0 ;
@@ -233,7 +233,7 @@ function sidebarExtra($guid, $connection2, $gibbonCourseClassID, $mode="manage")
 								$resultSelect->execute($dataSelect);
 							}
 							catch(PDOException $e) { }
-							$output.="<optgroup label='--" . _('My Classes') . "--'>" ;
+							$output.="<optgroup label='--" . __($guid, 'My Classes') . "--'>" ;
 							while ($rowSelect=$resultSelect->fetch()) {
 								$selected="" ;
 								if ($rowSelect["gibbonCourseClassID"]==$gibbonCourseClassID AND $selectCount==0) {
@@ -244,27 +244,29 @@ function sidebarExtra($guid, $connection2, $gibbonCourseClassID, $mode="manage")
 							}
 						$output.="</optgroup>" ;
 						
-						try {
-							$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-							$sqlSelect="SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClass.reportable='Y' ORDER BY course, class" ;
-							$resultSelect=$connection2->prepare($sqlSelect);
-							$resultSelect->execute($dataSelect);
-						}
-						catch(PDOException $e) { }
-						$output.="<optgroup label='--" . _('All Classes') . "--'>" ;
-							while ($rowSelect=$resultSelect->fetch()) {
-								$selected="" ;
-								if ($rowSelect["gibbonCourseClassID"]==$gibbonCourseClassID AND $selectCount==0) {
-									$selected="selected" ;
-									$selectCount++ ;
-								}
-								$output.="<option $selected value='" . $rowSelect["gibbonCourseClassID"] . "'>" . htmlPrep($rowSelect["course"]) . "." . htmlPrep($rowSelect["class"]) . "</option>" ;
+						if ($mode=="manage" OR ($mode=="write" AND getHighestGroupedAction($guid, "/modules/Formal Assessment/internalAssessment_write_data.php", $connection2)=="Write Internal Assessments_all")) {
+							try {
+								$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
+								$sqlSelect="SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClass.reportable='Y' ORDER BY course, class" ;
+								$resultSelect=$connection2->prepare($sqlSelect);
+								$resultSelect->execute($dataSelect);
 							}
-						$output.="</optgroup>" ;
+							catch(PDOException $e) { }
+							$output.="<optgroup label='--" . __($guid, 'All Classes') . "--'>" ;
+								while ($rowSelect=$resultSelect->fetch()) {
+									$selected="" ;
+									if ($rowSelect["gibbonCourseClassID"]==$gibbonCourseClassID AND $selectCount==0) {
+										$selected="selected" ;
+										$selectCount++ ;
+									}
+									$output.="<option $selected value='" . $rowSelect["gibbonCourseClassID"] . "'>" . htmlPrep($rowSelect["course"]) . "." . htmlPrep($rowSelect["class"]) . "</option>" ;
+								}
+							$output.="</optgroup>" ;
+						}
 					 $output.="</select>" ;
 				$output.="</td>" ;
 				$output.="<td class='right'>" ;
-					$output.="<input type='submit' value='" . _('Go') . "'>" ;
+					$output.="<input type='submit' value='" . __($guid, 'Go') . "'>" ;
 				$output.="</td>" ;
 			$output.="</tr>" ;
 		$output.="</table>" ;
@@ -286,25 +288,25 @@ function externalAssessmentDetails($guid, $gibbonPersonID, $connection2, $gibbon
 
 	if ($resultAssessments->rowCount()<1) {
 		print "<div class='error'>" ;
-		print _("There are no records to display.") ;
+		print __($guid, "There are no records to display.") ;
 		print "</div>" ;
 	}
 	else {
 		while ($rowAssessments=$resultAssessments->fetch()) {
 			print "<h2>" ;
-			print _($rowAssessments["name"]) . " <span style='font-size: 75%; font-style: italic'>(" . substr(strftime('%B', mktime(0, 0, 0, substr($rowAssessments["date"], 5, 2))),0,3)  . " " . substr($rowAssessments["date"], 0, 4) . ")</span>" ;
+			print __($guid, $rowAssessments["name"]) . " <span style='font-size: 75%; font-style: italic'>(" . substr(strftime('%B', mktime(0, 0, 0, substr($rowAssessments["date"], 5, 2))),0,3)  . " " . substr($rowAssessments["date"], 0, 4) . ")</span>" ;
 			if ($manage==TRUE) {
-				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/externalAssessment_manage_details_edit.php&gibbonPersonID=$gibbonPersonID&gibbonExternalAssessmentStudentID=" . $rowAssessments["gibbonExternalAssessmentStudentID"] . "&search=$search&allStudents=$allStudents'><img style='margin-left: 5px' title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/externalAssessment_manage_details_delete.php&gibbonPersonID=$gibbonPersonID&gibbonExternalAssessmentStudentID=" . $rowAssessments["gibbonExternalAssessmentStudentID"] . "&search=$search&allStudents=$allStudents'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/externalAssessment_manage_details_edit.php&gibbonPersonID=$gibbonPersonID&gibbonExternalAssessmentStudentID=" . $rowAssessments["gibbonExternalAssessmentStudentID"] . "&search=$search&allStudents=$allStudents'><img style='margin-left: 5px' title='" . __($guid, 'Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/externalAssessment_manage_details_delete.php&gibbonPersonID=$gibbonPersonID&gibbonExternalAssessmentStudentID=" . $rowAssessments["gibbonExternalAssessmentStudentID"] . "&search=$search&allStudents=$allStudents'><img title='" . __($guid, 'Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 			}
 			print "</h2>" ;
 			print "<p>" ;
-			print _($rowAssessments["description"]) ;
+			print __($guid, $rowAssessments["description"]) ;
 			print "</p>" ;
 			
 			if ($rowAssessments["attachment"]!="") {
 				print "<div class='linkTop'>" ;
-					print "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowAssessments["attachment"] . "'>" . _('Uploaded File') . "</a>" ;
+					print "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowAssessments["attachment"] . "'>" . __($guid, 'Uploaded File') . "</a>" ;
 				print "</div>" ;
 			}
 			
@@ -322,7 +324,7 @@ function externalAssessmentDetails($guid, $gibbonPersonID, $connection2, $gibbon
 
 			if ($resultResults->rowCount()<1) {
 				print "<div class='warning'>" ;
-				print _("There are no records to display.") ;
+				print __($guid, "There are no records to display.") ;
 				print "</div>" ;
 			}
 			else {
@@ -346,19 +348,19 @@ function externalAssessmentDetails($guid, $gibbonPersonID, $connection2, $gibbon
 						print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th style='width:40%'>" ;
-								print _("Item") ;
+								print __($guid, "Item") ;
 							print "</th>" ;
 							print "<th style='width:15%'>" ;
-								print _("Result") ;
+								print __($guid, "Result") ;
 							print "</th>" ;
 							print "<th style='width:15%'>" ;
-								print "<span title='" . _('Primary assessment scale equivalent') . "'>" . _('PAS Equivalent') . "</span>" ;
+								print "<span title='" . __($guid, 'Primary assessment scale equivalent') . "'>" . __($guid, 'PAS Equivalent') . "</span>" ;
 							print "</th>" ;
 							print "<th style='width:15%'>" ;
-								print "<span title='" . _('Weighted average from subject-related markbook grades in the current year') . "'>" . _('Markbook<br/>Average') . "</span>" ;
+								print "<span title='" . __($guid, 'Weighted average from subject-related markbook grades in the current year') . "'>" . __($guid, 'Markbook<br/>Average') . "</span>" ;
 							print "</th>" ;
 							print "<th style='width:15%'>" ;
-								print "<span title='" . _('Plus/Minus Value Added') . "'>" . _('+/-') . "</span>" ;
+								print "<span title='" . __($guid, 'Plus/Minus Value Added') . "'>" . __($guid, '+/-') . "</span>" ;
 							print "</th>" ;
 						print "</tr>" ;
 					}
@@ -373,14 +375,14 @@ function externalAssessmentDetails($guid, $gibbonPersonID, $connection2, $gibbon
 					//COLOR ROW BY STATUS!
 					print "<tr class=$rowNum>" ;
 						print "<td>" ;
-							print _($rowResults["name"]) ;
+							print __($guid, $rowResults["name"]) ;
 						print "</td>" ;
 						print "<td>" ;
 							$style="" ;
 							if ($rowResults["lowestAcceptable"]!="" AND $rowResults["sequenceNumber"]>$rowResults["lowestAcceptable"]) {
 								$style="style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'" ;
 							}
-							print "<span $style title='" . _($rowResults["usage"]) . "'>" . _($rowResults["value"]) . "</span>" ;
+							print "<span $style title='" . __($guid, $rowResults["usage"]) . "'>" . __($guid, $rowResults["value"]) . "</span>" ;
 						print "</td>" ;
 						print "<td>" ;
 							if ($rowResults["valuePrimary"]!="" AND $rowResults["usagePrimary"]!="") {
@@ -389,7 +391,7 @@ function externalAssessmentDetails($guid, $gibbonPersonID, $connection2, $gibbon
 									if ($rowResults["lowestAcceptablePrimary"]!="" AND $rowResults["sequenceNumberPrimary"]>$rowResults["lowestAcceptablePrimary"]) {
 										$style="style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'" ;
 									}
-									print "<span $style title='" . _($rowResults["usagePrimary"]) . "'>" . _($rowResults["valuePrimary"]) . "</span>" ;
+									print "<span $style title='" . __($guid, $rowResults["usagePrimary"]) . "'>" . __($guid, $rowResults["valuePrimary"]) . "</span>" ;
 								}
 							}
 						print "</td>" ;
@@ -440,7 +442,7 @@ function externalAssessmentDetails($guid, $gibbonPersonID, $connection2, $gibbon
 								}
 								
 								if ($av==FALSE) {
-									print "<i>" . _('Insufficient data') . "</i>" ;
+									print "<i>" . __($guid, 'Insufficient data') . "</i>" ;
 								}
 								else {
 									print "<span title='" . $rowResults["usagePrimary"] . "'>" . $av . "</span>" ;

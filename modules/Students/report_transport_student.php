@@ -25,17 +25,17 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Students/report_transport_student.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Student Transport') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Student Transport') . "</div>" ;
 	print "</div>" ;
 	
 	print "<div class='linkTop'>" ;
-	print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/report_transport_studentExport.php?address=" . $_GET["q"] . "'><img title='" . _('Export to Excel') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/download.png'/></a>" ;
+	print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/report_transport_studentExport.php?address=" . $_GET["q"] . "'><img title='" . __($guid, 'Export to Excel') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/download.png'/></a>" ;
 	print "</div>" ;
 	
 	try {
@@ -51,19 +51,19 @@ else {
 	print "<table cellspacing='0' style='width: 100%'>" ;
 		print "<tr class='head'>" ;
 			print "<th>" ;
-				print _("Transport") ;
+				print __($guid, "Transport") ;
 			print "</th>" ;
 			print "<th>" ;
-				print _("Student") ;
+				print __($guid, "Student") ;
 			print "</th>" ;
 			print "<th>" ;
-				print _("Address") ;
+				print __($guid, "Address") ;
 			print "</th>" ;
 			print "<th>" ;
-				print _("Parents") ;
+				print __($guid, "Parents") ;
 			print "</th>" ;
 			print "<th>" ;
-				print _("Roll Group") ;
+				print __($guid, "Roll Group") ;
 			print "</th>" ;
 		print "</tr>" ;
 		
@@ -168,7 +168,7 @@ else {
 		if ($count==0) {
 			print "<tr class=$rowNum>" ;
 				print "<td colspan=2>" ;
-					print _("There are no records to display.") ;
+					print __($guid, "There are no records to display.") ;
 				print "</td>" ;
 			print "</tr>" ;
 		}

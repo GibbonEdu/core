@@ -25,20 +25,20 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Planner/report_parentWeeklyEmailSummaryConfirmation.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Parent Weekly Email Summary') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Parent Weekly Email Summary') . "</div>" ;
 	print "</div>" ;
 	print "<p>" ;
-	print _("This report shows responses to the weekly summary email, organised by calendar week and role group.") ;
+	print __($guid, "This report shows responses to the weekly summary email, organised by calendar week and role group.") ;
 	print "</p>" ;
 	
 	print "<h2>" ;
-	print _("Choose Roll Group & Week") ;
+	print __($guid, "Choose Roll Group & Week") ;
 	print "</h2>" ;
 	
 	$gibbonRollGroupID=NULL ;
@@ -55,7 +55,7 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td style='width: 275px'> 
-					<b><?php print _('Roll Group') ?> *</b><br/>
+					<b><?php print __($guid, 'Roll Group') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select style="width: 302px" name="gibbonRollGroupID">
@@ -82,7 +82,7 @@ else {
 			</tr>
 			<tr>
 				<td style='width: 275px'> 
-					<b><?php print _('Calendar Week') ?> *</b><br/>
+					<b><?php print __($guid, 'Calendar Week') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select style="width: 302px" name="weekOfYear">
@@ -103,7 +103,7 @@ else {
 			<tr>
 				<td colspan=2 class="right">
 					<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/report_parentWeeklyEmailSummaryConfirmation.php">
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
@@ -112,7 +112,7 @@ else {
 	
 	if ($gibbonRollGroupID!="") {
 		print "<h2>" ;
-		print _("Report Data") ;
+		print __($guid, "Report Data") ;
 		print "</h2>" ;
 		
 		try {
@@ -128,16 +128,16 @@ else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print _("Student") ;
+					print __($guid, "Student") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Parent") ;
+					print __($guid, "Parent") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Sent") ;
+					print __($guid, "Sent") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Confirmed") ;
+					print __($guid, "Confirmed") ;
 				print "</th>" ;
 			print "</tr>" ;
 			
@@ -173,24 +173,24 @@ else {
 
 						if ($resultData->rowCount()==1) {
 							$rowData=$resultData->fetch() ;
-							print "<img title='" . _('Sent') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
+							print "<img title='" . __($guid, 'Sent') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
 							
 						}
 						else {
 							$rowData=NULL ;
-							print "<img title='" . _('Not Sent') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/> " ;
+							print "<img title='" . __($guid, 'Not Sent') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/> " ;
 						}
 					print "</td>" ;
 					print "<td style='width:15%'>" ;
 						if (is_null($rowData)) {
-							print _("NA") ;
+							print __($guid, "NA") ;
 						}
 						else {
 							if ($rowData["confirmed"]=="Y") {
-								print "<img title='" . _('Confirmed') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
+								print "<img title='" . __($guid, 'Confirmed') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
 							}
 							else {
-								print "<img title='" . _('Not Confirmed') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/> " ;
+								print "<img title='" . __($guid, 'Not Confirmed') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/> " ;
 							}
 						}
 					print "</td>" ;
@@ -199,7 +199,7 @@ else {
 			if ($count==0) {
 				print "<tr class=$rowNum>" ;
 					print "<td colspan=4>" ;
-						print _("There are no records to display.") ;
+						print __($guid, "There are no records to display.") ;
 					print "</td>" ;
 				print "</tr>" ;
 			}

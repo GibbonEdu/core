@@ -76,7 +76,7 @@ else {
 				//Fail 2
 				$URL.="&updateReturn=fail2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}			
 			
 			//Get next autoincrement for unit
@@ -88,7 +88,7 @@ else {
 				//Fail 2
 				$URL.="&updateReturn=fail2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}			
 			
 			$rowAI=$resultAI->fetch();
@@ -119,7 +119,7 @@ else {
 					//Fail 2
 					$URL.="&updateReturn=fail2" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 				
 				if ($result->rowCount()!=1) {
@@ -134,8 +134,8 @@ else {
 						$name.=" (Copy)" ;
 					}
 					try {
-						$data=array("gibbonCourseID"=>$gibbonCourseIDTarget, "name"=>$name, "description"=>$row["description"] ,"attachment"=>$row["attachment"] ,"details"=>$row["details"], "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"] ,"gibbonPersonIDLastEdit"=>$_SESSION[$guid]["gibbonPersonID"]); 
-						$sql="INSERT INTO gibbonUnit SET gibbonCourseID=:gibbonCourseID, name=:name, description=:description, attachment=:attachment, details=:details ,gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit" ;
+						$data=array("gibbonCourseID"=>$gibbonCourseIDTarget, "name"=>$name, "description"=>$row["description"], "ordering"=>$row["ordering"] ,"attachment"=>$row["attachment"] ,"details"=>$row["details"], "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"] ,"gibbonPersonIDLastEdit"=>$_SESSION[$guid]["gibbonPersonID"]); 
+						$sql="INSERT INTO gibbonUnit SET gibbonCourseID=:gibbonCourseID, name=:name, description=:description, ordering=:ordering, attachment=:attachment, details=:details ,gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit" ;
 						$result=$connection2->prepare($sql);
 						$result->execute($data);
 					}
@@ -143,7 +143,7 @@ else {
 						//Fail 2
 						$URL.="&updateReturn=fail2" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 					
 					//Copy Outcomes

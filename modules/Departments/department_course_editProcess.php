@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Departments/department_cou
 else {
 	if ($gibbonDepartmentID=="") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -101,7 +101,7 @@ else {
 						//Fail 2
 						$URL.="&updateReturn=fail2" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 
 					//Success 0

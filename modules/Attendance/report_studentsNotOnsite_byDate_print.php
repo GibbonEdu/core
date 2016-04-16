@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Attendance/report_studentsNotOnsite_byDate_print.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -38,7 +38,7 @@ else {
 	
 	//Proceed!
 	print "<h2>" ;
-	print _("Students Not Onsite") . ", " . dateConvertBack($guid, $currentDate) ;
+	print __($guid, "Students Not Onsite") . ", " . dateConvertBack($guid, $currentDate) ;
 	print "</h2>" ;
 	
 	
@@ -55,7 +55,7 @@ else {
 	
 	if ($result->rowCount()<1) {
 		print "<div class='error'>" ;
-			print _("There are no records to display.") ;
+			print __($guid, "There are no records to display.") ;
 		print "</div>" ;
 	}
 	else {
@@ -82,12 +82,12 @@ else {
 
 		if ($result->rowCount()<1) {
 			print "<div class='error'>" ;
-				print _("There are no records to display.") ;
+				print __($guid, "There are no records to display.") ;
 			print "</div>" ;
 		}
 		else {
 			print "<div class='linkTop'>" ;
-			print "<a href='javascript:window.print()'>" .  _('Print') . "<img style='margin-left: 5px' title='" . _('Print') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
+			print "<a href='javascript:window.print()'>" .  __($guid, 'Print') . "<img style='margin-left: 5px' title='" . __($guid, 'Print') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
 			print "</div>" ;
 		
 			$lastPerson="" ;
@@ -95,19 +95,19 @@ else {
 			print "<table class='mini' cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
 					print "<th>" ;
-						print _("Roll Group") ;
+						print __($guid, "Roll Group") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Name") ;
+						print __($guid, "Name") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Status") ;
+						print __($guid, "Status") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Reason") ;
+						print __($guid, "Reason") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Comment") ;
+						print __($guid, "Comment") ;
 					print "</th>" ;
 				print "</tr>" ;
 				
@@ -136,7 +136,7 @@ else {
 									print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 								}
 								if ($resultRollGroup->rowCount()<1) {
-									print "<i>" . _('Unknown') . "</i>" ;
+									print "<i>" . __($guid, 'Unknown') . "</i>" ;
 								}
 								else {
 									$rowRollGroup=$resultRollGroup->fetch() ;
@@ -180,7 +180,7 @@ else {
 				if ($count==0) {
 					print "<tr class=$rowNum>" ;
 						print "<td colspan=5>" ;
-							print _("All students are present.") ;
+							print __($guid, "All students are present.") ;
 						print "</td>" ;
 					print "</tr>" ;
 				}

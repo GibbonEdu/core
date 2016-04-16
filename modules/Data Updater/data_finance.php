@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Data Updater/data_finance.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -33,23 +33,23 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print _("The highest grouped action cannot be determined.") ;
+		print __($guid, "The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
 		//Proceed!
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Update Finance Data') . "</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Update Finance Data') . "</div>" ;
 		print "</div>" ;
 	
 		if ($highestAction=="Update Finance Data_any") {
 			print "<p>" ;
-			print _("This page allows a user to request selected finance data updates for any user. If a user does not appear in the list, please visit the Manage Invoicees page to create any missing students.") ;
+			print __($guid, "This page allows a user to request selected finance data updates for any user. If a user does not appear in the list, please visit the Manage Invoicees page to create any missing students.") ;
 			print "</p>" ;
 		}
 		else {
 			print "<p>" ;
-			print sprintf(_('This page allows any adult with data access permission to request selected finance data updates for any children in their family. If any of your children do not appear in this list, please contact %1$s.'), "<a href='mailto:" . $_SESSION[$guid]["organisationAdministratorEmail"] . "'>" . $_SESSION[$guid]["organisationAdministratorName"] . "</a>") ;
+			print sprintf(__($guid, 'This page allows any adult with data access permission to request selected finance data updates for any children in their family. If any of your children do not appear in this list, please contact %1$s.'), "<a href='mailto:" . $_SESSION[$guid]["organisationAdministratorEmail"] . "'>" . $_SESSION[$guid]["organisationAdministratorName"] . "</a>") ;
 			print "</p>" ;
 		}
 		
@@ -58,30 +58,30 @@ else {
 		$class="error" ;
 		if (!($updateReturn=="")) {
 			if ($updateReturn=="fail0") {
-				$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+				$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 			}
 			else if ($updateReturn=="fail1") {
-				$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+				$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($updateReturn=="fail2") {
-				$updateReturnMessage=_("Your request failed due to a database error.") ;	
+				$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 			}
 			else if ($updateReturn=="fail3") {
-				$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+				$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($updateReturn=="fail4") {
-				$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+				$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($updateReturn=="fail5") {
-				$updateReturnMessage=_("Your request was successful, but some data was not properly saved. An administrator will process your request as soon as possible. <u>You will not see the updated data in the system until it has been processed and approved.</u>") ; 
+				$updateReturnMessage=__($guid, "Your request was successful, but some data was not properly saved. An administrator will process your request as soon as possible. <u>You will not see the updated data in the system until it has been processed and approved.</u>") ; 
 				if ($_SESSION[$guid]["organisationDBAEmail"]!="" AND $_SESSION[$guid]["organisationDBAName"]!="") {
-					$updateReturnMessage.=" " . sprintf(_('Please contact %1$s if you have any questions.'), "<a href='mailto:" . $_SESSION[$guid]["organisationDBAEmail"] . "'>" . $_SESSION[$guid]["organisationDBAName"] . "</a>") ;	
+					$updateReturnMessage.=" " . sprintf(__($guid, 'Please contact %1$s if you have any questions.'), "<a href='mailto:" . $_SESSION[$guid]["organisationDBAEmail"] . "'>" . $_SESSION[$guid]["organisationDBAName"] . "</a>") ;	
 				}
 			}
 			else if ($updateReturn=="success0") {
-				$updateReturnMessage=_("Your request was completed successfully. An administrator will process your request as soon as possible. You will not see the updated data in the system until it has been processed and approved.") ; 
+				$updateReturnMessage=__($guid, "Your request was completed successfully. An administrator will process your request as soon as possible. You will not see the updated data in the system until it has been processed and approved.") ; 
 				if ($_SESSION[$guid]["organisationDBAEmail"]!="" AND $_SESSION[$guid]["organisationDBAName"]!="") {
-					$updateReturnMessage.=" " . sprintf(_('Please contact %1$s if you have any questions.'), "<a href='mailto:" . $_SESSION[$guid]["organisationDBAEmail"] . "'>" . $_SESSION[$guid]["organisationDBAName"] . "</a>") ;	
+					$updateReturnMessage.=" " . sprintf(__($guid, 'Please contact %1$s if you have any questions.'), "<a href='mailto:" . $_SESSION[$guid]["organisationDBAEmail"] . "'>" . $_SESSION[$guid]["organisationDBAName"] . "</a>") ;	
 				}
 				$class="success" ;
 			}
@@ -91,7 +91,7 @@ else {
 		} 
 		
 		print "<h2>" ;
-		print _("Choose User") ;
+		print __($guid, "Choose User") ;
 		print "</h2>" ;
 		
 		$gibbonFinanceInvoiceeID=NULL ;
@@ -104,8 +104,8 @@ else {
 			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 				<tr>
 					<td style='width: 275px'> 
-						<b><?php print _('Invoicee') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print _('Individual for whom invoices are generated.') ?></i></span>
+						<b><?php print __($guid, 'Invoicee') ?> *</b><br/>
+						<span style="font-size: 90%"><i><?php print __($guid, 'Individual for whom invoices are generated.') ?></i></span>
 					</td>
 					<td class="right">
 						<select style="width: 302px" name="gibbonFinanceInvoiceeID">
@@ -162,7 +162,7 @@ else {
 				<tr>
 					<td colspan=2 class="right">
 						<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/data_finance.php">
-						<input type="submit" value="<?php print _("Submit") ; ?>">
+						<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 					</td>
 				</tr>
 			</table>
@@ -171,7 +171,7 @@ else {
 		
 		if ($gibbonFinanceInvoiceeID!="") {
 			print "<h2>" ;
-			print _("Update Data") ;
+			print __($guid, "Update Data") ;
 			print "</h2>" ;
 			
 			//Check access to person
@@ -212,7 +212,7 @@ else {
 			
 			if ($checkCount<1) {
 				print "<div class='error'>" ;
-					print _("The selected record does not exist, or you do not have access to it.") ;
+					print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 				print "</div>" ;
 			}
 			else {
@@ -231,7 +231,7 @@ else {
 				
 				if ($result->rowCount()>1) {
 					print "<div class='error'>" ;
-						print _("Your request failed due to a database error.") ;
+						print __($guid, "Your request failed due to a database error.") ;
 					print "</div>" ;
 				}
 				else if ($result->rowCount()==1) {
@@ -239,7 +239,7 @@ else {
 					$proceed=FALSE;
 					if ($updateReturn=="") {
 						print "<div class='warning'>" ;
-							print _("You have already submitted a form, which is pending approval by an administrator. If you wish to make changes, please edited the data below, but remember your data will not appear in the system until it has been approved.") ;
+							print __($guid, "You have already submitted a form, which is pending approval by an administrator. If you wish to make changes, please edited the data below, but remember your data will not appear in the system until it has been approved.") ;
 						print "</div>" ;
 					}
 					$proceed=TRUE;
@@ -257,7 +257,7 @@ else {
 					}
 					if ($result->rowCount()!=1) {
 						print "<div class='error'>" ;
-							print _("The specified record cannot be found.") ;
+							print __($guid, "The specified record cannot be found.") ;
 						print "</div>" ;
 					}
 					else {
@@ -273,7 +273,7 @@ else {
 						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 							<tr class='break'>
 								<td colspan=2> 
-									<h4><?php print _('Invoice To') ?></h4>
+									<h4><?php print __($guid, 'Invoice To') ?></h4>
 								</td>
 							</tr>
 							
@@ -345,21 +345,21 @@ else {
 							</script>
 							<tr id="familyRow">
 								<td colspan=2'>
-									<p><?php print _('If you choose family, future invoices will be sent according to family contact preferences, which can be changed at a later date by contacting the school. For example you may wish both parents to receive the invoice, or only one. Alternatively, if you choose Company, you can choose for all or only some fees to be covered by the specified company.') ?></p>
+									<p><?php print __($guid, 'If you choose family, future invoices will be sent according to family contact preferences, which can be changed at a later date by contacting the school. For example you may wish both parents to receive the invoice, or only one. Alternatively, if you choose Company, you can choose for all or only some fees to be covered by the specified company.') ?></p>
 								</td>
 							</tr>
 							<tr>
 								<td style='width: 275px'> 
-									<b><?php print _('Send Invoices To') ?></b><br/>
+									<b><?php print __($guid, 'Send Invoices To') ?></b><br/>
 								</td>
 								<td class="right">
-									<input <?php if ($row["invoiceTo"]=="Family" OR $row["invoiceTo"]=="") { print "checked" ; } ?> type="radio" name="invoiceTo" value="Family" class="invoiceTo" /> <?php print _('Family') ?>
-									<input <?php if ($row["invoiceTo"]=="Company") { print "checked" ; } ?> type="radio" name="invoiceTo" value="Company" class="invoiceTo" /> <?php print _('Company') ?>
+									<input <?php if ($row["invoiceTo"]=="Family" OR $row["invoiceTo"]=="") { print "checked" ; } ?> type="radio" name="invoiceTo" value="Family" class="invoiceTo" /> <?php print __($guid, 'Family') ?>
+									<input <?php if ($row["invoiceTo"]=="Company") { print "checked" ; } ?> type="radio" name="invoiceTo" value="Company" class="invoiceTo" /> <?php print __($guid, 'Company') ?>
 								</td>
 							</tr>
 							<tr id="companyNameRow">
 								<td> 
-									<b><?php print _('Company Name') ?> *</b><br/>
+									<b><?php print __($guid, 'Company Name') ?> *</b><br/>
 								</td>
 								<td class="right">
 									<input name="companyName" id="companyName" maxlength=100 value="<?php print $row["companyName"] ?>" type="text" style="width: 300px">
@@ -371,7 +371,7 @@ else {
 							</tr>
 							<tr id="companyContactRow">
 								<td> 
-									<b><?php print _('Company Contact Person') ?> *</b><br/>
+									<b><?php print __($guid, 'Company Contact Person') ?> *</b><br/>
 								</td>
 								<td class="right">
 									<input name="companyContact" id="companyContact" maxlength=100 value="<?php print $row["companyContact"] ?>" type="text" style="width: 300px">
@@ -383,7 +383,7 @@ else {
 							</tr>
 							<tr id="companyAddressRow">
 								<td> 
-									<b><?php print _('Company Address') ?> *</b><br/>
+									<b><?php print __($guid, 'Company Address') ?> *</b><br/>
 								</td>
 								<td class="right">
 									<input name="companyAddress" id="companyAddress" maxlength=255 value="<?php print $row["companyAddress"] ?>" type="text" style="width: 300px">
@@ -395,32 +395,32 @@ else {
 							</tr>
 							<tr id="companyEmailRow">
 								<td> 
-									<b><?php print _('Company Email') ?> *</b><br/>
+									<b><?php print __($guid, 'Company Emails') ?> *</b><br/>
+									<span style="font-size: 90%"><i><?php print __($guid, 'Comma-separated list of email address.') ?></i></span>
 								</td>
 								<td class="right">
-									<input name="companyEmail" id="companyEmail" maxlength=255 value="<?php print $row["companyEmail"] ?>" type="text" style="width: 300px">
+									<input name="companyEmail" id="companyEmail" value="<?php print $row["companyEmail"] ?>" type="text" style="width: 300px">
 									<script type="text/javascript">
 										var companyEmail=new LiveValidation('companyEmail');
 										companyEmail.add(Validate.Presence);
-										companyEmail.add(Validate.Email);
 									</script>
 								</td>
 							</tr>
 							<tr id="companyCCFamilyRow">
 								<td> 
-									<b><?php print _('CC Family?') ?></b><br/>
-									<span style="font-size: 90%"><i><?php print _('Should the family be sent a copy of billing emails?') ?></i></span>
+									<b><?php print __($guid, 'CC Family?') ?></b><br/>
+									<span style="font-size: 90%"><i><?php print __($guid, 'Should the family be sent a copy of billing emails?') ?></i></span>
 								</td>
 								<td class="right">
 									<select name="companyCCFamily" id="companyCCFamily" style="width: 302px">
-										<option <?php if ($row["companyCCFamily"]=="N") { print "selected" ; } ?> value="N" /> <?php print _('No') ?>
-										<option <?php if ($row["companyCCFamily"]=="Y") { print "selected" ; } ?> value="Y" /> <?php print _('Yes') ?>
+										<option <?php if ($row["companyCCFamily"]=="N") { print "selected" ; } ?> value="N" /> <?php print __($guid, 'No') ?>
+										<option <?php if ($row["companyCCFamily"]=="Y") { print "selected" ; } ?> value="Y" /> <?php print __($guid, 'Yes') ?>
 									</select>
 								</td>
 							</tr>
 							<tr id="companyPhoneRow">
 								<td> 
-									<b><?php print _('Company Phone') ?></b><br/>
+									<b><?php print __($guid, 'Company Phone') ?></b><br/>
 								</td>
 								<td class="right">
 									<input name="companyPhone" id="companyPhone" maxlength=20 value="<?php print $row["companyPhone"] ?>" type="text" style="width: 300px">
@@ -441,18 +441,18 @@ else {
 								?>
 								<tr id="companyAllRow">
 									<td> 
-										<b><?php print _('Company All?') ?></b><br/>
-										<span style="font-size: 90%"><i><?php print _('Should all items be billed to the specified company, or just some?') ?></i></span>
+										<b><?php print __($guid, 'Company All?') ?></b><br/>
+										<span style="font-size: 90%"><i><?php print __($guid, 'Should all items be billed to the specified company, or just some?') ?></i></span>
 									</td>
 									<td class="right">
-										<input type="radio" name="companyAll" value="Y" class="companyAll" <?php if ($row["companyAll"]=="Y" OR $row["companyAll"]=="") { print "checked" ; } ?> /> <?php print _('All') ?>
-										<input type="radio" name="companyAll" value="N" class="companyAll" <?php if ($row["companyAll"]=="N") { print "checked" ; } ?> /> <?php print _('Selected') ?>
+										<input type="radio" name="companyAll" value="Y" class="companyAll" <?php if ($row["companyAll"]=="Y" OR $row["companyAll"]=="") { print "checked" ; } ?> /> <?php print __($guid, 'All') ?>
+										<input type="radio" name="companyAll" value="N" class="companyAll" <?php if ($row["companyAll"]=="N") { print "checked" ; } ?> /> <?php print __($guid, 'Selected') ?>
 									</td>
 								</tr>
 								<tr id="companyCategoriesRow">
 									<td> 
-										<b><?php print _('Company Fee Categories') ?></b><br/>
-										<span style="font-size: 90%"><i><?php print _('If the specified company is not paying all fees, which categories are they paying?') ?></i></span>
+										<b><?php print __($guid, 'Company Fee Categories') ?></b><br/>
+										<span style="font-size: 90%"><i><?php print __($guid, 'If the specified company is not paying all fees, which categories are they paying?') ?></i></span>
 									</td>
 									<td class="right">
 										<?php
@@ -467,7 +467,7 @@ else {
 										if (strpos($row["gibbonFinanceFeeCategoryIDList"], "0001")!==FALSE) {
 											$checked="checked" ;
 										}
-										print _("Other") . " <input $checked type='checkbox' name='gibbonFinanceFeeCategoryIDList[]' value='0001'/><br/>" ;
+										print __($guid, "Other") . " <input $checked type='checkbox' name='gibbonFinanceFeeCategoryIDList[]' value='0001'/><br/>" ;
 										?>
 									</td>
 								</tr>
@@ -477,7 +477,7 @@ else {
 							
 							<tr>
 								<td>
-									<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+									<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
 								</td>
 								<td class="right">
 									<?php
@@ -489,7 +489,7 @@ else {
 									}
 									?>
 									<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-									<input type="submit" value="<?php print _("Submit") ; ?>">
+									<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 								</td>
 							</tr>
 						</table>

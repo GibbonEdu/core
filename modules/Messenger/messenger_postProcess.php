@@ -124,7 +124,7 @@ else {
 				//Fail 2
 				$URL.="&addReturn=fail2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 
 			//Get next autoincrement
@@ -136,7 +136,7 @@ else {
 				//Fail 2
 				$URL.="&addReturn=fail2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 
 			$rowAI=$resultAI->fetch();
@@ -153,7 +153,7 @@ else {
 				//Fail 2
 				$URL.="&addReturn=fail2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 
 			try {
@@ -164,7 +164,7 @@ else {
 				//Fail 2
 				$URL.="&addReturn=fail2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 
 			//TARGETS
@@ -1717,7 +1717,7 @@ else {
 				natcasesort($emails) ;
 
 				//Prep message
-				$body.="<p style='font-style: italic;'>" . sprintf(_('Email sent via %1$s at %2$s.'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationName"]) ."</p>" ;
+				$body.="<p style='font-style: italic;'>" . sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationName"]) ."</p>" ;
 				$bodyPlain=preg_replace('#<br\s*/?>#i', "\n", $body) ;
 				$bodyPlain=str_replace("</p>", "\n\n", $bodyPlain) ;
 				$bodyPlain=str_replace("</div>", "\n\n", $bodyPlain) ;

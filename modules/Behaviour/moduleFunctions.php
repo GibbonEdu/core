@@ -33,20 +33,20 @@ function getBehaviourRecord($guid, $gibbonPersonID, $connection2) {
 
 	if ($resultYears->rowCount()<1) {
 		print "<div class='error'>" ;
-		print _("There are no records to display.") ;
+		print __($guid, "There are no records to display.") ;
 		print "</div>" ;
 	}
 	else {
 		print "<div class='linkTop'>" ;
 			$policyLink=getSettingByScope($connection2, "Behaviour", "policyLink") ;
 			if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_manage.php")==TRUE) {
-				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage_add.php&gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=&gibbonYearGroupID=&type='>" . _('Add') . "<img style='margin: 0 0 -4px 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage_add.php&gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=&gibbonYearGroupID=&type='>" . __($guid, 'Add') . "<img style='margin: 0 0 -4px 5px' title='" . __($guid, 'Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
 				if ($policyLink!="") {
 					print " | " ;
 				}
 			}
 			if ($policyLink!="") {
-				print "<a href='$policyLink'>" . _('View Behaviour Policy') . "</a>" ;
+				print "<a href='$policyLink'>" . __($guid, 'View Behaviour Policy') . "</a>" ;
 			}
 		print "</div>" ;
 		
@@ -75,33 +75,33 @@ function getBehaviourRecord($guid, $gibbonPersonID, $connection2) {
 			
 			if ($result->rowCount()<1) {
 				print "<div class='error'>" ;
-				print _("There are no records to display.") ;
+				print __($guid, "There are no records to display.") ;
 				print "</div>" ;
 			}
 			else {
 				print "<table cellspacing='0' style='width: 100%'>" ;
 					print "<tr class='head'>" ;
-						print "<th>" ;
-							print _("Date") ;
+						print "<th style='width: 10%'>" ;
+							print __($guid, "Date") ;
 						print "</th>" ;
-						print "<th>" ;
-							print _("Type") ;
+						print "<th style='width: 7%'>" ;
+							print __($guid, "Type") ;
 						print "</th>" ;
 						if ($enableDescriptors=="Y") {
-							print "<th>" ;
-								print _("Descriptor") ;
+							print "<th style='width: 18%'>" ;
+								print __($guid, "Descriptor") ;
 							print "</th>" ;
 						}
 						if ($enableLevels=="Y") {
-							print "<th>" ;
-								print _("Level") ;
+							print "<th style='width: 18%'>" ;
+								print __($guid, "Level") ;
 							print "</th>" ;
 						}
-						print "<th>" ;
-							print _("Teacher") ;
+						print "<th style='width: 17%'>" ;
+							print __($guid, "Teacher") ;
 						print "</th>" ;
-						print "<th>" ;
-							print _("Actions") ;
+						print "<th style='width: 10%'>" ;
+							print __($guid, "Actions") ;
 						print "</th>" ;
 					print "</tr>" ;
 					
@@ -120,8 +120,8 @@ function getBehaviourRecord($guid, $gibbonPersonID, $connection2) {
 						print "<tr class=$rowNum>" ;
 							print "<td>" ;
 								if (substr($row["timestamp"],0,10)>$row["date"]) {
-									print _("Updated:") . " " . dateConvertBack($guid, substr($row["timestamp"],0,10)) . "<br/>" ;
-									print _("Incident:") . " " . dateConvertBack($guid, $row["date"]) . "<br/>" ;
+									print __($guid, "Updated:") . " " . dateConvertBack($guid, substr($row["timestamp"],0,10)) . "<br/>" ;
+									print __($guid, "Incident:") . " " . dateConvertBack($guid, $row["date"]) . "<br/>" ;
 								}
 								else {
 									print dateConvertBack($guid, $row["date"]) . "<br/>" ;
@@ -150,10 +150,10 @@ function getBehaviourRecord($guid, $gibbonPersonID, $connection2) {
 							print "</td>" ;
 							print "<td>" ;
 								if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_manage.php", "Manage Behaviour Records_all") AND $row["gibbonSchoolYearID"]==$_SESSION[$guid]["gibbonSchoolYearID"]) {
-									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage_edit.php&gibbonBehaviourID=" . $row["gibbonBehaviourID"] . "&gibbonPersonID=" . $row["gibbonPersonID"] . "&gibbonRollGroupID=&gibbonYearGroupID=&type='><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage_edit.php&gibbonBehaviourID=" . $row["gibbonBehaviourID"] . "&gibbonPersonID=" . $row["gibbonPersonID"] . "&gibbonRollGroupID=&gibbonYearGroupID=&type='><img title='" . __($guid, 'Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 								}
 								else if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_manage.php", "Manage Behaviour Records_my") AND $row["gibbonSchoolYearID"]==$_SESSION[$guid]["gibbonSchoolYearID"]  AND $row["gibbonPersonIDCreator"]==$_SESSION[$guid]["gibbonPersonID"]) {
-									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage_edit.php&gibbonBehaviourID=" . $row["gibbonBehaviourID"] . "&gibbonPersonID=" . $row["gibbonPersonID"] . "&gibbonRollGroupID=&gibbonYearGroupID=&type='><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage_edit.php&gibbonBehaviourID=" . $row["gibbonBehaviourID"] . "&gibbonPersonID=" . $row["gibbonPersonID"] . "&gibbonRollGroupID=&gibbonYearGroupID=&type='><img title='" . __($guid, 'Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 								}
 								print "<script type='text/javascript'>" ;	
 									print "$(document).ready(function(){" ;
@@ -165,7 +165,7 @@ function getBehaviourRecord($guid, $gibbonPersonID, $connection2) {
 									print "});" ;
 								print "</script>" ;
 								if ($row["comment"]!="" OR $row["followup"]!="") {
-									print "<a title='" . _('View Description') . "' class='show_hide-$count-$yearCount' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='" . _('Show Comment') . "' onclick='return false;' /></a>" ;
+									print "<a title='" . __($guid, 'View Description') . "' class='show_hide-$count-$yearCount' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='" . __($guid, 'Show Comment') . "' onclick='return false;' /></a>" ;
 								}
 							print "</td>" ;
 						print "</tr>" ;
@@ -179,11 +179,11 @@ function getBehaviourRecord($guid, $gibbonPersonID, $connection2) {
 							print "<tr class='comment-$count-$yearCount' id='comment-$count-$yearCount'>" ;
 								print "<td style='$bg' colspan=6>" ;
 									if ($row["comment"]!="") {
-										print "<b>" . _('Incident') . "</b><br/>" ;
+										print "<b>" . __($guid, 'Incident') . "</b><br/>" ;
 										print nl2brr($row["comment"]) . "<br/><br/>" ;
 									}
 									if ($row["followup"]!="") {
-										print "<b>" . _('Follow Up') . "</b><br/>" ;
+										print "<b>" . __($guid, 'Follow Up') . "</b><br/>" ;
 										print nl2brr($row["followup"]) . "<br/><br/>" ;
 									}
 								print "</td>" ;

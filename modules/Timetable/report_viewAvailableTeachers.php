@@ -25,16 +25,16 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Timetable/report_viewAvailableTeachers.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('View Available Teachers') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'View Available Teachers') . "</div>" ;
 	print "</div>" ;
 	
 	print "<h2>" ;
-	print _("Choose Options") ;
+	print __($guid, "Choose Options") ;
 	print "</h2>" ;
 	
 	$gibbonTTID=NULL ;
@@ -55,11 +55,11 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td style='width: 275px'> 
-					<b><?php print _('Timetable') ?></b><br/>
+					<b><?php print __($guid, 'Timetable') ?></b><br/>
 				</td>
 				<td class="right">
 					<select name="gibbonTTID" id="gibbonTTID" style="width: 302px">
-						<option value='Please select...'><?php print _('Please select...') ?></option>
+						<option value='Please select...'><?php print __($guid, 'Please select...') ?></option>
 						<?php
 						try {
 							$dataSelect=array(); 
@@ -70,6 +70,9 @@ else {
 						catch(PDOException $e) { }
 					
 						while ($rowSelect=$resultSelect->fetch()) {
+							if ($resultSelect->rowCount()==1) {
+								$gibbonTTID=$rowSelect["gibbonTTID"] ;
+							}
 							$selected="" ;
 							if ($gibbonTTID==$rowSelect["gibbonTTID"]) {
 								$selected="selected" ;
@@ -80,13 +83,13 @@ else {
 					</select>
 					<script type="text/javascript">
 						var gibbonTTID=new LiveValidation('gibbonTTID');
-						gibbonTTID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+						gibbonTTID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 					</script>	
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Date') ?></b><br/>
+					<b><?php print __($guid, 'Date') ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="ttDate" id="ttDate" maxlength=10 value="<?php print $ttDate ?>" type="text" style="width: 300px">
@@ -106,7 +109,7 @@ else {
 			<tr>
 				<td colspan=2 class="right">
 					<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/report_viewAvailableTeachers.php">
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
@@ -115,8 +118,8 @@ else {
 	
 	if ($gibbonTTID!="") {
 		print "<h2>" ;
-		print _("Report Data") ;
-		print "<h2>" ;
+		print __($guid, "Report Data") ;
+		print "</h2>" ;
 		
 		try {
 			$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonTTID"=>$gibbonTTID); 
@@ -130,110 +133,74 @@ else {
 
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-			print _("The selected record does not exist, or you do not have access to it.") ;
+			print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 			print "</div>" ;
 		}
 		else {
 			$row=$result->fetch() ;
 			$startDayStamp=strtotime(dateConvert($guid, $ttDate)) ;
 						
-			//Count back to first Monday before first day
-			while (date("D",$startDayStamp)!="Mon") {
-				$startDayStamp=$startDayStamp-86400 ;
-			}
-				
 			//Check which days are school days
 			$daysInWeek=0;
 			$days=array() ;
 			$timeStart="" ;
 			$timeEnd="" ;
-			$days["Mon"]="N" ;
-			$days["Tue"]="N" ;
-			$days["Wed"]="N" ;
-			$days["Thu"]="N" ;
-			$days["Fri"]="N" ;
-			$days["Sat"]="N" ;
-			$days["Sun"]="N" ;
 			try {
-				$dataDays=array(); 
-				$sqlDays="SELECT * FROM gibbonDaysOfWeek WHERE schoolDay='Y'" ;
+				$dataDays=array();
+				$sqlDays="SELECT * FROM gibbonDaysOfWeek WHERE schoolDay='Y' ORDER BY sequenceNumber" ;
 				$resultDays=$connection2->prepare($sqlDays);
 				$resultDays->execute($dataDays);
 			}
-			catch(PDOException $e) { 
-				print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+			catch(PDOException $e) {
+				print "<div class='error'>" . $e->getMessage() . "</div>" ;
 			}
-			while ($rowDays=$resultDays->fetch()) {
-				//Max diff time for week based on days of week
-				if ($timeStart=="") {
-					$timeStart=$rowDays["schoolStart"] ;
+			$days=$resultDays->fetchAll() ;
+			$daysInWeek=$resultDays->rowCount() ;
+			foreach ($days AS $day) {
+				if ($timeStart=="" OR $timeEnd=="") {
+					$timeStart=$day["schoolStart"] ;
+					$timeEnd=$day["schoolEnd"] ;
 				}
-				if ($rowDays["schoolStart"]<$timeStart) {
-					$timeStart=$rowDays["schoolStart"] ;
-				}
-				if ($timeEnd=="") {
-					$timeEnd=$rowDays["schoolEnd"] ;
-				}
-				if ($rowDays["schoolEnd"]>$timeEnd) {
-					$timeEnd=$rowDays["schoolEnd"] ;
-				}
-		
-				//See which days are school days
-				if ($rowDays["nameShort"]=="Mon") {
-					$days["Mon"]="Y" ;
-					$daysInWeek++ ;
-				}
-				else if ($rowDays["nameShort"]=="Tue") {
-					$days["Tue"]="Y" ;
-					$daysInWeek++ ;
-				}
-				else if ($rowDays["nameShort"]=="Wed") {
-					$days["Wed"]="Y" ;
-					$daysInWeek++ ;
-				}
-				else if ($rowDays["nameShort"]=="Thu") {
-					$days["Thu"]="Y" ;
-					$daysInWeek++ ;
-				}
-				else if ($rowDays["nameShort"]=="Fri") {
-					$days["Fri"]="Y" ;
-					$daysInWeek++ ;
-				}
-				else if ($rowDays["nameShort"]=="Sat") {
-					$days["Sat"]="Y" ;
-					$daysInWeek++ ;
-				}
-				else if ($rowDays["nameShort"]=="Sun") {
-					$days["Sun"]="Y" ;
-					$daysInWeek++ ;
+				else {
+					if ($day["schoolStart"]<$timeStart) {
+						$timeStart=$day["schoolStart"] ;
+					}
+					if ($day["schoolEnd"]>$timeEnd) {
+						$timeEnd=$day["schoolEnd"] ;
+					}
 				}
 			}
-	
+			
+			//Count back to first dayOfWeek before specified calendar date
+			while (date("D",$startDayStamp)!=$days[0]["nameShort"]) {
+				$startDayStamp=$startDayStamp-86400 ;
+			}
+			
 			//Count forward to the end of the week
-			$endDayStamp=$startDayStamp+(86400*$daysInWeek) ;
+			$endDayStamp=$startDayStamp+(86400*($daysInWeek-1)) ;
 	
 			$schoolCalendarAlpha=0.85 ;
 			$ttAlpha=1.0 ;
 	
 			//Max diff time for week based on timetables
 			try {
-				$dataDiff=array("date1"=>date("Y-m-d", ($startDayStamp+(86400*0))), "date2"=>date("Y-m-d", ($endDayStamp+(86400*1))), "gibbonTTID"=>$row["gibbonTTID"]); 
+				$dataDiff=array("date1"=>date("Y-m-d", ($startDayStamp+(86400*0))), "date2"=>date("Y-m-d", ($endDayStamp+(86400*1))), "gibbonTTID"=>$row["gibbonTTID"]);
 				$sqlDiff="SELECT DISTINCT gibbonTTColumn.gibbonTTColumnID FROM gibbonTTDay JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) JOIN gibbonTTColumn ON (gibbonTTDay.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) WHERE (date>=:date1 AND date<=:date2) AND gibbonTTID=:gibbonTTID" ;
 				$resultDiff=$connection2->prepare($sqlDiff);
 				$resultDiff->execute($dataDiff);
 			}
-			catch(PDOException $e) { 
-				print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+			catch(PDOException $e) {
+				print "<div class='error'>" . $e->getMessage() . "</div>" ;
 			}
 			while ($rowDiff=$resultDiff->fetch()) {
 				try {
-					$dataDiffDay=array("gibbonTTColumnID"=>$rowDiff["gibbonTTColumnID"]); 
+					$dataDiffDay=array("gibbonTTColumnID"=>$rowDiff["gibbonTTColumnID"]);
 					$sqlDiffDay="SELECT * FROM gibbonTTColumnRow WHERE gibbonTTColumnID=:gibbonTTColumnID ORDER BY timeStart" ;
 					$resultDiffDay=$connection2->prepare($sqlDiffDay);
 					$resultDiffDay->execute($dataDiffDay);
 				}
-				catch(PDOException $e) { 
-					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				catch(PDOException $e) {
+					print "<div class='error'>" . $e->getMessage() . "</div>" ;
 				}
 				while ($rowDiffDay=$resultDiffDay->fetch()) {
 					if ($rowDiffDay["timeStart"]<$timeStart) {
@@ -257,54 +224,24 @@ else {
 						//Calculate week number
 						$week=getWeekNumber ($startDayStamp, $connection2, $guid) ;
 						if ($week!=false) {
-							print _("Week") . " " . $week ."<br/>" ;
+							print __($guid, "Week") . " " . $week ."<br/>" ;
 						}
-						print "<span style='font-weight: normal; font-style: italic;'>" . _('Time') . "<span>" ;
+						print "<span style='font-weight: normal; font-style: italic;'>" . __($guid, 'Time') . "<span>" ;
 					print "</th>" ;
-					if ($days["Mon"]=="Y") {
-						print "<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-							print _("Mon") . "<br/>" ;
-							print "<span style='font-size: 80%; font-style: italic'>". date($_SESSION[$guid]["i18n"]["dateFormatPHP"], ($startDayStamp+(86400*0))) . "</span><br/>" ;
-						print "</th>" ;
-					}
-					if ($days["Tue"]=="Y") {	
-						print "<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-							print _("Tue") . "<br/>" ;
-							print "<span style='font-size: 80%; font-style: italic'>". date($_SESSION[$guid]["i18n"]["dateFormatPHP"], ($startDayStamp+(86400*1))) . "</span><br/>" ;
-						print "</th>" ;
-					}
-					if ($days["Wed"]=="Y") {
-						print "<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-							print _("Wed") . "<br/>" ;
-							print "<span style='font-size: 80%; font-style: italic'>". date($_SESSION[$guid]["i18n"]["dateFormatPHP"], ($startDayStamp+(86400*2))) . "</span><br/>" ;
-						print "</th>" ;
-					}
-					if ($days["Thu"]=="Y") {
-						print "<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-							print _("Thu") . "<br/>" ;
-							print "<span style='font-size: 80%; font-style: italic'>". date($_SESSION[$guid]["i18n"]["dateFormatPHP"], ($startDayStamp+(86400*3))) . "</span><br/>" ;
-						print "</th>" ;
-					}
-					if ($days["Fri"]=="Y") {
-						print "<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-							print _("Fri") . "<br/>" ;
-							print "<span style='font-size: 80%; font-style: italic'>". date($_SESSION[$guid]["i18n"]["dateFormatPHP"], ($startDayStamp+(86400*4))) . "</span><br/>" ;
-						print "</th>" ;
-					}
-					if ($days["Sat"]=="Y") {
-						print "<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-							print _("Sat") . "<br/>" ;
-							print "<span style='font-size: 80%; font-style: italic'>". date($_SESSION[$guid]["i18n"]["dateFormatPHP"], ($startDayStamp+(86400*5))) . "</span><br/>" ;
-						print "</th>" ;
-					}
-					if ($days["Sun"]=="Y") {
-						print "<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
-							print _("Sun") . "<br/>" ;
-							print "<span style='font-size: 80%; font-style: italic'>". date($_SESSION[$guid]["i18n"]["dateFormatPHP"], ($startDayStamp+(86400*6))) . "</span><br/>" ;
-						print "</th>" ;
+					foreach ($days AS $day) {
+						if ($day["schoolDay"]=="Y") {
+							$dateCorrection=($day["sequenceNumber"]-1) ;
+						
+							print "<th style='vertical-align: top; text-align: center; width: " . (550/$daysInWeek) . "px'>" ;
+								print __($guid, $day["nameShort"]) . "<br/>" ;
+								print "<span style='font-size: 80%; font-style: italic'>". date($_SESSION[$guid]["i18n"]["dateFormatPHP"], ($startDayStamp+(86400*$dateCorrection))) . "</span><br/>" ;
+							print "</th>" ;
+						}
 					}
 				print "</tr>" ;
-		
+					
+					
+					
 				print "<tr style='height:" . (ceil($diffTime/60)+14) . "px'>" ;
 					print "<td style='height: 300px; width: 75px; text-align: center; vertical-align: top'>" ;
 						print "<div style='position: relative; width: 71px'>" ;
@@ -315,7 +252,7 @@ else {
 							print "</div>" ;
 							$time=date("H:i:s", strtotime($time)+3600) ;
 							$spinControl=0 ;
-							while ($time<=$timeEnd AND $spinControl<@(23-date("H",$timeStart))) {
+							while ($time<=$timeEnd AND $spinControl<(23-substr($timeStart,0,5))) {
 								$countTime++ ;
 								print "<div style='position: absolute; top:" . (($countTime*60)-5) . "px ; width: 71px ; border: none; height: 60px; margin: 0px; padding: 0px; font-size: 92%'>" ;
 									print substr($time,0,5) . "<br/>" ;
@@ -356,19 +293,11 @@ else {
 					}
 			
 					//Run through days of the week
-					$dayOfWeek="" ;
-					for ($d=0; $d<7; $d++) {
-						$day="" ;
-						if ($d==0) { $dayOfWeek="Mon" ; }
-						else if ($d==1) { $dayOfWeek="Tue" ; }
-						else if ($d==2) { $dayOfWeek="Wed" ; }
-						else if ($d==3) { $dayOfWeek="Thu" ; }
-						else if ($d==4) { $dayOfWeek="Fri" ; }
-						else if ($d==5) { $dayOfWeek="Sat" ; }
-						else if ($d==6) { $dayOfWeek="Sun" ; }
-				
-				
-						if ($days[$dayOfWeek]=="Y") {
+					foreach ($days AS $day) {
+						$dayOut="" ;
+						if ($day["schoolDay"]=="Y") {
+							$dateCorrection=($day["sequenceNumber"]-1) ;
+							
 							//Check to see if day is term time
 							$isDayInTerm=FALSE ;
 							try {
@@ -399,15 +328,15 @@ else {
 								}
 								if ($resultClosure->rowCount()==1) {
 									$rowClosure=$resultClosure->fetch() ;
-									$day=$day . "<td style='text-align: center; vertical-align: top; font-size: 11px'>" ;
-										$day=$day . "<div style='position: relative'>" ;
-											$day=$day . "<div style='z-index: $zCount; position: absolute; top: 0; width: $width ; border: 1px solid rgba(136,136,136,$ttAlpha); height: " . ceil($diffTime/60) . "px; margin: 0px; padding: 0px; background-color: rgba(255,196,202,$ttAlpha)'>" ;
-												$day=$day . "<div style='position: relative; top: 50%'>" ;
-													$day=$day . "<span style='color: rgba(255,0,0,$ttAlpha);'>" . $rowClosure["name"] . "</span>" ;
-												$day=$day . "</div>" ;
-											$day=$day . "</div>" ;
-										$day=$day . "</div>" ;
-									$day=$day . "</td>" ;
+									$dayOut.="<td style='text-align: center; vertical-align: top; font-size: 11px'>" ;
+										$dayOut.="<div style='position: relative'>" ;
+											$dayOut.="<div style='z-index: $zCount; position: absolute; top: 0; width: $width ; border: 1px solid rgba(136,136,136,$ttAlpha); height: " . ceil($diffTime/60) . "px; margin: 0px; padding: 0px; background-color: rgba(255,196,202,$ttAlpha)'>" ;
+												$dayOut.="<div style='position: relative; top: 50%'>" ;
+													$dayOut.="<span style='color: rgba(255,0,0,$ttAlpha);'>" . $rowClosure["name"] . "</span>" ;
+												$dayOut.="</div>" ;
+											$dayOut.="</div>" ;
+										$dayOut.="</div>" ;
+									$dayOut.="</td>" ;
 								}
 								else {
 									$schoolCalendarAlpha=0.85 ;
@@ -449,7 +378,7 @@ else {
 
 									$startPad=strtotime($dayTimeStart)-strtotime($timeStart);
 
-									$day=$day . "<td style='text-align: center; vertical-align: top; font-size: 11px'>" ;
+									$dayOut.="<td style='text-align: center; vertical-align: top; font-size: 11px'>" ;
 										try {
 											$dataDay=array("gibbonTTID"=>$gibbonTTID, "date"=>date("Y-m-d", ($startDayStamp+(86400*$count)))); 
 											$sqlDay="SELECT gibbonTTDay.gibbonTTDayID FROM gibbonTTDayDate JOIN gibbonTTDay ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) WHERE gibbonTTID=:gibbonTTID AND date=:date" ;
@@ -457,13 +386,13 @@ else {
 											$resultDay->execute($dataDay);
 										}
 										catch(PDOException $e) { 
-											$day=$day . "<div class='error'>" . $e->getMessage() . "</div>" ; 
+											$dayOut.="<div class='error'>" . $e->getMessage() . "</div>" ; 
 										}
 	
 										if ($resultDay->rowCount()==1) {
 											$rowDay=$resultDay->fetch() ;
 											$zCount=0 ;
-											$day=$day . "<div style='position: relative;'>" ;
+											$dayOut.="<div style='position: relative;'>" ;
 		
 											//Draw outline of the day
 											try {
@@ -473,7 +402,7 @@ else {
 												$resultPeriods->execute($dataPeriods);
 											}
 											catch(PDOException $e) { 
-												$day=$day . "<div class='error'>" . $e->getMessage() . "</div>" ; 
+												$dayOut.="<div class='error'>" . $e->getMessage() . "</div>" ; 
 											}
 											while ($rowPeriods=$resultPeriods->fetch()) {
 												$isSlotInTime=FALSE ;
@@ -508,9 +437,9 @@ else {
 													if ($rowPeriods["type"]=="Lesson") {
 														$style="" ;
 													}
-													$day=$day . "<div style='color: rgba(0,0,0,$ttAlpha); z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid rgba(136,136,136, $ttAlpha); height: $height; margin: 0px; padding: 0px; background-color: $bg; color: rgba(136,136,136, $ttAlpha) $style'>" ;
+													$dayOut.="<div style='color: rgba(0,0,0,$ttAlpha); z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid rgba(136,136,136, $ttAlpha); height: $height; margin: 0px; padding: 0px; background-color: $bg; color: rgba(136,136,136, $ttAlpha) $style'>" ;
 													if ($height>15) {
-														$day=$day . $rowPeriods["name"] . "<br/>" ;
+														$dayOut.=$rowPeriods["name"] . "<br/>" ;
 													}
 													if ($rowPeriods["type"]=="Lesson") {
 														$vacancies="" ;
@@ -538,42 +467,42 @@ else {
 															}
 														}
 														$vacancies=substr($vacancies,0,-2) ;
-														$day=$day . "<div title='" . htmlPrep($vacancies) . "' style='color: black; font-weight: normal;line-height: 0.9'>" ;
+														$dayOut.="<div title='" . htmlPrep($vacancies) . "' style='color: black; font-weight: normal;line-height: 0.9'>" ;
 															if (strlen($vacancies)<=50) {
-																$day.=$vacancies ;
+																$dayOut.=$vacancies ;
 															}
 															else {
-																$day.=substr($vacancies,0,50) . "..." ;
+																$dayOut.=substr($vacancies,0,50) . "..." ;
 															}
 															
-														$day=$day . "</div>" ;
+														$dayOut.="</div>" ;
 													}
-													$day=$day . "</div>" ;
+													$dayOut.="</div>" ;
 													$zCount++ ;
 												}
 											}
 										}
-									$day=$day . "</td>" ;
+									$dayOut.="</td>" ;
 
 								}
 							}
 							else {
-								$day=$day . "<td style='text-align: center; vertical-align: top; font-size: 11px'>" ;
-									$day=$day . "<div style='position: relative'>" ;
-										$day=$day . "<div style='z-index: $zCount; position: absolute; top: 0; width: $width ; border: 1px solid rgba(136,136,136,$ttAlpha); height: " . ceil($diffTime/60) . "px; margin: 0px; padding: 0px; background-color: rgba(255,196,202,$ttAlpha)'>" ;
-											$day=$day . "<div style='position: relative; top: 50%'>" ;
-												$day=$day . "<span style='color: rgba(255,0,0,$ttAlpha);'>" . _('School Closed') . "</span>" ;
-											$day=$day . "</div>" ;
-										$day=$day . "</div>" ;
-									$day=$day . "</div>" ;
-								$day=$day . "</td>" ;
+								$dayOut.="<td style='text-align: center; vertical-align: top; font-size: 11px'>" ;
+									$dayOut.="<div style='position: relative'>" ;
+										$dayOut.="<div style='position: absolute; top: 0; width: $width ; border: 1px solid rgba(136,136,136,$ttAlpha); height: " . ceil($diffTime/60) . "px; margin: 0px; padding: 0px; background-color: rgba(255,196,202,$ttAlpha)'>" ;
+											$dayOut.="<div style='position: relative; top: 50%'>" ;
+												$dayOut.="<span style='color: rgba(255,0,0,$ttAlpha);'>" . __($guid, 'School Closed') . "</span>" ;
+											$dayOut.="</div>" ;
+										$dayOut.="</div>" ;
+									$dayOut.="</div>" ;
+								$dayOut.="</td>" ;
 							}
 					
 							if ($day=="") {
-								$day=$day . "<td style='text-align: center; vertical-align: top; font-size: 11px'></td>" ;
+								$dayOut.="<td style='text-align: center; vertical-align: top; font-size: 11px'></td>" ;
 							}
 					
-							print $day ;
+							print $dayOut ;
 							
 							$count++ ;
 						}

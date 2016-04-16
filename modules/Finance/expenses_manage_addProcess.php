@@ -101,7 +101,7 @@ else {
 					//Fail2
 					$URL.="&addReturn=fail2" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 			
 				$gibbonFinanceExpenseID=$connection2->lastInsertID() ;
@@ -117,7 +117,7 @@ else {
 					//Fail2
 					$URL.="&addReturn=fail2" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 			
 				//Add Payment log entry if needed
@@ -132,7 +132,7 @@ else {
 						//Fail2
 						$URL.="&addReturn=fail2" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 				}
 			

@@ -46,7 +46,7 @@ if (isset($_POST["comment"])) {
 }
 	
 if ($gibbonPersonID=="" OR $gibbonPlannerEntryID=="" OR ($mode!="add" AND $mode!="remove")) {
-	print _("Error") ;
+	print __($guid, "Error") ;
 }
 else {
 	//Prepare scripts abd buttons to return via AJAX

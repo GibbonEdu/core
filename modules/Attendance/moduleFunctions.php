@@ -96,7 +96,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 	
 	if ($print) {
 		print "<div class='linkTop'>" ;
-		print "<a target=_blank href='$printURL'>" .  _('Print') . "<img style='margin-left: 5px' title='" . _('Print') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
+		print "<a target=_blank href='$printURL'>" .  __($guid, 'Print') . "<img style='margin-left: 5px' title='" . __($guid, 'Print') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
 		print "</div>" ;
 	}
 	
@@ -112,7 +112,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 	
 	if ($result->rowCount()<1) {
 		$output.="<div class='error'>" ;
-			$output.=_("There are no records to display.") ;
+			$output.=__($guid, "There are no records to display.") ;
 		$output.="</div>" ;
 	}
 	else {
@@ -216,39 +216,39 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 				for ($w=0; $w<$weeks; $w++) {
 					if ($days["Mon"]=="Y") {
 						$output.="<th style='width: 14px'>" ;
-							$output.=_("Mon") ;
+							$output.=__($guid, "Mon") ;
 						$output.="</th>" ;
 					}
 					if ($days["Tue"]=="Y") {
 						$output.="<th style='width: 14px'>" ;
-							$output.=_("Tue") ;
+							$output.=__($guid, "Tue") ;
 						$output.="</th>" ;
 				
 					}
 					if ($days["Wed"]=="Y") {
 						$output.="<th style='width: 14px'>" ;
-							$output.=_("Wed") ;
+							$output.=__($guid, "Wed") ;
 						$output.="</th>" ;
 				
 					}
 					if ($days["Thu"]=="Y") {
 						$output.="<th style='width: 14px'>" ;
-							$output.=_("Thu") ;
+							$output.=__($guid, "Thu") ;
 						$output.="</th>" ;
 					}
 					if ($days["Fri"]=="Y") {
 						$output.="<th style='width: 14px'>" ;
-							$output.=_("Fri") ;
+							$output.=__($guid, "Fri") ;
 						$output.="</th>" ;
 					}
 					if ($days["Sat"]=="Y") {
 						$output.="<th style='width: 14px'>" ;
-							$output.=_("Sat") ;
+							$output.=__($guid, "Sat") ;
 						$output.="</th>" ;
 					}
 					if ($days["Sun"]=="Y") {
 						$output.="<th style='width: 15px'>" ;
-							$output.=_("Sun") ;
+							$output.=__($guid, "Sun") ;
 						$output.="</th>" ;
 					}
 				}
@@ -280,7 +280,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 					else if ($dateEnd!="" AND date("Y-m-d", $i)>$dateEnd) {
 						$output.="<td style='border: 1px solid #D65602; color: #D65602; background-color: #FFD2A9!important; text-align: center; font-size: 10px'>" ;
 						$output.=date($_SESSION[$guid]["i18n"]["dateFormatPHP"],$i) . "<br/>" ;
-						$output.=_("After End Date") ;
+						$output.=__($guid, "After End Date") ;
 						$output.="</td>" ;
 						$count++ ;
 					}
@@ -396,26 +396,26 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 		print "<tr>" ;
 			print "<td style='vertical-align: top; width: 410px'>" ;
 				print "<h3>" ;
-					print _("Summary") ;
+					print __($guid, "Summary") ;
 				print "</h2>" ;
 				print "<p>" ;
 					if (isset($countSchoolDays) AND isset($countPresent) AND isset($countAbsent)) {
 						if ($countSchoolDays!=($countPresent+$countAbsent)) {
-							print "<i>" . _('It appears that this student is missing attendance data for some school days:') . "</i><br/>" ;
+							print "<i>" . __($guid, 'It appears that this student is missing attendance data for some school days:') . "</i><br/>" ;
 							print "<br/>" ;
 						}
-						print "<b>" . _('Total number of school days to date:') . " $countSchoolDays</b><br/>" ;
-						print _("Total number of school days attended:") . " $countPresent<br/>" ;
-						print _("Total number of school days absent:") . " $countAbsent<br/>" ;
+						print "<b>" . __($guid, 'Total number of school days to date:') . " $countSchoolDays</b><br/>" ;
+						print __($guid, "Total number of school days attended:") . " $countPresent<br/>" ;
+						print __($guid, "Total number of school days absent:") . " $countAbsent<br/>" ;
 					 }
 					else {
-						print _("NA") ;
+						print __($guid, "NA") ;
 					}
 				print "</p>" ;
 			print "</td>" ;
 			print "<td style='vertical-align: top'>" ;
 				print "<h3>" ;
-					print _("Key") ;
+					print __($guid, "Key") ;
 				print "</h2>" ;
 				print "<p>" ;
 					print "<img style='border: 1px solid #eee' alt='Data Key' src='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Attendance/img/dataKey.png'>" ;
