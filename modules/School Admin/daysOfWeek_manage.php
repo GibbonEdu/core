@@ -78,7 +78,7 @@ else {
 		//Let's go!
 		?>
 		<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/daysOfWeek_manageProcess.php"?>">
-			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+			<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<?php
 			while($row=$result->fetch()) {
 				?>
@@ -87,13 +87,13 @@ else {
 						<h3><?php print __($guid, $row["name"]) . " (" . __($guid, $row["nameShort"]) . ")" ?></h3>
 					</td>
 				</tr>
-				<input name="<?php print $row["name"]?>sequenceNumber" id="<?php print $row["name"]?>sequenceNumber" maxlength=2 value="<?php print $row["sequenceNumber"] ?>" type="hidden" style="width: 300px">
+				<input name="<?php print $row["name"]?>sequenceNumber" id="<?php print $row["name"]?>sequenceNumber" maxlength=2 value="<?php print $row["sequenceNumber"] ?>" type="hidden" class="standardWidth">
 				<tr>
 					<td style='width: 275px'> 
 						<b><?php print __($guid, 'School Day') ?> *</b>
 					</td>
 					<td class="right">
-						<select style="width: 302px" name="<?php print $row["name"]?>schoolDay" id="<?php print $row["name"]?>schoolDay">
+						<select class="standardWidth" name="<?php print $row["name"]?>schoolDay" id="<?php print $row["name"]?>schoolDay">
 							<?php
 							if ($row["schoolDay"]=="Y") {
 								print "<option selected value='Y'>" . __($guid, 'Yes') . "</option>" ;
@@ -285,7 +285,7 @@ else {
 			?>
 				<tr>
 					<td>
-						<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+						<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 					</td>
 					<td class="right">
 						<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

@@ -113,11 +113,11 @@ else {
 				}
 				?>
 				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/library_manage_catalog_duplicate.php&step=2&gibbonLibraryItemID=" . $row["gibbonLibraryItemID"] . "&name=" . $_GET["name"] . "&gibbonLibraryTypeID=" . $_GET["gibbonLibraryTypeID"] . "&gibbonSpaceID=" . $_GET["gibbonSpaceID"] . "&status=" . $_GET["status"] . "&gibbonPersonIDOwnership=" . $_GET["gibbonPersonIDOwnership"] . "&typeSpecificFields=" . $_GET["typeSpecificFields"] ?>">
-					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>	
 						<tr>
 							<td style='width: 275px'> 
 								<b><?php print __($guid, 'Type') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+								<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 							</td>
 							<td class="right">
 								<input readonly style='width: 300px' type='text' value='<?php print __($guid, $row["type"]) ?>' />
@@ -127,35 +127,35 @@ else {
 						<tr>
 							<td> 
 								<b><?php print __($guid, 'Name') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+								<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 							</td>
 							<td class="right">
-								<input readonly name="name" id="name" maxlength=255 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
+								<input readonly name="name" id="name" maxlength=255 value="<?php print $row["name"] ?>" type="text" class="standardWidth">
 							</td>
 						</tr>
 						<tr>
 							<td> 
 								<b><?php print __($guid, 'ID') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+								<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 							</td>
 							<td class="right">
-								<input readonly name="id" id="id" maxlength=255 value="<?php print $row["id"] ?>" type="text" style="width: 300px">
+								<input readonly name="id" id="id" maxlength=255 value="<?php print $row["id"] ?>" type="text" class="standardWidth">
 							</td>
 						</tr>
 						<tr>
 							<td> 
 								<b><?php print __($guid, 'Author/Brand') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+								<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 							</td>
 							<td class="right">
-								<input readonly name="producer" id="producer" maxlength=255 value="<?php print $row["producer"] ?>" type="text" style="width: 300px">
+								<input readonly name="producer" id="producer" maxlength=255 value="<?php print $row["producer"] ?>" type="text" class="standardWidth">
 							</td>
 						</tr>
 						
 						<tr>
 							<td> 
 								<b><?php print __($guid, 'Number of Copies') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, 'How many copies do you want to make of this item?') ?></i></span>
+								<span class="emphasis small"><?php print __($guid, 'How many copies do you want to make of this item?') ?></span>
 							</td>
 							<td class="right">
 								<select name='number' id='number' style='width: 304px'>
@@ -170,7 +170,7 @@ else {
 						
 						<tr>
 							<td>
-								<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+								<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 							</td>
 							<td class="right">
 								<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
@@ -195,7 +195,7 @@ else {
 				}
 				?>
 				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/library_manage_catalog_duplicateProcess.php?gibbonLibraryItemID=" . $row["gibbonLibraryItemID"] . "&name=" . $_GET["name"] . "&gibbonLibraryTypeID=" . $_GET["gibbonLibraryTypeID"] . "&gibbonSpaceID=" . $_GET["gibbonSpaceID"] . "&status=" . $_GET["status"] . "&gibbonPersonIDOwnership=" . $_GET["gibbonPersonIDOwnership"] . "&typeSpecificFields=" . $_GET["typeSpecificFields"] ?>">
-					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>	
 						<?php
 						$number=$_POST["number"] ;
 						for ($i=1; $i<=$number; $i++) {
@@ -211,10 +211,10 @@ else {
 							<tr>
 								<td style='width: 275px'> 
 									<b><?php print __($guid, 'Name') ?> *</b><br/>
-									<span style="font-size: 90%"><i>Volume or product name.</i></span>
+									<span class="emphasis small">Volume or product name.</span>
 								</td>
 								<td class="right">
-									<input name="name<?php print $i ?>" id="name<?php print $i ?>" maxlength=255 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
+									<input name="name<?php print $i ?>" id="name<?php print $i ?>" maxlength=255 value="<?php print $row["name"] ?>" type="text" class="standardWidth">
 									<script type="text/javascript">
 										var name<?php print $i ?>=new LiveValidation('name<?php print $i ?>');
 										name<?php print $i ?>.add(Validate.Presence);
@@ -224,10 +224,10 @@ else {
 							<tr>
 								<td> 
 									<b><?php print __($guid, 'ID') ?> *</b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'School-unique ID or barcode.') ?></i></span>
+									<span class="emphasis small"><?php print __($guid, 'School-unique ID or barcode.') ?></span>
 								</td>
 								<td class="right">
-									<input name="id<?php print $i ?>" id="id<?php print $i ?>" maxlength=255 value="" type="text" style="width: 300px">
+									<input name="id<?php print $i ?>" id="id<?php print $i ?>" maxlength=255 value="" type="text" class="standardWidth">
 									<?php
 									//Get list of all ids already in use
 									$idList="" ;
@@ -252,10 +252,10 @@ else {
 							<tr>
 								<td> 
 									<b><?php print __($guid, 'Author/Brand') ?> *</b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'Who created the item?') ?></i></span>
+									<span class="emphasis small"><?php print __($guid, 'Who created the item?') ?></span>
 								</td>
 								<td class="right">
-									<input name="producer<?php print $i ?>" id="producer<?php print $i ?>" maxlength=255 value="<?php print $row["producer"] ?>" type="text" style="width: 300px">
+									<input name="producer<?php print $i ?>" id="producer<?php print $i ?>" maxlength=255 value="<?php print $row["producer"] ?>" type="text" class="standardWidth">
 									<script type="text/javascript">
 										var producer<?php print $i ?>=new LiveValidation('producer<?php print $i ?>');
 										producer<?php print $i ?>.add(Validate.Presence);
@@ -265,19 +265,19 @@ else {
 							<tr>
 								<td> 
 									<b><?php print __($guid, 'Vendor') ?></b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'Who supplied the item?') ?></i></span>
+									<span class="emphasis small"><?php print __($guid, 'Who supplied the item?') ?></span>
 								</td>
 								<td class="right">
-									<input name="vendor<?php print $i ?>" id="vendor<?php print $i ?>" maxlength=100 value="<?php print $row["vendor"] ?>" type="text" style="width: 300px">
+									<input name="vendor<?php print $i ?>" id="vendor<?php print $i ?>" maxlength=100 value="<?php print $row["vendor"] ?>" type="text" class="standardWidth">
 								</td>
 							</tr>
 							<tr>
 								<td> 
 									<b><?php print __($guid, 'Purchase Date') ?></b><br/>
-									<span style="font-size: 90%"><i></i></span>
+									<span class="emphasis small"></span>
 								</td>
 								<td class="right">
-									<input name="purchaseDate<?php print $i ?>" id="purchaseDate<?php print $i ?>" maxlength=10 value="<?php print dateConvertBack($guid, $row["purchaseDate"]) ?>" type="text" style="width: 300px">
+									<input name="purchaseDate<?php print $i ?>" id="purchaseDate<?php print $i ?>" maxlength=10 value="<?php print dateConvertBack($guid, $row["purchaseDate"]) ?>" type="text" class="standardWidth">
 									<script type="text/javascript">
 										var purchaseDate=new LiveValidation('purchaseDate');
 										purchaseDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
@@ -292,10 +292,10 @@ else {
 							<tr>
 								<td> 
 									<b><?php print __($guid, 'Invoice Number') ?></b><br/>
-									<span style="font-size: 90%"><i></i></span>
+									<span class="emphasis small"></span>
 								</td>
 								<td class="right">
-									<input name="invoiceNumber<?php print $i ?>" id="invoiceNumber<?php print $i ?>" maxlength=50 value="<?php print $row["invoiceNumber"] ?>" type="text" style="width: 300px">
+									<input name="invoiceNumber<?php print $i ?>" id="invoiceNumber<?php print $i ?>" maxlength=50 value="<?php print $row["invoiceNumber"] ?>" type="text" class="standardWidth">
 								</td>
 							</tr>
 							<tr id="locationRow">
@@ -303,7 +303,7 @@ else {
 									<b><?php print __($guid, 'Location') ?> *</b><br/>
 								</td>
 								<td class="right">
-									<select name="gibbonSpaceID<?php print $i ?>" id="gibbonSpaceID<?php print $i ?>" style="width: 302px">
+									<select name="gibbonSpaceID<?php print $i ?>" id="gibbonSpaceID<?php print $i ?>" class="standardWidth">
 										<?php
 										print "<option value=''></option>" ;
 										try {
@@ -327,10 +327,10 @@ else {
 							<tr>
 								<td> 
 									<b><?php print __($guid, 'Location Detail') ?></b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'Shelf, cabinet, sector, etc') ?></i></span>
+									<span class="emphasis small"><?php print __($guid, 'Shelf, cabinet, sector, etc') ?></span>
 								</td>
 								<td class="right">
-									<input name="locationDetail<?php print $i ?>" id="locationDetail<?php print $i ?>" maxlength=255 value="<?php print $row["locationDetail"] ?>" type="text" style="width: 300px">
+									<input name="locationDetail<?php print $i ?>" id="locationDetail<?php print $i ?>" maxlength=255 value="<?php print $row["locationDetail"] ?>" type="text" class="standardWidth">
 								</td>
 							</tr>
 							
@@ -355,10 +355,10 @@ else {
 							<tr id='ownershipTypeRow<?php print $i ?>'>
 								<td> 
 									<b><?php print __($guid, 'Ownership Type') ?></b><br/>
-									<span style="font-size: 90%"><i></i></span>
+									<span class="emphasis small"></span>
 								</td>
 								<td class="right">
-									<select name="ownershipType<?php print $i ?>" id="ownershipType<?php print $i ?>" class='ownershipType<?php print $i ?>' style="width: 302px">
+									<select name="ownershipType<?php print $i ?>" id="ownershipType<?php print $i ?>" class='ownershipType<?php print $i ?>' class="standardWidth">
 										<option value=""></option>
 										<option <?php if ($row["ownershipType"]=="School") { print "selected" ; } ?> value="School" /> <?php print __($guid, 'School') ?>
 										<option <?php if ($row["ownershipType"]=="Individual") { print "selected" ; } ?> value="Individual" /> <?php print __($guid, 'Individual') ?>
@@ -403,10 +403,10 @@ else {
 							<tr id="ownershipTypeSchoolRow<?php print $i ?>" <?php if ($row["ownershipType"]!="School") { print "style='display: none'" ; }?>>
 								<td> 
 									<b><?php print __($guid, 'Main User') ?></b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'Person the device is assigned to.') ?></i></span>
+									<span class="emphasis small"><?php print __($guid, 'Person the device is assigned to.') ?></span>
 								</td>
 								<td class="right">
-									<select name="gibbonPersonIDOwnershipSchool<?php print $i ?>" id="gibbonPersonIDOwnershipSchool<?php print $i ?>" style="width: 302px">
+									<select name="gibbonPersonIDOwnershipSchool<?php print $i ?>" id="gibbonPersonIDOwnershipSchool<?php print $i ?>" class="standardWidth">
 										<?php print $selectContents ?>
 									</select>
 								</td>
@@ -416,7 +416,7 @@ else {
 									<b><?php print __($guid, 'Owner') ?></b><br/>
 								</td>
 								<td class="right">
-									<select name="gibbonPersonIDOwnershipIndividual<?php print $i ?>" id="gibbonPersonIDOwnershipIndividual<?php print $i ?>" style="width: 302px">
+									<select name="gibbonPersonIDOwnershipIndividual<?php print $i ?>" id="gibbonPersonIDOwnershipIndividual<?php print $i ?>" class="standardWidth">
 										<?php print $selectContents ?>
 									</select>
 								</td>
@@ -424,10 +424,10 @@ else {
 							<tr id="gibbonDepartmentIDRow">
 								<td> 
 									<b><?php print __($guid, 'Department') ?></b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'Which department is responsible for the item?') ?></i></span>
+									<span class="emphasis small"><?php print __($guid, 'Which department is responsible for the item?') ?></span>
 								</td>
 								<td class="right">
-									<select name="gibbonDepartmentID<?php print $i ?>" id="gibbonDepartmentID<?php print $i ?>" style="width: 302px">
+									<select name="gibbonDepartmentID<?php print $i ?>" id="gibbonDepartmentID<?php print $i ?>" class="standardWidth">
 										<?php
 										print "<option value=''></option>" ;
 										try {
@@ -451,10 +451,10 @@ else {
 							<tr>
 								<td> 
 									<b><?php print __($guid, 'Borrowable?') ?> *</b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'Is item available for loan?') ?></i></span>
+									<span class="emphasis small"><?php print __($guid, 'Is item available for loan?') ?></span>
 								</td>
 								<td class="right">
-									<select name="borrowable<?php print $i ?>" id="borrowable<?php print $i ?>" style="width: 302px">
+									<select name="borrowable<?php print $i ?>" id="borrowable<?php print $i ?>" class="standardWidth">
 										<option <?php if ($row["borrowable"]=="Y") { print "selected" ; } ?> value="Y" /> <?php print __($guid, 'Yes') ?>
 										<option <?php if ($row["borrowable"]=="N") { print "selected" ; } ?> value="N" /> <?php print __($guid, 'No') ?>
 									</select>
@@ -463,7 +463,7 @@ else {
 							<tr>
 								<td> 
 									<b><?php print __($guid, 'Status?') ?> *</b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+									<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 								</td>
 								<td class="right">
 									<input readonly style='width: 300px' type='text' value='Available' />
@@ -473,10 +473,10 @@ else {
 							<tr id='gibbonSchoolYearIDReplacement'>
 								<td> 
 									<b><?php print __($guid, "Replacement Year") ; ?></b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'When is this item scheduled for replacement.') ?></i></span>
+									<span class="emphasis small"><?php print __($guid, 'When is this item scheduled for replacement.') ?></span>
 								</td>
 								<td class="right">
-									<select name="gibbonSchoolYearIDReplacement" id="gibbonSchoolYearIDReplacement" style="width: 302px">
+									<select name="gibbonSchoolYearIDReplacement" id="gibbonSchoolYearIDReplacement" class="standardWidth">
 										<?php
 										try {
 											$dataSelect=array(); 
@@ -514,7 +514,7 @@ else {
 									</span>
 								</td>
 								<td class="right">
-									<input name="replacementCost" id="replacementCost" maxlength=13 value="<?php print $row["replacementCost"] ?>" type="text" style="width: 300px">
+									<input name="replacementCost" id="replacementCost" maxlength=13 value="<?php print $row["replacementCost"] ?>" type="text" class="standardWidth">
 									<script type="text/javascript">
 										var replacementCost=new LiveValidation('replacementCost');
 										replacementCost.add(Validate.Format, { pattern: /^(?:\d*\.\d{1,2}|\d+)$/, failureMessage: "Invalid number format!" } );
@@ -566,7 +566,7 @@ else {
 											if ($field["required"]=="Y") {
 												print " *" ;
 											}
-											$output.="<br/><span style='font-size: 90%'><i>" . str_replace("dd/mm/yyyy", $_SESSION[$guid]["i18n"]["dateFormat"], $field["description"]) . "</i></span>" ;
+											$output.="<br/><span style='font-size: 90%'><i>" . str_replace("dd/mm/yyyy", $_SESSION[$guid]["i18n"]["dateFormat"], $field["description"]) . "</span>" ;
 										print "</td>" ;
 										print "<td class='right'>" ;
 											if ($field["type"]=="Text") {
@@ -633,7 +633,7 @@ else {
 						?>
 						<tr>
 							<td>
-								<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+								<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 							</td>
 							<td class="right">
 								<input type="hidden" name="count" value="<?php print $number ?>">

@@ -109,7 +109,7 @@ else {
 			?>
 		
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/behaviour_manage_addProcess.php?step=1&gibbonPersonID=" . $_GET["gibbonPersonID"] . "&gibbonRollGroupID=" . $_GET["gibbonRollGroupID"] . "&gibbonYearGroupID=" . $_GET["gibbonYearGroupID"] . "&type=" .$_GET["type"] ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr class='break'>
 						<td colspan=2> 
 							<h3><?php print __($guid, 'Step 1') ?></h3>
@@ -118,7 +118,7 @@ else {
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php print __($guid, 'Student') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
 							<?php 
@@ -127,7 +127,7 @@ else {
 									$gibbonPersonID=$_GET["gibbonPersonID"] ; 
 								} 
 							?>
-							<select name="gibbonPersonID" id="gibbonPersonID2" style="width: 302px">
+							<select name="gibbonPersonID" id="gibbonPersonID2" class="standardWidth">
 								<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
 								<?php
 								try {
@@ -158,10 +158,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Date') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></span>
 						</td>
 						<td class="right">
-							<input name="date" id="date" maxlength=10 value="<?php print date($_SESSION[$guid]["i18n"]["dateFormatPHP"]) ?>" type="text" style="width: 300px">
+							<input name="date" id="date" maxlength=10 value="<?php print date($_SESSION[$guid]["i18n"]["dateFormatPHP"]) ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var date=new LiveValidation('date');
 								date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
@@ -176,10 +176,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Type') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
-							<select name="type" id="type" style="width: 302px">
+							<select name="type" id="type" class="standardWidth">
 								<option value="Positive"><?php print __($guid, 'Positive') ?></option>
 								<option value="Negative"><?php print __($guid, 'Negative') ?></option>
 							</select>
@@ -209,10 +209,10 @@ else {
 								<tr>
 									<td> 
 										<b><?php print __($guid, 'Descriptor') ?> *</b><br/>
-										<span style="font-size: 90%"><i></i></span>
+										<span class="emphasis small"></span>
 									</td>
 									<td class="right">
-										<select name="descriptor" id="descriptor" style="width: 302px">
+										<select name="descriptor" id="descriptor" class="standardWidth">
 											<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
 											<?php
 											for ($i=0; $i<count($optionsPositive); $i++) {
@@ -251,10 +251,10 @@ else {
 							<tr>
 								<td> 
 									<b><?php print __($guid, 'Level') ?> *</b><br/>
-									<span style="font-size: 90%"><i></i></span>
+									<span class="emphasis small"></span>
 								</td>
 								<td class="right">
-									<select name="level" id="level" style="width: 302px">
+									<select name="level" id="level" class="standardWidth">
 										<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
 										<?php
 										for ($i=0; $i<count($optionsLevels); $i++) {
@@ -294,7 +294,7 @@ else {
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+							<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
@@ -332,7 +332,7 @@ else {
 					
 					?>
 					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/behaviour_manage_addProcess.php?step=2&gibbonPersonID=" . $_GET["gibbonPersonID"] . "&gibbonRollGroupID=" . $_GET["gibbonRollGroupID"] . "&gibbonYearGroupID=" . $_GET["gibbonYearGroupID"] . "&type=" .$_GET["type"] ?>">
-						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+						<table class='smallIntBorder fullWidth' cellspacing='0'>	
 							<tr class='break'>
 								<td colspan=2> 
 									<h3><?php print __($guid, 'Step 2 (Optional)') ?></h3>
@@ -341,20 +341,20 @@ else {
 							<tr>
 								<td> 
 									<b><?php print __($guid, 'Student') ?> *</b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+									<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 								</td>
 								<td class="right">
 									<input type="hidden" name="gibbonPersonID" value="<?php print $row["gibbonPersonID"] ?>">
-									<input readonly name="name" id="name" value="<?php print formatName("", $row["preferredName"], $row["surname"], "Student") ?>" type="text" style="width: 300px">
+									<input readonly name="name" id="name" value="<?php print formatName("", $row["preferredName"], $row["surname"], "Student") ?>" type="text" class="standardWidth">
 								</td>
 							</tr>
 							<tr>
 								<td> 
 									<b><?php print __($guid, 'Link To Lesson?') ?></b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'From last 30 days') ?></i></span>
+									<span class="emphasis small"><?php print __($guid, 'From last 30 days') ?></span>
 								</td>
 								<td class="right">
-									<select name="gibbonPlannerEntryID" id="gibbonPlannerEntryID" style="width: 302px">
+									<select name="gibbonPlannerEntryID" id="gibbonPlannerEntryID" class="standardWidth">
 										<option value=""></option>
 										<?php
 										$minDate=date("Y-m-d", (time()-(24*60*60*30))) ;
@@ -402,7 +402,7 @@ else {
 						
 							<tr>
 								<td>
-									<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+									<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 								</td>
 								<td class="right">
 									<input type="hidden" name="gibbonBehaviourID" value="<?php print $gibbonBehaviourID ?>">

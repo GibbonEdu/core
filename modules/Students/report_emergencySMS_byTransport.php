@@ -60,13 +60,13 @@ else {
 	?>
 	
 	<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr>
 				<td style='width: 275px'> 
 					<b>Transport *</b><br/>
 				</td>
 				<td class="right">
-					<select style="width: 302px" name="transport">
+					<select class="standardWidth" name="transport">
 						<?php
 						print "<option value=''></option>" ;
 						if ($transport=="*") {

@@ -86,14 +86,14 @@ else {
 			$row=$result->fetch() ;
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/schoolYearTerm_manage_editProcess.php?gibbonSchoolYearTermID=$gibbonSchoolYearTermID" ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php print __($guid, 'School Year') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
-							<select name="gibbonSchoolYearID" id="gibbonSchoolYearID" style="width: 302px">
+							<select name="gibbonSchoolYearID" id="gibbonSchoolYearID" class="standardWidth">
 								<?php
 								print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
 								try {
@@ -122,10 +122,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Sequence Number') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique. Controls chronological ordering.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Must be unique. Controls chronological ordering.') ?></span>
 						</td>
 						<td class="right">
-							<input name="sequenceNumber" id="sequenceNumber" maxlength=3 value="<?php print $row["sequenceNumber"] ?>" type="text" style="width: 300px">
+							<input name="sequenceNumber" id="sequenceNumber" maxlength=3 value="<?php print $row["sequenceNumber"] ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var sequenceNumber=new LiveValidation('sequenceNumber');
 								sequenceNumber.add(Validate.Numericality);
@@ -136,10 +136,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Name') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
-							<input name="name" id="name" maxlength=20 value="<?php print htmlPrep($row["name"]) ?>" type="text" style="width: 300px">
+							<input name="name" id="name" maxlength=20 value="<?php print htmlPrep($row["name"]) ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var name2=new LiveValidation('name');
 								name2.add(Validate.Presence);
@@ -149,10 +149,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Short Name') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
-							<input name="nameShort" id="nameShort" maxlength=4 value="<?php print htmlPrep($row["nameShort"]) ?>" type="text" style="width: 300px">
+							<input name="nameShort" id="nameShort" maxlength=4 value="<?php print htmlPrep($row["nameShort"]) ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var nameShort=new LiveValidation('nameShort');
 								nameShort.add(Validate.Presence);
@@ -162,10 +162,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'First Day') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+							<span class="emphasis small"><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></span>
 						</td>
 						<td class="right">
-							<input name="firstDay" id="firstDay" maxlength=10 value="<?php print dateConvertBack($guid, $row["firstDay"]) ?>" type="text" style="width: 300px">
+							<input name="firstDay" id="firstDay" maxlength=10 value="<?php print dateConvertBack($guid, $row["firstDay"]) ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var firstDay=new LiveValidation('firstDay');
 								firstDay.add(Validate.Presence);
@@ -181,10 +181,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Last Day') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+							<span class="emphasis small"><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></span>
 						</td>
 						<td class="right">
-							<input name="lastDay" id="lastDay" maxlength=10 value="<?php print dateConvertBack($guid, $row["lastDay"]) ?>" type="text" style="width: 300px">
+							<input name="lastDay" id="lastDay" maxlength=10 value="<?php print dateConvertBack($guid, $row["lastDay"]) ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var lastDay=new LiveValidation('lastDay');
 								lastDay.add(Validate.Presence);
@@ -199,7 +199,7 @@ else {
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+							<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

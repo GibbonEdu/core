@@ -57,13 +57,13 @@ else {
 	?>
 	
 	<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr>
 				<td style='width: 275px'> 
 					<b><?php print __($guid, 'Timetable') ?> *</b><br/>
 				</td>
 				<td class="right">
-					<select style="width: 302px" name="gibbonTTID">
+					<select class="standardWidth" name="gibbonTTID">
 						<?php
 						try {
 							$dataSelect=array(); 

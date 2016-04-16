@@ -67,13 +67,13 @@ else {
 	?>
 	
 	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/medicalForm_manage_addProcess.php?search=$search" ?>">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr>
 				<td style='width: 275px'> 
 					<b><?php print __($guid, 'Person') ?> *</b><br/>
 				</td>
 				<td class="right">
-					<select style="width: 302px" name="gibbonPersonID" id="gibbonPersonID">
+					<select class="standardWidth" name="gibbonPersonID" id="gibbonPersonID">
 						<?php
 						print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
 						try {
@@ -102,10 +102,10 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Blood Type') ?></b><br/>
-					<span style="font-size: 90%"><i></i></span>
+					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
-					<select style="width: 302px" name="bloodType">
+					<select class="standardWidth" name="bloodType">
 						<option value=""></option>
 						<option value="O+">O+</option>
 						<option value="A+">A+</option>
@@ -121,10 +121,10 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Long-Term Medication?') ?></b><br/>
-					<span style="font-size: 90%"><i></i></span>
+					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
-					<select style="width: 302px" name="longTermMedication">
+					<select class="standardWidth" name="longTermMedication">
 						<option value=""></option>
 						<option value="Y"><?php print __($guid, 'Yes') ?></option>
 						<option value="N"><?php print __($guid, 'No') ?></option>
@@ -136,16 +136,16 @@ else {
 					<b><?php print __($guid, 'Medication Details') ?></b><br/>
 				</td>
 				<td class="right">
-					<textarea name="longTermMedicationDetails" id="longTermMedicationDetails" rows=8 style="width: 300px"></textarea>
+					<textarea name="longTermMedicationDetails" id="longTermMedicationDetails" rows=8 class="standardWidth"></textarea>
 				</td>
 			</tr>
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Tetanus Within Last 10 Years?') ?></b><br/>
-					<span style="font-size: 90%"><i></i></span>
+					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
-					<select style="width: 302px" name="tetanusWithin10Years">
+					<select class="standardWidth" name="tetanusWithin10Years">
 						<option value=""></option>
 						<option value="Y"><?php print __($guid, 'Yes') ?></option>
 						<option value="N"><?php print __($guid, 'No') ?></option>
@@ -154,7 +154,7 @@ else {
 			</tr>
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+					<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

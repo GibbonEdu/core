@@ -148,11 +148,11 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/behaviour_manage_editProcess.php?gibbonBehaviourID=$gibbonBehaviourID&gibbonPersonID=" . $_GET["gibbonPersonID"] . "&gibbonRollGroupID=" . $_GET["gibbonRollGroupID"] . "&gibbonYearGroupID=" . $_GET["gibbonYearGroupID"] . "&type=" .$_GET["type"] ?>">
-					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>	
 						<tr>
 							<td style='width: 275px'> 
 								<b><?php print __($guid, 'Student') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+								<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 							</td>
 							<td class="right">
 								<?php
@@ -169,26 +169,26 @@ else {
 								
 								?>
 								<input type="hidden" name="gibbonPersonID" value="<?php print $row["gibbonPersonID"] ?>">
-								<input readonly name="name" id="name" value="<?php print formatName("", $rowSelect["preferredName"], $rowSelect["surname"], "Student") ?>" type="text" style="width: 300px">
+								<input readonly name="name" id="name" value="<?php print formatName("", $rowSelect["preferredName"], $rowSelect["surname"], "Student") ?>" type="text" class="standardWidth">
 							</td>
 						</tr>
 						<tr>
 							<td> 
 								<b><?php print __($guid, 'Date') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
+								<span class="emphasis small"><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></span>
 							</td>
 							<td class="right">
-								<input readonly name="date" id="date" maxlength=10 value="<?php print dateConvertBack($guid, $row["date"]) ?>" type="text" style="width: 300px">
+								<input readonly name="date" id="date" maxlength=10 value="<?php print dateConvertBack($guid, $row["date"]) ?>" type="text" class="standardWidth">
 							</td>
 						</tr>
 					
 						<tr>
 							<td> 
 								<b><?php print __($guid, 'Type') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+								<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 							</td>
 							<td class="right">
-								<input name="type" id="type" readonly="readonly" maxlength=20 value="<?php print __($guid, $row["type"]) ?>" type="text" style="width: 300px">
+								<input name="type" id="type" readonly="readonly" maxlength=20 value="<?php print __($guid, $row["type"]) ?>" type="text" class="standardWidth">
 							</td>
 						</tr>
 						
@@ -232,10 +232,10 @@ else {
 								<tr>
 									<td> 
 										<b><?php print __($guid, 'Descriptor') ?> *</b><br/>
-										<span style="font-size: 90%"><i></i></span>
+										<span class="emphasis small"></span>
 									</td>
 									<td class="right">
-										<select name="descriptor" id="descriptor" style="width: 302px">
+										<select name="descriptor" id="descriptor" class="standardWidth">
 											<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
 											<?php
 											for ($i=0; $i<count($options); $i++) {
@@ -279,10 +279,10 @@ else {
 									<tr>
 										<td> 
 											<b><?php print __($guid, 'Level') ?> *</b><br/>
-											<span style="font-size: 90%"><i></i></span>
+											<span class="emphasis small"></span>
 										</td>
 										<td class="right">
-											<select name="level" id="level" style="width: 302px">
+											<select name="level" id="level" class="standardWidth">
 												<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
 												<?php
 												for ($i=0; $i<count($optionsLevels); $i++) {
@@ -327,10 +327,10 @@ else {
 						<tr>
 							<td> 
 								<b><?php print __($guid, 'Link To Lesson?') ?></b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, 'From last 30 days') ?></i></span>
+								<span class="emphasis small"><?php print __($guid, 'From last 30 days') ?></span>
 							</td>
 							<td class="right">
-								<select name="gibbonPlannerEntryID" id="gibbonPlannerEntryID" style="width: 302px">
+								<select name="gibbonPlannerEntryID" id="gibbonPlannerEntryID" class="standardWidth">
 									<option value=""></option>
 									<?php
 									$minDate=date("Y-m-d", (strtotime($row["date"])-(24*60*60*30))) ;
@@ -381,7 +381,7 @@ else {
 						
 						<tr>
 							<td>
-								<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+								<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 							</td>
 							<td class="right">
 								<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

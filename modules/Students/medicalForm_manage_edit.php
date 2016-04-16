@@ -107,11 +107,11 @@ else {
 			}
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/medicalForm_manage_editProcess.php?gibbonPersonMedicalID=" . $gibbonPersonMedicalID . "&search=$search" ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php print __($guid, 'Person') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 						</td>
 						<td class="right">
 							<?php
@@ -124,16 +124,16 @@ else {
 							catch(PDOException $e) { }
 							$rowSelect=$resultSelect->fetch() ;
 							?>	
-							<input readonly name="name" id="name" maxlength=255 value="<?php print formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student") ; ?>" type="text" style="width: 300px">
+							<input readonly name="name" id="name" maxlength=255 value="<?php print formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student") ; ?>" type="text" class="standardWidth">
 						</td>
 					</tr>
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Blood Type') ?></b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
-							<select style="width: 302px" name="bloodType">
+							<select class="standardWidth" name="bloodType">
 								<option <?php if ($row["bloodType"]=="") {print "selected ";}?>value=""></option>
 								<option <?php if ($row["bloodType"]=="O+") {print "selected ";}?>value="O+">O+</option>
 								<option <?php if ($row["bloodType"]=="A+") {print "selected ";}?>value="A+">A+</option>
@@ -149,10 +149,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Long-Term Medication?') ?></b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
-							<select style="width: 302px" name="longTermMedication">
+							<select class="standardWidth" name="longTermMedication">
 								<option <?php if ($row["longTermMedication"]=="") {print "selected ";}?>value=""></option>
 								<option <?php if ($row["longTermMedication"]=="Y") {print "selected ";}?>value="Y">Y</option>
 								<option <?php if ($row["longTermMedication"]=="N") {print "selected ";}?>value="N">N</option>
@@ -164,7 +164,7 @@ else {
 							<b><?php print __($guid, 'Medication Details') ?></b><br/>
 						</td>
 						<td class="right">
-							<textarea name="longTermMedicationDetails" id="longTermMedicationDetails" rows=8 style="width: 300px"><?php print $row["longTermMedicationDetails"] ?></textarea>
+							<textarea name="longTermMedicationDetails" id="longTermMedicationDetails" rows=8 class="standardWidth"><?php print $row["longTermMedicationDetails"] ?></textarea>
 						</td>
 					</tr>
 					<tr>
@@ -172,7 +172,7 @@ else {
 							<b><?php print __($guid, 'Tetanus Within Last 10 Years?') ?></b><br/>
 						</td>
 						<td class="right">
-							<select style="width: 302px" name="tetanusWithin10Years">
+							<select class="standardWidth" name="tetanusWithin10Years">
 								<option <?php if ($row["tetanusWithin10Years"]=="") {print "selected ";}?>value=""></option>
 								<option <?php if ($row["tetanusWithin10Years"]=="Y") {print "selected ";}?>value="Y"><?php print __($guid, 'Yes') ?></option>
 								<option <?php if ($row["tetanusWithin10Years"]=="N") {print "selected ";}?>value="N"><?php print __($guid, 'No') ?></option>
@@ -181,7 +181,7 @@ else {
 					</tr>						
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+							<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="gibbonPersonMedicalID" value="<?php print $row["gibbonPersonMedicalID"] ?>">

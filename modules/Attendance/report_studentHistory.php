@@ -54,14 +54,14 @@ else {
 			?>
 			
 			<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php print __($guid, 'Student') ?></b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
-							<select style="width: 302px" name="gibbonPersonID">
+							<select class="standardWidth" name="gibbonPersonID">
 								<?php
 								print "<option value=''></option>" ;
 								try {
@@ -188,10 +188,10 @@ else {
 							<tr>
 								<td> 
 									<b><?php print __($guid, 'Search For') ?></b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'Preferred, surname, username.') ?></i></span>
+									<span class="emphasis small"><?php print __($guid, 'Preferred, surname, username.') ?></span>
 								</td>
 								<td class="right">
-									<select name="search" id="search" style="width: 302px">
+									<select name="search" id="search" class="standardWidth">
 										<option value=""></value>
 										<?php print $options ; ?> 
 									</select>

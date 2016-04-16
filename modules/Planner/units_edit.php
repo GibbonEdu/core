@@ -223,7 +223,7 @@ else {
 							$gibbonDepartmentID=$row["gibbonDepartmentID"] ;
 							?>
 							<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/units_editProcess.php?gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&address=" . $_GET["q"] ?>" enctype="multipart/form-data">
-								<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+								<table class='smallIntBorder fullWidth' cellspacing='0'>	
 									<tr class='break'>
 										<td colspan=2> 
 											<h3><?php print __($guid, 'Unit Basics') ?></h3>
@@ -232,28 +232,28 @@ else {
 									<tr>
 										<td style='width: 275px'> 
 											<b><?php print __($guid, 'School Year') ?> *</b><br/>
-											<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+											<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 										</td>
 										<td class="right">
-											<input readonly name="yearName" id="yearName" maxlength=20 value="<?php print $yearName ?>" type="text" style="width: 300px">
+											<input readonly name="yearName" id="yearName" maxlength=20 value="<?php print $yearName ?>" type="text" class="standardWidth">
 										</td>
 									</tr>
 									<tr>
 										<td> 
 											<b><?php print __($guid, 'Course') ?> *</b><br/>
-											<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+											<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 										</td>
 										<td class="right">
-											<input readonly name="courseName" id="courseName" maxlength=20 value="<?php print htmlPrep($row["courseName"]) ?>" type="text" style="width: 300px">
+											<input readonly name="courseName" id="courseName" maxlength=20 value="<?php print htmlPrep($row["courseName"]) ?>" type="text" class="standardWidth">
 										</td>
 									</tr>
 									<tr>
 										<td> 
 											<b><?php print __($guid, 'Name') ?> *</b><br/>
-											<span style="font-size: 90%"><i></i></span>
+											<span class="emphasis small"></span>
 										</td>
 										<td class="right">
-											<input name="name" id="name" maxlength=40 value="<?php print htmlPrep($row["name"]) ?>" type="text" style="width: 300px">
+											<input name="name" id="name" maxlength=40 value="<?php print htmlPrep($row["name"]) ?>" type="text" class="standardWidth">
 											<script type="text/javascript">
 												var name2=new LiveValidation('name');
 												name2.add(Validate.Presence);
@@ -273,10 +273,10 @@ else {
 									<tr>
 										<td> 
 											<b><?php print __($guid, 'Ordering') ?> *</b><br/>
-											<span style="font-size: 90%"><i><?php print __($guid, "Units are arranged form lowest to highest ordering value, then alphabetically.") ; ?></i></span>
+											<span class="emphasis small"><?php print __($guid, "Units are arranged form lowest to highest ordering value, then alphabetically.") ; ?></span>
 										</td>
 										<td class="right">
-											<input name="ordering" id="ordering" maxlength=4 value="<?php print htmlPrep($row["ordering"]) ?>" type="text" style="width: 300px">
+											<input name="ordering" id="ordering" maxlength=4 value="<?php print htmlPrep($row["ordering"]) ?>" type="text" class="standardWidth">
 											<script type="text/javascript">
 												var ordering=new LiveValidation('ordering');
 												ordering.add(Validate.Presence);
@@ -287,10 +287,10 @@ else {
 									<tr>
 										<td> 
 											<b><?php print __($guid, "License") ?></b><br/>
-											<span style="font-size: 90%"><i><?php print __($guid, "Under what conditions can this work be reused?") ; ?></i></span>
+											<span class="emphasis small"><?php print __($guid, "Under what conditions can this work be reused?") ; ?></span>
 										</td>
 										<td class="right">
-											<select name="license" id="license" style="width: 302px">
+											<select name="license" id="license" class="standardWidth">
 												<option <?php if ($row["license"]=="") {print "selected ";} ?>value=""></option>
 												<option <?php if ($row["license"]=="Copyright") {print "selected ";} ?>value="Copyright"><?php print __($guid, 'Copyright') ?></option>
 												<option <?php if ($row["license"]=="Creative Commons BY") {print "selected ";} ?>value="Creative Commons BY"><?php print __($guid, 'Creative Commons BY') ?></option>
@@ -307,7 +307,7 @@ else {
 										<tr>
 											<td> 
 												<b><?php print __($guid, "Shared Publically") ?> * </b><br/>
-												<span style="font-size: 90%"><i><?php print __($guid, "Share this unit via the public listing of units? Useful for building MOOCS.") ; ?></i></span>
+												<span class="emphasis small"><?php print __($guid, "Share this unit via the public listing of units? Useful for building MOOCS.") ; ?></span>
 											</td>
 											<td class="right">
 												<input <?php if ($row["sharedPublic"]=="Y") { print "checked" ; } ?> type="radio" name="sharedPublic" value="Y" /> <?php print __($guid, 'Yes') ?>
@@ -320,7 +320,7 @@ else {
 									<tr>
 										<td> 
 											<b><?php print __($guid, 'Embeddable') ?> *</b><br/>
-											<span style="font-size: 90%"><i><?php print __($guid, 'Can this unit be embedded and shared publicly in other websites?') ?></i></span>
+											<span class="emphasis small"><?php print __($guid, 'Can this unit be embedded and shared publicly in other websites?') ?></span>
 										</td>
 										<td class="right">
 											<input <?php if ($row["embeddable"]=="Y") { print "checked" ; } ?> type="radio" id="embeddable" name="embeddable" class="embeddable" value="Y" /> <?php print __($guid, 'Yes') ?>
@@ -349,7 +349,7 @@ else {
 									<tr id="embeddableRow" <?php if ($row["embeddable"]=="N") { print "style='display: none'" ; } ?>>
 										<td> 
 											<b><?php print __($guid, 'Embed Code') ?></b><br/>
-											<span style="font-size: 90%"><i><?php print __($guid, 'Copy and paste this HTML code into the target website.') ?></i></span>
+											<span class="emphasis small"><?php print __($guid, 'Copy and paste this HTML code into the target website.') ?></span>
 										</td>
 										<td class="right">
 											<textarea readonly name='embedCode' id='embedCode' rows=5 style='width: 300px'><?php print "<iframe style='border: none; width: 620px; height: 800px; overflow-x: hidden; overflow-y: scroll' src=\"" . $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/units_embed.php?gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&themeName=" . $_SESSION[$guid]["gibbonThemeName"] . "&title=false\"></iframe>" ?></textarea>
@@ -631,7 +631,7 @@ else {
 																print "</td>" ;
 																print "<td>" ;
 																	?>
-																	<input name="gibbonCourseClassID<?php print $classCount?>" id="gibbonCourseClassID<?php print $classCount?>" maxlength=10 value="<?php print $rowClass["gibbonCourseClassID"] ?>" type="hidden" style="width: 300px">
+																	<input name="gibbonCourseClassID<?php print $classCount?>" id="gibbonCourseClassID<?php print $classCount?>" maxlength=10 value="<?php print $rowClass["gibbonCourseClassID"] ?>" type="hidden" class="standardWidth">
 																	<select name="running<?php print $classCount?>" id="running<?php print $classCount?>" style="width:100%">
 																		<option <?php if ($rowClassData["running"]=="N") { print "selected ";} ?>value="N"><?php print __($guid, 'No') ?></option>
 																		<option <?php if ($rowClassData["running"]=="Y") { print "selected ";} ?>value="Y"><?php print __($guid, 'Yes') ?></option>
@@ -704,9 +704,9 @@ else {
 									<tr>
 										<td> 
 											<b><?php print __($guid, 'Downloadable Unit Outline') ?></b><br/>
-											<span style="font-size: 90%"><i><?php print __($guid, 'Available to most users.') ?></i></span>
+											<span class="emphasis small"><?php print __($guid, 'Available to most users.') ?></span>
 											<?php if ($row["attachment"]!="") { ?>
-												<span style="font-size: 90%"><i><?php print __($guid, 'Will overwrite existing attachment.') ?></i></span>
+												<span class="emphasis small"><?php print __($guid, 'Will overwrite existing attachment.') ?></span>
 											<?php } ?>
 										</td>
 										<td class="right">
@@ -822,7 +822,7 @@ else {
 								
 									<tr>
 										<td>
-											<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+											<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 										</td>
 										<td class="right">
 											<input name="classCount" id="classCount" value="<?php print $classCount ?>" type="hidden">
@@ -910,28 +910,28 @@ else {
 								<tr>
 									<td> 
 										<b><?php print __($guid, 'School Year') ?> *</b><br/>
-										<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+										<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 									</td>
 									<td class="right">
-										<input readonly name="yearName" id="yearName" maxlength=20 value="<?php print $yearName ?>" type="text" style="width: 300px">
+										<input readonly name="yearName" id="yearName" maxlength=20 value="<?php print $yearName ?>" type="text" class="standardWidth">
 									</td>
 								</tr>
 								<tr>
 									<td> 
 										<b><?php print __($guid, 'Course') ?> *</b><br/>
-										<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+										<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 									</td>
 									<td class="right">
-										<input readonly name="courseName" id="courseName" maxlength=20 value="<?php print $row["nameShort"] ?>" type="text" style="width: 300px">
+										<input readonly name="courseName" id="courseName" maxlength=20 value="<?php print $row["nameShort"] ?>" type="text" class="standardWidth">
 									</td>
 								</tr>
 								<tr>
 									<td> 
 										<b><?php print __($guid, 'Name') ?> *</b><br/>
-										<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+										<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 									</td>
 									<td class="right">
-										<input readonly name="name" id="name" maxlength=40 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
+										<input readonly name="name" id="name" maxlength=40 value="<?php print $row["name"] ?>" type="text" class="standardWidth">
 									</td>
 								</tr>
 							

@@ -79,7 +79,7 @@ else {
 	?>
 	
 	<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr class='break'>
 				<td colspan=2>
 					<h3>
@@ -90,10 +90,10 @@ else {
 			<tr>
 				<td style='width: 275px'> 
 					<b><?php print __($guid, 'Student') ?></b><br/>
-					<span style="font-size: 90%"><i></i></span>
+					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
-					<select style="width: 302px" name="gibbonPersonID">
+					<select class="standardWidth" name="gibbonPersonID">
 						<?php
 						print "<option value=''></option>" ;
 						try {
@@ -121,10 +121,10 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Date') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, "Format:") . " " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } ?></i></span>
+					<span class="emphasis small"><?php print __($guid, "Format:") . " " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } ?></span>
 				</td>
 				<td class="right">
-					<input name="currentDate" id="currentDate" maxlength=10 value="<?php print dateConvertBack($guid, $currentDate) ?>" type="text" style="width: 300px">
+					<input name="currentDate" id="currentDate" maxlength=10 value="<?php print dateConvertBack($guid, $currentDate) ?>" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var currentDate=new LiveValidation('currentDate');
 						currentDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
@@ -220,7 +220,7 @@ else {
 				?>
 				
 				<form onsubmit="return dateCheck()" method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/attendance_take_byPersonProcess.php?gibbonPersonID=$gibbonPersonID" ?>">
-					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>	
 						<tr class='break'>
 							<td colspan=2>
 								<h3>
@@ -231,7 +231,7 @@ else {
 						<tr>
 							<td style='width: 275px'> 
 								<b><?php print __($guid, 'Recent Attendance Summary') ?></b><br/>
-								<span style="font-size: 90%"><i></i></span>
+								<span class="emphasis small"></span>
 							</td>
 							<td class="right">
 								<?php
@@ -295,7 +295,7 @@ else {
 						<tr>
 							<td> 
 								<b><?php print __($guid, 'Type') ?> *</b><br/>
-								<span style="font-size: 90%"><i></i></span>
+								<span class="emphasis small"></span>
 							</td>
 							<td class="right">
 								<?php
@@ -313,7 +313,7 @@ else {
 						<tr>
 							<td> 
 								<b><?php print __($guid, 'Reason') ?></b><br/>
-								<span style="font-size: 90%"><i></i></span>
+								<span class="emphasis small"></span>
 							</td>
 							<td class="right">
 								<?php
@@ -331,7 +331,7 @@ else {
 						<tr>
 							<td> 
 								<b><?php print __($guid, 'Comment') ?></b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, '255 character limit') ?></i></span>
+								<span class="emphasis small"><?php print __($guid, '255 character limit') ?></span>
 							</td>
 							<td class="right">
 								<?php
@@ -345,7 +345,7 @@ else {
 						</tr>
 						<tr>
 							<td>
-								<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+								<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 							</td>
 							<td class="right">
 								<?php print "<input type='hidden' name='currentDate' value='$currentDate'>" ; ?>

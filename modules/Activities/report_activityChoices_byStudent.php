@@ -45,13 +45,13 @@ else {
 	?>
 	
 	<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr>
 				<td style='width: 275px'> 
 					<b><?php print __($guid, 'Student') ?> *</b><br/>
 				</td>
 				<td class="right">
-					<select name="gibbonPersonID" id="gibbonPersonID" style="width: 302px">
+					<select name="gibbonPersonID" id="gibbonPersonID" class="standardWidth">
 						<option></option>
 						<optgroup label='--<?php print __($guid, 'Students by Roll Group') ?>--'>
 							<?php

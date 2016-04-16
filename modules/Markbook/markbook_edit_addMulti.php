@@ -106,7 +106,7 @@ else {
 				?>
 
 				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_addMultiProcess.php?gibbonCourseClassID=$gibbonCourseClassID&address=" . $_SESSION[$guid]["address"] ?>" enctype="multipart/form-data">
-					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>	
 						<tr class='break'>
 							<td colspan=2> 
 								<h3><?php print __($guid, 'Basic Information') ?></h3>
@@ -115,13 +115,13 @@ else {
 						<tr>
 							<td style='width: 275px'> 
 								<b><?php print __($guid, 'Class') ?> *</b><br/>
-								<span style="font-size: 90%"><i>
+								<span class="emphasis small">
 									<?php 
 									print __($guid, 'Use Control, Command and/or Shift to select multiple.') ;
 									print " " ;
 									print sprintf(__($guid, 'The current class (%1$s.%2$s) has already been selected.'), $row["course"], $row["class"]) ;
 									?>
-								</i></span>
+								</span>
 							</td>
 							<td class="right">
 								<?php
@@ -155,7 +155,7 @@ else {
 								<b><?php print __($guid, 'Name') ?> *</b><br/>
 							</td>
 							<td class="right">
-								<input name="name" id="name" maxlength=20 value="" type="text" style="width: 300px">
+								<input name="name" id="name" maxlength=20 value="" type="text" class="standardWidth">
 								<script type="text/javascript">
 									var name2=new LiveValidation('name');
 									name2.add(Validate.Presence);
@@ -167,7 +167,7 @@ else {
 								<b><?php print __($guid, 'Description') ?> *</b><br/>
 							</td>
 							<td class="right">
-								<input name="description" id="description" maxlength=1000 value="" type="text" style="width: 300px">
+								<input name="description" id="description" maxlength=1000 value="" type="text" class="standardWidth">
 								<script type="text/javascript">
 									var description=new LiveValidation('description');
 									description.add(Validate.Presence);
@@ -182,10 +182,10 @@ else {
 							<tr>
 								<td> 
 									<b><?php print __($guid, 'Type') ?> *</b><br/>
-									<span style="font-size: 90%"><i></i></span>
+									<span class="emphasis small"></span>
 								</td>
 								<td class="right">
-									<select name="type" id="type" style="width: 302px">
+									<select name="type" id="type" class="standardWidth">
 										<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
 										<?php
 										for ($i=0; $i<count($types); $i++) {
@@ -273,7 +273,7 @@ else {
 								<b><?php if ($attainmentAlternativeName!="") { print $attainmentAlternativeName . " " . __($guid, 'Scale') ; } else { print __($guid, 'Attainment Scale') ; } ?></b><br/>
 							</td>
 							<td class="right">
-								<select name="gibbonScaleIDAttainment" id="gibbonScaleIDAttainment" style="width: 302px">
+								<select name="gibbonScaleIDAttainment" id="gibbonScaleIDAttainment" class="standardWidth">
 									<?php
 									try {
 										$dataSelect=array(); 
@@ -302,7 +302,7 @@ else {
 									<b><?php if ($attainmentAlternativeName!="") { print $attainmentAlternativeName . " " . __($guid, 'Weighting') ; } else { print __($guid, 'Attainment Weighting') ; } ?></b><br/>
 								</td>
 								<td class="right">
-									<input name="attainmentWeighting" id="attainmentWeighting" maxlength=3 value="0" type="text" style="width: 300px">
+									<input name="attainmentWeighting" id="attainmentWeighting" maxlength=3 value="0" type="text" class="standardWidth">
 									<script type="text/javascript">
 										var attainmentWeighting=new LiveValidation('attainmentWeighting');
 										attainmentWeighting.add(Validate.Numericality);
@@ -315,10 +315,10 @@ else {
 						<tr id="gibbonRubricIDAttainmentRow">
 							<td> 
 								<b><?php if ($attainmentAlternativeName!="") { print $attainmentAlternativeName . " " . __($guid, 'Rubric') ; } else { print __($guid, 'Attainment Rubric') ; } ?></b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, 'Choose predefined rubric, if desired.') ?></i></span>
+								<span class="emphasis small"><?php print __($guid, 'Choose predefined rubric, if desired.') ?></span>
 							</td>
 							<td class="right">
-								<select name="gibbonRubricIDAttainment" id="gibbonRubricIDAttainment" style="width: 302px">
+								<select name="gibbonRubricIDAttainment" id="gibbonRubricIDAttainment" class="standardWidth">
 									<option><option>
 									<optgroup label='--<?php print __($guid, 'School Rubrics') ?> --'>
 									<?php
@@ -410,7 +410,7 @@ else {
 								<b><?php if ($effortAlternativeName!="") { print $effortAlternativeName . " " . __($guid, 'Scale') ; } else { print __($guid, 'Effort Scale') ; } ?></b><br/>
 							</td>
 							<td class="right">
-								<select name="gibbonScaleIDEffort" id="gibbonScaleIDEffort" style="width: 302px">
+								<select name="gibbonScaleIDEffort" id="gibbonScaleIDEffort" class="standardWidth">
 									<?php
 									try {
 										$dataSelect=array(); 
@@ -434,10 +434,10 @@ else {
 						<tr id="gibbonRubricIDEffortRow">
 							<td> 
 								<b><?php if ($effortAlternativeName!="") { print $effortAlternativeName . " " . __($guid, 'Rubric') ; } else { print __($guid, 'Effort Rubric') ; } ?></b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, 'Choose predefined rubric, if desired.') ?></i></span>
+								<span class="emphasis small"><?php print __($guid, 'Choose predefined rubric, if desired.') ?></span>
 							</td>
 							<td class="right">
-								<select name="gibbonRubricIDEffort" id="gibbonRubricIDEffort" style="width: 302px">
+								<select name="gibbonRubricIDEffort" id="gibbonRubricIDEffort" class="standardWidth">
 									<option><option>
 									<optgroup label='--<?php print __($guid, 'School Rubrics') ?>--'>
 									<?php
@@ -525,10 +525,10 @@ else {
 						<tr>
 							<td> 
 								<b><?php print __($guid, 'Viewable to Students') ?> *</b><br/>
-								<span style="font-size: 90%"><i></i></span>
+								<span class="emphasis small"></span>
 							</td>
 							<td class="right">
-								<select name="viewableStudents" id="viewableStudents" style="width: 302px">
+								<select name="viewableStudents" id="viewableStudents" class="standardWidth">
 									<option value="Y"><?php print __($guid, 'Yes') ?></option>
 									<option value="N"><?php print __($guid, 'No') ?></option>
 								</select>
@@ -537,10 +537,10 @@ else {
 						<tr>
 							<td> 
 								<b><?php print __($guid, 'Viewable to Parents') ?> *</b><br/>
-								<span style="font-size: 90%"><i></i></span>
+								<span class="emphasis small"></span>
 							</td>
 							<td class="right">
-								<select name="viewableParents" id="viewableParents" style="width: 302px">
+								<select name="viewableParents" id="viewableParents" class="standardWidth">
 									<option value="Y"><?php print __($guid, 'Yes') ?></option>
 									<option value="N"><?php print __($guid, 'No') ?></option>
 								</select>
@@ -549,10 +549,10 @@ else {
 						<tr>
 							<td> 
 								<b><?php print __($guid, 'Go Live Date') ?></b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, '1. Format') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/><?php print __($guid, '2. Column is hidden until date is reached.') ?></i></span>
+								<span class="emphasis small"><?php print __($guid, '1. Format') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/><?php print __($guid, '2. Column is hidden until date is reached.') ?></span>
 							</td>
 							<td class="right">
-								<input name="completeDate" id="completeDate" maxlength=10 value="" type="text" style="width: 300px">
+								<input name="completeDate" id="completeDate" maxlength=10 value="" type="text" class="standardWidth">
 								<script type="text/javascript">
 									var completeDate=new LiveValidation('completeDate');
 									completeDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
@@ -566,9 +566,9 @@ else {
 						</tr>
 						<tr>
 							<td>
-								<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?><br/>
+								<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?><br/>
 								<?php print getMaxUpload($guid) ; ?>
-								</i></span>
+								</span>
 							</td>
 							<td class="right">
 								<input type="submit" value="<?php print __($guid, "Submit") ; ?>">

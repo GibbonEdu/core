@@ -157,10 +157,10 @@ else {
 						<tr>
 							<td> 
 								<b><?php print __($guid, 'Search For') ?></b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, 'Preferred, surname, username.') ?></i></span>
+								<span class="emphasis small"><?php print __($guid, 'Preferred, surname, username.') ?></span>
 							</td>
 							<td class="right">
-								<select name="search" id="search" style="width: 302px">
+								<select name="search" id="search" class="standardWidth">
 									<option value=""></value>
 									<?php print $options ; ?> 
 								</select>

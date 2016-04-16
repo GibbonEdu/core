@@ -115,7 +115,7 @@ else {
 		
 				?>
 				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/resources_manage_editProcess.php?gibbonResourceID=$gibbonResourceID&search=" . $_GET["search"] ?>" enctype="multipart/form-data">
-					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>	
 						<input type="hidden" name="type" value="<?php print $row["type"] ?>">
 						<tr class='break'>
 							<td colspan=2> 
@@ -129,7 +129,7 @@ else {
 								<td style='width: 275px'> 
 									<b><?php print __($guid, 'File') ?></b><br/>
 									<?php if ($row["content"]!="") { ?>
-									<span style="font-size: 90%"><i><?php print __($guid, 'Will overwrite existing attachment.') ?></i></span>
+									<span class="emphasis small"><?php print __($guid, 'Will overwrite existing attachment.') ?></span>
 									<?php } ?>
 								</td>
 								<td class="right">
@@ -181,7 +181,7 @@ else {
 									<b><?php print __($guid, 'Link') ?> *</b><br/>
 								</td>
 								<td class="right">
-									<input name="link" id="link" maxlength=255 value="<?php print $row["content"] ?>" type="text" style="width: 300px">
+									<input name="link" id="link" maxlength=255 value="<?php print $row["content"] ?>" type="text" class="standardWidth">
 									<script type="text/javascript">
 										var link=new LiveValidation('link');
 										link.add(Validate.Presence);
@@ -201,10 +201,10 @@ else {
 						<tr>
 							<td> 
 								<b><?php print __($guid, 'Name') ?> *</b><br/>
-								<span style="font-size: 90%"><i></i></span>
+								<span class="emphasis small"></span>
 							</td>
 							<td class="right">
-								<input name="name" id="name" maxlength=30 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
+								<input name="name" id="name" maxlength=30 value="<?php print $row["name"] ?>" type="text" class="standardWidth">
 								<script type="text/javascript">
 									var name2=new LiveValidation('name');
 									name2.add(Validate.Presence);
@@ -232,10 +232,10 @@ else {
 								<tr>
 									<td> 
 										<b><?php print __($guid, 'Category') ?> *</b><br/>
-										<span style="font-size: 90%"><i></i></span>
+										<span class="emphasis small"></span>
 									</td>
 									<td class="right">
-										<select name="category" id="category" style="width: 302px">
+										<select name="category" id="category" class="standardWidth">
 											<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
 											<?php
 											for ($i=0; $i<count($options); $i++) {
@@ -285,10 +285,10 @@ else {
 								<tr>
 									<td> 
 										<b><?php print __($guid, 'Purpose') ?></b><br/>
-										<span style="font-size: 90%"><i></i></span>
+										<span class="emphasis small"></span>
 									</td>
 									<td class="right">
-										<select name="purpose" id="purpose" style="width: 302px">
+										<select name="purpose" id="purpose" class="standardWidth">
 											<option value=""></option>
 											<?php
 											for ($i=0; $i<count($options); $i++) {
@@ -311,7 +311,7 @@ else {
 						<tr>
 							<td> 
 								<b><?php print __($guid, 'Tags') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, 'Use lots of tags!') ?></i></span>
+								<span class="emphasis small"><?php print __($guid, 'Use lots of tags!') ?></span>
 							</td>
 							<td class="right">
 								<?php
@@ -405,16 +405,16 @@ else {
 						<tr>
 							<td> 
 								<b><?php print __($guid, 'Description') ?></b><br/>
-								<span style="font-size: 90%"><i></i></span>
+								<span class="emphasis small"></span>
 							</td>
 							<td class="right">
-								<textarea name="description" id="description" rows=8 style="width: 300px"><?php print $row["description"] ?></textarea>
+								<textarea name="description" id="description" rows=8 class="standardWidth"><?php print $row["description"] ?></textarea>
 							</td>
 						</tr>
 						
 						<tr>
 							<td>
-								<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+								<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 							</td>
 							<td class="right">
 								<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

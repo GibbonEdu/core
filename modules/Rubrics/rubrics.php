@@ -111,16 +111,16 @@ else {
 				<tr>
 					<td> 
 						<b><?php print __($guid, 'Search For') ?></b><br/>
-						<span style="font-size: 90%"><i><?php print __($guid, 'Rubric name.') ?></i></span>
+						<span class="emphasis small"><?php print __($guid, 'Rubric name.') ?></span>
 					</td>
 					<td class="right">
-						<input name="search" id="search" maxlength=20 value="<?php print $search ?>" type="text" style="width: 300px">
+						<input name="search" id="search" maxlength=20 value="<?php print $search ?>" type="text" class="standardWidth">
 					</td>
 				</tr>
 				<tr>
 					<td> 
 						<b><?php print __($guid, 'Learning Areas') ?></b><br/>
-						<span style="font-size: 90%"><i></i></span>
+						<span class="emphasis small"></span>
 					</td>
 					<td class="right">
 						<?php

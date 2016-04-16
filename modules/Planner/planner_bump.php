@@ -137,14 +137,14 @@ else {
 					} 
 					?>
 					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_bumpProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID" ?>">
-						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+						<table class='smallIntBorder fullWidth' cellspacing='0'>	
 							<tr>
 								<td> 
 									<b><?php print __($guid, "Bump Direction") ?> *</b><br/>
-									<span style="font-size: 90%"><i></i></span>
+									<span class="emphasis small"></span>
 								</td>
 								<td class="right">
-									<select name="direction" id="direction" style="width: 302px">
+									<select name="direction" id="direction" class="standardWidth">
 										<option value="forward"><?php print __($guid, 'Forward') ?></option>
 										<option value="backward"><?php print __($guid, 'Backward') ?></option>
 									</select>
@@ -157,7 +157,7 @@ else {
 							</tr>
 							<tr>
 								<td>
-									<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+									<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 								</td>
 								<td class="right">
 									<input name="viewBy" id="viewBy" value="<?php print $viewBy ?>" type="hidden">

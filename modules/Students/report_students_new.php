@@ -57,7 +57,7 @@ else {
 	?>
 	
 	<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<!-- FIELDS & CONTROLS FOR TYPE -->
 			<script type="text/javascript">
 				$(document).ready(function(){
@@ -77,7 +77,7 @@ else {
 					<b><?php print __($guid, 'Type') ?> *</b><br/>
 				</td>
 				<td class="right">
-					<select style="width: 302px" name="type" id="type" class="type">
+					<select class="standardWidth" name="type" id="type" class="type">
 						<?php
 						print "<option" ; if ($type=="Current School Year") { print " selected" ; } print " value='Current School Year'>" . __($guid, 'Current School Year') . "</option>" ;
 						print "<option" ; if ($type=="Date Range") { print " selected" ; } print " value='Date Range'>" . __($guid, 'Date Range') . "</option>" ;
@@ -88,10 +88,10 @@ else {
 			<tr id='startDateFromRow' <?php if ($type!="Date Range") { print "style='display: none'" ; } ?>>
 				<td> 
 					<b><?php print __($guid, 'From Date') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Earliest student start date to include.') ?><br/><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'Earliest student start date to include.') ?><br/><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></span>
 				</td>
 				<td class="right">
-					<input name="startDateFrom" id="startDateFrom" maxlength=10 value="<?php print $startDateFrom ?>" type="text" style="width: 300px">
+					<input name="startDateFrom" id="startDateFrom" maxlength=10 value="<?php print $startDateFrom ?>" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var startDateFrom=new LiveValidation('startDateFrom');
 						startDateFrom.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
@@ -106,10 +106,10 @@ else {
 			<tr id='startDateToRow' <?php if ($type!="Date Range") { print "style='display: none'" ; } ?>>
 				<td> 
 					<b><?php print __($guid, 'To Date') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Latest student start date to include.') ?><br/><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'Latest student start date to include.') ?><br/><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></span>
 				</td>
 				<td class="right">
-					<input name="startDateTo" id="startDateTo" maxlength=10 value="<?php print $startDateTo ?>" type="text" style="width: 300px">
+					<input name="startDateTo" id="startDateTo" maxlength=10 value="<?php print $startDateTo ?>" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var startDateTo=new LiveValidation('startDateTo');
 						startDateTo.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
@@ -124,7 +124,7 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Ignore Enrolment') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'This is useful for picking up students who are set to Full, have a start date but are not yet enroled.') ?></span>
+					<span class="emphasis small"><?php print __($guid, 'This is useful for picking up students who are set to Full, have a start date but are not yet enroled.') ?></span>
 				</td>
 				<td class="right">
 					<input <?php if ($ignoreEnrolment=="on") { print "checked" ; } ?> name="ignoreEnrolment" id="ignoreEnrolment" type="checkbox">

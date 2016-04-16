@@ -103,16 +103,16 @@ else {
 				<tr>
 					<td> 
 						<b><?php print __($guid, 'Search For') ?></b><br/>
-						<span style="font-size: 90%"><i><?php print __($guid, 'Preferred, surname, username.') ?></i></span>
+						<span class="emphasis small"><?php print __($guid, 'Preferred, surname, username.') ?></span>
 					</td>
 					<td class="right">
-						<input name="search" id="search" maxlength=20 value="<?php print $search ?>" type="text" style="width: 300px">
+						<input name="search" id="search" maxlength=20 value="<?php print $search ?>" type="text" class="standardWidth">
 					</td>
 				</tr>
 				<tr>
 					<td> 
 						<b><?php print __($guid, 'All Users') ?></b><br/>
-						<span style="font-size: 90%"><i><?php print __($guid, 'Include non-staff, non-student users.') ?></i></span>
+						<span class="emphasis small"><?php print __($guid, 'Include non-staff, non-student users.') ?></span>
 					</td>
 					<td class="right">
 						<?php

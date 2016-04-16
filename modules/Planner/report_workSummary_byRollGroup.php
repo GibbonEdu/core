@@ -48,13 +48,13 @@ else {
 	?>
 	
 	<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr>
 				<td style='width: 275px'> 
 					<b><?php print __($guid, 'Roll Group') ?> *</b><br/>
 				</td>
 				<td class="right">
-					<select style="width: 302px" name="gibbonRollGroupID">
+					<select class="standardWidth" name="gibbonRollGroupID">
 						<?php
 						print "<option value=''></option>" ;
 						try {

@@ -145,7 +145,7 @@ else {
 							}
 							?>
 							<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/expenses_manage_addProcess.php" ?>">
-								<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+								<table class='smallIntBorder fullWidth' cellspacing='0'>	
 									<tr class='break'>
 										<td colspan=2> 
 											<h3><?php print __($guid, 'Basic Information') ?></h3>
@@ -172,8 +172,8 @@ else {
 												$yearName=$rowYear["name"] ;
 											}
 											?>
-											<input readonly name="name" id="name" maxlength=20 value="<?php print $yearName ?>" type="text" style="width: 300px">
-											<input name="gibbonFinanceBudgetCycleID" id="gibbonFinanceBudgetCycleID" maxlength=20 value="<?php print $gibbonFinanceBudgetCycleID ?>" type="hidden" style="width: 300px">
+											<input readonly name="name" id="name" maxlength=20 value="<?php print $yearName ?>" type="text" class="standardWidth">
+											<input name="gibbonFinanceBudgetCycleID" id="gibbonFinanceBudgetCycleID" maxlength=20 value="<?php print $gibbonFinanceBudgetCycleID ?>" type="hidden" class="standardWidth">
 											<script type="text/javascript">
 												var gibbonFinanceBudgetCycleID=new LiveValidation('gibbonFinanceBudgetCycleID');
 												gibbonFinanceBudgetCycleID.add(Validate.Presence);
@@ -185,7 +185,7 @@ else {
 											<b><?php print __($guid, 'Budget') ?></b><br/>
 										</td>
 										<td class="right">
-											<input readonly name="name" id="name" maxlength=20 value="<?php print $row["budget"] ; ?>" type="text" style="width: 300px">
+											<input readonly name="name" id="name" maxlength=20 value="<?php print $row["budget"] ; ?>" type="text" class="standardWidth">
 										</td>
 									</tr>
 									<tr>
@@ -193,7 +193,7 @@ else {
 											<b><?php print __($guid, 'Title') ?></b><br/>
 										</td>
 										<td class="right">
-											<input readonly name="name" id="name" maxlength=60 value="<?php print $row["title"] ; ?>" type="text" style="width: 300px">
+											<input readonly name="name" id="name" maxlength=60 value="<?php print $row["title"] ; ?>" type="text" class="standardWidth">
 										</td>
 									</tr>
 									<tr>
@@ -201,7 +201,7 @@ else {
 											<b><?php print __($guid, 'Status') ?></b><br/>
 										</td>
 										<td class="right">
-											<input readonly name="name" id="name" maxlength=60 value="<?php print $row["status"] ; ?>" type="text" style="width: 300px">
+											<input readonly name="name" id="name" maxlength=60 value="<?php print $row["status"] ; ?>" type="text" class="standardWidth">
 										</td>
 									</tr>
 									<tr>
@@ -231,7 +231,7 @@ else {
 											</span>
 										</td>
 										<td class="right">
-											<input readonly name="name" id="name" maxlength=60 value="<?php print $row["cost"] ; ?>" type="text" style="width: 300px">
+											<input readonly name="name" id="name" maxlength=60 value="<?php print $row["cost"] ; ?>" type="text" class="standardWidth">
 										</td>
 									</tr>
 									<tr>
@@ -239,7 +239,7 @@ else {
 											<b><?php print __($guid, 'Count Against Budget') ?> *</b><br/>
 										</td>
 										<td class="right">
-											<input readonly name="countAgainstBudget" id="countAgainstBudget" maxlength=60 value="<?php print ynExpander($guid, $row["countAgainstBudget"]) ; ?>" type="text" style="width: 300px">
+											<input readonly name="countAgainstBudget" id="countAgainstBudget" maxlength=60 value="<?php print ynExpander($guid, $row["countAgainstBudget"]) ; ?>" type="text" class="standardWidth">
 										</td>
 									</tr>
 									<tr>
@@ -247,7 +247,7 @@ else {
 											<b><?php print __($guid, 'Purchase By') ?></b><br/>
 										</td>
 										<td class="right">
-											<input readonly name="purchaseBy" id="purchaseBy" maxlength=60 value="<?php print $row["purchaseBy"] ; ?>" type="text" style="width: 300px">
+											<input readonly name="purchaseBy" id="purchaseBy" maxlength=60 value="<?php print $row["purchaseBy"] ; ?>" type="text" class="standardWidth">
 										</td>
 									</tr>
 									<tr>
@@ -285,31 +285,31 @@ else {
 										<tr id="paymentDateRow">
 											<td> 
 												<b><?php print __($guid, 'Date Paid') ?></b><br/>
-												<span style="font-size: 90%"><i><?php print __($guid, 'Date of payment, not entry to system.') ?></i></span>
+												<span class="emphasis small"><?php print __($guid, 'Date of payment, not entry to system.') ?></span>
 											</td>
 											<td class="right">
-												<input readonly name="paymentDate" id="paymentDate" maxlength=10 value="<?php print dateConvertBack($guid, $row["paymentDate"]) ?>" type="text" style="width: 300px">
+												<input readonly name="paymentDate" id="paymentDate" maxlength=10 value="<?php print dateConvertBack($guid, $row["paymentDate"]) ?>" type="text" class="standardWidth">
 											</td>
 										</tr>
 										<tr id="paymentAmountRow">
 											<td> 
 												<b><?php print __($guid, 'Amount Paid') ?></b><br/>
-												<span style="font-size: 90%"><i><?php print __($guid, 'Final amount paid.') ?>
+												<span class="emphasis small"><?php print __($guid, 'Final amount paid.') ?>
 												<?php
 												if ($_SESSION[$guid]["currency"]!="") {
 													print "<span style='font-style: italic; font-size: 85%'>" . $_SESSION[$guid]["currency"] . "</span>" ;
 												}
 												?>
-												</i></span>
+												</span>
 											</td>
 											<td class="right">
-												<input readonly name="paymentAmount" id="paymentAmount" maxlength=10 value="<?php print number_format($row["paymentAmount"] , 2, ".", ",") ?>" type="text" style="width: 300px">
+												<input readonly name="paymentAmount" id="paymentAmount" maxlength=10 value="<?php print number_format($row["paymentAmount"] , 2, ".", ",") ?>" type="text" class="standardWidth">
 											</td>
 										</tr>
 										<tr id="payeeRow">
 											<td> 
 												<b><?php print __($guid, 'Payee') ?></b><br/>
-												<span style="font-size: 90%"><i><?php print __($guid, 'Staff who made, or arranged, the payment.') ?></i></span>
+												<span class="emphasis small"><?php print __($guid, 'Staff who made, or arranged, the payment.') ?></span>
 											</td>
 											<td class="right">
 												<?php
@@ -323,7 +323,7 @@ else {
 												if ($resultSelect->rowCount()==1) {
 													$rowSelect=$resultSelect->fetch() ;
 													?>
-													<input readonly name="payee" id="payee" maxlength=10 value="<?php print formatName(htmlPrep($rowSelect["title"]), ($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]),"Staff", true, true) ?>" type="text" style="width: 300px">
+													<input readonly name="payee" id="payee" maxlength=10 value="<?php print formatName(htmlPrep($rowSelect["title"]), ($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]),"Staff", true, true) ?>" type="text" class="standardWidth">
 													<?php
 												}
 												?>	
@@ -334,16 +334,16 @@ else {
 												<b><?php print __($guid, 'Payment Method') ?></b><br/>
 											</td>
 											<td class="right">
-												<input readonly name="paymentMethod" id="paymentMethod" maxlength=10 value="<?php print $row["paymentMethod"] ?>" type="text" style="width: 300px">
+												<input readonly name="paymentMethod" id="paymentMethod" maxlength=10 value="<?php print $row["paymentMethod"] ?>" type="text" class="standardWidth">
 											</td>
 										</tr>
 										<tr id="paymentIDRow">
 											<td> 
 												<b><?php print __($guid, 'Payment ID') ?></b><br/>
-												<span style="font-size: 90%"><i><?php print __($guid, 'Transaction ID to identify this payment.') ?></i></span>
+												<span class="emphasis small"><?php print __($guid, 'Transaction ID to identify this payment.') ?></span>
 											</td>
 											<td class="right">
-												<input readonly name="paymentID" id="paymentID" maxlength=100 value="<?php print $row["paymentID"] ?>" type="text" style="width: 300px">
+												<input readonly name="paymentID" id="paymentID" maxlength=100 value="<?php print $row["paymentID"] ?>" type="text" class="standardWidth">
 											</td>
 										</tr>
 										<?php

@@ -86,23 +86,23 @@ else {
 			} 
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/gradeScales_manage_edit_grade_addProcess.php" ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php print __($guid, 'Grade Scale') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 						</td>
 						<td class="right">
-							<input readonly name="name" id="name" maxlength=20 value="<?php print __($guid, $row["name"]) ?>" type="text" style="width: 300px">
+							<input readonly name="name" id="name" maxlength=20 value="<?php print __($guid, $row["name"]) ?>" type="text" class="standardWidth">
 						</td>
 					</tr>
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Value') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique for this grade scale.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Must be unique for this grade scale.') ?></span>
 						</td>
 						<td class="right">
-							<input name="value" id="value" maxlength=10 value="" type="text" style="width: 300px">
+							<input name="value" id="value" maxlength=10 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var value=new LiveValidation('value');
 								value.add(Validate.Presence);
@@ -112,10 +112,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Descriptor') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
-							<input name="descriptor" id="descriptor" maxlength=50 value="" type="text" style="width: 300px">
+							<input name="descriptor" id="descriptor" maxlength=50 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var descriptor=new LiveValidation('descriptor');
 								descriptor.add(Validate.Presence);
@@ -125,10 +125,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Sequence Number') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique for this grade scale.') ?><br/></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Must be unique for this grade scale.') ?><br/></span>
 						</td>
 						<td class="right">
-							<input name="sequenceNumber" id="sequenceNumber" maxlength=5 value="" type="text" style="width: 300px">
+							<input name="sequenceNumber" id="sequenceNumber" maxlength=5 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var sequenceNumber=new LiveValidation('sequenceNumber');
 								sequenceNumber.add(Validate.Presence);
@@ -138,10 +138,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Is Default?') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Preselects this option when using this grade scale in appropriate contexts.') ?><br/></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Preselects this option when using this grade scale in appropriate contexts.') ?><br/></span>
 						</td>
 						<td class="right">
-							<select name="isDefault" id="isDefault" style="width: 302px">
+							<select name="isDefault" id="isDefault" class="standardWidth">
 								<option value="N"><?php print ynExpander($guid, 'N') ?></option>
 								<option value="Y"><?php print ynExpander($guid, 'Y') ?></option>
 							</select>
@@ -149,7 +149,7 @@ else {
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+							<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 						</td>
 						<td class="right">
 							<input name="gibbonScaleID" id="gibbonScaleID" value="<?php print $gibbonScaleID ?>" type="hidden">

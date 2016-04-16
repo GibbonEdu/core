@@ -63,7 +63,7 @@ else {
 	
 	?>
 	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/department_manage_addProcess.php?address=" . $_SESSION[$guid]["address"] ?>" enctype="multipart/form-data">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<!-- FIELDS & CONTROLS FOR TYPE -->
 			<script type="text/javascript">
 				$(document).ready(function(){
@@ -83,7 +83,7 @@ else {
 					<b><?php print __($guid, 'Type') ?> *</b><br/>
 				</td>
 				<td class="right">
-					<select name="type" id="type" class='type' style="width: 300px">
+					<select name="type" id="type" class='type' class="standardWidth">
 						<option value='Learning Area'>Learning Area</option>
 						<option value='Administration'>Administration</option>
 					</select>
@@ -94,7 +94,7 @@ else {
 					<b><?php print __($guid, 'Name') ?> *</b><br/>
 				</td>
 				<td class="right">
-					<input name="name" id="name" maxlength=40 value="" type="text" style="width: 300px">
+					<input name="name" id="name" maxlength=40 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var name2=new LiveValidation('name');
 						name2.add(Validate.Presence);
@@ -106,7 +106,7 @@ else {
 					<b><?php print __($guid, 'Short Name') ?> *</b><br/>
 				</td>
 				<td class="right">
-					<input name="nameShort" id="nameShort" maxlength=4 value="" type="text" style="width: 300px">
+					<input name="nameShort" id="nameShort" maxlength=4 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var nameShort=new LiveValidation('nameShort');
 						nameShort.add(Validate.Presence);
@@ -118,7 +118,7 @@ else {
 					<b><?php print __($guid, 'Subject Listing') ?></b><br/>
 				</td>
 				<td class="right">
-					<input name="subjectListing" id="subjectListing" maxlength=255 value="" type="text" style="width: 300px">
+					<input name="subjectListing" id="subjectListing" maxlength=255 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
 			<tr>
@@ -130,7 +130,7 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Logo') ?></b><br/>
-					<span style="font-size: 90%"><i>125x125px jpg/png/gif</i></span>
+					<span class="emphasis small">125x125px jpg/png/gif</span>
 				</td>
 				<td class="right">
 					<input type="file" name="file" id="file"><br/><br/>
@@ -148,7 +148,7 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Staff') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 				</td>
 				<td class="right">
 					<select name="staff[]" id="staff[]" multiple style="width: 302px; height: 150px">
@@ -172,7 +172,7 @@ else {
 					<b><?php print __($guid, 'Role') ?></b><br/>
 				</td>
 				<td class="right">
-					<select name="roleLA" id="roleLA" style="width: 302px">
+					<select name="roleLA" id="roleLA" class="standardWidth">
 						<option value="Coordinator"><?php print __($guid, 'Coordinator') ?></option>
 						<option value="Assistant Coordinator"><?php print __($guid, 'Assistant Coordinator') ?></option>
 						<option value="Teacher (Curriculum)"><?php print __($guid, 'Teacher (Curriculum)') ?></option>
@@ -186,7 +186,7 @@ else {
 					<b>Role</b><br/>
 				</td>
 				<td class="right">
-					<select name="roleAdmin" id="roleAdmin" style="width: 302px">
+					<select name="roleAdmin" id="roleAdmin" class="standardWidth">
 						<option value="Director"><?php print __($guid, 'Director') ?></option>
 						<option value="Manager"><?php print __($guid, 'Manager') ?></option>
 						<option value="Administrator"><?php print __($guid, 'Administrator') ?></option>
@@ -196,7 +196,7 @@ else {
 			</tr>
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+					<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 				</td>
 				<td class="right">
 					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">

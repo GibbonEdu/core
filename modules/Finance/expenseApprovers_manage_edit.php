@@ -87,13 +87,13 @@ else {
 			$row=$result->fetch() ;
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/expenseApprovers_manage_editProcess.php?gibbonFinanceExpenseApproverID=$gibbonFinanceExpenseApproverID" ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Staff') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<select name="gibbonPersonID" id="gibbonPersonID" style="width: 302px">
+							<select name="gibbonPersonID" id="gibbonPersonID" class="standardWidth">
 								<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
 								<?php
 								try {
@@ -125,10 +125,10 @@ else {
 						<tr>
 							<td> 
 								<b><?php print __($guid, 'Sequence Number') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique.') ?></i></span>
+								<span class="emphasis small"><?php print __($guid, 'Must be unique.') ?></span>
 							</td>
 							<td class="right">
-								<input name="sequenceNumber" ID="sequenceNumber" value="<?php print $row["sequenceNumber"] ?>" type="text" style="width: 300px">
+								<input name="sequenceNumber" ID="sequenceNumber" value="<?php print $row["sequenceNumber"] ?>" type="text" class="standardWidth">
 								<script type="text/javascript">
 									var sequenceNumber=new LiveValidation('sequenceNumber');
 									sequenceNumber.add(Validate.Numericality, { minimum: 0 } );
@@ -141,7 +141,7 @@ else {
 					?>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+							<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

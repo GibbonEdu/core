@@ -100,11 +100,11 @@ else {
 			else {
 				?>
 				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/course_rollover.php&step=2" ?>">
-					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>	
 						<tr>
 							<td colspan=2 style='text-align: justify'> 
 								<?php
-								print sprintf(__($guid, 'By clicking the "Proceed" button below you will initiate the course enrolment rollover from %1$s to %2$s. In a big school this operation may take some time to complete. %3$sYou are really, very strongly advised to backup all data before you proceed%4$s.'), "<b>" . $_SESSION[$guid]["gibbonSchoolYearName"] . "</b>", "<b>" . $nameNext. "</b>", "<span style=\"color: #cc0000\"><i>", "</i></span>") ;
+								print sprintf(__($guid, 'By clicking the "Proceed" button below you will initiate the course enrolment rollover from %1$s to %2$s. In a big school this operation may take some time to complete. %3$sYou are really, very strongly advised to backup all data before you proceed%4$s.'), "<b>" . $_SESSION[$guid]["gibbonSchoolYearName"] . "</b>", "<b>" . $nameNext. "</b>", "<span style=\"color: #cc0000\"><i>", "</span>") ;
 								?>
 							</td>
 						</tr>
@@ -160,7 +160,7 @@ else {
 					print sprintf(__($guid, 'Options'), $nameNext) ;
 					print "</h4>" ;
 					?>
-					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>	
 						<tr>
 							<td style='width: 275px'> 
 								<b><?php print __($guid, 'Include Students') ?> *</b><br/>
@@ -290,7 +290,7 @@ else {
 					print "<table cellspacing='0' style='width: 100%'>" ;	
 						print "<tr>" ;
 							print "<td>" ;
-								print "<span style='font-size: 90%'><i>* " . __($guid, "denotes a required field") . "</i></span>" ;
+								print "<span style='font-size: 90%'><i>* " . __($guid, "denotes a required field") . "</span>" ;
 							print "</td>" ;
 							print "<td class='right'>" ;
 								print "<input type='hidden' name='nextYear' value='$nextYear'>" ;

@@ -125,14 +125,14 @@ else {
 					$row=$result->fetch() ;
 					?>
 					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/outcomes_editProcess.php?gibbonOutcomeID=$gibbonOutcomeID&filter2=" . $filter2 ?>">
-						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+						<table class='smallIntBorder fullWidth' cellspacing='0'>	
 							<tr>
 								<td style='width: 275px'> 
 									<b><?php print __($guid, 'Scope') ?> *</b><br/>
-									<span style="font-size: 90%"><i></i></span>
+									<span class="emphasis small"></span>
 								</td>
 								<td class="right">
-									<input readonly name="scope" id="scope" value="<?php print $row["scope"] ?>" type="text" style="width: 300px">
+									<input readonly name="scope" id="scope" value="<?php print $row["scope"] ?>" type="text" class="standardWidth">
 								</td>
 							</tr>
 							
@@ -154,11 +154,11 @@ else {
 								<tr>
 									<td> 
 										<b><?php print __($guid, 'Learning Area') ?> *</b><br/>
-										<span style="font-size: 90%"><i></i></span>
+										<span class="emphasis small"></span>
 									</td>
 									<td class="right">
-										<input readonly name="gibbonDepartment" id="gibbonDepartment" value="<?php print $rowLearningAreas["name"] ?>" type="text" style="width: 300px">
-										<input name="gibbonDepartmentID" id="gibbonDepartmentID" value="<?php print $row["gibbonDepartmentID"] ?>" type="hidden" style="width: 300px">
+										<input readonly name="gibbonDepartment" id="gibbonDepartment" value="<?php print $rowLearningAreas["name"] ?>" type="text" class="standardWidth">
+										<input name="gibbonDepartmentID" id="gibbonDepartmentID" value="<?php print $row["gibbonDepartmentID"] ?>" type="hidden" class="standardWidth">
 									</td>
 								</tr>
 								<?php
@@ -171,7 +171,7 @@ else {
 									<b><?php print __($guid, 'Name') ?> *</b><br/>
 								</td>
 								<td class="right">
-									<input name="name" id="name" maxlength=100 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
+									<input name="name" id="name" maxlength=100 value="<?php print $row["name"] ?>" type="text" class="standardWidth">
 									<script type="text/javascript">
 										var name2=new LiveValidation('name');
 										name2.add(Validate.Presence);
@@ -183,7 +183,7 @@ else {
 									<b><?php print __($guid, 'Short Name') ?> *</b><br/>
 								</td>
 								<td class="right">
-									<input name="nameShort" id="nameShort" maxlength=14 value="<?php print $row["nameShort"] ?>" type="text" style="width: 300px">
+									<input name="nameShort" id="nameShort" maxlength=14 value="<?php print $row["nameShort"] ?>" type="text" class="standardWidth">
 									<script type="text/javascript">
 										var nameShort=new LiveValidation('nameShort');
 										nameShort.add(Validate.Presence);
@@ -193,10 +193,10 @@ else {
 							<tr>
 								<td> 
 									<b><?php print __($guid, 'Active') ?> *</b><br/>
-									<span style="font-size: 90%"><i></i></span>
+									<span class="emphasis small"></span>
 								</td>
 								<td class="right">
-									<select name="active" id="active" style="width: 302px">
+									<select name="active" id="active" class="standardWidth">
 										<option <?php if ($row["active"]=="Y") { print "selected" ; } ?> value="Y"><?php print __($guid, 'Yes') ?></option>
 										<option <?php if ($row["active"]=="N") { print "selected" ; } ?> value="N"><?php print __($guid, 'No') ?></option>
 									</select>
@@ -208,7 +208,7 @@ else {
 									<b><?php print __($guid, 'Category') ?></b><br/>
 								</td>
 								<td class="right">
-									<input name="category" id="category" maxlength=100 value="<?php print $row["category"] ?>" type="text" style="width: 300px">
+									<input name="category" id="category" maxlength=100 value="<?php print $row["category"] ?>" type="text" class="standardWidth">
 									<script type="text/javascript">
 										$(function() {
 											var availableTags=[
@@ -241,7 +241,7 @@ else {
 							<tr>
 								<td> 
 									<b><?php print __($guid, 'Year Groups') ?></b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'Relevant student year groups') ?><br/></i></span>
+									<span class="emphasis small"><?php print __($guid, 'Relevant student year groups') ?><br/></span>
 								</td>
 								<td class="right">
 									<?php 
@@ -265,7 +265,7 @@ else {
 							</tr>
 							<tr>
 								<td>
-									<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+									<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 								</td>
 								<td class="right">
 									<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

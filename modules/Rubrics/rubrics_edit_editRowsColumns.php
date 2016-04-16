@@ -125,10 +125,10 @@ else {
 							<tr>
 								<td style='width: 275px'> 
 									<b><?php print __($guid, 'Scope') ?> *</b><br/>
-									<span style="font-size: 90%"><i></i></span>
+									<span class="emphasis small"></span>
 								</td>
 								<td class="right">
-									<input readonly name="scope" id="scope" value="<?php print $row["scope"] ?>" type="text" style="width: 300px">
+									<input readonly name="scope" id="scope" value="<?php print $row["scope"] ?>" type="text" class="standardWidth">
 								</td>
 							</tr>
 							
@@ -151,11 +151,11 @@ else {
 								<tr>
 									<td> 
 										<b><?php print __($guid, 'Learning Area') ?> *</b><br/>
-										<span style="font-size: 90%"><i></i></span>
+										<span class="emphasis small"></span>
 									</td>
 									<td class="right">
-										<input readonly name="department" id="department" value="<?php print $rowLearningAreas["name"] ?>" type="text" style="width: 300px" maxlength=20>
-										<input name="gibbonDepartmentID" id="gibbonDepartmentID" value="<?php print $row["gibbonDepartmentID"] ?>" type="hidden" style="width: 300px">
+										<input readonly name="department" id="department" value="<?php print $rowLearningAreas["name"] ?>" type="text" class="standardWidth" maxlength=20>
+										<input name="gibbonDepartmentID" id="gibbonDepartmentID" value="<?php print $row["gibbonDepartmentID"] ?>" type="hidden" class="standardWidth">
 									</td>
 								</tr>
 								<?php
@@ -166,7 +166,7 @@ else {
 									<b><?php print __($guid, 'Name') ?> *</b><br/>
 								</td>
 								<td class="right">
-									<input readonly name="name" id="name" maxlength=50 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
+									<input readonly name="name" id="name" maxlength=50 value="<?php print $row["name"] ?>" type="text" class="standardWidth">
 								</td>
 							</tr>
 							
@@ -199,7 +199,7 @@ else {
 									<tr>
 										<td> 
 											<b><?php print sprintf(__($guid, 'Row %1$s Title'), ($count+1)) ?></b><br/>
-											<span style="font-size: 90%"><i></i></span>
+											<span class="emphasis small"></span>
 										</td>
 										<td class="right">
 											<?php
@@ -309,7 +309,7 @@ else {
 												}
 												?>
 											</select>
-											<input name="rowTitle[]" id="rowTitle-<?php print $count ?>" value="<?php print $rowRows["title"] ?>" type="text" style="width: 300px" maxlength=40>
+											<input name="rowTitle[]" id="rowTitle-<?php print $count ?>" value="<?php print $rowRows["title"] ?>" type="text" class="standardWidth" maxlength=40>
 											<input name="gibbonRubricRowID[]" id="gibbonRubricRowID[]" value="<?php print $rowRows["gibbonRubricRowID"] ?>" type="hidden">
 										</td>
 									</tr>
@@ -350,10 +350,10 @@ else {
 										<tr>
 											<td> 
 												<b><?php print sprintf(__($guid, 'Column %1$s Title'), ($count+1)) ?></b><br/>
-												<span style="font-size: 90%"><i></i></span>
+												<span class="emphasis small"></span>
 											</td>
 											<td class="right">
-												<input name="columnTitle[]" id="columnTitle[]" value="<?php print $rowColumns["title"] ?>" type="text" style="width: 300px" maxlength=20>
+												<input name="columnTitle[]" id="columnTitle[]" value="<?php print $rowColumns["title"] ?>" type="text" class="standardWidth" maxlength=20>
 												<input name="gibbonRubricColumnID[]" id="gibbonRubricColumnID[]" value="<?php print $rowColumns["gibbonRubricColumnID"] ?>" type="hidden">
 											</td>
 										</tr>
@@ -369,7 +369,7 @@ else {
 										<tr>
 											<td> 
 												<b><?php print sprintf(__($guid, 'Column %1$s Grade'), ($count+1)) ?></b><br/>
-												<span style="font-size: 90%"><i></i></span>
+												<span class="emphasis small"></span>
 											</td>
 											<td class="right">
 												<?php
@@ -404,7 +404,7 @@ else {
 							
 							<tr>
 								<td>
-									<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+									<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 								</td>
 								<td class="right">
 									<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

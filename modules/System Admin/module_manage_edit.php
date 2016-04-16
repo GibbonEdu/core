@@ -87,14 +87,14 @@ else {
 			$row=$result->fetch() ;
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/module_manage_editProcess.php?gibbonModuleID=$gibbonModuleID" ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php print __($guid, 'Name') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 						</td>
 						<td class="right">
-							<input readonly name="name" id="name" maxlength=20 value="<?php print htmlPrep(__($guid, $row["name"])) ?>" type="text" style="width: 300px">
+							<input readonly name="name" id="name" maxlength=20 value="<?php print htmlPrep(__($guid, $row["name"])) ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var name2=new LiveValidation('name');
 								name2.add(Validate.Presence);
@@ -104,10 +104,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Description') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 						</td>
 						<td class="right">
-							<input readonly name="description" id="description" maxlength=100 value="<?php print htmlPrep(__($guid, $row["description"])) ?>" type="text" style="width: 300px">
+							<input readonly name="description" id="description" maxlength=100 value="<?php print htmlPrep(__($guid, $row["description"])) ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var description=new LiveValidation('description');
 								description.add(Validate.Presence);
@@ -117,10 +117,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Category') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Determines menu structure') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Determines menu structure') ?></span>
 						</td>
 						<td class="right">
-							<input name="category" id="category" maxlength=10 value="<?php print htmlPrep(__($guid, $row["category"])) ?>" type="text" style="width: 300px">
+							<input name="category" id="category" maxlength=10 value="<?php print htmlPrep(__($guid, $row["category"])) ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var category=new LiveValidation('category');
 								category.add(Validate.Presence);
@@ -130,10 +130,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Active') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
-							<select name="active" id="active" style="width: 302px">
+							<select name="active" id="active" class="standardWidth">
 								<option <?php if ($row["active"]=="Y") {print "selected ";}?>value="Y"><?php print __($guid, 'Yes') ?></option>
 								<option <?php if ($row["active"]=="N") {print "selected ";}?>value="N"><?php print __($guid, 'No') ?></option>
 							</select>
@@ -141,7 +141,7 @@ else {
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+							<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

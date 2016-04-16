@@ -63,11 +63,11 @@ else {
 		?>
 	
 		<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php?q=/modules/Tracking/graphing.php">
-			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+			<table class='smallIntBorder fullWidth' cellspacing='0'>	
 				<tr>
 					<td style='width: 275px'> 
 						<b><?php print __($guid, 'Student') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></i></span>
+						<span class="emphasis small"><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 					</td>
 					<td class="right">
 						<select name="gibbonPersonIDs[]" id="gibbonPersonIDs[]" multiple style="width: 302px; height: 150px">
@@ -135,7 +135,7 @@ else {
 							$effortTitle=$effortAlt ;
 						}
 						?>
-						<select name="dataType" id="dataType" style="width: 302px">
+						<select name="dataType" id="dataType" class="standardWidth">
 							<option <?php if ($dataType=="attainment") { print "selected" ; } ?> value="attainment"><?php print __($guid, $attainmentTitle) ?></option>
 							<option <?php if ($dataType=="effort") { print "selected" ; } ?> value="effort"><?php print __($guid, $effortTitle) ?></option>
 						</select>
@@ -144,7 +144,7 @@ else {
 				<tr>
 					<td> 
 						<b><?php print __($guid, 'Learning Areas') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print __($guid, 'Only Learning Areas for which the student has data will be displayed.') ?></i></span>
+						<span class="emphasis small"><?php print __($guid, 'Only Learning Areas for which the student has data will be displayed.') ?></span>
 					</td>
 					<td class="right">
 						<?php 

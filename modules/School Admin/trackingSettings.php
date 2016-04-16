@@ -58,7 +58,7 @@ else {
 	?>
 
 	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/trackingSettingsProcess.php" ?>">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">
+		<table class='smallIntBorder fullWidth' cellspacing='0'>
 			<?php
 			$yearGroups=getYearGroups($connection2) ;
 			if ($yearGroups=="") {
@@ -184,7 +184,7 @@ else {
 
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+					<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

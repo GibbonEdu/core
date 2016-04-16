@@ -57,13 +57,13 @@ else {
 	?>
 	
 	<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr>
 				<td style='width: 275px'> 
 					<b><?php print __($guid, 'Timetable') ?></b><br/>
 				</td>
 				<td class="right">
-					<select name="gibbonTTID" id="gibbonTTID" style="width: 302px">
+					<select name="gibbonTTID" id="gibbonTTID" class="standardWidth">
 						<option value='Please select...'><?php print __($guid, 'Please select...') ?></option>
 						<?php
 						try {
@@ -97,7 +97,7 @@ else {
 					<b><?php print __($guid, 'Facility Type') ?></b><br/>
 				</td>
 				<td class="right">
-					<select name="spaceType" id="spaceType" style="width: 302px">
+					<select name="spaceType" id="spaceType" class="standardWidth">
 						<option <?php if ($spaceType=="") { print "selected" ; } ?> value=''><?php print __($guid, 'All') ?></option>
 						<option <?php if ($spaceType=="Classroom") { print "selected" ; } ?> value='Classroom'><?php print __($guid, 'Classroom') ?></option>
 						<option <?php if ($spaceType=="Performance") { print "selected" ; } ?> value='Performance'><?php print __($guid, 'Performance') ?></option>
@@ -118,7 +118,7 @@ else {
 					<b><?php print __($guid, 'Date') ?></b><br/>
 				</td>
 				<td class="right">
-					<input name="ttDate" id="ttDate" maxlength=10 value="<?php print $ttDate ?>" type="text" style="width: 300px">
+					<input name="ttDate" id="ttDate" maxlength=10 value="<?php print $ttDate ?>" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var ttDate=new LiveValidation('ttDate');
 						ttDate.add(Validate.Presence);

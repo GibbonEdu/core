@@ -102,14 +102,14 @@ else {
 
 				?>
 				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/student_view_details_notes_addProcess.php?gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=$subpage&category=" . $_GET["category"] . "&allStudents=$allStudents" ?>">
-					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>	
 						<tr>
 							<td style='width: 275px'> 
 								<b><?php print __($guid, 'Title') ?> *</b><br/>
-								<span style="font-size: 90%"><i></i></span>
+								<span class="emphasis small"></span>
 							</td>
 							<td class="right">
-								<input name="title" id="title" maxlength=100 value="" type="text" style="width: 300px">
+								<input name="title" id="title" maxlength=100 value="" type="text" class="standardWidth">
 								<script type="text/javascript">
 									var title=new LiveValidation('title');
 									title.add(Validate.Presence);
@@ -129,10 +129,10 @@ else {
 							<tr>
 								<td style='width: 275px'> 
 									<b><?php print __($guid, 'Category') ?> *</b><br/>
-									<span style="font-size: 90%"><i></i></span>
+									<span class="emphasis small"></span>
 								</td>
 								<td class="right">
-									<select name="gibbonStudentNoteCategoryID" id="gibbonStudentNoteCategoryID" style="width: 302px">
+									<select name="gibbonStudentNoteCategoryID" id="gibbonStudentNoteCategoryID" class="standardWidth">
 										<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
 										<?php
 										while ($rowCategories=$resultCategories->fetch()) {
@@ -176,7 +176,7 @@ else {
 						</tr>
 						<tr>
 							<td>
-								<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+								<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 							</td>
 							<td class="right">
 								<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

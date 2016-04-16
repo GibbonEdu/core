@@ -79,13 +79,13 @@ else {
 			print "</h2>" ;
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/spaceChange_manage_add.php&step=2" ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Class') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<select name="gibbonCourseClassID" id="gibbonCourseClassID" style="width: 302px">
+							<select name="gibbonCourseClassID" id="gibbonCourseClassID" class="standardWidth">
 								<option value='Please select...'><?php print __($guid, 'Please select...') ?></option>
 								<?php
 								try {
@@ -114,7 +114,7 @@ else {
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+							<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
@@ -165,14 +165,14 @@ else {
 				$rowSelect=$resultSelect->fetch() ;
 				?>
 				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/spaceChange_manage_addProcess.php" ?>">
-					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>	
 						<tr>
 							<td style='width: 275px'> 
 								<b><?php print __($guid, 'Class') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+								<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 							</td>
 							<td class="right">
-								<input readonly name="class" id="class" value="<?php print $rowSelect["course"] . "." . $rowSelect["class"] ?>" type="text" style="width: 300px">
+								<input readonly name="class" id="class" value="<?php print $rowSelect["course"] . "." . $rowSelect["class"] ?>" type="text" class="standardWidth">
 							</td>
 						</tr>
 						<tr>
@@ -180,7 +180,7 @@ else {
 								<b><?php print __($guid, 'Upcoming Class Slots') ?> *</b><br/>
 							</td>
 							<td class="right">
-								<select name="gibbonTTDayRowClassID" id="gibbonTTDayRowClassID" style="width: 302px">
+								<select name="gibbonTTDayRowClassID" id="gibbonTTDayRowClassID" class="standardWidth">
 									<option value='Please select...'><?php print __($guid, 'Please select...') ?></option>
 									<?php
 									try {
@@ -208,7 +208,7 @@ else {
 								<b><?php print __($guid, 'Facility') ?></b><br/>
 							</td>
 							<td class="right">
-								<select name="gibbonSpaceID" id="gibbonSpaceID" style="width: 302px">
+								<select name="gibbonSpaceID" id="gibbonSpaceID" class="standardWidth">
 								<?php
 								print "<option value=''></option>" ;
 								try {
@@ -227,7 +227,7 @@ else {
 						</tr>
 						<tr>
 							<td>
-								<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+								<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 							</td>
 							<td class="right">
 								<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

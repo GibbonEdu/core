@@ -125,7 +125,7 @@ else {
 								
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/library_lending_item_signoutProcess.php?name=" . $_GET["name"] . "&gibbonLibraryTypeID=" . $_GET["gibbonLibraryTypeID"] . "&gibbonSpaceID=" . $_GET["gibbonSpaceID"] . "&status=" . $_GET["status"] ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr class='break'>
 						<td colspan=2>
 							<h3><?php print __($guid, 'Item Details') ?></h3>
@@ -134,28 +134,28 @@ else {
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php print __($guid, 'ID') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 						</td>
 						<td class="right">
-							<input readonly name="name" id="id" value="<?php print $row["id"] ?>" type="text" style="width: 300px">
+							<input readonly name="name" id="id" value="<?php print $row["id"] ?>" type="text" class="standardWidth">
 						</td>
 					</tr>
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Name') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 						</td>
 						<td class="right">
-							<input readonly name="name" id="name" value="<?php print $row["name"] ?>" type="text" style="width: 300px">
+							<input readonly name="name" id="name" value="<?php print $row["name"] ?>" type="text" class="standardWidth">
 						</td>
 					</tr>
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Current Status') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 						</td>
 						<td class="right">
-							<input readonly name="statusCurrent" id="statusCurrent" value="<?php print $row["status"] ?>" type="text" style="width: 300px">
+							<input readonly name="statusCurrent" id="statusCurrent" value="<?php print $row["status"] ?>" type="text" class="standardWidth">
 						</td>
 					</tr>
 					<tr class='break'>
@@ -167,10 +167,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'New Status') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
-							<select name="status" id="status" style="width: 302px">
+							<select name="status" id="status" class="standardWidth">
 								<option value="On Loan" /> <?php print __($guid, 'On Loan') ?>
 								<option value="Reserved" /> <?php print __($guid, 'Reserved') ?>
 								<option value="Decommissioned" /> <?php print __($guid, 'Decommissioned') ?>
@@ -182,7 +182,7 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Responsible User') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Who is responsible for this new status?') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Who is responsible for this new status?') ?></span>
 						</td>
 						<td class="right">
 							<?php
@@ -229,10 +229,10 @@ else {
 						?>
 						<td> 
 							<b><?php print __($guid, 'Expected Return Date') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print sprintf(__($guid, 'Default loan length is %1$s day(s).'), $loanLength) ?></i></span>
+							<span class="emphasis small"><?php print sprintf(__($guid, 'Default loan length is %1$s day(s).'), $loanLength) ?></span>
 						</td>
 						<td class="right">
-							<input name="returnExpected" id="returnExpected" maxlength=10 value="<?php print dateConvertBack($guid, date("Y-m-d", (time()+(24*60*60*$loanLength)))) ?>" type="text" style="width: 300px">
+							<input name="returnExpected" id="returnExpected" maxlength=10 value="<?php print dateConvertBack($guid, date("Y-m-d", (time()+(24*60*60*$loanLength)))) ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var returnExpected=new LiveValidation('returnExpected');
 								returnExpected.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
@@ -252,10 +252,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Action') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'What to do when item is next returned.') ?><br/></i></span>
+							<span class="emphasis small"><?php print __($guid, 'What to do when item is next returned.') ?><br/></span>
 						</td>
 						<td class="right">
-							<select name="returnAction" id="returnAction" style="width: 302px">
+							<select name="returnAction" id="returnAction" class="standardWidth">
 								<option value="" />
 								<option value="Reserve" /> <?php print __($guid, 'Reserve') ?>
 								<option value="Decommission" /> <?php print __($guid, 'Decommission') ?>
@@ -266,7 +266,7 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Responsible User') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Who will be responsible for the future status?') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Who will be responsible for the future status?') ?></span>
 						</td>
 						<td class="right">
 							<?php
@@ -302,7 +302,7 @@ else {
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+							<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 						</td>
 						<td class="right">
 							<input name="gibbonLibraryItemID" id="gibbonLibraryItemID" value="<?php print $gibbonLibraryItemID ?>" type="hidden">

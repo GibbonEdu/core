@@ -58,7 +58,7 @@ else {
 	?>
 	
 	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/applicationFormSettingsProcess.php" ?>">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr class='break'>
 				<td colspan=2> 
 					<h3><?php print __($guid, 'General Options') ?></h3>
@@ -79,10 +79,10 @@ else {
 				?>
 				<td style='width: 275px'> 
 					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=12 style="width: 300px"><?php print $row["value"] ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=12 class="standardWidth"><?php print $row["value"] ?></textarea>
 				</td>
 			</tr>
 			<tr>
@@ -100,10 +100,10 @@ else {
 				?>
 				<td style='width: 275px'> 
 					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=12 style="width: 300px"><?php print $row["value"] ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=12 class="standardWidth"><?php print $row["value"] ?></textarea>
 				</td>
 			</tr>
 			<tr>
@@ -121,10 +121,10 @@ else {
 				?>
 				<td style='width: 275px'> 
 					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td stclass="right">
-					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print htmlPrep($row["value"]) ?>" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
@@ -148,10 +148,10 @@ else {
 				?>
 				<td> 
 					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=12 style="width: 300px"><?php print $row["value"] ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=12 class="standardWidth"><?php print $row["value"] ?></textarea>
 				</td>
 			</tr>
 			<tr>
@@ -169,10 +169,10 @@ else {
 				?>
 				<td> 
 					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=8 style="width: 300px"><?php print $row["value"] ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=8 class="standardWidth"><?php print $row["value"] ?></textarea>
 				</td>
 			</tr>
 			<tr>
@@ -190,10 +190,10 @@ else {
 				?>
 				<td> 
 					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=8 style="width: 300px"><?php print $row["value"] ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=8 class="standardWidth"><?php print $row["value"] ?></textarea>
 				</td>
 			</tr>
 			<tr>
@@ -211,7 +211,7 @@ else {
 				?>
 				<td> 
 					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i>
+					<span class="emphasis small">
 						<?php 
 							print $row["description"] ;
 							$currency=getSettingByScope($connection2, "System", "currency") ;
@@ -219,10 +219,10 @@ else {
 								print " " . sprintf(__($guid, 'In %1$s.'), $currency) ;
 							}
 						?>
-					</i></span>
+					</span>
 				</td>
 				<td class="right">
-					<input type='text' name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 300px" value='<?php print htmlPrep($row["value"]) ?>'>
+					<input type='text' name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth" value='<?php print htmlPrep($row["value"]) ?>'>
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Numericality, { minimum: 0 });
@@ -246,10 +246,10 @@ else {
 				?>
 				<td> 
 					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
 						<option <?php if ($row["value"]=="N") {print "selected ";} ?>value="N"><?php print __($guid, 'No') ?></option>
 						<option <?php if ($row["value"]=="Y") {print "selected ";} ?>value="Y"><?php print __($guid, 'Yes') ?></option>
 					</select>
@@ -268,10 +268,10 @@ else {
 				?>
 				<td> 
 					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=4 type="text" style="width: 300px"><?php print $row["value"] ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=4 type="text" class="standardWidth"><?php print $row["value"] ?></textarea>
 				</td>
 			</tr>
 			<tr>
@@ -287,10 +287,10 @@ else {
 				?>
 				<td> 
 					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=4 type="text" style="width: 300px"><?php print $row["value"] ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=4 type="text" class="standardWidth"><?php print $row["value"] ?></textarea>
 				</td>
 			</tr>
 			
@@ -312,10 +312,10 @@ else {
 				?>
 				<td> 
 					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=4 type="text" style="width: 300px"><?php print $row["value"] ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=4 type="text" class="standardWidth"><?php print $row["value"] ?></textarea>
 				</td>
 			</tr>
 			<tr>
@@ -331,10 +331,10 @@ else {
 				?>
 				<td> 
 					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=4 type="text" style="width: 300px"><?php print $row["value"] ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=4 type="text" class="standardWidth"><?php print $row["value"] ?></textarea>
 				</td>
 			</tr>
 			<tr>
@@ -352,10 +352,10 @@ else {
 				?>
 				<td> 
 					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
 						<option <?php if ($row["value"]=="N") {print "selected ";} ?>value="N">No</option>
 						<option <?php if ($row["value"]=="Y") {print "selected ";} ?>value="Y">Yes</option>
 					</select>
@@ -388,10 +388,10 @@ else {
 				?>
 				<td> 
 					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
 						<option <?php if ($row["value"]=="Y") {print "selected ";} ?>value="Y"><?php print ynExpander($guid, 'Y') ?></option>
 						<option <?php if ($row["value"]=="N") {print "selected ";} ?>value="N"><?php print ynExpander($guid, 'N') ?></option>
 					</select>
@@ -410,10 +410,10 @@ else {
 				?>
 				<td> 
 					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=4 type="text" style="width: 300px"><?php print $row["value"] ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=4 type="text" class="standardWidth"><?php print $row["value"] ?></textarea>
 				</td>
 			</tr>
 			<tr>
@@ -429,10 +429,10 @@ else {
 				?>
 				<td> 
 					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=4 type="text" style="width: 300px"><?php print $row["value"] ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=4 type="text" class="standardWidth"><?php print $row["value"] ?></textarea>
 				</td>
 			</tr>
 			
@@ -456,10 +456,10 @@ else {
 				?>
 				<td> 
 					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<input type='text' name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 300px" value='<?php print htmlPrep($row["value"]) ?>'>
+					<input type='text' name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth" value='<?php print htmlPrep($row["value"]) ?>'>
 				</td>
 			</tr>
 			<tr>
@@ -477,10 +477,10 @@ else {
 				?>
 				<td> 
 					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=8 style="width: 300px"><?php print $row["value"] ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=8 class="standardWidth"><?php print $row["value"] ?></textarea>
 				</td>
 			</tr>
 			<tr>
@@ -498,10 +498,10 @@ else {
 				?>
 				<td> 
 					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
 						<option <?php if ($row["value"]=="Y") {print "selected ";} ?>value="Y"><?php print ynExpander($guid, 'Y') ?></option>
 						<option <?php if ($row["value"]=="N") {print "selected ";} ?>value="N"><?php print ynExpander($guid, 'N') ?></option>
 					</select>
@@ -522,10 +522,10 @@ else {
 				?>
 				<td> 
 					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=8 style="width: 300px"><?php print $row["value"] ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=8 class="standardWidth"><?php print $row["value"] ?></textarea>
 				</td>
 			</tr>
 			<tr>
@@ -543,10 +543,10 @@ else {
 				?>
 				<td> 
 					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
 						<option <?php if ($row["value"]=="Y") {print "selected ";} ?>value="Y"><?php print ynExpander($guid, 'Y') ?></option>
 						<option <?php if ($row["value"]=="N") {print "selected ";} ?>value="N"><?php print ynExpander($guid, 'N') ?></option>
 					</select>
@@ -567,10 +567,10 @@ else {
 				?>
 				<td> 
 					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<input type='text' name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 300px" value='<?php print htmlPrep($row["value"]) ?>'>
+					<input type='text' name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth" value='<?php print htmlPrep($row["value"]) ?>'>
 				</td>
 			</tr>
 			<tr>
@@ -588,10 +588,10 @@ else {
 				?>
 				<td> 
 					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<input type='text' name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 300px" value='<?php print htmlPrep($row["value"]) ?>'>
+					<input type='text' name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth" value='<?php print htmlPrep($row["value"]) ?>'>
 				</td>
 			</tr>
 			<tr>
@@ -609,10 +609,10 @@ else {
 				?>
 				<td> 
 					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
 						<option <?php if ($row["value"]=="Y") {print "selected ";} ?>value="Y"><?php print ynExpander($guid, 'Y') ?></option>
 						<option <?php if ($row["value"]=="N") {print "selected ";} ?>value="N"><?php print ynExpander($guid, 'N') ?></option>
 					</select>
@@ -621,7 +621,7 @@ else {
 			
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+					<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

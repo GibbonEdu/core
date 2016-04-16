@@ -96,23 +96,23 @@ else {
 			?>
 			
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/staff_manage_edit_contract_editProcess.php?gibbonStaffContractID=$gibbonStaffContractID&gibbonStaffID=$gibbonStaffID&search=$search" ?>" enctype="multipart/form-data">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php print __($guid, 'Person') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 						</td>
 						<td class="right">
-							<input readonly name="person" id="person" maxlength=255 value="<?php print formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Staff", false, true) ?>" type="text" style="width: 300px">
+							<input readonly name="person" id="person" maxlength=255 value="<?php print formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Staff", false, true) ?>" type="text" class="standardWidth">
 						</td>
 					</tr>
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php print __($guid, 'Title') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'A name to identify this contract.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'A name to identify this contract.') ?></span>
 						</td>
 						<td class="right">
-							<input name="title" id="title" maxlength=100 value="<?php print htmlPrep($row["title"]) ?>" type="text" style="width: 300px">
+							<input name="title" id="title" maxlength=100 value="<?php print htmlPrep($row["title"]) ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var title=new LiveValidation('title');
 								title.add(Validate.Presence);
@@ -124,7 +124,7 @@ else {
 							<b><?php print __($guid, 'Status') ?></b><br/>
 						</td>
 						<td class="right">
-							<select style="width: 302px" name="status">
+							<select class="standardWidth" name="status">
 								<option value=""></option>
 								<option <?php if ($row["status"]=="Pending") { print "selected" ; } ?> value="Pending"><?php print __($guid, 'Pending') ?></option>
 								<option <?php if ($row["status"]=="Active") { print "selected" ; } ?> value="Active"><?php print __($guid, 'Active') ?></option>
@@ -137,7 +137,7 @@ else {
 							<b><?php print __($guid, 'Start Date') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<input name="dateStart" id="dateStart" maxlength=10 value="<?php print dateConvertBack($guid, $row["dateStart"]) ?>" type="text" style="width: 300px">
+							<input name="dateStart" id="dateStart" maxlength=10 value="<?php print dateConvertBack($guid, $row["dateStart"]) ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var dateStart=new LiveValidation('dateStart');
 								dateStart.add(Validate.Presence);
@@ -155,7 +155,7 @@ else {
 							<b><?php print __($guid, 'End Date') ?></b><br/>
 						</td>
 						<td class="right">
-							<input name="dateEnd" id="dateEnd" maxlength=10 value="<?php if ($row["dateEnd"]!="") { print dateConvertBack($guid, $row["dateEnd"]) ; } ?>" type="text" style="width: 300px">
+							<input name="dateEnd" id="dateEnd" maxlength=10 value="<?php if ($row["dateEnd"]!="") { print dateConvertBack($guid, $row["dateEnd"]) ; } ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var dateEnd=new LiveValidation('dateEnd');
 								dateEnd.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
@@ -175,10 +175,10 @@ else {
 						<tr>
 							<td> 
 								<b><?php print __($guid, 'Salary Scale') ?></b><br/>
-								<span style="font-size: 90%"><i></i></span>
+								<span class="emphasis small"></span>
 							</td>
 							<td class="right">
-								<select name="salaryScale" id="salaryScale" style="width: 302px">
+								<select name="salaryScale" id="salaryScale" class="standardWidth">
 									<option value=""></option>
 									<?php
 									for ($i=0; $i<count($types); $i++) {
@@ -200,7 +200,7 @@ else {
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php print __($guid, 'Salary') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["currency"] ?><br/></i></span>
+							<span class="emphasis small"><?php print $_SESSION[$guid]["currency"] ?><br/></span>
 						</td>
 						<td class="right">
 							<select style="width: 150px" name="salaryPeriod">
@@ -225,10 +225,10 @@ else {
 						<tr>
 							<td> 
 								<b><?php print __($guid, 'Responsibility Level') ?></b><br/>
-								<span style="font-size: 90%"><i></i></span>
+								<span class="emphasis small"></span>
 							</td>
 							<td class="right">
-								<select name="responsibility" id="responsibility" style="width: 302px">
+								<select name="responsibility" id="responsibility" class="standardWidth">
 									<option value=""></option>
 									<?php
 									for ($i=0; $i<count($types); $i++) {
@@ -250,7 +250,7 @@ else {
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php print __($guid, 'Responsibility') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["currency"] ?><br/></i></span>
+							<span class="emphasis small"><?php print $_SESSION[$guid]["currency"] ?><br/></span>
 						</td>
 						<td class="right">
 							<select style="width: 150px" name="responsibilityPeriod">
@@ -270,7 +270,7 @@ else {
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php print __($guid, 'Housing') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["currency"] ?><br/></i></span>
+							<span class="emphasis small"><?php print $_SESSION[$guid]["currency"] ?><br/></span>
 						</td>
 						<td class="right">
 							<select style="width: 150px" name="housingPeriod">
@@ -290,7 +290,7 @@ else {
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php print __($guid, 'Travel') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["currency"] ?><br/></i></span>
+							<span class="emphasis small"><?php print $_SESSION[$guid]["currency"] ?><br/></span>
 						</td>
 						<td class="right">
 							<select style="width: 150px" name="travelPeriod">
@@ -310,7 +310,7 @@ else {
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php print __($guid, 'Retirement') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["currency"] ?><br/></i></span>
+							<span class="emphasis small"><?php print $_SESSION[$guid]["currency"] ?><br/></span>
 						</td>
 						<td class="right">
 							<select style="width: 150px" name="retirementPeriod">
@@ -330,7 +330,7 @@ else {
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php print __($guid, 'Bonus/Gratuity') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["currency"] ?><br/></i></span>
+							<span class="emphasis small"><?php print $_SESSION[$guid]["currency"] ?><br/></span>
 						</td>
 						<td class="right">
 							<select style="width: 150px" name="bonusPeriod">
@@ -362,9 +362,9 @@ else {
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php print __($guid, 'Contract File') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Accepts PDF, ODT, DOC, DOCX, RTF.') ?><br/></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Accepts PDF, ODT, DOC, DOCX, RTF.') ?><br/></span>
 							<?php if ($row["contractUpload"]!="") { ?>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Will overwrite existing attachment.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Will overwrite existing attachment.') ?></span>
 							<?php } ?>
 						</td>
 						<td class="right">
@@ -382,7 +382,7 @@ else {
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+							<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 						</td>
 						<td class="right">
 							<input name="gibbonStudentEnrolmentID" id="gibbonStudentEnrolmentID" value="<?php print $gibbonStudentEnrolmentID ?>" type="hidden">

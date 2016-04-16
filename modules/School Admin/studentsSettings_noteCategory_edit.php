@@ -100,14 +100,14 @@ else {
 			$row=$result->fetch() ;
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/studentsSettings_noteCategory_editProcess.php?gibbonStudentNoteCategoryID=" . $gibbonStudentNoteCategoryID ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php print __($guid, 'Name') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique.') ; ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Must be unique.') ; ?></span>
 						</td>
 						<td class="right">
-							<input name="name" id="name" maxlength=30 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
+							<input name="name" id="name" maxlength=30 value="<?php print $row["name"] ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var name2=new LiveValidation('name');
 								name2.add(Validate.Presence);
@@ -117,10 +117,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Active') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
-							<select name="active" id="active" style="width: 302px">
+							<select name="active" id="active" class="standardWidth">
 								<option <?php if ($row["active"]=="Y") { print "selected" ; } ?> value="Y"><?php print __($guid, 'Yes') ?></option>
 								<option <?php if ($row["active"]=="N") { print "selected" ; } ?> value="N"><?php print __($guid, 'No') ?></option>
 							</select>
@@ -129,15 +129,15 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Template') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'HTML code to be inserted into blank note.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'HTML code to be inserted into blank note.') ?></span>
 						</td>
 						<td class="right">
-							<textarea name="template" id="template" rows=8 style="width: 300px"><?php print $row["template"] ?></textarea>
+							<textarea name="template" id="template" rows=8 class="standardWidth"><?php print $row["template"] ?></textarea>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+							<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

@@ -101,13 +101,13 @@ else {
 		?>
 		
 		<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+			<table class='smallIntBorder fullWidth' cellspacing='0'>	
 				<tr>
 					<td> 
 						<b><?php print __($guid, 'Family') ?> *</b><br/>
 					</td>
 					<td class="right">
-						<select style="width: 302px" name="gibbonFamilyID">
+						<select class="standardWidth" name="gibbonFamilyID">
 							<?php
 							if ($highestAction=="Update Family Data_any") {
 								try {
@@ -241,14 +241,14 @@ else {
 					$row=$result->fetch() ;
 					?>
 					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/data_familyProcess.php?gibbonFamilyID=" . $gibbonFamilyID ?>">
-						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+						<table class='smallIntBorder fullWidth' cellspacing='0'>	
 							<tr>
 								<td style='width: 275px'> 
 									<b><?php print __($guid, 'Address Name') ?> *</b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'Formal name to address parents with.') ?></i></span>
+									<span class="emphasis small"><?php print __($guid, 'Formal name to address parents with.') ?></span>
 								</td>
 								<td class="right">
-									<input name="nameAddress" id="nameAddress" maxlength=100 value="<?php print htmlPrep($row["nameAddress"]) ?>" type="text" style="width: 300px">								
+									<input name="nameAddress" id="nameAddress" maxlength=100 value="<?php print htmlPrep($row["nameAddress"]) ?>" type="text" class="standardWidth">								
 									<script type="text/javascript">
 										var nameAddress=new LiveValidation('nameAddress');
 										nameAddress.add(Validate.Presence);
@@ -258,10 +258,10 @@ else {
 							<tr>
 								<td> 
 									<b><?php print __($guid, 'Home Address') ?> *</b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'Unit, Building, Street') ?></i></span>
+									<span class="emphasis small"><?php print __($guid, 'Unit, Building, Street') ?></span>
 								</td>
 								<td class="right">
-									<input name="homeAddress" id="homeAddress" maxlength=255 value="<?php print $row["homeAddress"] ?>" type="text" style="width: 300px">
+									<input name="homeAddress" id="homeAddress" maxlength=255 value="<?php print $row["homeAddress"] ?>" type="text" class="standardWidth">
 									<script type="text/javascript">
 										var homeAddress=new LiveValidation('homeAddress');
 										homeAddress.add(Validate.Presence);
@@ -271,10 +271,10 @@ else {
 							<tr>
 								<td> 
 									<b><?php print __($guid, 'Home Address (District)') ?> *</b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'County, State, District') ?></i></span>
+									<span class="emphasis small"><?php print __($guid, 'County, State, District') ?></span>
 								</td>
 								<td class="right">
-									<input name="homeAddressDistrict" id="homeAddressDistrict" maxlength=30 value="<?php print $row["homeAddressDistrict"] ?>" type="text" style="width: 300px">
+									<input name="homeAddressDistrict" id="homeAddressDistrict" maxlength=30 value="<?php print $row["homeAddressDistrict"] ?>" type="text" class="standardWidth">
 								</td>
 								<script type="text/javascript">
 									$(function() {
@@ -305,7 +305,7 @@ else {
 									<b><?php print __($guid, 'Home Address (Country)') ?></b><br/>
 								</td>
 								<td class="right">
-									<select name="homeAddressCountry" id="homeAddressCountry" style="width: 302px">
+									<select name="homeAddressCountry" id="homeAddressCountry" class="standardWidth">
 										<?php
 										print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
 										try {
@@ -335,7 +335,7 @@ else {
 									<b><?php print __($guid, 'Home Language - Primary') ?> *</b><br/>
 								</td>
 								<td class="right">
-									<select name="languageHomePrimary" id="languageHomePrimary" style="width: 302px">
+									<select name="languageHomePrimary" id="languageHomePrimary" class="standardWidth">
 										<?php
 										print "<option value='Please select...'>Please select...</option>" ;
 										try {
@@ -365,7 +365,7 @@ else {
 									<b><?php print __($guid, 'Home Language - Secondary') ?></b><br/>
 								</td>
 								<td class="right">
-									<select name="languageHomeSecondary" id="languageHomeSecondary" style="width: 302px">
+									<select name="languageHomeSecondary" id="languageHomeSecondary" class="standardWidth">
 										<?php
 										print "<option value=''></option>" ;
 										try {
@@ -388,7 +388,7 @@ else {
 							</tr>
 							<tr>
 								<td>
-									<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+									<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 								</td>
 								<td class="right">
 									<?php

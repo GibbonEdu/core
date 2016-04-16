@@ -196,14 +196,14 @@ else {
 								$rowSubmission=$resultSubmission->fetch()
 								?>
 								<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full_submit_editProcess.php" ?>">
-									<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+									<table class='smallIntBorder fullWidth' cellspacing='0'>	
 										<tr>
 											<td style='width: 275px'> 
 												<b><?php print __($guid, 'Student') ?> *</b><br/>
-												<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+												<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 											</td>
 											<td class="right">
-												<input readonly name="courseName" id="courseName" maxlength=20 value="<?php print formatName("", htmlPrep($rowSubmission["preferredName"]), htmlPrep($rowSubmission["surname"]), "Student") ?>" type="text" style="width: 300px">
+												<input readonly name="courseName" id="courseName" maxlength=20 value="<?php print formatName("", htmlPrep($rowSubmission["preferredName"]), htmlPrep($rowSubmission["surname"]), "Student") ?>" type="text" class="standardWidth">
 											</td>
 										</tr>
 										<tr>
@@ -211,7 +211,7 @@ else {
 												<b><?php print __($guid, 'Status') ?> *</b><br/>
 											</td>
 											<td class="right">
-												<select style="width: 302px" name="status">
+												<select class="standardWidth" name="status">
 													<option <?php if ($rowSubmission["status"]=="On Time") { print "selected ";} ?>value="On Time"><?php print __($guid, 'On Time') ?></option>
 													<option <?php if ($rowSubmission["status"]=="Late") { print "selected ";} ?>value="Late"><?php print __($guid, 'Late') ?></option>
 												</select>
@@ -261,14 +261,14 @@ else {
 							
 								?>
 								<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full_submit_editProcess.php" ?>" enctype="multipart/form-data">
-									<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+									<table class='smallIntBorder fullWidth' cellspacing='0'>	
 										<tr>
 											<td style='width: 275px'> 
 												<b><?php print __($guid, 'Student') ?> *</b><br/>
-												<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+												<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 											</td>
 											<td class="right">
-												<input readonly name="courseName" id="courseName" maxlength=20 value="<?php print formatName("", htmlPrep($rowSubmission["preferredName"]), htmlPrep($rowSubmission["surname"]), "Student") ?>" type="text" style="width: 300px">
+												<input readonly name="courseName" id="courseName" maxlength=20 value="<?php print formatName("", htmlPrep($rowSubmission["preferredName"]), htmlPrep($rowSubmission["surname"]), "Student") ?>" type="text" class="standardWidth">
 											</td>
 										</tr>
 										<tr>
@@ -386,7 +386,7 @@ else {
 												<b><?php print __($guid, 'Submit Link') ?> *</b><br/>
 											</td>
 											<td class="right">
-												<input name="link" id="link" maxlength=255 value="" type="text" style="width: 300px">
+												<input name="link" id="link" maxlength=255 value="" type="text" class="standardWidth">
 												<script type="text/javascript">
 													var link=new LiveValidation('link');
 													link.add( Validate.Inclusion, { within: ['http://', 'https://'], failureMessage: "Address must start with http:// or https://", partialMatch: true } );
@@ -400,7 +400,7 @@ else {
 												<b><?php print __($guid, 'Status') ?> *</b><br/>
 											</td>
 											<td class="right">
-												<select style="width: 302px" name="status">
+												<select class="standardWidth" name="status">
 													<option value="On Time"><?php print __($guid, 'On Time') ?></option>
 													<option value="Late"><?php print __($guid, 'Late') ?></option>
 													<option value="Exemption"><?php print __($guid, 'Exemption') ?></option>

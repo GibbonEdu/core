@@ -98,11 +98,11 @@ else {
 			}
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/externalAssessment_manage_details_editProcess.php?search=$search&allStudents=$allStudents" ?>" enctype="multipart/form-data">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php print __($guid, 'Assessment Type') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 						</td>
 						<td class="right" colspan=2>
 							<input readonly name="name" id="name" maxlength=20 value="<?php print __($guid, $row["assessment"]) ?>" type="text" style="width: 300px; text-align: right">
@@ -111,10 +111,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Date') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, "Format:") . " " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } ?><br/></i></span>
+							<span class="emphasis small"><?php print __($guid, "Format:") . " " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } ?><br/></span>
 						</td>
 						<td class="right" colspan=2>
-							<input name="date" id="date" maxlength=10 value="<?php if ($row["date"]!="") { print dateConvertBack($guid, $row["date"]) ; } ?>" type="text" style="width: 300px">
+							<input name="date" id="date" maxlength=10 value="<?php if ($row["date"]!="") { print dateConvertBack($guid, $row["date"]) ; } ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var date=new LiveValidation('date');
 								date.add(Validate.Presence);
@@ -133,9 +133,9 @@ else {
 						<tr>
 							<td style='width: 275px'> 
 								<b><?php print __($guid, 'Upload File') ?></b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, 'Use this to attach raw data, graphical summary, etc.') ?></i><br/></span>
+								<span class="emphasis small"><?php print __($guid, 'Use this to attach raw data, graphical summary, etc.') ?></i><br/></span>
 								<?php if ($row["attachment"]!="") { ?>
-									<span style="font-size: 90%"><i><?php print __($guid, 'Will overwrite existing attachment.') ?></i></span>
+									<span class="emphasis small"><?php print __($guid, 'Will overwrite existing attachment.') ?></span>
 								<?php } ?>
 							</td>
 							<td class="right" colspan=2>
@@ -274,13 +274,13 @@ else {
 					?>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?>
+							<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?>
 							<?php
 							if ($row["allowFileUpload"]=="Y") {
 								print getMaxUpload($guid) ; 
 							}
 							?>
-							</i></span>
+							</span>
 						</td>
 						<td class="right" colspan=2>
 							<input name="count" id="count" value="<?php print $count ?>" type="hidden">

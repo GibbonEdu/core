@@ -178,7 +178,7 @@ else {
 				<tr>
 					<td> 
 						<b><?php print __($guid, 'Status') ?></b><br/>
-						<span style="font-size: 90%"><i></i></span>
+						<span class="emphasis small"></span>
 					</td>
 					<td class="right">
 						<?php
@@ -235,7 +235,7 @@ else {
 				<tr>
 					<td> 
 						<b><?php print __($guid, 'Student') ?></b><br/>
-						<span style="font-size: 90%"><i></i></span>
+						<span class="emphasis small"></span>
 					</td>
 					<td class="right">
 						<?php
@@ -263,7 +263,7 @@ else {
 				<tr>
 					<td> 
 						<b><?php print __($guid, 'Month of Issue') ?></b><br/>
-						<span style="font-size: 90%"><i></i></span>
+						<span class="emphasis small"></span>
 					</td>
 					<td class="right">
 						<?php
@@ -283,7 +283,7 @@ else {
 				<tr>
 					<td> 
 						<b><?php print __($guid, 'Billing Schedule') ?></b><br/>
-						<span style="font-size: 90%"><i></i></span>
+						<span class="emphasis small"></span>
 					</td>
 					<td class="right">
 						<?php

@@ -129,7 +129,7 @@ else {
 							<b><?php print __($guid, 'Order By') ?></b><br/>
 						</td>
 						<td class="right">
-							<select name="orderBy" id="orderBy" style="width: 302px">
+							<select name="orderBy" id="orderBy" class="standardWidth">
 								<?php
 								print "<option " ; if ($orderBy=="normal") { print "selected " ; } print "value='normal'>" . __($guid, 'Normal (Roll Order, Surname, Preferred Name)') . "</option>" ;
 								print "<option " ; if ($orderBy=="surname") { print "selected " ; } print "value='surname'>" . __($guid, 'Surname (Surname, Preferred Name)') . "</option>" ;

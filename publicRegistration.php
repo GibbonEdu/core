@@ -91,7 +91,7 @@ else {
 	?>
 	
 	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/publicRegistrationProcess.php" ?>" enctype="multipart/form-data">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			
 			
 			<tr class='break'>
@@ -104,7 +104,7 @@ else {
 					<b><?php print __($guid, 'First Name') ?> *</b><br/>
 				</td>
 				<td class="right">
-					<input name="firstName" id="firstName" maxlength=30 value="" type="text" style="width: 300px">
+					<input name="firstName" id="firstName" maxlength=30 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var firstName=new LiveValidation('firstName');
 						firstName.add(Validate.Presence);
@@ -116,7 +116,7 @@ else {
 					<b><?php print __($guid, 'Surname') ?> *</b><br/>
 				</td>
 				<td class="right">
-					<input name="surname" id="surname" maxlength=30 value="" type="text" style="width: 300px">
+					<input name="surname" id="surname" maxlength=30 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var surname=new LiveValidation('surname');
 						surname.add(Validate.Presence);
@@ -127,10 +127,10 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Email') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique.') ?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'Must be unique.') ?></span>
 				</td>
 				<td class="right">
-					<input name="email" id="email" maxlength=50 value="" type="text" style="width: 300px">
+					<input name="email" id="email" maxlength=50 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var email=new LiveValidation('email');
 						email.add(Validate.Email);
@@ -144,7 +144,7 @@ else {
 					<b><?php print __($guid, 'Gender') ?> *</b><br/>
 				</td>
 				<td class="right">
-					<select name="gender" id="gender" style="width: 302px">
+					<select name="gender" id="gender" class="standardWidth">
 						<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
 						<option value="F"><?php print __($guid, 'Female') ?></option>
 						<option value="M"><?php print __($guid, 'Male') ?></option>
@@ -160,10 +160,10 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Date of Birth') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Format:') . " " . $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'Format:') . " " . $_SESSION[$guid]["i18n"]["dateFormat"]  ?></span>
 				</td>
 				<td class="right">
-					<input name="dob" id="dob" maxlength=10 value="" type="text" style="width: 300px">
+					<input name="dob" id="dob" maxlength=10 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var dob=new LiveValidation('dob');
 						dob.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
@@ -179,10 +179,10 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Username') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique.') ?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'Must be unique.') ?></span>
 				</td>
 				<td class="right">
-					<input name="username" id="username" maxlength=20 value="" type="text" style="width: 300px">
+					<input name="username" id="username" maxlength=20 value="" type="text" class="standardWidth">
 					<?php
 					$idList="" ;
 					try {
@@ -218,11 +218,11 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Password') ?> *</b><br/>
-					<span style="font-size: 90%"><i></i></span>
+					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
 					<input type='button' class="generatePassword" value="<?php print __($guid, "Generate Password") ?>"/>
-					<input name="passwordNew" id="passwordNew" maxlength=20 value="" type="password" style="width: 300px"><br/>
+					<input name="passwordNew" id="passwordNew" maxlength=20 value="" type="password" class="standardWidth"><br/>
 					
 					<script type="text/javascript">
 						var passwordNew=new LiveValidation('passwordNew');
@@ -316,7 +316,7 @@ else {
 			?>
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+					<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

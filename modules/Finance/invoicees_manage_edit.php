@@ -116,7 +116,7 @@ else {
 			print "</table>" ;
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/invoicees_manage_editProcess.php?gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&search=" .$_GET["search"] . "&allUsers=" . $_GET["allUsers"] ; ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<script type="text/javascript">
 						/* Resource 1 Option Control */
 						$(document).ready(function(){
@@ -202,7 +202,7 @@ else {
 							<b><?php print __($guid, 'Company Name') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<input name="companyName" id="companyName" maxlength=100 value="<?php print $row["companyName"] ?>" type="text" style="width: 300px">
+							<input name="companyName" id="companyName" maxlength=100 value="<?php print $row["companyName"] ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var companyName=new LiveValidation('companyName');
 								companyName.add(Validate.Presence);
@@ -214,7 +214,7 @@ else {
 							<b><?php print __($guid, 'Company Contact Person') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<input name="companyContact" id="companyContact" maxlength=100 value="<?php print $row["companyContact"] ?>" type="text" style="width: 300px">
+							<input name="companyContact" id="companyContact" maxlength=100 value="<?php print $row["companyContact"] ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var companyContact=new LiveValidation('companyContact');
 								companyContact.add(Validate.Presence);
@@ -226,7 +226,7 @@ else {
 							<b><?php print __($guid, 'Company Address') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<input name="companyAddress" id="companyAddress" maxlength=255 value="<?php print $row["companyAddress"] ?>" type="text" style="width: 300px">
+							<input name="companyAddress" id="companyAddress" maxlength=255 value="<?php print $row["companyAddress"] ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var companyAddress=new LiveValidation('companyAddress');
 								companyAddress.add(Validate.Presence);
@@ -236,10 +236,10 @@ else {
 					<tr id="companyEmailRow">
 						<td> 
 							<b><?php print __($guid, 'Company Emails') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Comma-separated list of email address.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Comma-separated list of email address.') ?></span>
 						</td>
 						<td class="right">
-							<input name="companyEmail" id="companyEmail" value="<?php print $row["companyEmail"] ?>" type="text" style="width: 300px">
+							<input name="companyEmail" id="companyEmail" value="<?php print $row["companyEmail"] ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var companyEmail=new LiveValidation('companyEmail');
 								companyEmail.add(Validate.Presence);
@@ -249,10 +249,10 @@ else {
 					<tr id="companyCCFamilyRow">
 						<td> 
 							<b><?php print __($guid, 'CC Family?') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Should the family be sent a copy of billing emails?') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Should the family be sent a copy of billing emails?') ?></span>
 						</td>
 						<td class="right">
-							<select name="companyCCFamily" id="companyCCFamily" style="width: 302px">
+							<select name="companyCCFamily" id="companyCCFamily" class="standardWidth">
 								<option <?php if ($row["companyCCFamily"]=="N") { print "selected" ; } ?> value="N" /> <?php print __($guid, 'No') ?>
 								<option <?php if ($row["companyCCFamily"]=="Y") { print "selected" ; } ?> value="Y" /> <?php print __($guid, 'Yes') ?>
 							</select>
@@ -263,7 +263,7 @@ else {
 							<b><?php print __($guid, 'Company Phone') ?></b><br/>
 						</td>
 						<td class="right">
-							<input name="companyPhone" id="companyPhone" maxlength=20 value="<?php print $row["companyPhone"] ?>" type="text" style="width: 300px">
+							<input name="companyPhone" id="companyPhone" maxlength=20 value="<?php print $row["companyPhone"] ?>" type="text" class="standardWidth">
 						</td>
 					</tr>
 					<?php
@@ -282,7 +282,7 @@ else {
 						<tr id="companyAllRow">
 							<td> 
 								<b><?php print __($guid, 'Company All?') ?></b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, 'Should all items be billed to the specified company, or just some?') ?></i></span>
+								<span class="emphasis small"><?php print __($guid, 'Should all items be billed to the specified company, or just some?') ?></span>
 							</td>
 							<td class="right">
 								<input type="radio" name="companyAll" value="Y" class="companyAll" <?php if ($row["companyAll"]=="Y" OR $row["companyAll"]=="") { print "checked" ; } ?> /> <?php print __($guid, 'All') ?>
@@ -292,7 +292,7 @@ else {
 						<tr id="companyCategoriesRow">
 							<td> 
 								<b><?php print __($guid, 'Company Fee Categories') ?></b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, 'If the specified company is not paying all fees, which categories are they paying?') ?></i></span>
+								<span class="emphasis small"><?php print __($guid, 'If the specified company is not paying all fees, which categories are they paying?') ?></span>
 							</td>
 							<td class="right">
 								<?php
@@ -317,7 +317,7 @@ else {
 					
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+							<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

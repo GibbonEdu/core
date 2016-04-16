@@ -151,7 +151,7 @@ else {
 						if ($field["required"]=="Y") {
 							$output.=" *" ;
 						}
-						$output.="<br/><span style='font-size: 90%'><i>" . str_replace("dd/mm/yyyy", $_SESSION[$guid]["i18n"]["dateFormat"], $field["description"]) . "</i></span>" ;
+						$output.="<br/><span style='font-size: 90%'><i>" . str_replace("dd/mm/yyyy", $_SESSION[$guid]["i18n"]["dateFormat"], $field["description"]) . "</span>" ;
 					$output.="</td>" ;
 					$output.="<td class='right'>" ;
 						if ($field["type"]=="Text") {

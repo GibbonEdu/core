@@ -51,7 +51,7 @@ else {
 			<tr>
 				<td>
 					<b><?php print __($guid, 'Ignore Status') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Include all studenusersts, regardless of status and current enrolment.') ?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'Include all studenusersts, regardless of status and current enrolment.') ?></span>
 				</td>
 				<td class="right">
 					<?php

@@ -148,7 +148,7 @@ else {
 	?>
 	
 	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/applicationFormProcess.php" ?>" enctype="multipart/form-data">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr class='break'>
 				<td colspan=2> 
 					<h3><?php print __($guid, 'Student') ?></h3>
@@ -163,10 +163,10 @@ else {
 			<tr>
 				<td style='width: 275px'> 
 					<b><?php print __($guid, 'Surname') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Family name as shown in ID documents.') ?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'Family name as shown in ID documents.') ?></span>
 				</td>
 				<td class="right">
-					<input name="surname" id="surname" maxlength=30 value="" type="text" style="width: 300px">
+					<input name="surname" id="surname" maxlength=30 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var surname=new LiveValidation('surname');
 						surname.add(Validate.Presence);
@@ -176,10 +176,10 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'First Name') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'First name as shown in ID documents.') ?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'First name as shown in ID documents.') ?></span>
 				</td>
 				<td class="right">
-					<input name="firstName" id="firstName" maxlength=30 value="" type="text" style="width: 300px">
+					<input name="firstName" id="firstName" maxlength=30 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var firstName=new LiveValidation('firstName');
 						firstName.add(Validate.Presence);
@@ -189,10 +189,10 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Preferred Name') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Most common name, alias, nickname, etc.') ?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'Most common name, alias, nickname, etc.') ?></span>
 				</td>
 				<td class="right">
-					<input name="preferredName" id="preferredName" maxlength=30 value="" type="text" style="width: 300px">
+					<input name="preferredName" id="preferredName" maxlength=30 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var preferredName=new LiveValidation('preferredName');
 						preferredName.add(Validate.Presence);
@@ -202,10 +202,10 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Official Name') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Full name as shown in ID documents.') ?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'Full name as shown in ID documents.') ?></span>
 				</td>
 				<td class="right">
-					<input title='Please enter full name as shown in ID documents' name="officialName" id="officialName" maxlength=150 value="" type="text" style="width: 300px">
+					<input title='Please enter full name as shown in ID documents' name="officialName" id="officialName" maxlength=150 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var officialName=new LiveValidation('officialName');
 						officialName.add(Validate.Presence);
@@ -215,10 +215,10 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Name In Characters') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Chinese or other character-based name.') ?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'Chinese or other character-based name.') ?></span>
 				</td>
 				<td class="right">
-					<input name="nameInCharacters" id="nameInCharacters" maxlength=20 value="" type="text" style="width: 300px">
+					<input name="nameInCharacters" id="nameInCharacters" maxlength=20 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
 			<tr>
@@ -226,7 +226,7 @@ else {
 					<b><?php print __($guid, 'Gender') ?> *</b><br/>
 				</td>
 				<td class="right">
-					<select name="gender" id="gender" style="width: 302px">
+					<select name="gender" id="gender" class="standardWidth">
 						<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
 						<option value="F"><?php print __($guid, 'Female') ?></option>
 						<option value="M"><?php print __($guid, 'Male') ?></option>
@@ -240,10 +240,10 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Date of Birth') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Format:') . " " . $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'Format:') . " " . $_SESSION[$guid]["i18n"]["dateFormat"]  ?></span>
 				</td>
 				<td class="right">
-					<input name="dob" id="dob" maxlength=10 value="" type="text" style="width: 300px">
+					<input name="dob" id="dob" maxlength=10 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var dob=new LiveValidation('dob');
 						dob.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
@@ -266,10 +266,10 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Home Language - Primary') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'The primary language used in the student\'s home.') ?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'The primary language used in the student\'s home.') ?></span>
 				</td>
 				<td class="right">
-					<select name="languageHomePrimary" id="languageHomePrimary" style="width: 302px">
+					<select name="languageHomePrimary" id="languageHomePrimary" class="standardWidth">
 						<?php
 						print "<option value='Please select...'>Please select...</option>" ;
 						try {
@@ -295,7 +295,7 @@ else {
 					<b><?php print __($guid, 'Home Language - Secondary') ?></b><br/>
 				</td>
 				<td class="right">
-					<select name="languageHomeSecondary" id="languageHomeSecondary" style="width: 302px">
+					<select name="languageHomeSecondary" id="languageHomeSecondary" class="standardWidth">
 						<?php
 						print "<option value=''></option>" ;
 						try {
@@ -315,10 +315,10 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'First Language') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Student\'s native/first/mother language.') ?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'Student\'s native/first/mother language.') ?></span>
 				</td>
 				<td class="right">
-					<select name="languageFirst" id="languageFirst" style="width: 302px">
+					<select name="languageFirst" id="languageFirst" class="standardWidth">
 						<?php
 						print "<option value='Please select...'>Please select...</option>" ;
 						try {
@@ -344,7 +344,7 @@ else {
 					<b><?php print __($guid, 'Second Language') ?></b><br/>
 				</td>
 				<td class="right">
-					<select name="languageSecond" id="languageSecond" style="width: 302px">
+					<select name="languageSecond" id="languageSecond" class="standardWidth">
 						<?php
 						print "<option value=''></option>" ;
 						try {
@@ -366,7 +366,7 @@ else {
 					<b><?php print __($guid, 'Third Language') ?></b><br/>
 				</td>
 				<td class="right">
-					<select name="languageThird" id="languageThird" style="width: 302px">
+					<select name="languageThird" id="languageThird" class="standardWidth">
 						<?php
 						print "<option value=''></option>" ;
 						try {
@@ -388,7 +388,7 @@ else {
 					<b><?php print __($guid, 'Country of Birth') ?> *</b><br/>
 				</td>
 				<td class="right">
-					<select name="countryOfBirth" id="countryOfBirth" style="width: 302px">
+					<select name="countryOfBirth" id="countryOfBirth" class="standardWidth">
 						<?php
 						try {
 							$dataSelect=array(); 
@@ -414,7 +414,7 @@ else {
 					<b><?php print __($guid, 'Citizenship') ?> *</b><br/>
 				</td>
 				<td class="right">
-					<select name="citizenship1" id="citizenship1" style="width: 302px">
+					<select name="citizenship1" id="citizenship1" class="standardWidth">
 						<?php
 						print "<option value='Please select...'>" . _("Please select...") . "</option>" ;
 						$nationalityList=getSettingByScope($connection2, "User Admin", "nationality") ;
@@ -449,7 +449,7 @@ else {
 					<b><?php print __($guid, 'Citizenship Passport Number') ?></b><br/>
 				</td>
 				<td class="right">
-					<input name="citizenship1Passport" id="citizenship1Passport" maxlength=30 value="" type="text" style="width: 300px">
+					<input name="citizenship1Passport" id="citizenship1Passport" maxlength=30 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
 			<tr>
@@ -464,7 +464,7 @@ else {
 					?>
 				</td>
 				<td class="right">
-					<input name="nationalIDCardNumber" id="nationalIDCardNumber" maxlength=30 value="" type="text" style="width: 300px">
+					<input name="nationalIDCardNumber" id="nationalIDCardNumber" maxlength=30 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
 			<tr>
@@ -505,11 +505,11 @@ else {
 					else {
 						print "<b>" . $_SESSION[$guid]["country"] . " " . __($guid, 'Visa Expiry Date') . "</b><br/>" ;
 					}
-					print "<span style='font-size: 90%'><i>Format: " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } print ". " . __($guid, 'If relevant.') . "</i></span>" ;
+					print "<span style='font-size: 90%'><i>Format: " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } print ". " . __($guid, 'If relevant.') . "</span>" ;
 					?>
 				</td>
 				<td class="right">
-					<input name="visaExpiryDate" id="visaExpiryDate" maxlength=10 value="" type="text" style="width: 300px">
+					<input name="visaExpiryDate" id="visaExpiryDate" maxlength=10 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var visaExpiryDate=new LiveValidation('visaExpiryDate');
 						visaExpiryDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
@@ -533,7 +533,7 @@ else {
 					<b><?php print __($guid, 'Email') ?></b><br/>
 				</td>
 				<td class="right">
-					<input name="email" id="email" maxlength=50 value="" type="text" style="width: 300px">
+					<input name="email" id="email" maxlength=50 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var email=new LiveValidation('email');
 						email.add(Validate.Email);
@@ -546,7 +546,7 @@ else {
 				<tr>
 					<td> 
 						<b><?php print __($guid, 'Phone') ?> <?php print $i ?></b><br/>
-						<span style="font-size: 90%"><i><?php print __($guid, 'Type, country code, number.') ?></i></span>
+						<span class="emphasis small"><?php print __($guid, 'Type, country code, number.') ?></span>
 					</td>
 					<td class="right">
 						<input name="phone<?php print $i ?>" id="phone<?php print $i ?>" maxlength=20 value="" type="text" style="width: 160px">
@@ -608,10 +608,10 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Special Educational Needs (SEN)') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Are there any known or suspected SEN concerns, or previous SEN assessments?') ?></i></span><br/>
+					<span class="emphasis small"><?php print __($guid, 'Are there any known or suspected SEN concerns, or previous SEN assessments?') ?></span><br/>
 				</td>
 				<td class="right">
-					<select name="sen" id="sen" class='sen' style="width: 302px">
+					<select name="sen" id="sen" class='sen' class="standardWidth">
 						<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
 						<option value="Y" /> <?php print ynExpander($guid, 'Y') ?>
 						<option value="N" /> <?php print ynExpander($guid, 'N') ?>
@@ -625,14 +625,14 @@ else {
 			<tr id='senDetailsRow' style='display: none'>
 				<td colspan=2 style='padding-top: 15px'> 
 					<b><?php print __($guid, 'SEN Details') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Provide any comments or information concerning your child\'s development and SEN history.') ?></i></span><br/> 					
+					<span class="emphasis small"><?php print __($guid, 'Provide any comments or information concerning your child\'s development and SEN history.') ?></span><br/> 					
 					<textarea name="senDetails" id="senDetails" rows=5 style="width:738px; margin: 5px 0px 0px 0px"></textarea>
 				</td>
 			</tr>
 			<tr>
 				<td colspan=2 style='padding-top: 15px'> 
 					<b><?php print __($guid, 'Medical Information') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Please indicate any medical conditions.') ?></i></span><br/>
+					<span class="emphasis small"><?php print __($guid, 'Please indicate any medical conditions.') ?></span><br/>
 					<textarea name="medicalInformation" id="medicalInformation" rows=5 style="width:738px; margin: 5px 0px 0px 0px"></textarea>
 				</td>
 			</tr>
@@ -647,10 +647,10 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Anticipated Year of Entry') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'What school year will the student join in?') ?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'What school year will the student join in?') ?></span>
 				</td>
 				<td class="right">
-					<select name="gibbonSchoolYearIDEntry" id="gibbonSchoolYearIDEntry" style="width: 302px">
+					<select name="gibbonSchoolYearIDEntry" id="gibbonSchoolYearIDEntry" class="standardWidth">
 						<?php
 						print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
 						try {
@@ -676,10 +676,10 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Intended Start Date') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Student\'s intended first day at school.') ?><br/><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'Student\'s intended first day at school.') ?><br/><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></span>
 				</td>
 				<td class="right">
-					<input name="dateStart" id="dateStart" maxlength=10 value="" type="text" style="width: 300px">
+					<input name="dateStart" id="dateStart" maxlength=10 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var dateStart=new LiveValidation('dateStart');
 						dateStart.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
@@ -695,10 +695,10 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Year Group at Entry') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Which year level will student enter.') ?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'Which year level will student enter.') ?></span>
 				</td>
 				<td class="right">
-					<select name="gibbonYearGroupIDEntry" id="gibbonYearGroupIDEntry" style="width: 302px">
+					<select name="gibbonYearGroupIDEntry" id="gibbonYearGroupIDEntry" class="standardWidth">
 						<?php
 						print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
 						try {
@@ -729,10 +729,10 @@ else {
 				<tr>
 					<td> 
 						<b><?php print __($guid, 'Day Type') ?></b><br/>
-						<span style="font-size: 90%"><i><?php print getSettingByScope($connection2, 'User Admin', 'dayTypeText') ; ?></i></span>
+						<span class="emphasis small"><?php print getSettingByScope($connection2, 'User Admin', 'dayTypeText') ; ?></span>
 					</td>
 					<td class="right">
-						<select name="dayType" id="dayType" style="width: 302px">
+						<select name="dayType" id="dayType" class="standardWidth">
 							<?php
 							$dayTypes=explode(",", $dayTypeOptions) ;
 							foreach ($dayTypes as $dayType) {
@@ -750,10 +750,10 @@ else {
 				<tr>
 					<td> 
 						<b><?php print __($guid, 'Current School Reference Email') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'An email address for a referee at the applicant\'s current school.') ?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'An email address for a referee at the applicant\'s current school.') ?></span>
 					</td>
 					<td class="right">
-						<input name="referenceEmail" id="referenceEmail" maxlength=100 value="" type="text" style="width: 300px">
+						<input name="referenceEmail" id="referenceEmail" maxlength=100 value="" type="text" class="standardWidth">
 						<script type="text/javascript">
 							var referenceEmail=new LiveValidation('referenceEmail');
 							referenceEmail.add(Validate.Presence);
@@ -770,7 +770,7 @@ else {
 			<tr>
 				<td colspan=2 style='padding-top: 15px'> 
 					<b><?php print __($guid, 'Previous Schools') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Please give information on the last two schools attended by the applicant.') ?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'Please give information on the last two schools attended by the applicant.') ?></span>
 				</td>
 			</tr>
 			<tr>
@@ -899,10 +899,10 @@ else {
 				<tr>
 					<td> 
 						<b><?php print __($guid, 'Home Address') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print __($guid, 'Unit, Building, Street') ?></i></span>
+						<span class="emphasis small"><?php print __($guid, 'Unit, Building, Street') ?></span>
 					</td>
 					<td class="right">
-						<input name="homeAddress" id="homeAddress" maxlength=255 value="" type="text" style="width: 300px">
+						<input name="homeAddress" id="homeAddress" maxlength=255 value="" type="text" class="standardWidth">
 						<script type="text/javascript">
 							var homeAddress=new LiveValidation('homeAddress');
 							homeAddress.add(Validate.Presence);
@@ -912,10 +912,10 @@ else {
 				<tr>
 					<td> 
 						<b><?php print __($guid, 'Home Address (District)') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print __($guid, 'County, State, District') ?></i></span>
+						<span class="emphasis small"><?php print __($guid, 'County, State, District') ?></span>
 					</td>
 					<td class="right">
-						<input name="homeAddressDistrict" id="homeAddressDistrict" maxlength=30 value="" type="text" style="width: 300px">
+						<input name="homeAddressDistrict" id="homeAddressDistrict" maxlength=30 value="" type="text" class="standardWidth">
 					</td>
 					<script type="text/javascript">
 						$(function() {
@@ -946,7 +946,7 @@ else {
 						<b><?php print __($guid, 'Home Address (Country)') ?> *</b><br/>
 					</td>
 					<td class="right">
-						<select name="homeAddressCountry" id="homeAddressCountry" style="width: 302px">
+						<select name="homeAddressCountry" id="homeAddressCountry" class="standardWidth">
 							<?php
 							try {
 								$dataSelect=array(); 
@@ -987,29 +987,29 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Username') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'System login ID.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'System login ID.') ?></span>
 						</td>
 						<td class="right">
-							<input readonly name='parent1username' maxlength=30 value="<?php print $_SESSION[$guid]["username"] ?>" type="text" style="width: 300px">
+							<input readonly name='parent1username' maxlength=30 value="<?php print $_SESSION[$guid]["username"] ?>" type="text" class="standardWidth">
 						</td>
 					</tr>
 					
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Surname') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Family name as shown in ID documents.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Family name as shown in ID documents.') ?></span>
 						</td>
 						<td class="right">
-							<input readonly name='parent1surname' maxlength=30 value="<?php print $_SESSION[$guid]["surname"] ?>" type="text" style="width: 300px">
+							<input readonly name='parent1surname' maxlength=30 value="<?php print $_SESSION[$guid]["surname"] ?>" type="text" class="standardWidth">
 						</td>
 					</tr>
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Preferred Name') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Most common name, alias, nickname, etc.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Most common name, alias, nickname, etc.') ?></span>
 						</td>
 						<td class="right">
-							<input readonly name='parent1preferredName' maxlength=30 value="<?php print $_SESSION[$guid]["preferredName"] ?>" type="text" style="width: 300px">
+							<input readonly name='parent1preferredName' maxlength=30 value="<?php print $_SESSION[$guid]["preferredName"] ?>" type="text" class="standardWidth">
 						</td>
 					</tr>
 					<tr>
@@ -1017,7 +1017,7 @@ else {
 							<b><?php print __($guid, 'Relationship') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<select name="parent1relationship" id="parent1relationship" style="width: 302px">
+							<select name="parent1relationship" id="parent1relationship" class="standardWidth">
 								<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
 								<option value="Mother"><?php print __($guid, 'Mother') ?></option>
 								<option value="Father"><?php print __($guid, 'Father') ?></option>
@@ -1149,10 +1149,10 @@ else {
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
 						<td> 
 							<b><?php print __($guid, 'Title') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
-							<select style="width: 302px" id="<?php print "parent$i" ?>title" name="<?php print "parent$i" ?>title">
+							<select class="standardWidth" id="<?php print "parent$i" ?>title" name="<?php print "parent$i" ?>title">
 								<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
 								<option value="Ms."><?php print __($guid, 'Ms.') ?></option>
 								<option value="Miss"><?php print __($guid, 'Miss.') ?></option>
@@ -1169,10 +1169,10 @@ else {
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
 						<td> 
 							<b><?php print __($guid, 'Surname') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Family name as shown in ID documents.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Family name as shown in ID documents.') ?></span>
 						</td>
 						<td class="right">
-							<input name="<?php print "parent$i" ?>surname" id="<?php print "parent$i" ?>surname" maxlength=30 value="" type="text" style="width: 300px">
+							<input name="<?php print "parent$i" ?>surname" id="<?php print "parent$i" ?>surname" maxlength=30 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var <?php print "parent$i" ?>surname=new LiveValidation('<?php print "parent$i" ?>surname');
 								<?php print "parent$i" ?>surname.add(Validate.Presence);
@@ -1182,10 +1182,10 @@ else {
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
 						<td> 
 							<b><?php print __($guid, 'First Name') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'First name as shown in ID documents.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'First name as shown in ID documents.') ?></span>
 						</td>
 						<td class="right">
-							<input name="<?php print "parent$i" ?>firstName" id="<?php print "parent$i" ?>firstName" maxlength=30 value="" type="text" style="width: 300px">
+							<input name="<?php print "parent$i" ?>firstName" id="<?php print "parent$i" ?>firstName" maxlength=30 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var <?php print "parent$i" ?>firstName=new LiveValidation('<?php print "parent$i" ?>firstName');
 								<?php print "parent$i" ?>firstName.add(Validate.Presence);
@@ -1195,10 +1195,10 @@ else {
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
 						<td> 
 							<b><?php print __($guid, 'Preferred Name') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Most common name, alias, nickname, etc.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Most common name, alias, nickname, etc.') ?></span>
 						</td>
 						<td class="right">
-							<input name="<?php print "parent$i" ?>preferredName" id="<?php print "parent$i" ?>preferredName" maxlength=30 value="" type="text" style="width: 300px">
+							<input name="<?php print "parent$i" ?>preferredName" id="<?php print "parent$i" ?>preferredName" maxlength=30 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var <?php print "parent$i" ?>preferredName=new LiveValidation('<?php print "parent$i" ?>preferredName');
 								<?php print "parent$i" ?>preferredName.add(Validate.Presence);
@@ -1208,10 +1208,10 @@ else {
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
 						<td> 
 							<b><?php print __($guid, 'Official Name') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Full name as shown in ID documents.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Full name as shown in ID documents.') ?></span>
 						</td>
 						<td class="right">
-							<input title='Please enter full name as shown in ID documents' name="<?php print "parent$i" ?>officialName" id="<?php print "parent$i" ?>officialName" maxlength=150 value="" type="text" style="width: 300px">
+							<input title='Please enter full name as shown in ID documents' name="<?php print "parent$i" ?>officialName" id="<?php print "parent$i" ?>officialName" maxlength=150 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var <?php print "parent$i" ?>officialName=new LiveValidation('<?php print "parent$i" ?>officialName');
 								<?php print "parent$i" ?>officialName.add(Validate.Presence);
@@ -1221,10 +1221,10 @@ else {
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
 						<td> 
 							<b><?php print __($guid, 'Name In Characters') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Chinese or other character-based name.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Chinese or other character-based name.') ?></span>
 						</td>
 						<td class="right">
-							<input name="<?php print "parent$i" ?>nameInCharacters" id="<?php print "parent$i" ?>nameInCharacters" maxlength=20 value="" type="text" style="width: 300px">
+							<input name="<?php print "parent$i" ?>nameInCharacters" id="<?php print "parent$i" ?>nameInCharacters" maxlength=20 value="" type="text" class="standardWidth">
 						</td>
 					</tr>
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
@@ -1232,7 +1232,7 @@ else {
 							<b><?php print __($guid, 'Gender') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<select name="<?php print "parent$i" ?>gender" id="<?php print "parent$i" ?>gender" style="width: 302px">
+							<select name="<?php print "parent$i" ?>gender" id="<?php print "parent$i" ?>gender" class="standardWidth">
 								<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
 								<option value="F"><?php print __($guid, 'Female') ?></option>
 								<option value="M"><?php print __($guid, 'Male') ?></option>
@@ -1248,7 +1248,7 @@ else {
 							<b><?php print __($guid, 'Relationship') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<select name="<?php print "parent$i" ?>relationship" id="<?php print "parent$i" ?>relationship" style="width: 302px">
+							<select name="<?php print "parent$i" ?>relationship" id="<?php print "parent$i" ?>relationship" class="standardWidth">
 								<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
 								<option value="Mother"><?php print __($guid, 'Mother') ?></option>
 								<option value="Father"><?php print __($guid, 'Father') ?></option>
@@ -1280,7 +1280,7 @@ else {
 							<b><?php print __($guid, 'First Language') ?></b><br/>
 						</td>
 						<td class="right">
-							<select name="<?php print "parent$i" ?>languageFirst" id="<?php print "parent$i" ?>languageFirst" style="width: 302px">
+							<select name="<?php print "parent$i" ?>languageFirst" id="<?php print "parent$i" ?>languageFirst" class="standardWidth">
 								<?php
 								print "<option value=''></option>" ;
 								try {
@@ -1302,7 +1302,7 @@ else {
 							<b><?php print __($guid, 'Second Language') ?></b><br/>
 						</td>
 						<td class="right">
-							<select name="<?php print "parent$i" ?>languageSecond" id="<?php print "parent$i" ?>languageSecond" style="width: 302px">
+							<select name="<?php print "parent$i" ?>languageSecond" id="<?php print "parent$i" ?>languageSecond" class="standardWidth">
 								<?php
 								print "<option value=''></option>" ;
 								try {
@@ -1324,7 +1324,7 @@ else {
 							<b><?php print __($guid, 'Citizenship') ?></b><br/>
 						</td>
 						<td class="right">
-							<select name="<?php print "parent$i" ?>citizenship1" id="<?php print "parent$i" ?>citizenship1" style="width: 302px">
+							<select name="<?php print "parent$i" ?>citizenship1" id="<?php print "parent$i" ?>citizenship1" class="standardWidth">
 								<?php
 								print "<option value=''></option>" ;
 								$nationalityList=getSettingByScope($connection2, "User Admin", "nationality") ;
@@ -1362,7 +1362,7 @@ else {
 							?>
 						</td>
 						<td class="right">
-							<input name="<?php print "parent$i" ?>nationalIDCardNumber" id="<?php print "parent$i" ?>nationalIDCardNumber" maxlength=30 value="" type="text" style="width: 300px">
+							<input name="<?php print "parent$i" ?>nationalIDCardNumber" id="<?php print "parent$i" ?>nationalIDCardNumber" maxlength=30 value="" type="text" class="standardWidth">
 						</td>
 					</tr>
 					<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
@@ -1403,11 +1403,11 @@ else {
 							else {
 								print "<b>" . $_SESSION[$guid]["country"] . " " . __($guid, 'Visa Expiry Date') . "</b><br/>" ;
 							}
-							print "<span style='font-size: 90%'><i>" . __($guid, 'Format:') . " " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } print ". " . __($guid, 'If relevant.') . "</i></span>" ;
+							print "<span style='font-size: 90%'><i>" . __($guid, 'Format:') . " " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } print ". " . __($guid, 'If relevant.') . "</span>" ;
 							?>
 						</td>
 						<td class="right">
-							<input name="<?php print "parent$i" ?>visaExpiryDate" id="<?php print "parent$i" ?>visaExpiryDate" maxlength=10 value="" type="text" style="width: 300px">
+							<input name="<?php print "parent$i" ?>visaExpiryDate" id="<?php print "parent$i" ?>visaExpiryDate" maxlength=10 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var <?php print "parent$i" ?>visaExpiryDate=new LiveValidation('<?php print "parent$i" ?>visaExpiryDate');
 								<?php print "parent$i" ?>visaExpiryDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
@@ -1431,7 +1431,7 @@ else {
 							<b><?php print __($guid, 'Email') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<input name="<?php print "parent$i" ?>email" id="<?php print "parent$i" ?>email" maxlength=50 value="" type="text" style="width: 300px">
+							<input name="<?php print "parent$i" ?>email" id="<?php print "parent$i" ?>email" maxlength=50 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var <?php print "parent$i" ?>email=new LiveValidation('<?php print "parent$i" ?>email');
 								<?php 
@@ -1448,7 +1448,7 @@ else {
 						<tr <?php if ($i==2) { print "class='secondParent'" ; }?>>
 							<td> 
 								<b><?php print __($guid, 'Phone') ?> <?php print $y ; if ($y==1) { print " *" ;}?></b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, 'Type, country code, number.') ?></i></span>
+								<span class="emphasis small"><?php print __($guid, 'Type, country code, number.') ?></span>
 							</td>
 							<td class="right">
 								<input name="<?php print "parent$i" ?>phone<?php print $y ?>" id="<?php print "parent$i" ?>phone<?php print $y ?>" maxlength=20 value="" type="text" style="width: 160px">
@@ -1502,7 +1502,7 @@ else {
 							<b><?php print __($guid, 'Profession') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<input name="<?php print "parent$i" ?>profession" id="<?php print "parent$i" ?>profession" maxlength=30 value="" type="text" style="width: 300px">
+							<input name="<?php print "parent$i" ?>profession" id="<?php print "parent$i" ?>profession" maxlength=30 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var <?php print "parent$i" ?>profession=new LiveValidation('<?php print "parent$i" ?>profession');
 								<?php print "parent$i" ?>profession.add(Validate.Presence);
@@ -1514,7 +1514,7 @@ else {
 							<b><?php print __($guid, 'Employer') ?></b><br/>
 						</td>
 						<td class="right">
-							<input name="<?php print "parent$i" ?>employer" id="<?php print "parent$i" ?>employer" maxlength=30 value="" type="text" style="width: 300px">
+							<input name="<?php print "parent$i" ?>employer" id="<?php print "parent$i" ?>employer" maxlength=30 value="" type="text" class="standardWidth">
 						</td>
 					</tr>
 					<?php
@@ -1788,10 +1788,10 @@ else {
 				<tr>
 					<td> 
 						<b><?php print __($guid, 'Language Choice') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php  print __($guid, 'Please choose preferred additional language to study.') ?></i></span>
+						<span class="emphasis small"><?php  print __($guid, 'Please choose preferred additional language to study.') ?></span>
 					</td>
 					<td class="right">
-						<select name="languageChoice" id="languageChoice" style="width: 302px">
+						<select name="languageChoice" id="languageChoice" class="standardWidth">
 							<?php
 							print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
 							$languageOptionsLanguageList=getSettingByScope($connection2, "Application Form", "languageOptionsLanguageList") ;
@@ -1810,7 +1810,7 @@ else {
 				<tr>
 					<td colspan=2 style='padding-top: 15px'> 
 						<b><?php print __($guid, 'Language Choice Experience') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print __($guid, 'Has the applicant studied the selected language before? If so, please describe the level and type of experience.') ?></i></span><br/> 					
+						<span class="emphasis small"><?php print __($guid, 'Has the applicant studied the selected language before? If so, please describe the level and type of experience.') ?></span><br/> 					
 						<textarea name="languageChoiceExperience" id="languageChoiceExperience" rows=5 style="width:738px; margin: 5px 0px 0px 0px"></textarea>
 						<script type="text/javascript">
 							var languageChoiceExperience=new LiveValidation('languageChoiceExperience');
@@ -1841,7 +1841,7 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Interest') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Indicate if you are interested in a scholarship.') ?></i></span><br/>
+					<span class="emphasis small"><?php print __($guid, 'Indicate if you are interested in a scholarship.') ?></span><br/>
 				</td>
 				<td class="right">
 					<input type="radio" id="scholarshipInterest" name="scholarshipInterest" class="type" value="Y" /> <?php print ynExpander($guid, 'Y') ?>
@@ -1851,7 +1851,7 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Required?') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Is a scholarship required for you to take up a place at the school?') ?></i></span><br/>
+					<span class="emphasis small"><?php print __($guid, 'Is a scholarship required for you to take up a place at the school?') ?></span><br/>
 				</td>
 				<td class="right">
 					<input type="radio" id="scholarshipRequired" name="scholarshipRequired" class="type" value="Y" /> <?php print ynExpander($guid, 'Y') ?>
@@ -1943,7 +1943,7 @@ else {
 					<b><?php print __($guid, 'Company Name') ?> *</b><br/>
 				</td>
 				<td class="right">
-					<input name="companyName" id="companyName" maxlength=100 value="" type="text" style="width: 300px">
+					<input name="companyName" id="companyName" maxlength=100 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var companyName=new LiveValidation('companyName');
 						companyName.add(Validate.Presence);
@@ -1955,7 +1955,7 @@ else {
 					<b><?php print __($guid, 'Company Contact Person') ?> *</b><br/>
 				</td>
 				<td class="right">
-					<input name="companyContact" id="companyContact" maxlength=100 value="" type="text" style="width: 300px">
+					<input name="companyContact" id="companyContact" maxlength=100 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var companyContact=new LiveValidation('companyContact');
 						companyContact.add(Validate.Presence);
@@ -1967,7 +1967,7 @@ else {
 					<b><?php print __($guid, 'Company Address') ?> *</b><br/>
 				</td>
 				<td class="right">
-					<input name="companyAddress" id="companyAddress" maxlength=255 value="" type="text" style="width: 300px">
+					<input name="companyAddress" id="companyAddress" maxlength=255 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var companyAddress=new LiveValidation('companyAddress');
 						companyAddress.add(Validate.Presence);
@@ -1977,10 +1977,10 @@ else {
 			<tr id="companyEmailRow">
 				<td> 
 					<b><?php print __($guid, 'Company Emails') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Comma-separated list of email address.') ?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'Comma-separated list of email address.') ?></span>
 				</td>
 				<td class="right">
-					<input name="companyEmail" id="companyEmail" value="" type="text" style="width: 300px">
+					<input name="companyEmail" id="companyEmail" value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var companyEmail=new LiveValidation('companyEmail');
 						companyEmail.add(Validate.Presence);
@@ -1990,10 +1990,10 @@ else {
 			<tr id="companyCCFamilyRow">
 				<td> 
 					<b><?php print __($guid, 'CC Family?') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Should the family be sent a copy of billing emails?') ?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'Should the family be sent a copy of billing emails?') ?></span>
 				</td>
 				<td class="right">
-					<select name="companyCCFamily" id="companyCCFamily" style="width: 302px">
+					<select name="companyCCFamily" id="companyCCFamily" class="standardWidth">
 						<option value="N" /> <?php print __($guid, 'No') ?>
 						<option value="Y" /> <?php print __($guid, 'Yes') ?>
 					</select>
@@ -2004,7 +2004,7 @@ else {
 					<b><?php print __($guid, 'Company Phone') ?></b><br/>
 				</td>
 				<td class="right">
-					<input name="companyPhone" id="companyPhone" maxlength=20 value="" type="text" style="width: 300px">
+					<input name="companyPhone" id="companyPhone" maxlength=20 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
 			<?php
@@ -2023,7 +2023,7 @@ else {
 				<tr id="companyAllRow">
 					<td> 
 						<b><?php print __($guid, 'Company All?') ?></b><br/>
-						<span style="font-size: 90%"><i><?php print __($guid, 'Should all items be billed to the specified company, or just some?') ?></i></span>
+						<span class="emphasis small"><?php print __($guid, 'Should all items be billed to the specified company, or just some?') ?></span>
 					</td>
 					<td class="right">
 						<input type="radio" name="companyAll" value="Y" class="companyAll" checked /> <?php print __($guid, 'All') ?>
@@ -2033,7 +2033,7 @@ else {
 				<tr id="companyCategoriesRow">
 					<td> 
 						<b><?php print __($guid, 'Company Fee Categories') ?></b><br/>
-						<span style="font-size: 90%"><i><?php print __($guid, 'If the specified company is not paying all fees, which categories are they paying?') ?></i></span>
+						<span class="emphasis small"><?php print __($guid, 'If the specified company is not paying all fees, which categories are they paying?') ?></span>
 					</td>
 					<td class="right">
 						<?php
@@ -2169,10 +2169,10 @@ else {
 			<tr id="tellUsMoreRow" style='display: none'>
 				<td> 
 					<b><?php print __($guid, 'Tell Us More') ?> </b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'The name of a person or link to a website, etc.') ?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'The name of a person or link to a website, etc.') ?></span>
 				</td>
 				<td class="right">
-					<input name="howDidYouHearMore" id="howDidYouHearMore" maxlength=255 value="" type="text" style="width: 300px">
+					<input name="howDidYouHearMore" id="howDidYouHearMore" maxlength=255 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
 			<?php
@@ -2184,8 +2184,8 @@ else {
 				<tr>
 					<td> 
 						<b><?php print __($guid, 'Privacy') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print htmlPrep($privacyBlurb) ?><br/>
-						</i></span>
+						<span class="emphasis small"><?php print htmlPrep($privacyBlurb) ?><br/>
+						</span>
 					</td>
 					<td class="right">
 						<?php
@@ -2233,7 +2233,7 @@ else {
 		
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+					<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

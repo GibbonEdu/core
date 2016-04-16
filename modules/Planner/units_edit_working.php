@@ -332,7 +332,7 @@ else {
 
 													if ($resultTT->rowCount()==1) {
 														$rowTT=$resultTT->fetch() ;
-														print "<span style='font-size: 80%'><i>" . date("D jS M, Y", dateConvertToTimestamp($rowLessons["date"])) . "<br/>" . $rowTT["period"] . " (" . substr($rowLessons["timeStart"],0,5) . " - " . substr($rowLessons["timeEnd"],0,5) . ")</i></span>" ;
+														print "<span style='font-size: 80%'><i>" . date("D jS M, Y", dateConvertToTimestamp($rowLessons["date"])) . "<br/>" . $rowTT["period"] . " (" . substr($rowLessons["timeStart"],0,5) . " - " . substr($rowLessons["timeEnd"],0,5) . ")</span>" ;
 													}
 													else {
 														print "<span style='font-size: 80%'><i>" ;
@@ -352,7 +352,7 @@ else {
 													print "<input type='hidden' name='timeEnd$i' value='" . $rowLessons["timeEnd"] . "' >" ;
 													print "<input type='hidden' name='gibbonPlannerEntryID$i' value='" . $rowLessons["gibbonPlannerEntryID"] . "' >" ;
 													print "<div style='text-align: right; float: right; margin-top: -33px; margin-right: 3px'>" ;
-														print "<span style='font-size: 80%'><i>" . __($guid, 'Add Block:') . "</i></span><br/>" ; 
+														print "<span style='font-size: 80%'><i>" . __($guid, 'Add Block:') . "</span><br/>" ; 
 														print "<script type='text/javascript'>" ;
 															print "$(document).ready(function(){" ;
 																print "$(\"#blockAdd$i\").change(function(){" ;

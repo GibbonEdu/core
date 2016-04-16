@@ -127,7 +127,7 @@ else {
 				
 				?>
 				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/department_editProcess.php?gibbonDepartmentID=$gibbonDepartmentID&address=" . $_GET["q"] ?>" enctype="multipart/form-data">
-					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>	
 						<tr class='break'>
 							<td colspan=2> 
 								<h3><?php print __($guid, 'Overview') ?></h3>
@@ -314,7 +314,7 @@ else {
 								<b><?php print sprintf(__($guid, 'Resource %1$s Name'), "1") ?></b><br/>
 							</td>
 							<td class="right">
-								<input name="name1" id="name1" maxlength=100 value="" type="text" style="width: 300px">
+								<input name="name1" id="name1" maxlength=100 value="" type="text" class="standardWidth">
 							</td>
 						</tr>
 						<tr>
@@ -331,7 +331,7 @@ else {
 								<b><?php print sprintf(__($guid, 'Resource %1$s URL'), "1") ?></b><br/>
 							</td>
 							<td class="right">
-								<input name="url1" id="url1" maxlength=255 value="" type="text" style="width: 300px">
+								<input name="url1" id="url1" maxlength=255 value="" type="text" class="standardWidth">
 								<script type="text/javascript">
 									var url1=new LiveValidation('url1');
 									url1.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
@@ -382,7 +382,7 @@ else {
 								<b><?php print sprintf(__($guid, 'Resource %1$s Name'), "2") ?></b><br/>
 							</td>
 							<td class="right">
-								<input name="name2" id="name2" maxlength=100 value="" type="text" style="width: 300px">
+								<input name="name2" id="name2" maxlength=100 value="" type="text" class="standardWidth">
 							</td>
 						</tr>
 						<tr id="type2">
@@ -399,7 +399,7 @@ else {
 								<b><?php print sprintf(__($guid, 'Resource %1$s URL'), "2") ?></b><br/>
 							</td>
 							<td class="right">
-								<input name="url2" id="url2" maxlength=255 value="" type="text" style="width: 300px">
+								<input name="url2" id="url2" maxlength=255 value="" type="text" class="standardWidth">
 								<script type="text/javascript">
 									var url2=new LiveValidation('url2');
 									url2.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
@@ -437,7 +437,7 @@ else {
 								<b><?php print sprintf(__($guid, 'Resource %1$s Name'), "3") ?></b><br/>
 							</td>
 							<td class="right">
-								<input name="name3" id="name3" maxlength=100 value="" type="text" style="width: 300px">
+								<input name="name3" id="name3" maxlength=100 value="" type="text" class="standardWidth">
 							</td>
 						</tr>
 						<tr id="type3">
@@ -454,7 +454,7 @@ else {
 								<b><?php print sprintf(__($guid, 'Resource %1$s URL'), "3") ?></b><br/>
 							</td>
 							<td class="right">
-								<input name="url3" id="url3" maxlength=255 value="" type="text" style="width: 300px">
+								<input name="url3" id="url3" maxlength=255 value="" type="text" class="standardWidth">
 								<script type="text/javascript">
 									var url3=new LiveValidation('url3');
 									url3.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );

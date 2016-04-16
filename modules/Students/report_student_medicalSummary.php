@@ -46,11 +46,11 @@ else {
 	?>
 	
 	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_student_medicalSummary.php"?>">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr>
 				<td style='width: 275px'> 
 					<b><?php print __($guid, 'Students') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 				</td>
 				<td class="right">
 					<select name="Members[]" id="Members[]" multiple style="width: 302px; height: 150px">
@@ -140,7 +140,7 @@ else {
 				print "</th>" ;
 				print "<th>" ;
 					print __($guid, "Tetanus") . "<br/>" ;
-					print "<span style='font-size: 80%'><i>" . __($guid, '10 Years') . "</i></span>" ;
+					print "<span style='font-size: 80%'><i>" . __($guid, '10 Years') . "</span>" ;
 				print "</th>" ;
 				print "<th>" ;
 					print __($guid, "Last Update") ;

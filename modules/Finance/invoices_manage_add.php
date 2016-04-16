@@ -92,7 +92,7 @@ else {
 		}
 		?>
 		<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_addProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID" ?>">
-			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+			<table class='smallIntBorder fullWidth' cellspacing='0'>	
 				<tr class='break'>
 					<td colspan=2> 
 						<h3><?php print __($guid, 'Basic Information') ?></h3>
@@ -101,7 +101,7 @@ else {
 				<tr>
 					<td style='width: 275px'> 
 						<b><?php print __($guid, 'School Year') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+						<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 					</td>
 					<td class="right">
 						<?php
@@ -120,7 +120,7 @@ else {
 							$yearName=$rowYear["name"] ;
 						}
 						?>
-						<input readonly name="yearName" id="yearName" maxlength=20 value="<?php print $yearName ?>" type="text" style="width: 300px">
+						<input readonly name="yearName" id="yearName" maxlength=20 value="<?php print $yearName ?>" type="text" class="standardWidth">
 						<script type="text/javascript">
 							var yearName=new LiveValidation('yearName');
 							yearname2.add(Validate.Presence);
@@ -130,7 +130,7 @@ else {
 				<tr>
 					<td> 
 						<b><?php print __($guid, 'Invoicees') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?><br/><?php print sprintf(__($guid, 'Visit %1$sManage Invoicees%2$s to automatically generate missing students.'), "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoicees_manage.php'>", "</a>") ?></i></span>
+						<span class="emphasis small"><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?><br/><?php print sprintf(__($guid, 'Visit %1$sManage Invoicees%2$s to automatically generate missing students.'), "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoicees_manage.php'>", "</a>") ?></span>
 					</td>
 					<td class="right">
 						<select name="gibbonFinanceInvoiceeIDs[]" id="gibbonFinanceInvoiceeIDs[]" multiple style="width: 302px; height: 150px">
@@ -194,7 +194,7 @@ else {
 				<tr>
 					<td> 
 						<b><?php print __($guid, 'Scheduling') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print __($guid, 'When using scheduled, invoice due date is linked to and determined by the schedule.') ?></i></span>
+						<span class="emphasis small"><?php print __($guid, 'When using scheduled, invoice due date is linked to and determined by the schedule.') ?></span>
 					</td>
 					<td class="right">
 						<input checked type="radio" name="scheduling" class="scheduling" value="Scheduled" /> Scheduled
@@ -228,7 +228,7 @@ else {
 						<b><?php print __($guid, 'Billing Schedule') ?> *</b><br/>
 					</td>
 					<td class="right">
-						<select name="gibbonFinanceBillingScheduleID" id="gibbonFinanceBillingScheduleID" style="width: 302px">
+						<select name="gibbonFinanceBillingScheduleID" id="gibbonFinanceBillingScheduleID" class="standardWidth">
 							<?php
 							print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
 							try {
@@ -252,10 +252,10 @@ else {
 				<tr id="adHocRow">
 					<td> 
 						<b><?php print __($guid, 'Invoice Due Date') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print __($guid, 'For fees added to existing invoice, specified date will override existing due date.') ?></i></span>
+						<span class="emphasis small"><?php print __($guid, 'For fees added to existing invoice, specified date will override existing due date.') ?></span>
 					</td>
 					<td class="right">
-						<input name="invoiceDueDate" id="invoiceDueDate" maxlength=10 value="" type="text" style="width: 300px">
+						<input name="invoiceDueDate" id="invoiceDueDate" maxlength=10 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 							var invoiceDueDate=new LiveValidation('invoiceDueDate');
 							invoiceDueDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
@@ -370,7 +370,7 @@ else {
 				
 				<tr>
 					<td>
-						<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+						<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 					</td>
 					<td class="right">
 						<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

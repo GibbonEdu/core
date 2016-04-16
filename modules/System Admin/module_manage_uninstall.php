@@ -87,17 +87,17 @@ else {
 			$row=$result->fetch() ;
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/module_manage_uninstallProcess.php?gibbonModuleID=$gibbonModuleID&orphaned=$orphaned" ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td style='width: 275px' colspan=2> 
 							<b><?php print __($guid, 'Are you sure you want to delete this record?') ; ?></b><br/>
-							<span style="font-size: 90%; color: #cc0000"><i><?php print __($guid, 'This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!') ; ?></i></span>
+							<span style="font-size: 90%; color: #cc0000"><i><?php print __($guid, 'This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!') ; ?></span>
 						</td>
 					</tr>
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php print __($guid, "Remove Data") ?></b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, "Would you like to remove the following tables and views from your database?") ?></i></span>
+							<span class="emphasis small"><?php print __($guid, "Would you like to remove the following tables and views from your database?") ?></span>
 						</td>
 						<td class="right">
 							<?php

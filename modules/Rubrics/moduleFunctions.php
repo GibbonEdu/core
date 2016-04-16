@@ -108,7 +108,7 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName="", $search
 								else {
 									$rowOutcome=$resultOutcome->fetch() ;
 									$output.="<b>" . __($guid, $rowOutcome["descriptor"]) . " (" . __($guid, $rowOutcome["value"]) . ")</b><br/>" ;
-									$output.="<span style='font-size: 85%'><i>" . __($guid, $scaleName) . " Scale</i></span><br/>" ;
+									$output.="<span style='font-size: 85%'><i>" . __($guid, $scaleName) . " Scale</span><br/>" ;
 								}
 							}
 							else {
@@ -143,7 +143,7 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName="", $search
 										$output.="<b>" . $rowOutcome["name"] . "</b><i> - " . $rowOutcome["category"] . "</i><br/>" ;
 									}
 									
-									$output.="<span style='font-size: 85%'><i>" . $rowOutcome["scope"] . " " . __($guid, 'Outcome') . "</i></span><br/>" ;
+									$output.="<span style='font-size: 85%'><i>" . $rowOutcome["scope"] . " " . __($guid, 'Outcome') . "</span><br/>" ;
 								}
 							}
 							else {
@@ -352,7 +352,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 											}
 										}
 										if ($rowScale["name"]!="") {
-											$output.="<span style='font-size: 85%'><i>" . __($guid, $rowScale["name"]) . " Scale</i></span><br/>" ;
+											$output.="<span style='font-size: 85%'><i>" . __($guid, $rowScale["name"]) . " Scale</span><br/>" ;
 										}
 									}
 								}
@@ -399,9 +399,9 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 											$output.="<span title='" . htmlprep($rowOutcome["description"]) . "'><b>" . $rowOutcome["name"] . "</b></span><br/>" ;
 										}
 										else {
-											$output.="<span title='" . htmlprep($rowOutcome["description"]) . "'><b>" . $rowOutcome["name"] . "</b><i> - " . $rowOutcome["category"] . "</i></span><br/>" ;
+											$output.="<span title='" . htmlprep($rowOutcome["description"]) . "'><b>" . $rowOutcome["name"] . "</b><i> - " . $rowOutcome["category"] . "</span><br/>" ;
 										}
-										$output.="<span style='font-size: 85%'><i>" . $rowOutcome["scope"] . " " . __($guid, 'Outcome') . "</i></span><br/>" ;
+										$output.="<span style='font-size: 85%'><i>" . $rowOutcome["scope"] . " " . __($guid, 'Outcome') . "</span><br/>" ;
 									}
 								}
 								else {
