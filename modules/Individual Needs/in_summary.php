@@ -25,12 +25,12 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_manage.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Individual Needs Summary') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Individual Needs Summary') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -38,7 +38,7 @@ else {
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="success0") {
-			$deleteReturnMessage=_("Your request was completed successfully.") ;		
+			$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;		
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -64,14 +64,14 @@ else {
 	}
 	
 	print "<h3>" ;
-		print _("Filter") ;
+		print __($guid, "Filter") ;
 	print "</h3>" ;
 	print "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Individual Needs/in_summary.php'>" ;
 		print "<table class='noIntBorder' cellspacing='0' style='width: 100%'>" ;
 			?>
 			<tr>
 				<td> 
-					<b><?php print _('Descriptor') ?></b><br/>
+					<b><?php print __($guid, 'Descriptor') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
@@ -91,7 +91,7 @@ else {
 							if ($rowPurpose["gibbonINDescriptorID"]==$gibbonINDescriptorID) {
 								$selected="selected" ;
 							}
-							print "<option $selected value='" . $rowPurpose["gibbonINDescriptorID"] . "'>" . _($rowPurpose["name"]) . "</option>" ;
+							print "<option $selected value='" . $rowPurpose["gibbonINDescriptorID"] . "'>" . __($guid, $rowPurpose["name"]) . "</option>" ;
 						}
 					print "</select>" ;
 					?>
@@ -99,7 +99,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Alert Level') ?></b><br/>
+					<b><?php print __($guid, 'Alert Level') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
@@ -119,7 +119,7 @@ else {
 							if ($rowPurpose["gibbonAlertLevelID"]==$gibbonAlertLevelID) {
 								$selected="selected" ;
 							}
-							print "<option $selected value='" . $rowPurpose["gibbonAlertLevelID"] . "'>" . _($rowPurpose["name"]) . "</option>" ;
+							print "<option $selected value='" . $rowPurpose["gibbonAlertLevelID"] . "'>" . __($guid, $rowPurpose["name"]) . "</option>" ;
 						}
 					print "</select>" ;
 					?>
@@ -127,7 +127,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Roll Group') ?></b><br/>
+					<b><?php print __($guid, 'Roll Group') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
@@ -155,7 +155,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Year Group') ?></b><br/>
+					<b><?php print __($guid, 'Year Group') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
@@ -175,7 +175,7 @@ else {
 							if ($rowPurpose["gibbonYearGroupID"]==$gibbonYearGroupID) {
 								$selected="selected" ;
 							}
-							print "<option $selected value='" . $rowPurpose["gibbonYearGroupID"] . "'>" . _($rowPurpose["name"]) . "</option>" ;
+							print "<option $selected value='" . $rowPurpose["gibbonYearGroupID"] . "'>" . __($guid, $rowPurpose["name"]) . "</option>" ;
 						}
 					print "</select>" ;
 					?>
@@ -185,8 +185,8 @@ else {
 			print "<tr>" ;
 				print "<td class='right' colspan=2>" ;
 					print "<input type='hidden' name='q' value='" . $_GET["q"] . "'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Individual Needs/in_summary.php'>" . _('Clear Filters') . "</a> " ;
-					print "<input type='submit' value='" . _('Go') . "'>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Individual Needs/in_summary.php'>" . __($guid, 'Clear Filters') . "</a> " ;
+					print "<input type='submit' value='" . __($guid, 'Go') . "'>" ;
 				print "</td>" ;
 			print "</tr>" ;
 		print "</table>" ;
@@ -194,10 +194,10 @@ else {
 	
 	
 	print "<h3>" ;
-		print _("Students With Records") ;
+		print __($guid, "Students With Records") ;
 	print "</h3>" ;
 	print "<p>" ;
-	print _("Students only show up in this list if they have an Individual Needs record with descriptors set. If a student does not show up here, check in Individual Needs Records.") ;
+	print __($guid, "Students only show up in this list if they have an Individual Needs record with descriptors set. If a student does not show up here, check in Individual Needs Records.") ;
 	print "</p>" ;
 	
 	//Set pagination variable
@@ -242,7 +242,7 @@ else {
 
 	if ($result->rowCount()<1) {
 		print "<div class='error'>" ;
-		print _("There are no records to display.") ;
+		print __($guid, "There are no records to display.") ;
 		print "</div>" ;
 	}
 	else {
@@ -253,16 +253,16 @@ else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print _("Name") ;
+					print __($guid, "Name") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Year Group") ;
+					print __($guid, "Year Group") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Roll Group") ;
+					print __($guid, "Roll Group") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Actions") ;
+					print __($guid, "Actions") ;
 				print "</th>" ;
 			print "</tr>" ;
 			
@@ -295,7 +295,7 @@ else {
 						print formatName("", $row["preferredName"], $row["surname"], "Student", true) ;
 					print "</td>" ;
 					print "<td>" ;
-						print _($row["yearGroup"]) ;
+						print __($guid, $row["yearGroup"]) ;
 					print "</td>" ;
 					print "<td>" ;
 						print $row["rollGroup"] ;

@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/ttDates_edit_delete.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -32,7 +32,7 @@ else {
 	$gibbonTTDayID=$_GET["gibbonTTDayID"] ;
 	if ($gibbonSchoolYearID=="" OR $dateStamp=="" OR $gibbonTTDayID=="") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -48,7 +48,7 @@ else {
 
 		if ($result->rowCount()<1) {
 			print "<div class='error'>" ;
-				print _("The specified record cannot be found.") ;
+				print __($guid, "The specified record cannot be found.") ;
 			print "</div>" ;
 		}
 		else {
@@ -57,7 +57,7 @@ else {
 			
 			//Proceed!
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/ttDates.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . _('Tie Days to Dates') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/ttDates_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=$dateStamp'>" . _('Edit Days in Date') . "</a> > </div><div class='trailEnd'>" . _('Delete Day from Date') . "</div>" ;
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/ttDates.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . __($guid, 'Tie Days to Dates') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/ttDates_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=$dateStamp'>" . __($guid, 'Edit Days in Date') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Delete Day from Date') . "</div>" ;
 			print "</div>" ;
 			
 			if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -65,16 +65,16 @@ else {
 			$class="error" ;
 			if (!($deleteReturn=="")) {
 				if ($deleteReturn=="fail0") {
-					$deleteReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+					$deleteReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 				}
 				else if ($deleteReturn=="fail1") {
-					$deleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$deleteReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($deleteReturn=="fail2") {
-					$deleteReturnMessage=_("Your request failed due to a database error.") ;	
+					$deleteReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 				}
 				else if ($deleteReturn=="fail3") {
-					$deleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$deleteReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 				}
 				print "<div class='$class'>" ;
 					print $deleteReturnMessage;
@@ -85,8 +85,8 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
-							<b><?php print _('Are you sure you want to delete this record?') ; ?></b><br/>
-							<span style="font-size: 90%; color: #cc0000"><i><?php print _('This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!') ; ?></i></span>
+							<b><?php print __($guid, 'Are you sure you want to delete this record?') ; ?></b><br/>
+							<span style="font-size: 90%; color: #cc0000"><i><?php print __($guid, 'This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!') ; ?></i></span>
 						</td>
 						<td class="right">
 							
@@ -95,7 +95,7 @@ else {
 					<tr>
 						<td> 
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<?php print _('Yes') ; ?>">
+							<input type="submit" value="<?php print __($guid, 'Yes') ; ?>">
 						</td>
 						<td class="right">
 							

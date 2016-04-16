@@ -25,20 +25,20 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/data_personal_edit.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/data_personal.php'>" . _('Personal Data Updates') . "</a> > </div><div class='trailEnd'>" . _('Edit Request') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/data_personal.php'>" . __($guid, 'Personal Data Updates') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Edit Request') . "</div>" ;
 	print "</div>" ;
 	
 	//Check if school year specified
 	$gibbonPersonUpdateID=$_GET["gibbonPersonUpdateID"];
 	if ($gibbonPersonUpdateID=="Y") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -54,7 +54,7 @@ else {
 
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print _("The selected record does not exist, or you do not have access to it.") ;
+				print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 			print "</div>" ;
 		}
 		else {
@@ -63,22 +63,22 @@ else {
 			$class="error" ;
 			if (!($updateReturn=="")) {
 				if ($updateReturn=="fail0") {
-					$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+					$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 				}
 				else if ($updateReturn=="fail1") {
-					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($updateReturn=="fail2") {
-					$updateReturnMessage=_("Your request failed due to a database error.") ;	
+					$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 				}
 				else if ($updateReturn=="fail3") {
-					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($updateReturn=="success1") {
-					$updateReturnMessage=_("Your request was completed successfully, but status could not be updated.") ;	
+					$updateReturnMessage=__($guid, "Your request was completed successfully, but status could not be updated.") ;	
 				}
 				else if ($updateReturn=="success0") {
-					$updateReturnMessage=_("Your request was completed successfully.") ;	
+					$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
 					$class="success" ;
 				}
 				print "<div class='$class'>" ;
@@ -116,16 +116,16 @@ else {
 				print "<table cellspacing='0' style='width: 100%'>" ;
 					print "<tr class='head'>" ;
 						print "<th>" ;
-							print _("Field") ;
+							print __($guid, "Field") ;
 						print "</th>" ;
 						print "<th>" ;
-							print _("Current Value") ;
+							print __($guid, "Current Value") ;
 						print "</th>" ;
 						print "<th>" ;
-							print _("New Value") ;
+							print __($guid, "New Value") ;
 						print "</th>" ;
 						print "<th>" ;
-							print _("Accept") ;
+							print __($guid, "Accept") ;
 						print "</th>" ;
 					print "</tr>" ;
 					
@@ -133,7 +133,7 @@ else {
 					//COLOR ROW BY STATUS!
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print _("Title") ;
+							print __($guid, "Title") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["title"] ;
@@ -152,7 +152,7 @@ else {
 					print "</tr>" ;
 					print "<tr>" ;
 						print "<td>" ;
-							print _("Surname") ;
+							print __($guid, "Surname") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["surname"] ;
@@ -171,7 +171,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print _("First Name") ;
+							print __($guid, "First Name") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["firstName"] ;
@@ -191,7 +191,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print _("Preferred Name") ;
+							print __($guid, "Preferred Name") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["preferredName"] ;
@@ -211,7 +211,7 @@ else {
 					print "</tr>" ;
 					print "<tr>" ;
 						print "<td>" ;
-							print _("Official Name") ;
+							print __($guid, "Official Name") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["officialName"] ;
@@ -231,7 +231,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print _("Name In Characters") ;
+							print __($guid, "Name In Characters") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["nameInCharacters"] ;
@@ -251,7 +251,7 @@ else {
 					print "</tr>" ;
 					print "<tr>" ;
 						print "<td>" ;
-							print _("Date of Birth") ;
+							print __($guid, "Date of Birth") ;
 						print "</td>" ;
 						print "<td>" ;
 							print dateConvertBack($guid, $row["dob"]) ;
@@ -271,7 +271,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print _("Email") ;
+							print __($guid, "Email") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["email"] ;
@@ -291,7 +291,7 @@ else {
 					print "</tr>" ;
 					print "<tr>" ;
 						print "<td>" ;
-							print _("Alternate Email") ;
+							print __($guid, "Alternate Email") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["emailAlternate"] ;
@@ -311,7 +311,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print _("Address 1") ;
+							print __($guid, "Address 1") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["address1"] ;
@@ -331,7 +331,7 @@ else {
 					print "</tr>" ;
 					print "<tr>" ;
 						print "<td>" ;
-							print _("Address 1 District") ;
+							print __($guid, "Address 1 District") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["address1District"] ;
@@ -351,7 +351,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print _("Address 1 Country") ;
+							print __($guid, "Address 1 Country") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["address1Country"] ;
@@ -371,7 +371,7 @@ else {
 					print "</tr>" ;
 					print "<tr>" ;
 						print "<td>" ;
-							print _("Address 2") ;
+							print __($guid, "Address 2") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["address2"] ;
@@ -391,7 +391,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print _("Address 2 District") ;
+							print __($guid, "Address 2 District") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["address2District"] ;
@@ -411,7 +411,7 @@ else {
 					print "</tr>" ;
 					print "<tr>" ;
 						print "<td>" ;
-							print _("Address 2 Country") ;
+							print __($guid, "Address 2 Country") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["address2Country"] ;
@@ -435,7 +435,7 @@ else {
 						$class="odd" ;
 						print "<tr class='$class'>" ;
 							print "<td>" ;
-								print sprintf(_('Phone %1$s Type'), $i) ;
+								print sprintf(__($guid, 'Phone %1$s Type'), $i) ;
 							print "</td>" ;
 							print "<td>" ;
 								print $row["phone" . $i . "Type"] ;
@@ -456,7 +456,7 @@ else {
 						$phoneCount++ ;
 						print "<tr class='$class'>" ;
 							print "<td>" ;
-								print sprintf(_('Phone %1$s Country Code'), $i) ;
+								print sprintf(__($guid, 'Phone %1$s Country Code'), $i) ;
 							print "</td>" ;
 							print "<td>" ;
 								print $row["phone" . $i . "CountryCode"] ;
@@ -477,7 +477,7 @@ else {
 						$phoneCount++ ;
 						print "<tr class='$class'>" ;
 							print "<td>" ;
-								print _("Phone") . " " . $i ;
+								print __($guid, "Phone") . " " . $i ;
 							print "</td>" ;
 							print "<td>" ;
 								print $row["phone" . $i] ;
@@ -498,7 +498,7 @@ else {
 					}
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print _("First Language") ;
+							print __($guid, "First Language") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["languageFirst"] ;
@@ -518,7 +518,7 @@ else {
 					print "</tr>" ;
 					print "<tr>" ;
 						print "<td>" ;
-							print _("Second Language") ;
+							print __($guid, "Second Language") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["languageSecond"] ;
@@ -538,7 +538,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print _("Third Language") ;
+							print __($guid, "Third Language") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["languageThird"] ;
@@ -559,7 +559,7 @@ else {
 					
 					print "<tr>" ;
 						print "<td>" ;
-							print _("Country of Birth") ;
+							print __($guid, "Country of Birth") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["countryOfBirth"] ;
@@ -579,7 +579,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print _("Ethnicity") ;
+							print __($guid, "Ethnicity") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["ethnicity"] ;
@@ -599,7 +599,7 @@ else {
 					print "</tr>" ;
 					print "<tr>" ;
 						print "<td>" ;
-							print _("Citizenship 1") ;
+							print __($guid, "Citizenship 1") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["citizenship1"] ;
@@ -619,7 +619,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print _("Citizenship 1 Passport") ;
+							print __($guid, "Citizenship 1 Passport") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["citizenship1Passport"] ;
@@ -639,7 +639,7 @@ else {
 					print "</tr>" ;
 					print "<tr>" ;
 						print "<td>" ;
-							print _("Citizenship 2") ;
+							print __($guid, "Citizenship 2") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["citizenship2"] ;
@@ -659,7 +659,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print _("Citizenship 2 Passport") ;
+							print __($guid, "Citizenship 2 Passport") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["citizenship2Passport"] ;
@@ -679,7 +679,7 @@ else {
 					print "</tr>" ;
 					print "<tr>" ;
 						print "<td>" ;
-							print _("Religion") ;
+							print __($guid, "Religion") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["religion"] ;
@@ -699,7 +699,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print _("National ID Card Number") ;
+							print __($guid, "National ID Card Number") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["nationalIDCardNumber"] ;
@@ -719,7 +719,7 @@ else {
 					print "</tr>" ;
 					print "<tr>" ;
 						print "<td>" ;
-							print _("Residency Status") ;
+							print __($guid, "Residency Status") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["residencyStatus"] ;
@@ -739,7 +739,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print _("Visa Expiry Date") ;
+							print __($guid, "Visa Expiry Date") ;
 						print "</td>" ;
 						print "<td>" ;
 							print dateConvertBack($guid, $row["visaExpiryDate"]) ;
@@ -759,7 +759,7 @@ else {
 					print "</tr>" ;
 					print "<tr>" ;
 						print "<td>" ;
-							print _("Profession") ;
+							print __($guid, "Profession") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["profession"] ;
@@ -779,7 +779,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print _("Employer") ;
+							print __($guid, "Employer") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["employer"] ;
@@ -799,7 +799,7 @@ else {
 					print "</tr>" ;
 					print "<tr>" ;
 						print "<td>" ;
-							print _("Job Title") ;
+							print __($guid, "Job Title") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["jobTitle"] ;
@@ -819,7 +819,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print _("Emergency 1 Name") ;
+							print __($guid, "Emergency 1 Name") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["emergency1Name"] ;
@@ -839,7 +839,7 @@ else {
 					print "</tr>" ;
 					print "<tr>" ;
 						print "<td>" ;
-							print _("Emergency 1 Number 1") ;
+							print __($guid, "Emergency 1 Number 1") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["emergency1Number1"] ;
@@ -859,7 +859,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print _("Emergency 1 Number 2") ;
+							print __($guid, "Emergency 1 Number 2") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["emergency1Number2"] ;
@@ -879,7 +879,7 @@ else {
 					print "</tr>" ;
 					print "<tr>" ;
 						print "<td>" ;
-							print _("Emergency 1 Relationship") ;
+							print __($guid, "Emergency 1 Relationship") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["emergency1Relationship"] ;
@@ -899,7 +899,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print _("Emergency 2 Name") ;
+							print __($guid, "Emergency 2 Name") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["emergency2Name"] ;
@@ -919,7 +919,7 @@ else {
 					print "</tr>" ;
 					print "<tr>" ;
 						print "<td>" ;
-							print _("Emergency 2 Number 1") ;
+							print __($guid, "Emergency 2 Number 1") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["emergency2Number1"] ;
@@ -939,7 +939,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print _("Emergency 2 Number 2") ;
+							print __($guid, "Emergency 2 Number 2") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["emergency2Number2"] ;
@@ -959,7 +959,7 @@ else {
 					print "</tr>" ;
 					print "<tr>" ;
 						print "<td>" ;
-							print _("Emergency 2 Relationship") ;
+							print __($guid, "Emergency 2 Relationship") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["emergency2Relationship"] ;
@@ -979,7 +979,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print _("Vehicle Registration") ;
+							print __($guid, "Vehicle Registration") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["vehicleRegistration"] ;
@@ -1005,7 +1005,7 @@ else {
 						if ($privacySetting=="Y" AND $privacyBlurb!="") {
 							print "<tr>" ;
 								print "<td>" ;
-									print _("Image Privacy") ;
+									print __($guid, "Image Privacy") ;
 								print "</td>" ;
 								print "<td>" ;
 									print $row["privacy"] ;
@@ -1038,7 +1038,7 @@ else {
 						while ($rowFields=$resultFields->fetch()) {
 							print "<tr class='odd'>" ;
 								print "<td>" ;
-									print _($rowFields["name"]) ;
+									print __($guid, $rowFields["name"]) ;
 								print "</td>" ;
 								print "<td>" ;
 									$current="" ;

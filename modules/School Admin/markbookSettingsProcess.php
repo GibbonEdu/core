@@ -49,6 +49,7 @@ else {
 		$markbookType.=trim($type) . "," ;
 	}
 	$markbookType=substr($markbookType,0,-1) ;
+	$enableColumnWeighting=$_POST["enableColumnWeighting"] ;
 	$attainmentAlternativeName=$_POST["attainmentAlternativeName"] ;
 	$attainmentAlternativeNameAbrev=$_POST["attainmentAlternativeNameAbrev"] ;
 	$effortAlternativeName=$_POST["effortAlternativeName"] ;
@@ -61,7 +62,7 @@ else {
 	$personalisedWarnings=$_POST["personalisedWarnings"] ;
 	
 	//Validate Inputs
-	if ($markbookType=="") {
+	if ($markbookType=="" OR $enableColumnWeighting=="") {
 		//Fail 3
 		$URL.="&updateReturn=fail3" ;
 		header("Location: {$URL}");
@@ -73,6 +74,16 @@ else {
 		try {
 			$data=array("value"=>$markbookType); 
 			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='markbookType'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ;
+		}
+		
+		try {
+			$data=array("value"=>$enableColumnWeighting); 
+			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='enableColumnWeighting'" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}

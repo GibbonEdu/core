@@ -78,7 +78,7 @@ if (isset($_GET["alpha"])) {
 if (isActionAccessible($guid, $connection2, "/modules/Resources/resources_view.php")==FALSE) {
 	//Acess denied
 	$output.="<div class='error'>" ;
-		$output.=_("Your request failed because you do not have access to this action.") ;
+		$output.=__($guid, "Your request failed because you do not have access to this action.") ;
 	$output.="</div>" ;
 }
 else {
@@ -105,14 +105,14 @@ else {
 		$output.="<tr><td style='width: 30%; height: 1px; padding-top: 0px; padding-bottom: 0px'></td><td style='padding-top: 0px; padding-bottom: 0px'></td></tr>" ;
 		$output.="<tr id='" . $id . "resourceInsert'>" ;
 			$output.="<td colspan=2 style='padding-top: 0px'>" ; 
-				$output.="<div style='margin: 0px' class='linkTop'><a href='javascript:void(0)' onclick='formResetSearch(); \$(\"." .$id . "resourceSlider\").slideUp();'><img title='" . _('Close') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/></a></div>" ;
+				$output.="<div style='margin: 0px' class='linkTop'><a href='javascript:void(0)' onclick='formResetSearch(); \$(\"." .$id . "resourceSlider\").slideUp();'><img title='" . __($guid, 'Close') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/></a></div>" ;
 				$output.="<h3 style='margin-top: 0px; font-size: 140%'>Insert A Resource</h3>" ;
-				$output.="<p>" . sprintf(_('The table below shows shared resources drawn from the %1$sResources%2$s section of Gibbon. You will see the 50 most recent resources that match the filters you have used.'), "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Resources/resources_view.php'>", "</a>") . "</p>" ;
+				$output.="<p>" . sprintf(__($guid, 'The table below shows shared resources drawn from the %1$sResources%2$s section of Gibbon. You will see the 50 most recent resources that match the filters you have used.'), "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Resources/resources_view.php'>", "</a>") . "</p>" ;
 				$output.="<form id='" . $id . "ajaxFormSearch' name='" . $id . "ajaxFormSearch'>" ;
 					$output.="<table cellspacing='0' style='width: 200px'>" ;
 						$output.="<tr>" ;
 							$output.="<td colspan=4>" ;
-								$output.="<b>" . _('Tags') . "</b>" ;
+								$output.="<b>" . __($guid, 'Tags') . "</b>" ;
 							$output.="</td>" ;
 						$output.="</tr>" ;
 						$output.="<tr>" ;
@@ -157,13 +157,13 @@ else {
 						
 						$output.="<tr>" ;
 							$output.="<td>" ;
-								$output.="<b>" . _('Category') . "</b>" ;
+								$output.="<b>" . __($guid, 'Category') . "</b>" ;
 							$output.="</td>" ;
 							$output.="<td>" ;
-								$output.="<b>" . _('Purpose') . "</b>" ;
+								$output.="<b>" . __($guid, 'Purpose') . "</b>" ;
 							$output.="</td>" ;
 							$output.="<td>" ;
-								$output.="<b>" . _('Year Group') . "</b>" ;
+								$output.="<b>" . __($guid, 'Year Group') . "</b>" ;
 							$output.="</td>" ;
 							$output.="<td>" ;
 								
@@ -245,12 +245,12 @@ else {
 										if ($rowPurpose["gibbonYearGroupID"]==$gibbonYearGroupID) {
 											$selected="selected" ;
 										}
-										$output.="<option $selected value='" . $rowPurpose["gibbonYearGroupID"] . "'>" . _($rowPurpose["name"]) . "</option>" ;
+										$output.="<option $selected value='" . $rowPurpose["gibbonYearGroupID"] . "'>" . __($guid, $rowPurpose["name"]) . "</option>" ;
 									}
 								$output.="</select>" ;
 							$output.="</td>" ;
 							$output.="<td style='padding: 0px 0px 0px 2px'>" ;
-								$output.="<input type='submit' value='" . _('Go') . "'>" ;
+								$output.="<input type='submit' value='" . __($guid, 'Go') . "'>" ;
 							$output.="</td>" ;
 						$output.="</tr>" ;
 					$output.="</table>" ;
@@ -304,31 +304,31 @@ else {
 				
 				if ($result->rowCount()<1) {
 					$output.="<div class='error'>" ;
-					$output.=_("There are no records to display.") ;
+					$output.=__($guid, "There are no records to display.") ;
 					$output.="</div>" ;
 				}
 				else {
 					$output.="<table cellspacing='0' style='width: 100%'>" ;
 						$output.="<tr class='head'>" ;
 							$output.="<th>" ;
-								$output.=_("Name") . "<br/>";
-								$output.="<span style='font-size: 85%; font-style: italic'>" . _('Contributor') . "</span>" ;
+								$output.=__($guid, "Name") . "<br/>";
+								$output.="<span style='font-size: 85%; font-style: italic'>" . __($guid, 'Contributor') . "</span>" ;
 							$output.="</th>" ;
 							$output.="<th>" ;
-								$output.=_("Type") ;
+								$output.=__($guid, "Type") ;
 							$output.="</th>" ;
 							$output.="<th>" ;
-								$output.=_("Category") . "<br/>";
-								$output.="<span style='font-size: 85%; font-style: italic'>" . _('Purpose') . "</span>" ;
+								$output.=__($guid, "Category") . "<br/>";
+								$output.="<span style='font-size: 85%; font-style: italic'>" . __($guid, 'Purpose') . "</span>" ;
 							$output.="</th>" ;
 							$output.="<th>" ;
-								$output.=_("Tags") ;
+								$output.=__($guid, "Tags") ;
 							$output.="</th>" ;
 							$output.="<th>" ;
-								$output.=_("Year Groups") ;
+								$output.=__($guid, "Year Groups") ;
 							$output.="</th>" ;
 							$output.="<th>" ;
-								$output.=_("Insert") ;
+								$output.=__($guid, "Insert") ;
 							$output.="</th>" ;
 						$output.="</tr>" ;
 						
@@ -408,7 +408,7 @@ else {
 										}
 									}
 									else {
-										$output.="<i>" . _('None') . "</i>" ;
+										$output.="<i>" . __($guid, 'None') . "</i>" ;
 									}
 								$output.="</td>" ;
 								$output.="<td>" ;
@@ -435,7 +435,7 @@ else {
 									else if ($row["type"]=="HTML") {
 										$html=$row["content"] ;
 									}
-									$output.="<a href='javascript:void(0)' onclick='tinymce.execCommand(\"mceFocus\",false,\"$id\"); tinyMCE.execCommand(\"mceInsertContent\", 0, \"" . htmlPrep(addslashes($html)) ."\"); formResetSearch(); \$(\"." .$id . "resourceSlider\").slideUp();'><img title='" . _('Insert') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a>" ;
+									$output.="<a href='javascript:void(0)' onclick='tinymce.execCommand(\"mceFocus\",false,\"$id\"); tinyMCE.execCommand(\"mceInsertContent\", 0, \"" . htmlPrep(addslashes($html)) ."\"); formResetSearch(); \$(\"." .$id . "resourceSlider\").slideUp();'><img title='" . __($guid, 'Insert') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a>" ;
 								$output.="</td>" ;
 							$output.="</tr>" ;
 						}

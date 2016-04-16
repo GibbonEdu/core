@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/gradeScales_manage_edit_grade_edit.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -31,7 +31,7 @@ else {
 	$gibbonScaleID=$_GET["gibbonScaleID"] ;
 	if ($gibbonScaleGradeID=="" OR $gibbonScaleID=="") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -47,7 +47,7 @@ else {
 		
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print _("The specified record cannot be found.") ;
+				print __($guid, "The specified record cannot be found.") ;
 			print "</div>" ;
 		}
 		else {
@@ -55,7 +55,7 @@ else {
 			$row=$result->fetch() ;
 			
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/gradeScales_manage.php'>" . _('Manage Grade Scales') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/gradeScales_manage_edit.php&gibbonScaleID=$gibbonScaleID'>" . _('Edit Grade Scale') . "</a> > </div><div class='trailEnd'>" . _('Edit Grade') . "</div>" ;
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/gradeScales_manage.php'>" . __($guid, 'Manage Grade Scales') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/gradeScales_manage_edit.php&gibbonScaleID=$gibbonScaleID'>" . __($guid, 'Edit Grade Scale') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Edit Grade') . "</div>" ;
 			print "</div>" ;
 			
 			if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -63,22 +63,22 @@ else {
 			$class="error" ;
 			if (!($updateReturn=="")) {
 				if ($updateReturn=="fail0") {
-					$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+					$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 				}
 				else if ($updateReturn=="fail1") {
-					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($updateReturn=="fail2") {
-					$updateReturnMessage=_("Your request failed due to a database error.") ;	
+					$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 				}
 				else if ($updateReturn=="fail3") {
-					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($updateReturn=="fail4") {
-					$updateReturnMessage=_("Your request failed because some inputs did not meet a requirement for uniqueness.") ;	
+					$updateReturnMessage=__($guid, "Your request failed because some inputs did not meet a requirement for uniqueness.") ;	
 				}
 				else if ($updateReturn=="success0") {
-					$updateReturnMessage=_("Your request was completed successfully.") ;	
+					$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
 					$class="success" ;
 				}
 				print "<div class='$class'>" ;
@@ -90,20 +90,20 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td style='width: 275px'> 
-							<b><?php print _('Grade Scale') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+							<b><?php print __($guid, 'Grade Scale') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
 						</td>
 						<td class="right">
-							<input readonly name="name" id="name" maxlength=20 value="<?php print _($row["name"]) ?>" type="text" style="width: 300px">
+							<input readonly name="name" id="name" maxlength=20 value="<?php print __($guid, $row["name"]) ?>" type="text" style="width: 300px">
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Value') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('Must be unique for this grade scale.') ?></i></span>
+							<b><?php print __($guid, 'Value') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique for this grade scale.') ?></i></span>
 						</td>
 						<td class="right">
-							<input name="value" id="value" maxlength=10 value="<?php if (isset($row["value"])) { print _($row["value"]) ; } ?>" type="text" style="width: 300px">
+							<input name="value" id="value" maxlength=10 value="<?php if (isset($row["value"])) { print __($guid, $row["value"]) ; } ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var value=new LiveValidation('value');
 								value.add(Validate.Presence);
@@ -112,11 +112,11 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Descriptor') ?> *</b><br/>
+							<b><?php print __($guid, 'Descriptor') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
-							<input name="descriptor" id="descriptor" maxlength=50 value="<?php if (isset($row["descriptor"])) { print htmlPrep(_($row["descriptor"])) ; } ?>" type="text" style="width: 300px">
+							<input name="descriptor" id="descriptor" maxlength=50 value="<?php if (isset($row["descriptor"])) { print htmlPrep(__($guid, $row["descriptor"])) ; } ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
 								var descriptor=new LiveValidation('descriptor');
 								descriptor.add(Validate.Presence);
@@ -125,8 +125,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Sequence Number') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('Must be unique for this grade scale.') ?></i></span>
+							<b><?php print __($guid, 'Sequence Number') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique for this grade scale.') ?></i></span>
 						</td>
 						<td class="right">
 							<input name="sequenceNumber" id="sequenceNumber" maxlength=5 value="<?php if (isset($row["sequenceNumber"])) { print $row["sequenceNumber"] ; } ?>" type="text" style="width: 300px">
@@ -138,24 +138,24 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Is Default?') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('Preselects this option when using this grade scale in appropriate contexts.') ?><br/></i></span>
+							<b><?php print __($guid, 'Is Default?') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Preselects this option when using this grade scale in appropriate contexts.') ?><br/></i></span>
 						</td>
 						<td class="right">
 							<select name="isDefault" id="isDefault" style="width: 302px">
-								<option <?php if ($row["isDefault"]=="N") { print "selected" ; } ?> value="N"><?php print ynExpander('N') ?></option>
-								<option <?php if ($row["isDefault"]=="Y") { print "selected" ; } ?> value="Y"><?php print ynExpander('Y') ?></option>
+								<option <?php if ($row["isDefault"]=="N") { print "selected" ; } ?> value="N"><?php print ynExpander($guid, 'N') ?></option>
+								<option <?php if ($row["isDefault"]=="Y") { print "selected" ; } ?> value="Y"><?php print ynExpander($guid, 'Y') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
 							<input name="gibbonScaleID" id="gibbonScaleID" value="<?php print $gibbonScaleID ?>" type="hidden">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<?php print _("Submit") ; ?>">
+							<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 						</td>
 					</tr>
 				</table>

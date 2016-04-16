@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Activities/activities_my_full.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("Your request failed because you do not have access to this action.") ;
+		print __($guid, "Your request failed because you do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -33,7 +33,7 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print _("The highest grouped action cannot be determined.") ;
+		print __($guid, "The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
@@ -42,7 +42,7 @@ else {
 		$gibbonActivityID=$_GET["gibbonActivityID"] ;
 		if ($gibbonActivityID=="") {
 			print "<div class='warning'>" ;
-				print _("Your request failed because your inputs were invalid.") ;
+				print __($guid, "Your request failed because your inputs were invalid.") ;
 			print "</div>" ;
 		}
 		//Check existence of and access to this class.
@@ -61,7 +61,7 @@ else {
 			
 			if ($result->rowCount()!=1) {
 				print "<div class='warning'>" ;
-					print _("The selected record does not exist, or you do not have access to it.") ;
+					print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 				print "</div>" ;
 			}
 			else {
@@ -83,7 +83,7 @@ else {
 					print "<tr>" ;
 						if ($dateType!="Date") {
 							print "<td style='width: 33%; vertical-align: top'>" ;
-								print "<span style='font-size: 115%; font-weight: bold'>" . _('Terms') . "</span><br/>" ;
+								print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Terms') . "</span><br/>" ;
 								$terms=getTerms($connection2, $_SESSION[$guid]["gibbonSchoolYearID"]) ;
 								$termList="" ;
 								for ($i=0; $i<count($terms); $i=$i+2) {
@@ -92,7 +92,7 @@ else {
 									}
 								}
 								if ($termList=="") {
-									print "<i>" . _('NA') . "</i>" ;
+									print "<i>" . __($guid, 'NA') . "</i>" ;
 								}
 								else {
 									print substr($termList,0,-2) ;
@@ -101,24 +101,24 @@ else {
 						}
 						else {
 							print "<td style='width: 33%; vertical-align: top'>" ;
-								print "<span style='font-size: 115%; font-weight: bold'>" . _('Start Date') . "</span><br/>" ;
+								print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Start Date') . "</span><br/>" ;
 								print dateConvertBack($guid, $row["programStart"]) ;
 							print "</td>" ;
 							print "<td style='width: 33%; vertical-align: top'>" ;
-								print "<span style='font-size: 115%; font-weight: bold'>" . _('End Date') . "</span><br/>" ;
+								print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'End Date') . "</span><br/>" ;
 								print dateConvertBack($guid, $row["programEnd"]) ;
 							print "</td>" ;
 						}
 						print "<td style='width: 33%; vertical-align: top'>" ;
-							print "<span style='font-size: 115%; font-weight: bold'>" . _('Year Groups') . "</span><br/>" ;
-							print getYearGroupsFromIDList($connection2, $row["gibbonYearGroupIDList"]) ;
+							print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Year Groups') . "</span><br/>" ;
+							print getYearGroupsFromIDList($guid, $connection2, $row["gibbonYearGroupIDList"]) ;
 						print "</td>" ;
 					print "</tr>" ;
 					print "<tr>" ;
 						print "<td style='padding-top: 15px; width: 33%; vertical-align: top'>" ;
-							print "<span style='font-size: 115%; font-weight: bold'>" . _('Payment') . "</span><br/>" ;
+							print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Payment') . "</span><br/>" ;
 							if ($row["payment"]==0) {
-								print "<i>" . _('None') . "</i>" ;
+								print "<i>" . __($guid, 'None') . "</i>" ;
 							}
 							else {
 								if (substr($_SESSION[$guid]["currency"],4)!="") {
@@ -128,11 +128,11 @@ else {
 							}
 						print "</td>" ;
 						print "<td style='padding-top: 15px; width: 33%; vertical-align: top'>" ;
-							print "<span style='font-size: 115%; font-weight: bold'>" . _('Maximum Participants') . "</span><br/>" ;
+							print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Maximum Participants') . "</span><br/>" ;
 							print $row["maxParticipants"] ;
 						print "</td>" ;
 						print "<td style='padding-top: 15px; width: 33%; vertical-align: top'>" ;
-							print "<span style='font-size: 115%; font-weight: bold'>" . _('Staff') . "</span><br/>" ;
+							print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Staff') . "</span><br/>" ;
 							try {
 								$dataStaff=array("gibbonActivityID"=>$row["gibbonActivityID"]); 
 								$sqlStaff="SELECT title, preferredName, surname, role FROM gibbonActivityStaff JOIN gibbonPerson ON (gibbonActivityStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityID=:gibbonActivityID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') ORDER BY surname, preferredName" ;
@@ -144,7 +144,7 @@ else {
 							}
 							
 							if ($resultStaff->rowCount()<1) {
-								print "<i>" . _('None') . "</i>" ;
+								print "<i>" . __($guid, 'None') . "</i>" ;
 							}
 							else {
 								print "<ul style='margin-left: 15px'>" ;
@@ -157,14 +157,14 @@ else {
 					print "</tr>" ;
 					print "<tr>" ;
 						print "<td style='padding-top: 15px; width: 33%; vertical-align: top' colspan=3>" ;
-							print "<span style='font-size: 115%; font-weight: bold'>" . _('Provider') . "</span><br/>" ;
-							print "<i>" ; if ($row["provider"]=="School") { print $_SESSION[$guid]["organisationNameShort"] ; } else { print _("External") ; } ; print "</i>" ;
+							print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Provider') . "</span><br/>" ;
+							print "<i>" ; if ($row["provider"]=="School") { print $_SESSION[$guid]["organisationNameShort"] ; } else { print __($guid, "External") ; } ; print "</i>" ;
 						print "</td>" ;
 					print "</tr>" ;
 					if ($row["description"]!="") {
 						print "<tr>" ;
 							print "<td style='text-align: justify; padding-top: 15px; width: 33%; vertical-align: top' colspan=3>" ;
-								print "<h2>" . _('Description') . "</h2>" ;
+								print "<h2>" . __($guid, 'Description') . "</h2>" ;
 								print $row["description"] ;
 							print "</td>" ;
 						print "</tr>" ;
@@ -175,7 +175,7 @@ else {
 					
 				//Participants & Attendance
 				print "<div style='width:400px; float: right; font-size: 115%; padding-top: 6px'>" ;
-					print "<h3 style='padding-top: 0px; margin-top: 5px'>" . _('Time Slots') . "</h3>" ;
+					print "<h3 style='padding-top: 0px; margin-top: 5px'>" . __($guid, 'Time Slots') . "</h3>" ;
 					
 					try {
 						$dataSlots=array("gibbonActivityID"=>$row["gibbonActivityID"]); 
@@ -189,9 +189,9 @@ else {
 
 					$count=0 ;
 					while ($rowSlots=$resultSlots->fetch()) {
-						print "<h4>" . _($rowSlots["name"]) . "</h4>" ;
+						print "<h4>" . __($guid, $rowSlots["name"]) . "</h4>" ;
 						print "<p>" ;
-							print "<i>" . _('Time') . "</i>: " . substr($rowSlots["timeStart"], 0, 5) . " - " . substr($rowSlots["timeEnd"], 0, 5) . "<br/>" ;
+							print "<i>" . __($guid, 'Time') . "</i>: " . substr($rowSlots["timeStart"], 0, 5) . " - " . substr($rowSlots["timeEnd"], 0, 5) . "<br/>" ;
 							if ($rowSlots["gibbonSpaceID"]!="") {
 								try {
 									$dataSpace=array("gibbonSpaceID"=>$rowSlots["gibbonSpaceID"]); 
@@ -205,23 +205,23 @@ else {
 								
 								if ($resultSpace->rowCount()>0) {
 									$rowSpace=$resultSpace->fetch() ;
-									print "<i>" . _('Location') . "</i>: " . $rowSpace["name"] ;
+									print "<i>" . __($guid, 'Location') . "</i>: " . $rowSpace["name"] ;
 								}
 							}
 							else {
-								print "<i>" . _('Location') . "</i>: " . $rowSlots["locationExternal"] ;
+								print "<i>" . __($guid, 'Location') . "</i>: " . $rowSlots["locationExternal"] ;
 							}
 						print "</p>" ;
 						
 						$count++ ;
 					}
 					if ($count==0) {
-						print "<i>" . _('None') . "</i>" ;
+						print "<i>" . __($guid, 'None') . "</i>" ;
 					}
 					
 					$role=getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2) ;
 					if ($role=="Staff") {
-						print "<h3>" . _('Participants') . "</h3>" ;
+						print "<h3>" . __($guid, 'Participants') . "</h3>" ;
 						
 						try {
 							$dataStudents=array("gibbonActivityID"=>$row["gibbonActivityID"]); 
@@ -234,7 +234,7 @@ else {
 						}
 
 						if ($resultStudents->rowCount()<1) {
-							print "<i>" . _('None') . "</i>" ;
+							print "<i>" . __($guid, 'None') . "</i>" ;
 						}
 						else {
 							print "<ul style='margin-left: 15px'>" ;
@@ -255,7 +255,7 @@ else {
 						}
 						
 						if ($resultStudents->rowCount()>0) {
-							print "<h3>" . _('Waiting List') . "</h3>" ;
+							print "<h3>" . __($guid, 'Waiting List') . "</h3>" ;
 							print "<ol style='margin-left: 15px'>" ;
 							while ($rowStudent=$resultStudents->fetch()) {
 								print "<li>" . formatName("", $rowStudent["preferredName"], $rowStudent["surname"], "Student") . "</li>" ; 

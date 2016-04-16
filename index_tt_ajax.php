@@ -59,7 +59,7 @@ else {
 if (isActionAccessible($guid, $connection2, "/modules/Timetable/tt.php")==FALSE) {
 	//Acess denied
 	$output.="<div class='error'>" ;
-		$output.=_("Your request failed because you do not have access to this action.") ;
+		$output.=__($guid, "Your request failed because you do not have access to this action.") ;
 	$output.="</div>" ;
 }
 else {
@@ -91,14 +91,13 @@ else {
 			$_SESSION[$guid]["viewCalendarSpaceBooking"]="N" ;
 		}
 	}
-	
-	$tt=renderTT($guid, $connection2, $_SESSION[$guid]["gibbonPersonID"], $id, FALSE, $ttDate) ;
+	$tt=renderTT($guid, $connection2, $_SESSION[$guid]["gibbonPersonID"], $id, FALSE, $ttDate, "", "", "trim") ;
 	if ($tt!=FALSE) {
 		$output.=$tt ;
 	}
 	else {
 		$output.="<div class='error'>" ;
-			$output.=_("There is no information for the date specified.") ;
+			$output.=__($guid, "There is no information for the date specified.") ;
 		$output.="</div>" ;
 	}
 }

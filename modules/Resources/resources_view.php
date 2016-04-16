@@ -25,16 +25,16 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Resources/resources_view.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('View Resources') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'View Resources') . "</div>" ;
 	print "</div>" ;
 	
 	print "<h3>" ;
-		print _("Filters") ;
+		print __($guid, "Filters") ;
 	print "</h3>" ;
 	
 	//Get current filter values
@@ -63,7 +63,7 @@ else {
 		print "<table class='noIntBorder' cellspacing='0' style='width: 100%'>" ;
 			print "<tr>" ;
 				print "<td>" ;
-					print "<b>" . _('Tags') . "</b>" ;
+					print "<b>" . __($guid, 'Tags') . "</b>" ;
 				print "</td>" ;
 				print "<td style='padding: 0px 2px 0px 0px'>" ;
 					//Tag selector
@@ -114,7 +114,7 @@ else {
 			print "</tr>" ;
 			print "<tr>" ;
 				print "<td>" ;
-					print "<b>" . _('Category') . "</b>" ;
+					print "<b>" . __($guid, 'Category') . "</b>" ;
 				print "</td>" ;
 				print "<td style='padding: 0px 2px 0px 0px'>" ;
 					try {
@@ -148,7 +148,7 @@ else {
 			print "</tr>" ;
 			print "<tr>" ;
 				print "<td>" ;
-					print "<b>" . _('Purpose') . "</b>" ;
+					print "<b>" . __($guid, 'Purpose') . "</b>" ;
 				print "</td>" ;
 				print "<td style='padding: 0px 2px 0px 0px'>" ;
 					try {
@@ -185,7 +185,7 @@ else {
 			print "</tr>" ;
 			print "<tr>" ;
 				print "<td>" ;
-					print "<b>" . _('Year Group') . "</b>" ;
+					print "<b>" . __($guid, 'Year Group') . "</b>" ;
 				print "</td>" ;
 				print "<td style='padding: 0px 2px 0px 0px'>" ;
 					try {
@@ -204,7 +204,7 @@ else {
 							if ($rowPurpose["gibbonYearGroupID"]==$gibbonYearGroupID) {
 								$selected="selected" ;
 							}
-							print "<option $selected value='" . $rowPurpose["gibbonYearGroupID"] . "'>" . _($rowPurpose["name"]) . "</option>" ;
+							print "<option $selected value='" . $rowPurpose["gibbonYearGroupID"] . "'>" . __($guid, $rowPurpose["name"]) . "</option>" ;
 						}
 					print "</select>" ;
 				print "</td>" ;
@@ -212,8 +212,8 @@ else {
 			print "<tr>" ;
 				print "<td class='right' colspan=2>" ;
 					print "<input type='hidden' name='q' value='/modules/Resources/resources_view.php'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Resources/resources_view.php'>" . _('Clear Filters') . "</a> " ;
-					print "<input style='height: 27px; width: 20px!important; margin: 0px;' type='submit' value='" . _('Go') . "'>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Resources/resources_view.php'>" . __($guid, 'Clear Filters') . "</a> " ;
+					print "<input style='height: 27px; width: 20px!important; margin: 0px;' type='submit' value='" . __($guid, 'Go') . "'>" ;
 				print "</td>" ;
 			print "</tr>" ;
 		print "</table>" ;
@@ -229,7 +229,7 @@ else {
 	}
 		
 	print "<h3>" ;
-		print _("View") ;
+		print __($guid, "View") ;
 	print "</h3>" ;
 	
 	//Search with filters applied
@@ -273,12 +273,12 @@ else {
 	}
 
 	print "<div class='linkTop'>" ;
-		print " <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/resources_manage_add.php'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+		print " <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/resources_manage_add.php'>" .  __($guid, 'Add') . "<img style='margin-left: 5px' title='" . __($guid, 'Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
 	print "</div>" ;
 	
 	if ($result->rowCount()<1) {
 		print "<div class='error'>" ;
-		print _("There are no records to display.") ;
+		print __($guid, "There are no records to display.") ;
 		print "</div>" ;
 	}
 	else {
@@ -289,21 +289,21 @@ else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print _("Name") . "<br/>";
-					print "<span style='font-size: 85%; font-style: italic'>" . _('Contributor') . "</span>" ;
+					print __($guid, "Name") . "<br/>";
+					print "<span style='font-size: 85%; font-style: italic'>" . __($guid, 'Contributor') . "</span>" ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Type") ;
+					print __($guid, "Type") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Category") . "<br/>";
-					print "<span style='font-size: 85%; font-style: italic'>" . _('Purpose') . "</span>" ;
+					print __($guid, "Category") . "<br/>";
+					print "<span style='font-size: 85%; font-style: italic'>" . __($guid, 'Purpose') . "</span>" ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Tags") ;
+					print __($guid, "Tags") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Year Groups") ;
+					print __($guid, "Year Groups") ;
 				print "</th>" ;
 			print "</tr>" ;
 			
@@ -360,7 +360,7 @@ else {
 						$years=explode(",", $row["gibbonYearGroupIDList"]) ;
 						if (count($years)>0 AND $years[0]!="") {
 							if (count($years)==$resultYears->rowCount()) {
-								print "<i>" . _('All Years') . "</i>" ;
+								print "<i>" . __($guid, 'All Years') . "</i>" ;
 							}
 							else {
 								$count3=0 ;
@@ -371,7 +371,7 @@ else {
 											if ($count3>0 AND $count4>0) {
 												print ", " ;
 											}
-											print _($rowYears["nameShort"]) ;
+											print __($guid, $rowYears["nameShort"]) ;
 											$count4++ ;
 										}
 									}
@@ -380,7 +380,7 @@ else {
 							}
 						}
 						else {
-							print "<i>" . _('None') . "</i>" ;
+							print "<i>" . __($guid, 'None') . "</i>" ;
 						}
 					print "</td>" ;
 				print "</tr>" ;

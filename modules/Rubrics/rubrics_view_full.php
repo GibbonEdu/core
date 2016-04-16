@@ -25,7 +25,7 @@ include "./modules/Rubrics/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Rubrics/rubrics_view_full.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("Your request failed because you do not have access to this action.") ;
+		print __($guid, "Your request failed because you do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -34,7 +34,7 @@ else {
 	$gibbonRubricID=$_GET["gibbonRubricID"] ;
 	if ($gibbonRubricID=="") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -50,7 +50,7 @@ else {
 
 	if ($result3->rowCount()!=1) {
 		print "<div class='error'>" ;
-			print _("The specified record does not exist.") ;
+			print __($guid, "The specified record does not exist.") ;
 		print "</div>" ;
 	}
 	else {

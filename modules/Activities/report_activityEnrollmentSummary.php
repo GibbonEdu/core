@@ -25,13 +25,13 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Activities/report_activityEnrollmentSummary.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Activity Enrolment Summary') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Activity Enrolment Summary') . "</div>" ;
 	print "</div>" ;
 	try {
 		$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -45,7 +45,7 @@ else {
 
 	if ($result->rowCount()<1) {
 		print "<div class='error'>" ;
-			print _("There are no records to display.") ;
+			print __($guid, "There are no records to display.") ;
 		print "</div>" ;
 	}
 	else {
@@ -54,17 +54,17 @@ else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print _("Activity") ;
+					print __($guid, "Activity") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Accepted") ;
+					print __($guid, "Accepted") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Registered") . "<br/>" ;
-					print "<span style='font-size: 85%; font-style: italic'>" . _('Excludes "Not Accepted"') . "<span>" ;
+					print __($guid, "Registered") . "<br/>" ;
+					print "<span style='font-size: 85%; font-style: italic'>" . __($guid, 'Excludes "Not Accepted"') . "<span>" ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Max Participants") ;
+					print __($guid, "Max Participants") ;
 				print "</th>" ;
 			print "</tr>" ;
 			
@@ -96,7 +96,7 @@ else {
 						}
 
 						if ($resultEnrollment->rowCount()<0) {
-							print "<i>" . _('Unknown') . "</i>" ;
+							print "<i>" . __($guid, 'Unknown') . "</i>" ;
 						}
 						else {
 							if ($resultEnrollment->rowCount()>$row["maxParticipants"]) {
@@ -120,7 +120,7 @@ else {
 						}
 
 						if ($resultEnrollment->rowCount()<0) {
-							print "<i>" . _('Unknown') . "</i>" ;
+							print "<i>" . __($guid, 'Unknown') . "</i>" ;
 						}
 						else {
 							print $resultEnrollment->rowCount() ;

@@ -25,13 +25,13 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Students/report_rollGroupSummary.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Roll Group Summary') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Roll Group Summary') . "</div>" ;
 	print "</div>" ;
 	
 	$today=time() ;
@@ -65,26 +65,26 @@ else {
 	
 	if ($result->rowCount()==0) {
 		print "<div class='error'>" ;
-			print _("There are no records to display.") ;
+			print __($guid, "There are no records to display.") ;
 		print "</div>" ;
 	}
 	else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print _("Roll Group") ;
+					print __($guid, "Roll Group") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Mean Age") ;
+					print __($guid, "Mean Age") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Male") ;
+					print __($guid, "Male") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Female") ;
+					print __($guid, "Female") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Total") ;
+					print __($guid, "Total") ;
 				print "</th>" ;
 			print "</tr>" ;
 			
@@ -154,7 +154,7 @@ else {
 			}
 			print "<tr style='background-color: #FFD2A9'>" ;
 				print "<td>" ;
-					print "<b>" . _('All Roll Groups') . "</b>" ;
+					print "<b>" . __($guid, 'All Roll Groups') . "</b>" ;
 				print "</td>" ;
 				print "<td>" ;
 						$cellCount=0 ;

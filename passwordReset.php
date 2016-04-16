@@ -18,11 +18,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 print "<div class='trail'>" ;
-print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > </div><div class='trailEnd'>" . _("Password Reset") . "</div>" ;
+print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > </div><div class='trailEnd'>" . __($guid, "Password Reset") . "</div>" ;
 print "</div>" ;
 ?>
 <p>
-	<?php print sprintf(_('Enter your %1$s username, or the email address you have listed in the system, and press submit: your password will be reset and emailed to you.'), $_SESSION[$guid]["systemName"]) ; ?>
+	<?php print sprintf(__($guid, 'Enter your %1$s username, or the email address you have listed in the system, and press submit: your password will be reset and emailed to you.'), $_SESSION[$guid]["systemName"]) ; ?>
 </p>
 <?php
 if (isset($_GET["editReturn"])) { $editReturn=$_GET["editReturn"] ; } else { $editReturn="" ; }
@@ -33,7 +33,7 @@ if (!($editReturn=="")) {
 		$editReturnMessage="Email address not set." ;	
 	}
 	else if ($editReturn=="fail1") {
-		$editReturnMessage=_("Your request failed due to a database error.") ;	
+		$editReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 	}
 	else if ($editReturn=="fail2") {
 		$editReturnMessage="Your request failed due to incorrect or non-unique email address." ;	
@@ -61,7 +61,7 @@ if (!($editReturn=="")) {
 		<tr>
 			<td class="right">
 				<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-				<input type="submit" value="<?php print _("Submit") ; ?>">
+				<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 			</td>
 		</tr>
 	</table>

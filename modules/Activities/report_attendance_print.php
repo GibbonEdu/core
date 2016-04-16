@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Activities/report_attendance.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -59,17 +59,17 @@ else {
 		}
 		
 		print "<h2>" ;
-		print _("Participants for") . " " . $row["name"] . $date ;
+		print __($guid, "Participants for") . " " . $row["name"] . $date ;
 		print "</h2>" ;
 		
 		if ($result->rowCount()<1) {
 			print "<div class='error'>" ;
-				print _("There are no records to display.") ;
+				print __($guid, "There are no records to display.") ;
 			print "</div>" ;
 		}
 		else {
 			print "<div class='linkTop'>" ;
-			print "<a href='javascript:window.print()'>" .  _('Print') . "<img style='margin-left: 5px' title='" . _('Print') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
+			print "<a href='javascript:window.print()'>" .  __($guid, 'Print') . "<img style='margin-left: 5px' title='" . __($guid, 'Print') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
 			print "</div>" ;
 		
 			$lastPerson="" ;
@@ -77,10 +77,10 @@ else {
 			print "<table class='mini' cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
 					print "<th>" ;
-						print _("Student") ;
+						print __($guid, "Student") ;
 					print "</th>" ;
 					print "<th colspan=15>" ;
-						print _("Attendance") ;
+						print __($guid, "Attendance") ;
 					print "</th>" ;
 				print "</tr>" ;
 				print "<tr style='height: 75px' class='odd'>" ;
@@ -150,7 +150,7 @@ else {
 				if ($count==0) {
 					print "<tr class=$rowNum>" ;
 						print "<td colspan=16>" ;
-							print _("There are no records to display.") ;
+							print __($guid, "There are no records to display.") ;
 						print "</td>" ;
 					print "</tr>" ;
 				}

@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Attendance/report_studentHistory_print.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -46,7 +46,7 @@ else {
 	if ($gibbonPersonID!="") {
 		$output="" ;
 		print "<h2>" ;
-			print _("Attendance History for") . " " . formatName("", $row["preferredName"], $row["surname"], "Student") ;
+			print __($guid, "Attendance History for") . " " . formatName("", $row["preferredName"], $row["surname"], "Student") ;
 		print "</h2>" ;
 		
 		report_studentHistory($guid, $gibbonPersonID, FALSE, $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_studentHistory_print.php&gibbonPersonID=$gibbonPersonID", $connection2, $row["dateStart"], $row["dateEnd"]) ;

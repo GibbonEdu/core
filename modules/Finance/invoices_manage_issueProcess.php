@@ -77,7 +77,7 @@ else {
 				//Fail 2
 				$URL.="&issueReturn=fail2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 			
 			try {
@@ -90,7 +90,7 @@ else {
 				//Fail2
 				$URL.="&issueReturn=fail2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 			
 			if ($result->rowCount()!=1) {
@@ -128,7 +128,7 @@ else {
 						//Fail 2
 						$URL.="&issueReturn=fail2" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 				
 					$partialFail=FALSE ;
@@ -218,7 +218,19 @@ else {
 						$emails=NULL ;
 						if (isset($_POST["emails"])) {
 							$emails=$_POST["emails"] ;
+							for ($i=0; $i<count($emails); $i++) {
+								$emailsInner=explode(",", $emails[$i]) ;
+								for ($n=0 ; $n<count($emailsInner); $n++) {
+									if ($n==0) {
+										$emails[$i]=trim($emailsInner[$n]) ;
+									}
+									else {
+										array_push($emails, trim($emailsInner[$n])) ;
+									}
+								}
+							}
 						}
+						
 						if (count($emails)>0) {
 							require $_SESSION[$guid]["absolutePath"] . '/lib/PHPMailer/class.phpmailer.php';
 				

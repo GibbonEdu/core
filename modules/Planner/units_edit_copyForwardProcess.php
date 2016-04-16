@@ -82,7 +82,7 @@ else {
 				//Fail 2
 				$URL.="&copyForwardReturn=fail2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 			if ($result->rowCount()!=1) {
 				//Fail 4
@@ -101,7 +101,7 @@ else {
 					//Fail 2
 					$URL.="&copyForwardReturn=fail2" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 				if ($result->rowCount()!=1) {
 					//Fail 4
@@ -124,7 +124,7 @@ else {
 						//Fail 2
 						$URL.="&copyForwardReturn=fail2" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 					
 					//Get new unit ID

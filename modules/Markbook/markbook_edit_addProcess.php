@@ -80,6 +80,7 @@ else {
 		$type=$_POST["type"] ;
 		//Sort out attainment
 		$attainment=$_POST["attainment"] ;
+		$attainmentWeighting=NULL ;
 		if ($attainment=="N") {
 			$gibbonScaleIDAttainment=NULL ;
 			$gibbonRubricIDAttainment=NULL ;
@@ -90,6 +91,13 @@ else {
 			}
 			else {
 				$gibbonScaleIDAttainment=$_POST["gibbonScaleIDAttainment"] ;
+				if (isset($_POST["attainmentWeighting"])) {
+					if (is_numeric($_POST["attainmentWeighting"])) {
+						if ($_POST["attainmentWeighting"]>0) {
+							$attainmentWeighting=$_POST["attainmentWeighting"] ;
+						}
+					}
+				}
 			}
 			if ($_POST["gibbonRubricIDAttainment"]=="") {
 				$gibbonRubricIDAttainment=NULL ;
@@ -143,7 +151,7 @@ else {
 			//Fail 2
 			$URL.="&addReturn=fail2" ;
 			header("Location: {$URL}");
-			break ;
+			exit() ;
 		}			
 
 		//Get next autoincrement
@@ -155,7 +163,7 @@ else {
 			//Fail 2
 			$URL.="&addReturn=fail2" ;
 			header("Location: {$URL}");
-			break ;
+			exit() ;
 		}			
 		
 		$rowAI=$resultAI->fetch();
@@ -198,8 +206,8 @@ else {
 		else {
 			//Write to database
 			try {
-				$data=array("gibbonUnitID"=>$gibbonUnitID, "gibbonHookID"=>$gibbonHookID, "gibbonPlannerEntryID"=>$gibbonPlannerEntryID, "gibbonCourseClassID"=>$gibbonCourseClassID, "name"=>$name, "description"=>$description, "type"=>$type, "attainment"=>$attainment, "gibbonScaleIDAttainment"=>$gibbonScaleIDAttainment, "effort"=>$effort, "gibbonScaleIDEffort"=>$gibbonScaleIDEffort, "gibbonRubricIDAttainment"=>$gibbonRubricIDAttainment, "gibbonRubricIDEffort"=>$gibbonRubricIDEffort, "comment"=>$comment, "uploadedResponse"=>$uploadedResponse, "completeDate"=>$completeDate, "complete"=>$complete, "viewableStudents"=>$viewableStudents, "viewableParents"=>$viewableParents, "attachment"=>$attachment, "gibbonPersonIDCreator"=>$gibbonPersonIDCreator, "gibbonPersonIDLastEdit"=>$gibbonPersonIDLastEdit); 
-				$sql="INSERT INTO gibbonMarkbookColumn SET gibbonUnitID=:gibbonUnitID, gibbonHookID=:gibbonHookID, gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonCourseClassID=:gibbonCourseClassID, name=:name, description=:description, type=:type, attainment=:attainment, gibbonScaleIDAttainment=:gibbonScaleIDAttainment, effort=:effort, gibbonScaleIDEffort=:gibbonScaleIDEffort, gibbonRubricIDAttainment=:gibbonRubricIDAttainment, gibbonRubricIDEffort=:gibbonRubricIDEffort, comment=:comment, uploadedResponse=:uploadedResponse, completeDate=:completeDate, complete=:complete, viewableStudents=:viewableStudents, viewableParents=:viewableParents, attachment=:attachment, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit" ;
+				$data=array("gibbonUnitID"=>$gibbonUnitID, "gibbonHookID"=>$gibbonHookID, "gibbonPlannerEntryID"=>$gibbonPlannerEntryID, "gibbonCourseClassID"=>$gibbonCourseClassID, "name"=>$name, "description"=>$description, "type"=>$type, "attainment"=>$attainment, "gibbonScaleIDAttainment"=>$gibbonScaleIDAttainment, "attainmentWeighting"=>$attainmentWeighting, "effort"=>$effort, "gibbonScaleIDEffort"=>$gibbonScaleIDEffort, "gibbonRubricIDAttainment"=>$gibbonRubricIDAttainment, "gibbonRubricIDEffort"=>$gibbonRubricIDEffort, "comment"=>$comment, "uploadedResponse"=>$uploadedResponse, "completeDate"=>$completeDate, "complete"=>$complete, "viewableStudents"=>$viewableStudents, "viewableParents"=>$viewableParents, "attachment"=>$attachment, "gibbonPersonIDCreator"=>$gibbonPersonIDCreator, "gibbonPersonIDLastEdit"=>$gibbonPersonIDLastEdit); 
+				$sql="INSERT INTO gibbonMarkbookColumn SET gibbonUnitID=:gibbonUnitID, gibbonHookID=:gibbonHookID, gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonCourseClassID=:gibbonCourseClassID, name=:name, description=:description, type=:type, attainment=:attainment, gibbonScaleIDAttainment=:gibbonScaleIDAttainment, attainmentWeighting=:attainmentWeighting, effort=:effort, gibbonScaleIDEffort=:gibbonScaleIDEffort, gibbonRubricIDAttainment=:gibbonRubricIDAttainment, gibbonRubricIDEffort=:gibbonRubricIDEffort, comment=:comment, uploadedResponse=:uploadedResponse, completeDate=:completeDate, complete=:complete, viewableStudents=:viewableStudents, viewableParents=:viewableParents, attachment=:attachment, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit" ;
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
 			}
@@ -207,7 +215,7 @@ else {
 				//Fail 2
 				$URL.="&addReturn=fail2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 				
 			//Unlock module table

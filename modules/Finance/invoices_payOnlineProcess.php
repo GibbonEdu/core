@@ -74,14 +74,14 @@ if ($paid!="Y") { //IF PAID IS NOT Y, LET'S REDIRECT TO MAKE PAYMENT
 			//Fail 2
 			$URL.="&addReturn=fail2" ;
 			header("Location: {$URL}");
-			break ;
+			exit() ;
 		}
 
 		if ($resultKeyRead->rowCount()!=1) { //If not exists, report error
 			//Fail 2
 			$URL.="&addReturn=fail2" ;
 			header("Location: {$URL}");
-			break ;
+			exit() ;
 		}
 		else { 	//If exists check confirmed
 			$rowKeyRead=$resultKeyRead->fetch() ;
@@ -99,7 +99,7 @@ if ($paid!="Y") { //IF PAID IS NOT Y, LET'S REDIRECT TO MAKE PAYMENT
 				//Fail 2
 				$URL.="&addReturn=fail2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 	
 			if ($feeOK==TRUE) {
@@ -128,21 +128,21 @@ if ($paid!="Y") { //IF PAID IS NOT Y, LET'S REDIRECT TO MAKE PAYMENT
 							//Fail 2
 							$URL.="&addReturn=fail2" ;
 							header("Location: {$URL}");
-							break ;
+							exit() ;
 						}
 					}
 					else {
 						//Fail 2
 						$URL.="&addReturn=fail2" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 				}
 				else {
 					//Fail 2
 					$URL.="&addReturn=fail2" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 			}
 		}

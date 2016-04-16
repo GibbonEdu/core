@@ -57,7 +57,7 @@ else {
 		//Fail2
 		$URL.="?uploadReturn=fail2" ;
 		header("Location: {$URL}");
-		BREAK ;
+		exit() ;
 	}
 
 	if ($result->rowCount()!=1) {
@@ -95,7 +95,7 @@ else {
 				//Fail 6
 				$URL.="&addReturn=fail6" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 		}
 		
@@ -130,7 +130,7 @@ else {
 				//Fail 2
 				$URL.="?uploadReturn=fail2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 		
 			//Update session variables

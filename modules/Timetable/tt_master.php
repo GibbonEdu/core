@@ -25,16 +25,16 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Timetable/tt_master.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('View Master Timetable') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'View Master Timetable') . "</div>" ;
 	print "</div>" ;
 	
 	print "<h2>" ;
-	print _("Choose Timetable") ;
+	print __($guid, "Choose Timetable") ;
 	print "</h2>" ;
 	
 	$gibbonTTID=NULL ;
@@ -60,7 +60,7 @@ else {
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 			<tr>
 				<td style='width: 275px'> 
-					<b><?php print _('Timetable') ?> *</b><br/>
+					<b><?php print __($guid, 'Timetable') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select style="width: 302px" name="gibbonTTID">
@@ -73,6 +73,9 @@ else {
 						}
 						catch(PDOException $e) { }
 						while ($rowSelect=$resultSelect->fetch()) {
+							if ($resultSelect->rowCount()==1) {
+								$gibbonTTID=$rowSelect["gibbonTTID"] ;
+							}
 							$selected="" ;
 							if ($gibbonTTID==$rowSelect["gibbonTTID"]) {
 								$selected="selected" ;
@@ -86,7 +89,7 @@ else {
 			<tr>
 				<td colspan=2 class="right">
 					<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/tt_master.php">
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
@@ -109,7 +112,7 @@ else {
 	
 		if ($result->rowCount()<1) {
 			print "<div class='error'>" ;
-			print _("There are no records to display.") ;
+			print __($guid, "There are no records to display.") ;
 			print "</div>" ;
 		}
 		else {
@@ -128,14 +131,14 @@ else {
 		
 			if ($resultDays->rowCount()<1) {
 				print "<div class='error'>" ;
-				print _("There are no records to display.") ;
+				print __($guid, "There are no records to display.") ;
 				print "</div>" ;
 			}
 			else {
 				//Output days
 				while ($rowDays=$resultDays->fetch()) {
 					print "<h2 style='margin-top: 40px'>" ;
-						print _($rowDays["name"]) ;
+						print __($guid, $rowDays["name"]) ;
 					print "</h2>" ;
 				
 					//GET PERIODS/ROWS
@@ -153,14 +156,14 @@ else {
 	
 					if ($resultPeriods->rowCount()<1) {
 						print "<div class='error'>" ;
-						print _("There are no records to display.") ;
+						print __($guid, "There are no records to display.") ;
 						print "</div>" ;
 					}
 					else {
 						//Output periods/rows
 						while ($rowPeriods=$resultPeriods->fetch()) {
 							print "<h5 style='margin-top: 25px'>" ;
-								print _($rowPeriods["name"]) ;
+								print __($guid, $rowPeriods["name"]) ;
 							print "</h5>" ;
 						
 							//GET CLASSES
@@ -176,7 +179,7 @@ else {
 			
 							if ($resultClasses->rowCount()<1) {
 								print "<div class='error'>" ;
-									print _("Their are no classes associated with this period on this day.") ;
+									print __($guid, "Their are no classes associated with this period on this day.") ;
 								print "</div>" ;
 							}
 							else {
@@ -184,13 +187,13 @@ else {
 								print "<table cellspacing='0' style='width: 100%'>" ;
 									print "<tr class='head'>" ;
 										print "<th style='width: 34%'>" ;
-											print _("Class") ;
+											print __($guid, "Class") ;
 										print "</th>" ;
 										print "<th style='width: 33%'>" ;
-											print _("Location") ;
+											print __($guid, "Location") ;
 										print "</th>" ;
 										print "<th style='width: 33%'>" ;
-											print _("Teachers") ;
+											print __($guid, "Teachers") ;
 										print "</th>" ;
 									print "</tr>" ;
 					

@@ -26,20 +26,20 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/data_finance_edit.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/data_finance.php'>" . _('Finance Data Updates') . "</a> > </div><div class='trailEnd'>". _('Edit Request') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/data_finance.php'>" . __($guid, 'Finance Data Updates') . "</a> > </div><div class='trailEnd'>". __($guid, 'Edit Request') . "</div>" ;
 	print "</div>" ;
 	
 	//Check if school year specified
 	$gibbonFinanceInvoiceeUpdateID=$_GET["gibbonFinanceInvoiceeUpdateID"];
 	if ($gibbonFinanceInvoiceeUpdateID=="Y") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -55,7 +55,7 @@ else {
 
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print _("The selected record does not exist, or you do not have access to it.") ;
+				print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 			print "</div>" ;
 		}
 		else {
@@ -64,22 +64,22 @@ else {
 			$class="error" ;
 			if (!($updateReturn=="")) {
 				if ($updateReturn=="fail0") {
-					$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+					$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 				}
 				else if ($updateReturn=="fail1") {
-					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($updateReturn=="fail2") {
-					$updateReturnMessage=_("Your request failed due to a database error.") ;	
+					$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 				}
 				else if ($updateReturn=="fail3") {
-					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($updateReturn=="success1") {
-					$updateReturnMessage=_("Your request was completed successfully, but status could not be updated.") ;	
+					$updateReturnMessage=__($guid, "Your request was completed successfully, but status could not be updated.") ;	
 				}
 				else if ($updateReturn=="success0") {
-					$updateReturnMessage=_("Your request was completed successfully.") ;	
+					$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
 					$class="success" ;
 				}
 				print "<div class='$class'>" ;
@@ -95,16 +95,16 @@ else {
 				print "<table cellspacing='0' style='width: 100%'>" ;
 					print "<tr class='head'>" ;
 						print "<th>" ;
-							print _("Field") ;
+							print __($guid, "Field") ;
 						print "</th>" ;
 						print "<th>" ;
-							print _("Current Value") ;
+							print __($guid, "Current Value") ;
 						print "</th>" ;
 						print "<th>" ;
-							print _("New Value") ;
+							print __($guid, "New Value") ;
 						print "</th>" ;
 						print "<th>" ;
-							print _("Accept") ;
+							print __($guid, "Accept") ;
 						print "</th>" ;
 					print "</tr>" ;
 					
@@ -113,7 +113,7 @@ else {
 					//COLOR ROW BY STATUS!
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print _("Invoice To") ;
+							print __($guid, "Invoice To") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["invoiceTo"] ;
@@ -132,7 +132,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='even'>" ;
 						print "<td>" ;
-							print _("Company Name") ;
+							print __($guid, "Company Name") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["companyName"] ;
@@ -151,7 +151,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print _("Company Contact Person") ;
+							print __($guid, "Company Contact Person") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["companyContact"] ;
@@ -171,7 +171,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='even'>" ;
 						print "<td>" ;
-							print _("Company Address") ;
+							print __($guid, "Company Address") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["companyAddress"] ;
@@ -191,7 +191,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print _("Company Email") ;
+							print __($guid, "Company Email") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["companyEmail"] ;
@@ -211,7 +211,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='even'>" ;
 						print "<td>" ;
-							print _("CC Family?") ;
+							print __($guid, "CC Family?") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["companyCCFamily"] ;
@@ -231,7 +231,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print _("Company Phone") ;
+							print __($guid, "Company Phone") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["companyPhone"] ;
@@ -251,7 +251,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='even'>" ;
 						print "<td>" ;
-							print _("Company All?") ;
+							print __($guid, "Company All?") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["companyAll"] ;
@@ -271,7 +271,7 @@ else {
 					print "</tr>" ;
 					print "<tr class='odd'>" ;
 						print "<td>" ;
-							print _("Company Fee Categories") ;
+							print __($guid, "Company Fee Categories") ;
 						print "</td>" ;
 						print "<td>" ;
 							print $row["gibbonFinanceFeeCategoryIDList"] ;

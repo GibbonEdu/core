@@ -112,7 +112,7 @@ else {
 							//Fail2
 							$URL.="&editReturn=fail2" ;
 							header("Location: {$URL}");
-							break ;
+							exit() ;
 						}
 	
 						if ($result->rowCount()!=1) {
@@ -152,7 +152,7 @@ else {
 								if ($row["status"]=="Paid" AND $row["purchaseBy"]=="Self" AND $row["paymentReimbursementStatus"]=="Requested" AND $paymentReimbursementStatus=="Complete") {
 									$paymentID=$_POST["paymentID"] ;
 									$reimbursementComment=$_POST["reimbursementComment"] ;
-									$notificationText=sprintf(_('Your reimbursement expense request for "%1$s" in budget "%2$s" has been completed.'), $row["title"], $row["budget"]) ;
+									$notificationText=sprintf(__($guid, 'Your reimbursement expense request for "%1$s" in budget "%2$s" has been completed.'), $row["title"], $row["budget"]) ;
 									setNotification($connection2, $guid, $row["gibbonPersonIDCreator"], $notificationText, "Finance", "/index.php?q=/modules/Finance/expenseRequest_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=&gibbonFinanceBudgetID=" . $row["gibbonFinanceBudgetID"]) ;
 									//Write change to log
 									try {
@@ -165,7 +165,7 @@ else {
 										//Fail2
 										$URL.="&editReturn=fail2" ;
 										header("Location: {$URL}");
-										break ;
+										exit() ;
 									}
 								}
 							}
@@ -181,7 +181,7 @@ else {
 								//Fail2
 								$URL.="&editReturn=fail2" ;
 								header("Location: {$URL}");
-								break ;
+								exit() ;
 							}
 							
 							if ($statusOld!=$status) {
@@ -192,13 +192,13 @@ else {
 								else if ($status=="Approved") {
 									$action="Approval - Exempt" ;
 									//Notify original creator that it is approved
-									$notificationText=sprintf(_('Your expense request for "%1$s" in budget "%2$s" has been fully approved.'), $row["title"], $row["budget"]) ;
+									$notificationText=sprintf(__($guid, 'Your expense request for "%1$s" in budget "%2$s" has been fully approved.'), $row["title"], $row["budget"]) ;
 									setNotification($connection2, $guid, $row["gibbonPersonIDCreator"], $notificationText, "Finance", "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=&gibbonFinanceBudgetID=" . $row["gibbonFinanceBudgetID"]) ;
 								}
 								else if ($status=="Rejected") {
 									$action="Rejection" ;
 									//Notify original creator that it is rejected
-									$notificationText=sprintf(_('Your expense request for "%1$s" in budget "%2$s" has been rejected.'), $row["title"], $row["budget"]) ;
+									$notificationText=sprintf(__($guid, 'Your expense request for "%1$s" in budget "%2$s" has been rejected.'), $row["title"], $row["budget"]) ;
 									setNotification($connection2, $guid, $row["gibbonPersonIDCreator"], $notificationText, "Finance", "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=&gibbonFinanceBudgetID=" . $row["gibbonFinanceBudgetID"]) ;
 								}
 								else if ($status=="Ordered") {
@@ -222,7 +222,7 @@ else {
 									//Fail2
 									$URL.="&editReturn=fail2" ;
 									header("Location: {$URL}");
-									break ;
+									exit() ;
 								}
 							}
 							

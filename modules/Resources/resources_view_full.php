@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Resources/resources_view_full.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("Your request failed because you do not have access to this action.") ;
+		print __($guid, "Your request failed because you do not have access to this action.") ;
 	print "</div>" ;
 }
 else {	
@@ -34,7 +34,7 @@ else {
 	$gibbonResourceID=$_GET["gibbonResourceID"] ;
 	if ($gibbonResourceID=="") {
 		print "<div class='warning'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	//Check existence of and access to this class.
@@ -51,7 +51,7 @@ else {
 		
 		if ($result->rowCount()!=1) {
 			print "<div class='warning'>" ;
-				print _("The specified record does not exist.") ;
+				print __($guid, "The specified record does not exist.") ;
 			print "</div>" ;
 		}
 		else {

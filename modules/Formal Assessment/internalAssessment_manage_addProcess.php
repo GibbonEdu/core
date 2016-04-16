@@ -109,7 +109,7 @@ else {
 			//Fail 2
 			$URL.="&addReturn=fail2" ;
 			header("Location: {$URL}");
-			break ;
+			exit() ;
 		}			
 
 		//Get next groupingID
@@ -121,7 +121,7 @@ else {
 			//Fail 2
 			$URL.="&addReturn=fail2" ;
 			header("Location: {$URL}");
-			break ;
+			exit() ;
 		}			
 		
 		$rowGrouping=$resultGrouping->fetch();

@@ -26,20 +26,20 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/data_medical_edit.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/data_medical.php'>" ._('Medical Data Updates') . "</a> > </div><div class='trailEnd'>" . _('Edit Request') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/data_medical.php'>" .__($guid, 'Medical Data Updates') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Edit Request') . "</div>" ;
 	print "</div>" ;
 	
 	//Check if school year specified
 	$gibbonPersonMedicalUpdateID=$_GET["gibbonPersonMedicalUpdateID"];
 	if ($gibbonPersonMedicalUpdateID=="Y") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -55,7 +55,7 @@ else {
 		
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print _("The specified record does not exist.") ;
+				print __($guid, "The specified record does not exist.") ;
 			print "</div>" ;
 		}
 		else {
@@ -64,26 +64,26 @@ else {
 			$class="error" ;
 			if (!($updateReturn=="")) {
 				if ($updateReturn=="fail0") {
-					$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+					$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 				}
 				else if ($updateReturn=="fail1") {
-					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($updateReturn=="fail2") {
-					$updateReturnMessage=_("Your request failed due to a database error.") ;	
+					$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 				}
 				else if ($updateReturn=="fail3") {
-					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($updateReturn=="fail5") {
-					$updateReturnMessage=_("Update succeeded, although some fields were not recorded.") ;	
+					$updateReturnMessage=__($guid, "Update succeeded, although some fields were not recorded.") ;	
 				}
 				else if ($updateReturn=="success1") {
-					$updateReturnMessage=_("Your request was completed successfully, but status could not be updated.") ;	
+					$updateReturnMessage=__($guid, "Your request was completed successfully, but status could not be updated.") ;	
 					$class="success" ;
 				}
 				else if ($updateReturn=="success0") {
-					$updateReturnMessage=_("Your request was completed successfully.") ;	
+					$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
 					$class="success" ;
 				}
 				print "<div class='$class'>" ;
@@ -121,21 +121,21 @@ else {
 					print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th>" ;
-								print _("Field") ;
+								print __($guid, "Field") ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("Current Value") ;
+								print __($guid, "Current Value") ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("New Value") ;
+								print __($guid, "New Value") ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("Accept") ;
+								print __($guid, "Accept") ;
 							print "</th>" ;
 						print "</tr>" ;
 						print "<tr class='break'>" ;
 							print "<td colspan=4> " ;
-								print "<h3>" . _('Basic Information') . "</h3>" ;
+								print "<h3>" . __($guid, 'Basic Information') . "</h3>" ;
 							print "</td>" ;
 						print "</tr>" ;
 						
@@ -146,7 +146,7 @@ else {
 						//COLOR ROW BY STATUS!
 						print "<tr class='odd'>" ;
 							print "<td>" ;
-								print _("Blood Type") ;
+								print __($guid, "Blood Type") ;
 							print "</td>" ;
 							print "<td>" ;
 								if (isset($row2)) {
@@ -174,7 +174,7 @@ else {
 						print "</tr>" ;
 						print "<tr class='even'>" ;
 							print "<td>" ;
-								print _("Long Term Medication") ;
+								print __($guid, "Long Term Medication") ;
 							print "</td>" ;
 							print "<td>" ;
 								if (isset($row2)) {
@@ -202,7 +202,7 @@ else {
 						print "</tr>" ;
 						print "<tr class='odd'>" ;
 							print "<td>" ;
-								print _("Long Term Medication Details") ;
+								print __($guid, "Long Term Medication Details") ;
 							print "</td>" ;
 							print "<td>" ;
 								if (isset($row2)) {
@@ -230,7 +230,7 @@ else {
 						print "</tr>" ;
 						print "<tr class='even'>" ;
 							print "<td>" ;
-								print _("Tetanus Within 10 Years") ;
+								print __($guid, "Tetanus Within 10 Years") ;
 							print "</td>" ;
 							print "<td>" ;
 								if (isset($row2)) {
@@ -287,15 +287,15 @@ else {
 				
 							print "<tr class='break'>" ;
 								print "<td colspan=4> " ;
-									print "<h3>" . _('Existing Condition') . " " . ($count+1) . "</h3>" ;
+									print "<h3>" . __($guid, 'Existing Condition') . " " . ($count+1) . "</h3>" ;
 								print "</td>" ;
 							print "</tr>" ;
 							print "<tr class='odd'>" ;
 								print "<td>" ;
-									print _("Name") ;
+									print __($guid, "Name") ;
 								print "</td>" ;
 								print "<td>" ;
-									print _($rowCond2["name"]) ;
+									print __($guid, $rowCond2["name"]) ;
 								print "</td>" ;
 								print "<td>" ;
 									$style="" ;
@@ -303,7 +303,7 @@ else {
 										$style="style='color: #ff0000'" ;
 									}
 									print "<span $style>" ;
-									print _($rowCond["name"]) ;
+									print __($guid, $rowCond["name"]) ;
 								print "</td>" ;
 								print "<td>" ;
 									if ($rowCond2["name"]!=$rowCond["name"]) { print "<input checked type='checkbox' name='nameOn$count'><input name='name$count' type='hidden' value='" . htmlprep($rowCond["name"]) . "'>" ; }
@@ -311,21 +311,21 @@ else {
 							print "</tr>" ;
 							print "<tr class='even'>" ;
 								print "<td>" ;
-									print _("Risk") ;
+									print __($guid, "Risk") ;
 								print "</td>" ;
 								print "<td>" ;
-									$alert=getAlert($connection2, $rowCond2["gibbonAlertLevelID"]) ;
+									$alert=getAlert($guid, $connection2, $rowCond2["gibbonAlertLevelID"]) ;
 									if ($alert!=FALSE) {
 										$style="" ;
 										if ($rowCond2["gibbonAlertLevelID"]!=$rowCond["gibbonAlertLevelID"]) {
 											$style="style='color: #ff0000'" ;
 										}
 										print "<span $style>" ;
-										print _($alert["name"]) ;
+										print __($guid, $alert["name"]) ;
 									}
 								print "</td>" ;
 								print "<td>" ;
-									$alert=getAlert($connection2, $rowCond["gibbonAlertLevelID"]) ;
+									$alert=getAlert($guid, $connection2, $rowCond["gibbonAlertLevelID"]) ;
 									if ($alert!=FALSE) {
 										$style="" ;
 										if ($rowCond2["gibbonAlertLevelID"]!=$rowCond["gibbonAlertLevelID"]) {
@@ -341,7 +341,7 @@ else {
 							print "</tr>" ;
 							print "<tr class='odd'>" ;
 								print "<td>" ;
-									print _("Triggers") ;
+									print __($guid, "Triggers") ;
 								print "</td>" ;
 								print "<td>" ;
 									print $rowCond2["triggers"] ;
@@ -360,7 +360,7 @@ else {
 							print "</tr>" ;
 							print "<tr class='even'>" ;
 								print "<td>" ;
-									print _("Reaction") ;
+									print __($guid, "Reaction") ;
 								print "</td>" ;
 								print "<td>" ;
 									print $rowCond2["reaction"] ;
@@ -379,7 +379,7 @@ else {
 							print "</tr>" ;
 							print "<tr class='odd'>" ;
 								print "<td>" ;
-									print _("Response") ;
+									print __($guid, "Response") ;
 								print "</td>" ;
 								print "<td>" ;
 									print $rowCond2["response"] ;
@@ -399,7 +399,7 @@ else {
 							
 							print "<tr class='even'>" ;
 								print "<td>" ;
-									print _("Medication") ;
+									print __($guid, "Medication") ;
 								print "</td>" ;
 								print "<td>" ;
 									print $rowCond2["medication"] ;
@@ -418,7 +418,7 @@ else {
 							print "</tr>" ;
 							print "<tr class='odd'>" ;
 								print "<td>" ;
-									print _("Last Episode") ;
+									print __($guid, "Last Episode") ;
 								print "</td>" ;
 								print "<td>" ;
 									print dateConvertBack($guid, $rowCond2["lastEpisode"]) ;
@@ -437,7 +437,7 @@ else {
 							print "</tr>" ;
 							print "<tr class='even'>" ;
 								print "<td>" ;
-									print _("Last Episode Treatment") ;
+									print __($guid, "Last Episode Treatment") ;
 								print "</td>" ;
 								print "<td>" ;
 									print $rowCond2["lastEpisodeTreatment"] ;
@@ -456,7 +456,7 @@ else {
 							print "</tr>" ;
 							print "<tr class='odd'>" ;
 								print "<td>" ;
-									print _("Comment") ;
+									print __($guid, "Comment") ;
 								print "</td>" ;
 								print "<td>" ;
 									print $rowCond2["comment"] ;
@@ -501,16 +501,16 @@ else {
 							$rowCond2=NULL ;
 							print "<tr class='break'>" ;
 								print "<td colspan=4> " ;
-									print "<h3>" . _('New Condition') . " " . $count2 . "</h3>" ;
+									print "<h3>" . __($guid, 'New Condition') . " " . $count2 . "</h3>" ;
 								print "</td>" ;
 							print "</tr>" ;
 							print "<tr class='odd'>" ;
 								print "<td>" ;
-									print _("Name") ;
+									print __($guid, "Name") ;
 								print "</td>" ;
 								print "<td>" ;
 									if ($rowCond2["name"]!="") {
-										print _($rowCond2["name"]) ;
+										print __($guid, $rowCond2["name"]) ;
 									}
 								print "</td>" ;
 								print "<td>" ;
@@ -519,7 +519,7 @@ else {
 										$style="style='color: #ff0000'" ;
 									}
 									print "<span $style>" ;
-									print _($rowCond["name"]) ;
+									print __($guid, $rowCond["name"]) ;
 								print "</td>" ;
 								print "<td>" ;
 									if ($rowCond2["name"]!=$rowCond["name"]) { print "<input checked type='checkbox' name='nameOn" . ($count+$count2) . "'><input name='name" . ($count+$count2) . "' type='hidden' value='" . htmlprep($rowCond["name"]) . "'>" ; }
@@ -527,20 +527,20 @@ else {
 							print "</tr>" ;
 							print "<tr class='even'>" ;
 								print "<td>" ;
-									print _("Risk") ;
+									print __($guid, "Risk") ;
 								print "</td>" ;
 								print "<td>" ;
 									print $rowCond2["gibbonAlertLevelID"] ;
 								print "</td>" ;
 								print "<td>" ;
-									$alert=getAlert($connection2, $rowCond["gibbonAlertLevelID"]) ;
+									$alert=getAlert($guid, $connection2, $rowCond["gibbonAlertLevelID"]) ;
 									if ($alert!=FALSE) {
 										$style="" ;
 										if ($rowCond2["gibbonAlertLevelID"]!=$rowCond["gibbonAlertLevelID"]) {
 											$style="style='color: #ff0000'" ;
 										}
 										print "<span $style>" ;
-										print _($alert["name"]) ;
+										print __($guid, $alert["name"]) ;
 									}
 								print "</td>" ;
 								print "<td>" ;
@@ -549,7 +549,7 @@ else {
 							print "</tr>" ;
 							print "<tr class='odd'>" ;
 								print "<td>" ;
-									print _("Triggers") ;
+									print __($guid, "Triggers") ;
 								print "</td>" ;
 								print "<td>" ;
 									print $rowCond2["triggers"] ;
@@ -568,7 +568,7 @@ else {
 							print "</tr>" ;
 							print "<tr class='even'>" ;
 								print "<td>" ;
-									print _("Reaction") ;
+									print __($guid, "Reaction") ;
 								print "</td>" ;
 								print "<td>" ;
 									print $rowCond2["reaction"] ;
@@ -587,7 +587,7 @@ else {
 							print "</tr>" ;
 							print "<tr class='odd'>" ;
 								print "<td>" ;
-									print _("Response") ;
+									print __($guid, "Response") ;
 								print "</td>" ;
 								print "<td>" ;
 									print $rowCond2["response"] ;
@@ -607,7 +607,7 @@ else {
 							
 							print "<tr class='even'>" ;
 								print "<td>" ;
-									print _("Medication") ;
+									print __($guid, "Medication") ;
 								print "</td>" ;
 								print "<td>" ;
 									print $rowCond2["medication"] ;
@@ -626,7 +626,7 @@ else {
 							print "</tr>" ;
 							print "<tr class='odd'>" ;
 								print "<td>" ;
-									print _("Last Episode") ;
+									print __($guid, "Last Episode") ;
 								print "</td>" ;
 								print "<td>" ;
 									print dateConvertBack($guid, $rowCond2["lastEpisode"]) ;
@@ -645,7 +645,7 @@ else {
 							print "</tr>" ;
 							print "<tr class='even'>" ;
 								print "<td>" ;
-									print _("Last Episode Treatment") ;
+									print __($guid, "Last Episode Treatment") ;
 								print "</td>" ;
 								print "<td>" ;
 									print $rowCond2["lastEpisodeTreatment"] ;
@@ -664,7 +664,7 @@ else {
 							print "</tr>" ;
 							print "<tr class='odd'>" ;
 								print "<td>" ;
-									print _("Comment") ;
+									print __($guid, "Comment") ;
 								print "</td>" ;
 								print "<td>" ;
 									print $rowCond2["comment"] ;

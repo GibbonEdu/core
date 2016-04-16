@@ -45,6 +45,8 @@ if (isActionAccessible($guid, $connection2, "/modules/User Admin/applicationForm
 else {
 	//Proceed!
 	$introduction=$_POST["introduction"] ; 	
+	$applicationFormSENText=$_POST["applicationFormSENText"] ; 	
+	$applicationFormRefereeLink=$_POST["applicationFormRefereeLink"] ; 	
 	$postscript=$_POST["postscript"] ; 	
 	$scholarships=$_POST["scholarships"] ; 	
 	$agreement=$_POST["agreement"] ; 	
@@ -65,6 +67,7 @@ else {
 	$studentDefaultEmail=$_POST["studentDefaultEmail"] ; 
 	$studentDefaultWebsite=$_POST["studentDefaultWebsite"] ;
 	$autoHouseAssign=$_POST["autoHouseAssign"] ;
+	$usernameFormat=$_POST["usernameFormat"] ;
 	
 	//Write to database
 	$fail=FALSE ;
@@ -78,6 +81,27 @@ else {
 	catch(PDOException $e) { 
 		$fail=TRUE ; 
 	}
+	
+	try {
+		$data=array("value"=>$applicationFormSENText); 
+		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Students' AND name='applicationFormSENText'" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { 
+		$fail=TRUE ; 
+	}
+	
+	try {
+		$data=array("value"=>$applicationFormRefereeLink); 
+		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Students' AND name='applicationFormRefereeLink'" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { 
+		$fail=TRUE ; 
+	}
+	
 	
 	try {
 		$data=array("value"=>$postscript); 
@@ -272,6 +296,16 @@ else {
 	try {
 		$data=array("value"=>$autoHouseAssign); 
 		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Application Form' AND name='autoHouseAssign'" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { 
+		$fail=TRUE ; 
+	}
+	
+	try {
+		$data=array("value"=>$usernameFormat); 
+		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Application Form' AND name='usernameFormat'" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}

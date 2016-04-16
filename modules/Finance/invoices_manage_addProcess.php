@@ -96,7 +96,7 @@ else {
 				//Fail3
 				$URL.="&addReturn=fail3" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 			else {
 				//LOCK INVOICE TABLES
@@ -110,7 +110,7 @@ else {
 					//Fail 2
 					$URL.="&addReturn=fail2" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 			
 				//CYCLE THROUGH STUDENTS
@@ -247,7 +247,7 @@ else {
 										//Fail 2
 										$URL.="&addReturn=fail2" ;
 										header("Location: {$URL}");
-										break ;
+										exit() ;
 									}
 									else {
 										try {
@@ -417,7 +417,7 @@ else {
 										//Fail 2
 										$URL.="&addReturn=fail2" ;
 										header("Location: {$URL}");
-										break ;
+										exit() ;
 									}
 									else {
 										try {

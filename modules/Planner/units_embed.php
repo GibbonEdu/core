@@ -67,7 +67,7 @@ print "<script type=\"text/javascript\" src=" . $_SESSION[$guid]["absoluteURL"] 
 
 if ($gibbonCourseID=="" OR $gibbonSchoolYearID=="") {
 	print "<div class='error'>" ;
-		print _("You have not specified one or more required parameters.") ;
+		print __($guid, "You have not specified one or more required parameters.") ;
 	print "</div>" ;
 }
 else {
@@ -83,7 +83,7 @@ else {
 
 	if ($result->rowCount()!=1) {
 		print "<div class='error'>" ;
-			print _("The selected record does not exist, or you do not have access to it.") ;
+			print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 		print "</div>" ;
 	}
 	else {
@@ -94,13 +94,13 @@ else {
 		//Check if unit specified
 		if ($gibbonUnitID=="") {
 			print "<div class='error'>" ;
-				print _("You have not specified one or more required parameters.") ;
+				print __($guid, "You have not specified one or more required parameters.") ;
 			print "</div>" ;
 		}
 		else {
 			if ($gibbonUnitID=="") {
 				print "<div class='error'>" ;
-					print _("You have not specified one or more required parameters.") ;
+					print __($guid, "You have not specified one or more required parameters.") ;
 				print "</div>" ;
 			}
 			else {
@@ -116,7 +116,7 @@ else {
 				
 				if ($result->rowCount()!=1) {
 					print "<div class='error'>" ;
-						print _("The specified record cannot be found.") ;
+						print __($guid, "The specified record cannot be found.") ;
 					print "</div>" ;
 				}
 				else {
@@ -150,7 +150,7 @@ else {
 						print "<div class='error'>There are no smart blocks in this unit.</div>" ; 
 					}
 					else {
-						print "<p>Smart blocks are <a target='_parent' href='http://gibbonedu.org'>Gibbon's</a> unique method for organising the content within a unit. Each block represents an element of a lesson, perhaps an activity, a discussion or even an outcome. Here you can simply view the blocks, but if your school runs Gibbon you can use the blocks to create lessons plans, and use drag and drop to quickly move content between lessons.</p>" ;
+						print "<p>Smart blocks are <a target='_parent' href='https://gibbonedu.org'>Gibbon's</a> unique method for organising the content within a unit. Each block represents an element of a lesson, perhaps an activity, a discussion or even an outcome. Here you can simply view the blocks, but if your school runs Gibbon you can use the blocks to create lessons plans, and use drag and drop to quickly move content between lessons.</p>" ;
 						while ($rowBlocks=$resultBlocks->fetch()) {
 							makeBlock($guid, $connection2, $i, "embed", $rowBlocks["title"], $rowBlocks["type"], $rowBlocks["length"], $rowBlocks["contents"], "N", $rowBlocks["gibbonUnitBlockID"], "", $rowBlocks["teachersNotes"]) ;
 							$i++ ;
@@ -173,10 +173,10 @@ else {
 						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr class='head'>" ;
 								print "<th>" ;
-									print _("Name") ;
+									print __($guid, "Name") ;
 								print "</th>" ;
 								print "<th>" ;
-									print _("Year Groups") ;
+									print __($guid, "Year Groups") ;
 								print "</th>" ;
 								print "<th>" ;
 									print "Description" ;
@@ -200,7 +200,7 @@ else {
 										print "<span style='font-size: 75%; font-style: italic'>" . $rowBlocks["name"] . "</span>" ;
 									print "</td>" ;
 									print "<td>" ;
-										print getYearGroupsFromIDList($connection2, $rowBlocks["gibbonYearGroupIDList"]) ;
+										print getYearGroupsFromIDList($guid, $connection2, $rowBlocks["gibbonYearGroupIDList"]) ;
 									print "</td>" ;
 									print "<td colspan=5>" ;
 										print $rowBlocks["content"] ;
@@ -213,10 +213,10 @@ else {
 					
 					print "<h3>Source</h3>" ;
 					if ($_SESSION[$guid]["webLink"]=="") {
-						print "<p>This unit was built with, and is powered by, <a target='_parent' href='http://gibbonedu.org'>Gibbon</a> (the open, flexible and free school platform) at " . $_SESSION[$guid]["organisationName"] . "</p>" ;
+						print "<p>This unit was built with, and is powered by, <a target='_parent' href='https://gibbonedu.org'>Gibbon</a> (the open, flexible and free school platform) at " . $_SESSION[$guid]["organisationName"] . "</p>" ;
 					}
 					else {
-						print "<p>This unit was built with, and is powered by, <a target='_parent' href='http://gibbonedu.org'>Gibbon</a> (the open, flexible and free school platform) at <a target='_parent' href='" . $_SESSION[$guid]["webLink"] . "'>" . $_SESSION[$guid]["organisationName"] . "</a></p>" ;
+						print "<p>This unit was built with, and is powered by, <a target='_parent' href='https://gibbonedu.org'>Gibbon</a> (the open, flexible and free school platform) at <a target='_parent' href='" . $_SESSION[$guid]["webLink"] . "'>" . $_SESSION[$guid]["organisationName"] . "</a></p>" ;
 					}
 				}
 			}

@@ -47,7 +47,7 @@ try {
 catch(PDOException $e) { 
 	$URL=$URL. "&deleteReturn=fail2" ;
 	header("Location: {$URL}");
-	break ;
+	exit() ;
 }
 
 $URL=$URL. "&deleteReturn=success0" ;

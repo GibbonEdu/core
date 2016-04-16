@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Planner/units_edit.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -33,7 +33,7 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print _("The highest grouped action cannot be determined.") ;
+		print __($guid, "The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
@@ -50,7 +50,7 @@ else {
 		
 		//Proceed!
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>" . _('Unit Planner') . "</a> > </div><div class='trailEnd'>" . _('Edit Unit') . "</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>" . __($guid, 'Unit Planner') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Edit Unit') . "</div>" ;
 		print "</div>" ;
 		
 		if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -58,28 +58,28 @@ else {
 		$class="error" ;
 		if (!($updateReturn=="")) {
 			if ($updateReturn=="fail0") {
-				$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+				$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 			}
 			else if ($updateReturn=="fail1") {
-				$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+				$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($updateReturn=="fail2") {
-				$updateReturnMessage=_("Your request failed due to a database error.") ;	
+				$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 			}
 			else if ($updateReturn=="fail3") {
-				$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+				$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($updateReturn=="fail4") {
-				$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+				$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($updateReturn=="fail5") {
-				$updateReturnMessage=_("Your request failed due to an attachment error.") ;	
+				$updateReturnMessage=__($guid, "Your request failed due to an attachment error.") ;	
 			}
 			else if ($updateReturn=="fail6") {
-				$updateReturnMessage=_("Your request was successful, but some data was not properly saved.") ;
+				$updateReturnMessage=__($guid, "Your request was successful, but some data was not properly saved.") ;
 			}
 			else if ($updateReturn=="success0") {
-				$updateReturnMessage=_("Your request was completed successfully.") ;	
+				$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;
@@ -92,7 +92,7 @@ else {
 		$class="error" ;
 		if (!($addReturn=="")) {
 			if ($addReturn=="success0") {
-				$addReturnMessage=_("Your Smart Unit was successfully created: you can now edit and deploy it using the form below.") ;	
+				$addReturnMessage=__($guid, "Your Smart Unit was successfully created: you can now edit and deploy it using the form below.") ;	
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;
@@ -105,23 +105,23 @@ else {
 		$class="error" ;
 		if (!($deployReturn=="")) {
 			if ($deployReturn=="fail0") {
-				$deployReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+				$deployReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 			}
 			else if ($deployReturn=="fail2") {
-				$deployReturnMessage=_("Your request failed due to a database error.") ;	
+				$deployReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 			}
 			else if ($deployReturn=="fail3") {
-				$deployReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+				$deployReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($deployReturn=="fail4") {
-				$deployReturnMessage=_("The selected record does not exist, or you do not have access to it.") ;	
+				$deployReturnMessage=__($guid, "The selected record does not exist, or you do not have access to it.") ;	
 			}
 			else if ($deployReturn=="fail6") {
-				$deployReturnMessage=_("Your request was successful, but some data was not properly saved.") ;
+				$deployReturnMessage=__($guid, "Your request was successful, but some data was not properly saved.") ;
 				$class="success" ;	
 			}
 			else if ($deployReturn=="success0") {
-				$deployReturnMessage=_("Your request was completed successfully.") ;	
+				$deployReturnMessage=__($guid, "Your request was completed successfully.") ;	
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;
@@ -134,11 +134,11 @@ else {
 		$class="error" ;
 		if (!($copyReturn=="")) {
 			if ($copyReturn=="success0") {
-				$copyReturnMessage=_("Copy was successful. The blocks from the selected working unit have replaced those in the master unit (see below for the new block listing).") ;	
+				$copyReturnMessage=__($guid, "Copy was successful. The blocks from the selected working unit have replaced those in the master unit (see below for the new block listing).") ;	
 				$class="success" ;
 			}
 			if ($copyReturn=="success1") {
-				$copyReturnMessage=_("Smart Blockify was successful.") ;	
+				$copyReturnMessage=__($guid, "Smart Blockify was successful.") ;	
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;
@@ -151,7 +151,7 @@ else {
 		$class="error" ;
 		if (!($copyForwardReturn=="")) {
 			if ($copyForwardReturn=="success0") {
-				$copyForwardReturnMessage=_("Your request was completed successfully.") ;	
+				$copyForwardReturnMessage=__($guid, "Your request was completed successfully.") ;	
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;
@@ -164,7 +164,7 @@ else {
 		$gibbonCourseID=$_GET["gibbonCourseID"]; 
 		if ($gibbonCourseID=="" OR $gibbonSchoolYearID=="") {
 			print "<div class='error'>" ;
-				print _("You have not specified one or more required parameters.") ;
+				print __($guid, "You have not specified one or more required parameters.") ;
 			print "</div>" ;
 		}
 		else {
@@ -188,7 +188,7 @@ else {
 
 				if ($result->rowCount()!=1) {
 					print "<div class='error'>" ;
-						print _("The selected record does not exist, or you do not have access to it.") ;
+						print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 					print "</div>" ;
 				}
 				else {
@@ -199,7 +199,7 @@ else {
 					//Check if unit specified
 					if ($gibbonUnitID=="") {
 						print "<div class='error'>" ;
-							print _("You have not specified one or more required parameters.") ;
+							print __($guid, "You have not specified one or more required parameters.") ;
 						print "</div>" ;
 					}
 					else {
@@ -214,7 +214,7 @@ else {
 						}
 						if ($result->rowCount()!=1) {
 							print "<div class='error'>" ;
-								print _("The specified record cannot be found.") ;
+								print __($guid, "The specified record cannot be found.") ;
 							print "</div>" ;
 						}
 						else {
@@ -226,13 +226,13 @@ else {
 								<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 									<tr class='break'>
 										<td colspan=2> 
-											<h3><?php print _('Unit Basics') ?></h3>
+											<h3><?php print __($guid, 'Unit Basics') ?></h3>
 										</td>
 									</tr>
 									<tr>
 										<td style='width: 275px'> 
-											<b><?php print _('School Year') ?> *</b><br/>
-											<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+											<b><?php print __($guid, 'School Year') ?> *</b><br/>
+											<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
 										</td>
 										<td class="right">
 											<input readonly name="yearName" id="yearName" maxlength=20 value="<?php print $yearName ?>" type="text" style="width: 300px">
@@ -240,20 +240,20 @@ else {
 									</tr>
 									<tr>
 										<td> 
-											<b><?php print _('Course') ?> *</b><br/>
-											<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+											<b><?php print __($guid, 'Course') ?> *</b><br/>
+											<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
 										</td>
 										<td class="right">
-											<input readonly name="courseName" id="courseName" maxlength=20 value="<?php print $row["courseName"] ?>" type="text" style="width: 300px">
+											<input readonly name="courseName" id="courseName" maxlength=20 value="<?php print htmlPrep($row["courseName"]) ?>" type="text" style="width: 300px">
 										</td>
 									</tr>
 									<tr>
 										<td> 
-											<b><?php print _('Name') ?> *</b><br/>
+											<b><?php print __($guid, 'Name') ?> *</b><br/>
 											<span style="font-size: 90%"><i></i></span>
 										</td>
 										<td class="right">
-											<input name="name" id="name" maxlength=40 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
+											<input name="name" id="name" maxlength=40 value="<?php print htmlPrep($row["name"]) ?>" type="text" style="width: 300px">
 											<script type="text/javascript">
 												var name2=new LiveValidation('name');
 												name2.add(Validate.Presence);
@@ -262,28 +262,41 @@ else {
 									</tr>
 									<tr>
 										<td colspan=2> 
-											<b><?php print _('Blurb') ?> *</b> 
-											<textarea name='description' id='description' rows=5 style='width: 300px'><?php print $row["description"] ?></textarea>
+											<b><?php print __($guid, 'Blurb') ?> *</b> 
+											<textarea name='description' id='description' rows=5 style='width: 300px'><?php print htmlPrep($row["description"]) ?></textarea>
 											<script type="text/javascript">
 												var description=new LiveValidation('description');
 												description.add(Validate.Presence);
 											</script>
 										</td>
 									</tr>
-									
 									<tr>
 										<td> 
-											<b><?php print _("License") ?></b><br/>
-											<span style="font-size: 90%"><i><?php print _("Under what conditions can this work be reused?") ; ?></i></span>
+											<b><?php print __($guid, 'Ordering') ?> *</b><br/>
+											<span style="font-size: 90%"><i><?php print __($guid, "Units are arranged form lowest to highest ordering value, then alphabetically.") ; ?></i></span>
+										</td>
+										<td class="right">
+											<input name="ordering" id="ordering" maxlength=4 value="<?php print htmlPrep($row["ordering"]) ?>" type="text" style="width: 300px">
+											<script type="text/javascript">
+												var ordering=new LiveValidation('ordering');
+												ordering.add(Validate.Presence);
+												ordering.add(Validate.Numericality);
+											</script>
+										</td>
+									</tr>
+									<tr>
+										<td> 
+											<b><?php print __($guid, "License") ?></b><br/>
+											<span style="font-size: 90%"><i><?php print __($guid, "Under what conditions can this work be reused?") ; ?></i></span>
 										</td>
 										<td class="right">
 											<select name="license" id="license" style="width: 302px">
 												<option <?php if ($row["license"]=="") {print "selected ";} ?>value=""></option>
-												<option <?php if ($row["license"]=="Copyright") {print "selected ";} ?>value="Copyright"><?php print _('Copyright') ?></option>
-												<option <?php if ($row["license"]=="Creative Commons BY") {print "selected ";} ?>value="Creative Commons BY"><?php print _('Creative Commons BY') ?></option>
-												<option <?php if ($row["license"]=="Creative Commons BY-SA") {print "selected ";} ?>value="Creative Commons BY-SA"><?php print _('Creative Commons BY-SA') ?></option>
-												<option <?php if ($row["license"]=="Creative Commons BY-SA-NC") {print "selected ";} ?>value="Creative Commons BY-SA-NC"><?php print _('Creative Commons BY-SA-NC') ?></option>
-												<option <?php if ($row["license"]=="Public Domain") {print "selected ";} ?>value="Public Domain"><?php print _('Public Domain') ?></option>
+												<option <?php if ($row["license"]=="Copyright") {print "selected ";} ?>value="Copyright"><?php print __($guid, 'Copyright') ?></option>
+												<option <?php if ($row["license"]=="Creative Commons BY") {print "selected ";} ?>value="Creative Commons BY"><?php print __($guid, 'Creative Commons BY') ?></option>
+												<option <?php if ($row["license"]=="Creative Commons BY-SA") {print "selected ";} ?>value="Creative Commons BY-SA"><?php print __($guid, 'Creative Commons BY-SA') ?></option>
+												<option <?php if ($row["license"]=="Creative Commons BY-SA-NC") {print "selected ";} ?>value="Creative Commons BY-SA-NC"><?php print __($guid, 'Creative Commons BY-SA-NC') ?></option>
+												<option <?php if ($row["license"]=="Public Domain") {print "selected ";} ?>value="Public Domain"><?php print __($guid, 'Public Domain') ?></option>
 											</select>
 										</td>
 									</tr>
@@ -293,12 +306,12 @@ else {
 										?>
 										<tr>
 											<td> 
-												<b><?php print _("Shared Publically") ?> * </b><br/>
-												<span style="font-size: 90%"><i><?php print _("Share this unit via the public listing of units? Useful for building MOOCS.") ; ?></i></span>
+												<b><?php print __($guid, "Shared Publically") ?> * </b><br/>
+												<span style="font-size: 90%"><i><?php print __($guid, "Share this unit via the public listing of units? Useful for building MOOCS.") ; ?></i></span>
 											</td>
 											<td class="right">
-												<input <?php if ($row["sharedPublic"]=="Y") { print "checked" ; } ?> type="radio" name="sharedPublic" value="Y" /> <?php print _('Yes') ?>
-												<input <?php if ($row["sharedPublic"]=="N" OR $row["sharedPublic"]=="") { print "checked" ; } ?> type="radio" name="sharedPublic" value="N" /> <?php print _('No') ?>
+												<input <?php if ($row["sharedPublic"]=="Y") { print "checked" ; } ?> type="radio" name="sharedPublic" value="Y" /> <?php print __($guid, 'Yes') ?>
+												<input <?php if ($row["sharedPublic"]=="N" OR $row["sharedPublic"]=="") { print "checked" ; } ?> type="radio" name="sharedPublic" value="N" /> <?php print __($guid, 'No') ?>
 											</td>
 										</tr>
 										<?php
@@ -306,12 +319,12 @@ else {
 									?>
 									<tr>
 										<td> 
-											<b><?php print _('Embeddable') ?> *</b><br/>
-											<span style="font-size: 90%"><i><?php print _('Can this unit be embedded and shared publicly in other websites?') ?></i></span>
+											<b><?php print __($guid, 'Embeddable') ?> *</b><br/>
+											<span style="font-size: 90%"><i><?php print __($guid, 'Can this unit be embedded and shared publicly in other websites?') ?></i></span>
 										</td>
 										<td class="right">
-											<input <?php if ($row["embeddable"]=="Y") { print "checked" ; } ?> type="radio" id="embeddable" name="embeddable" class="embeddable" value="Y" /> <?php print _('Yes') ?>
-											<input <?php if ($row["embeddable"]=="N") { print "checked" ; } ?> type="radio" id="embeddable" name="embeddable" class="embeddable" value="N" /> <?php print _('No') ?>
+											<input <?php if ($row["embeddable"]=="Y") { print "checked" ; } ?> type="radio" id="embeddable" name="embeddable" class="embeddable" value="Y" /> <?php print __($guid, 'Yes') ?>
+											<input <?php if ($row["embeddable"]=="N") { print "checked" ; } ?> type="radio" id="embeddable" name="embeddable" class="embeddable" value="N" /> <?php print __($guid, 'No') ?>
 										</td>
 									</tr>
 									<script type="text/javascript">
@@ -335,8 +348,8 @@ else {
 									
 									<tr id="embeddableRow" <?php if ($row["embeddable"]=="N") { print "style='display: none'" ; } ?>>
 										<td> 
-											<b><?php print _('Embed Code') ?></b><br/>
-											<span style="font-size: 90%"><i><?php print _('Copy and paste this HTML code into the target website.') ?></i></span>
+											<b><?php print __($guid, 'Embed Code') ?></b><br/>
+											<span style="font-size: 90%"><i><?php print __($guid, 'Copy and paste this HTML code into the target website.') ?></i></span>
 										</td>
 										<td class="right">
 											<textarea readonly name='embedCode' id='embedCode' rows=5 style='width: 300px'><?php print "<iframe style='border: none; width: 620px; height: 800px; overflow-x: hidden; overflow-y: scroll' src=\"" . $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/units_embed.php?gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&themeName=" . $_SESSION[$guid]["gibbonThemeName"] . "&title=false\"></iframe>" ?></textarea>
@@ -345,7 +358,7 @@ else {
 									
 									<tr class='break'>
 										<td colspan=2> 
-											<h3><?php print _('Outcomes') ?></h3>
+											<h3><?php print __($guid, 'Outcomes') ?></h3>
 										</td>
 									</tr>
 									<?php 
@@ -372,7 +385,7 @@ else {
 									</script>
 									<tr>
 										<td colspan=2> 
-											<p><?php print _('Link this unit to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which units, classes and courses.') ?></p>
+											<p><?php print __($guid, 'Link this unit to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which units, classes and courses.') ?></p>
 											<div class="outcome" id="outcome" style='width: 100%; padding: 5px 0px 0px 0px; min-height: 66px'>
 												<?php
 												$i=1 ;
@@ -388,7 +401,7 @@ else {
 												}
 												if ($resultBlocks->rowCount()<1) {
 													print "<div id='outcomeOuter0'>" ;
-														print "<div style='color: #ddd; font-size: 230%; margin: 15px 0 0 6px'>" . _('Outcomes listed here...') . "</div>" ;
+														print "<div style='color: #ddd; font-size: 230%; margin: 15px 0 0 6px'>" . __($guid, 'Outcomes listed here...') . "</div>" ;
 													print "</div>" ;
 												}
 												else {
@@ -409,7 +422,7 @@ else {
 																	var outcomeCount=<?php print $i ?>;
 																</script>
 																<select class='all' id='newOutcome' onChange='outcomeDisplayElements(this.value);' style='float: none; margin-left: 3px; margin-top: 0px; margin-bottom: 3px; width: 350px'>
-																	<option class='all' value='0'><?php print _('Choose an outcome to add it to this unit') ?></option>
+																	<option class='all' value='0'><?php print __($guid, 'Choose an outcome to add it to this unit') ?></option>
 																	<?php
 																	$currentCategory="" ;
 																	$lastCategory="" ;
@@ -430,12 +443,12 @@ else {
 																	catch(PDOException $e) { 
 																		print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 																	}
-																	print "<optgroup label='--" . _('SCHOOL OUTCOMES') . "--'>" ;
+																	print "<optgroup label='--" . __($guid, 'SCHOOL OUTCOMES') . "--'>" ;
 																	while ($rowSelect=$resultSelect->fetch()) {
 																		$currentCategory=$rowSelect["category"] ;
 																		if (($currentCategory!=$lastCategory) AND $currentCategory!="") {
 																			print "<optgroup label='--" . $currentCategory . "--'>" ;
-																			print "<option class='$currentCategory' value='0'>" . _('Choose an outcome to add it to this unit') . "</option>" ;
+																			print "<option class='$currentCategory' value='0'>" . __($guid, 'Choose an outcome to add it to this unit') . "</option>" ;
 																			$categories[$categoryCount]=$currentCategory ;
 																			$categoryCount++ ;
 																		}
@@ -473,11 +486,11 @@ else {
 																		$currentCategory=$rowSelect["category"] ;
 																		$currentLA=$rowSelect["learningArea"] ;
 																		if (($currentLA!=$lastLA) AND $currentLA!="") {
-																			print "<optgroup label='--" . strToUpper($currentLA) . " " . _('OUTCOMES') . "--'>" ;
+																			print "<optgroup label='--" . strToUpper($currentLA) . " " . __($guid, 'OUTCOMES') . "--'>" ;
 																		}
 																		if (($currentCategory!=$lastCategory) AND $currentCategory!="") {
 																			print "<optgroup label='--" . $currentCategory . "--'>" ;
-																			print "<option class='$currentCategory' value='0'>" . _('Choose an outcome to add it to this unit') . "</option>" ;
+																			print "<option class='$currentCategory' value='0'>" . __($guid, 'Choose an outcome to add it to this unit') . "</option>" ;
 																			$categories[$categoryCount]=$currentCategory ;
 																			$categoryCount++ ;
 																		}
@@ -498,7 +511,7 @@ else {
 																if (count($categories)>0) {
 																	?>
 																	<select id='outcomeFilter' style='float: none; margin-left: 3px; margin-top: 0px; width: 350px'>
-																		<option value='all'><?php print _('View All') ?></option>
+																		<option value='all'><?php print __($guid, 'View All') ?></option>
 																		<?php
 																		$categories=array_unique($categories) ;
 																		$categories=msort($categories) ;
@@ -542,7 +555,7 @@ else {
 								
 									<tr class='break'>
 										<td colspan=2> 
-											<h3><?php print _('Classes') ?></h3>
+											<h3><?php print __($guid, 'Classes') ?></h3>
 										</td>
 									</tr>
 									<?php
@@ -550,7 +563,7 @@ else {
 										?>
 										<tr>
 											<td colspan=2> 
-												<p><?php print _('Select classes which will study this unit.') ?></p>
+												<p><?php print __($guid, 'Select classes which will study this unit.') ?></p>
 												<?php
 												$classCount=0 ;
 												try {
@@ -565,23 +578,23 @@ else {
 										
 												if ($resultClass->rowCount()<1) {
 													print "<div class='error'>" ;
-													print _("There are no records to display.") ;
+													print __($guid, "There are no records to display.") ;
 													print "</div>" ;
 												}
 												else {
 													print "<table cellspacing='0' style='width: 100%'>" ;
 														print "<tr class='head'>" ;
 															print "<th>" ;
-																print _("Class") ;
+																print __($guid, "Class") ;
 															print "</th>" ;
 															print "<th>" ;
-																print _("Running") . "<br/><span style='font-size: 80%'>" . _('Is class studying this unit?') . "</span>" ;
+																print __($guid, "Running") . "<br/><span style='font-size: 80%'>" . __($guid, 'Is class studying this unit?') . "</span>" ;
 															print "</th>" ;
 															print "<th>" ;
-																print _("First Lesson") . "<br/><span style='font-size: 80%'>" ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } print "</span>" ;
+																print __($guid, "First Lesson") . "<br/><span style='font-size: 80%'>" ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } print "</span>" ;
 															print "</th>" ;
 															print "<th>" ;
-																print _("Actions") ;
+																print __($guid, "Actions") ;
 															print "</th>" ;
 														print "</tr>" ;
 												
@@ -620,8 +633,8 @@ else {
 																	?>
 																	<input name="gibbonCourseClassID<?php print $classCount?>" id="gibbonCourseClassID<?php print $classCount?>" maxlength=10 value="<?php print $rowClass["gibbonCourseClassID"] ?>" type="hidden" style="width: 300px">
 																	<select name="running<?php print $classCount?>" id="running<?php print $classCount?>" style="width:100%">
-																		<option <?php if ($rowClassData["running"]=="N") { print "selected ";} ?>value="N"><?php print _('No') ?></option>
-																		<option <?php if ($rowClassData["running"]=="Y") { print "selected ";} ?>value="Y"><?php print _('Yes') ?></option>
+																		<option <?php if ($rowClassData["running"]=="N") { print "selected ";} ?>value="N"><?php print __($guid, 'No') ?></option>
+																		<option <?php if ($rowClassData["running"]=="Y") { print "selected ";} ?>value="Y"><?php print __($guid, 'Yes') ?></option>
 																	</select>
 																	<?php
 																print "</td>" ;
@@ -634,7 +647,7 @@ else {
 																	}
 																	catch(PDOException $e) { }
 																	if ($resultDate->rowCount()<1) {
-																		print "<i>" . _('There are no records to display.') . "</i>" ;
+																		print "<i>" . __($guid, 'There are no records to display.') . "</i>" ;
 																	}
 																	else {
 																		$rowDate=$resultDate->fetch() ;
@@ -649,7 +662,7 @@ else {
 																		else {
 																			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/units_edit_working.php&gibbonCourseClassID=" . $rowClass["gibbonCourseClassID"] . "&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonUnitClassID=" . $rowClassData["gibbonUnitClassID"] . "'><img title='Edit Unit' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 																		}
-																		print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner.php&gibbonCourseClassID=" . $rowClass["gibbonCourseClassID"] . "&viewBy=class'><img style='margin-top: 3px' title='" . _('View Planner') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/planner.png'/></a> " ;
+																		print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner.php&gibbonCourseClassID=" . $rowClass["gibbonCourseClassID"] . "&viewBy=class'><img style='margin-top: 3px' title='" . __($guid, 'View Planner') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/planner.png'/></a> " ;
 																		print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/units_edit_copyBack.php&gibbonCourseClassID=" . $rowClass["gibbonCourseClassID"] . "&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonUnitClassID=" . $rowClassData["gibbonUnitClassID"] . "'><img title='Copy Back' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/copyback.png'/></a> " ;
 																		print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/units_edit_copyForward.php&gibbonCourseClassID=" . $rowClass["gibbonCourseClassID"] . "&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonUnitClassID=" . $rowClassData["gibbonUnitClassID"] . "'><img title='Copy Forward' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/copyforward.png'/></a> " ;
 																		print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/units_edit_smartBlockify.php&gibbonCourseClassID=" . $rowClass["gibbonCourseClassID"] . "&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonUnitClassID=" . $rowClassData["gibbonUnitClassID"] . "'><img title='Smart Blockify' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/run.png'/></a> " ;
@@ -669,7 +682,7 @@ else {
 										print "<tr>" ;
 											print "<td colspan=2 style='margin-top: 0; padding-top: 0'>" ;
 												print "<div class='warning'>" ;
-													print _("You are currently not logged into the current year and/or are looking at units in another year, and so you cannot access your classes. Please log back into the current school year, and look at units in the current year.") ;
+													print __($guid, "You are currently not logged into the current year and/or are looking at units in another year, and so you cannot access your classes. Please log back into the current school year, and look at units in the current year.") ;
 												print "</div>" ;
 											print "</td>" ;
 										print "</tr>" ;
@@ -679,32 +692,32 @@ else {
 									
 									<tr class='break'>
 										<td colspan=2> 
-											<h3><?php print _('Unit Outline') ?></h3>
+											<h3><?php print __($guid, 'Unit Outline') ?></h3>
 										</td>
 									</tr>
 									<tr>
 										<td colspan=2>
-											<p><?php print _('The contents of this field are viewable only to those with full access to the Planner (usually teachers and administrators, but not students and parents), whereas the downloadable version (below) is available to more users (usually parents).') ?></p>
+											<p><?php print __($guid, 'The contents of this field are viewable only to those with full access to the Planner (usually teachers and administrators, but not students and parents), whereas the downloadable version (below) is available to more users (usually parents).') ?></p>
 											<?php print getEditor($guid,  TRUE, "details", $row["details"], 40, true, false, false) ?>
 										</td>
 									</tr>
 									<tr>
 										<td> 
-											<b><?php print _('Downloadable Unit Outline') ?></b><br/>
-											<span style="font-size: 90%"><i><?php print _('Available to most users.') ?></i></span>
+											<b><?php print __($guid, 'Downloadable Unit Outline') ?></b><br/>
+											<span style="font-size: 90%"><i><?php print __($guid, 'Available to most users.') ?></i></span>
 											<?php if ($row["attachment"]!="") { ?>
-												<span style="font-size: 90%"><i><?php print _('Will overwrite existing attachment.') ?></i></span>
+												<span style="font-size: 90%"><i><?php print __($guid, 'Will overwrite existing attachment.') ?></i></span>
 											<?php } ?>
 										</td>
 										<td class="right">
 											<?php
 											if ($row["attachment"]!="") {
-												print _("Current attachment:") . " <a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["attachment"] . "'>" . $row["attachment"] . "</a><br/><br/>" ;
+												print __($guid, "Current attachment:") . " <a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["attachment"] . "'>" . $row["attachment"] . "</a><br/><br/>" ;
 											}
 											?>
 											<input type="file" name="file" id="file"><br/><br/>
 											<?php
-											print getMaxUpload() ;
+											print getMaxUpload($guid) ;
 										
 											//Get list of acceptable file extensions
 											try {
@@ -729,13 +742,13 @@ else {
 							
 									<tr class='break'>
 										<td colspan=2>
-											<h3><?php print _('Smart Blocks') ?></h3>
+											<h3><?php print __($guid, 'Smart Blocks') ?></h3>
 										</td>
 									</tr>
 									<tr>
 										<td colspan=2>
 											<p>
-												<?php print _('Smart Blocks aid unit planning by giving teachers help in creating and maintaining new units, splitting material into smaller units which can be deployed to lesson plans. As well as predefined fields to fill, Smart Units provide a visual view of the content blocks that make up a unit. Blocks may be any kind of content, such as discussion, assessments, group work, outcome etc.') ?>
+												<?php print __($guid, 'Smart Blocks aid unit planning by giving teachers help in creating and maintaining new units, splitting material into smaller units which can be deployed to lesson plans. As well as predefined fields to fill, Smart Units provide a visual view of the content blocks that make up a unit. Blocks may be any kind of content, such as discussion, assessments, group work, outcome etc.') ?>
 											</p>
 										
 											<style>
@@ -798,7 +811,7 @@ else {
 																		 });
 																	});
 																</script>
-																<div id='new' style='cursor: default; float: none; border: 1px dotted #aaa; background: none; margin-left: 3px; color: #999; margin-top: 0px; font-size: 140%; font-weight: bold; width: 350px'><?php print _('Click to create a new block') ?></div><br/>
+																<div id='new' style='cursor: default; float: none; border: 1px dotted #aaa; background: none; margin-left: 3px; color: #999; margin-top: 0px; font-size: 140%; font-weight: bold; width: 350px'><?php print __($guid, 'Click to create a new block') ?></div><br/>
 															</td>
 														</tr>
 													</table>
@@ -809,7 +822,7 @@ else {
 								
 									<tr>
 										<td>
-											<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+											<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
 										</td>
 										<td class="right">
 											<input name="classCount" id="classCount" value="<?php print $classCount ?>" type="hidden">
@@ -843,7 +856,7 @@ else {
 
 				if ($result->rowCount()!=1) {
 					print "<div class='error'>" ;
-						print _("The selected record does not exist, or you do not have access to it.") ;
+						print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 					print "</div>" ;
 				}
 				else {
@@ -854,7 +867,7 @@ else {
 					//Check if unit specified
 					if ($gibbonHookIDToken=="") {
 						print "<div class='error'>" ;
-							print _("You have not specified one or more required parameters.") ;
+							print __($guid, "You have not specified one or more required parameters.") ;
 						print "</div>" ;
 					}
 					else {
@@ -880,7 +893,7 @@ else {
 						}
 						if ($result->rowCount()!=1) {
 							print "<div class='error'>" ;
-								print _("The specified record cannot be found.") ;
+								print __($guid, "The specified record cannot be found.") ;
 							print "</div>" ;
 						}
 						else {
@@ -896,8 +909,8 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b><?php print _('School Year') ?> *</b><br/>
-										<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+										<b><?php print __($guid, 'School Year') ?> *</b><br/>
+										<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
 									</td>
 									<td class="right">
 										<input readonly name="yearName" id="yearName" maxlength=20 value="<?php print $yearName ?>" type="text" style="width: 300px">
@@ -905,8 +918,8 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b><?php print _('Course') ?> *</b><br/>
-										<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+										<b><?php print __($guid, 'Course') ?> *</b><br/>
+										<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
 									</td>
 									<td class="right">
 										<input readonly name="courseName" id="courseName" maxlength=20 value="<?php print $row["nameShort"] ?>" type="text" style="width: 300px">
@@ -914,8 +927,8 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b><?php print _('Name') ?> *</b><br/>
-										<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+										<b><?php print __($guid, 'Name') ?> *</b><br/>
+										<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
 									</td>
 									<td class="right">
 										<input readonly name="name" id="name" maxlength=40 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
@@ -924,8 +937,8 @@ else {
 							
 								<tr>
 									<td colspan=2> 
-										<h3><?php print _('Classes') ?></h3>
-										<p><?php print _('Select classes which will study this unit.') ?></p>
+										<h3><?php print __($guid, 'Classes') ?></h3>
+										<p><?php print __($guid, 'Select classes which will study this unit.') ?></p>
 									</td>
 								</tr>
 								<tr>
@@ -944,23 +957,23 @@ else {
 									
 										if ($resultClass->rowCount()<1) {
 											print "<div class='error'>" ;
-											print _("There are no records to display.") ;
+											print __($guid, "There are no records to display.") ;
 											print "</div>" ;
 										}
 										else {
 											print "<table cellspacing='0' style='width: 100%'>" ;
 												print "<tr class='head'>" ;
 													print "<th>" ;
-														print _("Class") ;
+														print __($guid, "Class") ;
 													print "</th>" ;
 													print "<th>" ;
-														print _("Running") . "<br/><span style='font-size: 80%'>" . _('Is class studying this unit?') . "</span>" ;
+														print __($guid, "Running") . "<br/><span style='font-size: 80%'>" . __($guid, 'Is class studying this unit?') . "</span>" ;
 													print "</th>" ;
 													print "<th>" ;
-														print _("First Lesson") . "<br/><span style='font-size: 80%'>" ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } ; print "</span>" ;
+														print __($guid, "First Lesson") . "<br/><span style='font-size: 80%'>" ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } ; print "</span>" ;
 													print "</th>" ;
 													print "<th>" ;
-														print _("Actions") ;
+														print __($guid, "Actions") ;
 													print "</th>" ;
 												print "</tr>" ;
 											
@@ -993,7 +1006,7 @@ else {
 															}
 															catch(PDOException $e) { }
 															if ($resultDate->rowCount()<1) {
-																print "<i>" . _('There are no records to display.') . "</i>" ;
+																print "<i>" . __($guid, 'There are no records to display.') . "</i>" ;
 															}
 															else {
 																$rowDate=$resultDate->fetch() ;
@@ -1007,7 +1020,7 @@ else {
 															else {
 																print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/units_edit_working.php&gibbonCourseClassID=" . $rowClass["gibbonCourseClassID"] . "&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonUnitClassID=" . $rowClass[$hookOptions["classLinkIDField"]] . "'><img title='Edit Unit' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 															}
-															print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner.php&gibbonCourseClassID=" . $rowClass["gibbonCourseClassID"] . "&viewBy=class'><img style='margin-top: 3px' title='" . _('View Planner') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/planner.png'/></a> " ;
+															print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner.php&gibbonCourseClassID=" . $rowClass["gibbonCourseClassID"] . "&viewBy=class'><img style='margin-top: 3px' title='" . __($guid, 'View Planner') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/planner.png'/></a> " ;
 														print "</td>" ;
 													print "</tr>" ;
 													$classCount++ ;

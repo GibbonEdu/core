@@ -34,13 +34,13 @@ catch(PDOException $e) {
 if (isActionAccessible($guid, $connection2, "/modules/Students/report_transport_student.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<h1>" ;
-	print _("Student Transport") ;
+	print __($guid, "Student Transport") ;
 	print "</h1>" ;
 	
 	try {
@@ -56,19 +56,19 @@ else {
 	print "<table cellspacing='0' style='width: 100%'>" ;
 		print "<tr class='head'>" ;
 			print "<th>" ;
-				print _("Transport") ;
+				print __($guid, "Transport") ;
 			print "</th>" ;
 			print "<th>" ;
-				print _("Student") ;
+				print __($guid, "Student") ;
 			print "</th>" ;
 			print "<th>" ;
-				print _("Address") ;
+				print __($guid, "Address") ;
 			print "</th>" ;
 			print "<th>" ;
-				print _("Parents") ;
+				print __($guid, "Parents") ;
 			print "</th>" ;
 			print "<th>" ;
-				print _("Roll Group") ;
+				print __($guid, "Roll Group") ;
 			print "</th>" ;
 		print "</tr>" ;
 		
@@ -177,7 +177,7 @@ else {
 		if ($count==0) {
 			print "<tr class=$rowNum>" ;
 				print "<td colspan=2>" ;
-					print _("There are no records to display.") ;
+					print __($guid, "There are no records to display.") ;
 				print "</td>" ;
 			print "</tr>" ;
 		}

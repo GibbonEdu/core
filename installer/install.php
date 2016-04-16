@@ -19,6 +19,39 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include "../version.php" ;
 include "../functions.php" ;
+
+//Get and set step
+$step=0 ;
+if (isset($_GET["step"])) {
+	$step=$_GET["step"] ;
+}
+
+//Deal with $guid setup
+if ($step==0) {
+	$charList="abcdefghijkmnopqrstuvwxyz023456789";
+	$guid="" ;
+	for ($i=0;$i<36;$i++) {
+		if ($i==9 OR $i==14 OR $i==19 OR $i==24) {
+			$guid.="-" ;
+		}
+		else {
+			$guid.=substr($charList, rand(1,strlen($charList)),1);
+		}
+	}
+}
+else {
+	if (isset($_GET["guid"])) {
+		$guid=$_GET["guid"] ;
+	}
+	else {
+		$guid="" ;
+	}
+}
+		
+//Deal with no-existent stringReplacement session					
+@session_start() ;
+$_SESSION[$guid]["stringReplacement"]=array() ;
+
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -30,7 +63,7 @@ include "../functions.php" ;
 		<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
 		<meta http-equiv="content-language" content="en"/>
 		<meta name="author" content="Ross Parker, International College Hong Kong"/>
-		<meta name="ROBOTS" content="none"/>
+		<meta name="robots" content="none"/>
 		
 		<link rel="shortcut icon" type="image/x-icon" href="../favicon.ico"/>
 		<script type="text/javascript" src="../lib/LiveValidation/livevalidation_standalone.compressed.js"></script>
@@ -78,12 +111,7 @@ include "../functions.php" ;
 								$demoData=$_POST["demoData"] ;
 							}
 							
-							//Get and set step
-							$step=0 ;
-							if (isset($_GET["step"])) {
-								$step=$_GET["step"] ;
-							}
-							print "<h2>" . sprintf(_('Installation - Step %1$s'), ($step+1)) . "</h2>" ;
+							print "<h2>" . sprintf(__($guid, 'Installation - Step %1$s'), ($step+1)) . "</h2>" ;
 							
 							//Set language
 							$code="en_GB" ;
@@ -98,23 +126,23 @@ include "../functions.php" ;
 							if ($step==0) { //Choose language
 								if (file_exists("../config.php")) { //Make sure system is not already installed
 									print "<div class='error'>" ;
-										print _("../config.php already exists, which suggests this system is already installed. The installer cannot proceed.") ;
+										print __($guid, "../config.php already exists, which suggests this system is already installed. The installer cannot proceed.") ;
 									print "</div>" ;
 								}
 								else { //No config, so continue installer
 									if (is_writable("../")==FALSE) { //Ensure that home directory is writable
 										print "<div class='error'>" ;
-											print _("The directory containing the Gibbon files is not currently writable, so the installer cannot proceed.") ;
+											print __($guid, "The directory containing the Gibbon files is not currently writable, so the installer cannot proceed.") ;
 										print "</div>" ;
 									}
 									else {
 										print "<div class='success'>" ;
-											print _("The directory containing the Gibbon files is writable, so the installation may proceed.") ;
+											print __($guid, "The directory containing the Gibbon files is writable, so the installation may proceed.") ;
 										print "</div>" ;
 										
 										//Set language options
 										?>
-										<form method="post" action="./install.php?step=1">
+										<form method="post" action="./install.php?step=1&guid=<?php print $guid ?>">
 											<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 												<tr class='break'>
 													<td colspan=2> 
@@ -140,10 +168,10 @@ include "../functions.php" ;
 												</tr>
 												<tr>
 													<td>
-														<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+														<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
 													</td>
 													<td class="right">
-														<input type="submit" value="<?php print _("Submit") ; ?>">
+														<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 													</td>
 												</tr>
 											</table>
@@ -154,17 +182,17 @@ include "../functions.php" ;
 							}
 							if ($step==1) { //Set database options
 								?>
-								<form method="post" action="./install.php?step=2">
+								<form method="post" action="./install.php?step=2&guid=<?php print $guid ?>">
 									<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 										<tr class='break'>
 											<td colspan=2> 
-												<h3><?php print _('Database Information') ?></h3>
+												<h3><?php print __($guid, 'Database Information') ?></h3>
 											</td>
 										</tr>
 										<tr>
 											<td style='width: 275px'> 
-												<b><?php print _('Database Type') ?> *</b><br/>
-												<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+												<b><?php print __($guid, 'Database Type') ?> *</b><br/>
+												<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
 											</td>
 											<td class="right">
 												<input readonly name="type" id="type" value="MySQL" type="text" style="width: 300px">
@@ -172,8 +200,8 @@ include "../functions.php" ;
 										</tr>
 										<tr>
 											<td style='width: 275px'> 
-												<b><?php print _('Database Server') ?> *</b><br/>
-												<span style="font-size: 90%"><i><?php print _('Localhost, IP address or domain.') ?></i></span>
+												<b><?php print __($guid, 'Database Server') ?> *</b><br/>
+												<span style="font-size: 90%"><i><?php print __($guid, 'Localhost, IP address or domain.') ?></i></span>
 											</td>
 											<td class="right">
 												<input name="databaseServer" id="databaseServer" maxlength=255 value="" type="text" style="width: 300px">
@@ -185,8 +213,8 @@ include "../functions.php" ;
 										</tr>
 										<tr>
 											<td> 
-												<b><?php print _('Database Name') ?> *</b><br/>
-												<span style="font-size: 90%"><i><?php print _('This database will be created if it does not already exist. Collation should be utf8_general_ci.') ?></i></span>
+												<b><?php print __($guid, 'Database Name') ?> *</b><br/>
+												<span style="font-size: 90%"><i><?php print __($guid, 'This database will be created if it does not already exist. Collation should be utf8_general_ci.') ?></i></span>
 											</td>
 											<td class="right">
 												<input name="databaseName" id="databaseName" maxlength=50 value="" type="text" style="width: 300px">
@@ -198,7 +226,7 @@ include "../functions.php" ;
 										</tr>
 										<tr>
 											<td> 
-												<b><?php print _('Database Username') ?>*</b><br/>
+												<b><?php print __($guid, 'Database Username') ?>*</b><br/>
 											</td>
 											<td class="right">
 												<input name="databaseUsername" id="databaseUsername" maxlength=50 value="" type="text" style="width: 300px">
@@ -210,7 +238,7 @@ include "../functions.php" ;
 										</tr>
 										<tr>
 											<td> 
-												<b><?php print _('Database Password') ?> *</b><br/>
+												<b><?php print __($guid, 'Database Password') ?> *</b><br/>
 											</td>
 											<td class="right">
 												<input name="databasePassword" id="databasePassword" maxlength=255 value="" type="password" style="width: 300px">
@@ -223,24 +251,24 @@ include "../functions.php" ;
 										
 										<tr>
 											<td> 
-												<b><?php print _('Install Demo Data?') ?> *</b><br/>
+												<b><?php print __($guid, 'Install Demo Data?') ?> *</b><br/>
 											</td>
 											<td class="right">
 												<select name="demoData" id="demoData" style="width: 302px">
 													<?php
-													print "<option selected value='N'>" . ynExpander('N') . "</option>" ;
-													print "<option value='Y'>" . ynExpander('Y') . "</option>" ;
+													print "<option selected value='N'>" . ynExpander($guid, 'N') . "</option>" ;
+													print "<option value='Y'>" . ynExpander($guid, 'Y') . "</option>" ;
 													?>			
 												</select>
 											</td>
 										</tr>
 										<tr>
 											<td>
-												<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+												<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
 											</td>
 											<td class="right">
 												<input type="hidden" name="code" value="<?php print $code ?>">
-												<input type="submit" value="<?php print _("Submit") ; ?>">
+												<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 											</td>
 										</tr>
 									</table>
@@ -251,7 +279,7 @@ include "../functions.php" ;
 								//Check for db values
 								if ($databaseServer=="" OR $databaseName=="" OR $databaseUsername=="" OR $databasePassword=="" OR $demoData=="") {
 									print "<div class='error'>" ;
-										print sprintf(_('A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", "</a>") ;
+										print sprintf(__($guid, 'A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", "</a>") ;
 									print "</div>" ;
 								}
 								
@@ -268,7 +296,7 @@ include "../functions.php" ;
 								
 								if ($connected1==FALSE) {
 									print "<div class='error'>" ;
-										print sprintf(_('A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", "</a>") ;
+										print sprintf(__($guid, 'A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", "</a>") ;
 									print "</div>" ;
 								}
 								else {
@@ -298,27 +326,30 @@ include "../functions.php" ;
 									}
 									
 									if ($connected2==FALSE) {
-										print "<div class='error'>" ;
-											print sprintf(_('A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", "</a>") ;
+										
+											print sprintf(__($guid, 'A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", "</a>") ;
 										print "</div>" ;
 									}
 									else {
-										print "<div class='success'>" ;
-											print _("Your database connection was successful, so the installation may proceed.") ;
-										print "</div>" ;
-									
-										//Set up GUID
-										$charList="abcdefghijkmnopqrstuvwxyz023456789";
-										$guid="" ;
-										for ($i=0;$i<36;$i++) {
-											if ($i==9 OR $i==14 OR $i==19 OR $i==24) {
-												$guid.="-" ;
-											}
-											else {
-												$guid.=substr($charList, rand(1,strlen($charList)),1);
-											}
+										//Check for strict Mode in mySQL
+										$sqlMode="SELECT @@sql_mode;";
+										$resultMode=$connection2->prepare($sqlMode);
+										$resultMode->execute();
+										$rows = $resultMode->fetchAll();
+										$rowsString=serialize($rows);
+										
+										$pos = strpos($rowsString, "STRICT_TRANS_TABLES");
+										if ($pos == false) {
+											print "<div class='success'>" ;
+												print __($guid, "Your database connection was successful, so the installation may proceed.") ;		
+											print "</div>" ;
+										} else {
+											print "<div class='error'>" ;
+												print sprintf(__($guid, 'mySQL is set to strict mode you will need to remove STRICT_TRANS_TABLES from your my.cnf file' ), "<a href='./install.php'>", "</a>") ;
+											print "</div>" ;
 										}
-								
+											
+									
 										//Set up config.php
 										$config="" ;
 										$config.="<?php\n" ;
@@ -360,14 +391,14 @@ include "../functions.php" ;
 								
 										if (file_exists("../config.php")==FALSE) { //Something went wrong, config.php could not be created.
 											print "<div class='error'>" ;
-												print _("../config.php could not be created, and so the installer cannot proceed.") ;
+												print __($guid, "../config.php could not be created, and so the installer cannot proceed.") ;
 											print "</div>" ;
 										}
 										else { //Config, exists, let's press on
 											//Let's populate the database
 											if (file_exists("../gibbon.sql")==FALSE) {
 												print "<div class='error'>" ;
-													print _("../gibbon.sql does not exist, and so the installer cannot proceed.") ;
+													print __($guid, "../gibbon.sql does not exist, and so the installer cannot proceed.") ;
 												print "</div>" ;
 											}
 											else {
@@ -392,7 +423,7 @@ include "../functions.php" ;
 										
 												if ($partialFail==TRUE) {
 													print "<div class='error'>" ;
-														print _("Errors occurred in populating the database; empty your database, remove ../config.php and try again.") ;
+														print __($guid, "Errors occurred in populating the database; empty your database, remove ../config.php and try again.") ;
 													print "</div>" ;
 												}
 												else {
@@ -400,7 +431,7 @@ include "../functions.php" ;
 													if ($demoData=="Y") {
 														if (file_exists("../gibbon_demo.sql")==FALSE) {
 															print "<div class='error'>" ;
-																print _("../gibbon_demo.sql does not exist, so we will conintue without demo data.") ;
+																print __($guid, "../gibbon_demo.sql does not exist, so we will conintue without demo data.") ;
 															print "</div>" ;
 														}
 														else {
@@ -424,7 +455,7 @@ include "../functions.php" ;
 														
 															if ($demoFail) {
 																print "<div class='error'>" ;
-																	print _("There were some issues installing the demo data, but we will conintue anyway.") ;
+																	print __($guid, "There were some issues installing the demo data, but we will conintue anyway.") ;
 																print "</div>" ;
 															}
 														}
@@ -449,32 +480,32 @@ include "../functions.php" ;
 										
 													//Let's gather some more information
 													?>
-													<form method="post" action="./install.php?step=3">
+													<form method="post" action="./install.php?step=3&guid=<?php print $guid ?>">
 														<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 															<tr class='break'>
 																<td colspan=2> 
-																	<h3><?php print _('User Account') ?></h3>
+																	<h3><?php print __($guid, 'User Account') ?></h3>
 																</td>
 															</tr>
 															<tr>
 																<td style='width: 275px'> 
-																	<b><?php print _('Title') ?></b><br/>
+																	<b><?php print __($guid, 'Title') ?></b><br/>
 																</td>
 																<td class="right">
 																	<select style="width: 302px" name="title">
 																		<option value=""></option>
-																		<option value="Ms. "><?php print _('Ms.') ?></option>
-																		<option value="Miss "><?php print _('Miss') ?></option>
-																		<option value="Mr. "><?php print _('Mr.') ?></option>
-																		<option value="Mrs. "><?php print _('Mrs.') ?></option>
-																		<option value="Dr. "><?php print _('Dr.') ?></option>
+																		<option value="Ms. "><?php print __($guid, 'Ms.') ?></option>
+																		<option value="Miss "><?php print __($guid, 'Miss') ?></option>
+																		<option value="Mr. "><?php print __($guid, 'Mr.') ?></option>
+																		<option value="Mrs. "><?php print __($guid, 'Mrs.') ?></option>
+																		<option value="Dr. "><?php print __($guid, 'Dr.') ?></option>
 																	</select>
 																</td>
 															</tr>
 															<tr>
 																<td> 
-																	<b><?php print _('Surname') ?> *</b><br/>
-																	<span style="font-size: 90%"><i><?php print _('Family name as shown in ID documents.') ?></i></span>
+																	<b><?php print __($guid, 'Surname') ?> *</b><br/>
+																	<span style="font-size: 90%"><i><?php print __($guid, 'Family name as shown in ID documents.') ?></i></span>
 																</td>
 																<td class="right">
 																	<input name="surname" id="surname" maxlength=30 value="" type="text" style="width: 300px">
@@ -486,8 +517,8 @@ include "../functions.php" ;
 															</tr>
 															<tr>
 																<td> 
-																	<b><?php print _('First Name') ?>*</b><br/>
-																	<span style="font-size: 90%"><i><?php print _('First name as shown in ID documents.') ?></i></span>
+																	<b><?php print __($guid, 'First Name') ?>*</b><br/>
+																	<span style="font-size: 90%"><i><?php print __($guid, 'First name as shown in ID documents.') ?></i></span>
 																</td>
 																<td class="right">
 																	<input name="firstName" id="firstName" maxlength=30 value="" type="text" style="width: 300px">
@@ -499,7 +530,7 @@ include "../functions.php" ;
 															</tr>
 															<tr>
 																<td> 
-																	<b><?php print _('Email') ?> *</b><br/>
+																	<b><?php print __($guid, 'Email') ?> *</b><br/>
 																</td>
 																<td class="right">
 																	<input name="email" id="email" maxlength=50 value="" type="text" style="width: 300px">
@@ -512,8 +543,8 @@ include "../functions.php" ;
 															</tr>
 															<tr>
 																<td> 
-																	<b><?php print _('Receive Support?') ?></b><br/>
-																	<span style="font-size: 90%"><i><?php print _('Join our mailing list and recieve a welcome email from the team.') ?></i></span>
+																	<b><?php print __($guid, 'Receive Support?') ?></b><br/>
+																	<span style="font-size: 90%"><i><?php print __($guid, 'Join our mailing list and recieve a welcome email from the team.') ?></i></span>
 																</td>
 																<td class="right">
 																	<input name="support" id="support" value="true" type="checkbox">
@@ -521,8 +552,8 @@ include "../functions.php" ;
 															</tr>
 															<tr>
 																<td> 
-																	<b><?php print _('Username') ?> *</b><br/>
-																	<span style="font-size: 90%"><i><?php print _('Must be unique. System login name. Cannot be changed.') ?></i></span>
+																	<b><?php print __($guid, 'Username') ?> *</b><br/>
+																	<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique. System login name. Cannot be changed.') ?></i></span>
 																</td>
 																<td class="right">
 																	<input name="username" id="username" maxlength=20 value="" type="text" style="width: 300px">
@@ -548,7 +579,7 @@ include "../functions.php" ;
 															<tr>
 																<td colspan=2>
 																	<?php
-																	$policy=getPasswordPolicy($connection2) ;
+																	$policy=getPasswordPolicy($guid, $connection2) ;
 																	if ($policy!=FALSE) {
 																		print "<div class='warning'>" ;
 																			print $policy ;
@@ -559,38 +590,55 @@ include "../functions.php" ;
 															</tr>
 															<tr>
 																<td> 
-																	<b><?php print _('Password') ?> *</b><br/>
+																	<b><?php print __($guid, 'Password') ?> *</b><br/>
 																	<span style="font-size: 90%"><i></i></span>
 																</td>
 																<td class="right">
-																	<input name="password" id="password" maxlength=30 value="" type="password" style="width: 300px">
+																	<input type='button' class="generatePassword" value="<?php print __($guid, "Generate Password") ?>"/>
+																	<input name="passwordNew" id="passwordNew" maxlength=20 value="" type="password" style="width: 300px"><br/>
+							
 																	<script type="text/javascript">
-																		var password=new LiveValidation('password');
-																		password.add(Validate.Presence);
+																		var passwordNew=new LiveValidation('passwordNew');
+																		passwordNew.add(Validate.Presence);
 																		<?php
 																		$alpha=getSettingByScope( $connection2, "System", "passwordPolicyAlpha" ) ;
-																		if ($alpha=="Y") {
-																			print "password.add( Validate.Format, { pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: \"" . _('Does not meet password policy.') . "\" } );" ;
-																		}
 																		$numeric=getSettingByScope( $connection2, "System", "passwordPolicyNumeric" ) ;
-																		if ($numeric=="Y") {
-																			print "password.add( Validate.Format, { pattern: /.*[0-9]/, failureMessage: \"" . _('Does not meet password policy.') . "\" } );" ;
-																		}
 																		$punctuation=getSettingByScope( $connection2, "System", "passwordPolicyNonAlphaNumeric" ) ;
-																		if ($punctuation=="Y") {
-																			print "password.add( Validate.Format, { pattern: /[^a-zA-Z0-9]/, failureMessage: \"" . _('Does not meet password policy.') . "\" } );" ;
-																		}
 																		$minLength=getSettingByScope( $connection2, "System", "passwordPolicyMinLength" ) ;
+																		if ($alpha=="Y") {
+																			print "passwordNew.add( Validate.Format, { pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: \"" . __($guid, 'Does not meet password policy.') . "\" } );" ;
+																		}
+																		if ($numeric=="Y") {
+																			print "passwordNew.add( Validate.Format, { pattern: /.*[0-9]/, failureMessage: \"" . __($guid, 'Does not meet password policy.') . "\" } );" ;
+																		}
+																		if ($punctuation=="Y") {
+																			print "passwordNew.add( Validate.Format, { pattern: /[^a-zA-Z0-9]/, failureMessage: \"" . __($guid, 'Does not meet password policy.') . "\" } );" ;
+																		}
 																		if (is_numeric($minLength)) {
-																			print "password.add( Validate.Length, { minimum: " . $minLength . "} );" ;
+																			print "passwordNew.add( Validate.Length, { minimum: " . $minLength . "} );" ;
 																		}
 																		?>
+								
+																		$(".generatePassword").click(function(){
+																			var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789![]{}()%&*$#^<>~@|';
+																			var text = '';
+																			for(var i=0; i < <?php print ($minLength+4) ?>; i++) {
+																				if (i==0) { text += chars.charAt(Math.floor(Math.random() * 26)); }
+																				else if (i==1) { text += chars.charAt(Math.floor(Math.random() * 26)+26); }
+																				else if (i==2) { text += chars.charAt(Math.floor(Math.random() * 10)+52); }
+																				else if (i==3) { text += chars.charAt(Math.floor(Math.random() * 19)+62); }
+																				else { text += chars.charAt(Math.floor(Math.random() * chars.length)); }
+																			}
+																			$('input[name="passwordNew"]').val(text);
+																			$('input[name="passwordConfirm"]').val(text);
+																			alert('<?php print __($guid, "Copy this password if required:") ?>' + '\n\n' + text) ;
+																		});
 																	</script>
 																</td>
 															</tr>
 															<tr>
 																<td> 
-																	<b><?php print _('Confirm Password') ?> *</b><br/>
+																	<b><?php print __($guid, 'Confirm Password') ?> *</b><br/>
 																	<span style="font-size: 90%"><i></i></span>
 																</td>
 																<td class="right">
@@ -598,14 +646,14 @@ include "../functions.php" ;
 																	<script type="text/javascript">
 																		var passwordConfirm=new LiveValidation('passwordConfirm');
 																		passwordConfirm.add(Validate.Presence);
-																		passwordConfirm.add(Validate.Confirmation, { match: 'password' } );
+																		passwordConfirm.add(Validate.Confirmation, { match: 'passwordNew' } );
 																	</script>
 																</td>
 															</tr>
 														
 															<tr class='break'>
 																<td colspan=2> 
-																	<h3><?php print _('System Settings') ?></h3>
+																	<h3><?php print __($guid, 'System Settings') ?></h3>
 																</td>
 															</tr>
 															<tr>
@@ -622,12 +670,19 @@ include "../functions.php" ;
 																$row=$result->fetch() ;
 																?>
 																<td style='width: 275px'> 
-																	<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-																	<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+																	<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+																	<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
 																</td>
 																<td stclass="right">
-																	<?php $pageURL = (@$_SERVER["HTTPS"] == "on") ? "https://" : "http://"; ?>
-																	<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print substr(($pageURL.$_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"]),0,-29) ?>" type="text" style="width: 300px">
+																	<?php 
+																		$pageURL = (@$_SERVER["HTTPS"] == "on") ? "https://" : "http://"; 
+																		$port="" ;
+																		if ($_SERVER["SERVER_PORT"]!="80") {
+																			$port=":" . $_SERVER["SERVER_PORT"] ;
+																		}
+																		$uri_parts=explode('?', $_SERVER['REQUEST_URI'], 2);
+																	?>
+																	<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print $pageURL . $_SERVER["SERVER_NAME"] . $port . substr($uri_parts[0], 0, -22) ?>" type="text" style="width: 300px">
 																	<script type="text/javascript">
 																		var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 																		<?php print $row["name"] ?>.add(Validate.Presence);
@@ -649,8 +704,8 @@ include "../functions.php" ;
 																$row=$result->fetch() ;
 																?>
 																<td> 
-																	<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-																	<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+																	<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+																	<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
 																</td>
 																<td stclass="right">
 																	<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print substr(__FILE__,0,-22) ?>" type="text" style="width: 300px">
@@ -674,8 +729,8 @@ include "../functions.php" ;
 																$row=$result->fetch() ;
 																?>
 																<td> 
-																	<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-																	<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+																	<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+																	<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
 																</td>
 																<td class="right">
 																	<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="Gibbon" type="text" style="width: 300px">
@@ -699,8 +754,8 @@ include "../functions.php" ;
 																$row=$result->fetch() ;
 																?>
 																<td> 
-																	<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-																	<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+																	<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+																	<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
 																</td>
 																<td class="right">
 																	<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
@@ -718,7 +773,7 @@ include "../functions.php" ;
 																	print "<div id='status' class='warning'>" ;
 																		print "<div style='width: 100%; text-align: center'>" ;
 																			print "<img style='margin: 10px 0 5px 0' src='../themes/Default/img/loading.gif' alt='Loading'/><br/>" ;
-																			print _("Checking for Cutting Edge Code.") ;
+																			print __($guid, "Checking for Cutting Edge Code.") ;
 																		print "</div>" ;
 																	print "</div>" ;
 																print "</td>" ;
@@ -738,14 +793,14 @@ include "../functions.php" ;
 																$row=$result->fetch() ;
 																?>
 																<td> 
-																	<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-																	<span style="font-size: 90%"><i><?php print _($row["description"]) ?>. <?php print "<b>" . _('Not recommended for non-experts!.') . "<b>" ?></i></span>
+																	<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+																	<span style="font-size: 90%"><i><?php print __($guid, $row["description"]) ?>. <?php print "<b>" . __($guid, 'Not recommended for non-experts!.') . "<b>" ?></i></span>
 																</td>
 																<td class="right">
 																	<select disabled name="<?php print $row["name"] ?>Disabled" id="<?php print $row["name"] ?>" style="width: 302px">
 																		<?php
-																		print "<option selected value='N'>" . ynExpander('N') . "</option>" ;
-																		print "<option value='Y'>" . ynExpander('Y') . "</option>" ;
+																		print "<option selected value='N'>" . ynExpander($guid, 'N') . "</option>" ;
+																		print "<option value='Y'>" . ynExpander($guid, 'Y') . "</option>" ;
 																		?>			
 																	</select>
 																	<input type='hidden' name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>Hidden" value="N">
@@ -762,17 +817,17 @@ include "../functions.php" ;
 																		print "success: function(data) {" ;
 																			print "$(\"#status\").attr(\"class\",\"success\");" ;
 																			print "if (data['status']==='false') {" ;
-																				print "$(\"#status\").html('" . _('Cutting Edge Code check successful.') . "') ;" ;
+																				print "$(\"#status\").html('" . __($guid, 'Cutting Edge Code check successful.') . "') ;" ;
 																			print "}" ;
 																			print "else {" ;
-																				print "$(\"#status\").html('" . _('Cutting Edge Code check successful.') . "') ;" ;
+																				print "$(\"#status\").html('" . __($guid, 'Cutting Edge Code check successful.') . "') ;" ;
 																				print "$(\"#cuttingEdgeCode\").val('Y');" ;
 																				print "$(\"#cuttingEdgeCodeHidden\").val('Y');" ;
 																			print "}" ;
 																		print "}," ;
 																		print "error: function (data, textStatus, errorThrown) {" ;
 																			print "$(\"#status\").attr(\"class\",\"error\");" ;
-																				print "$(\"#status\").html('" . _('Cutting Edge Code check failed') . ".') ;" ;
+																				print "$(\"#status\").html('" . __($guid, 'Cutting Edge Code check failed') . ".') ;" ;
 																		print "}" ;
 																	print "});" ;
 																print "});" ;
@@ -793,14 +848,14 @@ include "../functions.php" ;
 																$row=$result->fetch() ;
 																?>
 																<td> 
-																	<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-																	<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+																	<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+																	<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
 																</td>
 																<td class="right">
 																	<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
 																		<?php
-																		print "<option value='Y'>" . ynExpander('Y') . "</option>" ;
-																		print "<option value='N'>" . ynExpander('N') . "</option>" ;
+																		print "<option value='Y'>" . ynExpander($guid, 'Y') . "</option>" ;
+																		print "<option value='N'>" . ynExpander($guid, 'N') . "</option>" ;
 																		?>			
 																	</select>
 																</td>
@@ -808,7 +863,7 @@ include "../functions.php" ;
 		
 															<tr class='break'>
 																<td colspan=2> 
-																	<h3><?php print _('Organisation Settings') ?></h3>
+																	<h3><?php print __($guid, 'Organisation Settings') ?></h3>
 																</td>
 															</tr>
 															<tr>
@@ -825,8 +880,8 @@ include "../functions.php" ;
 																$row=$result->fetch() ;
 																?>
 																<td> 
-																	<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-																	<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+																	<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+																	<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
 																</td>
 																<td class="right">
 																	<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="" type="text" style="width: 300px">
@@ -850,8 +905,8 @@ include "../functions.php" ;
 																$row=$result->fetch() ;
 																?>
 																<td> 
-																	<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-																	<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+																	<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+																	<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
 																</td>
 																<td class="right">
 																	<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="" type="text" style="width: 300px">
@@ -875,12 +930,12 @@ include "../functions.php" ;
 															$row=$result->fetch() ;
 															?>
 															<td> 
-																<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-																<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+																<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+																<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
 															</td>
 															<td class="right">
 																<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
-																	<optgroup label='--<?php print _('PAYPAL SUPPORTED') ?>--'/>
+																	<optgroup label='--<?php print __($guid, 'PAYPAL SUPPORTED') ?>--'/>
 																		<option value='AUD $'>Australian Dollar (A$)</option>
 																		<option value='BRL R$'>Brazilian Real</option>
 																		<option value='GBP £'>British Pound (£)</option>
@@ -905,17 +960,21 @@ include "../functions.php" ;
 																		<option value='TRY'>Turkish Lira</option>
 																		<option value='USD $'>U.S. Dollar ($)</option>
 																	</optgroup>
-																	<optgroup label='--<?php print _('OTHERS') ?>--'/>
+																	<optgroup label='--<?php print __($guid, 'OTHERS') ?>--'/>
 																		<option value='BDT ó'>Bangladeshi Taka (ó)</option>
 																		<option value='BTC'>Bitcoin</option>
 																		<option value='XAF FCFA'>Central African Francs (FCFA)</option>
 																		<option value='EGP £'>Egyptian Pound (£)</option>
 																		<option value='INR ₹'>Indian Rupee (₹)</option>
 																		<option value='IDR Rp'>Indonesian Rupiah (Rp)</option>
+																		<option value='JMD $'>Jamaican Dollar ($)</option>
 																		<option value='KES KSh'>Kenyan Shilling (KSh)</option>
+																		<option value='MOP MOP$'>Macanese Pataca (MOP$)</option>
 																		<option value='NPR ₨'>Nepalese Rupee (₨)</option>
 																		<option value='NGN ₦'>Nigerian Naira (₦)</option>
+																		<option value='PKR ₨'>Pakistani Rupee (₨)</option>
 																		<option value='SAR ﷼‎'>Saudi Riyal (﷼‎)</option>
+																		<option value='TZS TSh'>Tanzania Shillings (TSh)</option>
 																		<option value='VND ₫‎'>Vietnamese Dong (₫‎)</option>
 																	</optgroup>
 																</select>
@@ -924,7 +983,7 @@ include "../functions.php" ;
 														
 															<tr class='break'>
 																<td colspan=2> 
-																	<h3><?php print _('gibbonedu.com Value-Added Services') ?></h3>
+																	<h3><?php print __($guid, 'gibbonedu.com Value-Added Services') ?></h3>
 																</td>
 															</tr>
 															<tr>
@@ -941,8 +1000,8 @@ include "../functions.php" ;
 																$row=$result->fetch() ;
 																?>
 																<td> 
-																	<b><?php print _($row["nameDisplay"]) ?></b><br/>
-																	<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+																	<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
+																	<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
 																</td>
 																<td class="right">
 																	<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="" type="text" style="width: 300px">
@@ -962,8 +1021,8 @@ include "../functions.php" ;
 																$row=$result->fetch() ;
 																?>
 																<td> 
-																	<b><?php print _($row["nameDisplay"]) ?></b><br/>
-																	<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+																	<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
+																	<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
 																</td>
 																<td class="right">
 																	<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="" type="text" style="width: 300px">
@@ -972,7 +1031,7 @@ include "../functions.php" ;
 			
 															<tr class='break'>
 																<td colspan=2> 
-																	<h3><?php print _('Miscellaneous') ?></h3>
+																	<h3><?php print __($guid, 'Miscellaneous') ?></h3>
 																</td>
 															</tr>
 															<tr>
@@ -989,13 +1048,13 @@ include "../functions.php" ;
 																$row=$result->fetch() ;
 																?>
 																<td> 
-																	<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-																	<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+																	<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+																	<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
 																</td>
 																<td class="right">
 																	<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
 																		<?php
-																		print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+																		print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
 																		try {
 																			$dataSelect=array(); 
 																			$sqlSelect="SELECT printable_name FROM gibbonCountry ORDER BY printable_name" ;
@@ -1006,13 +1065,13 @@ include "../functions.php" ;
 																			print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 																		}
 																		while ($rowSelect=$resultSelect->fetch()) {
-																			print "<option value='" . $rowSelect["printable_name"] . "'>" . _($rowSelect["printable_name"]) . "</option>" ;
+																			print "<option value='" . $rowSelect["printable_name"] . "'>" . __($guid, $rowSelect["printable_name"]) . "</option>" ;
 																		}
 																		?>
 																	</select>
 																	<script type="text/javascript">
 																		var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-																		<?php print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+																		<?php print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 																	</script>
 																</td>
 															</tr>
@@ -1030,8 +1089,8 @@ include "../functions.php" ;
 																$row=$result->fetch() ;
 																?>
 																<td> 
-																	<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-																	<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+																	<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+																	<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
 																</td>
 																<td class="right">
 																	<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="Asia/Hong_Kong" type="text" style="width: 300px">
@@ -1055,13 +1114,13 @@ include "../functions.php" ;
 																$row=$result->fetch() ;
 																?>
 																<td> 
-																	<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-																	<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+																	<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+																	<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
 																</td>
 																<td class="right">
 																	<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
 																		<?php
-																		print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+																		print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
 																		try {
 																			$dataSelect=array(); 
 																			$sqlSelect="SELECT * FROM gibbonScale WHERE active='Y' ORDER BY name" ;
@@ -1072,20 +1131,20 @@ include "../functions.php" ;
 																			print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 																		}
 																		while ($rowSelect=$resultSelect->fetch()) {
-																			print "<option value='" . $rowSelect["gibbonScaleID"] . "'>" . _($rowSelect["name"]) . "</option>" ;
+																			print "<option value='" . $rowSelect["gibbonScaleID"] . "'>" . __($guid, $rowSelect["name"]) . "</option>" ;
 																		}
 																		?>			
 																	</select>
 																	<script type="text/javascript">
 																		var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-																		<?php print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+																		<?php print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 																	</script>
 																</td>
 															</tr>
 			
 															<tr>
 																<td>
-																	<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+																	<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
 																</td>
 																<td class="right">
 																	<input type="hidden" name="code" value="<?php print $code ?>">
@@ -1093,7 +1152,7 @@ include "../functions.php" ;
 																	<input type="hidden" name="databaseName" value="<?php print $databaseName ?>">
 																	<input type="hidden" name="databaseUsername" value="<?php print $databaseUsername ?>">
 																	<input type="hidden" name="databasePassword" value="<?php print $databasePassword ?>">
-																	<input type="submit" value="<?php print _("Submit") ; ?>">
+																	<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 																</td>
 															</tr>
 														</table>
@@ -1115,7 +1174,7 @@ include "../functions.php" ;
 								catch(PDOException $e) {
 									$connected3=FALSE ;
 									print "<div class='error'>" ;
-										print sprintf(_('A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", "</a>") ;
+										print sprintf(__($guid, 'A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", "</a>") ;
 									print "</div>" ;
 								}
 								
@@ -1126,7 +1185,7 @@ include "../functions.php" ;
 									$firstName=$_POST["firstName"] ;
 									$preferredName=$_POST["firstName"] ;
 									$username=$_POST["username"] ;
-									$password=$_POST["password"] ;
+									$password=$_POST["passwordNew"] ;
 									$passwordConfirm=$_POST["passwordConfirm"] ;
 									$email=$_POST["email"] ;
 									$support=FALSE ;
@@ -1154,14 +1213,14 @@ include "../functions.php" ;
 								
 									if ($surname=="" OR $firstName=="" OR $preferredName=="" OR $email=="" OR $username=="" OR $password=="" OR $passwordConfirm=="" OR $email=="" OR $absoluteURL=="" OR $absolutePath=="" OR $systemName=="" OR $organisationName=="" OR $organisationNameShort=="" OR $timezone=="" OR $country=="" OR $primaryAssessmentScale=="" OR $installType=="" OR $statsCollection=="" OR $cuttingEdgeCode=="") {
 										print "<div class='error'>" ;
-											print _("Some required fields have not been set, and so installation cannot proceed.") ;
+											print __($guid, "Some required fields have not been set, and so installation cannot proceed.") ;
 										print "</div>" ;
 									}
 									else {
 										//Check passwords for match
 										if ($password!=$passwordConfirm) {
 											print "<div class='error'>" ;
-												print _("Your request failed because your passwords did not match.") ;
+												print __($guid, "Your request failed because your passwords did not match.") ;
 											print "</div>" ;
 										}
 										else {
@@ -1179,7 +1238,7 @@ include "../functions.php" ;
 											catch(PDOException $e) { 
 												$userFail=true ;
 												print "<div class='error'>" ;
-													print sprintf(_('Errors occurred in populating the database; empty your database, remove ../config.php and %1$stry again%2$s.'), "<a href='./install.php'>", "</a>") ;
+													print sprintf(__($guid, 'Errors occurred in populating the database; empty your database, remove ../config.php and %1$stry again%2$s.'), "<a href='./install.php'>", "</a>") ;
 												print "</div>" ;
 											}
 											
@@ -1266,6 +1325,16 @@ include "../functions.php" ;
 												try {
 													$data=array("organisationDBA"=>1); 
 													$sql="UPDATE gibbonSetting SET value=:organisationDBA WHERE scope='System' AND name='organisationDBA'" ;
+													$result=$connection2->prepare($sql);
+													$result->execute($data);
+												}
+												catch(PDOException $e) { 
+													$settingsFail=TRUE ;
+												}
+												
+												try {
+													$data=array("organisationHR"=>1); 
+													$sql="UPDATE gibbonSetting SET value=:organisationHR WHERE scope='System' AND name='organisationHR'" ;
 													$result=$connection2->prepare($sql);
 													$result->execute($data);
 												}
@@ -1421,16 +1490,16 @@ include "../functions.php" ;
 																							
 												if ($settingsFail==TRUE) {
 													print "<div class='error'>" ;
-														print sprintf(_('Some settings did not save. The system may work, but you may need to remove everything and start again. Try and %1$sgo to your Gibbon homepage%2$s and login as user <u>admin</u> with password <u>gibbon</u>.'), "<a href='$absoluteURL'>", "</a>") ;
+														print sprintf(__($guid, 'Some settings did not save. The system may work, but you may need to remove everything and start again. Try and %1$sgo to your Gibbon homepage%2$s and login as user <u>admin</u> with password <u>gibbon</u>.'), "<a href='$absoluteURL'>", "</a>") ;
 														print "<br/><br/>" ; 
-														print sprintf(_('It is also advisable to follow the %1$sPost-Install and Server Config instructions%2$s.'), "<a target='_blank' href='https://gibbonedu.org/support/administrators/installing-gibbon/'>", "</a>") ;
+														print sprintf(__($guid, 'It is also advisable to follow the %1$sPost-Install and Server Config instructions%2$s.'), "<a target='_blank' href='https://gibbonedu.org/support/administrators/installing-gibbon/'>", "</a>") ;
 													print "</div>" ;
 												}
 												else {
 													print "<div class='success'>" ;
-														print sprintf(_('Congratulations, your installation is complete. Feel free to %1$sgo to your Gibbon homepage%2$s and login with the username and password you created.'), "<a href='$absoluteURL'>", "</a>") ;
+														print sprintf(__($guid, 'Congratulations, your installation is complete. Feel free to %1$sgo to your Gibbon homepage%2$s and login with the username and password you created.'), "<a href='$absoluteURL'>", "</a>") ;
 														print "<br/><br/>" ; 
-														print sprintf(_('It is also advisable to follow the %1$sPost-Install and Server Config instructions%2$s.'), "<a target='_blank' href='https://gibbonedu.org/support/administrators/installing-gibbon/'>", "</a>") ;
+														print sprintf(__($guid, 'It is also advisable to follow the %1$sPost-Install and Server Config instructions%2$s.'), "<a target='_blank' href='https://gibbonedu.org/support/administrators/installing-gibbon/'>", "</a>") ;
 													print "</div>" ;
 												}
 											}
@@ -1442,21 +1511,21 @@ include "../functions.php" ;
 						?>
 					</div>		
 					<div id="sidebar">
-						<h2><?php print _('Welcome To Gibbon') ?></h2>
+						<h2><?php print __($guid, 'Welcome To Gibbon') ?></h2>
 						<p style='padding-top: 7px'>
-						<?php print _('Created by teachers, Gibbon is the school platform which solves real problems faced by educators every day.') ?><br/>
+						<?php print __($guid, 'Created by teachers, Gibbon is the school platform which solves real problems faced by educators every day.') ?><br/>
 						<br/>
-						<?php print _('Free, open source and flexible, Gibbon can morph to meet the needs of a huge range of schools.') ?><br/>
+						<?php print __($guid, 'Free, open source and flexible, Gibbon can morph to meet the needs of a huge range of schools.') ?><br/>
 						<br/>
-						<?php print sprintf(_('For support, please visit %1$sgibbonedu.org%2$s.'), "<a target='_blank' href='https://gibbonedu.org/support'>", "</a>") ?>
+						<?php print sprintf(__($guid, 'For support, please visit %1$sgibbonedu.org%2$s.'), "<a target='_blank' href='https://gibbonedu.org/support'>", "</a>") ?>
 						</p>
 					</div>
 					<br style="clear: both">
 				</div>
 				<div id="footer">
-					<?php print _("Powered by") ?> <a href="http://gibbonedu.org">Gibbon</a> v<?php print $version ?> &#169; <a href="http://rossparker.org">Ross Parker</a> 2010-<?php print date("Y") ?><br/>
+					<?php print __($guid, "Powered by") ?> <a href="https://gibbonedu.org">Gibbon</a> v<?php print $version ?> &#169; <a href="http://rossparker.org">Ross Parker</a> 2010-<?php print date("Y") ?><br/>
 					<span style='font-size: 90%; '>
-						<?php print _("Created under the") ?> <a href="http://www.gnu.org/licenses/gpl.html">GNU GPL</a> at <a href='http://www.ichk.edu.hk'>ICHK</a>
+						<?php print __($guid, "Created under the") ?> <a href="https://www.gnu.org/licenses/gpl.html">GNU GPL</a> at <a href='http://www.ichk.edu.hk'>ICHK</a>
 					</span><br/>
 					<img style='z-index: 100; margin-bottom: -57px; margin-right: -50px' alt='Logo Small' src='../themes/Default/img/logoFooter.png'/>
 				</div>

@@ -25,13 +25,13 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byRollGroup.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Take Attendance by Roll Group') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Take Attendance by Roll Group') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -39,25 +39,25 @@ else {
 	$class="error" ;
 	if (!($updateReturn=="")) {
 		if ($updateReturn=="fail0") {
-			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($updateReturn=="fail1") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail2") {
-			$updateReturnMessage=_("Your request failed due to a database error.") ;	
+			$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 		}
 		else if ($updateReturn=="fail3") {
-			$updateReturnMessage=_("Your request was successful, but some data was not properly saved.") ;
+			$updateReturnMessage=__($guid, "Your request was successful, but some data was not properly saved.") ;
 		}
 		else if ($updateReturn=="fail4") {
-			$updateReturnMessage=_("Your request failed because the specified date is not in the future, or is not a school day.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because the specified date is not in the future, or is not a school day.") ;	
 		}
 		else if ($updateReturn=="fail5") {
-			$updateReturnMessage=_("Your request failed because the specified date is not in the future, or is not a school day.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because the specified date is not in the future, or is not a school day.") ;	
 		}
 		else if ($updateReturn=="success0") {
-			$updateReturnMessage=_("Your request was completed successfully.") ;	
+			$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -100,13 +100,13 @@ else {
 			<tr class='break'>
 				<td colspan=2>
 					<h3>
-					<?php print _('Choose Roll Group') ?>
+					<?php print __($guid, 'Choose Roll Group') ?>
 					</h3>
 				</td>
 			</tr>
 			<tr>
 				<td style='width: 275px'> 
-					<b><?php print _('Roll Group') ?></b><br/>
+					<b><?php print __($guid, 'Roll Group') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
@@ -137,15 +137,15 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Date') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _("Format:") . " " . $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+					<b><?php print __($guid, 'Date') ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print __($guid, "Format:") . " " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } ?></i></span>
 				</td>
 				<td class="right">
 					<input name="currentDate" id="currentDate" maxlength=10 value="<?php print dateConvertBack($guid, $currentDate) ?>" type="text" style="width: 300px">
 					<script type="text/javascript">
-						var date=new LiveValidation('date');
-						date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-						date.add(Validate.Presence);
+						var currentDate=new LiveValidation('currentDate');
+						currentDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+						currentDate.add(Validate.Presence);
 					</script>
 					 <script type="text/javascript">
 						$(function() {
@@ -167,13 +167,13 @@ else {
 	if ($gibbonRollGroupID!="") {
 		if ($currentDate>$today) {
 			print "<div class='error'>" ;
-				print _("The specified date is in the future: it must be today or earlier.");
+				print __($guid, "The specified date is in the future: it must be today or earlier.");
 			print "</div>" ;
 		}
 		else {
 			if (isSchoolOpen($guid, $currentDate, $connection2)==FALSE) {
 				print "<div class='error'>" ;
-					print _("School is closed on the specified date, and so attendance information cannot be recorded.") ;
+					print __($guid, "School is closed on the specified date, and so attendance information cannot be recorded.") ;
 				print "</div>" ;
 			}
 			else {
@@ -227,15 +227,15 @@ else {
 					}
 					if ($resultLog->rowCount()<1) {
 						print "<div class='error'>" ;
-							print _("Attendance has not been taken for this group yet for the specified date. The entries below are a best-guess based on defaults and information put into the system in advance, not actual data.") ;
+							print __($guid, "Attendance has not been taken for this group yet for the specified date. The entries below are a best-guess based on defaults and information put into the system in advance, not actual data.") ;
 						print "</div>" ;
 					}
 					else {
 						print "<div class='success'>" ;
-							print _("Attendance has been taken at the following times for the specified date for this group:") ;
+							print __($guid, "Attendance has been taken at the following times for the specified date for this group:") ;
 							print "<ul>" ;
 							while ($rowLog=$resultLog->fetch()) {
-								print "<li>" . sprintf(_('Recorded at %1$s on %2$s by %3$s.'), substr($rowLog["timestampTaken"],11), dateConvertBack($guid, substr($rowLog["timestampTaken"],0,10)), formatName("", $rowLog["preferredName"], $rowLog["surname"], "Staff", false, true)) ."</li>" ;
+								print "<li>" . sprintf(__($guid, 'Recorded at %1$s on %2$s by %3$s.'), substr($rowLog["timestampTaken"],11), dateConvertBack($guid, substr($rowLog["timestampTaken"],0,10)), formatName("", $rowLog["preferredName"], $rowLog["surname"], "Staff", false, true)) ."</li>" ;
 							}
 							print "</ul>" ;
 						print "</div>" ;
@@ -254,20 +254,30 @@ else {
 				
 					if ($resultRollGroup->rowCount()<1) {
 						print "<div class='error'>" ;
-							print _("There are no records to display.") ;
+							print __($guid, "There are no records to display.") ;
 						print "</div>" ;
 					}
 					else {
 						$count=0 ;
 						$countPresent=0 ;
 						$columns=4 ;
-						print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/attendance_take_byRollGroupProcess.php'>" ;
+						
+						print "<script type='text/javascript'>
+							function dateCheck() {
+								var date = new Date();
+								if ('" . $currentDate . "'<getDate()) {
+									return confirm(\"" .__($guid, 'The selected date for attendance is in the past. Are you sure you want to continue?') . "\")
+								}
+							}
+						</script>" ;
+						
+						print "<form onsubmit=\"return dateCheck()\" method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/attendance_take_byRollGroupProcess.php'>" ;
 							print "<table class='smallIntBorder' cellspacing='0' style='width:100%'>" ;
 							?>
 							<tr class='break'>
 								<td colspan=<?php print $columns ?>>
 									<h3>
-										<?php print _('Take Attendance') ?>
+										<?php print __($guid, 'Take Attendance') ?>
 									</h3>
 								</td>
 							</tr>
@@ -304,26 +314,26 @@ else {
 										if ($firstDay!=NULL AND $lastDay!=NULL) {
 											$absenceCount=getAbsenceCount($guid, $rowRollGroup["gibbonPersonID"], $connection2, $firstDay, $lastDay) ;
 											if ($absenceCount!==FALSE) {
-												print sprintf(_('%1$s Days Absent'), $absenceCount) ;
+												print sprintf(__($guid, '%1$s Days Absent'), $absenceCount) ;
 											}
 										}
 									print "</div><br/>" ;
 									print "<input type='hidden' name='$count-gibbonPersonID' value='" . $rowRollGroup["gibbonPersonID"] . "'>" ;
 									print "<select style='float: none; width:130px; margin-bottom: 3px' name='$count-type'>" ;
-										print "<option " ; if ($rowLog["type"]=="Present") { print "selected " ; } ; print "value='Present'>" . _('Present') . "</option>" ;
-										print "<option " ; if ($rowLog["type"]=="Present - Late") { print "selected " ; } ; print "value='Present - Late'>" . _('Present - Late') . "</option>" ;
-										print "<option " ; if ($rowLog["type"]=="Present - Offsite") { print "selected " ; } ; print "value='Present - Offsite'>" . _('Present - Offsite') . "</option>" ;
-										print "<option " ; if ($rowLog["type"]=="Absent") { print "selected " ; } ; print "value='Absent'>" . _('Absent') . "</option>" ;
-										print "<option " ; if ($rowLog["type"]=="Left") { print "selected " ; } ; print "value='Left'>" . _('Left') . "</option>" ;
-										print "<option " ; if ($rowLog["type"]=="Left - Early") { print "selected " ; } ; print "value='Left - Early'>" . _('Left - Early') . "</option>" ;
+										print "<option " ; if ($rowLog["type"]=="Present") { print "selected " ; } ; print "value='Present'>" . __($guid, 'Present') . "</option>" ;
+										print "<option " ; if ($rowLog["type"]=="Present - Late") { print "selected " ; } ; print "value='Present - Late'>" . __($guid, 'Present - Late') . "</option>" ;
+										print "<option " ; if ($rowLog["type"]=="Present - Offsite") { print "selected " ; } ; print "value='Present - Offsite'>" . __($guid, 'Present - Offsite') . "</option>" ;
+										print "<option " ; if ($rowLog["type"]=="Absent") { print "selected " ; } ; print "value='Absent'>" . __($guid, 'Absent') . "</option>" ;
+										print "<option " ; if ($rowLog["type"]=="Left") { print "selected " ; } ; print "value='Left'>" . __($guid, 'Left') . "</option>" ;
+										print "<option " ; if ($rowLog["type"]=="Left - Early") { print "selected " ; } ; print "value='Left - Early'>" . __($guid, 'Left - Early') . "</option>" ;
 									print "</select>" ;
 									print "<select style='float: none; width:130px; margin-bottom: 3px' name='$count-reason'>" ;
 										print "<option " ; if ($rowLog["reason"]=="") { print "selected " ; } ; print "value=''></option>" ;
-										print "<option " ; if ($rowLog["reason"]=="Pending") { print "selected " ; } ; print "value='Pending'>" . _('Pending') . "</option>" ;
-										print "<option " ; if ($rowLog["reason"]=="Education") { print "selected " ; } ; print "value='Education'>" . _('Education') . "</option>" ;
-										print "<option " ; if ($rowLog["reason"]=="Family") { print "selected " ; } ; print "value='Family'>" . _('Family') . "</option>" ;
-										print "<option " ; if ($rowLog["reason"]=="Medical") { print "selected " ; } ; print "value='Medical'>" . _('Medical') . "</option>" ;
-										print "<option " ; if ($rowLog["reason"]=="Other") { print "selected " ; } ; print "value='Other'>" . _('Other') . "</option>" ;
+										print "<option " ; if ($rowLog["reason"]=="Pending") { print "selected " ; } ; print "value='Pending'>" . __($guid, 'Pending') . "</option>" ;
+										print "<option " ; if ($rowLog["reason"]=="Education") { print "selected " ; } ; print "value='Education'>" . __($guid, 'Education') . "</option>" ;
+										print "<option " ; if ($rowLog["reason"]=="Family") { print "selected " ; } ; print "value='Family'>" . __($guid, 'Family') . "</option>" ;
+										print "<option " ; if ($rowLog["reason"]=="Medical") { print "selected " ; } ; print "value='Medical'>" . __($guid, 'Medical') . "</option>" ;
+										print "<option " ; if ($rowLog["reason"]=="Other") { print "selected " ; } ; print "value='Other'>" . __($guid, 'Other') . "</option>" ;
 									print "</select>" ;
 									print "<input type='text' maxlength=255 name='$count-comment' id='$count-comment' style='float: none; width:126px; margin-bottom: 3px' value='" . htmlPrep($rowLog["comment"]) . "'>" ;
 								
@@ -339,7 +349,7 @@ else {
 													$extraStyle="color: #555; background-color: #eee;" ;
 												
 													print "<td style='" . $extraStyle . "height: 25px; width: 20%'>" ;
-													print "<i>" . _('NA') . "</i>" ;
+													print "<i>" . __($guid, 'NA') . "</i>" ;
 													print "</td>" ;
 												}
 												else {
@@ -403,10 +413,10 @@ else {
 							print "<tr>" ;
 								print "<td class='right' colspan=5>" ;
 									print "<div class='success'>" ;
-										print "<b>" . _('Total students:') . " $count</b><br/>" ;
+										print "<b>" . __($guid, 'Total students:') . " $count</b><br/>" ;
 										if ($resultLog->rowCount()>=1) {
-											print "<span title='" . _('e.g. Present or Present - Late') . "'>" . _('Total students present in room:') . " <b>$countPresent</b><br/>" ;
-											print "<span title='" . _('e.g. not Present and not Present - Late') . "'>" . _('Total students absent from room:') . " <b>" . ($count-$countPresent) . "</b><br/>" ;
+											print "<span title='" . __($guid, 'e.g. Present or Present - Late') . "'>" . __($guid, 'Total students present in room:') . " <b>$countPresent</b><br/>" ;
+											print "<span title='" . __($guid, 'e.g. not Present and not Present - Late') . "'>" . __($guid, 'Total students absent from room:') . " <b>" . ($count-$countPresent) . "</b><br/>" ;
 										}
 									print "</div>" ;
 								print "</td>" ;

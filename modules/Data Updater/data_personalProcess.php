@@ -126,14 +126,14 @@ else {
 					//Fail 2
 					$URL.="&updateReturn=fail2" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 				
 				if ($result->rowCount()!=1) {
 					//Fail 2
 					$URL.="&updateReturn=fail2" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 				else {
 					$row=$result->fetch() ;
@@ -321,7 +321,7 @@ else {
 					
 						//Attempt to notify to DBA
 						if ($_SESSION[$guid]["organisationDBA"]!="") {
-							$notificationText=sprintf(_('A personal data update request has been submitted.')) ;
+							$notificationText=sprintf(__($guid, 'A personal data update request has been submitted.')) ;
 							setNotification($connection2, $guid, $_SESSION[$guid]["organisationDBA"], $notificationText, "Data Updater", "/index.php?q=/modules/User Admin/data_personal.php") ;
 						}
 				
@@ -344,7 +344,7 @@ else {
 							//Fail 2
 							$URL.="&updateReturn=fail2" ;
 							header("Location: {$URL}");
-							break ;
+							exit() ;
 						}
 				
 						//Update matching addresses

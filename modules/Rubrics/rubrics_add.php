@@ -35,7 +35,7 @@ if (isset($_GET["filter2"])) {
 if (isActionAccessible($guid, $connection2, "/modules/Rubrics/rubrics_add.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -43,24 +43,24 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print _("The highest grouped action cannot be determined.") ;
+		print __($guid, "The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
 		if ($highestAction!="Manage Rubrics_viewEditAll" AND $highestAction!="Manage Rubrics_viewAllEditLearningArea") {
 			print "<div class='error'>" ;
-				print _("You do not have access to this action.") ;
+				print __($guid, "You do not have access to this action.") ;
 			print "</div>" ;
 		}
 		else {
 			//Proceed!
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/rubrics.php&search=$search&filter2=$filter2'>" . _('Manage Rubrics') . "</a> > </div><div class='trailEnd'>" . _('Add Rubric') . "</div>" ;
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/rubrics.php&search=$search&filter2=$filter2'>" . __($guid, 'Manage Rubrics') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Add Rubric') . "</div>" ;
 			print "</div>" ;
 			
 			if ($search!="" OR $filter2!="") {
 				print "<div class='linkTop'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Rubrics/rubrics.php&search=$search&filter2=$filter2'>" . _('Back to Search Results') . "</a>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Rubrics/rubrics.php&search=$search&filter2=$filter2'>" . __($guid, 'Back to Search Results') . "</a>" ;
 				print "</div>" ;
 			}
 			
@@ -69,16 +69,16 @@ else {
 			$class="error" ;
 			if (!($addReturn=="")) {
 				if ($addReturn=="fail0") {
-					$addReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+					$addReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 				}
 				else if ($addReturn=="fail2") {
-					$addReturnMessage=_("Your request failed due to a database error.") ;	
+					$addReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 				}
 				else if ($addReturn=="fail3") {
-					$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($addReturn=="success0") {
-					$addReturnMessage=_("Your request was completed successfully. You can now add another record if you wish.") ;	
+					$addReturnMessage=__($guid, "Your request was completed successfully. You can now add another record if you wish.") ;	
 					$class="success" ;
 				}
 				print "<div class='$class'>" ;
@@ -91,12 +91,12 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr class='break'>
 						<td colspan=2>
-							<h3><?php print _('Rubric Basics') ?></h3>
+							<h3><?php print __($guid, 'Rubric Basics') ?></h3>
 						</td>
 					</tr>
 					<tr>
 						<td style='width: 275px'> 
-							<b><?php print _('Scope') ?> *</b><br/>
+							<b><?php print __($guid, 'Scope') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
@@ -104,13 +104,13 @@ else {
 							if ($highestAction=="Manage Rubrics_viewEditAll") {
 								?>
 								<select name="scope" id="scope" style="width: 302px">
-									<option value="Please select..."><?php print _('Please select...') ?></option>
-									<option value="School"><?php print _('School') ?></option>
-									<option value="Learning Area"><?php print _('Learning Area') ?></option>
+									<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
+									<option value="School"><?php print __($guid, 'School') ?></option>
+									<option value="Learning Area"><?php print __($guid, 'Learning Area') ?></option>
 								</select>
 								<script type="text/javascript">
 									var scope=new LiveValidation('scope');
-									scope.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+									scope.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 								</script>
 								 <?php
 							}
@@ -148,12 +148,12 @@ else {
 					?>
 					<tr id='learningAreaRow'>
 						<td> 
-							<b><?php print _('Learning Area') ?> *</b><br/>
+							<b><?php print __($guid, 'Learning Area') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
 							<select name="gibbonDepartmentID" id="gibbonDepartmentID" style="width: 302px">
-								<option value="Please select..."><?php print _('Please select...') ?></option>
+								<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
 								<?php
 								try {
 									if ($highestAction=="Manage Rubrics_viewEditAll") {
@@ -175,7 +175,7 @@ else {
 							</select>
 							<script type="text/javascript">
 								var gibbonDepartmentID=new LiveValidation('gibbonDepartmentID');
-								gibbonDepartmentID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+								gibbonDepartmentID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 								<?php
 								if ($highestAction=="Manage Rubrics_viewEditAll") {
 									print "gibbonDepartmentID.disable();" ;
@@ -186,7 +186,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Name') ?> *</b><br/>
+							<b><?php print __($guid, 'Name') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<input name="name" id="name" maxlength=50 value="" type="text" style="width: 300px">
@@ -198,20 +198,20 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Active') ?> *</b><br/>
+							<b><?php print __($guid, 'Active') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
 							<select name="active" id="active" style="width: 302px">
-								<option value="Y"><?php print _('Yes') ?></option>
-								<option value="N"><?php print _('No') ?></option>
+								<option value="Y"><?php print __($guid, 'Yes') ?></option>
+								<option value="N"><?php print __($guid, 'No') ?></option>
 							</select>
 						</td>
 					</tr>
 					
 					<tr>
 						<td> 
-							<b><?php print _('Category') ?></b><br/>
+							<b><?php print __($guid, 'Category') ?></b><br/>
 						</td>
 						<td class="right">
 							<input name="category" id="category" maxlength=100 value="" type="text" style="width: 300px">
@@ -238,7 +238,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Description') ?></b><br/>
+							<b><?php print __($guid, 'Description') ?></b><br/>
 						</td>
 						<td class="right">
 							<textarea name='description' id='description' rows=5 style='width: 300px'></textarea>
@@ -246,18 +246,18 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Year Groups') ?></b><br/>
+							<b><?php print __($guid, 'Year Groups') ?></b><br/>
 						</td>
 						<td class="right">
 							<?php 
 							$yearGroups=getYearGroups($connection2) ;
 							if ($yearGroups=="") {
-								print "<i>" . _('No year groups available.') . "</i>" ;
+								print "<i>" . __($guid, 'No year groups available.') . "</i>" ;
 							}
 							else {
 								for ($i=0; $i<count($yearGroups); $i=$i+2) {
 									$checked="checked " ;
-									print _($yearGroups[($i+1)]) . " <input $checked type='checkbox' name='gibbonYearGroupIDCheck" . ($i)/2 . "'><br/>" ; 
+									print __($guid, $yearGroups[($i+1)]) . " <input $checked type='checkbox' name='gibbonYearGroupIDCheck" . ($i)/2 . "'><br/>" ; 
 									print "<input type='hidden' name='gibbonYearGroupID" . ($i)/2 . "' value='" . $yearGroups[$i] . "'>" ;
 								}
 							}
@@ -267,8 +267,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Grade Scale') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print _('Link columns to grades on a scale?') ?></i></span>
+							<b><?php print __($guid, 'Grade Scale') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Link columns to grades on a scale?') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="gibbonScaleID" id="gibbonScaleID" style="width: 302px">
@@ -285,10 +285,10 @@ else {
 								}
 								while ($rowSelect=$resultSelect->fetch()) {
 									if ($row["gibbonScaleID"]==$rowSelect["gibbonScaleID"]) {
-										print "<option selected value='" . $rowSelect["gibbonScaleID"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
+										print "<option selected value='" . $rowSelect["gibbonScaleID"] . "'>" . htmlPrep(__($guid, $rowSelect["name"])) . "</option>" ;
 									}
 									else {
-										print "<option value='" . $rowSelect["gibbonScaleID"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
+										print "<option value='" . $rowSelect["gibbonScaleID"] . "'>" . htmlPrep(__($guid, $rowSelect["name"])) . "</option>" ;
 									}
 								}
 								?>				
@@ -298,13 +298,13 @@ else {
 								
 					<tr class='break'>
 						<td colspan=2>
-							<h3><?php print _('Rubric Design') ?></h3>
+							<h3><?php print __($guid, 'Rubric Design') ?></h3>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Initial Rows') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('Rows store assessment strands.') ?></i></span>
+							<b><?php print __($guid, 'Initial Rows') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Rows store assessment strands.') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="rows" id="rows" style="width: 302px">
@@ -318,8 +318,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Initial Columns') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('Columns store assessment levels.') ?></i></span>
+							<b><?php print __($guid, 'Initial Columns') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Columns store assessment levels.') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="columns" id="columns" style="width: 302px">
@@ -334,11 +334,11 @@ else {
 					
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<?php print _("Submit") ; ?>">
+							<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 						</td>
 					</tr>
 				</table>

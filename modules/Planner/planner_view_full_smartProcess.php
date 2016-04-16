@@ -74,7 +74,7 @@ else {
 				//Fail2
 				$URL.="&updateReturn=fail2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 
 			if ($result->rowCount()!=1) {
@@ -156,9 +156,11 @@ else {
 					$order=$_POST["order"] ;
 					$seq=$_POST["minSeq"] ;
 					
+					$summaryBlocks="" ;
 					foreach ($order as $i) {
 						$id=$_POST["gibbonUnitClassBlockID$i"] ;
 						$title=$_POST["title$i"] ;
+						$summaryBlocks.=$title . ", " ;
 						$type=$_POST["type$i"] ;
 						$length=$_POST["length$i"] ;
 						$contents=$_POST["contents$i"] ;
@@ -199,6 +201,25 @@ else {
 						}
 						$seq++ ;
 					}
+				}
+				
+				$summaryBlocks=substr($summaryBlocks,0,-2) ;
+				if (strlen($summaryBlocks)>75) {
+					$summaryBlocks=substr($summaryBlocks,0, 72) . "..." ;	
+				}
+				if ($summaryBlocks) {
+					$summary=$summaryBlocks ;
+				}
+				
+				//Write to database
+				try {
+					$data=array("summary"=>$summary, "gibbonPlannerEntryID"=>$gibbonPlannerEntryID); 
+					$sql="UPDATE gibbonPlannerEntry SET summary=:summary WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					$partialFail=true ;
 				}
 				
 				//Return final verdict

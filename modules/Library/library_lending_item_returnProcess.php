@@ -69,7 +69,7 @@ else {
 				//Fail 2
 				$URL.="&updateReturn=fail2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 			
 			if ($result->rowCount()!=1) {
@@ -106,7 +106,7 @@ else {
 					//Fail 2
 					$URL.="&updateReturn=fail2" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 				
 				//No return action, so just mark the item
@@ -121,7 +121,7 @@ else {
 						//Fail 2
 						$URL.="&updateReturn=fail2" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 				}
 				//Return action, so mark the item, and create a new event
@@ -136,7 +136,7 @@ else {
 						//Fail 2
 						$URL.="&addReturn=fail2" . $e->getMessage() ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 					
 					try {
@@ -149,7 +149,7 @@ else {
 						//Fail 2
 						$URL.="&addReturn=fail2" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 				}
 						

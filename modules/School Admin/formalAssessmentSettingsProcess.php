@@ -50,17 +50,20 @@ else {
 	$internalAssessmentTypes=substr($internalAssessmentTypes,0,-1) ;
 	$gibbonYearGroupID=$_POST["gibbonYearGroupID"] ;
 	$gibbonExternalAssessmentID=$_POST["gibbonExternalAssessmentID"] ;
-	if (isset($_POST["category"])) {
-		$category=$_POST["category"] ;
-	}
-	$count=0 ; 
 	$primaryExternalAssessmentByYearGroup=array() ;
-	
+	$count=0 ; 
 	foreach ($gibbonYearGroupID as $year) {
-		if (isset($gibbonExternalAssessmentID[$count]) AND isset($category[$count]) AND $category[$count]!="") {
-			$primaryExternalAssessmentByYearGroup[$year]=$gibbonExternalAssessmentID[$count] . "-" . $category[$count] ;
+		$set=FALSE ;
+		
+		if (isset($gibbonExternalAssessmentID[$count]) AND $gibbonExternalAssessmentID[$count]!="") {
+			if (isset($_POST["category$count"])) {
+				if ($_POST["category$count"]!="") {
+					$primaryExternalAssessmentByYearGroup[$year]=$gibbonExternalAssessmentID[$count] . "-" . $_POST["category$count"] ;
+					$set=TRUE ;
+				}
+			}
 		}
-		else {
+		if ($set==FALSE) {
 			$primaryExternalAssessmentByYearGroup[$year]=NULL ;
 		}
 		$count++ ;

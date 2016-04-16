@@ -120,7 +120,7 @@ else {
 				if ($resultDetail->rowCount()==1) {
 					$rowDetail=$resultDetail->fetch() ;
 					$name=formatName("", $rowDetail["preferredName"], $rowDetail["surname"], "Student", false) ;
-					$notificationText=sprintf(_('Someone has created a negative behaviour record for your tutee, %1$s.'), $name) ;
+					$notificationText=sprintf(__($guid, 'Someone has created a negative behaviour record for your tutee, %1$s.'), $name) ;
 					if ($rowDetail["gibbonPersonIDTutor"]!=NULL AND $rowDetail["gibbonPersonIDTutor"]!=$_SESSION[$guid]["gibbonPersonID"]) {
 						setNotification($connection2, $guid, $rowDetail["gibbonPersonIDTutor"], $notificationText, "Behaviour", "/index.php?q=/modules/Behaviour/behaviour_view_details.php&gibbonPersonID=$gibbonPersonID&search=") ;
 					}

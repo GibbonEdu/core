@@ -99,7 +99,7 @@ else {
 					catch(PDOException $e) { 
 						$URL.="&editReturn=fail1" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 					
 					//Check for forceReset and take action
@@ -114,7 +114,7 @@ else {
 						catch(PDOException $e) { 
 							$URL.="&forceResetReturn=fail0" ;
 							header("Location: {$URL}");
-							break ;
+							exit() ;
 						}
 						$_SESSION[$guid]["passwordForceReset"]="N" ;
 						$URL.="&forceResetReturn=success0" ;

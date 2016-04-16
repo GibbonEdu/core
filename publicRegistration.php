@@ -31,13 +31,13 @@ if (isset($_SESSION[$guid]["username"])==FALSE) {
 if ($proceed==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > </div><div class='trailEnd'>" . $_SESSION[$guid]["organisationNameShort"] . " " . _('Public Registration') . "</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > </div><div class='trailEnd'>" . $_SESSION[$guid]["organisationNameShort"] . " " . __($guid, 'Public Registration') . "</div>" ;
 	print "</div>" ;
 	
 	$publicRegistrationMinimumAge=getSettingByScope($connection2, 'User Admin', 'publicRegistrationMinimumAge') ;
@@ -47,29 +47,29 @@ else {
 	$class="error" ;
 	if (!($addReturn=="")) {
 		if ($addReturn=="fail0") {
-			$addReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+			$addReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($addReturn=="fail2") {
-			$addReturnMessage=_("Your request failed due to a database error.") ;	
+			$addReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 		}
 		else if ($addReturn=="fail3") {
-			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail4") {
-			$addReturnMessage=_("Your request failed because some inputs did not meet a requirement for uniqueness.") ;	
+			$addReturnMessage=__($guid, "Your request failed because some inputs did not meet a requirement for uniqueness.") ;	
 		}
 		else if ($addReturn=="fail5") {
-			$addReturnMessage=sprintf(_('Your request failed because you do not meet the minimum age for joining this site (%1$s years of age).'), $publicRegistrationMinimumAge) ;	
+			$addReturnMessage=sprintf(__($guid, 'Your request failed because you do not meet the minimum age for joining this site (%1$s years of age).'), $publicRegistrationMinimumAge) ;	
 		}
 		else if ($addReturn=="fail7") {
-			$addReturnMessage=_("Your request failed because your password to not meet the minimum requirements for strength.") ;	
+			$addReturnMessage=__($guid, "Your request failed because your password to not meet the minimum requirements for strength.") ;	
 		}
 		else if ($addReturn=="success1") {
-			$addReturnMessage=_("Your registration was successfully submitted and is now pending approval. Our team will review your registration and be in touch in due course.") ;
+			$addReturnMessage=__($guid, "Your registration was successfully submitted and is now pending approval. Our team will review your registration and be in touch in due course.") ;
 			$class="success" ;
 		}
 		else if ($addReturn=="success0") {
-			$addReturnMessage=_("Your registration was successfully submitted, and you may now log into the system using your new username and password.") ;
+			$addReturnMessage=__($guid, "Your registration was successfully submitted, and you may now log into the system using your new username and password.") ;
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -81,7 +81,7 @@ else {
 	$intro=getSettingByScope($connection2, 'User Admin', 'publicRegistrationIntro') ;
 	if ($intro!="") {
 		print "<h3>" ; 
-			print _("Introduction") ;
+			print __($guid, "Introduction") ;
 		print "</h3>" ;
 		print "<p>" ;
 			print $intro ;
@@ -96,12 +96,12 @@ else {
 			
 			<tr class='break'>
 				<th colspan=2> 
-					<?php print _("Account Details") ; ?>
+					<?php print __($guid, "Account Details") ; ?>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('First Name') ?> *</b><br/>
+					<b><?php print __($guid, 'First Name') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<input name="firstName" id="firstName" maxlength=30 value="" type="text" style="width: 300px">
@@ -113,7 +113,7 @@ else {
 			</tr>
 			<tr>
 				<td style='width: 275px'> 
-					<b><?php print _('Surname') ?> *</b><br/>
+					<b><?php print __($guid, 'Surname') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<input name="surname" id="surname" maxlength=30 value="" type="text" style="width: 300px">
@@ -126,8 +126,8 @@ else {
 			
 			<tr>
 				<td> 
-					<b><?php print _('Email') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _('Must be unique.') ?></i></span>
+					<b><?php print __($guid, 'Email') ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="email" id="email" maxlength=50 value="" type="text" style="width: 300px">
@@ -141,26 +141,26 @@ else {
 			
 			<tr>
 				<td> 
-					<b><?php print _('Gender') ?> *</b><br/>
+					<b><?php print __($guid, 'Gender') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select name="gender" id="gender" style="width: 302px">
-						<option value="Please select..."><?php print _('Please select...') ?></option>
-						<option value="F"><?php print _('Female') ?></option>
-						<option value="M"><?php print _('Male') ?></option>
-						<option value="F"><?php print _('Other') ?></option>
-						<option value="M"><?php print _('Unspecified') ?></option>
+						<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
+						<option value="F"><?php print __($guid, 'Female') ?></option>
+						<option value="M"><?php print __($guid, 'Male') ?></option>
+						<option value="F"><?php print __($guid, 'Other') ?></option>
+						<option value="M"><?php print __($guid, 'Unspecified') ?></option>
 					</select>
 					<script type="text/javascript">
 						var gender=new LiveValidation('gender');
-						gender.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+						gender.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 					</script>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Date of Birth') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _('Format:') . " " . $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+					<b><?php print __($guid, 'Date of Birth') ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print __($guid, 'Format:') . " " . $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 				</td>
 				<td class="right">
 					<input name="dob" id="dob" maxlength=10 value="" type="text" style="width: 300px">
@@ -178,8 +178,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Username') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _('Must be unique.') ?></i></span>
+					<b><?php print __($guid, 'Username') ?> *</b><br/>
+					<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique.') ?></i></span>
 				</td>
 				<td class="right">
 					<input name="username" id="username" maxlength=20 value="" type="text" style="width: 300px">
@@ -198,7 +198,7 @@ else {
 					?>
 					<script type="text/javascript">
 						var username=new LiveValidation('username');
-						username.add( Validate.Exclusion, { within: [<?php print $idList ;?>], failureMessage: "<?php print _('Value already in use!') ?>", partialMatch: false, caseSensitive: false } );
+						username.add( Validate.Exclusion, { within: [<?php print $idList ;?>], failureMessage: "<?php print __($guid, 'Value already in use!') ?>", partialMatch: false, caseSensitive: false } );
 						username.add(Validate.Presence);
 					</script>
 				</td>
@@ -206,7 +206,7 @@ else {
 			<tr>
 				<td colspan=2>
 					<?php
-					$policy=getPasswordPolicy($connection2) ;
+					$policy=getPasswordPolicy($guid, $connection2) ;
 					if ($policy!=FALSE) {
 						print "<div class='warning'>" ;
 							print $policy ;
@@ -217,32 +217,50 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Password') ?> *</b><br/>
+					<b><?php print __($guid, 'Password') ?> *</b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
-					<input name="password" id="password" maxlength=30 value="" type="password" style="width: 300px">
+					<input type='button' class="generatePassword" value="<?php print __($guid, "Generate Password") ?>"/>
+					<input name="passwordNew" id="passwordNew" maxlength=20 value="" type="password" style="width: 300px"><br/>
+					
 					<script type="text/javascript">
-						var password=new LiveValidation('password');
-						password.add(Validate.Presence);
+						var passwordNew=new LiveValidation('passwordNew');
+						passwordNew.add(Validate.Presence);
 						<?php
 						$alpha=getSettingByScope( $connection2, "System", "passwordPolicyAlpha" ) ;
-						if ($alpha=="Y") {
-							print "password.add( Validate.Format, { pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: \"" . _('Does not meet password policy.') . "\" } );" ;
-						}
 						$numeric=getSettingByScope( $connection2, "System", "passwordPolicyNumeric" ) ;
-						if ($numeric=="Y") {
-							print "password.add( Validate.Format, { pattern: /.*[0-9]/, failureMessage: \"" . _('Does not meet password policy.') . "\" } );" ;
-						}
 						$punctuation=getSettingByScope( $connection2, "System", "passwordPolicyNonAlphaNumeric" ) ;
-						if ($punctuation=="Y") {
-							print "password.add( Validate.Format, { pattern: /[^a-zA-Z0-9]/, failureMessage: \"" . _('Does not meet password policy.') . "\" } );" ;
-						}
 						$minLength=getSettingByScope( $connection2, "System", "passwordPolicyMinLength" ) ;
+						if ($alpha=="Y") {
+							print "passwordNew.add( Validate.Format, { pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: \"" . __($guid, 'Does not meet password policy.') . "\" } );" ;
+						}
+						if ($numeric=="Y") {
+							print "passwordNew.add( Validate.Format, { pattern: /.*[0-9]/, failureMessage: \"" . __($guid, 'Does not meet password policy.') . "\" } );" ;
+						}
+						if ($punctuation=="Y") {
+							print "passwordNew.add( Validate.Format, { pattern: /[^a-zA-Z0-9]/, failureMessage: \"" . __($guid, 'Does not meet password policy.') . "\" } );" ;
+						}
 						if (is_numeric($minLength)) {
-							print "password.add( Validate.Length, { minimum: " . $minLength . "} );" ;
+							print "passwordNew.add( Validate.Length, { minimum: " . $minLength . "} );" ;
 						}
 						?>
+						
+						$(".generatePassword").click(function(){
+							var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789![]{}()%&*$#^<>~@|';
+							var text = '';
+							for(var i=0; i < <?php print ($minLength+4) ?>; i++) {
+								for(var i=0; i < <?php print ($minLength+4) ?>; i++) {
+									if (i==0) { text += chars.charAt(Math.floor(Math.random() * 26)); }
+									else if (i==1) { text += chars.charAt(Math.floor(Math.random() * 26)+26); }
+									else if (i==2) { text += chars.charAt(Math.floor(Math.random() * 10)+52); }
+									else if (i==3) { text += chars.charAt(Math.floor(Math.random() * 19)+62); }
+									else { text += chars.charAt(Math.floor(Math.random() * chars.length)); }
+								}
+							}
+							$('input[name="passwordNew"]').val(text);
+							alert('<?php print __($guid, "Copy this password if required:") ?>' + '\n\n' + text) ;
+						});
 					</script>
 				</td>
 			</tr>
@@ -253,7 +271,7 @@ else {
 			if ($privacyStatement!="") {
 				print "<tr class='break'>" ;
 					print "<th colspan=2>" ; 
-						print _("Privacy Statement") ;
+						print __($guid, "Privacy Statement") ;
 					print "</th>" ;
 				print "</tr>" ;
 				print "<tr>" ;
@@ -270,7 +288,7 @@ else {
 			if ($agreement!="") {
 				print "<tr class='break'>" ;
 					print "<th colspan=2>" ; 
-						print _("Agreement") ;
+						print __($guid, "Agreement") ;
 					print "</td>" ;
 				print "</tr>" ;
 				
@@ -281,7 +299,7 @@ else {
 				print "</tr>" ;
 				print "<tr>" ;
 					print "<td>" ; 
-						print "<b>" . _('Do you agree to the above?') . "</b><br/>" ;
+						print "<b>" . __($guid, 'Do you agree to the above?') . "</b><br/>" ;
 					print "</td>" ;
 					print "<td class='right'>" ;
 						print "Yes <input type='checkbox' name='agreement' id='agreement'>" ;
@@ -298,11 +316,11 @@ else {
 			?>
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+					<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
@@ -313,7 +331,7 @@ else {
 	$postscript=getSettingByScope($connection2, 'User Admin', 'publicRegistrationPostscript') ;
 	if ($postscript!="") {
 		print "<h2>" ; 
-			print _("Further Information") ;
+			print __($guid, "Further Information") ;
 		print "</h2>" ;
 		print "<p style='padding-bottom: 15px'>" ;
 			print $postscript ;

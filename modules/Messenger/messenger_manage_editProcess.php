@@ -103,7 +103,7 @@ else {
 					//FgibbonMessengerIDl 2
 					$URL.="&updateReturn=fgibbonMessengerIDl2" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 
 				//TARGETS

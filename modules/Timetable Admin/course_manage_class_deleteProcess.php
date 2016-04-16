@@ -71,7 +71,7 @@ else {
 				//Fail2
 				$URL.="&deleteReturn=fail2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 			
 			if ($result->rowCount()!=1) {
@@ -129,7 +129,7 @@ else {
 					//Fail 2
 					$URL.="&deleteReturn=fail2" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 				
 				//Success 0

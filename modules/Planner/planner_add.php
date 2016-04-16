@@ -25,14 +25,14 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Planner/planner_add.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print _("The highest grouped action cannot be determined.") ;
+		print __($guid, "The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
@@ -120,12 +120,12 @@ else {
 		
 		if ($proceed==FALSE) {
 			print "<div class='error'>" ;
-				print _("Your request failed because you do not have access to this action.") ;
+				print __($guid, "Your request failed because you do not have access to this action.") ;
 			print "</div>" ;
 		}
 		else {
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner.php$params'>" . _('Planner') . " $extra</a> > </div><div class='trailEnd'" . _('>Add Lesson Plan') . "</div>" ;
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner.php$params'>" . __($guid, 'Planner') . " $extra</a> > </div><div class='trailEnd'" . __($guid, '>Add Lesson Plan') . "</div>" ;
 			print "</div>" ;
 			
 			if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -133,25 +133,25 @@ else {
 			$class="error" ;
 			if (!($addReturn=="")) {
 				if ($addReturn=="fail0") {
-					$addReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+					$addReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 				}
 				else if ($addReturn=="fail2") {
-					$addReturnMessage=_("Your request failed due to a database error.") ;	
+					$addReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 				}
 				else if ($addReturn=="fail3") {
-					$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($addReturn=="fail4") {
-					$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($addReturn=="fail5") {
-					$updateReturnMessage=_("Your request was successful, but some data was not properly saved.") ;
+					$updateReturnMessage=__($guid, "Your request was successful, but some data was not properly saved.") ;
 				}
 				else if ($addReturn=="fail6") {
-					$addReturnMessage=_("Your request failed due to an attachment error.") ;	
+					$addReturnMessage=__($guid, "Your request failed due to an attachment error.") ;	
 				}
 				else if ($addReturn=="success0") {
-					$addReturnMessage=_("Your request was completed successfully. You can now add another record if you wish.") ;	
+					$addReturnMessage=__($guid, "Your request was completed successfully. You can now add another record if you wish.") ;	
 					$class="success" ;
 				}
 				print "<div class='$class'>" ;
@@ -164,12 +164,12 @@ else {
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr class='break'>
 						<td colspan=2> 
-							<h3><?php print _('Basic Information') ?></h3>
+							<h3><?php print __($guid, 'Basic Information') ?></h3>
 						</td>
 					</tr>
 					<tr>
 						<td style='width: 275px'> 
-							<b><?php print _('Class') ?> *</b><br/>
+							<b><?php print __($guid, 'Class') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<?php
@@ -183,7 +183,7 @@ else {
 								?>
 								<select name="gibbonCourseClassID" id="gibbonCourseClassID" style="width: 302px">
 									<?php
-									print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+									print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
 									try {
 										if ($highestAction=="Lesson Planner_viewEditAllClasses" ) {
 											$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -208,7 +208,7 @@ else {
 								</select>
 								<script type="text/javascript">
 									var gibbonCourseClassID=new LiveValidation('gibbonCourseClassID');
-									gibbonCourseClassID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+									gibbonCourseClassID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 								</script>
 								<?php
 							}
@@ -218,7 +218,7 @@ else {
 				
 					<tr>
 						<td> 
-							<b><?php print _('Unit') ?></b><br/>
+							<b><?php print __($guid, 'Unit') ?></b><br/>
 						</td>
 						<td class="right">
 							<?php
@@ -237,7 +237,7 @@ else {
 									$lastType="" ;
 									$currentType="" ;
 									print "<option value=''></option>" ;
-									print "<optgroup label='--" . _('Gibbon Units') . "--'>" ;
+									print "<optgroup label='--" . __($guid, 'Gibbon Units') . "--'>" ;
 									while ($rowSelect=$resultSelect->fetch()) {
 										print "<option value='" . $rowSelect["gibbonUnitID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
 										$lastType=$currentType ;
@@ -293,7 +293,7 @@ else {
 									$lastType="" ;
 									$currentType="" ;
 									print "<option value=''></option>" ;
-									print "<optgroup label='--" . _('Gibbon Units') . "--'>" ;
+									print "<optgroup label='--" . __($guid, 'Gibbon Units') . "--'>" ;
 									while ($rowSelect=$resultSelect->fetch()) {
 										print "<option class='" . $rowSelect["gibbonCourseClassID"] . "' value='" . $rowSelect["gibbonUnitID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
 										$lastType=$currentType ;
@@ -343,7 +343,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Name') ?> *</b><br/>
+							<b><?php print __($guid, 'Name') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<input name="name" id="name" maxlength=50 value="" type="text" style="width: 300px">
@@ -355,7 +355,7 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Summary') ?> *</b><br/>
+							<b><?php print __($guid, 'Summary') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<input name="summary" id="summary" maxlength=255 value="" type="text" style="width: 300px">
@@ -421,8 +421,8 @@ else {
 					
 					<tr>
 						<td> 
-							<b><?php print _('Date') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></i></span>
+							<b><?php print __($guid, 'Date') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></i></span>
 						</td>
 						<td class="right">
 							<?php
@@ -451,8 +451,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Start Time') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('Format: hh:mm (24hr)') ?><br/></i></span>
+							<b><?php print __($guid, 'Start Time') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Format: hh:mm (24hr)') ?><br/></i></span>
 						</td>
 						<td class="right">
 							<input name="timeStart" id="timeStart" maxlength=5 value="<?php if (isset($nextTimeStart)) { print substr($nextTimeStart,0,5) ; } ?>" type="text" style="width: 300px">
@@ -484,8 +484,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('End Time') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('Format: hh:mm (24hr)') ?><br/></i></span>
+							<b><?php print __($guid, 'End Time') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Format: hh:mm (24hr)') ?><br/></i></span>
 						</td>
 						<td class="right">
 							<input name="timeEnd" id="timeEnd" maxlength=5 value="<?php if (isset($nextTimeEnd)) { print substr($nextTimeEnd,0,5) ; } ?>" type="text" style="width: 300px">
@@ -517,14 +517,14 @@ else {
 					</tr>
 					<tr>
 						<td colspan=2> 
-							<b><?php print _('Lesson Details') ?></b>
+							<b><?php print __($guid, 'Lesson Details') ?></b>
 							<?php $description=getSettingByScope($connection2, "Planner", "lessonDetailsTemplate" ) ?>
 							<?php print getEditor($guid,  TRUE, "description", $description, 25, true, false, false) ?>
 						</td>
 					</tr>
 					<tr id="teachersNotesRow">
 						<td colspan=2> 
-							<b><?php print _('Teacher\'s Notes') ?></b>
+							<b><?php print __($guid, 'Teacher\'s Notes') ?></b>
 							<?php $teachersNotes=getSettingByScope($connection2, "Planner", "teachersNotesTemplate" ) ?>
 							<?php print getEditor($guid,  TRUE, "teachersNotes", $teachersNotes, 25, true, false, false ) ?>
 						</td>
@@ -632,23 +632,23 @@ else {
 						
 					<tr class='break' id="homeworkHeaderRow">
 						<td colspan=2> 
-							<h3><?php print _('Homework') ?></h3>
+							<h3><?php print __($guid, 'Homework') ?></h3>
 						</td>
 					</tr>
 					<tr id="homeworkRow">
 						<td> 
-							<b><?php print _('Homework?') ?> *</b><br/>
+							<b><?php print __($guid, 'Homework?') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
-							<input type="radio" name="homework" value="Yes" class="homework" /> <?php print _('Yes') ?>
-							<input checked type="radio" name="homework" value="No" class="homework" /> <?php print _('No') ?>
+							<input type="radio" name="homework" value="Yes" class="homework" /> <?php print __($guid, 'Yes') ?>
+							<input checked type="radio" name="homework" value="No" class="homework" /> <?php print __($guid, 'No') ?>
 						</td>
 					</tr>
 					<tr id="homeworkDueDateRow">
 						<td> 
-							<b><?php print _('Homework Due Date') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></i></span>
+							<b><?php print __($guid, 'Homework Due Date') ?> *</b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></i></span>
 						</td>
 						<td class="right">
 							<input name="homeworkDueDate" id="homeworkDueDate" maxlength=10 value="" type="text" style="width: 300px">
@@ -667,8 +667,8 @@ else {
 					</tr>
 					<tr id="homeworkDueDateTimeRow">
 						<td> 
-							<b><?php print _('Homework Due Date Time') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print _('Format: hh:mm (24hr)') ?><br/></i></span>
+							<b><?php print __($guid, 'Homework Due Date Time') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Format: hh:mm (24hr)') ?><br/></i></span>
 						</td>
 						<td class="right">
 							<input name="homeworkDueDateTime" id="homeworkDueDateTime" maxlength=5 value="" type="text" style="width: 300px">
@@ -699,13 +699,13 @@ else {
 					</tr>
 					<tr id="homeworkDetailsRow">
 						<td colspan=2> 
-							<b><?php print _('Homework Details') ?> *</b> 
+							<b><?php print __($guid, 'Homework Details') ?> *</b> 
 							<?php print getEditor($guid,  TRUE, "homeworkDetails", "", 25, true, true, true ) ?>
 						</td>
 					</tr>
 					<tr id="homeworkSubmissionRow">
 						<td> 
-							<b><?php print _('Online Submission?') ?> *</b><br/>
+							<b><?php print __($guid, 'Online Submission?') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<input type="radio" name="homeworkSubmission" value="Yes" class="homeworkSubmission" /> Yes
@@ -714,8 +714,8 @@ else {
 					</tr>
 					<tr id="homeworkSubmissionDateOpenRow">
 						<td> 
-							<b><?php print _('Submission Open Date') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print _('Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></i></span>
+							<b><?php print __($guid, 'Submission Open Date') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></i></span>
 						</td>
 						<td class="right">
 							<input name="homeworkSubmissionDateOpen" id="homeworkSubmissionDateOpen" maxlength=10 value="" type="text" style="width: 300px">
@@ -732,12 +732,12 @@ else {
 					</tr>
 					<tr id="homeworkSubmissionDraftsRow">
 						<td> 
-							<b><?php print _('Drafts') ?> *</b><br/>
+							<b><?php print __($guid, 'Drafts') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
 							<select name="homeworkSubmissionDrafts" id="homeworkSubmissionDrafts" style="width: 302px">
-								<option value="0"><?php print _('None') ?></option>
+								<option value="0"><?php print __($guid, 'None') ?></option>
 								<option value="1">1</option>
 								<option value="2">2</option>
 								<option value="3">3</option>
@@ -746,20 +746,20 @@ else {
 					</tr>
 					<tr id="homeworkSubmissionTypeRow">
 						<td> 
-							<b><?php print _('Submission Type') ?> *</b><br/>
+							<b><?php print __($guid, 'Submission Type') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
 							<select name="homeworkSubmissionType" id="homeworkSubmissionType" style="width: 302px">
-								<option value="Link"><?php print _('Link') ?></option>
-								<option value="File"><?php print _('File') ?></option>
-								<option value="Link/File"><?php print _('Link/File') ?></option>
+								<option value="Link"><?php print __($guid, 'Link') ?></option>
+								<option value="File"><?php print __($guid, 'File') ?></option>
+								<option value="Link/File"><?php print __($guid, 'Link/File') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr id="homeworkSubmissionRequiredRow">
 						<td> 
-							<b><?php print _('Submission Required') ?> *</b><br/>
+							<b><?php print __($guid, 'Submission Required') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
@@ -772,33 +772,33 @@ else {
 					<?php if (isActionAccessible($guid, $connection2, "/modules/Crowd Assessment/crowdAssess.php")) { ?>
 						<tr id="homeworkCrowdAssessRow">
 							<td> 
-								<b><?php print _('Crowd Assessment?') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print _('Allow crowd assessment of homework?') ?></i></span>
+								<b><?php print __($guid, 'Crowd Assessment?') ?> *</b><br/>
+								<span style="font-size: 90%"><i><?php print __($guid, 'Allow crowd assessment of homework?') ?></i></span>
 							</td>
 							<td class="right">
-								<input type="radio" name="homeworkCrowdAssess" value="Yes" class="homeworkCrowdAssess" /> <?php print _('Yes') ?>
-								<input checked type="radio" name="homeworkCrowdAssess" value="No" class="homeworkCrowdAssess" /> <?php print _('No') ?>
+								<input type="radio" name="homeworkCrowdAssess" value="Yes" class="homeworkCrowdAssess" /> <?php print __($guid, 'Yes') ?>
+								<input checked type="radio" name="homeworkCrowdAssess" value="No" class="homeworkCrowdAssess" /> <?php print __($guid, 'No') ?>
 							</td>
 						</tr>
 						<tr id="homeworkCrowdAssessControlRow">
 							<td> 
-								<b><?php print _('Access Controls?') ?></b><br/>
-								<span style="font-size: 90%"><i><?php print _('Decide who can see this homework.') ?></i></span>
+								<b><?php print __($guid, 'Access Controls?') ?></b><br/>
+								<span style="font-size: 90%"><i><?php print __($guid, 'Decide who can see this homework.') ?></i></span>
 							</td>
 							<td class="right">
 								<?php
 								print "<table cellspacing='0' style='width: 308px' align=right>" ;
 									print "<tr class='head'>" ;
 										print "<th>" ;
-											print _("Role") ;
+											print __($guid, "Role") ;
 										print "</th>" ;
 										print "<th style='text-align: center'>" ;
-											print _("Access") ;
+											print __($guid, "Access") ;
 										print "</th>" ;
 									print "</tr>" ;
 									print "<tr class='even'>" ;
 										print "<td style='text-align: left'>" ;
-											print _("Class Teachers") ;
+											print __($guid, "Class Teachers") ;
 										print "</td>" ;
 										print "<td style='text-align: center'>" ;
 											print "<input checked disabled='disabled' type='checkbox' />" ;
@@ -806,7 +806,7 @@ else {
 									print "</tr>" ;
 									print "<tr class='even'>" ;
 										print "<td style='text-align: left'>" ;
-											print _("Submitter") ;
+											print __($guid, "Submitter") ;
 										print "</td>" ;
 										print "<td style='text-align: center'>" ;
 											print "<input checked disabled='disabled' type='checkbox' />" ;
@@ -814,7 +814,7 @@ else {
 									print "</tr>" ;
 									print "<tr class='odd'>" ;
 										print "<td style='text-align: left'>" ;
-											print _("Classmates") ;
+											print __($guid, "Classmates") ;
 										print "</td>" ;
 										print "<td style='text-align: center'>" ;
 											print "<input type='checkbox' name='homeworkCrowdAssessClassmatesRead' />" ;
@@ -822,7 +822,7 @@ else {
 									print "</tr>" ;
 									print "<tr class='even'>" ;
 										print "<td style='text-align: left'>" ;
-											print _("Other Students") ;
+											print __($guid, "Other Students") ;
 										print "</td>" ;
 										print "<td style='text-align: center'>" ;
 											print "<input type='checkbox' name='homeworkCrowdAssessOtherStudentsRead' />" ;
@@ -830,7 +830,7 @@ else {
 									print "</tr>" ;
 									print "<tr class='odd'>" ;
 										print "<td style='text-align: left'>" ;
-											print _("Other Teachers") ;
+											print __($guid, "Other Teachers") ;
 										print "</td>" ;
 										print "<td style='text-align: center'>" ;
 											print "<input type='checkbox' name='homeworkCrowdAssessOtherTeachersRead' />" ;
@@ -838,7 +838,7 @@ else {
 									print "</tr>" ;
 									print "<tr class='even'>" ;
 										print "<td style='text-align: left'>" ;
-											print _("Submitter\'s Parents") ;
+											print __($guid, "Submitter's Parents") ;
 										print "</td>" ;
 										print "<td style='text-align: center'>" ;
 											print "<input type='checkbox' name='homeworkCrowdAssessSubmitterParentsRead' />" ;
@@ -846,7 +846,7 @@ else {
 									print "</tr>" ;
 									print "<tr class='odd'>" ;
 										print "<td style='text-align: left'>" ;
-											print _("Classmates\'s Parents") ;
+											print __($guid, "Classmates's Parents") ;
 										print "</td>" ;
 										print "<td style='text-align: center'>" ;
 											print "<input type='checkbox' name='homeworkCrowdAssessClassmatesParentsRead' />" ;
@@ -854,7 +854,7 @@ else {
 									print "</tr>" ;
 									print "<tr class='even'>" ;
 										print "<td style='text-align: left'>" ;
-											print _("Other Parents") ;
+											print __($guid, "Other Parents") ;
 										print "</td>" ;
 										print "<td style='text-align: center'>" ;
 											print "<input type='checkbox' name='homeworkCrowdAssessOtherParentsRead' />" ;
@@ -873,13 +873,13 @@ else {
 						?>
 						<tr class='break'>
 							<td colspan=2> 
-								<h3><?php print _('Outcomes') ?></h3>
+								<h3><?php print __($guid, 'Outcomes') ?></h3>
 							</td>
 						</tr>
 						<tr>
 							<td colspan=2> 
 								<div class='warning'>
-									<?php print _('Outcomes cannot be set when viewing the Planner by date. Use the "Choose A Class" dropdown in the sidebar to switch to a class. Make sure to save your changes first.') ?>
+									<?php print __($guid, 'Outcomes cannot be set when viewing the Planner by date. Use the "Choose A Class" dropdown in the sidebar to switch to a class. Make sure to save your changes first.') ?>
 								</div>
 							</td>
 						</tr>
@@ -889,12 +889,12 @@ else {
 						?>
 						<tr class='break'>
 							<td colspan=2> 
-								<h3><?php print _('Outcomes') ?></h3>
+								<h3><?php print __($guid, 'Outcomes') ?></h3>
 							</td>
 						</tr>
 						<tr>
 							<td colspan=2> 
-								<p><?php print _('Link this lesson to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which lessons.') ?></p>
+								<p><?php print __($guid, 'Link this lesson to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which lessons.') ?></p>
 							</td>
 						</tr>
 						<?php
@@ -941,7 +941,7 @@ else {
 														});
 													</script>
 													<select id='newOutcome' onChange='outcomeDisplayElements(this.value);' style='float: none; margin-left: 3px; margin-top: 0px; margin-bottom: 3px; width: 350px'>
-														<option class='all' value='0'><?php print _('Choose an outcome to add it to this lesson') ?></option>
+														<option class='all' value='0'><?php print __($guid, 'Choose an outcome to add it to this lesson') ?></option>
 														<?php
 														$currentCategory="" ;
 														$lastCategory="" ;
@@ -963,7 +963,7 @@ else {
 														catch(PDOException $e) { 
 															print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 														}
-														print "<optgroup label='--" . _('SCHOOL OUTCOMES') . "--'>" ;
+														print "<optgroup label='--" . __($guid, 'SCHOOL OUTCOMES') . "--'>" ;
 														while ($rowSelect=$resultSelect->fetch()) {
 															$currentCategory=$rowSelect["category"] ;
 															if (($currentCategory!=$lastCategory) AND $currentCategory!="") {
@@ -1007,7 +1007,7 @@ else {
 																$currentCategory=$rowSelect["category"] ;
 																$currentLA=$rowSelect["learningArea"] ;
 																if (($currentLA!=$lastLA) AND $currentLA!="") {
-																	print "<optgroup label='--" . strToUpper($currentLA) . " " . _('OUTCOMES') . "--'>" ;
+																	print "<optgroup label='--" . strToUpper($currentLA) . " " . __($guid, 'OUTCOMES') . "--'>" ;
 																}
 																if (($currentCategory!=$lastCategory) AND $currentCategory!="") {
 																	print "<optgroup label='--" . $currentCategory . "--'>" ;
@@ -1032,7 +1032,7 @@ else {
 													if (count($categories)>0) {
 														?>
 														<select id='outcomeFilter' style='float: none; margin-left: 3px; margin-top: 0px; width: 350px'>
-															<option value='all'><?php print _('View All') ?></option>
+															<option value='all'><?php print __($guid, 'View All') ?></option>
 															<?php
 															$categories=array_unique($categories) ;
 															$categories=msort($categories) ;
@@ -1080,17 +1080,17 @@ else {
 								
 					<tr class='break'>
 						<td colspan=2> 
-							<h3><?php print _('Markbook') ?></h3>
+							<h3><?php print __($guid, 'Markbook') ?></h3>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Create Markbook Column?') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print _('Linked to this lesson by default.') ?></i></span>
+							<b><?php print __($guid, 'Create Markbook Column?') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Linked to this lesson by default.') ?></i></span>
 						</td>
 						<td class="right">
-							<input type="radio" name="markbook" value="Y" id="markbook" /> <?php print _('Yes') ?>
-							<input checked type="radio" name="markbook" value="N" id="markbook" /> <?php print _('No') ?>
+							<input type="radio" name="markbook" value="Y" id="markbook" /> <?php print __($guid, 'Yes') ?>
+							<input checked type="radio" name="markbook" value="N" id="markbook" /> <?php print __($guid, 'No') ?>
 						</td>
 					</tr>
 					
@@ -1128,7 +1128,7 @@ else {
 							});
 						</script>
 						<td colspan=2> 
-							<h3><?php print _('Advanced Options') ?></h3>
+							<h3><?php print __($guid, 'Advanced Options') ?></h3>
 						</td>
 					</tr>
 					<tr>
@@ -1136,19 +1136,19 @@ else {
 						<td class="right">
 							<?php
 							print "<input type='checkbox' name='advanced' class='advanced' id='advanced' value='Yes' />" ;
-							print "<span style='font-size: 85%; font-weight: normal; font-style: italic'> " . _('Show Advanced Options') . "</span>" ;
+							print "<span style='font-size: 85%; font-weight: normal; font-style: italic'> " . __($guid, 'Show Advanced Options') . "</span>" ;
 							?>
 						</td>
 					</tr>
 					
 					<tr class='break' id="accessRow">
 						<td colspan=2> 
-							<h4><?php print _('Access') ?></h4>
+							<h4><?php print __($guid, 'Access') ?></h4>
 						</td>
 					</tr>
 					<tr id="accessRowStudents">
 						<td> 
-							<b><?php print _('Viewable to Students') ?> *</b><br/>
+							<b><?php print __($guid, 'Viewable to Students') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
@@ -1156,14 +1156,14 @@ else {
 							$sharingDefaultStudents=getSettingByScope( $connection2, "Planner", "sharingDefaultStudents" ) ;
 							?>
 							<select name="viewableStudents" id="viewableStudents" style="width: 302px">
-								<option <?php if ($sharingDefaultStudents=="Y") { print "selected" ; } ?> value="Y"><?php print _('Yes') ?></option>
-								<option <?php if ($sharingDefaultStudents=="N") { print "selected" ; } ?> value="N"><?php print _('No') ?></option>
+								<option <?php if ($sharingDefaultStudents=="Y") { print "selected" ; } ?> value="Y"><?php print __($guid, 'Yes') ?></option>
+								<option <?php if ($sharingDefaultStudents=="N") { print "selected" ; } ?> value="N"><?php print __($guid, 'No') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr id="accessRowParents">
 						<td> 
-							<b><?php print _('Viewable to Parents') ?> *</b><br/>
+							<b><?php print __($guid, 'Viewable to Parents') ?> *</b><br/>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
@@ -1171,21 +1171,21 @@ else {
 							$sharingDefaultParents=getSettingByScope( $connection2, "Planner", "sharingDefaultParents" ) ;
 							?>
 							<select name="viewableParents" id="viewableParents" style="width: 302px">
-								<option <?php if ($sharingDefaultParents=="Y") { print "selected" ; } ?> value="Y"><?php print _('Yes') ?></option>
-								<option <?php if ($sharingDefaultParents=="N") { print "selected" ; } ?> value="N"><?php print _('No') ?></option>
+								<option <?php if ($sharingDefaultParents=="Y") { print "selected" ; } ?> value="Y"><?php print __($guid, 'Yes') ?></option>
+								<option <?php if ($sharingDefaultParents=="N") { print "selected" ; } ?> value="N"><?php print __($guid, 'No') ?></option>
 							</select>
 						</td>
 					</tr>
 					
 					<tr class='break' id="guestRow">
 						<td colspan=2> 
-							<h4><?php print _('Guests') ?></h4>
+							<h4><?php print __($guid, 'Guests') ?></h4>
 						</td>
 					</tr>
 					<tr id="guestListRow">
 						<td> 
-							<b><?php print _('Guest List') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
+							<b><?php print __($guid, 'Guest List') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></i></span>
 						</td>
 						<td class="right">
 							<select name="guests[]" id="guests[]" multiple style="width: 302px; height: 150px">
@@ -1206,25 +1206,25 @@ else {
 					</tr>
 					<tr id="guestRoleRow">
 						<td> 
-							<b><?php print _('Role') ?></b><br/>
+							<b><?php print __($guid, 'Role') ?></b><br/>
 						</td>
 						<td class="right">
 							<select name="role" id="role" style="width: 302px">
-								<option value="Guest Student"><?php print _('Guest Student') ?></option>
-								<option value="Guest Teacher"><?php print _('Guest Teacher') ?></option>
-								<option value="Guest Assistant"><?php print _('Guest Assistant') ?></option>
-								<option value="Guest Technician"><?php print _('Guest Technician') ?></option>
-								<option value="Guest Parent"><?php print _('Guest Parent') ?></option>
-								<option value="Other Guest"><?php print _('Other Guest') ?></option>
+								<option value="Guest Student"><?php print __($guid, 'Guest Student') ?></option>
+								<option value="Guest Teacher"><?php print __($guid, 'Guest Teacher') ?></option>
+								<option value="Guest Assistant"><?php print __($guid, 'Guest Assistant') ?></option>
+								<option value="Guest Technician"><?php print __($guid, 'Guest Technician') ?></option>
+								<option value="Guest Parent"><?php print __($guid, 'Guest Parent') ?></option>
+								<option value="Other Guest"><?php print __($guid, 'Other Guest') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
-							<input type="submit" value="<?php print _("Submit") ; ?>">
+							<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 						</td>
 					</tr>
 				</table>

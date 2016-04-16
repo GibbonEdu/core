@@ -86,7 +86,7 @@ else {
 				//Fail2
 				$URL.="&bumpReturn=fail2$params" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 			
 			if ($result->rowCount()!=1) {
@@ -109,7 +109,7 @@ else {
 						//Fail2
 						$URL.="&bumpReturn=fail2$params" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 					while ($rowList=$resultList->fetch()) {
 						//Look for next available slot
@@ -160,7 +160,7 @@ else {
 						//Fail2
 						$URL.="&bumpReturn=fail2$params" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 					while ($rowList=$resultList->fetch()) {
 						//Look for last available slot

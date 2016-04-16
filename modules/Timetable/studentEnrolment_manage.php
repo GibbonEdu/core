@@ -22,17 +22,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/Timetable/studentEnrolment_manage.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Manage Student Enrolment') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Manage Student Enrolment') . "</div>" ;
 	print "</div>" ;
 	
 	print "<p>" ;
-	print _('This page allows departmental Coordinators and Assistant Coordinators to manage student enolment within their department.') ;
+	print __($guid, 'This page allows departmental Coordinators and Assistant Coordinators to manage student enolment within their department.') ;
 	print "</p>" ;
 	
 	try {
@@ -47,7 +47,7 @@ else {
 	
 	if ($result->rowCount()<1) {
 		print "<div class='error'>" ;
-		print _("There are no records to display.") ;
+		print __($guid, "There are no records to display.") ;
 		print "</div>" ;
 	}
 	else {
@@ -68,32 +68,32 @@ else {
 			
 			if ($resultClass->rowCount()<1) {
 				print "<div class='error'>" ;
-				print _("There are no records to display.") ;
+				print __($guid, "There are no records to display.") ;
 				print "</div>" ;
 			}
 			else {
 				print "<table cellspacing='0' style='width: 100%'>" ;
 					print "<tr class='head'>" ;
 						print "<th>" ;
-							print _("Name") ;
+							print __($guid, "Name") ;
 						print "</th>" ;
 						print "<th>" ;
-							print _("Short Name") ;
+							print __($guid, "Short Name") ;
 						print "</th>" ;
 						print "<th>" ;
-							print _("Participants") . "<br/>" ;
-							print "<span style='font-size: 85%; font-style: italic'>" . _('Active') . "</span>" ;
-						print "</th>" ;
-						print "<th>" ;
-							print "Participants<br/>" ;
-							print "<span style='font-size: 85%; font-style: italic'>" . _('Expected') . "</span>" ;
+							print __($guid, "Participants") . "<br/>" ;
+							print "<span style='font-size: 85%; font-style: italic'>" . __($guid, 'Active') . "</span>" ;
 						print "</th>" ;
 						print "<th>" ;
 							print "Participants<br/>" ;
-							print "<span style='font-size: 85%; font-style: italic'>" . _('Total') . "</span>" ;
+							print "<span style='font-size: 85%; font-style: italic'>" . __($guid, 'Expected') . "</span>" ;
+						print "</th>" ;
+						print "<th>" ;
+							print "Participants<br/>" ;
+							print "<span style='font-size: 85%; font-style: italic'>" . __($guid, 'Total') . "</span>" ;
 						print "</th>" ;
 						print "<th style='width: 55px'>" ;
-							print _("Actions") ;
+							print __($guid, "Actions") ;
 						print "</th>" ;
 					print "</tr>" ;
 					
@@ -153,7 +153,7 @@ else {
 								print "<b>" . ($active+$expected) . "<b/> " ;
 							print "</td>" ;
 							print "<td>" ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/studentEnrolment_manage_edit.php&gibbonCourseClassID=" . $rowClass["gibbonCourseClassID"] . "&gibbonCourseID=" . $row["gibbonCourseID"] . "'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/studentEnrolment_manage_edit.php&gibbonCourseClassID=" . $rowClass["gibbonCourseClassID"] . "&gibbonCourseID=" . $row["gibbonCourseID"] . "'><img title='" . __($guid, 'Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 							print "</td>" ;
 						print "</tr>" ;
 						

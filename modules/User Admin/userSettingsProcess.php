@@ -44,7 +44,8 @@ if (isActionAccessible($guid, $connection2, "/modules/User Admin/userSettings.ph
 }
 else {
 	//Proceed!
-	$ethnicity=$_POST["ethnicity"] ; 	
+	$ethnicity=$_POST["ethnicity"] ; 
+	$religions=$_POST["religions"] ; 		
 	$nationality=$_POST["nationality"] ; 	
 	$residencyStatus=$_POST["residencyStatus"] ; 	
 	$departureReasons=$_POST["departureReasons"] ; 	
@@ -61,6 +62,16 @@ else {
 	try {
 		$data=array("value"=>$ethnicity); 
 		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='ethnicity'" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { 
+		$fail=TRUE ; 
+	}
+	
+	try {
+		$data=array("value"=>$religions); 
+		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='religions'" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}

@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Finance/invoices_manage_print.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -43,7 +43,7 @@ else {
 	
 	if ($gibbonFinanceInvoiceID=="" OR $gibbonSchoolYearID=="" OR $type=="") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -59,7 +59,7 @@ else {
 		
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print _("The specified record cannot be found.") ;
+				print __($guid, "The specified record cannot be found.") ;
 			print "</div>" ;
 		}
 		else {
@@ -80,14 +80,14 @@ else {
 				print "</h2>" ;
 				if ($preview) {
 					print "<p style='font-weight: bold; color: #c00; font-size: 100%; letter-spacing: -0.5px'>" ;
-						print _("THIS INVOICE IS A PREVIEW: IT HAS NOT YET BEEN ISSUED AND IS FOR TESTING PURPOSES ONLY!") ;
+						print __($guid, "THIS INVOICE IS A PREVIEW: IT HAS NOT YET BEEN ISSUED AND IS FOR TESTING PURPOSES ONLY!") ;
 					print "</p>" ;
 				}
 				
 				$invoiceContents=invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]["currency"], FALSE, TRUE) ;
 				if ($invoiceContents==FALSE) {
 					print "<div class='error'>" ;
-						print _("An error occurred.") ;
+						print __($guid, "An error occurred.") ;
 					print "</div>" ;
 				}
 				else {
@@ -134,12 +134,12 @@ else {
 				}
 				
 				print "<h2>" ;
-					print _("Invoice") ;
+					print __($guid, "Invoice") ;
 				print "</h2>" ;
 				$invoiceContents=invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]["currency"]) ;
 				if ($invoiceContents==FALSE) {
 					print "<div class='error'>" ;
-						print _("An error occurred.") ;
+						print __($guid, "An error occurred.") ;
 					print "</div>" ;
 				}
 				else {
@@ -150,12 +150,12 @@ else {
 			}
 			else if ($type="Receipt") {
 				print "<h2>" ;
-					print _("Receipt") ;
+					print __($guid, "Receipt") ;
 				print "</h2>" ;
 				$receiptContents=receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]["currency"], FALSE, $receiptNumber) ;
 				if ($receiptContents==FALSE) {
 					print "<div class='error'>" ;
-						print _("An error occurred.") ;
+						print __($guid, "An error occurred.") ;
 					print "</div>" ;
 				}
 				else {

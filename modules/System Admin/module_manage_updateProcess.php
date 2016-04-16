@@ -64,7 +64,7 @@ else {
 			//Fail2
 			$URL.="&updateReturn=fail2" ;
 			header("Location: {$URL}");
-			break ;
+			exit() ;
 		}
 		
 		if ($result->rowCount()!=1) {
@@ -77,9 +77,9 @@ else {
 			
 			$versionDB=$_POST["versionDB"] ;
 			$versionCode=$_POST["versionCode"] ;
-
+			
 			//Validate Inputs
-			if ($versionDB=="" OR $versionCode=="" OR $versionDB>=$versionCode) {
+			if ($versionDB=="" OR $versionCode=="" OR version_compare($versionDB, $versionCode)!=-1) {
 				//Fail 3
 				$URL.="&updateReturn=fail3" ;
 				header("Location: {$URL}");
@@ -89,7 +89,7 @@ else {
 				
 				$partialFail=FALSE;
 				foreach ($sql AS $version) {
-					if ($version[0]>$versionDB AND $version[0]<=$versionCode) {
+					if (version_compare($version[0], $versionDB, ">") AND version_compare($version[0], $versionCode, "<=")) {
 						$sqlTokens=explode(";end", $version[1]) ;
 						foreach ($sqlTokens AS $sqlToken) {
 							if (trim($sqlToken)!="") {
@@ -122,7 +122,7 @@ else {
 						//Fail 2
 						$URL.="&updateReturn=fail2" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 					
 					//Success 0

@@ -144,7 +144,7 @@ else {
 								//Fail2
 								$URL.="&approveReturn=fail2" ;
 								header("Location: {$URL}");
-								break ;
+								exit() ;
 							}
 	
 							if ($result->rowCount()!=1) {
@@ -169,7 +169,7 @@ else {
 									//Fail2
 									$URL.="&approveReturn=fail2" ;
 									header("Location: {$URL}");
-									break ;
+									exit() ;
 								}
 							
 							
@@ -183,14 +183,14 @@ else {
 									}
 									catch(PDOException $e) { }
 									while ($rowHolder=$resultHolder->fetch()) {
-										$notificationText=sprintf(_('Someone has commented on the expense request for "%1$s" in budget "%2$s".'), $row["title"], $row["budget"]) ;
+										$notificationText=sprintf(__($guid, 'Someone has commented on the expense request for "%1$s" in budget "%2$s".'), $row["title"], $row["budget"]) ;
 										setNotification($connection2, $guid, $rowHolder["gibbonPersonID"], $notificationText, "Finance", "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=" . $row["gibbonFinanceBudgetID"]) ;
 									}
 								}
 							
 								//Notify approvers that it is commented upon
 								foreach ($approvers AS $approver) {
-									$notificationText=sprintf(_('Someone has commented on the expense request for "%1$s" in budget "%2$s".'), $row["title"], $row["budget"]) ;
+									$notificationText=sprintf(__($guid, 'Someone has commented on the expense request for "%1$s" in budget "%2$s".'), $row["title"], $row["budget"]) ;
 									setNotification($connection2, $guid, $approver["gibbonPersonID"], $notificationText, "Finance", "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=" . $row["gibbonFinanceBudgetID"]) ;
 								}
 							

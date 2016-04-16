@@ -25,13 +25,13 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_future_byPerson.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Set Future Absence') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Set Future Absence') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -39,16 +39,16 @@ else {
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="fail0") {
-			$deleteReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+			$deleteReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($deleteReturn=="fail1") {
-			$deleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$deleteReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($deleteReturn=="fail2") {
-			$deleteReturnMessage=_("Your request failed due to a database error.") ;	
+			$deleteReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 		}
 		else if ($deleteReturn=="success0") {
-			$deleteReturnMessage=_("Your request was completed successfully.") ;	
+			$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -61,25 +61,25 @@ else {
 	$class="error" ;
 	if (!($updateReturn=="")) {
 		if ($updateReturn=="fail0") {
-			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($updateReturn=="fail1") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail2") {
-			$updateReturnMessage=_("Your request failed due to a database error.") ;	
+			$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 		}
 		else if ($updateReturn=="fail3") {
-			$updateReturnMessage=_("Your request failed because the specified date is not in the future, or is not a school day.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because the specified date is not in the future, or is not a school day.") ;	
 		}
 		else if ($updateReturn=="fail4") {
-			$updateReturnMessage=_("Your request failed because specified date already has a record associated with it.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because specified date already has a record associated with it.") ;	
 		}
 		else if ($updateReturn=="fail5") {
-			$updateReturnMessage=_("Your request was successful, but some data was not properly saved.") ;	
+			$updateReturnMessage=__($guid, "Your request was successful, but some data was not properly saved.") ;	
 		}
 		else if ($updateReturn=="success0") {
-			$updateReturnMessage=_("Your request was completed successfully.") ;	
+			$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -98,13 +98,13 @@ else {
 			<tr class='break'>
 				<td colspan=2> 
 					<h3>
-						<?php print _('Choose Student') ?>
+						<?php print __($guid, 'Choose Student') ?>
 					</h3>
 				</td>
 			</tr>
 			<tr>
 				<td style='width: 275px'> 
-					<b><?php print _('Student') ?></b><br/>
+					<b><?php print __($guid, 'Student') ?></b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
@@ -159,10 +159,10 @@ else {
 		
 		if ($resultLog->rowCount()>0) {
 			print "<div class='success'>" ;
-				print _('The following future absences have been set for the selected student.') ;
+				print __($guid, 'The following future absences have been set for the selected student.') ;
 				print "<ul>" ;
 				while ($rowLog=$resultLog->fetch()) {
-					print "<li style='line-height: 250%'><b>" . dateConvertBack($guid, substr($rowLog["date"],0,10)) . "</b> | " . sprintf(_('Recorded at %1$s on %2$s by %3$s'), substr($rowLog["timestampTaken"],11), dateConvertBack($guid, substr($rowLog["timestampTaken"],0,10)), formatName($rowLog["title"], $rowLog["preferredName"], $rowLog["surname"], "Staff", false, true)) . " <a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Attendance/attendance_future_byPersonDeleteProcess.php?gibbonPersonID=$gibbonPersonID&date=" .$rowLog["date"] . "' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a></li>" ;
+					print "<li style='line-height: 250%'><b>" . dateConvertBack($guid, substr($rowLog["date"],0,10)) . "</b> | " . sprintf(__($guid, 'Recorded at %1$s on %2$s by %3$s'), substr($rowLog["timestampTaken"],11), dateConvertBack($guid, substr($rowLog["timestampTaken"],0,10)), formatName($rowLog["title"], $rowLog["preferredName"], $rowLog["surname"], "Staff", false, true)) . " <a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Attendance/attendance_future_byPersonDeleteProcess.php?gibbonPersonID=$gibbonPersonID&date=" .$rowLog["date"] . "' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' title='" . __($guid, 'Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a></li>" ;
 				}
 				print "</ul>" ;
 			print "</div>" ;
@@ -175,14 +175,14 @@ else {
 				<tr class='break'>
 					<td colspan=2> 
 						<h3>
-							<?php print _('Set Future Attendance') ?>
+							<?php print __($guid, 'Set Future Attendance') ?>
 						</h3>
 					</td>
 				</tr>
 				<tr>
 					<td style='width: 275px'> 
-						<b><?php print _('Type') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+						<b><?php print __($guid, 'Type') ?> *</b><br/>
+						<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
 					</td>
 					<td class="right">
 						<input readonly name="type" id="type" maxlength=10 value="Absent" type="text" style="width: 300px">
@@ -190,7 +190,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('Start Date') ?> *</b><br/>
+						<b><?php print __($guid, 'Start Date') ?> *</b><br/>
 						<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 					</td>
 					<td class="right">
@@ -209,7 +209,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('End Date') ?></b><br/>
+						<b><?php print __($guid, 'End Date') ?></b><br/>
 						<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
 					</td>
 					<td class="right">
@@ -227,26 +227,26 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('Reason') ?></b><br/>
+						<b><?php print __($guid, 'Reason') ?></b><br/>
 						<span style="font-size: 90%"><i></i></span>
 					</td>
 					<td class="right">
 						<?php
 						print "<select style='float: none; width: 302px; margin-bottom: 10px' name='reason'>" ;
 							print "<option value=''></option>" ;
-							print "<option value='Pending'>" . _('Pending') . "</option>" ;
-							print "<option value='Education'>" . _('Education') . "</option>" ;
-							print "<option value='Family'>" . _('Family') . "</option>" ;
-							print "<option value='Medical'>" . _('Medical') . "</option>" ;
-							print "<option value='Other'>" . _('Other') . "</option>" ;
+							print "<option value='Pending'>" . __($guid, 'Pending') . "</option>" ;
+							print "<option value='Education'>" . __($guid, 'Education') . "</option>" ;
+							print "<option value='Family'>" . __($guid, 'Family') . "</option>" ;
+							print "<option value='Medical'>" . __($guid, 'Medical') . "</option>" ;
+							print "<option value='Other'>" . __($guid, 'Other') . "</option>" ;
 						print "</select>" ;
 						?>
 					</td>
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('Comment') ?></b><br/>
-						<span style="font-size: 90%"><i><?php print _('255 character limit') ?></i></span>
+						<b><?php print __($guid, 'Comment') ?></b><br/>
+						<span style="font-size: 90%"><i><?php print __($guid, '255 character limit') ?></i></span>
 					</td>
 					<td class="right">
 						<?php
@@ -260,11 +260,11 @@ else {
 				</tr>
 				<tr>
 					<td>
-						<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+						<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
 					</td>
 					<td class="right">
 						<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-						<input type="submit" value="<?php print _("Submit") ; ?>">
+						<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 					</td>
 				</tr>
 			</table>

@@ -25,13 +25,13 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Library/library_browse.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Browse The Library') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Browse The Library') . "</div>" ;
 	print "</div>" ;
 	
 	//Get display settings
@@ -53,7 +53,7 @@ else {
 				print "<tr>" ;
 					print "<td style='width: 10px'></td>" ;
 					print "<td style='width: 33%; padding-top: 5px; text-align: center; vertical-align: top'>" ;
-						print "<div style='color: #CC0000; margin-bottom: -2px; font-weight: bold; font-size: 135%'>" . _('All Time Top 5') . "</div>" ; 
+						print "<div style='color: #CC0000; margin-bottom: -2px; font-weight: bold; font-size: 135%'>" . __($guid, 'All Time Top 5') . "</div>" ; 
 						try {
 							$dataTop=array(); 
 							$sqlTop="SELECT gibbonLibraryItem.name, producer, COUNT( * ) AS count FROM gibbonLibraryItem JOIN gibbonLibraryItemEvent ON (gibbonLibraryItemEvent.gibbonLibraryItemID=gibbonLibraryItem.gibbonLibraryItemID) JOIN gibbonLibraryType ON (gibbonLibraryItem.gibbonLibraryTypeID=gibbonLibraryType.gibbonLibraryTypeID) WHERE gibbonLibraryItem.borrowable='Y' AND gibbonLibraryItemEvent.type='Loan' AND gibbonLibraryType.name='Print Publication' GROUP BY producer, name ORDER BY count DESC LIMIT 0, 5" ;
@@ -65,7 +65,7 @@ else {
 						}
 						if ($resultTop->rowCount()<1) {
 							print "<div class='warning'>" ;
-								print _("There are no records to display.") ;
+								print __($guid, "There are no records to display.") ;
 							print "</div>" ; 
 						}
 						else {
@@ -92,7 +92,7 @@ else {
 						}
 					print "</td>" ;
 					print "<td style='width: 33%; padding-top: 5px; text-align: center; vertical-align: top'>" ;
-						print "<div style='color: #CC0000; margin-bottom: -2px; font-weight: bold; font-size: 135%'>" . _('Monthly Top 5') . "</div>" ; 
+						print "<div style='color: #CC0000; margin-bottom: -2px; font-weight: bold; font-size: 135%'>" . __($guid, 'Monthly Top 5') . "</div>" ; 
 						try {
 							$dataTop=array("timestampOut"=>date("Y-m-d H:i:s", (time()-(60*60*24*30)))); 
 							$sqlTop="SELECT gibbonLibraryItem.name, producer, COUNT( * ) AS count FROM gibbonLibraryItem JOIN gibbonLibraryItemEvent ON (gibbonLibraryItemEvent.gibbonLibraryItemID=gibbonLibraryItem.gibbonLibraryItemID) JOIN gibbonLibraryType ON (gibbonLibraryItem.gibbonLibraryTypeID=gibbonLibraryType.gibbonLibraryTypeID) WHERE timestampOut>=:timestampOut AND gibbonLibraryItem.borrowable='Y' AND gibbonLibraryItemEvent.type='Loan' AND gibbonLibraryType.name='Print Publication' GROUP BY producer, name ORDER BY count DESC LIMIT 0, 5" ;
@@ -104,7 +104,7 @@ else {
 						}
 						if ($resultTop->rowCount()<1) {
 							print "<div class='warning'>" ;
-								print _("There are no records to display.") ;
+								print __($guid, "There are no records to display.") ;
 							print "</div>" ; 
 						}
 						else {
@@ -131,7 +131,7 @@ else {
 						}
 					print "</td>" ;
 					print "<td style='width: 33%; padding-top: 5px; text-align: center; vertical-align: top'>" ;
-						print "<div style='color: #CC0000; margin-bottom: -5px; font-weight: bold; font-size: 135%'>" . _('New Titles') . "</div>" ;  
+						print "<div style='color: #CC0000; margin-bottom: -5px; font-weight: bold; font-size: 135%'>" . __($guid, 'New Titles') . "</div>" ;  
 						try {
 							$dataTop=array(); 
 							$sqlTop="SELECT gibbonLibraryItem.name, producer FROM gibbonLibraryItem JOIN gibbonLibraryType ON (gibbonLibraryItem.gibbonLibraryTypeID=gibbonLibraryType.gibbonLibraryTypeID) WHERE gibbonLibraryItem.borrowable='Y' AND gibbonLibraryType.name='Print Publication'  ORDER BY timestampCreator DESC LIMIT 0, 5" ;
@@ -143,7 +143,7 @@ else {
 						}
 						if ($resultTop->rowCount()<1) {
 							print "<div class='warning'>" ;
-								print _("There are no records to display.") ;
+								print __($guid, "There are no records to display.") ;
 							print "</div>" ; 
 						}
 						else {
@@ -230,16 +230,16 @@ else {
 					print "<tr>" ;
 						print "<td style='width: 10px'></td>" ;
 						print "<td style='padding-top: 10px'>" ;
-							print "<b>" . _('Title') . "</b>" ;
+							print "<b>" . __($guid, 'Title') . "</b>" ;
 						print "</td>" ;
 						print "<td style='padding-top: 10px'>" ;
-							print "<b>" . _('Author/Producer') . "</b>" ;
+							print "<b>" . __($guid, 'Author/Producer') . "</b>" ;
 						print "</td>" ;
 						print "<td style='padding-top: 10px'>" ;
-							print "<b>" . _('Category') . "</b>" ;
+							print "<b>" . __($guid, 'Category') . "</b>" ;
 						print "</td>" ;
 						print "<td style='padding-top: 10px'>" ;
-							print "<b>" . _('Collection') . "</b>" ;
+							print "<b>" . __($guid, 'Collection') . "</b>" ;
 						print "</td>" ;
 					print "</tr>" ;
 					print "<tr>" ;
@@ -269,7 +269,7 @@ else {
 									if ($rowSelect["gibbonLibraryTypeID"]==$category) {
 										$selected="selected" ;
 									}
-									print "<option $selected value='" . $rowSelect["gibbonLibraryTypeID"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
+									print "<option $selected value='" . $rowSelect["gibbonLibraryTypeID"] . "'>" . htmlPrep(__($guid, $rowSelect["name"])) . "</option>" ;
 									$fields=unserialize($rowSelect["fields"]) ;
 										foreach ($fields as $field) {
 										if ($field["name"]=="Collection" AND $field["type"]=="Select") {
@@ -302,7 +302,7 @@ else {
 					print "<tr>" ;
 						print "<td style='width: 10px'></td>" ;
 						print "<td style='padding-top: 10px' colspan=4>" ;
-							print "<b>" . _('All Fields') . "</b>" ;
+							print "<b>" . __($guid, 'All Fields') . "</b>" ;
 						print "</td>" ;
 					print "</tr>" ;
 					print "<tr>" ;
@@ -314,8 +314,8 @@ else {
 					print "<tr>" ;
 						print "<td style='padding: 0px 2px 10px 0px; text-align: right' colspan=5>" ;
 							print "<input type='hidden' name='q' value='/modules/Library/library_lending.php'>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Library/library_browse.php'>" . _('Clear Filters') . "</a> " ;
-							print "<input style='height: 27px; width: 20px!important; margin: 0px;' type='submit' value='" . _('Go') . "'>" ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Library/library_browse.php'>" . __($guid, 'Clear Filters') . "</a> " ;
+							print "<input style='height: 27px; width: 20px!important; margin: 0px;' type='submit' value='" . __($guid, 'Go') . "'>" ;
 						print "</td>" ;
 					print "</tr>" ;
 				print "</table>" ;
@@ -422,7 +422,7 @@ else {
 				
 			if ($result->rowCount()<1) {
 				print "<div class='error'>" ;
-				print _("There are no records to display.") ;
+				print __($guid, "There are no records to display.") ;
 				print "</div>" ;
 			}
 			else {
@@ -436,18 +436,18 @@ else {
 						
 						print "</th>" ;
 						print "<th>" ;
-							print _("Name") . "<br/>" ;
-							print "<span style='font-size: 85%; font-style: italic'>" . _('Author/Producer') . "</span>" ;
+							print __($guid, "Name") . "<br/>" ;
+							print "<span style='font-size: 85%; font-style: italic'>" . __($guid, 'Author/Producer') . "</span>" ;
 						print "</th>" ;
 						print "<th>" ;
-							print _("ID") . "<br/>" ;
-							print "<span style='font-size: 85%; font-style: italic'>" . _('Status') . "</span>" ;
+							print __($guid, "ID") . "<br/>" ;
+							print "<span style='font-size: 85%; font-style: italic'>" . __($guid, 'Status') . "</span>" ;
 						print "</th>" ;
 						print "<th>" ;
-							print _("Location") ;
+							print __($guid, "Location") ;
 						print "</th>" ;
 						print "<th>" ;
-							print _("Actions") ;
+							print __($guid, "Actions") ;
 						print "</th>" ;
 					print "</tr>" ;
 					
@@ -512,7 +512,7 @@ else {
 									print "});" ;
 								print "</script>" ;
 								if ($row["fields"]!="") {
-									print "<a title='" . _('View Description') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='Show Details' onclick='return false;' /></a>" ;
+									print "<a title='" . __($guid, 'View Description') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='Show Details' onclick='return false;' /></a>" ;
 								}
 							print "</td>" ;
 						print "</tr>" ;

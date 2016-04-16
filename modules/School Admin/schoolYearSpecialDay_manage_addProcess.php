@@ -85,7 +85,7 @@ else {
 			//Fail 2
 			$URL.="&duplicateReturn=fail2" ;
 			header("Location: {$URL}");
-			break ;
+			exit() ;
 		}		
 			
 		//Check unique inputs for uniquness
@@ -99,7 +99,7 @@ else {
 			//Fail 2
 			$URL.="&addReturn=fail2" ;
 			header("Location: {$URL}");
-			break ;
+			exit() ;
 		}
 		
 		if ($dateStamp<$firstDay OR $dateStamp>$lastDay) {
@@ -125,7 +125,7 @@ else {
 					//Fail 2
 					$URL.="&addReturn=fail2" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 				
 				//Unlock locked database tables

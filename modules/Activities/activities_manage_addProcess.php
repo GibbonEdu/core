@@ -76,11 +76,18 @@ else {
 	}
 	$gibbonYearGroupIDList=substr($gibbonYearGroupIDList,0,(strlen($gibbonYearGroupIDList)-1)) ;
 	$maxParticipants=$_POST["maxParticipants"] ;
-	$payment=$_POST["payment"] ;
+	if (getSettingByScope($connection2, "Activities", "payment")=="None" OR getSettingByScope($connection2, "Activities", "payment")=="Single") {
+		$paymentOn=FALSE ;
+		$payment=NULL ;
+	}
+	else {
+		$paymentOn=TRUE ;
+		$payment=$_POST["payment"] ;
+	}
 	$description=$_POST["description"] ;
 
 	
-	if ($dateType=="" OR $name=="" OR $provider=="" OR $active=="" OR $registration=="" OR $maxParticipants=="" OR $payment=="" OR ($dateType=="Date" AND ($listingStart=="" OR $listingEnd=="" OR $programStart=="" OR $programEnd==""))) {
+	if ($dateType=="" OR $name=="" OR $provider=="" OR $active=="" OR $registration=="" OR $maxParticipants=="" OR ($paymentOn AND $payment=="") OR ($dateType=="Date" AND ($listingStart=="" OR $listingEnd=="" OR $programStart=="" OR $programEnd==""))) {
 		//Fail 3
 		$URL.="&addReturn=fail3" ;
 		header("Location: {$URL}");
@@ -108,7 +115,7 @@ else {
 			//Fail 2
 			$URL.="&addReturn=fail2" ;
 			header("Location: {$URL}");
-			break ; 
+			exit() ; 
 		}
 		
 		//Last insert ID
