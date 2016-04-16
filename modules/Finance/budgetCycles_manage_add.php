@@ -30,6 +30,8 @@ else {
 	print "<div class='trail'>" ;
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/budgetCycles_manage.php'>" . __($guid, 'Manage Budget Cycles') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Add Budget Cycle') . "</div>" ;
 	print "</div>" ;
+
+	if (isset($_GET["return"])) { returnProcess($_GET["return"], null, array("error3" => "Your request failed because some inputs did not meet a requirement for uniqueness.")); }
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
 	$addReturnMessage="" ;

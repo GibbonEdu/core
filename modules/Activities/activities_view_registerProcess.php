@@ -46,14 +46,14 @@ $URLSuccess=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModu
 
 if (isActionAccessible($guid, $connection2, "/modules/Activities/activities_view_register.php")==FALSE) {
 	//Fail 0
-	$URL.="&updateReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, "/modules/Activities/activities_view_register.php", $connection2) ;
 	if ($highestAction==FALSE) {
 		//Fail 0
-		$URL.="&updateReturn=fail0" ;
+		$URL.="&return=error0" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -65,7 +65,7 @@ else {
 		
 		if ($access!="Register") {
 			//Fail0
-			$URL.="&updateReturn=fail0" ;
+			$URL.="&return=error0" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -73,7 +73,7 @@ else {
 			//Check if school year specified
 			if ($gibbonActivityID=="" OR $gibbonPersonID=="") {
 				//Fail1
-				$URL.="&updateReturn=fail1" ;
+				$URL.="&return=error1" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -95,14 +95,14 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail2
-					$URL.="&updateReturn=fail2" ;
+					$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
 						
 				if ($result->rowCount()!=1) {
 					//Fail 2
-					$URL.="&updateReturn=fail2" ;
+					$URL.="&return=error2" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -118,14 +118,14 @@ else {
 						}
 						catch(PDOException $e) { 
 							//Fail 2
-							$URL.="&updateReturn=fail2" ;
+							$URL.="&return=error2" ;
 							header("Location: {$URL}");
 							exit() ;
 						}
 								
 						if ($resultReg->rowCount()>0) {
 							//Fail 5
-							$URL.="&updateReturn=fail5" ;
+							$URL.="&return=error3" ;
 							header("Location: {$URL}");
 						}
 						else {
@@ -141,7 +141,7 @@ else {
 							
 							if ($backup=="Y" AND $gibbonActivityIDBackup=="") {
 								//Fail 3
-								$URL.="&updateReturn=fail3" ;
+								$URL.="&error=error1" ;
 								header("Location: {$URL}");
 							}
 							else {
@@ -155,7 +155,7 @@ else {
 								}
 								catch(PDOException $e) { 
 									//Fail 2
-									$URL.="&updateReturn=fail2" ;
+									$URL.="&return=error2" ;
 									header("Location: {$URL}");
 									exit() ;
 								}		
@@ -193,7 +193,7 @@ else {
 								}
 								catch(PDOException $e) { 
 									//Fail 2
-									$URL.="&updateReturn=fail2" ;
+									$URL.="&return=error2" ;
 									header("Location: {$URL}");
 									exit() ;
 								}
@@ -207,11 +207,11 @@ else {
 							
 								//Success 0
 								if ($status=="Waiting List") {
-									$URLSuccess=$URLSuccess . "&updateReturn=success2" ;
+									$URLSuccess=$URLSuccess . "&return=success2" ;
 									header("Location: {$URLSuccess}");
 								}
 								else {
-									$URLSuccess=$URLSuccess . "&updateReturn=success0" ;
+									$URLSuccess=$URLSuccess . "&return=success0" ;
 									header("Location: {$URLSuccess}");
 								}
 							}
@@ -227,14 +227,14 @@ else {
 						}
 						catch(PDOException $e) { 
 							//Fail 2
-							$URL.="&updateReturn=fail2" ;
+							$URL.="&return=error2" ;
 							header("Location: {$URL}");
 							exit() ;
 						}
 						
 						if ($resultReg->rowCount()<1) {
 							//Fail 5
-							$URL.="&updateReturn=fail5" ;
+							$URL.="&return=error3" ;
 							header("Location: {$URL}");
 						}
 						else {
@@ -247,7 +247,7 @@ else {
 							}
 							catch(PDOException $e) { 
 								//Fail 2
-								$URL.="&updateReturn=fail2" ;
+								$URL.="&return=error2" ;
 								header("Location: {$URL}");
 								exit() ;
 							}
@@ -262,7 +262,7 @@ else {
 								}
 								catch(PDOException $e) { 
 									//Fail 2
-									$URL.="&updateReturn=fail2" ;
+									$URL.="&return=error2" ;
 									header("Location: {$URL}");
 									exit() ;
 								}		
@@ -308,7 +308,7 @@ else {
 							}
 							
 							//Success 1
-							$URLSuccess=$URLSuccess . "&updateReturn=success1" ;
+							$URLSuccess=$URLSuccess . "&return=success1" ;
 							header("Location: {$URLSuccess}");
 						}
 					}

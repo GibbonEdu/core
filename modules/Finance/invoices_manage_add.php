@@ -33,41 +33,21 @@ else {
 	print "<div class='trail'>" ;
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoices_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . __($guid, 'Manage Invoices') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Add Fees & Invoices') . "</div>" ;
 	print "</div>" ;
-	
-	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
-	$addReturnMessage="" ;
-	$class="error" ;
-	if (!($addReturn=="")) {
-		if ($addReturn=="fail0") {
-			$addReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-		}
-		else if ($addReturn=="fail2") {
-			$addReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-		}
-		else if ($addReturn=="fail3") {
-			$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($addReturn=="fail4") {
-			$addReturnMessage=__($guid, "Some aspects of your update failed, effecting the following areas:") . "<ul>" ;	
-			if ($_GET["studentFailCount"]) {
-				$addReturnMessage.="<li>" . $_GET["studentFailCount"] . " " . __($guid, 'students encountered problems.') . "</li>" ;
-			}
-			if ($_GET["invoiceFailCount"]) {
-				$addReturnMessage.="<li>" . $_GET["invoiceFailCount"] . " " . __($guid, 'invoices encountered problems.') . "</li>" ;
-			}
-			if ($_GET["invoiceFeeFailCount"]) {
-				$addReturnMessage.="<li>" . $_GET["invoiceFeeFailCount"] . " " . __($guid, 'fee entires encountered problems.') . "</li>" ;
-			}
-			$addReturnMessage.="</ul>" . __($guid, 'It is recommended that you remove all pending invoices and try to recreate them.') ;
-		}
-		else if ($addReturn=="success0") {
-			$addReturnMessage=__($guid, "Your request was completed successfully.") ;	
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $addReturnMessage;
-		print "</div>" ;
+
+	$error3=__($guid, "Some aspects of your update failed, effecting the following areas:") . "<ul>" ;	
+	if ($_GET["studentFailCount"]) {
+		$error3.="<li>" . $_GET["studentFailCount"] . " " . __($guid, 'students encountered problems.') . "</li>" ;
 	}
+	if ($_GET["invoiceFailCount"]) {
+		$error3.="<li>" . $_GET["invoiceFailCount"] . " " . __($guid, 'invoices encountered problems.') . "</li>" ;
+	}
+	if ($_GET["invoiceFeeFailCount"]) {
+		$error3.="<li>" . $_GET["invoiceFeeFailCount"] . " " . __($guid, 'fee entires encountered problems.') . "</li>" ;
+	}
+	$error3.="</ul>" . __($guid, 'It is recommended that you remove all pending invoices and try to recreate them.') ;
+
+
+	if (isset($_GET["return"])) { returnProcess($_GET["return"], null, array("error3" => $error3)); }
 	
 	print "<p>" ;
 		print __($guid, "Here you can add fees to one or more students. These fees will be added to an existing invoice or used to form a new invoice, depending on the specified billing schedule and other details.") ;

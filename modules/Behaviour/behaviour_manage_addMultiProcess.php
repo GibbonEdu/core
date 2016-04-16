@@ -42,7 +42,7 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_manage_add.php")==FALSE) {
 	//Fail 0
-	$URL.="&addReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -68,7 +68,7 @@ else {
 		
 	if (is_null($gibbonPersonIDMulti)==TRUE OR $date=="" OR $type=="" OR ($descriptor=="" AND $enableDescriptors=="Y")) {
 		//Fail 3
-		$URL.="&addReturn=fail3" ;
+		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -136,12 +136,12 @@ else {
 		
 		if ($partialFail==TRUE) {
 			//Fail 5
-			$URL.="&addReturn=fail5" ;
+			$URL.="&return=warning1" ;
 			header("Location: {$URL}");
 		}
 		else {
 			//Success 0
-			$URL.="&addReturn=success0" ;
+			$URL.="&return=success0" ;
 			header("Location: {$URL}");
 		}
 	}

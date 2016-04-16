@@ -46,7 +46,7 @@ else {
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Finance/billingSchedule_manage_add.php")==FALSE) {
 		//Fail 0
-		$URL.="&addReturn=fail0" ;
+		$URL.="&return=error0" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -58,7 +58,7 @@ else {
 			
 		if ($name=="" OR $active=="" OR $invoiceIssueDate=="" OR $invoiceDueDate=="") {
 			//Fail 3
-			$URL.="&addReturn=fail3" ;
+			$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -72,13 +72,13 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail2
-				$URL.="&addReturn=fail2" ;
+				$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
 	
 			//Success 0
-			$URL.="&addReturn=success0" ;
+			$URL.="&return=success0" ;
 			header("Location: {$URL}");
 		}
 	}

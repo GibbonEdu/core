@@ -40,7 +40,7 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/Activities/activities_copy.php")==FALSE) {
 	//Fail 0
-	$URL.="&copyReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -48,7 +48,7 @@ else {
 	//Check if school year specified
 	if ($gibbonSchoolYearID=="") {
 		//Fail1
-		$URL.="&copyReturn=fail1" ;
+		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -60,14 +60,14 @@ else {
 		}
 		catch(PDOException $e) { 
 			//Fail2
-			$URL.="&copyReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ; 
 		}
 		
 		if ($result->rowCount()!=1) {
 			//Fail 2
-			$URL.="&copyReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -76,7 +76,7 @@ else {
 			
 			if ($gibbonSchoolYearIDTarget=="") {
 				//Fail 3
-				$URL.="&copyReturn=fail3" ;
+				$URL.="&return=error1" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -168,15 +168,14 @@ else {
 					}
 				}
 				
-				
 				if ($partialFail==TRUE) {
-					//Fail 5
-					$URL.="&copyReturn=fail5" ;
+					//Unknown Error
+					$URL.="&return=warning1" ;
 					header("Location: {$URL}");
 				}
 				else {
 					//Success 0
-					$URL.="&copyReturn=success0" ;
+					$URL.="&return=success0" ;
 					header("Location: {$URL}");
 				}
 			}

@@ -62,13 +62,13 @@ else {
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Finance/invoices_manage.php")==FALSE) {
 		//Fail 0
-		$URL.="&bulkReturn=fail0" ;
+		$URL.="&return=error0" ;
 		header("Location: {$URL}");
 	}
 	else {
 		$gibbonFinanceInvoiceIDs=$_POST["gibbonFinanceInvoiceIDs"] ;
 		if (count($gibbonFinanceInvoiceIDs)<1) {
-			$URL.="&bulkReturn=fail3" ;
+			$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -97,12 +97,12 @@ else {
 					}
 				}
 				if ($partialFail==TRUE) {
-					$URL.="&bulkReturn=fail5" ;
+					$URL.="&return=error?" ;
 					header("Location: {$URL}");
 				}
 				else {
 					//Success 0
-					$URL.="&bulkReturn=success0" ;
+					$URL.="&return=success0" ;
 					header("Location: {$URL}");
 				}
 			}
@@ -373,17 +373,17 @@ else {
 				}
 				
 				if ($partialFail==TRUE) {
-					$URL.="&bulkReturn=fail5" ;
+					$URL.="&return=error?" ;
 					header("Location: {$URL}");
 				}
 				else if ($emailFail==TRUE) { 
 					//Success 1
-					$URL.="&bulkReturn=success1" ;
+					$URL.="&return=success1" ;
 					header("Location: {$URL}");
 				}
 				else {
 					//Success 0
-					$URL.="&bulkReturn=success0" ;
+					$URL.="&return=success0" ;
 					header("Location: {$URL}");
 				}
 			}
@@ -533,17 +533,17 @@ else {
 				}
 				
 				if ($partialFail==TRUE) {
-					$URL.="&bulkReturn=fail5" ;
+					$URL.="&return=error?" ;
 					header("Location: {$URL}");
 				}
 				else if ($emailFail==TRUE) { 
 					//Success 1
-					$URL.="&bulkReturn=success1" ;
+					$URL.="&return=success1" ;
 					header("Location: {$URL}");
 				}
 				else {
 					//Success 0
-					$URL.="&bulkReturn=success0" ;
+					$URL.="&return=success0" ;
 					header("Location: {$URL}");
 				}
 			}
@@ -560,7 +560,7 @@ else {
 				//header("Location: {$URL}");
 			}
 			else {
-				$URL.="&bulkReturn=fail3" ;
+				$URL.="&return=fail1" ;
 				header("Location: {$URL}");
 			}
 		}

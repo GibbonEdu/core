@@ -29,41 +29,9 @@ if (isset($_GET["key"])) {
 	$key=$_GET["key"] ;
 }
 
-if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
-$addReturnMessage="" ;
-$class="error" ;
-if (!($addReturn=="")) {
-	if ($addReturn=="fail0") {
-		$addReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-	}
-	else if ($addReturn=="fail2") {
-		$addReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-	}
-	else if ($addReturn=="fail3") {
-		$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-	}
-	else if ($addReturn=="fail4") {
-		$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-	}
-	else if ($addReturn=="fail5") {
-		$addReturnMessage=__($guid, "Your payment could not be made as the payment gateway does not support the system's currency.") ;	
-	}
-	else if ($addReturn=="success1") {
-		$class="success" ;
-		$addReturnMessage=__($guid, "Your payment has been successfully made to your credit card. A receipt has been emailed to you.") ;
-	}
-	else if ($addReturn=="success2") {
-		$addReturnMessage=__($guid, "Your payment could not be made to your credit card. Please try an alternative payment method.") ;
-	}
-	else if ($addReturn=="success3") {
-		$addReturnMessage=sprintf(__($guid, 'Your payment has been successfully made to your credit card, but there has been an error recording your payment in %1$s. Please print this screen and contact the school ASAP, quoting code %2$s.'), $_SESSION[$guid]["systemName"], $gibbonFinanceInvoiceID) ;
-	}	
-	print "<div class='$class'>" ;
-		print $addReturnMessage;
-	print "</div>" ;
-} 
+if (isset($_GET["return"])) { returnProcess($_GET["return"], null, array("error3" => "Your payment could not be made as the payment gateway does not support the system's currency.", "success1" => "Your payment has been successfully made to your credit card. A receipt has been emailed to you.", "success2" => "Your payment could not be made to your credit card. Please try an alternative payment method.", "success3" => sprintf(__($guid, 'Your payment has been successfully made to your credit card, but there has been an error recording your payment in %1$s. Please print this screen and contact the school ASAP, quoting code %2$s.'), $_SESSION[$guid]["systemName"], $gibbonFinanceInvoiceID))); }
 	
-if ($addReturnMessage=="") { //No return message, so must just be landing to make payment
+if (!isset($_GET["return"])) { //No return message, so must just be landing to make payment
 	//Check variables
 	if ($gibbonFinanceInvoiceID=="" OR $key=="") {
 		print "<div class='error'>" ;

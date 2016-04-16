@@ -36,6 +36,7 @@ else {
 		print "</div>" ;
 	}
 	else {
+		if (isset($_GET["return"])) { returnProcess($_GET["return"], null, null); }
 		//Proceed!
 		if (isset($_GET["approveReturn"])) { $approveReturn=$_GET["approveReturn"] ; } else { $approveReturn="" ; }
 		$approveReturnMessage="" ;

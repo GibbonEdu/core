@@ -35,36 +35,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/invoicees_manage.php'>" . __($guid, 'Manage Invoicees') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Edit Invoicee') . "</div>" ;
 	print "</div>" ;
 	
-	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-	$updateReturnMessage="" ;
-	$class="error" ;
-	if (!($updateReturn=="")) {
-		if ($updateReturn=="fail0") {
-			$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-		}
-		else if ($updateReturn=="fail1") {
-			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($updateReturn=="fail2") {
-			$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-		}
-		else if ($updateReturn=="fail3") {
-			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($updateReturn=="fail4") {
-			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($updateReturn=="fail5") {
-			$updateReturnMessage=__($guid, "Your request failed due to an attachment error.") ;	
-		}
-		else if ($updateReturn=="success0") {
-			$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $updateReturnMessage;
-		print "</div>" ;
-	} 
+	if (isset($_GET["return"])) { returnProcess($_GET["return"], null, null); }
 	
 	if ($_GET["search"]!="" OR $_GET["allUsers"]=="on") {
 		print "<div class='linkTop'>" ;

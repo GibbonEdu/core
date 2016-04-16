@@ -52,43 +52,21 @@ else {
 			print sprintf(__($guid, 'This page allows any adult with data access permission to request selected finance data updates for any children in their family. If any of your children do not appear in this list, please contact %1$s.'), "<a href='mailto:" . $_SESSION[$guid]["organisationAdministratorEmail"] . "'>" . $_SESSION[$guid]["organisationAdministratorName"] . "</a>") ;
 			print "</p>" ;
 		}
-		
-		if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-		$updateReturnMessage="" ;
-		$class="error" ;
-		if (!($updateReturn=="")) {
-			if ($updateReturn=="fail0") {
-				$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-			}
-			else if ($updateReturn=="fail1") {
-				$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-			}
-			else if ($updateReturn=="fail2") {
-				$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-			}
-			else if ($updateReturn=="fail3") {
-				$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-			}
-			else if ($updateReturn=="fail4") {
-				$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-			}
-			else if ($updateReturn=="fail5") {
-				$updateReturnMessage=__($guid, "Your request was successful, but some data was not properly saved. An administrator will process your request as soon as possible. <u>You will not see the updated data in the system until it has been processed and approved.</u>") ; 
-				if ($_SESSION[$guid]["organisationDBAEmail"]!="" AND $_SESSION[$guid]["organisationDBAName"]!="") {
-					$updateReturnMessage.=" " . sprintf(__($guid, 'Please contact %1$s if you have any questions.'), "<a href='mailto:" . $_SESSION[$guid]["organisationDBAEmail"] . "'>" . $_SESSION[$guid]["organisationDBAName"] . "</a>") ;	
-				}
-			}
-			else if ($updateReturn=="success0") {
-				$updateReturnMessage=__($guid, "Your request was completed successfully. An administrator will process your request as soon as possible. You will not see the updated data in the system until it has been processed and approved.") ; 
-				if ($_SESSION[$guid]["organisationDBAEmail"]!="" AND $_SESSION[$guid]["organisationDBAName"]!="") {
-					$updateReturnMessage.=" " . sprintf(__($guid, 'Please contact %1$s if you have any questions.'), "<a href='mailto:" . $_SESSION[$guid]["organisationDBAEmail"] . "'>" . $_SESSION[$guid]["organisationDBAName"] . "</a>") ;	
-				}
-				$class="success" ;
-			}
-			print "<div class='$class'>" ;
-				print $updateReturnMessage;
-			print "</div>" ;
-		} 
+
+		$customResponces = array();
+		$error3=__($guid, "Your request was successful, but some data was not properly saved. An administrator will process your request as soon as possible. <u>You will not see the updated data in the system until it has been processed and approved.</u>") ; 
+		if ($_SESSION[$guid]["organisationDBAEmail"]!="" AND $_SESSION[$guid]["organisationDBAName"]!="") {
+			$error3.=" " . sprintf(__($guid, 'Please contact %1$s if you have any questions.'), "<a href='mailto:" . $_SESSION[$guid]["organisationDBAEmail"] . "'>" . $_SESSION[$guid]["organisationDBAName"] . "</a>") ;	
+		}
+		$customResponces["error3"] = $error3;
+
+		$success0=__($guid, "Your request was completed successfully. An administrator will process your request as soon as possible. You will not see the updated data in the system until it has been processed and approved.") ; 
+		if ($_SESSION[$guid]["organisationDBAEmail"]!="" AND $_SESSION[$guid]["organisationDBAName"]!="") {
+			$success0.=" " . sprintf(__($guid, 'Please contact %1$s if you have any questions.'), "<a href='mailto:" . $_SESSION[$guid]["organisationDBAEmail"] . "'>" . $_SESSION[$guid]["organisationDBAName"] . "</a>") ;	
+		}
+		$customResponces["success0"] = $success0;
+
+		if (isset($_GET["return"])) { returnProcess($_GET["return"], null, $customResponces); }
 		
 		print "<h2>" ;
 		print __($guid, "Choose User") ;

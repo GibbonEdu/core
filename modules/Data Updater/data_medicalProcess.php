@@ -40,14 +40,14 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/Data Updater/data_medical.php")==FALSE) {
 	//Fail 0
-	$URL.="&updateReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, $_POST["address"], $connection2) ;
 	if ($highestAction==FALSE) {
 		//Fail 0
-		$URL.="&updateReturn=fail0$params" ;
+		$URL.="&return=error0$params" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -55,7 +55,7 @@ else {
 		//Check if school year specified
 		if ($gibbonPersonID=="") {
 			//Fail1
-			$URL.="&updateReturn=fail1" ;
+			$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -70,7 +70,7 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail 2
-					$URL.="&updateReturn=fail2$params" ;
+					$URL.="&return=error2$params" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
@@ -85,7 +85,7 @@ else {
 				}
 				catch(PDOException $e) {
 					//Fail 2
-					$URL.="&updateReturn=fail2$params" ;
+					$URL.="&return=error2$params" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
@@ -98,7 +98,7 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail 2
-						$URL.="&updateReturn=fail2$params" ;
+						$URL.="&return=error2$params" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
@@ -111,7 +111,7 @@ else {
 			}
 			if ($checkCount<1) {
 				//Fail 2
-				$URL.="&updateReturn=fail2" ;
+				$URL.="&return=error2" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -127,7 +127,7 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail 2
-						$URL.="&addReturn=fail2" ;
+						$URL.="&return=error2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}	
@@ -139,7 +139,7 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail 2
-						$URL.="&addReturn=fail2" ;
+						$URL.="&return=error2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
@@ -303,7 +303,7 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail 2
-					$URL.="&updateReturn=fail2" ;
+					$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
@@ -317,12 +317,12 @@ else {
 				}
 						
 				if ($partialFail==TRUE) {
-					$URL.="&updateReturn=fail5" ;
+					$URL.="&return=fail1" ;
 					header("Location: {$URL}");
 				}
 				else {
 					//Success 0
-					$URL.="&updateReturn=success0" ;
+					$URL.="&return=success0" ;
 					header("Location: {$URL}");
 				}
 			}

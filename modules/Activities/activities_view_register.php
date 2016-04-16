@@ -202,29 +202,7 @@ else {
 									print "</div>" ;
 								}
 								else {
-									if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-									$updateReturnMessage="" ;
-									$class="error" ;
-									if (!($updateReturn=="")) {
-										if ($updateReturn=="fail0") {
-											$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-										}
-										else if ($updateReturn=="fail2") {
-											$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-										}
-										else if ($updateReturn=="fail3") {
-											$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-										}
-										else if ($updateReturn=="fail4") {
-											$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-										}
-										else if ($updateReturn=="fail5") {
-											$updateReturnMessage=__($guid, "Registration failed because you are already registered in this activity.") ;	
-										}
-										print "<div class='$class'>" ;
-											print $updateReturnMessage;
-										print "</div>" ;
-									} 
+									if (isset($_GET["return"])) { returnProcess($_GET["return"], null, array("error3" => "Registration failed because you are already registered in this activity.")); }
 									
 									//Check registration limit...
 									$proceed=true ;

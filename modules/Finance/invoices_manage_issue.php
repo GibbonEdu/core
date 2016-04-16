@@ -45,30 +45,8 @@ else {
 	print "<p>" ;
 	print __($guid, "Issuing an invoice confirms it in the system, meaning the financial details within the invoice can no longer be edited. On issue, you also have the choice to email the invoice to the appropriate family and company recipients.") ;
 	print "</p>" ;
-	
-	if (isset($_GET["issueReturn"])) { $issueReturn=$_GET["issueReturn"] ; } else { $issueReturn="" ; }
-	$issueReturnMessage="" ;
-	$class="error" ;
-	if (!($issueReturn=="")) {
-		if ($issueReturn=="fail0") {
-			$issueReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-		}
-		else if ($issueReturn=="fail1") {
-			$issueReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($issueReturn=="fail2") {
-			$issueReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-		}
-		else if ($issueReturn=="fail3") {
-			$issueReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($issueReturn=="fail4") {
-			$issueReturnMessage=__($guid, "Some aspects of your request failed, but others were successful. Because of the errors, the system did not attempt to send any requested emails.") ;	
-		}
-		print "<div class='$class'>" ;
-			print $issueReturnMessage;
-		print "</div>" ;
-	} 
+
+	if (isset($_GET["return"])) { returnProcess($_GET["return"], null, array("error4" => "Some aspects of your request failed, but others were successful. Because of the errors, the system did not attempt to send any requested emails.")); }
 	
 	if ($gibbonFinanceInvoiceID=="" OR $gibbonSchoolYearID=="") {
 		print "<div class='error'>" ;

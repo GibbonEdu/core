@@ -40,28 +40,8 @@ else {
 		print "<div class='trail'>" ;
 		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/expenses_manage.php&gibbonFinanceBudgetCycleID=" . $_GET["gibbonFinanceBudgetCycleID"] . "'>" . __($guid, 'Manage Expenses') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Edit Expense') . "</div>" ;
 		print "</div>" ;
-		
-		if (isset($_GET["editReturn"])) { $editReturn=$_GET["editReturn"] ; } else { $editReturn="" ; }
-		$editReturnMessage="" ;
-		$class="error" ;
-		if (!($editReturn=="")) {
-			if ($editReturn=="fail0") {
-				$editReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-			}
-			else if ($editReturn=="fail2") {
-				$editReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-			}
-			else if ($editReturn=="fail3") {
-				$editReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-			}
-			if ($editReturn=="success0") {
-				$editReturnMessage=__($guid, "Your request was completed successfully.") ;		
-				$class="success" ;
-			}
-			print "<div class='$class'>" ;
-				print $editReturnMessage;
-			print "</div>" ;
-		} 
+
+		if (isset($_GET["return"])) { returnProcess($_GET["return"], null, null); }
 	
 		//Check if params are specified
 		$gibbonFinanceExpenseID=$_GET["gibbonFinanceExpenseID"] ;

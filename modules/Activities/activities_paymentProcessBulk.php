@@ -46,7 +46,7 @@ else {
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Activities/activities_payment.php")==FALSE) {
 		//Fail 0
-		$URL.="&updateReturn=fail0" ;
+		$URL.="&return=error0" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -65,7 +65,7 @@ else {
 		//Check if person specified
 		if (count($students)<1) {
 			//Fail4
-			$URL.="&updateReturn=fail4" ;
+			$URL.="&return=erorr1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -78,7 +78,7 @@ else {
 			}
 			catch(PDOException $e) {
 				//Fail 2
-				$URL.="&updateReturn=fail2" ;
+				$URL.="&error=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
@@ -268,12 +268,12 @@ else {
 			catch(PDOException $e) {}	
 			
 			if ($partialFail==TRUE) {
-				$URL.="&updateReturn=fail5" ;
+				$URL.="&return=warning1" ;
 				header("Location: {$URL}");
 			}
 			else {
 				//Success 0
-				$URL.="&updateReturn=success0" ;
+				$URL.="&return=success0" ;
 				header("Location: {$URL}");
 			}
 		}

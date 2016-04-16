@@ -42,14 +42,14 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_manage_add.php")==FALSE) {
 	//Fail 0
-	$URL.="&addReturn=fail0&step=1" ;
+	$URL.="&return=error0&step=1" ;
 	header("Location: {$URL}");
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, $_POST["address"], $connection2) ;
 	if ($highestAction==FALSE) {
 		//Fail 0
-		$URL.="&updateReturn=fail0&step=1" ;
+		$URL.="&return=error0&step=1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -84,7 +84,7 @@ else {
 			
 			if ($gibbonPersonID=="" OR $date=="" OR $type=="" OR ($descriptor=="" AND $enableDescriptors=="Y")) {
 				//Fail 3
-				$URL.="&addReturn=fail3&step=1" ;
+				$URL.="&return=error1&step=1" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -97,7 +97,7 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail 2
-					$URL.="&addReturn=fail2&step=1" ;
+					$URL.="&return=erorr2&step=1" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
@@ -163,7 +163,7 @@ else {
 			
 			if ($gibbonPersonID=="") {
 				//Fail 3
-				$URL.="&addReturn=fail3" ;
+				$URL.="&return=error1" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -175,13 +175,13 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail 2
-					$URL.="&addReturn=fail2a&step=2" ;
+					$URL.="&return=warning0&step=2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
 				if ($result->rowCount()!=1) {
 					//Fail 2
-					$URL.="&addReturn=fail2a&step=2" ;
+					$URL.="&return=error2&step=2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
@@ -195,13 +195,13 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail 2
-						$URL.="&addReturn=fail2a&step=2" ;
+						$URL.="&return=warning0&step=2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
 			
 					//Success 0
-					$URL.="&addReturn=success0" ;
+					$URL.="&return=success0" ;
 					header("Location: {$URL}");
 				}
 			}

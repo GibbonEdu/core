@@ -52,7 +52,7 @@ else {
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Finance/expenseRequest_manage_add.php")==FALSE) {
 		//Fail 0
-		$URL.="&addReturn=fail0" ;
+		$URL.="&return=error0" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -65,7 +65,7 @@ else {
 			
 		if ($title=="" OR $cost=="" OR $purchaseBy=="" OR $countAgainstBudget=="") {
 			//Fail 3
-			$URL.="&addReturn=fail3" ;
+			$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -73,7 +73,7 @@ else {
 			$budgetLevelExpenseApproval=getSettingByScope($connection2, "Finance", "budgetLevelExpenseApproval") ;
 			if ($budgetLevelExpenseApproval=="") {
 				//Fail2
-				$URL.="&addReturn=fail2" ;
+				$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
@@ -101,7 +101,7 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail2
-				$URL.="&addReturn=fail2" ;
+				$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
@@ -118,7 +118,7 @@ else {
 			catch(PDOException $e) { 
 				//Fail2
 				print $e->getMessage() ;
-				$URL.="&addReturn=fail2" ;
+				$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
@@ -131,12 +131,12 @@ else {
 	
 			if ($partialFail==TRUE) {
 				//Success 1
-				$URL.="&addReturn=success1" ;
+				$URL.="&return=success1" ;
 				header("Location: {$URL}");
 			}
 			else {
 				//Success 0
-				$URL.="&addReturn=success0" ;
+				$URL.="&return=success0" ;
 				header("Location: {$URL}");
 			}
 			
