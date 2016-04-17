@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 /**
  * sql Connection
  *
- * @version	12th April 2016
+ * @version	18th April 2016
  * @since	8th April 2016
  * @author	Craig Rayner
  */
@@ -72,6 +72,7 @@ class sqlConnection
 	 */
 	public function __construct($message = NULL)
 	{	
+		// Test for Config file. 
 		if (file_exists(dirname(__FILE__). '/../../config.php'))
 			include dirname(__FILE__). '/../../config.php';
 		else
@@ -100,14 +101,7 @@ class sqlConnection
 			$this->pdo = new \PDO("mysql:host=".$databaseServer.";dbname=".$databaseName.";charset=utf8", $databaseUsername, $databasePassword );
 			$this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 			$this->pdo->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
-			$version = $this->getVersion();
-			if ($version > '5.7')  //Default for 5.7.x is STRICT_ALL_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_ZERO_DATE,NO_ZERO_IN_DATE,NO_AUTO_CREATE_USER
-				$result = $this->pdo->prepare("SET SESSION `sql_mode` = ''");
-			elseif ($version > '5.6')  // Default for 5.6.x is NO_ENGINE_SUBSTITUTION
-				$result = $this->pdo->prepare("SET SESSION `sql_mode` = ''");
-			else // Default for < 5.6 is ''
-				$result = $this->pdo->prepare("SET SESSION `sql_mode` = ''");
-			$result->execute(array());
+			$this->setSQLMode();
 		}
 		catch( \PDOException $e)
 		{
@@ -124,6 +118,7 @@ class sqlConnection
 	/**
 	 * get Connection
 	 *
+	 * Only required for backwards compatibilty in Gibbon.
 	 * @version	8th April 2016
 	 * @since	8th April 2016
 	 * @return	Object PDO COnnection
@@ -225,8 +220,8 @@ class sqlConnection
 	 * @param	string	error Message
 	 * @return	Object	PDO Connection
 	 */
-	 public function installBypass($databaseServer, $databaseName, $databaseUsername, $databasePassword, $message = NULL)
-	 {
+	public function installBypass($databaseServer, $databaseName, $databaseUsername, $databasePassword, $message = NULL)
+	{
 		$databaseNameClean="`".str_replace("`","``",$databaseName)."`";
 		$this->success = true;
 		$this->pdo = NULL;
@@ -235,14 +230,7 @@ class sqlConnection
 			$this->pdo = new \PDO("mysql:host=".$databaseServer.";charset=utf8", $databaseUsername, $databasePassword );
 			$this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 			$this->pdo->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
-			$version = $this->getVersion();
-			if ($version > '5.7')  //Default for 5.7.x is STRICT_ALL_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_ZERO_DATE,NO_ZERO_IN_DATE,NO_AUTO_CREATE_USER
-				$result = $this->pdo->prepare("SET SESSION `sql_mode` = ''");
-			elseif ($version > '5.6')  // Default for 5.6.x is NO_ENGINE_SUBSTITUTION
-				$result = $this->pdo->prepare("SET SESSION `sql_mode` = ''");
-			else // Default for < 5.6 is ''
-				$result = $this->pdo->prepare("SET SESSION `sql_mode` = ''");
-			$result->execute(array());
+			$this->setSQLMode();
 		}
 		catch( \PDOException $e)
 		{
@@ -258,7 +246,26 @@ class sqlConnection
 		if ($this->querySuccess)
 			$result = $this->executeQuery(array(), "USE ". $databaseNameClean);
 		return $this;
-	 }
+	}
+	 
+	/**
+	 * set SQL Mode
+	 *
+	 * @version	18th April 2016
+	 * @since	18th April 2016
+	 * @return	void
+	 */
+	private function setSQLMode()
+	{
+		$version = $this->getVersion();
+		if ($version > '5.7')  //Default for 5.7.x is STRICT_ALL_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_ZERO_DATE,NO_ZERO_IN_DATE,NO_AUTO_CREATE_USER
+			$result = $this->pdo->prepare("SET SESSION `sql_mode` = ''");
+		elseif ($version > '5.6')  // Default for 5.6.x is NO_ENGINE_SUBSTITUTION
+			$result = $this->pdo->prepare("SET SESSION `sql_mode` = ''");
+		else // Default for < 5.6 is ''
+			$result = $this->pdo->prepare("SET SESSION `sql_mode` = ''");
+		$result->execute(array());
+	}
 }
 
 /**
@@ -268,7 +275,7 @@ class sqlConnection
  * @since OLD
  * @param mixed The object to be printed
  * @param boolean Stop execution after printing object.
- * @param boolean Stop execution after printing object.
+ * @param boolean Full dump of Trace Stack
  * @return void
  */
 function dump($object, $stop = false, $full = false) 
