@@ -350,5 +350,6 @@ UPDATE gibbonAction SET category='Request Updates' WHERE gibbonModuleID=(SELECT 
 UPDATE gibbonAction SET category='Request Updates' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Data Updater') AND name LIKE 'Update Medical Data_%';end
 UPDATE gibbonAction SET category='Request Updates' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Data Updater') AND name LIKE 'Update Personal Data_%';end
 UPDATE gibbonSetting SET description='Default HTML contents for the Job Opening Description field.' WHERE name='jobOpeningDescriptionTemplate' AND scope='Staff';end
+INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('hu_HU', 'Magyar - Magyarország', 'N', 'N', 'Attila Pegan', '', 'dd-mm-yyyy', '/^(0[1-9]|[12][0-9]|3[01])[-](0[1-9]|1[012])[-](19|20)\\\d\\\d$/i', 'd-m-Y', 'N');end
 ";
 ?>
