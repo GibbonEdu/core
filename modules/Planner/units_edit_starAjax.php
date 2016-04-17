@@ -23,14 +23,8 @@ include "../../config.php" ;
 include "./moduleFunctions.php" ;
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 @session_start() ;
 
@@ -43,7 +37,7 @@ $gibbonUnitBlockID=$_POST["gibbonUnitBlockID"] ;
 $i=$_POST["i"] ; 
 	
 if ($gibbonPersonID=="" OR $action=="" OR $gibbonUnitBlockID=="" OR $i=="") {
-	print _("Error") ;
+	print __($guid, "Error") ;
 }
 else {
 	if ($action=="star") {

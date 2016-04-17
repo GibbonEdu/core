@@ -22,13 +22,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/applicationFormSettings.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Data Updater Settings') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Data Updater Settings') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -36,19 +36,19 @@ else {
 	$class="error" ;
 	if (!($updateReturn=="")) {
 		if ($updateReturn=="fail0") {
-			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($updateReturn=="fail1") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail2") {
-			$updateReturnMessage=_("One or more of the fields in your request failed due to a database error.") ;	
+			$updateReturnMessage=__($guid, "One or more of the fields in your request failed due to a database error.") ;	
 		}
 		else if ($updateReturn=="fail3") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="success0") {
-			$updateReturnMessage=_("Your request was completed successfully.") ;	
+			$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -58,8 +58,8 @@ else {
 	?>
 	
 	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/dataUpdaterSettingsProcess.php" ?>">
-		<h2><?php print _('Required Fields for Personal Updates') ?></h2>
-		<p><?php print _('These required field settings apply to all users, except those who hold the ability to submit a data update request for all users in the system (generally just admins).') ?></p>
+		<h2><?php print __($guid, 'Required Fields for Personal Updates') ?></h2>
+		<p><?php print __($guid, 'These required field settings apply to all users, except those who hold the ability to submit a data update request for all users in the system (generally just admins).') ?></p>
 		<?php
 		
 		//Get setting and unserialize
@@ -68,10 +68,10 @@ else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print _("Field") ;
+					print __($guid, "Field") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Required") ;
+					print __($guid, "Required") ;
 				print "</th>" ;
 			print "</tr>" ;
 			
@@ -80,7 +80,7 @@ else {
 			//COLOR ROW BY STATUS!
 			print "<tr class='odd'>" ;
 				print "<td>" ;
-					print _("Title") ;
+					print __($guid, "Title") ;
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
@@ -94,7 +94,7 @@ else {
 			print "</tr>" ;
 			print "<tr class='even'>" ;
 				print "<td>" ;
-					print _("Surname") ;
+					print __($guid, "Surname") ;
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
@@ -108,7 +108,7 @@ else {
 			print "</tr>" ;
 			print "<tr class='odd'>" ;
 				print "<td>" ;
-					print _("First Name") ;
+					print __($guid, "First Name") ;
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
@@ -122,7 +122,7 @@ else {
 			print "</tr>" ;
 			print "<tr class='odd'>" ;
 				print "<td>" ;
-					print _("Preferred Names") ;
+					print __($guid, "Preferred Names") ;
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
@@ -136,7 +136,7 @@ else {
 			print "</tr>" ;
 			print "<tr class='even'>" ;
 				print "<td>" ;
-					print _("Official Name") ;
+					print __($guid, "Official Name") ;
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
@@ -150,7 +150,7 @@ else {
 			print "</tr>" ;
 			print "<tr class='odd'>" ;
 				print "<td>" ;
-					print _("Name In Characters") ;
+					print __($guid, "Name In Characters") ;
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
@@ -164,7 +164,7 @@ else {
 			print "</tr>" ;
 			print "<tr class='even'>" ;
 				print "<td>" ;
-					print _("Date of Birth") ;
+					print __($guid, "Date of Birth") ;
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
@@ -178,7 +178,7 @@ else {
 			print "</tr>" ;
 			print "<tr class='odd'>" ;
 				print "<td>" ;
-					print _("Email") ;
+					print __($guid, "Email") ;
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
@@ -192,7 +192,7 @@ else {
 			print "</tr>" ;
 			print "<tr class='even'>" ;
 				print "<td>" ;
-					print _("Alternate Email") ;
+					print __($guid, "Alternate Email") ;
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
@@ -206,50 +206,50 @@ else {
 			print "</tr>" ;
 			print "<tr class='odd'>" ;
 				print "<td>" ;
-					print _("Address 1") ;
+					print __($guid, "Address 1") ;
 				print "</td>" ;
 				print "<td>" ;
-					print "<input disabled='disabled' type='checkbox' name='address1'> <i>" . _('This field cannot be required') . "</i>." ;
+					print "<input disabled='disabled' type='checkbox' name='address1'> <i>" . __($guid, 'This field cannot be required') . "</i>." ;
 				print "</td>" ;
 			print "</tr>" ;
 			print "<tr class='even'>" ;
 				print "<td>" ;
-					print _("Address 1 District") ;
+					print __($guid, "Address 1 District") ;
 				print "</td>" ;
 				print "<td>" ;
-					print "<input disabled='disabled' type='checkbox' name='address1District'> <i>" . _('This field cannot be required') . "</i>." ;
+					print "<input disabled='disabled' type='checkbox' name='address1District'> <i>" . __($guid, 'This field cannot be required') . "</i>." ;
 				print "</td>" ;
 			print "</tr>" ;
 			print "<tr class='odd'>" ;
 				print "<td>" ;
-					print _("Address 1 Country") ;
+					print __($guid, "Address 1 Country") ;
 				print "</td>" ;
 				print "<td>" ;
-					print "<input disabled='disabled' type='checkbox' name='address1Country'> <i>" . _('This field cannot be required') . "</i>." ;
+					print "<input disabled='disabled' type='checkbox' name='address1Country'> <i>" . __($guid, 'This field cannot be required') . "</i>." ;
 				print "</td>" ;
 			print "</tr>" ;
 			print "<tr class='even'>" ;
 				print "<td>" ;
-					print _("Address 2") ;
+					print __($guid, "Address 2") ;
 				print "</td>" ;
 				print "<td>" ;
-					print "<input disabled='disabled' type='checkbox' name='address2'> <i>" . _('This field cannot be required') . "</i>." ;
+					print "<input disabled='disabled' type='checkbox' name='address2'> <i>" . __($guid, 'This field cannot be required') . "</i>." ;
 				print "</td>" ;
 			print "</tr>" ;
 			print "<tr class='odd'>" ;
 				print "<td>" ;
-					print _("Address 2 District") ;
+					print __($guid, "Address 2 District") ;
 				print "</td>" ;
 				print "<td>" ;
-					print "<input disabled='disabled' type='checkbox' name='address2District'> <i>" . _('This field cannot be required') . "</i>." ;
+					print "<input disabled='disabled' type='checkbox' name='address2District'> <i>" . __($guid, 'This field cannot be required') . "</i>." ;
 				print "</td>" ;
 			print "</tr>" ;
 			print "<tr class='even'>" ;
 				print "<td>" ;
-					print _("Address 2 Country") ;
+					print __($guid, "Address 2 Country") ;
 				print "</td>" ;
 				print "<td>" ;
-					print "<input disabled='disabled' type='checkbox' name='address2Country'> <i>" . _('This field cannot be required') . "</i>." ;
+					print "<input disabled='disabled' type='checkbox' name='address2Country'> <i>" . __($guid, 'This field cannot be required') . "</i>." ;
 				print "</td>" ;
 			print "</tr>" ;
 			$phoneCount=0 ;
@@ -261,7 +261,7 @@ else {
 				}
 				print "<tr class='$class'>" ;
 					print "<td>" ;
-						print sprintf(_('Phone %1$s'), $i) ;
+						print sprintf(__($guid, 'Phone %1$s'), $i) ;
 					print "</td>" ;
 					print "<td>" ;
 						$checked="" ;
@@ -276,7 +276,7 @@ else {
 			}
 			print "<tr class='odd'>" ;
 				print "<td>" ;
-					print _("First Language") ;
+					print __($guid, "First Language") ;
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
@@ -290,7 +290,7 @@ else {
 			print "</tr>" ;
 			print "<tr class='even'>" ;
 				print "<td>" ;
-					print _("Second Language") ;
+					print __($guid, "Second Language") ;
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
@@ -304,7 +304,7 @@ else {
 			print "</tr>" ;
 			print "<tr class='odd'>" ;
 				print "<td>" ;
-					print _("Third Language") ;
+					print __($guid, "Third Language") ;
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
@@ -319,7 +319,7 @@ else {
 			
 			print "<tr class='even'>" ;
 				print "<td>" ;
-					print _("Country of Birth") ;
+					print __($guid, "Country of Birth") ;
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
@@ -333,7 +333,7 @@ else {
 			print "</tr>" ;
 			print "<tr class='odd'>" ;
 				print "<td>" ;
-					print _("Ethnicity") ;
+					print __($guid, "Ethnicity") ;
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
@@ -347,7 +347,7 @@ else {
 			print "</tr>" ;
 			print "<tr class='even'>" ;
 				print "<td>" ;
-					print _("Citizenship 1") ;
+					print __($guid, "Citizenship 1") ;
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
@@ -361,7 +361,7 @@ else {
 			print "</tr>" ;
 			print "<tr class='odd'>" ;
 				print "<td>" ;
-					print _("Citizenship 1 Passport") ;
+					print __($guid, "Citizenship 1 Passport") ;
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
@@ -375,7 +375,7 @@ else {
 			print "</tr>" ;
 			print "<tr class='even'>" ;
 				print "<td>" ;
-					print _("Citizenship 2") ;
+					print __($guid, "Citizenship 2") ;
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
@@ -389,7 +389,7 @@ else {
 			print "</tr>" ;
 			print "<tr class='odd'>" ;
 				print "<td>" ;
-					print _("Citizenship 2 Passport") ;
+					print __($guid, "Citizenship 2 Passport") ;
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
@@ -403,7 +403,7 @@ else {
 			print "</tr>" ;
 			print "<tr class='even'>" ;
 				print "<td>" ;
-					print _("Religion") ;
+					print __($guid, "Religion") ;
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
@@ -417,7 +417,7 @@ else {
 			print "</tr>" ;
 			print "<tr class='odd'>" ;
 				print "<td>" ;
-					print _("National ID Card Number") ;
+					print __($guid, "National ID Card Number") ;
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
@@ -431,7 +431,7 @@ else {
 			print "</tr>" ;
 			print "<tr class='even'>" ;
 				print "<td>" ;
-					print _("Residency Status") ;
+					print __($guid, "Residency Status") ;
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
@@ -445,7 +445,7 @@ else {
 			print "</tr>" ;
 			print "<tr class='odd'>" ;
 				print "<td>" ;
-					print _("Visa Expiry Date") ;
+					print __($guid, "Visa Expiry Date") ;
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
@@ -460,7 +460,7 @@ else {
 			
 			print "<tr class='even'>" ;
 				print "<td>" ;
-					print _("Profession") ;
+					print __($guid, "Profession") ;
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
@@ -474,7 +474,7 @@ else {
 			print "</tr>" ;
 			print "<tr class='odd'>" ;
 				print "<td>" ;
-					print _("Employer") ;
+					print __($guid, "Employer") ;
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
@@ -488,7 +488,7 @@ else {
 			print "</tr>" ;
 			print "<tr class='even'>" ;
 				print "<td>" ;
-					print _("Job Title") ;
+					print __($guid, "Job Title") ;
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
@@ -502,7 +502,7 @@ else {
 			print "</tr>" ;
 			print "<tr class='odd'>" ;
 				print "<td>" ;
-					print _("Emergency 1 Name") ;
+					print __($guid, "Emergency 1 Name") ;
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
@@ -516,7 +516,7 @@ else {
 			print "</tr>" ;
 			print "<tr class='even'>" ;
 				print "<td>" ;
-					print _("Emergency 1 Number 1") ;
+					print __($guid, "Emergency 1 Number 1") ;
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
@@ -530,7 +530,7 @@ else {
 			print "</tr>" ;
 			print "<tr class='odd'>" ;
 				print "<td>" ;
-					print _("Emergency 1 Number 2") ;
+					print __($guid, "Emergency 1 Number 2") ;
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
@@ -544,7 +544,7 @@ else {
 			print "</tr>" ;
 			print "<tr class='even'>" ;
 				print "<td>" ;
-					print _("Emergency 1 Relationship") ;
+					print __($guid, "Emergency 1 Relationship") ;
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
@@ -558,7 +558,7 @@ else {
 			print "</tr>" ;
 			print "<tr class='odd'>" ;
 				print "<td>" ;
-					print _("Emergency 2 Name") ;
+					print __($guid, "Emergency 2 Name") ;
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
@@ -572,7 +572,7 @@ else {
 			print "</tr>" ;
 			print "<tr class='even'>" ;
 				print "<td>" ;
-					print _("Emergency 2 Number 1") ;
+					print __($guid, "Emergency 2 Number 1") ;
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
@@ -586,7 +586,7 @@ else {
 			print "</tr>" ;
 			print "<tr class='odd'>" ;
 				print "<td>" ;
-					print _("Emergency 2 Number 2") ;
+					print __($guid, "Emergency 2 Number 2") ;
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
@@ -600,7 +600,7 @@ else {
 			print "</tr>" ;
 			print "<tr class='even'>" ;
 				print "<td>" ;
-					print _("Emergency 2 Relationship") ;
+					print __($guid, "Emergency 2 Relationship") ;
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;
@@ -614,7 +614,7 @@ else {
 			print "</tr>" ;
 			print "<tr class='odd'>" ;
 				print "<td>" ;
-					print _("Vehicle Registration") ;
+					print __($guid, "Vehicle Registration") ;
 				print "</td>" ;
 				print "<td>" ;
 					$checked="" ;

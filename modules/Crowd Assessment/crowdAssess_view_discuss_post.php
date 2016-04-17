@@ -25,44 +25,15 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Crowd Assessment/crowdAssess_view_discuss_post.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/crowdAssess.php'>" . _('View All Assessments') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/crowdAssess_view.php&gibbonPlannerEntryID=" . $_GET["gibbonPlannerEntryID"] . "'>" . _('View Assessment') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/crowdAssess_view_discuss.php&gibbonPlannerEntryID=" . $_GET["gibbonPlannerEntryID"] . "&gibbonPlannerEntryHomeworkID=" . $_GET["gibbonPlannerEntryHomeworkID"] . "&gibbonPersonID=" . $_GET["gibbonPersonID"] . "'>" . _('Discuss') . "</a> > </div><div class='trailEnd'>" . _('Add Post') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/crowdAssess.php'>" . __($guid, 'View All Assessments') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/crowdAssess_view.php&gibbonPlannerEntryID=" . $_GET["gibbonPlannerEntryID"] . "'>" . __($guid, 'View Assessment') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/crowdAssess_view_discuss.php&gibbonPlannerEntryID=" . $_GET["gibbonPlannerEntryID"] . "&gibbonPlannerEntryHomeworkID=" . $_GET["gibbonPlannerEntryHomeworkID"] . "&gibbonPersonID=" . $_GET["gibbonPersonID"] . "'>" . __($guid, 'Discuss') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Add Post') . "</div>" ;
 	print "</div>" ;
-	
-	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-	$updateReturnMessage="" ;
-	$class="error" ;
-	if (!($updateReturn=="")) {
-		if ($updateReturn=="fail0") {
-			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
-		}
-		else if ($updateReturn=="fail1") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($updateReturn=="fail2") {
-			$updateReturnMessage=_("Your request failed due to a database error.") ;	
-		}
-		else if ($updateReturn=="fail3") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($updateReturn=="fail4") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		if ($updateReturn=="fail5") {
-			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
-		}
-		else if ($updateReturn=="success0") {
-			$updateReturnMessage=_("Your request was completed successfully.") ;	
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $updateReturnMessage;
-		print "</div>" ;
-	} 
+
+	if (isset($_GET["return"])) { returnProcess($_GET["return"], null, null); }
 	
 	//Get class variable
 	$gibbonPersonID=$_GET["gibbonPersonID"] ;
@@ -70,7 +41,7 @@ else {
 	$gibbonPlannerEntryHomeworkID=$_GET["gibbonPlannerEntryHomeworkID"] ;
 	if ($gibbonPersonID=="" OR $gibbonPlannerEntryID=="" OR $gibbonPlannerEntryHomeworkID=="") {
 		print "<div class='warning'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	//Check existence of and access to this class.
@@ -87,7 +58,7 @@ else {
 		
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print _("The selected record does not exist, or you do not have access to it.") ;
+				print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 			print "</div>" ;
 		}
 		else {
@@ -111,7 +82,7 @@ else {
 				
 				if ($resultList->rowCount()!=1) {
 					print "<div class='error'>" ;
-						print _("There is currently no work to assess.") ;
+						print __($guid, "There is currently no work to assess.") ;
 					print "</div>" ;
 				}
 				else {
@@ -119,16 +90,16 @@ else {
 					
 					?>
 					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/crowdAssess_view_discuss_postProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID&address=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&replyTo=$replyTo" ?>">
-						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+						<table class='smallIntBorder fullWidth' cellspacing='0'>	
 							<tr>
 								<td colspan=2> 
-									<b><?php print _('Write your comment below:') ?></b> 
+									<b><?php print __($guid, 'Write your comment below:') ?></b> 
 									<?php print getEditor($guid,  TRUE, "comment" ) ?>
 								</td>
 							</tr>
 							<tr>
 								<td class="right" colspan=2>
-									<input type="submit" value="<?php print _("Submit") ; ?>">
+									<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 								</td>
 							</tr>
 						</table>

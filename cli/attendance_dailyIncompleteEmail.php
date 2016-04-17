@@ -22,15 +22,8 @@ require getcwd() . "/../functions.php" ;
 require getcwd() . "/../lib/PHPMailer/class.phpmailer.php";
 						
 //New PDO DB connection
-if ($databaseServer=="localhost") {
-	$databaseServer="127.0.0.1" ;
-}
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) { }
+$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 @session_start() ;
 
@@ -53,7 +46,7 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
 //Check for CLI, so this cannot be run through browser
 if (php_sapi_name()!="cli") { 
-	print _("This script cannot be run from a browser, only via CLI.") . "\n\n" ;
+	print __($guid, "This script cannot be run from a browser, only via CLI.") . "\n\n" ;
 }
 else {
 	$currentDate=date("Y-m-d") ;
@@ -71,7 +64,7 @@ else {
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
-			$report=_("Your request failed due to a database error.") ; 
+			$report=__($guid, "Your request failed due to a database error.") ; 
 		}
 	
 		$log=array() ;
@@ -86,11 +79,11 @@ else {
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
-			$report=_("Your request failed due to a database error.") ;
+			$report=__($guid, "Your request failed due to a database error.") ;
 		}
 	
 		if ($result->rowCount()<1) {
-			$report=_("There are no records to display.") ;
+			$report=__($guid, "There are no records to display.") ;
 		}
 		else {
 			$count=0 ;
@@ -119,10 +112,10 @@ else {
 		}
 		if (isset($count)) {
 			if ($count==0) {
-				$report=sprintf(_('All form groups have been registered today (%1$s).'), dateConvertBack($guid, $currentDate)) ;
+				$report=sprintf(__($guid, 'All form groups have been registered today (%1$s).'), dateConvertBack($guid, $currentDate)) ;
 			}
 			else {
-				$report=sprintf(_('%1$s form groups have not been registered today  (%2$s).'), $count, dateConvertBack($guid, $currentDate)) . "<br/><br/>" . $reportInner ;
+				$report=sprintf(__($guid, '%1$s form groups have not been registered today  (%2$s).'), $count, dateConvertBack($guid, $currentDate)) . "<br/><br/>" . $reportInner ;
 			}
 		}
 		
@@ -130,12 +123,12 @@ else {
 	
 		//Notify non-completing tutors
 		foreach ($ids AS $id) {
-			$notificationText=_('You have not taken attendance yet today. Please do so as soon as possible.') ;
+			$notificationText=__($guid, 'You have not taken attendance yet today. Please do so as soon as possible.') ;
 			setNotification($connection2, $guid, $id[1], $notificationText, "Attendance", "/index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID=" . $id[0] . "&currentDate=" . dateConvertBack($guid, date('Y-m-d'))) ;
 		}
 		
 		//Notify admin {
-		$notificationText=_('An Attendance CLI script has run.') . " " . $report ;
+		$notificationText=__($guid, 'An Attendance CLI script has run.') . " " . $report ;
 		setNotification($connection2, $guid, $_SESSION[$guid]["organisationAdministrator"], $notificationText, "Attendance", "/index.php?q=/modules/Attendance/report_rollGroupsNotRegistered_byDate.php") ;
 	}
 }

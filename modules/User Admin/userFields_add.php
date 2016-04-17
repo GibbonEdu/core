@@ -22,13 +22,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/userFields_add.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/userFields.php'>" . _('Manage Custom Fields') . "</a> > </div><div class='trailEnd'>" . _('Add Custom Field') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/userFields.php'>" . __($guid, 'Manage Custom Fields') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Add Custom Field') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -36,22 +36,22 @@ else {
 	$class="error" ;
 	if (!($addReturn=="")) {
 		if ($addReturn=="fail0") {
-			$addReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+			$addReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($addReturn=="fail2") {
-			$addReturnMessage=_("Your request failed due to a database error.") ;	
+			$addReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 		}
 		else if ($addReturn=="fail3") {
-			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail4") {
-			$addReturnMessage=_("Your request failed because some inputs did not meet a requirement for uniqueness.") ;	
+			$addReturnMessage=__($guid, "Your request failed because some inputs did not meet a requirement for uniqueness.") ;	
 		}
 		else if ($addReturn=="fail5") {
 			$addReturnMessage="Your request failed because your passwords did not match." ;	
 		}
 		else if ($addReturn=="success0") {
-			$addReturnMessage=_("Your request was completed successfully. You can now add another record if you wish.") ;	
+			$addReturnMessage=__($guid, "Your request was completed successfully. You can now add another record if you wish.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -61,13 +61,13 @@ else {
 	?>
 	
 	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/userFields_addProcess.php" ?>">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr>
 				<td> 
-					<b><?php print _('Name') ?> *</b><br/>
+					<b><?php print __($guid, 'Name') ?> *</b><br/>
 				</td>
 				<td class="right">
-					<input name="name" id="name2" maxlength=50 value="" type="text" style="width: 300px">
+					<input name="name" id="name2" maxlength=50 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var name2=new LiveValidation('name2');
 						name2.add(Validate.Presence);
@@ -76,24 +76,24 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Active') ?> *</b><br/>
-					<span style="font-size: 90%"><i></i></span>
+					<b><?php print __($guid, 'Active') ?> *</b><br/>
+					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
-					<select style="width: 302px" name="active">
+					<select class="standardWidth" name="active">
 						<?php
-						print "<option value='Y'>" . _('Yes') . "</option>" ;
-						print "<option value='N'>" . _('No') . "</option>" ;
+						print "<option value='Y'>" . __($guid, 'Yes') . "</option>" ;
+						print "<option value='N'>" . __($guid, 'No') . "</option>" ;
 						?>				
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Description') ?> *</b><br/>
+					<b><?php print __($guid, 'Description') ?> *</b><br/>
 				</td>
 				<td class="right">
-					<input name="description" id="description" maxlength=255 value="" type="text" style="width: 300px">
+					<input name="description" id="description" maxlength=255 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var description=new LiveValidation('description');
 						description.add(Validate.Presence);
@@ -120,12 +120,12 @@ else {
 			</script>
 			<tr>
 				<td style='width: 275px'> 
-					<b><?php print _('Type') ?> *</b><br/>
+					<b><?php print __($guid, 'Type') ?> *</b><br/>
 				</td>
 				<td class="right">
-					<select style="width: 302px" name="type" id="type" class="type">
+					<select class="standardWidth" name="type" id="type" class="type">
 						<?php
-							print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+							print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
 							print "<option value='varchar'>Short Text (max 255 characters)</option>" ;
 							print "<option value='text'>Long Text</option>" ;
 							print "<option value='date'>Date</option>" ;
@@ -135,74 +135,74 @@ else {
 					</select>
 					<script type="text/javascript">
 						var type=new LiveValidation('type');
-						type.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+						type.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 					</script>
 				</td>
 			</tr>
 			<tr id="optionsRow">
 				<td> 
-					<b><?php print _('Options') ?> *</b><br/>
-					<span style="font-size: 90%"><i>
+					<b><?php print __($guid, 'Options') ?> *</b><br/>
+					<span class="emphasis small">
 						<?php 
-							print _('Short Text: number of characters, up to 255.') . "<br/>" ;
-							print _('Long Text: number of rows for field.') . "<br/>" ;
-							print _('Dropdown: comma separated list of options.') . "<br/>" ;	
+							print __($guid, 'Short Text: number of characters, up to 255.') . "<br/>" ;
+							print __($guid, 'Long Text: number of rows for field.') . "<br/>" ;
+							print __($guid, 'Dropdown: comma separated list of options.') . "<br/>" ;	
 						?>
-						</i></span>
+						</span>
 				</td>
 				<td class="right">
-					<textarea name="options" id="options" style="width: 300px" rows='3'></textarea>
+					<textarea name="options" id="options" class="standardWidth" rows='3'></textarea>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Required') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _('Is this field compulsory?') ?></i></span>
+					<b><?php print __($guid, 'Required') ?> *</b><br/>
+					<span class="emphasis small"><?php print __($guid, 'Is this field compulsory?') ?></span>
 				</td>
 				<td class="right">
-					<select style="width: 302px" name="required">
+					<select class="standardWidth" name="required">
 						<?php
-						print "<option value='Y'>" . _('Yes') . "</option>" ;
-						print "<option value='N'>" . _('No') . "</option>" ;
+						print "<option value='Y'>" . __($guid, 'Yes') . "</option>" ;
+						print "<option value='N'>" . __($guid, 'No') . "</option>" ;
 						?>				
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<td style='width: 275px'> 
-					<b><?php print _('Role Categories') ?></b><br/>
+					<b><?php print __($guid, 'Role Categories') ?></b><br/>
 				</td>
 				<td class="right">
 					<?php
-						print _("Student") . " <input checked type='checkbox' name='activePersonStudent' value='1'/><br/>" ;
-						print _("Staff") . " <input type='checkbox' name='activePersonStaff' value='1'/><br/>" ;
-						print _("Parent") . " <input type='checkbox' name='activePersonParent' value='1'/><br/>" ;
-						print _("Other") . " <input type='checkbox' name='activePersonOther' value='1'/><br/>" ;
+						print __($guid, "Student") . " <input checked type='checkbox' name='activePersonStudent' value='1'/><br/>" ;
+						print __($guid, "Staff") . " <input type='checkbox' name='activePersonStaff' value='1'/><br/>" ;
+						print __($guid, "Parent") . " <input type='checkbox' name='activePersonParent' value='1'/><br/>" ;
+						print __($guid, "Other") . " <input type='checkbox' name='activePersonOther' value='1'/><br/>" ;
 					?>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Include In Data Updater?') ?> *</b><br/>
+					<b><?php print __($guid, 'Include In Data Updater?') ?> *</b><br/>
 				</td>
 				<td class="right">
-					<select style="width: 302px" name="activeDataUpdater">
+					<select class="standardWidth" name="activeDataUpdater">
 						<?php
-						print "<option value='1'>" . _('Yes') . "</option>" ;
-						print "<option value='0'>" . _('No') . "</option>" ;
+						print "<option value='1'>" . __($guid, 'Yes') . "</option>" ;
+						print "<option value='0'>" . __($guid, 'No') . "</option>" ;
 						?>				
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Include In Application Form?') ?> *</b><br/>
+					<b><?php print __($guid, 'Include In Application Form?') ?> *</b><br/>
 				</td>
 				<td class="right">
-					<select style="width: 302px" name="activeApplicationForm">
+					<select class="standardWidth" name="activeApplicationForm">
 						<?php
-						print "<option value='1'>" . _('Yes') . "</option>" ;
-						print "<option selected value='0'>" . _('No') . "</option>" ;
+						print "<option value='1'>" . __($guid, 'Yes') . "</option>" ;
+						print "<option selected value='0'>" . __($guid, 'No') . "</option>" ;
 						?>				
 					</select>
 				</td>
@@ -210,11 +210,11 @@ else {
 			
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+					<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 				</td>
 			</tr>
 		</table>

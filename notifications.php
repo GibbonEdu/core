@@ -21,12 +21,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 if (is_null($_SESSION[$guid]["username"])) {
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > </div><div class='trailEnd'>" . _("Notifications") . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > </div><div class='trailEnd'>" . __($guid, "Notifications") . "</div>" ;
 	print "</div>" ;
 
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -34,13 +34,13 @@ else {
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="fail1") {
-			$deleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$deleteReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($deleteReturn=="fail2") {
-			$deleteReturnMessage=_("Your request failed due to a database error.") ;	
+			$deleteReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 		}
 		else if ($deleteReturn=="success0") {
-			$deleteReturnMessage=_("Your request was completed successfully.") ;	
+			$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -53,13 +53,13 @@ else {
 	$class="error" ;
 	if (!($updateReturn=="")) {
 		if ($updateReturn=="fail1") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail2") {
-			$updateReturnMessage=_("Your request failed due to a database error.") ;	
+			$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 		}
 		else if ($updateReturn=="success0") {
-			$updateReturnMessage=_("Your request was completed successfully.") ;	
+			$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -68,7 +68,7 @@ else {
 	}
 
 	print "<div class='linkTop'>" ; 
-		print "<a onclick='return confirm(\"Are you sure you want to delete these records.\")' href='" . $_SESSION[$guid]["absoluteURL"] . "/notificationsDeleteAllProcess.php'>" . _('Delete All Notifications') . " <img style='vertical-align: -25%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'></a>" ;
+		print "<a onclick='return confirm(\"Are you sure you want to delete these records.\")' href='" . $_SESSION[$guid]["absoluteURL"] . "/notificationsDeleteAllProcess.php'>" . __($guid, 'Delete All Notifications') . " <img style='vertical-align: -25%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'></a>" ;
 	print "</div>" ;
 	
 	//Get and show newnotifications
@@ -86,25 +86,25 @@ else {
 	}
 
 	print "<h2>" ;
-		print _("New Notifications") . " <span style='font-size: 65%; font-style: italic; font-weight: normal'> x" . $resultNotifications->rowCount() . "</span>" ;
+		print __($guid, "New Notifications") . " <span style='font-size: 65%; font-style: italic; font-weight: normal'> x" . $resultNotifications->rowCount() . "</span>" ;
 	print "</h2>" ;
 	
 	print "<table cellspacing='0' style='width: 100%'>" ;
 		print "<tr class='head'>" ;
 			print "<th style='width: 18%'>" ;
-				print _("Source") ;
+				print __($guid, "Source") ;
 			print "</th>" ;
 			print "<th style='width: 12%'>" ;
-				print _("Date") ;
+				print __($guid, "Date") ;
 			print "</th>" ;
 			print "<th style='width: 51%'>" ;
-				print _("Message") ;
+				print __($guid, "Message") ;
 			print "</th>" ;
 			print "<th style='width: 7%'>" ;
-				print _("Count") ;
+				print __($guid, "Count") ;
 			print "</th>" ;
 			print "<th style='width: 12%'>" ;
-				print _("Actions") ;
+				print __($guid, "Actions") ;
 			print "</th>" ;
 		print "</tr>" ;
 	
@@ -113,7 +113,7 @@ else {
 		if ($resultNotifications->rowCount()<1) {
 			print "<tr class=$rowNum>" ;
 				print "<td colspan=5>" ;
-					print _("There are no records to display.") ;
+					print __($guid, "There are no records to display.") ;
 				print "</td>" ;
 			print "</tr>" ;
 		}
@@ -142,8 +142,8 @@ else {
 						print $row["count"] ;
 					print "</td>" ;
 					print "<td>" ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/notificationsActionProcess.php?action=" . urlencode($row["actionLink"]) . "&gibbonNotificationID=" . $row["gibbonNotificationID"] . "'><img title='" . _('Action & Archive') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/notificationsDeleteProcess.php?gibbonNotificationID=" . $row["gibbonNotificationID"] . "'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/notificationsActionProcess.php?action=" . urlencode($row["actionLink"]) . "&gibbonNotificationID=" . $row["gibbonNotificationID"] . "'><img title='" . __($guid, 'Action & Archive') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/notificationsDeleteProcess.php?gibbonNotificationID=" . $row["gibbonNotificationID"] . "'><img title='" . __($guid, 'Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
 					print "</td>" ;
 				print "</tr>" ;
 			}
@@ -165,24 +165,24 @@ else {
 	}
 
 	print "<h2>" ;
-		print _("Archived Notifications") ;
+		print __($guid, "Archived Notifications") ;
 	print "</h2>" ;
 	print "<table cellspacing='0' style='width: 100%'>" ;
 		print "<tr class='head'>" ;
 			print "<th style='width: 18%'>" ;
-				print _("Source") ;
+				print __($guid, "Source") ;
 			print "</th>" ;
 			print "<th style='width: 12%'>" ;
-				print _("Date") ;
+				print __($guid, "Date") ;
 			print "</th>" ;
 			print "<th style='width: 51%'>" ;
-				print _("Message") ;
+				print __($guid, "Message") ;
 			print "</th>" ;
 			print "<th style='width: 7%'>" ;
-				print _("Count") ;
+				print __($guid, "Count") ;
 			print "</th>" ;
 			print "<th style='width: 12%'>" ;
-				print _("Actions") ;
+				print __($guid, "Actions") ;
 			print "</th>" ;
 		print "</tr>" ;
 	
@@ -191,7 +191,7 @@ else {
 		if ($resultNotifications->rowCount()<1) {
 			print "<tr class=$rowNum>" ;
 				print "<td colspan=5>" ;
-					print _("There are no records to display.") ;
+					print __($guid, "There are no records to display.") ;
 				print "</td>" ;
 			print "</tr>" ;
 		}
@@ -220,8 +220,8 @@ else {
 						print $row["count"] ;
 					print "</td>" ;
 					print "<td>" ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/notificationsActionProcess.php?action=" . urlencode($row["actionLink"]) . "&gibbonNotificationID=" . $row["gibbonNotificationID"] . "'><img title='" . _('Action') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/notificationsDeleteProcess.php?gibbonNotificationID=" . $row["gibbonNotificationID"] . "'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/notificationsActionProcess.php?action=" . urlencode($row["actionLink"]) . "&gibbonNotificationID=" . $row["gibbonNotificationID"] . "'><img title='" . __($guid, 'Action') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/notificationsDeleteProcess.php?gibbonNotificationID=" . $row["gibbonNotificationID"] . "'><img title='" . __($guid, 'Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
 					print "</td>" ;
 				print "</tr>" ;
 			}

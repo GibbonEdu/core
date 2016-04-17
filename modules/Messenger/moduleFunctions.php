@@ -428,7 +428,7 @@ function getMessages($guid, $connection2, $mode="", $date="") {
 		
 		if ($resultPosts->rowCount()<1) {
 			$return.= "<div class='warning'>" ;
-				$return.= _("There are no records to display.") ;
+				$return.= __($guid, "There are no records to display.") ;
 			$return.= "</div>" ;
 		}
 		else {
@@ -455,10 +455,10 @@ function getMessages($guid, $connection2, $mode="", $date="") {
 			$return.= "<table cellspacing='0' style='margin-top: 10px'>" ;
 				$return.= "<tr>" ;
 					$return.= "<th style='text-align: center'>" ;
-						$return.= _("Sharing") ;
+						$return.= __($guid, "Sharing") ;
 					$return.= "</th>" ;
 					$return.= "<th>" ;
-						$return.= _("Message") ;
+						$return.= __($guid, "Message") ;
 					$return.= "</th>" ;
 				$return.= "</tr>" ;
 				$rowCount=0;
@@ -480,10 +480,10 @@ function getMessages($guid, $connection2, $mode="", $date="") {
 							$likesGiven=countLikesByContextAndGiver($connection2, "Messenger", "gibbonMessengerID", $output[$i]["gibbonMessengerID"], $_SESSION[$guid]["gibbonPersonID"], $output[$i]["gibbonPersonID"]) ;
 							if ($output[$i]["gibbonPersonID"]==$_SESSION[$guid]["gibbonPersonID"]) {
 								if ($likesGiven==1) {
-									$return.=$likesGiven . "x " . _('Like') . "<br/><br/>" ;
+									$return.=$likesGiven . "x " . __($guid, 'Like') . "<br/><br/>" ;
 								}
 								else {
-									$return.=$likesGiven . "x " . _('Likes') . "<br/><br/>" ;
+									$return.=$likesGiven . "x " . __($guid, 'Likes') . "<br/><br/>" ;
 								}
 							}
 							else {

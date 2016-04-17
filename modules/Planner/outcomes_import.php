@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/Planner/outcomes_import.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -39,13 +39,13 @@ else {
 	if ($permission!="Learning Area" AND $permission!="School") {
 		//Acess denied due to privileges in Manage Outcomes
 		print "<div class='error'>" ;
-			print _("You do not have access to this action.") ;
+			print __($guid, "You do not have access to this action.") ;
 		print "</div>" ;
 	}
 	else {
 		//Proceed!
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Import Outcomes') . "</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Import Outcomes') . "</div>" ;
 		print "</div>" ;
 	
 		$step=NULL ;
@@ -65,17 +65,17 @@ else {
 		if ($step==1) {
 			?>
 			<h2>
-				<?php print _('Step 1 - Select CSV Files') ?>
+				<?php print __($guid, 'Step 1 - Select CSV Files') ?>
 			</h2>
 			<p>
-				<?php print _('This page allows you to import outcomes from a CSV file, based on your access level in Manage Outcomes.') ?><br/>
+				<?php print __($guid, 'This page allows you to import outcomes from a CSV file, based on your access level in Manage Outcomes.') ?><br/>
 			</p>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/outcomes_import.php&step=2" ?>" enctype="multipart/form-data">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td style='width: 275px'> 
-							<b><?php print _('CSV File') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('See Notes below for specification.') ?></i></span>
+							<b><?php print __($guid, 'CSV File') ?> *</b><br/>
+							<span class="emphasis small"><?php print __($guid, 'See Notes below for specification.') ?></span>
 						</td>
 						<td class="right">
 							<input type="file" name="file" id="file" size="chars">
@@ -87,10 +87,10 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Field Delimiter') ?> *</b><br/>
+							<b><?php print __($guid, 'Field Delimiter') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<input type="text" style="width: 300px" name="fieldDelimiter" value="," maxlength=1>
+							<input type="text" class="standardWidth" name="fieldDelimiter" value="," maxlength=1>
 							<script type="text/javascript">
 								var fieldDelimiter=new LiveValidation('fieldDelimiter');
 								fieldDelimiter.add(Validate.Presence);
@@ -99,11 +99,11 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('String Enclosure') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<b><?php print __($guid, 'String Enclosure') ?> *</b><br/>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
-							<input type="text" style="width: 300px" name="stringEnclosure" value='"' maxlength=1>
+							<input type="text" class="standardWidth" name="stringEnclosure" value='"' maxlength=1>
 							<script type="text/javascript">
 								var stringEnclosure=new LiveValidation('stringEnclosure');
 								stringEnclosure.add(Validate.Presence);
@@ -112,11 +112,11 @@ else {
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+							<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<?php print _("Submit") ; ?>">
+							<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
@@ -125,59 +125,59 @@ else {
 		
 		
 			<h4>
-				<?php print _('Notes') ?>
+				<?php print __($guid, 'Notes') ?>
 			</h4>
 			<ol>
-				<li style='color: #c00; font-weight: bold'><?php print _('THE SYSTEM WILL NOT PROMPT YOU TO PROCEED, IT WILL JUST DO THE IMPORT. BACKUP YOUR DATA.') ?></li>
-				<li><?php print _('You may only submit CSV files.') ?></li>
-				<li><?php print _('The submitted file must have the following fields in the following order (* denotes required field):') ?></li> 
+				<li style='color: #c00; font-weight: bold'><?php print __($guid, 'THE SYSTEM WILL NOT PROMPT YOU TO PROCEED, IT WILL JUST DO THE IMPORT. BACKUP YOUR DATA.') ?></li>
+				<li><?php print __($guid, 'You may only submit CSV files.') ?></li>
+				<li><?php print __($guid, 'The submitted file must have the following fields in the following order (* denotes required field):') ?></li> 
 					<ol>
 						<?php
 						if ($permission=="Learning Area") {
-							print "<li><b>" . _('Scope') . " *</b> - " . _('Learning Area') . "</li>" ;
+							print "<li><b>" . __($guid, 'Scope') . " *</b> - " . __($guid, 'Learning Area') . "</li>" ;
 						}
 						else if ($permission=="School") {
-							print "<li><b>" . _('Scope') . " *</b> - " . _('School or Learning Area') . "</li>" ;
+							print "<li><b>" . __($guid, 'Scope') . " *</b> - " . __($guid, 'School or Learning Area') . "</li>" ;
 						}
 						?>
-						<li><b><?php print _('Learning Area') ?></b> - <?php print _('Learning Area name, or blank if scope is School') ?></li>
-						<li><b><?php print _('Name') ?> *</b></li>
-						<li><b><?php print _('Short Name') ?> *</b></li>
-						<li><b><?php print _('Category') ?></b></li>
-						<li><b><?php print _('Description') ?></b></li>
+						<li><b><?php print __($guid, 'Learning Area') ?></b> - <?php print __($guid, 'Learning Area name, or blank if scope is School') ?></li>
+						<li><b><?php print __($guid, 'Name') ?> *</b></li>
+						<li><b><?php print __($guid, 'Short Name') ?> *</b></li>
+						<li><b><?php print __($guid, 'Category') ?></b></li>
+						<li><b><?php print __($guid, 'Description') ?></b></li>
 						<?php
 						$yearGroupList="" ;
 						for ($i=0; $i<count($yearGroups); $i=$i+2) {
-							$yearGroupList.= _($yearGroups[($i+1)]) . ", " ;
+							$yearGroupList.= __($guid, $yearGroups[($i+1)]) . ", " ;
 						}
 						$yearGroupList=substr($yearGroupList,0,-2) ;
 						?>
-						<li><b><?php print _('Year Groups') ?></b> - <?php print sprintf(_('Comma separated list, e.g: %1$s'), "<i>" . $yearGroupList . "</i>") ?></li>
+						<li><b><?php print __($guid, 'Year Groups') ?></b> - <?php print sprintf(__($guid, 'Comma separated list, e.g: %1$s'), "<i>" . $yearGroupList . "</i>") ?></li>
 					</ol>
 				</li>
-				<li><?php print _('Do not include a header row in the CSV files.') ?></li>
+				<li><?php print __($guid, 'Do not include a header row in the CSV files.') ?></li>
 			</ol>
 		<?php
 		}
 		else if ($step==2) {
 			?>
 			<h2>
-				<?php print _('Step 2 - Data Check & Confirm') ?>
+				<?php print __($guid, 'Step 2 - Data Check & Confirm') ?>
 			</h2>
 			<?php
 		
 			//Check file type
-			if (($_FILES['file']['type']!="text/csv") AND ($_FILES['file']['type']!="text/comma-separated-values") AND ($_FILES['file']['type']!="text/x-comma-separated-values") AND ($_FILES['file']['type']!="application/vnd.ms-excel")) {
+			if (($_FILES['file']['type']!="text/csv") AND ($_FILES['file']['type']!="text/comma-separated-values") AND ($_FILES['file']['type']!="text/x-comma-separated-values") AND ($_FILES['file']['type']!="application/vnd.ms-excel") AND ($_FILES['file']['type']!="application/csv")) {
 				?>
 				<div class='error'>
-					<?php print sprintf(_('Import cannot proceed, as the submitted file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['file']['type']) ?><br/>
+					<?php print sprintf(__($guid, 'Import cannot proceed, as the submitted file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['file']['type']) ?><br/>
 				</div>
 				<?php
 			}
 			else if (($_POST["fieldDelimiter"]=="") OR ($_POST["stringEnclosure"]=="")) {
 				?>
 				<div class='error'>
-					<?php print _('Import cannot proceed, as the "Field Delimiter" and/or "String Enclosure" fields have been left blank.') ?><br/>
+					<?php print __($guid, 'Import cannot proceed, as the "Field Delimiter" and/or "String Enclosure" fields have been left blank.') ?><br/>
 				</div>
 				<?php
 			}
@@ -185,7 +185,7 @@ else {
 				$proceed=TRUE ;
 				
 				print "<h4>" ;
-					print _("File Import") ;
+					print __($guid, "File Import") ;
 				print "</h4>" ;
 				$importFail=false ;
 				$csvFile=$_FILES['file']['tmp_name'] ;
@@ -207,7 +207,7 @@ else {
 					}
 					else {
 						print "<div class='error'>" ;
-							print sprintf(_('Outcome with name %1$s had some information malformations.'), $data[2]) ;
+							print sprintf(__($guid, 'Outcome with name %1$s had some information malformations.'), $data[2]) ;
 						print "</div>" ;
 					}
 					$userCount++ ;
@@ -215,24 +215,24 @@ else {
 				fclose($handle);
 				if ($userSuccessCount==0) {
 					print "<div class='error'>" ;
-						print _("No useful outcomes were detected in the import file (perhaps they did not meet minimum requirements), so the import will be aborted.") ;
+						print __($guid, "No useful outcomes were detected in the import file (perhaps they did not meet minimum requirements), so the import will be aborted.") ;
 					print "</div>" ;
 					$proceed=false ;
 				}
 				else if ($userSuccessCount<$userCount) {
 					print "<div class='error'>" ;
-						print _("Some outcomes could not be successfully read or used, so the import will be aborted.") ;
+						print __($guid, "Some outcomes could not be successfully read or used, so the import will be aborted.") ;
 					print "</div>" ;
 					$proceed=false ;
 				}
 				else if ($userSuccessCount==$userCount) {
 					print "<div class='success'>" ;
-						print _("All outcomes could be read and used, so the import will proceed.") ;
+						print __($guid, "All outcomes could be read and used, so the import will proceed.") ;
 					print "</div>" ;
 				}
 				else {
 					print "<div class='error'>" ;
-						print _("An unknown error occured, so the import will be aborted.") ;
+						print __($guid, "An unknown error occured, so the import will be aborted.") ;
 					print "</div>" ;
 					$proceed=false ;
 				}
@@ -247,7 +247,7 @@ else {
 					//Check permisison
 					if ($user["scope"]=="School" AND $permission!="School") {
 						print "<div class='error'>" ;
-							print _("There was an error creating outcome:") . " " . $user["name"] . "." ;
+							print __($guid, "There was an error creating outcome:") . " " . $user["name"] . "." ;
 						print "</div>" ;
 					}
 					else {
@@ -293,12 +293,12 @@ else {
 						//Spit out results
 						if ($addUserFail==TRUE) {
 							print "<div class='error'>" ;
-								print _("There was an error creating outcome:") . " " . $user["name"] . "." ;
+								print __($guid, "There was an error creating outcome:") . " " . $user["name"] . "." ;
 							print "</div>" ;
 						}
 						else {
 							print "<div class='success'>" ;
-								print sprintf(_('Outcome %1$s was successfully created.'), $user["name"]) ;
+								print sprintf(__($guid, 'Outcome %1$s was successfully created.'), $user["name"]) ;
 							print "</div>" ;
 						}
 					}

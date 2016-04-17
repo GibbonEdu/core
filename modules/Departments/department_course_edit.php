@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Departments/department_course_edit.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -35,7 +35,7 @@ else {
 	
 	if ($gibbonDepartmentID=="" OR $gibbonCourseID=="") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -51,7 +51,7 @@ else {
 
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print _("The selected record does not exist, or you do not have access to it.") ;
+				print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 			print "</div>" ;
 		}
 		else {
@@ -65,52 +65,23 @@ else {
 				$extra=" " . $row["year"];
 			}
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/departments.php'>" . _('View All') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/department.php&gibbonDepartmentID=" . $_GET["gibbonDepartmentID"] . "'>" . $row["department"] . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/department_course.php&gibbonDepartmentID=" . $_GET["gibbonDepartmentID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>" . $row["course"] . "$extra</a> ></div><div class='trailEnd'>" . _('Edit Course') . "</div>" ;
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/departments.php'>" . __($guid, 'View All') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/department.php&gibbonDepartmentID=" . $_GET["gibbonDepartmentID"] . "'>" . $row["department"] . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/department_course.php&gibbonDepartmentID=" . $_GET["gibbonDepartmentID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>" . $row["course"] . "$extra</a> ></div><div class='trailEnd'>" . __($guid, 'Edit Course') . "</div>" ;
 			print "</div>" ;
 			
-			if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-			$updateReturnMessage="" ;
-			$class="error" ;
-			if (!($updateReturn=="")) {
-				if ($updateReturn=="fail0") {
-					$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
-				}
-				else if ($updateReturn=="fail1") {
-					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-				}
-				else if ($updateReturn=="fail2") {
-					$updateReturnMessage=_("Your request failed due to a database error.") ;	
-				}
-				else if ($updateReturn=="fail3") {
-					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-				}
-				else if ($updateReturn=="fail4") {
-					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-				}
-				else if ($updateReturn=="fail5") {
-					$updateReturnMessage=_("Your request failed due to an attachment error.") ;	
-				}
-				else if ($updateReturn=="success0") {
-					$updateReturnMessage=_("Your request was completed successfully.") ;	
-					$class="success" ;
-				}
-				print "<div class='$class'>" ;
-					print $updateReturnMessage;
-				print "</div>" ;
-			} 
+			if (isset($_GET["return"])) { returnProcess($_GET["return"], null, null); }
 
 			if ($role!="Coordinator" AND $role!="Assistant Coordinator" AND $role!="Teacher (Curriculum)") {
 				print "<div class='error'>" ;
-					print _("The selected record does not exist, or you do not have access to it.") ;
+					print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 				print "</div>" ;
 			}
 			else{
 				?>
 				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/department_course_editProcess.php?gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=$gibbonCourseID&address=" . $_GET["q"] ?>" enctype="multipart/form-data">
-					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>	
 						<tr class='break'>
 							<td colspan=2>
-								<h3><?php print _('Overview') ?></h3> 
+								<h3><?php print __($guid, 'Overview') ?></h3> 
 							</td>
 						</tr>
 						<tr>
@@ -120,7 +91,7 @@ else {
 						</tr>
 						<tr>
 							<td class="right" colspan=2>
-								<input type="submit" value="<?php print _("Submit") ; ?>">
+								<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 							</td>
 						</tr>
 					</table>

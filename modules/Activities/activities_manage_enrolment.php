@@ -25,76 +25,22 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Activities/activities_manage_enrolment.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Activities/activities_manage.php'>" . _('Manage Activities') . "</a> > </div><div class='trailEnd'>" . _('Activity Enrolment') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Activities/activities_manage.php'>" . __($guid, 'Manage Activities') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Activity Enrolment') . "</div>" ;
 	print "</div>" ;
 	
-	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-	$updateReturnMessage="" ;
-	$class="error" ;
-	if (!($updateReturn=="")) {
-		if ($updateReturn=="fail0") {
-			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
-		}
-		else if ($updateReturn=="fail1") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($updateReturn=="fail2") {
-			$updateReturnMessage=_("Your request failed due to a database error.") ;	
-		}
-		else if ($updateReturn=="fail3") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($updateReturn=="fail4") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($updateReturn=="fail5") {
-			$updateReturnMessage=_("Your request failed due to an attachment error.") ;	
-		}
-		else if ($updateReturn=="success0") {
-			$updateReturnMessage=_("Your request was completed successfully.") ;	
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $updateReturnMessage;
-		print "</div>" ;
-	} 
-	
-	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-	$deleteReturnMessage="" ;
-	$class="error" ;
-	if (!($deleteReturn=="")) {
-		if ($deleteReturn=="fail0") {
-			$deleteReturnMessage=_("Your request failed because you do not have access to this action.") ;	
-		}
-		else if ($deleteReturn=="fail1") {
-			$deleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($deleteReturn=="fail2") {
-			$deleteReturnMessage=_("Your request failed due to a database error.") ;	
-		}
-		else if ($deleteReturn=="fail3") {
-			$deleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($deleteReturn=="success0") {
-			$deleteReturnMessage=_("Your request was completed successfully.") ;		
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $deleteReturnMessage;
-		print "</div>" ;
-	} 
+	if (isset($_GET["return"])) { returnProcess($_GET["return"], null, null); }
 	
 	//Check if school year specified
 	$gibbonActivityID=$_GET["gibbonActivityID"];
 	if ($gibbonActivityID=="Y") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -110,7 +56,7 @@ else {
 		
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print _("The selected record does not exist, or you do not have access to it.") ;
+				print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 			print "</div>" ;
 		}
 		else {
@@ -119,18 +65,18 @@ else {
 			$dateType=getSettingByScope($connection2, "Activities", "dateType") ;
 			if ($_GET["search"]!="") {
 				print "<div class='linkTop'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Activities/activities_manage.php&search=" .$_GET["search"] . "'>" . _('Back to Search Results') . "</a>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Activities/activities_manage.php&search=" .$_GET["search"] . "'>" . __($guid, 'Back to Search Results') . "</a>" ;
 				print "</div>" ;
 			}
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/tt_editProcess.php?gibbonTTID=$gibbonTTID&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&search=" . $_GET["search"] ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td style='width: 275px'> 
-							<b><?php print _('Name') ?></b><br/>
+							<b><?php print __($guid, 'Name') ?></b><br/>
 						</td>
 						<td class="right">
-							<input readonly name="name" id="name" maxlength=20 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
+							<input readonly name="name" id="name" maxlength=20 value="<?php print $row["name"] ?>" type="text" class="standardWidth">
 						</td>
 					</tr>
 					<?php
@@ -138,18 +84,18 @@ else {
 						?>
 						<tr>
 							<td> 
-								<b><?php print _('Listing Dates') ?></b><br/>
+								<b><?php print __($guid, 'Listing Dates') ?></b><br/>
 							</td>
 							<td class="right">
-								<input readonly name="name" id="name" maxlength=20 value="<?php print dateConvertBack($guid, $row["listingStart"]) . "-" . dateConvertBack($guid, $row["listingEnd"]) ?>" type="text" style="width: 300px">
+								<input readonly name="name" id="name" maxlength=20 value="<?php print dateConvertBack($guid, $row["listingStart"]) . "-" . dateConvertBack($guid, $row["listingEnd"]) ?>" type="text" class="standardWidth">
 							</td>
 						</tr>
 						<tr>
 							<td> 
-								<b><?php print _('Program Dates') ?></b><br/>
+								<b><?php print __($guid, 'Program Dates') ?></b><br/>
 							</td>
 							<td class="right">
-								<input readonly name="name" id="name" maxlength=20 value="<?php print dateConvertBack($guid, $row["programStart"]) . "-" . dateConvertBack($guid, $row["programEnd"]) ?>" type="text" style="width: 300px">
+								<input readonly name="name" id="name" maxlength=20 value="<?php print dateConvertBack($guid, $row["programStart"]) . "-" . dateConvertBack($guid, $row["programEnd"]) ?>" type="text" class="standardWidth">
 							</td>
 						</tr>
 						<?php
@@ -158,7 +104,7 @@ else {
 						?>
 						<tr>
 							<td> 
-								<b><?php print _('Terms') ?></b><br/>
+								<b><?php print __($guid, 'Terms') ?></b><br/>
 							</td>
 							<td class="right">
 								<?php
@@ -173,7 +119,7 @@ else {
 									$termList="-, " ;
 								}
 								?>
-								<input readonly name="name" id="name" maxlength=20 value="<?php print substr($termList,0,-2) ?>" type="text" style="width: 300px">
+								<input readonly name="name" id="name" maxlength=20 value="<?php print substr($termList,0,-2) ?>" type="text" class="standardWidth">
 							</td>
 						</tr>
 						<?php
@@ -201,28 +147,28 @@ else {
 			}
 			
 			print "<div class='linkTop'>" ;
-			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_enrolment_add.php&gibbonActivityID=$gibbonActivityID&search=" . $_GET["search"] . "'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_enrolment_add.php&gibbonActivityID=$gibbonActivityID&search=" . $_GET["search"] . "'>" .  __($guid, 'Add') . "<img style='margin-left: 5px' title='" . __($guid, 'Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
 			print "</div>" ;
 			
 			if ($result->rowCount()<1) {
 				print "<div class='error'>" ;
-				print _("There are no records to display.") ;
+				print __($guid, "There are no records to display.") ;
 				print "</div>" ;
 			}
 			else {
 				print "<table cellspacing='0' style='width: 100%'>" ;
 					print "<tr class='head'>" ;
 						print "<th>" ;
-							print _("Student") ;
+							print __($guid, "Student") ;
 						print "</th>" ;
 						print "<th>" ;
-							print _("Status") ;
+							print __($guid, "Status") ;
 						print "</th>" ;
 						print "<th>" ;
 							print "Timestamp" ;
 						print "</th>" ;
 						print "<th>" ;
-							print _("Actions") ;
+							print __($guid, "Actions") ;
 						print "</th>" ;
 					print "</tr>" ;
 					
@@ -249,8 +195,8 @@ else {
 								print dateConvertBack($guid, substr($row["timestamp"],0,10)) . " at " . substr($row["timestamp"],11,5) ;
 							print "</td>" ;
 							print "<td>" ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_enrolment_edit.php&gibbonActivityID=" . $row["gibbonActivityID"] . "&gibbonPersonID=" . $row["gibbonPersonID"] . "&search=" . $_GET["search"] . "'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_enrolment_delete.php&gibbonActivityID=" . $row["gibbonActivityID"] . "&gibbonPersonID=" . $row["gibbonPersonID"] . "&search=" . $_GET["search"] . "'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_enrolment_edit.php&gibbonActivityID=" . $row["gibbonActivityID"] . "&gibbonPersonID=" . $row["gibbonPersonID"] . "&search=" . $_GET["search"] . "'><img title='" . __($guid, 'Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_enrolment_delete.php&gibbonActivityID=" . $row["gibbonActivityID"] . "&gibbonPersonID=" . $row["gibbonPersonID"] . "&search=" . $_GET["search"] . "'><img title='" . __($guid, 'Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
 							print "</td>" ;
 						print "</tr>" ;
 					}

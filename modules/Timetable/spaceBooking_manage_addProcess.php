@@ -21,14 +21,8 @@ include "../../functions.php" ;
 include "../../config.php" ;
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 @session_start() ;
 
@@ -55,7 +49,8 @@ else {
 	}
 	else {
 		//Proceed!
-		$gibbonSpaceID=$_POST["gibbonSpaceID"] ;
+		$foreignKey=$_POST["foreignKey"] ;
+		$foreignKeyID=$_POST["foreignKeyID"] ;
 		$dates=$_POST["dates"] ;
 		$timeStart=$_POST["timeStart"] ;
 		$timeEnd=$_POST["timeEnd"] ;
@@ -70,7 +65,7 @@ else {
 		}
 		
 		//Validate Inputs
-		if ($gibbonSpaceID=="" OR $timeStart=="" OR $timeEnd=="" OR $repeat=="" OR count($dates)<1) {
+		if ($foreignKey=="" OR $foreignKeyID=="" OR $timeStart=="" OR $timeEnd=="" OR $repeat=="" OR count($dates)<1) {
 			//Fail 3
 			$URL.="&addReturn=fail3" ;
 			header("Location: {$URL}");
@@ -85,22 +80,22 @@ else {
 				//Fail 2
 				$URL.="&duplicateReturn=fail2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}	
 					
 			$failCount=0 ;
 			$available="" ;
 			//Scroll through all dates
 			foreach ($dates AS $date) {
-				$available=isSpaceFree($guid, $connection2, $gibbonSpaceID, $date, $timeStart, $timeEnd) ;
+				$available=isSpaceFree($guid, $connection2, $foreignKey, $foreignKeyID, $date, $timeStart, $timeEnd) ;
 				if ($available==FALSE) {
 					$failCount++ ;
 				}
 				else {
 					//Write to database
 					try {
-						$data=array("gibbonSpaceID"=>$gibbonSpaceID, "date"=>$date, "timeStart"=>$timeStart, "timeEnd"=>$timeEnd, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-						$sql="INSERT INTO gibbonTTSpaceBooking SET gibbonSpaceID=:gibbonSpaceID, date=:date, timeStart=:timeStart, timeEnd=:timeEnd, gibbonPersonID=:gibbonPersonID" ;
+						$data=array("foreignKey"=>$foreignKey, "foreignKeyID"=>$foreignKeyID, "date"=>$date, "timeStart"=>$timeStart, "timeEnd"=>$timeEnd, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
+						$sql="INSERT INTO gibbonTTSpaceBooking SET foreignKey=:foreignKey, foreignKeyID=:foreignKeyID, date=:date, timeStart=:timeStart, timeEnd=:timeEnd, gibbonPersonID=:gibbonPersonID" ;
 						$result=$connection2->prepare($sql);
 						$result->execute($data);
 					}

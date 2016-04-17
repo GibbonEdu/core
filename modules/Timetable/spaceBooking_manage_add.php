@@ -26,7 +26,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Timetable/spaceBooking_manage_add.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -34,13 +34,13 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print _("The highest grouped action cannot be determined.") ;
+		print __($guid, "The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
 		//Proceed!
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/spaceBooking_manage.php'>" . _('Manage Space Bookings') . "</a> > </div><div class='trailEnd'>" . _('Add Space Booking') . "</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/spaceBooking_manage.php'>" . __($guid, 'Manage Facility Bookings') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Add Facility Booking') . "</div>" ;
 		print "</div>" ;
 	
 		if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -48,22 +48,22 @@ else {
 		$class="error" ;
 		if (!($addReturn=="")) {
 			if ($addReturn=="fail0") {
-				$addReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+				$addReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 			}
 			else if ($addReturn=="fail2") {
-				$addReturnMessage=_("Your request failed due to a database error.") ;	
+				$addReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 			}
 			else if ($addReturn=="fail3") {
-				$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+				$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($addReturn=="fail4") {
-				$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+				$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($addReturn=="fail5") {
-				$addReturnMessage=_("Your request was successful, but some data was not properly saved.") ;	
+				$addReturnMessage=__($guid, "Your request was successful, but some data was not properly saved.") ;	
 			}
 			else if ($addReturn=="success0") {
-				$addReturnMessage=_("Your request was completed successfully. You can now add another record if you wish.") ;	
+				$addReturnMessage=__($guid, "Your request was completed successfully. You can now add another record if you wish.") ;	
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;
@@ -82,44 +82,60 @@ else {
 		//Step 1
 		if ($step==1) {
 			print "<h2>" ;
-				print _("Step 1 - Choose Space") ;
+				print __($guid, "Step 1 - Choose Facility") ;
 			print "</h2>" ;
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/spaceBooking_manage_add.php&step=2" ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td> 
-							<b><?php print _('Space') ?> *</b><br/>
+							<b><?php print __($guid, 'Facility') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<select name="gibbonSpaceID" id="gibbonSpaceID" style="width: 302px">
-								<option value='Please select...'><?php print _('Please select...') ?></option>
-								<?php
-								try {
-									$dataSelect=array(); 
-									$sqlSelect="SELECT * FROM gibbonSpace ORDER by name" ; 
-									$resultSelect=$connection2->prepare($sqlSelect);
-									$resultSelect->execute($dataSelect);
-								}
-								catch(PDOException $e) { }
-								while ($rowSelect=$resultSelect->fetch()) {
-									print "<option value='" . $rowSelect["gibbonSpaceID"] . "'>" . $rowSelect["name"] . "</option>" ; 
-								}
-								?>
+							<select name="foreignKeyID" id="foreignKeyID" class="standardWidth">
+								<option value='Please select...'><?php print __($guid, 'Please select...') ?></option>
+								<optgroup label='--<?php print __($guid, "Facilities") ?>--'/>" ;
+									<?php
+									try {
+										$dataSelect=array(); 
+										$sqlSelect="SELECT * FROM gibbonSpace ORDER BY name" ; 
+										$resultSelect=$connection2->prepare($sqlSelect);
+										$resultSelect->execute($dataSelect);
+									}
+									catch(PDOException $e) { }
+									while ($rowSelect=$resultSelect->fetch()) {
+										print "<option value='gibbonSpaceID-" . $rowSelect["gibbonSpaceID"] . "'>" . $rowSelect["name"] . "</option>" ; 
+									}
+									?>
+								</optgroup>
+								<optgroup label='--<?php print __($guid, "Library") ?>--'/>" ;
+									<?php
+									try {
+										$dataSelect=array(); 
+										$sqlSelect="SELECT * FROM gibbonLibraryItem WHERE bookable='Y' ORDER BY name" ; 
+										$resultSelect=$connection2->prepare($sqlSelect);
+										$resultSelect->execute($dataSelect);
+									}
+									catch(PDOException $e) { }
+									while ($rowSelect=$resultSelect->fetch()) {
+										print "<option value='gibbonLibraryItemID-" . $rowSelect["gibbonLibraryItemID"] . "'>" . $rowSelect["name"] . "</option>" ; 
+									}
+									?>
+								</optgroup>
 							</select>
 							<script type="text/javascript">
 								var gibbonSpaceID=new LiveValidation('gibbonSpaceID');
-								gibbonSpaceID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+								gibbonSpaceID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 							</script>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Date') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+							<b><?php print __($guid, 'Date') ?> *</b><br/>
+							<span class="emphasis small"><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></span>
 						</td>
 						<td class="right">
-							<input name="date" id="date" maxlength=10 value="" type="text" style="width: 300px">
+							<input name="date" id="date" maxlength=10 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var date=new LiveValidation('date');
 								date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
@@ -134,11 +150,11 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Start Time') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('Format: hh:mm (24hr)') ?><br/></i></span>
+							<b><?php print __($guid, 'Start Time') ?> *</b><br/>
+							<span class="emphasis small"><?php print __($guid, 'Format: hh:mm (24hr)') ?><br/></span>
 						</td>
 						<td class="right">
-							<input name="timeStart" id="timeStart" maxlength=5 value="" type="text" style="width: 300px">
+							<input name="timeStart" id="timeStart" maxlength=5 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var timeStart=new LiveValidation('timeStart');
 								timeStart.add(Validate.Presence);
@@ -148,11 +164,11 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('End Time') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('Format: hh:mm (24hr)') ?><br/></i></span>
+							<b><?php print __($guid, 'End Time') ?> *</b><br/>
+							<span class="emphasis small"><?php print __($guid, 'Format: hh:mm (24hr)') ?><br/></span>
 						</td>
 						<td class="right">
-							<input name="timeEnd" id="timeEnd" maxlength=5 value="" type="text" style="width: 300px">
+							<input name="timeEnd" id="timeEnd" maxlength=5 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var timeEnd=new LiveValidation('timeEnd');
 								timeEnd.add(Validate.Presence);
@@ -192,22 +208,22 @@ else {
 					
 					<tr id="repeatRow">
 						<td> 
-							<b><?php print _('Repeat?') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<b><?php print __($guid, 'Repeat?') ?> *</b><br/>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
-							<input checked type="radio" name="repeat" value="No" class="repeat" /> <?php print _('No') ?>
-							<input type="radio" name="repeat" value="Daily" class="repeat" /> <?php print _('Daily') ?>
-							<input type="radio" name="repeat" value="Weekly" class="repeat" /> <?php print _('Weekly') ?>
+							<input checked type="radio" name="repeat" value="No" class="repeat" /> <?php print __($guid, 'No') ?>
+							<input type="radio" name="repeat" value="Daily" class="repeat" /> <?php print __($guid, 'Daily') ?>
+							<input type="radio" name="repeat" value="Weekly" class="repeat" /> <?php print __($guid, 'Weekly') ?>
 						</td>
 					</tr>
 					<tr id="repeatDailyRow">
 						<td> 
-							<b><?php print _('Repeat Daily') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('Repeat daily for this many days.') . "<br/>" . _('Does not include non-school days.') ?></i></span>
+							<b><?php print __($guid, 'Repeat Daily') ?> *</b><br/>
+							<span class="emphasis small"><?php print __($guid, 'Repeat daily for this many days.') . "<br/>" . __($guid, 'Does not include non-school days.') ?></span>
 						</td>
 						<td class="right">
-							<input name="repeatDaily" id="repeatDaily" maxlength=2 value="2" type="text" style="width: 300px">
+							<input name="repeatDaily" id="repeatDaily" maxlength=2 value="2" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var repeatDaily=new LiveValidation('repeatDaily');
 							 	repeatDaily.add(Validate.Presence);
@@ -218,11 +234,11 @@ else {
 					</tr>
 					<tr id="repeatWeeklyRow">
 						<td> 
-							<b><?php print _('Repeat Weekly') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print _('Repeat weekly for this many days.') . "<br/>" . _('Does not include non-school days.') ?></i></span>
+							<b><?php print __($guid, 'Repeat Weekly') ?></b><br/>
+							<span class="emphasis small"><?php print __($guid, 'Repeat weekly for this many days.') . "<br/>" . __($guid, 'Does not include non-school days.') ?></span>
 						</td>
 						<td class="right">
-							<input name="repeatWeekly" id="repeatWeekly" maxlength=2 value="2" type="text" style="width: 300px">
+							<input name="repeatWeekly" id="repeatWeekly" maxlength=2 value="2" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var repeatWeekly=new LiveValidation('repeatWeekly');
 							 	repeatWeekly.add(Validate.Presence);
@@ -234,11 +250,11 @@ else {
 					
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+							<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<?php print _("Submit") ; ?>">
+							<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
@@ -247,12 +263,20 @@ else {
 		}
 		else if ($step==2) {
 			print "<h2>" ;
-				print _("Step 2 - Availability Check") ;
+				print __($guid, "Step 2 - Availability Check") ;
 			print "</h2>" ;
 			
-			$gibbonSpaceID=NULL ;
-			if (isset($_POST["gibbonSpaceID"])) {
-				$gibbonSpaceID=$_POST["gibbonSpaceID"] ;
+			$foreignKey=NULL ;
+			$foreignKeyID=NULL ;
+			if (isset($_POST["foreignKeyID"])) {
+				if (substr($_POST["foreignKeyID"], 0, 13)=="gibbonSpaceID") { //It's a facility
+					$foreignKey="gibbonSpaceID" ;
+					$foreignKeyID=substr($_POST["foreignKeyID"], 14) ;
+				}
+				else if (substr($_POST["foreignKeyID"], 0, 19)=="gibbonLibraryItemID") { //It's a library item
+					$foreignKey="gibbonLibraryItemID" ;
+					$foreignKeyID=substr($_POST["foreignKeyID"], 20) ;
+				}
 			}
 			$date=dateConvert($guid, $_POST["date"]) ;
 			$timeStart=$_POST["timeStart"] ;
@@ -267,49 +291,57 @@ else {
 				$repeatWeekly=$_POST["repeatWeekly"] ;
 			}
 			
-			try {
-				$dataSelect=array("gibbonSpace"=>$gibbonSpaceID); 
-				$sqlSelect="SELECT * FROM gibbonSpace WHERE gibbonSpace.gibbonSpaceID=:gibbonSpace" ; 
-				$resultSelect=$connection2->prepare($sqlSelect);
-				$resultSelect->execute($dataSelect);
-			}
-			catch(PDOException $e) { 
-				print "<div class='error'>" ;
-					print _("Your request failed due to a database error.") ;
-				print "</div>" ;
-			}
 			
-			if ($resultSelect->rowCount()!=1) {
+			//Check for required fields
+			if ($foreignKey==NULL OR $foreignKeyID==NULL OR $foreignKey=="" OR $foreignKeyID=="" OR $date=="" OR $timeStart=="" OR $timeEnd=="" OR $repeat=="") {
 				print "<div class='error'>" ;
-					print _("Your request failed due to a database error.") ;
+					print __($guid, "Your request failed because your inputs were invalid.") ;
 				print "</div>" ;
 			}
 			else {
-				$rowSelect=$resultSelect->fetch() ;
-				//Check for required fields
-				if ($gibbonSpaceID=="" OR $date=="" OR $timeStart=="" OR $timeEnd=="" OR $repeat=="") {
+				try {
+					if ($foreignKey=="gibbonSpaceID") {
+						$dataSelect=array("gibbonSpace"=>$foreignKeyID); 
+						$sqlSelect="SELECT * FROM gibbonSpace WHERE gibbonSpaceID=:gibbonSpace" ;
+					} 
+					else if ($foreignKey=="gibbonLibraryItemID") {
+						$dataSelect=array("gibbonLibraryItemID"=>$foreignKeyID); 
+						$sqlSelect="SELECT * FROM gibbonLibraryItem WHERE gibbonLibraryItemID=:gibbonLibraryItemID" ;
+					}
+					$resultSelect=$connection2->prepare($sqlSelect);
+					$resultSelect->execute($dataSelect);
+				}
+				catch(PDOException $e) { 
 					print "<div class='error'>" ;
-						print _("Your request failed because your inputs were invalid.") ;
+						print __($guid, "Your request failed due to a database error.") ;
+					print "</div>" ;
+				}
+			
+				if ($resultSelect->rowCount()!=1) {
+					print "<div class='error'>" ;
+						print __($guid, "Your request failed due to a database error.") ;
 					print "</div>" ;
 				}
 				else {
+					$rowSelect=$resultSelect->fetch() ;
+					
 					$available=FALSE ;
 					?>
 					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/spaceBooking_manage_addProcess.php" ?>">
-						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+						<table class='smallIntBorder fullWidth' cellspacing='0'>	
 							<?php
 							if ($repeat=="No") {
 								?>
 								<tr>
 									<td colspan=2>
 										<?php
-										$available=isSpaceFree($guid, $connection2, $gibbonSpaceID, $date, $timeStart, $timeEnd) ;
+										$available=isSpaceFree($guid, $connection2, $foreignKey, $foreignKeyID, $date, $timeStart, $timeEnd) ;
 										if ($available==TRUE) {
 											?>
 											<tr class='current'>
 												<td> 
 													<b><?php print dateConvertBack($guid, $date) ?></b><br/>
-													<span style="font-size: 90%"><i><?php print _('Available') ?></i></span>
+													<span class="emphasis small"><?php print __($guid, 'Available') ?></span>
 												</td>
 												<td class="right">
 													<input checked type='checkbox' name='dates[]' value='<?php print $date ?>'>
@@ -322,7 +354,7 @@ else {
 											<tr class='error'>
 												<td> 
 													<b><?php print dateConvertBack($guid, $date) ?></b><br/>
-													<span style="font-size: 90%"><i><?php print _('Not Available') ?></i></span>
+													<span class="emphasis small"><?php print __($guid, 'Not Available') ?></span>
 												</td>
 												<td class="right">
 													<input disabled type='checkbox' name='dates[]' value='<?php print $date ?>'>
@@ -350,12 +382,12 @@ else {
 											$continue=FALSE ;
 										}
 										//Print days
-										if (isSpaceFree($guid, $connection2, $gibbonSpaceID, $dateTemp, $timeStart, $timeEnd)==TRUE) {
+										if (isSpaceFree($guid, $connection2, $foreignKey, $foreignKeyID, $dateTemp, $timeStart, $timeEnd)==TRUE) {
 											?>
 											<tr class='current'>
 												<td> 
 													<b><?php print dateConvertBack($guid, $dateTemp) ?></b><br/>
-													<span style="font-size: 90%"><i></i></span>
+													<span class="emphasis small"></span>
 												</td>
 												<td class="right">
 													<input checked type='checkbox' name='dates[]' value='<?php print $dateTemp ?>'>
@@ -368,7 +400,7 @@ else {
 											<tr class='error'>
 												<td> 
 													<b><?php print dateConvertBack($guid, $dateTemp) ?></b><br/>
-													<span style="font-size: 90%"><i><?php print _('Not Available') ?></i></span>
+													<span class="emphasis small"><?php print __($guid, 'Not Available') ?></span>
 												</td>
 												<td class="right">
 													<input disabled type='checkbox' name='dates[]' value='<?php print $dateTemp ?>'>
@@ -401,12 +433,12 @@ else {
 											$continue=FALSE ;
 										}
 										//Print days
-										if (isSpaceFree($guid, $connection2, $gibbonSpaceID, $dateTemp, $timeStart, $timeEnd)==TRUE) {
+										if (isSpaceFree($guid, $connection2, $foreignKey, $foreignKeyID, $dateTemp, $timeStart, $timeEnd)==TRUE) {
 											?>
 											<tr class='current'>
 												<td> 
 													<b><?php print dateConvertBack($guid, $dateTemp) ?></b><br/>
-													<span style="font-size: 90%"><i></i></span>
+													<span class="emphasis small"></span>
 												</td>
 												<td class="right">
 													<input checked type='checkbox' name='dates[]' value='<?php print $dateTemp ?>'>
@@ -419,7 +451,7 @@ else {
 											<tr class='error'>
 												<td> 
 													<b><?php print dateConvertBack($guid, $dateTemp) ?></b><br/>
-													<span style="font-size: 90%"><i><?php print _('Not Available') ?></i></span>
+													<span class="emphasis small"><?php print __($guid, 'Not Available') ?></span>
 												</td>
 												<td class="right">
 													<input disabled type='checkbox' name='dates[]' value='<?php print $dateTemp ?>'>
@@ -439,19 +471,18 @@ else {
 							}
 							else {
 								print "<div class='error'>" ;
-									print _("Your request failed because your inputs were invalid.") ;
+									print __($guid, "Your request failed because your inputs were invalid.") ;
 								print "</div>" ;
 							}
 							?>
-							
-							
-							
+						
 							<tr>
 								<td colspan=2 class="right">
 									<?php
 									if ($available==TRUE) {
 										?>
-										<input type="hidden" name="gibbonSpaceID" value="<?php print $gibbonSpaceID ; ?>">
+										<input type="hidden" name="foreignKey" value="<?php print $foreignKey ; ?>">
+										<input type="hidden" name="foreignKeyID" value="<?php print $foreignKeyID ; ?>">
 										<input type="hidden" name="date" value="<?php print $date ; ?>">
 										<input type="hidden" name="timeStart" value="<?php print $timeStart ; ?>">
 										<input type="hidden" name="timeEnd" value="<?php print $timeEnd ; ?>">
@@ -459,12 +490,12 @@ else {
 										<input type="hidden" name="repeatDaily" value="<?php print $repeatDaily ; ?>">
 										<input type="hidden" name="repeatWeekly" value="<?php print $repeatWeekly ; ?>">
 										<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-										<input type="submit" value="<?php print _("Submit") ; ?>">
+										<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 										<?php
 									}
 									else {
 										print "<div class='error'>" ;
-											print _('There are no sessions available, and so this form cannot be submitted.') ;
+											print __($guid, 'There are no sessions available, and so this form cannot be submitted.') ;
 										print "</div>" ;
 									}
 									?>

@@ -27,34 +27,34 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Students/report_familyAddress_byStudent.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>Family Address by Student</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>Family Address by Student</div>" ;
 	print "</div>" ;
 	print "<p>" ;
-	print _("This report attempts to print the family address(es) based on parents who are labelled as Contract Priority 1.") ;
+	print __($guid, "This report attempts to print the family address(es) based on parents who are labelled as Contract Priority 1.") ;
 	print "</p>" ;
 	
 	print "<h2>" ;
-	print _("Choose Students") ;
+	print __($guid, "Choose Students") ;
 	print "</h2>" ;
 	
 	?>
 	
 	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_familyAddress_byStudent.php"?>">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr>
 				<td style='width: 275px'> 
-					<b><?php print _('Students') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
+					<b><?php print __($guid, 'Students') ?> *</b><br/>
+					<span class="emphasis small"><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 				</td>
 				<td class="right">
 					<select name="Members[]" id="Members[]" multiple style="width: 302px; height: 150px">
-						<optgroup label='--<?php print _('Students by Roll Group') ?>--'>
+						<optgroup label='--<?php print __($guid, 'Students by Roll Group') ?>--'>
 							<?php
 							try {
 								$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -68,7 +68,7 @@ else {
 							}
 							?>
 						</optgroup>
-						<optgroup label='--<?php print _('Students by Name') ?>--'>
+						<optgroup label='--<?php print __($guid, 'Students by Name') ?>--'>
 							<?php
 							try {
 								$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -87,7 +87,7 @@ else {
 			</tr>
 			<tr>
 				<td colspan=2 class="right">
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
@@ -103,7 +103,7 @@ else {
 		$_SESSION[$guid]["report_student_emergencySummary.php_choices"]=$choices ;
 		
 		print "<h2>" ;
-		print _("Report Data") ;
+		print __($guid, "Report Data") ;
 		print "</h2>" ;
 		
 		try {
@@ -139,13 +139,13 @@ else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print _("Family") ;
+					print __($guid, "Family") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Selected Students") ;
+					print __($guid, "Selected Students") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Home Address") ;
+					print __($guid, "Home Address") ;
 				print "</th>" ;
 			print "</tr>" ;
 			
@@ -223,7 +223,7 @@ else {
 			if ($count==0) {
 				print "<tr class=$rowNum>" ;
 					print "<td colspan=3>" ;
-						print _("There are no records to display.") ;
+						print __($guid, "There are no records to display.") ;
 					print "</td>" ;
 				print "</tr>" ;
 			}

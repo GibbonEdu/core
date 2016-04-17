@@ -22,13 +22,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/System Admin/i18n_manage.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Language Settings') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Language Settings') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -36,16 +36,16 @@ else {
 	$class="error" ;
 	if (!($updateReturn=="")) {
 		if ($updateReturn=="fail0") {
-			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($updateReturn=="fail1") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail2") {
-			$updateReturnMessage=_("Your request failed due to a database error.") ;	
+			$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 		}
 		else if ($updateReturn=="success0") {
-			$updateReturnMessage=_("Your request was completed successfully.") ;	
+			$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -64,12 +64,12 @@ else {
 	}
 	
 	print "<p>" ;
-		print _("Inactive languages are not yet ready for use within the system as they are still under development. They cannot be set to default, nor selected by users.") ;
+		print __($guid, "Inactive languages are not yet ready for use within the system as they are still under development. They cannot be set to default, nor selected by users.") ;
 	print "</p>" ;
 	
 	if ($result->rowCount()<1) {
 		print "<div class='error'>" ;
-		print _("There are no records to display.") ;
+		print __($guid, "There are no records to display.") ;
 		print "</div>" ;
 	}
 	else {
@@ -77,19 +77,19 @@ else {
 			print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
 					print "<th>" ;
-						print _("Name") ;
+						print __($guid, "Name") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Code") ;
+						print __($guid, "Code") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Active") ;
+						print __($guid, "Active") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Maintainer") ;
+						print __($guid, "Maintainer") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Default") ;
+						print __($guid, "Default") ;
 					print "</th>" ;
 				print "</tr>" ;
 				
@@ -117,7 +117,7 @@ else {
 							print $row["code"] ;
 						print "</td>" ;
 						print "<td>" ;
-							print ynExpander($row["active"]) ;
+							print ynExpander($guid, $row["active"]) ;
 						print "</td>" ;
 						print "<td>" ;
 							if ($row["maintainerWebsite"]!="") {
@@ -143,7 +143,7 @@ else {
 					print "<td colspan=6 class='right'>" ;
 						?>
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<?php print _("Submit") ; ?>">
+							<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 						<?php
 					print "</td>" ;
 				print "</tr>" ;

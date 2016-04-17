@@ -21,14 +21,8 @@ include "../../functions.php" ;
 include "../../config.php" ;
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 @session_start() ;
 
@@ -43,14 +37,14 @@ if (isActionAccessible($guid, $connection2, "/modules/School Admin/spaceSettings
 	header("Location: {$URL}");
 }
 else {
-	$spaceTypes="" ; 
-	foreach (explode(",", $_POST["spaceTypes"]) as $type) {
-		$spaceTypes.=trim($type) . "," ;
+	$facilityTypes="" ; 
+	foreach (explode(",", $_POST["facilityTypes"]) as $type) {
+		$facilityTypes.=trim($type) . "," ;
 	}
-	$spaceTypes=substr($spaceTypes,0,-1) ;
+	$facilityTypes=substr($facilityTypes,0,-1) ;
 
 	//Validate Inputs
-	if ($spaceTypes=="") {
+	if ($facilityTypes=="") {
 		//Fail 3
 		$URL.="&updateReturn=fail3" ;
 		header("Location: {$URL}");
@@ -61,8 +55,8 @@ else {
 		
 		//Update internal assessment fields
 		try {
-			$data=array("value"=>$spaceTypes); 
-			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='School Admin' AND name='spaceTypes'" ;
+			$data=array("value"=>$facilityTypes); 
+			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='School Admin' AND name='facilityTypes'" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}

@@ -35,7 +35,7 @@ if (isset($_GET["filter2"])) {
 if (isActionAccessible($guid, $connection2, "/modules/Rubrics/rubrics_edit.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -43,19 +43,19 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print _("The highest grouped action cannot be determined.") ;
+		print __($guid, "The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
 		if ($highestAction!="Manage Rubrics_viewEditAll" AND $highestAction!="Manage Rubrics_viewAllEditLearningArea") {
 			print "<div class='error'>" ;
-				print _("You do not have access to this action.") ;
+				print __($guid, "You do not have access to this action.") ;
 			print "</div>" ;
 		}
 		else {
 			//Proceed!
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/rubrics.php&search=$search&filter2=$filter2'>" . _('Manage Rubrics') . "</a> > </div><div class='trailEnd'>" . _('Edit Rubric') . "</div>" ;
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/rubrics.php&search=$search&filter2=$filter2'>" . __($guid, 'Manage Rubrics') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Edit Rubric') . "</div>" ;
 			print "</div>" ;
 			
 			if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -63,19 +63,19 @@ else {
 			$class="error" ;
 			if (!($updateReturn=="")) {
 				if ($updateReturn=="fail0") {
-					$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+					$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 				}
 				else if ($updateReturn=="fail1") {
-					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($updateReturn=="fail2") {
-					$updateReturnMessage=_("Your request failed due to a database error.") ;	
+					$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 				}
 				else if ($updateReturn=="fail3") {
-					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($updateReturn=="success0") {
-					$updateReturnMessage=_("Your request was completed successfully.") ;	
+					$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
 					$class="success" ;
 				}
 				print "<div class='$class'>" ;
@@ -88,7 +88,7 @@ else {
 			$class="error" ;
 			if (!($addReturn=="")) {
 				if ($addReturn=="success0") {
-					$addReturnMessage=_("Your request was completed successfully.") ;	
+					$addReturnMessage=__($guid, "Your request was completed successfully.") ;	
 					$class="success" ;
 				}
 				print "<div class='$class'>" ;
@@ -101,19 +101,19 @@ else {
 			$class="error" ;
 			if (!($columnDeleteReturn=="")) {
 				if ($columnDeleteReturn=="fail0") {
-					$columnDeleteReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+					$columnDeleteReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 				}
 				else if ($columnDeleteReturn=="fail1") {
-					$columnDeleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$columnDeleteReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($columnDeleteReturn=="fail2") {
-					$columnDeleteReturnMessage=_("Your request failed due to a database error.") ;	
+					$columnDeleteReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 				}
 				else if ($columnDeleteReturn=="fail3") {
-					$columnDeleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$columnDeleteReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($columnDeleteReturn=="success0") {
-					$columnDeleteReturnMessage=_("Your request was completed successfully.") ;	
+					$columnDeleteReturnMessage=__($guid, "Your request was completed successfully.") ;	
 					$class="success" ;
 				}
 				print "<div class='$class'>" ;
@@ -126,19 +126,19 @@ else {
 			$class="error" ;
 			if (!($rowDeleteReturn=="")) {
 				if ($rowDeleteReturn=="fail0") {
-					$rowDeleteReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+					$rowDeleteReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 				}
 				else if ($rowDeleteReturn=="fail1") {
-					$rowDeleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$rowDeleteReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($rowDeleteReturn=="fail2") {
-					$rowDeleteReturnMessage=_("Your request failed due to a database error.") ;	
+					$rowDeleteReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 				}
 				else if ($rowDeleteReturn=="fail3") {
-					$rowDeleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$rowDeleteReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($rowDeleteReturn=="success0") {
-					$rowDeleteReturnMessage=_("Your request was completed successfully.") ;	
+					$rowDeleteReturnMessage=__($guid, "Your request was completed successfully.") ;	
 					$class="success" ;
 				}
 				print "<div class='$class'>" ;
@@ -151,22 +151,22 @@ else {
 			$class="error" ;
 			if (!($cellEditReturn=="")) {
 				if ($cellEditReturn=="fail0") {
-					$cellEditReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+					$cellEditReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 				}
 				else if ($cellEditReturn=="fail1") {
-					$cellEditReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$cellEditReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($cellEditReturn=="fail2") {
-					$cellEditReturnMessage=_("Your request failed due to a database error.") ;	
+					$cellEditReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 				}
 				else if ($cellEditReturn=="fail3") {
-					$cellEditReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$cellEditReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($cellEditReturn=="fail5") {
-					$cellEditReturnMessage=_("Your request was successful, but some data was not properly saved.") ;	
+					$cellEditReturnMessage=__($guid, "Your request was successful, but some data was not properly saved.") ;	
 				}
 				else if ($cellEditReturn=="success0") {
-					$cellEditReturnMessage=_("Your request was completed successfully.") ;	
+					$cellEditReturnMessage=__($guid, "Your request was completed successfully.") ;	
 					$class="success" ;
 				}
 				print "<div class='$class'>" ;
@@ -178,7 +178,7 @@ else {
 			$gibbonRubricID=$_GET["gibbonRubricID"];
 			if ($gibbonRubricID=="") {
 				print "<div class='error'>" ;
-					print _("You have not specified one or more required parameters.") ;
+					print __($guid, "You have not specified one or more required parameters.") ;
 				print "</div>" ;
 			}
 			else {
@@ -194,7 +194,7 @@ else {
 				
 				if ($result->rowCount()!=1) {
 					print "<div class='error'>" ;
-						print _("The specified record does not exist.") ;
+						print __($guid, "The specified record does not exist.") ;
 					print "</div>" ;
 				}
 				else {
@@ -203,24 +203,24 @@ else {
 					
 					if ($search!="" OR $filter2!="") {
 						print "<div class='linkTop'>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Rubrics/rubrics.php&search=$search&filter2=$filter2'>" . _('Back to Search Results') . "</a>" ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Rubrics/rubrics.php&search=$search&filter2=$filter2'>" . __($guid, 'Back to Search Results') . "</a>" ;
 						print "</div>" ;
 					}
 					?>
 					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/rubrics_editProcess.php?gibbonRubricID=$gibbonRubricID&search=$search&filter2=$filter2" ?>">
-						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+						<table class='smallIntBorder fullWidth' cellspacing='0'>	
 							<tr class='break'>
 								<td colspan=2>
-									<h3><?php print _('Rubric Basics') ?></h3>
+									<h3><?php print __($guid, 'Rubric Basics') ?></h3>
 								</td>
 							</tr>
 							<tr>
 								<td style='width: 275px'> 
-									<b><?php print _('Scope') ?> *</b><br/>
-									<span style="font-size: 90%"><i></i></span>
+									<b><?php print __($guid, 'Scope') ?> *</b><br/>
+									<span class="emphasis small"></span>
 								</td>
 								<td class="right">
-									<input readonly name="scope" id="scope" value="<?php print $row["scope"] ?>" type="text" style="width: 300px">
+									<input readonly name="scope" id="scope" value="<?php print $row["scope"] ?>" type="text" class="standardWidth">
 								</td>
 							</tr>
 							
@@ -241,12 +241,12 @@ else {
 								?>
 								<tr>
 									<td> 
-										<b><?php print _('Learning Area') ?> *</b><br/>
-										<span style="font-size: 90%"><i></i></span>
+										<b><?php print __($guid, 'Learning Area') ?> *</b><br/>
+										<span class="emphasis small"></span>
 									</td>
 									<td class="right">
-										<input readonly name="department" id="department" value="<?php print $rowLearningAreas["name"] ?>" type="text" style="width: 300px">
-										<input name="gibbonDepartmentID" id="gibbonDepartmentID" value="<?php print $row["gibbonDepartmentID"] ?>" type="hidden" style="width: 300px">
+										<input readonly name="department" id="department" value="<?php print $rowLearningAreas["name"] ?>" type="text" class="standardWidth">
+										<input name="gibbonDepartmentID" id="gibbonDepartmentID" value="<?php print $row["gibbonDepartmentID"] ?>" type="hidden" class="standardWidth">
 									</td>
 								</tr>
 								<?php
@@ -256,10 +256,10 @@ else {
 							
 							<tr>
 								<td> 
-									<b><?php print _('Name') ?> *</b><br/>
+									<b><?php print __($guid, 'Name') ?> *</b><br/>
 								</td>
 								<td class="right">
-									<input name="name" id="name" maxlength=50 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
+									<input name="name" id="name" maxlength=50 value="<?php print $row["name"] ?>" type="text" class="standardWidth">
 									<script type="text/javascript">
 										var name2=new LiveValidation('name');
 										name2.add(Validate.Presence);
@@ -268,23 +268,23 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b><?php print _('Active') ?> *</b><br/>
-									<span style="font-size: 90%"><i></i></span>
+									<b><?php print __($guid, 'Active') ?> *</b><br/>
+									<span class="emphasis small"></span>
 								</td>
 								<td class="right">
-									<select name="active" id="active" style="width: 302px">
-										<option <?php if ($row["active"]=="Y") { print "selected" ; } ?> value="Y"><?php print _('Yes') ?></option>
-										<option <?php if ($row["active"]=="N") { print "selected" ; } ?> value="N"><?php print _('No') ?></option>
+									<select name="active" id="active" class="standardWidth">
+										<option <?php if ($row["active"]=="Y") { print "selected" ; } ?> value="Y"><?php print __($guid, 'Yes') ?></option>
+										<option <?php if ($row["active"]=="N") { print "selected" ; } ?> value="N"><?php print __($guid, 'No') ?></option>
 									</select>
 								</td>
 							</tr>
 							
 							<tr>
 								<td> 
-									<b><?php print _('Category') ?></b><br/>
+									<b><?php print __($guid, 'Category') ?></b><br/>
 								</td>
 								<td class="right">
-									<input name="category" id="category" maxlength=100 value="<?php print $row["category"] ?>" type="text" style="width: 300px">
+									<input name="category" id="category" maxlength=100 value="<?php print $row["category"] ?>" type="text" class="standardWidth">
 									<script type="text/javascript">
 										$(function() {
 											var availableTags=[
@@ -308,7 +308,7 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b><?php print _('Description') ?></b><br/>
+									<b><?php print __($guid, 'Description') ?></b><br/>
 								</td>
 								<td class="right">
 									<textarea name='description' id='description' rows=5 style='width: 300px'><?php print $row["description"] ?></textarea>
@@ -316,13 +316,13 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b><?php print _('Year Groups') ?></b><br/>
+									<b><?php print __($guid, 'Year Groups') ?></b><br/>
 								</td>
 								<td class="right">
 									<?php 
 									$yearGroups=getYearGroups($connection2) ;
 									if ($yearGroups=="") {
-										print "<i>" . _('No year groups available.') . "</i>" ;
+										print "<i>" . __($guid, 'No year groups available.') . "</i>" ;
 									}
 									else {
 										for ($i=0; $i<count($yearGroups); $i=$i+2) {
@@ -330,7 +330,7 @@ else {
 											if (is_numeric(strpos($row["gibbonYearGroupIDList"], $yearGroups[$i]))) {
 												$checked="checked " ;
 											}
-											print _($yearGroups[($i+1)]) . " <input $checked type='checkbox' name='gibbonYearGroupIDCheck" . ($i)/2 . "'><br/>" ; 
+											print __($guid, $yearGroups[($i+1)]) . " <input $checked type='checkbox' name='gibbonYearGroupIDCheck" . ($i)/2 . "'><br/>" ; 
 											print "<input type='hidden' name='gibbonYearGroupID" . ($i)/2 . "' value='" . $yearGroups[$i] . "'>" ;
 										}
 									}
@@ -340,8 +340,8 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b><?php print _('Grade Scale') ?></b><br/>
-									<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+									<b><?php print __($guid, 'Grade Scale') ?></b><br/>
+									<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 								</td>
 								<td class="right">
 									<?php
@@ -361,13 +361,13 @@ else {
 									}
 									if (isset($rowSelect["name"])==FALSE) {
 										?>
-										<input readonly name="scale" id="scale" value="None" type="text" style="width: 300px">
+										<input readonly name="scale" id="scale" value="None" type="text" class="standardWidth">
 										<?php
 									}
 									else {
 										?>
-										<input readonly name="scale" id="scale" value="<?php print _($rowSelect["name"]) ?>" type="text" style="width: 300px">
-										<input name="gibbonScaleID" id="gibbonScaleID" value="<?php print $rowSelect["gibbonScaleID"] ?>" type="hidden" style="width: 300px">
+										<input readonly name="scale" id="scale" value="<?php print __($guid, $rowSelect["name"]) ?>" type="text" class="standardWidth">
+										<input name="gibbonScaleID" id="gibbonScaleID" value="<?php print $rowSelect["gibbonScaleID"] ?>" type="hidden" class="standardWidth">
 										<?php
 									}
 									?>
@@ -375,11 +375,11 @@ else {
 							</tr>
 							<tr>
 								<td>
-									<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+									<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 								</td>
 								<td class="right">
 									<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-									<input type="submit" value="<?php print _("Submit") ; ?>">
+									<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 								</td>
 							</tr>
 						</table>
@@ -388,7 +388,7 @@ else {
 					<table class='smallIntBorder' cellspacing='0' style="width:100%">
 						<tr class='break'>
 							<td colspan=2>
-								<h3><?php print _('Rubric Design') ?></h3>
+								<h3><?php print __($guid, 'Rubric Design') ?></h3>
 							</td>
 						</tr>
 					</table>

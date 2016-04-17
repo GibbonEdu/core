@@ -28,7 +28,7 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 if (isActionAccessible($guid, $connection2, "/modules/Staff/staff_view_details.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -36,14 +36,14 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print _("The highest grouped action cannot be determined.") ;
+		print __($guid, "The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
 		$gibbonPersonID=$_GET["gibbonPersonID"] ;
 		if ($gibbonPersonID==FALSE) {
 			print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 			print "</div>" ;
 		}
 		else {
@@ -70,7 +70,7 @@ else {
 
 				if ($result->rowCount()!=1) {
 					print "<div class='error'>" ;
-						print _("The selected record does not exist, or you do not have access to it.") ;
+						print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 					print "</div>" ;
 					print "</div>" ;
 				}
@@ -78,39 +78,39 @@ else {
 					$row=$result->fetch() ;
 					
 					print "<div class='trail'>" ;
-					print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/staff_view.php'>" . _('View Staff Profiles') . "</a> > </div><div class='trailEnd'>" . formatName("", $row["preferredName"], $row["surname"], "Student") . "</div>" ;
+					print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/staff_view.php'>" . __($guid, 'View Staff Profiles') . "</a> > </div><div class='trailEnd'>" . formatName("", $row["preferredName"], $row["surname"], "Student") . "</div>" ;
 					print "</div>" ;
 					
 					if ($search!="") {
 						print "<div class='linkTop'>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Staff/staff_view.php&search=" . $search . "'>" . _('Back to Search Results') . "</a>" ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Staff/staff_view.php&search=" . $search . "'>" . __($guid, 'Back to Search Results') . "</a>" ;
 						print "</div>" ;
 					}
 					
 					print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 						print "<tr>" ;
 							print "<td style='width: 33%; vertical-align: top'>" ;
-								print "<span style='font-size: 115%; font-weight: bold'>" . _('Name') . "</span><br/>" ;
+								print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Name') . "</span><br/>" ;
 								print "<i>" . formatName($row["title"], $row["preferredName"], $row["surname"], "Parent") . "</i>" ;
 							print "</td>" ;
 							print "<td style='width: 33%; vertical-align: top'>" ;
-								print "<span style='font-size: 115%; font-weight: bold'>" . _('Staff Type') . "</span><br/>" ;
+								print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Staff Type') . "</span><br/>" ;
 								print "<i>" . $row["type"] . "</i>" ;
 							print "</td>" ;
 							print "<td style='width: 33%; vertical-align: top'>" ;
-								print "<span style='font-size: 115%; font-weight: bold'>" . _('Job Title') . "</span><br/>" ;
+								print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Job Title') . "</span><br/>" ;
 								print "<i>" . $row["jobTitle"] . "</i>" ;
 							print "</td>" ;
 						print "</tr>" ;
 						print "<tr>" ;
 							print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-								print "<span style='font-size: 115%; font-weight: bold'>" . _('Email') . "</span><br/>" ;
+								print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Email') . "</span><br/>" ;
 								if ($row["email"]!="") {
 									print "<i><a href='mailto:" . $row["email"] . "'>" . $row["email"] . "</a></i>" ;
 								}
 							print "</td>" ;
 							print "<td style='width: 67%; padding-top: 15px; vertical-align: top' colspan=2>" ;
-								print "<span style='font-size: 115%; font-weight: bold'>" . _('Website') . "</span><br/>" ;
+								print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Website') . "</span><br/>" ;
 								if ($row["website"]!="") {
 									print "<i><a href='" . $row["website"] . "'>" . $row["website"] . "</a></i>" ;
 								}
@@ -119,22 +119,22 @@ else {
 					print "</table>" ;
 					
 					print "<h4>" ;
-						print _("Biography") ;
+						print __($guid, "Biography") ;
 					print "</h4>" ;
 					print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 						print "<tr>" ;
 							print "<td style='width: 33%; vertical-align: top'>" ;
-								print "<span style='font-size: 115%; font-weight: bold'>" . _('Country Of Origin') . "</span><br/>" ;
+								print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Country Of Origin') . "</span><br/>" ;
 								print "<i>" . $row["countryOfOrigin"] . "</i>" ;
 							print "</td>" ;
 							print "<td style='width: 67%; vertical-align: top' colspan=2>" ;
-								print "<span style='font-size: 115%; font-weight: bold'>" . _('Qualifications') . "</span><br/>" ;
+								print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Qualifications') . "</span><br/>" ;
 								print "<i>" . $row["qualifications"] . "</i>" ;
 							print "</td>" ;
 						print "</tr>" ;
 						print "<tr>" ;
 							print "<td style='width: 100%; vertical-align: top' colspan=3>" ;
-								print "<span style='font-size: 115%; font-weight: bold'>" . _('Biography') . "</span><br/>" ;
+								print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Biography') . "</span><br/>" ;
 								print "<i>" . $row["biography"] . "</i>" ;
 							print "</td>" ;
 						print "</tr>" ;
@@ -162,14 +162,14 @@ else {
 				
 				if ($result->rowCount()!=1) {
 					print "<div class='error'>" ;
-						print _("The selected record does not exist, or you do not have access to it.") ;
+						print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 					print "</div>" ;
 				}
 				else {
 					$row=$result->fetch() ;
 					
 					print "<div class='trail'>" ;
-					print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/staff_view.php&search=$search&allStaff=$allStaff'>" . _('View Staff Profiles') . "</a> > </div><div class='trailEnd'>" . formatName("", $row["preferredName"], $row["surname"], "Student") . "</div>" ;
+					print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/staff_view.php&search=$search&allStaff=$allStaff'>" . __($guid, 'View Staff Profiles') . "</a> > </div><div class='trailEnd'>" . formatName("", $row["preferredName"], $row["surname"], "Student") . "</div>" ;
 					print "</div>" ;
 					
 					$subpage=NULL ;
@@ -182,7 +182,7 @@ else {
 					
 					if ($search!="") {
 						print "<div class='linkTop'>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Staff/staff_view.php&search=" . $search . "'>" . _('Back to Search Results') . "</a>" ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Staff/staff_view.php&search=" . $search . "'>" . __($guid, 'Back to Search Results') . "</a>" ;
 						print "</div>" ;
 					}
 					
@@ -195,42 +195,42 @@ else {
 					if ($subpage=="Overview") {
 						if (isActionAccessible($guid, $connection2, "/modules/User Admin/user_manage.php")==TRUE) {
 							print "<div class='linkTop'>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID'>" . _('Edit') . "<img style='margin: 0 0 -4px 5px' title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID'>" . __($guid, 'Edit') . "<img style='margin: 0 0 -4px 5px' title='" . __($guid, 'Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 							print "</div>" ;
 						}
 						
 						//General Information
 						print "<h4>" ;
-							print _("General Information") ;
+							print __($guid, "General Information") ;
 						print "</h4>" ;
 						print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>" . _('Name') . "</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Name') . "</span><br/>" ;
 									print "<i>" . formatName($row["title"], $row["preferredName"], $row["surname"], "Parent") . "</i>" ;
 								print "</td>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>" . _('Staff Type') . "</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Staff Type') . "</span><br/>" ;
 									print "<i>" . $row["type"] . "</i>" ;
 								print "</td>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>" . _('Job Title') . "</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Job Title') . "</span><br/>" ;
 									print "<i>" . $row["jobTitle"] . "</i>" ;
 								print "</td>" ;
 							print "</tr>" ;
 							print "<tr>" ;
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>" . _('Username') . "</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Username') . "</span><br/>" ;
 									print "<i>" . $row["username"] . "</i>" ;
 								print "</td>" ;
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>" . _('Website') . "</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Website') . "</span><br/>" ;
 									if ($row["website"]!="") {
 										print "<i><a href='" . $row["website"] . "'>" . $row["website"] . "</a></i>" ;
 									}
 								print "</td>" ;
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>" . _('Email') . "</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Email') . "</span><br/>" ;
 									if ($row["email"]!="") {
 										print "<i><a href='mailto:" . $row["email"] . "'>" . $row["email"] . "</a></i>" ;
 									}
@@ -239,22 +239,22 @@ else {
 						print "</table>" ;
 						
 						print "<h4>" ;
-							print _("Biography") ;
+							print __($guid, "Biography") ;
 						print "</h4>" ;
 						print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>" . _('Country Of Origin') . "</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Country Of Origin') . "</span><br/>" ;
 									print "<i>" . $row["countryOfOrigin"] . "</i>" ;
 								print "</td>" ;
 								print "<td style='width: 67%; vertical-align: top' colspan=2>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>" . _('Qualifications') . "</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Qualifications') . "</span><br/>" ;
 									print "<i>" . $row["qualifications"] . "</i>" ;
 								print "</td>" ;
 							print "</tr>" ;
 							print "<tr>" ;
 								print "<td style='width: 100%; vertical-align: top' colspan=3>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>" . _('Biography') . "</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Biography') . "</span><br/>" ;
 									print "<i>" . $row["biography"] . "</i>" ;
 								print "</td>" ;
 							print "</tr>" ;
@@ -263,12 +263,12 @@ else {
 						//Show timetable
 						print "<a name='timetable'></a>" ;
 						print "<h4>" ;
-							print _("Timetable") ;
+							print __($guid, "Timetable") ;
 						print "</h4>" ;
 						if (isActionAccessible($guid, $connection2, "/modules/Timetable/tt_view.php")==TRUE) {
 							if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php")==TRUE) {
 								print "<div class='linkTop'>" ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=" . $_SESSION[$guid]["gibbonSchoolYearID"] . "&type=Staff&allUsers='>" . _('Edit') . "<img style='margin: 0 0 -4px 5px' title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=" . $_SESSION[$guid]["gibbonSchoolYearID"] . "&type=Staff&allUsers='>" . __($guid, 'Edit') . "<img style='margin: 0 0 -4px 5px' title='" . __($guid, 'Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 								print "</div>" ;
 							}
 						
@@ -287,7 +287,7 @@ else {
 							}
 							else {
 								print "<div class='error'>" ;
-									print _("The selected record does not exist, or you do not have access to it.");
+									print __($guid, "The selected record does not exist, or you do not have access to it.");
 								print "</div>" ;
 							}
 						}
@@ -295,32 +295,32 @@ else {
 					else if ($subpage=="Personal") {
 						if (isActionAccessible($guid, $connection2, "/modules/User Admin/user_manage.php")==TRUE) {
 							print "<div class='linkTop'>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID'>" . _('Edit') . "<img style='margin: 0 0 -4px 5px' title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID'>" . __($guid, 'Edit') . "<img style='margin: 0 0 -4px 5px' title='" . __($guid, 'Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 							print "</div>" ;
 						}
 						
 						print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>" . _('Name') . "</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Name') . "</span><br/>" ;
 									print "<i>" . formatName($row["title"], $row["preferredName"], $row["surname"], "Parent") . "</i>" ;
 								print "</td>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>" . _('Staff Type') . "</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Staff Type') . "</span><br/>" ;
 									print "<i>" . $row["type"] . "</i>" ;
 								print "</td>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>" . _('Job Title') . "</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Job Title') . "</span><br/>" ;
 									print "<i>" . $row["jobTitle"] . "</i>" ;
 								print "</td>" ;
 							print "</tr>" ;	
 							print "<tr>" ;
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>" . _('Initials') . "</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Initials') . "</span><br/>" ;
 									print $row["initials"] ;
 								print "</td>" ;
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>" . _('Gender') . "</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Gender') . "</span><br/>" ;
 									print $row["gender"] ;
 								print "</td>" ;
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
@@ -341,7 +341,7 @@ else {
 										if ($row["phone" . $i]!="") {
 											$numberCount++ ;
 											print "<td width: 33%; style='vertical-align: top'>" ;
-												print "<span style='font-size: 115%; font-weight: bold'>" . _('Phone') . " $numberCount</span><br/>" ;
+												print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Phone') . " $numberCount</span><br/>" ;
 												if ($row["phone" . $i . "Type"]!="") {
 													print "<i>" . $row["phone" . $i . "Type"] . ":</i> " ;
 												}
@@ -359,19 +359,19 @@ else {
 							}
 							print "<tr>" ;
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>" . _('Email') . "</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Email') . "</span><br/>" ;
 									if ($row["email"]!="") {
 										print "<i><a href='mailto:" . $row["email"] . "'>" . $row["email"] . "</a></i>" ;
 									}
 								print "</td>" ;
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>" . _('Alternate Email') . "</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Alternate Email') . "</span><br/>" ;
 									if ($row["emailAlternate"]!="") {
 										print "<i><a href='mailto:" . $row["emailAlternate"] . "'>" . $row["emailAlternate"] . "</a></i>" ;
 									}
 								print "</td>" ;
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>" . _('Website') . "</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Website') . "</span><br/>" ;
 									if ($row["website"]!="") {
 										print "<i><a href='" . $row["website"] . "'>" . $row["website"] . "</a></i>" ;
 									}
@@ -383,7 +383,7 @@ else {
 							if ($row["address1"]!="") {
 								print "<tr>" ;
 									print "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=3>" ;
-										print "<span style='font-size: 115%; font-weight: bold'>" . _('Address 1') . "</span><br/>" ;
+										print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Address 1') . "</span><br/>" ;
 										$address1=addressFormat( $row["address1"], $row["address1District"], $row["address1Country"] ) ;
 										if ($address1!=FALSE) {
 											print $address1 ;
@@ -394,7 +394,7 @@ else {
 							if ($row["address2"]!="") {
 								print "<tr>" ;
 									print "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=3>" ;
-										print "<span style='font-size: 115%; font-weight: bold'>" . _('Address 2') . "</span><br/>" ;
+										print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Address 2') . "</span><br/>" ;
 										$address2=addressFormat( $row["address2"], $row["address2District"], $row["address2Country"] ) ;
 										if ($address2!=FALSE) {
 											print $address2 ;
@@ -405,21 +405,21 @@ else {
 						print "</table>" ;	
 						
 						print "<h4>" ;
-						print _("Miscellaneous") ;
+						print __($guid, "Miscellaneous") ;
 						print "</h4>" ;
 						
 						print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>" . _('Transport') . "</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Transport') . "</span><br/>" ;
 									print $row["transport"] ;
 								print "</td>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>" . _('Vehicle Registration') . "</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Vehicle Registration') . "</span><br/>" ;
 									print $row["vehicleRegistration"] ;
 								print "</td>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>" . _('Locker Number') . "</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Locker Number') . "</span><br/>" ;
 									print $row["lockerNumber"] ;
 								print "</td>" ;
 							print "</tr>" ;
@@ -430,7 +430,7 @@ else {
 						$resultFields=getCustomFields($connection2, $guid, FALSE, TRUE) ;
 						if ($resultFields->rowCount()>0) {
 							print "<h4>" ;
-							print _("Custom Fields") ;
+							print __($guid, "Custom Fields") ;
 							print "</h4>" ;
 							
 							print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
@@ -442,7 +442,7 @@ else {
 										print "<tr>" ;
 									}
 									print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-											print "<span style='font-size: 115%; font-weight: bold'>" . _($rowFields["name"]) . "</span><br/>" ;
+											print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, $rowFields["name"]) . "</span><br/>" ;
 											if (isset($fields[$rowFields["gibbonPersonFieldID"]])) {
 												if ($rowFields["type"]=="date") {
 													print dateConvertBack($guid, $fields[$rowFields["gibbonPersonFieldID"]]) ;
@@ -475,16 +475,16 @@ else {
 					else if ($subpage=="Emergency Contacts") {
 						if (isActionAccessible($guid, $connection2, "/modules/User Admin/user_manage.php")==TRUE) {
 							print "<div class='linkTop'>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID'>" . _('Edit') . "<img style='margin: 0 0 -4px 5px' title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID'>" . __($guid, 'Edit') . "<img style='margin: 0 0 -4px 5px' title='" . __($guid, 'Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 							print "</div>" ;
 						}
 						
 						print "<p>" ;
-						print _("In an emergency, please try and contact the adult family members listed below first. If these cannot be reached, then try the emergency contacts below.") ;
+						print __($guid, "In an emergency, please try and contact the adult family members listed below first. If these cannot be reached, then try the emergency contacts below.") ;
 						print "</p>" ;
 						
 						print "<h4>" ;
-						print _("Adult Family Members") ;
+						print __($guid, "Adult Family Members") ;
 						print "</h4>" ;
 						
 						try {
@@ -499,7 +499,7 @@ else {
 						
 						if ($resultFamily->rowCount()!=1) {
 							print "<div class='error'>" ;
-								print _("There is no family information available for the current staff member.");
+								print __($guid, "There is no family information available for the current staff member.");
 							print "</div>" ;
 						}
 						else {
@@ -520,17 +520,17 @@ else {
 								print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 									print "<tr>" ;
 										print "<td style='width: 33%; vertical-align: top'>" ;
-											print "<span style='font-size: 115%; font-weight: bold'>" . _('Name') . "</span><br/>" ;
+											print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Name') . "</span><br/>" ;
 												print formatName($rowMember["title"], $rowMember["preferredName"], $rowMember["surname"], "Parent") ;
 										print "</td>" ;
 										print "<td style='width: 33%; vertical-align: top'>" ;
-											print "<span style='font-size: 115%; font-weight: bold'>" . _('Relationship') . "</span><br/>" ;
+											print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Relationship') . "</span><br/>" ;
 												if ($rowMember["role"]=="Parent") {
 													if ($rowMember["gender"]=="M") {
-														print _("Father") ;
+														print __($guid, "Father") ;
 													}
 													else if ($rowMember["gender"]=="F") {
-														print _("Mother") ;
+														print __($guid, "Mother") ;
 													}
 													else {
 														print $rowMember["role"] ;
@@ -541,7 +541,7 @@ else {
 												}
 										print "</td>" ;
 										print "<td style='width: 34%; vertical-align: top'>" ;
-											print "<span style='font-size: 115%; font-weight: bold'>" . _('Contact By Phone') . "</span><br/>" ;
+											print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Contact By Phone') . "</span><br/>" ;
 											for ($i=1; $i<5; $i++) {
 												if ($rowMember["phone" . $i]!="") {
 													if ($rowMember["phone" . $i . "Type"]!="") {
@@ -561,23 +561,23 @@ else {
 						}
 							
 						print "<h4>" ;
-						print _("Emergency Contacts") ;
+						print __($guid, "Emergency Contacts") ;
 						print "</h4>" ;
 						print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>" . _('Contact 1') . "</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Contact 1') . "</span><br/>" ;
 									print "<i>" . $row["emergency1Name"] . "</i>" ;
 									if ($row["emergency1Relationship"]!="") {
 										print " (" . $row["emergency1Relationship"] . ")" ;
 									}
 								print "</td>" ;
 								print "<td style='width: 33%; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>" . _('Number 1') . "</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Number 1') . "</span><br/>" ;
 									print $row["emergency1Number1"] ;
 								print "</td>" ;
 								print "<td style=width: 34%; 'vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>" . _('Number 2') . "</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Number 2') . "</span><br/>" ;
 									if ($row["emergency1Number2"]!="") {
 										print $row["emergency1Number2"] ;
 									}
@@ -585,18 +585,18 @@ else {
 							print "</tr>" ;
 							print "<tr>" ;
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>" . _('Contact 2') . "</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Contact 2') . "</span><br/>" ;
 									print "<i>" . $row["emergency2Name"] . "</i>" ;
 									if ($row["emergency2Relationship"]!="") {
 										print " (" . $row["emergency2Relationship"] . ")" ;
 									}
 								print "</td>" ;
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>" . _('Number 1') . "</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Number 1') . "</span><br/>" ;
 									print $row["emergency2Number1"] ;
 								print "</td>" ;
 								print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>" . _('Number 2') . "</span><br/>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Number 2') . "</span><br/>" ;
 									if ($row["emergency2Number2"]!="") {
 										print $row["emergency2Number2"] ;
 									}
@@ -607,13 +607,13 @@ else {
 					else if ($subpage=="Timetable") {
 						if (isActionAccessible($guid, $connection2, "/modules/Timetable/tt_view.php")==FALSE) {
 							print "<div class='error'>" ;
-								print _("The selected record does not exist, or you do not have access to it.");
+								print __($guid, "The selected record does not exist, or you do not have access to it.");
 							print "</div>" ;
 						}
 						else {
 							if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php")==TRUE) {
 								print "<div class='linkTop'>" ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=" . $_SESSION[$guid]["gibbonSchoolYearID"] . "&type=Staff&allUsers='>" . _('Edit') . "<img style='margin: 0 0 -4px 5px' title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=" . $_SESSION[$guid]["gibbonSchoolYearID"] . "&type=Staff&allUsers='>" . __($guid, 'Edit') . "<img style='margin: 0 0 -4px 5px' title='" . __($guid, 'Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 								print "</div>" ;
 							}
 						
@@ -632,7 +632,7 @@ else {
 							}
 							else {
 								print "<div class='error'>" ;
-									print _("The selected record does not exist, or you do not have access to it.");
+									print __($guid, "The selected record does not exist, or you do not have access to it.");
 								print "</div>" ;
 							}
 						}
@@ -647,28 +647,28 @@ else {
 					
 					//PERSONAL DATA MENU ITEMS
 					$_SESSION[$guid]["sidebarExtra"].="<h4>Personal</h4>" ;
-					$_SESSION[$guid]["sidebarExtra"].="<ul>" ;
+					$_SESSION[$guid]["sidebarExtra"].="<ul class='moduleMenu'>" ;
 					$style="" ;
 					if ($subpage=="Overview") {
 						$style="style='font-weight: bold'" ;
 					}
-					$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&allStaff=$allStaff&subpage=Overview'>" . _('Overview') . "</a></li>" ;
+					$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&allStaff=$allStaff&subpage=Overview'>" . __($guid, 'Overview') . "</a></li>" ;
 					$style="" ;
 					if ($subpage=="Personal") {
 						$style="style='font-weight: bold'" ;
 					}
-					$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&allStaff=$allStaff&subpage=Personal'>" . _('Personal') . "</a></li>" ;
+					$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&allStaff=$allStaff&subpage=Personal'>" . __($guid, 'Personal') . "</a></li>" ;
 					$style="" ;
 					if ($subpage=="Emergency Contacts") {
 						$style="style='font-weight: bold'" ;
 					}
-					$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&allStaff=$allStaff&subpage=Emergency Contacts'>" . _('Emergency Contacts') . "</a></li>" ;
+					$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&allStaff=$allStaff&subpage=Emergency Contacts'>" . __($guid, 'Emergency Contacts') . "</a></li>" ;
 					if (isActionAccessible($guid, $connection2, "/modules/Timetable/tt_view.php")) {
 						$style="" ;
 						if ($subpage=="Timetable") {
 							$style="style='font-weight: bold'" ;
 						}
-						$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&allStaff=$allStaff&subpage=Timetable'>" . _('Timetable') . "</a></li>" ;
+						$_SESSION[$guid]["sidebarExtra"].="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&allStaff=$allStaff&subpage=Timetable'>" . __($guid, 'Timetable') . "</a></li>" ;
 					}
 					$_SESSION[$guid]["sidebarExtra"].="</ul>" ;
 					

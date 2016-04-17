@@ -23,14 +23,8 @@ include "./config.php" ;
 include "./version.php" ;
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 @session_start() ;
 $_SESSION[$guid]["sidebarExtra"]="" ;
@@ -41,7 +35,7 @@ if ($_SESSION[$guid]["systemSettingsSet"]==FALSE) {
 }
 //If still false, show warning, otherwise display page
 if ($_SESSION[$guid]["systemSettingsSet"]==FALSE) {
-	print _("System Settings are not set: the system cannot be displayed") ;
+	print __($guid, "System Settings are not set: the system cannot be displayed") ;
 }
 else {
 	?>
@@ -52,7 +46,7 @@ else {
 			<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
 			<meta http-equiv="content-language" content="en"/>
 			<meta name="author" content="Ross Parker, International College Hong Kong"/>
-			<meta name="ROBOTS" content="none"/>
+			<meta name="robots" content="none"/>
 			
 			<?php
 			//Set up for i18n via gettext
@@ -141,13 +135,13 @@ else {
 			$_SESSION[$guid]["action"]=getActionName($_SESSION[$guid]["address"]) ;
 			if ($_SESSION[$guid]["address"]=="") {
 				print "<h1>" ;
-				print _("There is no content to display") ;
+				print __($guid, "There is no content to display") ;
 				print "</h1>" ;
 			}
 			else {
 				if (strstr($_SESSION[$guid]["address"],"..")!=FALSE) {
 					print "<div class='error'>" ;
-					print _("Illegal address detected: access denied.") ;
+					print __($guid, "Illegal address detected: access denied.") ;
 					print "</div>" ;
 				}
 				else {

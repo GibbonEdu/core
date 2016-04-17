@@ -21,14 +21,8 @@ include "../../functions.php" ;
 include "../../config.php" ;
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 @session_start() ;
 
@@ -80,6 +74,7 @@ else {
 		$type=$_POST["type"] ;
 		//Sort out attainment
 		$attainment=$_POST["attainment"] ;
+		$attainmentWeighting=NULL ;
 		if ($attainment=="N") {
 			$gibbonScaleIDAttainment=NULL ;
 			$gibbonRubricIDAttainment=NULL ;
@@ -90,6 +85,13 @@ else {
 			}
 			else {
 				$gibbonScaleIDAttainment=$_POST["gibbonScaleIDAttainment"] ;
+				if (isset($_POST["attainmentWeighting"])) {
+					if (is_numeric($_POST["attainmentWeighting"])) {
+						if ($_POST["attainmentWeighting"]>0) {
+							$attainmentWeighting=$_POST["attainmentWeighting"] ;
+						}
+					}
+				}
 			}
 			if ($_POST["gibbonRubricIDAttainment"]=="") {
 				$gibbonRubricIDAttainment=NULL ;
@@ -143,7 +145,7 @@ else {
 			//Fail 2
 			$URL.="&addReturn=fail2" ;
 			header("Location: {$URL}");
-			break ;
+			exit() ;
 		}			
 
 		//Get next autoincrement
@@ -155,7 +157,7 @@ else {
 			//Fail 2
 			$URL.="&addReturn=fail2" ;
 			header("Location: {$URL}");
-			break ;
+			exit() ;
 		}			
 		
 		$rowAI=$resultAI->fetch();
@@ -198,8 +200,8 @@ else {
 		else {
 			//Write to database
 			try {
-				$data=array("gibbonUnitID"=>$gibbonUnitID, "gibbonHookID"=>$gibbonHookID, "gibbonPlannerEntryID"=>$gibbonPlannerEntryID, "gibbonCourseClassID"=>$gibbonCourseClassID, "name"=>$name, "description"=>$description, "type"=>$type, "attainment"=>$attainment, "gibbonScaleIDAttainment"=>$gibbonScaleIDAttainment, "effort"=>$effort, "gibbonScaleIDEffort"=>$gibbonScaleIDEffort, "gibbonRubricIDAttainment"=>$gibbonRubricIDAttainment, "gibbonRubricIDEffort"=>$gibbonRubricIDEffort, "comment"=>$comment, "uploadedResponse"=>$uploadedResponse, "completeDate"=>$completeDate, "complete"=>$complete, "viewableStudents"=>$viewableStudents, "viewableParents"=>$viewableParents, "attachment"=>$attachment, "gibbonPersonIDCreator"=>$gibbonPersonIDCreator, "gibbonPersonIDLastEdit"=>$gibbonPersonIDLastEdit); 
-				$sql="INSERT INTO gibbonMarkbookColumn SET gibbonUnitID=:gibbonUnitID, gibbonHookID=:gibbonHookID, gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonCourseClassID=:gibbonCourseClassID, name=:name, description=:description, type=:type, attainment=:attainment, gibbonScaleIDAttainment=:gibbonScaleIDAttainment, effort=:effort, gibbonScaleIDEffort=:gibbonScaleIDEffort, gibbonRubricIDAttainment=:gibbonRubricIDAttainment, gibbonRubricIDEffort=:gibbonRubricIDEffort, comment=:comment, uploadedResponse=:uploadedResponse, completeDate=:completeDate, complete=:complete, viewableStudents=:viewableStudents, viewableParents=:viewableParents, attachment=:attachment, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit" ;
+				$data=array("gibbonUnitID"=>$gibbonUnitID, "gibbonHookID"=>$gibbonHookID, "gibbonPlannerEntryID"=>$gibbonPlannerEntryID, "gibbonCourseClassID"=>$gibbonCourseClassID, "name"=>$name, "description"=>$description, "type"=>$type, "attainment"=>$attainment, "gibbonScaleIDAttainment"=>$gibbonScaleIDAttainment, "attainmentWeighting"=>$attainmentWeighting, "effort"=>$effort, "gibbonScaleIDEffort"=>$gibbonScaleIDEffort, "gibbonRubricIDAttainment"=>$gibbonRubricIDAttainment, "gibbonRubricIDEffort"=>$gibbonRubricIDEffort, "comment"=>$comment, "uploadedResponse"=>$uploadedResponse, "completeDate"=>$completeDate, "complete"=>$complete, "viewableStudents"=>$viewableStudents, "viewableParents"=>$viewableParents, "attachment"=>$attachment, "gibbonPersonIDCreator"=>$gibbonPersonIDCreator, "gibbonPersonIDLastEdit"=>$gibbonPersonIDLastEdit); 
+				$sql="INSERT INTO gibbonMarkbookColumn SET gibbonUnitID=:gibbonUnitID, gibbonHookID=:gibbonHookID, gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonCourseClassID=:gibbonCourseClassID, name=:name, description=:description, type=:type, attainment=:attainment, gibbonScaleIDAttainment=:gibbonScaleIDAttainment, attainmentWeighting=:attainmentWeighting, effort=:effort, gibbonScaleIDEffort=:gibbonScaleIDEffort, gibbonRubricIDAttainment=:gibbonRubricIDAttainment, gibbonRubricIDEffort=:gibbonRubricIDEffort, comment=:comment, uploadedResponse=:uploadedResponse, completeDate=:completeDate, complete=:complete, viewableStudents=:viewableStudents, viewableParents=:viewableParents, attachment=:attachment, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit" ;
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
 			}
@@ -207,7 +209,7 @@ else {
 				//Fail 2
 				$URL.="&addReturn=fail2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 				
 			//Unlock module table

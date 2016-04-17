@@ -22,13 +22,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/user_manage_password.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage.php'>" . _('Manage Users') . "</a> > </div><div class='trailEnd'>" . _('Reset User Password') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage.php'>" . __($guid, 'Manage Users') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Reset User Password') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -36,28 +36,28 @@ else {
 	$class="error" ;
 	if (!($updateReturn=="")) {
 		if ($updateReturn=="fail0") {
-			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($updateReturn=="fail1") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail2") {
-			$updateReturnMessage=_("Your request failed due to a database error.") ;	
+			$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 		}
 		else if ($updateReturn=="fail3") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail4") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail5") {
-			$updateReturnMessage=_("Your request failed because your passwords did not match.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your passwords did not match.") ;	
 		}
 		else if ($updateReturn=="fail6") {
-			$updateReturnMessage=_("Your request failed because your password to not meet the minimum requirements for strength.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your password to not meet the minimum requirements for strength.") ;	
 		}
 		else if ($updateReturn=="success0") {
-			$updateReturnMessage=_("Your request was completed successfully.") ;	
+			$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -69,7 +69,7 @@ else {
 	$gibbonPersonID=$_GET["gibbonPersonID"] ;
 	if ($gibbonPersonID=="") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -85,7 +85,7 @@ else {
 
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print _("The specified record cannot be found.") ;
+				print __($guid, "The specified record cannot be found.") ;
 			print "</div>" ;
 		}
 		else {
@@ -93,11 +93,11 @@ else {
 			$row=$result->fetch() ;
 			if ($_GET["search"]!="") {
 				print "<div class='linkTop'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage.php&search=" . $_GET["search"] . "'>" . _('Back to Search Results') . "</a>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage.php&search=" . $_GET["search"] . "'>" . __($guid, 'Back to Search Results') . "</a>" ;
 				print "</div>" ;
 			}
 			
-			$policy=getPasswordPolicy($connection2) ;
+			$policy=getPasswordPolicy($guid, $connection2) ;
 			if ($policy!=FALSE) {
 				print "<div class='warning'>" ;
 					print $policy ;
@@ -105,14 +105,14 @@ else {
 			}
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/user_manage_passwordProcess.php?gibbonPersonID=" . $gibbonPersonID . "&search=" . $_GET["search"] ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td style='width: 275px'> 
-							<b><?php print _('Username') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<b><?php print __($guid, 'Username') ?> *</b><br/>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
-							<input readonly name="username" id="username" maxlength=20 value="<?php print htmlPrep($row["username"]) ?>" type="text" style="width: 300px">
+							<input readonly name="username" id="username" maxlength=20 value="<?php print htmlPrep($row["username"]) ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var username=new LiveValidation('username');
 								username.add(Validate.Presence);
@@ -121,42 +121,59 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Password') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<b><?php print __($guid, 'Password') ?> *</b><br/>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
-							<input name="passwordNew" id="passwordNew" maxlength=20 value="" type="password" style="width: 300px">
+							<input type='button' class="generatePassword" value="<?php print __($guid, "Generate Password") ?>"/>
+							<input name="passwordNew" id="passwordNew" maxlength=20 value="" type="password" class="standardWidth"><br/>
+							
 							<script type="text/javascript">
 								var passwordNew=new LiveValidation('passwordNew');
 								passwordNew.add(Validate.Presence);
 								<?php
 								$alpha=getSettingByScope( $connection2, "System", "passwordPolicyAlpha" ) ;
-								if ($alpha=="Y") {
-									print "passwordNew.add( Validate.Format, { pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: \"" . _('Does not meet password policy.') . "\" } );" ;
-								}
 								$numeric=getSettingByScope( $connection2, "System", "passwordPolicyNumeric" ) ;
-								if ($numeric=="Y") {
-									print "passwordNew.add( Validate.Format, { pattern: /.*[0-9]/, failureMessage: \"" . _('Does not meet password policy.') . "\" } );" ;
-								}
 								$punctuation=getSettingByScope( $connection2, "System", "passwordPolicyNonAlphaNumeric" ) ;
-								if ($punctuation=="Y") {
-									print "passwordNew.add( Validate.Format, { pattern: /[^a-zA-Z0-9]/, failureMessage: \"" . _('Does not meet password policy.') . "\" } );" ;
-								}
 								$minLength=getSettingByScope( $connection2, "System", "passwordPolicyMinLength" ) ;
+								if ($alpha=="Y") {
+									print "passwordNew.add( Validate.Format, { pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: \"" . __($guid, 'Does not meet password policy.') . "\" } );" ;
+								}
+								if ($numeric=="Y") {
+									print "passwordNew.add( Validate.Format, { pattern: /.*[0-9]/, failureMessage: \"" . __($guid, 'Does not meet password policy.') . "\" } );" ;
+								}
+								if ($punctuation=="Y") {
+									print "passwordNew.add( Validate.Format, { pattern: /[^a-zA-Z0-9]/, failureMessage: \"" . __($guid, 'Does not meet password policy.') . "\" } );" ;
+								}
 								if (is_numeric($minLength)) {
 									print "passwordNew.add( Validate.Length, { minimum: " . $minLength . "} );" ;
 								}
 								?>
+								
+								$(".generatePassword").click(function(){
+									var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789![]{}()%&*$#^<>~@|';
+									var text = '';
+									for(var i=0; i < <?php print ($minLength+4) ?>; i++) {
+										if (i==0) { text += chars.charAt(Math.floor(Math.random() * 26)); }
+										else if (i==1) { text += chars.charAt(Math.floor(Math.random() * 26)+26); }
+										else if (i==2) { text += chars.charAt(Math.floor(Math.random() * 10)+52); }
+										else if (i==3) { text += chars.charAt(Math.floor(Math.random() * 19)+62); }
+										else { text += chars.charAt(Math.floor(Math.random() * chars.length)); }
+									}
+									$('input[name="passwordNew"]').val(text);
+									$('input[name="passwordConfirm"]').val(text);
+									alert('<?php print __($guid, "Copy this password if required:") ?>' + '\n\n' + text) ;
+								});
 							</script>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Confirm Password') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<b><?php print __($guid, 'Confirm Password') ?> *</b><br/>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
-							<input name="passwordConfirm" id="passwordConfirm" maxlength=20 value="" type="password" style="width: 300px">
+							<input name="passwordConfirm" id="passwordConfirm" maxlength=20 value="" type="password" class="standardWidth">
 							<script type="text/javascript">
 								var passwordConfirm=new LiveValidation('passwordConfirm');
 								passwordConfirm.add(Validate.Presence);
@@ -166,23 +183,23 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Force Reset Password?') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('User will be prompted on next login.') ?></i></span>
+							<b><?php print __($guid, 'Force Reset Password?') ?> *</b><br/>
+							<span class="emphasis small"><?php print __($guid, 'User will be prompted on next login.') ?></span>
 						</td>
 						<td class="right">
-							<select style="width: 302px" name="passwordForceReset">
-								<option <?php if ($row["passwordForceReset"]=="Y") {print "selected ";}?>value="Y"><?php print _('Yes') ?></option>
-								<option <?php if ($row["passwordForceReset"]=="N") {print "selected ";}?>value="N"><?php print _('No') ?></option>
+							<select class="standardWidth" name="passwordForceReset">
+								<option <?php if ($row["passwordForceReset"]=="Y") {print "selected ";}?>value="Y"><?php print __($guid, 'Yes') ?></option>
+								<option <?php if ($row["passwordForceReset"]=="N") {print "selected ";}?>value="N"><?php print __($guid, 'No') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+							<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<?php print _("Submit") ; ?>">
+							<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 						</td>
 					</tr>
 				</table>

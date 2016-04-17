@@ -21,14 +21,8 @@ include "../../functions.php" ;
 include "../../config.php" ;
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 @session_start() ;
 
@@ -54,7 +48,7 @@ else {
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Finance/invoices_manage_edit.php")==FALSE) {
 		//Fail 0
-		$URL.="&issueReturn=fail0" ;
+		$URL.="&return=error0" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -62,7 +56,7 @@ else {
 		//Check if person specified
 		if ($gibbonFinanceInvoiceID=="") {
 			//Fail1
-			$URL.="&issueReturn=fail1" ;
+			$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -75,9 +69,9 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail 2
-				$URL.="&issueReturn=fail2" ;
+				$URL.="&return=error2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 			
 			try {
@@ -88,14 +82,14 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail2
-				$URL.="&issueReturn=fail2" ;
+				$URL.="&return=error2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 			
 			if ($result->rowCount()!=1) {
 				//Fail 2
-				$URL.="&issueReturn=fail2" ;
+				$URL.="&return=error2" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -113,7 +107,7 @@ else {
 				
 				if ($invoiceDueDate=="") {
 					//Fail 3
-					$URL.="&issueReturn=fail3" ;
+					$URL.="&return=error1" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -126,9 +120,9 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail 2
-						$URL.="&issueReturn=fail2" ;
+						$URL.="&return=error2" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 				
 					$partialFail=FALSE ;
@@ -218,12 +212,24 @@ else {
 						$emails=NULL ;
 						if (isset($_POST["emails"])) {
 							$emails=$_POST["emails"] ;
+							for ($i=0; $i<count($emails); $i++) {
+								$emailsInner=explode(",", $emails[$i]) ;
+								for ($n=0 ; $n<count($emailsInner); $n++) {
+									if ($n==0) {
+										$emails[$i]=trim($emailsInner[$n]) ;
+									}
+									else {
+										array_push($emails, trim($emailsInner[$n])) ;
+									}
+								}
+							}
 						}
+						
 						if (count($emails)>0) {
 							require $_SESSION[$guid]["absolutePath"] . '/lib/PHPMailer/class.phpmailer.php';
 				
 							//Prep message
-							$body=invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]["currency"], TRUE) . "<p style='font-style: italic;'>Email sent via " . $_SESSION[$guid]["systemName"] . " at " . $_SESSION[$guid]["organisationName"] . ".</p>" ;
+							$body=invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]["currency"], TRUE) . "<p class='emphasis'>Email sent via " . $_SESSION[$guid]["systemName"] . " at " . $_SESSION[$guid]["organisationName"] . ".</p>" ;
 							$bodyPlain="This email is not viewable in plain text: enable rich text/HTML in your email client to view the invoice. Please reply to this email if you have any questions." ;
 
 							$mail=new PHPMailer;
@@ -246,17 +252,17 @@ else {
 				
 					if ($partialFail==TRUE) { 
 						//Fail 4
-						$URL.="&issueReturn=fail4" ;
+						$URL.="&return=error3" ;
 						header("Location: {$URL}");
 					}
 					else if ($emailFail==TRUE) { 
 						//Success 1
-						$URLSuccess=$URLSuccess . "&issueReturn=success1" ;
+						$URLSuccess=$URLSuccess . "&return=success1" ;
 						header("Location: {$URLSuccess}");
 					}
 					else {
 						//Success 0
-						$URLSuccess=$URLSuccess . "&issueReturn=success0" ;
+						$URLSuccess=$URLSuccess . "&return=success0" ;
 						header("Location: {$URLSuccess}");
 					}
 				}

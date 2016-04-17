@@ -22,17 +22,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/Finance/invoices_view.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	$entryCount=0; 
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('View Invoices') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'View Invoices') . "</div>" ;
 	print "</div>" ;
 
 	print "<p>" ;
-		print _("This section allows you to view and invoices for children within your family.") . "<br/>" ;
+		print __($guid, "This section allows you to view invoices for children within your family.") . "<br/>" ;
 	print "</p>" ;
 	
 	//Test data access field for permission
@@ -48,7 +48,7 @@ else {
 
 	if ($result->rowCount()<1) {
 		print "<div class='error'>" ;
-		print _("Access denied.") ;
+		print __($guid, "Access denied.") ;
 		print "</div>" ;
 	}
 	else {
@@ -81,7 +81,7 @@ else {
 		
 		if ($count==0) {
 			print "<div class='error'>" ;
-			print _("Access denied.") ;
+			print __($guid, "Access denied.") ;
 			print "</div>" ;
 		}
 		else if ($count==1) {
@@ -98,11 +98,11 @@ else {
 					<tr><td style="width: 30%"></td><td></td></tr>
 					<tr>
 						<td> 
-							<b><?php print _('Search For') ?></b><br/>
-							<span style="font-size: 90%"><i>Preferred, surname, username.</i></span>
+							<b><?php print __($guid, 'Search For') ?></b><br/>
+							<span class="emphasis small">Preferred, surname, username.</span>
 						</td>
 						<td class="right">
-							<select name="search" id="search" style="width: 302px">
+							<select name="search" id="search" class="standardWidth">
 								<option value=""></value>
 								<?php print $options ; ?> 
 							</select>
@@ -113,9 +113,9 @@ else {
 							<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/invoices_view.php">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 							<?php
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_view.php'>" . _('Clear Search') . "</a>" ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_view.php'>" . __($guid, 'Clear Search') . "</a>" ;
 							?>
-							<input type="submit" value="<?php print _("Submit") ; ?>">
+							<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
@@ -141,7 +141,7 @@ else {
 			}
 			if ($resultChild->rowCount()<1) {
 				print "<div class='error'>" ;
-				print _("The selected record does not exist, or you do not have access to it.") ;
+				print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 				print "</div>" ;
 			}
 			else {
@@ -168,7 +168,7 @@ else {
 					}
 					if ($result->rowcount()!=1) {
 						print "<div class='error'>" ;
-							print _("The specified record does not exist.") ;
+							print __($guid, "The specified record does not exist.") ;
 						print "</div>" ;
 					}
 					else {
@@ -186,17 +186,17 @@ else {
 					print "<div class='linkTop'>" ;
 						//Print year picker
 						if (getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)!=FALSE) {
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_view.php&search=$gibbonPersonID&gibbonSchoolYearID=" . getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) . "'>" . _('Previous Year') . "</a> " ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_view.php&search=$gibbonPersonID&gibbonSchoolYearID=" . getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) . "'>" . __($guid, 'Previous Year') . "</a> " ;
 						}
 						else {
-							print _("Previous Year") . " " ;
+							print __($guid, "Previous Year") . " " ;
 						}
 						print " | " ;
 						if (getNextSchoolYearID($gibbonSchoolYearID, $connection2)!=FALSE) {
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_view.php&search=$gibbonPersonID&gibbonSchoolYearID=" . getNextSchoolYearID($gibbonSchoolYearID, $connection2) . "'>" . _('Next Year') . "</a> " ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_view.php&search=$gibbonPersonID&gibbonSchoolYearID=" . getNextSchoolYearID($gibbonSchoolYearID, $connection2) . "'>" . __($guid, 'Next Year') . "</a> " ;
 						}
 						else {
-							print _("Next Year") . " " ;
+							print __($guid, "Next Year") . " " ;
 						}
 					print "</div>" ;
 
@@ -214,46 +214,46 @@ else {
 	
 					if ($result->rowCount()<1) {
 						print "<h3>" ;
-						print _("View") ;
+						print __($guid, "View") ;
 						print "</h3>" ;
 		
 						print "<div class='error'>" ;
-						print _("There are no records to display.") ;
+						print __($guid, "There are no records to display.") ;
 						print "</div>" ;
 					}
 					else {
 						print "<h3>" ;
-						print _("View") ;
-						print "<span style='font-weight: normal; font-style: italic; font-size: 55%'> " . sprintf(_('%1$s invoice(s) in current view'), $result->rowCount()) . "</span>" ;
+						print __($guid, "View") ;
+						print "<span style='font-weight: normal; font-style: italic; font-size: 55%'> " . sprintf(__($guid, '%1$s invoice(s) in current view'), $result->rowCount()) . "</span>" ;
 						print "</h3>" ;
 
-						print "<form onsubmit='return confirm(\"" ._('Are you sure you wish to process this action? It cannot be undone.') . "\")' method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/invoices_view_processBulk.php?gibbonSchoolYearID=$gibbonSchoolYearID'>" ;
+						print "<form onsubmit='return confirm(\"" .__($guid, 'Are you sure you wish to process this action? It cannot be undone.') . "\")' method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/invoices_view_processBulk.php?gibbonSchoolYearID=$gibbonSchoolYearID'>" ;
 							print "<fieldset style='border: none'>" ;
 								print "<table cellspacing='0' style='width: 100%'>" ;
 									print "<tr class='head'>" ;
 										print "<th style='width: 110px'>" ;
-											print _("Student") . "<br/>" ;
-											print "<span style='font-style: italic; font-size: 85%'>" . _('Invoice To') . "</span>" ;
+											print __($guid, "Student") . "<br/>" ;
+											print "<span style='font-style: italic; font-size: 85%'>" . __($guid, 'Invoice To') . "</span>" ;
 										print "</th>" ;
 										print "<th style='width: 110px'>" ;
-											print _("Roll Group") ;
+											print __($guid, "Roll Group") ;
 										print "</th>" ;
 										print "<th style='width: 100px'>" ;
-											print _("Status") ;
+											print __($guid, "Status") ;
 										print "</th>" ;
 										print "<th style='width: 90px'>" ;
-											print _("Schedule") ;
+											print __($guid, "Schedule") ;
 										print "</th>" ;
 										print "<th style='width: 120px'>" ;
-											print _("Total") . " <span style='font-style: italic; font-size: 75%'>(" . $_SESSION[$guid]["currency"] . ")</span><br/>" ;
-											print "<span style='font-style: italic; font-size: 75%'>" . _('Paid') . " (" . $_SESSION[$guid]["currency"] . ")</span>" ;
+											print __($guid, "Total") . " <span style='font-style: italic; font-size: 75%'>(" . $_SESSION[$guid]["currency"] . ")</span><br/>" ;
+											print "<span style='font-style: italic; font-size: 75%'>" . __($guid, 'Paid') . " (" . $_SESSION[$guid]["currency"] . ")</span>" ;
 										print "</th>" ;
 										print "<th style='width: 80px'>" ;
-											print _("Issue Date") . "<br/>" ;
-											print "<span style='font-style: italic; font-size: 75%'>" . _('Due Date') . "</span>" ;
+											print __($guid, "Issue Date") . "<br/>" ;
+											print "<span style='font-style: italic; font-size: 75%'>" . __($guid, 'Due Date') . "</span>" ;
 										print "</th>" ;
 										print "<th style='width: 140px'>" ;
-											print _("Actions") ;
+											print __($guid, "Actions") ;
 										print "</th>" ;
 									print "</tr>" ;
 		
@@ -360,10 +360,10 @@ else {
 											print "</td>" ;
 											print "<td>" ;
 												if ($row["status"]=="Issued") {
-													print "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_view_print.php&type=invoice&gibbonFinanceInvoiceID=" . $row["gibbonFinanceInvoiceID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID'><img title='" . _('Print') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
+													print "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_view_print.php&type=invoice&gibbonFinanceInvoiceID=" . $row["gibbonFinanceInvoiceID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID'><img title='" . __($guid, 'Print') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
 												}
 												else if ($row["status"]=="Paid" OR $row["status"]=="Paid - Partial") {
-													print "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_view_print.php&type=receipt&gibbonFinanceInvoiceID=" . $row["gibbonFinanceInvoiceID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID'><img title='" . _('Print') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
+													print "<a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/report.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoices_view_print.php&type=receipt&gibbonFinanceInvoiceID=" . $row["gibbonFinanceInvoiceID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID'><img title='" . __($guid, 'Print') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
 												}
 												print "<script type='text/javascript'>" ;	
 													print "$(document).ready(function(){" ;
@@ -375,7 +375,7 @@ else {
 													print "});" ;
 												print "</script>" ;
 												if ($row["notes"]!="") {
-													print "<a title='View Notes' class='show_hide-$count' onclick='false' href='#'><img style='margin-left: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='" . _('Show Comment') . "' onclick='return false;' /></a>" ;
+													print "<a title='View Notes' class='show_hide-$count' onclick='false' href='#'><img style='margin-left: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='" . __($guid, 'Show Comment') . "' onclick='return false;' /></a>" ;
 												}
 											print "</td>" ;
 										print "</tr>" ;

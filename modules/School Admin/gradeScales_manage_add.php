@@ -25,13 +25,13 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/gradeScales_manage_add.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/gradeScales_manage.php'>" . _('Manage Grade Scales') . "</a> > </div><div class='trailEnd'>" . _('Add Grade Scale') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/gradeScales_manage.php'>" . __($guid, 'Manage Grade Scales') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Add Grade Scale') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -39,22 +39,22 @@ else {
 	$class="error" ;
 	if (!($addReturn=="")) {
 		if ($addReturn=="fail0") {
-			$addReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+			$addReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($addReturn=="fail2") {
-			$addReturnMessage=_("Your request failed due to a database error.") ;	
+			$addReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 		}
 		else if ($addReturn=="fail3") {
-			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail4") {
-			$addReturnMessage=_("Your request failed because some inputs did not meet a requirement for uniqueness.") ;	
+			$addReturnMessage=__($guid, "Your request failed because some inputs did not meet a requirement for uniqueness.") ;	
 		}
 		else if ($addReturn=="fail5") {
-			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="success0") {
-			$addReturnMessage=_("Your request was completed successfully.") ;	
+			$addReturnMessage=__($guid, "Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -64,14 +64,14 @@ else {
 	?>
 	
 	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/gradeScales_manage_addProcess.php" ?>">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr>
 				<td style='width: 275px'> 
-					<b><?php print _('Name') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _('Must be unique.') ; ?></i></span>
+					<b><?php print __($guid, 'Name') ?> *</b><br/>
+					<span class="emphasis small"><?php print __($guid, 'Must be unique.') ; ?></span>
 				</td>
 				<td class="right">
-					<input name="name" id="name" maxlength=40 value="" type="text" style="width: 300px">
+					<input name="name" id="name" maxlength=40 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var name2=new LiveValidation('name');
 						name2.add(Validate.Presence);
@@ -80,11 +80,11 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Short Name') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _('Must be unique.') ; ?></i></span>
+					<b><?php print __($guid, 'Short Name') ?> *</b><br/>
+					<span class="emphasis small"><?php print __($guid, 'Must be unique.') ; ?></span>
 				</td>
 				<td class="right">
-					<input name="nameShort" id="nameShort" maxlength=4 value="" type="text" style="width: 300px">
+					<input name="nameShort" id="nameShort" maxlength=4 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var nameShort=new LiveValidation('nameShort');
 						nameShort.add(Validate.Presence);
@@ -93,11 +93,11 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Usage') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _('Brief description of how scale is used.') ?></i></span>
+					<b><?php print __($guid, 'Usage') ?> *</b><br/>
+					<span class="emphasis small"><?php print __($guid, 'Brief description of how scale is used.') ?></span>
 				</td>
 				<td class="right">
-					<input name="usage" id="usage" maxlength=50 value="" type="text" style="width: 300px">
+					<input name="usage" id="usage" maxlength=50 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var usage=new LiveValidation('usage');
 						usage.add(Validate.Presence);
@@ -106,34 +106,34 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Active') ?> *</b><br/>
+					<b><?php print __($guid, 'Active') ?> *</b><br/>
 				</td>
 				<td class="right">
-					<select name="active" id="active" style="width: 302px">
-						<option value="Y"><?php print _('Yes') ?></option>
-						<option value="N"><?php print _('No') ?></option>
+					<select name="active" id="active" class="standardWidth">
+						<option value="Y"><?php print __($guid, 'Yes') ?></option>
+						<option value="N"><?php print __($guid, 'No') ?></option>
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Numeric') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _('Does this scale use only numeric grades? Note, grade "Incomplete" is exempt.') ?></i></span>
+					<b><?php print __($guid, 'Numeric') ?> *</b><br/>
+					<span class="emphasis small"><?php print __($guid, 'Does this scale use only numeric grades? Note, grade "Incomplete" is exempt.') ?></span>
 				</td>
 				<td class="right">
-					<select name="numeric" id="numeric" style="width: 302px">
-						<option value="Y"><?php print _('Yes') ?></option>
-						<option value="N"><?php print _('No') ?></option>
+					<select name="numeric" id="numeric" class="standardWidth">
+						<option value="Y"><?php print __($guid, 'Yes') ?></option>
+						<option value="N"><?php print __($guid, 'No') ?></option>
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+					<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 				</td>
 			</tr>
 		</table>

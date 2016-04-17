@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Planner/units_duplicate.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -33,12 +33,12 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print _("The highest grouped action cannot be determined.") ;
+		print __($guid, "The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>" . _('Unit Planner') . "</a> > </div><div class='trailEnd'>" . _('Duplicate Unit') . "</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>" . __($guid, 'Unit Planner') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Duplicate Unit') . "</div>" ;
 		print "</div>" ;
 		
 		//Proceed!
@@ -47,28 +47,28 @@ else {
 		$class="error" ;
 		if (!($updateReturn=="")) {
 			if ($updateReturn=="fail0") {
-				$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+				$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 			}
 			else if ($updateReturn=="fail1") {
-				$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+				$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($updateReturn=="fail2") {
-				$updateReturnMessage=_("Your request failed due to a database error.") ;	
+				$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 			}
 			else if ($updateReturn=="fail3") {
-				$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+				$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($updateReturn=="fail4") {
-				$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+				$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($updateReturn=="fail5") {
-				$updateReturnMessage=_("Your request failed due to an attachment error.") ;	
+				$updateReturnMessage=__($guid, "Your request failed due to an attachment error.") ;	
 			}
 			else if ($updateReturn=="fail6") {
-				$updateReturnMessage=_("Your request was successful, but some data was not properly saved.") ;	
+				$updateReturnMessage=__($guid, "Your request was successful, but some data was not properly saved.") ;	
 			}
 			else if ($updateReturn=="success0") {
-				$updateReturnMessage=_("Your request was completed successfully.") ;	
+				$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;
@@ -82,7 +82,7 @@ else {
 		$gibbonUnitID=$_GET["gibbonUnitID"]; 
 		if ($gibbonCourseID=="" OR $gibbonSchoolYearID=="") {
 			print "<div class='error'>" ;
-				print _("You have not specified one or more required parameters.") ;
+				print __($guid, "You have not specified one or more required parameters.") ;
 			print "</div>" ;
 		}
 		else {
@@ -104,7 +104,7 @@ else {
 
 			if ($result->rowCount()!=1) {
 				print "<div class='error'>" ;
-					print _("The selected record does not exist, or you do not have access to it.") ;
+					print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 				print "</div>" ;
 			}
 			else {
@@ -114,13 +114,13 @@ else {
 				//Check if unit specified
 				if ($gibbonUnitID=="") {
 					print "<div class='error'>" ;
-						print _("You have not specified one or more required parameters.") ;
+						print __($guid, "You have not specified one or more required parameters.") ;
 					print "</div>" ;
 				}
 				else {
 					if ($gibbonUnitID=="") {
 						print "<div class='error'>" ;
-							print _("You have not specified one or more required parameters.") ;
+							print __($guid, "You have not specified one or more required parameters.") ;
 						print "</div>" ;
 					}
 					else {
@@ -136,7 +136,7 @@ else {
 						
 						if ($result->rowCount()!=1) {
 							print "<div class='error'>" ;
-								print _("The specified record cannot be found.") ;
+								print __($guid, "The specified record cannot be found.") ;
 							print "</div>" ;
 						}
 						else {
@@ -154,20 +154,20 @@ else {
 							//Step 1
 							if ($step==1) {
 								print "<h2>" ;
-								print _("Step 1") ;
+								print __($guid, "Step 1") ;
 								print "</h2>" ;
 								?>
 								<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/units_duplicate.php&step=2&gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID" ?>">
-									<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+									<table class='smallIntBorder fullWidth' cellspacing='0'>	
 										<tr class='break'>
 											<td colspan=2> 
-												<h3><?php print _('Source') ?></h3>
+												<h3><?php print __($guid, 'Source') ?></h3>
 											</td>
 										</tr>
 										<tr>
 											<td style='width: 275px'> 
-												<b><?php print _('School Year') ?> *</b><br/>
-												<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+												<b><?php print __($guid, 'School Year') ?> *</b><br/>
+												<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 											</td>
 											<td class="right">
 												<?php
@@ -182,7 +182,7 @@ else {
 												}
 												
 												if ($resultYear->rowCount()!=1) {
-													print "<i>" . _('Unknown') . "</i>" ;
+													print "<i>" . __($guid, 'Unknown') . "</i>" ;
 												}
 												else {
 													$rowYear=$resultYear->fetch() ;
@@ -193,8 +193,8 @@ else {
 										</tr>
 										<tr>
 											<td> 
-												<b><?php print _('Course') ?> *</b><br/>
-												<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+												<b><?php print __($guid, 'Course') ?> *</b><br/>
+												<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 											</td>
 											<td class="right">
 												<?php print "<input readonly value='" . $row["courseName"] . "' type='text' style='width: 300px'>" ; ?>
@@ -202,8 +202,8 @@ else {
 										</tr>
 										<tr>
 											<td> 
-												<b><?php print _('Unit') ?> *</b><br/>
-												<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+												<b><?php print __($guid, 'Unit') ?> *</b><br/>
+												<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 											</td>
 											<td class="right">
 												<?php print "<input readonly value='" . $row["name"] . "' type='text' style='width: 300px'>" ; ?>
@@ -212,18 +212,18 @@ else {
 										
 										<tr class='break'>
 											<td colspan=2> 
-												<h3><?php print _('Target') ?></h3>
+												<h3><?php print __($guid, 'Target') ?></h3>
 											</td>
 										</tr>
 												
 										<tr>
 											<td> 
-												<b><?php print _('Year') ?> *</b><br/>
+												<b><?php print __($guid, 'Year') ?> *</b><br/>
 											</td>
 											<td class="right">
-												<select name="gibbonSchoolYearIDCopyTo" id="gibbonSchoolYearIDCopyTo" style="width: 302px">
+												<select name="gibbonSchoolYearIDCopyTo" id="gibbonSchoolYearIDCopyTo" class="standardWidth">
 													<?php
-													print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+													print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
 													try {
 														$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
 														$sqlSelect="SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID" ;
@@ -248,16 +248,16 @@ else {
 												</select>
 												<script type="text/javascript">
 													var gibbonSchoolYearIDCopyTo=new LiveValidation('gibbonSchoolYearIDCopyTo');
-													gibbonSchoolYearIDCopyTo.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+													gibbonSchoolYearIDCopyTo.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 												</script>
 											</td>
 										</tr>
 										<tr>
 											<td> 
-												<b><?php print _('Course') ?> *</b><br/>
+												<b><?php print __($guid, 'Course') ?> *</b><br/>
 											</td>
 											<td class="right">
-												<select name="gibbonCourseIDTarget" id="gibbonCourseIDTarget" style="width: 302px">
+												<select name="gibbonCourseIDTarget" id="gibbonCourseIDTarget" class="standardWidth">
 													<?php
 													try {
 														if ($highestAction=="Unit Planner_all") {
@@ -287,8 +287,8 @@ else {
 										</tr>
 										<tr>
 											<td> 
-												<b><?php print _('Unit') ?> *</b><br/>
-												<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+												<b><?php print __($guid, 'Unit') ?> *</b><br/>
+												<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 											</td>
 											<td class="right">
 												<?php print "<input readonly value='" . $row["name"] . "' type='text' style='width: 300px'>" ; ?>
@@ -297,11 +297,11 @@ else {
 										
 										<tr>
 											<td>
-												<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+												<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 											</td>
 											<td class="right">
 												<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-												<input type="submit" value="<?php print _("Submit") ; ?>">
+												<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 											</td>
 										</tr>
 									</table>
@@ -310,19 +310,19 @@ else {
 							}
 							else if ($step==2) {
 								print "<h2>" ;
-								print _("Step 2") ;
+								print __($guid, "Step 2") ;
 								print "</h2>" ;
 								
 								$gibbonCourseIDTarget=$_POST["gibbonCourseIDTarget"] ;
 								if ($gibbonCourseIDTarget=="") {
 									print "<div class='error'>" ;
-										print _("You have not specified one or more required parameters.") ;
+										print __($guid, "You have not specified one or more required parameters.") ;
 									print "</div>" ;
 								}
 								else {
 									?>
 									<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/units_duplicateProcess.php?gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&address=" . $_GET["q"] ?>">
-										<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+										<table class='smallIntBorder fullWidth' cellspacing='0'>	
 											<script type="text/javascript">
 												/* Resource 1 Option Control */
 												$(document).ready(function(){
@@ -339,7 +339,7 @@ else {
 											</script>
 											<tr>
 												<td style='width: 275px'> 
-													<b><?php print _('Copy Lessons?') ?> *</b>
+													<b><?php print __($guid, 'Copy Lessons?') ?> *</b>
 												</td>
 												<td class="right">
 													<input checked type="radio" name="copyLessons" value="Yes" class="copyLessons" /> Yes
@@ -348,13 +348,13 @@ else {
 											</tr>
 											<tr class='break'>
 												<td colspan=2> 
-													<h3><?php print _('Source') ?></h3>
+													<h3><?php print __($guid, 'Source') ?></h3>
 												</td>
 											</tr>
 											<tr>
 												<td> 
-													<b><?php print _('School Year') ?> *</b><br/>
-													<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+													<b><?php print __($guid, 'School Year') ?> *</b><br/>
+													<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 												</td>
 												<td class="right">
 													<?php
@@ -368,7 +368,7 @@ else {
 														print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 													}
 													if ($resultYear->rowCount()!=1) {
-														print "<i>" . _('Unknown') . "</i>" ;
+														print "<i>" . __($guid, 'Unknown') . "</i>" ;
 													}
 													else {
 														$rowYear=$resultYear->fetch() ;
@@ -379,8 +379,8 @@ else {
 											</tr>
 											<tr>
 												<td> 
-													<b><?php print _('Course') ?> *</b><br/>
-													<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+													<b><?php print __($guid, 'Course') ?> *</b><br/>
+													<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 												</td>
 												<td class="right">
 													<?php print "<input readonly value='" . $row["courseName"] . "' type='text' style='width: 300px'>" ; ?>
@@ -388,8 +388,8 @@ else {
 											</tr>
 											<tr>
 												<td> 
-													<b><?php print _('Unit') ?> *</b><br/>
-													<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+													<b><?php print __($guid, 'Unit') ?> *</b><br/>
+													<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 												</td>
 												<td class="right">
 													<?php print "<input readonly value='" . $row["name"] . "' type='text' style='width: 300px'>" ; ?>
@@ -397,12 +397,12 @@ else {
 											</tr>
 											<tr id="sourceClass">
 												<td> 
-													<b><?php print _('Source Class') ?> *</b><br/>
+													<b><?php print __($guid, 'Source Class') ?> *</b><br/>
 												</td>
 												<td class="right">
-													<select name="gibbonCourseClassIDSource" id="gibbonCourseClassIDSource" style="width: 302px">
+													<select name="gibbonCourseClassIDSource" id="gibbonCourseClassIDSource" class="standardWidth">
 														<?php
-														print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+														print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
 														try {
 															$dataSelect=array("gibbonCourseID"=>$gibbonCourseID); 
 															$sqlSelect="SELECT gibbonCourseClassID, gibbonCourseClass.nameShort AS class, gibbonCourse.nameShort AS course FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourseClass.gibbonCourseID=:gibbonCourseID" ;
@@ -436,14 +436,14 @@ else {
 											
 											<tr class='break'>
 												<td colspan=2> 
-													<h3><?php print _('Target') ?></h3>
+													<h3><?php print __($guid, 'Target') ?></h3>
 												</td>
 											</tr>
 											
 											<tr>
 												<td> 
-													<b><?php print _('School Year') ?>*</b><br/>
-													<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+													<b><?php print __($guid, 'School Year') ?>*</b><br/>
+													<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 												</td>
 												<td class="right">
 													<?php print "<input readonly value='$year' type='text' style='width: 300px'>" ; ?>
@@ -451,8 +451,8 @@ else {
 											</tr>
 											<tr>
 												<td> 
-													<b><?php print _('Course') ?> *</b><br/>
-													<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+													<b><?php print __($guid, 'Course') ?> *</b><br/>
+													<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 												</td>
 												<td class="right">
 													<?php print "<input readonly value='$course' type='text' style='width: 300px'>" ; ?>
@@ -460,8 +460,8 @@ else {
 											</tr>
 											<tr>
 												<td> 
-													<b><?php print _('Unit') ?> *</b><br/>
-													<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+													<b><?php print __($guid, 'Unit') ?> *</b><br/>
+													<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 												</td>
 												<td class="right">
 													<?php print "<input readonly value='" . $row["name"] . "' type='text' style='width: 300px'>" ; ?>
@@ -469,8 +469,8 @@ else {
 											</tr>
 											<tr id="targetClass">
 												<td> 
-													<b><?php print _('Classes') ?> *</b><br/>
-													<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
+													<b><?php print __($guid, 'Classes') ?> *</b><br/>
+													<span class="emphasis small"><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 												</td>
 												<td class="right">
 													<select name="gibbonCourseClassIDTarget[]" id="gibbonCourseClassIDTarget[]" multiple style="width: 302px; height: 100px">
@@ -491,12 +491,12 @@ else {
 											</tr>
 											<tr>
 												<td>
-													<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+													<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 												</td>
 												<td class="right">
 													<input type="hidden" name="gibbonCourseIDTarget" value="<?php print $gibbonCourseIDTarget ?>">
 													<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-													<input type="submit" value="<?php print _("Submit") ; ?>">
+													<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 												</td>
 											</tr>
 										</table>

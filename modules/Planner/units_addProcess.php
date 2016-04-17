@@ -21,14 +21,8 @@ include "../../functions.php" ;
 include "../../config.php" ;
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 @session_start() ;
 
@@ -64,6 +58,7 @@ else {
 			//Validate Inputs
 			$name=$_POST["name"] ;
 			$description=$_POST["description"] ;
+			$ordering=$_POST["ordering"] ;
 			$details=$_POST["details"] ;
 			$license=$_POST["license"] ;
 			$sharedPublic=NULL ;
@@ -71,7 +66,7 @@ else {
 				$sharedPublic=$_POST["sharedPublic"] ;
 			}
 			
-			if ($gibbonSchoolYearID=="" OR $gibbonCourseID=="" OR $name=="" OR $description=="") {
+			if ($gibbonSchoolYearID=="" OR $gibbonCourseID=="" OR $name=="" OR $description=="" OR $ordering=="") {
 				//Fail 3
 				$URL.="&addReturn=fail3" ;
 				header("Location: {$URL}");
@@ -94,7 +89,7 @@ else {
 					//Fail 2
 					$URL.="&addReturn=fail2" . $e->getMessage() ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 				
 				if ($result->rowCount()!=1) {
@@ -112,7 +107,7 @@ else {
 						//Fail 2
 						$URL.="&addReturn=fail2" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}	
 						
 					//Get next autoincrement
@@ -124,7 +119,7 @@ else {
 						//Fail 2
 						$URL.="&addReturn=fail2" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}		
 
 					$rowAI=$resultAI->fetch();
@@ -248,8 +243,8 @@ else {
 					
 					//Write to database
 					try {
-						$data=array("gibbonCourseID"=>$gibbonCourseID, "name"=>$name, "description"=>$description, "license"=>$license, "sharedPublic"=>$sharedPublic, "attachment"=>$attachment, "details"=>$details, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonIDLastEdit"=>$_SESSION[$guid]["gibbonPersonID"], ); 
-						$sql="INSERT INTO gibbonUnit SET gibbonCourseID=:gibbonCourseID, name=:name, description=:description, license=:license, sharedPublic=:sharedPublic, attachment=:attachment, details=:details, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit" ;
+						$data=array("gibbonCourseID"=>$gibbonCourseID, "name"=>$name, "description"=>$description, "ordering"=>$ordering, "license"=>$license, "sharedPublic"=>$sharedPublic, "attachment"=>$attachment, "details"=>$details, "gibbonPersonIDCreator"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonIDLastEdit"=>$_SESSION[$guid]["gibbonPersonID"], ); 
+						$sql="INSERT INTO gibbonUnit SET gibbonCourseID=:gibbonCourseID, name=:name, description=:description, ordering=:ordering, license=:license, sharedPublic=:sharedPublic, attachment=:attachment, details=:details, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit" ;
 						$result=$connection2->prepare($sql);
 						$result->execute($data);
 					}
@@ -257,7 +252,7 @@ else {
 						//Fail 2
 						$URL.="&addReturn=fail2" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 			
 					//Unlock module table

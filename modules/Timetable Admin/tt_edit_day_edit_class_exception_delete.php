@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/tt_edit_day_edit_class_exception_delete.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -36,7 +36,7 @@ else {
 	
 	if ($gibbonTTDayID=="" OR $gibbonTTID=="" OR $gibbonSchoolYearID=="" OR $gibbonTTColumnRowID=="" OR $gibbonCourseClassID=="" OR $gibbonTTDayRowClassID=="") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -52,7 +52,7 @@ else {
 		
 		if ($result->rowCount()<1) {
 			print "<div class='error'>" ;
-				print _("The specified record cannot be found.") ;
+				print __($guid, "The specified record cannot be found.") ;
 			print "</div>" ;
 		}
 		else {
@@ -60,7 +60,7 @@ else {
 			$gibbonTTDayRowClassExceptionID=$_GET["gibbonTTDayRowClassExceptionID"] ;
 			if ($gibbonTTDayRowClassExceptionID=="") {
 				print "<div class='error'>" ;
-					print _("You have not specified one or more required parameters.") ;
+					print __($guid, "You have not specified one or more required parameters.") ;
 				print "</div>" ;
 			}
 			else {
@@ -76,12 +76,12 @@ else {
 				
 				if ($result->rowCount()<1) {
 					print "<div class='error'>" ;
-						print _("The specified record cannot be found.") ;
+						print __($guid, "The specified record cannot be found.") ;
 					print "</div>" ;
 				}
 				else {
 					print "<div class='trail'>" ;
-					print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > ... > ... > ... > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt_edit_day_edit.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID'>" . _('Edit Timetable Day') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt_edit_day_edit_class.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClass=$gibbonTTDayRowClassID'>" . _('Classes in Period') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt_edit_day_edit_class_exception.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClass=$gibbonTTDayRowClassID&gibbonCourseClassID=$gibbonCourseClassID'>" . _('Class List Exception') . "</a> > </div><div class='trailEnd'>" . _('Delete Exception') . "</div>" ; 
+					print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > ... > ... > ... > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt_edit_day_edit.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID'>" . __($guid, 'Edit Timetable Day') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt_edit_day_edit_class.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClass=$gibbonTTDayRowClassID'>" . __($guid, 'Classes in Period') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt_edit_day_edit_class_exception.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClass=$gibbonTTDayRowClassID&gibbonCourseClassID=$gibbonCourseClassID'>" . __($guid, 'Class List Exception') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Delete Exception') . "</div>" ; 
 					print "</div>" ;
 					
 					if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -89,19 +89,19 @@ else {
 					$class="error" ;
 					if (!($deleteReturn=="")) {
 						if ($deleteReturn=="fail0") {
-							$deleteReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+							$deleteReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 						}
 						else if ($deleteReturn=="fail1") {
-							$deleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+							$deleteReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 						}
 						else if ($deleteReturn=="fail2") {
-							$deleteReturnMessage=_("Your request failed due to a database error.") ;	
+							$deleteReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 						}
 						else if ($deleteReturn=="fail3") {
-							$deleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+							$deleteReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 						}
 						else if ($deleteReturn=="success0") {
-							$deleteReturnMessage=_("Your request was completed successfully.") ;	
+							$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;	
 							$class="success" ;
 						}
 						print "<div class='$class'>" ;
@@ -110,11 +110,11 @@ else {
 					} 
 					?>
 					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/tt_edit_day_edit_class_exception_deleteProcess.php?&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClassID=$gibbonTTDayRowClassID&gibbonCourseClassID=$gibbonCourseClassID&gibbonTTDayRowClassExceptionID=$gibbonTTDayRowClassExceptionID" ?>">
-						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+						<table class='smallIntBorder fullWidth' cellspacing='0'>	
 							<tr>
 								<td> 
-									<b><?php print _('Are you sure you want to delete this record?') ; ?></b><br/>
-									<span style="font-size: 90%; color: #cc0000"><i><?php print _('This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!') ; ?></i></span>
+									<b><?php print __($guid, 'Are you sure you want to delete this record?') ; ?></b><br/>
+									<span style="font-size: 90%; color: #cc0000"><i><?php print __($guid, 'This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!') ; ?></span>
 								</td>
 								<td class="right">
 									
@@ -123,7 +123,7 @@ else {
 							<tr>
 								<td> 
 									<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-									<input type="submit" value="<?php print _('Yes') ; ?>">
+									<input type="submit" value="<?php print __($guid, 'Yes') ; ?>">
 								</td>
 								<td class="right">
 									

@@ -22,13 +22,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/System Admin/module_manage.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Manage Modules') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Manage Modules') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -53,25 +53,25 @@ else {
 	$class="error" ;
 	if (!($addReturn=="")) {
 		if ($addReturn=="fail0") {
-			$addReturnMessage =_("Your request failed because you do not have access to this action.") ;	
+			$addReturnMessage =__($guid, "Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($addReturn=="fail2") {
-			$addReturnMessage =_("Your request failed due to a database error.") ;	
+			$addReturnMessage =__($guid, "Your request failed due to a database error.") ;	
 		}
 		else if ($addReturn=="fail3") {
-			$addReturnMessage =_("Install failed because either the module name was not given or the manifest file was invalid.") ;	
+			$addReturnMessage =__($guid, "Install failed because either the module name was not given or the manifest file was invalid.") ;	
 		}
 		else if ($addReturn=="fail4") {
 			$addReturnMessage =("Install failed because a module with the same name is already installed.") ;	
 		}
 		else if ($addReturn=="fail5") {
-			$addReturnMessage =_("Install failed, but module was added to the system and set non-active.") ;	
+			$addReturnMessage =__($guid, "Install failed, but module was added to the system and set non-active.") ;	
 		}
 		else if ($addReturn=="fail6") {
-			$addReturnMessage =_("Install was successful, but module could not be activated.") ;
+			$addReturnMessage =__($guid, "Install was successful, but module could not be activated.") ;
 		}
 		else if ($addReturn=="success0") {
-			$addReturnMessage =_("Your request was successful. You can now add another record if you wish.") ;	
+			$addReturnMessage =__($guid, "Your request was successful. You can now add another record if you wish.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -79,7 +79,7 @@ else {
 			if (isset($_SESSION[$guid]["moduleInstallError"])) {
 				if ($_SESSION[$guid]["moduleInstallError"]!="") {
 					print "<br/><br/>" ;
-					print _("The following SQL statements caused errors:") . " " . $_SESSION[$guid]["moduleInstallError"] ;
+					print __($guid, "The following SQL statements caused errors:") . " " . $_SESSION[$guid]["moduleInstallError"] ;
 				}
 				$_SESSION[$guid]["moduleInstallError"]=NULL ;
 			}
@@ -106,40 +106,40 @@ else {
 	$modulesFS=glob($_SESSION[$guid]["absolutePath"] . "/modules/*" , GLOB_ONLYDIR);
 
 	print "<div class='warning'>" ;
-		print sprintf(_('To install a module, upload the module folder to %1$s on your server and then refresh this page. After refresh, the module should appear in the list below: use the install button in the Actions column to set it up.'), "<b><u>" . $_SESSION[$guid]["absolutePath"] . "/modules/</u></b>") ;
+		print sprintf(__($guid, 'To install a module, upload the module folder to %1$s on your server and then refresh this page. After refresh, the module should appear in the list below: use the install button in the Actions column to set it up.'), "<b><u>" . $_SESSION[$guid]["absolutePath"] . "/modules/</u></b>") ;
 	print "</div>" ;
 	
 	if (count($modulesFS)<1) {
 		print "<div class='error'>" ;
-		print _("There are no records to display.") ;
+		print __($guid, "There are no records to display.") ;
 		print "</div>" ;
 	}
 	else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print _("Name") ;
+					print __($guid, "Name") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Status") ;
+					print __($guid, "Status") ;
 				print "</th>" ;
 				print "<th style='width: 200px;'>" ;
-					print _("Description") ;
+					print __($guid, "Description") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Type") ;
+					print __($guid, "Type") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Active") ;
+					print __($guid, "Active") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Version") ;
+					print __($guid, "Version") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Author") ;
+					print __($guid, "Author") ;
 				print "</th>" ;
 				print "<th style='width: 140px!important'>" ;
-					print _("Action") ;
+					print __($guid, "Action") ;
 				print "</th>" ;
 			print "</tr>" ;
 			
@@ -166,11 +166,11 @@ else {
 				//COLOR ROW BY STATUS!
 				print "<tr class=$rowNum>" ;
 					print "<td>" ;
-						print _($moduleName) ;
+						print __($guid, $moduleName) ;
 					print "</td>" ;
 					if ($installed) {
 						print "<td>" ;
-							print _("Installed") ;
+							print __($guid, "Installed") ;
 						print "</td>" ;
 					}
 					else {
@@ -185,24 +185,24 @@ else {
 						}
 						if ($manifestOK) {
 							print "<td colspan=6>" ;
-								print _("Not Installed") ;
+								print __($guid, "Not Installed") ;
 							print "</td>" ;
 						}
 						else {
 							print "<td colspan=7>" ;
-								print _("Module error due to incorrect manifest file or folder name.") ;
+								print __($guid, "Module error due to incorrect manifest file or folder name.") ;
 							print "</td>" ;
 						}
 					}
 					if ($installed) {
 						print "<td>" ;
-							print _($modulesSQL[$moduleName][0]["description"]) ;
+							print __($guid, $modulesSQL[$moduleName][0]["description"]) ;
 						print "</td>" ;
 						print "<td>" ;
-							print _($modulesSQL[$moduleName][0]["type"]) ;
+							print __($guid, $modulesSQL[$moduleName][0]["type"]) ;
 						print "</td>" ;
 						print "<td>" ;
-							print ynExpander($modulesSQL[$moduleName][0]["active"]) ;
+							print ynExpander($guid, $modulesSQL[$moduleName][0]["active"]) ;
 						print "</td>" ;
 						print "<td>" ;
 							if ($modulesSQL[$moduleName][0]["type"]=="Additional") {
@@ -221,7 +221,7 @@ else {
 							}
 						print "</td>" ;
 						print "<td style='width: 120px'>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/module_manage_edit.php&gibbonModuleID=" . $modulesSQL[$moduleName][0]["gibbonModuleID"] . "'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/module_manage_edit.php&gibbonModuleID=" . $modulesSQL[$moduleName][0]["gibbonModuleID"] . "'><img title='" . __($guid, 'Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 							if ($modulesSQL[$moduleName][0]["type"]=="Additional") {
 								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/module_manage_uninstall.php&gibbonModuleID=" . $modulesSQL[$moduleName][0]["gibbonModuleID"] . "'><img title='Uninstall' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/module_manage_update.php&gibbonModuleID=" . $modulesSQL[$moduleName][0]["gibbonModuleID"] . "'><img title='Update' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/delivery2.png'/></a>" ;
@@ -231,7 +231,7 @@ else {
 					else {
 						if ($manifestOK) {
 							print "<td>" ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/module_manage_installProcess.php?name=" . urlencode($moduleName) . "'><img title='" . _('Install') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/module_manage_installProcess.php?name=" . urlencode($moduleName) . "'><img title='" . __($guid, 'Install') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
 							print "</td>" ;
 						}
 					}
@@ -250,19 +250,19 @@ else {
 	
 	if ($orphans) {
 		print "<h2 style='margin-top: 40px'>" ;
-			print _("Orphaned Modules") ;
+			print __($guid, "Orphaned Modules") ;
 		print "</h2>" ;
 		print "<p>" ;
-			print _("These modules are installed in the database, but are missing from within the file system.") ;
+			print __($guid, "These modules are installed in the database, but are missing from within the file system.") ;
 		print "</p>" ;
 		
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print _("Name") ;
+					print __($guid, "Name") ;
 				print "</th>" ;
 				print "<th style='width: 140px!important'>" ;
-					print _("Action") ;
+					print __($guid, "Action") ;
 				print "</th>" ;
 			print "</tr>" ;
 			
@@ -284,7 +284,7 @@ else {
 					//COLOR ROW BY STATUS!
 					print "<tr class=$rowNum>" ;
 						print "<td>" ;
-							print _($moduleName) ;
+							print __($guid, $moduleName) ;
 						print "</td>" ;
 						print "<td>" ;
 							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/module_manage_uninstall.php&gibbonModuleID=" . $modulesSQL[$moduleName][0]["gibbonModuleID"] . "&orphaned=true'><img title='Remove Record' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
@@ -296,7 +296,7 @@ else {
 				print "<td colspan=7 class='right'>" ;
 					?>
 					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 					<?php
 				print "</td>" ;
 			print "</tr>" ;

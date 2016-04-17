@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Formal Assessment/internalAssessment_manage_delete.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -34,7 +34,7 @@ else {
 	$gibbonInternalAssessmentColumnID=$_GET["gibbonInternalAssessmentColumnID"] ;
 	if ($gibbonCourseClassID=="" OR $gibbonInternalAssessmentColumnID=="") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -50,7 +50,7 @@ else {
 
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print _("The selected record does not exist, or you do not have access to it.") ;
+				print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 			print "</div>" ;
 		}
 		else {
@@ -66,7 +66,7 @@ else {
 
 			if ($result2->rowCount()!=1) {
 				print "<div class='error'>" ;
-					print _("The selected record does not exist, or you do not have access to it.") ;
+					print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 				print "</div>" ;
 			}
 			else {
@@ -75,7 +75,7 @@ else {
 				$row2=$result2->fetch() ;
 			
 				print "<div class='trail'>" ;
-				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/internalAssessment_manage.php&gibbonCourseClassID=" . $_GET["gibbonCourseClassID"] . "'>" . _('Manage') . " " . $row["course"] . "." . $row["class"] . " " . _('Internal Assessments') . "</a> > </div><div class='trailEnd'>" . _('Delete Column') . "</div>" ;
+				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/internalAssessment_manage.php&gibbonCourseClassID=" . $_GET["gibbonCourseClassID"] . "'>" . __($guid, 'Manage') . " " . $row["course"] . "." . $row["class"] . " " . __($guid, 'Internal Assessments') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Delete Column') . "</div>" ;
 				print "</div>" ;
 			
 				if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -83,16 +83,16 @@ else {
 				$class="error" ;
 				if (!($deleteReturn=="")) {
 					if ($deleteReturn=="fail0") {
-						$deleteReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+						$deleteReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 					}
 					else if ($deleteReturn=="fail1") {
-						$deleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+						$deleteReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 					}
 					else if ($deleteReturn=="fail2") {
-						$deleteReturnMessage=_("Your request failed due to a database error.") ;	
+						$deleteReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 					}
 					else if ($deleteReturn=="fail3") {
-						$deleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+						$deleteReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 					}
 					print "<div class='$class'>" ;
 						print $deleteReturnMessage;
@@ -100,11 +100,11 @@ else {
 				}
 				?>
 				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/internalAssessment_manage_deleteProcess.php?gibbonInternalAssessmentColumnID=$gibbonInternalAssessmentColumnID" ?>">
-					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>	
 						<tr>
 							<td> 
-								<b><?php print _('Are you sure you want to delete this record?') ; ?></b><br/>
-								<span style="font-size: 90%; color: #cc0000"><i><?php print _('This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!') ; ?></i></span>
+								<b><?php print __($guid, 'Are you sure you want to delete this record?') ; ?></b><br/>
+								<span style="font-size: 90%; color: #cc0000"><i><?php print __($guid, 'This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!') ; ?></span>
 							</td>
 							<td class="right">
 						
@@ -114,7 +114,7 @@ else {
 							<td> 
 								<input name="gibbonCourseClassID" id="gibbonCourseClassID" value="<?php print $gibbonCourseClassID ?>" type="hidden">
 								<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-								<input type="submit" value="<?php print _('Yes') ; ?>">
+								<input type="submit" value="<?php print __($guid, 'Yes') ; ?>">
 							</td>
 							<td class="right">
 						

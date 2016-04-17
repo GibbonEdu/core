@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Data Updater/data_family.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -33,65 +33,43 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print _("The highest grouped action cannot be determined.") ;
+		print __($guid, "The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
 		//Proceed!
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Update Family Data') . "</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Update Family Data') . "</div>" ;
 		print "</div>" ;
 	
 		if ($highestAction=="Update Personal Data_any") {
 			print "<p>" ;
-			print _("This page allows a user to request selected family data updates for any family.") ;
+			print __($guid, "This page allows a user to request selected family data updates for any family.") ;
 			print "</p>" ;
 		}
 		else {
 			print "<p>" ;
-			print _("This page allows any adult with data access permission to request selected family data updates for their family.") ;
+			print __($guid, "This page allows any adult with data access permission to request selected family data updates for their family.") ;
 			print "</p>" ;
 		}
 		
-		if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-		$updateReturnMessage="" ;
-		$class="error" ;
-		if (!($updateReturn=="")) {
-			if ($updateReturn=="fail0") {
-				$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
-			}
-			else if ($updateReturn=="fail1") {
-				$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-			}
-			else if ($updateReturn=="fail2") {
-				$updateReturnMessage=_("Your request failed due to a database error.") ;	
-			}
-			else if ($updateReturn=="fail3") {
-				$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-			}
-			else if ($updateReturn=="fail4") {
-				$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-			}
-			else if ($updateReturn=="fail5") {
-				$updateReturnMessage=_("Your request was successful, but some data was not properly saved. An administrator will process your request as soon as possible. <u>You will not see the updated data in the system until it has been processed and approved.</u>") ; 
-				if ($_SESSION[$guid]["organisationDBAEmail"]!="" AND $_SESSION[$guid]["organisationDBAName"]!="") {
-					$updateReturnMessage.=" " . sprintf(_('Please contact %1$s if you have any questions.'), "<a href='mailto:" . $_SESSION[$guid]["organisationDBAEmail"] . "'>" . $_SESSION[$guid]["organisationDBAName"] . "</a>") ;	
-				}
-			}
-			else if ($updateReturn=="success0") {
-				$updateReturnMessage=_("Your request was completed successfully. An administrator will process your request as soon as possible. You will not see the updated data in the system until it has been processed and approved.") ; 
-				if ($_SESSION[$guid]["organisationDBAEmail"]!="" AND $_SESSION[$guid]["organisationDBAName"]!="") {
-					$updateReturnMessage.=" " . sprintf(_('Please contact %1$s if you have any questions.'), "<a href='mailto:" . $_SESSION[$guid]["organisationDBAEmail"] . "'>" . $_SESSION[$guid]["organisationDBAName"] . "</a>") ;	
-				}
-				$class="success" ;
-			}
-			print "<div class='$class'>" ;
-				print $updateReturnMessage;
-			print "</div>" ;
-		} 
-		
+		$customResponces = array();
+		$error3=__($guid, "Your request was successful, but some data was not properly saved. An administrator will process your request as soon as possible. <u>You will not see the updated data in the system until it has been processed and approved.</u>") ; 
+		if ($_SESSION[$guid]["organisationDBAEmail"]!="" AND $_SESSION[$guid]["organisationDBAName"]!="") {
+			$error3.=" " . sprintf(__($guid, 'Please contact %1$s if you have any questions.'), "<a href='mailto:" . $_SESSION[$guid]["organisationDBAEmail"] . "'>" . $_SESSION[$guid]["organisationDBAName"] . "</a>") ;	
+		}
+		$customResponces["error3"] = $error3;
+
+		$success0=__($guid, "Your request was completed successfully. An administrator will process your request as soon as possible. You will not see the updated data in the system until it has been processed and approved.") ; 
+		if ($_SESSION[$guid]["organisationDBAEmail"]!="" AND $_SESSION[$guid]["organisationDBAName"]!="") {
+			$success0.=" " . sprintf(__($guid, 'Please contact %1$s if you have any questions.'), "<a href='mailto:" . $_SESSION[$guid]["organisationDBAEmail"] . "'>" . $_SESSION[$guid]["organisationDBAName"] . "</a>") ;	
+		}
+		$customResponces["success0"] = $success0;
+
+		if (isset($_GET["return"])) { returnProcess($_GET["return"], null, $customResponces); }
+
 		print "<h2>" ;
-		print _("Choose Family") ;
+		print __($guid, "Choose Family") ;
 		print "</h2>" ;
 		
 		$gibbonFamilyID=NULL ;
@@ -101,13 +79,13 @@ else {
 		?>
 		
 		<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+			<table class='smallIntBorder fullWidth' cellspacing='0'>	
 				<tr>
 					<td> 
-						<b><?php print _('Family') ?> *</b><br/>
+						<b><?php print __($guid, 'Family') ?> *</b><br/>
 					</td>
 					<td class="right">
-						<select style="width: 302px" name="gibbonFamilyID">
+						<select class="standardWidth" name="gibbonFamilyID">
 							<?php
 							if ($highestAction=="Update Family Data_any") {
 								try {
@@ -152,7 +130,7 @@ else {
 				<tr>
 					<td colspan=2 class="right">
 						<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/data_family.php">
-						<input type="submit" value="<?php print _("Submit") ; ?>">
+						<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 					</td>
 				</tr>
 			</table>
@@ -161,7 +139,7 @@ else {
 		
 		if ($gibbonFamilyID!="") {
 			print "<h2>" ;
-			print _("Update Data") ;
+			print __($guid, "Update Data") ;
 			print "</h2>" ;
 			
 			//Check access to person
@@ -186,7 +164,7 @@ else {
 			
 			if ($resultCheck->rowCount()!=1) {
 				print "<div class='error'>" ;
-					print _("The selected record does not exist, or you do not have access to it.") ;
+					print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 				print "</div>" ;
 			}
 			else {
@@ -205,13 +183,13 @@ else {
 				
 				if ($result->rowCount()>1) {
 					print "<div class='error'>" ;
-						print _("Your request failed due to a database error.") ;
+						print __($guid, "Your request failed due to a database error.") ;
 					print "</div>" ;
 				}
 				else if ($result->rowCount()==1) {
 					$existing=TRUE ;
 					print "<div class='warning'>" ;
-						print _("You have already submitted a form, which is pending approval by an administrator. If you wish to make changes, please edited the data below, but remember your data will not appear in the system until it has been approved.") ;
+						print __($guid, "You have already submitted a form, which is pending approval by an administrator. If you wish to make changes, please edited the data below, but remember your data will not appear in the system until it has been approved.") ;
 					print "</div>" ;
 					$proceed=TRUE;
 				}
@@ -228,7 +206,7 @@ else {
 					}
 					if ($result->rowCount()!=1) {
 						print "<div class='error'>" ;
-							print _("The specified record cannot be found.") ;
+							print __($guid, "The specified record cannot be found.") ;
 						print "</div>" ;
 					}
 					else {
@@ -241,14 +219,14 @@ else {
 					$row=$result->fetch() ;
 					?>
 					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/data_familyProcess.php?gibbonFamilyID=" . $gibbonFamilyID ?>">
-						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+						<table class='smallIntBorder fullWidth' cellspacing='0'>	
 							<tr>
 								<td style='width: 275px'> 
-									<b><?php print _('Address Name') ?> *</b><br/>
-									<span style="font-size: 90%"><i><?php print _('Formal name to address parents with.') ?></i></span>
+									<b><?php print __($guid, 'Address Name') ?> *</b><br/>
+									<span class="emphasis small"><?php print __($guid, 'Formal name to address parents with.') ?></span>
 								</td>
 								<td class="right">
-									<input name="nameAddress" id="nameAddress" maxlength=100 value="<?php print htmlPrep($row["nameAddress"]) ?>" type="text" style="width: 300px">								
+									<input name="nameAddress" id="nameAddress" maxlength=100 value="<?php print htmlPrep($row["nameAddress"]) ?>" type="text" class="standardWidth">								
 									<script type="text/javascript">
 										var nameAddress=new LiveValidation('nameAddress');
 										nameAddress.add(Validate.Presence);
@@ -257,11 +235,11 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b><?php print _('Home Address') ?> *</b><br/>
-									<span style="font-size: 90%"><i><?php print _('Unit, Building, Street') ?></i></span>
+									<b><?php print __($guid, 'Home Address') ?> *</b><br/>
+									<span class="emphasis small"><?php print __($guid, 'Unit, Building, Street') ?></span>
 								</td>
 								<td class="right">
-									<input name="homeAddress" id="homeAddress" maxlength=255 value="<?php print $row["homeAddress"] ?>" type="text" style="width: 300px">
+									<input name="homeAddress" id="homeAddress" maxlength=255 value="<?php print $row["homeAddress"] ?>" type="text" class="standardWidth">
 									<script type="text/javascript">
 										var homeAddress=new LiveValidation('homeAddress');
 										homeAddress.add(Validate.Presence);
@@ -270,11 +248,11 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b><?php print _('Home Address (District)') ?> *</b><br/>
-									<span style="font-size: 90%"><i><?php print _('County, State, District') ?></i></span>
+									<b><?php print __($guid, 'Home Address (District)') ?> *</b><br/>
+									<span class="emphasis small"><?php print __($guid, 'County, State, District') ?></span>
 								</td>
 								<td class="right">
-									<input name="homeAddressDistrict" id="homeAddressDistrict" maxlength=30 value="<?php print $row["homeAddressDistrict"] ?>" type="text" style="width: 300px">
+									<input name="homeAddressDistrict" id="homeAddressDistrict" maxlength=30 value="<?php print $row["homeAddressDistrict"] ?>" type="text" class="standardWidth">
 								</td>
 								<script type="text/javascript">
 									$(function() {
@@ -302,12 +280,12 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b><?php print _('Home Address (Country)') ?></b><br/>
+									<b><?php print __($guid, 'Home Address (Country)') ?></b><br/>
 								</td>
 								<td class="right">
-									<select name="homeAddressCountry" id="homeAddressCountry" style="width: 302px">
+									<select name="homeAddressCountry" id="homeAddressCountry" class="standardWidth">
 										<?php
-										print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+										print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
 										try {
 											$dataSelect=array(); 
 											$sqlSelect="SELECT printable_name FROM gibbonCountry ORDER BY printable_name" ;
@@ -320,22 +298,22 @@ else {
 											if ($rowSelect["printable_name"]==$row["homeAddressCountry"]) {
 												$selected=" selected" ;
 											}
-											print "<option $selected value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(_($rowSelect["printable_name"])) . "</option>" ;
+											print "<option $selected value='" . $rowSelect["printable_name"] . "'>" . htmlPrep(__($guid, $rowSelect["printable_name"])) . "</option>" ;
 										}
 										?>				
 									</select>
 									<script type="text/javascript">
 										var homeAddressCountry=new LiveValidation('homeAddressCountry');
-										homeAddressCountry.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+										homeAddressCountry.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 									</script>
 								</td>
 							</tr>
 							<tr>
 								<td> 
-									<b><?php print _('Home Language - Primary') ?> *</b><br/>
+									<b><?php print __($guid, 'Home Language - Primary') ?> *</b><br/>
 								</td>
 								<td class="right">
-									<select name="languageHomePrimary" id="languageHomePrimary" style="width: 302px">
+									<select name="languageHomePrimary" id="languageHomePrimary" class="standardWidth">
 										<?php
 										print "<option value='Please select...'>Please select...</option>" ;
 										try {
@@ -350,22 +328,22 @@ else {
 											if ($row["languageHomePrimary"]==$rowSelect["name"]) {
 												$selected="selected" ;
 											}
-											print "<option $selected value='" . $rowSelect["name"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
+											print "<option $selected value='" . $rowSelect["name"] . "'>" . htmlPrep(__($guid, $rowSelect["name"])) . "</option>" ;
 										}
 										?>				
 									</select>
 									<script type="text/javascript">
 										var languageHomePrimary=new LiveValidation('languageHomePrimary');
-										languageHomePrimary.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+										languageHomePrimary.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 									</script>
 								</td>
 							</tr>
 							<tr>
 								<td> 
-									<b><?php print _('Home Language - Secondary') ?></b><br/>
+									<b><?php print __($guid, 'Home Language - Secondary') ?></b><br/>
 								</td>
 								<td class="right">
-									<select name="languageHomeSecondary" id="languageHomeSecondary" style="width: 302px">
+									<select name="languageHomeSecondary" id="languageHomeSecondary" class="standardWidth">
 										<?php
 										print "<option value=''></option>" ;
 										try {
@@ -380,7 +358,7 @@ else {
 											if ($row["languageHomeSecondary"]==$rowSelect["name"]) {
 												$selected="selected" ;
 											}
-											print "<option $selected value='" . $rowSelect["name"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
+											print "<option $selected value='" . $rowSelect["name"] . "'>" . htmlPrep(__($guid, $rowSelect["name"])) . "</option>" ;
 										}
 										?>				
 									</select>
@@ -388,7 +366,7 @@ else {
 							</tr>
 							<tr>
 								<td>
-									<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+									<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 								</td>
 								<td class="right">
 									<?php
@@ -400,7 +378,7 @@ else {
 									}
 									?>
 									<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-									<input type="submit" value="<?php print _("Submit") ; ?>">
+									<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 								</td>
 							</tr>
 						</table>

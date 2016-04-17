@@ -22,28 +22,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/Finance/budgetCycles_manage.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Manage School Year') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Manage School Year') . "</div>" ;
 	print "</div>" ;
-	
-	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-	$deleteReturnMessage="" ;
-	$class="error" ;
-	if (!($deleteReturn=="")) {
-		if ($deleteReturn=="success0") {
-			$deleteReturnMessage=_("Your request was completed successfully.") ;		
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $deleteReturnMessage;
-		print "</div>" ;
-	} 
-	
+
+	if (isset($_GET["return"])) { returnProcess($_GET["return"], null, array("success0" => "Your request was completed successfully.")); }
+
 	try {
 		$data=array(); 
 		$sql="SELECT * FROM gibbonFinanceBudgetCycle ORDER BY sequenceNumber" ; 
@@ -55,31 +44,31 @@ else {
 	}
 	
 	print "<div class='linkTop'>" ;
-	print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/budgetCycles_manage_add.php'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+	print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/budgetCycles_manage_add.php'>" .  __($guid, 'Add') . "<img style='margin-left: 5px' title='" . __($guid, 'Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
 	print "</div>" ;
 	
 	if ($result->rowcount()<1) {
 		print "<div class='error'>" ;
-		print _("There are no records to display.") ;
+		print __($guid, "There are no records to display.") ;
 		print "</div>" ;
 	}
 	else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print _("Sequence") ;
+					print __($guid, "Sequence") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Name") ;
+					print __($guid, "Name") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Dates") ;
+					print __($guid, "Dates") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Status") ;
+					print __($guid, "Status") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Actions") ;
+					print __($guid, "Actions") ;
 				print "</th>" ;
 			print "</tr>" ;
 			
@@ -111,8 +100,8 @@ else {
 						print $row["status"] ;
 					print "</td>" ;
 					print "<td>" ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/budgetCycles_manage_edit.php&gibbonFinanceBudgetCycleID=" . $row["gibbonFinanceBudgetCycleID"] . "'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/budgetCycles_manage_delete.php&gibbonFinanceBudgetCycleID=" . $row["gibbonFinanceBudgetCycleID"] . "'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/budgetCycles_manage_edit.php&gibbonFinanceBudgetCycleID=" . $row["gibbonFinanceBudgetCycleID"] . "'><img title='" . __($guid, 'Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/budgetCycles_manage_delete.php&gibbonFinanceBudgetCycleID=" . $row["gibbonFinanceBudgetCycleID"] . "'><img title='" . __($guid, 'Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
 					print "</td>" ;
 				print "</tr>" ;
 				

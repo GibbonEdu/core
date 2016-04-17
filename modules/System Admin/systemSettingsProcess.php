@@ -20,15 +20,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include "../../functions.php" ;
 include "../../config.php" ;
 
+//Module includes
+include "./moduleFunctions.php" ;
+
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 @session_start() ;
 
@@ -54,10 +51,12 @@ else {
 	$organisationLogo=$_POST["organisationLogo"] ;
 	$organisationAdministrator=$_POST["organisationAdministrator"] ;
 	$organisationDBA=$_POST["organisationDBA"] ;
+	$organisationHR=$_POST["organisationHR"] ;
 	$organisationAdmissions=$_POST["organisationAdmissions"] ;
 	$pagination=$_POST["pagination"] ;
 	$timezone=$_POST["timezone"] ;
 	$country=$_POST["country"] ;
+	$firstDayOfTheWeek=$_POST["firstDayOfTheWeek"] ;
 	$analytics=$_POST["analytics"] ;
 	$emailLink=$_POST["emailLink"] ;
 	$webLink=$_POST["webLink"] ;
@@ -76,7 +75,7 @@ else {
 	
 	
 	//Validate Inputs
-	if ($absoluteURL=="" OR $systemName=="" OR $organisationLogo=="" OR $indexText=="" OR $organisationName=="" OR $organisationNameShort=="" OR $organisationAdministrator=="" OR $organisationDBA=="" OR $organisationAdmissions=="" OR $pagination=="" OR (!(is_numeric($pagination))) OR $timezone=="" OR $installType=="" OR $statsCollection=="" OR $passwordPolicyMinLength=="" OR $passwordPolicyAlpha=="" OR $passwordPolicyNumeric=="" OR $passwordPolicyNonAlphaNumeric=="" OR $currency=="") {
+	if ($absoluteURL=="" OR $systemName=="" OR $organisationLogo=="" OR $indexText=="" OR $organisationName=="" OR $organisationNameShort=="" OR $organisationAdministrator=="" OR $organisationDBA=="" OR $organisationHR=="" OR $organisationAdmissions=="" OR $pagination=="" OR (!(is_numeric($pagination))) OR $timezone=="" OR $installType=="" OR $statsCollection=="" OR $passwordPolicyMinLength=="" OR $passwordPolicyAlpha=="" OR $passwordPolicyNumeric=="" OR $passwordPolicyNonAlphaNumeric=="" OR $firstDayOfTheWeek=="" OR ($firstDayOfTheWeek!="Monday" AND $firstDayOfTheWeek!="Sunday") OR $currency=="") {
 		//Fail 3
 		$URL.="&updateReturn=fail3" ;
 		header("Location: {$URL}");
@@ -230,6 +229,35 @@ else {
 		}
 		
 		
+		try {
+			$data=array("organisationHR"=>$organisationHR); 
+			$sql="UPDATE gibbonSetting SET value=:organisationHR WHERE scope='System' AND name='organisationHR'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ;
+		}
+		//Update session variables
+		try {
+			$data=array("gibbonPersonID"=>$organisationHR); 
+			$sql="SELECT surname, preferredName, email FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ;
+		}
+		if ($result->rowCount()!=1) {
+			$fail=TRUE ;
+		}
+		else {
+			$row=$result->fetch() ;
+			$_SESSION[$guid]["organisationHRName"]=formatName("", $row["preferredName"], $row["surname"], "Staff", FALSE, TRUE) ;
+			$_SESSION[$guid]["organisationHREmail"]=$row["email"] ;
+		}
+		
+		
 		
 		try {
 			$data=array("organisationAdmissions"=>$organisationAdmissions); 
@@ -278,6 +306,20 @@ else {
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
+			$fail=TRUE ;
+		}
+		
+		try {
+			$data=array("firstDayOfTheWeek"=>$firstDayOfTheWeek); 
+			$sql="UPDATE gibbonSetting SET value=:firstDayOfTheWeek WHERE scope='System' AND name='firstDayOfTheWeek'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ;
+		}
+		
+		if (setFirstDayOfTheWeek($connection2, $firstDayOfTheWeek, $databaseName)!=TRUE) {
 			$fail=TRUE ;
 		}
 		

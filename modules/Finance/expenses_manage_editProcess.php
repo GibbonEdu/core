@@ -24,14 +24,8 @@ include "../../config.php" ;
 include "./moduleFunctions.php" ;
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 @session_start() ;
 
@@ -54,20 +48,20 @@ else {
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Finance/expenses_manage_add.php", "Manage Expenses_all")==FALSE) {
 		//Fail 0
-		$URL.="&editReturn=fail0" ;
+		$URL.="&return=error0" ;
 		header("Location: {$URL}");
 	}
 	else {
 		$highestAction=getHighestGroupedAction($guid, $_POST["address"], $connection2) ;
 		if ($highestAction==FALSE) {
 			//Fail 0
-			$URL.="&editReturn=fail0" ;
+			$URL.="&return=error0" ;
 			header("Location: {$URL}");
 		}
 		else {
 			if ($gibbonFinanceExpenseID=="" OR $status=="" OR $countAgainstBudget=="") {
 				//Fail 0
-				$URL.="&editReturn=fail0" ;
+				$URL.="&return=error1" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -77,7 +71,7 @@ else {
 				$expenseRequestTemplate=getSettingByScope($connection2, "Finance", "expenseRequestTemplate") ;
 				if ($expenseApprovalType=="" OR $budgetLevelExpenseApproval=="") {
 					//Fail 0
-					$URL.="&editReturn=fail0" ;
+					$URL.="&return=error1" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -92,7 +86,7 @@ else {
 		
 					if ($result->rowCount()<1) {
 						//Fail 0
-						$URL.="&editReturn=fail0" ;
+						$URL.="&return=error0" ;
 						header("Location: {$URL}");
 					}
 					else {
@@ -110,14 +104,14 @@ else {
 						}
 						catch(PDOException $e) { 
 							//Fail2
-							$URL.="&editReturn=fail2" ;
+							$URL.="&return=error2" ;
 							header("Location: {$URL}");
-							break ;
+							exit() ;
 						}
 	
 						if ($result->rowCount()!=1) {
 							//Fail 0
-							$URL.="&editReturn=fail0" ;
+							$URL.="&return=error2" ;
 							header("Location: {$URL}");
 						}
 						else {
@@ -152,7 +146,7 @@ else {
 								if ($row["status"]=="Paid" AND $row["purchaseBy"]=="Self" AND $row["paymentReimbursementStatus"]=="Requested" AND $paymentReimbursementStatus=="Complete") {
 									$paymentID=$_POST["paymentID"] ;
 									$reimbursementComment=$_POST["reimbursementComment"] ;
-									$notificationText=sprintf(_('Your reimbursement expense request for "%1$s" in budget "%2$s" has been completed.'), $row["title"], $row["budget"]) ;
+									$notificationText=sprintf(__($guid, 'Your reimbursement expense request for "%1$s" in budget "%2$s" has been completed.'), $row["title"], $row["budget"]) ;
 									setNotification($connection2, $guid, $row["gibbonPersonIDCreator"], $notificationText, "Finance", "/index.php?q=/modules/Finance/expenseRequest_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=&gibbonFinanceBudgetID=" . $row["gibbonFinanceBudgetID"]) ;
 									//Write change to log
 									try {
@@ -163,9 +157,9 @@ else {
 									}
 									catch(PDOException $e) { 
 										//Fail2
-										$URL.="&editReturn=fail2" ;
+										$URL.="&return=error2" ;
 										header("Location: {$URL}");
-										break ;
+										exit() ;
 									}
 								}
 							}
@@ -179,9 +173,9 @@ else {
 							}
 							catch(PDOException $e) { 
 								//Fail2
-								$URL.="&editReturn=fail2" ;
+								$URL.="&return=error2" ;
 								header("Location: {$URL}");
-								break ;
+								exit() ;
 							}
 							
 							if ($statusOld!=$status) {
@@ -192,13 +186,13 @@ else {
 								else if ($status=="Approved") {
 									$action="Approval - Exempt" ;
 									//Notify original creator that it is approved
-									$notificationText=sprintf(_('Your expense request for "%1$s" in budget "%2$s" has been fully approved.'), $row["title"], $row["budget"]) ;
+									$notificationText=sprintf(__($guid, 'Your expense request for "%1$s" in budget "%2$s" has been fully approved.'), $row["title"], $row["budget"]) ;
 									setNotification($connection2, $guid, $row["gibbonPersonIDCreator"], $notificationText, "Finance", "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=&gibbonFinanceBudgetID=" . $row["gibbonFinanceBudgetID"]) ;
 								}
 								else if ($status=="Rejected") {
 									$action="Rejection" ;
 									//Notify original creator that it is rejected
-									$notificationText=sprintf(_('Your expense request for "%1$s" in budget "%2$s" has been rejected.'), $row["title"], $row["budget"]) ;
+									$notificationText=sprintf(__($guid, 'Your expense request for "%1$s" in budget "%2$s" has been rejected.'), $row["title"], $row["budget"]) ;
 									setNotification($connection2, $guid, $row["gibbonPersonIDCreator"], $notificationText, "Finance", "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=&gibbonFinanceBudgetID=" . $row["gibbonFinanceBudgetID"]) ;
 								}
 								else if ($status=="Ordered") {
@@ -220,14 +214,14 @@ else {
 								}
 								catch(PDOException $e) { 
 									//Fail2
-									$URL.="&editReturn=fail2" ;
+									$URL.="&return=error2" ;
 									header("Location: {$URL}");
-									break ;
+									exit() ;
 								}
 							}
 							
 							//Success 0
-							$URL.="&editReturn=success0" ;
+							$URL.="&return=success0" ;
 							header("Location: {$URL}");
 								
 						}

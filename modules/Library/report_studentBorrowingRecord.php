@@ -27,17 +27,17 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Library/report_studentBorrowingRecord.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Student Borrowing Record') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Student Borrowing Record') . "</div>" ;
 	print "</div>" ;
 	
 	print "<h2>" ;
-	print _("Choose Student") ;
+	print __($guid, "Choose Student") ;
 	print "</h2>" ;
 	
 	$gibbonPersonID=NULL ;
@@ -47,13 +47,13 @@ else {
 	?>
 	
 	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_studentBorrowingRecord.php"?>">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr>
 				<td style='width: 275px'> 
-					<b><?php print _('Students') ?> *</b><br/>
+					<b><?php print __($guid, 'Students') ?> *</b><br/>
 				</td>
 				<td class="right">
-					<select name="gibbonPersonID" id="gibbonPersonID" style="width: 302px">
+					<select name="gibbonPersonID" id="gibbonPersonID" class="standardWidth">
 						<option value=''></value>
 						<?php
 						try {
@@ -76,7 +76,7 @@ else {
 			</tr>
 			<tr>
 				<td colspan=2 class="right">
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
@@ -85,13 +85,13 @@ else {
 	
 	if ($gibbonPersonID!="") {
 		print "<h2>" ;
-		print _("Report Data") ;
+		print __($guid, "Report Data") ;
 		print "</h2>" ;
 		
 		$output=getBorrowingRecord($guid, $connection2, $gibbonPersonID) ;
 		if ($output==FALSE) {
 			print "<div class='error'>" ;
-				print _("There are no records to display.") ;
+				print __($guid, "There are no records to display.") ;
 			print "</div>" ;
 		}
 		else {

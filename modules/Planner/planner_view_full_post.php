@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Planner/planner_view_full_post.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -33,7 +33,7 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print _("The highest grouped action cannot be determined.") ;
+		print __($guid, "The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
@@ -79,7 +79,7 @@ else {
 		
 		if ($gibbonPlannerEntryID=="") {
 			print "<div class='warning'>" ;
-				print _("You have not specified one or more required parameters.") ;
+				print __($guid, "You have not specified one or more required parameters.") ;
 			print "</div>" ;
 		}
 		//Check existence of and access to this class.
@@ -87,7 +87,7 @@ else {
 			if ($highestAction=="Lesson Planner_viewMyChildrensClasses") {
 				if ($_GET["search"]=="") {
 					print "<div class='warning'>" ;
-						print _("You have not specified one or more required parameters.") ;
+						print __($guid, "You have not specified one or more required parameters.") ;
 					print "</div>" ;
 				}
 				else {
@@ -103,7 +103,7 @@ else {
 					}
 					if ($resultChild->rowCount()!=1) {
 						print "<div class='error'>" ;
-						print _("The selected record does not exist, or you do not have access to it.") ;
+						print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 						print "</div>" ;
 					}
 					else {
@@ -130,7 +130,7 @@ else {
 
 			if ($result->rowCount()!=1) {
 				print "<div class='warning'>" ;
-					print _("The selected record does not exist, or you do not have access to it.") ;
+					print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 				print "</div>" ;
 			}
 			else {
@@ -158,7 +158,7 @@ else {
 									
 									
 				print "<div class='trail'>" ;
-				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner.php$params'>" . _('Planner') . " $extra</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner_view_full.php$params&gibbonPlannerEntryID=$gibbonPlannerEntryID'>" . _('View Lesson Plan') . "</a> > </div><div class='trailEnd'>" . _('Add Comment') . "</div>" ;
+				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner.php$params'>" . __($guid, 'Planner') . " $extra</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner_view_full.php$params&gibbonPlannerEntryID=$gibbonPlannerEntryID'>" . __($guid, 'View Lesson Plan') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Add Comment') . "</div>" ;
 				print "</div>" ;
 				
 				if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -166,25 +166,25 @@ else {
 				$class="error" ;
 				if (!($updateReturn=="")) {
 					if ($updateReturn=="fail0") {
-						$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+						$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 					}
 					else if ($updateReturn=="fail1") {
-						$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+						$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 					}
 					else if ($updateReturn=="fail2") {
-						$updateReturnMessage=_("Your request failed due to a database error.") ;	
+						$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 					}
 					else if ($updateReturn=="fail3") {
-						$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+						$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 					}
 					else if ($updateReturn=="fail4") {
-						$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+						$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 					}
 					if ($updateReturn=="fail5") {
-						$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+						$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 					}
 					else if ($updateReturn=="success0") {
-						$updateReturnMessage=_("Your request was completed successfully.") ;	
+						$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
 						$class="success" ;
 					}
 					print "<div class='$class'>" ;
@@ -194,20 +194,20 @@ else {
 		
 				if (($row["role"]=="Student" AND $row["viewableStudents"]=="N") AND ($highestAction=="Lesson Planner_viewMyChildrensClasses" AND $row["viewableParents"]=="N")) {
 					print "<div class='warning'>" ;
-						print _("The selected record does not exist, or you do not have access to it.") ;
+						print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 					print "</div>" ;
 				}
 				else {						
 					print "<h2>" ;
-					print _("Planner Discussion Post") ;
+					print __($guid, "Planner Discussion Post") ;
 					print "</h2>" ;
 
 					?>
 					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full_postProcess.php" ?>">
-						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+						<table class='smallIntBorder fullWidth' cellspacing='0'>	
 							<tr>
 								<td colspan=2> 
-									<b><?php print _('Write your comment below:') ?></b> 
+									<b><?php print __($guid, 'Write your comment below:') ?></b> 
 									<?php print getEditor($guid,  TRUE, "comment", "", 20, TRUE ) ?>
 								</td>
 							</tr>
@@ -221,7 +221,7 @@ else {
 									print "<input type='hidden' name='address' value='" . $_SESSION[$guid]["address"] . "'>" ;
 									?>
 									
-									<input type="submit" value="<?php print _("Submit") ; ?>">
+									<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 								</td>
 							</tr>
 						</table>

@@ -21,14 +21,8 @@ include "../../functions.php" ;
 include "../../config.php" ;
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 @session_start() ;
 
@@ -70,7 +64,7 @@ else {
 				//Fail2
 				$URL.="&updateReturn=fail2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 			
 			if ($result->rowCount()!=1) {
@@ -148,28 +142,44 @@ else {
 						catch(PDOException $e) { 
 							$partialFail=TRUE ;
 						}
+						
 						//With personal warnings
 						if ($personalisedWarnings=="Y" AND $resultTarget->rowCount()==1 AND $attainmentValue!="") {
 							$attainmentConcern="N" ;
 							$attainmentDescriptor="" ;
 							$rowTarget=$resultTarget->fetch() ;
-							//Test against target grade and set values accordingly	
-							//On target
-							if ($rowTarget["value"]==$attainmentValue) {
-								$attainmentConcern="N" ;
-								$attainmentDescriptor="Attainment is on personalised target" ;
+							
+							//Get details of attainment grade (sequenceNumber)
+							$scaleAttainment=$_POST["scaleAttainment"] ;
+							try {
+								$dataScale=array("attainmentValue"=>$attainmentValue, "scaleAttainment"=>$scaleAttainment); 
+								$sqlScale="SELECT * FROM gibbonScaleGrade JOIN gibbonScale ON (gibbonScaleGrade.gibbonScaleID=gibbonScale.gibbonScaleID) WHERE value=:attainmentValue AND gibbonScaleGrade.gibbonScaleID=:scaleAttainment" ;
+								$resultScale=$connection2->prepare($sqlScale);
+								$resultScale->execute($dataScale);
 							}
-							//Below target
-							else if ($rowTarget["value"]>$attainmentValue) {
-								$attainmentConcern="Y" ;
-								$attainmentDescriptor="Attainment is below personalised target of " . $rowTarget["value"] ;
+							catch(PDOException $e) { 
+								$partialFail=TRUE ;
 							}
-							//Above target
-							else if ($rowTarget["value"]<$attainmentValue) {
-								$attainmentConcern="P" ;
-								$attainmentDescriptor="Attainment is above personalised target of " . $rowTarget["value"] ;
+							if ($resultScale->rowCount()!=1) {
+								$partialFail=TRUE ;
 							}
-					
+							else {
+								$rowScale=$resultScale->fetch() ;
+								$target=$rowTarget["sequenceNumber"] ;
+								$attainmentSequence=$rowScale["sequenceNumber"] ;
+							
+								//Test against target grade and set values accordingly	
+								//Below target
+								if ($attainmentSequence>$target) {
+									$attainmentConcern="Y" ;
+									$attainmentDescriptor=sprintf(__($guid, 'Below personalised target of %1$s'), $rowTarget["value"]) ;
+								}
+								//Above target
+								else if ($attainmentSequence<=$target) {
+									$attainmentConcern="P" ;
+									$attainmentDescriptor=sprintf(__($guid, 'Equal to or above personalised target of %1$s'), $rowTarget["value"]) ;
+								}
+							}
 						}
 						//Without personal warnings
 						else {

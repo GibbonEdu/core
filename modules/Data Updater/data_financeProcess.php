@@ -21,14 +21,8 @@ include "../../functions.php" ;
 include "../../config.php" ;
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 @session_start() ;
 
@@ -40,7 +34,7 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/Data Updater/data_finance.php")==FALSE) {
 	//Fail 0
-	$URL.="&updateReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -48,7 +42,7 @@ else {
 	//Check if school year specified
 	if ($gibbonFinanceInvoiceeID=="") {
 		//Fail1
-		$URL.="&updateReturn=fail1" ;
+		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -56,7 +50,7 @@ else {
 		$highestAction=getHighestGroupedAction($guid, $_POST["address"], $connection2) ;
 		if ($highestAction==FALSE) {
 			//Fail 0
-			$URL.="&updateReturn=fail0$params" ;
+			$URL.="&return=error0$params" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -98,7 +92,7 @@ else {
 			
 			if ($checkCount<1) {
 			//Fail 2
-				$URL.="&updateReturn=fail2" ;
+				$URL.="&return=error2" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -137,7 +131,7 @@ else {
 				
 				//Attempt to notify to DBA
 				if ($_SESSION[$guid]["organisationDBA"]!="") {
-					$notificationText=sprintf(_('A finance data update request has been submitted.')) ;
+					$notificationText=sprintf(__($guid, 'A finance data update request has been submitted.')) ;
 					setNotification($connection2, $guid, $_SESSION[$guid]["organisationDBA"], $notificationText, "Data Updater", "/index.php?q=/modules/User Admin/data_finance.php") ;
 				}
 				
@@ -158,13 +152,13 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail 2
-					$URL.="&updateReturn=fail2" ;
+					$URL.="&return=error2" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 				
 				//Success 0
-				$URL.="&updateReturn=success0" ;
+				$URL.="&return=success0" ;
 				header("Location: {$URL}");
 			}
 		}

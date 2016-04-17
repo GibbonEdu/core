@@ -23,14 +23,8 @@ include "../../config.php" ;
 include "./moduleFunctions.php" ;
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 @session_start() ;
 
@@ -41,7 +35,7 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/Finance/feeCategories_manage_add.php")==FALSE) {
 	//Fail 0
-	$URL.="&addReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -53,7 +47,7 @@ else {
 			
 	if ($name=="" OR $nameShort=="" OR $active=="") {
 		//Fail 3
-		$URL.="&addReturn=fail3" ;
+		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -66,13 +60,13 @@ else {
 		}
 		catch(PDOException $e) { 
 			//Fail 2
-			$URL.="&addReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
-			break ;
+			exit() ;
 		}
 
 		//Success 0
-		$URL.="&addReturn=success0" ;
+		$URL.="&return=success0" ;
 		header("Location: {$URL}");
 	}
 }

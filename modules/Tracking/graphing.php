@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Tracking/graphing.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -33,17 +33,17 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print _("The highest grouped action cannot be determined.") ;
+		print __($guid, "The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
 		//Get action with highest precendence
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Graphing') . "</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Graphing') . "</div>" ;
 		print "</div>" ;
 	
 		print "<h2>" ;
-		print _("Filter") ;
+		print __($guid, "Filter") ;
 		print "</h2>" ;
 	
 		$gibbonPersonIDs=NULL ;
@@ -63,15 +63,15 @@ else {
 		?>
 	
 		<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php?q=/modules/Tracking/graphing.php">
-			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+			<table class='smallIntBorder fullWidth' cellspacing='0'>	
 				<tr>
 					<td style='width: 275px'> 
-						<b><?php print _('Student') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
+						<b><?php print __($guid, 'Student') ?> *</b><br/>
+						<span class="emphasis small"><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 					</td>
 					<td class="right">
 						<select name="gibbonPersonIDs[]" id="gibbonPersonIDs[]" multiple style="width: 302px; height: 150px">
-							<optgroup label='--<?php print _('Students by Roll Group') ?>--'>
+							<optgroup label='--<?php print __($guid, 'Students by Roll Group') ?>--'>
 								<?php
 								try {
 									$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -93,7 +93,7 @@ else {
 								}
 								?>
 							</optgroup>
-							<optgroup label='--<?php print _('Students by Name') ?>--'>
+							<optgroup label='--<?php print __($guid, 'Students by Name') ?>--'>
 								<?php
 								try {
 									$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -120,7 +120,7 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('Data Type') ?> *</b><br/>
+						<b><?php print __($guid, 'Data Type') ?> *</b><br/>
 					</td>
 					<td class="right">
 						<?php
@@ -135,16 +135,16 @@ else {
 							$effortTitle=$effortAlt ;
 						}
 						?>
-						<select name="dataType" id="dataType" style="width: 302px">
-							<option <?php if ($dataType=="attainment") { print "selected" ; } ?> value="attainment"><?php print _($attainmentTitle) ?></option>
-							<option <?php if ($dataType=="effort") { print "selected" ; } ?> value="effort"><?php print _($effortTitle) ?></option>
+						<select name="dataType" id="dataType" class="standardWidth">
+							<option <?php if ($dataType=="attainment") { print "selected" ; } ?> value="attainment"><?php print __($guid, $attainmentTitle) ?></option>
+							<option <?php if ($dataType=="effort") { print "selected" ; } ?> value="effort"><?php print __($guid, $effortTitle) ?></option>
 						</select>
 					</td>
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('Learning Areas') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print _('Only Learning Areas for which the student has data will be displayed.') ?></i></span>
+						<b><?php print __($guid, 'Learning Areas') ?> *</b><br/>
+						<span class="emphasis small"><?php print __($guid, 'Only Learning Areas for which the student has data will be displayed.') ?></span>
 					</td>
 					<td class="right">
 						<?php 
@@ -156,7 +156,7 @@ else {
 						}
 						catch(PDOException $e) { }	
 						if ($resultLA->rowCount()<1) {
-							print "<i>" . _('No Learning Areas available.') . "</i>" ;
+							print "<i>" . __($guid, 'No Learning Areas available.') . "</i>" ;
 						}
 						else {
 							print "<fieldset style='border: none'>" ;
@@ -169,7 +169,7 @@ else {
 								});
 							</script>
 							<?php
-							print _("All/None") . " <input type='checkbox' class='checkall'><br/>" ;
+							print __($guid, "All/None") . " <input type='checkbox' class='checkall'><br/>" ;
 							while ($rowLA=$resultLA->fetch()) {
 								$checked="" ;
 								if ($gibbonDepartmentIDs!=NULL) {
@@ -179,7 +179,7 @@ else {
 										}
 									}
 								}
-								print _($rowLA["name"]) . " <input $checked type='checkbox' name='gibbonDepartmentIDs[]' value='" . $rowLA["gibbonDepartmentID"] . "'><br/>" ;
+								print __($guid, $rowLA["name"]) . " <input $checked type='checkbox' name='gibbonDepartmentIDs[]' value='" . $rowLA["gibbonDepartmentID"] . "'><br/>" ;
 							}
 						}
 						print "</fieldset>" ;
@@ -189,7 +189,7 @@ else {
 				</tr>
 				<tr>
 					<td colspan=2 class="right">
-						<input type="submit" value="<?php print _("Submit") ; ?>">
+						<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 					</td>
 				</tr>
 			</table>
@@ -198,16 +198,16 @@ else {
 		if (count($_POST)>0) {
 			if ($gibbonPersonIDs==NULL OR $gibbonDepartmentIDs==NULL OR ($dataType!="attainment" AND $dataType!="effort")) {
 				print "<div class='error'>" ;
-				print _("There are no records to display.") ;
+				print __($guid, "There are no records to display.") ;
 				print "</div>" ;
 			}
 			else {
 				$output="" ;
 				print "<h2>" ;
-				print _("Report Data") ;
+				print __($guid, "Report Data") ;
 				print "</h2>" ;
 				print "<p>" ;
-				print _("The chart below shows Years and Terms along the X axis, and mean Markbook grades, converted to a 0-1 scale, on the Y axis.") ;
+				print __($guid, "The chart below shows Years and Terms along the X axis, and mean Markbook grades, converted to a 0-1 scale, on the Y axis.") ;
 				print "</p>" ;
 			
 				//GET DEPARTMENTS
@@ -341,7 +341,7 @@ else {
 			
 				if ($resultGrades->rowCount()<1) {
 					print "<div class='error'>" ;
-					print _("There are no records to display.") ;
+					print __($guid, "There are no records to display.") ;
 					print "</div>" ;
 				}
 				else {
@@ -417,12 +417,12 @@ else {
 			
 					if (count($grades)<5) {
 						print "<div class='error'>" ;
-						print _("The are less than 4 data points, so no graph can be produced.") ;
+						print __($guid, "The are less than 4 data points, so no graph can be produced.") ;
 						print "</div>" ;
 					}
 					else {
 						//CREATE LEGEND
-						print "<p style='margin-top: 20px; margin-bottom: 5px'><b>" . _('Legend') . "</b></p>" ;
+						print "<p style='margin-top: 20px; margin-bottom: 5px'><b>" . __($guid, 'Legend') . "</b></p>" ;
 						print "<table class='noIntBorder' style='width: 100%;  border-spacing: 0; border-collapse: collapse;'>" ;
 							$columns=8 ;
 							$columnCount=0 ;
@@ -459,7 +459,7 @@ else {
 						//PLOT DATA
 						print "<script type=\"text/javascript\" src=\"" . $_SESSION[$guid]["absoluteURL"] . "/lib/Chart.js/Chart.min.js\"></script>" ;
 			
-						print "<p style='margin-top: 20px; margin-bottom: 5px'><b>" . _('Data') . "</b></p>" ;
+						print "<p style='margin-top: 20px; margin-bottom: 5px'><b>" . __($guid, 'Data') . "</b></p>" ;
 						print "<div style=\"width:100%\">" ;
 							print "<div>" ;
 								print "<canvas id=\"canvas\"></canvas>" ;

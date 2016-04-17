@@ -21,14 +21,8 @@ include "../../functions.php" ;
 include "../../config.php" ;
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 @session_start() ;
 
@@ -40,7 +34,7 @@ $time=time() ;
 if (isActionAccessible($guid, $connection2, "/modules/Resources/resources_manage_add.php")==FALSE) {
 	//Fail 0
 	print "<span style='font-weight: bold; color: #ff0000'>" ;
-		print _("Your request failed because you do not have access to this action.") ;
+		print __($guid, "Your request failed because you do not have access to this action.") ;
 	print "</span>" ;
 }
 else {
@@ -78,7 +72,7 @@ else {
 		if (($type!="File" AND $type!="Link") OR is_null($content) OR $name=="" OR $category=="" OR $tags=="" OR $id=="") {
 			//Fail 3
 			print "<span style='font-weight: bold; color: #ff0000'>" ;
-				print _("Your request failed because your inputs were invalid.") ;
+				print __($guid, "Your request failed because your inputs were invalid.") ;
 			print "</span>" ;
 		}
 		else {
@@ -117,9 +111,9 @@ else {
 			catch(PDOException $e) { 
 				//Fail 2
 				print "<span style='font-weight: bold; color: #ff0000'>" ;
-					print _("Your request failed due to a database error.") ;
+					print __($guid, "Your request failed due to a database error.") ;
 				print "</span>" ;
-				break ;
+				exit() ;
 			}		
 
 			//Update tag counts
@@ -174,9 +168,9 @@ else {
 			catch(PDOException $e) { 
 				//Fail 2
 				print "<span style='font-weight: bold; color: #ff0000'>" ;
-					print _("Your request failed due to a database error.") ;
+					print __($guid, "Your request failed due to a database error.") ;
 				print "</span>" ;
-				break ;
+				exit() ;
 			}		
 			
 			//Write to database
@@ -191,12 +185,12 @@ else {
 				print "<span style='font-weight: bold; color: #ff0000'>" ;
 					print $e->getMessage() ;
 				print "</span>" ;
-				break ;
+				exit() ;
 			}
 			
 			if ($partialFail==TRUE) {
 				print "<span style='font-weight: bold; color: #ff0000'>" ;
-					print _("Your request was successful, but some data was not properly saved.") ;
+					print __($guid, "Your request was successful, but some data was not properly saved.") ;
 				print "</span>" ;
 			}
 			else {

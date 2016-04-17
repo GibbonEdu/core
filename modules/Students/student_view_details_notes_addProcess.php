@@ -21,14 +21,8 @@ include "../../functions.php" ;
 include "../../config.php" ;
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 @session_start() ;
 
@@ -71,14 +65,14 @@ else {
 				//Fail 2
 				$URL.="&addReturn=fail2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 		
 			if ($result->rowCount()!=1) {
 				//Fail 2
 				$URL.="&addReturn=fail2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 			else {
 				$row=$result->fetch() ;
@@ -111,7 +105,7 @@ else {
 						//Fail 2
 						$URL.="&addReturn=fail2" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 			
 					//Attempt to alert form tutor(s)
@@ -131,7 +125,7 @@ else {
 						catch(PDOException $e) { }
 						if ($result->rowCount()==1) {
 							$row=$result->fetch() ;
-							$notificationText=sprintf(_('Someone has added a note ("%1$s") about your tutee, %2$s.'), $title, $name) ;
+							$notificationText=sprintf(__($guid, 'Someone has added a note ("%1$s") about your tutee, %2$s.'), $title, $name) ;
 							if ($row["tutor1gibbonPersonID"]!="") {
 								if ($row["tutor1gibbonPersonID"]!=$_SESSION[$guid]["gibbonPersonID"]) {
 									setNotification($connection2, $guid, $row["tutor1gibbonPersonID"], $notificationText, "Students", "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=$subpage&category=" . $_GET["category"]) ;

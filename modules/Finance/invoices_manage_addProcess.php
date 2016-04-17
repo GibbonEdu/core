@@ -21,14 +21,8 @@ include "../../functions.php" ;
 include "../../config.php" ;
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 @session_start() ;
 
@@ -49,7 +43,7 @@ else {
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Finance/invoices_manage_add.php")==FALSE) {
 		//Fail 0
-		$URL.="&addReturn=fail0" ;
+		$URL.="&return=error0" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -68,7 +62,7 @@ else {
 			
 		if (count($gibbonFinanceInvoiceeIDs)==0 OR $scheduling=="" OR ($scheduling=="Scheduled" AND $gibbonFinanceBillingScheduleID=="") OR ($scheduling=="Ad Hoc" AND $invoiceDueDate=="") OR count($order)==0) {
 			//Fail 3
-			$URL.="&addReturn=fail3" ;
+			$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -94,9 +88,9 @@ else {
 			
 			if ($feeFail==TRUE) {
 				//Fail3
-				$URL.="&addReturn=fail3" ;
+				$URL.="&return=error1" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 			else {
 				//LOCK INVOICE TABLES
@@ -108,9 +102,9 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail 2
-					$URL.="&addReturn=fail2" ;
+					$URL.="&return=error2" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 			
 				//CYCLE THROUGH STUDENTS
@@ -245,9 +239,9 @@ else {
 
 									if ($continue==FALSE) {
 										//Fail 2
-										$URL.="&addReturn=fail2" ;
+										$URL.="&return=error2" ;
 										header("Location: {$URL}");
-										break ;
+										exit() ;
 									}
 									else {
 										try {
@@ -415,9 +409,9 @@ else {
 
 									if ($continue==FALSE) {
 										//Fail 2
-										$URL.="&addReturn=fail2" ;
+										$URL.="&return=error2" ;
 										header("Location: {$URL}");
-										break ;
+										exit() ;
 									}
 									else {
 										try {
@@ -528,12 +522,12 @@ else {
 				//Return results, include three types of fail and counts
 				if ($studentFailCount!=0 OR $invoiceFailCount!=0 OR $invoiceFeeFailCount!=0) {
 					//Fail 4
-					$URL.="&addReturn=fail4&studentFailCount=$studentFailCount&invoiceFailCount=$invoiceFailCount&invoiceFeeFailCount=$invoiceFeeFailCount" ;
+					$URL.="&return=error3&studentFailCount=$studentFailCount&invoiceFailCount=$invoiceFailCount&invoiceFeeFailCount=$invoiceFeeFailCount" ;
 					header("Location: {$URL}");
 				}
 				else {
 					//Success 0
-					$URL.="&addReturn=success0" ;
+					$URL.="&return=success0" ;
 					header("Location: {$URL}");	
 				}
 			}			

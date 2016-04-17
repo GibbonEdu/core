@@ -24,14 +24,8 @@ include "../../functions.php" ;
 include "../../config.php" ;
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 print "<link rel='stylesheet' type='text/css' href='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/css/main.css' />" ;
 ?>
@@ -51,7 +45,7 @@ print "<link rel='stylesheet' type='text/css' href='" . $_SESSION[$guid]["absolu
 			if (isActionAccessible($guid, $connection2, "/modules/Resources/resources_view_full.php")==FALSE) {
 				//Acess denied
 				print "<div class='error'>" ;
-					print _("Your request failed because you do not have access to this action.") ;
+					print __($guid, "Your request failed because you do not have access to this action.") ;
 				print "</div>" ;
 			}
 			else {	
@@ -77,7 +71,7 @@ print "<link rel='stylesheet' type='text/css' href='" . $_SESSION[$guid]["absolu
 					
 					if ($result->rowCount()!=1) {
 						print "<div class='warning'>" ;
-							print _("The specified record does not exist.") ;
+							print __($guid, "The specified record does not exist.") ;
 						print "</div>" ;
 					}
 					else {
@@ -97,6 +91,6 @@ print "<link rel='stylesheet' type='text/css' href='" . $_SESSION[$guid]["absolu
 		</div>
 	</div>
 	<div id="footer">
-		<a href="http://gibbonedu.org">Gibbon</a> v<?php print $version ?> | &#169; 2011, <a href="http://rossparker.org">Ross Parker</a> at <a href="http://www.ichk.edu.hk">International College Hong Kong</a> | Created under the <a href="http://www.gnu.org/licenses/gpl.html">GNU General Public License</a>
+		<a href="https://gibbonedu.org">Gibbon</a> v<?php print $version ?> | &#169; 2011, <a href="http://rossparker.org">Ross Parker</a> at <a href="http://www.ichk.edu.hk">International College Hong Kong</a> | Created under the <a href="https://www.gnu.org/licenses/gpl.html">GNU General Public License</a>
 	</div>
 </div>

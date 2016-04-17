@@ -25,14 +25,14 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Planner/planner_bump.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print _("The highest grouped action cannot be determined.") ;
+		print __($guid, "The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
@@ -67,7 +67,7 @@ else {
 		
 		if ($viewBy=="date") {
 			print "<div class='error'>" ;
-				print _("You do not have access to this action.") ;
+				print __($guid, "You do not have access to this action.") ;
 			print "</div>" ;
 		}
 		else {
@@ -79,7 +79,7 @@ else {
 			$gibbonPlannerEntryID=$_GET["gibbonPlannerEntryID"] ;
 			if ($gibbonPlannerEntryID=="" OR ($viewBy=="class" AND $gibbonCourseClassID=="Y")) {
 				print "<div class='error'>" ;
-					print _("You have not specified one or more required parameters.") ;
+					print __($guid, "You have not specified one or more required parameters.") ;
 				print "</div>" ;
 			}
 			else {
@@ -102,7 +102,7 @@ else {
 				
 				if ($result->rowCount()!=1) {
 					print "<div class='error'>" ;
-						print _("The selected record does not exist, or you do not have access to it.") ;
+						print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 					print "</div>" ;
 				}
 				else {
@@ -111,7 +111,7 @@ else {
 					$extra=$row["course"] . "." . $row["class"] ;
 					
 					print "<div class='trail'>" ;
-					print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner.php$params'>" . _('Planner') . " $extra</a> > </div><div class='trailEnd'>" . _('Bump Forward Lesson Plan') . "</div>" ;
+					print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner.php$params'>" . __($guid, 'Planner') . " $extra</a> > </div><div class='trailEnd'>" . __($guid, 'Bump Forward Lesson Plan') . "</div>" ;
 					print "</div>" ;
 					
 					//Proceed!
@@ -120,16 +120,16 @@ else {
 					$class="error" ;
 					if (!($bumpReturn=="")) {
 						if ($bumpReturn=="fail0") {
-							$bumpReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+							$bumpReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 						}
 						else if ($bumpReturn=="fail1") {
-							$bumpReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+							$bumpReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 						}
 						else if ($bumpReturn=="fail2") {
-							$bumpReturnMessage=_("Your request failed due to a database error.") ;	
+							$bumpReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 						}
 						else if ($bumpReturn=="fail3") {
-							$bumpReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+							$bumpReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 						}
 						print "<div class='$class'>" ;
 							print $bumpReturnMessage;
@@ -137,27 +137,27 @@ else {
 					} 
 					?>
 					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_bumpProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID" ?>">
-						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+						<table class='smallIntBorder fullWidth' cellspacing='0'>	
 							<tr>
 								<td> 
-									<b><?php print _("Bump Direction") ?> *</b><br/>
-									<span style="font-size: 90%"><i></i></span>
+									<b><?php print __($guid, "Bump Direction") ?> *</b><br/>
+									<span class="emphasis small"></span>
 								</td>
 								<td class="right">
-									<select name="direction" id="direction" style="width: 302px">
-										<option value="forward"><?php print _('Forward') ?></option>
-										<option value="backward"><?php print _('Backward') ?></option>
+									<select name="direction" id="direction" class="standardWidth">
+										<option value="forward"><?php print __($guid, 'Forward') ?></option>
+										<option value="backward"><?php print __($guid, 'Backward') ?></option>
 									</select>
 								</td>
 							</tr>
 							<tr>
 								<td colspan=2> 
-									<?php print sprintf(_('Pressing "Yes" below will move this lesson, and all preceeding or succeeding lessons in this class, to the previous or next available time slot. <b>Are you sure you want to bump %1$s?'), $row["name"]) ?></b><br/>
+									<?php print sprintf(__($guid, 'Pressing "Yes" below will move this lesson, and all preceeding or succeeding lessons in this class, to the previous or next available time slot. <b>Are you sure you want to bump %1$s?'), $row["name"]) ?></b><br/>
 								</td>
 							</tr>
 							<tr>
 								<td>
-									<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+									<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 								</td>
 								<td class="right">
 									<input name="viewBy" id="viewBy" value="<?php print $viewBy ?>" type="hidden">
@@ -165,7 +165,7 @@ else {
 									<input name="date" id="date" value="<?php print $date ?>" type="hidden">
 									<input name="gibbonCourseClassID" id="gibbonCourseClassID" value="<?php print $gibbonCourseClassID ?>" type="hidden">
 									<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-									<input type="submit" value="<?php print _("Submit") ; ?>">
+									<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 								</td>
 							</tr>
 						</table>

@@ -28,7 +28,7 @@ $highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 if (isActionAccessible($guid, $connection2, "/modules/Planner/planner_deadlines.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -93,7 +93,7 @@ else {
 	//My children's classes
 	if ($highestAction=="Lesson Planner_viewMyChildrensClasses") {
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner.php'>" . _('My Children\'s Classes') . "</a> > </div><div class='trailEnd'>" . _('Homework + Deadlines') . "</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner.php'>" . __($guid, 'My Children\'s Classes') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Homework + Deadlines') . "</div>" ;
 		print "</div>" ;
 	
 		//Test data access field for permission
@@ -108,7 +108,7 @@ else {
 		}
 		if ($result->rowCount()<1) {
 			print "<div class='error'>" ;
-			print _("Access denied.") ;
+			print __($guid, "Access denied.") ;
 			print "</div>" ;
 		}
 		else {
@@ -139,7 +139,7 @@ else {
 			
 			if ($count==0) {
 				print "<div class='error'>" ;
-				print _("Access denied.") ;
+				print __($guid, "Access denied.") ;
 				print "</div>" ;
 			}
 			else if ($count==1) {
@@ -147,7 +147,7 @@ else {
 			}
 			else {
 				print "<h3>" ;
-				print _("Choose") ;
+				print __($guid, "Choose") ;
 				print "</h3>" ;
 				
 				?>
@@ -156,11 +156,11 @@ else {
 						<tr><td style="width: 30%"></td><td></td></tr>
 						<tr>
 							<td> 
-								<b><?php print _('Search For') ?></b><br/>
-								<span style="font-size: 90%"><i><?php print _('Preferred, surname, username.') ?></i></span>
+								<b><?php print __($guid, 'Search For') ?></b><br/>
+								<span class="emphasis small"><?php print __($guid, 'Preferred, surname, username.') ?></span>
 							</td>
 							<td class="right">
-								<select name="search" id="search" style="width: 302px">
+								<select name="search" id="search" class="standardWidth">
 									<option value=""></value>
 									<?php print $options ; ?> 
 								</select>
@@ -171,9 +171,9 @@ else {
 								<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/planner_deadlines.php">
 								<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 								<?php
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner.php'>" . _('Clear Search') . "</a>" ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner.php'>" . __($guid, 'Clear Search') . "</a>" ;
 								?>
-								<input type="submit" value="<?php print _("Submit") ; ?>">
+								<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 							</td>
 						</tr>
 					</table>
@@ -195,14 +195,14 @@ else {
 				}
 				if ($resultChild->rowCount()<1) {
 					print "<div class='error'>" ;
-					print _("The selected record does not exist, or you do not have access to it.") ;
+					print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 					print "</div>" ;
 				}
 				else {
 					$rowChild=$resultChild->fetch() ;
 					
 					print "<h3>" ;
-					print _("Upcoming Deadlines") ;
+					print __($guid, "Upcoming Deadlines") ;
 					print "</h3>" ;
 					
 					$proceed=TRUE ;
@@ -228,7 +228,7 @@ else {
 					
 					if ($proceed==FALSE) {
 						print "<div class='error'>" ;
-							print _("Your request failed because you do not have access to this action.") ;
+							print __($guid, "Your request failed because you do not have access to this action.") ;
 						print "</div>" ;
 					}
 					else {
@@ -248,7 +248,7 @@ else {
 											
 						if ($result->rowCount()<1) {
 							print "<div class='success'>" ;
-								print _("No upcoming deadlines!") ;
+								print __($guid, "No upcoming deadlines!") ;
 							print "</div>" ;
 						}
 						else {
@@ -279,7 +279,7 @@ else {
 					$style="" ;
 					
 					print "<h3>" ;
-					print _("All Homework") ;
+					print __($guid, "All Homework") ;
 					print "</h3>" ;
 					
 					$filter=NULL ;
@@ -310,7 +310,7 @@ else {
 					//Only show add if user has edit rights
 					if ($result->rowCount()<1) {
 						print "<div class='error'>" ;
-						print _("There are no records to display.") ;
+						print __($guid, "There are no records to display.") ;
 						print "</div>" ;
 					}
 					else {
@@ -338,7 +338,7 @@ else {
 											 print "</select>" ;
 										print "</td>" ;
 										print "<td class='right'>" ;
-											print "<input type='submit' value='" . _('Go') . "' style='margin-right: 0px'>" ;
+											print "<input type='submit' value='" . __($guid, 'Go') . "' style='margin-right: 0px'>" ;
 											print "<input type='hidden' name='q' value='/modules/Planner/planner_deadlines.php'>" ;
 											print "<input type='hidden' name='search' value='$gibbonPersonID'>" ;
 										print "</td>" ;
@@ -349,25 +349,25 @@ else {
 						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr class='head'>" ;
 								print "<th>" ;
-									print _("Class") . "</br>" ;
-									print "<span style='font-size: 85%; font-style: italic'>" . _('Date') . "</span>" ;
+									print __($guid, "Class") . "</br>" ;
+									print "<span style='font-size: 85%; font-style: italic'>" . __($guid, 'Date') . "</span>" ;
 								print "</th>" ;
 								print "<th>" ;
-									print _("Lesson") . "</br>" ;
-									print "<span style='font-size: 85%; font-style: italic'>" . _('Unit') . "</span>" ;
+									print __($guid, "Lesson") . "</br>" ;
+									print "<span style='font-size: 85%; font-style: italic'>" . __($guid, 'Unit') . "</span>" ;
 								print "</th>" ;
 								print "<th style='min-width: 25%'>" ;
-									print _("Type") . "<br/>" ;
-									print "<span style='font-size: 85%; font-style: italic'>" . _('Details') . "</span>" ;
+									print __($guid, "Type") . "<br/>" ;
+									print "<span style='font-size: 85%; font-style: italic'>" . __($guid, 'Details') . "</span>" ;
 								print "</th>" ;
 								print "<th>" ;
-									print _("Deadline") ;
+									print __($guid, "Deadline") ;
 								print "</th>" ;
 								print "<th>" ;
-									print sprintf(_('Online%1$sSubmission'), "<br/>") ;
+									print sprintf(__($guid, 'Online%1$sSubmission'), "<br/>") ;
 								print "</th>" ;
 								print "<th>" ;
-									print _("Actions") ;
+									print __($guid, "Actions") ;
 								print "</th>" ;
 							print "</tr>" ;
 							
@@ -445,15 +445,15 @@ else {
 													if ($resultVersion->rowCount()<1) {
 														//Before deadline
 														if (date("Y-m-d H:i:s")<$row["homeworkDueDateTime"]) {
-															print _("Pending") ;
+															print __($guid, "Pending") ;
 														}
 														//After
 														else {
 															if ($row["homeworkSubmissionRequired"]=="Compulsory") {
-																print "<div style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px; margin: 2px 0px'>" . _('Incomplete') . "</div>" ;
+																print "<div style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px; margin: 2px 0px'>" . __($guid, 'Incomplete') . "</div>" ;
 															}
 															else {
-																print  _("Not submitted online") ;
+																print  __($guid, "Not submitted online") ;
 															}
 														}
 													}
@@ -475,7 +475,7 @@ else {
 											}
 										print "</td>" ;
 										print "<td>" ;
-											print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full.php&search=$gibbonPersonID&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=class&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "'><img title='" . _('View') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
+											print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full.php&search=$gibbonPersonID&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=class&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "'><img title='" . __($guid, 'View') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 										print "</td>" ;
 									print "</tr>" ;
 								}
@@ -491,7 +491,7 @@ else {
 		$category=getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2) ;
 	
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner.php$params'>" . _('Planner') . "</a> > </div><div class='trailEnd'>" . _('Homework + Deadlines') . "</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner.php$params'>" . __($guid, 'Planner') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Homework + Deadlines') . "</div>" ;
 		print "</div>" ;
 		
 		//Get Smart Workflow help message
@@ -509,16 +509,16 @@ else {
 		$class="error" ;
 		if (!($updateReturn=="")) {
 			if ($updateReturn=="fail0") {
-				$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+				$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 			}
 			else if ($updateReturn=="fail2") {
-				$updateReturnMessage=_("Your request failed due to a database error.") ;	
+				$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 			}
 			else if ($updateReturn=="fail5") {
-				$updateReturnMessage=_("Your request was successful, but some data was not properly saved.") ;
+				$updateReturnMessage=__($guid, "Your request was successful, but some data was not properly saved.") ;
 			}
 			else if ($updateReturn=="success0") {
-				$updateReturnMessage=_("Your request was completed successfully.") ;	
+				$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;
@@ -527,7 +527,7 @@ else {
 		} 
 		
 		print "<h3>" ;
-		print _("Upcoming Deadlines") ;
+		print __($guid, "Upcoming Deadlines") ;
 		print "</h3>" ;
 		
 		$proceed=TRUE ;
@@ -559,7 +559,7 @@ else {
 		
 		if ($proceed==FALSE) {
 			print "<div class='error'>" ;
-				print _("Your request failed because you do not have access to this action.") ;
+				print __($guid, "Your request failed because you do not have access to this action.") ;
 			print "</div>" ;
 		}
 		else {
@@ -585,7 +585,7 @@ else {
 							
 			if ($result->rowCount()<1) {
 				print "<div class='success'>" ;
-					print _("No upcoming deadlines!") ;
+					print __($guid, "No upcoming deadlines!") ;
 				print "</div>" ;
 			}
 			else {
@@ -662,7 +662,7 @@ else {
 		}
 		
 		print "<h3>" ;
-		print _("All Homework") ;
+		print __($guid, "All Homework") ;
 		print "</h3>" ;
 		
 		$completionArray=array() ;
@@ -722,7 +722,7 @@ else {
 		//Only show add if user has edit rights
 		if ($result->rowCount()<1) {
 			print "<div class='error'>" ;
-			print _("There are no records to display.") ;
+			print __($guid, "There are no records to display.") ;
 			print "</div>" ;
 		}
 		else {
@@ -756,7 +756,7 @@ else {
 								 print "</select>" ;
 							print "</td>" ;
 							print "<td class='right'>" ;
-								print "<input type='submit' value='" . _('Go') . "' style='margin-right: 0px'>" ;
+								print "<input type='submit' value='" . __($guid, 'Go') . "' style='margin-right: 0px'>" ;
 								print "<input type='hidden' name='q' value='/modules/Planner/planner_deadlines.php'>" ;
 							print "</td>" ;
 						print "</tr>" ;
@@ -770,40 +770,40 @@ else {
 						?>
 						<tr>
 							<td class="right" colspan=7>
-								<input type="submit" value="<?php print _("Submit") ; ?>">
+								<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 							</td>
 						</tr>
 						<?php
 					}
 					print "<tr class='head'>" ;
 						print "<th>" ;
-							print _("Class") . "</br>" ;
-							print "<span style='font-size: 85%; font-style: italic'>" . _('Date') . "</span>" ;
+							print __($guid, "Class") . "</br>" ;
+							print "<span style='font-size: 85%; font-style: italic'>" . __($guid, 'Date') . "</span>" ;
 						print "</th>" ;
 						print "<th>" ;
-							print _("Lesson") . "</br>" ;
-							print "<span style='font-size: 85%; font-style: italic'>" . _('Unit') . "</span>" ;
+							print __($guid, "Lesson") . "</br>" ;
+							print "<span style='font-size: 85%; font-style: italic'>" . __($guid, 'Unit') . "</span>" ;
 						print "</th>" ;
 						print "<th style='min-width: 25%'>" ;
-							print _("Type") . "<br/>" ;
-							print "<span style='font-size: 85%; font-style: italic'>" . _('Details') . "</span>" ;
+							print __($guid, "Type") . "<br/>" ;
+							print "<span style='font-size: 85%; font-style: italic'>" . __($guid, 'Details') . "</span>" ;
 						print "</th>" ;
 						print "<th>" ;
-							print _("Deadline") ;
+							print __($guid, "Deadline") ;
 						print "</th>" ;
 						
 						if ($category=="Student") {
 							print "<th colspan=2>" ;
-								print _("Complete?") ;
+								print __($guid, "Complete?") ;
 							print "</th>" ;
 						}
 						else {
 							print "<th>" ;
-								print sprintf(_('Online%1$sSubmission'), "<br/>") ;
+								print sprintf(__($guid, 'Online%1$sSubmission'), "<br/>") ;
 							print "</th>" ;
 						}
 						print "<th>" ;
-							print _("Actions") ;
+							print __($guid, "Actions") ;
 						print "</th>" ;
 					print "</tr>" ;
 					
@@ -853,18 +853,18 @@ else {
 												$completion="<input disabled type='checkbox'>" ;
 											}
 											else {
-												$status.=_("Pending") ;
+												$status.=__($guid, "Pending") ;
 												$completion="<input " . $completionArray[$row["gibbonPlannerEntryID"]] . " name='complete-$count' type='checkbox'>" ;
 											}
 										}
 										//After
 										else {
 											if ($row["homeworkSubmissionRequired"]=="Compulsory") {
-												$status.="<div style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px; margin: 2px 0px'>" . _('Incomplete') . "</div>" ;
+												$status.="<div style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px; margin: 2px 0px'>" . __($guid, 'Incomplete') . "</div>" ;
 												$completion="<input disabled type='checkbox'>" ;
 											}
 											else {
-												$status.=_("Not submitted online") ;
+												$status.=__($guid, "Not submitted online") ;
 												@$completion="<input " . $completionArray[$row["gibbonPlannerEntryID"]] . " name='complete-$count' type='checkbox'>" ;
 											}
 										}
@@ -990,14 +990,14 @@ else {
 												}
 												$class=$resultVersion->rowCount() ;
 												if (date("Y-m-d H:i:s")<$row["homeworkDueDateTime"]) {
-													print "<span style='font-size: 85%; font-style: italic'>" . _('Pending') . ": " . ($class-$late-$onTime) . "</span><br/>" ;
+													print "<span style='font-size: 85%; font-style: italic'>" . __($guid, 'Pending') . ": " . ($class-$late-$onTime) . "</span><br/>" ;
 												}
 												else {
 													if ($row["homeworkSubmissionRequired"]=="Compulsory") {
-														print "<span style='font-size: 85%; font-style: italic'>" . _('Incomplete') . ": " . ($class-$late-$onTime) . "</span><br/>" ;
+														print "<span style='font-size: 85%; font-style: italic'>" . __($guid, 'Incomplete') . ": " . ($class-$late-$onTime) . "</span><br/>" ;
 													}
 													else {
-														print "<span style='font-size: 85%; font-style: italic'>" . _('Not Submitted Online') . ": " . ($class-$late-$onTime) . "</span><br/>" ;
+														print "<span style='font-size: 85%; font-style: italic'>" . __($guid, 'Not Submitted Online') . ": " . ($class-$late-$onTime) . "</span><br/>" ;
 													}
 												}
 											}
@@ -1005,7 +1005,7 @@ else {
 									print "</td>" ;
 								}
 								print "<td>" ;
-									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full.php&search=$gibbonPersonID&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=class&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "'><img title='" . _('View') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full.php&search=$gibbonPersonID&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] . "&viewBy=class&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "'><img title='" . __($guid, 'View') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 								print "</td>" ;
 							print "</tr>" ;
 						}
@@ -1014,7 +1014,7 @@ else {
 						?>
 						<tr>
 							<td class="right" colspan=7>
-								<input type="submit" value="<?php print _("Submit") ; ?>">
+								<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 							</td>
 						</tr>
 						<?php

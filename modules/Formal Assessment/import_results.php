@@ -22,13 +22,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/Formal Assessment/import_results.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Sync Results') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Sync Results') . "</div>" ;
 	print "</div>" ;
 	
 	$step=NULL ;
@@ -46,17 +46,17 @@ else {
 	if ($step==1) {
 		?>
 		<h2>
-			<?php print _('Step 1 - Select CSV Files') ?>
+			<?php print __($guid, 'Step 1 - Select CSV Files') ?>
 		</h2>
 		<p>
-			<?php print _('This page allows you to import external assessment results from a CSV file. The import includes one row for each student result. The system will match assessments by type and date, updating any matching results, whilst creating new results not already existing in the system.') ?><br/>
+			<?php print __($guid, 'This page allows you to import external assessment results from a CSV file. The import includes one row for each student result. The system will match assessments by type and date, updating any matching results, whilst creating new results not already existing in the system.') ?><br/>
 		</p>
 		<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/import_results.php&step=2" ?>" enctype="multipart/form-data">
-			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+			<table class='smallIntBorder fullWidth' cellspacing='0'>	
 				<tr>
 					<td style='width: 275px'> 
-						<b><?php print _('CSV File') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print _('See Notes below for specification.') ?></i></span>
+						<b><?php print __($guid, 'CSV File') ?> *</b><br/>
+						<span class="emphasis small"><?php print __($guid, 'See Notes below for specification.') ?></span>
 					</td>
 					<td class="right">
 						<input type="file" name="file" id="file" size="chars">
@@ -68,10 +68,10 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('Field Delimiter') ?> *</b><br/>
+						<b><?php print __($guid, 'Field Delimiter') ?> *</b><br/>
 					</td>
 					<td class="right">
-						<input type="text" style="width: 300px" name="fieldDelimiter" value="," maxlength=1>
+						<input type="text" class="standardWidth" name="fieldDelimiter" value="," maxlength=1>
 						<script type="text/javascript">
 							var fieldDelimiter=new LiveValidation('fieldDelimiter');
 							fieldDelimiter.add(Validate.Presence);
@@ -80,11 +80,11 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('String Enclosure') ?> *</b><br/>
-						<span style="font-size: 90%"><i></i></span>
+						<b><?php print __($guid, 'String Enclosure') ?> *</b><br/>
+						<span class="emphasis small"></span>
 					</td>
 					<td class="right">
-						<input type="text" style="width: 300px" name="stringEnclosure" value='"' maxlength=1>
+						<input type="text" class="standardWidth" name="stringEnclosure" value='"' maxlength=1>
 						<script type="text/javascript">
 							var stringEnclosure=new LiveValidation('stringEnclosure');
 							stringEnclosure.add(Validate.Presence);
@@ -93,12 +93,12 @@ else {
 				</tr>
 				<tr>
 					<td>
-						<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+						<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 					</td>
 					<td class="right">
 						<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php print $gibbonSchoolYearID ?>" type="hidden">
 						<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-						<input type="submit" value="<?php print _("Submit") ; ?>">
+						<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 					</td>
 				</tr>
 			</table>
@@ -107,47 +107,47 @@ else {
 		
 		
 		<h4>
-			<?php print _('Notes') ?>
+			<?php print __($guid, 'Notes') ?>
 		</h4>
 		<ol>
-			<li style='color: #c00; font-weight: bold'><?php print _('THE SYSTEM WILL NOT PROMPT YOU TO PROCEED, IT WILL JUST DO THE IMPORT. BACKUP YOUR DATA.') ?></li>
-			<li><?php print _('You may only submit CSV files.') ?></li>
-			<li><?php print _('Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).') ?></li>
-			<li><?php print _('Your import can only include users whose status is set "Expected", "Full" or "Left" (e.g. all users).') ?></li>
-			<li><?php print _('The submitted file must have the following fields in the following order (* denotes required field):') ?></li> 
+			<li style='color: #c00; font-weight: bold'><?php print __($guid, 'THE SYSTEM WILL NOT PROMPT YOU TO PROCEED, IT WILL JUST DO THE IMPORT. BACKUP YOUR DATA.') ?></li>
+			<li><?php print __($guid, 'You may only submit CSV files.') ?></li>
+			<li><?php print __($guid, 'Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).') ?></li>
+			<li><?php print __($guid, 'Your import can only include users whose status is set "Expected", "Full" or "Left" (e.g. all users).') ?></li>
+			<li><?php print __($guid, 'The submitted file must have the following fields in the following order (* denotes required field):') ?></li> 
 				<ol>
-					<li><b><?php print _('Assessment Name') ?>* </b> - <?php print _('Must match value of gibbonExternalAssessment.name in database.') ?></li>
-					<li><b><?php print _('Official Name') ?> *</b> - <?php print _('Must match value of gibbonPerson.officialName in database,') ?></li>
-					<li><b><?php print _('Assessment Date') ?> *</b> - <?php print _('dd/mm/yyyy') ?></li>
-					<li><b><?php print _('Field Name') ?> *</b> - <?php print _('Must match value of gibbonExternalAssessmentField.name in database.') ?></li>
-					<li><b><?php print _('Field Name Category') ?> *</b> - <?php print _('Must match value of gibbonExternalAssessmentField.category in database, less [numeric_] prefix.') ?></li>
-					<li><b><?php print _('Result') ?> *</b> - <?php print _('Must match value of gibbonScaleGrade.value in database.') ?></li>
-					<li><b><?php print _('PAS Result') ?></b> - <?php print _('The Primary Assessment Scale equivalent grade.') . " " . _('Must match value of gibbonScaleGrade.value in database.') ?></li>
+					<li><b><?php print __($guid, 'Assessment Name') ?>* </b> - <?php print __($guid, 'Must match value of gibbonExternalAssessment.name in database.') ?></li>
+					<li><b><?php print __($guid, 'Official Name') ?> *</b> - <?php print __($guid, 'Must match value of gibbonPerson.officialName in database,') ?></li>
+					<li><b><?php print __($guid, 'Assessment Date') ?> *</b> - <?php print __($guid, 'dd/mm/yyyy') ?></li>
+					<li><b><?php print __($guid, 'Field Name') ?> *</b> - <?php print __($guid, 'Must match value of gibbonExternalAssessmentField.name in database.') ?></li>
+					<li><b><?php print __($guid, 'Field Name Category') ?> *</b> - <?php print __($guid, 'Must match value of gibbonExternalAssessmentField.category in database, less [numeric_] prefix.') ?></li>
+					<li><b><?php print __($guid, 'Result') ?> *</b> - <?php print __($guid, 'Must match value of gibbonScaleGrade.value in database.') ?></li>
+					<li><b><?php print __($guid, 'PAS Result') ?></b> - <?php print __($guid, 'The Primary Assessment Scale equivalent grade.') . " " . __($guid, 'Must match value of gibbonScaleGrade.value in database.') ?></li>
 				</ol>
 			</li>
-			<li><?php print _('Do not include a header row in the CSV files.') ?></li>
+			<li><?php print __($guid, 'Do not include a header row in the CSV files.') ?></li>
 		</ol>
 	<?php
 	}
 	else if ($step==2) {
 		?>
 		<h2>
-			<?php print _('Step 2 - Data Check & Confirm') ?>
+			<?php print __($guid, 'Step 2 - Data Check & Confirm') ?>
 		</h2>
 		<?php
 		
 		//Check file type
-		if (($_FILES['file']['type']!="text/csv") AND ($_FILES['file']['type']!="text/comma-separated-values") AND ($_FILES['file']['type']!="text/x-comma-separated-values") AND ($_FILES['file']['type']!="application/vnd.ms-excel")) {
+		if (($_FILES['file']['type']!="text/csv") AND ($_FILES['file']['type']!="text/comma-separated-values") AND ($_FILES['file']['type']!="text/x-comma-separated-values") AND ($_FILES['file']['type']!="application/vnd.ms-excel") AND ($_FILES['file']['type']!="application/csv")) {
 			?>
 			<div class='error'>
-				<?php print sprintf(_('Import cannot proceed, as the submitted file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['file']['type']) ?><br/>
+				<?php print sprintf(__($guid, 'Import cannot proceed, as the submitted file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['file']['type']) ?><br/>
 			</div>
 			<?php
 		}
 		else if (($_POST["fieldDelimiter"]=="") OR ($_POST["stringEnclosure"]=="")) {
 			?>
 			<div class='error'>
-				<?php print _('Import cannot proceed, as the "Field Delimiter" and/or "String Enclosure" fields have been left blank.') ?><br/>
+				<?php print __($guid, 'Import cannot proceed, as the "Field Delimiter" and/or "String Enclosure" fields have been left blank.') ?><br/>
 			</div>
 			<?php
 		}
@@ -156,7 +156,7 @@ else {
 			
 			//PREPARE TABLES
 			print "<h4>" ;
-				print _("Prepare Database Tables") ;
+				print __($guid, "Prepare Database Tables") ;
 			print "</h4>" ;
 			//Lock tables
 			$lockFail=false ;
@@ -170,12 +170,12 @@ else {
 			}
 			if ($lockFail==true) {
 				print "<div class='error'>" ;
-					print _("The database could not be locked for use.") ;
+					print __($guid, "The database could not be locked for use.") ;
 				print "</div>" ;	
 			}
 			else if ($lockFail==false) {
 				print "<div class='success'>" ;
-					print _("The database was successfully locked.") ;
+					print __($guid, "The database was successfully locked.") ;
 				print "</div>" ;	
 			}	
 			
@@ -183,7 +183,7 @@ else {
 				//READ IN DATA
 				if ($proceed==true) {
 					print "<h4>" ;
-						print _("File Import") ;
+						print __($guid, "File Import") ;
 					print "</h4>" ;
 					$importFail=false ;
 					$csvFile=$_FILES['file']['tmp_name'] ;
@@ -204,7 +204,7 @@ else {
 						}
 						else {
 							print "<div class='error'>" ;
-								print sprintf(_('User with official Name %1$s had some information malformations.'), $data[1]) ;
+								print sprintf(__($guid, 'User with official Name %1$s had some information malformations.'), $data[1]) ;
 							print "</div>" ;
 						}
 						$resultCount++ ;
@@ -212,24 +212,24 @@ else {
 					fclose($handle);
 					if ($resultSuccessCount==0) {
 						print "<div class='error'>" ;
-							print _("No useful results were detected in the import file (perhaps they did not meet minimum requirements), so the import will be aborted.") ;
+							print __($guid, "No useful results were detected in the import file (perhaps they did not meet minimum requirements), so the import will be aborted.") ;
 						print "</div>" ;
 						$proceed=false ;
 					}
 					else if ($resultSuccessCount<$resultCount) {
 						print "<div class='error'>" ;
-							print _("Some results could not be successfully read or used, so the import will be aborted.") ;
+							print __($guid, "Some results could not be successfully read or used, so the import will be aborted.") ;
 						print "</div>" ;
 						$proceed=false ;
 					}
 					else if ($resultSuccessCount==$resultCount) {
 						print "<div class='success'>" ;
-							print _("All results could be read and used, so the import will proceed.") ;
+							print __($guid, "All results could be read and used, so the import will proceed.") ;
 						print "</div>" ;
 					}
 					else {
 						print "<div class='error'>" ;
-							print _("An unknown error occured, so the import will be aborted.") ;
+							print __($guid, "An unknown error occured, so the import will be aborted.") ;
 						print "</div>" ;
 						$proceed=false ;
 					}
@@ -238,7 +238,7 @@ else {
 				
 				if ($proceed==TRUE) {
 					print "<h4>" ;
-						print _("Results") ;
+						print __($guid, "Results") ;
 					print "</h4>" ;
 					
 					$users=array() ;
@@ -258,13 +258,13 @@ else {
 							}
 							catch(PDOException $e) { 
 								print "<div class='error'>" ;
-									print _('Your request failed due to a database error.') ;
+									print __($guid, 'Your request failed due to a database error.') ;
 								print "</div>" ;
 								$users[$result["officialName"]]=NULL ;
 							}
 							if ($resultUser->rowCount()!=1) {
 								print "<div class='error'>" ;
-									print sprintf(_('User with official name %1$s in import cannot be found.'), $result["officialName"]) ;
+									print sprintf(__($guid, 'User with official name %1$s in import cannot be found.'), $result["officialName"]) ;
 								print "</div>" ;
 								$users[$result["officialName"]]=NULL ;
 							}
@@ -287,13 +287,13 @@ else {
 								}
 								catch(PDOException $e) { 
 									print "<div class='error'>" ;
-										print _('Your request failed due to a database error.') ;
+										print __($guid, 'Your request failed due to a database error.') ;
 									print "</div>" ;
 									$assessments[$result["assessmentName"]]=NULL ;
 								}
 								if ($resultAssessment->rowCount()!=1) {
 									print "<div class='error'>" ;
-										print sprintf(_('External Assessment with name %1$s in import cannot be found.'), $result["assessmentName"]) ;
+										print sprintf(__($guid, 'External Assessment with name %1$s in import cannot be found.'), $result["assessmentName"]) ;
 									print "</div>" ;
 									$assessments[$result["assessmentName"]]=NULL ;
 								}
@@ -317,13 +317,13 @@ else {
 									}
 									catch(PDOException $e) { 
 										print "<div class='error'>" ;
-											print _('Your request failed due to a database error.') ;
+											print __($guid, 'Your request failed due to a database error.') ;
 										print "</div>" ;
 										$fields[$result["fieldName"] . $result["fieldCategory"]]=NULL ;
 									}
 									if ($resultAssessmentField->rowCount()!=1) {
 										print "<div class='error'>" ;
-											print sprintf(_('External Assessment field with name %1$s in import cannot be found.'), $result["fieldName"]) ;
+											print sprintf(__($guid, 'External Assessment field with name %1$s in import cannot be found.'), $result["fieldName"]) ;
 										print "</div>" ;
 										$fields[$result["fieldName"] . $result["fieldCategory"]]=NULL ;
 									}
@@ -345,7 +345,7 @@ else {
 									}
 									catch(PDOException $e) { 
 										print "<div class='error'>" ;
-											print _('Your request failed due to a database error.') ;
+											print __($guid, 'Your request failed due to a database error.') ;
 										print "</div>" ;
 									}
 									if ($resultAssessmentStudent->rowCount()==1) { //Assessment exists for this student
@@ -360,7 +360,7 @@ else {
 										}
 										catch(PDOException $e) { 
 											print "<div class='error'>" ;
-												print _('Your request failed due to a database error.') ;
+												print __($guid, 'Your request failed due to a database error.') ;
 											print "</div>" ;
 										}
 										if ($resultAssessmentStudentField->rowCount()==1) { //If exists, update
@@ -382,13 +382,13 @@ else {
 											}
 											catch(PDOException $e) { 
 												print "<div class='error'>" ;
-													print _('Your request failed due to a database error.') ;
+													print __($guid, 'Your request failed due to a database error.') ;
 												print "</div>" ;
 												$updateFail=TRUE ;
 											}
 											if ($updateFail==FALSE) {
 												print "<div class='success'>" ;
-													print sprintf(_('%1$s %2$s grade %3$s was successfully recorded for %4$s.'), $result["assessmentName"], $result["fieldName"], $result["result"], $result["officialName"] ) ;
+													print sprintf(__($guid, '%1$s %2$s grade %3$s was successfully recorded for %4$s.'), $result["assessmentName"], $result["fieldName"], $result["result"], $result["officialName"] ) ;
 												print "</div>" ;
 											}
 										}
@@ -412,13 +412,13 @@ else {
 											
 											catch(PDOException $e) { 
 												print "<div class='error'>" ;
-													print _('Your request failed due to a database error.') ;
+													print __($guid, 'Your request failed due to a database error.') ;
 												print "</div>" ;
 												$insertFail=TRUE ;
 											}
 											if ($insertFail==FALSE) {
 												print "<div class='success'>" ;
-													print sprintf(_('%1$s %2$s grade %3$s was successfully recorded for %4$s.'), $result["assessmentName"], $result["fieldName"], $result["result"], $result["officialName"] ) ;
+													print sprintf(__($guid, '%1$s %2$s grade %3$s was successfully recorded for %4$s.'), $result["assessmentName"], $result["fieldName"], $result["result"], $result["officialName"] ) ;
 												print "</div>" ;
 											}
 										}	
@@ -434,7 +434,7 @@ else {
 										}
 										catch(PDOException $e) { 
 											print "<div class='error'>" ;
-												print _('Your request failed due to a database error.') ;
+												print __($guid, 'Your request failed due to a database error.') ;
 											print "</div>" ;
 											$insertFail=TRUE ;
 										}
@@ -444,7 +444,7 @@ else {
 											//Insert field
 											if ($gibbonExternalAssessmentStudentID=="") {
 												print "<div class='error'>" ;
-													print _('Your request failed due to a database error.') ;
+													print __($guid, 'Your request failed due to a database error.') ;
 												print "</div>" ;
 											}
 											else {
@@ -466,13 +466,13 @@ else {
 											
 												catch(PDOException $e) { 
 													print "<div class='error'>" ;
-														print _('Your request failed due to a database error.') ;
+														print __($guid, 'Your request failed due to a database error.') ;
 													print "</div>" ;
 													$insertFail=TRUE ;
 												}
 												if ($insertFail==FALSE) {
 													print "<div class='success'>" ;
-														print sprintf(_('%1$s %2$s grade %3$s was successfully recorded for %4$s.'), $result["assessmentName"], $result["fieldName"], $result["result"], $result["officialName"] ) ;
+														print sprintf(__($guid, '%1$s %2$s grade %3$s was successfully recorded for %4$s.'), $result["assessmentName"], $result["fieldName"], $result["result"], $result["officialName"] ) ;
 													print "</div>" ;
 												}
 											}

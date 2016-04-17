@@ -26,14 +26,14 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Planner/planner_duplicate.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print _("The highest grouped action cannot be determined.") ;
+		print __($guid, "The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
@@ -86,7 +86,7 @@ else {
 		$gibbonPlannerEntryID=$_GET["gibbonPlannerEntryID"] ;
 		if ($gibbonPlannerEntryID=="" OR ($viewBy=="class" AND $gibbonCourseClassID=="Y")) {
 			print "<div class='error'>" ;
-				print _("You have not specified one or more required parameters.") ;
+				print __($guid, "You have not specified one or more required parameters.") ;
 			print "</div>" ;
 		}
 		else {
@@ -126,7 +126,7 @@ else {
 				$class="success" ;
 				if (!($updateReturn=="")) {
 					if ($updateReturn=="success0") {
-						$updateReturnMessage=_("Your request was completed successfully, but the target class is in another year, so you cannot see the results here.") ;	
+						$updateReturnMessage=__($guid, "Your request was completed successfully, but the target class is in another year, so you cannot see the results here.") ;	
 						$otherYearDuplicateSuccess=TRUE ;
 					}
 					print "<div class='$class'>" ;
@@ -135,7 +135,7 @@ else {
 				}
 				if ($otherYearDuplicateSuccess!=TRUE) {
 					print "<div class='error'>" ;
-						print _("The selected record does not exist, or you do not have access to it.") ;
+						print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 					print "</div>" ;
 				}
 			}
@@ -151,7 +151,7 @@ else {
 				}
 				
 				print "<div class='trail'>" ;
-				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner.php$params'>" . _('Planner') . " $extra</a> > </div><div class='trailEnd'>" . _('Duplicate Lesson Plan') . "</div>" ;
+				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner.php$params'>" . __($guid, 'Planner') . " $extra</a> > </div><div class='trailEnd'>" . __($guid, 'Duplicate Lesson Plan') . "</div>" ;
 				print "</div>" ;
 				
 				if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -159,22 +159,22 @@ else {
 				$class="error" ;
 				if (!($updateReturn=="")) {
 					if ($updateReturn=="fail0") {
-						$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+						$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 					}
 					else if ($updateReturn=="fail1") {
-						$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+						$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 					}
 					else if ($updateReturn=="fail2") {
-						$updateReturnMessage=_("Your request failed due to a database error.") ;	
+						$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 					}
 					else if ($updateReturn=="fail3") {
-						$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+						$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 					}
 					else if ($updateReturn=="fail4") {
-						$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+						$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 					}
 					else if ($updateReturn=="fail5") {
-						$updateReturnMessage=_("Your request failed due to an attachment error.") ;	
+						$updateReturnMessage=__($guid, "Your request failed due to an attachment error.") ;	
 					}
 					print "<div class='$class'>" ;
 						print $updateReturnMessage;
@@ -192,18 +192,18 @@ else {
 				if ($step==1) {
 					?>
 					<p>
-					<?php print _('This process will duplicate all aspects of the selected lesson. If a lesson is copied into another course, Smart Block content will be added into the lesson body, so it does not get left out.') ?>
+					<?php print __($guid, 'This process will duplicate all aspects of the selected lesson. If a lesson is copied into another course, Smart Block content will be added into the lesson body, so it does not get left out.') ?>
 					</p>
 					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/planner_duplicate.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date&step=2" ?>">
-						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+						<table class='smallIntBorder fullWidth' cellspacing='0'>	
 							<tr>
 								<td style='width: 275px'> 
-									<b><?php print _('Target Year') ?> *</b><br/>
+									<b><?php print __($guid, 'Target Year') ?> *</b><br/>
 								</td>
 								<td class="right">
-									<select name="gibbonSchoolYearID" id="gibbonSchoolYearID" style="width: 302px">
+									<select name="gibbonSchoolYearID" id="gibbonSchoolYearID" class="standardWidth">
 										<?php
-										print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+										print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
 										try {
 											$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
 											$sqlSelect="SELECT * FROM gibbonSchoolYear WHERE sequenceNumber>=(SELECT sequenceNumber FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID) ORDER BY sequenceNumber" ;
@@ -222,18 +222,18 @@ else {
 									</select>
 									<script type="text/javascript">
 										var gibbonCourseClassID=new LiveValidation('gibbonCourseClassID');
-										gibbonCourseClassID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+										gibbonCourseClassID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 									</script>
 								</td>
 							</tr>
 							<tr>
 								<td style='width: 275px'> 
-									<b><?php print _('Target Class') ?> *</b><br/>
+									<b><?php print __($guid, 'Target Class') ?> *</b><br/>
 								</td>
 								<td class="right">
-									<select name="gibbonCourseClassID" id="gibbonCourseClassID" style="width: 302px">
+									<select name="gibbonCourseClassID" id="gibbonCourseClassID" class="standardWidth">
 										<?php
-										print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+										print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
 										try {
 											if ($highestAction=="Lesson Planner_viewEditAllClasses" ) {
 												$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -254,7 +254,7 @@ else {
 									</select>
 									<script type="text/javascript">
 										var gibbonCourseClassID=new LiveValidation('gibbonCourseClassID');
-										gibbonCourseClassID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+										gibbonCourseClassID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 									</script> 
 									<script type="text/javascript">
 										$("#gibbonCourseClassID").chainedTo("#gibbonSchoolYearID");
@@ -277,11 +277,11 @@ else {
 								?>
 								<tr>
 									<td> 
-										<b><?php print _('Duplicate Markbook Columns?') ?></b><br/>
-										<span style="font-size: 90%"><i><?php print _('Will duplicate any columns linked to this lesson.') ?><br/></i></span>
+										<b><?php print __($guid, 'Duplicate Markbook Columns?') ?></b><br/>
+										<span class="emphasis small"><?php print __($guid, 'Will duplicate any columns linked to this lesson.') ?><br/></span>
 									</td>
 									<td class="right">
-										<select name="duplicate" id="duplicate" style="width: 302px">
+										<select name="duplicate" id="duplicate" class="standardWidth">
 											<option value='N'>N</option>	
 											<option value='Y'>Y</option>	
 										</select>
@@ -293,14 +293,14 @@ else {
 							
 							<tr>
 								<td>
-									<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+									<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 								</td>
 								<td class="right">
 									<input name="viewBy" id="viewBy" value="<?php print $viewBy ?>" type="hidden">
 									<input name="gibbonPlannerEntryID_org" id="gibbonPlannerEntryID_org" value="<?php print $gibbonPlannerEntryID ?>" type="hidden">
 									<input name="subView" id="subView" value="<?php print $subView ?>" type="hidden">
 									<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-									<input type="submit" value="<?php print _('Next') ?>">
+									<input type="submit" value="<?php print __($guid, 'Next') ?>">
 								</td>
 							</tr>
 						</table>
@@ -317,17 +317,17 @@ else {
 					}
 					if ($gibbonCourseClassID=="" OR $gibbonSchoolYearID=="") {
 						print "<div class='error'>" ;
-							print _("You have not specified one or more required parameters.") ;
+							print __($guid, "You have not specified one or more required parameters.") ;
 						print "</div>" ;
 					}
 					else {
 						?>
 						<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_duplicateProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID" ?>">
-							<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+							<table class='smallIntBorder fullWidth' cellspacing='0'>	
 								<tr>
 									<td style='width: 275px'> 
-										<b><?php print _('Class') ?> *</b><br/>
-										<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+										<b><?php print __($guid, 'Class') ?> *</b><br/>
+										<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 									</td>
 									<td class="right">
 										<?php
@@ -347,7 +347,7 @@ else {
 										if ($resultSelect->rowCount()==1) {
 											$rowSelect=$resultSelect->fetch()
 											?>
-											<input readonly name="class" id="class" maxlength=50 value="<?php print htmlPrep($rowSelect["course"]) . "." . htmlPrep($rowSelect["class"]) ?>" type="text" style="width: 300px">
+											<input readonly name="class" id="class" maxlength=50 value="<?php print htmlPrep($rowSelect["course"]) . "." . htmlPrep($rowSelect["class"]) ?>" type="text" class="standardWidth">
 											<?php
 										}		
 										?>		
@@ -373,13 +373,13 @@ else {
 										?>
 										<tr>
 											<td> 
-												<b><?php print _('Keep lesson in original unit?') ?></b><br/>
-												<span style="font-size: 90%"><i><?php print _('Only available if source and target classes are in the same course.') ?><br/></i></span>
+												<b><?php print __($guid, 'Keep lesson in original unit?') ?></b><br/>
+												<span class="emphasis small"><?php print __($guid, 'Only available if source and target classes are in the same course.') ?><br/></span>
 											</td>
 											<td class="right">
-												<select name="keepUnit" id="keepUnit" style="width: 302px">
-													<option value='Y'><?php print _('Yes') ?></option>	
-													<option value='N'><?php print _('No') ?></option>
+												<select name="keepUnit" id="keepUnit" class="standardWidth">
+													<option value='Y'><?php print __($guid, 'Yes') ?></option>	
+													<option value='N'><?php print __($guid, 'No') ?></option>
 												</select>
 											</td>
 										</tr>
@@ -390,10 +390,10 @@ else {
 								
 								<tr>
 									<td> 
-										<b><?php print _('Name') ?> *</b><br/>
+										<b><?php print __($guid, 'Name') ?> *</b><br/>
 									</td>
 									<td class="right">
-										<input name="name" id="name" maxlength=20 value="<?php print htmlPrep($row["name"]) ?>" type="text" style="width: 300px">
+										<input name="name" id="name" maxlength=20 value="<?php print htmlPrep($row["name"]) ?>" type="text" class="standardWidth">
 										<script type="text/javascript">
 											var name2=new LiveValidation('name');
 											name2.add(Validate.Presence);
@@ -431,11 +431,11 @@ else {
 								?>
 								<tr>
 									<td> 
-										<b><?php print _('Date') ?> *</b><br/>
-										<span style="font-size: 90%"><i><?php print _('Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></i></span>
+										<b><?php print __($guid, 'Date') ?> *</b><br/>
+										<span class="emphasis small"><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></span>
 									</td>
 									<td class="right">
-										<input name="date" id="date" maxlength=10 value="<?php print dateConvertBack($guid, $nextDate) ?>" type="text" style="width: 300px">
+										<input name="date" id="date" maxlength=10 value="<?php print dateConvertBack($guid, $nextDate) ?>" type="text" class="standardWidth">
 										<script type="text/javascript">
 											var date=new LiveValidation('date');
 											date.add(Validate.Presence);
@@ -450,11 +450,11 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b><?php print _('Start Time') ?> *</b><br/>
-										<span style="font-size: 90%"><i><?php print _('Format: hh:mm (24hr)') ?><br/></i></span>
+										<b><?php print __($guid, 'Start Time') ?> *</b><br/>
+										<span class="emphasis small"><?php print __($guid, 'Format: hh:mm (24hr)') ?><br/></span>
 									</td>
 									<td class="right">
-										<input name="timeStart" id="timeStart" maxlength=5 value="<?php print substr($nextTimeStart,0,5) ?>" type="text" style="width: 300px">
+										<input name="timeStart" id="timeStart" maxlength=5 value="<?php print substr($nextTimeStart,0,5) ?>" type="text" class="standardWidth">
 										<script type="text/javascript">
 											var timeStart=new LiveValidation('timeStart');
 											timeStart.add(Validate.Presence);
@@ -483,11 +483,11 @@ else {
 								</tr>
 								<tr>
 									<td> 
-										<b><?php print _('End Time') ?> *</b><br/>
-										<span style="font-size: 90%"><i><?php print _('Format: hh:mm (24hr)') ?><br/></i></span>
+										<b><?php print __($guid, 'End Time') ?> *</b><br/>
+										<span class="emphasis small"><?php print __($guid, 'Format: hh:mm (24hr)') ?><br/></span>
 									</td>
 									<td class="right">
-										<input name="timeEnd" id="timeEnd" maxlength=5 value="<?php print substr($nextTimeEnd,0,5) ?>" type="text" style="width: 300px">
+										<input name="timeEnd" id="timeEnd" maxlength=5 value="<?php print substr($nextTimeEnd,0,5) ?>" type="text" class="standardWidth">
 										<script type="text/javascript">
 											var timeEnd=new LiveValidation('timeEnd');
 											timeEnd.add(Validate.Presence);
@@ -516,7 +516,7 @@ else {
 								</tr>
 								<tr>
 									<td>
-										<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+										<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 									</td>
 									<td class="right">
 										<input name="duplicate" id="duplicate" value="<?php print $duplicate ?>" type="hidden">
@@ -526,7 +526,7 @@ else {
 										<input name="viewBy" id="viewBy" value="<?php print $viewBy ?>" type="hidden">
 										<input name="subView" id="subView" value="<?php print $subView ?>" type="hidden">
 										<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-										<input type="submit" value="<?php print _("Submit") ; ?>">
+										<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 									</td>
 								</tr>
 							</table>

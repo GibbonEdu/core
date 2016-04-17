@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Resources/resources_manage_add.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -33,12 +33,12 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print _("The highest grouped action cannot be determined.") ;
+		print __($guid, "The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/resources_manage.php'>" . _('Manage Resources') . "</a> > </div><div class='trailEnd'>" . _('Add Resource') . "</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/resources_manage.php'>" . __($guid, 'Manage Resources') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Add Resource') . "</div>" ;
 		print "</div>" ;
 		
 		if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -46,25 +46,25 @@ else {
 		$class="error" ;
 		if (!($addReturn=="")) {
 			if ($addReturn=="fail0") {
-				$addReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+				$addReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 			}
 			else if ($addReturn=="fail2") {
-				$addReturnMessage=_("Your request failed due to a database error.") ;	
+				$addReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 			}
 			else if ($addReturn=="fail3") {
-				$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+				$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($addReturn=="fail4") {
-				$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+				$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 			}
 			else if ($addReturn=="fail5") {
-				$addReturnMessage=_("Your request failed due to an attachment error.") ;	
+				$addReturnMessage=__($guid, "Your request failed due to an attachment error.") ;	
 			}
 			else if ($addReturn=="fail6") {
-				$updateReturnMessage=_("Your request was successful, but some data was not properly saved.") ;
+				$updateReturnMessage=__($guid, "Your request was successful, but some data was not properly saved.") ;
 			}
 			else if ($addReturn=="success0") {
-				$addReturnMessage=_("Your request was completed successfully. You can now add another record if you wish.") ;	
+				$addReturnMessage=__($guid, "Your request was completed successfully. You can now add another record if you wish.") ;	
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;
@@ -74,10 +74,10 @@ else {
 		
 		?>
 		<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/resources_manage_addProcess.php" ?>" enctype="multipart/form-data">
-			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+			<table class='smallIntBorder fullWidth' cellspacing='0'>	
 				<tr class='break'>
 					<td colspan=2> 
-						<h3><?php print _('Resource Contents') ?></h3>
+						<h3><?php print __($guid, 'Resource Contents') ?></h3>
 					</td>
 				</tr>
 				<script type="text/javascript">
@@ -122,24 +122,24 @@ else {
 				</script>
 				<tr>
 					<td style='width: 275px'> 
-						<b><?php print _('Type') ?> *</b><br/>
+						<b><?php print __($guid, 'Type') ?> *</b><br/>
 					</td>
 					<td class="right">
-						<select name="type" id="type" class='type' style="width: 302px">
-							<option value="Please select..."><?php print _('Please select...') ?></option>
-							<option id='type' name="type" value="File" /> <?php print _('File') ?>
-							<option id='type' name="type" value="HTML" /> <?php print _('HTML') ?>
-							<option id='type' name="type" value="Link" /> <?php print _('Link') ?>
+						<select name="type" id="type" class='type' class="standardWidth">
+							<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
+							<option id='type' name="type" value="File" /> <?php print __($guid, 'File') ?>
+							<option id='type' name="type" value="HTML" /> <?php print __($guid, 'HTML') ?>
+							<option id='type' name="type" value="Link" /> <?php print __($guid, 'Link') ?>
 						</select>
 						<script type="text/javascript">
 							var type=new LiveValidation('type');
-							type.add(Validate.Inclusion, { within: ['File','HTML','Link'], failureMessage: "<?php print _('Select something!') ?>"});
+							type.add(Validate.Inclusion, { within: ['File','HTML','Link'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 						</script>
 					</td>
 				</tr>
 				<tr id="resourceFile">
 					<td> 
-						<b><?php print _('File') ?> *</b><br/>
+						<b><?php print __($guid, 'File') ?> *</b><br/>
 					</td>
 					<td class="right">
 						<input type="file" name="file" id="file"><br/><br/>
@@ -164,22 +164,22 @@ else {
 							file.disable();
 						</script>	
 						<?php
-						print getMaxUpload() ;
+						print getMaxUpload($guid) ;
 						?>
 					</td>
 				</tr>
 				<tr id="resourceHTML">
 					<td colspan=2> 
-						<b><?php print _('HTML') ?> *</b>
+						<b><?php print __($guid, 'HTML') ?> *</b>
 						<?php print getEditor($guid,  TRUE, "html", "", 20, false, false, false, false ) ?>
 					</td>
 				</tr>
 				<tr id="resourceLink">
 					<td> 
-						<b><?php print _('Link') ?> *</b><br/>
+						<b><?php print __($guid, 'Link') ?> *</b><br/>
 					</td>
 					<td class="right">
-						<input name="link" id="link" maxlength=255 value="" type="text" style="width: 300px">
+						<input name="link" id="link" maxlength=255 value="" type="text" class="standardWidth">
 						<script type="text/javascript">
 							var link=new LiveValidation('link');
 							link.add(Validate.Presence);
@@ -192,16 +192,16 @@ else {
 				
 				<tr class='break'>
 					<td colspan=2> 
-						<h3><?php print _('Resource Details') ?></h3>
+						<h3><?php print __($guid, 'Resource Details') ?></h3>
 					</td>
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('Name') ?> *</b><br/>
-						<span style="font-size: 90%"><i></i></span>
+						<b><?php print __($guid, 'Name') ?> *</b><br/>
+						<span class="emphasis small"></span>
 					</td>
 					<td class="right">
-						<input name="name" id="name" maxlength=60 value="" type="text" style="width: 300px">
+						<input name="name" id="name" maxlength=60 value="" type="text" class="standardWidth">
 						<script type="text/javascript">
 							var name2=new LiveValidation('name');
 							name2.add(Validate.Presence);
@@ -227,12 +227,12 @@ else {
 						?>
 						<tr>
 							<td> 
-								<b><?php print _('Category') ?> *</b><br/>
-								<span style="font-size: 90%"><i></i></span>
+								<b><?php print __($guid, 'Category') ?> *</b><br/>
+								<span class="emphasis small"></span>
 							</td>
 							<td class="right">
-								<select name="category" id="category" style="width: 302px">
-									<option value="Please select..."><?php print _('Please select...') ?></option>
+								<select name="category" id="category" class="standardWidth">
+									<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
 									<?php
 									for ($i=0; $i<count($options); $i++) {
 									?>
@@ -243,7 +243,7 @@ else {
 								</select>
 								<script type="text/javascript">
 									var category=new LiveValidation('category');
-									category.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+									category.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 								</script>
 							</td>
 						</tr>
@@ -276,11 +276,11 @@ else {
 						?>
 						<tr>
 							<td> 
-								<b><?php print _('Purpose') ?></b><br/>
-								<span style="font-size: 90%"><i></i></span>
+								<b><?php print __($guid, 'Purpose') ?></b><br/>
+								<span class="emphasis small"></span>
 							</td>
 							<td class="right">
-								<select name="purpose" id="purpose" style="width: 302px">
+								<select name="purpose" id="purpose" class="standardWidth">
 									<option value=""></option>
 									<?php
 									for ($i=0; $i<count($options); $i++) {
@@ -298,8 +298,8 @@ else {
 				?>
 				<tr>
 					<td> 
-						<b><?php print _('Tags') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print _('Use lots of tags!') ?></i></span>
+						<b><?php print __($guid, 'Tags') ?> *</b><br/>
+						<span class="emphasis small"><?php print __($guid, 'Use lots of tags!') ?></span>
 					</td>
 					<td class="right">
 						<?php
@@ -342,8 +342,8 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('Year Groups') ?></b><br/>
-						<span style="font-size: 90%"><i>Students year groups which may participate<br/></i></span>
+						<b><?php print __($guid, 'Year Groups') ?></b><br/>
+						<span class="emphasis small">Students year groups which may participate<br/></span>
 					</td>
 					<td class="right">
 						<?php 
@@ -357,15 +357,15 @@ else {
 							});
 						</script>
 						<?php
-						print _("All/None") . " <input type='checkbox' class='checkall' checked><br/>" ;
+						print __($guid, "All/None") . " <input type='checkbox' class='checkall' checked><br/>" ;
 						$yearGroups=getYearGroups($connection2) ;
 						if ($yearGroups=="") {
-							print "<i>" . _('No year groups available.') . "</i>" ;
+							print "<i>" . __($guid, 'No year groups available.') . "</i>" ;
 						}
 						else {
 							for ($i=0; $i<count($yearGroups); $i=$i+2) {
 								$checked="checked " ;
-								print _($yearGroups[($i+1)]) . " <input $checked type='checkbox' name='gibbonYearGroupIDCheck" . ($i)/2 . "'><br/>" ; 
+								print __($guid, $yearGroups[($i+1)]) . " <input $checked type='checkbox' name='gibbonYearGroupIDCheck" . ($i)/2 . "'><br/>" ; 
 								print "<input type='hidden' name='gibbonYearGroupID" . ($i)/2 . "' value='" . $yearGroups[$i] . "'>" ;
 							}
 						}
@@ -376,21 +376,21 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('Description') ?></b><br/>
-						<span style="font-size: 90%"><i></i></span>
+						<b><?php print __($guid, 'Description') ?></b><br/>
+						<span class="emphasis small"></span>
 					</td>
 					<td class="right">
-						<textarea name="description" id="description" rows=8 style="width: 300px"></textarea>
+						<textarea name="description" id="description" rows=8 class="standardWidth"></textarea>
 					</td>
 				</tr>
 				
 				<tr>
 					<td>
-						<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+						<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 					</td>
 					<td class="right">
 						<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-						<input type="submit" value="<?php print _("Submit") ; ?>">
+						<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 					</td>
 				</tr>
 			</table>

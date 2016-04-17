@@ -35,7 +35,7 @@ if (isset($_GET["filter2"])) {
 if (isActionAccessible($guid, $connection2, "/modules/Rubrics/rubrics_edit_editRowsColumns.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -43,24 +43,24 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print _("The highest grouped action cannot be determined.") ;
+		print __($guid, "The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
 		if ($highestAction!="Manage Rubrics_viewEditAll" AND $highestAction!="Manage Rubrics_viewAllEditLearningArea") {
 			print "<div class='error'>" ;
-				print _("You do not have access to this action.") ;
+				print __($guid, "You do not have access to this action.") ;
 			print "</div>" ;
 		}
 		else {
 			//Proceed!
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/rubrics.php&search=$search&filter2=$filter2'>" . _('Manage Rubrics') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/rubrics_edit.php&gibbonRubricID=" . $_GET["gibbonRubricID"] ."&search=$search&filter2=$filter2'>" . _('Edit Rubric') . "</a> > </div><div class='trailEnd'>" . _('Edit Rubric Rows & Columns') . "</div>" ;
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/rubrics.php&search=$search&filter2=$filter2'>" . __($guid, 'Manage Rubrics') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/rubrics_edit.php&gibbonRubricID=" . $_GET["gibbonRubricID"] ."&search=$search&filter2=$filter2'>" . __($guid, 'Edit Rubric') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Edit Rubric Rows & Columns') . "</div>" ;
 			print "</div>" ;
 			
 			if ($search!="" OR $filter2!="") {
 				print "<div class='linkTop'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Rubrics/rubrics_edit.php&gibbonRubricID=" . $_GET["gibbonRubricID"] . "&search=$search&filter2=$filter2&sidebar=false'>" . _('Back') . "</a>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Rubrics/rubrics_edit.php&gibbonRubricID=" . $_GET["gibbonRubricID"] . "&search=$search&filter2=$filter2&sidebar=false'>" . __($guid, 'Back') . "</a>" ;
 				print "</div>" ;
 			}
 			
@@ -69,19 +69,19 @@ else {
 			$class="error" ;
 			if (!($updateReturn=="")) {
 				if ($updateReturn=="fail0") {
-					$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+					$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 				}
 				else if ($updateReturn=="fail1") {
-					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($updateReturn=="fail2") {
-					$updateReturnMessage=_("Your request failed due to a database error.") ;	
+					$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 				}
 				else if ($updateReturn=="fail3") {
-					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($updateReturn=="fail4") {
-					$updateReturnMessage=_("Your request was successful, but some data was not properly saved.") ;
+					$updateReturnMessage=__($guid, "Your request was successful, but some data was not properly saved.") ;
 				}
 				print "<div class='$class'>" ;
 					print $updateReturnMessage;
@@ -92,7 +92,7 @@ else {
 			$gibbonRubricID=$_GET["gibbonRubricID"];
 			if ($gibbonRubricID=="") {
 				print "<div class='error'>" ;
-					print _("You have not specified one or more required parameters.") ;
+					print __($guid, "You have not specified one or more required parameters.") ;
 				print "</div>" ;
 			}
 			else {
@@ -108,7 +108,7 @@ else {
 				
 				if ($result->rowCount()!=1) {
 					print "<div class='error'>" ;
-						print _("The specified record does not exist.") ;
+						print __($guid, "The specified record does not exist.") ;
 					print "</div>" ;
 				}
 				else {
@@ -119,16 +119,16 @@ else {
 						<table class='smallIntBorder' cellspacing='0' style="width: 760px">	
 							<tr class='break'>
 								<td colspan=2>
-									<h3><?php print _('Rubric Basics') ?></h3>
+									<h3><?php print __($guid, 'Rubric Basics') ?></h3>
 								</td>
 							</tr>
 							<tr>
 								<td style='width: 275px'> 
-									<b><?php print _('Scope') ?> *</b><br/>
-									<span style="font-size: 90%"><i></i></span>
+									<b><?php print __($guid, 'Scope') ?> *</b><br/>
+									<span class="emphasis small"></span>
 								</td>
 								<td class="right">
-									<input readonly name="scope" id="scope" value="<?php print $row["scope"] ?>" type="text" style="width: 300px">
+									<input readonly name="scope" id="scope" value="<?php print $row["scope"] ?>" type="text" class="standardWidth">
 								</td>
 							</tr>
 							
@@ -150,12 +150,12 @@ else {
 								?>
 								<tr>
 									<td> 
-										<b><?php print _('Learning Area') ?> *</b><br/>
-										<span style="font-size: 90%"><i></i></span>
+										<b><?php print __($guid, 'Learning Area') ?> *</b><br/>
+										<span class="emphasis small"></span>
 									</td>
 									<td class="right">
-										<input readonly name="department" id="department" value="<?php print $rowLearningAreas["name"] ?>" type="text" style="width: 300px" maxlength=20>
-										<input name="gibbonDepartmentID" id="gibbonDepartmentID" value="<?php print $row["gibbonDepartmentID"] ?>" type="hidden" style="width: 300px">
+										<input readonly name="department" id="department" value="<?php print $rowLearningAreas["name"] ?>" type="text" class="standardWidth" maxlength=20>
+										<input name="gibbonDepartmentID" id="gibbonDepartmentID" value="<?php print $row["gibbonDepartmentID"] ?>" type="hidden" class="standardWidth">
 									</td>
 								</tr>
 								<?php
@@ -163,17 +163,17 @@ else {
 							?>
 							<tr>
 								<td> 
-									<b><?php print _('Name') ?> *</b><br/>
+									<b><?php print __($guid, 'Name') ?> *</b><br/>
 								</td>
 								<td class="right">
-									<input readonly name="name" id="name" maxlength=50 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
+									<input readonly name="name" id="name" maxlength=50 value="<?php print $row["name"] ?>" type="text" class="standardWidth">
 								</td>
 							</tr>
 							
 							<?php //ROWS!?>
 							<tr class='break'>
 								<td colspan=2>
-									<h3><?php print _('Rows') ?></h3>
+									<h3><?php print __($guid, 'Rows') ?></h3>
 								</td>
 							</tr>
 							<?php
@@ -189,7 +189,7 @@ else {
 							
 							if ($resultRows->rowCount()<1) {
 								print "<div class='error'>" ;
-									print _("There are no records to display.") ;
+									print __($guid, "There are no records to display.") ;
 								print "</div>" ;
 							}
 							else {
@@ -198,8 +198,8 @@ else {
 									?>
 									<tr>
 										<td> 
-											<b><?php print sprintf(_('Row %1$s Title'), ($count+1)) ?></b><br/>
-											<span style="font-size: 90%"><i></i></span>
+											<b><?php print sprintf(__($guid, 'Row %1$s Title'), ($count+1)) ?></b><br/>
+											<span class="emphasis small"></span>
 										</td>
 										<td class="right">
 											<?php
@@ -249,11 +249,11 @@ else {
 												}
 											?>
 												
-											<input <?php if ($outcomeBased==FALSE) {print "checked";} ?> type="radio" name="type-<?php print $count ?>" value="Standalone" class="type-<?php print $count ?>" /> <?php print _('Standalone') ?> 
-											<input <?php if ($outcomeBased==TRUE) {print "checked";} ?> type="radio" name="type-<?php print $count ?>" value="Outcome Based" class="type-<?php print $count ?>" /> <?php print _('Outcome Based') ?><br/>
+											<input <?php if ($outcomeBased==FALSE) {print "checked";} ?> type="radio" name="type-<?php print $count ?>" value="Standalone" class="type-<?php print $count ?>" /> <?php print __($guid, 'Standalone') ?> 
+											<input <?php if ($outcomeBased==TRUE) {print "checked";} ?> type="radio" name="type-<?php print $count ?>" value="Outcome Based" class="type-<?php print $count ?>" /> <?php print __($guid, 'Outcome Based') ?><br/>
 											<select name='gibbonOutcomeID[]' id='gibbonOutcomeID-<?php print $count ?>' style='width: 304px'>
 												<option><option>
-												<optgroup label='--<?php print _('School Outcomes') ?>--'>
+												<optgroup label='--<?php print __($guid, 'School Outcomes') ?>--'>
 													<?php
 													try {
 														$sqlSelect="SELECT * FROM gibbonOutcome WHERE scope='School' AND active='Y' $filterSelect ORDER BY category, name" ;
@@ -280,7 +280,7 @@ else {
 												<?php
 												if ($row["scope"]=="Learning Area") {
 													?>
-													<optgroup label='--<?php print _('Learning Area Outcomes') ?>--'>
+													<optgroup label='--<?php print __($guid, 'Learning Area Outcomes') ?>--'>
 														<?php
 														try {
 															$dataSelect["gibbonDepartmentID"]=$row["gibbonDepartmentID"]; 
@@ -309,7 +309,7 @@ else {
 												}
 												?>
 											</select>
-											<input name="rowTitle[]" id="rowTitle-<?php print $count ?>" value="<?php print $rowRows["title"] ?>" type="text" style="width: 300px" maxlength=40>
+											<input name="rowTitle[]" id="rowTitle-<?php print $count ?>" value="<?php print $rowRows["title"] ?>" type="text" class="standardWidth" maxlength=40>
 											<input name="gibbonRubricRowID[]" id="gibbonRubricRowID[]" value="<?php print $rowRows["gibbonRubricRowID"] ?>" type="hidden">
 										</td>
 									</tr>
@@ -322,7 +322,7 @@ else {
 							<?php //COLUMNS!?>
 							<tr class='break'>
 								<td colspan=2>
-									<h3><?php print _('Columns') ?></h3>
+									<h3><?php print __($guid, 'Columns') ?></h3>
 								</td>
 							</tr>
 							<?php
@@ -338,7 +338,7 @@ else {
 							
 							if ($resultColumns->rowCount()<1) {
 								print "<div class='error'>" ;
-									print _("There are no records to display.") ;
+									print __($guid, "There are no records to display.") ;
 								print "</div>" ;
 							}
 							else {
@@ -349,11 +349,11 @@ else {
 										?>
 										<tr>
 											<td> 
-												<b><?php print sprintf(_('Column %1$s Title'), ($count+1)) ?></b><br/>
-												<span style="font-size: 90%"><i></i></span>
+												<b><?php print sprintf(__($guid, 'Column %1$s Title'), ($count+1)) ?></b><br/>
+												<span class="emphasis small"></span>
 											</td>
 											<td class="right">
-												<input name="columnTitle[]" id="columnTitle[]" value="<?php print $rowColumns["title"] ?>" type="text" style="width: 300px" maxlength=20>
+												<input name="columnTitle[]" id="columnTitle[]" value="<?php print $rowColumns["title"] ?>" type="text" class="standardWidth" maxlength=20>
 												<input name="gibbonRubricColumnID[]" id="gibbonRubricColumnID[]" value="<?php print $rowColumns["gibbonRubricColumnID"] ?>" type="hidden">
 											</td>
 										</tr>
@@ -368,8 +368,8 @@ else {
 										?>
 										<tr>
 											<td> 
-												<b><?php print sprintf(_('Column %1$s Grade'), ($count+1)) ?></b><br/>
-												<span style="font-size: 90%"><i></i></span>
+												<b><?php print sprintf(__($guid, 'Column %1$s Grade'), ($count+1)) ?></b><br/>
+												<span class="emphasis small"></span>
 											</td>
 											<td class="right">
 												<?php
@@ -383,10 +383,10 @@ else {
 													catch(PDOException $e) { }
 													while ($rowSelect=$resultSelect->fetch()) {
 														if ($rowColumns["gibbonScaleGradeID"]==$rowSelect["gibbonScaleGradeID"]) {
-															print "<option selected value='" . $rowSelect["gibbonScaleGradeID"] . "'>" . htmlPrep(_($rowSelect["value"])) . " - " . htmlPrep(_($rowSelect["descriptor"])) . "</option>" ;
+															print "<option selected value='" . $rowSelect["gibbonScaleGradeID"] . "'>" . htmlPrep(__($guid, $rowSelect["value"])) . " - " . htmlPrep(__($guid, $rowSelect["descriptor"])) . "</option>" ;
 														}
 														else {
-															print "<option value='" . $rowSelect["gibbonScaleGradeID"] . "'>" . htmlPrep(_($rowSelect["value"])) . " - " . htmlPrep(_($rowSelect["descriptor"])) . "</option>" ;
+															print "<option value='" . $rowSelect["gibbonScaleGradeID"] . "'>" . htmlPrep(__($guid, $rowSelect["value"])) . " - " . htmlPrep(__($guid, $rowSelect["descriptor"])) . "</option>" ;
 														}
 													}
 												print "</select>" ;
@@ -404,11 +404,11 @@ else {
 							
 							<tr>
 								<td>
-									<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+									<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 								</td>
 								<td class="right">
 									<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-									<input type="submit" value="<?php print _("Submit") ; ?>">
+									<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 								</td>
 							</tr>
 						</table>

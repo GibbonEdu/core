@@ -22,17 +22,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/Finance/invoicees_manage.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Manage Invoicees') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Manage Invoicees') . "</div>" ;
 	print "</div>" ;
 	
 	print "<p>" ;
-	print _('The table below shows all student invoicees within the school. A red row in the table below indicates that an invoicee\'s status is not "Full" or that their start or end dates are greater or less than than the current date.') ;
+	print __($guid, 'The table below shows all student invoicees within the school. A red row in the table below indicates that an invoicee\'s status is not "Full" or that their start or end dates are greater or less than than the current date.') ;
 	print "</p>" ;
 	
 	//Check for missing students from studentEnrolment and add a gibbonFinanceInvoicee record for them.
@@ -66,12 +66,12 @@ else {
 		if ($addCount>0) {
 			if ($addFail==TRUE) {
 				print "<div class='error'>" ;
-					print _("It was detected that some students did not have invoicee records. The system tried to create these, but some of more creations failed.") ;
+					print __($guid, "It was detected that some students did not have invoicee records. The system tried to create these, but some of more creations failed.") ;
 				print "</div>" ;
 			}
 			else {
 				print "<div class='success'>" ;
-					print sprintf(_('It was detected that some students did not have invoicee records. The system has successfully created %1$s record(s) for you.'), $addCount) ;
+					print sprintf(__($guid, 'It was detected that some students did not have invoicee records. The system has successfully created %1$s record(s) for you.'), $addCount) ;
 				print "</div>" ;
 			}
 		}
@@ -79,7 +79,7 @@ else {
 	
 	
 	print "<h2>" ;
-	print _("Filters") ;
+	print __($guid, "Filters") ;
 	print "</h2>" ;
 	
 	$search=NULL ;
@@ -96,17 +96,17 @@ else {
 			<tr><td style="width: 30%"></td><td></td></tr>
 			<tr>
 				<td> 
-					<b><?php print _('Search For') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('Preferred, surname, username.') ?></i></span>
+					<b><?php print __($guid, 'Search For') ?></b><br/>
+					<span class="emphasis small"><?php print __($guid, 'Preferred, surname, username.') ?></span>
 				</td>
 				<td class="right">
-					<input name="search" id="search" maxlength=20 value="<?php print $search ?>" type="text" style="width: 300px">
+					<input name="search" id="search" maxlength=20 value="<?php print $search ?>" type="text" class="standardWidth">
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('All Students') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('Include students whose status is not "Full".') ?></i></span>
+					<b><?php print __($guid, 'All Students') ?></b><br/>
+					<span class="emphasis small"><?php print __($guid, 'Include students whose status is not "Full".') ?></span>
 				</td>
 				<td class="right">
 					<?php
@@ -123,9 +123,9 @@ else {
 					<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/invoicees_manage.php">
 					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 					<?php
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoicees_manage.php'>" . _('Clear Filters') . "</a>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoicees_manage.php'>" . __($guid, 'Clear Filters') . "</a>" ;
 					?>
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
@@ -133,7 +133,7 @@ else {
 	<?php
 	
 	print "<h2>" ;
-	print _("View") ;
+	print __($guid, "View") ;
 	print "</h2>" ;
 	
 	//Set pagination variable
@@ -163,7 +163,7 @@ else {
 	
 	if ($result->rowCount()<1) {
 		print "<div class='error'>" ;
-		print _("There are no records to display.") ;
+		print __($guid, "There are no records to display.") ;
 		print "</div>" ;
 	}
 	else {
@@ -174,16 +174,16 @@ else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print _("Name") ;
+					print __($guid, "Name") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Status") ;
+					print __($guid, "Status") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Invoice To") ;
+					print __($guid, "Invoice To") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Actions") ;
+					print __($guid, "Actions") ;
 				print "</th>" ;
 			print "</tr>" ;
 			
@@ -219,20 +219,20 @@ else {
 					print "</td>" ;
 					print "<td>" ;
 						if ($row["invoiceTo"]=="Family") {
-							print _("Family") ;
+							print __($guid, "Family") ;
 						}
 						else if ($row["invoiceTo"]=="Company" AND $row["companyAll"]=="Y" ) {
-							print _("Company") ;
+							print __($guid, "Company") ;
 						}
 						else if ($row["invoiceTo"]=="Company" AND $row["companyAll"]=="N" ) {
-							print _("Family + Company") ;
+							print __($guid, "Family + Company") ;
 						}
 						else {
-							print "<i>" . _('Unknown') . "</i>" ;
+							print "<i>" . __($guid, 'Unknown') . "</i>" ;
 						}
 					print "</td>" ;
 					print "<td>" ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoicees_manage_edit.php&gibbonFinanceInvoiceeID=" . $row["gibbonFinanceInvoiceeID"] . "&search=$search&allUsers=$allUsers'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/invoicees_manage_edit.php&gibbonFinanceInvoiceeID=" . $row["gibbonFinanceInvoiceeID"] . "&search=$search&allUsers=$allUsers'><img title='" . __($guid, 'Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 					print "</td>" ;
 				print "</tr>" ;
 				

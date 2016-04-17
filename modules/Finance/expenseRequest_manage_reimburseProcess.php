@@ -24,14 +24,8 @@ include "../../config.php" ;
 include "./moduleFunctions.php" ;
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 @session_start() ;
 
@@ -105,7 +99,7 @@ else {
 						//Fail2
 						$URL.="&editReturn=fail2" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 
 					if ($result->rowCount()!=1) {
@@ -145,7 +139,7 @@ else {
 							//Fail 5
 							$URL.="&editReturn=fail5" ;
 							header("Location: {$URL}");
-							break ;
+							exit() ;
 						}
 						
 						//Write back to gibbonFinanceExpense
@@ -159,13 +153,13 @@ else {
 							//Fail2
 							$URL.="&editReturn=fail2" ;
 							header("Location: {$URL}");
-							break ;
+							exit() ;
 						}
 						
 						//Notify reimbursement officer that action is required
 						$reimbursementOfficer=getSettingByScope($connection2, "Finance", "reimbursementOfficer") ;
 						if ($reimbursementOfficer!=FALSE AND $reimbursementOfficer!="") {
-							$notificationText=sprintf(_('Someone has requested reimbursement for "%1$s" in budget "%2$s".'), $row["title"], $row["budget"]) ;
+							$notificationText=sprintf(__($guid, 'Someone has requested reimbursement for "%1$s" in budget "%2$s".'), $row["title"], $row["budget"]) ;
 							setNotification($connection2, $guid, $reimbursementOfficer, $notificationText, "Finance", "/index.php?q=/modules/Finance/expenses_manage_edit.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=&gibbonFinanceBudgetID2=" . $row["gibbonFinanceBudgetID"]) ;
 						}
 						
@@ -180,7 +174,7 @@ else {
 							//Fail2
 							$URL.="&editReturn=fail2" ;
 							header("Location: {$URL}");
-							break ;
+							exit() ;
 						}
 						
 						//Write reimbursement request change to log
@@ -194,7 +188,7 @@ else {
 							//Fail2
 							$URL.="&editReturn=fail2" ;
 							header("Location: {$URL}");
-							break ;
+							exit() ;
 						}
 						
 						//Success 0

@@ -58,7 +58,7 @@ msgstr "Eroare"
 #: error.php:25 error.php:27 error.php:27
 msgid ""
 "An error has occurred. This could mean a number of different things, but "
-"generally indicates that you have a misspelt an address, or are trying to "
+"generally indicates that you have a misspelt address, or are trying to "
 "access a page that you are not permitted to access."
 msgstr ""
 "A apărut o eroare. Acest lucru poate avea mai multe cauze, dar, în general, "
@@ -26542,7 +26542,7 @@ msgid ""
 "Dear %1$s,\\n\\nWelcome to %2$s, %3$s's system for managing school "
 "information. You can access the system by going to %4$s and logging in with "
 "your new username (%5$s) and password (%6$s). You can learn more about using "
-"%7$s on the official support website (http://gibbonedu.org/support/parents)."
+"%7$s on the official support website (https://gibbonedu.org/support/parents)."
 "\\n\\nIn order to maintain the security of your data, we highly recommend "
 "you change your password to something easy to remember but hard to guess. "
 "This can be done by using the Preferences page after logging in (top-right "
@@ -26552,7 +26552,7 @@ msgstr ""
 "gestionarea informațiilor legate de școală. Puteți accesa sistemul mergînd  "
 "la% 4 $ s și conectare cu noul nume de utilizator (% 5 $ s) și parola (% 6 $ "
 "s). Puteți afla mai multe despre utilizarea% 7 $ s pe site-ul de suport "
-"oficial (http://gibbonedu.org/support/parents).\\n\\nIn scopul de a menține "
+"oficial (https://gibbonedu.org/support/parents).\\n\\nIn scopul de a menține "
 "securitatea datelor, vă recomandăm să modificați dumneavoastră parola la "
 "ceva usor de retinut, dar greu de ghicit. Acest lucru poate fi realizat prin "
 "utilizarea paginii Preferințe dupa logare (dreapta-sus a ecranului). \\ N \\ "
@@ -51343,7 +51343,7 @@ msgstr "Trimiteți următoarele facturi la "
 #: Form/applicationForm.php:1998
 #: modules/Application Form/applicationForm.php:2001
 msgid ""
-"These documents must all be included before the application can be submitted."
+"All documents must all be included before the application can be submitted."
 msgstr ""
 "Aceste documente trebuie să fie incluse toate înainte de depunerea cererii "
 "pentu a putea fi transmise."
@@ -56248,16 +56248,6 @@ msgstr "Alți cursanți"
 msgid "Other Teachers"
 msgstr "Alți Profesori"
 
-#: modules/Planner/planner_add.php:849 modules/Planner/planner_add.php:841
-#: modules/Planner/planner_add.php:841
-msgid "Submitter\\'s Parents"
-msgstr "Emițători\\'s Părinți"
-
-#: modules/Planner/planner_add.php:857 modules/Planner/planner_add.php:849
-#: modules/Planner/planner_add.php:849
-msgid "Classmates\\'s Parents"
-msgstr "Colegii de clasă\\'s Părinți"
-
 #: modules/Planner/planner_add.php:865 modules/Planner/planner_edit.php:1034
 #: modules/Planner/planner_edit.php:1037 modules/Planner/planner_add.php:857
 #: modules/Planner/planner_add.php:857 modules/Planner/planner_edit.php:1037
@@ -59558,7 +59548,7 @@ msgid "Manage Units_learningAreas"
 msgstr " Administrează Unități_SpațiiÎnvățare"
 
 #: i18n/dbStringsForTranslation.php:249
-msgid "Markbook_viewMyChildrensClasses"
+msgid "ViewMarkbook_viewMyChildrensClasses"
 msgstr "Catalog_afișareEleviiMeiClase"
 
 #: i18n/dbStringsForTranslation.php:257
@@ -64426,7 +64416,7 @@ msgstr "Comandă rol"
 #: modules/User Admin/import_studentEnrolment.php:135
 #: modules/User Admin/studentEnrolment_manage_add.php:195
 #: modules/User Admin/studentEnrolment_manage_edit.php:211
-msgid "Must be unique to roll gorup if set."
+msgid "Must be unique to roll group if set."
 msgstr "Trebuie să fie unic dacă  dacă este setaă clasa."
 
 #: preferences.php:214 preferences.php:214
@@ -68406,7 +68396,7 @@ msgstr ""
 #: modules/Application Form/applicationFormProcess.php:734
 #: modules/Application Form/applicationFormProcess.php:734
 #, php-format
-msgid "An application form has submitted for %1$s."
+msgid "An application form has been submitted for %1$s."
 msgstr ""
 
 #: modules/Behaviour/behaviour_manage_addMultiProcess.php:123
@@ -69313,7 +69303,7 @@ msgstr ""
 
 #: modules/Finance/invoices_view.php:35 modules/Finance/invoices_view.php:35
 msgid ""
-"This section allows you to view and invoices for children within your family."
+"This section allows you to view invoices for children within your family."
 msgstr ""
 
 #: modules/Library/report_viewOverdueItems.php:54

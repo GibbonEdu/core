@@ -21,14 +21,8 @@ include "../../functions.php" ;
 include "../../config.php" ;
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 @session_start() ;
 
@@ -93,7 +87,7 @@ else {
 				//Fail 2
 				$URL.="&deployReturn=fail2a" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 			
 			if ($result->rowCount()!=1) {
@@ -114,7 +108,7 @@ else {
 						//Fail 2
 						$URL.="&deployReturn=fail2b" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 				}
 				else {
@@ -128,7 +122,7 @@ else {
 						//Fail 2
 						$URL.="&deployReturn=fail2c" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 					if ($resultHooks->rowCount()==1) {
 						$rowHooks=$resultHooks->fetch() ;
@@ -144,7 +138,7 @@ else {
 								//Fail 2
 								$URL.="&deployReturn=fail2d" ;
 								header("Location: {$URL}");
-								break ;
+								exit() ;
 							}									
 						}
 					}
@@ -174,7 +168,7 @@ else {
 						//Fail 2
 						$URL.="&deployReturn=fail2e" ;
 						header("Location: {$URL}");
-						break ; 
+						exit() ; 
 					}	
 					
 					//Get next autoincrement
@@ -186,7 +180,7 @@ else {
 						//Fail 2
 						$URL.="&deployReturn=fail2f" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}	
 					
 					$rowAI=$resultAI->fetch();
@@ -194,6 +188,7 @@ else {
 					
 					$lessonCount=0 ;
 					$sequenceNumber=0 ;
+					$lessDescriptions=array() ;
 					foreach ($orders AS $order) {
 						//It is a lesson, so add it
 						if (strpos($order, "lessonHeader-")!==FALSE) {
@@ -202,6 +197,8 @@ else {
 								$AI=str_pad($AI, 14, "0", STR_PAD_LEFT) ;
 							}
 							$summary="Part of the " . $row["name"] . " unit." ;
+							$lessonDescriptions[$AI][0]=$AI ;
+							$lessonDescriptions[$AI][1]="" ;
 							$teachersNotes=getSettingByScope($connection2, "Planner", "teachersNotesTemplate") ;
 							$viewableStudents=$_POST["viewableStudents"] ;
 							$viewableParents=$_POST["viewableParents"] ;
@@ -227,6 +224,7 @@ else {
 						//It is a block, so add it to the last added lesson
 						else {
 							$titles=$_POST["title" . $order] ;
+							$lessonDescriptions[$AI][1].=$titles . ", " ;
 							$types=$_POST["type" . $order] ;
 							$lengths=$_POST["length" . $order] ;
 							$contents=$_POST["contents" . $order] ;
@@ -261,6 +259,23 @@ else {
 								$partialFail=true;
 							}
 							$sequenceNumber++ ;
+						}
+					}
+					
+					//Update lesson description
+					foreach ($lessonDescriptions AS $lessonDescription) {
+						$lessonDescription[1]=substr($lessonDescription[1],0,-2) ;
+						if (strlen($lessonDescription[1])>75) {
+							$lessonDescription[1]=substr($lessonDescription[1],0, 72) . "..." ;	
+						}
+						try {
+							$data=array("summary"=>$lessonDescription[1], "gibbonPlannerEntryID"=>$lessonDescription[0]); 
+							$sql="UPDATE gibbonPlannerEntry SET summary=:summary WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID" ;
+							$result=$connection2->prepare($sql);
+							$result->execute($data);
+						}
+						catch(PDOException $e) {
+							$partialFail=true;
 						}
 					}
 

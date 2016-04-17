@@ -25,45 +25,22 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Activities/activities_payment.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Create Invoices') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Create Invoices') . "</div>" ;
 	print "</div>" ;
-	
-	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-	$updateReturnMessage="" ;
-	$class="error" ;
-	if (!($updateReturn=="")) {
-		if ($updateReturn=="fail0") {
-			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
-		}
-		else if ($updateReturn=="fail2") {
-			$updateReturnMessage=_("Your request failed due to a database error.") ;	
-		}
-		else if ($updateReturn=="fail4") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($updateReturn=="fail5") {
-			$updateReturnMessage=_("Your request was successful, but some data was not properly saved.") ;
-		}
-		else if ($updateReturn=="success0") {
-			$updateReturnMessage=_("Your request was completed successfully.") ;	
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $updateReturnMessage;
-		print "</div>" ;
-	} 
+
+	if (isset($_GET["return"])) { returnProcess($_GET["return"], null, null); }
 	
 	print "<h2>" ;
-		print _("Invoices Not Yet Generated") ;
+		print __($guid, "Invoices Not Yet Generated") ;
 	print "</h2>" ;
 	print "<p>" ;
-		print sprintf(_('The list below shows students who have been accepted for an activity in the current year, who have yet to have invoices generated for them. You can generate invoices to a given %1$sBilling Schedule%2$s, or you can simulate generation (e.g. mark them as generated, but not actually produce an invoice).'), "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/billingSchedule_manage.php'>", "</a>") ;
+		print sprintf(__($guid, 'The list below shows students who have been accepted for an activity in the current year, who have yet to have invoices generated for them. You can generate invoices to a given %1$sBilling Schedule%2$s, or you can simulate generation (e.g. mark them as generated, but not actually produce an invoice).'), "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/billingSchedule_manage.php'>", "</a>") ;
 	print "</p>" ;
 	
 	try {
@@ -78,7 +55,7 @@ else {
 
 	if ($result->rowCount()<1) {
 		print "<div class='error'>" ;
-			print _("There are no records to display.") ;
+			print __($guid, "There are no records to display.") ;
 		print "</div>" ;
 	}
 	else {
@@ -88,9 +65,9 @@ else {
 			print "<fieldset style='border: none'>" ;
 				print "<div class='linkTop' style='height: 27px'>" ;
 					?>
-					<input style='margin-top: 0px; float: right' type='submit' value='<?php print _('Go') ?>'>
+					<input style='margin-top: 0px; float: right' type='submit' value='<?php print __($guid, 'Go') ?>'>
 					<select name="action" id="action" style='width:120px; float: right; margin-right: 1px;'>
-						<option value="Select action"><?php print _('Select action') ?></option>
+						<option value="Select action"><?php print __($guid, 'Select action') ?></option>
 						<?php
 						try {
 							$dataSchedule=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
@@ -100,15 +77,15 @@ else {
 						}
 						catch(PDOException $e) { }
 						while ($rowSchedule=$resultSchedule->fetch()) {
-							print "<option value='" . $rowSchedule["gibbonFinanceBillingScheduleID"] . "'>" . sprintf(_('Generate Invoices To %1$s'), $rowSchedule["name"]) . "</option>" ;
+							print "<option value='" . $rowSchedule["gibbonFinanceBillingScheduleID"] . "'>" . sprintf(__($guid, 'Generate Invoices To %1$s'), $rowSchedule["name"]) . "</option>" ;
 						
 						}
 						?>
-						<option value="Generate Invoice - Simulate"><?php print _('Generate Invoice - Simulate') ?></option>
+						<option value="Generate Invoice - Simulate"><?php print __($guid, 'Generate Invoice - Simulate') ?></option>
 					</select>
 					<script type="text/javascript">
 						var action=new LiveValidation('action');
-						action.add(Validate.Exclusion, { within: ['Select action'], failureMessage: "<?php print _('Select something!') ?>"});
+						action.add(Validate.Exclusion, { within: ['Select action'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 					</script>
 					<?php
 				print "</div>" ;
@@ -116,16 +93,16 @@ else {
 				print "<table cellspacing='0' style='width: 100%'>" ;
 					print "<tr class='head'>" ;
 						print "<th>" ;
-							print _("Roll Group") ;
+							print __($guid, "Roll Group") ;
 						print "</th>" ;
 						print "<th>" ;
-							print _("Student") ;
+							print __($guid, "Student") ;
 						print "</th>" ;
 						print "<th>" ;
-							print _("Activity") ;
+							print __($guid, "Activity") ;
 						print "</th>" ;
 						print "<th>" ;
-							print _("Cost") . "<br/>" ;
+							print __($guid, "Cost") . "<br/>" ;
 							print "<span style='font-style: italic; font-size: 85%'>" . $_SESSION[$guid]["currency"] . "</span>" ;
 						print "</th>" ;
 						print "<th>" ;
@@ -180,7 +157,7 @@ else {
 					if ($count==0) {
 						print "<tr class=$rowNum>" ;
 							print "<td colspan=4>" ;
-								print _("There are no records to display.") ;
+								print __($guid, "There are no records to display.") ;
 							print "</td>" ;
 						print "</tr>" ;
 					}
@@ -193,7 +170,7 @@ else {
 	}
 	
 	print "<h2>" ;
-		print _("Invoices Generated") ;
+		print __($guid, "Invoices Generated") ;
 	print "</h2>" ;
 	
 	try {
@@ -208,7 +185,7 @@ else {
 
 	if ($result->rowCount()<1) {
 		print "<div class='error'>" ;
-			print _("There are no records to display.") ;
+			print __($guid, "There are no records to display.") ;
 		print "</div>" ;
 	}
 	else {
@@ -217,20 +194,20 @@ else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print _("Roll Group") ;
+					print __($guid, "Roll Group") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Student") ;
+					print __($guid, "Student") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Activity") ;
+					print __($guid, "Activity") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Cost") . "<br/>" ;
+					print __($guid, "Cost") . "<br/>" ;
 					print "<span style='font-style: italic; font-size: 85%'>" . $_SESSION[$guid]["currency"] . "</span>" ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Invoice Number") . "<br/>" ;
+					print __($guid, "Invoice Number") . "<br/>" ;
 				print "</th>" ;
 			print "</tr>" ;
 			
@@ -281,7 +258,7 @@ else {
 			if ($count==0) {
 				print "<tr class=$rowNum>" ;
 					print "<td colspan=4>" ;
-						print _("There are no records to display.") ;
+						print __($guid, "There are no records to display.") ;
 					print "</td>" ;
 				print "</tr>" ;
 			}

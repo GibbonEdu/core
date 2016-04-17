@@ -22,13 +22,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/financeSettings.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Invoice & Receipt Settings') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Invoice & Receipt Settings') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -36,19 +36,19 @@ else {
 	$class="error" ;
 	if (!($updateReturn=="")) {
 		if ($updateReturn=="fail0") {
-			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($updateReturn=="fail1") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail2") {
-			$updateReturnMessage=_("One or more of the fields in your request failed due to a database error.") ;	
+			$updateReturnMessage=__($guid, "One or more of the fields in your request failed due to a database error.") ;	
 		}
 		else if ($updateReturn=="fail3") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="success0") {
-			$updateReturnMessage=_("Your request was completed successfully.") ;	
+			$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -58,10 +58,10 @@ else {
 	?>
 	
 	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/financeSettingsProcess.php" ?>">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><?php print _('General Settings') ?></h3>
+					<h3><?php print __($guid, 'General Settings') ?></h3>
 				</td>
 			</tr>
 			<tr>
@@ -76,11 +76,11 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td style='width: 275px'> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Email);
@@ -102,18 +102,18 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
 						<?php
 						$selected="" ;
 						if ($row["value"]=="Y" ) { $selected="selected" ; }
-						print "<option $selected value='Y'>" . ynExpander('Y') . "</option>" ;
+						print "<option $selected value='Y'>" . ynExpander($guid, 'Y') . "</option>" ;
 						$selected="" ;
 						if ($row["value"]=="N" ) { $selected="selected" ; }
-						print "<option $selected value='N'>" . ynExpander('N') . "</option>" ;
+						print "<option $selected value='N'>" . ynExpander($guid, 'N') . "</option>" ;
 						?>			
 					</select>
 				</td>
@@ -132,20 +132,20 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i>
+					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
+					<span class="emphasis small">
 						<?php 
-							if ($row["description"]!="") { print _($row["description"]) ; } 
+							if ($row["description"]!="") { print __($guid, $row["description"]) ; } 
 							$currency=getSettingByScope($connection2, "System", "currency") ;
 							if ($currency!=FALSE AND $currency!="") {
-								print " " . sprintf(_('In %1$s.'), $currency) ;
+								print " " . sprintf(__($guid, 'In %1$s.'), $currency) ;
 							}
 							?> 
 					
-					</i></span>
+					</span>
 				</td>
 				<td class="right">
-					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Numericality);
@@ -155,7 +155,7 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><?php print _('Invoices') ?></h3>
+					<h3><?php print __($guid, 'Invoices') ?></h3>
 				</td>
 			</tr>
 			<tr>
@@ -170,11 +170,11 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" type="text" style="width: 300px" rows=4><?php print $row["value"] ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" type="text" class="standardWidth" rows=4><?php print $row["value"] ?></textarea>
 				</td>
 			</tr>
 			<tr>
@@ -189,11 +189,11 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" type="text" style="width: 300px" rows=4><?php print $row["value"] ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" type="text" class="standardWidth" rows=4><?php print $row["value"] ?></textarea>
 				</td>
 			</tr>
 			<tr>
@@ -210,11 +210,11 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
 						<?php
 						$selected="" ;
 						if ($row["value"]=="Invoice ID" ) { $selected="selected" ; }
@@ -232,7 +232,7 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><?php print _('Receipts') ?></h3>
+					<h3><?php print __($guid, 'Receipts') ?></h3>
 				</td>
 			</tr>
 			<tr>
@@ -247,11 +247,11 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" type="text" style="width: 300px" rows=4><?php print $row["value"] ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" type="text" class="standardWidth" rows=4><?php print $row["value"] ?></textarea>
 				</td>
 			</tr>
 			<tr>
@@ -266,11 +266,11 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" type="text" style="width: 300px" rows=4><?php print $row["value"] ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" type="text" class="standardWidth" rows=4><?php print $row["value"] ?></textarea>
 				</td>
 			</tr>
 			<tr>
@@ -287,18 +287,18 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
 						<?php
 						$selected="" ;
 						if ($row["value"]=="Y" ) { $selected="selected" ; }
-						print "<option $selected value='Y'>" . ynExpander('Y') . "</option>" ;
+						print "<option $selected value='Y'>" . ynExpander($guid, 'Y') . "</option>" ;
 						$selected="" ;
 						if ($row["value"]=="N" ) { $selected="selected" ; }
-						print "<option $selected value='N'>" . ynExpander('N') . "</option>" ;
+						print "<option $selected value='N'>" . ynExpander($guid, 'N') . "</option>" ;
 						?>			
 					</select>
 				</td>
@@ -306,7 +306,7 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><?php print _('Reminders') ?></h3>
+					<h3><?php print __($guid, 'Reminders') ?></h3>
 				</td>
 			</tr>
 			<tr>
@@ -321,11 +321,11 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" type="text" style="width: 300px" rows=4><?php print $row["value"] ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" type="text" class="standardWidth" rows=4><?php print $row["value"] ?></textarea>
 				</td>
 			</tr>
 			<tr>
@@ -340,11 +340,11 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" type="text" style="width: 300px" rows=4><?php print $row["value"] ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" type="text" class="standardWidth" rows=4><?php print $row["value"] ?></textarea>
 				</td>
 			</tr>
 			<tr>
@@ -359,17 +359,17 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" type="text" style="width: 300px" rows=4><?php print $row["value"] ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" type="text" class="standardWidth" rows=4><?php print $row["value"] ?></textarea>
 				</td>
 			</tr>
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><?php print _('Expenses') ?></h3>
+					<h3><?php print __($guid, 'Expenses') ?></h3>
 				</td>
 			</tr>
 			<tr>
@@ -386,15 +386,15 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i>
+					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+					<span class="emphasis small">
 						<?php 
-						if ($row["description"]!="") { print _($row["description"]) ; } 
+						if ($row["description"]!="") { print __($guid, $row["description"]) ; } 
 						?> 
-					</i></span>
+					</span>
 				</td>
 				<td class="right">
-					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Presence);
@@ -415,11 +415,11 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
 						<?php
 						$selected="" ;
 						if ($row["value"]=="One Of" ) { $selected="selected" ; }
@@ -448,18 +448,18 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
 						<?php
 						$selected="" ;
 						if ($row["value"]=="Y" ) { $selected="selected" ; }
-						print "<option $selected value='Y'>" . ynExpander('Y') . "</option>" ;
+						print "<option $selected value='Y'>" . ynExpander($guid, 'Y') . "</option>" ;
 						$selected="" ;
 						if ($row["value"]=="N" ) { $selected="selected" ; }
-						print "<option $selected value='N'>" . ynExpander('N') . "</option>" ;
+						print "<option $selected value='N'>" . ynExpander($guid, 'N') . "</option>" ;
 						?>			
 					</select>
 				</td>
@@ -476,11 +476,11 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" type="text" style="width: 300px" rows=4><?php print $row["value"] ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" type="text" class="standardWidth" rows=4><?php print $row["value"] ?></textarea>
 				</td>
 			</tr>
 			<tr>
@@ -497,18 +497,18 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
 						<?php
 						$selected="" ;
 						if ($row["value"]=="Y" ) { $selected="selected" ; }
-						print "<option $selected value='Y'>" . ynExpander('Y') . "</option>" ;
+						print "<option $selected value='Y'>" . ynExpander($guid, 'Y') . "</option>" ;
 						$selected="" ;
 						if ($row["value"]=="N" ) { $selected="selected" ; }
-						print "<option $selected value='N'>" . ynExpander('N') . "</option>" ;
+						print "<option $selected value='N'>" . ynExpander($guid, 'N') . "</option>" ;
 						?>			
 					</select>
 				</td>
@@ -525,11 +525,11 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
 						<?php
 						print "<option value=''></option>" ;
 						try {
@@ -562,11 +562,11 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
 						<?php
 						print "<option value=''></option>" ;
 						try {
@@ -591,11 +591,11 @@ else {
 			
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+					<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 				</td>
 			</tr>
 		</table>

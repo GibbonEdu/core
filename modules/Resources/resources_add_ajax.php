@@ -24,14 +24,8 @@ include "../../functions.php" ;
 include "../../config.php" ;
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 //Module includes
 include $_SESSION[$guid]["absolutePath"] . "/modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -68,14 +62,14 @@ if (isset($_GET["alpha"])) {
 if (isActionAccessible($guid, $connection2, "/modules/Resources/resources_manage_add.php")==FALSE) {
 	//Acess denied
 	$output.="<div class='error'>" ;
-		$output.=_("Your request failed because you do not have access to this action.") ;
+		$output.=__($guid, "Your request failed because you do not have access to this action.") ;
 	$output.="</div>" ;
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, "/modules/Resources/resources_manage.php", $connection2) ;
 	if ($highestAction==FALSE) {
 		$output.="<div class='error'>" ;
-		$output.=_("The highest grouped action cannot be determined.") ;
+		$output.=__($guid, "The highest grouped action cannot be determined.") ;
 		$output.="</div>" ;
 	}
 	else {
@@ -91,7 +85,7 @@ else {
 		 
 				$output.="$('#" . $id . "ajaxForm').submit(function() {" ; 
 					$output.="$(this).ajaxSubmit(options);" ; 
-					$output.="$(\"." .$id . "resourceAddSlider\").html(\"<div class='resourceAddSlider'><img style='margin: 10px 0 5px 0' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/loading.gif' alt='" . _('Uploading') . "' onclick='return false;' /><br/>" . _('Loading') . "</div>\");" ;
+					$output.="$(\"." .$id . "resourceAddSlider\").html(\"<div class='resourceAddSlider'><img style='margin: 10px 0 5px 0' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/loading.gif' alt='" . __($guid, 'Uploading') . "' onclick='return false;' /><br/>" . __($guid, 'Loading') . "</div>\");" ;
 					$output.="return false;" ; 
 				$output.="});" ; 
 			$output.="});" ; 
@@ -106,14 +100,14 @@ else {
 			$output.="<tr id='" . $id . "resourceInsert'>" ;
 				$output.="<td colspan=2 style='padding-top: 0px'>" ; 
 					$output.="<div style='margin: 0px' class='linkTop'><a href='javascript:void(0)' onclick='formReset(); \$(\"." .$id . "resourceAddSlider\").slideUp();'><img title='Close' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/></a></div>" ;
-					$output.="<h3 style='margin-top: 0px; font-size: 140%'>" . _('Add & Insert A New Resource') . "</h3>" ;
-					$output.="<p>" . _('Use the form below to add a new resource to Gibbon. If the addition is successful, then it will be automatically inserted into your work above. Note that you cannot create HTML resources here (you have to go to the Resources module for that).') . "</p>" ;
+					$output.="<h3 style='margin-top: 0px; font-size: 140%'>" . __($guid, 'Add & Insert A New Resource') . "</h3>" ;
+					$output.="<p>" . __($guid, 'Use the form below to add a new resource to Gibbon. If the addition is successful, then it will be automatically inserted into your work above. Note that you cannot create HTML resources here (you have to go to the Resources module for that).') . "</p>" ;
 					$output.="<form id='" . $id . "ajaxForm' action='#'>" ;
 						$output.="<table cellspacing='0' style='width: 100%'>" ;
 							$output.="<tr><td style='width: 30%'></td><td></td></tr>" ;
 							$output.="<tr>" ;
 								$output.="<td colspan=2> " ;
-									$output.="<h4>" . _('Resource Contents') . "</h4>" ;
+									$output.="<h4>" . __($guid, 'Resource Contents') . "</h4>" ;
 								$output.="</td>" ;
 							$output.="</tr>" ;
 						
@@ -146,13 +140,13 @@ else {
 						
 							$output.="<tr>" ;
 								$output.="<td>" ;
-									$output.="<b>" . _('Type') . " *</b><br/>" ;
+									$output.="<b>" . __($guid, 'Type') . " *</b><br/>" ;
 								$output.="</td>" ;
 								$output.="<td class='right'>" ;
 									$output.="<select name='" . $id . "type' id='" . $id . "type' class='" . $id . "type' style='width: 302px'>" ;
 										$output.="<option value='Please select...'>Please select...</option>" ;
-										$output.="<option id='type' name='type' value='File'>" . _('File') . "</option>" ;
-										$output.="<option id='type' name='type' value='Link'>" . _('Link') . "</option>" ;
+										$output.="<option id='type' name='type' value='File'>" . __($guid, 'File') . "</option>" ;
+										$output.="<option id='type' name='type' value='Link'>" . __($guid, 'Link') . "</option>" ;
 									$output.="</select>" ;
 									$output.="<script type='text/javascript'>" ;
 										$output.="var " . $id . "type=new LiveValidation('" . $id . "type');" ;
@@ -162,7 +156,7 @@ else {
 							$output.="</tr>" ;
 							$output.="<tr id='" . $id . "resourceFile'>" ;
 								$output.="<td>" ;
-									$output.="<b>" . _('File') . " *</b><br/>" ;
+									$output.="<b>" . __($guid, 'File') . " *</b><br/>" ;
 								$output.="</td>" ;
 								$output.="<td class='right'>" ;
 									$output.="<input type='file' name='" . $id . "file' id='" . $id . "file'><br/><br/>" ;
@@ -184,12 +178,12 @@ else {
 										$output.=$id . "file.add(Validate.Presence);" ;
 										$output.=$id . "file.disable();" ;
 									$output.="</script>" ;
-									$output.=getMaxUpload() ;
+									$output.=getMaxUpload($guid) ;
 								$output.="</td>" ;
 							$output.="</tr>" ;
 							$output.="<tr id='" . $id . "resourceLink'>" ;
 								$output.="<td>" ;
-									$output.="<b>" . _('Link') . " *</b><br/>" ;
+									$output.="<b>" . __($guid, 'Link') . " *</b><br/>" ;
 								$output.="</td>" ;
 								$output.="<td class='right'>" ;
 									$output.="<input name='" . $id . "link' id='" . $id . "link' maxlength=255 value='' type='text' style='width: 300px'>" ;
@@ -205,13 +199,13 @@ else {
 						
 							$output.="<tr>" ;
 								$output.="<td colspan=2>" ;
-									$output.="<h4>" . _('Resource Details') . "</h4>" ;
+									$output.="<h4>" . __($guid, 'Resource Details') . "</h4>" ;
 								$output.="</td>" ;
 							$output.="</tr>" ;
 							$output.="<tr>" ;
 								$output.="<td> " ;
-									$output.="<b>" . _('Name') . " *</b><br/>" ;
-									$output.="<span style='font-size: 90%'><i></i></span>" ;
+									$output.="<b>" . __($guid, 'Name') . " *</b><br/>" ;
+									$output.="<span style='font-size: 90%'><i></span>" ;
 								$output.="</td>" ;
 								$output.="<td class='right'>" ;
 									$output.="<input name='" . $id . "name' id='" . $id . "name' maxlength=60 value='' type='text' style='width: 300px'>" ;
@@ -240,8 +234,8 @@ else {
 									$options=explode(",", $options) ;
 									$output.="<tr>" ;
 										$output.="<td> " ;
-											$output.="<b>" . _('Category') . " *</b><br/>" ;
-											$output.="<span style='font-size: 90%'><i></i></span>" ;
+											$output.="<b>" . __($guid, 'Category') . " *</b><br/>" ;
+											$output.="<span style='font-size: 90%'><i></span>" ;
 										$output.="</td>" ;
 										$output.="<td class='right'>" ;
 											$output.="<select name='" . $id . "category' id='" . $id . "category' style='width: 302px'>" ;
@@ -283,8 +277,8 @@ else {
 									$options=explode(",", $options) ;
 									$output.="<tr>" ;
 										$output.="<td>" ;
-											$output.="<b>" . _('Purpose') . "</b><br/>" ;
-											$output.="<span style='font-size: 90%'><i></i></span>" ;
+											$output.="<b>" . __($guid, 'Purpose') . "</b><br/>" ;
+											$output.="<span style='font-size: 90%'><i></span>" ;
 										$output.="</td>" ;
 										$output.="<td class='right'>" ;
 											$output.="<select name='" . $id . "purpose' id='" . $id . "purpose' style='width: 302px'>" ;
@@ -300,8 +294,8 @@ else {
 						
 							$output.="<tr>" ;
 								$output.="<td> " ;
-									$output.="<b>" . _('Tags') . " *</b><br/>" ;
-									$output.="<span style='font-size: 90%'><i>" . _('Use lots of tags!') . "</i></span>" ;
+									$output.="<b>" . __($guid, 'Tags') . " *</b><br/>" ;
+									$output.="<span style='font-size: 90%'><i>" . __($guid, 'Use lots of tags!') . "</span>" ;
 								$output.="</td>" ;
 								$output.="<td class='right'>" ;
 									//Get tag list
@@ -342,8 +336,8 @@ else {
 					
 							$output.="<tr>" ;
 								$output.="<td>" ;
-									$output.="<b><?php print _('Year Groups') ?></b><br/>" ;
-									$output.="<span style='font-size: 90%'><i>Students year groups which may participate<br/></i></span>" ;
+									$output.="<b><?php print __($guid, 'Year Groups') ?></b><br/>" ;
+									$output.="<span style='font-size: 90%'><i>Students year groups which may participate<br/></span>" ;
 								$output.="</td>" ;
 								$output.="<td class='right'>" ;
 									$output.="<fieldset style='border: none'>" ;
@@ -354,15 +348,15 @@ else {
 											$output.="});" ;
 										$output.="});" ;
 									$output.="</script>" ;
-									$output.=_("All/None") . " <input type='checkbox' class='checkall' checked><br/>" ;
+									$output.=__($guid, "All/None") . " <input type='checkbox' class='checkall' checked><br/>" ;
 									$yearGroups=getYearGroups($connection2) ;
 									if ($yearGroups=="") {
-										$output.="<i>" . _('No year groups available.') . "</i>" ;
+										$output.="<i>" . __($guid, 'No year groups available.') . "</i>" ;
 									}
 									else {
 										for ($i=0; $i<count($yearGroups); $i=$i+2) {
 											$checked="checked " ;
-											$output.=_($yearGroups[($i+1)]) . " <input $checked type='checkbox' name='" . $id . "gibbonYearGroupIDCheck" . ($i)/2 . "'><br/>" ; 
+											$output.=__($guid, $yearGroups[($i+1)]) . " <input $checked type='checkbox' name='" . $id . "gibbonYearGroupIDCheck" . ($i)/2 . "'><br/>" ; 
 											$output.="<input type='hidden' name='" . $id . "gibbonYearGroupID" . ($i)/2 . "' value='" . $yearGroups[$i] . "'>" ;
 										}
 									}
@@ -373,8 +367,8 @@ else {
 						
 							$output.="<tr>" ;
 								$output.="<td>" ;
-									$output.="<b>" . _('Description') . "</b><br/>" ;
-									$output.="<span style='font-size: 90%'><i></i></span>" ;
+									$output.="<b>" . __($guid, 'Description') . "</b><br/>" ;
+									$output.="<span style='font-size: 90%'><i></span>" ;
 								$output.="</td>" ;
 								$output.="<td class='right'>" ;
 									$output.="<textarea name='" . $id . "description' id='" . $id . "description' rows=8 style='width: 300px'></textarea>" ;
@@ -390,7 +384,7 @@ else {
 							$output.="</tr>" ;
 							$output.="<tr>" ;
 								$output.="<td class='right' colspan=2>" ;
-									$output.="<span style='font-size: 90%'><i>* " . _("denotes a required field") . "</i></span>" ;
+									$output.="<span style='font-size: 90%'><i>* " . __($guid, "denotes a required field") . "</span>" ;
 								$output.="</td>" ;
 							$output.="</tr>" ;
 						$output.="</table>" ;

@@ -21,16 +21,8 @@ require getcwd() . "/../config.php" ;
 require getcwd() . "/../functions.php" ;
 require getcwd() . "/../lib/PHPMailer/class.phpmailer.php";
 						
-//New PDO DB connection
-if ($databaseServer=="localhost") {
-	$databaseServer="127.0.0.1" ;
-}
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) { }
+$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 @session_start() ;
 
@@ -53,7 +45,7 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
 //Check for CLI, so this cannot be run through browser
 //if (php_sapi_name()!="cli") { 
-//	print _("This script cannot be run from a browser, only via CLI.") . "\n\n" ;
+//	print __($guid, "This script cannot be run from a browser, only via CLI.") . "\n\n" ;
 //}
 //else {
 	//Check that one of the days in question is a school day
@@ -65,11 +57,11 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 	}
 	
 	if ($isSchoolOpen==FALSE) { //No school on any day in the last week
-		print _("School is not open, so no emails will be sent.") . "\n\n" ;
+		print __($guid, "School is not open, so no emails will be sent.") . "\n\n" ;
 	}
 	else { //Yes school, so go ahead.
 		if ($_SESSION[$guid]["organisationEmail"]=="") {
-			print _("This script cannot be run, as no school email address has been set.") . "\n\n" ;
+			print __($guid, "This script cannot be run, as no school email address has been set.") . "\n\n" ;
 		}
 		else {
 			//Lock table
@@ -83,7 +75,7 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 			}			
 
 			if (!$lock) { 
-				print _("Your request failed due to a database error.") ;
+				print __($guid, "Your request failed due to a database error.") ;
 			}
 			else { 
 				//Get list of all current students
@@ -100,13 +92,13 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 				$sendFailCount=0 ;
 		
 				if ($studentCount<1) { //No students to display
-					print _("There are no records to display.") . "\n\n" ;
+					print __($guid, "There are no records to display.") . "\n\n" ;
 				}
 				else { //Students to display so get going
 					while ($row=$result->fetch()) {
 						//Get all homework for the past week, ready for email
 						$homework="" ;
-						$homework.="<h2>" . _('Homework') . "</h2>" ;
+						$homework.="<h2>" . __($guid, 'Homework') . "</h2>" ;
 						try {
 							$dataHomework=array("gibbonPersonID1"=>$row["gibbonPersonID"], "gibbonSchoolYearID1"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID2"=>$row["gibbonPersonID"], "gibbonSchoolYearID2"=>$_SESSION[$guid]["gibbonSchoolYearID"]) ;
 							$sqlHomework="
@@ -121,19 +113,19 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 						if ($resultHomework->rowCount()>0) {
 							$homework.="<ul>" ;
 								while ($rowHomework=$resultHomework->fetch()) {
-									$homework.="<li><b>" . $rowHomework["course"] . "." . $rowHomework["class"]  . "</b> - " . $rowHomework["name"] . " - " . sprintf(_('Due on %1$s at %2$s.'), dateConvertBack($guid, substr($rowHomework["homeworkDueDateTime"],0,10)), substr($rowHomework["homeworkDueDateTime"],11,5)) . "</li>" ;
+									$homework.="<li><b>" . $rowHomework["course"] . "." . $rowHomework["class"]  . "</b> - " . $rowHomework["name"] . " - " . sprintf(__($guid, 'Due on %1$s at %2$s.'), dateConvertBack($guid, substr($rowHomework["homeworkDueDateTime"],0,10)), substr($rowHomework["homeworkDueDateTime"],11,5)) . "</li>" ;
 								}
 							$homework.="</ul><br/>" ;
 						}
 						else {
-							$homework.=_("There are no records to display.") . "<br/><br/>" ;
+							$homework.=__($guid, "There are no records to display.") . "<br/><br/>" ;
 						}
 				
 						$behaviour="" ;
 						$parentWeeklyEmailSummaryIncludeBehaviour=getSettingByScope($connection2, "Planner", "parentWeeklyEmailSummaryIncludeBehaviour" ) ; 
 						if ($parentWeeklyEmailSummaryIncludeBehaviour=="Y") {
 							//Get behaviour records for the past week, ready for email
-							$behaviour.="<h2>" . _('Behaviour') . "</h2>" ;
+							$behaviour.="<h2>" . __($guid, 'Behaviour') . "</h2>" ;
 							try {
 								$dataBehaviourPositive=array("gibbonPersonID"=>$row["gibbonPersonID"], "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]) ;
 								$sqlBehaviourPositive="SELECT * FROM gibbonBehaviour WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND type='Positive' AND date>'" . date('Y-m-d', strtotime("-1 week")) . "' AND date<='" . date("Y-m-d") . "'" ;
@@ -149,8 +141,8 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 							}
 							catch(PDOException $e) { }
 							$behaviour.="<ul>" ;
-								$behaviour.="<li>" . _("Positive behaviour records this week") . ": " . $resultBehaviourPositive->rowCount() . "</li>" ;
-								$behaviour.="<li>" . _("Negative behaviour records this week") . ": " . $resultBehaviourNegative->rowCount() . "</li>" ;
+								$behaviour.="<li>" . __($guid, "Positive behaviour records this week") . ": " . $resultBehaviourPositive->rowCount() . "</li>" ;
+								$behaviour.="<li>" . __($guid, "Negative behaviour records this week") . ": " . $resultBehaviourNegative->rowCount() . "</li>" ;
 							$behaviour.="</ul><br/>" ;
 						}
 						
@@ -201,12 +193,12 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 						
 								if ($keyReadFail==TRUE) {
 									$sendFailCount++ ;
-									error_log(sprintf(_('Planner Wekly Summary Email: an error (%1$s) occured sending an email to %2$s.'), "1", $rowMember["preferredName"] . " " . $rowMember["surname"])) ;
+									error_log(sprintf(__($guid, 'Planner Wekly Summary Email: an error (%1$s) occured sending an email to %2$s.'), "1", $rowMember["preferredName"] . " " . $rowMember["surname"])) ;
 								}
 								else {
 									if ($resultKeyRead->rowCount()!=0) {
 										$sendFailCount++ ;
-										error_log(sprintf(_('Planner Wekly Summary Email: an error (%1$s) occured sending an email to %2$s.'), "2", $rowMember["preferredName"] . " " . $rowMember["surname"])) ;
+										error_log(sprintf(__($guid, 'Planner Wekly Summary Email: an error (%1$s) occured sending an email to %2$s.'), "2", $rowMember["preferredName"] . " " . $rowMember["surname"])) ;
 									}
 									else {
 										//Make and store unique code for confirmation. add it to email text.
@@ -233,7 +225,7 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 						
 										if ($continue==FALSE) {
 											$sendFailCount++ ;
-											error_log(sprintf(_('Planner Wekly Summary Email: an error (%1$s) occured sending an email to %2$s.'), "3", $rowMember["preferredName"] . " " . $rowMember["surname"])) ;
+											error_log(sprintf(__($guid, 'Planner Wekly Summary Email: an error (%1$s) occured sending an email to %2$s.'), "3", $rowMember["preferredName"] . " " . $rowMember["surname"])) ;
 										}
 										else {
 											//Write key to database
@@ -248,16 +240,16 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 							
 											if ($keyWriteFail==TRUE) {
 												$sendFailCount++ ;
-												error_log(sprintf(_('Planner Wekly Summary Email: an error (%1$s) occured sending an email to %2$s.'), "4", $rowMember["preferredName"] . " " . $rowMember["surname"])) ;
+												error_log(sprintf(__($guid, 'Planner Wekly Summary Email: an error (%1$s) occured sending an email to %2$s.'), "4", $rowMember["preferredName"] . " " . $rowMember["surname"])) ;
 											}
 											else {
 												//Prep email
-												$body=sprintf(_('Dear %1$s'), $rowMember["preferredName"] . " " . $rowMember["surname"]) . ",<br/><br/>" ;
-												$body.=sprintf(_('Please find below a summary of homework and behaviour for %1$s.'), $row["preferredName"] . " " . $row["surname"]) . "<br/><br/>" ;
+												$body=sprintf(__($guid, 'Dear %1$s'), $rowMember["preferredName"] . " " . $rowMember["surname"]) . ",<br/><br/>" ;
+												$body.=sprintf(__($guid, 'Please find below a summary of homework and behaviour for %1$s.'), $row["preferredName"] . " " . $row["surname"]) . "<br/><br/>" ;
 												$body.=$homework ;
 												$body.=$behaviour ;
-												$body.=sprintf(_('Please %1$sclick here%2$s to confirm that you have received and read this summary email.'), "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_parentWeeklyEmailSummaryConfirm.php&key=$key&gibbonPersonIDStudent=" . $row["gibbonPersonID"] . "&gibbonPersonIDParent=" . $rowMember["gibbonPersonID"] . "&gibbonSchoolYearID=" . $_SESSION[$guid]["gibbonSchoolYearID"] . "'>", "</a>" ) ;
-												$body.="<p style='font-style: italic;'>" . sprintf(_('Email sent via %1$s at %2$s.'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationName"]) ."</p>" ;
+												$body.=sprintf(__($guid, 'Please %1$sclick here%2$s to confirm that you have received and read this summary email.'), "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_parentWeeklyEmailSummaryConfirm.php&key=$key&gibbonPersonIDStudent=" . $row["gibbonPersonID"] . "&gibbonPersonIDParent=" . $rowMember["gibbonPersonID"] . "&gibbonSchoolYearID=" . $_SESSION[$guid]["gibbonSchoolYearID"] . "'>", "</a>" ) ;
+												$body.="<p class='emphasis'>" . sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationName"]) ."</p>" ;
 												$bodyPlain=preg_replace('#<br\s*/?>#i', "\n", $body) ;
 												$bodyPlain=str_replace("</p>", "\n\n", $bodyPlain) ;
 												$bodyPlain=str_replace("</div>", "\n\n", $bodyPlain) ;
@@ -273,7 +265,7 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 												$mail->CharSet="UTF-8"; 
 												$mail->Encoding="base64" ;
 												$mail->IsHTML(true);                            
-												$mail->Subject=sprintf(_('Weekly Planner Summary for %1$s via %2$s at %3$s'), $row["surname"] . ", " . $row["preferredName"] . " (" . $row["name"] . ")", $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationName"]) ;
+												$mail->Subject=sprintf(__($guid, 'Weekly Planner Summary for %1$s via %2$s at %3$s'), $row["surname"] . ", " . $row["preferredName"] . " (" . $row["name"] . ")", $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationName"]) ;
 												$mail->Body=$body ;
 												$mail->AltBody=$bodyPlain ;
 		
@@ -282,7 +274,7 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 													$sendSucceedCount++ ;
 												}
 												else {
-													error_log(sprintf(_('Planner Wekly Summary Email: an error (%1$s) occured sending an email to %2$s.'), "5", $rowMember["preferredName"] . " " . $rowMember["surname"])) ;
+													error_log(sprintf(__($guid, 'Planner Wekly Summary Email: an error (%1$s) occured sending an email to %2$s.'), "5", $rowMember["preferredName"] . " " . $rowMember["surname"])) ;
 													$sendFailCount++ ;
 												}
 											}
@@ -303,11 +295,11 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 			catch(PDOException $e) { }		
 		
 			//Notify administrator
-			$body=_("Week") . ": " . date("W") . "<br/>" ;	
-			$body.=_("Student Count") . ": " . $studentCount . "<br/>" ;	
-			$body.=_("Send Succeed Count") . ": " . $sendSucceedCount . "<br/>" ;	
-			$body.=_("Send Fail Count") . ": " . $sendFailCount . "<br/><br/>" ;	
-			$notificationText=_('A Planner CLI script has run.') . "<br/>" . $body ;
+			$body=__($guid, "Week") . ": " . date("W") . "<br/>" ;	
+			$body.=__($guid, "Student Count") . ": " . $studentCount . "<br/>" ;	
+			$body.=__($guid, "Send Succeed Count") . ": " . $sendSucceedCount . "<br/>" ;	
+			$body.=__($guid, "Send Fail Count") . ": " . $sendFailCount . "<br/><br/>" ;	
+			$notificationText=__($guid, 'A Planner CLI script has run.') . "<br/>" . $body ;
 			setNotification($connection2, $guid, $_SESSION[$guid]["organisationAdministrator"], $notificationText, "Planner", "/index.php?q=/modules/Planner/report_parentWeeklyEmailSummaryConfirmation.php") ;
 		}
 	}

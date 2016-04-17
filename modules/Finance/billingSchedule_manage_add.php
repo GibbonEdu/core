@@ -22,67 +22,38 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/Finance/billingSchedule_manage_add.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/billingSchedule_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . _('Manage Billing Schedule') . "</a> > </div><div class='trailEnd'>" . _('Add Entry') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/billingSchedule_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . __($guid, 'Manage Billing Schedule') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Add Entry') . "</div>" ;
 	print "</div>" ;
-	
-	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
-	$addReturnMessage="" ;
-	$class="error" ;
-	if (!($addReturn=="")) {
-		if ($addReturn=="fail0") {
-			$addReturnMessage=_("Your request failed because you do not have access to this action.") ;	
-		}
-		else if ($addReturn=="fail2") {
-			$addReturnMessage=_("Your request failed due to a database error.") ;	
-		}
-		else if ($addReturn=="fail3") {
-			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($addReturn=="fail4") {
-			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($addReturn=="fail5") {
-			$addReturnMessage=_("Your request failed because your passwords did not match.") ;	
-		}
-		else if ($addReturn=="fail6") {
-			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($addReturn=="success0") {
-			$addReturnMessage=_("Your request was successful. You can now add another record if you wish.") ;	
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $addReturnMessage;
-		print "</div>" ;
-	} 
+
+	if (isset($_GET["return"])) { returnProcess($_GET["return"], null, null); }
 	
 	//Check if school year specified
 	$gibbonSchoolYearID=$_GET["gibbonSchoolYearID"] ;
 	$search=$_GET["search"] ;
 	if ($gibbonSchoolYearID=="") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
 		if ($search!="") {
 			print "<div class='linkTop'>" ;
-				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/billingSchedule_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>" . _('Back to Search Results') . "</a>" ;
+				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/billingSchedule_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>" . __($guid, 'Back to Search Results') . "</a>" ;
 			print "</div>" ;
 		}
 		?>
 		<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/billingSchedule_manage_addProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&search=$search" ?>">
-			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+			<table class='smallIntBorder fullWidth' cellspacing='0'>	
 				<tr>
 					<td style='width: 275px'> 
-						<b><?php print _('School Year') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+						<b><?php print __($guid, 'School Year') ?> *</b><br/>
+						<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 					</td>
 					<td class="right">
 						<?php
@@ -101,7 +72,7 @@ else {
 							$yearName=$rowYear["name"] ;
 						}
 						?>
-						<input readonly name="yearName" id="yearName" maxlength=20 value="<?php print $yearName ?>" type="text" style="width: 300px">
+						<input readonly name="yearName" id="yearName" maxlength=20 value="<?php print $yearName ?>" type="text" class="standardWidth">
 						<script type="text/javascript">
 							var yearName=new LiveValidation('yearName');
 							yearname2.add(Validate.Presence);
@@ -110,10 +81,10 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('Name') ?> *</b><br/>
+						<b><?php print __($guid, 'Name') ?> *</b><br/>
 					</td>
 					<td class="right">
-						<input name="name" id="name" maxlength=100 value="" type="text" style="width: 300px">
+						<input name="name" id="name" maxlength=100 value="" type="text" class="standardWidth">
 						<script type="text/javascript">
 							var name2=new LiveValidation('name');
 							name2.add(Validate.Presence);
@@ -122,19 +93,19 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('Active') ?> *</b><br/>
-						<span style="font-size: 90%"><i></i></span>
+						<b><?php print __($guid, 'Active') ?> *</b><br/>
+						<span class="emphasis small"></span>
 					</td>
 					<td class="right">
-						<select name="active" id="active" style="width: 302px">
-							<option value="Y"><?php print _('Yes') ?></option>
-							<option value="N"><?php print _('No') ?></option>
+						<select name="active" id="active" class="standardWidth">
+							<option value="Y"><?php print __($guid, 'Yes') ?></option>
+							<option value="N"><?php print __($guid, 'No') ?></option>
 						</select>
 					</td>
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('Description') ?></b><br/>
+						<b><?php print __($guid, 'Description') ?></b><br/>
 					</td>
 					<td class="right">
 						<textarea name='description' id='description' rows=5 style='width: 300px'></textarea>
@@ -143,11 +114,11 @@ else {
 				
 				<tr>
 					<td> 
-						<b><?php print _('Invoice Issue Date') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print _('Intended issue date.') ."<br/>" . _('Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></i></span>
+						<b><?php print __($guid, 'Invoice Issue Date') ?> *</b><br/>
+						<span class="emphasis small"><?php print __($guid, 'Intended issue date.') ."<br/>" . __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></span>
 					</td>
 					<td class="right">
-						<input name="invoiceIssueDate" id="invoiceIssueDate" maxlength=10 value="" type="text" style="width: 300px">
+						<input name="invoiceIssueDate" id="invoiceIssueDate" maxlength=10 value="" type="text" class="standardWidth">
 						<script type="text/javascript">
 							var invoiceIssueDate=new LiveValidation('invoiceIssueDate');
 							invoiceIssueDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
@@ -164,10 +135,10 @@ else {
 				<tr>
 					<td> 
 						<b>Invoice Due Date *</b><br/>
-						<span style="font-size: 90%"><i><?php print _('Final Payment Date.') . "<br/>" . _('Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></i></span>
+						<span class="emphasis small"><?php print __($guid, 'Final Payment Date.') . "<br/>" . __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></span>
 					</td>
 					<td class="right">
-						<input name="invoiceDueDate" id="invoiceDueDate" maxlength=10 value="" type="text" style="width: 300px">
+						<input name="invoiceDueDate" id="invoiceDueDate" maxlength=10 value="" type="text" class="standardWidth">
 						<script type="text/javascript">
 							var invoiceDueDate=new LiveValidation('invoiceDueDate');
 							invoiceDueDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
@@ -183,12 +154,12 @@ else {
 				
 				<tr>
 					<td>
-						<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+						<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 					</td>
 					<td class="right">
 						<input name="gibbonFinanceBillingScheduleID" id="gibbonFinanceBillingScheduleID" value="<?php print $gibbonFinanceBillingScheduleID ?>" type="hidden">
 						<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-						<input type="submit" value="<?php print _("Submit") ; ?>">
+						<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 					</td>
 				</tr>
 			</table>

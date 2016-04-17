@@ -18,39 +18,39 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 print "<div class='trail'>" ;
-print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > </div><div class='trailEnd'>" . _("Likes") . "</div>" ;
+print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > </div><div class='trailEnd'>" . __($guid, "Likes") . "</div>" ;
 print "</div>" ;
 print "<p>" ;
-print _("This page shows you a break down of all your likes in the current year, and they have been earned.") ;
+print __($guid, "This page shows you a break down of all your likes in the current year, and they have been earned.") ;
 print "</p>" ;
 
 //Count planner likes
 $resultLike=countLikesByRecipient($connection2, $_SESSION[$guid]["gibbonPersonID"], "result", $_SESSION[$guid]["gibbonSchoolYearID"]) ;
 if ($resultLike==FALSE) {
-	print "<div class='error'>" . _('An error has occurred.') . "</div>" ; 
+	print "<div class='error'>" . __($guid, 'An error has occurred.') . "</div>" ; 
 }
 else {
 	if ($resultLike->rowCount()<1) {
 		print "<div class='error'>" ;
-		print _("There are no records to display.") ;
+		print __($guid, "There are no records to display.") ;
 		print "</div>" ;
 	}
 	else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th style='width: 90px'>" ;
-					print _("Photo") ;
+					print __($guid, "Photo") ;
 				print "</th>" ;
 				print "<th style='width: 180px'>" ;
-					print _("Giver") . "<br/>" ;
-					print "<span style='font-size: 85%; font-style: italic'>" . _("Role") . "</span>" ;
+					print __($guid, "Giver") . "<br/>" ;
+					print "<span style='font-size: 85%; font-style: italic'>" . __($guid, "Role") . "</span>" ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Title") . "<br/>" ;
-					print "<span style='font-size: 85%; font-style: italic'>" . _("Comment") . "</span>" ;
+					print __($guid, "Title") . "<br/>" ;
+					print "<span style='font-size: 85%; font-style: italic'>" . __($guid, "Comment") . "</span>" ;
 				print "</th>" ;
 				print "<th style='width: 70px'>" ;
-					print _("Date") ;
+					print __($guid, "Date") ;
 				print "</th>" ;
 			print "</tr>" ;
 		
@@ -74,15 +74,15 @@ else {
 						$roleCategory=getRoleCategory($row["gibbonRoleIDPrimary"], $connection2) ;
 						if ($roleCategory=="Student" AND isActionAccessible($guid, $connection2, "/modules/Students/student_view_details.php")) {
 							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $row["gibbonPersonID"] . "'>" . formatName("", $row["preferredName"], $row["surname"], $roleCategory, false) . "</a><br/>" ;
-							print "<span style='font-size: 85%; font-style: italic'>" . _($roleCategory) . "</i>" ;
+							print "<span style='font-size: 85%; font-style: italic'>" . __($guid, $roleCategory) . "</i>" ;
 						}
 						else {
 							print formatName("", $row["preferredName"], $row["surname"], $roleCategory, false) . "<br/>" ;
-							print "<span style='font-size: 85%; font-style: italic'>" . _($roleCategory) . "</i>" ;
+							print "<span style='font-size: 85%; font-style: italic'>" . __($guid, $roleCategory) . "</i>" ;
 						}
 					print "</td>" ;
 					print "<td>" ;
-						print _($row["title"]) . "<br/>" ;
+						print __($guid, $row["title"]) . "<br/>" ;
 						print "<span style='font-size: 85%; font-style: italic'>" . $row["comment"] . "</span>" ;
 					print "</td>" ;
 					print "<td>" ;

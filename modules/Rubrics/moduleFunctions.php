@@ -50,7 +50,7 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName="", $search
 
 	if ($rowCount<=0 OR $columnCount<=0) {
 		$output.="<div class='error'>" ;
-			$output.=_("The rubric cannot be drawn.") ;
+			$output.=__($guid, "The rubric cannot be drawn.") ;
 		$output.="</div>" ;
 	}
 	else {
@@ -103,18 +103,18 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName="", $search
 								}
 								catch(PDOException $e) {}
 								if ($resultOutcome->rowCount()!=1) {
-									 print _("Error") ;
+									 print __($guid, "Error") ;
 								}
 								else {
 									$rowOutcome=$resultOutcome->fetch() ;
-									$output.="<b>" . _($rowOutcome["descriptor"]) . " (" . _($rowOutcome["value"]) . ")</b><br/>" ;
-									$output.="<span style='font-size: 85%'><i>" . _($scaleName) . " Scale</i></span><br/>" ;
+									$output.="<b>" . __($guid, $rowOutcome["descriptor"]) . " (" . __($guid, $rowOutcome["value"]) . ")</b><br/>" ;
+									$output.="<span style='font-size: 85%'><i>" . __($guid, $scaleName) . " Scale</span><br/>" ;
 								}
 							}
 							else {
 								$output.="<b>" . $columns[$n][1] . "</b><br/>" ;
 							}
-							$output.="<a onclick='return confirm(\"" . _('Are you sure you want to delete this column? Any unsaved changes will be lost.') . "\")' href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/rubrics_edit_deleteColumnProcess.php?gibbonRubricID=$gibbonRubricID&gibbonRubricColumnID=" . $columns[$n][0] . "&address=" . $_GET["q"] . "&search=$search&filter2=$filter2'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/ style='margin: 2px 0px 0px 0px'></a>" ;	
+							$output.="<a onclick='return confirm(\"" . __($guid, 'Are you sure you want to delete this column? Any unsaved changes will be lost.') . "\")' href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/rubrics_edit_deleteColumnProcess.php?gibbonRubricID=$gibbonRubricID&gibbonRubricColumnID=" . $columns[$n][0] . "&address=" . $_GET["q"] . "&search=$search&filter2=$filter2'><img title='" . __($guid, 'Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/ style='margin: 2px 0px 0px 0px'></a>" ;	
 						$output.="</td>" ;
 					}
 				$output.="</tr>" ;
@@ -132,7 +132,7 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName="", $search
 								}
 								catch(PDOException $e) {}
 								if ($resultOutcome->rowCount()!=1) {
-									 print _("Error") ;
+									 print __($guid, "Error") ;
 								}
 								else {
 									$rowOutcome=$resultOutcome->fetch() ;
@@ -143,13 +143,13 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName="", $search
 										$output.="<b>" . $rowOutcome["name"] . "</b><i> - " . $rowOutcome["category"] . "</i><br/>" ;
 									}
 									
-									$output.="<span style='font-size: 85%'><i>" . $rowOutcome["scope"] . " " . _('Outcome') . "</i></span><br/>" ;
+									$output.="<span style='font-size: 85%'><i>" . $rowOutcome["scope"] . " " . __($guid, 'Outcome') . "</span><br/>" ;
 								}
 							}
 							else {
 								$output.="<b>" . $rows[$i][1] . "</b><br/>" ;
 							}
-							$output.="<a onclick='return confirm(\"" . _('Are you sure you want to delete this row? Any unsaved changes will be lost.') . "\")' href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/rubrics_edit_deleteRowProcess.php?gibbonRubricID=$gibbonRubricID&gibbonRubricRowID=" . $rows[$i][0] . "&address=" . $_GET["q"] . "&search=$search&filter2=$filter2'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/ style='margin: 2px 0px 0px 0px'></a><br/>" ;
+							$output.="<a onclick='return confirm(\"" . __($guid, 'Are you sure you want to delete this row? Any unsaved changes will be lost.') . "\")' href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/rubrics_edit_deleteRowProcess.php?gibbonRubricID=$gibbonRubricID&gibbonRubricRowID=" . $rows[$i][0] . "&address=" . $_GET["q"] . "&search=$search&filter2=$filter2'><img title='" . __($guid, 'Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/ style='margin: 2px 0px 0px 0px'></a><br/>" ;
 						$output.="</td>" ;
 						for ($n=0; $n<$columnCount; $n++) {
 							$output.="<td style='background: none; background-color: #fff; padding: 0px; margin: 0px'>" ;
@@ -166,7 +166,7 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName="", $search
 				$output.="<tr style='border: 1px none #000'>" ;
 					$output.="<td class='right' colspan=3 style='border: 1px none #000'>" ;
 						$output.="<input type='hidden' name='address' value='" . $_SESSION[$guid]["address"] . "'>" ;
-						$output.="<input type='submit' value='" . _('Submit') . "'>" ;
+						$output.="<input type='submit' value='" . __($guid, 'Submit') . "'>" ;
 					$output.="</td>" ;
 				$output.="</tr>" ;
 			$output.="</table>" ;
@@ -192,7 +192,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 	
 	if ($result->rowCount()!=1) {
 		print "<div class='error'>" ;
-			print _("The specified record cannot be found.") ;
+			print __($guid, "The specified record cannot be found.") ;
 		print "</div>" ; 
 	}
 	else {
@@ -228,7 +228,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 		
 		if ($rowCount<=0 OR $columnCount<=0) {
 			$output.="<div class='error'>" ;
-				$output.=_("The rubric cannot be drawn.") ;
+				$output.=__($guid, "The rubric cannot be drawn.") ;
 			$output.="</div>" ;
 		}
 		else {
@@ -262,24 +262,24 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 			if ($contextDBTable!="" AND $contextDBTableIDField!="" AND $contextDBTableID!="" AND $contextDBTableGibbonRubricIDField!="" AND $contextDBTableNameField!="" AND $contextDBTableDateField!="") { 
 				try {
 					$dataContext=array("gibbonPersonID"=>$gibbonPersonID); 
-					$sqlContext="SELECT * FROM gibbonRubricEntry JOIN $contextDBTable ON (gibbonRubricEntry.contextDBTableID=$contextDBTable.$contextDBTableIDField AND gibbonRubricEntry.gibbonRubricID=$contextDBTable.$contextDBTableGibbonRubricIDField) JOIN gibbonRubricCell ON (gibbonRubricEntry.gibbonRubricCellID=gibbonRubricCell.gibbonRubricCellID) WHERE contextDBTable='$contextDBTable' AND gibbonRubricEntry.gibbonPersonID=:gibbonPersonID AND NOT $contextDBTableDateField IS NULL ORDER BY $contextDBTableDateField DESC" ;
+					$sqlContext="SELECT gibbonRubricEntry.*, $contextDBTable.*, gibbonRubricEntry.*, gibbonRubricCell.*, gibbonCourse.nameShort AS course, gibbonCourseClass.nameshort AS class FROM gibbonRubricEntry JOIN $contextDBTable ON (gibbonRubricEntry.contextDBTableID=$contextDBTable.$contextDBTableIDField AND gibbonRubricEntry.gibbonRubricID=$contextDBTable.$contextDBTableGibbonRubricIDField) JOIN gibbonRubricCell ON (gibbonRubricEntry.gibbonRubricCellID=gibbonRubricCell.gibbonRubricCellID) LEFT JOIN gibbonCourseClass ON ($contextDBTable.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) LEFT JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE contextDBTable='$contextDBTable' AND gibbonRubricEntry.gibbonPersonID=:gibbonPersonID AND NOT $contextDBTableDateField IS NULL ORDER BY $contextDBTableDateField DESC" ;
 					$resultContext=$connection2->prepare($sqlContext);
 					$resultContext->execute($dataContext);
 				}
-				catch(PDOException $e) { print $e->getMessage() ; }
+				catch(PDOException $e) { }
 				while ($rowContext=$resultContext->fetch()) {
 					if (isset($cells[$rowContext["gibbonRubricRowID"]][$rowContext["gibbonRubricColumnID"]][2])) {
-						$cells[$rowContext["gibbonRubricRowID"]][$rowContext["gibbonRubricColumnID"]][2].=$rowContext[$contextDBTableNameField] . " (" . dateConvertBack($guid, $rowContext[$contextDBTableDateField]) . ")<br/>" ;
+						$cells[$rowContext["gibbonRubricRowID"]][$rowContext["gibbonRubricColumnID"]][2].=$rowContext["course"] . "." . $rowContext["class"] . " - " . $rowContext[$contextDBTableNameField] . " (" . dateConvertBack($guid, $rowContext[$contextDBTableDateField]) . ")<br/>" ;
 					}
 					else {
-						$cells[$rowContext["gibbonRubricRowID"]][$rowContext["gibbonRubricColumnID"]][2]=$rowContext[$contextDBTableNameField] . " (" . dateConvertBack($guid, $rowContext[$contextDBTableDateField]) . ")<br/>" ;
+						$cells[$rowContext["gibbonRubricRowID"]][$rowContext["gibbonRubricColumnID"]][2]=$rowContext["course"] . "." . $rowContext["class"] . " - " . $rowContext[$contextDBTableNameField] . " (" . dateConvertBack($guid, $rowContext[$contextDBTableDateField]) . ")<br/>" ;
 					}
 				}
 			}
 			
 			if ($mark==TRUE) {
 				print "<p>" ;
-					print _("Click on any of the cells below to highlight them. Data is saved automatically after each click.") ;
+					print __($guid, "Click on any of the cells below to highlight them. Data is saved automatically after each click.") ;
 				print "</p>" ;
 			}
 		
@@ -303,8 +303,8 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 				$output.="</script>" ;	
 				$output.="<div class='linkTop'>" ;
 					$output.="Viewing Mode: <select name='type' id='type' class='type' style='width: 152px; float: none'>" ;
-						$output.="<option id='type' name='type' value='Current'>". _('Current') . "</option>" ;
-						$output.="<option id='type' name='type' value='Historical'>" . _('Historical Data') . "</option>" ;
+						$output.="<option id='type' name='type' value='Current'>". __($guid, 'Current') . "</option>" ;
+						$output.="<option id='type' name='type' value='Historical'>" . __($guid, 'Historical Data') . "</option>" ;
 					$output.="</select>" ;
 				$output.="</div>" ;
 			}
@@ -330,11 +330,11 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 									}
 									catch(PDOException $e) {}
 									if ($resultOutcome->rowCount()!=1) {
-										 print _("Error") ;
+										 print __($guid, "Error") ;
 									}
 									else {
 										$rowOutcome=$resultOutcome->fetch() ;
-										$output.="<b>" . _($rowOutcome["descriptor"]) . " (" . _($rowOutcome["value"]) . ")</b><br/>" ;
+										$output.="<b>" . __($guid, $rowOutcome["descriptor"]) . " (" . __($guid, $rowOutcome["value"]) . ")</b><br/>" ;
 										//Try to get scale name
 										if ($row["gibbonScaleID"]!="") { 
 											try {
@@ -352,7 +352,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 											}
 										}
 										if ($rowScale["name"]!="") {
-											$output.="<span style='font-size: 85%'><i>" . _($rowScale["name"]) . " Scale</i></span><br/>" ;
+											$output.="<span style='font-size: 85%'><i>" . __($guid, $rowScale["name"]) . " Scale</span><br/>" ;
 										}
 									}
 								}
@@ -376,7 +376,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 									}
 									catch(PDOException $e) {}
 									if ($resultOutcome->rowCount()!=1) {
-										 print _("Error") ;
+										 print __($guid, "Error") ;
 									}
 									else {
 										$rowOutcome=$resultOutcome->fetch() ;
@@ -399,9 +399,9 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 											$output.="<span title='" . htmlprep($rowOutcome["description"]) . "'><b>" . $rowOutcome["name"] . "</b></span><br/>" ;
 										}
 										else {
-											$output.="<span title='" . htmlprep($rowOutcome["description"]) . "'><b>" . $rowOutcome["name"] . "</b><i> - " . $rowOutcome["category"] . "</i></span><br/>" ;
+											$output.="<span title='" . htmlprep($rowOutcome["description"]) . "'><b>" . $rowOutcome["name"] . "</b><i> - " . $rowOutcome["category"] . "</span><br/>" ;
 										}
-										$output.="<span style='font-size: 85%'><i>" . $rowOutcome["scope"] . " " . _('Outcome') . "</i></span><br/>" ;
+										$output.="<span style='font-size: 85%'><i>" . $rowOutcome["scope"] . " " . __($guid, 'Outcome') . "</span><br/>" ;
 									}
 								}
 								else {
@@ -454,14 +454,14 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 										}
 										$countHistorical=count($arrayHistorical)-1 ;
 										if ($countHistorical>0) {
-											$output.="<b><u>" . _('Total Occurences:') . " " . $countHistorical . "</u></b><br/>" ;
+											$output.="<b><u>" . __($guid, 'Total Occurences:') . " " . $countHistorical . "</u></b><br/>" ;
 											for ($h=0; $h<$countHistorical; $h++) {
 												if ($h<7) {
 													$output.=($h+1) . ") " . $arrayHistorical[$h] . "<br/>" ;
 												}
 											}
 											if ($countHistorical>7) {
-												$output.="<b>" . _('Older occurrences not shown...') . "</b>" ;
+												$output.="<b>" . __($guid, 'Older occurrences not shown...') . "</b>" ;
 											}
 										}
 									$output.="</div>" ;

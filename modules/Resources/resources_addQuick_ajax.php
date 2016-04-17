@@ -24,14 +24,8 @@ include "../../functions.php" ;
 include "../../config.php" ;
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 //Module includes
 include $_SESSION[$guid]["absolutePath"] . "/modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -52,7 +46,7 @@ $output.="<script type='text/javascript'>" ;
 	 
 		$output.="$('#" . $id . "ajaxForm').submit(function() {" ; 
 			$output.="$(this).ajaxSubmit(options);" ; 
-			$output.="$(\"." .$id . "resourceQuickSlider\").html(\"<div class='resourceAddSlider'><img style='margin: 10px 0 5px 0' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/loading.gif' alt='" . _('Uploading') . "' onclick='return false;' /><br/>" . _('Loading') . "</div>\");" ;
+			$output.="$(\"." .$id . "resourceQuickSlider\").html(\"<div class='resourceAddSlider'><img style='margin: 10px 0 5px 0' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/loading.gif' alt='" . __($guid, 'Uploading') . "' onclick='return false;' /><br/>" . __($guid, 'Loading') . "</div>\");" ;
 			$output.="return false;" ; 
 		$output.="});" ; 
 	$output.="});" ; 
@@ -65,7 +59,7 @@ $output.="</script>" ;
 $output.="<table cellspacing='0' style='width: 100%'>" ;	
 	$output.="<tr id='" . $id . "resourceQuick'>" ;
 		$output.="<td colspan=2 style='border: none; padding-top: 0px'>" ; 
-			$output.="<div style='margin: 0px' class='linkTop'><a href='javascript:void(0)' onclick='formReset(); \$(\"." .$id . "resourceQuickSlider\").slideUp();'><img title='" . _('Close') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/></a></div>" ;
+			$output.="<div style='margin: 0px' class='linkTop'><a href='javascript:void(0)' onclick='formReset(); \$(\"." .$id . "resourceQuickSlider\").slideUp();'><img title='" . __($guid, 'Close') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/></a></div>" ;
 			$output.="<form id='" . $id . "ajaxForm'>" ;
 				$output.="<table cellspacing='0' style='border: none; width: 100%'>" ;
 					//Get list of acceptable file extensions
@@ -85,7 +79,7 @@ $output.="<table cellspacing='0' style='width: 100%'>" ;
 					for ($i=1; $i<5; $i++) {
 						$output.="<tr id='" . $id . "resourceFile'>" ;
 							$output.="<td>" ;
-								$output.="<b>" . sprintf(_('File %1$s'), $i) . "</b><br/>" ;
+								$output.="<b>" . sprintf(__($guid, 'File %1$s'), $i) . "</b><br/>" ;
 							$output.="</td>" ;
 							$output.="<td class='right'>" ;
 								$output.="<input type='file' name='" . $id . "file" . $i . "' id='" . $id . "file" . $i . "' style='max-width: 235px'><br/><br/>" ;
@@ -99,19 +93,19 @@ $output.="<table cellspacing='0' style='width: 100%'>" ;
 					
 					$output.="<tr>" ;
 						$output.="<td>" ;
-							$output.="<b>" . _("Insert Images As") . "*</b><br/>" ;
+							$output.="<b>" . __($guid, "Insert Images As") . "*</b><br/>" ;
 						$output.="</td>" ;
 						$output.="<td class=\"right\">" ;
 							$output.="<select name=\"imagesAsLinks\" id=\"imagesAsLinks\" style=\"width: 302px\">" ;
-								$output.="<option value='N'>" . _('Image') . "</option>" ;		
-								$output.="<option value='Y'>" . _('Link') . "</option>" ;	
+								$output.="<option value='N'>" . __($guid, 'Image') . "</option>" ;		
+								$output.="<option value='Y'>" . __($guid, 'Link') . "</option>" ;	
 							$output.="</select>" ;
 						$output.="</td>" ;
 					$output.="</tr>" ;
 					
 					$output.="<tr>" ;
 						$output.="<td>" ;
-							$output.=getMaxUpload(TRUE) ;
+							$output.=getMaxUpload($guid, TRUE) ;
 						$output.="</td>" ;
 						$output.="<td class='right'>" ;
 							$output.="<input type='hidden' name='id' value='" . $id . "'>" ;

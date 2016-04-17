@@ -25,13 +25,13 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Students/report_privacy_student.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Privacy Choices by Student') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Privacy Choices by Student') . "</div>" ;
 	print "</div>" ;
 	
 	try {
@@ -49,23 +49,23 @@ else {
 	
 	if (count($privacyOptions)<1 OR $privacy=="N") {
 		print "<div class='error'>" ;
-			print _("There are no privacy options in place.") ;
+			print __($guid, "There are no privacy options in place.") ;
 		print "</div>" ;
 	}
 	else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th rowspan=2>" ;
-					print _("Count") ;
+					print __($guid, "Count") ;
 				print "</th>" ;
 				print "<th rowspan=2>" ;
-					print _("Roll Group") ;
+					print __($guid, "Roll Group") ;
 				print "</th>" ;
 				print "<th rowspan=2>" ;
-					print _("Student") ;
+					print __($guid, "Student") ;
 				print "</th>" ;
 				print "<th colspan=" . count($privacyOptions) . ">" ;
-					print _("Privacy") ;
+					print __($guid, "Privacy") ;
 				print "</th>" ;
 			print "</tr>" ;
 		
@@ -104,7 +104,7 @@ else {
 						print "<td>" ;
 							foreach ($studentPrivacyOptions AS $studentOption) {
 								if (trim($studentOption)==trim($option)) {
-									print _("Yes") ;
+									print __($guid, "Yes") ;
 								}
 							}
 						print "</td>" ;
@@ -114,7 +114,7 @@ else {
 			if ($count==0) {
 				print "<tr class=$rowNum>" ;
 					print "<td colspan=3>" ;
-						print _("There are no records to display.") ;
+						print __($guid, "There are no records to display.") ;
 					print "</td>" ;
 				print "</tr>" ;
 			}

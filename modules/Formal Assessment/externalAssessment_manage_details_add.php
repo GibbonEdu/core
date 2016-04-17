@@ -22,13 +22,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/Formal Assessment/externalAssessment_manage_details_add.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/externalAssessment.php'>" . _('View All Assessments') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/externalAssessment_details.php&gibbonPersonID=" . $_GET["gibbonPersonID"] . "'>" . _('Student Details') . "</a> > </div><div class='trailEnd'>" . _('Add Assessment') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/externalAssessment.php'>" . __($guid, 'View All Assessments') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/externalAssessment_details.php&gibbonPersonID=" . $_GET["gibbonPersonID"] . "'>" . __($guid, 'Student Details') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Add Assessment') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -36,22 +36,22 @@ else {
 	$class="error" ;
 	if (!($addReturn=="")) {
 		if ($addReturn=="fail0") {
-			$addReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+			$addReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($addReturn=="fail2") {
-			$addReturnMessage=_("Your request failed due to a database error.") ;	
+			$addReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 		}
 		else if ($addReturn=="fail3") {
-			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail4") {
-			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail5") {
-			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="success0") {
-			$addReturnMessage=_("Your request was completed successfully.") ;	
+			$addReturnMessage=__($guid, "Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -68,7 +68,7 @@ else {
 	
 	if ($gibbonPersonID=="") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -90,13 +90,13 @@ else {
 
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-			print _("There are no records to display.") ;
+			print __($guid, "There are no records to display.") ;
 			print "</div>" ;
 		}
 		else {
 			if ($search!="") {
 				print "<div class='linkTop'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Formal Assessment/externalAssessment_details.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents'>" . _('Back') . "</a>" ;				
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Formal Assessment/externalAssessment_details.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents'>" . __($guid, 'Back') . "</a>" ;				
 				print "</div>" ;
 			}
 			$row=$result->fetch() ;
@@ -104,17 +104,17 @@ else {
 			print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 				print "<tr>" ;
 					print "<td style='width: 34%; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>" . _('Name') . "</span><br/>" ;
+						print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Name') . "</span><br/>" ;
 						print formatName("", $row["preferredName"], $row["surname"], "Student") ;
 					print "</td>" ;
 					print "<td style='width: 33%; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>" . _('Year Group') . "</span><br/>" ;
+						print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Year Group') . "</span><br/>" ;
 						if ($row["yearGroup"]!="") {
-							print _($row["yearGroup"]) ;
+							print __($guid, $row["yearGroup"]) ;
 						}
 					print "</td>" ;
 					print "<td style='width: 34%; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>" . _('Roll Group') . "</span><br/>" ;
+						print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Roll Group') . "</span><br/>" ;
 						print $row["rollGroup"] ;
 					print "</td>" ;
 				print "</tr>" ;
@@ -132,19 +132,19 @@ else {
 			if ($step==1) {
 				?>
 				<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/externalAssessment_manage_details_add.php" ?>">
-					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>	
 						<tr class='break'>
 							<td colspan=2> 
-								<h3><?php print _('Assessment Type') ?></h3>
+								<h3><?php print __($guid, 'Assessment Type') ?></h3>
 							</td>
 						</tr>
 						
 						<tr>
 							<td style='width: 275px'> 
-								<b><?php print _('Choose Assessment') ?> *</b><br/>
+								<b><?php print __($guid, 'Choose Assessment') ?> *</b><br/>
 							</td>
 							<td class="right">
-								<select style="width: 302px" name="gibbonExternalAssessmentID" id="gibbonExternalAssessmentID">
+								<select class="standardWidth" name="gibbonExternalAssessmentID" id="gibbonExternalAssessmentID">
 									<?php
 									try {
 										$dataSelect=array(); 
@@ -153,15 +153,15 @@ else {
 										$resultSelect->execute($dataSelect);
 									}
 									catch(PDOException $e) { }
-									print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+									print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
 									while ($rowSelect=$resultSelect->fetch()) {
-										print "<option id='gibbonExternalAssessmentID' value='" . $rowSelect["gibbonExternalAssessmentID"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
+										print "<option id='gibbonExternalAssessmentID' value='" . $rowSelect["gibbonExternalAssessmentID"] . "'>" . htmlPrep(__($guid, $rowSelect["name"])) . "</option>" ;
 									}
 									?>				
 								</select>
 								<script type="text/javascript">
 									var gibbonExternalAssessmentID=new LiveValidation('gibbonExternalAssessmentID');
-									gibbonExternalAssessmentID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+									gibbonExternalAssessmentID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 								</script>
 							</td>
 						</tr>
@@ -184,8 +184,8 @@ else {
 						</script>
 						<tr id="copyToGCSE">
 							<td> 
-								<b><?php print _('Copy Target Grades?') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print _('These will come from the student\'s last CAT test.') ?></i></span>
+								<b><?php print __($guid, 'Copy Target Grades?') ?> *</b><br/>
+								<span class="emphasis small"><?php print __($guid, 'These will come from the student\'s last CAT test.') ?></span>
 							</td>
 							<td class="right">
 								<input type="checkbox" name="copyToGCSECheck" id="copyToGCSECheck"><br/><br/>
@@ -209,21 +209,21 @@ else {
 						</script>
 						<tr id="copyToIB">
 							<td> 
-								<b><?php print _('Create Target Grades?') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print _('These will be calculated from the student\'s GCSE grades.') ?></i></span>
+								<b><?php print __($guid, 'Create Target Grades?') ?> *</b><br/>
+								<span class="emphasis small"><?php print __($guid, 'These will be calculated from the student\'s GCSE grades.') ?></span>
 							</td>
 							<td class="right">
 								<select name="copyToIBCheck" id="copyToIBCheck">
 									<option value=''></option>
-									<option value='Target'><?php print _('From GCSE Target Grades') ?></option>
-									<option value='Final'>From <?php print _('GCSE Final Grades') ?></option>
+									<option value='Target'><?php print __($guid, 'From GCSE Target Grades') ?></option>
+									<option value='Final'>From <?php print __($guid, 'GCSE Final Grades') ?></option>
 								</select>
 							</td>
 						</tr>
 						
 						<tr>
 							<td>
-								<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+								<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 							</td>
 							<td class="right">
 								<input type="hidden" name="step" value="2">
@@ -260,7 +260,7 @@ else {
 				
 				if ($resultSelect->rowCount()!=1) {
 					print "<div class='error'>" ;
-					print _("The selected record does not exist, or you do not have access to it.") ;
+					print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 					print "</div>" ;
 				}
 				else {
@@ -469,11 +469,11 @@ else {
 					
 					?>
 					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/externalAssessment_manage_details_addProcess.php?search=$search&allStudents=$allStudents" ?>" enctype="multipart/form-data">
-						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+						<table class='smallIntBorder fullWidth' cellspacing='0'>	
 							<tr>
 								<td style='width: 275px'> 
-									<b><?php print _('Assessment Type') ?> *</b><br/>
-									<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+									<b><?php print __($guid, 'Assessment Type') ?> *</b><br/>
+									<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 								</td>
 								<td class="right" colspan=2>
 									<input readonly name="name" id="name" maxlength=20 value="<?php print $rowSelect["name"] ?>" type="text" style="width: 300px; text-align: right">
@@ -481,11 +481,11 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b><?php print _('Date') ?> *</b><br/>
-									<span style="font-size: 90%"><i>Format <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></i></span>
+									<b><?php print __($guid, 'Date') ?> *</b><br/>
+									<span class="emphasis small"><?php print __($guid, "Format:") . " " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } ?><br/></span>
 								</td>
 								<td class="right" colspan=2>
-									<input name="date" id="date" maxlength=10 value="" type="text" style="width: 300px">
+									<input name="date" id="date" maxlength=10 value="" type="text" class="standardWidth">
 									<script type="text/javascript">
 										var date=new LiveValidation('date');
 										date.add(Validate.Presence);
@@ -503,8 +503,8 @@ else {
 								?>
 								<tr>
 									<td style='width: 275px'> 
-										<b><?php print _('Upload File') ?></b><br/>
-										<span style="font-size: 90%"><i><?php print _('Use this to attach raw data, graphical summary, etc.') ?></i></span>
+										<b><?php print __($guid, 'Upload File') ?></b><br/>
+										<span class="emphasis small"><?php print __($guid, 'Use this to attach raw data, graphical summary, etc.') ?></span>
 									</td>
 									<td class="right" colspan=2>
 										<input type="file" name="file" id="file"><br/><br/>
@@ -546,7 +546,7 @@ else {
 								print "<tr class='break'>" ;
 									print "<td colspan=3> " ;
 										print "<div class='warning'>" ;
-											print _("There are no fields in this assessment.") ;
+											print __($guid, "There are no fields in this assessment.") ;
 										print "</div>" ;
 									print "</td>" ;
 								print "</tr>" ;
@@ -574,17 +574,17 @@ else {
 												
 											print "</td>" ;
 											print "<td class='right'>" ;
-												print "<span style='font-weight: bold'>" . _('Grade') . "</span>" ;
+												print "<span style='font-weight: bold'>" . __($guid, 'Grade') . "</span>" ;
 											print "</td>" ;
 											print "<td class='right'>" ;
-												print "<span style='font-weight: bold' title='" . _('Primary Assessment Scale Grade') . "'>" . _('PAS Grade') . "</span>" ;
+												print "<span style='font-weight: bold' title='" . __($guid, 'Primary Assessment Scale Grade') . "'>" . __($guid, 'PAS Grade') . "</span>" ;
 											print "</td>" ;
 										print "</tr>" ;
 									}
 									?>
 									<tr>
 										<td> 
-											<span style='font-weight: bold' title='<?php print $rowField["usage"] ?>'><?php print _($rowField["name"]) ?></span><br/>
+											<span style='font-weight: bold' title='<?php print $rowField["usage"] ?>'><?php print __($guid, $rowField["name"]) ?></span><br/>
 										</td>
 										<td class="right">
 											<input name="<?php print $count?>-gibbonExternalAssessmentFieldID" id="<?php print $count?>-gibbonExternalAssessmentFieldID" value="<?php print $rowField["gibbonExternalAssessmentFieldID"] ?>" type="hidden">
@@ -636,20 +636,20 @@ else {
 						?>
 						<tr>
 							<td>
-								<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?>
+								<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?>
 								<?php
 								if ($rowSelect["allowFileUpload"]=="Y") { 
-									print getMaxUpload() ; 
+									print getMaxUpload($guid) ; 
 								}
 								?>
-								</i></span>
+								</span>
 							</td>
 							<td class="right" colspan=2>
 								<input name="count" id="count" value="<?php print $count ?>" type="hidden">
 								<input name="gibbonPersonID" id="gibbonPersonID" value="<?php print $gibbonPersonID ?>" type="hidden">
 								<input name="gibbonExternalAssessmentID" id="gibbonExternalAssessmentID" value="<?php print $gibbonExternalAssessmentID ?>" type="hidden">
 								<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-								<input type="submit" value="<?php print _("Submit") ; ?>">
+								<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 							</td>
 						</tr>
 					</table>

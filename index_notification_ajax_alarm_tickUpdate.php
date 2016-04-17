@@ -22,14 +22,8 @@ include "./functions.php" ;
 include "./config.php" ;
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 @session_start() ;
 
@@ -42,7 +36,7 @@ $gibbonPersonID=$_POST["gibbonPersonID"] ;
 //Proceed!
 if ($gibbonAlarmID=="" OR $gibbonPersonID=="") {
 	print "<div class='error'>" ;
-		print _("An error has occurred.") ;
+		print __($guid, "An error has occurred.") ;
 	print "</div>" ;
 }
 else {	
@@ -57,7 +51,7 @@ else {
 	
 	if ($resultConfirm->rowCount()!=1) {
 		print "<div class='error'>" ;
-			print _("An error has occurred.") ;
+			print __($guid, "An error has occurred.") ;
 		print "</div>" ;
 	}
 	else {
@@ -68,7 +62,7 @@ else {
 		print "</td>" ;
 		print "<td style='color: #fff'>" ;
 			if ($rowConfirm["sounder"]==$rowConfirm["confirmer"]) {
-				print _("NA") ;
+				print __($guid, "NA") ;
 			}
 			else {
 				if ($rowConfirm["gibbonAlarmConfirmID"]!="") {
@@ -79,7 +73,7 @@ else {
 		print "<td style='color: #fff'>" ;
 			if ($rowConfirm["sounder"]!=$rowConfirm["confirmer"]) {
 				if ($rowConfirm["gibbonAlarmConfirmID"]=="") {
-					print "<a target='_parent' href='" . $_SESSION[$guid]["absoluteURL"] . "/index_notification_ajax_alarmConfirmProcess.php?gibbonPersonID=" . $rowConfirm["confirmer"] . "&gibbonAlarmID=$gibbonAlarmID'><img title='" . _('Confirm') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick_light.png'/></a> " ;
+					print "<a target='_parent' href='" . $_SESSION[$guid]["absoluteURL"] . "/index_notification_ajax_alarmConfirmProcess.php?gibbonPersonID=" . $rowConfirm["confirmer"] . "&gibbonAlarmID=$gibbonAlarmID'><img title='" . __($guid, 'Confirm') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick_light.png'/></a> " ;
 				}
 			}
 		print "</td>" ;

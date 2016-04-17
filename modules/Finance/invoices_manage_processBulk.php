@@ -21,14 +21,8 @@ include "../../functions.php" ;
 include "../../config.php" ;
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 @session_start() ;
 
@@ -62,13 +56,13 @@ else {
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Finance/invoices_manage.php")==FALSE) {
 		//Fail 0
-		$URL.="&bulkReturn=fail0" ;
+		$URL.="&return=error0" ;
 		header("Location: {$URL}");
 	}
 	else {
 		$gibbonFinanceInvoiceIDs=$_POST["gibbonFinanceInvoiceIDs"] ;
 		if (count($gibbonFinanceInvoiceIDs)<1) {
-			$URL.="&bulkReturn=fail3" ;
+			$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -97,12 +91,12 @@ else {
 					}
 				}
 				if ($partialFail==TRUE) {
-					$URL.="&bulkReturn=fail5" ;
+					$URL.="&return=error?" ;
 					header("Location: {$URL}");
 				}
 				else {
 					//Success 0
-					$URL.="&bulkReturn=success0" ;
+					$URL.="&return=success0" ;
 					header("Location: {$URL}");
 				}
 			}
@@ -163,7 +157,7 @@ else {
 									//Fail 2
 									$URL.="&issueReturn=fail2" ;
 									header("Location: {$URL}");
-									break ;
+									exit() ;
 								}
 	
 								//Read & Organise Fees
@@ -283,9 +277,17 @@ else {
 							else {
 								$rowCompany=$resultCompany->fetch() ;
 								if ($rowCompany["companyEmail"]!="" AND $rowCompany["companyContact"]!="" AND $rowCompany["companyName"]!="") {
-									$emails[$emailsCount]=$rowCompany["companyEmail"] ;
-									$emailsCount++ ;
-									$rowCompany["companyCCFamily"] ;
+									$emailsInner=explode(",", $rowCompany["companyEmail"]) ;
+									for ($n=0 ; $n<count($emailsInner); $n++) {
+										if ($n==0) {
+											$emails[$emailsCount]=trim($emailsInner[$n]) ;
+											$emailsCount++ ;
+										}
+										else {
+											array_push($emails, trim($emailsInner[$n])) ;
+											$emailsCount++ ;
+										}
+									}
 									if ($rowCompany["companyCCFamily"]=="Y") {
 										try {
 											$dataParents=array("gibbonFinanceInvoiceeID"=>$row["gibbonFinanceInvoiceeID"]); 
@@ -342,7 +344,7 @@ else {
 						}
 						else {
 							//Prep message
-							$body=invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]["currency"], TRUE) . "<p style='font-style: italic;'>Email sent via " . $_SESSION[$guid]["systemName"] . " at " . $_SESSION[$guid]["organisationName"] . ".</p>" ;
+							$body=invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]["currency"], TRUE) . "<p class='emphasis'>Email sent via " . $_SESSION[$guid]["systemName"] . " at " . $_SESSION[$guid]["organisationName"] . ".</p>" ;
 							$bodyPlain="This email is not viewable in plain text: enable rich text/HTML in your email client to view the invoice. Please reply to this email if you have any questions." ;
 
 							$mail=new PHPMailer;
@@ -365,17 +367,17 @@ else {
 				}
 				
 				if ($partialFail==TRUE) {
-					$URL.="&bulkReturn=fail5" ;
+					$URL.="&return=error?" ;
 					header("Location: {$URL}");
 				}
 				else if ($emailFail==TRUE) { 
 					//Success 1
-					$URL.="&bulkReturn=success1" ;
+					$URL.="&return=success1" ;
 					header("Location: {$URL}");
 				}
 				else {
 					//Success 0
-					$URL.="&bulkReturn=success0" ;
+					$URL.="&return=success0" ;
 					header("Location: {$URL}");
 				}
 			}
@@ -492,7 +494,7 @@ else {
 							}
 							$body.="<p>Reminder " . $reminderOutput . ": " . $reminderText . "</p><br/>" ;
 						}
-						$body.=invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]["currency"], TRUE) . "<p style='font-style: italic;'>Email sent via " . $_SESSION[$guid]["systemName"] . " at " . $_SESSION[$guid]["organisationName"] . ".</p>" ;
+						$body.=invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]["currency"], TRUE) . "<p class='emphasis'>Email sent via " . $_SESSION[$guid]["systemName"] . " at " . $_SESSION[$guid]["organisationName"] . ".</p>" ;
 						$bodyPlain="This email is not viewable in plain text: enable rich text/HTML in your email client to view the reminder. Please reply to this email if you have any questions." ;
 
 						//Update reminder count
@@ -525,17 +527,17 @@ else {
 				}
 				
 				if ($partialFail==TRUE) {
-					$URL.="&bulkReturn=fail5" ;
+					$URL.="&return=error?" ;
 					header("Location: {$URL}");
 				}
 				else if ($emailFail==TRUE) { 
 					//Success 1
-					$URL.="&bulkReturn=success1" ;
+					$URL.="&return=success1" ;
 					header("Location: {$URL}");
 				}
 				else {
 					//Success 0
-					$URL.="&bulkReturn=success0" ;
+					$URL.="&return=success0" ;
 					header("Location: {$URL}");
 				}
 			}
@@ -552,7 +554,7 @@ else {
 				//header("Location: {$URL}");
 			}
 			else {
-				$URL.="&bulkReturn=fail3" ;
+				$URL.="&return=fail1" ;
 				header("Location: {$URL}");
 			}
 		}

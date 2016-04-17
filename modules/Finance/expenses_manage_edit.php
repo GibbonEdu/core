@@ -25,43 +25,23 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Finance/expenses_manage_edit.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if (isActionAccessible($guid, $connection2, "/modules/Finance/expenses_manage_add.php", "Manage Expenses_all")==FALSE) {
 		print "<div class='error'>" ;
-		print _("The highest grouped action cannot be determined.") ;
+		print __($guid, "The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
 		//Proceed!
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/expenses_manage.php&gibbonFinanceBudgetCycleID=" . $_GET["gibbonFinanceBudgetCycleID"] . "'>" . _('Manage Expenses') . "</a> > </div><div class='trailEnd'>" . _('Edit Expense') . "</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/expenses_manage.php&gibbonFinanceBudgetCycleID=" . $_GET["gibbonFinanceBudgetCycleID"] . "'>" . __($guid, 'Manage Expenses') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Edit Expense') . "</div>" ;
 		print "</div>" ;
-		
-		if (isset($_GET["editReturn"])) { $editReturn=$_GET["editReturn"] ; } else { $editReturn="" ; }
-		$editReturnMessage="" ;
-		$class="error" ;
-		if (!($editReturn=="")) {
-			if ($editReturn=="fail0") {
-				$editReturnMessage=_("Your request failed because you do not have access to this action.") ;	
-			}
-			else if ($editReturn=="fail2") {
-				$editReturnMessage=_("Your request failed due to a database error.") ;	
-			}
-			else if ($editReturn=="fail3") {
-				$editReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-			}
-			if ($editReturn=="success0") {
-				$editReturnMessage=_("Your request was completed successfully.") ;		
-				$class="success" ;
-			}
-			print "<div class='$class'>" ;
-				print $editReturnMessage;
-			print "</div>" ;
-		} 
+
+		if (isset($_GET["return"])) { returnProcess($_GET["return"], null, null); }
 	
 		//Check if params are specified
 		$gibbonFinanceExpenseID=$_GET["gibbonFinanceExpenseID"] ;
@@ -70,7 +50,7 @@ else {
 		$gibbonFinanceBudgetID2=$_GET["gibbonFinanceBudgetID2"] ;
 		if ($gibbonFinanceExpenseID=="" OR $gibbonFinanceBudgetCycleID=="") {
 			print "<div class='error'>" ;
-				print _("You have not specified one or more required parameters.") ;
+				print __($guid, "You have not specified one or more required parameters.") ;
 			print "</div>" ;
 		}
 		else {
@@ -90,7 +70,7 @@ else {
 			
 			if ($budgetsAccess==FALSE) {
 				print "<div class='error'>" ;
-					print _("You do not have Full or Write access to any budgets.") ;
+					print __($guid, "You do not have Full or Write access to any budgets.") ;
 				print "</div>" ;
 			}
 			else {
@@ -100,7 +80,7 @@ else {
 				$expenseRequestTemplate=getSettingByScope($connection2, "Finance", "expenseRequestTemplate") ;
 				if ($expenseApprovalType=="" OR $budgetLevelExpenseApproval=="") {
 					print "<div class='error'>" ;
-						print _("An error has occurred with your expense and budget settings.") ;
+						print __($guid, "An error has occurred with your expense and budget settings.") ;
 					print "</div>" ;
 				}
 				else {
@@ -115,7 +95,7 @@ else {
 			
 					if ($result->rowCount()<1) {
 						print "<div class='error'>" ;
-							print _("An error has occurred with your expense and budget settings.") ;
+							print __($guid, "An error has occurred with your expense and budget settings.") ;
 						print "</div>" ;
 					}
 					else {
@@ -137,7 +117,7 @@ else {
 		
 						if ($result->rowCount()!=1) {
 							print "<div class='error'>" ;
-								print _("The specified record cannot be found.") ;
+								print __($guid, "The specified record cannot be found.") ;
 							print "</div>" ;
 						}
 						else {
@@ -146,20 +126,20 @@ else {
 					
 							if ($status2!="" OR $gibbonFinanceBudgetID2!="") {
 								print "<div class='linkTop'>" ;
-									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/expenses_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>" . _('Back to Search Results') . "</a>" ;
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/expenses_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>" . __($guid, 'Back to Search Results') . "</a>" ;
 								print "</div>" ;
 							}
 							?>
 							<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/expenses_manage_editProcess.php" ?>">
-								<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+								<table class='smallIntBorder fullWidth' cellspacing='0'>	
 									<tr class='break'>
 										<td colspan=2> 
-											<h3><?php print _('Basic Information') ?></h3>
+											<h3><?php print __($guid, 'Basic Information') ?></h3>
 										</td>
 									</tr>
 									<tr>
 										<td style='width: 275px'> 
-											<b><?php print _('Budget Cycle') ?> *</b><br/>
+											<b><?php print __($guid, 'Budget Cycle') ?> *</b><br/>
 										</td>
 										<td class="right">
 											<?php
@@ -178,8 +158,8 @@ else {
 												$yearName=$rowYear["name"] ;
 											}
 											?>
-											<input readonly name="name" id="name" maxlength=20 value="<?php print $yearName ?>" type="text" style="width: 300px">
-											<input name="gibbonFinanceBudgetCycleID" id="gibbonFinanceBudgetCycleID" maxlength=20 value="<?php print $gibbonFinanceBudgetCycleID ?>" type="hidden" style="width: 300px">
+											<input readonly name="name" id="name" maxlength=20 value="<?php print $yearName ?>" type="text" class="standardWidth">
+											<input name="gibbonFinanceBudgetCycleID" id="gibbonFinanceBudgetCycleID" maxlength=20 value="<?php print $gibbonFinanceBudgetCycleID ?>" type="hidden" class="standardWidth">
 											<script type="text/javascript">
 												var gibbonFinanceBudgetCycleID=new LiveValidation('gibbonFinanceBudgetCycleID');
 												gibbonFinanceBudgetCycleID.add(Validate.Presence);
@@ -188,117 +168,117 @@ else {
 									</tr>
 									<tr>
 										<td style='width: 275px'> 
-											<b><?php print _('Budget') ?> *</b><br/>
+											<b><?php print __($guid, 'Budget') ?> *</b><br/>
 										</td>
 										<td class="right">
-											<input readonly name="name" id="name" maxlength=20 value="<?php print $row["budget"] ; ?>" type="text" style="width: 300px">
+											<input readonly name="name" id="name" maxlength=20 value="<?php print $row["budget"] ; ?>" type="text" class="standardWidth">
 										</td>
 									</tr>
 									<tr>
 										<td> 
-											<b><?php print _('Title') ?> *</b><br/>
+											<b><?php print __($guid, 'Title') ?> *</b><br/>
 										</td>
 										<td class="right">
-											<input readonly name="name" id="name" maxlength=60 value="<?php print $row["title"] ; ?>" type="text" style="width: 300px">
+											<input readonly name="name" id="name" maxlength=60 value="<?php print $row["title"] ; ?>" type="text" class="standardWidth">
 										</td>
 									</tr>
 									<tr>
 										<td> 
-											<b><?php print _('Status') ?> *</b><br/><?php print $row["status"] ?>
+											<b><?php print __($guid, 'Status') ?> *</b><br/><?php print $row["status"] ?>
 										</td>
 										<td class="right">
 											<?php
 											if ($row["status"]=="Requested" OR $row["status"]=="Approved" OR $row["status"]=="Ordered") {
 												print "<select name='status' id='status' style='width:302px'>" ;
-													print "<option  value='Please select...'>" . _('Please select...') . "</option>" ;
+													print "<option  value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
 													if ($row["status"]=="Requested") {
 														$selected="" ;
 														if ($row["status"]=="Requested") {
 															$selected="selected" ;
 														}
-														print "<option $selected value='Requested'>" . _('Requested') . "</option>" ;
+														print "<option $selected value='Requested'>" . __($guid, 'Requested') . "</option>" ;
 														$selected="" ;
 														if ($row["status"]=="Approved") {
 															$selected="selected" ;
 														}
-														print "<option $selected value='Approved'>" . _('Approved') . "</option>" ;
+														print "<option $selected value='Approved'>" . __($guid, 'Approved') . "</option>" ;
 														$selected="" ;
 														if ($row["status"]=="Rejected") {
 															$selected="selected" ;
 														}
-														print "<option $selected value='Rejected'>" . _('Rejected') . "</option>" ;
+														print "<option $selected value='Rejected'>" . __($guid, 'Rejected') . "</option>" ;
 														$selected="" ;
 														if ($row["status"]=="Ordered") {
 															$selected="selected" ;
 														}
-														print "<option $selected value='Ordered'>" . _('Ordered') . "</option>" ;
+														print "<option $selected value='Ordered'>" . __($guid, 'Ordered') . "</option>" ;
 														$selected="" ;
 														if ($row["status"]=="Paid") {
 															$selected="selected" ;
 														}
-														print "<option $selected value='Paid'>" . _('Paid') . "</option>" ;
+														print "<option $selected value='Paid'>" . __($guid, 'Paid') . "</option>" ;
 														$selected="" ;
 														if ($row["status"]=="Cancelled") {
 															$selected="selected" ;
 														}
-														print "<option $selected value='Cancelled'>" . _('Cancelled') . "</option>" ;
+														print "<option $selected value='Cancelled'>" . __($guid, 'Cancelled') . "</option>" ;
 													}
 													else if ($row["status"]=="Approved") {
 														$selected="" ;
 														if ($row["status"]=="Approved") {
 															$selected="selected" ;
 														}
-														print "<option $selected value='Approved'>" . _('Approved') . "</option>" ;
+														print "<option $selected value='Approved'>" . __($guid, 'Approved') . "</option>" ;
 														$selected="" ;
 														if ($row["status"]=="Ordered") {
 															$selected="selected" ;
 														}
-														print "<option $selected value='Ordered'>" . _('Ordered') . "</option>" ;
+														print "<option $selected value='Ordered'>" . __($guid, 'Ordered') . "</option>" ;
 														$selected="" ;
 														if ($row["status"]=="Paid") {
 															$selected="selected" ;
 														}
-														print "<option $selected value='Paid'>" . _('Paid') . "</option>" ;
+														print "<option $selected value='Paid'>" . __($guid, 'Paid') . "</option>" ;
 														$selected="" ;
 														if ($row["status"]=="Cancelled") {
 															$selected="selected" ;
 														}
-														print "<option $selected value='Cancelled'>" . _('Cancelled') . "</option>" ;
+														print "<option $selected value='Cancelled'>" . __($guid, 'Cancelled') . "</option>" ;
 													}
 													else if ($row["status"]=="Ordered") {
 														$selected="" ;
 														if ($row["status"]=="Ordered") {
 															$selected="selected" ;
 														}
-														print "<option $selected value='Ordered'>" . _('Ordered') . "</option>" ;
+														print "<option $selected value='Ordered'>" . __($guid, 'Ordered') . "</option>" ;
 														$selected="" ;
 														if ($row["status"]=="Paid") {
 															$selected="selected" ;
 														}
-														print "<option $selected value='Paid'>" . _('Paid') . "</option>" ;
+														print "<option $selected value='Paid'>" . __($guid, 'Paid') . "</option>" ;
 														$selected="" ;
 														if ($row["status"]=="Cancelled") {
 															$selected="selected" ;
 														}
-														print "<option $selected value='Cancelled'>" . _('Cancelled') . "</option>" ;
+														print "<option $selected value='Cancelled'>" . __($guid, 'Cancelled') . "</option>" ;
 													}
 												print "</select>" ;
 											}
 											else {
 												?>
-												<input readonly name="status" id="status" maxlength=60 value="<?php print $row["status"] ; ?>" type="text" style="width: 300px">
+												<input readonly name="status" id="status" maxlength=60 value="<?php print $row["status"] ; ?>" type="text" class="standardWidth">
 												<?php
 											}
 											?>
 											<script type="text/javascript">
 												var status=new LiveValidation('status');
-												status.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+												status.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 											</script>
 										</td>
 									</tr>
 									<tr>
 										<td colspan=2> 
-											<b><?php print _('Description') ?></b>
+											<b><?php print __($guid, 'Description') ?></b>
 											<?php 
 												print "<p>" ;
 													print $row["body"] ;
@@ -308,15 +288,15 @@ else {
 									</tr>
 									<tr>
 										<td> 
-											<b><?php print _('Purchase By') ?> *</b><br/>
+											<b><?php print __($guid, 'Purchase By') ?> *</b><br/>
 										</td>
 										<td class="right">
-											<input readonly name="purchaseBy" id="purchaseBy" maxlength=60 value="<?php print $row["purchaseBy"] ; ?>" type="text" style="width: 300px">
+											<input readonly name="purchaseBy" id="purchaseBy" maxlength=60 value="<?php print $row["purchaseBy"] ; ?>" type="text" class="standardWidth">
 										</td>
 									</tr>
 									<tr>
 										<td colspan=2> 
-											<b><?php print _('Purchase Details') ?></b>
+											<b><?php print __($guid, 'Purchase Details') ?></b>
 											<?php 
 												print "<p>" ;
 													print $row["purchaseDetails"] ;
@@ -330,49 +310,49 @@ else {
 										?>
 										<tr class='break'>
 											<td colspan=2> 
-												<h3><?php print _('Budget Tracking') ?></h3>
+												<h3><?php print __($guid, 'Budget Tracking') ?></h3>
 											</td>
 										</tr>
 										<tr>
 											<td> 
-												<b><?php print _('Total Cost') ?> *</b><br/>
+												<b><?php print __($guid, 'Total Cost') ?> *</b><br/>
 												<span style="font-size: 90%">
 													<i>
 													<?php
 													if ($_SESSION[$guid]["currency"]!="") {
-														print sprintf(_('Numeric value of the fee in %1$s.'), $_SESSION[$guid]["currency"]) ;
+														print sprintf(__($guid, 'Numeric value of the fee in %1$s.'), $_SESSION[$guid]["currency"]) ;
 													}
 													else {
-														print _("Numeric value of the fee.") ;
+														print __($guid, "Numeric value of the fee.") ;
 													}
 													?>
 													</i>
 												</span>
 											</td>
 											<td class="right">
-												<input readonly name="name" id="name" maxlength=60 value="<?php print number_format($row["cost"], 2, ".", ",") ; ?>" type="text" style="width: 300px">
+												<input readonly name="name" id="name" maxlength=60 value="<?php print number_format($row["cost"], 2, ".", ",") ; ?>" type="text" class="standardWidth">
 											</td>
 										</tr>
 										<tr>
 											<td> 
-												<b><?php print _('Count Against Budget') ?> *</b><br/>
-												<span style="font-size: 90%"><i>
-													<?php print _("For tracking purposes, should the item be counted against the budget? If immediately offset by some revenue, perhaps not.") ; ?>
-												</i></span>
+												<b><?php print __($guid, 'Count Against Budget') ?> *</b><br/>
+												<span class="emphasis small">
+													<?php print __($guid, "For tracking purposes, should the item be counted against the budget? If immediately offset by some revenue, perhaps not.") ; ?>
+												</span>
 											</td>
 											<td class="right">
-												<select name="countAgainstBudget" id="countAgainstBudget" style="width: 302px">
+												<select name="countAgainstBudget" id="countAgainstBudget" class="standardWidth">
 													<?php
 													$selected="" ;
 													if ($row["countAgainstBudget"]=="Y") {
 														$selected="selected" ;
 													}
-													print "<option $selected value='Y'>" . ynExpander('Y') . "</option>" ;
+													print "<option $selected value='Y'>" . ynExpander($guid, 'Y') . "</option>" ;
 													$selected="" ;
 													if ($row["countAgainstBudget"]=="N") {
 														$selected="selected" ;
 													}
-													print "<option $selected value='N'>" . ynExpander('N') . "</option>" ;
+													print "<option $selected value='N'>" . ynExpander($guid, 'N') . "</option>" ;
 													?>			
 												</select>
 											</td>
@@ -383,15 +363,15 @@ else {
 											?>
 											<tr>
 												<td> 
-													<b><?php print _('Budget For Cycle') ?> *</b><br/>
+													<b><?php print __($guid, 'Budget For Cycle') ?> *</b><br/>
 													<span style="font-size: 90%">
 														<i>
 														<?php
 														if ($_SESSION[$guid]["currency"]!="") {
-															print sprintf(_('Numeric value of the fee in %1$s.'), $_SESSION[$guid]["currency"]) ;
+															print sprintf(__($guid, 'Numeric value of the fee in %1$s.'), $_SESSION[$guid]["currency"]) ;
 														}
 														else {
-															print _("Numeric value of the fee.") ;
+															print __($guid, "Numeric value of the fee.") ;
 														}
 														?>
 														</i>
@@ -412,14 +392,14 @@ else {
 														$budgetAllocationFail=TRUE ;
 													}
 													if ($resultCheck->rowCount()!=1) {
-														print "<input readonly name=\"name\" id=\"name\" maxlength=60 value=\"" . _('NA') . "\" type=\"text\" style=\"width: 300px\">" ;
+														print "<input readonly name=\"name\" id=\"name\" maxlength=60 value=\"" . __($guid, 'NA') . "\" type=\"text\" style=\"width: 300px\">" ;
 														$budgetAllocationFail=TRUE ;
 													}
 													else {
 														$rowCheck=$resultCheck->fetch() ;
 														$budgetAllocation=$rowCheck["value"] ;
 														?>
-														<input readonly name="name" id="name" maxlength=60 value="<?php print number_format($budgetAllocation, 2, ".", ",") ; ?>" type="text" style="width: 300px">
+														<input readonly name="name" id="name" maxlength=60 value="<?php print number_format($budgetAllocation, 2, ".", ",") ; ?>" type="text" class="standardWidth">
 														<?php
 													}
 													?>
@@ -427,15 +407,15 @@ else {
 											</tr>
 											<tr>
 												<td> 
-													<b><?php print _('Amount already approved or spent') ?> *</b><br/>
+													<b><?php print __($guid, 'Amount already approved or spent') ?> *</b><br/>
 													<span style="font-size: 90%">
 														<i>
 														<?php
 														if ($_SESSION[$guid]["currency"]!="") {
-															print sprintf(_('Numeric value of the fee in %1$s.'), $_SESSION[$guid]["currency"]) ;
+															print sprintf(__($guid, 'Numeric value of the fee in %1$s.'), $_SESSION[$guid]["currency"]) ;
 														}
 														else {
-															print _("Numeric value of the fee.") ;
+															print __($guid, "Numeric value of the fee.") ;
 														}
 														?>
 														</i>
@@ -463,7 +443,7 @@ else {
 															$budgetAllocated=$budgetAllocated+$rowCheck["cost"] ;
 														}
 														?>
-														<input readonly name="name" id="name" maxlength=60 value="<?php print number_format($budgetAllocated, 2, ".", ",") ; ?>" type="text" style="width: 300px">
+														<input readonly name="name" id="name" maxlength=60 value="<?php print number_format($budgetAllocated, 2, ".", ",") ; ?>" type="text" class="standardWidth">
 														<?php
 													}
 											
@@ -475,15 +455,15 @@ else {
 												?>
 												<tr>
 												<td> 
-													<b><?php print _('Budget Remaining For Cycle') ?> *</b><br/>
+													<b><?php print __($guid, 'Budget Remaining For Cycle') ?> *</b><br/>
 													<span style="font-size: 90%">
 														<i>
 														<?php
 														if ($_SESSION[$guid]["currency"]!="") {
-															print sprintf(_('Numeric value of the fee in %1$s.'), $_SESSION[$guid]["currency"]) ;
+															print sprintf(__($guid, 'Numeric value of the fee in %1$s.'), $_SESSION[$guid]["currency"]) ;
 														}
 														else {
-															print _("Numeric value of the fee.") ;
+															print __($guid, "Numeric value of the fee.") ;
 														}
 														?>
 														</i>
@@ -507,7 +487,7 @@ else {
 									
 									<tr class='break'>
 										<td colspan=2> 
-											<h3><?php print _('Log') ?></h3>
+											<h3><?php print __($guid, 'Log') ?></h3>
 										</td>
 									</tr>
 									<tr>
@@ -568,16 +548,16 @@ else {
 										</script>
 										<tr class='break' id="paidTitle">
 											<td colspan=2> 
-												<h3><?php print _('Payment Information') ?></h3>
+												<h3><?php print __($guid, 'Payment Information') ?></h3>
 											</td>
 										</tr>
 										<tr id="paymentDateRow">
 											<td> 
-												<b><?php print _('Date Paid') ?> *</b><br/>
-												<span style="font-size: 90%"><i><?php print _('Date of payment, not entry to system.') ?></i></span>
+												<b><?php print __($guid, 'Date Paid') ?> *</b><br/>
+												<span class="emphasis small"><?php print __($guid, 'Date of payment, not entry to system.') ?></span>
 											</td>
 											<td class="right">
-												<input name="paymentDate" id="paymentDate" maxlength=10 value="" type="text" style="width: 300px">
+												<input name="paymentDate" id="paymentDate" maxlength=10 value="" type="text" class="standardWidth">
 												<script type="text/javascript">
 													var paymentDate=new LiveValidation('paymentDate');
 													paymentDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
@@ -592,17 +572,17 @@ else {
 										</tr>
 										<tr id="paymentAmountRow">
 											<td> 
-												<b><?php print _('Amount Paid') ?> *</b><br/>
-												<span style="font-size: 90%"><i><?php print _('Final amount paid.') ?>
+												<b><?php print __($guid, 'Amount Paid') ?> *</b><br/>
+												<span class="emphasis small"><?php print __($guid, 'Final amount paid.') ?>
 												<?php
 												if ($_SESSION[$guid]["currency"]!="") {
 													print "<span style='font-style: italic; font-size: 85%'>" . $_SESSION[$guid]["currency"] . "</span>" ;
 												}
 												?>
-												</i></span>
+												</span>
 											</td>
 											<td class="right">
-												<input name="paymentAmount" id="paymentAmount" maxlength=15 value="" type="text" style="width: 300px">
+												<input name="paymentAmount" id="paymentAmount" maxlength=15 value="" type="text" class="standardWidth">
 												<script type="text/javascript">
 													var paymentAmount=new LiveValidation('paymentAmount');
 													paymentAmount.add( Validate.Format, { pattern: /^(?:\d*\.\d{1,2}|\d+)$/, failureMessage: "Invalid number format!" } );
@@ -612,13 +592,13 @@ else {
 										</tr>
 										<tr id="payeeRow">
 											<td> 
-												<b><?php print _('Payee') ?> *</b><br/>
-												<span style="font-size: 90%"><i><?php print _('Staff who made, or arranged, the payment.') ?></i></span>
+												<b><?php print __($guid, 'Payee') ?> *</b><br/>
+												<span class="emphasis small"><?php print __($guid, 'Staff who made, or arranged, the payment.') ?></span>
 											</td>
 											<td class="right">
-												<select name="gibbonPersonIDPayment" id="gibbonPersonIDPayment" style="width: 302px">
+												<select name="gibbonPersonIDPayment" id="gibbonPersonIDPayment" class="standardWidth">
 													<?php
-													print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+													print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
 													try {
 														$dataSelect=array(); 
 														$sqlSelect="SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName" ;
@@ -633,18 +613,18 @@ else {
 												</select>
 												<script type="text/javascript">
 													var gibbonPersonIDPayment=new LiveValidation('gibbonPersonIDPayment');
-													gibbonPersonIDPayment.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+													gibbonPersonIDPayment.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 												</script>
 											</td>
 										</tr>
 										<tr id="paymentMethodRow">
 											<td> 
-												<b><?php print _('Payment Method') ?> *</b><br/>
+												<b><?php print __($guid, 'Payment Method') ?> *</b><br/>
 											</td>
 											<td class="right">
 												<?
 												print "<select name='paymentMethod' id='paymentMethod' style='width:302px'>" ;
-													print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+													print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
 													print "<option value='Bank Transfer'>Bank Transfer</option>" ;
 													print "<option value='Cash'>Cash</option>" ;
 													print "<option value='Cheque'>Cheque</option>" ;
@@ -654,17 +634,17 @@ else {
 												?>
 												<script type="text/javascript">
 													var paymentMethod=new LiveValidation('paymentMethod');
-													paymentMethod.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+													paymentMethod.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 												</script>
 											</td>
 										</tr>
 										<tr id="paymentIDRow">
 											<td> 
-												<b><?php print _('Payment ID') ?></b><br/>
-												<span style="font-size: 90%"><i><?php print _('Transaction ID to identify this payment.') ?></i></span>
+												<b><?php print __($guid, 'Payment ID') ?></b><br/>
+												<span class="emphasis small"><?php print __($guid, 'Transaction ID to identify this payment.') ?></span>
 											</td>
 											<td class="right">
-												<input name="paymentID" id="paymentID" maxlength=100 value="" type="text" style="width: 300px">
+												<input name="paymentID" id="paymentID" maxlength=100 value="" type="text" class="standardWidth">
 											</td>
 										</tr>
 										<?php
@@ -673,37 +653,37 @@ else {
 										?>
 										<tr class='break' id="paidTitle">
 											<td colspan=2> 
-												<h3><?php print _('Payment Information') ?></h3>
+												<h3><?php print __($guid, 'Payment Information') ?></h3>
 											</td>
 										</tr>
 										<tr id="paymentDateRow">
 											<td> 
-												<b><?php print _('Date Paid') ?></b><br/>
-												<span style="font-size: 90%"><i><?php print _('Date of payment, not entry to system.') ?></i></span>
+												<b><?php print __($guid, 'Date Paid') ?></b><br/>
+												<span class="emphasis small"><?php print __($guid, 'Date of payment, not entry to system.') ?></span>
 											</td>
 											<td class="right">
-												<input readonly name="paymentDate" id="paymentDate" maxlength=10 value="<?php print dateConvertBack($guid, $row["paymentDate"]) ?>" type="text" style="width: 300px">
+												<input readonly name="paymentDate" id="paymentDate" maxlength=10 value="<?php print dateConvertBack($guid, $row["paymentDate"]) ?>" type="text" class="standardWidth">
 											</td>
 										</tr>
 										<tr id="paymentAmountRow">
 											<td> 
-												<b><?php print _('Amount Paid') ?></b><br/>
-												<span style="font-size: 90%"><i><?php print _('Final amount paid.') ?>
+												<b><?php print __($guid, 'Amount Paid') ?></b><br/>
+												<span class="emphasis small"><?php print __($guid, 'Final amount paid.') ?>
 												<?php
 												if ($_SESSION[$guid]["currency"]!="") {
 													print "<span style='font-style: italic; font-size: 85%'>" . $_SESSION[$guid]["currency"] . "</span>" ;
 												}
 												?>
-												</i></span>
+												</span>
 											</td>
 											<td class="right">
-												<input readonly name="paymentAmount" id="paymentAmount" maxlength=10 value="<?php print number_format($row["paymentAmount"] , 2, ".", ",") ?>" type="text" style="width: 300px">
+												<input readonly name="paymentAmount" id="paymentAmount" maxlength=10 value="<?php print number_format($row["paymentAmount"] , 2, ".", ",") ?>" type="text" class="standardWidth">
 											</td>
 										</tr>
 										<tr id="payeeRow">
 											<td> 
-												<b><?php print _('Payee') ?></b><br/>
-												<span style="font-size: 90%"><i><?php print _('Staff who made, or arranged, the payment.') ?></i></span>
+												<b><?php print __($guid, 'Payee') ?></b><br/>
+												<span class="emphasis small"><?php print __($guid, 'Staff who made, or arranged, the payment.') ?></span>
 											</td>
 											<td class="right">
 												<?php
@@ -717,7 +697,7 @@ else {
 												if ($resultSelect->rowCount()==1) {
 													$rowSelect=$resultSelect->fetch() ;
 													?>
-													<input readonly name="payee" id="payee" maxlength=10 value="<?php print formatName(htmlPrep($rowSelect["title"]), ($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]),"Staff", true, true) ?>" type="text" style="width: 300px">
+													<input readonly name="payee" id="payee" maxlength=10 value="<?php print formatName(htmlPrep($rowSelect["title"]), ($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]),"Staff", true, true) ?>" type="text" class="standardWidth">
 													<?php
 												}
 												?>	
@@ -725,33 +705,33 @@ else {
 										</tr>
 										<tr id="paymentMethodRow">
 											<td> 
-												<b><?php print _('Payment Method') ?></b><br/>
+												<b><?php print __($guid, 'Payment Method') ?></b><br/>
 											</td>
 											<td class="right">
-												<input readonly name="paymentMethod" id="paymentMethod" maxlength=10 value="<?php print $row["paymentMethod"] ?>" type="text" style="width: 300px">
+												<input readonly name="paymentMethod" id="paymentMethod" maxlength=10 value="<?php print $row["paymentMethod"] ?>" type="text" class="standardWidth">
 											</td>
 										</tr>
 										<tr id="paymentIDRow">
 											<td> 
-												<b><?php print _('Payment ID') ?></b><br/>
-												<span style="font-size: 90%"><i><?php print _('Transaction ID to identify this payment.') ?></i></span>
+												<b><?php print __($guid, 'Payment ID') ?></b><br/>
+												<span class="emphasis small"><?php print __($guid, 'Transaction ID to identify this payment.') ?></span>
 											</td>
 											<td class="right">
 												<?php
 												if ($row["paymentReimbursementReceipt"]!="") {
 													if(is_file("./" . $row["paymentReimbursementReceipt"])) {
-														print "<a target='_blank' href=\"./" . $row["paymentReimbursementReceipt"] . "\">" . _("Payment Receipt") . "</a><br/>" ;
+														print "<a target='_blank' href=\"./" . $row["paymentReimbursementReceipt"] . "\">" . __($guid, "Payment Receipt") . "</a><br/>" ;
 													}
 												}
 												
 												if ($row["paymentID"]=="" AND $row["status"]=="Paid" AND $row["purchaseBy"]=="Self" AND $row["paymentReimbursementStatus"]=="Requested") {
 													?>
-													<input name="paymentID" id="paymentID" maxlength=100 value="" type="text" style="width: 300px">
+													<input name="paymentID" id="paymentID" maxlength=100 value="" type="text" class="standardWidth">
 													<?php
 												}
 												else {
 													?>
-													<input readonly name="paymentID" id="paymentID" maxlength=100 value="<?php print $row["paymentID"] ?>" type="text" style="width: 300px">
+													<input readonly name="paymentID" id="paymentID" maxlength=100 value="<?php print $row["paymentID"] ?>" type="text" class="standardWidth">
 													<?php
 												}
 												?>
@@ -762,7 +742,7 @@ else {
 											?>
 											<tr id="reimbursementRow">
 												<td> 
-													<b><?php print _('Reimbursement Status') ?></b><br/>
+													<b><?php print __($guid, 'Reimbursement Status') ?></b><br/>
 												</td>
 												<td class="right">
 													<?php
@@ -772,17 +752,17 @@ else {
 															if ($row["status"]=="Requested") {
 																$selected="selected" ;
 															}
-															print "<option $selected value='Requested'>" . _('Requested') . "</option>" ;
+															print "<option $selected value='Requested'>" . __($guid, 'Requested') . "</option>" ;
 															$selected="" ;
 															if ($row["status"]=="Complete") {
 																$selected="selected" ;
 															}
-															print "<option $selected value='Complete'>" . _('Complete') . "</option>" ;
+															print "<option $selected value='Complete'>" . __($guid, 'Complete') . "</option>" ;
 														print "</select>" ;
 													}
 													else {
 														?>
-														<input readonly name="paymentReimbursementStatus" id="paymentReimbursementStatus" maxlength=60 value="<?php print $row["paymentReimbursementStatus"] ; ?>" type="text" style="width: 300px">
+														<input readonly name="paymentReimbursementStatus" id="paymentReimbursementStatus" maxlength=60 value="<?php print $row["paymentReimbursementStatus"] ; ?>" type="text" class="standardWidth">
 														<?php
 													}
 													?>
@@ -793,7 +773,7 @@ else {
 												?>
 												<tr id="reimbursementCommentRow">
 													<td colspan=2> 
-														<b><?php print _('Reimbursement Comment') ?></b><br/>
+														<b><?php print __($guid, 'Reimbursement Comment') ?></b><br/>
 														<textarea name="reimbursementComment" id="reimbursementComment" rows=4 style="width: 100%"></textarea>
 													</td>
 												</tr>
@@ -805,7 +785,7 @@ else {
 									
 									<tr>
 										<td>
-											<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+											<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 										</td>
 										<td class="right">
 											<input name="gibbonFinanceExpenseID" id="gibbonFinanceExpenseID" value="<?php print $gibbonFinanceExpenseID ?>" type="hidden">
@@ -813,7 +793,7 @@ else {
 											<input name="status2" id="status2" value="<?php print $status2 ?>" type="hidden">
 											<input name="gibbonFinanceBudgetID2" id="gibbonFinanceBudgetID2" value="<?php print $gibbonFinanceBudgetID2 ?>" type="hidden">
 											<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-											<input type="submit" value="<?php print _("Submit") ; ?>">
+											<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 										</td>
 									</tr>
 								</table>

@@ -22,15 +22,8 @@ require getcwd() . "/../functions.php" ;
 require getcwd() . "/../lib/PHPMailer/class.phpmailer.php";
 						
 //New PDO DB connection
-if ($databaseServer=="localhost") {
-	$databaseServer="127.0.0.1" ;
-}
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) { }
+$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 @session_start() ;
 
@@ -53,7 +46,7 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
 //Check for CLI, so this cannot be run through browser
 //if (php_sapi_name()!="cli") { 
-//	print _("This script cannot be run from a browser, only via CLI.") . "\n\n" ;
+//	print __($guid, "This script cannot be run from a browser, only via CLI.") . "\n\n" ;
 //}
 //else {
 	//SCAN THROUGH ALL OVERDUE LOANS
@@ -69,7 +62,7 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
 	if ($result->rowCount()>0) {
 		while ($row=$result->fetch()) { //For every student
-			$notificationText=sprintf(_('You have an overdue loan item that needs to be returned (%1$s).'), $row["name"]) ;
+			$notificationText=sprintf(__($guid, 'You have an overdue loan item that needs to be returned (%1$s).'), $row["name"]) ;
 			setNotification($connection2, $guid, $row["gibbonPersonIDStatusResponsible"], $notificationText, "Library", "/index.php?q=/modules/Library/library_browse.php&gibbonLibraryItemID=" . $row["gibbonLibraryItemID"]) ;
 		}
 	}

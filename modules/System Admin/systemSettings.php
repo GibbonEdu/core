@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/System Admin/systemSettings.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -62,7 +62,7 @@ else {
 
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('System Settings') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'System Settings') . "</div>" ;
 	print "</div>" ;
 	
 	//Check for new version of Gibbon
@@ -73,19 +73,19 @@ else {
 	$class="error" ;
 	if (!($updateReturn=="")) {
 		if ($updateReturn=="fail0") {
-			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($updateReturn=="fail1") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail2") {
-			$updateReturnMessage=_("One or more of the fields in your request failed due to a database error.") ;	
+			$updateReturnMessage=__($guid, "One or more of the fields in your request failed due to a database error.") ;	
 		}
 		else if ($updateReturn=="fail3") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="success0") {
-			$updateReturnMessage=_("Your request was completed successfully.") ;	
+			$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -95,10 +95,10 @@ else {
 	?>
 	
 	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/systemSettingsProcess.php" ?>">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><?php print _('System Settings') ?></h3>
+					<h3><?php print __($guid, 'System Settings') ?></h3>
 				</td>
 			</tr>
 			<tr>
@@ -115,11 +115,11 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td style='width: 275px'> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td stclass="right">
-					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print htmlPrep($row["value"]) ?>" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Presence);
@@ -141,11 +141,11 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td stclass="right">
-					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print htmlPrep($row["value"]) ?>" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Presence);
@@ -166,11 +166,11 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print htmlPrep($row["value"]) ?>" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Presence);
@@ -191,11 +191,11 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=8 style="width: 300px"><?php print htmlPrep($row["value"]) ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=8 class="standardWidth"><?php print htmlPrep($row["value"]) ?></textarea>
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Presence);
@@ -216,11 +216,11 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
 						<?php
 						$selected="" ;
 						if ($row["value"]=="Production" ) { $selected="selected" ; }
@@ -249,11 +249,11 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _($row["description"]) ?>. <?php print _('This value cannot be changed.') ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+					<span class="emphasis small"><?php print __($guid, $row["description"]) ?>. <?php print __($guid, 'This value cannot be changed.') ?></span>
 				</td>
 				<td class="right">
-					<input readonly value='<?php print ynExpander($row["value"]) ?>'  style="width: 300px"\>
+					<input readonly value='<?php print ynExpander($guid, $row["value"]) ?>'  class="standardWidth"\>
 				</td>
 			</tr>
 			<tr>
@@ -270,18 +270,18 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
 						<?php
 						$selected="" ;
 						if ($row["value"]=="Y" ) { $selected="selected" ; }
-						print "<option $selected value='Y'>" . ynExpander('Y') . "</option>" ;
+						print "<option $selected value='Y'>" . ynExpander($guid, 'Y') . "</option>" ;
 						$selected="" ;
 						if ($row["value"]=="N" ) { $selected="selected" ; }
-						print "<option $selected value='N'>" . ynExpander('N') . "</option>" ;
+						print "<option $selected value='N'>" . ynExpander($guid, 'N') . "</option>" ;
 						?>			
 					</select>
 				</td>
@@ -289,7 +289,7 @@ else {
 		
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><?php print _('Organisation Settings') ?></h3>
+					<h3><?php print __($guid, 'Organisation Settings') ?></h3>
 				</td>
 			</tr>
 			<tr>
@@ -306,11 +306,11 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print htmlPrep($row["value"]) ?>" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Presence);
@@ -331,11 +331,11 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print htmlPrep($row["value"]) ?>" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Presence);
@@ -356,11 +356,11 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print htmlPrep($row["value"]) ?>" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Email);
@@ -381,11 +381,11 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print htmlPrep($row["value"]) ?>" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Presence);
@@ -407,13 +407,13 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
 						<?php
-						print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+						print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
 						try {
 							$dataSelect=array(); 
 							$sqlSelect="SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName" ;
@@ -432,7 +432,7 @@ else {
 					</select>
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-						<?php print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+						<?php print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 					</script>
 				</td>
 			</tr>
@@ -450,13 +450,13 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
 						<?php
-						print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+						print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
 						try {
 							$dataSelect=array(); 
 							$sqlSelect="SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName" ;
@@ -475,7 +475,7 @@ else {
 					</select>
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-						<?php print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+						<?php print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 					</script>
 				</td>
 			</tr>
@@ -493,13 +493,13 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
 						<?php
-						print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+						print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
 						try {
 							$dataSelect=array(); 
 							$sqlSelect="SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName" ;
@@ -518,19 +518,63 @@ else {
 					</select>
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-						<?php print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+						<?php print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
+					</script>
+				</td>
+			</tr>
+			
+			<tr>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='organisationHR'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
+				</td>
+				<td class="right">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
+						<?php
+						print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
+						try {
+							$dataSelect=array(); 
+							$sqlSelect="SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName" ;
+							$resultSelect=$connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						}
+						catch(PDOException $e) { }	
+						while ($rowSelect=$resultSelect->fetch()) {
+							$selected="" ;
+							if ($row["value"]==$rowSelect["gibbonPersonID"]) {
+								$selected="selected" ;
+							}
+							print "<option $selected value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName(htmlPrep($rowSelect["title"]), ($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]),"Staff", true, true) . "</option>" ;
+						}
+						?>
+					</select>
+					<script type="text/javascript">
+						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
+						<?php print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 					</script>
 				</td>
 			</tr>
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><?php print _('Security Settings') ?></h3>
+					<h3><?php print __($guid, 'Security Settings') ?></h3>
 				</td>
 			</tr>
 			<tr>
 				<td colspan=2> 
-					<h4><?php print _('Password Policy') ?></h4>
+					<h4><?php print __($guid, 'Password Policy') ?></h4>
 				</td>
 			</tr>
 			<tr>
@@ -547,11 +591,11 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
 						<?php
 						for ($i=4; $i<13; $i++ ) { 
 							$selected="" ;
@@ -576,18 +620,18 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
 						<?php
 						$selected="" ;
 						if ($row["value"]=="Y" ) { $selected="selected" ; }
-						print "<option $selected value='Y'>" . ynExpander('Y') . "</option>" ;
+						print "<option $selected value='Y'>" . ynExpander($guid, 'Y') . "</option>" ;
 						$selected="" ;
 						if ($row["value"]=="N" ) { $selected="selected" ; }
-						print "<option $selected value='N'>" . ynExpander('N') . "</option>" ;
+						print "<option $selected value='N'>" . ynExpander($guid, 'N') . "</option>" ;
 						?>			
 					</select>
 				</td>
@@ -606,18 +650,18 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
 						<?php
 						$selected="" ;
 						if ($row["value"]=="Y" ) { $selected="selected" ; }
-						print "<option $selected value='Y'>" . ynExpander('Y') . "</option>" ;
+						print "<option $selected value='Y'>" . ynExpander($guid, 'Y') . "</option>" ;
 						$selected="" ;
 						if ($row["value"]=="N" ) { $selected="selected" ; }
-						print "<option $selected value='N'>" . ynExpander('N') . "</option>" ;
+						print "<option $selected value='N'>" . ynExpander($guid, 'N') . "</option>" ;
 						?>			
 					</select>
 				</td>
@@ -636,25 +680,25 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
 						<?php
 						$selected="" ;
 						if ($row["value"]=="Y" ) { $selected="selected" ; }
-						print "<option $selected value='Y'>" . ynExpander('Y') . "</option>" ;
+						print "<option $selected value='Y'>" . ynExpander($guid, 'Y') . "</option>" ;
 						$selected="" ;
 						if ($row["value"]=="N" ) { $selected="selected" ; }
-						print "<option $selected value='N'>" . ynExpander('N') . "</option>" ;
+						print "<option $selected value='N'>" . ynExpander($guid, 'N') . "</option>" ;
 						?>			
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<td colspan=2> 
-					<h4><?php print _('Miscellaneous') ?></h4>
+					<h4><?php print __($guid, 'Miscellaneous') ?></h4>
 				</td>
 			</tr>
 			<tr>
@@ -671,11 +715,11 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print $row["value"] ?>" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Numericality);
@@ -698,17 +742,17 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=8 style="width: 300px"><?php print htmlPrep($row["value"]) ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=8 class="standardWidth"><?php print htmlPrep($row["value"]) ?></textarea>
 				</td>
 			</tr>
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><?php print _('gibbonedu.com Value Added Services') ?></h3>
+					<h3><?php print __($guid, 'gibbonedu.com Value Added Services') ?></h3>
 				</td>
 			</tr>
 			<tr>
@@ -725,11 +769,11 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" class="standardWidth">
 				</td>
 			</tr>
 			<tr>
@@ -746,18 +790,18 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" class="standardWidth">
 				</td>
 			</tr>
 			
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><?php print _('Localisation') ?></h3>
+					<h3><?php print __($guid, 'Localisation') ?></h3>
 				</td>
 			</tr>
 			<tr>
@@ -774,11 +818,11 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
 						<?php
 						print "<option value=''></option>" ;
 						try {
@@ -795,9 +839,33 @@ else {
 							if ($row["value"]==$rowSelect["printable_name"]) {
 								$selected="selected" ;
 							}
-							print "<option $selected value='" . $rowSelect["printable_name"] . "'>" . _($rowSelect["printable_name"]) . "</option>" ;
+							print "<option $selected value='" . $rowSelect["printable_name"] . "'>" . __($guid, $rowSelect["printable_name"]) . "</option>" ;
 						}
 						?>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<?php
+				try {
+					$data=array(); 
+					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='firstDayOfTheWeek'" ;
+					$result=$connection2->prepare($sql);
+					$result->execute($data);
+				}
+				catch(PDOException $e) { 
+					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				}
+				$row=$result->fetch() ;
+				?>
+				<td> 
+					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
+				</td>
+				<td class="right">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
+						<option <?php if ($row["value"]=="Monday") { print "selected" ; } ?> value='Monday'>Monday</option>
+						<option <?php if ($row["value"]=="Sunday") { print "selected" ; } ?> value='Sunday'>Sunday</option>
 					</select>
 				</td>
 			</tr>
@@ -815,11 +883,11 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print htmlPrep($row["value"]) ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print htmlPrep($row["value"]) ?>" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Presence);
@@ -840,12 +908,12 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
-						<optgroup label='--<?php print _('PAYPAL SUPPORTED') ?>--'/>
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
+						<optgroup label='--<?php print __($guid, 'PAYPAL SUPPORTED') ?>--'/>
 							<option <?php if ($row["value"]=="AUD $") { print "selected" ; } ?> value='AUD $'>Australian Dollar (A$)</option>
 							<option <?php if ($row["value"]=="BRL R$") { print "selected" ; } ?> value='BRL R$'>Brazilian Real</option>
 							<option <?php if ($row["value"]=="GBP £") { print "selected" ; } ?> value='GBP £'>British Pound (£)</option>
@@ -870,17 +938,21 @@ else {
 							<option <?php if ($row["value"]=="TRY") { print "selected" ; } ?> value='TRY'>Turkish Lira</option>
 							<option <?php if ($row["value"]=="USD $") { print "selected" ; } ?> value='USD $'>U.S. Dollar ($)</option>
 						</optgroup>
-						<optgroup label='--<?php print _('OTHERS') ?>--'/>
+						<optgroup label='--<?php print __($guid, 'OTHERS') ?>--'/>
 							<option <?php if ($row["value"]=="BDT ó") { print "selected" ; } ?> value='BDT ó'>Bangladeshi Taka (ó)</option>
 							<option <?php if ($row["value"]=="BTC") { print "selected" ; } ?> value='BTC'>Bitcoin</option>
 							<option <?php if ($row["value"]=="XAF FCFA") { print "selected" ; } ?> value='XAF FCFA'>Central African Francs (FCFA)</option>
 							<option <?php if ($row["value"]=="EGP £") { print "selected" ; } ?> value='EGP £'>Egyptian Pound (£)</option>
 							<option <?php if ($row["value"]=="INR ₹") { print "selected" ; } ?> value='INR ₹'>Indian Rupee (₹)</option>
 							<option <?php if ($row["value"]=="IDR Rp") { print "selected" ; } ?> value='IDR Rp'>Indonesian Rupiah (Rp)</option>
+							<option <?php if ($row["value"]=="JMD $") { print "selected" ; } ?> value='JMD $'>Jamaican Dollar ($)</option>
 							<option <?php if ($row["value"]=="KES KSh") { print "selected" ; } ?> value='KES KSh'>Kenyan Shilling (KSh)</option>
+							<option <?php if ($row["value"]=="MOP MOP$") { print "selected" ; } ?> value='MOP MOP$'>Macanese Pataca (MOP$)</option>
 							<option <?php if ($row["value"]=="NPR ₨") { print "selected" ; } ?> value='NPR ₨'>Nepalese Rupee (₨)</option>
 							<option <?php if ($row["value"]=="NGN ₦") { print "selected" ; } ?> value='NGN ₦'>Nigerian Naira (₦)</option>
+							<option <?php if ($row["value"]=="PKR ₨") { print "selected" ; } ?> value='PKR ₨'>Pakistani Rupee (₨)</option>
 							<option <?php if ($row["value"]=="SAR ﷼‎") { print "selected" ; } ?> value='SAR ﷼‎'>Saudi Riyal (﷼‎)</option>
+							<option <?php if ($row["value"]=="TZS TSh") { print "selected" ; } ?> value='TZS TSh'>Tanzania Shilling (TSh)</option>
 							<option <?php if ($row["value"]=="VND ₫‎") { print "selected" ; } ?> value='VND ₫‎'>Vietnamese Dong (₫‎)</option>
 						</optgroup>
 					</select>
@@ -889,7 +961,7 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><?php print _('Miscellaneous') ?></h3>
+					<h3><?php print __($guid, 'Miscellaneous') ?></h3>
 				</td>
 			</tr>
 			<tr>
@@ -906,11 +978,11 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
@@ -931,11 +1003,11 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="<?php print $row["value"] ?>" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
@@ -956,11 +1028,11 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print $row["value"] ?>" type="text" style="width: 300px">
+					<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print $row["value"] ?>" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add(Validate.Numericality);
@@ -982,11 +1054,11 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=8 style="width: 300px"><?php print htmlPrep($row["value"]) ?></textarea>
+					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" rows=8 class="standardWidth"><?php print htmlPrep($row["value"]) ?></textarea>
 				</td>
 			</tr>
 			<tr>
@@ -1003,13 +1075,13 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<td> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
 						<?php
-						print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+						print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
 						try {
 							$dataSelect=array(); 
 							$sqlSelect="SELECT * FROM gibbonScale WHERE active='Y' ORDER BY name" ;
@@ -1025,24 +1097,24 @@ else {
 								$selected="selected" ;
 							}
 							
-							print "<option $selected value='" . $rowSelect["gibbonScaleID"] . "'>" . htmlPrep(_($rowSelect["name"])) . "</option>" ;
+							print "<option $selected value='" . $rowSelect["gibbonScaleID"] . "'>" . htmlPrep(__($guid, $rowSelect["name"])) . "</option>" ;
 						}
 						?>			
 					</select>
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-						<?php print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+						<?php print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 					</script>
 				</td>
 			</tr>
 			
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+					<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 				</td>
 			</tr>
 		</table>

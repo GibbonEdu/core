@@ -21,14 +21,8 @@ include "./functions.php" ;
 include "./config.php" ;
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 //Start session
 @session_start() ;
@@ -99,7 +93,7 @@ else {
 					catch(PDOException $e) { 
 						$URL.="&editReturn=fail1" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 					
 					//Check for forceReset and take action
@@ -114,7 +108,7 @@ else {
 						catch(PDOException $e) { 
 							$URL.="&forceResetReturn=fail0" ;
 							header("Location: {$URL}");
-							break ;
+							exit() ;
 						}
 						$_SESSION[$guid]["passwordForceReset"]="N" ;
 						$URL.="&forceResetReturn=success0" ;

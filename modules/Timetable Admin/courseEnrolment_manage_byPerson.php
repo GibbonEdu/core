@@ -22,13 +22,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/courseEnrolment_manage_byPerson.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Course Enrolment by Person') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Course Enrolment by Person') . "</div>" ;
 	print "</div>" ;
 	
 	$gibbonSchoolYearID="" ;
@@ -52,7 +52,7 @@ else {
 		}
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print _("The specified record does not exist.") ;
+				print __($guid, "The specified record does not exist.") ;
 			print "</div>" ;
 		}
 		else {
@@ -70,17 +70,17 @@ else {
 		print "<div class='linkTop'>" ;
 			//Print year picker
 			if (getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)!=FALSE) {
-				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/courseEnrolment_manage_byPerson.php&gibbonSchoolYearID=" . getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) . "'>" . _('Previous Year') . "</a> " ;
+				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/courseEnrolment_manage_byPerson.php&gibbonSchoolYearID=" . getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) . "'>" . __($guid, 'Previous Year') . "</a> " ;
 			}
 			else {
-				print _("Previous Year") . " " ;
+				print __($guid, "Previous Year") . " " ;
 			}
 			print " | " ;
 			if (getNextSchoolYearID($gibbonSchoolYearID, $connection2)!=FALSE) {
-				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/courseEnrolment_manage_byPerson.php&gibbonSchoolYearID=" . getNextSchoolYearID($gibbonSchoolYearID, $connection2) . "'>" . _('Next Year') . "</a> " ;
+				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/courseEnrolment_manage_byPerson.php&gibbonSchoolYearID=" . getNextSchoolYearID($gibbonSchoolYearID, $connection2) . "'>" . __($guid, 'Next Year') . "</a> " ;
 			}
 			else {
-				print _("Next Year") . " " ;
+				print __($guid, "Next Year") . " " ;
 			}
 		print "</div>" ;
 		
@@ -95,24 +95,24 @@ else {
 		}
 		
 		print "<h3>" ;
-		print _("Filters") ;
+		print __($guid, "Filters") ;
 		print "</h3>" ;
 		?>
 		<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
 			<table class='noIntBorder' cellspacing='0' style="width: 100%">	
 				<tr>
 					<td> 
-						<b><?php print _('Search For') ?></b><br/>
-						<span style="font-size: 90%"><i><?php print _('Preferred, surname, username.') ?></i></span>
+						<b><?php print __($guid, 'Search For') ?></b><br/>
+						<span class="emphasis small"><?php print __($guid, 'Preferred, surname, username.') ?></span>
 					</td>
 					<td class="right">
-						<input name="search" id="search" maxlength=20 value="<?php print $search ?>" type="text" style="width: 300px">
+						<input name="search" id="search" maxlength=20 value="<?php print $search ?>" type="text" class="standardWidth">
 					</td>
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('All Users') ?></b><br/>
-						<span style="font-size: 90%"><i><?php print _('Include non-staff, non-student users.') ?></i></span>
+						<b><?php print __($guid, 'All Users') ?></b><br/>
+						<span class="emphasis small"><?php print __($guid, 'Include non-staff, non-student users.') ?></span>
 					</td>
 					<td class="right">
 						<?php
@@ -130,9 +130,9 @@ else {
 						<input type="hidden" name="gibbonSchoolYearID" value="<?php print $gibbonSchoolYearID ?>">
 						<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 						<?php
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/courseEnrolment_manage_byPerson.php'>" . _('Clear Filters') . "</a>" ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/courseEnrolment_manage_byPerson.php'>" . __($guid, 'Clear Filters') . "</a>" ;
 						?>
-						<input type="submit" value="<?php print _("Submit") ; ?>">
+						<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 					</td>
 				</tr>
 			</table>
@@ -140,7 +140,7 @@ else {
 		<?php
 		
 		print "<h3>" ;
-		print _("View") ;
+		print __($guid, "View") ;
 		print "</h3>" ;
 		
 		//Set pagination variable
@@ -177,7 +177,7 @@ else {
 		
 		if ($result->rowCount()<1) {
 			print "<div class='error'>" ;
-			print _("There are no records to display.") ;
+			print __($guid, "There are no records to display.") ;
 			print "</div>" ;
 		}
 		else {
@@ -188,19 +188,19 @@ else {
 			print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
 					print "<th>" ;
-						print _("Name") ;
+						print __($guid, "Name") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Role Category") ;
+						print __($guid, "Role Category") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Year Group") ;
+						print __($guid, "Year Group") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Roll Group") ;
+						print __($guid, "Roll Group") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Actions") ;
+						print __($guid, "Actions") ;
 					print "</th>" ;
 				print "</tr>" ;
 				
@@ -230,10 +230,10 @@ else {
 						print "<td>" ;
 							if ($allUsers=="on") {
 								if ($row["yearGroup"]!="") {
-									print _("Student") ;
+									print __($guid, "Student") ;
 								}
 								else {
-									print _("Non-student") ;
+									print __($guid, "Non-student") ;
 								}
 							}
 							else {
@@ -242,14 +242,14 @@ else {
 						print "</td>" ;
 						print "<td>" ;
 							if ($row["yearGroup"]!="") {
-								print _($row["yearGroup"]) ;
+								print __($guid, $row["yearGroup"]) ;
 							}
 						print "</td>" ;
 						print "<td>" ;
 							print $row["rollGroup"] ;
 						print "</td>" ;
 						print "<td>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=" . $row["gibbonPersonID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID&type=" . $row["type"] . "&allUsers=$allUsers&search=$search'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=" . $row["gibbonPersonID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID&type=" . $row["type"] . "&allUsers=$allUsers&search=$search'><img title='" . __($guid, 'Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 						print "</td>" ;
 					print "</tr>" ;
 				}

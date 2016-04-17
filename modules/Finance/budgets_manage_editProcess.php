@@ -23,14 +23,8 @@ include "../../config.php" ;
 include "./moduleFunctions.php" ;
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 @session_start() ;
 
@@ -42,7 +36,7 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/Finance/budgets_manage_edit.php")==FALSE) {
 	//Fail 0
-	$URL.="&updateReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -50,7 +44,7 @@ else {
 	//Check if school year specified
 	if ($gibbonFinanceBudgetID=="") {
 		//Fail1
-		$URL.="&updateReturn=fail1" ;
+		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -62,14 +56,14 @@ else {
 		}
 		catch(PDOException $e) { 
 			//Fail2
-			$URL.="&deleteReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
-			break ;
+			exit() ;
 		}
 	
 		if ($result->rowCount()!=1) {
 			//Fail 2
-			$URL.="&updateReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -81,7 +75,7 @@ else {
 			
 			if ($name=="" OR $nameShort=="" OR $active=="" OR $category=="") {
 				//Fail 3
-				$URL.="&updateReturn=fail3" ;
+				$URL.="&return=error1" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -94,14 +88,14 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail 2
-					$URL.="&updateReturn=fail2" ;
+					$URL.="&return=error2" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 				
 				if ($result->rowCount()>0) {
 					//Fail 4
-					$URL.="&updateReturn=fail4" ;
+					$URL.="&return=error3" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -150,20 +144,20 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail 2
-						$URL.="&updateReturn=fail2" ;
+						$URL.="&return=error2" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 				
 				
 					if ($partialFail==TRUE) {
 						//Fail 5
-						$URL.="&updateReturn=fail5" ;
+						$URL.="&return=error4" ;
 						header("Location: {$URL}");
 					}
 					else {
 						//Success 0
-						$URL.="&updateReturn=success0" ;
+						$URL.="&return=success0" ;
 						header("Location: {$URL}");
 					}
 				}

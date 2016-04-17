@@ -25,52 +25,32 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Finance/invoices_manage_add.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoices_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . _('Manage Invoices') . "</a> > </div><div class='trailEnd'>" . _('Add Fees & Invoices') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoices_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . __($guid, 'Manage Invoices') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Add Fees & Invoices') . "</div>" ;
 	print "</div>" ;
-	
-	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
-	$addReturnMessage="" ;
-	$class="error" ;
-	if (!($addReturn=="")) {
-		if ($addReturn=="fail0") {
-			$addReturnMessage=_("Your request failed because you do not have access to this action.") ;	
-		}
-		else if ($addReturn=="fail2") {
-			$addReturnMessage=_("Your request failed due to a database error.") ;	
-		}
-		else if ($addReturn=="fail3") {
-			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($addReturn=="fail4") {
-			$addReturnMessage=_("Some aspects of your update failed, effecting the following areas:") . "<ul>" ;	
-			if ($_GET["studentFailCount"]) {
-				$addReturnMessage.="<li>" . $_GET["studentFailCount"] . " " . _('students encountered problems.') . "</li>" ;
-			}
-			if ($_GET["invoiceFailCount"]) {
-				$addReturnMessage.="<li>" . $_GET["invoiceFailCount"] . " " . _('invoices encountered problems.') . "</li>" ;
-			}
-			if ($_GET["invoiceFeeFailCount"]) {
-				$addReturnMessage.="<li>" . $_GET["invoiceFeeFailCount"] . " " . _('fee entires encountered problems.') . "</li>" ;
-			}
-			$addReturnMessage.="</ul>" . _('It is recommended that you remove all pending invoices and try to recreate them.') ;
-		}
-		else if ($addReturn=="success0") {
-			$addReturnMessage=_("Your request was completed successfully.") ;	
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $addReturnMessage;
-		print "</div>" ;
+
+	$error3=__($guid, "Some aspects of your update failed, effecting the following areas:") . "<ul>" ;	
+	if ($_GET["studentFailCount"]) {
+		$error3.="<li>" . $_GET["studentFailCount"] . " " . __($guid, 'students encountered problems.') . "</li>" ;
 	}
+	if ($_GET["invoiceFailCount"]) {
+		$error3.="<li>" . $_GET["invoiceFailCount"] . " " . __($guid, 'invoices encountered problems.') . "</li>" ;
+	}
+	if ($_GET["invoiceFeeFailCount"]) {
+		$error3.="<li>" . $_GET["invoiceFeeFailCount"] . " " . __($guid, 'fee entires encountered problems.') . "</li>" ;
+	}
+	$error3.="</ul>" . __($guid, 'It is recommended that you remove all pending invoices and try to recreate them.') ;
+
+
+	if (isset($_GET["return"])) { returnProcess($_GET["return"], null, array("error3" => $error3)); }
 	
 	print "<p>" ;
-		print _("Here you can add fees to one or more students. These fees will be added to an existing invoice or used to form a new invoice, depending on the specified billing schedule and other details.") ;
+		print __($guid, "Here you can add fees to one or more students. These fees will be added to an existing invoice or used to form a new invoice, depending on the specified billing schedule and other details.") ;
 	print "</p>" ; 
 	
 	//Check if school year specified
@@ -81,27 +61,27 @@ else {
 	$gibbonFinanceBillingScheduleID=$_GET["gibbonFinanceBillingScheduleID"] ;
 	if ($gibbonSchoolYearID=="") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
 		if ($status!="" OR $gibbonFinanceInvoiceeID!="" OR $monthOfIssue!="" OR $gibbonFinanceBillingScheduleID!="") {
 			print "<div class='linkTop'>" ;
-				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoices_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'>" . _('Back to Search Results') . "</a>" ;
+				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoices_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'>" . __($guid, 'Back to Search Results') . "</a>" ;
 			print "</div>" ;
 		}
 		?>
 		<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_addProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID" ?>">
-			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+			<table class='smallIntBorder fullWidth' cellspacing='0'>	
 				<tr class='break'>
 					<td colspan=2> 
-						<h3><?php print _('Basic Information') ?></h3>
+						<h3><?php print __($guid, 'Basic Information') ?></h3>
 					</td>
 				</tr>
 				<tr>
 					<td style='width: 275px'> 
-						<b><?php print _('School Year') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+						<b><?php print __($guid, 'School Year') ?> *</b><br/>
+						<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 					</td>
 					<td class="right">
 						<?php
@@ -120,7 +100,7 @@ else {
 							$yearName=$rowYear["name"] ;
 						}
 						?>
-						<input readonly name="yearName" id="yearName" maxlength=20 value="<?php print $yearName ?>" type="text" style="width: 300px">
+						<input readonly name="yearName" id="yearName" maxlength=20 value="<?php print $yearName ?>" type="text" class="standardWidth">
 						<script type="text/javascript">
 							var yearName=new LiveValidation('yearName');
 							yearname2.add(Validate.Presence);
@@ -129,12 +109,12 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('Invoicees') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?><br/><?php print sprintf(_('Visit %1$sManage Invoicees%2$s to automatically generate missing students.'), "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoicees_manage.php'>", "</a>") ?></i></span>
+						<b><?php print __($guid, 'Invoicees') ?> *</b><br/>
+						<span class="emphasis small"><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?><br/><?php print sprintf(__($guid, 'Visit %1$sManage Invoicees%2$s to automatically generate missing students.'), "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoicees_manage.php'>", "</a>") ?></span>
 					</td>
 					<td class="right">
 						<select name="gibbonFinanceInvoiceeIDs[]" id="gibbonFinanceInvoiceeIDs[]" multiple style="width: 302px; height: 150px">
-							<optgroup label='--<?php print _('All Enrolled Students by Roll Group') ?>--'>
+							<optgroup label='--<?php print __($guid, 'All Enrolled Students by Roll Group') ?>--'>
 							<?php
 							$students=array() ;
 							$count=0 ;
@@ -160,7 +140,7 @@ else {
 							if ($dayTypeOptions!="") {
 								$dayTypes=explode(",", $dayTypeOptions) ;
 								foreach ($dayTypes as $dayType) {
-									print "<optgroup label='--$dayType " . _('Students by Roll Groups') . "--'>" ; 
+									print "<optgroup label='--$dayType " . __($guid, 'Students by Roll Groups') . "--'>" ; 
 									foreach ($students AS $student) {
 										if ($student["dayType"]==$dayType) {
 											print "<option value='" . $student["gibbonFinanceInvoiceeID"] . "'>" . $student["rollGroup"] . " - " . $student["student"] . "</option>" ;
@@ -170,7 +150,7 @@ else {
 								}
 							}
 							?>
-							<optgroup label='--<?php print _('All Enrolled Students by Alphabet') ?>--'>
+							<optgroup label='--<?php print __($guid, 'All Enrolled Students by Alphabet') ?>--'>
 							<?php
 							$students=array() ;
 							$count=0 ;
@@ -193,8 +173,8 @@ else {
 				<?php //BILLING TYPE CHOOSER ?>
 				<tr>
 					<td> 
-						<b><?php print _('Scheduling') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print _('When using scheduled, invoice due date is linked to and determined by the schedule.') ?></i></span>
+						<b><?php print __($guid, 'Scheduling') ?> *</b><br/>
+						<span class="emphasis small"><?php print __($guid, 'When using scheduled, invoice due date is linked to and determined by the schedule.') ?></span>
 					</td>
 					<td class="right">
 						<input checked type="radio" name="scheduling" class="scheduling" value="Scheduled" /> Scheduled
@@ -225,12 +205,12 @@ else {
 				
 				<tr id="schedulingRow">
 					<td> 
-						<b><?php print _('Billing Schedule') ?> *</b><br/>
+						<b><?php print __($guid, 'Billing Schedule') ?> *</b><br/>
 					</td>
 					<td class="right">
-						<select name="gibbonFinanceBillingScheduleID" id="gibbonFinanceBillingScheduleID" style="width: 302px">
+						<select name="gibbonFinanceBillingScheduleID" id="gibbonFinanceBillingScheduleID" class="standardWidth">
 							<?php
-							print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+							print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
 							try {
 								$dataSelect=array(); 
 								$sqlSelect="SELECT * FROM gibbonFinanceBillingSchedule WHERE active='Y' ORDER BY name" ;
@@ -245,17 +225,17 @@ else {
 						</select>
 						<script type="text/javascript">
 							var gibbonFinanceBillingScheduleID=new LiveValidation('gibbonFinanceBillingScheduleID');
-							gibbonFinanceBillingScheduleID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+							gibbonFinanceBillingScheduleID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 						</script>
 					</td>
 				</tr>
 				<tr id="adHocRow">
 					<td> 
-						<b><?php print _('Invoice Due Date') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print _('For fees added to existing invoice, specified date will override existing due date.') ?></i></span>
+						<b><?php print __($guid, 'Invoice Due Date') ?> *</b><br/>
+						<span class="emphasis small"><?php print __($guid, 'For fees added to existing invoice, specified date will override existing due date.') ?></span>
 					</td>
 					<td class="right">
-						<input name="invoiceDueDate" id="invoiceDueDate" maxlength=10 value="" type="text" style="width: 300px">
+						<input name="invoiceDueDate" id="invoiceDueDate" maxlength=10 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 							var invoiceDueDate=new LiveValidation('invoiceDueDate');
 							invoiceDueDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
@@ -270,14 +250,14 @@ else {
 				</tr>
 				<tr>
 					<td colspan=2> 
-						<b><?php print _('Notes') ?></b> 
+						<b><?php print __($guid, 'Notes') ?></b> 
 						<textarea name='notes' id='notes' rows=5 style='width: 300px'></textarea>
 					</td>
 				</tr>
 				
 				<tr class='break'>
 					<td colspan=2> 
-						<h3><?php print _('Fees') ?></h3>
+						<h3><?php print __($guid, 'Fees') ?></h3>
 					</td>
 				</tr>
 				<?php 
@@ -295,7 +275,7 @@ else {
 					<td colspan=2> 
 						<div class="fee" id="fee" style='width: 100%; padding: 5px 0px 0px 0px; min-height: 66px'>
 							<div id="feeOuter0">
-								<div style='color: #ddd; font-size: 230%; margin: 15px 0 0 6px'><?php print _('Fees will be listed here...') ?></div>
+								<div style='color: #ddd; font-size: 230%; margin: 15px 0 0 6px'><?php print __($guid, 'Fees will be listed here...') ?></div>
 							</div>
 						</div>
 						<div style='width: 100%; padding: 0px 0px 0px 0px'>
@@ -307,7 +287,7 @@ else {
 												var feeCount=1 ;
 											</script>
 											<select id='newFee' onChange='feeDisplayElements(this.value);' style='float: none; margin-left: 3px; margin-top: 0px; margin-bottom: 3px; width: 350px'>
-												<option class='all' value='0'><?php print _('Choose a fee to add it') ?></option>
+												<option class='all' value='0'><?php print __($guid, 'Choose a fee to add it') ?></option>
 												<?php
 												print "<option value='Ad Hoc'>Ad Hoc Fee</option>" ;
 												$switchContents="case \"Ad Hoc\": " ;
@@ -370,11 +350,11 @@ else {
 				
 				<tr>
 					<td>
-						<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+						<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 					</td>
 					<td class="right">
 						<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-						<input type="submit" value="<?php print _("Submit") ; ?>">
+						<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 					</td>
 				</tr>
 			</table>

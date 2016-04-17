@@ -24,14 +24,8 @@ include "../../functions.php" ;
 include "../../config.php" ;
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 //Module includes
 include $_SESSION[$guid]["absolutePath"] . "/modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -43,7 +37,7 @@ $id=$_GET["id"] ;
 if (isActionAccessible($guid, $connection2, "/modules/Library/library_manage_catalog_add.php")==FALSE) {
 	//Acess denied
 	$output.="<div class='error'>" ;
-		$output.=_("Your request failed because you do not have access to this action.") ;
+		$output.=__($guid, "Your request failed because you do not have access to this action.") ;
 	$output.="</div>" ;
 }
 else {
@@ -57,7 +51,7 @@ else {
 	
 	if ($result->rowCount()!=1) {
 		$output.="<div class='error'>" ;
-			$output.=_("The specified recod cannot be found.") ;
+			$output.=__($guid, "The specified recod cannot be found.") ;
 		$output.="</div>" ;
 	}
 	else {
@@ -85,7 +79,7 @@ else {
 									print "var obj=data;" ;
 								print "}" ;
 								print "if (obj['totalItems']==0) {" ;
-									print "alert('" . _('The specified record cannot be found.') . "');" ;
+									print "alert('" . __($guid, 'The specified record cannot be found.') . "');" ;
 								print "} else {" ;
 									//SET FIELDS
 									print "$(\"#name\").val(obj['items'][0]['volumeInfo']['title']);" ;
@@ -130,13 +124,13 @@ else {
 								print "}" ;
 							print "});" ;
 						print "} else {" ;
-							print "alert('" . _('Please enter an ISBN13 or ISBN10 value before trying to get data from Google Books.') . "') ;" ;
+							print "alert('" . __($guid, 'Please enter an ISBN13 or ISBN10 value before trying to get data from Google Books.') . "') ;" ;
 						print "}" ;
 					print "});" ;
 				print "});" ;
 			print "</script>" ;
 			print "<div style='text-align: right'>" ;
-				print "<a class='gbooks' onclick='return false' href='#'>" . _('Get Book Data From Google') . "</a>" ;
+				print "<a class='gbooks' onclick='return false' href='#'>" . __($guid, 'Get Book Data From Google') . "</a>" ;
 			print "</div>" ;
 		}
 		
@@ -147,11 +141,11 @@ else {
 				$fieldName=preg_replace("/ /", "", $field["name"]) ;
 				$output.="<tr>" ;
 					$output.="<td> " ;
-						$output.="<b>" . _($field["name"]) . "</b>" ;
+						$output.="<b>" . __($guid, $field["name"]) . "</b>" ;
 						if ($field["required"]=="Y") {
 							$output.=" *" ;
 						}
-						$output.="<br/><span style='font-size: 90%'><i>" . str_replace("dd/mm/yyyy", $_SESSION[$guid]["i18n"]["dateFormat"], $field["description"]) . "</i></span>" ;
+						$output.="<br/><span style='font-size: 90%'><i>" . str_replace("dd/mm/yyyy", $_SESSION[$guid]["i18n"]["dateFormat"], $field["description"]) . "</span>" ;
 					$output.="</td>" ;
 					$output.="<td class='right'>" ;
 						if ($field["type"]=="Text") {

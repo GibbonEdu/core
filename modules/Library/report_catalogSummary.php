@@ -27,17 +27,17 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Library/report_catalogSummary.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Catalog Summary') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Catalog Summary') . "</div>" ;
 	print "</div>" ;
 	
 	print "<h3>" ;
-		print _("Search & Filter") ;
+		print __($guid, "Search & Filter") ;
 	print "</h3>" ;
 	
 	//Get current filter values
@@ -84,23 +84,23 @@ else {
 			?>
 			<tr>
 				<td> 
-					<b><?php print _('Ownership Type') ?></b><br/>
-					<span style="font-size: 90%"><i></i></span>
+					<b><?php print __($guid, 'Ownership Type') ?></b><br/>
+					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
 					<?php
 					print "<select name='ownershipType' id='ownershipType' style='width:302px'>" ;
 						print "<option " ; if ($ownershipType=="") { print "selected " ; } print "value=''></option>" ;
-						print "<option " ; if ($ownershipType=="School") { print "selected " ; } print "value='School'>" . _('School') . "</option>" ;
-						print "<option " ; if ($ownershipType=="Individual") { print "selected " ; } print "value='Individual'>" . _('Individual') . "</option>" ;
+						print "<option " ; if ($ownershipType=="School") { print "selected " ; } print "value='School'>" . __($guid, 'School') . "</option>" ;
+						print "<option " ; if ($ownershipType=="Individual") { print "selected " ; } print "value='Individual'>" . __($guid, 'Individual') . "</option>" ;
 					print "</select>" ;
 					?>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Type') ?></b><br/>
-					<span style="font-size: 90%"><i></i></span>
+					<b><?php print __($guid, 'Type') ?></b><br/>
+					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
 					<?php
@@ -120,7 +120,7 @@ else {
 							if ($rowType["gibbonLibraryTypeID"]==$gibbonLibraryTypeID) {
 								$selected="selected" ;
 							}
-							print "<option $selected value='" . $rowType["gibbonLibraryTypeID"] . "'>" . _($rowType["name"]) . "</option>" ;
+							print "<option $selected value='" . $rowType["gibbonLibraryTypeID"] . "'>" . __($guid, $rowType["name"]) . "</option>" ;
 						}
 					print "</select>" ;	
 					?>
@@ -128,8 +128,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Location') ?> *</b><br/>
-					<span style="font-size: 90%"><i></i></span>
+					<b><?php print __($guid, 'Location') ?> *</b><br/>
+					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
 					<?php
@@ -157,20 +157,20 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Status') ?></b><br/>
-					<span style="font-size: 90%"><i></i></span>
+					<b><?php print __($guid, 'Status') ?></b><br/>
+					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
 					<?php
 					print "<select name='status' id='status' style='width:302px'>" ;
 						print "<option value=''></option>" ;
-						print "<option " ; if ($status=="Available") { print "selected " ; } print "value='Available'>" . _('Available') . "</option>" ;
-						print "<option " ; if ($status=="Decommissioned") { print "selected " ; } print "value='Decommissioned'>" . _('Decommissioned') . "</option>" ;
-						print "<option " ; if ($status=="In Use") { print "selected " ; } print "value='In Use'>" . _('In Use') . "</option>" ;
-						print "<option " ; if ($status=="Lost") { print "selected " ; } print "value='Lost'>" . _('Lost') . "</option>" ;
-						print "<option " ; if ($status=="On Loan") { print "selected " ; } print "value='On Loan'>" . _('On Loan') . "</option>" ;
-						print "<option " ; if ($status=="Repair") { print "selected " ; } print "value='Repair'>" . _('Repair') . "</option>" ;
-						print "<option " ; if ($status=="Reserved") { print "selected " ; } print "value='Reserved'>" . _('Reserved') . "</option>" ;
+						print "<option " ; if ($status=="Available") { print "selected " ; } print "value='Available'>" . __($guid, 'Available') . "</option>" ;
+						print "<option " ; if ($status=="Decommissioned") { print "selected " ; } print "value='Decommissioned'>" . __($guid, 'Decommissioned') . "</option>" ;
+						print "<option " ; if ($status=="In Use") { print "selected " ; } print "value='In Use'>" . __($guid, 'In Use') . "</option>" ;
+						print "<option " ; if ($status=="Lost") { print "selected " ; } print "value='Lost'>" . __($guid, 'Lost') . "</option>" ;
+						print "<option " ; if ($status=="On Loan") { print "selected " ; } print "value='On Loan'>" . __($guid, 'On Loan') . "</option>" ;
+						print "<option " ; if ($status=="Repair") { print "selected " ; } print "value='Repair'>" . __($guid, 'Repair') . "</option>" ;
+						print "<option " ; if ($status=="Reserved") { print "selected " ; } print "value='Reserved'>" . __($guid, 'Reserved') . "</option>" ;
 					print "</select>" ;
 					?>
 				</td>
@@ -179,19 +179,19 @@ else {
 			print "<tr>" ;
 				print "<td class='right' colspan=2>" ;
 					print "<input type='hidden' name='q' value='" . $_GET["q"] . "'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Library/report_catalogSummary.php'>" . _('Clear Filters') . "</a> " ;
-					print "<input type='submit' value='" . _('Go') . "'>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Library/report_catalogSummary.php'>" . __($guid, 'Clear Filters') . "</a> " ;
+					print "<input type='submit' value='" . __($guid, 'Go') . "'>" ;
 				print "</td>" ;
 			print "</tr>" ;
 		print "</table>" ;
 	print "</form>" ;
 	
 	print "<h3>" ;
-		print _("Report Data") ;
+		print __($guid, "Report Data") ;
 	print "</h3>" ;
 	
 	print "<div class='linkTop'>" ;
-	print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/report_catalogSummaryExport.php?address=" . $_GET["q"] . "&ownershipType=$ownershipType&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status'><img title='" . _('Export to Excel') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/download.png'/></a>" ;
+	print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/report_catalogSummaryExport.php?address=" . $_GET["q"] . "&ownershipType=$ownershipType&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status'><img title='" . __($guid, 'Export to Excel') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/download.png'/></a>" ;
 	print "</div>" ;
 	
 	//Search with filters applied
@@ -230,34 +230,34 @@ else {
 		
 	if ($result->rowCount()<1) {
 		print "<div class='error'>" ;
-		print _("There are no records to display.") ;
+		print __($guid, "There are no records to display.") ;
 		print "</div>" ;
 	}
 	else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th>" ;
-					print _("School ID") . "<br/>" ;
-					print "<span style='font-style: italic; font-size: 85%'>" . _('Type') . "</span>" ;
+					print __($guid, "School ID") . "<br/>" ;
+					print "<span style='font-style: italic; font-size: 85%'>" . __($guid, 'Type') . "</span>" ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Name") . "<br/>" ;
-					print "<span style='font-size: 85%; font-style: italic'>" . _('Producer') . "</span>" ;
+					print __($guid, "Name") . "<br/>" ;
+					print "<span style='font-size: 85%; font-style: italic'>" . __($guid, 'Producer') . "</span>" ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Location") ;
+					print __($guid, "Location") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Ownership") . "<br/>" ;
-					print "<span style='font-size: 85%; font-style: italic'>" . _('User/Owner') . "</span>" ;
+					print __($guid, "Ownership") . "<br/>" ;
+					print "<span style='font-size: 85%; font-style: italic'>" . __($guid, 'User/Owner') . "</span>" ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Status") . "<br/>" ;
-					print "<span style='font-size: 85%; font-style: italic'>" . _('Borrowable') . "</span>" ;
+					print __($guid, "Status") . "<br/>" ;
+					print "<span style='font-size: 85%; font-style: italic'>" . __($guid, 'Borrowable') . "</span>" ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Purchase Date") . "<br/>" ;
-					print "<span style='font-size: 85%; font-style: italic'>" . _('Vendor') . "</span>" ;
+					print __($guid, "Purchase Date") . "<br/>" ;
+					print "<span style='font-size: 85%; font-style: italic'>" . __($guid, 'Vendor') . "</span>" ;
 				print "</th>" ;
 			print "</tr>" ;
 			
@@ -287,7 +287,7 @@ else {
 							}
 							if ($resultType->rowCount()==1) {
 								$rowType=$resultType->fetch() ;
-								print _($rowType["name"]) . "<br/>" ;
+								print __($guid, $rowType["name"]) . "<br/>" ;
 							}
 						print "</span>" ;
 					print "</td>" ;
@@ -344,7 +344,7 @@ else {
 					print "</td>" ;
 					print "<td>" ;
 						if ($row["purchaseDate"]=="") {
-							print "<i>" . _('Unknown') . "</i><br/>" ;
+							print "<i>" . __($guid, 'Unknown') . "</i><br/>" ;
 						}
 						else {
 							print dateConvertBack($guid, $row["purchaseDate"]) . "<br/>" ;

@@ -21,14 +21,8 @@ include "../../functions.php" ;
 include "../../config.php" ;
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 @session_start() ;
 
@@ -63,6 +57,7 @@ else {
 			//Validate Inputs
 			$name=$_POST["name"] ;
 			$description=$_POST["description"] ;
+			$ordering=$_POST["ordering"] ;
 			$details=$_POST["details"] ;
 			$license=$_POST["license"] ;
 			$sharedPublic=NULL ;
@@ -71,7 +66,7 @@ else {
 			}
 			$embeddable=$_POST["embeddable"] ;
 			
-			if ($gibbonSchoolYearID=="" OR $gibbonCourseID=="" OR $gibbonUnitID=="" OR $name=="" OR $description=="" OR $embeddable=="") {
+			if ($gibbonSchoolYearID=="" OR $gibbonCourseID=="" OR $gibbonUnitID=="" OR $name=="" OR $description=="" OR $ordering=="" OR $embeddable=="") {
 				//Fail 3
 				$URL.="&updateReturn=fail3" ;
 				header("Location: {$URL}");
@@ -94,7 +89,7 @@ else {
 					//Fail 2
 					$URL.="&addReturn=fail2" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 				
 				if ($result->rowCount()!=1) {
@@ -114,7 +109,7 @@ else {
 						//Fail 2
 						$URL.="&addReturn=fail2" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 
 					if ($result->rowCount()!=1) {
@@ -303,7 +298,7 @@ else {
 							//Fail2
 							$URL.="&updateReturn=fail2" ;
 							header("Location: {$URL}");
-							break ;
+							exit() ;
 						}
 						//Insert outcomes
 						$count=0 ;
@@ -329,8 +324,8 @@ else {
 					
 						//Write to database
 						try {
-							$data=array("name"=>$name, "attachment"=>$attachment, "description"=>$description, "details"=>$details, "license"=>$license, "sharedPublic"=>$sharedPublic, "embeddable"=>$embeddable, "gibbonPersonIDLastEdit"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonUnitID"=>$gibbonUnitID); 
-							$sql="UPDATE gibbonUnit SET name=:name, attachment=:attachment, description=:description, details=:details, license=:license, sharedPublic=:sharedPublic, embeddable=:embeddable, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit WHERE gibbonUnitID=:gibbonUnitID" ;
+							$data=array("name"=>$name, "attachment"=>$attachment, "description"=>$description, "ordering"=>$ordering, "details"=>$details, "license"=>$license, "sharedPublic"=>$sharedPublic, "embeddable"=>$embeddable, "gibbonPersonIDLastEdit"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonUnitID"=>$gibbonUnitID); 
+							$sql="UPDATE gibbonUnit SET name=:name, attachment=:attachment, description=:description, ordering=:ordering, details=:details, license=:license, sharedPublic=:sharedPublic, embeddable=:embeddable, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit WHERE gibbonUnitID=:gibbonUnitID" ;
 							$result=$connection2->prepare($sql);
 							$result->execute($data);
 						}
@@ -338,7 +333,7 @@ else {
 							//Fail 2
 							$URL.="&updateReturn=fail2" ;
 							header("Location: {$URL}");
-							break ;
+							exit() ;
 						}
 
 						if ($partialFail) {

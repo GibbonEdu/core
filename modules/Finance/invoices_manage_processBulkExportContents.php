@@ -20,21 +20,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include "../../config.php" ;
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 @session_start() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Finance/invoices_manage.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -44,12 +38,12 @@ else {
 	
 	if ($gibbonFinanceInvoiceIDs=="" OR $gibbonSchoolYearID=="") {
 		print "<div class='error'>" ;
-		print _("List of invoices or school year have not been specified, and so this export cannot be completed.") ;
+		print __($guid, "List of invoices or school year have not been specified, and so this export cannot be completed.") ;
 		print "</div>" ;
 	}
 	else {
 		print "<h1>" ;
-		print _("Invoice Export") ;
+		print __($guid, "Invoice Export") ;
 		print "</h1>" ;
 	
 		try {
@@ -84,43 +78,43 @@ else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th style='width: 120px'>" ;
-					print _("Invoice Number") ;
+					print __($guid, "Invoice Number") ;
 				print "</th>" ;
 				print "<th style='width: 120px'>" ;
-					print _("Student") ;
+					print __($guid, "Student") ;
 				print "</th>" ;
 				print "<th style='width: 120px'>" ;
-					print _("Roll Group") ;
+					print __($guid, "Roll Group") ;
 				print "</th>" ;
 				print "<th style='width: 120px'>" ;
-					print _("Invoice To") ;
+					print __($guid, "Invoice To") ;
 				print "</th>" ;
 				print "<th style='width: 120px'>" ;
-					print _("DOB") ;
+					print __($guid, "DOB") ;
 				print "</th>" ;
 				print "<th style='width: 120px'>" ;
-					print _("Gender") ;
+					print __($guid, "Gender") ;
 				print "</th>" ;
 				print "<th style='width: 100px'>" ;
-					print _("Status") ;
+					print __($guid, "Status") ;
 				print "</th>" ;
 				print "<th style='width: 90px'>" ;
-					print _("Schedule") ;
+					print __($guid, "Schedule") ;
 				print "</th>" ;
 				print "<th style='width: 100px'>" ;
-					print _("Total Value") . " <span style='font-style: italic; font-size: 85%'>(" . $_SESSION[$guid]["currency"] . ")</span>" ;
+					print __($guid, "Total Value") . " <span style='font-style: italic; font-size: 85%'>(" . $_SESSION[$guid]["currency"] . ")</span>" ;
 				print "</th>" ;
 				print "<th style='width: 80px'>" ;
-					print _("Issue Date") ;
+					print __($guid, "Issue Date") ;
 				print "</th>" ;
 				print "<th style='width: 80px'>" ;
-					print _("Due Date") ;
+					print __($guid, "Due Date") ;
 				print "</th>" ;
 				print "<th style='width: 80px'>" ;
-					print _("Date Paid") ;
+					print __($guid, "Date Paid") ;
 				print "</th>" ;
 				print "<th style='width: 100px'>" ;
-					print _("Amount Paid") . " <span style='font-style: italic; font-size: 85%'>(" . $_SESSION[$guid]["currency"] . ")</span>" ;
+					print __($guid, "Amount Paid") . " <span style='font-style: italic; font-size: 85%'>(" . $_SESSION[$guid]["currency"] . ")</span>" ;
 				print "</th>" ;
 				
 			print "</tr>" ;
@@ -220,7 +214,7 @@ else {
 			if ($count==0) {
 				print "<tr>" ;
 					print "<td colspan=2>" ;
-						print _("There are no records to display.") ;
+						print __($guid, "There are no records to display.") ;
 					print "</td>" ;
 				print "</tr>" ;
 			}

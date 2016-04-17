@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Timetable/tt.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -33,16 +33,16 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print _("The highest grouped action cannot be determined.") ;
+		print __($guid, "The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('View Timetable by Person') . "</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'View Timetable by Person') . "</div>" ;
 		print "</div>" ;
 		
 		print "<h2>" ;
-		print _("Filters") ;
+		print __($guid, "Filters") ;
 		print "</h2>" ;
 		
 		$gibbonPersonID=NULL ;
@@ -64,17 +64,17 @@ else {
 				<tr><td style="width: 30%"></td><td></td></tr>
 				<tr>
 					<td> 
-						<b><?php print _('Search For') ?></b><br/>
-						<span style="font-size: 90%"><i>Preferred, surname, username.</i></span>
+						<b><?php print __($guid, 'Search For') ?></b><br/>
+						<span class="emphasis small">Preferred, surname, username.</span>
 					</td>
 					<td class="right">
-						<input name="search" id="search" maxlength=20 value="<?php print $search ?>" type="text" style="width: 300px">
+						<input name="search" id="search" maxlength=20 value="<?php print $search ?>" type="text" class="standardWidth">
 					</td>
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('All Users') ?></b><br/>
-						<span style="font-size: 90%"><i><?php print _('Include non-staff, non-student users.') ?></i></span>
+						<b><?php print __($guid, 'All Users') ?></b><br/>
+						<span class="emphasis small"><?php print __($guid, 'Include non-staff, non-student users.') ?></span>
 					</td>
 					<td class="right">
 						<?php
@@ -91,9 +91,9 @@ else {
 						<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/tt.php">
 						<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 						<?php
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/tt.php'>" . _('Clear Filters') . "</a>" ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/tt.php'>" . __($guid, 'Clear Filters') . "</a>" ;
 						?>
-						<input type="submit" value="<?php print _("Submit") ; ?>">
+						<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 					</td>
 				</tr>
 			</table>
@@ -101,7 +101,7 @@ else {
 		<?php
 		
 		print "<h2>" ;
-		print _("Choose A Person") ;
+		print __($guid, "Choose A Person") ;
 		print "</h2>" ;
 		
 		//Set pagination variable
@@ -137,7 +137,7 @@ else {
 
 		if ($result->rowCount()<1) {
 			print "<div class='error'>" ;
-			print _("There are no records to display.") ;
+			print __($guid, "There are no records to display.") ;
 			print "</div>" ;
 		}
 		else {
@@ -148,16 +148,16 @@ else {
 			print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
 					print "<th>" ;
-						print _("Name") ;
+						print __($guid, "Name") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Year Group") ;
+						print __($guid, "Year Group") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Roll Group") ;
+						print __($guid, "Roll Group") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Actions") ;
+						print __($guid, "Actions") ;
 					print "</th>" ;
 				print "</tr>" ;
 				
@@ -191,7 +191,7 @@ else {
 						print "</td>" ;
 						print "<td>" ;
 							if ($row["yearGroup"]!="") {
-								print _($row["yearGroup"]) ;
+								print __($guid, $row["yearGroup"]) ;
 							}
 						print "</td>" ;
 						print "<td>" ;
@@ -200,7 +200,7 @@ else {
 							}
 						print "</td>" ;
 						print "<td>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/tt_view.php&gibbonPersonID=" . $row["gibbonPersonID"] . "&allUsers=$allUsers&search=$search'><img title='" . _('View Details') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/tt_view.php&gibbonPersonID=" . $row["gibbonPersonID"] . "&allUsers=$allUsers&search=$search'><img title='" . __($guid, 'View Details') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 						print "</td>" ;
 					print "</tr>" ;
 				}

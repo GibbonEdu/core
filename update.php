@@ -26,7 +26,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 		</title>
 		<meta charset="utf-8"/>
 		<meta name="author" content="Ross Parker, International College Hong Kong"/>
-		<meta name="ROBOTS" content="none"/>
+		<meta name="robots" content="none"/>
 		
 		<link rel="shortcut icon" type="image/x-icon" href="./favicon.ico"/>
 		<link rel='stylesheet' type='text/css' href='./themes/Default/css/main.css' />
@@ -40,14 +40,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 		$partialFail=FALSE ;
 		
 		//New PDO DB connection
-		try {
-			$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-			$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-			$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
-		  echo $e->getMessage();
-		}
+		$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 		@session_start() ;
 
@@ -61,7 +55,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 		if ($type!="regularRelease" AND $type!="cuttingEdge") {
 			print "<div class='error'>" ;
-				print _("Your request failed because your inputs were invalid.") ;
+				print __($guid, "Your request failed because your inputs were invalid.") ;
 			print "</div>" ;
 		}
 		else if ($type=="regularRelease") { //Do regular release update
@@ -69,16 +63,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 			$versionCode=$version ;
 
 			//Validate Inputs
-			if ($versionDB=="" OR $versionCode=="" OR $versionDB>=$versionCode) {
+			if ($versionDB=="" OR $versionCode=="" OR version_compare($versionDB, $versionCode)!=-1) {
 				print "<div class='error'>" ;
-					print _("Your request failed because your inputs were invalid, or no update was required.") ;
+					print __($guid, "Your request failed because your inputs were invalid, or no update was required.") ;
 				print "</div>" ;
 			}
 			else {	
 				include "./CHANGEDB.php" ;
 
 				foreach ($sql AS $version) {
-					if ((float)$version[0]>(float)$versionDB AND (float)$version[0]<=(float)$versionCode) {
+					if (version_compare($version[0], $versionDB, ">") AND version_compare($version[0], $versionCode, "<=")) {
 						$sqlTokens=explode(";end", $version[1]) ;
 						foreach ($sqlTokens AS $sqlToken) {
 							if (trim($sqlToken)!="") {
@@ -95,7 +89,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 				if ($partialFail==TRUE) {
 					print "<div class='error'>" ;
-						print _("Some aspects of your update failed.") ;
+						print __($guid, "Some aspects of your update failed.") ;
 					print "</div>" ;
 				}
 				else {
@@ -108,13 +102,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 					}
 					catch(PDOException $e) { 
 						print "<div class='error'>" ;
-							print _("Some aspects of your update failed.") ;
+							print __($guid, "Some aspects of your update failed.") ;
 						print "</div>" ;
 						exit ;
 					}
 	
 					print "<div class='success'>" ;
-						print _("Your request was completed successfully.") ;
+						print __($guid, "Your request was completed successfully.") ;
 					print "</div>" ;
 				}
 			}
@@ -129,7 +123,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 			$sqlTokens=explode(";end", $sql[(count($sql))][1]) ;
 			$versionMaxLinesMax=(count($sqlTokens)-1) ;	
 			$update=FALSE ;
-			if ((float)$versionMax>(float)$versionDB) {
+			if (version_compare($versionMax, $versionDB, ">")) {
 				$update=TRUE ;
 			}
 			else {
@@ -140,15 +134,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 			if ($update==FALSE) { //Something went wrong...abandon!
 				print "<div class='error'>" ;
-					print _("Some aspects of your update failed.") ;
+					print __($guid, "Some aspects of your update failed.") ;
 				print "</div>" ;
 				exit ;
 			}
 			else { //Let's do it
-				if ((float)$versionMax>(float)$versionDB) { //At least one whole verison needs to be done
+				if (version_compare($versionMax, $versionDB, ">")) { //At least one whole verison needs to be done
 					foreach ($sql AS $version) {
 						$tokenCount=0 ;		
-						if ((float)$version[0]>=(float)$versionDB AND (float)$version[0]<=(float)$versionCode) {
+						if (version_compare($version[0], $versionDB, ">=") AND version_compare($version[0], $versionCode, "<=")) {
 							$sqlTokens=explode(";end", $version[1]) ;
 							if ($version[0]==$versionDB) { //Finish current version
 								foreach ($sqlTokens AS $sqlToken) {
@@ -184,7 +178,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 					//Get up to speed in max version
 					foreach ($sql AS $version) {
 						$tokenCount=0 ;
-						if ((float)$version[0]>=(float)$versionDB AND (float)$version[0]<=(float)$versionCode) {
+						if (version_compare($version[0], $versionDB, ">=") AND version_compare($version[0], $versionCode, "<=")) {
 							$sqlTokens=explode(";end", $version[1]) ;
 							foreach ($sqlTokens AS $sqlToken) {
 								if ($tokenCount>=$cuttingEdgeCodeLine) {
@@ -205,7 +199,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 	
 				if ($partialFail==TRUE) {
 					print "<div class='error'>" ;
-						print _("Some aspects of your update failed.") ;
+						print __($guid, "Some aspects of your update failed.") ;
 					print "</div>" ;
 				}
 				else {
@@ -218,7 +212,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 					}
 					catch(PDOException $e) { 
 						print "<div class='error'>" ;
-							print _("Some aspects of your update failed.") ;
+							print __($guid, "Some aspects of your update failed.") ;
 						print "</div>" ;
 						exit ;
 					}
@@ -232,13 +226,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 					}
 					catch(PDOException $e) { 
 						print "<div class='error'>" ;
-							print _("Some aspects of your update failed.") ;
+							print __($guid, "Some aspects of your update failed.") ;
 						print "</div>" ;
 						exit ;
 					}
 		
 					print "<div class='success'>" ;
-						print _("Your request was completed successfully.") ;
+						print __($guid, "Your request was completed successfully.") ;
 					print "</div>" ;
 				}
 			}

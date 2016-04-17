@@ -26,7 +26,7 @@ include "./modules/Timetable/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -46,7 +46,7 @@ else {
 	
 	if ($gibbonPersonID=="" OR $gibbonSchoolYearID=="") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -73,14 +73,14 @@ else {
 		
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print _("The specified record cannot be found.") ;
+				print __($guid, "The specified record cannot be found.") ;
 			print "</div>" ;
 		}
 		else {
 			//Let's go!
 			$row=$result->fetch() ;
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/courseEnrolment_manage_byPerson.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&allUsers=$allUsers'>" . _('Enrolment by Person') . "</a> > </div><div class='trailEnd'>" . $row["preferredName"] . " " . $row["surname"] . "</div>" ;
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/courseEnrolment_manage_byPerson.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&allUsers=$allUsers'>" . __($guid, 'Enrolment by Person') . "</a> > </div><div class='trailEnd'>" . $row["preferredName"] . " " . $row["surname"] . "</div>" ;
 			print "</div>" ;
 			
 			if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -88,25 +88,25 @@ else {
 			$class="error" ;
 			if (!($updateReturn=="")) {
 				if ($updateReturn=="fail0") {
-					$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+					$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 				}
 				else if ($updateReturn=="fail1") {
-					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($updateReturn=="fail2") {
-					$updateReturnMessage=_("Your request failed due to a database error.") ;	
+					$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 				}
 				else if ($updateReturn=="fail3") {
-					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($updateReturn=="fail4") {
-					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($updateReturn=="fail5") {
-					$updateReturnMessage=_("Your request was successful, but some data was not properly saved. You may have tried to mark as left people who are not students or teachers in this class.") ;	
+					$updateReturnMessage=__($guid, "Your request was successful, but some data was not properly saved. You may have tried to mark as left people who are not students or teachers in this class.") ;	
 				}
 				else if ($updateReturn=="success0") {
-					$updateReturnMessage=_("Your request was completed successfully.") ;	
+					$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
 					$class="success" ;
 				}
 				print "<div class='$class'>" ;
@@ -119,7 +119,7 @@ else {
 			$class="error" ;
 			if (!($deleteReturn=="")) {
 				if ($deleteReturn=="success0") {
-					$deleteReturnMessage=_("Your request was completed successfully.") ;		
+					$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;		
 					$class="success" ;
 				}
 				print "<div class='$class'>" ;
@@ -129,29 +129,29 @@ else {
 	
 			print "<div class='linkTop'>" ;
 				if ($search!="") {
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson.php&allUsers=$allUsers&search=$search&gibbonSchoolYearID=$gibbonSchoolYearID'>" . _('Back to Search Results') . "</a> | " ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson.php&allUsers=$allUsers&search=$search&gibbonSchoolYearID=$gibbonSchoolYearID'>" . __($guid, 'Back to Search Results') . "</a> | " ;
 				}
-				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable/tt_view.php&gibbonPersonID=$gibbonPersonID&allUsers=$allUsers'>" . _('View') . "<img style='margin: 0 0 -4px 3px' title='" . _('View') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/planner.png'/></a> " ;
+				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable/tt_view.php&gibbonPersonID=$gibbonPersonID&allUsers=$allUsers'>" . __($guid, 'View') . "<img style='margin: 0 0 -4px 3px' title='" . __($guid, 'View') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/planner.png'/></a> " ;
 			print "</div>" ;
 			
 			//INTERFACE TO ADD NEW CLASSES
 			print "<h2>" ;
-			print _("Add Classes") ;
+			print __($guid, "Add Classes") ;
 			print "</h2>" ;
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/courseEnrolment_manage_byPerson_edit_addProcess.php?type=$type&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID&allUsers=$allUsers&search=$search" ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td style='width: 275px'> 
-							<b><?php print _('Classes') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print _('Use Control, Command and/or Shift to select multiple.') ?></i></span>
+							<b><?php print __($guid, 'Classes') ?></b><br/>
+							<span class="emphasis small"><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 						</td>
 						<td class="right">
 							<select name="Members[]" id="Members[]" multiple style="width: 302px; height: 150px">
 								<?php
 								if ($row["type"]=="Student" ) {
 								?>
-									<optgroup label='--<?php print _('Enrolable Classes') ?>--'>
+									<optgroup label='--<?php print __($guid, 'Enrolable Classes') ?>--'>
 									<?php
 									try {
 										$dataSelect=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "gibbonYearGroupIDList"=>"%" . $row["gibbonYearGroupID"] . "%"); 
@@ -182,7 +182,7 @@ else {
 											print " - " . substr($teachers,0,-2) ;
 										
 										}
-										print " - " . $rowSelect["studentCount"] . " " . _('students') ;
+										print " - " . $rowSelect["studentCount"] . " " . __($guid, 'students') ;
 										print "</option>" ;
 									}
 									?>
@@ -190,7 +190,7 @@ else {
 								<?php
 								}
 								?>
-								<optgroup label='--<?php print _('All Classes') ?>--'>
+								<optgroup label='--<?php print __($guid, 'All Classes') ?>--'>
 								<?php
 								try {
 									$dataSelect=array("gibbonSchoolYearID"=>$gibbonSchoolYearID); 
@@ -209,24 +209,24 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Role') ?> *</b><br/>
+							<b><?php print __($guid, 'Role') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<select style="width: 302px" name="role">
-								<option <?php if ($type=="Student") { print "selected ";} ?>value="Student"><?php print _('Student') ?></option>
-								<option <?php if ($type=="Staff") { print "selected ";} ?>value="Teacher"><?php print _('Teacher') ?></option>
-								<option value="Assistant"><?php print _('Assistant') ?></option>
-								<option value="Technician"><?php print _('Technician') ?></option>
+							<select class="standardWidth" name="role">
+								<option <?php if ($type=="Student") { print "selected ";} ?>value="Student"><?php print __($guid, 'Student') ?></option>
+								<option <?php if ($type=="Staff") { print "selected ";} ?>value="Teacher"><?php print __($guid, 'Teacher') ?></option>
+								<option value="Assistant"><?php print __($guid, 'Assistant') ?></option>
+								<option value="Technician"><?php print __($guid, 'Technician') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+							<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<?php print _("Submit") ; ?>">
+							<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
@@ -235,7 +235,7 @@ else {
 			<?php
 			//SHOW CURRENT ENROLMENT	
 			print "<h2>" ;
-			print _("Current Enrolment") ;
+			print __($guid, "Current Enrolment") ;
 			print "</h2>" ;
 			
 			try {
@@ -250,7 +250,7 @@ else {
 		
 			if ($result->rowCount()<1) {
 				print "<div class='error'>" ;
-				print _("There are no records to display.") ;
+				print __($guid, "There are no records to display.") ;
 				print "</div>" ;
 			}
 			else {
@@ -258,15 +258,15 @@ else {
 					print "<fieldset style='border: none'>" ;
 					print "<div class='linkTop' style='height: 27px'>" ;
 						?>
-						<input style='margin-top: 0px; float: right' type='submit' value='<?php print _('Go') ?>'>
+						<input style='margin-top: 0px; float: right' type='submit' value='<?php print __($guid, 'Go') ?>'>
 						<select name="action" id="action" style='width:120px; float: right; margin-right: 1px;'>
-							<option value="Select action"><?php print _('Select action') ?></option>
-							<option value="Mark as left"><?php print _('Mark as left') ?></option>
-							<option value="Delete"><?php print _('Delete') ?></option>
+							<option value="Select action"><?php print __($guid, 'Select action') ?></option>
+							<option value="Mark as left"><?php print __($guid, 'Mark as left') ?></option>
+							<option value="Delete"><?php print __($guid, 'Delete') ?></option>
 						</select>
 						<script type="text/javascript">
 							var action=new LiveValidation('action');
-							action.add(Validate.Exclusion, { within: ['Select action'], failureMessage: "<?php print _('Select something!') ?>"});
+							action.add(Validate.Exclusion, { within: ['Select action'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 						</script>
 						<?php
 					print "</div>" ;
@@ -274,19 +274,19 @@ else {
 					print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th>" ;
-								print _("Class Code") ;
+								print __($guid, "Class Code") ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("Course") ;
+								print __($guid, "Course") ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("Class Role") ;
+								print __($guid, "Class Role") ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("Reportable") ;
+								print __($guid, "Reportable") ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("Actions") ;
+								print __($guid, "Actions") ;
 							print "</th>" ;
 							print "<th>" ;
 								?>
@@ -328,8 +328,8 @@ else {
 									print $row["reportable"] ;
 								print "</td>" ;
 								print "<td>" ;
-									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/courseEnrolment_manage_byPerson_edit_edit.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID&type=$type&allUsers=$allUsers&search=$search'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/courseEnrolment_manage_byPerson_edit_delete.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID&type=$type&allUsers=$allUsers&search=$search'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/courseEnrolment_manage_byPerson_edit_edit.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID&type=$type&allUsers=$allUsers&search=$search'><img title='" . __($guid, 'Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/courseEnrolment_manage_byPerson_edit_delete.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID&type=$type&allUsers=$allUsers&search=$search'><img title='" . __($guid, 'Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 								print "</td>" ;
 								print "<td>" ;
 									print "<input name='gibbonCourseClassID-$count' value='" . $row["gibbonCourseClassID"] . "' type='hidden'>" ;
@@ -364,13 +364,13 @@ else {
 				$ttDate=dateConvertToTimestamp(dateConvert($guid, $_POST["ttDate"]));
 			}
 			
-			$tt=renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, FALSE, $ttDate, "/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php", "&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=$gibbonSchoolYearID&type=$type#tt", FALSE, TRUE) ;
+			$tt=renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, FALSE, $ttDate, "/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php", "&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=$gibbonSchoolYearID&type=$type#tt", "full", TRUE) ;
 			if ($tt!=FALSE) {
 				print $tt ;
 			}
 			else {
 				print "<div class='error'>" ;
-					print _("There are no records to display.") ;
+					print __($guid, "There are no records to display.") ;
 				print "</div>" ;
 			}
 			
@@ -391,7 +391,7 @@ else {
 			
 			if ($result->rowCount()<1) {
 				print "<div class='error'>" ;
-				print _("There are no records to display.") ;
+				print __($guid, "There are no records to display.") ;
 				print "</div>" ;
 			}
 			else {
@@ -399,16 +399,16 @@ else {
 					print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th>" ;
-								print _("Class Code") ;
+								print __($guid, "Class Code") ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("Course") ;
+								print __($guid, "Course") ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("Class Role") ;
+								print __($guid, "Class Role") ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("Actions") ;
+								print __($guid, "Actions") ;
 							print "</th>" ;
 						print "</tr>" ;
 						
@@ -435,8 +435,8 @@ else {
 									print $row["role"] ;
 								print "</td>" ;
 								print "<td>" ;
-									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/courseEnrolment_manage_byPerson_edit_edit.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID&type=$type&allUsers=$allUsers&search=$search'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/courseEnrolment_manage_byPerson_edit_delete.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID&type=$type&allUsers=$allUsers&search=$search'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/courseEnrolment_manage_byPerson_edit_edit.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID&type=$type&allUsers=$allUsers&search=$search'><img title='" . __($guid, 'Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/courseEnrolment_manage_byPerson_edit_delete.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID&type=$type&allUsers=$allUsers&search=$search'><img title='" . __($guid, 'Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 								print "</td>" ;
 							print "</tr>" ;
 						}

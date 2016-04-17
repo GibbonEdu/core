@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Finance/invoices_view_print.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -39,7 +39,7 @@ else {
 	
 	if ($gibbonFinanceInvoiceID=="" OR $gibbonSchoolYearID=="" OR $type=="" OR $gibbonPersonID=="") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -55,7 +55,7 @@ else {
 		}
 		if ($resultChild->rowCount()<1) {
 			print "<div class='error'>" ;
-			print _("The selected record does not exist, or you do not have access to it.") ;
+			print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 			print "</div>" ;
 		}
 		else {
@@ -73,7 +73,7 @@ else {
 		
 			if ($result->rowCount()!=1) {
 				print "<div class='error'>" ;
-					print _("The specified record cannot be found.") ;
+					print __($guid, "The specified record cannot be found.") ;
 				print "</div>" ;
 			}
 			else {
@@ -95,7 +95,7 @@ else {
 					$invoiceContents=invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]["currency"], FALSE, TRUE) ;
 					if ($invoiceContents==FALSE) {
 						print "<div class='error'>" ;
-							print _("An error occurred.") ;
+							print __($guid, "An error occurred.") ;
 						print "</div>" ;
 					}
 					else {
@@ -104,12 +104,12 @@ else {
 				}
 				else if ($type="Receipt") {
 					print "<h2>" ;
-						print _("Receipt") ;
+						print __($guid, "Receipt") ;
 					print "</h2>" ;
 					$receiptContents=receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]["currency"], FALSE, $receiptNumber) ;
 					if ($receiptContents==FALSE) {
 						print "<div class='error'>" ;
-							print _("An error occurred.") ;
+							print __($guid, "An error occurred.") ;
 						print "</div>" ;
 					}
 					else {

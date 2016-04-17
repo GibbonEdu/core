@@ -35,7 +35,7 @@ if (isset($_GET["filter2"])) {
 if (isActionAccessible($guid, $connection2, "/modules/Rubrics/rubrics_delete.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -43,19 +43,19 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print _("The highest grouped action cannot be determined.") ;
+		print __($guid, "The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
 		if ($highestAction!="Manage Rubrics_viewEditAll" AND $highestAction!="Manage Rubrics_viewAllEditLearningArea") {
 			print "<div class='error'>" ;
-				print _("You do not have access to this action.") ;
+				print __($guid, "You do not have access to this action.") ;
 			print "</div>" ;
 		}
 		else {
 			//Proceed!
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/rubrics.php&search=$search&filter2=$filter2'>" . _('Manage Rubrics') . "</a> > </div><div class='trailEnd'>" . _('Delete Rubric') . "</div>" ;
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/rubrics.php&search=$search&filter2=$filter2'>" . __($guid, 'Manage Rubrics') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Delete Rubric') . "</div>" ;
 			print "</div>" ;
 			
 			if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -63,16 +63,16 @@ else {
 			$class="error" ;
 			if (!($deleteReturn=="")) {
 				if ($deleteReturn=="fail0") {
-					$deleteReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+					$deleteReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 				}
 				else if ($deleteReturn=="fail1") {
-					$deleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$deleteReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($deleteReturn=="fail2") {
-					$deleteReturnMessage=_("Your request failed due to a database error.") ;	
+					$deleteReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 				}
 				else if ($deleteReturn=="fail3") {
-					$deleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$deleteReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 				}
 				print "<div class='$class'>" ;
 					print $deleteReturnMessage;
@@ -83,7 +83,7 @@ else {
 			$gibbonRubricID=$_GET["gibbonRubricID"];
 			if ($gibbonRubricID=="") {
 				print "<div class='error'>" ;
-					print _("You have not specified one or more required parameters.") ;
+					print __($guid, "You have not specified one or more required parameters.") ;
 				print "</div>" ;
 			}
 			else {
@@ -105,7 +105,7 @@ else {
 			
 				if ($result->rowCount()!=1) {
 					print "<div class='error'>" ;
-						print _("The selected record does not exist, or you do not have access to it.") ;
+						print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 					print "</div>" ;
 				}
 				else {
@@ -115,11 +115,11 @@ else {
 					
 					?>
 					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/rubrics_deleteProcess.php?gibbonRubricID=$gibbonRubricID&search=$search&filter2=$filter2" ?>">
-						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+						<table class='smallIntBorder fullWidth' cellspacing='0'>	
 							<tr>
 								<td> 
-									<b><?php print _('Are you sure you want to delete this record?') ; ?></b><br/>
-									<span style="font-size: 90%; color: #cc0000"><i><?php print _('This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!') ; ?></i></span>
+									<b><?php print __($guid, 'Are you sure you want to delete this record?') ; ?></b><br/>
+									<span style="font-size: 90%; color: #cc0000"><i><?php print __($guid, 'This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!') ; ?></span>
 								</td>
 								<td class="right">
 									
@@ -129,7 +129,7 @@ else {
 								<td> 
 									<input name="gibbonRubricID" id="gibbonRubricID" value="<?php print $gibbonRubricID ?>" type="hidden">
 									<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-									<input type="submit" value="<?php print _('Yes') ; ?>">
+									<input type="submit" value="<?php print __($guid, 'Yes') ; ?>">
 								</td>
 								<td class="right">
 									

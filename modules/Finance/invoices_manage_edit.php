@@ -25,7 +25,7 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Finance/invoices_manage_edit.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -39,44 +39,14 @@ else {
 	
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoices_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'>" . _('Manage Invoices') . "</a> > </div><div class='trailEnd'>" . _('Edit Invoice') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoices_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'>" . __($guid, 'Manage Invoices') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Edit Invoice') . "</div>" ;
 	print "</div>" ;
 	
-	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-	$updateReturnMessage="" ;
-	$class="error" ;
-	if (!($updateReturn=="")) {
-		if ($updateReturn=="fail0") {
-			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
-		}
-		else if ($updateReturn=="fail1") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($updateReturn=="fail2") {
-			$updateReturnMessage=_("Your request failed due to a database error.") ;	
-		}
-		else if ($updateReturn=="fail3") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($updateReturn=="fail4") {
-			$updateReturnMessage=_("Your request was successful, but some data was not properly saved.") ;
-		}
-		else if ($updateReturn=="success0") {
-			$updateReturnMessage=_("Your request was completed successfully.") ;	
-			$class="success" ;
-		}
-		if ($updateReturn=="success1") {
-			$updateReturnMessage=_("Your request was completed successfully, but one or more requested emails could not be sent.") ;	
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $updateReturnMessage;
-		print "</div>" ;
-	} 
-	
+	if (isset($_GET["return"])) { returnProcess($_GET["return"], null, array("success0" => "Your request was completed successfully.", "success1" => "Your request was completed successfully, but one or more requested emails could not be sent.", "error3" => "Some elements of your request failed, but others were successful.")); }
+
 	if ($gibbonFinanceInvoiceID=="" OR $gibbonSchoolYearID=="") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -92,7 +62,7 @@ else {
 		
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print _("The specified record cannot be found.") ;
+				print __($guid, "The specified record cannot be found.") ;
 			print "</div>" ;
 		}
 		else {
@@ -101,22 +71,22 @@ else {
 			
 			if ($status!="" OR $gibbonFinanceInvoiceeID!="" OR $monthOfIssue!="" OR $gibbonFinanceBillingScheduleID!="") {
 				print "<div class='linkTop'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoices_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'>" . _('Back to Search Results') . "</a>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/invoices_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID'>" . __($guid, 'Back to Search Results') . "</a>" ;
 				print "</div>" ;
 			}
 			?>
 			
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/invoices_manage_editProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID" ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr class='break'>
 						<td colspan=2> 
-							<h3><?php print _('Basic Information') ?></h3>
+							<h3><?php print __($guid, 'Basic Information') ?></h3>
 						</td>
 					</tr>
 					<tr>
 						<td style='width: 275px'> 
-							<b><?php print _('School Year') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+							<b><?php print __($guid, 'School Year') ?> *</b><br/>
+							<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 						</td>
 						<td class="right">
 							<?php
@@ -135,12 +105,12 @@ else {
 								$yearName=$rowYear["name"] ;
 							}
 							?>
-							<input readonly name="yearName" id="yearName" value="<?php print $yearName ?>" type="text" style="width: 300px">
+							<input readonly name="yearName" id="yearName" value="<?php print $yearName ?>" type="text" class="standardWidth">
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Invoicee') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+							<b><?php print __($guid, 'Invoicee') ?> *</b><br/>
+							<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 						</td>
 						<td class="right">
 							<?php
@@ -159,17 +129,17 @@ else {
 								$personName=formatName("", htmlPrep($rowInvoicee["preferredName"]), htmlPrep($rowInvoicee["surname"]), "Student", true) ;
 							}
 							?>
-							<input readonly name="personName" id="personName" value="<?php print $personName ?>" type="text" style="width: 300px">
+							<input readonly name="personName" id="personName" value="<?php print $personName ?>" type="text" class="standardWidth">
 						</td>
 					</tr>
 					<?php //BILLING TYPE CHOOSER ?>
 					<tr>
 						<td> 
-							<b><?php print _('Scheduling') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+							<b><?php print __($guid, 'Scheduling') ?> *</b><br/>
+							<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 						</td>
 						<td class="right">
-							<input readonly name="billingScheduleType" id="billingScheduleType" value="<?php print $row["billingScheduleType"] ?>" type="text" style="width: 300px">
+							<input readonly name="billingScheduleType" id="billingScheduleType" value="<?php print $row["billingScheduleType"] ?>" type="text" class="standardWidth">
 						</td>
 					</tr>
 					<?php
@@ -177,8 +147,8 @@ else {
 						?>
 						<tr>
 							<td> 
-								<b><?php print _('Billing Schedule') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+								<b><?php print __($guid, 'Billing Schedule') ?> *</b><br/>
+								<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 							</td>
 							<td class="right">
 								<?php
@@ -197,7 +167,7 @@ else {
 									$schedule=$rowSchedule["name"] ;
 								}
 								?>
-								<input readonly name="schedule" id="schedule" value="<?php print $schedule ?>" type="text" style="width: 300px">
+								<input readonly name="schedule" id="schedule" value="<?php print $schedule ?>" type="text" class="standardWidth">
 							</td>
 						</tr>
 						<?php
@@ -207,10 +177,10 @@ else {
 							?>
 							<tr>
 								<td> 
-									<b><?php print _('Invoice Due Date') ?> *</b><br/>
+									<b><?php print __($guid, 'Invoice Due Date') ?> *</b><br/>
 								</td>
 								<td class="right">
-									<input name="invoiceDueDate" id="invoiceDueDate" value="<?php print dateConvertBack($guid, $row["invoiceDueDate"]) ?>" type="text" style="width: 300px">
+									<input name="invoiceDueDate" id="invoiceDueDate" value="<?php print dateConvertBack($guid, $row["invoiceDueDate"]) ?>" type="text" class="standardWidth">
 									<script type="text/javascript">
 										var invoiceDueDate=new LiveValidation('invoiceDueDate');
 										invoiceDueDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
@@ -229,11 +199,11 @@ else {
 							?>
 							<tr>
 								<td> 
-									<b><?php print _('Invoice Due Date') ?> *</b><br/>
-									<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+									<b><?php print __($guid, 'Invoice Due Date') ?> *</b><br/>
+									<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 								</td>
 								<td class="right">
-									<input readonly name="invoiceDueDate" id="invoiceDueDate" value="<?php print dateConvertBack($guid, $row["invoiceDueDate"]) ?>" type="text" style="width: 300px">
+									<input readonly name="invoiceDueDate" id="invoiceDueDate" value="<?php print dateConvertBack($guid, $row["invoiceDueDate"]) ?>" type="text" class="standardWidth">
 								</td>
 							</tr>
 							<?php
@@ -242,13 +212,13 @@ else {
 					?>
 					<tr>
 						<td> 
-							<b><?php print _('Status') ?> *</b><br/>
+							<b><?php print __($guid, 'Status') ?> *</b><br/>
 							<?php
 							if ($row["status"]=="Pending") {
-								print "<span style=\"font-size: 90%\"><i>" . _('This value cannot be changed. Use the Issue function to change the status from "Pending" to "Issued".') . "</i></span>" ;
+								print "<span style=\"font-size: 90%\"><i>" . __($guid, 'This value cannot be changed. Use the Issue function to change the status from "Pending" to "Issued".') . "</span>" ;
 							}
 							else {
-								print "<span style=\"font-size: 90%\"><i>" . _('Available options are limited according to current status.') . "</i></span>" ;
+								print "<span style=\"font-size: 90%\"><i>" . __($guid, 'Available options are limited according to current status.') . "</span>" ;
 							}
 							?>
 						</td>
@@ -259,22 +229,22 @@ else {
 							}
 							else if ($row["status"]=="Issued") {
 								print "<select name='status' id='status' style='width:302px'>" ;
-									print "<option selected value='Issued'>" . _('Issued') . "</option>" ;
-									print "<option value='Paid'>" . _('Paid') . "</option>" ;
-									print "<option value='Paid - Partial'>" . _('Paid - Partial') . "</option>" ;
-									print "<option value='Cancelled'>" . _('Cancelled') . "</option>" ;
+									print "<option selected value='Issued'>" . __($guid, 'Issued') . "</option>" ;
+									print "<option value='Paid'>" . __($guid, 'Paid') . "</option>" ;
+									print "<option value='Paid - Partial'>" . __($guid, 'Paid - Partial') . "</option>" ;
+									print "<option value='Cancelled'>" . __($guid, 'Cancelled') . "</option>" ;
 								print "</select>" ;
 							}
 							else if ($row["status"]=="Paid" OR $row["status"]=="Paid - Partial") {
 								print "<select name='status' id='status' style='width:302px'>" ;
 									if ($row["status"]=="Paid") {
-										print "<option selected value='Paid'>" . _('Paid') . "</option>" ;
+										print "<option selected value='Paid'>" . __($guid, 'Paid') . "</option>" ;
 									}
 									if ($row["status"]=="Paid - Partial") {
-										print "<option value='Paid - Partial'>" . _('Paid - Partial') . "</option>" ;
-										print "<option value='Paid - Complete'>" . _('Paid - Complete') . "</option>" ;
+										print "<option value='Paid - Partial'>" . __($guid, 'Paid - Partial') . "</option>" ;
+										print "<option value='Paid - Complete'>" . __($guid, 'Paid - Complete') . "</option>" ;
 									}
-									print "<option value='Refunded'>" . _('Refunded') . "</option>" ;
+									print "<option value='Refunded'>" . __($guid, 'Refunded') . "</option>" ;
 								print "</select>" ;
 							}
 							?>
@@ -321,41 +291,41 @@ else {
 						</script>
 						<tr id="paymentTypeRow">
 							<td> 
-								<b><?php print _('Payment Type') ?> *</b><br/>
+								<b><?php print __($guid, 'Payment Type') ?> *</b><br/>
 							</td>
 							<td class="right">
 								<?php
 								print "<select name='paymentType' id='paymentType' style='width:302px'>" ;
-									print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
-									print "<option value='Online'>" . _('Online') . "</option>" ;
-									print "<option value='Bank Transfer'>" . _('Bank Transfer') . "</option>" ;
-									print "<option value='Cash'>" . _('Cash') . "</option>" ;
-									print "<option value='Cheque'>" . _('Cheque') . "</option>" ;
-									print "<option value='Other'>" . _('Other') . "</option>" ;
+									print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
+									print "<option value='Online'>" . __($guid, 'Online') . "</option>" ;
+									print "<option value='Bank Transfer'>" . __($guid, 'Bank Transfer') . "</option>" ;
+									print "<option value='Cash'>" . __($guid, 'Cash') . "</option>" ;
+									print "<option value='Cheque'>" . __($guid, 'Cheque') . "</option>" ;
+									print "<option value='Other'>" . __($guid, 'Other') . "</option>" ;
 								print "</select>" ;
 								?>
 								<script type="text/javascript">
 									var paymentType=new LiveValidation('paymentType');
-									paymentType.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+									paymentType.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 								</script>
 							</td>
 						</tr>
 						<tr id="paymentTransactionIDRow">
 							<td> 
-								<b><?php print _('Transaction ID') ?></b><br/>
-								<span style="font-size: 90%"><i><?php print _('Date of payment, not entry to system.') ?></i></span>
+								<b><?php print __($guid, 'Transaction ID') ?></b><br/>
+								<span class="emphasis small"><?php print __($guid, 'Date of payment, not entry to system.') ?></span>
 							</td>
 							<td class="right">
-								<input name="paymentTransactionID" id="paymentTransactionID" maxlength=50 value="" type="text" style="width: 300px">
+								<input name="paymentTransactionID" id="paymentTransactionID" maxlength=50 value="" type="text" class="standardWidth">
 							</td>
 						</tr>
 						<tr id="paidDateRow">
 							<td> 
-								<b><?php print _('Date Paid') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print _('Date of payment, not entry to system.') ?></i></span>
+								<b><?php print __($guid, 'Date Paid') ?> *</b><br/>
+								<span class="emphasis small"><?php print __($guid, 'Date of payment, not entry to system.') ?></span>
 							</td>
 							<td class="right">
-								<input name="paidDate" id="paidDate" maxlength=10 value="" type="text" style="width: 300px">
+								<input name="paidDate" id="paidDate" maxlength=10 value="" type="text" class="standardWidth">
 								<script type="text/javascript">
 									var paidDate=new LiveValidation('paidDate');
 									paidDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
@@ -370,14 +340,14 @@ else {
 						</tr>
 						<tr id="paidAmountRow">
 							<td> 
-								<b><?php print _('Amount Paid') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print _('Amount in current payment.') ?>
+								<b><?php print __($guid, 'Amount Paid') ?> *</b><br/>
+								<span class="emphasis small"><?php print __($guid, 'Amount in current payment.') ?>
 								<?php
 								if ($_SESSION[$guid]["currency"]!="") {
 									print "<span style='font-style: italic; font-size: 85%'>" . $_SESSION[$guid]["currency"] . "</span>" ;
 								}
 								?>
-								</i></span>
+								</span>
 							</td>
 							<td class="right">
 								<?php
@@ -399,7 +369,7 @@ else {
 									$paidAmountDefault-=$alreadyPaid ;
 								}
 								?>
-								<input name="paidAmount" id="paidAmount" maxlength=14 value="<?php print number_format($paidAmountDefault,2,'.','') ?>" type="text" style="width: 300px">
+								<input name="paidAmount" id="paidAmount" maxlength=14 value="<?php print number_format($paidAmountDefault,2,'.','') ?>" type="text" class="standardWidth">
 								<script type="text/javascript">
 									var paidAmount=new LiveValidation('paidAmount');
 									paidAmount.add( Validate.Format, { pattern: /^(?:\d*\.\d{1,2}|\d+)$/, failureMessage: "Invalid number format!" } );
@@ -412,14 +382,14 @@ else {
 					?>
 					<tr>
 						<td colspan=2> 
-							<b><?php print _('Notes') ?></b> 
+							<b><?php print __($guid, 'Notes') ?></b> 
 							<textarea name='notes' id='notes' rows=5 style='width: 300px'><?php print htmlPrep($row["notes"]) ?></textarea>
 						</td>
 					</tr>
 					
 					<tr class='break'>
 						<td colspan=2> 
-							<h3><?php print _('Fees') ?></h3>
+							<h3><?php print __($guid, 'Fees') ?></h3>
 						</td>
 					</tr>
 					<?php 
@@ -469,7 +439,7 @@ else {
 														var feeCount=<?php print $feeCount ?> ;
 													</script>
 													<select id='newFee' onChange='feeDisplayElements(this.value);' style='float: none; margin-left: 3px; margin-top: 0px; margin-bottom: 3px; width: 350px'>
-														<option class='all' value='0'><?php print _('Choose a fee to add it') ?></option>
+														<option class='all' value='0'><?php print __($guid, 'Choose a fee to add it') ?></option>
 														<?php
 														print "<option value='Ad Hoc'>Ad Hoc Fee</option>" ;
 														$switchContents="case \"Ad Hoc\": " ;
@@ -546,23 +516,23 @@ else {
 								}
 								if ($resultFees->rowCount()<1) {
 									print "<div class='error'>" ;
-										print _("There are no records to display.") ;
+										print __($guid, "There are no records to display.") ;
 									print "</div>" ;
 								}
 								else {
 									print "<table cellspacing='0' style='width: 100%'>" ;
 										print "<tr class='head'>" ;
 											print "<th>" ;
-												print _("Name") ;
+												print __($guid, "Name") ;
 											print "</th>" ;
 											print "<th>" ;
-												print _("Category") ;
+												print __($guid, "Category") ;
 											print "</th>" ;
 											print "<th>" ;
-												print _("Description") ;
+												print __($guid, "Description") ;
 											print "</th>" ;
 											print "<th>" ;
-												print _("Fee") . "<br/>" ;
+												print __($guid, "Fee") . "<br/>" ;
 												if ($_SESSION[$guid]["currency"]!="") {
 													print "<span style='font-style: italic; font-size: 85%'>" . $_SESSION[$guid]["currency"] . "</span>" ;
 												}
@@ -601,7 +571,7 @@ else {
 										}
 										print "<tr style='height: 35px' class='current'>" ;
 											print "<td colspan=3 style='text-align: right'>" ;
-												print "<b>" . _('Invoice Total:') . "</b>";
+												print "<b>" . __($guid, 'Invoice Total:') . "</b>";
 											print "</td>" ;
 											print "<td>" ;
 												if (substr($_SESSION[$guid]["currency"],4)!="") {
@@ -619,7 +589,7 @@ else {
 					//PUT PAYMENT LOG
 					print "<tr class='break'>" ;
 						print "<td colspan=2>" ; 
-							print "<h3>" . _('Payment Log') . "</h3>" ;
+							print "<h3>" . __($guid, 'Payment Log') . "</h3>" ;
 						print "</td>" ;
 					print "</tr>" ;
 					print "<tr>" ;
@@ -650,7 +620,7 @@ else {
 						</script>
 						<tr class='break emailReceipt'>
 							<td colspan=2> 
-								<h3><?php print _('Email Receipt') ?></h3>
+								<h3><?php print __($guid, 'Email Receipt') ?></h3>
 								<input type='hidden' id='emailReceipt' name='emailReceipt' value='N'/>
 							</td>
 						</tr>
@@ -660,7 +630,7 @@ else {
 							print "<tr class='emailReceipt'>" ;
 								print "<td colspan=2>" ; 
 									print "<div class='error'>" ;
-										print _("An outgoing email address has not been set up under Invoice & Receipt Settings, and so no emails can be sent.") ;
+										print __($guid, "An outgoing email address has not been set up under Invoice & Receipt Settings, and so no emails can be sent.") ;
 									print "</div>" ;
 									print "<input type='hidden' name='email' value='$email'/>" ;
 								print "<td>" ; 
@@ -674,7 +644,7 @@ else {
 									<tr class='emailReceipt'>
 										<td> 
 											<b><?php print $row["companyContact"] ?></b> (<?php print $row["companyName"] ; ?>)
-											<span style="font-size: 90%"><i></i></span>
+											<span class="emphasis small"></span>
 										</td>
 										<td class="right">
 											<?php print $row["companyEmail"] ; ?> <input checked type='checkbox' name='emails[]' value='<?php print htmlPrep($row["companyEmail"]) ; ?>'/>
@@ -693,7 +663,7 @@ else {
 											print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 										}
 										if ($resultParents->rowCount()<1) {
-											print "<div class='warning'>" . _('There are no family members available to send this receipt to.') . "</div>" ; 
+											print "<div class='warning'>" . __($guid, 'There are no family members available to send this receipt to.') . "</div>" ; 
 										}
 										else {
 											while ($rowParents=$resultParents->fetch()) {
@@ -701,8 +671,8 @@ else {
 													?>
 													<tr class='emailReceipt'>
 														<td> 
-															<b><?php print formatName(htmlPrep($rowParents["title"]), htmlPrep($rowParents["preferredName"]), htmlPrep($rowParents["surname"]), "Parent", false) ?></b> <i><?php print _('(Family CC)') ?></i>
-															<span style="font-size: 90%"><i></i></span>
+															<b><?php print formatName(htmlPrep($rowParents["title"]), htmlPrep($rowParents["preferredName"]), htmlPrep($rowParents["surname"]), "Parent", false) ?></b> <i><?php print __($guid, '(Family CC)') ?></i>
+															<span class="emphasis small"></span>
 														</td>
 														<td class="right">
 															<?php print $rowParents["email"] ; ?> <input checked type='checkbox' name='emails[]' value='<?php print htmlPrep($rowParents["email"]) ; ?>'/>
@@ -716,7 +686,7 @@ else {
 									}
 								}
 								else {
-									print "<div class='warning'>" . _('There is no company contact available to send this invoice to.') . "</div>" ; 
+									print "<div class='warning'>" . __($guid, 'There is no company contact available to send this invoice to.') . "</div>" ; 
 								}
 							}
 							else {
@@ -730,7 +700,7 @@ else {
 									print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 								}
 								if ($resultParents->rowCount()<1) {
-									print "<div class='warning'>" . _('There are no family members available to send this receipt to.') . "</div>" ; 
+									print "<div class='warning'>" . __($guid, 'There are no family members available to send this receipt to.') . "</div>" ; 
 								}
 								else {
 									while ($rowParents=$resultParents->fetch()) {
@@ -739,7 +709,7 @@ else {
 											<tr class='emailReceipt'>
 												<td> 
 													<b><?php print formatName(htmlPrep($rowParents["title"]), htmlPrep($rowParents["preferredName"]), htmlPrep($rowParents["surname"]), "Parent", false) ?></b>
-													<span style="font-size: 90%"><i></i></span>
+													<span class="emphasis small"></span>
 												</td>
 												<td class="right">
 													<?php print $rowParents["email"] ; ?> <input checked type='checkbox' name='emails[]' value='<?php print htmlPrep($rowParents["email"]) ; ?>'/>
@@ -757,7 +727,7 @@ else {
 								<tr class='emailReceipt'>
 									<td> 
 										<b><?php print formatName("", htmlPrep($_SESSION[$guid]["preferredName"]), htmlPrep($_SESSION[$guid]["surname"]), "Parent", false) ?></b>
-										<span style="font-size: 90%"><i><?php print _('(CC Self?)') ?></i></span>
+										<span class="emphasis small"><?php print __($guid, '(CC Self?)') ?></span>
 									</td>
 									<td class="right">
 										<?php print $_SESSION[$guid]["email"] ; ?> <input type='checkbox' name='emails[]' value='<?php print $_SESSION[$guid]["email"] ; ?>'/>
@@ -788,7 +758,7 @@ else {
 						</script>
 						<tr class='break emailReminder'>
 							<td colspan=2> 
-								<h3><?php print _('Email Reminder') ?></h3>
+								<h3><?php print __($guid, 'Email Reminder') ?></h3>
 								<input type='hidden' id='emailReminder' name='emailReminder' value='Y'/>
 							</td>
 						</tr>
@@ -798,7 +768,7 @@ else {
 							print "<tr class='emailReminder'>" ;
 								print "<td colspan=2>" ; 
 									print "<div class='error'>" ;
-										print _("An outgoing email address has not been set up under Invoice & Receipt Settings, and so no emails can be sent.") ;
+										print __($guid, "An outgoing email address has not been set up under Invoice & Receipt Settings, and so no emails can be sent.") ;
 									print "</div>" ;
 									print "<input type='hidden' name='email' value='$email'/>" ;
 								print "<td>" ; 
@@ -812,7 +782,7 @@ else {
 									<tr class='emailReminder'>
 										<td> 
 											<b><?php print $row["companyContact"] ?></b> (<?php print $row["companyName"] ; ?>)
-											<span style="font-size: 90%"><i></i></span>
+											<span class="emphasis small"></span>
 										</td>
 										<td class="right">
 											<?php print $row["companyEmail"] ; ?> <input checked type='checkbox' name='emails2[]' value='<?php print htmlPrep($row["companyEmail"]) ; ?>'/>
@@ -831,7 +801,7 @@ else {
 											print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 										}
 										if ($resultParents->rowCount()<1) {
-											print "<div class='warning'>" . _('There are no family members available to send this receipt to.') . "</div>" ; 
+											print "<div class='warning'>" . __($guid, 'There are no family members available to send this receipt to.') . "</div>" ; 
 										}
 										else {
 											while ($rowParents=$resultParents->fetch()) {
@@ -839,8 +809,8 @@ else {
 													?>
 													<tr class='emailReminder'>
 														<td> 
-															<b><?php print formatName(htmlPrep($rowParents["title"]), htmlPrep($rowParents["preferredName"]), htmlPrep($rowParents["surname"]), "Parent", false) ?></b> <i><?php print _('(Family CC)') ?></i>
-															<span style="font-size: 90%"><i></i></span>
+															<b><?php print formatName(htmlPrep($rowParents["title"]), htmlPrep($rowParents["preferredName"]), htmlPrep($rowParents["surname"]), "Parent", false) ?></b> <i><?php print __($guid, '(Family CC)') ?></i>
+															<span class="emphasis small"></span>
 														</td>
 														<td class="right">
 															<?php print $rowParents["email"] ; ?> <input checked type='checkbox' name='emails2[]' value='<?php print htmlPrep($rowParents["email"]) ; ?>'/>
@@ -854,7 +824,7 @@ else {
 									}
 								}
 								else {
-									print "<div class='warning'>" . _('There is no company contact available to send this invoice to.') . "</div>" ; 
+									print "<div class='warning'>" . __($guid, 'There is no company contact available to send this invoice to.') . "</div>" ; 
 								}
 							}
 							else {
@@ -868,7 +838,7 @@ else {
 									print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 								}
 								if ($resultParents->rowCount()<1) {
-									print "<div class='warning'>" . _('There are no family members available to send this receipt to.') . "</div>" ; 
+									print "<div class='warning'>" . __($guid, 'There are no family members available to send this receipt to.') . "</div>" ; 
 								}
 								else {
 									while ($rowParents=$resultParents->fetch()) {
@@ -877,7 +847,7 @@ else {
 											<tr class='emailReminder'>
 												<td> 
 													<b><?php print formatName(htmlPrep($rowParents["title"]), htmlPrep($rowParents["preferredName"]), htmlPrep($rowParents["surname"]), "Parent", false) ?></b>
-													<span style="font-size: 90%"><i></i></span>
+													<span class="emphasis small"></span>
 												</td>
 												<td class="right">
 													<?php print $rowParents["email"] ; ?> <input checked type='checkbox' name='emails2[]' value='<?php print htmlPrep($rowParents["email"]) ; ?>'/>
@@ -895,7 +865,7 @@ else {
 								<tr class='emailReminder'>
 									<td> 
 										<b><?php print formatName("", htmlPrep($_SESSION[$guid]["preferredName"]), htmlPrep($_SESSION[$guid]["surname"]), "Parent", false) ?></b>
-										<span style="font-size: 90%"><i><?php print _('(CC Self?)') ?></i></span>
+										<span class="emphasis small"><?php print __($guid, '(CC Self?)') ?></span>
 									</td>
 									<td class="right">
 										<?php print $_SESSION[$guid]["email"] ; ?> <input type='checkbox' name='emails[]' value='<?php print $_SESSION[$guid]["email"] ; ?>'/>
@@ -909,12 +879,12 @@ else {
 					?>			
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+							<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 						</td>
 						<td class="right">
 							<input name="gibbonFinanceInvoiceID" id="gibbonFinanceInvoiceID" value="<?php print $gibbonFinanceInvoiceID ?>" type="hidden">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<?php print _("Submit") ; ?>">
+							<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 						</td>
 					</tr>
 				</table>

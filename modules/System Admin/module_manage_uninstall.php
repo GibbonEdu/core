@@ -29,13 +29,13 @@ if (isset($_GET["orphaned"])) {
 if (isActionAccessible($guid, $connection2, "/modules/System Admin/module_manage_uninstall.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/module_manage.php'>" . _('Manage Modules') . "</a> > </div><div class='trailEnd'>" . _('Uninstall Module') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/module_manage.php'>" . __($guid, 'Manage Modules') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Uninstall Module') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -43,16 +43,16 @@ else {
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="fail0") {
-			$deleteReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+			$deleteReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($deleteReturn=="fail1") {
-			$deleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$deleteReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($deleteReturn=="fail2") {
-			$deleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$deleteReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($deleteReturn=="fail3") {
-			$deleteReturnMessage=_("Uninstall encountered a partial fail: the module may or may not still work.") ;	
+			$deleteReturnMessage=__($guid, "Uninstall encountered a partial fail: the module may or may not still work.") ;	
 		}
 		print "<div class='$class'>" ;
 			print $deleteReturnMessage;
@@ -63,7 +63,7 @@ else {
 	$gibbonModuleID=$_GET["gibbonModuleID"] ;
 	if ($gibbonModuleID=="") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -79,7 +79,7 @@ else {
 
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print _("You have not specified one or more required parameters.") ;
+				print __($guid, "You have not specified one or more required parameters.") ;
 			print "</div>" ;
 		}
 		else {
@@ -87,23 +87,23 @@ else {
 			$row=$result->fetch() ;
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/module_manage_uninstallProcess.php?gibbonModuleID=$gibbonModuleID&orphaned=$orphaned" ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td style='width: 275px' colspan=2> 
-							<b><?php print _('Are you sure you want to delete this record?') ; ?></b><br/>
-							<span style="font-size: 90%; color: #cc0000"><i><?php print _('This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!') ; ?></i></span>
+							<b><?php print __($guid, 'Are you sure you want to delete this record?') ; ?></b><br/>
+							<span style="font-size: 90%; color: #cc0000"><i><?php print __($guid, 'This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!') ; ?></span>
 						</td>
 					</tr>
 					<tr>
 						<td style='width: 275px'> 
-							<b><?php print _("Remove Data") ?></b><br/>
-							<span style="font-size: 90%"><i><?php print _("Would you like to remove the following tables and views from your database?") ?></i></span>
+							<b><?php print __($guid, "Remove Data") ?></b><br/>
+							<span class="emphasis small"><?php print __($guid, "Would you like to remove the following tables and views from your database?") ?></span>
 						</td>
 						<td class="right">
 							<?php
 							if (is_file($_SESSION[$guid]["absolutePath"] . "/modules/" . $row["name"] . "/manifest.php")==FALSE) {
 								print "<div class='error'>" ;
-									print _("An error has occurred.") ;
+									print __($guid, "An error has occurred.") ;
 								print "</div>" ;
 							}
 							else {
@@ -116,10 +116,10 @@ else {
 										$name="" ;
 										$moduleTable=trim($moduleTable) ;
 										if (substr($moduleTable, 0, 12)=="CREATE TABLE") {
-											$type=_("Table") ;
+											$type=__($guid, "Table") ;
 										}
 										else if (substr($moduleTable, 0, 11)=="CREATE VIEW") {
-											$type=_("View") ;
+											$type=__($guid, "View") ;
 										}
 										if ($type!=NULL) {
 											$tokens=preg_split('/ +/', $moduleTable);
@@ -135,7 +135,7 @@ else {
 									} 
 								}
 								if ($count==0) {
-									print _("There are no records to display.") ;
+									print __($guid, "There are no records to display.") ;
 								}
 							}
 							?>
@@ -144,7 +144,7 @@ else {
 					<tr>
 						<td class="right" colspan=2>
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<?php print _('Submit') ; ?>">
+							<input type="submit" value="<?php print __($guid, 'Submit') ; ?>">
 						</td>
 					</tr>
 				</table>

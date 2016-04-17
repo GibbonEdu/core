@@ -22,13 +22,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/Formal Assessment/externalAssessment_manage_details_edit.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/externalAssessment.php'>" . _('View All Assessments') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/externalAssessment_details.php&gibbonPersonID=" . $_GET["gibbonPersonID"] . "'>" . _('Student Details') . "</a> > </div><div class='trailEnd'>" . _('Edit Assessment') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/externalAssessment.php'>" . __($guid, 'View All Assessments') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/externalAssessment_details.php&gibbonPersonID=" . $_GET["gibbonPersonID"] . "'>" . __($guid, 'Student Details') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Edit Assessment') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -36,22 +36,22 @@ else {
 	$class="error" ;
 	if (!($updateReturn=="")) {
 		if ($updateReturn=="fail0") {
-			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($updateReturn=="fail1") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail2") {
-			$updateReturnMessage=_("Your request failed due to a database error.") ;	
+			$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 		}
 		else if ($updateReturn=="fail3") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail4") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="success0") {
-			$updateReturnMessage=_("Your request was completed successfully.") ;	
+			$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -69,7 +69,7 @@ else {
 	}
 	if ($gibbonExternalAssessmentStudentID=="" OR $gibbonPersonID=="") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -84,7 +84,7 @@ else {
 		}
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print _("The specified record cannot be found.") ;
+				print __($guid, "The specified record cannot be found.") ;
 			print "</div>" ;
 		}
 		else {
@@ -93,28 +93,28 @@ else {
 			
 			if ($search!="") {
 				print "<div class='linkTop'>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Formal Assessment/externalAssessment_details.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents'>" . _('Back') . "</a>" ;				
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Formal Assessment/externalAssessment_details.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents'>" . __($guid, 'Back') . "</a>" ;				
 				print "</div>" ;
 			}
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/externalAssessment_manage_details_editProcess.php?search=$search&allStudents=$allStudents" ?>" enctype="multipart/form-data">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td style='width: 275px'> 
-							<b><?php print _('Assessment Type') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+							<b><?php print __($guid, 'Assessment Type') ?> *</b><br/>
+							<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 						</td>
 						<td class="right" colspan=2>
-							<input readonly name="name" id="name" maxlength=20 value="<?php print _($row["assessment"]) ?>" type="text" style="width: 300px; text-align: right">
+							<input readonly name="name" id="name" maxlength=20 value="<?php print __($guid, $row["assessment"]) ?>" type="text" style="width: 300px; text-align: right">
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Date') ?> *</b><br/>
-							<span style="font-size: 90%"><i>Format <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></i></span>
+							<b><?php print __($guid, 'Date') ?> *</b><br/>
+							<span class="emphasis small"><?php print __($guid, "Format:") . " " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } ?><br/></span>
 						</td>
 						<td class="right" colspan=2>
-							<input name="date" id="date" maxlength=10 value="<?php if ($row["date"]!="") { print dateConvertBack($guid, $row["date"]) ; } ?>" type="text" style="width: 300px">
+							<input name="date" id="date" maxlength=10 value="<?php if ($row["date"]!="") { print dateConvertBack($guid, $row["date"]) ; } ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var date=new LiveValidation('date');
 								date.add(Validate.Presence);
@@ -132,16 +132,16 @@ else {
 						?>
 						<tr>
 							<td style='width: 275px'> 
-								<b><?php print _('Upload File') ?></b><br/>
-								<span style="font-size: 90%"><i><?php print _('Use this to attach raw data, graphical summary, etc.') ?></i><br/></span>
+								<b><?php print __($guid, 'Upload File') ?></b><br/>
+								<span class="emphasis small"><?php print __($guid, 'Use this to attach raw data, graphical summary, etc.') ?></i><br/></span>
 								<?php if ($row["attachment"]!="") { ?>
-									<span style="font-size: 90%"><i><?php print _('Will overwrite existing attachment.') ?></i></span>
+									<span class="emphasis small"><?php print __($guid, 'Will overwrite existing attachment.') ?></span>
 								<?php } ?>
 							</td>
 							<td class="right" colspan=2>
 								<?php
 								if ($row["attachment"]!="") {
-									print _("Current attachment:") . " <a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["attachment"] . "'>" . $row["attachment"] . "</a><br/><br/>" ;
+									print __($guid, "Current attachment:") . " <a target='_blank' href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["attachment"] . "'>" . $row["attachment"] . "</a><br/><br/>" ;
 								}
 								?>
 								<input type="file" name="file" id="file"><br/><br/>
@@ -218,7 +218,7 @@ else {
 						print "<tr class='break'>" ;
 							print "<td colspan=3> " ;
 								print "<div class='warning'>" ;
-									print _("There are no fields in this assessment.") ;
+									print __($guid, "There are no fields in this assessment.") ;
 								print "</div>" ;
 							print "</td>" ;
 						print "</tr>" ;
@@ -241,17 +241,17 @@ else {
 										print "</h3>" ;
 									print "</td>" ;
 									print "<td class='right'>" ;
-										print "<span style='font-weight: bold'>" . _('Grade') . "</span>" ;
+										print "<span style='font-weight: bold'>" . __($guid, 'Grade') . "</span>" ;
 									print "</td>" ;
 									print "<td class='right'>" ;
-										print "<span style='font-weight: bold' title='" . _('Primary Assessment Scale Grade') . "'>" . _('PAS Grade') . "</span>" ;
+										print "<span style='font-weight: bold' title='" . __($guid, 'Primary Assessment Scale Grade') . "'>" . __($guid, 'PAS Grade') . "</span>" ;
 									print "</td>" ;
 								print "</tr>" ;
 							}
 							?>
 							<tr>
 								<td> 
-									<span style='font-weight: bold' title='<?php print $rowField["usage"] ?>'><?php print _($rowField["name"]) ?></span><br/>
+									<span style='font-weight: bold' title='<?php print $rowField["usage"] ?>'><?php print __($guid, $rowField["name"]) ?></span><br/>
 								</td>
 								<td class="right">
 									<input name="<?php print $count?>-gibbonExternalAssessmentStudentEntryID" id="<?php print $count?>-gibbonExternalAssessmentStudentEntryID" value="<?php print $rowField["gibbonExternalAssessmentStudentEntryID"] ?>" type="hidden">
@@ -274,20 +274,20 @@ else {
 					?>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?>
+							<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?>
 							<?php
 							if ($row["allowFileUpload"]=="Y") {
-								print getMaxUpload() ; 
+								print getMaxUpload($guid) ; 
 							}
 							?>
-							</i></span>
+							</span>
 						</td>
 						<td class="right" colspan=2>
 							<input name="count" id="count" value="<?php print $count ?>" type="hidden">
 							<input name="gibbonPersonID" id="gibbonPersonID" value="<?php print $gibbonPersonID ?>" type="hidden">
 							<input name="gibbonExternalAssessmentStudentID" id="gibbonExternalAssessmentStudentID" value="<?php print $gibbonExternalAssessmentStudentID ?>" type="hidden">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<?php print _("Submit") ; ?>">
+							<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 						</td>
 					</tr>
 				</table>

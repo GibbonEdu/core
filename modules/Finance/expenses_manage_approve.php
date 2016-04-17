@@ -25,20 +25,20 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Finance/expenses_manage_approve.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print _("The highest grouped action cannot be determined.") ;
+		print __($guid, "The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
 		//Proceed!
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/expenses_manage.php&gibbonFinanceBudgetCycleID=" . $_GET["gibbonFinanceBudgetCycleID"] . "'>" . _('Manage Expenses') . "</a> > </div><div class='trailEnd'>" . _('Approve/Reject Expense') . "</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/expenses_manage.php&gibbonFinanceBudgetCycleID=" . $_GET["gibbonFinanceBudgetCycleID"] . "'>" . __($guid, 'Manage Expenses') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Approve/Reject Expense') . "</div>" ;
 		print "</div>" ;
 		
 		if (isset($_GET["approveReturn"])) { $approveReturn=$_GET["approveReturn"] ; } else { $approveReturn="" ; }
@@ -46,13 +46,13 @@ else {
 		$class="error" ;
 		if (!($approveReturn=="")) {
 			if ($approveReturn=="fail0") {
-				$approveReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+				$approveReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 			}
 			else if ($approveReturn=="fail2") {
-				$approveReturnMessage=_("Your request failed due to a database error.") ;	
+				$approveReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 			}
 			else if ($approveReturn=="fail3") {
-				$approveReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+				$approveReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 			}
 			print "<div class='$class'>" ;
 				print $approveReturnMessage;
@@ -66,7 +66,7 @@ else {
 		$gibbonFinanceBudgetID2=$_GET["gibbonFinanceBudgetID2"] ;
 		if ($gibbonFinanceExpenseID=="" OR $gibbonFinanceBudgetCycleID=="") {
 			print "<div class='error'>" ;
-				print _("You have not specified one or more required parameters.") ;
+				print __($guid, "You have not specified one or more required parameters.") ;
 			print "</div>" ;
 		}
 		else {
@@ -86,7 +86,7 @@ else {
 			
 			if ($budgetsAccess==FALSE) {
 				print "<div class='error'>" ;
-					print _("You do not have Full or Write access to any budgets.") ;
+					print __($guid, "You do not have Full or Write access to any budgets.") ;
 				print "</div>" ;
 			}
 			else {
@@ -96,7 +96,7 @@ else {
 				$expenseRequestTemplate=getSettingByScope($connection2, "Finance", "expenseRequestTemplate") ;
 				if ($expenseApprovalType=="" OR $budgetLevelExpenseApproval=="") {
 					print "<div class='error'>" ;
-						print _("An error has occurred with your expense and budget settings.") ;
+						print __($guid, "An error has occurred with your expense and budget settings.") ;
 					print "</div>" ;
 				}
 				else {
@@ -111,7 +111,7 @@ else {
 			
 					if ($result->rowCount()<1) {
 						print "<div class='error'>" ;
-							print _("An error has occurred with your expense and budget settings.") ;
+							print __($guid, "An error has occurred with your expense and budget settings.") ;
 						print "</div>" ;
 					}
 					else {
@@ -147,7 +147,7 @@ else {
 		
 						if ($result->rowCount()!=1) {
 							print "<div class='error'>" ;
-								print _("The specified record cannot be found.") ;
+								print __($guid, "The specified record cannot be found.") ;
 							print "</div>" ;
 						}
 						else {
@@ -156,20 +156,20 @@ else {
 					
 							if ($status2!="" OR $gibbonFinanceBudgetID2!="") {
 								print "<div class='linkTop'>" ;
-									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/expenses_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>" . _('Back to Search Results') . "</a>" ;
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/expenses_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>" . __($guid, 'Back to Search Results') . "</a>" ;
 								print "</div>" ;
 							}
 							?>
 							<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/expenses_manage_approveProcess.php" ?>">
-								<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+								<table class='smallIntBorder fullWidth' cellspacing='0'>	
 									<tr class='break'>
 										<td colspan=2> 
-											<h3><?php print _('Basic Information') ?></h3>
+											<h3><?php print __($guid, 'Basic Information') ?></h3>
 										</td>
 									</tr>
 									<tr>
 										<td style='width: 275px'> 
-											<b><?php print _('Budget Cycle') ?> *</b><br/>
+											<b><?php print __($guid, 'Budget Cycle') ?> *</b><br/>
 										</td>
 										<td class="right">
 											<?php
@@ -188,8 +188,8 @@ else {
 												$yearName=$rowYear["name"] ;
 											}
 											?>
-											<input readonly name="name" id="name" maxlength=20 value="<?php print $yearName ?>" type="text" style="width: 300px">
-											<input name="gibbonFinanceBudgetCycleID" id="gibbonFinanceBudgetCycleID" maxlength=20 value="<?php print $gibbonFinanceBudgetCycleID ?>" type="hidden" style="width: 300px">
+											<input readonly name="name" id="name" maxlength=20 value="<?php print $yearName ?>" type="text" class="standardWidth">
+											<input name="gibbonFinanceBudgetCycleID" id="gibbonFinanceBudgetCycleID" maxlength=20 value="<?php print $gibbonFinanceBudgetCycleID ?>" type="hidden" class="standardWidth">
 											<script type="text/javascript">
 												var gibbonFinanceBudgetCycleID=new LiveValidation('gibbonFinanceBudgetCycleID');
 												gibbonFinanceBudgetCycleID.add(Validate.Presence);
@@ -198,7 +198,7 @@ else {
 									</tr>
 									<tr>
 										<td style='width: 275px'> 
-											<b><?php print _('Budget') ?> *</b><br/>
+											<b><?php print __($guid, 'Budget') ?> *</b><br/>
 										</td>
 										<td class="right">
 											<?php
@@ -216,7 +216,7 @@ else {
 													if ($gibbonFinanceBudgetID=="") {
 														$selected="selected" ;
 													}
-													print "<option $selected value='Please select...'>" . _('Please select...') . "</option>" ;
+													print "<option $selected value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
 													while ($rowBudget=$resultBudget->fetch()) {
 														$selected="" ;
 														if ($row["gibbonFinanceBudgetID"]==$rowBudget["gibbonFinanceBudgetID"]) {
@@ -228,13 +228,13 @@ else {
 												?>
 												<script type="text/javascript">
 													var gibbonFinanceBudgetID=new LiveValidation('gibbonFinanceBudgetID');
-													gibbonFinanceBudgetID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+													gibbonFinanceBudgetID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 												</script>
 												<?php
 											}
 											else { //Cannot change budget
 												?>
-												<input readonly name="name" id="name" maxlength=20 value="<?php print $row["budget"] ; ?>" type="text" style="width: 300px">
+												<input readonly name="name" id="name" maxlength=20 value="<?php print $row["budget"] ; ?>" type="text" class="standardWidth">
 												<input type='hidden' name='gibbonFinanceBudgetID' value='<?php print $row["gibbonFinanceBudgetID"] ?>'/>
 												<?php
 											}
@@ -243,23 +243,23 @@ else {
 									</tr>
 									<tr>
 										<td> 
-											<b><?php print _('Title') ?> *</b><br/>
+											<b><?php print __($guid, 'Title') ?> *</b><br/>
 										</td>
 										<td class="right">
-											<input readonly name="name" id="name" maxlength=60 value="<?php print $row["title"] ; ?>" type="text" style="width: 300px">
+											<input readonly name="name" id="name" maxlength=60 value="<?php print $row["title"] ; ?>" type="text" class="standardWidth">
 										</td>
 									</tr>
 									<tr>
 										<td> 
-											<b><?php print _('Status') ?> *</b><br/>
+											<b><?php print __($guid, 'Status') ?> *</b><br/>
 										</td>
 										<td class="right">
-											<input readonly name="name" id="name" maxlength=60 value="<?php print $row["status"] ; ?>" type="text" style="width: 300px">
+											<input readonly name="name" id="name" maxlength=60 value="<?php print $row["status"] ; ?>" type="text" class="standardWidth">
 										</td>
 									</tr>
 									<tr>
 										<td colspan=2> 
-											<b><?php print _('Description') ?></b>
+											<b><?php print __($guid, 'Description') ?></b>
 											<?php 
 												print "<p>" ;
 													print $row["body"] ;
@@ -269,15 +269,15 @@ else {
 									</tr>
 									<tr>
 										<td> 
-											<b><?php print _('Purchase By') ?> *</b><br/>
+											<b><?php print __($guid, 'Purchase By') ?> *</b><br/>
 										</td>
 										<td class="right">
-											<input readonly name="purchaseBy" id="purchaseBy" maxlength=60 value="<?php print $row["purchaseBy"] ; ?>" type="text" style="width: 300px">
+											<input readonly name="purchaseBy" id="purchaseBy" maxlength=60 value="<?php print $row["purchaseBy"] ; ?>" type="text" class="standardWidth">
 										</td>
 									</tr>
 									<tr>
 										<td colspan=2> 
-											<b><?php print _('Purchase Details') ?></b>
+											<b><?php print __($guid, 'Purchase Details') ?></b>
 											<?php 
 												print "<p>" ;
 													print $row["purchaseDetails"] ;
@@ -289,35 +289,35 @@ else {
 									
 									<tr class='break'>
 										<td colspan=2> 
-											<h3><?php print _('Budget Tracking') ?></h3>
+											<h3><?php print __($guid, 'Budget Tracking') ?></h3>
 										</td>
 									</tr>
 									<tr>
 										<td> 
-											<b><?php print _('Total Cost') ?> *</b><br/>
+											<b><?php print __($guid, 'Total Cost') ?> *</b><br/>
 											<span style="font-size: 90%">
 												<i>
 												<?php
 												if ($_SESSION[$guid]["currency"]!="") {
-													print sprintf(_('Numeric value of the fee in %1$s.'), $_SESSION[$guid]["currency"]) ;
+													print sprintf(__($guid, 'Numeric value of the fee in %1$s.'), $_SESSION[$guid]["currency"]) ;
 												}
 												else {
-													print _("Numeric value of the fee.") ;
+													print __($guid, "Numeric value of the fee.") ;
 												}
 												?>
 												</i>
 											</span>
 										</td>
 										<td class="right">
-											<input readonly name="name" id="name" maxlength=60 value="<?php print number_format($row["cost"], 2, ".", ",") ; ?>" type="text" style="width: 300px">
+											<input readonly name="name" id="name" maxlength=60 value="<?php print number_format($row["cost"], 2, ".", ",") ; ?>" type="text" class="standardWidth">
 										</td>
 									</tr>
 									<tr>
 										<td> 
-											<b><?php print _('Count Against Budget') ?> *</b><br/>
+											<b><?php print __($guid, 'Count Against Budget') ?> *</b><br/>
 										</td>
 										<td class="right">
-											<input readonly name="countAgainstBudget" id="countAgainstBudget" maxlength=60 value="<?php print ynExpander($row["countAgainstBudget"]) ; ?>" type="text" style="width: 300px">
+											<input readonly name="countAgainstBudget" id="countAgainstBudget" maxlength=60 value="<?php print ynExpander($guid, $row["countAgainstBudget"]) ; ?>" type="text" class="standardWidth">
 										</td>
 									</tr>
 									<?php 
@@ -325,15 +325,15 @@ else {
 										?>
 										<tr>
 											<td> 
-												<b><?php print _('Budget For Cycle') ?> *</b><br/>
+												<b><?php print __($guid, 'Budget For Cycle') ?> *</b><br/>
 												<span style="font-size: 90%">
 													<i>
 													<?php
 													if ($_SESSION[$guid]["currency"]!="") {
-														print sprintf(_('Numeric value of the fee in %1$s.'), $_SESSION[$guid]["currency"]) ;
+														print sprintf(__($guid, 'Numeric value of the fee in %1$s.'), $_SESSION[$guid]["currency"]) ;
 													}
 													else {
-														print _("Numeric value of the fee.") ;
+														print __($guid, "Numeric value of the fee.") ;
 													}
 													?>
 													</i>
@@ -354,14 +354,14 @@ else {
 													$budgetAllocationFail=TRUE ;
 												}
 												if ($resultCheck->rowCount()!=1) {
-													print "<input readonly name=\"name\" id=\"name\" maxlength=60 value=\"" . _('NA') . "\" type=\"text\" style=\"width: 300px\">" ;
+													print "<input readonly name=\"name\" id=\"name\" maxlength=60 value=\"" . __($guid, 'NA') . "\" type=\"text\" style=\"width: 300px\">" ;
 													$budgetAllocationFail=TRUE ;
 												}
 												else {
 													$rowCheck=$resultCheck->fetch() ;
 													$budgetAllocation=$rowCheck["value"] ;
 													?>
-													<input readonly name="name" id="name" maxlength=60 value="<?php print number_format($budgetAllocation, 2, ".", ",") ; ?>" type="text" style="width: 300px">
+													<input readonly name="name" id="name" maxlength=60 value="<?php print number_format($budgetAllocation, 2, ".", ",") ; ?>" type="text" class="standardWidth">
 													<?php
 												}
 												?>
@@ -369,15 +369,15 @@ else {
 										</tr>
 										<tr>
 											<td> 
-												<b><?php print _('Amount already approved or spent') ?> *</b><br/>
+												<b><?php print __($guid, 'Amount already approved or spent') ?> *</b><br/>
 												<span style="font-size: 90%">
 													<i>
 													<?php
 													if ($_SESSION[$guid]["currency"]!="") {
-														print sprintf(_('Numeric value of the fee in %1$s.'), $_SESSION[$guid]["currency"]) ;
+														print sprintf(__($guid, 'Numeric value of the fee in %1$s.'), $_SESSION[$guid]["currency"]) ;
 													}
 													else {
-														print _("Numeric value of the fee.") ;
+														print __($guid, "Numeric value of the fee.") ;
 													}
 													?>
 													</i>
@@ -405,7 +405,7 @@ else {
 														$budgetAllocated=$budgetAllocated+$rowCheck["cost"] ;
 													}
 													?>
-													<input readonly name="name" id="name" maxlength=60 value="<?php print number_format($budgetAllocated, 2, ".", ",") ; ?>" type="text" style="width: 300px">
+													<input readonly name="name" id="name" maxlength=60 value="<?php print number_format($budgetAllocated, 2, ".", ",") ; ?>" type="text" class="standardWidth">
 													<?php
 												}
 											
@@ -417,15 +417,15 @@ else {
 											?>
 											<tr>
 											<td> 
-												<b><?php print _('Budget Remaining For Cycle') ?> *</b><br/>
+												<b><?php print __($guid, 'Budget Remaining For Cycle') ?> *</b><br/>
 												<span style="font-size: 90%">
 													<i>
 													<?php
 													if ($_SESSION[$guid]["currency"]!="") {
-														print sprintf(_('Numeric value of the fee in %1$s.'), $_SESSION[$guid]["currency"]) ;
+														print sprintf(__($guid, 'Numeric value of the fee in %1$s.'), $_SESSION[$guid]["currency"]) ;
 													}
 													else {
-														print _("Numeric value of the fee.") ;
+														print __($guid, "Numeric value of the fee.") ;
 													}
 													?>
 													</i>
@@ -448,7 +448,7 @@ else {
 									
 									<tr class='break'>
 										<td colspan=2> 
-											<h3><?php print _('Log') ?></h3>
+											<h3><?php print __($guid, 'Log') ?></h3>
 										</td>
 									</tr>
 									<tr>
@@ -462,7 +462,7 @@ else {
 									
 									<tr class='break'>
 										<td colspan=2> 
-											<h3><?php print _('Action') ?></h3>
+											<h3><?php print __($guid, 'Action') ?></h3>
 										</td>
 									</tr>
 									<?php
@@ -471,7 +471,7 @@ else {
 										?>
 										<tr>
 											<td colspan=2> 
-												<div class='error'><?php print _('Your approval is not currently required: it is possible somone beat you to it, or you have already approved it.') ?></div>
+												<div class='error'><?php print __($guid, 'Your approval is not currently required: it is possible somone beat you to it, or you have already approved it.') ?></div>
 											</td>
 										</tr>
 										<?php
@@ -480,32 +480,32 @@ else {
 										?>
 										<tr>
 											<td style='width: 275px'> 
-												<b><?php print _('Approval') ?> *</b><br/>
+												<b><?php print __($guid, 'Approval') ?> *</b><br/>
 											</td>
 											<td class="right">
 												<?php
 												print "<select name='approval' id='approval' style='width:302px'>" ;
-													print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
-													print "<option value='Approval - Partial'>" . _('Approve') . "</option>" ;
-													print "<option value='Rejection'>" . _('Reject') . "</option>" ;
-													print "<option value='Comment'>" . _('Comment') . "</option>" ;
+													print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
+													print "<option value='Approval - Partial'>" . __($guid, 'Approve') . "</option>" ;
+													print "<option value='Rejection'>" . __($guid, 'Reject') . "</option>" ;
+													print "<option value='Comment'>" . __($guid, 'Comment') . "</option>" ;
 												print "</select>" ;
 												?>
 												<script type="text/javascript">
 													var approval=new LiveValidation('approval');
-													approval.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+													approval.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 												</script>
 											</td>
 										</tr>
 										<tr>
 											<td colspan=2> 
-												<b><?php print _('Comment') ?></b><br/>
+												<b><?php print __($guid, 'Comment') ?></b><br/>
 												<textarea name="comment" id="comment" rows=8 style="width: 100%"></textarea>
 											</td>
 										</tr>
 										<tr>
 											<td>
-												<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+												<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 											</td>
 											<td class="right">
 												<input name="gibbonFinanceExpenseID" id="gibbonFinanceExpenseID" value="<?php print $gibbonFinanceExpenseID ?>" type="hidden">
@@ -514,7 +514,7 @@ else {
 												<input name="gibbonFinanceBudgetID2" id="gibbonFinanceBudgetID2" value="<?php print $gibbonFinanceBudgetID2 ?>" type="hidden">
 												<input name="status" id="status" value="<?php print $status ?>" type="hidden">
 												<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-												<input type="submit" value="<?php print _("Submit") ; ?>">
+												<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 											</td>
 										</tr>
 										<?

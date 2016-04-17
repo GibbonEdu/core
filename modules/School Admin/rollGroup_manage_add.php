@@ -22,13 +22,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/rollGroup_manage_add.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/rollGroup_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . _('Manage Roll Groups') . "</a> > </div><div class='trailEnd'>" . _('Add Roll Group') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/rollGroup_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . __($guid, 'Manage Roll Groups') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Add Roll Group') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
@@ -36,19 +36,19 @@ else {
 	$class="error" ;
 	if (!($addReturn=="")) {
 		if ($addReturn=="fail0") {
-			$addReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+			$addReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($addReturn=="fail2") {
-			$addReturnMessage=_("Your request failed due to a database error.") ;	
+			$addReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 		}
 		else if ($addReturn=="fail3") {
-			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($addReturn=="fail4") {
-			$addReturnMessage=_("Your request failed because some inputs did not meet a requirement for uniqueness.") ;	
+			$addReturnMessage=__($guid, "Your request failed because some inputs did not meet a requirement for uniqueness.") ;	
 		}
 		else if ($addReturn=="success0") {
-			$addReturnMessage=_("Your request was completed successfully. You can now add another record if you wish.") ;	
+			$addReturnMessage=__($guid, "Your request was completed successfully. You can now add another record if you wish.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -59,7 +59,7 @@ else {
 	$gibbonSchoolYearID=$_GET["gibbonSchoolYearID"]; 
 	if ($gibbonSchoolYearID=="") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -75,7 +75,7 @@ else {
 		
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print _("The specified record does not exist.") ;
+				print __($guid, "The specified record does not exist.") ;
 			print "</div>" ;
 		}
 		else {
@@ -83,14 +83,14 @@ else {
 			?>
 	
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/rollGroup_manage_addProcess.php" ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td style='width: 275px'> 
-							<b><?php print _('School Year') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+							<b><?php print __($guid, 'School Year') ?> *</b><br/>
+							<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 						</td>
 						<td class="right">
-							<input readonly name="schoolYearName" id="schoolYearName" maxlength=20 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
+							<input readonly name="schoolYearName" id="schoolYearName" maxlength=20 value="<?php print $row["name"] ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var schoolYearName=new LiveValidation('schoolYearName');
 								schoolYearname2.add(Validate.Presence);
@@ -99,11 +99,11 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Name') ?> *</b><br/>
-							<span style="font-size: 90%"><i>Needs to be unique in school year.</i></span>
+							<b><?php print __($guid, 'Name') ?> *</b><br/>
+							<span class="emphasis small">Needs to be unique in school year.</span>
 						</td>
 						<td class="right">
-							<input name="name" id="name" maxlength=10 value="" type="text" style="width: 300px">
+							<input name="name" id="name" maxlength=10 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var name2=new LiveValidation('name');
 								name2.add(Validate.Presence);
@@ -112,11 +112,11 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Short Name') ?> *</b><br/>
-							<span style="font-size: 90%"><i>Needs to be unique in school year.</i></span>
+							<b><?php print __($guid, 'Short Name') ?> *</b><br/>
+							<span class="emphasis small">Needs to be unique in school year.</span>
 						</td>
 						<td class="right">
-							<input name="nameShort" id="nameShort" maxlength=5 value="" type="text" style="width: 300px">
+							<input name="nameShort" id="nameShort" maxlength=5 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var nameShort=new LiveValidation('nameShort');
 								nameShort.add(Validate.Presence);
@@ -125,11 +125,11 @@ else {
 					</tr>
 					<tr>
 						<td rowspan=3> 
-							<b><?php print _('Tutors') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print _('Up to 3 per roll group. The first-listed will be marked as "Main Tutor".') ?></i></span>
+							<b><?php print __($guid, 'Tutors') ?></b><br/>
+							<span class="emphasis small"><?php print __($guid, 'Up to 3 per roll group. The first-listed will be marked as "Main Tutor".') ?></span>
 						</td>
 						<td class="right">
-							<select style="width: 302px" name="gibbonPersonIDTutor">
+							<select class="standardWidth" name="gibbonPersonIDTutor">
 								<?php
 								print "<option value=''></option>" ;
 								try {
@@ -148,7 +148,7 @@ else {
 					</tr>
 					<tr>
 						<td class="right">
-							<select style="width: 302px" name="gibbonPersonIDTutor2">
+							<select class="standardWidth" name="gibbonPersonIDTutor2">
 								<?php
 								print "<option value=''></option>" ;
 								try {
@@ -167,7 +167,7 @@ else {
 					</tr>
 					<tr>
 						<td class="right">
-							<select style="width: 302px" name="gibbonPersonIDTutor3">
+							<select class="standardWidth" name="gibbonPersonIDTutor3">
 								<?php
 								print "<option value=''></option>" ;
 								try {
@@ -186,11 +186,11 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Location') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<b><?php print __($guid, 'Location') ?> *</b><br/>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
-							<select name="gibbonSpaceID" id="gibbonSpaceID" style="width: 302px">
+							<select name="gibbonSpaceID" id="gibbonSpaceID" class="standardWidth">
 								<?php
 								print "<option value=''></option>" ;
 								try {
@@ -213,8 +213,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Next Roll Group') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print _('Sets student progression on rollover.') ?></i></span>
+							<b><?php print __($guid, 'Next Roll Group') ?></b><br/>
+							<span class="emphasis small"><?php print __($guid, 'Sets student progression on rollover.') ?></span>
 						</td>
 						<td class="right">
 							<?php
@@ -245,11 +245,11 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Website') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print _('Include http://') ?></i></span>
+							<b><?php print __($guid, 'Website') ?></b><br/>
+							<span class="emphasis small"><?php print __($guid, 'Include http://') ?></span>
 						</td>
 						<td class="right">
-							<input name="website" id="website" maxlength=255 value="" type="text" style="width: 300px">
+							<input name="website" id="website" maxlength=255 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var website=new LiveValidation('website');
 								website.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
@@ -258,12 +258,12 @@ else {
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+							<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 						</td>
 						<td class="right">
 							<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php print $gibbonSchoolYearID ?>" type="hidden">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<?php print _("Submit") ; ?>">
+							<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 						</td>
 					</tr>
 				</table>

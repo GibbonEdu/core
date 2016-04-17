@@ -21,14 +21,8 @@ include "../../functions.php" ;
 include "../../config.php" ;
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 @session_start() ;
 
@@ -40,14 +34,14 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/Data Updater/data_medical.php")==FALSE) {
 	//Fail 0
-	$URL.="&updateReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, $_POST["address"], $connection2) ;
 	if ($highestAction==FALSE) {
 		//Fail 0
-		$URL.="&updateReturn=fail0$params" ;
+		$URL.="&return=error0$params" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -55,7 +49,7 @@ else {
 		//Check if school year specified
 		if ($gibbonPersonID=="") {
 			//Fail1
-			$URL.="&updateReturn=fail1" ;
+			$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -70,9 +64,9 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail 2
-					$URL.="&updateReturn=fail2$params" ;
+					$URL.="&return=error2$params" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 				$checkCount=$resultSelect->rowCount() ;
 			}
@@ -85,9 +79,9 @@ else {
 				}
 				catch(PDOException $e) {
 					//Fail 2
-					$URL.="&updateReturn=fail2$params" ;
+					$URL.="&return=error2$params" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 				while ($rowCheck=$resultCheck->fetch()) {
 					try {
@@ -98,9 +92,9 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail 2
-						$URL.="&updateReturn=fail2$params" ;
+						$URL.="&return=error2$params" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 					while ($rowCheck2=$resultCheck2->fetch()) {
 						if ($gibbonPersonID==$rowCheck2["gibbonPersonID"]) {
@@ -111,7 +105,7 @@ else {
 			}
 			if ($checkCount<1) {
 				//Fail 2
-				$URL.="&updateReturn=fail2" ;
+				$URL.="&return=error2" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -127,9 +121,9 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail 2
-						$URL.="&addReturn=fail2" ;
+						$URL.="&return=error2" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}	
 				
 					//Get next autoincrement
@@ -139,9 +133,9 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail 2
-						$URL.="&addReturn=fail2" ;
+						$URL.="&return=error2" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 					
 					$rowAI=$resultAI->fetch();
@@ -284,7 +278,7 @@ else {
 				
 				//Attempt to notify to DBA
 				if ($_SESSION[$guid]["organisationDBA"]!="") {
-					$notificationText=sprintf(_('A medical data update request has been submitted.')) ;
+					$notificationText=sprintf(__($guid, 'A medical data update request has been submitted.')) ;
 					setNotification($connection2, $guid, $_SESSION[$guid]["organisationDBA"], $notificationText, "Data Updater", "/index.php?q=/modules/User Admin/data_medical.php") ;
 				}
 				
@@ -303,9 +297,9 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail 2
-					$URL.="&updateReturn=fail2" ;
+					$URL.="&return=error2" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 
 				if ($existing=="N") {
@@ -317,12 +311,12 @@ else {
 				}
 						
 				if ($partialFail==TRUE) {
-					$URL.="&updateReturn=fail5" ;
+					$URL.="&return=fail1" ;
 					header("Location: {$URL}");
 				}
 				else {
 					//Success 0
-					$URL.="&updateReturn=success0" ;
+					$URL.="&return=success0" ;
 					header("Location: {$URL}");
 				}
 			}

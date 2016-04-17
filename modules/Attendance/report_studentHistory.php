@@ -25,26 +25,26 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Attendance/report_studentHistory.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Student History') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Student History') . "</div>" ;
 	print "</div>" ;
 	
 	//Get action with highest precendence
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print _("The highest grouped action cannot be determined.") ;
+		print __($guid, "The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
 		if ($highestAction=="Student History_all") {
 			print "<h2>" ;
-			print _("Choose Student") ;
+			print __($guid, "Choose Student") ;
 			print "</h2>" ;
 			
 			$gibbonPersonID=NULL ;
@@ -54,14 +54,14 @@ else {
 			?>
 			
 			<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td style='width: 275px'> 
-							<b><?php print _('Student') ?></b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<b><?php print __($guid, 'Student') ?></b><br/>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
-							<select style="width: 302px" name="gibbonPersonID">
+							<select class="standardWidth" name="gibbonPersonID">
 								<?php
 								print "<option value=''></option>" ;
 								try {
@@ -88,7 +88,7 @@ else {
 					<tr>
 						<td colspan=2 class="right">
 							<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/report_studentHistory.php">
-							<input type="submit" value="<?php print _("Submit") ; ?>">
+							<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 						</td>
 					</tr>
 				</table>
@@ -98,7 +98,7 @@ else {
 			if ($gibbonPersonID!="") {
 				$output="" ;
 				print "<h2>" ;
-				print _("Report Data") ;
+				print __($guid, "Report Data") ;
 				print "</h2>" ;
 				
 				try {
@@ -112,7 +112,7 @@ else {
 				}
 				if ($result->rowCount()!=1) {
 					print "<div class='error'>" ;
-					print _("The specified record does not exist.") ;
+					print __($guid, "The specified record does not exist.") ;
 					print "</div>" ;
 				}
 				else {
@@ -138,7 +138,7 @@ else {
 			}
 			if ($result->rowCount()<1) {
 				print "<div class='error'>" ;
-				print _("Access denied.") ;
+				print __($guid, "Access denied.") ;
 				print "</div>" ;
 			}
 			else {
@@ -170,7 +170,7 @@ else {
 				
 				if ($count==0) {
 					print "<div class='error'>" ;
-					print _("Access denied.") ;
+					print __($guid, "Access denied.") ;
 					print "</div>" ;
 				}
 				else if ($count==1) {
@@ -178,7 +178,7 @@ else {
 				}
 				else {
 					print "<h2>" ;
-					print _("Choose") ;
+					print __($guid, "Choose") ;
 					print "</h2>" ;
 					
 					?>
@@ -187,11 +187,11 @@ else {
 							<tr><td style="width: 30%"></td><td></td></tr>
 							<tr>
 								<td> 
-									<b><?php print _('Search For') ?></b><br/>
-									<span style="font-size: 90%"><i><?php print _('Preferred, surname, username.') ?></i></span>
+									<b><?php print __($guid, 'Search For') ?></b><br/>
+									<span class="emphasis small"><?php print __($guid, 'Preferred, surname, username.') ?></span>
 								</td>
 								<td class="right">
-									<select name="search" id="search" style="width: 302px">
+									<select name="search" id="search" class="standardWidth">
 										<option value=""></value>
 										<?php print $options ; ?> 
 									</select>
@@ -202,9 +202,9 @@ else {
 									<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/report_studentHistory.php">
 									<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 									<?php
-									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_studentHistory.php'>" . _('Clear Search') . "</a>" ;
+									print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_studentHistory.php'>" . __($guid, 'Clear Search') . "</a>" ;
 									?>
-									<input type="submit" value="<?php print _("Submit") ; ?>">
+									<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 								</td>
 							</tr>
 						</table>
@@ -227,7 +227,7 @@ else {
 					
 					if ($resultChild->rowCount()<1) {
 						print "<div class='error'>" ;
-						print _("The selected record does not exist, or you do not have access to it.") ;
+						print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 						print "</div>" ;
 					}
 					else {
@@ -236,7 +236,7 @@ else {
 						if ($gibbonPersonID!="") {
 							$output="" ;
 							print "<h2>" ;
-							print _("Report Data") ;
+							print __($guid, "Report Data") ;
 							print "</h2>" ;
 							
 							try {
@@ -250,7 +250,7 @@ else {
 							}
 							if ($result->rowCount()!=1) {
 								print "<div class='error'>" ;
-								print _("The specified record does not exist.") ;
+								print __($guid, "The specified record does not exist.") ;
 								print "</div>" ;
 							}
 							else {

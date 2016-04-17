@@ -21,14 +21,8 @@ include "../../functions.php" ;
 include "../../config.php" ;
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 @session_start() ;
 
@@ -49,6 +43,7 @@ else {
 		$markbookType.=trim($type) . "," ;
 	}
 	$markbookType=substr($markbookType,0,-1) ;
+	$enableColumnWeighting=$_POST["enableColumnWeighting"] ;
 	$attainmentAlternativeName=$_POST["attainmentAlternativeName"] ;
 	$attainmentAlternativeNameAbrev=$_POST["attainmentAlternativeNameAbrev"] ;
 	$effortAlternativeName=$_POST["effortAlternativeName"] ;
@@ -61,7 +56,7 @@ else {
 	$personalisedWarnings=$_POST["personalisedWarnings"] ;
 	
 	//Validate Inputs
-	if ($markbookType=="") {
+	if ($markbookType=="" OR $enableColumnWeighting=="") {
 		//Fail 3
 		$URL.="&updateReturn=fail3" ;
 		header("Location: {$URL}");
@@ -73,6 +68,16 @@ else {
 		try {
 			$data=array("value"=>$markbookType); 
 			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='markbookType'" ;
+			$result=$connection2->prepare($sql);
+			$result->execute($data);
+		}
+		catch(PDOException $e) { 
+			$fail=TRUE ;
+		}
+		
+		try {
+			$data=array("value"=>$enableColumnWeighting); 
+			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='enableColumnWeighting'" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}

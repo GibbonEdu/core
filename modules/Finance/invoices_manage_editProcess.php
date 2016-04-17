@@ -21,14 +21,8 @@ include "../../functions.php" ;
 include "../../config.php" ;
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 @session_start() ;
 
@@ -53,7 +47,7 @@ else {
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Finance/invoices_manage_edit.php")==FALSE) {
 		//Fail 0
-		$URL.="&updateReturn=fail0" ;
+		$URL.="&return=error0" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -61,7 +55,7 @@ else {
 		//Check if person specified
 		if ($gibbonFinanceInvoiceID=="") {
 			//Fail1
-			$URL.="&updateReturn=fail1" ;
+			$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -74,9 +68,9 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail 2
-				$URL.="&addReturn=fail2" ;
+				$URL.="&return=error2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 				
 			try {
@@ -87,14 +81,14 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail2
-				$URL.="&deleteReturn=fail2" ;
+				$URL.="&return=error2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 			
 			if ($result->rowCount()!=1) {
 				//Fail 2
-				$URL.="&updateReturn=fail2" ;
+				$URL.="&return=error2" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -152,9 +146,9 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail 2
-					$URL.="&updateReturn=fail2" ;
+					$URL.="&return=error2" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 				
 				$partialFail=FALSE ;
@@ -241,7 +235,7 @@ else {
 								$receiptCount=$resultPayments->rowCount() ;
 								
 								//Prep message
-								$body=receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]["currency"], TRUE, $receiptCount) . "<p style='font-style: italic;'>Email sent via " . $_SESSION[$guid]["systemName"] . " at " . $_SESSION[$guid]["organisationName"] . ".</p>" ;
+								$body=receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]["currency"], TRUE, $receiptCount) . "<p class='emphasis'>Email sent via " . $_SESSION[$guid]["systemName"] . " at " . $_SESSION[$guid]["organisationName"] . ".</p>" ;
 								$bodyPlain="This email is not viewable in plain text: enable rich text/HTML in your email client to view the receipt. Please reply to this email if you have any questions." ;
 		
 								$mail=new PHPMailer;
@@ -295,7 +289,7 @@ else {
 									}
 									$body.="<p>Reminder " . $reminderOutput . ": " . $reminderText . "</p><br/>" ;
 								}
-								$body.=invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]["currency"], TRUE) . "<p style='font-style: italic;'>Email sent via " . $_SESSION[$guid]["systemName"] . " at " . $_SESSION[$guid]["organisationName"] . ".</p>" ;
+								$body.=invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]["currency"], TRUE) . "<p class='emphasis'>Email sent via " . $_SESSION[$guid]["systemName"] . " at " . $_SESSION[$guid]["organisationName"] . ".</p>" ;
 								$bodyPlain="This email is not viewable in plain text: enable rich text/HTML in your email client to view the reminder. Please reply to this email if you have any questions." ;
 	
 								//Update reminder count
@@ -350,17 +344,17 @@ else {
 				
 				if ($partialFail==TRUE) { 
 					//Fail 4
-					$URL.="&updateReturn=fail4" ;
+					$URL.="&return=error3" ;
 					header("Location: {$URL}");
 				}
 				else if ($emailFail==TRUE) { 
 					//Success 1
-					$URL.="&updateReturn=success1" ;
+					$URL.="&return=success1" ;
 					header("Location: {$URL}");
 				}
 				else {
 					//Success 0
-					$URL.="&updateReturn=success0" ;
+					$URL.="&return=success0" ;
 					header("Location: {$URL}");
 				}
 			}

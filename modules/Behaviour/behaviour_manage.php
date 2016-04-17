@@ -28,7 +28,7 @@ $enableLevels=getSettingByScope($connection2, "Behaviour", "enableLevels") ;
 if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_manage.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -36,12 +36,12 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print _("The highest grouped action cannot be determined.") ;
+		print __($guid, "The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Manage Behaviour Records') . "</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Manage Behaviour Records') . "</div>" ;
 		print "</div>" ;
 		
 		if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -49,7 +49,7 @@ else {
 		$class="error" ;
 		if (!($deleteReturn=="")) {
 			if ($deleteReturn=="success0") {
-				$deleteReturnMessage=_("Your request was completed successfully.") ;		
+				$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;		
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;
@@ -75,18 +75,18 @@ else {
 		}
 		
 		print "<h3>" ;
-			print _("Filter") ;
+			print __($guid, "Filter") ;
 		print "</h3>" ;
 		print "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage.php'>" ;
 			print "<table class='noIntBorder' cellspacing='0' style='width: 100%'>" ;
 				?>
 				<tr>
 					<td> 
-						<b><?php print _('Student') ?></b><br/>
-						<span style="font-size: 90%"><i></i></span>
+						<b><?php print __($guid, 'Student') ?></b><br/>
+						<span class="emphasis small"></span>
 					</td>
 					<td class="right">
-						<select name="gibbonPersonID" id="gibbonPersonID" style="width: 302px">
+						<select name="gibbonPersonID" id="gibbonPersonID" class="standardWidth">
 							<option value=""></option>
 							<?php
 							try {
@@ -110,8 +110,8 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('Roll Group') ?></b><br/>
-						<span style="font-size: 90%"><i></i></span>
+						<b><?php print __($guid, 'Roll Group') ?></b><br/>
+						<span class="emphasis small"></span>
 					</td>
 					<td class="right">
 						<?php
@@ -138,8 +138,8 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('Year Group') ?></b><br/>
-						<span style="font-size: 90%"><i></i></span>
+						<b><?php print __($guid, 'Year Group') ?></b><br/>
+						<span class="emphasis small"></span>
 					</td>
 					<td class="right">
 						<?php
@@ -158,7 +158,7 @@ else {
 								if ($rowPurpose["gibbonYearGroupID"]==$gibbonYearGroupID) {
 									$selected="selected" ;
 								}
-								print "<option $selected value='" . $rowPurpose["gibbonYearGroupID"] . "'>" . _($rowPurpose["name"]) . "</option>" ;
+								print "<option $selected value='" . $rowPurpose["gibbonYearGroupID"] . "'>" . __($guid, $rowPurpose["name"]) . "</option>" ;
 							}
 						print "</select>" ;
 						?>
@@ -166,8 +166,8 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('Type') ?></b><br/>
-						<span style="font-size: 90%"><i></i></span>
+						<b><?php print __($guid, 'Type') ?></b><br/>
+						<span class="emphasis small"></span>
 					</td>
 					<td class="right">
 						<?php
@@ -177,12 +177,12 @@ else {
 							if ($type=="Positive") {
 								$selected="selected" ;
 							}
-							print "<option $selected value='Positive'>" . _('Positive') . "</option>" ;
+							print "<option $selected value='Positive'>" . __($guid, 'Positive') . "</option>" ;
 							$selected="" ;
 							if ($type=="Negative") {
 								$selected="selected" ;
 							}
-							print "<option $selected value='Negative'>" . _('Negative') . "</option>" ;
+							print "<option $selected value='Negative'>" . __($guid, 'Negative') . "</option>" ;
 						print "</select>" ;
 						?>
 					</td>
@@ -192,8 +192,8 @@ else {
 				print "<tr>" ;
 					print "<td class='right' colspan=2>" ;
 						print "<input type='hidden' name='q' value='" . $_GET["q"] . "'>" ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage.php'>" . _('Clear Filters') . "</a> " ;
-						print "<input type='submit' value='" . _('Go') . "'>" ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage.php'>" . __($guid, 'Clear Filters') . "</a> " ;
+						print "<input type='submit' value='" . __($guid, 'Go') . "'>" ;
 					print "</td>" ;
 				print "</tr>" ;
 			print "</table>" ;
@@ -201,7 +201,7 @@ else {
 		
 		
 		print "<h3>" ;
-			print _("Behaviour Records") ;
+			print __($guid, "Behaviour Records") ;
 		print "</h3>" ;
 		//Set pagination variable
 		$page=1 ; if (isset($_GET["page"])) { $page=$_GET["page"] ; }
@@ -255,17 +255,17 @@ else {
 		$sqlPage=$sql . " LIMIT " . $_SESSION[$guid]["pagination"] . " OFFSET " . (($page-1)*$_SESSION[$guid]["pagination"]) ;
 		
 		print "<div class='linkTop'>" ;
-			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/behaviour_manage_add.php&gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID&type=$type'>" . _('Add') . "<img style='margin: 0 0 -4px 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a> | " ;
-			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/behaviour_manage_addMulti.php&gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID&type=$type'>" . _('Add Multiple') . "<img style='margin: 0 0 -4px 5px' title='" . _('Add Multiple') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new_multi.png'/></a>" ;
+			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/behaviour_manage_add.php&gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID&type=$type'>" . __($guid, 'Add') . "<img style='margin: 0 0 -4px 5px' title='" . __($guid, 'Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a> | " ;
+			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/behaviour_manage_addMulti.php&gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID&type=$type'>" . __($guid, 'Add Multiple') . "<img style='margin: 0 0 -4px 5px' title='" . __($guid, 'Add Multiple') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new_multi.png'/></a>" ;
 			$policyLink=getSettingByScope($connection2, "Behaviour", "policyLink") ;
 			if ($policyLink!="") {
-				print " | <a target='_blank' href='$policyLink'>" . _('View Behaviour Policy') . "</a>" ;
+				print " | <a target='_blank' href='$policyLink'>" . __($guid, 'View Behaviour Policy') . "</a>" ;
 			}
 		print "</div>" ;
 		
 		if ($result->rowCount()<1) {
 			print "<div class='error'>" ;
-			print _("There are no records to display.") ;
+			print __($guid, "There are no records to display.") ;
 			print "</div>" ;
 		}
 		else {
@@ -276,26 +276,26 @@ else {
 			print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
 					print "<th>" ;
-						print _("Student & Date") ;
+						print __($guid, "Student & Date") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Type") ;
+						print __($guid, "Type") ;
 					print "</th>" ;
 					if ($enableDescriptors=="Y") {
 						print "<th>" ;
-							print _("Descriptor") ;
+							print __($guid, "Descriptor") ;
 						print "</th>" ;
 					}
 					if ($enableLevels=="Y") {
 						print "<th>" ;
-							print _("Level") ;
+							print __($guid, "Level") ;
 						print "</th>" ;
 					}
 					print "<th>" ;
-						print _("Teacher") ;
+						print __($guid, "Teacher") ;
 					print "</th>" ;
-					print "<th style='min-width: 70px'>" ;
-						print _("Actions") ;
+					print "<th style='min-width: 90px'>" ;
+						print __($guid, "Actions") ;
 					print "</th>" ;
 				print "</tr>" ;
 				
@@ -327,8 +327,8 @@ else {
 						}
 							print "<div style='padding: 2px 0px'><b><a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $row["gibbonPersonID"] . "&subpage=Behaviour&search=&allStudents=&sort=surname, preferredName'>" . formatName("", $row["preferredNameStudent"], $row["surnameStudent"], "Student", true) . "</a><br/></div>" ;
 							if (substr($row["timestamp"],0,10)>$row["date"]) {
-								print _("Updated:") . " " . dateConvertBack($guid, substr($row["timestamp"],0,10)) . "<br/>" ;
-								print _("Incident:") . " " . dateConvertBack($guid, $row["date"]) . "<br/>" ;
+								print __($guid, "Updated:") . " " . dateConvertBack($guid, substr($row["timestamp"],0,10)) . "<br/>" ;
+								print __($guid, "Incident:") . " " . dateConvertBack($guid, $row["date"]) . "<br/>" ;
 							}
 							else {
 								print dateConvertBack($guid, $row["date"]) . "<br/>" ;
@@ -356,8 +356,8 @@ else {
 							print formatName($row["title"], $row["preferredNameCreator"], $row["surnameCreator"], "Staff") . "</b><br/>" ;
 						print "</td>" ;
 						print "<td>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/behaviour_manage_edit.php&gibbonBehaviourID=" . $row["gibbonBehaviourID"] . "&gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID&type=$type'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/behaviour_manage_delete.php&gibbonBehaviourID=" . $row["gibbonBehaviourID"] . "&gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID&type=$type'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/behaviour_manage_edit.php&gibbonBehaviourID=" . $row["gibbonBehaviourID"] . "&gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID&type=$type'><img title='" . __($guid, 'Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/behaviour_manage_delete.php&gibbonBehaviourID=" . $row["gibbonBehaviourID"] . "&gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID&type=$type'><img title='" . __($guid, 'Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
 							print "<script type='text/javascript'>" ;	
 								print "$(document).ready(function(){" ;
 									print "\$(\".comment-$count\").hide();" ;
@@ -368,7 +368,7 @@ else {
 								print "});" ;
 							print "</script>" ;
 							if ($row["comment"]!="" OR $row["followup"]!="") {
-								print "<a title='" . _('View Description') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='" . _('Show Comment') . "' onclick='return false;' /></a>" ;
+								print "<a title='" . __($guid, 'View Description') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='" . __($guid, 'Show Comment') . "' onclick='return false;' /></a>" ;
 							}
 						print "</td>" ;
 					print "</tr>" ;
@@ -382,11 +382,11 @@ else {
 						print "<tr class='comment-$count' id='comment-$count'>" ;
 							print "<td style='$bg' colspan=6>" ;
 								if ($row["comment"]!="") {
-									print "<b>" . _('Incident') . "</b><br/>" ;
+									print "<b>" . __($guid, 'Incident') . "</b><br/>" ;
 									print nl2brr($row["comment"]) . "<br/><br/>" ;
 								}
 								if ($row["followup"]!="") {
-									print "<b>" . _('Follow Up') . "</b><br/>" ;
+									print "<b>" . __($guid, 'Follow Up') . "</b><br/>" ;
 									print nl2brr($row["followup"]) . "<br/><br/>" ;
 								}
 							print "</td>" ;

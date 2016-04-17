@@ -21,14 +21,8 @@ include "../../functions.php" ;
 include "../../config.php" ;
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 @session_start() ;
 
@@ -54,7 +48,7 @@ else {
 	if ($id=="") {
 		//Fail 3
 		print "<span style='font-weight: bold; color: #ff0000'>" ;
-			print _("Your request failed because your inputs were invalid.") ;
+			print __($guid, "Your request failed because your inputs were invalid.") ;
 		print "</span>" ;
 	}
 	else {

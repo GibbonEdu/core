@@ -21,14 +21,8 @@ include "../../functions.php" ;
 include "../../config.php" ;
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 @session_start() ;
 
@@ -41,21 +35,21 @@ $URLDelete=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModul
 
 if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_manage_delete.php")==FALSE) {
 	//Fail 0
-	$URL.="&deleteReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, $_POST["address"], $connection2) ;
 	if ($highestAction==FALSE) {
 		//Fail 0
-		$URL.="&updateReturn=fail0$params" ;
+		$URL.="&return=error0$params" ;
 		header("Location: {$URL}");
 	}
 	else {
 		//Proceed!
 		if ($gibbonBehaviourID=="") {
 			//Fail1
-			$URL.="&deleteReturn=fail1" ;
+			$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -67,14 +61,14 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail2
-				$URL.="&deleteReturn=fail2" ;
+				$URL.="&return=error2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 			
 			if ($result->rowCount()!=1) {
 				//Fail 2
-				$URL.="&deleteReturn=fail2" ;
+				$URL.="&return=error2" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -89,15 +83,15 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail2
-					$URL.="&deleteReturn=fail2" ;
+					$URL.="&return=error2" ;
 					header("Location: {$URL}");
-					break ;
+					exit() ;
 				}
 				
 				$return=deleteLike($connection2, "Behaviour", "gibbonBehaviourID", $gibbonBehaviourID, $_SESSION[$guid]["gibbonPersonID"], $row["gibbonPersonID"], "Positive Behaviour") ;
 				
 				//Success 0
-				$URLDelete=$URLDelete . "&deleteReturn=success0" ;
+				$URLDelete=$URLDelete . "&return=success0" ;
 				header("Location: {$URLDelete}");
 			}
 		}

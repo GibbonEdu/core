@@ -21,14 +21,8 @@ include "../../functions.php" ;
 include "../../config.php" ;
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 @session_start() ;
 
@@ -42,7 +36,7 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_manage_add.php")==FALSE) {
 	//Fail 0
-	$URL.="&addReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -68,7 +62,7 @@ else {
 		
 	if (is_null($gibbonPersonIDMulti)==TRUE OR $date=="" OR $type=="" OR ($descriptor=="" AND $enableDescriptors=="Y")) {
 		//Fail 3
-		$URL.="&addReturn=fail3" ;
+		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -120,7 +114,7 @@ else {
 				if ($resultDetail->rowCount()==1) {
 					$rowDetail=$resultDetail->fetch() ;
 					$name=formatName("", $rowDetail["preferredName"], $rowDetail["surname"], "Student", false) ;
-					$notificationText=sprintf(_('Someone has created a negative behaviour record for your tutee, %1$s.'), $name) ;
+					$notificationText=sprintf(__($guid, 'Someone has created a negative behaviour record for your tutee, %1$s.'), $name) ;
 					if ($rowDetail["gibbonPersonIDTutor"]!=NULL AND $rowDetail["gibbonPersonIDTutor"]!=$_SESSION[$guid]["gibbonPersonID"]) {
 						setNotification($connection2, $guid, $rowDetail["gibbonPersonIDTutor"], $notificationText, "Behaviour", "/index.php?q=/modules/Behaviour/behaviour_view_details.php&gibbonPersonID=$gibbonPersonID&search=") ;
 					}
@@ -136,12 +130,12 @@ else {
 		
 		if ($partialFail==TRUE) {
 			//Fail 5
-			$URL.="&addReturn=fail5" ;
+			$URL.="&return=warning1" ;
 			header("Location: {$URL}");
 		}
 		else {
 			//Success 0
-			$URL.="&addReturn=success0" ;
+			$URL.="&return=success0" ;
 			header("Location: {$URL}");
 		}
 	}

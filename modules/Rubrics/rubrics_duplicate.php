@@ -35,7 +35,7 @@ if (isset($_GET["filter2"])) {
 if (isActionAccessible($guid, $connection2, "/modules/Rubrics/rubrics_duplicate.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -43,19 +43,19 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print _("The highest grouped action cannot be determined.") ;
+		print __($guid, "The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
 		if ($highestAction!="Manage Rubrics_viewEditAll" AND $highestAction!="Manage Rubrics_viewAllEditLearningArea") {
 			print "<div class='error'>" ;
-				print _("You do not have access to this action.") ;
+				print __($guid, "You do not have access to this action.") ;
 			print "</div>" ;
 		}
 		else {
 			//Proceed!
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/rubrics.php&search=$search&filter2=$filter2'>" . _('Manage Rubrics') . "</a> > </div><div class='trailEnd'>" . _('Duplicate Rubric') . "</div>" ;
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/rubrics.php&search=$search&filter2=$filter2'>" . __($guid, 'Manage Rubrics') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Duplicate Rubric') . "</div>" ;
 			print "</div>" ;
 			
 			if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -63,22 +63,22 @@ else {
 			$class="error" ;
 			if (!($updateReturn=="")) {
 				if ($updateReturn=="fail0") {
-					$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+					$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 				}
 				else if ($updateReturn=="fail1") {
-					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($updateReturn=="fail2") {
-					$updateReturnMessage=_("Your request failed due to a database error.") ;	
+					$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 				}
 				else if ($updateReturn=="fail3") {
-					$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+					$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 				}
 				else if ($updateReturn=="fail5") {
-					$updateReturnMessage=_("Your request was successful, but some data was not properly saved.") ;
+					$updateReturnMessage=__($guid, "Your request was successful, but some data was not properly saved.") ;
 				}
 				else if ($updateReturn=="success0") {
-					$updateReturnMessage=_("Your request was completed successfully.") ;	
+					$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
 					$class="success" ;
 				}
 				print "<div class='$class'>" ;
@@ -90,7 +90,7 @@ else {
 			$gibbonRubricID=$_GET["gibbonRubricID"];
 			if ($gibbonRubricID=="") {
 				print "<div class='error'>" ;
-					print _("You have not specified one or more required parameters.") ;
+					print __($guid, "You have not specified one or more required parameters.") ;
 				print "</div>" ;
 			}
 			else {
@@ -106,7 +106,7 @@ else {
 				
 				if ($result->rowCount()!=1) {
 					print "<div class='error'>" ;
-						print _("The specified record does not exist.") ;
+						print __($guid, "The specified record does not exist.") ;
 					print "</div>" ;
 				}
 				else {
@@ -115,40 +115,40 @@ else {
 					
 					if ($search!="" OR $filter2!="") {
 						print "<div class='linkTop'>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Rubrics/rubrics.php&search=$search&filter2=$filter2'>" . _('Back to Search Results') . "</a>" ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Rubrics/rubrics.php&search=$search&filter2=$filter2'>" . __($guid, 'Back to Search Results') . "</a>" ;
 						print "</div>" ;
 					}
 					?>
 					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/rubrics_duplicateProcess.php?gibbonRubricID=$gibbonRubricID&search=$search&filter2=$filter2" ?>">
-						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+						<table class='smallIntBorder fullWidth' cellspacing='0'>	
 							<tr class='break'>
 								<td colspan=2>
-									<h3><?php print _('Rubric Basics') ?></h3>
+									<h3><?php print __($guid, 'Rubric Basics') ?></h3>
 								</td>
 							</tr>
 							<tr>
 								<td style='width: 275px'> 
-									<b><?php print _('Scope') ?> *</b><br/>
-									<span style="font-size: 90%"><i></i></span>
+									<b><?php print __($guid, 'Scope') ?> *</b><br/>
+									<span class="emphasis small"></span>
 								</td>
 								<td class="right">
 									<?php
 									if ($highestAction=="Manage Rubrics_viewEditAll") {
 										?>
-										<select name="scope" id="scope" style="width: 302px">
-											<option value="Please select..."><?php print _('Please select...') ?></option>
-											<option value="School"><?php print _('School') ?></option>
-											<option value="Learning Area"><?php print _('Learning Area') ?></option>
+										<select name="scope" id="scope" class="standardWidth">
+											<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
+											<option value="School"><?php print __($guid, 'School') ?></option>
+											<option value="Learning Area"><?php print __($guid, 'Learning Area') ?></option>
 										</select>
 										<script type="text/javascript">
 											var scope=new LiveValidation('scope');
-											scope.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+											scope.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 										</script>
 										 <?php
 									}
 									else if ($highestAction=="Manage Rubrics_viewAllEditLearningArea") {
 										?>
-										<input readonly name="scope" id="scope" value="Learning Area" type="text" style="width: 300px">
+										<input readonly name="scope" id="scope" value="Learning Area" type="text" class="standardWidth">
 										<?php
 									}
 									?>
@@ -179,12 +179,12 @@ else {
 							?>
 							<tr id='learningAreaRow'>
 								<td> 
-									<b><?php print _('Learning Area') ?> *</b><br/>
-									<span style="font-size: 90%"><i></i></span>
+									<b><?php print __($guid, 'Learning Area') ?> *</b><br/>
+									<span class="emphasis small"></span>
 								</td>
 								<td class="right">
-									<select name="gibbonDepartmentID" id="gibbonDepartmentID" style="width: 302px">
-										<option value="Please select..."><?php print _('Please select...') ?></option>
+									<select name="gibbonDepartmentID" id="gibbonDepartmentID" class="standardWidth">
+										<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
 										<?php
 										try {
 											if ($highestAction=="Manage Rubrics_viewEditAll") {
@@ -206,7 +206,7 @@ else {
 									</select>
 									<script type="text/javascript">
 										var gibbonDepartmentID=new LiveValidation('gibbonDepartmentID');
-										gibbonDepartmentID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+										gibbonDepartmentID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 										<?php
 										if ($highestAction=="Manage Rubrics_viewEditAll") {
 											print "gibbonDepartmentID.disable();" ;
@@ -217,10 +217,10 @@ else {
 							</tr>
 							<tr>
 								<td> 
-									<b><?php print _('Name') ?> *</b><br/>
+									<b><?php print __($guid, 'Name') ?> *</b><br/>
 								</td>
 								<td class="right">
-									<input name="name" id="name" maxlength=50 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
+									<input name="name" id="name" maxlength=50 value="<?php print $row["name"] ?>" type="text" class="standardWidth">
 									<script type="text/javascript">
 										var name2=new LiveValidation('name');
 										name2.add(Validate.Presence);
@@ -229,11 +229,11 @@ else {
 							</tr>
 							<tr>
 								<td>
-									<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+									<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 								</td>
 								<td class="right">
 									<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-									<input type="submit" value="<?php print _("Submit") ; ?>">
+									<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 								</td>
 							</tr>
 						</table>

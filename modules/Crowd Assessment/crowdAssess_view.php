@@ -25,50 +25,21 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Crowd Assessment/crowdAssess_view.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/crowdAssess.php'>" . _('View All Assessments') . "</a> > </div><div class='trailEnd'>" . _('View Assessment') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/crowdAssess.php'>" . __($guid, 'View All Assessments') . "</a> > </div><div class='trailEnd'>" . __($guid, 'View Assessment') . "</div>" ;
 	print "</div>" ;
-	
-	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-	$updateReturnMessage="" ;
-	$class="error" ;
-	if (!($updateReturn=="")) {
-		if ($updateReturn=="fail0") {
-			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
-		}
-		else if ($updateReturn=="fail1") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($updateReturn=="fail2") {
-			$updateReturnMessage=_("Your request failed due to a database error.") ;	
-		}
-		else if ($updateReturn=="fail3") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($updateReturn=="fail4") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		if ($updateReturn=="fail5") {
-			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
-		}
-		else if ($updateReturn=="success0") {
-			$updateReturnMessage=_("Your request was completed successfully.") ;	
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $updateReturnMessage;
-		print "</div>" ;
-	} 
+
+	if (isset($_GET["return"])) { returnProcess($_GET["return"], null, null); }
 	
 	//Get class variable
 	$gibbonPlannerEntryID=$_GET["gibbonPlannerEntryID"] ;
 	if ($gibbonPlannerEntryID=="") {
 		print "<div class='warning'>" ;
-			print _('You have not specified one or more required parameters.') ;
+			print __($guid, 'You have not specified one or more required parameters.') ;
 		print "</div>" ;
 	}
 	//Check existence of and access to this class.
@@ -86,7 +57,7 @@ else {
 		
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print _("The selected record does not exist, or you do not have access to it.") ;
+				print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 			print "</div>" ;
 		}
 		else {
@@ -95,21 +66,21 @@ else {
 			print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 				print "<tr>" ;
 					print "<td style='width: 34%; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>" . _('Class') . "</span><br/>" ;
+						print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Class') . "</span><br/>" ;
 						print $row["course"] . "." . $row["class"] ;
 					print "</td>" ;
 					print "<td style='width: 33%; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>" . _('Name') . "</span><br/>" ;
+						print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Name') . "</span><br/>" ;
 						print $row["name"] ;
 					print "</td>" ;
 					print "<td style='width: 34%; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>" . _('Date') . "</span><br/>" ;
+						print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Date') . "</span><br/>" ;
 						print dateConvertBack($guid, $row["date"]) ;
 					print "</td>" ;
 				print "</tr>" ;
 				print "<tr>" ;
 					print "<td style='padding-top: 15px; width: 34%; vertical-align: top' colspan=3>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>" . _('Homework Details') . "</span><br/>" ;
+						print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Homework Details') . "</span><br/>" ;
 						print $row["homeworkDetails"] ;
 					print "</td>" ;
 				print "</tr>" ;
@@ -138,19 +109,19 @@ else {
 					print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th>" ;
-								print _("Student") ;
+								print __($guid, "Student") ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("Read") ;
+								print __($guid, "Read") ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("Star") ;
+								print __($guid, "Star") ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("Comments") ;
+								print __($guid, "Comments") ;
 							print "</th>" ;
 							print "<th>" ;
-								print _("Discuss") ;
+								print __($guid, "Discuss") ;
 							print "</th>" ;
 						print "</tr>" ;
 						
@@ -228,7 +199,7 @@ else {
 								print "</td>" ;
 								print "<td>" ;
 									if ($rowWork["gibbonPlannerEntryHomeworkID"]!="" AND $rowWork["status"]!="Exemption") {
-										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/crowdAssess_view_discuss.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=" . $rowWork["gibbonPlannerEntryHomeworkID"] . "&gibbonPersonID=" . $rowList["gibbonPersonID"] . "'><img title='" . _('View') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
+										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/crowdAssess_view_discuss.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=" . $rowWork["gibbonPlannerEntryHomeworkID"] . "&gibbonPersonID=" . $rowList["gibbonPersonID"] . "'><img title='" . __($guid, 'View') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/plus.png'/></a> " ;
 									}
 								print "</td>" ;
 							print "</tr>" ;

@@ -21,14 +21,8 @@ include "./functions.php" ;
 include "./config.php" ;
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 @session_start() ;
 
@@ -63,7 +57,7 @@ else {
 		//Fail 2
 		$URL.="&addReturn=fail2" ;
 		header("Location: {$URL}");
-		break ;
+		exit() ;
 	}
 	
 	//Proceed!
@@ -81,7 +75,7 @@ else {
 	}
 	$email=$_POST["email"] ;
 	$username=$_POST["username"] ;
-	$password=$_POST["password"] ;
+	$password=$_POST["passwordNew"] ;
 	$salt=getSalt() ;
 	$passwordStrong=hash("sha256", $salt.$password) ;
 	$status=getSettingByScope($connection2, 'User Admin', 'publicRegistrationDefaultStatus') ;
@@ -114,7 +108,7 @@ else {
 				//Fail 2
 				$URL.="&addReturn=fail2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 		
 			if ($result->rowCount()>0) {
@@ -130,7 +124,7 @@ else {
 				if ($publicRegistrationMinimumAge=="") {
 					$ageFail=TRUE ;
 				}
-				else if ($publicRegistrationMinimumAge>0 AND $publicRegistrationMinimumAge>getAge(dateConvertToTimestamp($dob), TRUE, TRUE)) {
+				else if ($publicRegistrationMinimumAge>0 AND $publicRegistrationMinimumAge>getAge($guid, dateConvertToTimestamp($dob), TRUE, TRUE)) {
 					$ageFail=TRUE ;
 				}
 			
@@ -152,7 +146,7 @@ else {
 						print $e->getMessage() ; exit() ;
 						$URL.="&addReturn=fail2" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 					
 					$gibbonPersonID=$connection2->lastInsertId();
@@ -160,7 +154,7 @@ else {
 					if ($status=="Pending Approval") {
 						//Attempt to notify Admissions
 						if ($_SESSION[$guid]["organisationAdmissions"]) {
-							$notificationText=sprintf(_('An new public registration, for %1$s, is pending approval.'), formatName("", $preferredName, $surname, "Student")) ;
+							$notificationText=sprintf(__($guid, 'An new public registration, for %1$s, is pending approval.'), formatName("", $preferredName, $surname, "Student")) ;
 							setNotification($connection2, $guid, $_SESSION[$guid]["organisationAdmissions"], $notificationText, "User Admin", "/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID&search=") ;
 						}
 						

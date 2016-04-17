@@ -25,13 +25,13 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/role_manage_duplicate.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Get action with highest precendence
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/role_manage.php'>" . _('Manage Roles') . "</a> > </div><div class='trailEnd'>" . _('Duplicate Role') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/role_manage.php'>" . __($guid, 'Manage Roles') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Duplicate Role') . "</div>" ;
 	print "</div>" ;
 	
 	//Proceed!
@@ -40,28 +40,28 @@ else {
 	$class="error" ;
 	if (!($updateReturn=="")) {
 		if ($updateReturn=="fail0") {
-			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($updateReturn=="fail1") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail2") {
-			$updateReturnMessage=_("Your request failed due to a database error.") ;	
+			$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 		}
 		else if ($updateReturn=="fail3") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail4") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail5") {
-			$updateReturnMessage=_("Your request failed due to an attachment error.") ;	
+			$updateReturnMessage=__($guid, "Your request failed due to an attachment error.") ;	
 		}
 		else if ($updateReturn=="fail6") {
-			$updateReturnMessage=_("Your request was successful, but some data was not properly saved.") ;	
+			$updateReturnMessage=__($guid, "Your request was successful, but some data was not properly saved.") ;	
 		}
 		else if ($updateReturn=="success0") {
-			$updateReturnMessage=_("Your request was completed successfully.") ;	
+			$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -73,7 +73,7 @@ else {
 	$gibbonRoleID=$_GET["gibbonRoleID"]; 
 	if ($gibbonRoleID=="") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -89,7 +89,7 @@ else {
 
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print _("The selected record does not exist, or you do not have access to it.") ;
+				print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 			print "</div>" ;
 		}
 		else {
@@ -98,11 +98,11 @@ else {
 						
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/role_manage_duplicateProcess.php?gibbonRoleID=$gibbonRoleID" ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td> 
-							<b><?php print _('Role') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+							<b><?php print __($guid, 'Role') ?> *</b><br/>
+							<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 						</td>
 						<td class="right">
 							<?php print "<input readonly value='" . $row["name"] . "' type='text' style='width: 300px'>" ; ?>
@@ -110,10 +110,10 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Name') ?> *</b><br/>
+							<b><?php print __($guid, 'Name') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<input name="name" id="name" maxlength=20 value="" type="text" style="width: 300px">
+							<input name="name" id="name" maxlength=20 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var name=new LiveValidation('name');
 								name.add(Validate.Presence);
@@ -122,10 +122,10 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Name Short') ?> *</b><br/>
+							<b><?php print __($guid, 'Name Short') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<input name="nameShort" id="nameShort" maxlength=4 value="" type="text" style="width: 300px">
+							<input name="nameShort" id="nameShort" maxlength=4 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var nameShort=new LiveValidation('nameShort');
 								nameShort.add(Validate.Presence);
@@ -134,11 +134,11 @@ else {
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+							<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<?php print _("Submit") ; ?>">
+							<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 						</td>
 					</tr>
 				</table>

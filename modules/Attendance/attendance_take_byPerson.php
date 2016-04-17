@@ -25,42 +25,16 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byPerson.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Take Attendance by Person') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Take Attendance by Person') . "</div>" ;
 	print "</div>" ;
-	
-	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-	$updateReturnMessage="" ;
-	$class="error" ;
-	if (!($updateReturn=="")) {
-		if ($updateReturn=="fail0") {
-			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
-		}
-		else if ($updateReturn=="fail1") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($updateReturn=="fail2") {
-			$updateReturnMessage=_("Your request failed due to a database error.") ;	
-		}
-		else if ($updateReturn=="fail4") {
-			$updateReturnMessage=_("Your request failed because the specified date is not in the future, or is not a school day.") ;	
-		}
-		else if ($updateReturn=="fail5") {
-			$updateReturnMessage=_("Your request failed because the specified date is not in the future, or is not a school day.") ;	
-		}
-		else if ($updateReturn=="success0") {
-			$updateReturnMessage=_("Your request was completed successfully.") ;	
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $updateReturnMessage;
-		print "</div>" ;
-	} 
+
+	if (isset($_GET["return"])) { returnProcess($_GET["return"], null, array("error3" => "Your request failed because the specified date is not in the future, or is not a school day.")); }
 	
 	$gibbonPersonID=NULL ;
 	if (isset($_GET["gibbonPersonID"])) {
@@ -79,21 +53,21 @@ else {
 	?>
 	
 	<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr class='break'>
 				<td colspan=2>
 					<h3>
-						<?php print _('Choose Student') ?>
+						<?php print __($guid, 'Choose Student') ?>
 					</h3>
 				</td
 			</tr>
 			<tr>
 				<td style='width: 275px'> 
-					<b><?php print _('Student') ?></b><br/>
-					<span style="font-size: 90%"><i></i></span>
+					<b><?php print __($guid, 'Student') ?></b><br/>
+					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
-					<select style="width: 302px" name="gibbonPersonID">
+					<select class="standardWidth" name="gibbonPersonID">
 						<?php
 						print "<option value=''></option>" ;
 						try {
@@ -120,15 +94,15 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Date') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _("Format:") . " " . $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+					<b><?php print __($guid, 'Date') ?> *</b><br/>
+					<span class="emphasis small"><?php print __($guid, "Format:") . " " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } ?></span>
 				</td>
 				<td class="right">
-					<input name="currentDate" id="currentDate" maxlength=10 value="<?php print dateConvertBack($guid, $currentDate) ?>" type="text" style="width: 300px">
+					<input name="currentDate" id="currentDate" maxlength=10 value="<?php print dateConvertBack($guid, $currentDate) ?>" type="text" class="standardWidth">
 					<script type="text/javascript">
-						var date=new LiveValidation('date');
-						date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
-						date.add(Validate.Presence);
+						var currentDate=new LiveValidation('currentDate');
+						currentDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+						currentDate.add(Validate.Presence);
 					</script>
 					 <script type="text/javascript">
 						$(function() {
@@ -150,7 +124,7 @@ else {
 	if ($gibbonPersonID!="") {
 		if ($currentDate>$today) {
 			print "<div class='error'>" ;
-				print _("The specified date is in the future: it must be today or earlier.");
+				print __($guid, "The specified date is in the future: it must be today or earlier.");
 			print "</div>" ;
 		}
 		else {
@@ -191,15 +165,15 @@ else {
 				}
 				if ($resultLog->rowCount()<1) {
 					print "<div class='error'>" ;
-						print _("There is currently no attendance data today for the selected student.") ;
+						print __($guid, "There is currently no attendance data today for the selected student.") ;
 					print "</div>" ;
 				}
 				else {
 					print "<div class='success'>" ;
-						print _("The following attendance log has been recorded for the selected student today:") ;
+						print __($guid, "The following attendance log has been recorded for the selected student today:") ;
 						print "<ul>" ;
 						while ($rowLog=$resultLog->fetch()) {
-							print "<li><b>" . $rowLog["direction"] . "</b> (" . $rowLog["type"] . ") | " . sprintf(_('Recorded at %1$s on %2$s by %3$s.'), substr($rowLog["timestampTaken"],11), dateConvertBack($guid, substr($rowLog["timestampTaken"],0,10)), formatName("", $rowLog["preferredName"], $rowLog["surname"], "Staff", false, true)) ."</li>" ;
+							print "<li><b>" . $rowLog["direction"] . "</b> (" . $rowLog["type"] . ") | " . sprintf(__($guid, 'Recorded at %1$s on %2$s by %3$s.'), substr($rowLog["timestampTaken"],11), dateConvertBack($guid, substr($rowLog["timestampTaken"],0,10)), formatName("", $rowLog["preferredName"], $rowLog["surname"], "Staff", false, true)) ."</li>" ;
 							$lastType=$rowLog["type"] ;
 							$lastReason=$rowLog["reason"] ;
 							$lastComment=$rowLog["comment"] ;
@@ -209,20 +183,29 @@ else {
 				}
 				
 				//Show student form
+				print "<script type='text/javascript'>
+					function dateCheck() {
+						var date = new Date();
+						if ('" . $currentDate . "'<getDate()) {
+							return confirm(\"" .__($guid, 'The selected date for attendance is in the past. Are you sure you want to continue?') . "\")
+						}
+					}
+				</script>" ;
 				?>
-				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/attendance_take_byPersonProcess.php?gibbonPersonID=$gibbonPersonID" ?>">
-					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				
+				<form onsubmit="return dateCheck()" method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/attendance_take_byPersonProcess.php?gibbonPersonID=$gibbonPersonID" ?>">
+					<table class='smallIntBorder fullWidth' cellspacing='0'>	
 						<tr class='break'>
 							<td colspan=2>
 								<h3>
-									<?php print _('Take Attendance') ?>
+									<?php print __($guid, 'Take Attendance') ?>
 								</h3>
 							</td
 						</tr>
 						<tr>
 							<td style='width: 275px'> 
-								<b><?php print _('Recent Attendance Summary') ?></b><br/>
-								<span style="font-size: 90%"><i></i></span>
+								<b><?php print __($guid, 'Recent Attendance Summary') ?></b><br/>
+								<span class="emphasis small"></span>
 							</td>
 							<td class="right">
 								<?php
@@ -234,7 +217,7 @@ else {
 												$extraStyle="background-color: #eee;" ;
 												
 												print "<td style='" . $extraStyle . "height: 25px; width: 20%'>" ;
-												print "<i>" . _('NA') . "</i>" ;
+												print "<i>" . __($guid, 'NA') . "</i>" ;
 												print "</td>" ;
 											}
 											else {
@@ -285,44 +268,44 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<b><?php print _('Type') ?> *</b><br/>
-								<span style="font-size: 90%"><i></i></span>
+								<b><?php print __($guid, 'Type') ?> *</b><br/>
+								<span class="emphasis small"></span>
 							</td>
 							<td class="right">
 								<?php
 								print "<select style='float: none; width: 302px; margin-bottom: 3px' name='type'>" ;
-									print "<option " ; if ($lastType=="Present") { print "selected " ; } ; print "value='Present'>" . _('Present') . "</option>" ;
-									print "<option " ; if ($lastType=="Present - Late") { print "selected " ; } ; print "value='Present - Late'>" . _('Present - Late') . "</option>" ;
-									print "<option " ; if ($lastType=="Present - Offsite") { print "selected " ; } ; print "value='Present - Offsite'>" . _('Present - Offsite') . "</option>" ;
-									print "<option " ; if ($lastType=="Absent") { print "selected " ; } ; print "value='Absent'>" . _('Absent') . "</option>" ;
-									print "<option " ; if ($lastType=="Left") { print "selected " ; } ; print "value='Left'>" . _('Left') . "</option>" ;
-									print "<option " ; if ($lastType=="Left - Early") { print "selected " ; } ; print "value='Left - Early'>" . _('Left - Early') . "</option>" ;
+									print "<option " ; if ($lastType=="Present") { print "selected " ; } ; print "value='Present'>" . __($guid, 'Present') . "</option>" ;
+									print "<option " ; if ($lastType=="Present - Late") { print "selected " ; } ; print "value='Present - Late'>" . __($guid, 'Present - Late') . "</option>" ;
+									print "<option " ; if ($lastType=="Present - Offsite") { print "selected " ; } ; print "value='Present - Offsite'>" . __($guid, 'Present - Offsite') . "</option>" ;
+									print "<option " ; if ($lastType=="Absent") { print "selected " ; } ; print "value='Absent'>" . __($guid, 'Absent') . "</option>" ;
+									print "<option " ; if ($lastType=="Left") { print "selected " ; } ; print "value='Left'>" . __($guid, 'Left') . "</option>" ;
+									print "<option " ; if ($lastType=="Left - Early") { print "selected " ; } ; print "value='Left - Early'>" . __($guid, 'Left - Early') . "</option>" ;
 								print "</select>" ;
 								?>
 							</td>
 						</tr>
 						<tr>
 							<td> 
-								<b><?php print _('Reason') ?></b><br/>
-								<span style="font-size: 90%"><i></i></span>
+								<b><?php print __($guid, 'Reason') ?></b><br/>
+								<span class="emphasis small"></span>
 							</td>
 							<td class="right">
 								<?php
 								print "<select style='float: none; width: 302px; margin-bottom: 10px' name='reason'>" ;
 									print "<option " ; if ($lastReason=="") { print "selected " ; } ; print "value=''></option>" ;
-									print "<option " ; if ($lastReason=="Pending") { print "selected " ; } ; print "value='Pending'>" . _('Pending') . "</option>" ;
-									print "<option " ; if ($lastReason=="Education") { print "selected " ; } ; print "value='Education'>" . _('Education') . "</option>" ;
-									print "<option " ; if ($lastReason=="Family") { print "selected " ; } ; print "value='Family'>" . _('Family') . "</option>" ;
-									print "<option " ; if ($lastReason=="Medical") { print "selected " ; } ; print "value='Medical'>" . _('Medical') . "</option>" ;
-									print "<option " ; if ($lastReason=="Other") { print "selected " ; } ; print "value='Other'>" . _('Other') . "</option>" ;
+									print "<option " ; if ($lastReason=="Pending") { print "selected " ; } ; print "value='Pending'>" . __($guid, 'Pending') . "</option>" ;
+									print "<option " ; if ($lastReason=="Education") { print "selected " ; } ; print "value='Education'>" . __($guid, 'Education') . "</option>" ;
+									print "<option " ; if ($lastReason=="Family") { print "selected " ; } ; print "value='Family'>" . __($guid, 'Family') . "</option>" ;
+									print "<option " ; if ($lastReason=="Medical") { print "selected " ; } ; print "value='Medical'>" . __($guid, 'Medical') . "</option>" ;
+									print "<option " ; if ($lastReason=="Other") { print "selected " ; } ; print "value='Other'>" . __($guid, 'Other') . "</option>" ;
 								print "</select>" ;
 								?>
 							</td>
 						</tr>
 						<tr>
 							<td> 
-								<b><?php print _('Comment') ?></b><br/>
-								<span style="font-size: 90%"><i><?php print _('255 character limit') ?></i></span>
+								<b><?php print __($guid, 'Comment') ?></b><br/>
+								<span class="emphasis small"><?php print __($guid, '255 character limit') ?></span>
 							</td>
 							<td class="right">
 								<?php
@@ -336,12 +319,12 @@ else {
 						</tr>
 						<tr>
 							<td>
-								<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+								<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 							</td>
 							<td class="right">
 								<?php print "<input type='hidden' name='currentDate' value='$currentDate'>" ; ?>
 								<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-								<input type="submit" value="<?php print _("Submit") ; ?>">
+								<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 							</td>
 						</tr>
 					</table>

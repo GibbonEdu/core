@@ -3,12 +3,13 @@ session_start() ;
 include "../../functions.php" ;
 include "../../config.php" ;
 
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) { }
+//New PDO DB connection
+$pdo = new sqlConnection(false, '');
+$connection2 = $pdo->getConnection();
+
+
+//Set timezone from session variable
+date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
 setCurrentSchoolYear($guid, $connection2) ;
 
@@ -83,13 +84,12 @@ if (isset($_SESSION[$guid]['googleAPIAccessToken'] ) && $_SESSION[$guid]['google
 
 
 //Display user info or display login url as per the info we have.
-print '<div style="margin:20px">';
+
 if (isset($authUrl)){
 	//show login url
-
-	print '<a target=\'_top\' class="login" href="' . $authUrl . '"><img style=\'width: 260px; height: 55px; margin: -20px 0 0 -24px\' src="themes/Default/img/g_login_btn.png" /></a>';
-
-print '</div>';
+	print '<div style="margin:20px">';
+		print '<a target=\'_top\' class="login" href="' . $authUrl . '"><img style=\'width: 260px; height: 55px; margin: -20px 0 0 -24px\' src="themes/Default/img/g_login_btn.png" /></a>';
+	print '</div>';
 } else {
 	$user = $service->userinfo->get(); //get user info
 	$email = $user->email;
@@ -125,7 +125,7 @@ print '</div>';
 	if ($result->rowCount()!=1) {
 		unset($_SESSION[$guid]['googleAPIAccessToken'] );
 		unset($_SESSION[$guid]['gplusuer']);
-		session_destroy();
+		@session_destroy();
 		$_SESSION[$guid]=NULL ;
 	}
 	else {

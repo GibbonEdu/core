@@ -22,13 +22,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/userFields_edit.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/userFields.php'>" . _('Manage Custom Fields') . "</a> > </div><div class='trailEnd'>" . _('Edit Custom Field') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/userFields.php'>" . __($guid, 'Manage Custom Fields') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Edit Custom Field') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
@@ -36,22 +36,22 @@ else {
 	$class="error" ;
 	if (!($updateReturn=="")) {
 		if ($updateReturn=="fail0") {
-			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($updateReturn=="fail1") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail2") {
-			$updateReturnMessage=_("Your request failed due to a database error.") ;	
+			$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
 		}
 		else if ($updateReturn=="fail3") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($updateReturn=="fail4") {
-			$updateReturnMessage=_("Your request failed because some inputs did not meet a requirement for uniqueness.") ;	
+			$updateReturnMessage=__($guid, "Your request failed because some inputs did not meet a requirement for uniqueness.") ;	
 		}
 		else if ($updateReturn=="success0") {
-			$updateReturnMessage=_("Your request was completed successfully.") ;	
+			$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -63,7 +63,7 @@ else {
 	$gibbonPersonFieldID=$_GET["gibbonPersonFieldID"] ;
 	if ($gibbonPersonFieldID=="") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -79,7 +79,7 @@ else {
 		
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print _("The specified record cannot be found.") ;
+				print __($guid, "The specified record cannot be found.") ;
 			print "</div>" ;
 		}
 		else {
@@ -88,13 +88,13 @@ else {
 			
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/userFields_editProcess.php?gibbonPersonFieldID=" . $row["gibbonPersonFieldID"] ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td> 
-							<b><?php print _('Name') ?> *</b><br/>
+							<b><?php print __($guid, 'Name') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<input name="name" id="name2" maxlength=50 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
+							<input name="name" id="name2" maxlength=50 value="<?php print $row["name"] ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var name2=new LiveValidation('name2');
 								name2.add(Validate.Presence);
@@ -103,24 +103,24 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Active') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<b><?php print __($guid, 'Active') ?> *</b><br/>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
-							<select style="width: 302px" name="active">
+							<select class="standardWidth" name="active">
 								<?php
-								print "<option " ; if ($row["active"]=="Y") { print "selected" ; } print " value='Y'>" . _('Yes') . "</option>" ;
-								print "<option " ; if ($row["active"]=="N") { print "selected" ; } print " value='N'>" . _('No') . "</option>" ;
+								print "<option " ; if ($row["active"]=="Y") { print "selected" ; } print " value='Y'>" . __($guid, 'Yes') . "</option>" ;
+								print "<option " ; if ($row["active"]=="N") { print "selected" ; } print " value='N'>" . __($guid, 'No') . "</option>" ;
 								?>				
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Description') ?> *</b><br/>
+							<b><?php print __($guid, 'Description') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<input name="description" id="description" maxlength=255 value="<?php print $row["description"] ?>" type="text" style="width: 300px">
+							<input name="description" id="description" maxlength=255 value="<?php print $row["description"] ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var description=new LiveValidation('description');
 								description.add(Validate.Presence);
@@ -151,12 +151,12 @@ else {
 					</script>
 					<tr>
 						<td style='width: 275px'> 
-							<b><?php print _('Type') ?> *</b><br/>
+							<b><?php print __($guid, 'Type') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<select style="width: 302px" name="type" id="type" class="type">
+							<select class="standardWidth" name="type" id="type" class="type">
 								<?php
-									print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
+									print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
 									print "<option " ; if ($row["type"]=="varchar") { print "selected" ; } print " value='varchar'>Short Text (max 255 characters)</option>" ;
 									print "<option " ; if ($row["type"]=="text") { print "selected" ; } print " value='text'>Long Text</option>" ;
 									print "<option " ; if ($row["type"]=="date") { print "selected" ; } print " value='date'>Date</option>" ;
@@ -166,74 +166,74 @@ else {
 							</select>
 							<script type="text/javascript">
 								var type=new LiveValidation('type');
-								type.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+								type.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
 							</script>
 						</td>
 					</tr>
 					<tr id="optionsRow">
 						<td> 
-							<b><?php print _('Options') ?> *</b><br/>
-							<span style="font-size: 90%"><i>
+							<b><?php print __($guid, 'Options') ?> *</b><br/>
+							<span class="emphasis small">
 								<?php 
-									print _('Short Text: number of characters, up to 255.') . "<br/>" ;
-									print _('Long Text: number of rows for field.') . "<br/>" ;
-									print _('Dropdown: comma separated list of options.') . "<br/>" ;	
+									print __($guid, 'Short Text: number of characters, up to 255.') . "<br/>" ;
+									print __($guid, 'Long Text: number of rows for field.') . "<br/>" ;
+									print __($guid, 'Dropdown: comma separated list of options.') . "<br/>" ;	
 								?>
-								</i></span>
+								</span>
 						</td>
 						<td class="right">
-							<textarea name="options" id="options" style="width: 300px" rows='3'><?php print $row["options"] ?></textarea>
+							<textarea name="options" id="options" class="standardWidth" rows='3'><?php print $row["options"] ?></textarea>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Required') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('Is this field compulsory?') ?></i></span>
+							<b><?php print __($guid, 'Required') ?> *</b><br/>
+							<span class="emphasis small"><?php print __($guid, 'Is this field compulsory?') ?></span>
 						</td>
 						<td class="right">
-							<select style="width: 302px" name="required">
+							<select class="standardWidth" name="required">
 								<?php
-								print "<option " ; if ($row["required"]=="Y") { print "selected" ; } print " value='Y'>" . _('Yes') . "</option>" ;
-								print "<option " ; if ($row["required"]=="N") { print "selected" ; } print " value='N'>" . _('No') . "</option>" ;
+								print "<option " ; if ($row["required"]=="Y") { print "selected" ; } print " value='Y'>" . __($guid, 'Yes') . "</option>" ;
+								print "<option " ; if ($row["required"]=="N") { print "selected" ; } print " value='N'>" . __($guid, 'No') . "</option>" ;
 								?>				
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td style='width: 275px'> 
-							<b><?php print _('Role Categories') ?></b><br/>
+							<b><?php print __($guid, 'Role Categories') ?></b><br/>
 						</td>
 						<td class="right">
 							<?php
-								print _("Student") . " <input " ; if ($row["activePersonStudent"]=="1") { print "checked" ; } print " type='checkbox' name='activePersonStudent' value='1'/><br/>" ;
-								print _("Staff") . " <input " ; if ($row["activePersonStaff"]=="1") { print "checked" ; } print " type='checkbox' name='activePersonStaff' value='1'/><br/>" ;
-								print _("Parent") . " <input " ; if ($row["activePersonParent"]=="1") { print "checked" ; } print " type='checkbox' name='activePersonParent' value='1'/><br/>" ;
-								print _("Other") . " <input " ; if ($row["activePersonOther"]=="1") { print "checked" ; } print " type='checkbox' name='activePersonOther' value='1'/><br/>" ;
+								print __($guid, "Student") . " <input " ; if ($row["activePersonStudent"]=="1") { print "checked" ; } print " type='checkbox' name='activePersonStudent' value='1'/><br/>" ;
+								print __($guid, "Staff") . " <input " ; if ($row["activePersonStaff"]=="1") { print "checked" ; } print " type='checkbox' name='activePersonStaff' value='1'/><br/>" ;
+								print __($guid, "Parent") . " <input " ; if ($row["activePersonParent"]=="1") { print "checked" ; } print " type='checkbox' name='activePersonParent' value='1'/><br/>" ;
+								print __($guid, "Other") . " <input " ; if ($row["activePersonOther"]=="1") { print "checked" ; } print " type='checkbox' name='activePersonOther' value='1'/><br/>" ;
 							?>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Include In Data Updater?') ?> *</b><br/>
+							<b><?php print __($guid, 'Include In Data Updater?') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<select style="width: 302px" name="activeDataUpdater">
+							<select class="standardWidth" name="activeDataUpdater">
 								<?php
-								print "<option " ; if ($row["activeDataUpdater"]=="1") { print "selected" ; } print " value='1'>" . _('Yes') . "</option>" ;
-								print "<option " ; if ($row["activeDataUpdater"]=="0") { print "selected" ; } print " value='0'>" . _('No') . "</option>" ;
+								print "<option " ; if ($row["activeDataUpdater"]=="1") { print "selected" ; } print " value='1'>" . __($guid, 'Yes') . "</option>" ;
+								print "<option " ; if ($row["activeDataUpdater"]=="0") { print "selected" ; } print " value='0'>" . __($guid, 'No') . "</option>" ;
 								?>				
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Include In Application Form?') ?> *</b><br/>
+							<b><?php print __($guid, 'Include In Application Form?') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<select style="width: 302px" name="activeApplicationForm">
+							<select class="standardWidth" name="activeApplicationForm">
 								<?php
-								print "<option " ; if ($row["activeApplicationForm"]=="1") { print "selected" ; } print " value='1'>" . _('Yes') . "</option>" ;
-								print "<option " ; if ($row["activeApplicationForm"]=="0") { print "selected" ; } print " value='0'>" . _('No') . "</option>" ;
+								print "<option " ; if ($row["activeApplicationForm"]=="1") { print "selected" ; } print " value='1'>" . __($guid, 'Yes') . "</option>" ;
+								print "<option " ; if ($row["activeApplicationForm"]=="0") { print "selected" ; } print " value='0'>" . __($guid, 'No') . "</option>" ;
 								?>				
 							</select>
 						</td>
@@ -241,11 +241,11 @@ else {
 			
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+							<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<?php print _("Submit") ; ?>">
+							<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 						</td>
 					</tr>
 

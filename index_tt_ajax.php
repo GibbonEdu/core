@@ -24,14 +24,8 @@ include "./functions.php" ;
 include "./config.php" ;
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 //Set up for i18n via gettext
 if (isset($_SESSION[$guid]["i18n"]["code"])) {
@@ -59,7 +53,7 @@ else {
 if (isActionAccessible($guid, $connection2, "/modules/Timetable/tt.php")==FALSE) {
 	//Acess denied
 	$output.="<div class='error'>" ;
-		$output.=_("Your request failed because you do not have access to this action.") ;
+		$output.=__($guid, "Your request failed because you do not have access to this action.") ;
 	$output.="</div>" ;
 }
 else {
@@ -91,14 +85,13 @@ else {
 			$_SESSION[$guid]["viewCalendarSpaceBooking"]="N" ;
 		}
 	}
-	
-	$tt=renderTT($guid, $connection2, $_SESSION[$guid]["gibbonPersonID"], $id, FALSE, $ttDate) ;
+	$tt=renderTT($guid, $connection2, $_SESSION[$guid]["gibbonPersonID"], $id, FALSE, $ttDate, "", "", "trim") ;
 	if ($tt!=FALSE) {
 		$output.=$tt ;
 	}
 	else {
 		$output.="<div class='error'>" ;
-			$output.=_("There is no information for the date specified.") ;
+			$output.=__($guid, "There is no information for the date specified.") ;
 		$output.="</div>" ;
 	}
 }

@@ -21,14 +21,8 @@ include "../../functions.php" ;
 include "../../config.php" ;
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 @session_start() ;
 
@@ -50,17 +44,20 @@ else {
 	$internalAssessmentTypes=substr($internalAssessmentTypes,0,-1) ;
 	$gibbonYearGroupID=$_POST["gibbonYearGroupID"] ;
 	$gibbonExternalAssessmentID=$_POST["gibbonExternalAssessmentID"] ;
-	if (isset($_POST["category"])) {
-		$category=$_POST["category"] ;
-	}
-	$count=0 ; 
 	$primaryExternalAssessmentByYearGroup=array() ;
-	
+	$count=0 ; 
 	foreach ($gibbonYearGroupID as $year) {
-		if (isset($gibbonExternalAssessmentID[$count]) AND isset($category[$count]) AND $category[$count]!="") {
-			$primaryExternalAssessmentByYearGroup[$year]=$gibbonExternalAssessmentID[$count] . "-" . $category[$count] ;
+		$set=FALSE ;
+		
+		if (isset($gibbonExternalAssessmentID[$count]) AND $gibbonExternalAssessmentID[$count]!="") {
+			if (isset($_POST["category$count"])) {
+				if ($_POST["category$count"]!="") {
+					$primaryExternalAssessmentByYearGroup[$year]=$gibbonExternalAssessmentID[$count] . "-" . $_POST["category$count"] ;
+					$set=TRUE ;
+				}
+			}
 		}
-		else {
+		if ($set==FALSE) {
 			$primaryExternalAssessmentByYearGroup[$year]=NULL ;
 		}
 		$count++ ;

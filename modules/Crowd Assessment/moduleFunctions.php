@@ -302,7 +302,7 @@ function getThread($guid, $connection2, $gibbonPlannerEntryHomeworkID, $parent, 
 
 	if ($level==0 AND $resultDiscuss->rowCount()==0) {
 		$output.="<div class='error'>" ;
-			$output.=_("This conversation has not yet begun!") ;
+			$output.=__($guid, "This conversation has not yet begun!") ;
 		$output.="</div>" ;
 	}
 	else {

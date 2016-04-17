@@ -25,17 +25,17 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Students/report_students_left.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Left Students') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Left Students') . "</div>" ;
 	print "</div>" ;
 	
 	print "<h2>" ;
-	print _("Choose Options") ;
+	print __($guid, "Choose Options") ;
 	print "</h2>" ;
 	
 	$endDateFrom=NULL ;
@@ -53,14 +53,14 @@ else {
 	?>
 	
 	<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr>
 				<td style='width: 275px'> 
-					<b><?php print _('From Date') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('Earliest student end date to include.') ?><br/><?php print _('Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
+					<b><?php print __($guid, 'From Date') ?></b><br/>
+					<span class="emphasis small"><?php print __($guid, 'Earliest student end date to include.') ?><br/><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></span>
 				</td>
 				<td class="right">
-					<input name="endDateFrom" id="endDateFrom" maxlength=10 value="<?php print $endDateFrom ?>" type="text" style="width: 300px">
+					<input name="endDateFrom" id="endDateFrom" maxlength=10 value="<?php print $endDateFrom ?>" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var endDateFrom=new LiveValidation('endDateFrom');
 						endDateFrom.add(Validate.Presence);
@@ -75,11 +75,11 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('To Date') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('Latest student end date to include.') ?><br/><?php print _('Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
+					<b><?php print __($guid, 'To Date') ?></b><br/>
+					<span class="emphasis small"><?php print __($guid, 'Latest student end date to include.') ?><br/><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></span>
 				</td>
 				<td class="right">
-					<input name="endDateTo" id="endDateTo" maxlength=10 value="<?php print $endDateTo ?>" type="text" style="width: 300px">
+					<input name="endDateTo" id="endDateTo" maxlength=10 value="<?php print $endDateTo ?>" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var endDateTo=new LiveValidation('endDateTo');
 						endDateTo.add(Validate.Presence);
@@ -94,8 +94,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Ignore Status') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('This is useful for picking up students who have not yet left, but have an End Date set.') ?></span>
+					<b><?php print __($guid, 'Ignore Status') ?></b><br/>
+					<span class="emphasis small"><?php print __($guid, 'This is useful for picking up students who have not yet left, but have an End Date set.') ?></span>
 				</td>
 				<td class="right">
 					<input <?php if ($ignoreStatus=="on") { print "checked" ; } ?> name="ignoreStatus" id="ignoreStatus" type="checkbox">
@@ -104,7 +104,7 @@ else {
 			<tr>
 				<td colspan=2 class="right">
 					<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/report_students_left.php">
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
@@ -113,7 +113,7 @@ else {
 	
 	if ($endDateFrom!="" AND $endDateTo!="") {
 		print "<h2>" ;
-		print _("Results") ;
+		print __($guid, "Results") ;
 		print "</h2>" ;
 		
 		try {
@@ -132,24 +132,24 @@ else {
 			print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
 					print "<th>" ;
-						print _("Count") ;
+						print __($guid, "Count") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Name") ;
-						print "<span style='font-style: italic; font-size: 85%'>" . _('Roll Group') . "</span>" ;
+						print __($guid, "Name") ;
+						print "<span style='font-style: italic; font-size: 85%'>" . __($guid, 'Roll Group') . "</span>" ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Username") ;
+						print __($guid, "Username") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("End Date") . "<br/>" ;
-						print "<span style='font-style: italic; font-size: 85%'>" . _('Departure Reason') . "</span>" ;
+						print __($guid, "End Date") . "<br/>" ;
+						print "<span style='font-style: italic; font-size: 85%'>" . __($guid, 'Departure Reason') . "</span>" ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Next School") ;
+						print __($guid, "Next School") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Parents") ;
+						print __($guid, "Parents") ;
 					print "</th>" ;
 				print "</tr>" ;
 		
@@ -230,14 +230,14 @@ else {
 										}
 									}
 									if ($rowFamily2["citizenship1"]!="" OR $rowFamily2["citizenship1Passport"]!="") {
-										print "<i>" . _('Passport') . "</i>: " . $rowFamily2["citizenship1"] . " " . $rowFamily2["citizenship1Passport"] . "<br/>" ;
+										print "<i>" . __($guid, 'Passport') . "</i>: " . $rowFamily2["citizenship1"] . " " . $rowFamily2["citizenship1Passport"] . "<br/>" ;
 									}
 									if ($rowFamily2["nationalIDCardNumber"]!="") {
 										if ($_SESSION[$guid]["country"]=="") {
-											print "<i>" . _('National ID Card') . "</i>: " ;
+											print "<i>" . __($guid, 'National ID Card') . "</i>: " ;
 										}
 										else {
-											print "<i>" . $_SESSION[$guid]["country"] . " " . _('ID Card') . "</i>: " ;
+											print "<i>" . $_SESSION[$guid]["country"] . " " . __($guid, 'ID Card') . "</i>: " ;
 										}
 										print $rowFamily2["nationalIDCardNumber"] . "<br/>" ;
 									}
@@ -250,7 +250,7 @@ else {
 		}
 		else {
 			print "<div class='warning'>" ;
-				print _("There are no records to display.") ;
+				print __($guid, "There are no records to display.") ;
 			print "</div>" ;
 		}
 	}

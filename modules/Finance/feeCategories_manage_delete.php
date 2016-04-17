@@ -25,41 +25,22 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Finance/feeCategories_manage_delete.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/feeCategories_manage.php'>" . _('Manage Fee Categories') . "</a> > </div><div class='trailEnd'>" . _('Delete Category') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/feeCategories_manage.php'>" . __($guid, 'Manage Fee Categories') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Delete Category') . "</div>" ;
 	print "</div>" ;
 	
-	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-	$deleteReturnMessage="" ;
-	$class="error" ;
-	if (!($deleteReturn=="")) {
-		if ($deleteReturn=="fail0") {
-			$deleteReturnMessage=_("Your request failed because you do not have access to this action.") ;	
-		}
-		else if ($deleteReturn=="fail1") {
-			$deleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($deleteReturn=="fail2") {
-			$deleteReturnMessage=_("Your request failed due to a database error.") ;	
-		}
-		else if ($deleteReturn=="fail3") {
-			$deleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		print "<div class='$class'>" ;
-			print $deleteReturnMessage;
-		print "</div>" ;
-	} 
+	if (isset($_GET["return"])) { returnProcess($_GET["return"], null, null); }
 	
 	//Check if school year specified
 	$gibbonFinanceFeeCategoryID=$_GET["gibbonFinanceFeeCategoryID"];
 	if ($gibbonFinanceFeeCategoryID=="") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -75,7 +56,7 @@ else {
 
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print _("The selected record does not exist, or you do not have access to it.") ;
+				print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 			print "</div>" ;
 		}
 		else {
@@ -83,11 +64,11 @@ else {
 			$row=$result->fetch() 
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/feeCategories_manage_deleteProcess.php?gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID" ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td> 
-							<b><?php print _('Are you sure you want to delete this record?') ; ?></b><br/>
-							<span style="font-size: 90%; color: #cc0000"><i><?php print _('This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!') ; ?></i></span>
+							<b><?php print __($guid, 'Are you sure you want to delete this record?') ; ?></b><br/>
+							<span style="font-size: 90%; color: #cc0000"><i><?php print __($guid, 'This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!') ; ?></span>
 						</td>
 						<td class="right">
 							
@@ -97,7 +78,7 @@ else {
 						<td> 
 							<input name="gibbonFinanceFeeCategoryID" id="gibbonFinanceFeeCategoryID" value="<?php print $gibbonFinanceFeeCategoryID ?>" type="hidden">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<?php print _('Yes') ; ?>">
+							<input type="submit" value="<?php print __($guid, 'Yes') ; ?>">
 						</td>
 						<td class="right">
 							

@@ -25,17 +25,17 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Library/report_viewOverdueItems.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('View Overdue Items') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'View Overdue Items') . "</div>" ;
 	print "</div>" ;
 	
 	print "<h2>" ;
-		print _("Filter") ;
+		print __($guid, "Filter") ;
 	print "</h2>" ;
 
 	$ignoreStatus="" ;
@@ -50,8 +50,8 @@ else {
 			<tr><td style="width: 30%"></td><td></td></tr>
 			<tr>
 				<td>
-					<b><?php print _('Ignore Status') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('Include all studenusersts, regardless of status and current enrolment.') ?></i></span>
+					<b><?php print __($guid, 'Ignore Status') ?></b><br/>
+					<span class="emphasis small"><?php print __($guid, 'Include all studenusersts, regardless of status and current enrolment.') ?></span>
 				</td>
 				<td class="right">
 					<?php
@@ -69,9 +69,9 @@ else {
 					<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/report_viewOverdueItems.php">
 					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 					<?php
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_viewOverdueItems.php'>" . _('Clear Search') . "</a>" ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_viewOverdueItems.php'>" . __($guid, 'Clear Search') . "</a>" ;
 					?>
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 				</td>
 			</tr>
 		</table>
@@ -79,7 +79,7 @@ else {
 	
 	<?php			
 	print "<h2>" ;
-	print _("Report Data") ;
+	print __($guid, "Report Data") ;
 	print "</h2>" ;
 	
 	$today=date("Y-m-d") ;
@@ -102,23 +102,23 @@ else {
 	print "<table cellspacing='0' style='width: 100%'>" ;
 		print "<tr class='head'>" ;
 			print "<th>" ;
-				print _("Borrowing User") ;
+				print __($guid, "Borrowing User") ;
 			print "</th>" ;
 			print "<th>" ;
-				print _("Email") ;
+				print __($guid, "Email") ;
 			print "</th>" ;
 			print "<th>" ;
-				print _("Item") . "<br/>" ;
-				print "<span style='font-size: 85%; font-style: italic'>" . _('Author/Producer') . "</span>" ;
+				print __($guid, "Item") . "<br/>" ;
+				print "<span style='font-size: 85%; font-style: italic'>" . __($guid, 'Author/Producer') . "</span>" ;
 			print "</th>" ;
 			print "<th>" ;
-				print _("Due Date") ;
+				print __($guid, "Due Date") ;
 			print "</th>" ;
 			print "<th>" ;
-				print _("Days Overdue") ;
+				print __($guid, "Days Overdue") ;
 			print "</th>" ;
 			print "<th style='width: 50px'>" ;
-				print _("Actions") ;
+				print __($guid, "Actions") ;
 			print "</th>" ;
 		print "</tr>" ;
 		
@@ -152,14 +152,14 @@ else {
 					print (strtotime($today)-strtotime($row["returnExpected"]))/(60*60*24) ;
 				print "</td>" ;
 				print "<td>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/library_lending_item.php&gibbonLibraryItemID=" . $row["gibbonLibraryItemID"] . "&name=&gibbonLibraryTypeID=&gibbonSpaceID=&status='><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/library_lending_item.php&gibbonLibraryItemID=" . $row["gibbonLibraryItemID"] . "&name=&gibbonLibraryTypeID=&gibbonSpaceID=&status='><img title='" . __($guid, 'Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 				print "</td>" ;
 			print "</tr>" ;
 		}
 		if ($count==0) {
 			print "<tr class=$rowNum>" ;
 				print "<td colspan=4>" ;
-					print _("There are no records to display.") ;
+					print __($guid, "There are no records to display.") ;
 				print "</td>" ;
 			print "</tr>" ;
 		}

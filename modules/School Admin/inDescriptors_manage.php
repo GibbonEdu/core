@@ -22,13 +22,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/inDescriptors_manage.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Manage Individual Needs Descriptors') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Manage Individual Needs Descriptors') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -36,7 +36,7 @@ else {
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="success0") {
-			$deleteReturnMessage=_("Your request was completed successfully.") ;		
+			$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;		
 			$class="success" ;
 		}
 		print "<div class='$class'>" ;
@@ -55,29 +55,29 @@ else {
 	}
 	
 	print "<div class='linkTop'>" ;
-	print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/inDescriptors_manage_add.php'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+	print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/inDescriptors_manage_add.php'>" .  __($guid, 'Add') . "<img style='margin-left: 5px' title='" . __($guid, 'Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
 	print "</div>" ;
 	
 	if ($result->rowCount()<1) {
 		print "<div class='error'>" ;
-		print _("There are no records to display.") ;
+		print __($guid, "There are no records to display.") ;
 		print "</div>" ;
 	}
 	else {
 		print "<table cellspacing='0' style='width: 100%'>" ;
 			print "<tr class='head'>" ;
 				print "<th style='min-width: 50px'>" ;
-					print _("Number") ;
+					print __($guid, "Number") ;
 				print "</th>" ;
 				print "<th style='min-width: 220px'>" ;
-					print _("Name") . "<br/>" ;
-					print "<span style='font-size: 75%; font-style: italic'>" . _('Short Name') . "</span>" ;
+					print __($guid, "Name") . "<br/>" ;
+					print "<span style='font-size: 75%; font-style: italic'>" . __($guid, 'Short Name') . "</span>" ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Description") ;
+					print __($guid, "Description") ;
 				print "</th>" ;
 				print "<th>" ;
-					print _("Actions") ;
+					print __($guid, "Actions") ;
 				print "</th>" ;
 			print "</tr>" ;
 			
@@ -95,18 +95,18 @@ else {
 				//COLOR ROW BY STATUS!
 				print "<tr class=$rowNum>" ;
 					print "<td>" ;
-						print _($row["sequenceNumber"]) . "<br/>" ;
+						print __($guid, $row["sequenceNumber"]) . "<br/>" ;
 					print "</td>" ;
 					print "<td>" ;
 						print $row["name"] . "<br/>" ;
-						print "<span style='font-size: 85%; font-style: italic'>" . _($row["nameShort"]) . "</span>" ;
+						print "<span style='font-size: 85%; font-style: italic'>" . __($guid, $row["nameShort"]) . "</span>" ;
 					print "</td>" ;
 					print "<td>" ;
-						print _($row["description"]) . "<br/>" ;
+						print __($guid, $row["description"]) . "<br/>" ;
 					print "</td>" ;
 					print "<td>" ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/inDescriptors_manage_edit.php&gibbonINDescriptorID=" . $row["gibbonINDescriptorID"] . "'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/inDescriptors_manage_delete.php&gibbonINDescriptorID=" . $row["gibbonINDescriptorID"] . "'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/inDescriptors_manage_edit.php&gibbonINDescriptorID=" . $row["gibbonINDescriptorID"] . "'><img title='" . __($guid, 'Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/inDescriptors_manage_delete.php&gibbonINDescriptorID=" . $row["gibbonINDescriptorID"] . "'><img title='" . __($guid, 'Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
 					print "</td>" ;
 				print "</tr>" ;
 			}

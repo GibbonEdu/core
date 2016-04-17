@@ -29,13 +29,13 @@ if (isset($_GET["orphaned"])) {
 if (isActionAccessible($guid, $connection2, "/modules/System Admin/theme_manage_uninstall.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/theme_manage.php'>" . _('Manage Themes') . "</a> > </div><div class='trailEnd'>" . _('Uninstall Theme') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/theme_manage.php'>" . __($guid, 'Manage Themes') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Uninstall Theme') . "</div>" ;
 	print "</div>" ;
 	
 	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
@@ -43,16 +43,16 @@ else {
 	$class="error" ;
 	if (!($deleteReturn=="")) {
 		if ($deleteReturn=="fail0") {
-			$deleteReturnMessage=_("Your request failed because you do not have access to this action.") ;	
+			$deleteReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
 		}
 		else if ($deleteReturn=="fail1") {
-			$deleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
+			$deleteReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
 		}
 		else if ($deleteReturn=="fail2") {
-			$deleteReturnMessage=_("Your request encountered a partial fail: the module may or may not still work.") ;	
+			$deleteReturnMessage=__($guid, "Your request encountered a partial fail: the module may or may not still work.") ;	
 		}
 		else if ($deleteReturn=="fail3") {
-			$deleteReturnMessage=_("Your request failed because theme does not exist or is active.") ;	
+			$deleteReturnMessage=__($guid, "Your request failed because theme does not exist or is active.") ;	
 		}
 		print "<div class='$class'>" ;
 			print $deleteReturnMessage;
@@ -63,7 +63,7 @@ else {
 	$gibbonThemeID=$_GET["gibbonThemeID"] ;
 	if ($gibbonThemeID=="") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -87,11 +87,11 @@ else {
 			$row=$result->fetch() ;
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/theme_manage_uninstallProcess.php?gibbonThemeID=$gibbonThemeID&orphaned=$orphaned" ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td style='width: 275px'> 
-							<b><?php print _('Are you sure you want to delete this record?') ; ?></b><br/>
-							<span style="font-size: 90%; color: #cc0000"><i><?php print _('This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!') ; ?></i></span>
+							<b><?php print __($guid, 'Are you sure you want to delete this record?') ; ?></b><br/>
+							<span style="font-size: 90%; color: #cc0000"><i><?php print __($guid, 'This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!') ; ?></span>
 						</td>
 						<td class="right">
 							
@@ -100,7 +100,7 @@ else {
 					<tr>
 						<td> 
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<?php print _('Yes') ; ?>">
+							<input type="submit" value="<?php print __($guid, 'Yes') ; ?>">
 						</td>
 						<td class="right">
 							
