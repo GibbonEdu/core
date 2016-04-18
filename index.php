@@ -102,10 +102,7 @@ if (isset($_SESSION[$guid]["i18n"]["code"])) {
 	}
 }
 
-//Grab and store custom string replacement list
-if (isset($_SESSION[$guid]['stringReplacement'])==FALSE) {
-	setStringReplacementList($connection2, $guid) ;
-}					
+setStringReplacementList($connection2, $guid) ;
 					
 
 //Try to autoset user's calendar feed if not set already

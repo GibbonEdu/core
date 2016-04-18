@@ -47,7 +47,7 @@ class trans
 	 */
 	public function __construct()
 	{
-		$this->pdo = new Gibbon\sqlConnection();
+		$this->pdo = new sqlConnection();
 		$this->session = new session();
 	}
 
@@ -55,18 +55,23 @@ class trans
 	 * Get and store custom string replacements in session
 	 *
 	 * (Moved from Functions)
-	 * @version 16th April 2016
+	 * @version 19th April 2016
 	 * @since	Old
 	 * @return	void
 	 */
 	public function setStringReplacementList()
 	{
-		$this->session->set('stringReplacement', array()) ;
-		$sqlString="SELECT * FROM gibbonString ORDER BY priority DESC, original" ; 
-		$result = $this->pdo->execurteQuery(array(), $sql);
-
-		if ($result->rowCount()>0)
-			$this->session->set('stringReplacement', $resultString->fetchAll()) ;
+		if (! $this->session->get('stringReplacement'))
+		{
+			$this->session->set('stringReplacement', array()) ;
+			$sql="SELECT * FROM gibbonString ORDER BY priority DESC, original" ; 
+			$result = $this->pdo->executeQuery(array(), $sql);
+	
+			if ($result->rowCount()>0)
+				$this->session->set('stringReplacement', $result->fetchAll()) ;
+			else
+				$this->session->set('stringReplacement', false) ;
+		}
 	}
 	/**
 	 * Custom translation function to allow custom string replacement

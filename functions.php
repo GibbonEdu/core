@@ -20,58 +20,21 @@ require_once dirname(__FILE__).'/gibbon.php ';
 
 //Get and store custom string replacements in session
 function setStringReplacementList($connection2, $guid) {
-	$_SESSION[$guid]['stringReplacement']=array() ;
-	try {
-		$dataString=array(); 
-		$sqlString="SELECT * FROM gibbonString ORDER BY priority DESC, original" ; 
-		$resultString=$connection2->prepare($sqlString);
-		$resultString->execute($dataString);
-	}
-	catch(PDOException $e) { }
-	if ($resultString->rowCount()>0) {
-		$_SESSION[$guid]['stringReplacement']=$resultString->fetchAll() ;
-	}
+	
+	$caller = debug_backtrace();
+	error_log("DEPRECATED: ".$caller[0]['line'].":".$caller[0]['file']." called " . __METHOD__ . " in " . __FILE__ );
+	$trans = new Gibbon\trans();
+	$trans->setStringReplacementList();
 }
 
 //Custom translation function to allow custom string replacement
 function __($guid, $text) {
-	$replacements=$_SESSION[$guid]['stringReplacement'] ;
-	
-	$text=_($text) ;
-	
-	if (isset($replacements)) {
-		if (is_array($replacements)) {
-			foreach ($replacements AS $replacement) {
-				if ($replacement["mode"]=="Partial") { //Partial match
-					if ($replacement["caseSensitive"]=="Y") {
-						if (strpos($text, $replacement["original"])!==FALSE) {
-							$text=str_replace($replacement["original"], $replacement["replacement"], $text) ;
-						}
-					}
-					else {
-						if (stripos($text, $replacement["original"])!==FALSE) {
-							$text=str_ireplace($replacement["original"], $replacement["replacement"], $text) ;
-						}
-					}
-				}
-				else { //Whole match
-					if ($replacement["caseSensitive"]=="Y") {
-						if ($replacement["original"]==$text) {
-							$text=$replacement["replacement"] ;
-						}
-					}
-					else {
-						if (strtolower($replacement["original"])==strtolower($text)) {
-							$text=$replacement["replacement"] ;
-						}
-					}
-				}
-				
-			}
-		}
-	}
-	
-	return $text ;
+
+	$caller = debug_backtrace();
+	error_log("DEPRECATED: ".$caller[0]['line'].":".$caller[0]['file']." called " . __METHOD__ . " in " . __FILE__ );
+	$trans = new Gibbon\trans();
+	return $trans->__($text);
+
 }
 
 //$valueMode can be "value" or "id" according to what goes into option's value field
