@@ -24,7 +24,7 @@ include "../../config.php" ;
 include "./moduleFunctions.php" ;
 
 //New PDO DB connection
-$pdo = new sqlConnection();
+$pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
 @session_start() ;

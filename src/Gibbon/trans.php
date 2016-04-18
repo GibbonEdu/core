@@ -47,7 +47,7 @@ class trans
 	 */
 	public function __construct()
 	{
-		$this->pdo = new sqlConnection();
+		$this->pdo = new Gibbon\sqlConnection();
 		$this->session = new session();
 	}
 

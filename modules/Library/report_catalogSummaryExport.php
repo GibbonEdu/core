@@ -21,7 +21,7 @@ include "../../functions.php" ;
 include "../../config.php" ;
 
 //New PDO DB connection
-$pdo = new sqlConnection();
+$pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
 @session_start() ;
@@ -103,7 +103,7 @@ else {
 	}
 	else {
 		//Proceed!
-		$exp=new ExportToExcel();
+		$exp=new Gibbon\Excel();
 		$exp->exportWithPage($guid, "./report_catalogSummaryExportContents.php","catalogSummary.xls", "ownershipType=$ownershipType&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status");
 	}
 }

@@ -24,8 +24,9 @@ include "./functions.php" ;
 include "./config.php" ;
 
 //New PDO DB connection
-$pdo = new sqlConnection();
+$pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
+
 
 //Set up for i18n via gettext
 if (isset($_SESSION[$guid]["i18n"]["code"])) {

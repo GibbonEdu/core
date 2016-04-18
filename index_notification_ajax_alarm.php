@@ -28,7 +28,7 @@ print "<script type=\"text/javascript\" src=\"" . $_SESSION[$guid]["absoluteURL"
 print "<script type=\"text/javascript\" src=\"" . $_SESSION[$guid]["absoluteURL"] . "/lib/jquery/jquery-migrate.min.jsprint\"></script>" ;
 			
 //New PDO DB connection
-$pdo = new sqlConnection();
+$pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
 $type="" ;

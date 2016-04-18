@@ -23,7 +23,7 @@ include "config.php" ;
 @session_start() ;
 
 //New PDO DB connection
-$pdo = new sqlConnection();
+$pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
 //Set timezone from session variable

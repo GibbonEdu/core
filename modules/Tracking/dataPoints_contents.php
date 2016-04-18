@@ -30,7 +30,7 @@ include "../../functions.php" ;
 include "../../version.php" ;
 
 //New PDO DB connection
-$pdo = new sqlConnection();
+$pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
 //Module includes

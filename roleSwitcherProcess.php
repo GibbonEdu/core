@@ -26,7 +26,7 @@ include "config.php" ;
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
 //New PDO DB connection
-$pdo = new sqlConnection();
+$pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
 $URL="./index.php" ;

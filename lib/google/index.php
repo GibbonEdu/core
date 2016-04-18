@@ -4,7 +4,7 @@ include "../../functions.php" ;
 include "../../config.php" ;
 
 //New PDO DB connection
-$pdo = new sqlConnection(false, '');
+$pdo = new Gibbon\sqlConnection(false, '');
 $connection2 = $pdo->getConnection();
 
 

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+namespace Gibbon ;
 
 /**
  * sql Connection
@@ -266,32 +267,6 @@ class sqlConnection
 			$result = $this->pdo->prepare("SET SESSION `sql_mode` = ''");
 		$result->execute(array());
 	}
-}
-
-/**
- * Print an Object Alias (Dump)
- *
- * @version 16th February 2015
- * @since OLD
- * @param mixed The object to be printed
- * @param boolean Stop execution after printing object.
- * @param boolean Full dump of Trace Stack
- * @return void
- */
-function dump($object, $stop = false, $full = false) 
-{
-	$caller = debug_backtrace();
-	echo "<pre>\n";
-	echo $caller[0]['line'].': '.$caller[0]['file'];
-	echo "\n</pre>\n";
-	echo "<pre>\n";
-	print_r($object);
-	if ($full) 
-		print_r($caller);
-	echo "\n</pre>\n";
-	if ($stop) 
-		trigger_error('Object Print Stop', E_USER_ERROR);
-	return ;
 }
 
 ?>

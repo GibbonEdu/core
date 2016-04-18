@@ -21,7 +21,7 @@ include "../../functions.php" ;
 include "../../config.php" ;
 
 //New PDO DB connection
-$pdo = new sqlConnection();
+$pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
 @session_start() ;
@@ -58,7 +58,7 @@ else {
 			if ($action=="export") {
 				$_SESSION[$guid]["financeExpenseExportIDs"]=$gibbonFinanceExpenseIDs ;
 				
-				$exp=new ExportToExcel();
+				$exp=new Gibbon\Excel();
 				$exp->exportWithPage($guid, "./expenses_manage_processBulkExportContents.php","invoices.xls", "&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID");
 				
 				// THIS CODE HAS BEEN COMMENTED OUT, AS THE EXPORT RETURNS WITHOUT IT...NOT SURE WHY!

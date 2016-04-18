@@ -22,7 +22,7 @@ require getcwd() . "/../functions.php" ;
 require getcwd() . "/../lib/PHPMailer/class.phpmailer.php";
 						
 //New PDO DB connection
-$pdo = new sqlConnection();
+$pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
 @session_start() ;

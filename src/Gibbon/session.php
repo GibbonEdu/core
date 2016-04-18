@@ -47,9 +47,10 @@ class session
 	 */
 	public function __construct()
 	{
-		@session_start();
-		$config = new config();
-		$this->guid = $config->get('guid');
+		if (PHP_SESSION_ACTIVE !== session_status())
+			session_start();
+		include GIBBON_ROOT . 'config.php';
+		$this->guid = $guid;
 	}
 
 	/**

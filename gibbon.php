@@ -22,6 +22,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  * @since	7th April 2016
  */
 
+require_once dirname(__FILE__) . '/functions.php';
+
 if ( ! defined( 'GIBBON_ROOT' ) )
 {
 	$dr = dirname(__FILE__);

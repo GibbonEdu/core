@@ -21,7 +21,7 @@ include "../../functions.php" ;
 include "../../config.php" ;
 
 //New PDO DB connection
-$pdo = new sqlConnection();
+$pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
 @session_start() ;
@@ -63,7 +63,7 @@ else {
 		}
 		else {
 			//Proceed!
-			$exp=new ExportToExcel();
+			$exp=new Gibbon\Excel();
 			try {
 				$data=array(); 
 				$sql="SELECT role, surname, preferredName, email FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonCourseClassID=$gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') ORDER BY role DESC, surname, preferredName" ;
@@ -77,7 +77,7 @@ else {
 				exit() ;
 			}
 			
-			$exp=new ExportToExcel();
+			$exp=new Gibbon\Excel();
 			$exp->exportWithQuery($sql,"classList.xls",$connection2);
 		}
 	}

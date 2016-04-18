@@ -285,7 +285,7 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 								
 								//Estabish db connection without database name
 								$connected1=TRUE ;
-								$pdo = new sqlConnection(true);
+								$pdo = new Gibbon\sqlConnection(true);
 								$pdo->installBypass($databaseServer, $databaseName, $databaseUsername, $databasePassword);
 								$connected1 = $pdo->getSuccess();
 								$connection2 = $pdo->getConnection();
@@ -1110,7 +1110,7 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 							}
 							else if ($step==3) {
 								//New PDO DB connection
-								$pdo = new sqlConnection(false, "<div class='error'>\n".sprintf(__($guid, 'A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", "</a>")."\n</div>\n" );
+								$pdo = new Gibbon\sqlConnection(false, "<div class='error'>\n".sprintf(__($guid, 'A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", "</a>")."\n</div>\n" );
 								$connection2 = $pdo->getConnection();
 								$connected3 = $pdo->getSuccess();
 								

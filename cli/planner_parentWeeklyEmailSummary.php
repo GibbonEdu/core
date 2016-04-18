@@ -21,7 +21,7 @@ require getcwd() . "/../config.php" ;
 require getcwd() . "/../functions.php" ;
 require getcwd() . "/../lib/PHPMailer/class.phpmailer.php";
 						
-$pdo = new sqlConnection();
+$pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
 @session_start() ;
