@@ -5035,6 +5035,7 @@ function countLikesByRecipient($connection2, $gibbonPersonIDRecipient, $mode="co
 /*
 Easy Return Display Processing.
 Arguments:
+	$guid: The guid of your Gibbon Install.
 	$return: This should be the return value of the process.
 	$editLink: (Optional) This should be a link. The link will appended to the end of a success0 return.
 	$customReturns: (Optional) This should be an array. The array allows you to set custom return checks and messages. Set the array key to the return name and the value to the return message.
@@ -5047,42 +5048,40 @@ Default returns:
 	warning1: This is a default warning message for a successful request, where certain data was not save properly.
 */
 function returnProcess($guid, $return, $editLink = null, $customReturns=null) {
-	$class="error";
-	$returnMessage = "Unknown Return";
-	$returns = array();
-	$returns["success0"] = "Your request was completed successfully. You can now add another record if you wish.";
-	$returns["error0"] = "Your request failed because you do not have access to this action.";
-	$returns["error1"] = "Your request failed because your inputs were invalid.";
-	$returns["error2"] = "Your request failed due to a database error.";
-	$returns["warning0"] = "Your optional extra data failed to save.";
-	$returns["warning1"] = "Your request was successful, but some data was not properly saved.";
+	if(isset($return)) {
+		$class="error";
+		$returnMessage = "Unknown Return";
+		$returns = array();
+		$returns["success0"] = "Your request was completed successfully. You can now add another record if you wish.";
+		$returns["error0"] = "Your request failed because you do not have access to this action.";
+		$returns["error1"] = "Your request failed because your inputs were invalid.";
+		$returns["error2"] = "Your request failed due to a database error.";
+		$returns["warning0"] = "Your optional extra data failed to save.";
+		$returns["warning1"] = "Your request was successful, but some data was not properly saved.";
 
-	if($customReturns != null) {
-		if(is_array($customReturns)) {
-			$customReturnKeys = array_keys($customReturns);
-			for($i = 0 ; $i < count($customReturns); $i++){
-				$customReturnKey = $customReturnKeys[$i];
-				$customReturn = "" ;
-				if (isset($customReturns[$i])) {
-					$customReturn = $customReturns[$i];
+		if(isset($customReturns)) {
+			if(is_array($customReturns)) {
+				$customReturnKeys = array_keys($customReturns);
+				foreach($customReturnKeys as $customReturnKey) {
+					$customReturn = "Unknown Return" ;
+					if (isset($customReturns[$customReturnKey])) {
+						$customReturn = $customReturns[$customReturnKey];
+					}
+					$returns[$customReturnKey] = $customReturn;
 				}
-				$returns[$customReturnKey] = $customReturn;
 			}
 		}
-	}
-	if($return!="") {
 		$returnKeys = array_keys($returns);
 		foreach($returnKeys as $returnKey) {
-			$returnData = $returns[$returnKey];
 			if($return == $returnKey) {
-				$returnMessage = $returnData;
+				$returnMessage = $returns[$returnKey];
 				if(stripos($return, "error") !== false) $class = "error";
 				else if(stripos($return, "warning") !== false) $class = "warning";
 				else if(stripos($return, "success") !== false) $class = "success";
 				break;
 			}
 		}
-		if($return == "success0" && $editLink != null) {
+		if($class == "success" && $editLink != null) {
 			$returnMessage .= " You can edit your record <a href='$editLink'>here</a>.";
 		}
 
