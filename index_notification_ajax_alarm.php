@@ -28,14 +28,8 @@ print "<script type=\"text/javascript\" src=\"" . $_SESSION[$guid]["absoluteURL"
 print "<script type=\"text/javascript\" src=\"" . $_SESSION[$guid]["absoluteURL"] . "/lib/jquery/jquery-migrate.min.jsprint\"></script>" ;
 			
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new sqlConnection();
+$connection2 = $pdo->getConnection();
 
 $type="" ;
 if (isset($_GET["type"])) {

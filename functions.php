@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-
+require_once dirname(__FILE__).'/src/Gibbon/sqlConnection.php ';
 //Get and store custom string replacements in session
 function setStringReplacementList($connection2, $guid) {
 	$_SESSION[$guid]['stringReplacement']=array() ;
