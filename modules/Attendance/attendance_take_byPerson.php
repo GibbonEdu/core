@@ -34,7 +34,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Take Attendance by Person') . "</div>" ;
 	print "</div>" ;
 
-	if (isset($_GET["return"])) { returnProcess($_GET["return"], null, array("error3" => "Your request failed because the specified date is not in the future, or is not a school day.")); }
+	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, array("error3" => "Your request failed because the specified date is not in the future, or is not a school day.")); }
 	
 	$gibbonPersonID=NULL ;
 	if (isset($_GET["gibbonPersonID"])) {

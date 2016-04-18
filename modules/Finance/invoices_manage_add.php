@@ -47,7 +47,7 @@ else {
 	$error3.="</ul>" . __($guid, 'It is recommended that you remove all pending invoices and try to recreate them.') ;
 
 
-	if (isset($_GET["return"])) { returnProcess($_GET["return"], null, array("error3" => $error3)); }
+	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, array("error3" => $error3)); }
 	
 	print "<p>" ;
 		print __($guid, "Here you can add fees to one or more students. These fees will be added to an existing invoice or used to form a new invoice, depending on the specified billing schedule and other details.") ;

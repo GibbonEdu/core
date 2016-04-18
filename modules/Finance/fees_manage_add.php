@@ -31,7 +31,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/fees_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>Manage Fees</a> > </div><div class='trailEnd'>Add Fee</div>" ;
 	print "</div>" ;
 	
-	if (isset($_GET["return"])) { returnProcess($_GET["return"], null, null); }
+	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
 
 	//Check if school year specified
 	$gibbonSchoolYearID=$_GET["gibbonSchoolYearID"] ;

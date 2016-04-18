@@ -34,7 +34,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Activities/activities_manage.php'>Manage Activities</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Activities/activities_manage_enrolment.php&gibbonActivityID=" . $_GET["gibbonActivityID"] . "&search=" . $_GET["search"] . "'>Activity Enrolment</a> > </div><div class='trailEnd'>Edit Enrolment</div>" ;
 	print "</div>" ;
 
-	if (isset($_GET["return"])) { returnProcess($_GET["return"], null, null); }
+	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
 	
 	//Check if school year specified
 	$gibbonActivityID=$_GET["gibbonActivityID"] ;

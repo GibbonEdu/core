@@ -5046,7 +5046,7 @@ Default returns:
 	warning0: This is a default warning message for a extra data failing to save.
 	warning1: This is a default warning message for a successful request, where certain data was not save properly.
 */
-function returnProcess($return, $editLink = null, $customReturns=null) {
+function returnProcess($guid, $return, $editLink = null, $customReturns=null) {
 	$class="error";
 	$returnMessage = "Unknown Return";
 	$returns = array();
@@ -5062,7 +5062,10 @@ function returnProcess($return, $editLink = null, $customReturns=null) {
 			$customReturnKeys = array_keys($customReturns);
 			for($i = 0 ; $i < count($customReturns); $i++){
 				$customReturnKey = $customReturnKeys[$i];
-				$customReturn = $customReturns[$i];
+				$customReturn = "" ;
+				if (isset($customReturns[$i])) {
+					$customReturn = $customReturns[$i];
+				}
 				$returns[$customReturnKey] = $customReturn;
 			}
 		}
