@@ -45,7 +45,8 @@ if (isActionAccessible($guid, $connection2, "/modules/User Admin/staffApplicatio
 else {
 	//Proceed!
 	$staffApplicationFormIntroduction=$_POST["staffApplicationFormIntroduction"] ; 	
-	$staffApplicationFormQuestions=$_POST["staffApplicationFormQuestions"] ; 	
+	$staffApplicationFormQuestions=$_POST["staffApplicationFormQuestions"] ; 		
+	$applicationFormRefereeLink=$_POST["applicationFormRefereeLink"] ; 	
 	$staffApplicationFormPostscript=$_POST["staffApplicationFormPostscript"] ; 	
 	$staffApplicationFormAgreement=$_POST["staffApplicationFormAgreement"] ; 	
 	$staffApplicationFormMilestones=$_POST["staffApplicationFormMilestones"] ; 
@@ -74,6 +75,16 @@ else {
 	try {
 		$data=array("value"=>$staffApplicationFormQuestions); 
 		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Staff' AND name='staffApplicationFormQuestions'" ;
+		$result=$connection2->prepare($sql);
+		$result->execute($data);
+	}
+	catch(PDOException $e) { 
+		$fail=TRUE ; 
+	}
+	
+	try {
+		$data=array("value"=>$applicationFormRefereeLink); 
+		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Staff' AND name='applicationFormRefereeLink'" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data);
 	}

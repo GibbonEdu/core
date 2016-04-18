@@ -199,8 +199,16 @@ else {
 			if (isset($_POST["homeAddressCountry"])) {
 				$homeAddressCountry=$_POST["homeAddressCountry"] ;
 			}
+			$referenceEmail1="" ;
+			if (isset($_POST["referenceEmail1"])) {
+				$referenceEmail1=$_POST["referenceEmail1"] ;	
+			}
+			$referenceEmail2="" ;
+			if (isset($_POST["referenceEmail2"])) {
+				$referenceEmail2=$_POST["referenceEmail2"] ;	
+			}
 			
-			if ($gibbonStaffJobOpeningID=="" OR ($gibbonPersonID==NULL AND ($surname=="" OR $firstName=="" OR $preferredName=="" OR $officialName=="" OR $gender=="" OR $dob=="" OR $languageFirst=="" OR $email=="" OR $homeAddress=="" OR $homeAddressDistrict=="" OR $homeAddressCountry=="" OR $phone1==""))) {
+			if ($gibbonStaffJobOpeningID=="" OR ($gibbonPersonID==NULL AND ($surname=="" OR $firstName=="" OR $preferredName=="" OR $officialName=="" OR $gender=="" OR $dob=="" OR $languageFirst=="" OR $email=="" OR $homeAddress=="" OR $homeAddressDistrict=="" OR $homeAddressCountry=="" OR $phone1=="")) OR (isset($_POST["referenceEmail1"]) AND $referenceEmail1=="") OR (isset($_POST["referenceEmail2"]) AND $referenceEmail2=="")) {
 				//Fail 3
 				$URL.="&updateReturn=fail3" ;
 				header("Location: {$URL}");
@@ -242,8 +250,8 @@ else {
 					
 					//Write to database
 					try {
-						$data=array("priority"=>$priority, "status"=>$status, "milestones"=>$milestones, "dateStart"=>$dateStart, "notes"=>$notes, "surname"=>$surname, "firstName"=>$firstName, "preferredName"=>$preferredName, "officialName"=>$officialName, "nameInCharacters"=>$nameInCharacters, "gender"=>$gender, "dob"=>$dob, "languageFirst"=>$languageFirst, "languageSecond"=>$languageSecond, "languageThird"=>$languageThird, "countryOfBirth"=>$countryOfBirth, "citizenship1"=>$citizenship1, "citizenship1Passport"=>$citizenship1Passport, "nationalIDCardNumber"=>$nationalIDCardNumber, "residencyStatus"=>$residencyStatus, "visaExpiryDate"=>$visaExpiryDate, "email"=>$email, "homeAddress"=>$homeAddress, "homeAddressDistrict"=>$homeAddressDistrict, "homeAddressCountry"=>$homeAddressCountry, "phone1Type"=>$phone1Type, "phone1CountryCode"=>$phone1CountryCode, "phone1"=>$phone1, "fields"=>$fields, "gibbonStaffApplicationFormID"=>$gibbonStaffApplicationFormID); 
-						$sql="UPDATE gibbonStaffApplicationForm SET priority=:priority, status=:status, milestones=:milestones, dateStart=:dateStart, notes=:notes, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, dob=:dob, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, citizenship1=:citizenship1, citizenship1Passport=:citizenship1Passport, nationalIDCardNumber=:nationalIDCardNumber, residencyStatus=:residencyStatus, visaExpiryDate=:visaExpiryDate, email=:email, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, fields=:fields WHERE gibbonStaffApplicationFormID=:gibbonStaffApplicationFormID" ;
+						$data=array("priority"=>$priority, "status"=>$status, "milestones"=>$milestones, "dateStart"=>$dateStart, "notes"=>$notes, "surname"=>$surname, "firstName"=>$firstName, "preferredName"=>$preferredName, "officialName"=>$officialName, "nameInCharacters"=>$nameInCharacters, "gender"=>$gender, "dob"=>$dob, "languageFirst"=>$languageFirst, "languageSecond"=>$languageSecond, "languageThird"=>$languageThird, "countryOfBirth"=>$countryOfBirth, "citizenship1"=>$citizenship1, "citizenship1Passport"=>$citizenship1Passport, "nationalIDCardNumber"=>$nationalIDCardNumber, "residencyStatus"=>$residencyStatus, "visaExpiryDate"=>$visaExpiryDate, "email"=>$email, "homeAddress"=>$homeAddress, "homeAddressDistrict"=>$homeAddressDistrict, "homeAddressCountry"=>$homeAddressCountry, "phone1Type"=>$phone1Type, "phone1CountryCode"=>$phone1CountryCode, "phone1"=>$phone1, "referenceEmail1"=>$referenceEmail1, "referenceEmail2"=>$referenceEmail2, "fields"=>$fields, "gibbonStaffApplicationFormID"=>$gibbonStaffApplicationFormID); 
+						$sql="UPDATE gibbonStaffApplicationForm SET priority=:priority, status=:status, milestones=:milestones, dateStart=:dateStart, notes=:notes, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, dob=:dob, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, citizenship1=:citizenship1, citizenship1Passport=:citizenship1Passport, nationalIDCardNumber=:nationalIDCardNumber, residencyStatus=:residencyStatus, visaExpiryDate=:visaExpiryDate, email=:email, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, referenceEmail1=:referenceEmail1, referenceEmail2=:referenceEmail2, fields=:fields WHERE gibbonStaffApplicationFormID=:gibbonStaffApplicationFormID" ;
 						$result=$connection2->prepare($sql);
 						$result->execute($data);
 					}
