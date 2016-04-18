@@ -34,7 +34,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Set Future Absence') . "</div>" ;
 	print "</div>" ;
 
-	if (isset($_GET["return"])) { returnProcess($_GET["return"], null, null); }
+	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
 	
 	$gibbonPersonID=NULL ;
 	if (isset($_GET["gibbonPersonID"])) {
@@ -43,7 +43,7 @@ else {
 	?>
 	
 	<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr class='break'>
 				<td colspan=2> 
 					<h3>
@@ -54,10 +54,10 @@ else {
 			<tr>
 				<td style='width: 275px'> 
 					<b><?php print __($guid, 'Student') ?></b><br/>
-					<span style="font-size: 90%"><i></i></span>
+					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
-					<select style="width: 302px" name="gibbonPersonID">
+					<select class="standardWidth" name="gibbonPersonID">
 						<?php
 						print "<option value=''></option>" ;
 						try {
@@ -120,7 +120,7 @@ else {
 		//Show student form
 		?>
 		<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/attendance_future_byPersonProcess.php?gibbonPersonID=$gibbonPersonID" ?>">
-			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+			<table class='smallIntBorder fullWidth' cellspacing='0'>	
 				<tr class='break'>
 					<td colspan=2> 
 						<h3>
@@ -131,19 +131,19 @@ else {
 				<tr>
 					<td style='width: 275px'> 
 						<b><?php print __($guid, 'Type') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+						<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 					</td>
 					<td class="right">
-						<input readonly name="type" id="type" maxlength=10 value="Absent" type="text" style="width: 300px">
+						<input readonly name="type" id="type" maxlength=10 value="Absent" type="text" class="standardWidth">
 					</td>
 				</tr>
 				<tr>
 					<td> 
 						<b><?php print __($guid, 'Start Date') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+						<span class="emphasis small"><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></span>
 					</td>
 					<td class="right">
-						<input name="dateStart" id="dateStart" maxlength=10 value="" type="text" style="width: 300px">
+						<input name="dateStart" id="dateStart" maxlength=10 value="" type="text" class="standardWidth">
 						<script type="text/javascript">
 							var dateStart=new LiveValidation('dateStart');
 							dateStart.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
@@ -159,10 +159,10 @@ else {
 				<tr>
 					<td> 
 						<b><?php print __($guid, 'End Date') ?></b><br/>
-						<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+						<span class="emphasis small"><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></span>
 					</td>
 					<td class="right">
-						<input name="dateEnd" id="dateEnd" maxlength=10 value="" type="text" style="width: 300px">
+						<input name="dateEnd" id="dateEnd" maxlength=10 value="" type="text" class="standardWidth">
 						<script type="text/javascript">
 							var dateEnd=new LiveValidation('dateEnd');
 							dateEnd.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
@@ -177,7 +177,7 @@ else {
 				<tr>
 					<td> 
 						<b><?php print __($guid, 'Reason') ?></b><br/>
-						<span style="font-size: 90%"><i></i></span>
+						<span class="emphasis small"></span>
 					</td>
 					<td class="right">
 						<?php
@@ -195,7 +195,7 @@ else {
 				<tr>
 					<td> 
 						<b><?php print __($guid, 'Comment') ?></b><br/>
-						<span style="font-size: 90%"><i><?php print __($guid, '255 character limit') ?></i></span>
+						<span class="emphasis small"><?php print __($guid, '255 character limit') ?></span>
 					</td>
 					<td class="right">
 						<?php
@@ -209,7 +209,7 @@ else {
 				</tr>
 				<tr>
 					<td>
-						<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+						<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 					</td>
 					<td class="right">
 						<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

@@ -104,7 +104,7 @@ if ($result->rowCount()==1) {
 ?>
 
 <form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] ?>/preferencesPasswordProcess.php">
-	<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+	<table class='smallIntBorder fullWidth' cellspacing='0'>	
 		<tr class='break'>
 			<td colspan=2>
 				<h3>
@@ -127,10 +127,10 @@ if ($result->rowCount()==1) {
 		<tr>
 			<td> 
 				<b><?php print __($guid, "Current Password") ; ?> *</b><br/>
-				<span style="font-size: 90%"><i></i></span>
+				<span class="emphasis small"></span>
 			</td>
 			<td class="right">
-				<input name="password" id="password" maxlength=30 value="" type="password" style="width: 300px">
+				<input name="password" id="password" maxlength=30 value="" type="password" class="standardWidth">
 				<script type="text/javascript">
 					var password=new LiveValidation('password');
 					password.add(Validate.Presence);
@@ -140,11 +140,11 @@ if ($result->rowCount()==1) {
 		<tr>
 			<td> 
 				<b><?php print __($guid, 'New Password') ?> *</b><br/>
-				<span style="font-size: 90%"><i></i></span>
+				<span class="emphasis small"></span>
 			</td>
 			<td class="right">
 				<input type='button' class="generatePassword" value="<?php print __($guid, "Generate Password") ?>"/>
-				<input name="passwordNew" id="passwordNew" maxlength=20 value="" type="password" style="width: 300px"><br/>
+				<input name="passwordNew" id="passwordNew" maxlength=20 value="" type="password" class="standardWidth"><br/>
 				
 				<script type="text/javascript">
 					var passwordNew=new LiveValidation('passwordNew');
@@ -187,10 +187,10 @@ if ($result->rowCount()==1) {
 		<tr>
 			<td> 
 				<b><?php print __($guid, "Confirm New Password") ; ?> *</b><br/>
-				<span style="font-size: 90%"><i></i></span>
+				<span class="emphasis small"></span>
 			</td>
 			<td class="right">
-				<input name="passwordConfirm" id="passwordConfirm" maxlength=30 value="" type="password" style="width: 300px">
+				<input name="passwordConfirm" id="passwordConfirm" maxlength=30 value="" type="password" class="standardWidth">
 				<script type="text/javascript">
 					var passwordConfirm=new LiveValidation('passwordConfirm');
 					passwordConfirm.add(Validate.Presence);
@@ -200,7 +200,7 @@ if ($result->rowCount()==1) {
 		</tr>
 		<tr>
 			<td>
-				<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+				<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 			</td>
 			<td class="right">
 				<?php
@@ -217,7 +217,7 @@ if ($result->rowCount()==1) {
 	
 	
 <form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] ?>/preferencesProcess.php">
-	<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+	<table class='smallIntBorder fullWidth' cellspacing='0'>	
 		<tr class='break'>
 			<td colspan=2>
 				<h3>
@@ -228,10 +228,10 @@ if ($result->rowCount()==1) {
 		<tr>
 			<td> 
 				<b><?php print __($guid, "Personal Google Calendar ID") ; ?></b><br/>
-				<span style="font-size: 90%"><i><?php print __($guid, "Google Calendar ID for your personal calendar.") . "<br/>" . __($guid, "Only enables timetable integration when logging in via Google.") ; ?></i></span>
+				<span class="emphasis small"><?php print __($guid, "Google Calendar ID for your personal calendar.") . "<br/>" . __($guid, "Only enables timetable integration when logging in via Google.") ; ?></span>
 			</td>
 			<td class="right">
-				<input name="calendarFeedPersonal" id="calendarFeedPersonal" value="<?php print $row["calendarFeedPersonal"] ?>" type="text" style="width: 300px">
+				<input name="calendarFeedPersonal" id="calendarFeedPersonal" value="<?php print $row["calendarFeedPersonal"] ?>" type="text" class="standardWidth">
 			</td>
 		</tr>
 		
@@ -242,10 +242,10 @@ if ($result->rowCount()==1) {
 			<tr>
 				<td> 
 					<b><?php print __($guid, "Personal Background") ; ?></b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, "Set your own custom background image.") . "<br/>" . __($guid, "Please provide URL to image.") ; ?></i></span>
+					<span class="emphasis small"><?php print __($guid, "Set your own custom background image.") . "<br/>" . __($guid, "Please provide URL to image.") ; ?></span>
 				</td>
 				<td class="right">
-					<input name="personalBackground" id="personalBackground" value="<?php print $row["personalBackground"] ?>" type="text" style="width: 300px">
+					<input name="personalBackground" id="personalBackground" value="<?php print $row["personalBackground"] ?>" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var personalBackground=new LiveValidation('personalBackground');
 						personalBackground.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
@@ -259,10 +259,10 @@ if ($result->rowCount()==1) {
 		<tr>
 			<td> 
 				<b><?php print __($guid, "Personal Theme") ; ?></b><br/>
-				<span style="font-size: 90%"><i><?php print __($guid, "Override the system theme.") ; ?></i></span>
+				<span class="emphasis small"><?php print __($guid, "Override the system theme.") ; ?></span>
 			</td>
 			<td class="right">
-				<select name="gibbonThemeIDPersonal" id="gibbonThemeIDPersonal" style="width: 302px">
+				<select name="gibbonThemeIDPersonal" id="gibbonThemeIDPersonal" class="standardWidth">
 					<?php
 					print "<option value=''></option>" ;
 					try {
@@ -291,10 +291,10 @@ if ($result->rowCount()==1) {
 		<tr>
 			<td> 
 				<b><?php print __($guid, "Personal Language") ; ?></b><br/>
-				<span style="font-size: 90%"><i><?php print __($guid, "Override the system default language.") ; ?></i></span>
+				<span class="emphasis small"><?php print __($guid, "Override the system default language.") ; ?></span>
 			</td>
 			<td class="right">
-				<select name="gibboni18nIDPersonal" id="gibboni18nIDPersonal" style="width: 302px">
+				<select name="gibboni18nIDPersonal" id="gibboni18nIDPersonal" class="standardWidth">
 					<?php
 					print "<option value=''></option>" ;
 					try {
@@ -323,10 +323,10 @@ if ($result->rowCount()==1) {
 		<tr>
 			<td> 
 				<b><?php print __($guid, "Receive Email Notifications?") ; ?></b><br/>
-				<span style="font-size: 90%"><i><?php print __($guid, "Notifications can always be viewed on screen.") ; ?></i></span>
+				<span class="emphasis small"><?php print __($guid, "Notifications can always be viewed on screen.") ; ?></span>
 			</td>
 			<td class="right">
-				<select name="receiveNotificationEmails" id="receiveNotificationEmails" style="width: 302px">
+				<select name="receiveNotificationEmails" id="receiveNotificationEmails" class="standardWidth">
 					<?php
 					print "<option " ;
 					if ($_SESSION[$guid]["receiveNotificationEmails"]=="N") {
@@ -346,7 +346,7 @@ if ($result->rowCount()==1) {
 		
 		<tr>
 			<td>
-				<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+				<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 			</td>
 			<td class='right'>
 				<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

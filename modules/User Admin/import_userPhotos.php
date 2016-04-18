@@ -52,11 +52,11 @@ else {
 			<?php print __($guid, 'This page allows you to bulk import user photos, in the form of a ZIP file contain images named with individual usernames. See notes below for sizing information.') ?><br/>
 		</p>
 		<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/import_userPhotos.php&step=2" ?>" enctype="multipart/form-data">
-			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+			<table class='smallIntBorder fullWidth' cellspacing='0'>	
 				<tr>
 					<td style='width: 275px'> 
 						<b><?php print __($guid, 'ZIP File') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print __($guid, 'See Notes below for specification.') ?></i></span>
+						<span class="emphasis small"><?php print __($guid, 'See Notes below for specification.') ?></span>
 					</td>
 					<td class="right">
 						<input type="file" name="file" id="file" size="chars">
@@ -68,7 +68,7 @@ else {
 				</tr>
 				<tr>
 					<td>
-						<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+						<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 					</td>
 					<td class="right">
 						<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php print $gibbonSchoolYearID ?>" type="hidden">

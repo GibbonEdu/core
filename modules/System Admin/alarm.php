@@ -61,7 +61,7 @@ else {
 	?>
 	
 	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/alarmProcess.php" ?>" enctype="multipart/form-data">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr>
 				<?php
 				try {
@@ -75,9 +75,9 @@ else {
 				?>
 				<td> 
 					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span><br/>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span><br/>
 					<?php if ($row["value"]!="") { ?>
-						<span style="font-size: 90%"><i><?php print __($guid, 'Will overwrite existing attachment.') ?></i></span>
+						<span class="emphasis small"><?php print __($guid, 'Will overwrite existing attachment.') ?></span>
 					<?php } ?>
 				</td>
 				<td class="right">
@@ -122,10 +122,10 @@ else {
 				?>
 				<td> 
 					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
 						<option <?php if ($row["value"]=="None") {print "selected ";} ?>value="None"><?php print __($guid, 'None') ?></option>
 						<option <?php if ($row["value"]=="General") {print "selected ";} ?>value="General"><?php print __($guid, 'General') ?></option>
 						<option <?php if ($row["value"]=="Lockdown") {print "selected ";} ?>value="Lockdown"><?php print __($guid, 'Lockdown') ?></option>
@@ -142,7 +142,7 @@ else {
 			</tr>
             <tr>
 				<td>
-					<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+					<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

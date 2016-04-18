@@ -133,7 +133,7 @@ else {
 						
 						?>
 						<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/units_edit_copyForwardProcess.php?gibbonUnitID=$gibbonUnitID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonSchoolYearID=$gibbonSchoolYearID" ?>">
-							<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+							<table class='smallIntBorder fullWidth' cellspacing='0'>	
 								<tr class='break'>
 									<td colspan=2> 
 										<h3><?php print __($guid, 'Source') ?></h3>
@@ -142,7 +142,7 @@ else {
 								<tr>
 									<td style='width: 275px'> 
 										<b><?php print __($guid, 'School Year') ?> *</b><br/>
-										<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+										<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 									</td>
 									<td class="right">
 										<?php
@@ -153,7 +153,7 @@ else {
 								<tr>
 									<td> 
 										<b><?php print __($guid, 'Class') ?> *</b><br/>
-										<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+										<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 									</td>
 									<td class="right">
 										<?php print "<input readonly value='" . $course . "." . $class . "' type='text' style='width: 300px'>" ; ?>
@@ -162,7 +162,7 @@ else {
 								<tr>
 									<td> 
 										<b><?php print __($guid, 'Unit') ?> *</b><br/>
-										<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+										<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 									</td>
 									<td class="right">
 										<?php print "<input readonly value='" . $row["name"] . "' type='text' style='width: 300px'>" ; ?>
@@ -180,7 +180,7 @@ else {
 										<b><?php print __($guid, 'Year') ?> *</b><br/>
 									</td>
 									<td class="right">
-										<select name="gibbonSchoolYearIDCopyTo" id="gibbonSchoolYearIDCopyTo" style="width: 302px">
+										<select name="gibbonSchoolYearIDCopyTo" id="gibbonSchoolYearIDCopyTo" class="standardWidth">
 											<?php
 											print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
 											try {
@@ -216,7 +216,7 @@ else {
 										<b><?php print __($guid, 'Course') ?> *</b><br/>
 									</td>
 									<td class="right">
-										<select name="gibbonCourseIDTarget" id="gibbonCourseIDTarget" style="width: 302px">
+										<select name="gibbonCourseIDTarget" id="gibbonCourseIDTarget" class="standardWidth">
 											<?php
 											try {
 												if ($highestAction=="Unit Planner_all") {
@@ -244,7 +244,7 @@ else {
 								<tr>
 									<td> 
 										<b><?php print __($guid, 'New Unit Name') ?> *</b><br/>
-										<span style="font-size: 90%"><i></i></span>
+										<span class="emphasis small"></span>
 									</td>
 									<td class="right">
 										<?php print "<input name='nameTarget' id='nameTarget' value='" . $row["name"] . "' type='text' style='width: 300px'>" ; ?>
@@ -257,7 +257,7 @@ else {
 								
 								<tr>
 									<td>
-										<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+										<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 									</td>
 									<td class="right">
 										<input name="gibbonCourseClassID" id="gibbonCourseClassID" value="<?php print $gibbonCourseClassID ?>" type="hidden">

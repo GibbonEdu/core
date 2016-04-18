@@ -1202,3 +1202,19 @@ div.resourceAddSlider {
 	margin-bottom: -5px
 }
 
+/* V12 NEW CLASSES */
+p.emphasis, span.emphasis {
+	font-style: italic ; 
+}
+span.small {
+	font-size: 90% ;
+}
+input.standardWidth, textarea.standardWidth {
+	width: 300px ;
+}
+select.standardWidth {
+	width: 302px ;
+}
+table.fullWidth {
+	width: 100% ;
+}

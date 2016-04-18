@@ -968,7 +968,7 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Learning Area') ?></b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
 							<?php
@@ -995,7 +995,7 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'School Year') ?></b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
 							<?php
@@ -1029,10 +1029,10 @@ else {
 						<tr>
 							<td> 
 								<b><?php print __($guid, 'Type') ?></b><br/>
-								<span style="font-size: 90%"><i></i></span>
+								<span class="emphasis small"></span>
 							</td>
 							<td class="right">
-								<select name="filter3" id="filter3" style="width: 302px">
+								<select name="filter3" id="filter3" class="standardWidth">
 									<option value=""></option>
 									<?php
 									for ($i=0; $i<count($types); $i++) {
@@ -1471,10 +1471,10 @@ else {
 							<tr>
 								<td> 
 									<b><?php print __($guid, 'Search For') ?></b><br/>
-									<span style="font-size: 90%"><i>Preferred, surname, username.</i></span>
+									<span class="emphasis small">Preferred, surname, username.</span>
 								</td>
 								<td class="right">
-									<select name="search" id="search" style="width: 302px">
+									<select name="search" id="search" class="standardWidth">
 										<option value=""></value>
 										<?php print $options ; ?> 
 									</select>
@@ -1569,7 +1569,7 @@ else {
 								<tr>
 									<td> 
 										<b>Learning Area</b><br/>
-										<span style="font-size: 90%"><i></i></span>
+										<span class="emphasis small"></span>
 									</td>
 									<td class="right">
 										<?php
@@ -1596,7 +1596,7 @@ else {
 								<tr>
 									<td> 
 										<b><?php print __($guid, 'School Year') ?></b><br/>
-										<span style="font-size: 90%"><i></i></span>
+										<span class="emphasis small"></span>
 									</td>
 									<td class="right">
 										<?php
@@ -1630,10 +1630,10 @@ else {
 									<tr>
 										<td> 
 											<b><?php print __($guid, 'Type') ?></b><br/>
-											<span style="font-size: 90%"><i></i></span>
+											<span class="emphasis small"></span>
 										</td>
 										<td class="right">
-											<select name="filter3" id="filter3" style="width: 302px">
+											<select name="filter3" id="filter3" class="standardWidth">
 												<option value=""></option>
 												<?php
 												for ($i=0; $i<count($types); $i++) {

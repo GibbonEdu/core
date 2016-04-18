@@ -31,7 +31,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/budgetCycles_manage.php'>" . __($guid, 'Manage Budget Cycles') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Add Budget Cycle') . "</div>" ;
 	print "</div>" ;
 
-	if (isset($_GET["return"])) { returnProcess($_GET["return"], null, array("error3" => "Your request failed because some inputs did not meet a requirement for uniqueness.")); }
+	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, array("error3" => "Your request failed because some inputs did not meet a requirement for uniqueness.")); }
 	
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
 	$addReturnMessage="" ;
@@ -63,7 +63,7 @@ else {
 	
 	?>
 	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/budgetCycles_manage_addProcess.php" ?>">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr class='break'>
 				<td colspan=2> 
 					<h3><?php print __($guid, 'Basic Information') ?></h3>
@@ -72,10 +72,10 @@ else {
 			<tr>
 				<td style='width: 275px'> 
 					<b><?php print __($guid, 'Name') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique.') ?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'Must be unique.') ?></span>
 				</td>
 				<td class="right">
-					<input name="name" id="name" maxlength=7 value="" type="text" style="width: 300px">
+					<input name="name" id="name" maxlength=7 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var name2=new LiveValidation('name');
 						name2.add(Validate.Presence);
@@ -87,7 +87,7 @@ else {
 					<b><?php print __($guid, 'Status') ?> *</b>
 				</td>
 				<td class="right">
-					<select style="width: 302px" name="status">
+					<select class="standardWidth" name="status">
 						<option value="Past"><?php print __($guid, 'Past') ?></option>
 						<option value="Current"><?php print __($guid, 'Current') ?></option>
 						<option value="Upcoming" selected><?php print __($guid, 'Upcoming') ?></option>
@@ -97,10 +97,10 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Sequence Number') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique. Controls chronological ordering.') ?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'Must be unique. Controls chronological ordering.') ?></span>
 				</td>
 				<td class="right">
-					<input name="sequenceNumber" id="sequenceNumber" maxlength=3 value="" type="text" style="width: 300px">
+					<input name="sequenceNumber" id="sequenceNumber" maxlength=3 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var sequenceNumber=new LiveValidation('sequenceNumber');
 						sequenceNumber.add(Validate.Numericality);
@@ -111,10 +111,10 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Start Date') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+					<span class="emphasis small"><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></span>
 				</td>
 				<td class="right">
-					<input name="dateStart" id="dateStart" maxlength=10 value="" type="text" style="width: 300px">
+					<input name="dateStart" id="dateStart" maxlength=10 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var dateStart=new LiveValidation('dateStart');
 						dateStart.add(Validate.Presence);
@@ -130,10 +130,10 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'End Date') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+					<span class="emphasis small"><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></span>
 				</td>
 				<td class="right">
-					<input name="dateEnd" id="dateEnd" maxlength=10 value="" type="text" style="width: 300px">
+					<input name="dateEnd" id="dateEnd" maxlength=10 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var dateEnd=new LiveValidation('dateEnd');
 						dateEnd.add(Validate.Presence);
@@ -191,7 +191,7 @@ else {
 							</span>
 						</td>
 						<td class="right">
-							<input name="values[]" id="values" maxlength=15 value="0.00" type="text" style="width: 300px">
+							<input name="values[]" id="values" maxlength=15 value="0.00" type="text" class="standardWidth">
 							<input type="hidden" name="gibbonFinanceBudgetIDs[]" value="<?php print $rowBudget["gibbonFinanceBudgetID"] ?>">
 							<script type="text/javascript">
 								var values=new LiveValidation('values');
@@ -207,7 +207,7 @@ else {
 					
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+					<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

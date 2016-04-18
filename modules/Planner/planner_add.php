@@ -161,7 +161,7 @@ else {
 			?>
 	
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_addProcess.php?viewBy=$viewBy&subView=$subView&address=" . $_SESSION[$guid]["address"] ?>" enctype="multipart/form-data">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr class='break'>
 						<td colspan=2> 
 							<h3><?php print __($guid, 'Basic Information') ?></h3>
@@ -175,13 +175,13 @@ else {
 							<?php
 							if ($viewBy=="class") {
 								?>
-								<input readonly name="schoolYearName" id="schoolYearName" maxlength=20 value="<?php print $row["course"] . "." . $row["class"] ?>" type="text" style="width: 300px">
-								<input name="gibbonCourseClassID" id="gibbonCourseClassID" maxlength=20 value="<?php print $row["gibbonCourseClassID"] ?>" type="hidden" style="width: 300px">
+								<input readonly name="schoolYearName" id="schoolYearName" maxlength=20 value="<?php print $row["course"] . "." . $row["class"] ?>" type="text" class="standardWidth">
+								<input name="gibbonCourseClassID" id="gibbonCourseClassID" maxlength=20 value="<?php print $row["gibbonCourseClassID"] ?>" type="hidden" class="standardWidth">
 								<?php
 							}
 							else {
 								?>
-								<select name="gibbonCourseClassID" id="gibbonCourseClassID" style="width: 302px">
+								<select name="gibbonCourseClassID" id="gibbonCourseClassID" class="standardWidth">
 									<?php
 									print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
 									try {
@@ -224,7 +224,7 @@ else {
 							<?php
 							if ($viewBy=="class") {
 								?>
-								<select name="gibbonUnitID" id="gibbonUnitID" style="width: 302px">
+								<select name="gibbonUnitID" id="gibbonUnitID" class="standardWidth">
 									<?php
 									//List gibbon units
 									try {
@@ -280,7 +280,7 @@ else {
 							}
 							else {
 								?>
-								<select name="gibbonUnitID" id="gibbonUnitID" style="width: 302px">
+								<select name="gibbonUnitID" id="gibbonUnitID" class="standardWidth">
 									<?php
 									//List units
 									try {
@@ -346,7 +346,7 @@ else {
 							<b><?php print __($guid, 'Name') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<input name="name" id="name" maxlength=50 value="" type="text" style="width: 300px">
+							<input name="name" id="name" maxlength=50 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var name2=new LiveValidation('name');
 								name2.add(Validate.Presence);
@@ -358,7 +358,7 @@ else {
 							<b><?php print __($guid, 'Summary') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<input name="summary" id="summary" maxlength=255 value="" type="text" style="width: 300px">
+							<input name="summary" id="summary" maxlength=255 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var summary=new LiveValidation('summary');
 								summary.add(Validate.Presence);
@@ -422,18 +422,18 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Date') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></span>
 						</td>
 						<td class="right">
 							<?php
 							if ($viewBy=="date") {
 								?>
-								<input readonly name="date" id="date" maxlength=10 value="<?php print dateConvertBack($guid, $date) ?>" type="text" style="width: 300px">
+								<input readonly name="date" id="date" maxlength=10 value="<?php print dateConvertBack($guid, $date) ?>" type="text" class="standardWidth">
 								<?php
 							}
 							else {
 								?>
-								<input name="date" id="date" maxlength=10 value="<?php print dateConvertBack($guid, $nextDate) ?>" type="text" style="width: 300px">
+								<input name="date" id="date" maxlength=10 value="<?php print dateConvertBack($guid, $nextDate) ?>" type="text" class="standardWidth">
 								<script type="text/javascript">
 									var date=new LiveValidation('date');
 									date.add(Validate.Presence);
@@ -452,10 +452,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Start Time') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Format: hh:mm (24hr)') ?><br/></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Format: hh:mm (24hr)') ?><br/></span>
 						</td>
 						<td class="right">
-							<input name="timeStart" id="timeStart" maxlength=5 value="<?php if (isset($nextTimeStart)) { print substr($nextTimeStart,0,5) ; } ?>" type="text" style="width: 300px">
+							<input name="timeStart" id="timeStart" maxlength=5 value="<?php if (isset($nextTimeStart)) { print substr($nextTimeStart,0,5) ; } ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var timeStart=new LiveValidation('timeStart');
 								timeStart.add(Validate.Presence);
@@ -485,10 +485,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'End Time') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Format: hh:mm (24hr)') ?><br/></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Format: hh:mm (24hr)') ?><br/></span>
 						</td>
 						<td class="right">
-							<input name="timeEnd" id="timeEnd" maxlength=5 value="<?php if (isset($nextTimeEnd)) { print substr($nextTimeEnd,0,5) ; } ?>" type="text" style="width: 300px">
+							<input name="timeEnd" id="timeEnd" maxlength=5 value="<?php if (isset($nextTimeEnd)) { print substr($nextTimeEnd,0,5) ; } ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var timeEnd=new LiveValidation('timeEnd');
 								timeEnd.add(Validate.Presence);
@@ -638,7 +638,7 @@ else {
 					<tr id="homeworkRow">
 						<td> 
 							<b><?php print __($guid, 'Homework?') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
 							<input type="radio" name="homework" value="Yes" class="homework" /> <?php print __($guid, 'Yes') ?>
@@ -648,10 +648,10 @@ else {
 					<tr id="homeworkDueDateRow">
 						<td> 
 							<b><?php print __($guid, 'Homework Due Date') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></span>
 						</td>
 						<td class="right">
-							<input name="homeworkDueDate" id="homeworkDueDate" maxlength=10 value="" type="text" style="width: 300px">
+							<input name="homeworkDueDate" id="homeworkDueDate" maxlength=10 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var homeworkDueDate=new LiveValidation('homeworkDueDate');
 								homeworkDueDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
@@ -668,10 +668,10 @@ else {
 					<tr id="homeworkDueDateTimeRow">
 						<td> 
 							<b><?php print __($guid, 'Homework Due Date Time') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Format: hh:mm (24hr)') ?><br/></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Format: hh:mm (24hr)') ?><br/></span>
 						</td>
 						<td class="right">
-							<input name="homeworkDueDateTime" id="homeworkDueDateTime" maxlength=5 value="" type="text" style="width: 300px">
+							<input name="homeworkDueDateTime" id="homeworkDueDateTime" maxlength=5 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var homeworkDueDateTime=new LiveValidation('homeworkDueDateTime');
 								homeworkDueDateTime.add( Validate.Format, {pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use hh:mm" } ); 
@@ -715,10 +715,10 @@ else {
 					<tr id="homeworkSubmissionDateOpenRow">
 						<td> 
 							<b><?php print __($guid, 'Submission Open Date') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></span>
 						</td>
 						<td class="right">
-							<input name="homeworkSubmissionDateOpen" id="homeworkSubmissionDateOpen" maxlength=10 value="" type="text" style="width: 300px">
+							<input name="homeworkSubmissionDateOpen" id="homeworkSubmissionDateOpen" maxlength=10 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var homeworkSubmissionDateOpen=new LiveValidation('homeworkSubmissionDateOpen');
 								homeworkSubmissionDateOpen.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
@@ -733,10 +733,10 @@ else {
 					<tr id="homeworkSubmissionDraftsRow">
 						<td> 
 							<b><?php print __($guid, 'Drafts') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
-							<select name="homeworkSubmissionDrafts" id="homeworkSubmissionDrafts" style="width: 302px">
+							<select name="homeworkSubmissionDrafts" id="homeworkSubmissionDrafts" class="standardWidth">
 								<option value="0"><?php print __($guid, 'None') ?></option>
 								<option value="1">1</option>
 								<option value="2">2</option>
@@ -747,10 +747,10 @@ else {
 					<tr id="homeworkSubmissionTypeRow">
 						<td> 
 							<b><?php print __($guid, 'Submission Type') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
-							<select name="homeworkSubmissionType" id="homeworkSubmissionType" style="width: 302px">
+							<select name="homeworkSubmissionType" id="homeworkSubmissionType" class="standardWidth">
 								<option value="Link"><?php print __($guid, 'Link') ?></option>
 								<option value="File"><?php print __($guid, 'File') ?></option>
 								<option value="Link/File"><?php print __($guid, 'Link/File') ?></option>
@@ -760,10 +760,10 @@ else {
 					<tr id="homeworkSubmissionRequiredRow">
 						<td> 
 							<b><?php print __($guid, 'Submission Required') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
-							<select name="homeworkSubmissionRequired" id="homeworkSubmissionRequired" style="width: 302px">
+							<select name="homeworkSubmissionRequired" id="homeworkSubmissionRequired" class="standardWidth">
 								<option value="Optional">Optional</option>
 								<option value="Compulsory">Compulsory</option>
 							</select>
@@ -773,7 +773,7 @@ else {
 						<tr id="homeworkCrowdAssessRow">
 							<td> 
 								<b><?php print __($guid, 'Crowd Assessment?') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, 'Allow crowd assessment of homework?') ?></i></span>
+								<span class="emphasis small"><?php print __($guid, 'Allow crowd assessment of homework?') ?></span>
 							</td>
 							<td class="right">
 								<input type="radio" name="homeworkCrowdAssess" value="Yes" class="homeworkCrowdAssess" /> <?php print __($guid, 'Yes') ?>
@@ -783,7 +783,7 @@ else {
 						<tr id="homeworkCrowdAssessControlRow">
 							<td> 
 								<b><?php print __($guid, 'Access Controls?') ?></b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, 'Decide who can see this homework.') ?></i></span>
+								<span class="emphasis small"><?php print __($guid, 'Decide who can see this homework.') ?></span>
 							</td>
 							<td class="right">
 								<?php
@@ -1086,7 +1086,7 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Create Markbook Column?') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Linked to this lesson by default.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Linked to this lesson by default.') ?></span>
 						</td>
 						<td class="right">
 							<input type="radio" name="markbook" value="Y" id="markbook" /> <?php print __($guid, 'Yes') ?>
@@ -1149,13 +1149,13 @@ else {
 					<tr id="accessRowStudents">
 						<td> 
 							<b><?php print __($guid, 'Viewable to Students') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
 							<?php
 							$sharingDefaultStudents=getSettingByScope( $connection2, "Planner", "sharingDefaultStudents" ) ;
 							?>
-							<select name="viewableStudents" id="viewableStudents" style="width: 302px">
+							<select name="viewableStudents" id="viewableStudents" class="standardWidth">
 								<option <?php if ($sharingDefaultStudents=="Y") { print "selected" ; } ?> value="Y"><?php print __($guid, 'Yes') ?></option>
 								<option <?php if ($sharingDefaultStudents=="N") { print "selected" ; } ?> value="N"><?php print __($guid, 'No') ?></option>
 							</select>
@@ -1164,13 +1164,13 @@ else {
 					<tr id="accessRowParents">
 						<td> 
 							<b><?php print __($guid, 'Viewable to Parents') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
 							<?php
 							$sharingDefaultParents=getSettingByScope( $connection2, "Planner", "sharingDefaultParents" ) ;
 							?>
-							<select name="viewableParents" id="viewableParents" style="width: 302px">
+							<select name="viewableParents" id="viewableParents" class="standardWidth">
 								<option <?php if ($sharingDefaultParents=="Y") { print "selected" ; } ?> value="Y"><?php print __($guid, 'Yes') ?></option>
 								<option <?php if ($sharingDefaultParents=="N") { print "selected" ; } ?> value="N"><?php print __($guid, 'No') ?></option>
 							</select>
@@ -1185,7 +1185,7 @@ else {
 					<tr id="guestListRow">
 						<td> 
 							<b><?php print __($guid, 'Guest List') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 						</td>
 						<td class="right">
 							<select name="guests[]" id="guests[]" multiple style="width: 302px; height: 150px">
@@ -1209,7 +1209,7 @@ else {
 							<b><?php print __($guid, 'Role') ?></b><br/>
 						</td>
 						<td class="right">
-							<select name="role" id="role" style="width: 302px">
+							<select name="role" id="role" class="standardWidth">
 								<option value="Guest Student"><?php print __($guid, 'Guest Student') ?></option>
 								<option value="Guest Teacher"><?php print __($guid, 'Guest Teacher') ?></option>
 								<option value="Guest Assistant"><?php print __($guid, 'Guest Assistant') ?></option>
@@ -1221,7 +1221,7 @@ else {
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+							<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 						</td>
 						<td class="right">
 							<input type="submit" value="<?php print __($guid, "Submit") ; ?>">

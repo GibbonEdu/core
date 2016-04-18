@@ -132,7 +132,7 @@ else {
 			if ($step==1) {
 				?>
 				<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/externalAssessment_manage_details_add.php" ?>">
-					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>	
 						<tr class='break'>
 							<td colspan=2> 
 								<h3><?php print __($guid, 'Assessment Type') ?></h3>
@@ -144,7 +144,7 @@ else {
 								<b><?php print __($guid, 'Choose Assessment') ?> *</b><br/>
 							</td>
 							<td class="right">
-								<select style="width: 302px" name="gibbonExternalAssessmentID" id="gibbonExternalAssessmentID">
+								<select class="standardWidth" name="gibbonExternalAssessmentID" id="gibbonExternalAssessmentID">
 									<?php
 									try {
 										$dataSelect=array(); 
@@ -185,7 +185,7 @@ else {
 						<tr id="copyToGCSE">
 							<td> 
 								<b><?php print __($guid, 'Copy Target Grades?') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, 'These will come from the student\'s last CAT test.') ?></i></span>
+								<span class="emphasis small"><?php print __($guid, 'These will come from the student\'s last CAT test.') ?></span>
 							</td>
 							<td class="right">
 								<input type="checkbox" name="copyToGCSECheck" id="copyToGCSECheck"><br/><br/>
@@ -210,7 +210,7 @@ else {
 						<tr id="copyToIB">
 							<td> 
 								<b><?php print __($guid, 'Create Target Grades?') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, 'These will be calculated from the student\'s GCSE grades.') ?></i></span>
+								<span class="emphasis small"><?php print __($guid, 'These will be calculated from the student\'s GCSE grades.') ?></span>
 							</td>
 							<td class="right">
 								<select name="copyToIBCheck" id="copyToIBCheck">
@@ -223,7 +223,7 @@ else {
 						
 						<tr>
 							<td>
-								<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+								<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 							</td>
 							<td class="right">
 								<input type="hidden" name="step" value="2">
@@ -469,11 +469,11 @@ else {
 					
 					?>
 					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/externalAssessment_manage_details_addProcess.php?search=$search&allStudents=$allStudents" ?>" enctype="multipart/form-data">
-						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+						<table class='smallIntBorder fullWidth' cellspacing='0'>	
 							<tr>
 								<td style='width: 275px'> 
 									<b><?php print __($guid, 'Assessment Type') ?> *</b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+									<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 								</td>
 								<td class="right" colspan=2>
 									<input readonly name="name" id="name" maxlength=20 value="<?php print $rowSelect["name"] ?>" type="text" style="width: 300px; text-align: right">
@@ -482,10 +482,10 @@ else {
 							<tr>
 								<td> 
 									<b><?php print __($guid, 'Date') ?> *</b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, "Format:") . " " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } ?><br/></i></span>
+									<span class="emphasis small"><?php print __($guid, "Format:") . " " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } ?><br/></span>
 								</td>
 								<td class="right" colspan=2>
-									<input name="date" id="date" maxlength=10 value="" type="text" style="width: 300px">
+									<input name="date" id="date" maxlength=10 value="" type="text" class="standardWidth">
 									<script type="text/javascript">
 										var date=new LiveValidation('date');
 										date.add(Validate.Presence);
@@ -504,7 +504,7 @@ else {
 								<tr>
 									<td style='width: 275px'> 
 										<b><?php print __($guid, 'Upload File') ?></b><br/>
-										<span style="font-size: 90%"><i><?php print __($guid, 'Use this to attach raw data, graphical summary, etc.') ?></i></span>
+										<span class="emphasis small"><?php print __($guid, 'Use this to attach raw data, graphical summary, etc.') ?></span>
 									</td>
 									<td class="right" colspan=2>
 										<input type="file" name="file" id="file"><br/><br/>
@@ -636,13 +636,13 @@ else {
 						?>
 						<tr>
 							<td>
-								<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?>
+								<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?>
 								<?php
 								if ($rowSelect["allowFileUpload"]=="Y") { 
 									print getMaxUpload($guid) ; 
 								}
 								?>
-								</i></span>
+								</span>
 							</td>
 							<td class="right" colspan=2>
 								<input name="count" id="count" value="<?php print $count ?>" type="hidden">

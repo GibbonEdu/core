@@ -120,7 +120,7 @@ else {
 					}
 					?>
 					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/rubrics_duplicateProcess.php?gibbonRubricID=$gibbonRubricID&search=$search&filter2=$filter2" ?>">
-						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+						<table class='smallIntBorder fullWidth' cellspacing='0'>	
 							<tr class='break'>
 								<td colspan=2>
 									<h3><?php print __($guid, 'Rubric Basics') ?></h3>
@@ -129,13 +129,13 @@ else {
 							<tr>
 								<td style='width: 275px'> 
 									<b><?php print __($guid, 'Scope') ?> *</b><br/>
-									<span style="font-size: 90%"><i></i></span>
+									<span class="emphasis small"></span>
 								</td>
 								<td class="right">
 									<?php
 									if ($highestAction=="Manage Rubrics_viewEditAll") {
 										?>
-										<select name="scope" id="scope" style="width: 302px">
+										<select name="scope" id="scope" class="standardWidth">
 											<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
 											<option value="School"><?php print __($guid, 'School') ?></option>
 											<option value="Learning Area"><?php print __($guid, 'Learning Area') ?></option>
@@ -148,7 +148,7 @@ else {
 									}
 									else if ($highestAction=="Manage Rubrics_viewAllEditLearningArea") {
 										?>
-										<input readonly name="scope" id="scope" value="Learning Area" type="text" style="width: 300px">
+										<input readonly name="scope" id="scope" value="Learning Area" type="text" class="standardWidth">
 										<?php
 									}
 									?>
@@ -180,10 +180,10 @@ else {
 							<tr id='learningAreaRow'>
 								<td> 
 									<b><?php print __($guid, 'Learning Area') ?> *</b><br/>
-									<span style="font-size: 90%"><i></i></span>
+									<span class="emphasis small"></span>
 								</td>
 								<td class="right">
-									<select name="gibbonDepartmentID" id="gibbonDepartmentID" style="width: 302px">
+									<select name="gibbonDepartmentID" id="gibbonDepartmentID" class="standardWidth">
 										<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
 										<?php
 										try {
@@ -220,7 +220,7 @@ else {
 									<b><?php print __($guid, 'Name') ?> *</b><br/>
 								</td>
 								<td class="right">
-									<input name="name" id="name" maxlength=50 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
+									<input name="name" id="name" maxlength=50 value="<?php print $row["name"] ?>" type="text" class="standardWidth">
 									<script type="text/javascript">
 										var name2=new LiveValidation('name');
 										name2.add(Validate.Presence);
@@ -229,7 +229,7 @@ else {
 							</tr>
 							<tr>
 								<td>
-									<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+									<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 								</td>
 								<td class="right">
 									<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

@@ -86,13 +86,13 @@ else {
 			print "</h2>" ;
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/spaceBooking_manage_add.php&step=2" ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Facility') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<select name="foreignKeyID" id="foreignKeyID" style="width: 302px">
+							<select name="foreignKeyID" id="foreignKeyID" class="standardWidth">
 								<option value='Please select...'><?php print __($guid, 'Please select...') ?></option>
 								<optgroup label='--<?php print __($guid, "Facilities") ?>--'/>" ;
 									<?php
@@ -132,10 +132,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Date') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+							<span class="emphasis small"><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></span>
 						</td>
 						<td class="right">
-							<input name="date" id="date" maxlength=10 value="" type="text" style="width: 300px">
+							<input name="date" id="date" maxlength=10 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var date=new LiveValidation('date');
 								date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
@@ -151,10 +151,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Start Time') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Format: hh:mm (24hr)') ?><br/></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Format: hh:mm (24hr)') ?><br/></span>
 						</td>
 						<td class="right">
-							<input name="timeStart" id="timeStart" maxlength=5 value="" type="text" style="width: 300px">
+							<input name="timeStart" id="timeStart" maxlength=5 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var timeStart=new LiveValidation('timeStart');
 								timeStart.add(Validate.Presence);
@@ -165,10 +165,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'End Time') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Format: hh:mm (24hr)') ?><br/></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Format: hh:mm (24hr)') ?><br/></span>
 						</td>
 						<td class="right">
-							<input name="timeEnd" id="timeEnd" maxlength=5 value="" type="text" style="width: 300px">
+							<input name="timeEnd" id="timeEnd" maxlength=5 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var timeEnd=new LiveValidation('timeEnd');
 								timeEnd.add(Validate.Presence);
@@ -209,7 +209,7 @@ else {
 					<tr id="repeatRow">
 						<td> 
 							<b><?php print __($guid, 'Repeat?') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
 							<input checked type="radio" name="repeat" value="No" class="repeat" /> <?php print __($guid, 'No') ?>
@@ -220,10 +220,10 @@ else {
 					<tr id="repeatDailyRow">
 						<td> 
 							<b><?php print __($guid, 'Repeat Daily') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Repeat daily for this many days.') . "<br/>" . __($guid, 'Does not include non-school days.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Repeat daily for this many days.') . "<br/>" . __($guid, 'Does not include non-school days.') ?></span>
 						</td>
 						<td class="right">
-							<input name="repeatDaily" id="repeatDaily" maxlength=2 value="2" type="text" style="width: 300px">
+							<input name="repeatDaily" id="repeatDaily" maxlength=2 value="2" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var repeatDaily=new LiveValidation('repeatDaily');
 							 	repeatDaily.add(Validate.Presence);
@@ -235,10 +235,10 @@ else {
 					<tr id="repeatWeeklyRow">
 						<td> 
 							<b><?php print __($guid, 'Repeat Weekly') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Repeat weekly for this many days.') . "<br/>" . __($guid, 'Does not include non-school days.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Repeat weekly for this many days.') . "<br/>" . __($guid, 'Does not include non-school days.') ?></span>
 						</td>
 						<td class="right">
-							<input name="repeatWeekly" id="repeatWeekly" maxlength=2 value="2" type="text" style="width: 300px">
+							<input name="repeatWeekly" id="repeatWeekly" maxlength=2 value="2" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var repeatWeekly=new LiveValidation('repeatWeekly');
 							 	repeatWeekly.add(Validate.Presence);
@@ -250,7 +250,7 @@ else {
 					
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+							<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
@@ -328,7 +328,7 @@ else {
 					$available=FALSE ;
 					?>
 					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/spaceBooking_manage_addProcess.php" ?>">
-						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+						<table class='smallIntBorder fullWidth' cellspacing='0'>	
 							<?php
 							if ($repeat=="No") {
 								?>
@@ -341,7 +341,7 @@ else {
 											<tr class='current'>
 												<td> 
 													<b><?php print dateConvertBack($guid, $date) ?></b><br/>
-													<span style="font-size: 90%"><i><?php print __($guid, 'Available') ?></i></span>
+													<span class="emphasis small"><?php print __($guid, 'Available') ?></span>
 												</td>
 												<td class="right">
 													<input checked type='checkbox' name='dates[]' value='<?php print $date ?>'>
@@ -354,7 +354,7 @@ else {
 											<tr class='error'>
 												<td> 
 													<b><?php print dateConvertBack($guid, $date) ?></b><br/>
-													<span style="font-size: 90%"><i><?php print __($guid, 'Not Available') ?></i></span>
+													<span class="emphasis small"><?php print __($guid, 'Not Available') ?></span>
 												</td>
 												<td class="right">
 													<input disabled type='checkbox' name='dates[]' value='<?php print $date ?>'>
@@ -387,7 +387,7 @@ else {
 											<tr class='current'>
 												<td> 
 													<b><?php print dateConvertBack($guid, $dateTemp) ?></b><br/>
-													<span style="font-size: 90%"><i></i></span>
+													<span class="emphasis small"></span>
 												</td>
 												<td class="right">
 													<input checked type='checkbox' name='dates[]' value='<?php print $dateTemp ?>'>
@@ -400,7 +400,7 @@ else {
 											<tr class='error'>
 												<td> 
 													<b><?php print dateConvertBack($guid, $dateTemp) ?></b><br/>
-													<span style="font-size: 90%"><i><?php print __($guid, 'Not Available') ?></i></span>
+													<span class="emphasis small"><?php print __($guid, 'Not Available') ?></span>
 												</td>
 												<td class="right">
 													<input disabled type='checkbox' name='dates[]' value='<?php print $dateTemp ?>'>
@@ -438,7 +438,7 @@ else {
 											<tr class='current'>
 												<td> 
 													<b><?php print dateConvertBack($guid, $dateTemp) ?></b><br/>
-													<span style="font-size: 90%"><i></i></span>
+													<span class="emphasis small"></span>
 												</td>
 												<td class="right">
 													<input checked type='checkbox' name='dates[]' value='<?php print $dateTemp ?>'>
@@ -451,7 +451,7 @@ else {
 											<tr class='error'>
 												<td> 
 													<b><?php print dateConvertBack($guid, $dateTemp) ?></b><br/>
-													<span style="font-size: 90%"><i><?php print __($guid, 'Not Available') ?></i></span>
+													<span class="emphasis small"><?php print __($guid, 'Not Available') ?></span>
 												</td>
 												<td class="right">
 													<input disabled type='checkbox' name='dates[]' value='<?php print $dateTemp ?>'>

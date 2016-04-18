@@ -36,7 +36,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Find Behaviour Patterns') . "</div>" ;
 	print "</div>" ;
 
-	if (isset($_GET["return"])) { returnProcess($_GET["return"], null, array("success0" => "Your request was completed successfully.")); }
+	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, array("success0" => "Your request was completed successfully.")); }
 	
 	$descriptor=NULL ;
 	if (isset($_GET["descriptor"])) {
@@ -78,7 +78,7 @@ else {
 				<tr>
 					<td> 
 						<b><?php print __($guid, 'Descriptor') ?></b><br/>
-						<span style="font-size: 90%"><i></i></span>
+						<span class="emphasis small"></span>
 					</td>
 					<td class="right">
 						<?php
@@ -114,7 +114,7 @@ else {
 				<tr>
 					<td> 
 						<b><?php print __($guid, 'Level') ?></b><br/>
-						<span style="font-size: 90%"><i></i></span>
+						<span class="emphasis small"></span>
 					</td>
 					<td class="right">
 						<?php
@@ -141,10 +141,10 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'From Date') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, "Format:") . " " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } ?></i></span>
+					<span class="emphasis small"><?php print __($guid, "Format:") . " " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } ?></span>
 				</td>
 				<td class="right">
-					<input name="fromDate" id="fromDate" maxlength=10 value="<?php if ($fromDate!="") { print $fromDate ; } ?>" type="text" style="width: 300px">
+					<input name="fromDate" id="fromDate" maxlength=10 value="<?php if ($fromDate!="") { print $fromDate ; } ?>" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var fromDate=new LiveValidation('fromDate');
 						fromDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
@@ -159,7 +159,7 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Roll Group') ?></b><br/>
-					<span style="font-size: 90%"><i></i></span>
+					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
 					<?php
@@ -187,7 +187,7 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Year Group') ?></b><br/>
-					<span style="font-size: 90%"><i></i></span>
+					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
 					<?php
@@ -215,7 +215,7 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Minimum Count') ?></b><br/>
-					<span style="font-size: 90%"><i></i></span>
+					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
 					<?php

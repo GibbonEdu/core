@@ -202,7 +202,7 @@ else {
 									print "</div>" ;
 								}
 								else {
-									if (isset($_GET["return"])) { returnProcess($_GET["return"], null, array("error3" => "Registration failed because you are already registered in this activity.")); }
+									if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, array("error3" => "Registration failed because you are already registered in this activity.")); }
 									
 									//Check registration limit...
 									$proceed=true ;
@@ -243,13 +243,13 @@ else {
 											?>
 										</p>
 										<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/activities_view_registerProcess.php?search=" . $_GET["search"] ?>">
-											<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+											<table class='smallIntBorder fullWidth' cellspacing='0'>	
 												<tr>
 													<td style='width: 275px'> 
 														<b><?php print __($guid, 'Activity') ?></b><br/>
 													</td>
 													<td class="right">
-														<input readonly name="name" id="name" maxlength=40 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
+														<input readonly name="name" id="name" maxlength=40 value="<?php print $row["name"] ?>" type="text" class="standardWidth">
 													</td>
 												</tr>
 												<?php
@@ -269,7 +269,7 @@ else {
 																}
 															}
 															?>
-															<input readonly name="terms" id="terms" maxlength=10 value="<?php print substr($termList, 0, -2) ?>" type="text" style="width: 300px">
+															<input readonly name="terms" id="terms" maxlength=10 value="<?php print substr($termList, 0, -2) ?>" type="text" class="standardWidth">
 														</td>
 													</tr>
 													<?php
@@ -281,7 +281,7 @@ else {
 															<b><?php print __($guid, 'Program Start Date') ?></b><br/>
 														</td>
 														<td class="right">
-															<input readonly name="programStart" id="programStart" maxlength=10 value="<?php print dateConvertBack($guid, $row["programStart"]) ?>" type="text" style="width: 300px">
+															<input readonly name="programStart" id="programStart" maxlength=10 value="<?php print dateConvertBack($guid, $row["programStart"]) ?>" type="text" class="standardWidth">
 														</td>
 													</tr>
 													<tr>
@@ -289,7 +289,7 @@ else {
 															<b><?php print __($guid, 'Program End Date') ?></b><br/>
 														</td>
 														<td class="right">
-															<input readonly name="programEnd" id="programEnd" maxlength=10 value="<?php print dateConvertBack($guid, $row["programEnd"]) ?>" type="text" style="width: 300px">
+															<input readonly name="programEnd" id="programEnd" maxlength=10 value="<?php print dateConvertBack($guid, $row["programEnd"]) ?>" type="text" class="standardWidth">
 														</td>
 													</tr>
 													<?php
@@ -298,13 +298,13 @@ else {
 												<tr>
 													<td> 
 														<b><?php print __($guid, 'Cost') ?></b><br/>
-														<span style="font-size: 90%"><i><?php print __($guid, 'For entire programme') . ". " . $_SESSION[$guid]["currency"] . "." ?><br/></i></span>
+														<span class="emphasis small"><?php print __($guid, 'For entire programme') . ". " . $_SESSION[$guid]["currency"] . "." ?><br/></span>
 													</td>
 													<td class="right">
 														<?php
 															if (getSettingByScope($connection2, "Activities", "payment")!="None" AND getSettingByScope($connection2, "Activities", "payment")!="Single") {
 																?>
-																<input readonly name="payment" id="payment" maxlength=7 value="<?php if (substr($_SESSION[$guid]["currency"],4)!="") { print substr($_SESSION[$guid]["currency"],4) ; } print $row["payment"] ; ?>" type="text" style="width: 300px">
+																<input readonly name="payment" id="payment" maxlength=7 value="<?php if (substr($_SESSION[$guid]["currency"],4)!="") { print substr($_SESSION[$guid]["currency"],4) ; } print $row["payment"] ; ?>" type="text" class="standardWidth">
 																<?php
 															}
 														?>
@@ -318,10 +318,10 @@ else {
 													<tr>
 														<td> 
 															<b><?php print __($guid, 'Backup Choice') ?> * </b><br/>
-															<span style="font-size: 90%"><i><?php print sprintf(__($guid, 'Incase %1$s is full.'), $row["name"]) ?><br/></i></span>
+															<span class="emphasis small"><?php print sprintf(__($guid, 'Incase %1$s is full.'), $row["name"]) ?><br/></span>
 														</td>
 														<td class="right">
-															<select name="gibbonActivityIDBackup" id="gibbonActivityIDBackup" style="width: 302px">
+															<select name="gibbonActivityIDBackup" id="gibbonActivityIDBackup" class="standardWidth">
 																<?php
 																print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
 																
@@ -355,7 +355,7 @@ else {
 												?>
 												<tr>
 													<td>
-														<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+														<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 													</td>
 													<td class="right">
 														<input type="hidden" name="mode" value="<?php print $mode ?>">

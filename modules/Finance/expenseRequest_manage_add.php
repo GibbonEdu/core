@@ -34,7 +34,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/expenseRequest_manage.php&gibbonFinanceBudgetCycleID=" . $_GET["gibbonFinanceBudgetCycleID"] . "'>" . __($guid, 'My Expense Requests') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Add Expense Request') . "</div>" ;
 	print "</div>" ;
 	
-	if (isset($_GET["return"])) { returnProcess($_GET["return"], null, array("success1" => "Your request was completed successfully, but notifications could not be sent out.")); }
+	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, array("success1" => "Your request was completed successfully, but notifications could not be sent out.")); }
 
 	//Check if school year specified
 	$gibbonFinanceBudgetCycleID=$_GET["gibbonFinanceBudgetCycleID"] ;
@@ -93,11 +93,11 @@ else {
 					}
 					?>
 					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/expenseRequest_manage_addProcess.php" ?>">
-						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+						<table class='smallIntBorder fullWidth' cellspacing='0'>	
 							<tr>
 								<td style='width: 275px'> 
 									<b><?php print __($guid, 'Budget Cycle') ?> *</b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+									<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 								</td>
 								<td class="right">
 									<?php
@@ -116,8 +116,8 @@ else {
 										$yearName=$rowYear["name"] ;
 									}
 									?>
-									<input readonly name="name" id="name" maxlength=20 value="<?php print $yearName ?>" type="text" style="width: 300px">
-									<input name="gibbonFinanceBudgetCycleID" id="gibbonFinanceBudgetCycleID" maxlength=20 value="<?php print $gibbonFinanceBudgetCycleID ?>" type="hidden" style="width: 300px">
+									<input readonly name="name" id="name" maxlength=20 value="<?php print $yearName ?>" type="text" class="standardWidth">
+									<input name="gibbonFinanceBudgetCycleID" id="gibbonFinanceBudgetCycleID" maxlength=20 value="<?php print $gibbonFinanceBudgetCycleID ?>" type="hidden" class="standardWidth">
 									<script type="text/javascript">
 										var gibbonFinanceBudgetCycleID=new LiveValidation('gibbonFinanceBudgetCycleID');
 										gibbonFinanceBudgetCycleID.add(Validate.Presence);
@@ -156,7 +156,7 @@ else {
 									<b><?php print __($guid, 'Title') ?> *</b><br/>
 								</td>
 								<td class="right">
-									<input name="title" id="title" maxlength=60 value="" type="text" style="width: 300px">
+									<input name="title" id="title" maxlength=60 value="" type="text" class="standardWidth">
 									<script type="text/javascript">
 										var title=new LiveValidation('title');
 										title.add(Validate.Presence);
@@ -166,10 +166,10 @@ else {
 							<tr>
 								<td> 
 									<b><?php print __($guid, 'Status') ?> *</b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+									<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 								</td>
 								<td class="right">
-									<input readonly name="status" id="status" value="Requested" type="text" style="width: 300px">
+									<input readonly name="status" id="status" value="Requested" type="text" class="standardWidth">
 									<script type="text/javascript">
 										var status=new LiveValidation('status');
 										status.add(Validate.Presence);
@@ -200,7 +200,7 @@ else {
 									</span>
 								</td>
 								<td class="right">
-									<input name="cost" id="cost" maxlength=15 value="" type="text" style="width: 300px">
+									<input name="cost" id="cost" maxlength=15 value="" type="text" class="standardWidth">
 									<script type="text/javascript">
 										var cost=new LiveValidation('cost');
 										cost.add(Validate.Presence);
@@ -211,12 +211,12 @@ else {
 							<tr>
 								<td> 
 									<b><?php print __($guid, 'Count Against Budget') ?> *</b><br/>
-									<span style="font-size: 90%"><i>
+									<span class="emphasis small">
 										<?php print __($guid, "For tracking purposes, should the item be counted against the budget? If immediately offset by some revenue, perhaps not.") ; ?>
-									</i></span>
+									</span>
 								</td>
 								<td class="right">
-									<select name="countAgainstBudget" id="countAgainstBudget" style="width: 302px">
+									<select name="countAgainstBudget" id="countAgainstBudget" class="standardWidth">
 										<?php
 										print "<option selected value='Y'>" . ynExpander($guid, 'Y') . "</option>" ;
 										print "<option value='N'>" . ynExpander($guid, 'N') . "</option>" ;
@@ -248,7 +248,7 @@ else {
 				
 							<tr>
 								<td>
-									<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+									<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 								</td>
 								<td class="right">
 									<input name="gibbonFinanceInvoiceID" id="gibbonFinanceInvoiceID" value="<?php print $gibbonFinanceInvoiceID ?>" type="hidden">

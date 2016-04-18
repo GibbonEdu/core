@@ -90,14 +90,14 @@ else {
 			$row=$result->fetch() ;
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/course_manage_addProcess.php" ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php print __($guid, 'School Year') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 						</td>
 						<td class="right">
-							<input readonly name="schoolYearName" id="schoolYearName" maxlength=20 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
+							<input readonly name="schoolYearName" id="schoolYearName" maxlength=20 value="<?php print $row["name"] ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var schoolYearName=new LiveValidation('schoolYearName');
 								schoolYearname2.add(Validate.Presence);
@@ -109,7 +109,7 @@ else {
 							<b><?php print __($guid, 'Learning Area') ?></b><br/>
 						</td>
 						<td class="right">
-							<select style="width: 302px" name="gibbonDepartmentID">
+							<select class="standardWidth" name="gibbonDepartmentID">
 								<?php
 								print "<option value=''></option>" ;
 								try {
@@ -131,10 +131,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Name') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique for this school year.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Must be unique for this school year.') ?></span>
 						</td>
 						<td class="right">
-							<input name="name" id="name" maxlength=45 value="" type="text" style="width: 300px">
+							<input name="name" id="name" maxlength=45 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var name2=new LiveValidation('name');
 								name2.add(Validate.Presence);
@@ -144,10 +144,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Short Name') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
-							<input name="nameShort" id="nameShort" maxlength=6 value="" type="text" style="width: 300px">
+							<input name="nameShort" id="nameShort" maxlength=6 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var nameShort=new LiveValidation('nameShort');
 								nameShort.add(Validate.Presence);
@@ -157,10 +157,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Order') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'May be used to adjust arrangement of courses in reports.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'May be used to adjust arrangement of courses in reports.') ?></span>
 						</td>
 						<td class="right">
-							<input name="orderBy" id="orderBy" maxlength=6 value="" type="text" style="width: 300px">
+							<input name="orderBy" id="orderBy" maxlength=6 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var orderBy=new LiveValidation('orderBy');
 								orderBy.add(Validate.Numericality);
@@ -176,7 +176,7 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Year Groups') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Enrolable year groups.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Enrolable year groups.') ?></span>
 						</td>
 						<td class="right">
 							<?php 
@@ -196,7 +196,7 @@ else {
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+							<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 						</td>
 						<td class="right">
 							<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php print $gibbonSchoolYearID ?>" type="hidden">

@@ -75,7 +75,7 @@ function renderCustomFieldRow($connection2, $guid, $row, $value=NULL, $fieldName
 			if ($row["description"]=="Y") {
 				$return.="<br/>" ;
 				$return.="<span style='font-size: 90%'><i>" . __($guid, $row["description"]) . "<br/>" ;
-				$return.="</i></span>" ;
+				$return.="</span>" ;
 			}
 		$return.="</td>" ;
 		$return.="<td class=\"right\">" ;

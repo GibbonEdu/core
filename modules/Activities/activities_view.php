@@ -41,7 +41,7 @@ else {
 		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'View Activities') . "</div>" ;
 		print "</div>" ;
 		
-		if (isset($_GET["return"])) { returnProcess($_GET["return"], null, array("success0" => "Registration was successful.", "success1" => "Unregistration was successful.", "success2" => "Registration was successful, but the activity is full, so you are on the waiting list.")); }
+		if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, array("success0" => "Registration was successful.", "success1" => "Unregistration was successful.", "success2" => "Registration was successful, but the activity is full, so you are on the waiting list.")); }
 		
 		//Get current role category
 		$roleCategory=getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2) ;
@@ -155,10 +155,10 @@ else {
 						<tr>
 							<td> 
 								<b><?php print __($guid, 'Child') ?></b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, 'Choose the child you are registering for.') ?></i></span>
+								<span class="emphasis small"><?php print __($guid, 'Choose the child you are registering for.') ?></span>
 							</td>
 							<td class="right">
-								<select name="gibbonPersonID" id="gibbonPersonID" style="width: 302px">
+								<select name="gibbonPersonID" id="gibbonPersonID" class="standardWidth">
 									<?php 
 									if ($countChild>1) { 
 										print "<option value=''></value>" ; 
@@ -175,10 +175,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Search For Activity') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Activity name.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Activity name.') ?></span>
 						</td>
 						<td class="right">
-							<input name="search" id="search" maxlength=20 value="<?php print $search ?>" type="text" style="width: 300px">
+							<input name="search" id="search" maxlength=20 value="<?php print $search ?>" type="text" class="standardWidth">
 						</td>
 					</tr>
 					<tr>

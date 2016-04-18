@@ -87,14 +87,14 @@ else {
 			} 
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/ttColumn_edit_row_editProcess.php?gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTColumnID=$gibbonTTColumnID" ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php print __($guid, 'Column') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 						</td>
 						<td class="right">
-							<input readonly name="columnName" id="columnName" maxlength=20 value="<?php print $row["columnName"] ?>" type="text" style="width: 300px">
+							<input readonly name="columnName" id="columnName" maxlength=20 value="<?php print $row["columnName"] ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var courseName=new LiveValidation('courseName');
 								coursename2.add(Validate.Presence);
@@ -104,10 +104,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Name') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique for this column.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Must be unique for this column.') ?></span>
 						</td>
 						<td class="right">
-							<input name="name" id="name" maxlength=12 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
+							<input name="name" id="name" maxlength=12 value="<?php print $row["name"] ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var name2=new LiveValidation('name');
 								name2.add(Validate.Presence);
@@ -117,10 +117,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Short Name') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique for this column.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Must be unique for this column.') ?></span>
 						</td>
 						<td class="right">
-							<input name="nameShort" id="nameShort" maxlength=4 value="<?php print $row["nameShort"] ?>" type="text" style="width: 300px">
+							<input name="nameShort" id="nameShort" maxlength=4 value="<?php print $row["nameShort"] ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var nameShort=new LiveValidation('nameShort');
 								nameShort.add(Validate.Presence);
@@ -130,10 +130,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Start Time') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Format: hh:mm (24hr)') ?><br/></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Format: hh:mm (24hr)') ?><br/></span>
 						</td>
 						<td class="right">
-							<input name="timeStart" id="timeStart" maxlength=5 value="<?php print substr($row["timeStart"],0,5) ?>" type="text" style="width: 300px">
+							<input name="timeStart" id="timeStart" maxlength=5 value="<?php print substr($row["timeStart"],0,5) ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var timeStart=new LiveValidation('timeStart');
 								timeStart.add(Validate.Presence);
@@ -163,10 +163,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'End Time') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Format: hh:mm (24hr)') ?><br/></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Format: hh:mm (24hr)') ?><br/></span>
 						</td>
 						<td class="right">
-							<input name="timeEnd" id="timeEnd" maxlength=5 value="<?php print substr($row["timeEnd"],0,5) ?>" type="text" style="width: 300px">
+							<input name="timeEnd" id="timeEnd" maxlength=5 value="<?php print substr($row["timeEnd"],0,5) ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var timeEnd=new LiveValidation('timeEnd');
 								timeEnd.add(Validate.Presence);
@@ -198,7 +198,7 @@ else {
 							<b><?php print __($guid, 'Type') ?></b><br/>
 						</td>
 						<td class="right">
-							<select style="width: 302px" name="type">
+							<select class="standardWidth" name="type">
 								<?php
 								print "<option " ; if ($row["type"]=="Lesson") { print "selected "; } ; print " value='Lesson'>" . __($guid, 'Lesson') . "</option>" ;
 								print "<option " ; if ($row["type"]=="Pastoral") { print "selected "; } ; print " value='Pastoral'>" . __($guid, 'Pastoral') . "</option>" ;
@@ -212,7 +212,7 @@ else {
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+							<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 						</td>
 						<td class="right">
 							<input name="gibbonTTColumnID" id="gibbonTTColumnID" value="<?php print $gibbonTTColumnID ?>" type="hidden">

@@ -174,14 +174,14 @@ else {
 						
 						?>
 						<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/units_edit_working_copybackProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitID=$gibbonUnitID&gibbonUnitBlockID=$gibbonUnitBlockID&gibbonUnitClassBlockID=$gibbonUnitClassBlockID&gibbonUnitClassID=$gibbonUnitClassID" ; ?>">
-							<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+							<table class='smallIntBorder fullWidth' cellspacing='0'>	
 								<tr>
 									<td style='width: 275px'> 
 										<b><?php print __($guid, 'Include Working Units?') ?> *</b><br/>
-										<span style="font-size: 90%"><i></i></span>
+										<span class="emphasis small"></span>
 									</td>
 									<td class="right">
-										<select style="width: 302px" name="working">
+										<select class="standardWidth" name="working">
 											<?php
 											print "<option value='N'>" . __($guid, 'No') . "</option>" ;
 											print "<option value='Y'>" . __($guid, 'Yes') . "</option>" ;
@@ -191,7 +191,7 @@ else {
 								</tr>
 								<tr>
 									<td>
-										<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+										<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 									</td>
 									<td class="right">
 										<input name="gibbonTTID" id="gibbonTTID" value="<?php print $_GET["gibbonTTID"] ?>" type="hidden">

@@ -180,7 +180,7 @@ else {
 									<b><?php print __($guid, 'Description') ?> *</b><br/>
 								</td>
 								<td class="right" colspan="<?php print $span ?>">
-									<input name="description" id="description" maxlength=1000 value="<?php print htmlPrep($row2["description"]) ?>" type="text" style="width: 300px">
+									<input name="description" id="description" maxlength=1000 value="<?php print htmlPrep($row2["description"]) ?>" type="text" class="standardWidth">
 									<script type="text/javascript">
 										var description=new LiveValidation('description');
 										description.add(Validate.Presence);
@@ -191,7 +191,7 @@ else {
 								<td> 
 									<b><?php print __($guid, 'Attachment') ?></b><br/>
 									<?php if ($row2["attachment"]!="") { ?>
-									<span style="font-size: 90%"><i><?php print __($guid, 'Will overwrite existing attachment.') ?></i></span>
+									<span class="emphasis small"><?php print __($guid, 'Will overwrite existing attachment.') ?></span>
 									<?php } ?>
 								</td>
 								<td class="right" colspan="<?php print $span ?>">
@@ -501,10 +501,10 @@ else {
 								print "<td>" ;
 								?>
 									<b><?php print __($guid, 'Go Live Date') ?></b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, '1. Format') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/><?php print __($guid, '2. Column is hidden until date is reached.') ?></i></span>
+								<span class="emphasis small"><?php print __($guid, '1. Format') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/><?php print __($guid, '2. Column is hidden until date is reached.') ?></span>
 								</td>
 								<td class="right" colspan="<?php print $span-1 ?>">
-									<input name="completeDate" id="completeDate" maxlength=10 value="<?php print dateConvertBack($guid, $row2["completeDate"]) ?>" type="text" style="width: 300px">
+									<input name="completeDate" id="completeDate" maxlength=10 value="<?php print dateConvertBack($guid, $row2["completeDate"]) ?>" type="text" class="standardWidth">
 									<script type="text/javascript">
 										var completeDate=new LiveValidation('completeDate');
 										completeDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 

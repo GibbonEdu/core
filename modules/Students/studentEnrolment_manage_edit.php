@@ -96,11 +96,11 @@ else {
 			?>
 			
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/studentEnrolment_manage_editProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&search=$search" ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php print __($guid, 'School Year') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 						</td>
 						<td class="right">
 							<?php
@@ -119,7 +119,7 @@ else {
 								$yearName=$rowYear["name"] ;
 							}
 							?>
-							<input readonly name="yearName" id="yearName" maxlength=20 value="<?php print htmlPrep($yearName) ?>" type="text" style="width: 300px">
+							<input readonly name="yearName" id="yearName" maxlength=20 value="<?php print htmlPrep($yearName) ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var yearName=new LiveValidation('yearName');
 								yearname2.add(Validate.Presence);
@@ -129,10 +129,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Student') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 						</td>
 						<td class="right">
-							<input readonly name="participant" id="participant" maxlength=200 value="<?php print formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student") ?>" type="text" style="width: 300px">
+							<input readonly name="participant" id="participant" maxlength=200 value="<?php print formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student") ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var participant=new LiveValidation('participant');
 								participant.add(Validate.Presence);
@@ -145,7 +145,7 @@ else {
 							<span style="font-size: 90%"></span>
 						</td>
 						<td class="right">
-							<select name="gibbonYearGroupID" id="gibbonYearGroupID" style="width: 302px">
+							<select name="gibbonYearGroupID" id="gibbonYearGroupID" class="standardWidth">
 								<?php
 								print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
 								try {
@@ -178,7 +178,7 @@ else {
 							<span style="font-size: 90%"></span>
 						</td>
 						<td class="right">
-							<select name="gibbonRollGroupID" id="gibbonRollGroupID" style="width: 302px">
+							<select name="gibbonRollGroupID" id="gibbonRollGroupID" class="standardWidth">
 								<?php
 								print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
 								try {
@@ -208,10 +208,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Roll Order') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique to roll group if set.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Must be unique to roll group if set.') ?></span>
 						</td>
 						<td class="right">
-							<input name="rollOrder" id="rollOrder" maxlength=2 value="<?php print $row["rollOrder"] ?>" type="text" style="width: 300px">
+							<input name="rollOrder" id="rollOrder" maxlength=2 value="<?php print $row["rollOrder"] ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var rollOrder=new LiveValidation('rollOrder');
 								rollOrder.add(Validate.Numericality);
@@ -248,7 +248,7 @@ else {
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+							<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 						</td>
 						<td class="right">
 							<input name="gibbonStudentEnrolmentID" id="gibbonStudentEnrolmentID" value="<?php print $gibbonStudentEnrolmentID ?>" type="hidden">

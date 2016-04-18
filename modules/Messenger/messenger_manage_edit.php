@@ -110,7 +110,7 @@ else {
 				</div>
 				
 				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_editProcess.php?gibbonMessengerID=$gibbonMessengerID&search=$search&address=" . $_GET["q"] ?>" enctype="multipart/form-data">
-					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>	
 						<tr class='break'>
 							<td colspan=2> 
 								<h3><?php print __($guid, 'Delivery Mode') ?></h3>
@@ -122,7 +122,7 @@ else {
 							<tr>
 								<td style='width: 275px'> 
 									<b><?php print __($guid, 'Email') ?> *</b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'Deliver this message to user\'s primary email account?') ?><br/></i></span>
+									<span class="emphasis small"><?php print __($guid, 'Deliver this message to user\'s primary email account?') ?><br/></span>
 								</td>
 								<td class="right">
 									<?php 
@@ -153,7 +153,7 @@ else {
 							<tr>
 								<td> 
 									<b><?php print __($guid, 'Message Wall') ?> *</b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'Place this message on user\'s message wall?') ?><br/></i></span>
+									<span class="emphasis small"><?php print __($guid, 'Place this message on user\'s message wall?') ?><br/></span>
 								</td>
 								<td class="right">
 									<input <?php if ($row["messageWall"]=="Y") { print "checked" ; } ?> type="radio" name="messageWall" class="messageWall" value="Y"/> <?php print __($guid, 'Yes') ?>
@@ -163,10 +163,10 @@ else {
 							<tr id="messageWallRow" <?php if ($row["messageWall"]=="N") { print "style='display: none'" ; } ?>>
 								<td> 
 									<b><?php print __($guid, 'Publication Dates') ?> *</b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'Select up to three individual dates.') ?></br><?php print __($guid, "Format:") . " " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } ?>.<br/></i></span>
+									<span class="emphasis small"><?php print __($guid, 'Select up to three individual dates.') ?></br><?php print __($guid, "Format:") . " " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } ?>.<br/></span>
 								</td>
 								<td class="right">
-									<input name="date1" id="date1" maxlength=10 value="<?php print dateConvertBack($guid, $row["messageWall_date1"]) ?>" type="text" style="width: 300px">
+									<input name="date1" id="date1" maxlength=10 value="<?php print dateConvertBack($guid, $row["messageWall_date1"]) ?>" type="text" class="standardWidth">
 									<script type="text/javascript">
 										var date1=new LiveValidation('date1');
 										date1.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
@@ -207,7 +207,7 @@ else {
 							<tr>
 								<td> 
 									<b><?php print __($guid, 'SMS') ?> *</b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'Deliver this message to user\'s mobile phone?') ?><br/></i></span>
+									<span class="emphasis small"><?php print __($guid, 'Deliver this message to user\'s mobile phone?') ?><br/></span>
 								</td>
 								<td class="right">
 									<?php
@@ -233,10 +233,10 @@ else {
 						<tr>
 							<td> 
 								<b><?php print __($guid, 'Subject') ?> *</b><br/>
-								<span style="font-size: 90%"><i></i></span>
+								<span class="emphasis small"></span>
 							</td>
 							<td class="right">
-								<input name="subject" id="subject" maxlength=30 value="<?php print htmlPrep($row["subject"]) ?>" type="text" style="width: 300px">
+								<input name="subject" id="subject" maxlength=30 value="<?php print htmlPrep($row["subject"]) ?>" type="text" class="standardWidth">
 								<script type="text/javascript">
 									var subject=new LiveValidation('subject');
 									subject.add(Validate.Presence);
@@ -286,7 +286,7 @@ else {
 							<tr>
 								<td> 
 									<b><?php print __($guid, 'Role') ?></b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'Users of a certain type.') ?><br/></i></span>
+									<span class="emphasis small"><?php print __($guid, 'Users of a certain type.') ?><br/></span>
 								</td>
 								<td class="right">
 									<input <?php if ($resultTarget->rowCount()>0) { print "checked" ; }?> type="radio" name="role" class="role" value="Y"/> <?php print __($guid, 'Yes') ?>
@@ -303,7 +303,7 @@ else {
 							<tr id="roleRow">
 								<td class='hiddenReveal'> 
 									<b><?php print __($guid, 'Select Roles') ?></b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></i></span>
+									<span class="emphasis small"><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 								</td>
 								<td class="hiddenReveal right">
 									<select name="roles[]" id="roles[]" multiple style="width: 302px; height: 100px">
@@ -357,7 +357,7 @@ else {
 							<tr>
 								<td> 
 									<b><?php print __($guid, 'Role Category') ?></b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'Users of a certain type.') ?><br/></i></span>
+									<span class="emphasis small"><?php print __($guid, 'Users of a certain type.') ?><br/></span>
 								</td>
 								<td class="right">
 									<input <?php if ($resultTarget->rowCount()>0) { print "checked" ; }?> type="radio" name="roleCategory" class="roleCategory" value="Y"/> <?php print __($guid, 'Yes') ?>
@@ -374,7 +374,7 @@ else {
 							<tr id="roleCategoryRow">
 								<td class='hiddenReveal'> 
 									<b><?php print __($guid, 'Select Role Categories') ?></b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></i></span>
+									<span class="emphasis small"><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 								</td>
 								<td class="hiddenReveal right">
 									<select name="roleCategories[]" id="roleCategories[]" multiple style="width: 302px; height: 100px">
@@ -438,7 +438,7 @@ else {
 							<tr>
 								<td> 
 									<b><?php print __($guid, 'Year Group') ?></b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'Students in year; all staff.') ?><br/></i></span>
+									<span class="emphasis small"><?php print __($guid, 'Students in year; all staff.') ?><br/></span>
 								</td>
 								<td class="right">
 									<input <?php if ($resultTarget->rowCount()>0) { print "checked" ; }?> type="radio" name="yearGroup" class="yearGroup" value="Y"/> <?php print __($guid, 'Yes') ?>
@@ -467,7 +467,7 @@ else {
 							<tr id="yearGroupRow">
 								<td class='hiddenReveal'> 
 									<b><?php print __($guid, 'Select Year Groups') ?></b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></i></span>
+									<span class="emphasis small"><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 								</td>
 								<td class="hiddenReveal right">
 									<select name="yearGroups[]" id="yearGroups[]" multiple style="width: 302px; height: 100px">
@@ -495,7 +495,7 @@ else {
 									<b><?php print __($guid, 'Include staff?') ?></b><br/>
 								</td>
 								<td class="hiddenReveal right">
-									<select name="yearGroupsStaff" id="yearGroupsStaff" style="width: 302px">
+									<select name="yearGroupsStaff" id="yearGroupsStaff" class="standardWidth">
 										<?php
 										$selected="" ;
 										if ($staff==FALSE) {
@@ -512,7 +512,7 @@ else {
 									<b><?php print __($guid, 'Include students?') ?></b><br/>
 								</td>
 								<td class="hiddenReveal right">
-									<select name="yearGroupsStudents" id="yearGroupsStudents" style="width: 302px">
+									<select name="yearGroupsStudents" id="yearGroupsStudents" class="standardWidth">
 										<?php
 										$selected="" ;
 										if ($students==FALSE) {
@@ -532,7 +532,7 @@ else {
 										<b><?php print __($guid, 'Include parents?') ?></b><br/>
 									</td>
 									<td class="hiddenReveal right">
-										<select name="yearGroupsParents" id="yearGroupsParents" style="width: 302px">
+										<select name="yearGroupsParents" id="yearGroupsParents" class="standardWidth">
 											<?php
 											$selected="" ;
 											if ($parents==FALSE) {
@@ -585,7 +585,7 @@ else {
 							<tr>
 								<td> 
 									<b><?php print __($guid, 'Roll Group') ?></b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'Tutees and tutors.') ?><br/></i></span>
+									<span class="emphasis small"><?php print __($guid, 'Tutees and tutors.') ?><br/></span>
 								</td>
 								<td class="right">
 									<input <?php if ($resultTarget->rowCount()>0) { print "checked" ; }?> type="radio" name="rollGroup" class="rollGroup" value="Y"/> <?php print __($guid, 'Yes') ?>
@@ -614,7 +614,7 @@ else {
 							<tr id="rollGroupRow">
 								<td class='hiddenReveal'> 
 									<b><?php print __($guid, 'Select Roll Groups') ?></b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></i></span>
+									<span class="emphasis small"><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 								</td>
 								<td class="hiddenReveal right">
 									<select name="rollGroups[]" id="rollGroups[]" multiple style="width: 302px; height: 100px">
@@ -654,7 +654,7 @@ else {
 									<b><?php print __($guid, 'Include staff?') ?></b><br/>
 								</td>
 								<td class="hiddenReveal right">
-									<select name="rollGroupsStaff" id="rollGroupsStaff" style="width: 302px">
+									<select name="rollGroupsStaff" id="rollGroupsStaff" class="standardWidth">
 										<?php
 										$selected="" ;
 										if ($staff==FALSE) {
@@ -671,7 +671,7 @@ else {
 									<b><?php print __($guid, 'Include student?') ?></b><br/>
 								</td>
 								<td class="hiddenReveal right">
-									<select name="rollGroupsStudents" id="rollGroupsStudents" style="width: 302px">
+									<select name="rollGroupsStudents" id="rollGroupsStudents" class="standardWidth">
 										<?php
 										$selected="" ;
 										if ($students==FALSE) {
@@ -691,7 +691,7 @@ else {
 										<b><?php print __($guid, 'Include parents?') ?></b><br/>
 									</td>
 									<td class="hiddenReveal right">
-										<select name="rollGroupsParents" id="rollGroupsParents" style="width: 302px">
+										<select name="rollGroupsParents" id="rollGroupsParents" class="standardWidth">
 											<?php
 											$selected="" ;
 											if ($parents==FALSE) {
@@ -744,7 +744,7 @@ else {
 							<tr>
 								<td> 
 									<b><?php print __($guid, 'Course') ?></b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'Members of a course of study.') ?><br/></i></span>
+									<span class="emphasis small"><?php print __($guid, 'Members of a course of study.') ?><br/></span>
 								</td>
 								<td class="right">
 									<input <?php if ($resultTarget->rowCount()>0) { print "checked" ; }?> type="radio" name="course" class="course" value="Y"/> <?php print __($guid, 'Yes') ?>
@@ -773,7 +773,7 @@ else {
 							<tr id="courseRow">
 								<td class='hiddenReveal'> 
 									<b><?php print __($guid, 'Select Courses') ?></b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></i></span>
+									<span class="emphasis small"><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 								</td>
 								<td class="hiddenReveal right">
 									<select name="courses[]" id="courses[]" multiple style="width: 302px; height: 100px">
@@ -807,7 +807,7 @@ else {
 									<b><?php print __($guid, 'Include staff?') ?></b><br/>
 								</td>
 								<td class="hiddenReveal right">
-									<select name="coursesStaff" id="coursesStaff" style="width: 302px">
+									<select name="coursesStaff" id="coursesStaff" class="standardWidth">
 										<?php
 										$selected="" ;
 										if ($staff==TRUE) {
@@ -824,7 +824,7 @@ else {
 									<b><?php print __($guid, 'Include students?') ?></b><br/>
 								</td>
 								<td class="hiddenReveal right">
-									<select name="coursesStudents" id="coursesStudents" style="width: 302px">
+									<select name="coursesStudents" id="coursesStudents" class="standardWidth">
 										<?php
 										$selected="" ;
 										if ($students==TRUE) {
@@ -844,7 +844,7 @@ else {
 										<b><?php print __($guid, 'Include parents?') ?></b><br/>
 									</td>
 									<td class="hiddenReveal right">
-										<select name="coursesParents" id="coursesParents" style="width: 302px">
+										<select name="coursesParents" id="coursesParents" class="standardWidth">
 											<?php
 											$selected="" ;
 											if ($parents==TRUE) {
@@ -897,7 +897,7 @@ else {
 							<tr>
 								<td> 
 									<b><?php print __($guid, 'Class') ?></b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'Members of a class within a course.') ?><br/></i></span>
+									<span class="emphasis small"><?php print __($guid, 'Members of a class within a course.') ?><br/></span>
 								</td>
 								<td class="right">
 									<input <?php if ($resultTarget->rowCount()>0) { print "checked" ; }?> type="radio" name="class" class="class" value="Y"/> <?php print __($guid, 'Yes') ?>
@@ -926,7 +926,7 @@ else {
 							<tr id="classRow">
 								<td class='hiddenReveal'> 
 									<b><?php print __($guid, 'Select Classes') ?></b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></i></span>
+									<span class="emphasis small"><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 								</td>
 								<td class="hiddenReveal right">
 									<select name="classes[]" id="classes[]" multiple style="width: 302px; height: 100px">
@@ -960,7 +960,7 @@ else {
 									<b><?php print __($guid, 'Include staff?') ?></b><br/>
 								</td>
 								<td class="hiddenReveal right">
-									<select name="classesStaff" id="classesStaff" style="width: 302px">
+									<select name="classesStaff" id="classesStaff" class="standardWidth">
 										<?php
 										$selected="" ;
 										if ($staff==FALSE) {
@@ -977,7 +977,7 @@ else {
 									<b><?php print __($guid, 'Include students?') ?></b><br/>
 								</td>
 								<td class="hiddenReveal right">
-									<select name="classesStudents" id="classesStudents" style="width: 302px">
+									<select name="classesStudents" id="classesStudents" class="standardWidth">
 										<?php
 										$selected="" ;
 										if ($students==FALSE) {
@@ -997,7 +997,7 @@ else {
 										<b><?php print __($guid, 'Include parents?') ?></b><br/>
 									</td>
 									<td class="hiddenReveal right">
-										<select name="classesParents" id="classesParents" style="width: 302px">
+										<select name="classesParents" id="classesParents" class="standardWidth">
 											<?php
 											$selected="" ;
 											if ($parents==FALSE) {
@@ -1050,7 +1050,7 @@ else {
 							<tr>
 								<td> 
 									<b><?php print __($guid, 'Activity') ?></b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'Members of an activity.') ?><br/></i></span>
+									<span class="emphasis small"><?php print __($guid, 'Members of an activity.') ?><br/></span>
 								</td>
 								<td class="right">
 									<input <?php if ($resultTarget->rowCount()>0) { print "checked" ; }?> type="radio" name="activity" class="activity" value="Y"/> <?php print __($guid, 'Yes') ?>
@@ -1079,7 +1079,7 @@ else {
 							<tr id="activitiesRow">
 								<td class='hiddenReveal'> 
 									<b><?php print __($guid, 'Select Activities') ?></b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></i></span>
+									<span class="emphasis small"><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 								</td>
 								<td class="hiddenReveal right">
 									<select name="activities[]" id="activities[]" multiple style="width: 302px; height: 100px">
@@ -1119,7 +1119,7 @@ else {
 									<b><?php print __($guid, 'Include staff?') ?></b><br/>
 								</td>
 								<td class="hiddenReveal right">
-									<select name="activitiesStaff" id="activitiesStaff" style="width: 302px">
+									<select name="activitiesStaff" id="activitiesStaff" class="standardWidth">
 										<?php
 										$selected="" ;
 										if ($staff==FALSE) {
@@ -1136,7 +1136,7 @@ else {
 									<b><?php print __($guid, 'Include students?') ?></b><br/>
 								</td>
 								<td class="hiddenReveal right">
-									<select name="activitiesStudents" id="activitiesStudents" style="width: 302px">
+									<select name="activitiesStudents" id="activitiesStudents" class="standardWidth">
 										<?php
 										$selected="" ;
 										if ($students==FALSE) {
@@ -1156,7 +1156,7 @@ else {
 										<b><?php print __($guid, 'Include parents?') ?></b><br/>
 									</td>
 									<td class="hiddenReveal right">
-										<select name="activitiesParents" id="activitiesParents" style="width: 302px">
+										<select name="activitiesParents" id="activitiesParents" class="standardWidth">
 											<?php
 											$selected="" ;
 											if ($parents==FALSE) {
@@ -1200,7 +1200,7 @@ else {
 							<tr>
 								<td> 
 									<b><?php print __($guid, 'Applicants') ?></b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'Applicants from a given year.') . "<br/>" . __($guid, 'Does not apply to the message wall.') ?></i></span>
+									<span class="emphasis small"><?php print __($guid, 'Applicants from a given year.') . "<br/>" . __($guid, 'Does not apply to the message wall.') ?></span>
 								</td>
 								<td class="right">
 									<input <?php if ($resultTarget->rowCount()>0) { print "checked" ; }?> type="radio" name="applicants" class="applicants" value="Y"/> <?php print __($guid, 'Yes') ?>
@@ -1217,7 +1217,7 @@ else {
 							<tr id="applicantsRow">
 								<td class='hiddenReveal'> 
 									<b><?php print __($guid, 'Select Years') ?></b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></i></span>
+									<span class="emphasis small"><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 								</td>
 								<td class="hiddenReveal right">
 									<select name="applicantList[]" id="applicantList[]" multiple style="width: 302px; height: 100px">
@@ -1271,7 +1271,7 @@ else {
 							<tr>
 								<td> 
 									<b><?php print __($guid, 'Houses') ?></b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'Houses for competitions, etc.') ?><br/></i></span>
+									<span class="emphasis small"><?php print __($guid, 'Houses for competitions, etc.') ?><br/></span>
 								</td>
 								<td class="right">
 									<input <?php if ($resultTarget->rowCount()>0) { print "checked" ; }?> type="radio" name="houses" class="houses" value="Y"/> <?php print __($guid, 'Yes') ?>
@@ -1288,7 +1288,7 @@ else {
 							<tr id="housesRow">
 								<td class='hiddenReveal'> 
 									<b><?php print __($guid, 'Select Houses') ?></b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></i></span>
+									<span class="emphasis small"><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 								</td>
 								<td class="hiddenReveal right">
 									<select name="houseList[]" id="houseList[]" multiple style="width: 302px; height: 100px">
@@ -1349,7 +1349,7 @@ else {
 							<tr>
 								<td> 
 									<b><?php print __($guid, 'Indviduals') ?></b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'Individuals from the whole school.') ?><br/></i></span>
+									<span class="emphasis small"><?php print __($guid, 'Individuals from the whole school.') ?><br/></span>
 								</td>
 								<td class="right">
 									<input <?php if ($resultTarget->rowCount()>0) { print "checked" ; }?> type="radio" name="individuals" class="individuals" value="Y"/> <?php print __($guid, 'Yes') ?>
@@ -1366,7 +1366,7 @@ else {
 							<tr id="individualsRow">
 								<td class='hiddenReveal'> 
 									<b><?php print __($guid, 'Select Individuals') ?></b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></i></span>
+									<span class="emphasis small"><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 								</td>
 								<td class="hiddenReveal right">
 									<select name="individualList[]" id="individualList[]" multiple style="width: 302px; height: 100px">
@@ -1396,7 +1396,7 @@ else {
 						
 						<tr>
 							<td>
-								<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+								<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 							</td>
 							<td class="right">
 								<input type="submit" value="<?php print __($guid, "Submit") ; ?>">

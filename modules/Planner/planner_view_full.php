@@ -365,7 +365,7 @@ else {
 								if (strstr($row["role"],"Guest")==FALSE) {
 									//Links to previous and next lessons
 									print "<p style='text-align: right; margin-top: 10px'>" ;
-										print "<span style='font-size: 85%'><i>" . __($guid, 'For this class:') . "</i></span><br/>" ;
+										print "<span style='font-size: 85%'><i>" . __($guid, 'For this class:') . "</span><br/>" ;
 										try {
 											if ($row["role"]=="Teacher") {
 												$dataPrevious=array("gibbonCourseClassID"=>$row["gibbonCourseClassID"], "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "date1"=>$row["date"], "date2"=>$row["date"], "timeStart"=>$row["timeStart"]); 
@@ -948,7 +948,7 @@ else {
 													
 														?>
 														<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_view_full_submitProcess.php?address=" . $_GET["q"] . $params . "&gibbonPlannerEntryID=" . $row["gibbonPlannerEntryID"] ?>" enctype="multipart/form-data">
-															<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+															<table class='smallIntBorder fullWidth' cellspacing='0'>	
 																<tr>
 																	<td> 
 																		<b><?php print __($guid, 'Type') ?> *</b><br/>
@@ -1054,7 +1054,7 @@ else {
 																		<b><?php print __($guid, 'Submit Link') ?> *</b><br/>
 																	</td>
 																	<td class="right">
-																		<input name="link" id="link" maxlength=255 value="" type="text" style="width: 300px">
+																		<input name="link" id="link" maxlength=255 value="" type="text" class="standardWidth">
 																		<script type="text/javascript">
 																			var link=new LiveValidation('link');
 																			link.add( Validate.Inclusion, { within: ['http://', 'https://'], failureMessage: "Address must start with http:// or https://", partialMatch: true } );
@@ -1407,7 +1407,7 @@ else {
 												<tr >
 													<td> 
 														<b><?php print __($guid, 'Homework Due Date Time') ?></b><br/>
-														<span style="font-size: 90%"><i><?php print __($guid, 'Format: hh:mm (24hr)') ?><br/></i></span>
+														<span class="emphasis small"><?php print __($guid, 'Format: hh:mm (24hr)') ?><br/></span>
 													</td>
 													<td >
 														<?php if ($rowMyHomework["homework"]=="Y") { print substr($rowMyHomework["homeworkDueDateTime"],11,5) ; } ?>
@@ -1506,10 +1506,10 @@ else {
 												<tr id="homeworkDueDateRow">
 													<td> 
 														<b><?php print __($guid, 'Homework Due Date') ?> *</b><br/>
-														<span style="font-size: 90%"><i><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></i></span>
+														<span class="emphasis small"><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/></span>
 													</td>
 													<td class="right">
-														<input name="homeworkDueDate" id="homeworkDueDate" maxlength=10 value="<?php if ($rowMyHomework["homework"]=="Y") { print dateConvertBack($guid, substr($rowMyHomework["homeworkDueDateTime"],0,10)) ; } else { print dateConvertBack($guid, substr($homeworkDueDate,0,10)) ; } ?>" type="text" style="width: 300px">
+														<input name="homeworkDueDate" id="homeworkDueDate" maxlength=10 value="<?php if ($rowMyHomework["homework"]=="Y") { print dateConvertBack($guid, substr($rowMyHomework["homeworkDueDateTime"],0,10)) ; } else { print dateConvertBack($guid, substr($homeworkDueDate,0,10)) ; } ?>" type="text" class="standardWidth">
 														<script type="text/javascript">
 															var homeworkDueDate=new LiveValidation('homeworkDueDate');
 															homeworkDueDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
@@ -1530,10 +1530,10 @@ else {
 												<tr id="homeworkDueDateTimeRow">
 													<td> 
 														<b><?php print __($guid, 'Homework Due Date Time') ?></b><br/>
-														<span style="font-size: 90%"><i><?php print __($guid, 'Format: hh:mm (24hr)') ?><br/></i></span>
+														<span class="emphasis small"><?php print __($guid, 'Format: hh:mm (24hr)') ?><br/></span>
 													</td>
 													<td class="right">
-														<input name="homeworkDueDateTime" id="homeworkDueDateTime" maxlength=5 value="<?php if ($rowMyHomework["homework"]=="Y") { print substr($rowMyHomework["homeworkDueDateTime"],11,5) ; } else { print substr($homeworkDueDateTime,0,5) ; } ?>" type="text" style="width: 300px">
+														<input name="homeworkDueDateTime" id="homeworkDueDateTime" maxlength=5 value="<?php if ($rowMyHomework["homework"]=="Y") { print substr($rowMyHomework["homeworkDueDateTime"],11,5) ; } else { print substr($homeworkDueDateTime,0,5) ; } ?>" type="text" class="standardWidth">
 														<script type="text/javascript">
 															var homeworkDueDateTime=new LiveValidation('homeworkDueDateTime');
 															homeworkDueDateTime.add( Validate.Format, {pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use hh:mm" } ); 
@@ -1573,7 +1573,7 @@ else {
 												</tr>
 												<tr>
 													<td>
-														<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+														<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 													</td>
 													<td class="right">
 														<input type="submit" value="<?php print __($guid, "Submit") ; ?>">

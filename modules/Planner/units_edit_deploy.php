@@ -621,13 +621,13 @@ else {
 													print "<div id='sortable$i' style='min-height: 60px; font-size: 120%; font-style: italic'>" ;
 														print "<div id='head$i' class='head' style='height: 54px; font-size: 85%; padding: 3px'>" ;
 															print "<b>" . ($i+1) . ". " . date("D jS M, Y", dateConvertToTimestamp($lessons[$i][0])) . "</b><br/>" ;
-															print "<span style='font-size: 80%'><i>" . $lessons[$i][3] . " (" . substr($lessons[$i][1],0,5) . " - " . substr($lessons[$i][2],0,5) . ")</i></span>" ;
+															print "<span style='font-size: 80%'><i>" . $lessons[$i][3] . " (" . substr($lessons[$i][1],0,5) . " - " . substr($lessons[$i][2],0,5) . ")</span>" ;
 															print "<input type='hidden' name='order[]' value='lessonHeader-$i' >" ;
 															print "<input type='hidden' name='date$i' value='" . $lessons[$i][0] . "' >" ;
 															print "<input type='hidden' name='timeStart$i' value='" . $lessons[$i][1] . "' >" ;
 															print "<input type='hidden' name='timeEnd$i' value='" . $lessons[$i][2] . "' >" ;
 															print "<div style='text-align: right; float: right; margin-top: -17px; margin-right: 3px'>" ;
-																print "<span style='font-size: 80%'><i>" . __($guid, 'Add Block:') . "</i></span><br/>" ; 
+																print "<span style='font-size: 80%'><i>" . __($guid, 'Add Block:') . "</span><br/>" ; 
 																print "<script type='text/javascript'>" ;
 																	print "$(document).ready(function(){" ;
 																		print "$(\"#blockAdd$i\").change(function(){" ;
@@ -703,13 +703,13 @@ else {
 										<tr id="accessRowStudents">
 											<td> 
 												<b><?php print __($guid, 'Viewable to Students') ?> *</b><br/>
-												<span style="font-size: 90%"><i></i></span>
+												<span class="emphasis small"></span>
 											</td>
 											<td class="right">
 												<?php
 												$sharingDefaultStudents=getSettingByScope( $connection2, "Planner", "sharingDefaultStudents" ) ;
 												?>
-												<select name="viewableStudents" id="viewableStudents" style="width: 302px">
+												<select name="viewableStudents" id="viewableStudents" class="standardWidth">
 													<option <?php if ($sharingDefaultStudents=="Y") { print "selected" ; } ?> value="Y"><?php print __($guid, 'Yes') ?></option>
 													<option <?php if ($sharingDefaultStudents=="N") { print "selected" ; } ?> value="N"><?php print __($guid, 'No') ?></option>
 												</select>
@@ -718,13 +718,13 @@ else {
 										<tr id="accessRowParents">
 											<td> 
 												<b><?php print __($guid, 'Viewable to Parents') ?> *</b><br/>
-												<span style="font-size: 90%"><i></i></span>
+												<span class="emphasis small"></span>
 											</td>
 											<td class="right">
 												<?php
 												$sharingDefaultParents=getSettingByScope( $connection2, "Planner", "sharingDefaultParents" ) ;
 												?>
-												<select name="viewableParents" id="viewableParents" style="width: 302px">
+												<select name="viewableParents" id="viewableParents" class="standardWidth">
 													<option <?php if ($sharingDefaultParents=="Y") { print "selected" ; } ?> value="Y"><?php print __($guid, 'Yes') ?></option>
 													<option <?php if ($sharingDefaultParents=="N") { print "selected" ; } ?> value="N"><?php print __($guid, 'No') ?></option>
 												</select>

@@ -95,14 +95,14 @@ else {
 			}
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/family_manage_edit_editChildProcess.php?gibbonFamilyID=$gibbonFamilyID&gibbonPersonID=$gibbonPersonID&search=$search" ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php print __($guid, 'Child\'s Name') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
-							<input readonly name="child" id="child" maxlength=200 value="<?php print formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student") ?>" type="text" style="width: 300px">
+							<input readonly name="child" id="child" maxlength=200 value="<?php print formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student") ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var child=new LiveValidation('child');
 								child.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
@@ -114,12 +114,12 @@ else {
 							<b><?php print __($guid, 'Comment') ?></b><br/>
 						</td>
 						<td class="right">
-							<textarea name="comment" id="comment" rows=8 style="width: 300px"><?php print $row["comment"] ?></textarea>
+							<textarea name="comment" id="comment" rows=8 class="standardWidth"><?php print $row["comment"] ?></textarea>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+							<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 						</td>
 						<td colspan="3" class="right">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

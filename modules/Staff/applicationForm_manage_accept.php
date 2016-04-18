@@ -107,7 +107,7 @@ else {
 				print "</div>" ;
 				?>
 				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/applicationForm_manage_accept.php&step=2&gibbonStaffApplicationFormID=$gibbonStaffApplicationFormID&search=$search" ?>">
-					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>	
 						<tr>
 							<td> 
 								<b><?php print sprintf(__($guid, 'Are you sure you want to accept the application for %1$s?'), formatName("", $row["preferredName"], $row["surname"], "Student")) ?></b><br/>

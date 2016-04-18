@@ -1988,7 +1988,7 @@ else {
 										<tr>
 											<td> 
 												<b><?php print __($guid, 'Learning Areas') ?></b><br/>
-												<span style="font-size: 90%"><i></i></span>
+												<span class="emphasis small"></span>
 											</td>
 											<td class="right">
 												<?php
@@ -2015,7 +2015,7 @@ else {
 										<tr>
 											<td> 
 												<b><?php print __($guid, 'School Years') ?></b><br/>
-												<span style="font-size: 90%"><i></i></span>
+												<span class="emphasis small"></span>
 											</td>
 											<td class="right">
 												<?php
@@ -2047,10 +2047,10 @@ else {
 											<tr>
 												<td> 
 													<b><?php print __($guid, 'Type') ?></b><br/>
-													<span style="font-size: 90%"><i></i></span>
+													<span class="emphasis small"></span>
 												</td>
 												<td class="right">
-													<select name="filter3" id="filter3" style="width: 302px">
+													<select name="filter3" id="filter3" class="standardWidth">
 														<option value=""></option>
 														<?php
 														for ($i=0; $i<count($types); $i++) {

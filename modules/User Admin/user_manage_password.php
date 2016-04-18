@@ -105,14 +105,14 @@ else {
 			}
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/user_manage_passwordProcess.php?gibbonPersonID=" . $gibbonPersonID . "&search=" . $_GET["search"] ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php print __($guid, 'Username') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
-							<input readonly name="username" id="username" maxlength=20 value="<?php print htmlPrep($row["username"]) ?>" type="text" style="width: 300px">
+							<input readonly name="username" id="username" maxlength=20 value="<?php print htmlPrep($row["username"]) ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var username=new LiveValidation('username');
 								username.add(Validate.Presence);
@@ -122,11 +122,11 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Password') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
 							<input type='button' class="generatePassword" value="<?php print __($guid, "Generate Password") ?>"/>
-							<input name="passwordNew" id="passwordNew" maxlength=20 value="" type="password" style="width: 300px"><br/>
+							<input name="passwordNew" id="passwordNew" maxlength=20 value="" type="password" class="standardWidth"><br/>
 							
 							<script type="text/javascript">
 								var passwordNew=new LiveValidation('passwordNew');
@@ -170,10 +170,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Confirm Password') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
-							<input name="passwordConfirm" id="passwordConfirm" maxlength=20 value="" type="password" style="width: 300px">
+							<input name="passwordConfirm" id="passwordConfirm" maxlength=20 value="" type="password" class="standardWidth">
 							<script type="text/javascript">
 								var passwordConfirm=new LiveValidation('passwordConfirm');
 								passwordConfirm.add(Validate.Presence);
@@ -184,10 +184,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Force Reset Password?') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'User will be prompted on next login.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'User will be prompted on next login.') ?></span>
 						</td>
 						<td class="right">
-							<select style="width: 302px" name="passwordForceReset">
+							<select class="standardWidth" name="passwordForceReset">
 								<option <?php if ($row["passwordForceReset"]=="Y") {print "selected ";}?>value="Y"><?php print __($guid, 'Yes') ?></option>
 								<option <?php if ($row["passwordForceReset"]=="N") {print "selected ";}?>value="N"><?php print __($guid, 'No') ?></option>
 							</select>
@@ -195,7 +195,7 @@ else {
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+							<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

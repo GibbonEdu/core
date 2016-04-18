@@ -88,13 +88,13 @@ else {
 			
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/userFields_editProcess.php?gibbonPersonFieldID=" . $row["gibbonPersonFieldID"] ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Name') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<input name="name" id="name2" maxlength=50 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
+							<input name="name" id="name2" maxlength=50 value="<?php print $row["name"] ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var name2=new LiveValidation('name2');
 								name2.add(Validate.Presence);
@@ -104,10 +104,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Active') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
-							<select style="width: 302px" name="active">
+							<select class="standardWidth" name="active">
 								<?php
 								print "<option " ; if ($row["active"]=="Y") { print "selected" ; } print " value='Y'>" . __($guid, 'Yes') . "</option>" ;
 								print "<option " ; if ($row["active"]=="N") { print "selected" ; } print " value='N'>" . __($guid, 'No') . "</option>" ;
@@ -120,7 +120,7 @@ else {
 							<b><?php print __($guid, 'Description') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<input name="description" id="description" maxlength=255 value="<?php print $row["description"] ?>" type="text" style="width: 300px">
+							<input name="description" id="description" maxlength=255 value="<?php print $row["description"] ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var description=new LiveValidation('description');
 								description.add(Validate.Presence);
@@ -154,7 +154,7 @@ else {
 							<b><?php print __($guid, 'Type') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<select style="width: 302px" name="type" id="type" class="type">
+							<select class="standardWidth" name="type" id="type" class="type">
 								<?php
 									print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
 									print "<option " ; if ($row["type"]=="varchar") { print "selected" ; } print " value='varchar'>Short Text (max 255 characters)</option>" ;
@@ -173,25 +173,25 @@ else {
 					<tr id="optionsRow">
 						<td> 
 							<b><?php print __($guid, 'Options') ?> *</b><br/>
-							<span style="font-size: 90%"><i>
+							<span class="emphasis small">
 								<?php 
 									print __($guid, 'Short Text: number of characters, up to 255.') . "<br/>" ;
 									print __($guid, 'Long Text: number of rows for field.') . "<br/>" ;
 									print __($guid, 'Dropdown: comma separated list of options.') . "<br/>" ;	
 								?>
-								</i></span>
+								</span>
 						</td>
 						<td class="right">
-							<textarea name="options" id="options" style="width: 300px" rows='3'><?php print $row["options"] ?></textarea>
+							<textarea name="options" id="options" class="standardWidth" rows='3'><?php print $row["options"] ?></textarea>
 						</td>
 					</tr>
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Required') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Is this field compulsory?') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Is this field compulsory?') ?></span>
 						</td>
 						<td class="right">
-							<select style="width: 302px" name="required">
+							<select class="standardWidth" name="required">
 								<?php
 								print "<option " ; if ($row["required"]=="Y") { print "selected" ; } print " value='Y'>" . __($guid, 'Yes') . "</option>" ;
 								print "<option " ; if ($row["required"]=="N") { print "selected" ; } print " value='N'>" . __($guid, 'No') . "</option>" ;
@@ -217,7 +217,7 @@ else {
 							<b><?php print __($guid, 'Include In Data Updater?') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<select style="width: 302px" name="activeDataUpdater">
+							<select class="standardWidth" name="activeDataUpdater">
 								<?php
 								print "<option " ; if ($row["activeDataUpdater"]=="1") { print "selected" ; } print " value='1'>" . __($guid, 'Yes') . "</option>" ;
 								print "<option " ; if ($row["activeDataUpdater"]=="0") { print "selected" ; } print " value='0'>" . __($guid, 'No') . "</option>" ;
@@ -230,7 +230,7 @@ else {
 							<b><?php print __($guid, 'Include In Application Form?') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<select style="width: 302px" name="activeApplicationForm">
+							<select class="standardWidth" name="activeApplicationForm">
 								<?php
 								print "<option " ; if ($row["activeApplicationForm"]=="1") { print "selected" ; } print " value='1'>" . __($guid, 'Yes') . "</option>" ;
 								print "<option " ; if ($row["activeApplicationForm"]=="0") { print "selected" ; } print " value='0'>" . __($guid, 'No') . "</option>" ;
@@ -241,7 +241,7 @@ else {
 			
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+							<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

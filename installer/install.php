@@ -143,7 +143,7 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 										//Set language options
 										?>
 										<form method="post" action="./install.php?step=1&guid=<?php print $guid ?>">
-											<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+											<table class='smallIntBorder fullWidth' cellspacing='0'>	
 												<tr class='break'>
 													<td colspan=2> 
 														<h3><?php print "Language Settings" ?></h3>
@@ -154,7 +154,7 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 														<b><?php print "System Language" ?> *</b><br/>
 													</td>
 													<td class="right">
-														<select name="code" id="code" style="width: 302px">
+														<select name="code" id="code" class="standardWidth">
 															<option value='en_GB'>English - United Kingdom</option>
 															<option value='en_US'>English - United States</option>
 															<option value='es_ES'>Español</option>
@@ -168,7 +168,7 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 												</tr>
 												<tr>
 													<td>
-														<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+														<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 													</td>
 													<td class="right">
 														<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
@@ -183,7 +183,7 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 							if ($step==1) { //Set database options
 								?>
 								<form method="post" action="./install.php?step=2&guid=<?php print $guid ?>">
-									<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+									<table class='smallIntBorder fullWidth' cellspacing='0'>	
 										<tr class='break'>
 											<td colspan=2> 
 												<h3><?php print __($guid, 'Database Information') ?></h3>
@@ -192,19 +192,19 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 										<tr>
 											<td style='width: 275px'> 
 												<b><?php print __($guid, 'Database Type') ?> *</b><br/>
-												<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+												<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 											</td>
 											<td class="right">
-												<input readonly name="type" id="type" value="MySQL" type="text" style="width: 300px">
+												<input readonly name="type" id="type" value="MySQL" type="text" class="standardWidth">
 											</td>
 										</tr>
 										<tr>
 											<td style='width: 275px'> 
 												<b><?php print __($guid, 'Database Server') ?> *</b><br/>
-												<span style="font-size: 90%"><i><?php print __($guid, 'Localhost, IP address or domain.') ?></i></span>
+												<span class="emphasis small"><?php print __($guid, 'Localhost, IP address or domain.') ?></span>
 											</td>
 											<td class="right">
-												<input name="databaseServer" id="databaseServer" maxlength=255 value="" type="text" style="width: 300px">
+												<input name="databaseServer" id="databaseServer" maxlength=255 value="" type="text" class="standardWidth">
 												<script type="text/javascript">
 													var databaseServer=new LiveValidation('databaseServer');
 													databaseServer.add(Validate.Presence);
@@ -214,10 +214,10 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 										<tr>
 											<td> 
 												<b><?php print __($guid, 'Database Name') ?> *</b><br/>
-												<span style="font-size: 90%"><i><?php print __($guid, 'This database will be created if it does not already exist. Collation should be utf8_general_ci.') ?></i></span>
+												<span class="emphasis small"><?php print __($guid, 'This database will be created if it does not already exist. Collation should be utf8_general_ci.') ?></span>
 											</td>
 											<td class="right">
-												<input name="databaseName" id="databaseName" maxlength=50 value="" type="text" style="width: 300px">
+												<input name="databaseName" id="databaseName" maxlength=50 value="" type="text" class="standardWidth">
 												<script type="text/javascript">
 													var databaseName=new LiveValidation('databaseName');
 													databaseName.add(Validate.Presence);
@@ -229,7 +229,7 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 												<b><?php print __($guid, 'Database Username') ?>*</b><br/>
 											</td>
 											<td class="right">
-												<input name="databaseUsername" id="databaseUsername" maxlength=50 value="" type="text" style="width: 300px">
+												<input name="databaseUsername" id="databaseUsername" maxlength=50 value="" type="text" class="standardWidth">
 												<script type="text/javascript">
 													var databaseUsername=new LiveValidation('databaseUsername');
 													databaseUsername.add(Validate.Presence);
@@ -241,7 +241,7 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 												<b><?php print __($guid, 'Database Password') ?> *</b><br/>
 											</td>
 											<td class="right">
-												<input name="databasePassword" id="databasePassword" maxlength=255 value="" type="password" style="width: 300px">
+												<input name="databasePassword" id="databasePassword" maxlength=255 value="" type="password" class="standardWidth">
 												<script type="text/javascript">
 													var databasePassword=new LiveValidation('databasePassword');
 													databasePassword.add(Validate.Presence);
@@ -254,7 +254,7 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 												<b><?php print __($guid, 'Install Demo Data?') ?> *</b><br/>
 											</td>
 											<td class="right">
-												<select name="demoData" id="demoData" style="width: 302px">
+												<select name="demoData" id="demoData" class="standardWidth">
 													<?php
 													print "<option selected value='N'>" . ynExpander($guid, 'N') . "</option>" ;
 													print "<option value='Y'>" . ynExpander($guid, 'Y') . "</option>" ;
@@ -264,7 +264,7 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 										</tr>
 										<tr>
 											<td>
-												<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+												<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 											</td>
 											<td class="right">
 												<input type="hidden" name="code" value="<?php print $code ?>">
@@ -331,9 +331,24 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 										print "</div>" ;
 									}
 									else {
-										print "<div class='success'>" ;
-											print __($guid, "Your database connection was successful, so the installation may proceed.") ;
-										print "</div>" ;
+										//Check for strict Mode in mySQL
+										$sqlMode="SELECT @@sql_mode;";
+										$resultMode=$connection2->prepare($sqlMode);
+										$resultMode->execute();
+										$rows = $resultMode->fetchAll();
+										$rowsString=serialize($rows);
+										
+										$pos = strpos($rowsString, "STRICT_TRANS_TABLES");
+										if ($pos == false) {
+											print "<div class='success'>" ;
+												print __($guid, "Your database connection was successful, so the installation may proceed.") ;		
+											print "</div>" ;
+										} else {
+											print "<div class='error'>" ;
+												print sprintf(__($guid, 'mySQL is set to strict mode you will need to remove STRICT_TRANS_TABLES from your my.cnf file' ), "<a href='./install.php'>", "</a>") ;
+											print "</div>" ;
+										}
+											
 									
 										//Set up config.php
 										$config="" ;
@@ -466,7 +481,7 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 													//Let's gather some more information
 													?>
 													<form method="post" action="./install.php?step=3&guid=<?php print $guid ?>">
-														<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+														<table class='smallIntBorder fullWidth' cellspacing='0'>	
 															<tr class='break'>
 																<td colspan=2> 
 																	<h3><?php print __($guid, 'User Account') ?></h3>
@@ -477,7 +492,7 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 																	<b><?php print __($guid, 'Title') ?></b><br/>
 																</td>
 																<td class="right">
-																	<select style="width: 302px" name="title">
+																	<select class="standardWidth" name="title">
 																		<option value=""></option>
 																		<option value="Ms. "><?php print __($guid, 'Ms.') ?></option>
 																		<option value="Miss "><?php print __($guid, 'Miss') ?></option>
@@ -490,10 +505,10 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 															<tr>
 																<td> 
 																	<b><?php print __($guid, 'Surname') ?> *</b><br/>
-																	<span style="font-size: 90%"><i><?php print __($guid, 'Family name as shown in ID documents.') ?></i></span>
+																	<span class="emphasis small"><?php print __($guid, 'Family name as shown in ID documents.') ?></span>
 																</td>
 																<td class="right">
-																	<input name="surname" id="surname" maxlength=30 value="" type="text" style="width: 300px">
+																	<input name="surname" id="surname" maxlength=30 value="" type="text" class="standardWidth">
 																	<script type="text/javascript">
 																		var surname=new LiveValidation('surname');
 																		surname.add(Validate.Presence);
@@ -503,10 +518,10 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 															<tr>
 																<td> 
 																	<b><?php print __($guid, 'First Name') ?>*</b><br/>
-																	<span style="font-size: 90%"><i><?php print __($guid, 'First name as shown in ID documents.') ?></i></span>
+																	<span class="emphasis small"><?php print __($guid, 'First name as shown in ID documents.') ?></span>
 																</td>
 																<td class="right">
-																	<input name="firstName" id="firstName" maxlength=30 value="" type="text" style="width: 300px">
+																	<input name="firstName" id="firstName" maxlength=30 value="" type="text" class="standardWidth">
 																	<script type="text/javascript">
 																		var firstName=new LiveValidation('firstName');
 																		firstName.add(Validate.Presence);
@@ -518,7 +533,7 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 																	<b><?php print __($guid, 'Email') ?> *</b><br/>
 																</td>
 																<td class="right">
-																	<input name="email" id="email" maxlength=50 value="" type="text" style="width: 300px">
+																	<input name="email" id="email" maxlength=50 value="" type="text" class="standardWidth">
 																	<script type="text/javascript">
 																		var email=new LiveValidation('email');
 																		email.add(Validate.Email);
@@ -529,7 +544,7 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 															<tr>
 																<td> 
 																	<b><?php print __($guid, 'Receive Support?') ?></b><br/>
-																	<span style="font-size: 90%"><i><?php print __($guid, 'Join our mailing list and recieve a welcome email from the team.') ?></i></span>
+																	<span class="emphasis small"><?php print __($guid, 'Join our mailing list and recieve a welcome email from the team.') ?></span>
 																</td>
 																<td class="right">
 																	<input name="support" id="support" value="true" type="checkbox">
@@ -538,10 +553,10 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 															<tr>
 																<td> 
 																	<b><?php print __($guid, 'Username') ?> *</b><br/>
-																	<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique. System login name. Cannot be changed.') ?></i></span>
+																	<span class="emphasis small"><?php print __($guid, 'Must be unique. System login name. Cannot be changed.') ?></span>
 																</td>
 																<td class="right">
-																	<input name="username" id="username" maxlength=20 value="" type="text" style="width: 300px">
+																	<input name="username" id="username" maxlength=20 value="" type="text" class="standardWidth">
 																	<?php
 																	$idList="" ;
 																	try {
@@ -576,11 +591,11 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 															<tr>
 																<td> 
 																	<b><?php print __($guid, 'Password') ?> *</b><br/>
-																	<span style="font-size: 90%"><i></i></span>
+																	<span class="emphasis small"></span>
 																</td>
 																<td class="right">
 																	<input type='button' class="generatePassword" value="<?php print __($guid, "Generate Password") ?>"/>
-																	<input name="passwordNew" id="passwordNew" maxlength=20 value="" type="password" style="width: 300px"><br/>
+																	<input name="passwordNew" id="passwordNew" maxlength=20 value="" type="password" class="standardWidth"><br/>
 							
 																	<script type="text/javascript">
 																		var passwordNew=new LiveValidation('passwordNew');
@@ -624,10 +639,10 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 															<tr>
 																<td> 
 																	<b><?php print __($guid, 'Confirm Password') ?> *</b><br/>
-																	<span style="font-size: 90%"><i></i></span>
+																	<span class="emphasis small"></span>
 																</td>
 																<td class="right">
-																	<input name="passwordConfirm" id="passwordConfirm" maxlength=20 value="" type="password" style="width: 300px">
+																	<input name="passwordConfirm" id="passwordConfirm" maxlength=20 value="" type="password" class="standardWidth">
 																	<script type="text/javascript">
 																		var passwordConfirm=new LiveValidation('passwordConfirm');
 																		passwordConfirm.add(Validate.Presence);
@@ -656,7 +671,7 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 																?>
 																<td style='width: 275px'> 
 																	<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
-																	<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+																	<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 																</td>
 																<td stclass="right">
 																	<?php 
@@ -667,7 +682,7 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 																		}
 																		$uri_parts=explode('?', $_SERVER['REQUEST_URI'], 2);
 																	?>
-																	<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print $pageURL . $_SERVER["SERVER_NAME"] . $port . substr($uri_parts[0], 0, -22) ?>" type="text" style="width: 300px">
+																	<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print $pageURL . $_SERVER["SERVER_NAME"] . $port . substr($uri_parts[0], 0, -22) ?>" type="text" class="standardWidth">
 																	<script type="text/javascript">
 																		var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 																		<?php print $row["name"] ?>.add(Validate.Presence);
@@ -690,10 +705,10 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 																?>
 																<td> 
 																	<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
-																	<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+																	<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 																</td>
 																<td stclass="right">
-																	<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print substr(__FILE__,0,-22) ?>" type="text" style="width: 300px">
+																	<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="<?php print substr(__FILE__,0,-22) ?>" type="text" class="standardWidth">
 																	<script type="text/javascript">
 																		var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 																		<?php print $row["name"] ?>.add(Validate.Presence);
@@ -715,10 +730,10 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 																?>
 																<td> 
 																	<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
-																	<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+																	<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 																</td>
 																<td class="right">
-																	<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="Gibbon" type="text" style="width: 300px">
+																	<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="Gibbon" type="text" class="standardWidth">
 																	<script type="text/javascript">
 																		var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 																		<?php print $row["name"] ?>.add(Validate.Presence);
@@ -740,10 +755,10 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 																?>
 																<td> 
 																	<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
-																	<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+																	<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 																</td>
 																<td class="right">
-																	<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+																	<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
 																		<?php
 																		print "<option selected value='Testing'>Testing</option>" ;
 																		print "<option value='Production'>Production</option>" ;
@@ -779,10 +794,10 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 																?>
 																<td> 
 																	<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
-																	<span style="font-size: 90%"><i><?php print __($guid, $row["description"]) ?>. <?php print "<b>" . __($guid, 'Not recommended for non-experts!.') . "<b>" ?></i></span>
+																	<span class="emphasis small"><?php print __($guid, $row["description"]) ?>. <?php print "<b>" . __($guid, 'Not recommended for non-experts!.') . "<b>" ?></span>
 																</td>
 																<td class="right">
-																	<select disabled name="<?php print $row["name"] ?>Disabled" id="<?php print $row["name"] ?>" style="width: 302px">
+																	<select disabled name="<?php print $row["name"] ?>Disabled" id="<?php print $row["name"] ?>" class="standardWidth">
 																		<?php
 																		print "<option selected value='N'>" . ynExpander($guid, 'N') . "</option>" ;
 																		print "<option value='Y'>" . ynExpander($guid, 'Y') . "</option>" ;
@@ -834,10 +849,10 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 																?>
 																<td> 
 																	<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
-																	<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+																	<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 																</td>
 																<td class="right">
-																	<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+																	<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
 																		<?php
 																		print "<option value='Y'>" . ynExpander($guid, 'Y') . "</option>" ;
 																		print "<option value='N'>" . ynExpander($guid, 'N') . "</option>" ;
@@ -866,10 +881,10 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 																?>
 																<td> 
 																	<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
-																	<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+																	<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 																</td>
 																<td class="right">
-																	<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="" type="text" style="width: 300px">
+																	<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="" type="text" class="standardWidth">
 																	<script type="text/javascript">
 																		var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 																		<?php print $row["name"] ?>.add(Validate.Presence);
@@ -891,10 +906,10 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 																?>
 																<td> 
 																	<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
-																	<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+																	<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 																</td>
 																<td class="right">
-																	<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="" type="text" style="width: 300px">
+																	<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="" type="text" class="standardWidth">
 																	<script type="text/javascript">
 																		var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 																		<?php print $row["name"] ?>.add(Validate.Presence);
@@ -916,10 +931,10 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 															?>
 															<td> 
 																<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
-																<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+																<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 															</td>
 															<td class="right">
-																<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+																<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
 																	<optgroup label='--<?php print __($guid, 'PAYPAL SUPPORTED') ?>--'/>
 																		<option value='AUD $'>Australian Dollar (A$)</option>
 																		<option value='BRL R$'>Brazilian Real</option>
@@ -986,10 +1001,10 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 																?>
 																<td> 
 																	<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
-																	<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+																	<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 																</td>
 																<td class="right">
-																	<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="" type="text" style="width: 300px">
+																	<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="" type="text" class="standardWidth">
 																</td>
 															</tr>
 															<tr>
@@ -1007,10 +1022,10 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 																?>
 																<td> 
 																	<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
-																	<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+																	<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 																</td>
 																<td class="right">
-																	<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="" type="text" style="width: 300px">
+																	<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=255 value="" type="text" class="standardWidth">
 																</td>
 															</tr>
 			
@@ -1034,10 +1049,10 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 																?>
 																<td> 
 																	<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
-																	<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+																	<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 																</td>
 																<td class="right">
-																	<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+																	<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
 																		<?php
 																		print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
 																		try {
@@ -1075,10 +1090,10 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 																?>
 																<td> 
 																	<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
-																	<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+																	<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 																</td>
 																<td class="right">
-																	<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="Asia/Hong_Kong" type="text" style="width: 300px">
+																	<input name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=50 value="Asia/Hong_Kong" type="text" class="standardWidth">
 																	<script type="text/javascript">
 																		var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 																		<?php print $row["name"] ?>.add(Validate.Presence);
@@ -1100,10 +1115,10 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 																?>
 																<td> 
 																	<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
-																	<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+																	<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 																</td>
 																<td class="right">
-																	<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+																	<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
 																		<?php
 																		print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
 																		try {
@@ -1129,7 +1144,7 @@ $_SESSION[$guid]["stringReplacement"]=array() ;
 			
 															<tr>
 																<td>
-																	<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+																	<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 																</td>
 																<td class="right">
 																	<input type="hidden" name="code" value="<?php print $code ?>">

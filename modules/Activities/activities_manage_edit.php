@@ -35,7 +35,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Activities/activities_manage.php'>" . __($guid, 'Manage Activities') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Edit Activity') . "</div>" ;
 	print "</div>" ;
 
-	if (isset($_GET["return"])) { returnProcess($_GET["return"], null, array("error3" => "Your request failed due to an attachment error.")); }
+	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, array("error3" => "Your request failed due to an attachment error.")); }
 	
 	//Check if school year specified
 	$gibbonActivityID=$_GET["gibbonActivityID"];
@@ -70,7 +70,7 @@ else {
 			}
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_editProcess.php?gibbonActivityID=$gibbonActivityID&search=" . $_GET["search"] ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr class='break'>
 						<td colspan=2> 
 							<h3><?php print __($guid, 'Basic Information') ?></h3>
@@ -81,7 +81,7 @@ else {
 							<b><?php print __($guid, 'Name') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<input name="name" id="name" maxlength=40 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
+							<input name="name" id="name" maxlength=40 value="<?php print $row["name"] ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var name2=new LiveValidation('name');
 								name2.add(Validate.Presence);
@@ -92,10 +92,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Provider') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
-							<select name="provider" id="provider" style="width: 302px">
+							<select name="provider" id="provider" class="standardWidth">
 								<option <?php if ($row["provider"]=="School") {print "selected ";}?>value="School"><?php print $_SESSION[$guid]["organisationNameShort"] ?></option>
 								<option <?php if ($row["provider"]=="External") {print "selected ";}?>value="External"><?php print __($guid, 'External') ?></option>
 							</select>
@@ -121,10 +121,10 @@ else {
 							<tr>
 								<td> 
 									<b><?php print __($guid, 'Type') ?></b><br/>
-									<span style="font-size: 90%"><i></i></span>
+									<span class="emphasis small"></span>
 								</td>
 								<td class="right">
-									<select name="type" id="type" style="width: 302px">
+									<select name="type" id="type" class="standardWidth">
 										<option value=""></option>
 										<?php
 										for ($i=0; $i<count($options); $i++) {
@@ -144,10 +144,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Active') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
-							<select name="active" id="active" style="width: 302px">
+							<select name="active" id="active" class="standardWidth">
 								<option <?php if ($row["active"]=="Y") {print "selected ";}?>value="Y"><?php print __($guid, 'Yes') ?></option>
 								<option <?php if ($row["active"]=="N") {print "selected ";}?>value="N"><?php print __($guid, 'No') ?></option>
 							</select>
@@ -157,10 +157,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Registration') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Assuming system-wide registration is open, should this activity be open for registration?') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Assuming system-wide registration is open, should this activity be open for registration?') ?></span>
 						</td>
 						<td class="right">
-							<select name="registration" id="registration" style="width: 302px">
+							<select name="registration" id="registration" class="standardWidth">
 								<option <?php if ($row["registration"]=="Y") {print "selected ";}?>value="Y"><?php print __($guid, 'Yes') ?></option>
 								<option <?php if ($row["registration"]=="N") {print "selected ";}?>value="N"><?php print __($guid, 'No') ?></option>
 							</select>
@@ -178,7 +178,7 @@ else {
 						<tr>
 							<td> 
 								<b><?php print __($guid, 'Terms') ?></b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, 'Terms in which the activity will run.') ?><br/></i></span>
+								<span class="emphasis small"><?php print __($guid, 'Terms in which the activity will run.') ?><br/></span>
 							</td>
 							<td class="right">
 								<?php 
@@ -205,10 +205,10 @@ else {
 						<tr>
 							<td> 
 								<b><?php print __($guid, 'Listing Start Date') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/><?php print __($guid, 'Default: 2 weeks before the end of the current term.') ?></i></span>
+								<span class="emphasis small"><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/><?php print __($guid, 'Default: 2 weeks before the end of the current term.') ?></span>
 							</td>
 							<td class="right">
-								<input name="listingStart" id="listingStart" maxlength=10 value="<?php print dateConvertBack($guid, $row["listingStart"]) ?>" type="text" style="width: 300px">
+								<input name="listingStart" id="listingStart" maxlength=10 value="<?php print dateConvertBack($guid, $row["listingStart"]) ?>" type="text" class="standardWidth">
 								<script type="text/javascript">
 									var listingStart=new LiveValidation('listingStart');
 									listingStart.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
@@ -223,10 +223,10 @@ else {
 						<tr>
 							<td> 
 								<b><?php print __($guid, 'Listing End Date') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/><?php print __($guid, 'Default: 2 weeks after the start of next term.') ?></i></span>
+								<span class="emphasis small"><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/><?php print __($guid, 'Default: 2 weeks after the start of next term.') ?></span>
 							</td>
 							<td class="right">
-								<input name="listingEnd" id="listingEnd" maxlength=10 value="<?php print dateConvertBack($guid, $row["listingEnd"]) ?>" type="text" style="width: 300px">
+								<input name="listingEnd" id="listingEnd" maxlength=10 value="<?php print dateConvertBack($guid, $row["listingEnd"]) ?>" type="text" class="standardWidth">
 								<script type="text/javascript">
 									var listingEnd=new LiveValidation('listingEnd');
 									listingEnd.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
@@ -241,10 +241,10 @@ else {
 						<tr>
 							<td> 
 								<b><?php print __($guid, 'Program Start Date') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/><?php print __($guid, 'Default: first day of next term.') ?></i></span>
+								<span class="emphasis small"><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/><?php print __($guid, 'Default: first day of next term.') ?></span>
 							</td>
 							<td class="right">
-								<input name="programStart" id="programStart" maxlength=10 value="<?php print dateConvertBack($guid, $row["programStart"]) ?>" type="text" style="width: 300px">
+								<input name="programStart" id="programStart" maxlength=10 value="<?php print dateConvertBack($guid, $row["programStart"]) ?>" type="text" class="standardWidth">
 								<script type="text/javascript">
 									var programStart=new LiveValidation('programStart');
 									programStart.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
@@ -259,10 +259,10 @@ else {
 						<tr>
 							<td> 
 								<b><?php print __($guid, 'Program End Date') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/><?php print __($guid, 'Default: last day of the next term.') ?></i></span>
+								<span class="emphasis small"><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?><br/><?php print __($guid, 'Default: last day of the next term.') ?></span>
 							</td>
 							<td class="right">
-								<input name="programEnd" id="programEnd" maxlength=10 value="<?php print dateConvertBack($guid, $row["programEnd"]) ?>" type="text" style="width: 300px">
+								<input name="programEnd" id="programEnd" maxlength=10 value="<?php print dateConvertBack($guid, $row["programEnd"]) ?>" type="text" class="standardWidth">
 								<script type="text/javascript">
 									var programEnd=new LiveValidation('programEnd');
 									programEnd.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
@@ -309,7 +309,7 @@ else {
 							<b><?php print __($guid, 'Max Participants') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<input name="maxParticipants" id="maxParticipants" maxlength=4 value="<?php print $row["maxParticipants"] ?>" type="text" style="width: 300px">
+							<input name="maxParticipants" id="maxParticipants" maxlength=4 value="<?php print $row["maxParticipants"] ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var maxParticipants=new LiveValidation('maxParticipants');
 								maxParticipants.add(Validate.Presence);
@@ -320,18 +320,18 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Cost') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'For entire programme') . ". " . $_SESSION[$guid]["currency"] . "." ?><br/></i></span>
+							<span class="emphasis small"><?php print __($guid, 'For entire programme') . ". " . $_SESSION[$guid]["currency"] . "." ?><br/></span>
 						</td>
 						<td class="right">
 							<?php
 								if (getSettingByScope($connection2, "Activities", "payment")=="None" OR getSettingByScope($connection2, "Activities", "payment")=="Single") {
 									?>
-									<input readonly name="paymentNote" id="paymentNote" maxlength=100 value="<?php print __($guid, 'Per Activty payment is switched off') ?>" type="text" style="width: 300px">
+									<input readonly name="paymentNote" id="paymentNote" maxlength=100 value="<?php print __($guid, 'Per Activty payment is switched off') ?>" type="text" class="standardWidth">
 									<?php
 								}
 								else {
 									?>
-									<input name="payment" id="payment" maxlength=7 value="<?php print $row["payment"] ?>" type="text" style="width: 300px">
+									<input name="payment" id="payment" maxlength=7 value="<?php print $row["payment"] ?>" type="text" class="standardWidth">
 									<script type="text/javascript">
 										var payment=new LiveValidation('payment');
 										payment.add(Validate.Presence);
@@ -516,7 +516,7 @@ else {
 								<b><?php print sprintf(__($guid, 'Slot %1$s Day'), $i) ?></b><br/>
 							</td>
 							<td class="right">
-								<select name="gibbonDaysOfWeekID<?php print $i ?>" id="gibbonDaysOfWeekID<?php print $i ?>" style="width: 302px">
+								<select name="gibbonDaysOfWeekID<?php print $i ?>" id="gibbonDaysOfWeekID<?php print $i ?>" class="standardWidth">
 									<option value=""></option>
 									<?php
 									try {
@@ -537,10 +537,10 @@ else {
 						<tr id="slot<?php print $i ?>StartRow">
 							<td> 
 								<b><?php print sprintf(__($guid, 'Slot %1$s Start Time'), $i) ?></b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, 'Format: hh:mm') ?></i></span>
+								<span class="emphasis small"><?php print __($guid, 'Format: hh:mm') ?></span>
 							</td>
 							<td class="right">
-								<input name="timeStart<?php print $i ?>" id="timeStart<?php print $i ?>" maxlength=5 value="" type="text" style="width: 300px">
+								<input name="timeStart<?php print $i ?>" id="timeStart<?php print $i ?>" maxlength=5 value="" type="text" class="standardWidth">
 								<script type="text/javascript">
 									$(function() {
 										var availableTags=[
@@ -565,10 +565,10 @@ else {
 						<tr id="slot<?php print $i ?>EndRow">
 							<td> 
 								<b><?php print sprintf(__($guid, 'Slot %1$s End Time'), $i) ?></b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, 'Format: hh:mm') ?></i></span>
+								<span class="emphasis small"><?php print __($guid, 'Format: hh:mm') ?></span>
 							</td>
 							<td class="right">
-								<input name="timeEnd<?php print $i ?>" id="timeEnd<?php print $i ?>" maxlength=5 value="" type="text" style="width: 300px">
+								<input name="timeEnd<?php print $i ?>" id="timeEnd<?php print $i ?>" maxlength=5 value="" type="text" class="standardWidth">
 								<script type="text/javascript">
 									$(function() {
 										var availableTags=[
@@ -604,7 +604,7 @@ else {
 								
 							</td>
 							<td class="right">
-								<select name="gibbonSpaceID<?php print $i ?>" id="gibbonSpaceID<?php print $i ?>" style="width: 302px">
+								<select name="gibbonSpaceID<?php print $i ?>" id="gibbonSpaceID<?php print $i ?>" class="standardWidth">
 									<option value=""></option>
 									<?php
 									try {
@@ -626,7 +626,7 @@ else {
 								
 							</td>
 							<td class="right">
-								<input name="location<?php print $i ?>External" id="location<?php print $i ?>External" maxlength=50 value="" type="text" style="width: 300px">
+								<input name="location<?php print $i ?>External" id="location<?php print $i ?>External" maxlength=50 value="" type="text" class="standardWidth">
 							</td>
 						</tr>
 						<tr id="slot<?php print $i ?>ButtonRow">
@@ -715,7 +715,7 @@ else {
 					<tr>
 					<td> 
 						<b><?php print __($guid, 'Staff') ?></b><br/>
-						<span style="font-size: 90%"><i><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></i></span>
+						<span class="emphasis small"><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 					</td>
 					<td class="right">
 						<select name="staff[]" id="staff[]" multiple style="width: 302px; height: 150px">
@@ -756,7 +756,7 @@ else {
 							<b><?php print __($guid, 'Role') ?></b><br/>
 						</td>
 						<td class="right">
-							<select name="role" id="role" style="width: 302px">
+							<select name="role" id="role" class="standardWidth">
 								<option value="Organiser"><?php print __($guid, 'Organiser') ?></option>
 								<option value="Coach"><?php print __($guid, 'Coach') ?></option>
 								<option value="Assistant"><?php print __($guid, 'Assistant') ?></option>
@@ -767,7 +767,7 @@ else {
 					
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+							<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

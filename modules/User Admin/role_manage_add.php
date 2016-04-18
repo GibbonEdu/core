@@ -58,13 +58,13 @@ else {
 	
 	?>
 	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/role_manage_addProcess.php" ?>">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr>
 				<td style='width: 275px'> 
 					<b><?php print __($guid, 'Category') ?> *</b><br/>
 				</td>
 				<td class="right">
-					<select name="category" id="category" style="width: 302px">
+					<select name="category" id="category" class="standardWidth">
 						<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
 						<option value="Staff"><?php print __($guid, 'Staff') ?></option>
 						<option value="Student"><?php print __($guid, 'Student') ?></option>
@@ -80,10 +80,10 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Name') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique.') ?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'Must be unique.') ?></span>
 				</td>
 				<td class="right">
-					<input name="name" id="name" maxlength=20 value="" type="text" style="width: 300px">
+					<input name="name" id="name" maxlength=20 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var name2=new LiveValidation('name');
 						name2.add(Validate.Presence);
@@ -93,10 +93,10 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Short Name') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique.') ?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'Must be unique.') ?></span>
 				</td>
 				<td class="right">
-					<input name="nameShort" id="nameShort" maxlength=4 value="" type="text" style="width: 300px">
+					<input name="nameShort" id="nameShort" maxlength=4 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var nameShort=new LiveValidation('nameShort');
 						nameShort.add(Validate.Presence);
@@ -106,10 +106,10 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Description') ?> *</b><br/>
-					<span style="font-size: 90%"><i></i></span>
+					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
-					<input name="description" id="description" maxlength=60 value="" type="text" style="width: 300px">
+					<input name="description" id="description" maxlength=60 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var description=new LiveValidation('description');
 						description.add(Validate.Presence);
@@ -119,10 +119,10 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Type') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 				</td>
 				<td class="right">
-					<input name="type" id="type" readonly="readonly" maxlength=20 value="Additional" type="text" style="width: 300px">
+					<input name="type" id="type" readonly="readonly" maxlength=20 value="Additional" type="text" class="standardWidth">
 				</td>
 			</tr>
 			<tr>
@@ -130,7 +130,7 @@ else {
 					<b><?php print __($guid, 'Login To Past Years') ?> *</b><br/>
 				</td>
 				<td class="right">
-					<select name="pastYearsLogin" id="pastYearsLogin" style="width: 302px">
+					<select name="pastYearsLogin" id="pastYearsLogin" class="standardWidth">
 						<option value="Y"><?php print __($guid, 'Yes') ?></option>
 						<option value="N"><?php print __($guid, 'No') ?></option>
 					</select>
@@ -141,7 +141,7 @@ else {
 					<b><?php print __($guid, 'Login To Future Years') ?> *</b><br/>
 				</td>
 				<td class="right">
-					<select name="futureYearsLogin" id="futureYearsLogin" style="width: 302px">
+					<select name="futureYearsLogin" id="futureYearsLogin" class="standardWidth">
 						<option value="Y"><?php print __($guid, 'Yes') ?></option>
 						<option value="N"><?php print __($guid, 'No') ?></option>
 					</select>
@@ -149,7 +149,7 @@ else {
 			</tr>
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+					<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

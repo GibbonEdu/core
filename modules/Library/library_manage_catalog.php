@@ -112,7 +112,7 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'ID/Name/Producer') ?></b><br/>
-					<span style="font-size: 90%"><i></i></span>
+					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
 					<?php
@@ -123,7 +123,7 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Type') ?></b><br/>
-					<span style="font-size: 90%"><i></i></span>
+					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
 					<?php
@@ -152,7 +152,7 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Location') ?> *</b><br/>
-					<span style="font-size: 90%"><i></i></span>
+					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
 					<?php
@@ -181,7 +181,7 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Status') ?></b><br/>
-					<span style="font-size: 90%"><i></i></span>
+					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
 					<?php
@@ -201,7 +201,7 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Owner/User') ?></b><br/>
-					<span style="font-size: 90%"><i></i></span>
+					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
 					<?php
@@ -228,7 +228,7 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Type-Specific Fields') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'For example, a computer\'s MAC address or a book\'s ISBN.') ?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'For example, a computer\'s MAC address or a book\'s ISBN.') ?></span>
 				</td>
 				<td class="right">
 					<?php

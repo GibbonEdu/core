@@ -100,11 +100,11 @@ else {
 			else {
 				?>
 				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rollover.php&step=2" ?>">
-					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>	
 						<tr>
 							<td colspan=2 style='text-align: justify'> 
 								<?php
-								print sprintf(__($guid, 'By clicking the "Proceed" button below you will initiate the rollover from %1$s to %2$s. In a big school this operation may take some time to complete. This will change data in numerous tables across the system! %3$sYou are really, very strongly advised to backup all data before you proceed%4$s.'), "<b>" . $_SESSION[$guid]["gibbonSchoolYearName"] . "</b>", "<b>" . $nameNext. "</b>", "<span style=\"color: #cc0000\"><i>", "</i></span>") ;
+								print sprintf(__($guid, 'By clicking the "Proceed" button below you will initiate the rollover from %1$s to %2$s. In a big school this operation may take some time to complete. This will change data in numerous tables across the system! %3$sYou are really, very strongly advised to backup all data before you proceed%4$s.'), "<b>" . $_SESSION[$guid]["gibbonSchoolYearName"] . "</b>", "<b>" . $nameNext. "</b>", "<span style=\"color: #cc0000\"><i>", "</span>") ;
 								?>
 							</td>
 						</tr>
@@ -192,14 +192,14 @@ else {
 						print sprintf(__($guid, 'Add Year Following %1$s'), $nameNext) ;
 						print "</h4>" ;
 						?>
-						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+						<table class='smallIntBorder fullWidth' cellspacing='0'>	
 							<tr>
 								<td style='width: 275px'> 
 									<b><?php print __($guid, 'School Year Name') ?> *</b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique.') ?></i></span>
+									<span class="emphasis small"><?php print __($guid, 'Must be unique.') ?></span>
 								</td>
 								<td class="right">
-									<input name="nextname" id="nextname" maxlength=9 value="" type="text" style="width: 300px">
+									<input name="nextname" id="nextname" maxlength=9 value="" type="text" class="standardWidth">
 									<script type="text/javascript">
 										var nextname=new LiveValidation('nextname');
 										nextname2.add(Validate.Presence);
@@ -211,25 +211,25 @@ else {
 									<b><?php print __($guid, 'Status') ?> *</b>
 								</td>
 								<td class="right">
-									<input readonly name="next-status" id="next-status" value="Upcoming" type="text" style="width: 300px">
+									<input readonly name="next-status" id="next-status" value="Upcoming" type="text" class="standardWidth">
 								</td>
 							</tr>
 							<tr>
 								<td> 
 									<b><?php print __($guid, 'Sequence Number') ?> *</b><br/>
-									<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique. Controls chronological ordering.') ?></i></span>
+									<span class="emphasis small"><?php print __($guid, 'Must be unique. Controls chronological ordering.') ?></span>
 								</td>
 								<td class="right">
-									<input readonly name="next-sequenceNumber" id="next-sequenceNumber" maxlength=3 value="<?php print ($sequenceNext+1) ?>" type="text" style="width: 300px">
+									<input readonly name="next-sequenceNumber" id="next-sequenceNumber" maxlength=3 value="<?php print ($sequenceNext+1) ?>" type="text" class="standardWidth">
 								</td>
 							</tr>
 							<tr>
 								<td> 
 									<b><?php print __($guid, 'First Day') ?> *</b><br/>
-									<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+									<span class="emphasis small"><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></span>
 								</td>
 								<td class="right">
-									<input name="nextfirstDay" id="nextfirstDay" maxlength=10 value="" type="text" style="width: 300px">
+									<input name="nextfirstDay" id="nextfirstDay" maxlength=10 value="" type="text" class="standardWidth">
 									<script type="text/javascript">
 										var nextfirstDay=new LiveValidation('nextfirstDay');
 										nextfirstDay.add(Validate.Presence);
@@ -245,10 +245,10 @@ else {
 							<tr>
 								<td> 
 									<b><?php print __($guid, 'Last Day') ?> *</b><br/>
-									<span style="font-size: 90%"><i><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></i></span>
+									<span class="emphasis small"><?php print $_SESSION[$guid]["i18n"]["dateFormat"]  ?></span>
 								</td>
 								<td class="right">
-									<input name="nextlastDay" id="nextlastDay" maxlength=10 value="" type="text" style="width: 300px">
+									<input name="nextlastDay" id="nextlastDay" maxlength=10 value="" type="text" class="standardWidth">
 									<script type="text/javascript">
 										var nextlastDay=new LiveValidation('nextlastDay');
 										nextlastDay.add(Validate.Presence);
@@ -906,7 +906,7 @@ else {
 					print "<table cellspacing='0' style='width: 100%'>" ;	
 						print "<tr>" ;
 							print "<td>" ;
-								print "<span style='font-size: 90%'><i>* " . __($guid, "denotes a required field") . "</i></span>" ;
+								print "<span style='font-size: 90%'><i>* " . __($guid, "denotes a required field") . "</span>" ;
 							print "</td>" ;
 							print "<td class='right'>" ;
 								print "<input type='hidden' name='nextYear' value='$nextYear'>" ;

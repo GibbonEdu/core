@@ -53,14 +53,14 @@ else {
 	?>
 	
 	<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr>
 				<td style='width: 275px'> 
 					<b><?php print __($guid, 'From Date') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Earliest student end date to include.') ?><br/><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'Earliest student end date to include.') ?><br/><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></span>
 				</td>
 				<td class="right">
-					<input name="endDateFrom" id="endDateFrom" maxlength=10 value="<?php print $endDateFrom ?>" type="text" style="width: 300px">
+					<input name="endDateFrom" id="endDateFrom" maxlength=10 value="<?php print $endDateFrom ?>" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var endDateFrom=new LiveValidation('endDateFrom');
 						endDateFrom.add(Validate.Presence);
@@ -76,10 +76,10 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'To Date') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Latest student end date to include.') ?><br/><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'Latest student end date to include.') ?><br/><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></span>
 				</td>
 				<td class="right">
-					<input name="endDateTo" id="endDateTo" maxlength=10 value="<?php print $endDateTo ?>" type="text" style="width: 300px">
+					<input name="endDateTo" id="endDateTo" maxlength=10 value="<?php print $endDateTo ?>" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var endDateTo=new LiveValidation('endDateTo');
 						endDateTo.add(Validate.Presence);
@@ -95,7 +95,7 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Ignore Status') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'This is useful for picking up students who have not yet left, but have an End Date set.') ?></span>
+					<span class="emphasis small"><?php print __($guid, 'This is useful for picking up students who have not yet left, but have an End Date set.') ?></span>
 				</td>
 				<td class="right">
 					<input <?php if ($ignoreStatus=="on") { print "checked" ; } ?> name="ignoreStatus" id="ignoreStatus" type="checkbox">

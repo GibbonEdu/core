@@ -35,7 +35,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/budgets_manage.php'>" . __($guid, 'Manage Budgets') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Edit Budget') . "</div>" ;
 	print "</div>" ;
 	
-	if (isset($_GET["return"])) { returnProcess($_GET["return"], null, array("error3" => "Your request failed because some inputs did not meet a requirement for uniqueness.", "error4" => "Your request failed due to an attachment error.")); }
+	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, array("error3" => "Your request failed because some inputs did not meet a requirement for uniqueness.", "error4" => "Your request failed due to an attachment error.")); }
 
 	//Check if school year specified
 	$gibbonFinanceBudgetID=$_GET["gibbonFinanceBudgetID"];
@@ -65,7 +65,7 @@ else {
 			$row=$result->fetch() ;
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/budgets_manage_editProcess.php?gibbonFinanceBudgetID=$gibbonFinanceBudgetID" ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr class='break'>
 						<td colspan=2> 
 							<h3><?php print __($guid, 'General Settings') ?></h3>
@@ -74,10 +74,10 @@ else {
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php print __($guid, 'Name') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Must be unique.') ?></span>
 						</td>
 						<td class="right">
-							<input name="name" id="name" maxlength=100 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
+							<input name="name" id="name" maxlength=100 value="<?php print $row["name"] ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var name2=new LiveValidation('name');
 								name2.add(Validate.Presence);
@@ -87,10 +87,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Short Name') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Must be unique.') ?></span>
 						</td>
 						<td class="right">
-							<input name="nameShort" id="nameShort" maxlength=14 value="<?php print $row["nameShort"] ?>" type="text" style="width: 300px">
+							<input name="nameShort" id="nameShort" maxlength=14 value="<?php print $row["nameShort"] ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var nameShort=new LiveValidation('nameShort');
 								nameShort.add(Validate.Presence);
@@ -100,10 +100,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Active') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
-							<select name="active" id="active" style="width: 302px">
+							<select name="active" id="active" class="standardWidth">
 								<option <?php if ($row["active"]=="Y") { print "selected" ; } ?> value="Y"><?php print __($guid, 'Yes') ?></option>
 								<option <?php if ($row["active"]=="N") { print "selected" ; } ?> value="N"><?php print __($guid, 'No') ?></option>
 							</select>
@@ -117,10 +117,10 @@ else {
 						<tr>
 							<td> 
 								<b><?php print __($guid, 'Category') ?> *</b><br/>
-								<span style="font-size: 90%"><i></i></span>
+								<span class="emphasis small"></span>
 							</td>
 							<td class="right">
-								<select name="category" id="category" style="width: 302px">
+								<select name="category" id="category" class="standardWidth">
 									<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
 									<?php
 									for ($i=0; $i<count($categories); $i++) {
@@ -145,10 +145,10 @@ else {
 						<tr>
 							<td> 
 								<b><?php print __($guid, 'Category') ?> *</b><br/>
-								<span style="font-size: 90%"><i></i></span>
+								<span class="emphasis small"></span>
 							</td>
 							<td class="right">
-								<input readonly name="category" id="category" value="Other" type="text" style="width: 300px">
+								<input readonly name="category" id="category" value="Other" type="text" class="standardWidth">
 							</td>
 						</tr>
 						<?php
@@ -229,7 +229,7 @@ else {
 					<tr>
 					<td> 
 						<b>Staff</b><br/>
-						<span style="font-size: 90%"><i><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></i></span>
+						<span class="emphasis small"><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 					</td>
 					<td class="right">
 						<select name="staff[]" id="staff[]" multiple style="width: 302px; height: 150px">
@@ -253,7 +253,7 @@ else {
 							<b><?php print __($guid, 'Role') ?></b><br/>
 						</td>
 						<td class="right">
-							<select name="access" id="access" style="width: 302px">
+							<select name="access" id="access" class="standardWidth">
 								<option value="Full"><?php print __($guid, 'Full') ?></option>
 								<option value="Write"><?php print __($guid, 'Write') ?></option>
 								<option value="Read"><?php print __($guid, 'Read') ?></option>
@@ -262,7 +262,7 @@ else {
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+							<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

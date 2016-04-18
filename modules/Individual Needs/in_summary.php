@@ -72,7 +72,7 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Descriptor') ?></b><br/>
-					<span style="font-size: 90%"><i></i></span>
+					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
 					<?php
@@ -100,7 +100,7 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Alert Level') ?></b><br/>
-					<span style="font-size: 90%"><i></i></span>
+					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
 					<?php
@@ -128,7 +128,7 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Roll Group') ?></b><br/>
-					<span style="font-size: 90%"><i></i></span>
+					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
 					<?php
@@ -156,7 +156,7 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Year Group') ?></b><br/>
-					<span style="font-size: 90%"><i></i></span>
+					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
 					<?php

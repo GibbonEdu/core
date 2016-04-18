@@ -89,17 +89,17 @@ else {
 			
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/outcomes_addProcess.php?filter2=" . $filter2 ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php print __($guid, 'Scope') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
 							<?php
 							if ($highestAction=="Manage Outcomes_viewEditAll") {
 								?>
-								<select name="scope" id="scope" style="width: 302px">
+								<select name="scope" id="scope" class="standardWidth">
 									<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
 									<option value="School"><?php print __($guid, 'School') ?></option>
 									<option value="Learning Area"><?php print __($guid, 'Learning Area') ?></option>
@@ -112,7 +112,7 @@ else {
 							}
 							else if ($highestAction=="Manage Outcomes_viewAllEditLearningArea") {
 								?>
-								<input readonly name="scope" id="scope" value="Learning Area" type="text" style="width: 300px">
+								<input readonly name="scope" id="scope" value="Learning Area" type="text" class="standardWidth">
 								<?php
 							}
 							?>
@@ -145,7 +145,7 @@ else {
 					<tr id='learningAreaRow'>
 						<td> 
 							<b><?php print __($guid, 'Learning Area') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
 							<?php
@@ -163,7 +163,7 @@ else {
 							}
 							catch(PDOException $e) { }
 							?>
-							<select name="gibbonDepartmentID" id="gibbonDepartmentID" style="width: 302px">
+							<select name="gibbonDepartmentID" id="gibbonDepartmentID" class="standardWidth">
 								<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
 								<?php
 								while ($rowSelect=$resultSelect->fetch()) {
@@ -187,7 +187,7 @@ else {
 							<b><?php print __($guid, 'Name') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<input name="name" id="name" maxlength=100 value="" type="text" style="width: 300px">
+							<input name="name" id="name" maxlength=100 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var name2=new LiveValidation('name');
 								name2.add(Validate.Presence);
@@ -199,7 +199,7 @@ else {
 							<b><?php print __($guid, 'Short Name') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<input name="nameShort" id="nameShort" maxlength=14 value="" type="text" style="width: 300px">
+							<input name="nameShort" id="nameShort" maxlength=14 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var nameShort=new LiveValidation('nameShort');
 								nameShort.add(Validate.Presence);
@@ -209,10 +209,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Active') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
-							<select name="active" id="active" style="width: 302px">
+							<select name="active" id="active" class="standardWidth">
 								<option value="Y"><?php print __($guid, 'Yes') ?></option>
 								<option value="N"><?php print __($guid, 'No') ?></option>
 							</select>
@@ -224,7 +224,7 @@ else {
 							<b><?php print __($guid, 'Category') ?></b><br/>
 						</td>
 						<td class="right">
-							<input name="category" id="category" maxlength=100 value="" type="text" style="width: 300px">
+							<input name="category" id="category" maxlength=100 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 								$(function() {
 									var availableTags=[
@@ -257,7 +257,7 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Year Groups') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Relevant student year groups') ?><br/></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Relevant student year groups') ?><br/></span>
 						</td>
 						<td class="right">
 							<?php
@@ -289,7 +289,7 @@ else {
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+							<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

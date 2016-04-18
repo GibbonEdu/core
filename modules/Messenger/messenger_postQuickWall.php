@@ -77,7 +77,7 @@ else {
 			
 	?>
 	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/messenger_postQuickWallProcess.php?address=" . $_GET["q"] ?>" enctype="multipart/form-data">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr class='break'>
 				<td colspan=2> 
 					<h3><?php print __($guid, 'Delivery Mode') ?></h3>
@@ -86,7 +86,7 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Message Wall') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Place this message on user\'s message wall?') ?><br/></i></span>
+					<span class="emphasis small"><?php print __($guid, 'Place this message on user\'s message wall?') ?><br/></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="messageWall" class="messageWall" value="Y"/> <?php print __($guid, 'Yes') ?>
@@ -95,10 +95,10 @@ else {
 			<tr id="messageWallRow">
 				<td> 
 					<b><?php print __($guid, 'Publication Dates') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Select up to three individual dates.') ?></br><?php print __($guid, "Format:") . " " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } ?>.<br/></i></span>
+					<span class="emphasis small"><?php print __($guid, 'Select up to three individual dates.') ?></br><?php print __($guid, "Format:") . " " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } ?>.<br/></span>
 				</td>
 				<td class="right">
-					<input name="date1" id="date1" maxlength=10 value="<?php print dateConvertBack($guid, date("Y-m-d")) ; ?>" type="text" style="width: 300px">
+					<input name="date1" id="date1" maxlength=10 value="<?php print dateConvertBack($guid, date("Y-m-d")) ; ?>" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var date1=new LiveValidation('date1');
 						date1.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
@@ -141,10 +141,10 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Subject') ?> *</b><br/>
-					<span style="font-size: 90%"><i></i></span>
+					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
-					<input name="subject" id="subject" maxlength=30 value="" type="text" style="width: 300px">
+					<input name="subject" id="subject" maxlength=30 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var subject=new LiveValidation('subject');
 						subject.add(Validate.Presence);
@@ -179,7 +179,7 @@ else {
 						
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+					<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 				</td>
 				<td class="right">
 					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">

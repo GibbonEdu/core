@@ -211,7 +211,7 @@ else {
 							$output.="<tr>" ;
 								$output.="<td> " ;
 									$output.="<b>" . __($guid, 'Name') . " *</b><br/>" ;
-									$output.="<span style='font-size: 90%'><i></i></span>" ;
+									$output.="<span style='font-size: 90%'><i></span>" ;
 								$output.="</td>" ;
 								$output.="<td class='right'>" ;
 									$output.="<input name='" . $id . "name' id='" . $id . "name' maxlength=60 value='' type='text' style='width: 300px'>" ;
@@ -241,7 +241,7 @@ else {
 									$output.="<tr>" ;
 										$output.="<td> " ;
 											$output.="<b>" . __($guid, 'Category') . " *</b><br/>" ;
-											$output.="<span style='font-size: 90%'><i></i></span>" ;
+											$output.="<span style='font-size: 90%'><i></span>" ;
 										$output.="</td>" ;
 										$output.="<td class='right'>" ;
 											$output.="<select name='" . $id . "category' id='" . $id . "category' style='width: 302px'>" ;
@@ -284,7 +284,7 @@ else {
 									$output.="<tr>" ;
 										$output.="<td>" ;
 											$output.="<b>" . __($guid, 'Purpose') . "</b><br/>" ;
-											$output.="<span style='font-size: 90%'><i></i></span>" ;
+											$output.="<span style='font-size: 90%'><i></span>" ;
 										$output.="</td>" ;
 										$output.="<td class='right'>" ;
 											$output.="<select name='" . $id . "purpose' id='" . $id . "purpose' style='width: 302px'>" ;
@@ -301,7 +301,7 @@ else {
 							$output.="<tr>" ;
 								$output.="<td> " ;
 									$output.="<b>" . __($guid, 'Tags') . " *</b><br/>" ;
-									$output.="<span style='font-size: 90%'><i>" . __($guid, 'Use lots of tags!') . "</i></span>" ;
+									$output.="<span style='font-size: 90%'><i>" . __($guid, 'Use lots of tags!') . "</span>" ;
 								$output.="</td>" ;
 								$output.="<td class='right'>" ;
 									//Get tag list
@@ -343,7 +343,7 @@ else {
 							$output.="<tr>" ;
 								$output.="<td>" ;
 									$output.="<b><?php print __($guid, 'Year Groups') ?></b><br/>" ;
-									$output.="<span style='font-size: 90%'><i>Students year groups which may participate<br/></i></span>" ;
+									$output.="<span style='font-size: 90%'><i>Students year groups which may participate<br/></span>" ;
 								$output.="</td>" ;
 								$output.="<td class='right'>" ;
 									$output.="<fieldset style='border: none'>" ;
@@ -374,7 +374,7 @@ else {
 							$output.="<tr>" ;
 								$output.="<td>" ;
 									$output.="<b>" . __($guid, 'Description') . "</b><br/>" ;
-									$output.="<span style='font-size: 90%'><i></i></span>" ;
+									$output.="<span style='font-size: 90%'><i></span>" ;
 								$output.="</td>" ;
 								$output.="<td class='right'>" ;
 									$output.="<textarea name='" . $id . "description' id='" . $id . "description' rows=8 style='width: 300px'></textarea>" ;
@@ -390,7 +390,7 @@ else {
 							$output.="</tr>" ;
 							$output.="<tr>" ;
 								$output.="<td class='right' colspan=2>" ;
-									$output.="<span style='font-size: 90%'><i>* " . __($guid, "denotes a required field") . "</i></span>" ;
+									$output.="<span style='font-size: 90%'><i>* " . __($guid, "denotes a required field") . "</span>" ;
 								$output.="</td>" ;
 							$output.="</tr>" ;
 						$output.="</table>" ;

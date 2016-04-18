@@ -100,14 +100,14 @@ else {
 			$row=$result->fetch() ;
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/inDescriptors_manage_editProcess.php?gibbonINDescriptorID=" . $gibbonINDescriptorID ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php print __($guid, 'Name') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique.') ; ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Must be unique.') ; ?></span>
 						</td>
 						<td class="right">
-							<input name="name" id="name" maxlength=50 value="<?php print __($guid, $row["name"]) ?>" type="text" style="width: 300px">
+							<input name="name" id="name" maxlength=50 value="<?php print __($guid, $row["name"]) ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var name2=new LiveValidation('name');
 								name2.add(Validate.Presence);
@@ -117,10 +117,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Short Name') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique.') ; ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Must be unique.') ; ?></span>
 						</td>
 						<td class="right">
-							<input name="nameShort" id="nameShort" maxlength=5 value="<?php print __($guid, $row["nameShort"]) ?>" type="text" style="width: 300px">
+							<input name="nameShort" id="nameShort" maxlength=5 value="<?php print __($guid, $row["nameShort"]) ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var nameShort=new LiveValidation('nameShort');
 								nameShort.add(Validate.Presence);
@@ -130,10 +130,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Sequence Number') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique.') ; ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Must be unique.') ; ?></span>
 						</td>
 						<td class="right">
-							<input name="sequenceNumber" id="sequenceNumber" maxlength=5 value="<?php print $row["sequenceNumber"] ?>" type="text" style="width: 300px">
+							<input name="sequenceNumber" id="sequenceNumber" maxlength=5 value="<?php print $row["sequenceNumber"] ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var sequenceNumber=new LiveValidation('sequenceNumber');
 								sequenceNumber.add(Validate.Presence);
@@ -145,12 +145,12 @@ else {
 							<b><?php print __($guid, 'Description') ?></b><br/>
 						</td>
 						<td class="right">
-							<textarea name="description" id="description" rows=8 style="width: 300px"><?php print __($guid, $row["description"]) ?></textarea>
+							<textarea name="description" id="description" rows=8 class="standardWidth"><?php print __($guid, $row["description"]) ?></textarea>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+							<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

@@ -58,14 +58,14 @@ else {
 	
 	?>
 	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/fileExtensions_manage_addProcess.php" ?>">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr>
 				<td style='width: 275px'> 
 					<b><?php print __($guid, 'Extension') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique.') ?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'Must be unique.') ?></span>
 				</td>
 				<td class="right">
-					<input name="extension" id="extension" maxlength=7 value="" type="text" style="width: 300px">
+					<input name="extension" id="extension" maxlength=7 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var extension=new LiveValidation('extension');
 						extension.add(Validate.Presence);
@@ -75,10 +75,10 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Name') ?> *</b><br/>
-					<span style="font-size: 90%"><i></i></span>
+					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
-					<input name="name" id="name" maxlength=50 value="" type="text" style="width: 300px">
+					<input name="name" id="name" maxlength=50 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var name2=new LiveValidation('name');
 						name2.add(Validate.Presence);
@@ -88,10 +88,10 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Type') ?> *</b><br/>
-					<span style="font-size: 90%"><i></i></span>
+					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
-					<select name="type" id="type" style="width: 302px">
+					<select name="type" id="type" class="standardWidth">
 						<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
 						<option value="Document"><?php print __($guid, 'Document') ?></option>
 						<option value="Spreadsheet"><?php print __($guid, 'Spreadsheet') ?></option>
@@ -109,7 +109,7 @@ else {
 			</tr>
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+					<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

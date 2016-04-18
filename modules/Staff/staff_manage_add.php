@@ -76,7 +76,7 @@ else {
 	}
 	?>
 	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/staff_manage_addProcess.php?search=$search&allStaff=$allStaff" ?>">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr class='break'>
 				<td colspan=2> 
 					<h3><?php print __($guid, 'Basic Information') ?></h3>
@@ -85,10 +85,10 @@ else {
 			<tr>
 				<td style='width: 275px'> 
 					<b><?php print __($guid, 'Person') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique.') ?></i></span>		
+					<span class="emphasis small"><?php print __($guid, 'Must be unique.') ?></span>		
 				</td>
 				<td class="right">
-					<select style="width: 302px" name="gibbonPersonID" id="gibbonPersonID">
+					<select class="standardWidth" name="gibbonPersonID" id="gibbonPersonID">
 						<?php
 						print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
 						try {
@@ -114,10 +114,10 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Initials') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique if set.') ?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'Must be unique if set.') ?></span>
 				</td>
 				<td class="right">
-					<input name="initials" id="initials" maxlength=4 value="" type="text" style="width: 300px">
+					<input name="initials" id="initials" maxlength=4 value="" type="text" class="standardWidth">
 					<?php
 					$idList="" ;
 					try {
@@ -142,7 +142,7 @@ else {
 					<b><?php print __($guid, 'Type') ?> *</b><br/>
 				</td>
 				<td class="right">
-					<select name="type" id="type" style="width: 302px">
+					<select name="type" id="type" class="standardWidth">
 						<?php
 						print "<option value=\"Please select...\">" . __($guid, 'Please select...') . "</option>" ;
 						print "<optgroup label='--" . __($guid, 'Basic') . "--'>" ;
@@ -174,7 +174,7 @@ else {
 					<b><?php print __($guid, 'Job Title') ?></b><br/>
 				</td>
 				<td class="right">
-					<input name="jobTitle" id="jobTitle" maxlength=100 value="" type="text" style="width: 300px">
+					<input name="jobTitle" id="jobTitle" maxlength=100 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
 			
@@ -198,10 +198,10 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'First Aid Qualified?') ?></b><br/>
-					<span style="font-size: 90%"><i></i></span>
+					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
-					<select style="width: 302px" name="firstAidQualified" id="firstAidQualified" class="firstAidQualified">
+					<select class="standardWidth" name="firstAidQualified" id="firstAidQualified" class="firstAidQualified">
 						<option value=""></option>
 						<option value="Y"><?php print __($guid, 'Yes') ?></option>
 						<option value="N"><?php print __($guid, 'No') ?></option>
@@ -211,10 +211,10 @@ else {
 			<tr id='firstAidExpiryRow' style='display: none'>
 				<td> 
 					<b><?php print __($guid, 'First Aid Expiry') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, "Format:") . " " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } ?></i></span>
+					<span class="emphasis small"><?php print __($guid, "Format:") . " " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } ?></span>
 				</td>
 				<td class="right">
-					<input name="firstAidExpiry" id="firstAidExpiry" maxlength=10 value="<?php print dateConvertBack($guid, $row["firstAidExpiry"]) ?>" type="text" style="width: 300px">
+					<input name="firstAidExpiry" id="firstAidExpiry" maxlength=10 value="<?php print dateConvertBack($guid, $row["firstAidExpiry"]) ?>" type="text" class="standardWidth">
 					<script type="text/javascript">
 						$(function() {
 							$( "#firstAidExpiry" ).datepicker();
@@ -233,7 +233,7 @@ else {
 					<b><?php print __($guid, 'Country Of Origin') ?></b><br/>
 				</td>
 				<td class="right">
-					<select name="countryOfOrigin" id="countryOfOrigin" style="width: 302px">
+					<select name="countryOfOrigin" id="countryOfOrigin" class="standardWidth">
 						<?php
 						print "<option value=''></option>" ;
 						try {
@@ -255,25 +255,25 @@ else {
 					<b><?php print __($guid, 'Qualifications') ?></b><br/>
 				</td>
 				<td class="right">
-					<input name="qualifications" id="qualifications" maxlength=80 value="" type="text" style="width: 300px">
+					<input name="qualifications" id="qualifications" maxlength=80 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Grouping') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Used to group staff when creating a staff directory.') ?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'Used to group staff when creating a staff directory.') ?></span>
 				</td>
 				<td class="right">
-					<input name="biographicalGrouping" id="biographicalGrouping" maxlength=100 value="" type="text" style="width: 300px">
+					<input name="biographicalGrouping" id="biographicalGrouping" maxlength=100 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Grouping Priority') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Higher numbers move teachers up the order within their grouping.') ?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'Higher numbers move teachers up the order within their grouping.') ?></span>
 				</td>
 				<td class="right">
-					<input name="biographicalGroupingPriority" id="biographicalGroupingPriority" maxlength=4 value="0" type="text" style="width: 300px">
+					<input name="biographicalGroupingPriority" id="biographicalGroupingPriority" maxlength=4 value="0" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var biographicalGroupingPriority=new LiveValidation('biographicalGroupingPriority');
 						biographicalGroupingPriority.add(Validate.Numericality);
@@ -291,7 +291,7 @@ else {
 			
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+					<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

@@ -98,13 +98,13 @@ else {
 			}
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/stringReplacement_manage_editProcess.php?gibbonStringID=" . $row["gibbonStringID"] . "&search=$search" ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Original String') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<input name="original" id="original" maxlength=100 value="<?php print htmlPrep($row["original"]) ?>" type="text" style="width: 300px">
+							<input name="original" id="original" maxlength=100 value="<?php print htmlPrep($row["original"]) ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var original=new LiveValidation('original');
 								original.add(Validate.Presence);
@@ -116,7 +116,7 @@ else {
 							<b><?php print __($guid, 'Replacement String') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<input name="replacement" id="replacement" maxlength=100 value="<?php print htmlPrep($row["replacement"]) ?>" type="text" style="width: 300px">
+							<input name="replacement" id="replacement" maxlength=100 value="<?php print htmlPrep($row["replacement"]) ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var replacement=new LiveValidation('replacement');
 								replacement.add(Validate.Presence);
@@ -128,7 +128,7 @@ else {
 							<b><?php print __($guid, 'Mode') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<select name="mode" id="mode" style="width: 302px">
+							<select name="mode" id="mode" class="standardWidth">
 								<?php
 								$selected="" ;
 								if ($row["mode"]=="Whole") {
@@ -150,7 +150,7 @@ else {
 							<b><?php print __($guid, 'Case Sensitive') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<select name="caseSensitive" id="caseSensitive" style="width: 302px">
+							<select name="caseSensitive" id="caseSensitive" class="standardWidth">
 								<?php
 								$selected="" ;
 								if ($row["caseSensitive"]=="N") {
@@ -169,10 +169,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Priority') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, "Higher priorities are substituted first.") ?></i></span>
+							<span class="emphasis small"><?php print __($guid, "Higher priorities are substituted first.") ?></span>
 						</td>
 						<td class="right">
-							<input name="priority" id="priority" maxlength=2 value="<?php print htmlPrep($row["priority"]) ?>" type="text" style="width: 300px">
+							<input name="priority" id="priority" maxlength=2 value="<?php print htmlPrep($row["priority"]) ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var priority=new LiveValidation('priority');
 								priority.add(Validate.Presence);
@@ -182,7 +182,7 @@ else {
 					</tr>	
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+							<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

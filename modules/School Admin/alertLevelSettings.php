@@ -72,7 +72,7 @@ else {
 	//Let's go!
 	?>
 	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/alertLevelSettingsProcess.php"?>">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<?php
 			$count=0 ;
 			while($row=$result->fetch()) {
@@ -88,7 +88,7 @@ else {
 					</td>
 					<td class="right">
 						<input type='hidden' name="<?php print "gibbonAlertLevelID" .$count ?>" id="<?php print "gibbonAlertLevelID" .$count ?>" value="<?php print $row["gibbonAlertLevelID"] ?>">
-						<input type='text' name="<?php print "name" .$count ?>" id="<?php print "name" .$count ?>" maxlength=50 value="<?php print __($guid, $row["name"]) ?>" style="width: 300px">
+						<input type='text' name="<?php print "name" .$count ?>" id="<?php print "name" .$count ?>" maxlength=50 value="<?php print __($guid, $row["name"]) ?>" class="standardWidth">
 						<script type="text/javascript">
 							var <?php print "name" .$count ?>=new LiveValidation('<?php print "name" .$count ?>');
 							<?php print "name" .$count ?>.add(Validate.Presence);
@@ -100,7 +100,7 @@ else {
 						<b><?php print __($guid, 'Short Name') ?> *</b>
 					</td>
 					<td class="right">
-						<input type='text' name="<?php print "nameShort" .$count ?>" id="<?php print "nameShort" .$count ?>" maxlength=4 value="<?php print $row["nameShort"] ?>" style="width: 300px">
+						<input type='text' name="<?php print "nameShort" .$count ?>" id="<?php print "nameShort" .$count ?>" maxlength=4 value="<?php print $row["nameShort"] ?>" class="standardWidth">
 						<script type="text/javascript">
 							var <?php print "nameShort" .$count ?>=new LiveValidation('<?php print "nameShort" .$count ?>');
 							<?php print "nameShort" .$count ?>.add(Validate.Presence);
@@ -110,10 +110,10 @@ else {
 				<tr>
 					<td> 
 						<b><?php print __($guid, 'Font/Border Color') ?> *</b><br/>
-						<span style="font-size: 90%"><i>RGB Hex value, without leading #.</i></span>
+						<span class="emphasis small">RGB Hex value, without leading #.</span>
 					</td>
 					<td class="right">
-						<input type='text' name="<?php print "color" .$count ?>" id="<?php print "color" .$count ?>" maxlength=6 value="<?php print $row["color"] ?>" style="width: 300px">
+						<input type='text' name="<?php print "color" .$count ?>" id="<?php print "color" .$count ?>" maxlength=6 value="<?php print $row["color"] ?>" class="standardWidth">
 						<script type="text/javascript">
 							var <?php print "color" .$count ?>=new LiveValidation('<?php print "color" .$count ?>');
 							<?php print "color" .$count ?>.add(Validate.Presence);
@@ -123,10 +123,10 @@ else {
 				<tr>
 					<td> 
 						<b><?php print __($guid, 'Background Color') ?> *</b><br/>
-						<span style="font-size: 90%"><i>RGB Hex value, without leading #.</i></span>
+						<span class="emphasis small">RGB Hex value, without leading #.</span>
 					</td>
 					<td class="right">
-						<input type='text' name="<?php print "colorBG" .$count ?>" id="<?php print "colorBG" .$count ?>" maxlength=6 value="<?php print $row["colorBG"] ?>" style="width: 300px">
+						<input type='text' name="<?php print "colorBG" .$count ?>" id="<?php print "colorBG" .$count ?>" maxlength=6 value="<?php print $row["colorBG"] ?>" class="standardWidth">
 						<script type="text/javascript">
 							var <?php print "colorBG" .$count ?>=new LiveValidation('<?php print "colorBG" .$count ?>');
 							<?php print "colorBG" .$count ?>.add(Validate.Presence);
@@ -136,10 +136,10 @@ else {
 				<tr>
 					<td> 
 						<b><?php print __($guid, 'Sequence Number') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+						<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 					</td>
 					<td class="right">
-						<input readonly type='text' name="<?php print "sequenceNumber" .$count ?>" id="<?php print "sequenceNumber" .$count ?>" maxlength=4 value="<?php print $row["sequenceNumber"] ?>" style="width: 300px">
+						<input readonly type='text' name="<?php print "sequenceNumber" .$count ?>" id="<?php print "sequenceNumber" .$count ?>" maxlength=4 value="<?php print $row["sequenceNumber"] ?>" class="standardWidth">
 					</td>
 				</tr>
 				<tr>
@@ -154,7 +154,7 @@ else {
 			?>
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+					<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="count" value="<?php print $count ?>">

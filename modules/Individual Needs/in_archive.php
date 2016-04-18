@@ -66,14 +66,14 @@ else {
 
 	?>
 	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/in_archiveProcess.php"?>">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Delete Current Plans?') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Deletes Individual Education Plan fields only, not Individual Needs Status fields.') ?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'Deletes Individual Education Plan fields only, not Individual Needs Status fields.') ?></span>
 				</td>
 				<td class="right">
-					<select name="deleteCurrentPlans" id="deleteCurrentPlans" style="width: 302px">
+					<select name="deleteCurrentPlans" id="deleteCurrentPlans" class="standardWidth">
 						<option value="N"><?php print ynExpander($guid, 'N') ?></option>
 						<option value="Y"><?php print ynExpander($guid, 'Y') ?></option>
 					</select>
@@ -82,10 +82,10 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Archive Title') ?> *</b><br/>
-					<span style="font-size: 90%"><i></i></span>
+					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
-					<input type='text' maxlength=50 name="title" id="title" style="width: 300px" value=''/>
+					<input type='text' maxlength=50 name="title" id="title" class="standardWidth" value=''/>
 					<script type="text/javascript">
 						var title=new LiveValidation('title');
 						title.add(Validate.Presence);
@@ -135,7 +135,7 @@ else {
 			
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+					<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

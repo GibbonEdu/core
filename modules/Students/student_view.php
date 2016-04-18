@@ -162,11 +162,11 @@ else {
 						<td>
 							<b><?php print __($guid, 'Search For') ?></b><br/>
 							<?php
-								print "<span style=\"font-size: 90%\"><i>" . __($guid, 'Preferred, surname, username.') . "</i></span>" ;	
+								print "<span style=\"font-size: 90%\"><i>" . __($guid, 'Preferred, surname, username.') . "</span>" ;	
 							?>
 						</td>
 						<td class="right">
-							<input name="search" id="search" maxlength=20 value="<?php print $search ?>" type="text" style="width: 300px">
+							<input name="search" id="search" maxlength=20 value="<?php print $search ?>" type="text" class="standardWidth">
 						</td>
 					</tr>
 					<tr>
@@ -174,7 +174,7 @@ else {
 							<b><?php print __($guid, 'Sort By') ?></b><br/>
 						</td>
 						<td class="right">
-							<select name="sort" style="width: 300px">
+							<select name="sort" class="standardWidth">
 								<option value="surname, preferredName" <?php if($sort == 'surname, preferredName'){echo("selected");}?>><?php print __($guid, 'Surname') ; ?></option>
 								<option value="preferredName" <?php if($sort == 'preferredName'){echo("selected");}?>><?php print __($guid, 'Given Name') ; ?></option>
 								<option value="rollGroup" <?php if($sort == "rollGroup"){echo("selected");}?>><?php print __($guid, 'Roll Group') ; ?></option>
@@ -335,11 +335,11 @@ else {
 						<td>
 							<b><?php print __($guid, 'Search For') ?></b><br/>
 							<?php
-								print "<span style=\"font-size: 90%\"><i>" . __($guid, 'Preferred, surname, username, email, phone number, vehicle registration, parent email.') . "</i></span>" ;	
+								print "<span style=\"font-size: 90%\"><i>" . __($guid, 'Preferred, surname, username, email, phone number, vehicle registration, parent email.') . "</span>" ;	
 							?>
 						</td>
 						<td class="right">
-							<input name="search" id="search" maxlength=20 value="<?php print $search ?>" type="text" style="width: 300px">
+							<input name="search" id="search" maxlength=20 value="<?php print $search ?>" type="text" class="standardWidth">
 						</td>
 					</tr>
 					<tr>
@@ -347,7 +347,7 @@ else {
 							<b><?php print __($guid, 'Sort By') ?></b><br/>
 						</td>
 						<td class="right">
-							<select name="sort" style="width: 300px">
+							<select name="sort" class="standardWidth">
 								<option value="surname, preferredName" <?php if($sort == 'surname, preferredName'){echo("selected");}?>><?php print __($guid, 'Surname') ; ?></option>
 								<option value="preferredName" <?php if($sort == 'preferredName'){echo("selected");}?>><?php print __($guid, 'Given Name') ; ?></option>
 								<option value="rollGroup" <?php if($sort == "rollGroup"){echo("selected");}?>><?php print __($guid, 'Roll Group') ; ?></option>
@@ -359,7 +359,7 @@ else {
 					<tr>
 						<td>
 							<b><?php print __($guid, 'All Students') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Include all students, regardless of status and current enrolment. Some data may not display.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Include all students, regardless of status and current enrolment. Some data may not display.') ?></span>
 						</td>
 						<td class="right">
 							<?php

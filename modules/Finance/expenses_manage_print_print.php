@@ -36,7 +36,7 @@ else {
 		print "</div>" ;
 	}
 	else {
-		if (isset($_GET["return"])) { returnProcess($_GET["return"], null, null); }
+		if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
 		//Proceed!
 		if (isset($_GET["approveReturn"])) { $approveReturn=$_GET["approveReturn"] ; } else { $approveReturn="" ; }
 		$approveReturnMessage="" ;
@@ -153,7 +153,7 @@ else {
 							print "<a href='javascript:window.print()'>" .  __($guid, 'Print') . "<img style='margin-left: 5px' title='" . __($guid, 'Print') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/print.png'/></a>" ;
 							print "</div>" ;
 							?>
-							<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+							<table class='smallIntBorder fullWidth' cellspacing='0'>	
 								<tr class='break'>
 									<td colspan=2> 
 										<h3><?php print __($guid, 'Basic Information') ?></h3>
@@ -180,8 +180,8 @@ else {
 											$yearName=$rowYear["name"] ;
 										}
 										?>
-										<input readonly name="name" id="name" maxlength=20 value="<?php print $yearName ?>" type="text" style="width: 300px">
-										<input name="gibbonFinanceBudgetCycleID" id="gibbonFinanceBudgetCycleID" maxlength=20 value="<?php print $gibbonFinanceBudgetCycleID ?>" type="hidden" style="width: 300px">
+										<input readonly name="name" id="name" maxlength=20 value="<?php print $yearName ?>" type="text" class="standardWidth">
+										<input name="gibbonFinanceBudgetCycleID" id="gibbonFinanceBudgetCycleID" maxlength=20 value="<?php print $gibbonFinanceBudgetCycleID ?>" type="hidden" class="standardWidth">
 										<script type="text/javascript">
 											var gibbonFinanceBudgetCycleID=new LiveValidation('gibbonFinanceBudgetCycleID');
 											gibbonFinanceBudgetCycleID.add(Validate.Presence);
@@ -193,7 +193,7 @@ else {
 										<b><?php print __($guid, 'Budget') ?> *</b><br/>
 									</td>
 									<td class="right">
-										<input readonly name="name" id="name" maxlength=20 value="<?php print $row["budget"] ; ?>" type="text" style="width: 300px">
+										<input readonly name="name" id="name" maxlength=20 value="<?php print $row["budget"] ; ?>" type="text" class="standardWidth">
 									</td>
 								</tr>
 								<tr>
@@ -201,7 +201,7 @@ else {
 										<b><?php print __($guid, 'Title') ?> *</b><br/>
 									</td>
 									<td class="right">
-										<input readonly name="name" id="name" maxlength=60 value="<?php print $row["title"] ; ?>" type="text" style="width: 300px">
+										<input readonly name="name" id="name" maxlength=60 value="<?php print $row["title"] ; ?>" type="text" class="standardWidth">
 									</td>
 								</tr>
 								<tr>
@@ -209,7 +209,7 @@ else {
 										<b><?php print __($guid, 'Status') ?> *</b><br/>
 									</td>
 									<td class="right">
-										<input readonly name="name" id="name" maxlength=60 value="<?php print $row["status"] ; ?>" type="text" style="width: 300px">
+										<input readonly name="name" id="name" maxlength=60 value="<?php print $row["status"] ; ?>" type="text" class="standardWidth">
 									</td>
 								</tr>
 								<tr>
@@ -227,7 +227,7 @@ else {
 										<b><?php print __($guid, 'Purchase By') ?> *</b><br/>
 									</td>
 									<td class="right">
-										<input readonly name="purchaseBy" id="purchaseBy" maxlength=60 value="<?php print $row["purchaseBy"] ; ?>" type="text" style="width: 300px">
+										<input readonly name="purchaseBy" id="purchaseBy" maxlength=60 value="<?php print $row["purchaseBy"] ; ?>" type="text" class="standardWidth">
 									</td>
 								</tr>
 								<tr>
@@ -267,7 +267,7 @@ else {
 											</span>
 										</td>
 										<td class="right">
-											<input readonly name="name" id="name" maxlength=60 value="<?php print number_format($row["cost"], 2, ".", ",") ; ?>" type="text" style="width: 300px">
+											<input readonly name="name" id="name" maxlength=60 value="<?php print number_format($row["cost"], 2, ".", ",") ; ?>" type="text" class="standardWidth">
 										</td>
 									</tr>
 									<tr>
@@ -275,7 +275,7 @@ else {
 											<b><?php print __($guid, 'Count Against Budget') ?> *</b><br/>
 										</td>
 										<td class="right">
-											<input readonly name="countAgainstBudget" id="countAgainstBudget" maxlength=60 value="<?php print ynExpander($guid, $row["countAgainstBudget"]) ; ?>" type="text" style="width: 300px">
+											<input readonly name="countAgainstBudget" id="countAgainstBudget" maxlength=60 value="<?php print ynExpander($guid, $row["countAgainstBudget"]) ; ?>" type="text" class="standardWidth">
 										</td>
 									</tr>
 									<?php 
@@ -319,7 +319,7 @@ else {
 													$rowCheck=$resultCheck->fetch() ;
 													$budgetAllocation=$rowCheck["value"] ;
 													?>
-													<input readonly name="name" id="name" maxlength=60 value="<?php print number_format($budgetAllocation, 2, ".", ",") ; ?>" type="text" style="width: 300px">
+													<input readonly name="name" id="name" maxlength=60 value="<?php print number_format($budgetAllocation, 2, ".", ",") ; ?>" type="text" class="standardWidth">
 													<?php
 												}
 												?>
@@ -363,7 +363,7 @@ else {
 														$budgetAllocated=$budgetAllocated+$rowCheck["cost"] ;
 													}
 													?>
-													<input readonly name="name" id="name" maxlength=60 value="<?php print number_format($budgetAllocated, 2, ".", ",") ; ?>" type="text" style="width: 300px">
+													<input readonly name="name" id="name" maxlength=60 value="<?php print number_format($budgetAllocated, 2, ".", ",") ; ?>" type="text" class="standardWidth">
 													<?php
 												}
 										

@@ -88,14 +88,14 @@ else {
 			$row=$result->fetch() ;
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/rollGroup_manage_editProcess.php?gibbonRollGroupID=$gibbonRollGroupID" ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php print __($guid, 'School Year') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 						</td>
 						<td class="right">
-							<input readonly name="schoolYearName" id="schoolYearName" maxlength=20 value="<?php print $row["yearName"] ?>" type="text" style="width: 300px">
+							<input readonly name="schoolYearName" id="schoolYearName" maxlength=20 value="<?php print $row["yearName"] ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var schoolYearName=new LiveValidation('schoolYearName');
 								schoolYearname2.add(Validate.Presence);
@@ -105,10 +105,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Name') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Must be unique.') ?></span>
 						</td>
 						<td class="right">
-							<input name="name" id="name" maxlength=10 value="<?php print htmlPrep($row["name"]) ?>" type="text" style="width: 300px">
+							<input name="name" id="name" maxlength=10 value="<?php print htmlPrep($row["name"]) ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var name2=new LiveValidation('name');
 								name2.add(Validate.Presence);
@@ -118,10 +118,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Short Name') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Must be unique.') ?></span>
 						</td>
 						<td class="right">
-							<input name="nameShort" id="nameShort" maxlength=5 value="<?php print htmlPrep($row["nameShort"]) ?>" type="text" style="width: 300px">
+							<input name="nameShort" id="nameShort" maxlength=5 value="<?php print htmlPrep($row["nameShort"]) ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var nameShort=new LiveValidation('nameShort');
 								nameShort.add(Validate.Presence);
@@ -131,10 +131,10 @@ else {
 					<tr>
 						<td rowspan=3> 
 							<b><?php print __($guid, 'Tutors') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Up to 3 per roll group. The first-listed will be marked as "Main Tutor".') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Up to 3 per roll group. The first-listed will be marked as "Main Tutor".') ?></span>
 						</td>
 						<td class="right">
-							<select style="width: 302px" name="gibbonPersonIDTutor">
+							<select class="standardWidth" name="gibbonPersonIDTutor">
 								<?php
 								print "<option value=''></option>" ;
 								try {
@@ -158,7 +158,7 @@ else {
 					</tr>
 					<tr>
 						<td class="right">
-							<select style="width: 302px" name="gibbonPersonIDTutor2">
+							<select class="standardWidth" name="gibbonPersonIDTutor2">
 								<?php
 								print "<option value=''></option>" ;
 								try {
@@ -182,7 +182,7 @@ else {
 					</tr>
 					<tr>
 						<td class="right">
-							<select style="width: 302px" name="gibbonPersonIDTutor3">
+							<select class="standardWidth" name="gibbonPersonIDTutor3">
 								<?php
 								print "<option value=''></option>" ;
 								try {
@@ -207,10 +207,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Location') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
+							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
-							<select name="gibbonSpaceID" id="gibbonSpaceID" style="width: 302px">
+							<select name="gibbonSpaceID" id="gibbonSpaceID" class="standardWidth">
 								<?php
 								print "<option value=''></option>" ;
 								try {
@@ -234,7 +234,7 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Next Roll Group') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Sets student progression on rollover.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Sets student progression on rollover.') ?></span>
 						</td>
 						<td class="right">
 							<?php
@@ -271,10 +271,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Website') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Include http://') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Include http://') ?></span>
 						</td>
 						<td class="right">
-							<input name="website" id="website" maxlength=255 value="<?php print htmlPrep($row["website"]) ?>" type="text" style="width: 300px">
+							<input name="website" id="website" maxlength=255 value="<?php print htmlPrep($row["website"]) ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var website=new LiveValidation('website');
 								website.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
@@ -283,7 +283,7 @@ else {
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+							<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 						</td>
 						<td class="right">
 							<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php print $gibbonSchoolYearID ?>" type="hidden">

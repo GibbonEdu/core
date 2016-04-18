@@ -34,20 +34,20 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Copy Activities') . "</div>" ;
 	print "</div>" ;
 	
-	if (isset($_GET["return"])) { returnProcess($_GET["return"], null, null); }
+	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
 	
 	?>
 	<p>
 		<?php print __($guid, 'This action copies all current activities, slots and staff into a specified year.') . " " . __($guid, "Copied activities will be added to any existing activities in the target year.") ; ?>
 	</p>
 	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/activities_copyProcess.php" ?>">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr>
 				<td style='width: 275px'> 
 					<b><?php print __($guid, 'Current School Year') ?> *</b><br/>
 				</td>
 				<td class="right">
-					<input readonly name="gibbonSchoolYearName" id="gibbonSchoolYearName" value="<?php print $_SESSION[$guid]["gibbonSchoolYearName"] ?>" type="text" style="width: 300px">
+					<input readonly name="gibbonSchoolYearName" id="gibbonSchoolYearName" value="<?php print $_SESSION[$guid]["gibbonSchoolYearName"] ?>" type="text" class="standardWidth">
 					<input readonly name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php print $_SESSION[$guid]["gibbonSchoolYearID"] ?>" type="hidden">
 				</td>
 			</tr>
@@ -56,7 +56,7 @@ else {
 					<b><?php print __($guid, 'Target School Year') ?> *</b><br/>
 				</td>
 				<td class="right">
-					<select name="gibbonSchoolYearIDTarget" id="gibbonSchoolYearIDTarget" style="width: 302px">
+					<select name="gibbonSchoolYearIDTarget" id="gibbonSchoolYearIDTarget" class="standardWidth">
 						<option value='Please select...'><?php print __($guid, 'Please select...') ?></option>
 						<?php
 						try {
@@ -79,7 +79,7 @@ else {
 			</tr>
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+					<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

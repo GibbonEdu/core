@@ -1222,7 +1222,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 											$output.="<span style='border: 1px solid #c00; padding: 0 2px'>" . $spaceChanges[$rowPeriods["gibbonTTDayRowClassID"]][0] . "</span>" ;
 										}
 										else {
-											$output.="<span style='border: 1px solid #c00; padding: 0 2px'><i>" . __($guid, "No Space Allocated") . "</i></span>" ;
+											$output.="<span style='border: 1px solid #c00; padding: 0 2px'><i>" . __($guid, "No Space Allocated") . "</span>" ;
 										}
 									}
 								}

@@ -44,11 +44,11 @@ else {
 	?>
 	
 	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_students_IDCards.php"?>" enctype="multipart/form-data">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr>
 				<td style='width: 275px'> 
 					<b><?php print __($guid, 'Students') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 				</td>
 				<td class="right">
 					<select name="Members[]" id="Members[]" multiple style="width: 302px; height: 150px">
@@ -86,7 +86,7 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Card Background') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, '.png or .jpg file, 448 x 268px.') ?></i></span>
+					<span class="emphasis small"><?php print __($guid, '.png or .jpg file, 448 x 268px.') ?></span>
 				</td>
 				<td class="right">
 					<input type="file" name="file" id="file"><br/><br/>
@@ -205,10 +205,10 @@ else {
 								print "<td style='padding: 15px 0 0 0 ; text-align: left; width: 280px; vertical-align: top; font-size: 22px'>" ;
 									print "<div style='padding: 5px; background-color: rgba(255,255,255,0.3); min-height: 200px'>" ;
 										print "<div style='font-weight: bold; font-size: 30px'>" .$row["officialName"] . "</div><br/>" ;
-										print "<b>" . __($guid, 'DOB') . "</b>: <span style='float: right'><i>" . dateConvertBack($guid, $row["dob"]) . "</i></span><br/>" ;
-										print "<b>" . $_SESSION[$guid]["organisationNameShort"] . " " . __($guid, 'ID') . "</b>: <span style='float: right'><i>" . $row["studentID"] . "</i></span><br/>" ;
-										print "<b>" . __($guid, 'Year/Roll') . "</b>: <span style='float: right'><i>" . __($guid, $row["year"]) . " / " . $row["roll"] . "</i></span><br/>" ;
-										print "<b>" . __($guid, 'School Year') . "</b>: <span style='float: right'><i>" . $_SESSION[$guid]["gibbonSchoolYearName"] . "</i></span><br/>" ;
+										print "<b>" . __($guid, 'DOB') . "</b>: <span style='float: right'><i>" . dateConvertBack($guid, $row["dob"]) . "</span><br/>" ;
+										print "<b>" . $_SESSION[$guid]["organisationNameShort"] . " " . __($guid, 'ID') . "</b>: <span style='float: right'><i>" . $row["studentID"] . "</span><br/>" ;
+										print "<b>" . __($guid, 'Year/Roll') . "</b>: <span style='float: right'><i>" . __($guid, $row["year"]) . " / " . $row["roll"] . "</span><br/>" ;
+										print "<b>" . __($guid, 'School Year') . "</b>: <span style='float: right'><i>" . $_SESSION[$guid]["gibbonSchoolYearName"] . "</span><br/>" ;
 									print "</div>" ;
 								print "</td>" ;
 							print "</tr>" ;

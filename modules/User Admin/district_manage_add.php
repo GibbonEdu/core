@@ -58,14 +58,14 @@ else {
 	
 	?>
 	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/district_manage_addProcess.php" ?>">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr>
 				<td style='width: 275px'> 
 					<b><?php print __($guid, 'Name') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique.') ?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'Must be unique.') ?></span>
 				</td>
 				<td class="right">
-					<input name="name" id="name" maxlength=30 value="" type="text" style="width: 300px">
+					<input name="name" id="name" maxlength=30 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var name2=new LiveValidation('name');
 						name2.add(Validate.Presence);
@@ -74,7 +74,7 @@ else {
 			</tr>
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+					<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

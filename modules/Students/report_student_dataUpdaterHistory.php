@@ -52,11 +52,11 @@ else {
 	?>
 	
 	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_student_dataUpdaterHistory.php"?>">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr>
 				<td style='width: 275px'> 
 					<b><?php print __($guid, 'Students') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 				</td>
 				<td class="right">
 					<select name="Members[]" id="Members[]" multiple style="width: 302px; height: 150px">
@@ -94,10 +94,10 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Date') ?> *</b><br/>
-					<span style="font-size: 85%"><i><?php print __($guid, 'Earliest acceptable update') ?><br/><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></i></span>
+					<span style="font-size: 85%"><i><?php print __($guid, 'Earliest acceptable update') ?><br/><?php print __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?></span>
 				</td>
 				<td class="right">
-					<input name="date" id="date" maxlength=10 value="<?php if ($date!="") { print $date ; } else { print date($_SESSION[$guid]["i18n"]["dateFormatPHP"], (time()-(604800*26))) ; } ?>" type="text" style="width: 300px">
+					<input name="date" id="date" maxlength=10 value="<?php if ($date!="") { print $date ; } else { print date($_SESSION[$guid]["i18n"]["dateFormatPHP"], (time()-(604800*26))) ; } ?>" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var date=new LiveValidation('date');
 						date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
@@ -114,7 +114,7 @@ else {
 			<td> 
 				<b><?php print __($guid, 'Show Only Non-Compliant?') ?></b><br/>
 				<span style="font-size: 85%"><i><?php print __($guid, 'If not checked, show all. If checked, show only non-compliant students.') ?></i><br/>
-				</i></span>
+				</span>
 			</td>
 			<td class="right">
 				<input <?php if ($nonCompliant=="Y") { print "checked" ; } ?> type='checkbox' name='nonCompliant' value='Y'/>

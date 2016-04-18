@@ -34,7 +34,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Manage Activities') . "</div>" ;
 	print "</div>" ;
 
-	if (isset($_GET["return"])) { returnProcess($_GET["return"], null, null); }
+	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
 	
 	print "<h2>" ;
 	print __($guid, "Search") ;
@@ -57,10 +57,10 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Search For Activity') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Activity name.') ?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'Activity name.') ?></span>
 				</td>
 				<td class="right">
-					<input name="search" id="search" maxlength=20 value="<?php print $search ?>" type="text" style="width: 300px">
+					<input name="search" id="search" maxlength=20 value="<?php print $search ?>" type="text" class="standardWidth">
 				</td>
 			</tr>
 			<tr>

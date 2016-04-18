@@ -87,14 +87,14 @@ else {
 			$row=$result->fetch() ;
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/cannedResponse_manage_editProcess.php?gibbonMessengerCannedResponseID=$gibbonMessengerCannedResponseID" ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Subject') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Must be unique.') ?></span>
 						</td>
 						<td class="right">
-							<input name="subject" id="subject" maxlength=20 value="<?php print htmlPrep($row["subject"]) ?>" type="text" style="width: 300px">
+							<input name="subject" id="subject" maxlength=20 value="<?php print htmlPrep($row["subject"]) ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var subject=new LiveValidation('subject');
 								subject.add(Validate.Presence);
@@ -112,7 +112,7 @@ else {
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+							<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

@@ -31,7 +31,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Manage Invoices') . "</div>" ;
 	print "</div>" ;
 	
-	if (isset($_GET["return"])) { returnProcess($_GET["return"], null, array("success0" => "Your request was completed successfully.", "success1" => "Your request was completed successfully, but one or more requested emails could not be sent.", "error3" => "Some elements of your request failed, but others were successful.")); }
+	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, array("success0" => "Your request was completed successfully.", "success1" => "Your request was completed successfully, but one or more requested emails could not be sent.", "error3" => "Some elements of your request failed, but others were successful.")); }
 	
 	print "<p>" ;
 		print __($guid, "This section allows you to generate, view, edit and delete invoices, either for an individual or in bulk. You can use the filters below to pick up certain invoices types (e.g. those that are overdue) or view all invoices for a particular user. Invoices, reminders and receipts can be sent out using the Email function, shown in the right-hand side menu.") . "<br/>" ;
@@ -121,7 +121,7 @@ else {
 				<tr>
 					<td> 
 						<b><?php print __($guid, 'Status') ?></b><br/>
-						<span style="font-size: 90%"><i></i></span>
+						<span class="emphasis small"></span>
 					</td>
 					<td class="right">
 						<?php
@@ -178,7 +178,7 @@ else {
 				<tr>
 					<td> 
 						<b><?php print __($guid, 'Student') ?></b><br/>
-						<span style="font-size: 90%"><i></i></span>
+						<span class="emphasis small"></span>
 					</td>
 					<td class="right">
 						<?php
@@ -206,7 +206,7 @@ else {
 				<tr>
 					<td> 
 						<b><?php print __($guid, 'Month of Issue') ?></b><br/>
-						<span style="font-size: 90%"><i></i></span>
+						<span class="emphasis small"></span>
 					</td>
 					<td class="right">
 						<?php
@@ -226,7 +226,7 @@ else {
 				<tr>
 					<td> 
 						<b><?php print __($guid, 'Billing Schedule') ?></b><br/>
-						<span style="font-size: 90%"><i></i></span>
+						<span class="emphasis small"></span>
 					</td>
 					<td class="right">
 						<?php

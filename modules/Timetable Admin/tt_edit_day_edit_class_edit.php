@@ -110,14 +110,14 @@ else {
 				} 
 				?>
 				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/tt_edit_day_edit_class_editProcess.php?&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClassID=$gibbonTTDayRowClassID&gibbonCourseClassID=$gibbonCourseClassID" ?>">
-					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>	
 						<tr>
 							<td style='width: 275px'> 
 								<b><?php print __($guid, 'Timetable') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+								<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 							</td>
 							<td class="right">
-								<input readonly name="ttName" id="ttName" maxlength=20 value="<?php print $row["ttName"] ?>" type="text" style="width: 300px">
+								<input readonly name="ttName" id="ttName" maxlength=20 value="<?php print $row["ttName"] ?>" type="text" class="standardWidth">
 								<script type="text/javascript">
 									var courseName=new LiveValidation('courseName');
 									coursename2.add(Validate.Presence);
@@ -127,10 +127,10 @@ else {
 						<tr>
 							<td> 
 								<b><?php print __($guid, 'Day') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+								<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 							</td>
 							<td class="right">
-								<input readonly name="dayName" id="dayName" maxlength=20 value="<?php print $row["dayName"] ?>" type="text" style="width: 300px">
+								<input readonly name="dayName" id="dayName" maxlength=20 value="<?php print $row["dayName"] ?>" type="text" class="standardWidth">
 								<script type="text/javascript">
 									var courseName=new LiveValidation('courseName');
 									coursename2.add(Validate.Presence);
@@ -140,10 +140,10 @@ else {
 						<tr>
 							<td> 
 								<b><?php print __($guid, 'Period') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+								<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 							</td>
 							<td class="right">
-								<input readonly name="rowName" id="rowName" maxlength=20 value="<?php print $row["rowName"] ?>" type="text" style="width: 300px">
+								<input readonly name="rowName" id="rowName" maxlength=20 value="<?php print $row["rowName"] ?>" type="text" class="standardWidth">
 								<script type="text/javascript">
 									var courseName=new LiveValidation('courseName');
 									coursename2.add(Validate.Presence);
@@ -153,19 +153,19 @@ else {
 						<tr>
 							<td> 
 								<b><?php print __($guid, 'Class') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+								<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 							</td>
 							<td class="right">
-								<input readonly name="class" id="class" maxlength=20 value="<?php print $course . "." . $class ?>" type="text" style="width: 300px">
+								<input readonly name="class" id="class" maxlength=20 value="<?php print $course . "." . $class ?>" type="text" class="standardWidth">
 							</td>
 						</tr>
 						<tr>
 							<td> 
 								<b><?php print __($guid, 'Location') ?> *</b><br/>
-								<span style="font-size: 90%"><i></i></span>
+								<span class="emphasis small"></span>
 							</td>
 							<td class="right">
-								<select name="gibbonSpaceID" id="gibbonSpaceID" style="width: 302px">
+								<select name="gibbonSpaceID" id="gibbonSpaceID" class="standardWidth">
 									<?php
 									print "<option value=''></option>" ;
 									try {
@@ -196,7 +196,7 @@ else {
 						</tr>
 						<tr>
 							<td>
-								<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+								<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 							</td>
 							<td class="right">
 								<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

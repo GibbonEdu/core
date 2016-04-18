@@ -98,11 +98,11 @@ else {
 						
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/role_manage_duplicateProcess.php?gibbonRoleID=$gibbonRoleID" ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Role') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 						</td>
 						<td class="right">
 							<?php print "<input readonly value='" . $row["name"] . "' type='text' style='width: 300px'>" ; ?>
@@ -113,7 +113,7 @@ else {
 							<b><?php print __($guid, 'Name') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<input name="name" id="name" maxlength=20 value="" type="text" style="width: 300px">
+							<input name="name" id="name" maxlength=20 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var name=new LiveValidation('name');
 								name.add(Validate.Presence);
@@ -125,7 +125,7 @@ else {
 							<b><?php print __($guid, 'Name Short') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<input name="nameShort" id="nameShort" maxlength=4 value="" type="text" style="width: 300px">
+							<input name="nameShort" id="nameShort" maxlength=4 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var nameShort=new LiveValidation('nameShort');
 								nameShort.add(Validate.Presence);
@@ -134,7 +134,7 @@ else {
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+							<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

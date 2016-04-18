@@ -132,7 +132,7 @@ else {
 						$gibbonYearGroupIDList=$rowCourse["gibbonYearGroupIDList"] ;
 						?>
 						<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/units_addProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&address=" . $_GET["q"] ?>" enctype="multipart/form-data">
-							<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+							<table class='smallIntBorder fullWidth' cellspacing='0'>	
 								<tr class='break'>
 									<td colspan=2> 
 										<h3><?php print __($guid, 'Unit Basics') ?></h3>
@@ -141,28 +141,28 @@ else {
 								<tr>
 									<td style='width: 275px'> 
 										<b><?php print __($guid, 'School Year') ?> *</b><br/>
-										<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+										<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 									</td>
 									<td class="right">
-										<input readonly name="yearName" id="yearName" maxlength=20 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
+										<input readonly name="yearName" id="yearName" maxlength=20 value="<?php print $row["name"] ?>" type="text" class="standardWidth">
 									</td>
 								</tr>
 								<tr>
 									<td> 
 										<b><?php print __($guid, 'Course') ?> *</b><br/>
-										<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+										<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 									</td>
 									<td class="right">
-										<input readonly name="courseName" id="courseName" maxlength=20 value="<?php print $rowCourse["nameShort"] ?>" type="text" style="width: 300px">
+										<input readonly name="courseName" id="courseName" maxlength=20 value="<?php print $rowCourse["nameShort"] ?>" type="text" class="standardWidth">
 									</td>
 								</tr>
 								<tr>
 									<td> 
 										<b><?php print __($guid, 'Name') ?> *</b><br/>
-										<span style="font-size: 90%"><i></i></span>
+										<span class="emphasis small"></span>
 									</td>
 									<td class="right">
-										<input name="name" id="name" maxlength=40 value="" type="text" style="width: 300px">
+										<input name="name" id="name" maxlength=40 value="" type="text" class="standardWidth">
 										<script type="text/javascript">
 											var name2=new LiveValidation('name');
 											name2.add(Validate.Presence);
@@ -182,10 +182,10 @@ else {
 								<tr>
 									<td> 
 										<b><?php print __($guid, 'Ordering') ?> *</b><br/>
-										<span style="font-size: 90%"><i><?php print __($guid, "Units are arranged form lowest to highest ordering value, then alphabetically.") ; ?></i></span>
+										<span class="emphasis small"><?php print __($guid, "Units are arranged form lowest to highest ordering value, then alphabetically.") ; ?></span>
 									</td>
 									<td class="right">
-										<input name="ordering" id="ordering" maxlength=4 value="0" type="text" style="width: 300px">
+										<input name="ordering" id="ordering" maxlength=4 value="0" type="text" class="standardWidth">
 										<script type="text/javascript">
 											var ordering=new LiveValidation('ordering');
 											ordering.add(Validate.Presence);
@@ -196,10 +196,10 @@ else {
 								<tr>
 									<td> 
 										<b><?php print __($guid, "License") ?></b><br/>
-										<span style="font-size: 90%"><i><?php print __($guid, "Under what conditions can this work be reused?") ; ?></i></span>
+										<span class="emphasis small"><?php print __($guid, "Under what conditions can this work be reused?") ; ?></span>
 									</td>
 									<td class="right">
-										<select name="license" id="license" style="width: 302px">
+										<select name="license" id="license" class="standardWidth">
 											<option value=""></option>
 											<option value="Copyright"><?php print __($guid, 'Copyright') ?></option>
 											<option value="Creative Commons BY"><?php print __($guid, 'Creative Commons BY') ?></option>
@@ -216,7 +216,7 @@ else {
 									<tr>
 										<td> 
 											<b><?php print __($guid, "Shared Publically") ?> * </b><br/>
-											<span style="font-size: 90%"><i><?php print __($guid, "Share this unit via the public listing of units? Useful for building MOOCS.") ; ?></i></span>
+											<span class="emphasis small"><?php print __($guid, "Share this unit via the public listing of units? Useful for building MOOCS.") ; ?></span>
 										</td>
 										<td class="right">
 											<input type="radio" name="sharedPublic" value="Y" /> <?php print __($guid, 'Yes') ?>
@@ -463,7 +463,7 @@ else {
 														print "</td>" ;
 														print "<td>" ;
 															?>
-															<input name="gibbonCourseClassID<?php print $classCount?>" id="gibbonCourseClassID<?php print $classCount?>" maxlength=10 value="<?php print $rowClass["gibbonCourseClassID"] ?>" type="hidden" style="width: 300px">
+															<input name="gibbonCourseClassID<?php print $classCount?>" id="gibbonCourseClassID<?php print $classCount?>" maxlength=10 value="<?php print $rowClass["gibbonCourseClassID"] ?>" type="hidden" class="standardWidth">
 															<select name="running<?php print $classCount?>" id="running<?php print $classCount?>" style="width:100%">
 																<option value="N"><?php print __($guid, 'No') ?></option>
 																<option value="Y"><?php print __($guid, 'Yes') ?></option>
@@ -494,7 +494,7 @@ else {
 								<tr>
 									<td> 
 										<b><?php print __($guid, 'Downloadable Unit Outline') ?></b><br/>
-										<span style="font-size: 90%"><i><?php print __($guid, 'Available to most users.') ?></i></span>
+										<span class="emphasis small"><?php print __($guid, 'Available to most users.') ?></span>
 									</td>
 									<td class="right">
 										<input type="file" name="file" id="file"><br/><br/>
@@ -598,7 +598,7 @@ else {
 								</tr>
 								<tr>
 									<td class="right" colspan=2>
-										<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+										<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 									</td>
 								</tr>
 							</table>

@@ -58,7 +58,7 @@ else {
 	?>
 	
 	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/librarySettingsProcess.php" ?>">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr>
 				<?php
 				try {
@@ -72,10 +72,10 @@ else {
 				?>
 				<td style='width: 275px'> 
 					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
+					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
 						<?php for ($i=0; $i<=31; $i++) { ?>
 							<option <?php if ($row["value"]==$i) {print "selected ";} ?>value="<?php print $i ?>"><?php print $i ?></option>
 						<?php } ?>
@@ -95,10 +95,10 @@ else {
 				?>
 				<td> 
 					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<input type='text' name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=6 value="<?php print $row["value"] ?>" style="width: 300px">
+					<input type='text' name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" maxlength=6 value="<?php print $row["value"] ?>" class="standardWidth">
 				</td>
 			</tr>
 			<tr>
@@ -114,10 +114,10 @@ else {
 				?>
 				<td> 
 					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></i></span>
+					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
 				</td>
 				<td class="right">
-					<input type='text' name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>"style="width: 300px" value='<?php print htmlPrep($row["value"]) ?>'>
+					<input type='text' name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>"class="standardWidth" value='<?php print htmlPrep($row["value"]) ?>'>
 					<script type="text/javascript">
 						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
 						<?php print $row["name"] ?>.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
@@ -126,7 +126,7 @@ else {
 			</tr>
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+					<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

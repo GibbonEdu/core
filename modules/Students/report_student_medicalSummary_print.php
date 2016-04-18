@@ -70,7 +70,7 @@ else {
 				print "</th>" ;
 				print "<th>" ;
 					print __($guid, "Tetanus") . "<br/>" ;
-					print "<span style='font-size: 80%'><i>" . __($guid, '10 Years') . "</i></span>" ;
+					print "<span style='font-size: 80%'><i>" . __($guid, '10 Years') . "</span>" ;
 				print "</th>" ;
 				print "<th>" ;
 					print __($guid, "Last Update") ;

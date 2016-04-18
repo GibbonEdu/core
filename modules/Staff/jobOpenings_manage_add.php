@@ -58,13 +58,13 @@ else {
 	
 	?>
 	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/jobOpenings_manage_addProcess.php" ?>">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Type') ?> *</b><br/>
 				</td>
 				<td class="right">
-					<select name="type" id="type" style="width: 302px">
+					<select name="type" id="type" class="standardWidth">
 						<?php
 						print "<option value=\"Please select...\">" . __($guid, 'Please select...') . "</option>" ;
 						print "<optgroup label='--" . __($guid, 'Basic') . "--'>" ;
@@ -96,7 +96,7 @@ else {
 					<b><?php print __($guid, 'Job Title') ?> *</b><br/>
 				</td>
 				<td class="right">
-					<input name="jobTitle" id="jobTitle" maxlength=100 value="" type="text" style="width: 300px">
+					<input name="jobTitle" id="jobTitle" maxlength=100 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var jobTitle=new LiveValidation('jobTitle');
 						jobTitle.add(Validate.Presence);
@@ -106,10 +106,10 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Opening Date') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, "Format:") . " " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } ?></i></span>
+					<span class="emphasis small"><?php print __($guid, "Format:") . " " ; if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; } ?></span>
 				</td>
 				<td class="right">
-					<input name="dateOpen" id="dateOpen" maxlength=10 value="" type="text" style="width: 300px">
+					<input name="dateOpen" id="dateOpen" maxlength=10 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var dateOpen=new LiveValidation('dateOpen');
 						dateOpen.add(Validate.Presence);
@@ -122,10 +122,10 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Active') ?> *</b><br/>
-					<span style="font-size: 90%"><i></i></span>
+					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
-					<select name="active" id="active" style="width: 302px">
+					<select name="active" id="active" class="standardWidth">
 						<option value="Y"><?php print __($guid, 'Yes') ?></option>
 						<option value="N"><?php print __($guid, 'No') ?></option>
 					</select>
@@ -143,7 +143,7 @@ else {
 			</tr>
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+					<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

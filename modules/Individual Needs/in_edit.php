@@ -228,7 +228,7 @@ else {
 			
 				if (is_null($gibbonINArchiveID)==FALSE) { //SHOW ARCHIVE
 					?>
-					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>	
 						<tr>
 							<td colspan=2 style='padding-top: 25px'> 
 								<span style='font-weight: bold; font-size: 135%'><?php print __($guid, 'Targets') ?></span><br/>
@@ -274,7 +274,7 @@ else {
 					else {
 						$rowIEP=$resultIEP->fetch() ;
 						?>	
-						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+						<table class='smallIntBorder fullWidth' cellspacing='0'>	
 							<tr>
 								<td colspan=2 style='padding-top: 25px'> 
 									<span style='font-weight: bold; font-size: 135%'><?php print __($guid, 'Targets') ?></span><br/>

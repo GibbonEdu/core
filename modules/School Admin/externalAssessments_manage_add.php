@@ -64,14 +64,14 @@ else {
 	?>
 	
 	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/externalAssessments_manage_addProcess.php" ?>">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr>
 				<td style='width: 275px'> 
 					<b><?php print __($guid, 'Name') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique.') ; ?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'Must be unique.') ; ?></span>
 				</td>
 				<td class="right">
-					<input name="name" id="name" maxlength=50 value="" type="text" style="width: 300px">
+					<input name="name" id="name" maxlength=50 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var name2=new LiveValidation('name');
 						name2.add(Validate.Presence);
@@ -81,10 +81,10 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Short Name') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Must be unique.') ; ?></i></span>
+					<span class="emphasis small"><?php print __($guid, 'Must be unique.') ; ?></span>
 				</td>
 				<td class="right">
-					<input name="nameShort" id="nameShort" maxlength=10 value="" type="text" style="width: 300px">
+					<input name="nameShort" id="nameShort" maxlength=10 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var nameShort=new LiveValidation('nameShort');
 						nameShort.add(Validate.Presence);
@@ -94,10 +94,10 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Description') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Brief description of assessment and how it is used.') ; ?> </i></span>
+					<span class="emphasis small"><?php print __($guid, 'Brief description of assessment and how it is used.') ; ?> </span>
 				</td>
 				<td class="right">
-					<input name="description" id="description" maxlength=255 value="" type="text" style="width: 300px">
+					<input name="description" id="description" maxlength=255 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var description=new LiveValidation('description');
 						description.add(Validate.Presence);
@@ -109,7 +109,7 @@ else {
 					<b><?php print __($guid, 'Active') ; ?> *</b><br/>
 				</td>
 				<td class="right">
-					<select name="active" id="active" style="width: 302px">
+					<select name="active" id="active" class="standardWidth">
 						<option value="Y"><?php print __($guid, 'Yes') ?></option>
 						<option value="N"><?php print __($guid, 'No') ?></option>
 					</select>
@@ -119,10 +119,10 @@ else {
 			<tr>
 				<td> 
 					<b><?php print __($guid, 'Allow File Upload') ; ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print __($guid, 'Should the student record include the option of a file upload?') ; ?> </i></span>
+					<span class="emphasis small"><?php print __($guid, 'Should the student record include the option of a file upload?') ; ?> </span>
 				</td>
 				<td class="right">
-					<select name="allowFileUpload" id="allowFileUpload" style="width: 302px">
+					<select name="allowFileUpload" id="allowFileUpload" class="standardWidth">
 						<option value="N"><?php print __($guid, 'No') ?></option>
 						<option value="Y"><?php print __($guid, 'Yes') ?></option>
 					</select>
@@ -130,7 +130,7 @@ else {
 			</tr>
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+					<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

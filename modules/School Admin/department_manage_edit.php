@@ -119,7 +119,7 @@ else {
 			$row=$result->fetch() ;
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/department_manage_editProcess.php?gibbonDepartmentID=$gibbonDepartmentID&address=" . $_SESSION[$guid]["address"] ?>" enctype="multipart/form-data">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr class='break'>
 						<td colspan=2>
 							<h3><?php print __($guid, 'General Information') ?></h3>
@@ -128,11 +128,11 @@ else {
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php print __($guid, 'Type') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i><br/></span>
+							<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></i><br/></span>
 						</td>
 						<td class="right">
 							<?php $type=$row["type"] ; ?>
-							<input readonly name="type" id="type" value="<?php print $type ?>" type="text" style="width: 300px">
+							<input readonly name="type" id="type" value="<?php print $type ?>" type="text" class="standardWidth">
 						</td>
 					</tr>
 					<tr>
@@ -140,7 +140,7 @@ else {
 							<b><?php print __($guid, 'Name') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<input name="name" id="name" maxlength=40 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
+							<input name="name" id="name" maxlength=40 value="<?php print $row["name"] ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var name2=new LiveValidation('name');
 								name2.add(Validate.Presence);
@@ -152,7 +152,7 @@ else {
 							<b><?php print __($guid, 'Short Name') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<input name="nameShort" id="nameShort" maxlength=4 value="<?php print $row["nameShort"] ?>" type="text" style="width: 300px">
+							<input name="nameShort" id="nameShort" maxlength=4 value="<?php print $row["nameShort"] ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var nameShort=new LiveValidation('nameShort');
 								nameShort.add(Validate.Presence);
@@ -164,7 +164,7 @@ else {
 							<b><?php print __($guid, 'Subject Listing') ?></b><br/>
 						</td>
 						<td class="right">
-							<input name="subjectListing" id="subjectListing" maxlength=255 value="<?php print $row["subjectListing"] ?>" type="text" style="width: 300px">
+							<input name="subjectListing" id="subjectListing" maxlength=255 value="<?php print $row["subjectListing"] ?>" type="text" class="standardWidth">
 						</td>
 					</tr>
 					<tr>
@@ -176,9 +176,9 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Logo') ?></b><br/>
-							<span style="font-size: 90%"><i>125x125px jpg/png/gif</i><br/></span>
+							<span class="emphasis small">125x125px jpg/png/gif</i><br/></span>
 							<?php if ($row["logo"]!="") { ?>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Will overwrite existing attachment.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Will overwrite existing attachment.') ?></span>
 							<?php } ?>
 						</td>
 						<td class="right">
@@ -274,7 +274,7 @@ else {
 					<tr>
 					<td> 
 						<b>Staff</b><br/>
-						<span style="font-size: 90%"><i><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></i></span>
+						<span class="emphasis small"><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 					</td>
 					<td class="right">
 						<select name="staff[]" id="staff[]" multiple style="width: 302px; height: 150px">
@@ -298,7 +298,7 @@ else {
 							<b><?php print __($guid, 'Role') ?></b><br/>
 						</td>
 						<td class="right">
-							<select name="role" id="role" style="width: 302px">
+							<select name="role" id="role" class="standardWidth">
 								<?php
 								if ($type=="Learning Area") {
 									?>
@@ -329,7 +329,7 @@ else {
 					
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+							<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 						</td>
 						<td class="right">
 							<input type="submit" value="<?php print __($guid, "Submit") ; ?>">

@@ -34,7 +34,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Activities/activities_manage.php'>" . __($guid, 'Manage Activities') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Activities/activities_manage_enrolment.php&gibbonActivityID=" . $_GET["gibbonActivityID"] . "&search=" . $_GET["search"] . "'>" . __($guid, 'Activity Enrolment') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Add Student') . "</div>" ;
 	print "</div>" ;
 	
-	if (isset($_GET["return"])) { returnProcess($_GET["return"], null, null); }
+	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
 
 	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
 	$addReturnMessage="" ;
@@ -100,13 +100,13 @@ else {
 			}
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/activities_manage_enrolment_addProcess.php?gibbonActivityID=$gibbonActivityID&search=" . $_GET["search"] ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php print __($guid, 'Name') ?></b><br/>
 						</td>
 						<td class="right">
-							<input readonly name="name" id="name" maxlength=20 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
+							<input readonly name="name" id="name" maxlength=20 value="<?php print $row["name"] ?>" type="text" class="standardWidth">
 						</td>
 					</tr>
 					<?php
@@ -117,7 +117,7 @@ else {
 								<b><?php print __($guid, 'Listing Dates') ?></b><br/>
 							</td>
 							<td class="right">
-								<input readonly name="name" id="name" maxlength=20 value="<?php print dateConvertBack($guid, $row["listingStart"]) . "-" . dateConvertBack($guid, $row["listingEnd"]) ?>" type="text" style="width: 300px">
+								<input readonly name="name" id="name" maxlength=20 value="<?php print dateConvertBack($guid, $row["listingStart"]) . "-" . dateConvertBack($guid, $row["listingEnd"]) ?>" type="text" class="standardWidth">
 							</td>
 						</tr>
 						<tr>
@@ -125,7 +125,7 @@ else {
 								<b><?php print __($guid, 'Program Dates') ?></b><br/>
 							</td>
 							<td class="right">
-								<input readonly name="name" id="name" maxlength=20 value="<?php print dateConvertBack($guid, $row["programStart"]) . "-" . dateConvertBack($guid, $row["programEnd"]) ?>" type="text" style="width: 300px">
+								<input readonly name="name" id="name" maxlength=20 value="<?php print dateConvertBack($guid, $row["programStart"]) . "-" . dateConvertBack($guid, $row["programEnd"]) ?>" type="text" class="standardWidth">
 							</td>
 						</tr>
 						<?php
@@ -149,7 +149,7 @@ else {
 									$termList="-, " ;
 								}
 								?>
-								<input readonly name="name" id="name" maxlength=20 value="<?php print substr($termList,0,-2) ?>" type="text" style="width: 300px">
+								<input readonly name="name" id="name" maxlength=20 value="<?php print substr($termList,0,-2) ?>" type="text" class="standardWidth">
 							</td>
 						</tr>
 						<?php
@@ -158,7 +158,7 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Students') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 						</td>
 						<td class="right">
 							<select name="Members[]" id="Members[]" multiple style="width: 302px; height: 150px">
@@ -224,7 +224,7 @@ else {
 							<b><?php print __($guid, 'Status') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<select name="status" id="status" style="width: 302px">
+							<select name="status" id="status" class="standardWidth">
 								<option value="Accepted"><?php print __($guid, 'Accepted') ?></option>
 								<?php
 								$enrolment=getSettingByScope($connection2, "Activities", "enrolmentType") ;
@@ -240,7 +240,7 @@ else {
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+							<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">

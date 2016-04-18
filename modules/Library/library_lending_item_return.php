@@ -89,7 +89,7 @@ else {
 			}
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/library_lending_item_returnProcess.php?gibbonLibraryItemEventID=$gibbonLibraryItemEventID&gibbonLibraryItemID=$gibbonLibraryItemID&name=" . $_GET["name"] . "&gibbonLibraryTypeID=" . $_GET["gibbonLibraryTypeID"] . "&gibbonSpaceID=" . $_GET["gibbonSpaceID"] . "&status=" . $_GET["status"] ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr class='break'>
 						<td colspan=2>
 							<h3><?php print __($guid, 'Item Details') ?></h3>
@@ -98,28 +98,28 @@ else {
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php print __($guid, 'ID') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 						</td>
 						<td class="right">
-							<input readonly name="name" id="id" value="<?php print $row["id"] ?>" type="text" style="width: 300px">
+							<input readonly name="name" id="id" value="<?php print $row["id"] ?>" type="text" class="standardWidth">
 						</td>
 					</tr>
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Name') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 						</td>
 						<td class="right">
-							<input readonly name="name" id="name" value="<?php print $row["name"] ?>" type="text" style="width: 300px">
+							<input readonly name="name" id="name" value="<?php print $row["name"] ?>" type="text" class="standardWidth">
 						</td>
 					</tr>
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Current Status') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 						</td>
 						<td class="right">
-							<input readonly name="statusCurrent" id="statusCurrent" value="<?php print $row["status"] ?>" type="text" style="width: 300px">
+							<input readonly name="statusCurrent" id="statusCurrent" value="<?php print $row["status"] ?>" type="text" class="standardWidth">
 						</td>
 					</tr>
 					
@@ -136,10 +136,10 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Action') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Previously requested action.') ?><br/></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Previously requested action.') ?><br/></span>
 						</td>
 						<td class="right">
-							<select name="returnAction" id="returnAction" style="width: 302px">
+							<select name="returnAction" id="returnAction" class="standardWidth">
 								<option value="" />
 								<option <?php if ($row["returnAction"]=="Reserve") { print "selected" ; } ?> value="Reserve" /> <?php print __($guid, 'Reserve') ?>
 								<option <?php if ($row["returnAction"]=="Decommission") { print "selected" ; } ?> value="Decommission" /> <?php print __($guid, 'Decommission') ?>
@@ -150,7 +150,7 @@ else {
 					<tr>
 						<td> 
 							<b><?php print __($guid, 'Responsible User') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Who will be responsible for the future status?') ?></i></span>
+							<span class="emphasis small"><?php print __($guid, 'Who will be responsible for the future status?') ?></span>
 						</td>
 						<td class="right">
 							<?php
@@ -191,7 +191,7 @@ else {
 					
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+							<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 						</td>
 						<td class="right">
 							<input name="gibbonLibraryItemID" id="gibbonLibraryItemID" value="<?php print $gibbonLibraryItemID ?>" type="hidden">

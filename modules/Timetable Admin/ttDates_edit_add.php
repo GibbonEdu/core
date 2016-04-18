@@ -87,14 +87,14 @@ else {
 				} 
 				?>
 				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/ttDates_edit_addProcess.php" ?>">
-					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>	
 						<tr>
 							<td style='width: 275px'> 
 								<b><?php print __($guid, 'Year') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+								<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 							</td>
 							<td class="right">
-								<input readonly name="name" id="name" maxlength=20 value="<?php print $row["name"] ?>" type="text" style="width: 300px">
+								<input readonly name="name" id="name" maxlength=20 value="<?php print $row["name"] ?>" type="text" class="standardWidth">
 								<script type="text/javascript">
 									var courseName=new LiveValidation('courseName');
 									coursename2.add(Validate.Presence);
@@ -104,11 +104,11 @@ else {
 						<tr>
 							<td> 
 								<b><?php print __($guid, 'Date') ?> *</b><br/>
-								<span style="font-size: 90%"><i><?php print __($guid, 'This value cannot be changed.') ?></i></span>
+								<span class="emphasis small"><?php print __($guid, 'This value cannot be changed.') ?></span>
 							</td>
 							<td class="right">
-								<input hidden name="dateStamp" id="dateStamp" maxlength=20 value="<?php print $dateStamp ?>" type="text" style="width: 300px">
-								<input readonly name="date" id="date" maxlength=20 value="<?php print date("d/m/Y l", $dateStamp) ?>" type="text" style="width: 300px">
+								<input hidden name="dateStamp" id="dateStamp" maxlength=20 value="<?php print $dateStamp ?>" type="text" class="standardWidth">
+								<input readonly name="date" id="date" maxlength=20 value="<?php print date("d/m/Y l", $dateStamp) ?>" type="text" class="standardWidth">
 								<script type="text/javascript">
 									var courseName=new LiveValidation('courseName');
 									coursename2.add(Validate.Presence);
@@ -120,7 +120,7 @@ else {
 								<b><?php print __($guid, 'Day') ?></b><br/>
 							</td>
 							<td class="right">
-								<select style="width: 302px" name="gibbonTTDayID">
+								<select class="standardWidth" name="gibbonTTDayID">
 									<?php
 									//Check which timetables are not already linked to this date
 									try {
@@ -164,7 +164,7 @@ else {
 						</tr>
 						<tr>
 							<td>
-								<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+								<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
 							</td>
 							<td class="right">
 								<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php print $gibbonSchoolYearID ?>" type="hidden">
