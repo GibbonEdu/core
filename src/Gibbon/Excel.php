@@ -72,7 +72,7 @@ class Excel extends \PHPExcel
 	// deprecated
 	function exportWithPage($guid, $php_page, $excel_file_name, $params="")
 	{
-		throw new Gibbon_Exception(__("", 'This function is no longer valid to generate Excel documents.'));
+		throw new Gibbon\Exception(__("", 'This function is no longer valid to generate Excel documents.'));
 		$this->defineWorksheet($excel_file_name);
 		$_SESSION[$guid]["exportToExcelParams"]=$params ;
 		require_once "$php_page";

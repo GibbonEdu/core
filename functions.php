@@ -33,7 +33,10 @@ function __($guid, $text) {
 	$caller = debug_backtrace();
 	error_log("DEPRECATED: ".$caller[0]['line'].":".$caller[0]['file']." called " . __METHOD__ . " in " . __FILE__ );
 	$trans = new Gibbon\trans();
-	return $trans->__($text);
+	$x = true; 
+	if (empty($guid))
+		$x = false;
+	return $trans->__($text, $x);
 
 }
 
