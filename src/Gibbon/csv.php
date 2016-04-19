@@ -21,46 +21,40 @@ namespace Gibbon;
 /**
  * CSV Generator
  *
- * @version	14th April 2016
+ * @version	19th April 2016
  * @since	14th April 2016
  * @author	Craig Rayner
  */
 class csv
 {
-	/**
-	 * PDO Object
-	 */
-	private	$pdo;
 	
 	/**
 	 * string
 	 */
-	private $title;
+	static private $title;
 	
 	/**
-	 * Construct
+	 * Generate
 	 *
 	 * direct output of csv to browser.
 	 *
-	 * @version	14th April 2016
+	 * @version	19th April 2016
 	 * @since	14th April 2016
 	 * @param	Object	Gibbon\sqlConnection
 	 * @param	string	Title
-	 * @param	string	Header
+	 * @param	string	Header (Must be formated in csv)
 	 * @return	void
 	 */
-	public function __construct( sqlConnection $pdo, $title, $header = NULL)
+	static public function generate( sqlConnection $pdo, $title, $header = NULL)
 	{
-		$this->pdo = $pdo;
-		$this->title = $this->testTitle($title);
-		$this->header = $header;
+		self::$title = self::testTitle($title);
 		$start = true;
 		header("Pragma: public");
 		header("Expires: 0");
 		header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
 		header("Cache-Control: private", false);
 		header("Content-Type: text/csv");
-		header('Content-Disposition: attachment; filename="'.$this->title.'";' );
+		header('Content-Disposition: attachment; filename="'.self::$title.'";' );
 		while ($row = $pdo->getResult()->fetch()) 
 		{
 			if ($start)
@@ -70,14 +64,16 @@ class csv
 				{
 					$header = '';
 					foreach ($row as $colName=>$value)
-						$header .= $this->encodeCSVField($colName).',';
+						$header .= self::encodeCSVField($colName).',';
 					$header = rtrim($header, ",") . "\n";
 					echo $header;
 				}
+				else
+					echo $header;
 			}
 			$line = '';
 			foreach($row as $value)
-				$line .= $this->encodeCSVField($value).',';
+				$line .= self::encodeCSVField($value).',';
 			$line = rtrim($line, ",") . "\n";
 			echo $line;
 		}
@@ -91,7 +87,7 @@ class csv
 	 * @param	string	Title
 	 * @return	string	Title
 	 */
-	private function testTitle($title)
+	static private function testTitle($title)
 	{
 		$x = explode('.',$title);
 		if (count($x) >= 2)
@@ -109,7 +105,7 @@ class csv
 	 * @param	string	CSV Data
 	 * @return	string	CSV Data
 	 */
-	private function encodeCSVField($string) 
+	static private function encodeCSVField($string) 
 	{
 		if(strpos($string, ',') !== false || strpos($string, '"') !== false || strpos($string, "\n") !== false) 
 			$string = '"' . str_replace('"', '""', $string) . '"';
