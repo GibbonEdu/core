@@ -86,7 +86,8 @@ class trans
 //Custom translation function to allow custom string replacement
 	public function __($text, $guid = true)
 	{
-		$replacements = $this->session->get('stringReplacement') !== NULL ? $this->session->get('stringReplacement') : array() ;
+		
+		$replacements = $this->session->get('stringReplacement', $guid) !== NULL ? $this->session->get('stringReplacement', $guid) : array() ;
 		
 		$text=_($text) ;
 		

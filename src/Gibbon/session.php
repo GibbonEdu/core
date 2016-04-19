@@ -51,42 +51,57 @@ class session
 			session_start();
 		include GIBBON_ROOT . 'config.php';
 		$this->guid = $guid;
+		$this->setUseGuid(true);
 	}
 
 	/**
 	 * get Value
 	 *
-	 * @version	15th April 2016
+	 * @version	19th April 2016
 	 * @since	15th April 2016
 	 * @param	string	Session Value Name
+	 * @param	boolean	Use GUID (default = true)
 	 * @return	mixed
 	 */
-	public function get($name)
+	public function get($name, $guid =  true)
 	{
+		$guid = (boolean) $guid;
 		$steps = explode(',', $name);
 		foreach($steps as $q=>$w)
 			$steps[$q] = trim($w);
 		if (count($steps) === 1)
 		{
-			if (isset($_SESSION[$this->guid][$name]))
-				return $_SESSION[$this->guid][$name] ;
+			if ($guid)
+			{
+				if (isset($_SESSION[$this->guid][$name]))
+					return $_SESSION[$this->guid][$name] ;
+			}
+			else
+				if (isset($_SESSION[$name]))
+					return $_SESSION[$name] ;
+		
 		}
 		else
-			return $this->getSub($steps, $_SESSION[$this->guid][$steps[0]]);
+			if ($guid)
+				return $this->getSub($steps, $_SESSION[$this->guid][$steps[0]]);
+			else
+				return $this->getSub($steps, $_SESSION[$steps[0]]);
 		return NULL ;
 	}
 
 	/**
 	 * set Value
 	 *
-	 * @version	15th April 2016
+	 * @version	19th April 2016
 	 * @since	15th April 2016
 	 * @param	string	Session Value Name
 	 * @param	mixed	Session Value
+	 * @param	boolean	Use GUID (default = true)
 	 * @return	object	Gibbon\session
 	 */
-	public function set($name, $value)
+	public function set($name, $value, $guid)
 	{
+		$guid = (boolean) $guid ;
 		$this->base = NULL;
 		$steps = explode(',', $name);
 		foreach($steps as $q=>$w)
@@ -98,7 +113,10 @@ class session
 			return $this->set($this->base, $aValue);
 		}
 		else
-			$_SESSION[$this->guid][$name] = $value ;
+			if ($guid)
+				$_SESSION[$this->guid][$name] = $value ;
+			else
+				$_SESSION[$name] = $value ;
 		return $this ;
 	}
 
@@ -146,4 +164,5 @@ class session
 			$existing[$steps[0]] = $this->setSub($steps, $existing[$steps[0]], $value);
 		return $existing;	
 	}
+
 }
