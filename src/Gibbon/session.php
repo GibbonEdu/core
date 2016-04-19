@@ -51,7 +51,6 @@ class session
 			session_start();
 		include GIBBON_ROOT . 'config.php';
 		$this->guid = $guid;
-		$this->setUseGuid(true);
 	}
 
 	/**
@@ -63,7 +62,7 @@ class session
 	 * @param	boolean	Use GUID (default = true)
 	 * @return	mixed
 	 */
-	public function get($name, $guid =  true)
+	public function get($name, $guid = true)
 	{
 		$guid = (boolean) $guid;
 		$steps = explode(',', $name);
@@ -99,7 +98,7 @@ class session
 	 * @param	boolean	Use GUID (default = true)
 	 * @return	object	Gibbon\session
 	 */
-	public function set($name, $value, $guid)
+	public function set($name, $value, $guid = true)
 	{
 		$guid = (boolean) $guid ;
 		$this->base = NULL;
