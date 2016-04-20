@@ -48,7 +48,7 @@ else {
 	}
 }
 		
-//Deal with no-existent stringReplacement session					
+//Deal with non-existent stringReplacement session					
 @session_start() ;
 $_SESSION[$guid]["stringReplacement"]=array() ;
 

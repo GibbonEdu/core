@@ -49,8 +49,8 @@ class session
 	{
 		if (PHP_SESSION_ACTIVE !== session_status())
 			session_start();
-		include GIBBON_ROOT . 'config.php';
-		$this->guid = $guid;
+		//include GIBBON_ROOT . 'config.php';
+		//$this->guid = $guid;
 	}
 
 	/**

@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-require_once dirname(__FILE__).'/gibbon.php ';
+require_once dirname(__FILE__).'/gibbon.php';
 
 //Get and store custom string replacements in session
 function setStringReplacementList($connection2, $guid) {
@@ -25,6 +25,7 @@ function setStringReplacementList($connection2, $guid) {
 	error_log("DEPRECATED: ".$caller[0]['line'].":".$caller[0]['file']." called " . __METHOD__ . " in " . __FILE__ );
 	$trans = new Gibbon\trans();
 	$trans->setStringReplacementList();
+	
 }
 
 //Custom translation function to allow custom string replacement
@@ -37,6 +38,9 @@ function __($guid, $text) {
 	if (empty($guid))
 		$x = false;
 	return $trans->__($text, $x);
+	
+	
+
 
 }
 
