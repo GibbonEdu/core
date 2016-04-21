@@ -46,11 +46,6 @@ if (isActionAccessible($guid, $connection2, "/modules/Activities/activities_atte
 else {
 	//Proceed!
 
-	// print "<pre>";
-	// print_r($_POST);
-	// print "</pre>";
-	// die();
-
 	$gibbonPersonID=$_POST["gibbonPersonID"] ;
 
 	$sessions = (isset($_POST['sessions']))? $_POST['sessions'] : NULL;
@@ -131,7 +126,7 @@ else {
 
 		if ($partialFail==TRUE) {
 			//Fail 5
-			$URL.="&return=error3" ;
+			$URL.="&return=warning1" ;
 			header("Location: {$URL}");
 		}
 		else {
