@@ -26,6 +26,7 @@ v12.0.00
 		New workflows for advertising job openings, accepting and processing applications
 	
 	Changes With Important Notices
+		System: initial phase of object oriented PHP rewrite: expect errors during upload of the update.
 		Students: moved student application form from its own module into Students
 		Students: moved application form management from User Admin to Students module
 		Students: moved student enrolment from User Admin to Students module
@@ -34,12 +35,12 @@ v12.0.00
 	Significant Changes
 		System: replaced float with version_compare, fixing cases where minor (system and module) updates could not be installed.
 		System Admin: added system setting to allow choice of Sunday or Monday as first day of the week
+		Activities: added ability to digitally mark and export activity attendance
 		Individual Needs: new interface for parents to view individual education plans for their children (off by default)
 		Messenger: added Canned Response functionality for defining commonly sent messages.
 		School Admin: changed "Spaces" to "Facilities" and integrated borrowable Library items into Booking (to support laptop carts)
 		Staff: added ability to manage contract information	
 		User Admin: added bulk import of user photos from a zip file
-		Activities: added ability to digitally mark and export activity attendance
 		
 	Security
 		System: converted links to GNU GPL to HTTPS
@@ -56,6 +57,7 @@ v12.0.00
 		System: added a password generator to new password setting fields
 		System: updated jquery autosize library, to fix Chrome's disappearing textareas
 		System: replaced many instances of style=, moving minor styles into CSS (long over due)
+		System: updated jQuery to v2.2.3
 		System Admin: Improved version comparison in module updater
 		System Admin: Improved version comparison in non-login database updater
 		Activities: fixed error in adding and editing activities when payment is turned off
