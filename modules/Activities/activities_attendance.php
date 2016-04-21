@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 
-if (isActionAccessible($guid, $connection2, "/modules/Activities/report_attendance.php")==FALSE) {
+if (isActionAccessible($guid, $connection2, "/modules/Activities/activities_attendance.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
 		print __($guid, "You do not have access to this action.") ;
@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Activities/report_attendan
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Attendance by Activity') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Enter Activity Attendance') . "</div>" ;
 	print "</div>" ;
 
 	if (isset($_GET["return"])) { returnProcess($_GET["return"], null, null); }
@@ -44,7 +44,6 @@ else {
 	if (isset($_GET["gibbonActivityID"])) {
 		$gibbonActivityID=$_GET["gibbonActivityID"] ;
 	}
-	$allColumns= (isset($_GET['allColumns']))? $_GET['allColumns'] : false;
 	?>
 	
 	<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
@@ -78,17 +77,8 @@ else {
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print __($guid, 'All Columns')  ?></b><br>
-					<span class="emphasis small"><?php print __($guid, 'Include empty columns with unrecorded attendance.')  ?></span>
-				</td>
-				<td class="right">
-					<input name="allColumns" id="allColumns" type="checkbox" <?php if ($allColumns) echo "checked";  ?> >
-				</td>
-			</tr>
-			<tr>
 				<td colspan=2 class="right">
-					<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/report_attendance.php">
+					<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/activities_attendance.php">
 					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 				</td>
 			</tr>
@@ -138,8 +128,6 @@ else {
 	catch(PDOException $e) { 
 		print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 	}
-
-
 	// Gather the existing attendance data (by date and not index, should the time slots change)
 	$sessionAttendanceData = array();
 
@@ -160,7 +148,7 @@ else {
 	$activityTimespan = getActivityTimespan( $connection2, $gibbonActivityID, $activity['gibbonSchoolYearTermIDList']);
 
 	// Use the start and end date of the activity, along with time slots, to get the activity sessions
-	$activitySessions = getActivitySessions( ($allColumns)? $activityWeekDays : array(), $activityTimespan, $sessionAttendanceData);
+	$activitySessions = getActivitySessions( $activityWeekDays, $activityTimespan, $sessionAttendanceData);
 
 
 	print "<h2>" ;
@@ -208,13 +196,7 @@ else {
 	print __($guid, "Attendance") ;
 	print "</h2>" ;
 
-	if ( $allColumns == false && $attendanceResult->rowCount()<1 ) {
-		print "<div class='error'>" ;
-			print __($guid, "There are no records to display.") ;
-		print "</div>" ;
-		return;
-	}
-
+	// Handle activities with no time slots or start/end, but don't return because there can still be previous records
 	if ( empty($activityWeekDays) || empty($activityTimespan) ) {
 		print "<div class='error'>" ;
 			print __($guid, "There are no time slots assigned to this activity, or the start and end dates are invalid. New attendance values cannot be entered until the time slots and dates are added.") ;
@@ -234,8 +216,14 @@ else {
 			print "</div>" ;
 		}
 		
-		print "<div class='doublescroll-wrapper'>";
+		
 
+		
+
+		print "<form method='post' action='".$_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/activities_attendanceProcess.php?gibbonActivityID=$gibbonActivityID' >";
+
+		
+		print "<div class='doublescroll-wrapper'>";
 		print "<table class='mini' cellspacing='0' style='width:100%; border: 0; margin:0;'>" ;
 			print "<tr class='head' style='height:60px; '>" ;
 				print "<th style='width:175px;'>" ;
@@ -249,15 +237,19 @@ else {
 				print "</th>" ;
 			print "</tr>" ;
 		print "</table>" ;
+
+		
+
 		print "<div class='doublescroll-top'><div class='doublescroll-top-tablewidth'></div></div>";
 
-		$columnCount = ($allColumns)? count($activitySessions) : count($sessionAttendanceData);
-		
+		$columnCount = count($activitySessions);
+
+
 		print "<div class='doublescroll-container'>";
 		print "<table class='mini colorOddEven' cellspacing='0' style='width: ". ($columnCount * 56) ."px'>" ;
 
-			print "<tr style='height: 55px'>" ;
-				print "<td style='vertical-align:top;height:55px;'>".__($guid, "Date")."</td>" ;
+			print "<tr style='height: 75px'>" ;
+				print "<td style='vertical-align:top;height:75px;'>".__($guid, "Date")."</td>" ;
 
 				foreach ($activitySessions as $sessionDate => $sessionTimestamp ) {
 				
@@ -270,10 +262,13 @@ else {
 						}
 						
 						printf( "<span title='%s'>%s</span><br/>&nbsp;<br/>", $sessionAttendanceData[$sessionDate]['info'], date('D<\b\r>M j', $sessionTimestamp ) );
+						print "<a class='editColumn' data-checked='' data-column='$i' data-date='".$sessionTimestamp."'><img style='margin-top: 3px' title='" . _("Edit") . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 					} else {
 						print "<td style='color: #bbb; vertical-align:top; width: 45px;'>";
 						print date('D<\b\r>M j', $sessionTimestamp )."<br/>&nbsp;<br/>";
+						print "<a class='editColumn' data-checked='checked' data-column='$i' data-date='".$sessionTimestamp."'><img style='margin-top: 3px' title='" . _("Add") . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a> " ;
 					}
+					print "<a class='clearColumn hidden' data-column='$i'><img style='margin-top: 3px' title='" . _("Clear") . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
 					print "</td>" ;
 				}
 
@@ -338,7 +333,24 @@ else {
 
 		print "</table>" ;
 		print "</div>" ;
-		print "</div><br/>" ;
+		print "</div>" ;
+		?>
+			<table class='smallIntBorder fullWidth' cellspacing='0'>	
+				<tr>
+					<td>
+						<em><?php print __($guid, "All highlighted columns will be updated when you press submit.");?></em>
+					</td>
+					<td class="right">
+						<input name="gibbonPersonID" id="gibbonPersonID" value="<?php print $_SESSION[$guid]["gibbonPersonID"];?>" type="hidden">
+						<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+						<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
+					</td>
+				</tr>
+			</table>
+
+		</form>
+		<?
+		print "<br/>";
 	}
 
 
