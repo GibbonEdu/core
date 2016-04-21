@@ -251,6 +251,7 @@ else {
 			print "<tr style='height: 75px'>" ;
 				print "<td style='vertical-align:top;height:75px;'>".__($guid, "Date")."</td>" ;
 
+				$i = 0;
 				foreach ($activitySessions as $sessionDate => $sessionTimestamp ) {
 				
 					if ( isset($sessionAttendanceData[$sessionDate]['data'])  ) {
@@ -270,6 +271,7 @@ else {
 					}
 					print "<a class='clearColumn hidden' data-column='$i'><img style='margin-top: 3px' title='" . _("Clear") . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
 					print "</td>" ;
+					$i++;
 				}
 
 			print "</tr>" ;
@@ -286,6 +288,7 @@ else {
 						print $count . ". " . formatName("", $row["preferredName"], $row["surname"], "Student", true) ;
 					print "</td>" ;
 
+					$i = 0;
 					foreach ($activitySessions as $sessionDate => $sessionTimestamp ) {
 						print "<td class='col$i'>";
 						if ( isset($sessionAttendanceData[$sessionDate]['data']) ) {
@@ -294,6 +297,7 @@ else {
 							}
 						}
 						print "</td>" ;
+						$i++;
 					}
 
 				print "</tr>" ;
