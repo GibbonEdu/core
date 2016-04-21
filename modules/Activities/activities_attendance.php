@@ -353,15 +353,9 @@ else {
 			</table>
 
 		</form>
-		<?
+		<?php
 		print "<br/>";
 	}
-
-
-	
-
-	
-
 }
 
 ?>
