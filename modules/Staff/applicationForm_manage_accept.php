@@ -231,6 +231,8 @@ else {
 								$username=str_replace('[preferredNameInitial]', strtolower(substr($row["preferredName"],0,1)), $username);
 								$username=str_replace('[preferredName]', strtolower($row["preferredName"]), $username);
 								$username=str_replace('[surname]', strtolower($row["surname"]), $username);
+								$username=str_replace(" ", "", $username);
+								$username=str_replace("'", "", $username);
 								$username=substr($username, 0, 12);
 							}
 							$usernameBase=$username ;
