@@ -142,7 +142,9 @@ class menuMain
 				$menu.="</ul>" ;
 			}
 		}
-		$this->session->set('mainMenu', $menu) ;
+		
+		//$this->session->set('mainMenu', $menu) ;
+		$_SESSION[$this->config->get('guid')]["mainMenu"]=$menu ;
 	}
 }
 ?>
