@@ -392,7 +392,8 @@ else {
 							<?php 
 								//Get main menu
 								if ($cacheLoad) {
-									$_SESSION[$guid]["mainMenu"]=mainMenu($connection2, $guid) ;
+									$mainMenu = new Gibbon\menuMain();
+									$mainMenu->setMenu() ;
 								}
 								if (isset($_SESSION[$guid]["mainMenu"])) {
 									print $_SESSION[$guid]["mainMenu"] ;
