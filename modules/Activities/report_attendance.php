@@ -292,7 +292,7 @@ else {
 					print "</td>" ;
 
 					foreach ($activitySessions as $sessionDate => $sessionTimestamp ) {
-						print "<td class='col$i'>";
+						print "<td class='col'>";
 						if ( isset($sessionAttendanceData[$sessionDate]['data']) ) {
 							if ( isset($sessionAttendanceData[$sessionDate]['data'][$student]) ) {
 								print "✓";
