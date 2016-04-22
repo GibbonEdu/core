@@ -157,6 +157,14 @@ else {
 	if (isset($_POST["homeAddressCountry"])) {
 		$homeAddressCountry=$_POST["homeAddressCountry"] ;
 	}
+	$referenceEmail1="" ;
+	if (isset($_POST["referenceEmail1"])) {
+		$referenceEmail1=$_POST["referenceEmail1"] ;	
+	}
+	$referenceEmail2="" ;
+	if (isset($_POST["referenceEmail2"])) {
+		$referenceEmail2=$_POST["referenceEmail2"] ;	
+	}
 	$agreement=NULL ;
 	if (isset($_POST["agreement"])) {
 		if ($_POST["agreement"]=="on") {
@@ -168,7 +176,7 @@ else {
 	}
 
 	//VALIDATE INPUTS
-	if (count($gibbonStaffJobOpeningIDs)<1 OR ($gibbonPersonID==NULL AND ($surname=="" OR $firstName=="" OR $preferredName=="" OR $officialName=="" OR $gender=="" OR $dob=="" OR $languageFirst=="" OR $email=="" OR $homeAddress=="" OR $homeAddressDistrict=="" OR $homeAddressCountry=="" OR $phone1=="")) OR (isset($_POST["agreement"]) AND $agreement!="Y")) {
+	if (count($gibbonStaffJobOpeningIDs)<1 OR ($gibbonPersonID==NULL AND ($surname=="" OR $firstName=="" OR $preferredName=="" OR $officialName=="" OR $gender=="" OR $dob=="" OR $languageFirst=="" OR $email=="" OR $homeAddress=="" OR $homeAddressDistrict=="" OR $homeAddressCountry=="" OR $phone1=="")) OR (isset($_POST["referenceEmail1"]) AND $referenceEmail1=="") OR (isset($_POST["referenceEmail2"]) AND $referenceEmail2=="") OR (isset($_POST["agreement"]) AND $agreement!="Y")) {
 		//Fail 3
 		$URL.="&addReturn=fail3" ;
 		header("Location: {$URL}");
@@ -214,70 +222,119 @@ else {
 			foreach ($gibbonStaffJobOpeningIDs AS $gibbonStaffJobOpeningID) {
 				$thisFail=FALSE ;
 				
-				//Write to database
+				//Check for existence of behaviour record
 				try {
-					$data=array("gibbonStaffJobOpeningID"=>$gibbonStaffJobOpeningID, "questions"=>$questions, "gibbonPersonID"=>$gibbonPersonID, "surname"=>$surname, "firstName"=>$firstName, "preferredName"=>$preferredName, "officialName"=>$officialName, "nameInCharacters"=>$nameInCharacters, "gender"=>$gender, "dob"=>$dob, "languageFirst"=>$languageFirst, "languageSecond"=>$languageSecond, "languageThird"=>$languageThird, "countryOfBirth"=>$countryOfBirth, "citizenship1"=>$citizenship1, "citizenship1Passport"=>$citizenship1Passport, "nationalIDCardNumber"=>$nationalIDCardNumber, "residencyStatus"=>$residencyStatus, "visaExpiryDate"=>$visaExpiryDate, "email"=>$email, "homeAddress"=>$homeAddress, "homeAddressDistrict"=>$homeAddressDistrict, "homeAddressCountry"=>$homeAddressCountry, "phone1Type"=>$phone1Type, "phone1CountryCode"=>$phone1CountryCode, "phone1"=>$phone1, "agreement"=>$agreement, "fields"=>$fields, "timestamp"=>date("Y-m-d H:i:s")); 
-					$sql="INSERT INTO gibbonStaffApplicationForm SET gibbonStaffJobOpeningID=:gibbonStaffJobOpeningID, questions=:questions, gibbonPersonID=:gibbonPersonID, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, dob=:dob, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, citizenship1=:citizenship1, citizenship1Passport=:citizenship1Passport, nationalIDCardNumber=:nationalIDCardNumber, residencyStatus=:residencyStatus, visaExpiryDate=:visaExpiryDate, email=:email, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, agreement=:agreement, fields=:fields, timestamp=:timestamp" ;
+					$data=array("gibbonStaffJobOpeningID"=>$gibbonStaffJobOpeningID); 
+					$sql="SELECT gibbonStaffJobOpeningID, jobTitle FROM gibbonStaffJobOpening WHERE gibbonStaffJobOpeningID=:gibbonStaffJobOpeningID" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-					print $e->getMessage() ; exit() ;
 					$partialFail=TRUE ;
-					$thisFail=TRUE ;
 				}
+				if ($result->rowCount()!=1) {
+					$partialFail=TRUE ;
+				}
+				else {
+					$row=$result->fetch() ;
+					$jobTitle=$row["jobTitle"] ;
+				
+					//Write to database
+					try {
+						$data=array("gibbonStaffJobOpeningID"=>$gibbonStaffJobOpeningID, "questions"=>$questions, "gibbonPersonID"=>$gibbonPersonID, "surname"=>$surname, "firstName"=>$firstName, "preferredName"=>$preferredName, "officialName"=>$officialName, "nameInCharacters"=>$nameInCharacters, "gender"=>$gender, "dob"=>$dob, "languageFirst"=>$languageFirst, "languageSecond"=>$languageSecond, "languageThird"=>$languageThird, "countryOfBirth"=>$countryOfBirth, "citizenship1"=>$citizenship1, "citizenship1Passport"=>$citizenship1Passport, "nationalIDCardNumber"=>$nationalIDCardNumber, "residencyStatus"=>$residencyStatus, "visaExpiryDate"=>$visaExpiryDate, "email"=>$email, "homeAddress"=>$homeAddress, "homeAddressDistrict"=>$homeAddressDistrict, "homeAddressCountry"=>$homeAddressCountry, "phone1Type"=>$phone1Type, "phone1CountryCode"=>$phone1CountryCode, "phone1"=>$phone1, "referenceEmail1"=>$referenceEmail1, "referenceEmail2"=>$referenceEmail2, "agreement"=>$agreement, "fields"=>$fields, "timestamp"=>date("Y-m-d H:i:s")); 
+						$sql="INSERT INTO gibbonStaffApplicationForm SET gibbonStaffJobOpeningID=:gibbonStaffJobOpeningID, questions=:questions, gibbonPersonID=:gibbonPersonID, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, dob=:dob, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, citizenship1=:citizenship1, citizenship1Passport=:citizenship1Passport, nationalIDCardNumber=:nationalIDCardNumber, residencyStatus=:residencyStatus, visaExpiryDate=:visaExpiryDate, email=:email, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, referenceEmail1=:referenceEmail1, referenceEmail2=:referenceEmail2, agreement=:agreement, fields=:fields, timestamp=:timestamp" ;
+						$result=$connection2->prepare($sql);
+						$result->execute($data);
+					}
+					catch(PDOException $e) { 
+						print $e->getMessage() ; exit() ;
+						$partialFail=TRUE ;
+						$thisFail=TRUE ;
+					}
 	
-				if (!$thisFail) {
-					//Last insert ID
-					$AI=str_pad($connection2->lastInsertID(), 7, "0", STR_PAD_LEFT) ;
-					$ids.=$AI . ", " ;
+					if (!$thisFail) {
+						//Last insert ID
+						$AI=str_pad($connection2->lastInsertID(), 7, "0", STR_PAD_LEFT) ;
+						$ids.=$AI . ", " ;
 					
-					//Deal with required documents
-					$requiredDocuments=getSettingByScope($connection2, "Staff", "staffApplicationFormRequiredDocuments") ;
-					if ($requiredDocuments!="" AND $requiredDocuments!=FALSE) {
-						$fileCount=0 ;
-						if (isset($_POST["fileCount"])) {
-							$fileCount=$_POST["fileCount"] ;
-						}
-						for ($i=0; $i<$fileCount; $i++) {
-							$fileName=$_POST["fileName$i"] ;
-							$time=time() ;
-							//Move attached file, if there is one
-							if ($_FILES["file$i"]["tmp_name"]!="") {
-								//Check for folder in uploads based on today's date
-								$path=$_SESSION[$guid]["absolutePath"] ;
-								if (is_dir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time))==FALSE) {
-									mkdir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time), 0777, TRUE) ;
-								}
-								$unique=FALSE;
-								$count=0 ;
-								while ($unique==FALSE AND $count<100) {
-									$suffix=randomPassword(16) ;
-									$attachment="uploads/" . date("Y", $time) . "/" . date("m", $time) . "/Application Document_$suffix" . strrchr($_FILES["file$i"]["name"], ".") ;
-									if (!(file_exists($path . "/" . $attachment))) {
-										$unique=TRUE ;
+						//Deal with required documents
+						$requiredDocuments=getSettingByScope($connection2, "Staff", "staffApplicationFormRequiredDocuments") ;
+						if ($requiredDocuments!="" AND $requiredDocuments!=FALSE) {
+							$fileCount=0 ;
+							if (isset($_POST["fileCount"])) {
+								$fileCount=$_POST["fileCount"] ;
+							}
+							for ($i=0; $i<$fileCount; $i++) {
+								$fileName=$_POST["fileName$i"] ;
+								$time=time() ;
+								//Move attached file, if there is one
+								if ($_FILES["file$i"]["tmp_name"]!="") {
+									//Check for folder in uploads based on today's date
+									$path=$_SESSION[$guid]["absolutePath"] ;
+									if (is_dir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time))==FALSE) {
+										mkdir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time), 0777, TRUE) ;
 									}
-									$count++ ;
-								}
-								if (!(move_uploaded_file($_FILES["file$i"]["tmp_name"],$path . "/" . $attachment))) {
-								}
+									$unique=FALSE;
+									$count=0 ;
+									while ($unique==FALSE AND $count<100) {
+										$suffix=randomPassword(16) ;
+										$attachment="uploads/" . date("Y", $time) . "/" . date("m", $time) . "/Application Document_$suffix" . strrchr($_FILES["file$i"]["name"], ".") ;
+										if (!(file_exists($path . "/" . $attachment))) {
+											$unique=TRUE ;
+										}
+										$count++ ;
+									}
+									if (!(move_uploaded_file($_FILES["file$i"]["tmp_name"],$path . "/" . $attachment))) {
+									}
 					
-								//Write files to database
-								try {
-									$dataFile=array("gibbonStaffApplicationFormID"=>$AI, "name"=>$fileName, "path"=>$attachment); 
-									$sqlFile="INSERT INTO gibbonStaffApplicationFormFile SET gibbonStaffApplicationFormID=:gibbonStaffApplicationFormID, name=:name, path=:path" ;
-									$resultFile=$connection2->prepare($sqlFile);
-									$resultFile->execute($dataFile);
+									//Write files to database
+									try {
+										$dataFile=array("gibbonStaffApplicationFormID"=>$AI, "name"=>$fileName, "path"=>$attachment); 
+										$sqlFile="INSERT INTO gibbonStaffApplicationFormFile SET gibbonStaffApplicationFormID=:gibbonStaffApplicationFormID, name=:name, path=:path" ;
+										$resultFile=$connection2->prepare($sqlFile);
+										$resultFile->execute($dataFile);
+									}
+									catch(PDOException $e) { }
 								}
-								catch(PDOException $e) { }
 							}
 						}
-					}
 		
-					//Attempt to notify admissions administrator
-					if ($_SESSION[$guid]["organisationHR"]) {
-						$notificationText=sprintf(__($guid, 'An application form has been submitted for %1$s.'), formatName("", $preferredName, $surname, "Student")) ;
-						setNotification($connection2, $guid, $_SESSION[$guid]["organisationHR"], $notificationText, "Staff Application Form", "/index.php?q=/modules/Staff/applicationForm_manage_edit.php&gibbonStaffApplicationFormID=$AI&search=") ;
+						//Attempt to notify HR administrator
+						if ($_SESSION[$guid]["organisationHR"]) {
+							$notificationText=sprintf(__($guid, 'An application form has been submitted for %1$s.'), formatName("", $preferredName, $surname, "Student")) ;
+							setNotification($connection2, $guid, $_SESSION[$guid]["organisationHR"], $notificationText, "Staff Application Form", "/index.php?q=/modules/Staff/applicationForm_manage_edit.php&gibbonStaffApplicationFormID=$AI&search=") ;
+						}
+					
+						//Email reference form link to referee
+						$applicationFormRefereeLink=getSettingByScope($connection2, 'Staff', 'applicationFormRefereeLink') ;
+						if ($applicationFormRefereeLink!="" AND ($referenceEmail1!="" OR $refereeEmail2!="") AND $_SESSION[$guid]["organisationHRName"]!="" AND $_SESSION[$guid]["organisationHREmail"]!="") {
+							//Prep message
+							$subject=__($guid, "Request For Reference") ;
+							$body=sprintf(__($guid, 'To whom it may concern,%4$sThis email is being sent in relation to the job application of an individual who has nominated you as a referee: %1$s.%4$sIn assessing their application for the post of %5$s at our school, we would like to enlist your help in completing the following reference form: %2$s.<br/><br/>Please feel free to contact me, should you have any questions in regard to this matter.%4$sRegards,%4$s%3$s'), formatName("", $preferredName, $surname, "Staff", FALSE, TRUE), "<a href='$applicationFormRefereeLink' target='_blank'>$applicationFormRefereeLink</a>", $_SESSION[$guid]["organisationHRName"], "<br/><br/>", $jobTitle) ;
+							$body.="<p class='emphasis'>" . sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationName"]) ."</p>" ;
+							$bodyPlain=preg_replace('#<br\s*/?>#i', "\n", $body) ;
+							$bodyPlain=str_replace("</p>", "\n\n", $bodyPlain) ;
+							$bodyPlain=str_replace("</div>", "\n\n", $bodyPlain) ;
+							$bodyPlain=preg_replace("#\<a.+href\=[\"|\'](.+)[\"|\'].*\>.*\<\/a\>#U","$1",$bodyPlain);
+							$bodyPlain=strip_tags($bodyPlain, '<a>');
+
+							$mail=new PHPMailer;
+							$mail->SetFrom($_SESSION[$guid]["organisationHREmail"], $_SESSION[$guid]["organisationHRName"]);
+							if ($referenceEmail1!="") {
+								$mail->AddBCC($referenceEmail1);
+							}
+							if ($referenceEmail2!="") {
+								$mail->AddBCC($referenceEmail2);
+							}
+							$mail->CharSet="UTF-8";
+							$mail->Encoding="base64" ;
+							$mail->IsHTML(true);
+							$mail->Subject=$subject ;
+							$mail->Body=$body ;
+							$mail->AltBody=$bodyPlain ;
+					
+							$mail->Send() ;
+						}
 					}
 				}
 			}

@@ -58,7 +58,8 @@ else {
 	else {
 		//Make the switch
 		$_SESSION[$guid]["gibbonRoleIDCurrent"]=$role;
-		$_SESSION[$guid]["mainMenu"]=mainMenu($connection2, $guid) ;
+		$mainMenu = new Gibbon\menuMain();
+		$mainMenu->setMenu() ;
 		$URL.="?switchReturn=success0" ;
 		header("Location: {$URL}");
 	}

@@ -41,7 +41,7 @@ else {
 		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'View Activities') . "</div>" ;
 		print "</div>" ;
 		
-		if (isset($_GET["return"])) { returnProcess($_GET["return"], null, array("success0" => "Registration was successful.", "success1" => "Unregistration was successful.", "success2" => "Registration was successful, but the activity is full, so you are on the waiting list.")); }
+		if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, array("success0" => "Registration was successful.", "success1" => "Unregistration was successful.", "success2" => "Registration was successful, but the activity is full, so you are on the waiting list.")); }
 		
 		//Get current role category
 		$roleCategory=getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2) ;

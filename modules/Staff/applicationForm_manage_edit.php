@@ -868,6 +868,48 @@ else {
 						<?php
 					}
 					
+					//REFERENCES
+					$applicationFormRefereeLink=getSettingByScope($connection2, 'Staff', 'applicationFormRefereeLink') ;
+					if ($applicationFormRefereeLink!="") {
+						print "<tr class='break'>" ;
+							print "<td colspan=2>" ; 
+								print "<h3>" ; 
+									print __($guid, "References") ;
+								print "</h3>" ;
+							print "</td>" ;
+						print "</tr>" ;
+						?>
+						<tr>
+							<td> 
+								<b><?php print __($guid, 'Referee 1') ?> *</b><br/>
+								<span class="emphasis small"><?php print __($guid, 'An email address for a referee at the applicant\'s current school.') ?></span>
+							</td>
+							<td class="right">
+								<input name="referenceEmail1" id="referenceEmail1" maxlength=100 value="<?php print htmlPrep($row["referenceEmail1"]) ?>" type="text" class="standardWidth">
+								<script type="text/javascript">
+									var referenceEmail1=new LiveValidation('referenceEmail1');
+									referenceEmail1.add(Validate.Presence);
+									referenceEmail1.add(Validate.Email);
+								</script>
+							</td>
+						</tr>
+						<tr>
+							<td> 
+								<b><?php print __($guid, 'Referee 2') ?> *</b><br/>
+								<span class="emphasis small"><?php print __($guid, 'An email address for a second referee.') ?></span>
+							</td>
+							<td class="right">
+								<input name="referenceEmail2" id="referenceEmail2" maxlength=100 value="<?php print htmlPrep($row["referenceEmail2"]) ?>" type="text" class="standardWidth">
+								<script type="text/javascript">
+									var referenceEmail2=new LiveValidation('referenceEmail2');
+									referenceEmail2.add(Validate.Presence);
+									referenceEmail2.add(Validate.Email);
+								</script>
+							</td>
+						</tr>
+						<?php
+					}
+				
 					if ($proceed==TRUE) {
 						?>
 						<tr>

@@ -332,41 +332,50 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
 									}
 									else {
 										while ($rowLog=$resultLog->fetch()) {
-											$log[$logCount]=$rowLog["type"] ;
+											$log[$logCount][0]=$rowLog["type"] ;
+											$log[$logCount][1]=$rowLog["reason"] ;
 											$logCount++ ;
 										}
 							
-										if ($log[0]=="Absent") {
+										if ($log[0][0]=="Absent") {
 											$countAbsent++ ;
 											$extraStyle="border: 1px solid #c00; color: #c00; background-color: #F6CECB; " ;
+											
 										}
 										else {
 											$countPresent++ ;
 											$extraStyle="border: 1px solid #390; color: #390; background-color: #D4F6DC; " ;
+											
+										}
+										if ($log[0][1]!="") {
+											$title="title='" . $log[0][1] . "'" ;
+										}
+										else { 
+											$title="" ;
 										}
 									}
 									$output.="<td style='text-align: center; font-size: 10px; $extraStyle'>" ;
 									$output.=date($_SESSION[$guid]["i18n"]["dateFormatPHP"],$i) . "<br/>" ;
 									if (count($log)>0) {
-										$output.="<b>" . $log[0] . "</b><br/>" ;
+										$output.="<span style='font-weight: bold' $title>" . $log[0][0] . "</span><br/>" ;
 										for ($x=count($log); $x>=0; $x--) {
-											if (isset($log[$x])) {
-												if ($log[$x]=="Present") {
+											if (isset($log[$x][0])) {
+												if ($log[$x][0]=="Present") {
 													$output.="P" ;
 												}
-												else if ($log[$x]=="Present - Late") {
+												else if ($log[$x][0]=="Present - Late") {
 													$output.="PL" ;
 												}
-												else if ($log[$x]=="Present - Offsite") {
+												else if ($log[$x][0]=="Present - Offsite") {
 													$output.="PS" ;
 												}
-												else if ($log[$x]=="Left") {
+												else if ($log[$x][0]=="Left") {
 													$output.="L" ;
 												}
-												else if ($log[$x]=="Left - Early") {
+												else if ($log[$x[0]]=="Left - Early") {
 													$output.="LE" ;
 												}
-												else if ($log[$x]=="Absent") {
+												else if ($log[$x][0]=="Absent") {
 													$output.="A" ;
 												}
 											}

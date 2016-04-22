@@ -66,7 +66,7 @@ else {
 		}
 		$customResponces["success0"] = $success0;
 
-		if (isset($_GET["return"])) { returnProcess($_GET["return"], null, $customResponces); }
+		if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, $customResponces); }
 
 		print "<h2>" ;
 		print __($guid, "Choose Family") ;

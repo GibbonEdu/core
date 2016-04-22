@@ -202,7 +202,7 @@ else {
 									print "</div>" ;
 								}
 								else {
-									if (isset($_GET["return"])) { returnProcess($_GET["return"], null, array("error3" => "Registration failed because you are already registered in this activity.")); }
+									if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, array("error3" => "Registration failed because you are already registered in this activity.")); }
 									
 									//Check registration limit...
 									$proceed=true ;

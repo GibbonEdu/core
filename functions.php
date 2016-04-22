@@ -21,8 +21,8 @@ require_once dirname(__FILE__).'/gibbon.php';
 //Get and store custom string replacements in session
 function setStringReplacementList($connection2, $guid) {
 	
-	$caller = debug_backtrace();
-	error_log("DEPRECATED: ".$caller[0]['line'].":".$caller[0]['file']." called " . __METHOD__ . " in " . __FILE__ );
+	//$caller = debug_backtrace();
+	//error_log("DEPRECATED: ".$caller[0]['line'].":".$caller[0]['file']." called " . __METHOD__ . " in " . __FILE__ );
 	$trans = new Gibbon\trans();
 	$trans->setStringReplacementList();
 	
@@ -31,17 +31,13 @@ function setStringReplacementList($connection2, $guid) {
 //Custom translation function to allow custom string replacement
 function __($guid, $text) {
 
-	$caller = debug_backtrace();
-	error_log("DEPRECATED: ".$caller[0]['line'].":".$caller[0]['file']." called " . __METHOD__ . " in " . __FILE__ );
+	//$caller = debug_backtrace();
+	//error_log("DEPRECATED: ".$caller[0]['line'].":".$caller[0]['file']." called " . __METHOD__ . " in " . __FILE__ );
 	$trans = new Gibbon\trans();
 	$x = true; 
 	if (empty($guid))
 		$x = false;
 	return $trans->__($text, $x);
-	
-	
-
-
 }
 
 //$valueMode can be "value" or "id" according to what goes into option's value field
@@ -3552,81 +3548,6 @@ function sidebar($connection2, $guid) {
 	}
 }
 
-//Create the main menu
-function mainMenu($connection2, $guid) {
-	$output="" ;
-
-	if (isset($_SESSION[$guid]["gibbonRoleIDCurrent"])==FALSE) {
-		$output.="<ul id='nav'>" ;
-		$output.="<li class='active'><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" . __($guid, 'Home') . "</a></li>" ;
-		$output.="</ul>" ;
-	}
-	else {
-		try {
-			$data=array("gibbonRoleID"=>$_SESSION[$guid]["gibbonRoleIDCurrent"]);
-			$sql="SELECT DISTINCT gibbonModule.name, gibbonModule.category, gibbonModule.entryURL FROM `gibbonModule`, gibbonAction, gibbonPermission WHERE (active='Y') AND (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) ORDER BY (gibbonModule.category='Other') ASC, category, name";
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) {
-			$output.="<div class='error'>" ;
-			$output.=$e->getMessage() ;
-			$output.="</div>" ;
-		}
-
-		if ($result->rowCount()<1) {
-			$output.="<ul id='nav'>" ;
-			$output.="<li class='active'><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" . __($guid, 'Home') . "</a></li>" ;
-			$output.="</ul>" ;
-		}
-		else {
-			$output.="<ul id='nav'>" ;
-			$output.="<li><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" . __($guid, 'Home') . "</a></li>" ;
-
-			$currentCategory="" ;
-			$lastCategory="" ;
-			$count=0;
-			while ($row=$result->fetch()) {
-				$currentCategory=$row["category"] ;
-
-				$entryURL=$row["entryURL"] ;
-				if (isActionAccessible($guid, $connection2, "/modules/" . $row["name"] . "/" . $entryURL)==FALSE AND $entryURL!="index.php") {
-					try {
-						$dataEntry=array("gibbonRoleID"=>$_SESSION[$guid]["gibbonRoleIDCurrent"],"name"=>$row["name"]);
-						$sqlEntry="SELECT DISTINCT gibbonAction.entryURL FROM gibbonModule, gibbonAction, gibbonPermission WHERE (active='Y') AND (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) AND gibbonModule.name=:name ORDER BY gibbonAction.name";
-						$resultEntry=$connection2->prepare($sqlEntry);
-						$resultEntry->execute($dataEntry);
-					}
-					catch(PDOException $e) { }
-					if ($resultEntry->rowCount()>0) {
-						$rowEntry=$resultEntry->fetch() ;
-						$entryURL=$rowEntry["entryURL"] ;
-					}
-				}
-
-				if ($currentCategory!=$lastCategory) {
-					if ($count>0) {
-						$output.="</ul></li>";
-					}
-					$output.="<li><a href='#'>" . __($guid, $currentCategory) . "</a>" ;
-					$output.="<ul>" ;
-					$output.="<li><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $row["name"] . "/" . $entryURL . "'>" . __($guid, $row["name"]) . "</a></li>" ;
-				}
-				else {
-					$output.="<li><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $row["name"] . "/" . $entryURL . "'>" . __($guid, $row["name"]) . "</a></li>" ;
-				}
-				$lastCategory=$currentCategory ;
-				$count++ ;
-			}
-			if ($count>0) {
-				$output.="</ul></li>";
-			}
-			$output.="</ul>" ;
-		}
-	}
-	return $output ;
-}
-
 //Format address according to supplied inputs
 function addressFormat( $address, $addressDistrict, $addressCountry ) {
 	$return=FALSE ;
@@ -5006,6 +4927,7 @@ function countLikesByRecipient($connection2, $gibbonPersonIDRecipient, $mode="co
 /*
 Easy Return Display Processing.
 Arguments:
+	$guid: The guid of your Gibbon Install.
 	$return: This should be the return value of the process.
 	$editLink: (Optional) This should be a link. The link will appended to the end of a success0 return.
 	$customReturns: (Optional) This should be an array. The array allows you to set custom return checks and messages. Set the array key to the return name and the value to the return message.
@@ -5017,40 +4939,41 @@ Default returns:
 	warning0: This is a default warning message for a extra data failing to save.
 	warning1: This is a default warning message for a successful request, where certain data was not save properly.
 */
-function returnProcess($return, $editLink = null, $customReturns=null) {
-	$class="error";
-	$returnMessage = "Unknown Return";
-	$returns = array();
-	$returns["success0"] = "Your request was completed successfully. You can now add another record if you wish.";
-	$returns["error0"] = "Your request failed because you do not have access to this action.";
-	$returns["error1"] = "Your request failed because your inputs were invalid.";
-	$returns["error2"] = "Your request failed due to a database error.";
-	$returns["warning0"] = "Your optional extra data failed to save.";
-	$returns["warning1"] = "Your request was successful, but some data was not properly saved.";
+function returnProcess($guid, $return, $editLink = null, $customReturns=null) {
+	if(isset($return)) {
+		$class="error";
+		$returnMessage = "Unknown Return";
+		$returns = array();
+		$returns["success0"] = "Your request was completed successfully. You can now add another record if you wish.";
+		$returns["error0"] = "Your request failed because you do not have access to this action.";
+		$returns["error1"] = "Your request failed because your inputs were invalid.";
+		$returns["error2"] = "Your request failed due to a database error.";
+		$returns["warning0"] = "Your optional extra data failed to save.";
+		$returns["warning1"] = "Your request was successful, but some data was not properly saved.";
 
-	if($customReturns != null) {
-		if(is_array($customReturns)) {
-			$customReturnKeys = array_keys($customReturns);
-			for($i = 0 ; $i < count($customReturns); $i++){
-				$customReturnKey = $customReturnKeys[$i];
-				$customReturn = $customReturns[$i];
-				$returns[$customReturnKey] = $customReturn;
+		if(isset($customReturns)) {
+			if(is_array($customReturns)) {
+				$customReturnKeys = array_keys($customReturns);
+				foreach($customReturnKeys as $customReturnKey) {
+					$customReturn = "Unknown Return" ;
+					if (isset($customReturns[$customReturnKey])) {
+						$customReturn = $customReturns[$customReturnKey];
+					}
+					$returns[$customReturnKey] = $customReturn;
+				}
 			}
 		}
-	}
-	if($return!="") {
 		$returnKeys = array_keys($returns);
 		foreach($returnKeys as $returnKey) {
-			$returnData = $returns[$returnKey];
 			if($return == $returnKey) {
-				$returnMessage = $returnData;
+				$returnMessage = $returns[$returnKey];
 				if(stripos($return, "error") !== false) $class = "error";
 				else if(stripos($return, "warning") !== false) $class = "warning";
 				else if(stripos($return, "success") !== false) $class = "success";
 				break;
 			}
 		}
-		if($return == "success0" && $editLink != null) {
+		if($class == "success" && $editLink != null) {
 			$returnMessage .= " You can edit your record <a href='$editLink'>here</a>.";
 		}
 

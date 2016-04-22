@@ -45,7 +45,7 @@ else {
 			print __($guid, "Expenses added here do not require authorisation: this is for pre-authorised, or recurring expenses only.") ;
 		print "</div>" ;
 
-		if (isset($_GET["return"])) { returnProcess($_GET["return"], null, null); }
+		if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
 	
 		//Check if school year specified
 		$gibbonFinanceBudgetCycleID=$_GET["gibbonFinanceBudgetCycleID"] ;

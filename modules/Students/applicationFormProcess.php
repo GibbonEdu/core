@@ -744,7 +744,7 @@ else {
 				if ($applicationFormRefereeLink!="" AND $referenceEmail!="" AND $_SESSION[$guid]["organisationAdmissionsName"]!="" AND $_SESSION[$guid]["organisationAdmissionsEmail"]!="") {
 					//Prep message
 					$subject=__($guid, "Request For Reference") ;
-					$body=sprintf(__($guid, 'To whom it may concern,%4$sThis email is being sent in relation to the application of a current or former student of your school: %1$s.%4$sIn assessing their application for our school, we would like to enlist your help in completing the following reference form: %2$s.<br/><br/>Please feel free to contact me, should you have any questions in this regard.%4$sRegards,%4$s%3$s'), $officialName, "<a href='$applicationFormRefereeLink' target='_blank'>$applicationFormRefereeLink</a>", $_SESSION[$guid]["organisationAdmissionsName"], "<br/><br/>") ;
+					$body=sprintf(__($guid, 'To whom it may concern,%4$sThis email is being sent in relation to the application of a current or former student of your school: %1$s.%4$sIn assessing their application for our school, we would like to enlist your help in completing the following reference form: %2$s.<br/><br/>Please feel free to contact me, should you have any questions in regard to this matter.%4$sRegards,%4$s%3$s'), $officialName, "<a href='$applicationFormRefereeLink' target='_blank'>$applicationFormRefereeLink</a>", $_SESSION[$guid]["organisationAdmissionsName"], "<br/><br/>") ;
 					$body.="<p class='emphasis'>" . sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationName"]) ."</p>" ;
 					$bodyPlain=preg_replace('#<br\s*/?>#i', "\n", $body) ;
 					$bodyPlain=str_replace("</p>", "\n\n", $bodyPlain) ;
