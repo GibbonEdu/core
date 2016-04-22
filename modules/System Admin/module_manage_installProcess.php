@@ -312,7 +312,8 @@ else {
 						}
 					
 						//Update main menu
-						$_SESSION[$guid]["mainMenu"]=mainMenu($connection2, $guid) ;
+						$mainMenu = new Gibbon\menuMain();
+						$mainMenu->setMenu() ;
 			
 						//We made it!
 						//Success 0

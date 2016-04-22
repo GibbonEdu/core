@@ -22,7 +22,7 @@ require_once dirname(__FILE__).'/gibbon.php';
 function setStringReplacementList($connection2, $guid) {
 	
 	$caller = debug_backtrace();
-	error_log("DEPRECATED: ".$caller[0]['line'].":".$caller[0]['file']." called " . __METHOD__ . " in " . __FILE__ );
+	//error_log("DEPRECATED: ".$caller[0]['line'].":".$caller[0]['file']." called " . __METHOD__ . " in " . __FILE__ );
 	$trans = new Gibbon\trans();
 	$trans->setStringReplacementList();
 	
@@ -32,7 +32,7 @@ function setStringReplacementList($connection2, $guid) {
 function __($guid, $text) {
 
 	$caller = debug_backtrace();
-	error_log("DEPRECATED: ".$caller[0]['line'].":".$caller[0]['file']." called " . __METHOD__ . " in " . __FILE__ );
+	//error_log("DEPRECATED: ".$caller[0]['line'].":".$caller[0]['file']." called " . __METHOD__ . " in " . __FILE__ );
 	$trans = new Gibbon\trans();
 	$x = true; 
 	if (empty($guid))
