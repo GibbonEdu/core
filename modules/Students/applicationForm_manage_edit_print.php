@@ -32,13 +32,13 @@ else {
 	print "<h2>" ;
 	print __($guid, "Student Application Form Printout") ;
 	print "</h2>" ;
-		
+
 	$gibbonApplicationFormID=$_GET["gibbonApplicationFormID"] ;
 	$search="" ;
 	if (isset($_GET["search"])) {
 		$search=$_GET["search"] ;
 	}
-	
+
 	if ($gibbonApplicationFormID=="") {
 		print "<div class='error'>" ;
 		print __($guid, "You have not specified one or more required parameters.") ;
@@ -47,15 +47,15 @@ else {
 	else {
 		//Proceed!
 		try {
-			$data=array("gibbonApplicationFormID"=>$gibbonApplicationFormID); 
+			$data=array("gibbonApplicationFormID"=>$gibbonApplicationFormID);
 			$sql="SELECT * FROM gibbonApplicationForm LEFT JOIN gibbonPayment ON (gibbonApplicationForm.gibbonPaymentID=gibbonPayment.gibbonPaymentID AND foreignTable='gibbonApplicationForm') WHERE gibbonApplicationFormID=:gibbonApplicationFormID" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
-		catch(PDOException $e) { 
-			print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+		catch(PDOException $e) {
+			print "<div class='error'>" . $e->getMessage() . "</div>" ;
 		}
-	
+
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
 				print __($guid, "There is no data to display, or an error has occurred.") ;
@@ -87,13 +87,13 @@ else {
 					print "<td style='padding-top: 15px; vertical-align: top'>" ;
 						print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Year of Entry') . "</span><br/>" ;
 						try {
-							$dataSelect=array("gibbonSchoolYearIDEntry"=>$row["gibbonSchoolYearIDEntry"]); 
+							$dataSelect=array("gibbonSchoolYearIDEntry"=>$row["gibbonSchoolYearIDEntry"]);
 							$sqlSelect="SELECT name FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearIDEntry" ;
 							$resultSelect=$connection2->prepare($sqlSelect);
 							$resultSelect->execute($dataSelect);
 						}
-						catch(PDOException $e) { 
-							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+						catch(PDOException $e) {
+							print "<div class='error'>" . $e->getMessage() . "</div>" ;
 						}
 						if ($resultSelect->rowCount()==1) {
 							$rowSelect=$resultSelect->fetch() ;
@@ -103,13 +103,13 @@ else {
 					print "<td style='padding-top: 15px; vertical-align: top'>" ;
 						print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Year Group at Entry') . "</span><br/>" ;
 						try {
-							$dataSelect=array("gibbonYearGroupIDEntry"=>$row["gibbonYearGroupIDEntry"]); 
+							$dataSelect=array("gibbonYearGroupIDEntry"=>$row["gibbonYearGroupIDEntry"]);
 							$sqlSelect="SELECT name FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupIDEntry" ;
 							$resultSelect=$connection2->prepare($sqlSelect);
 							$resultSelect->execute($dataSelect);
 						}
-						catch(PDOException $e) { 
-							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+						catch(PDOException $e) {
+							print "<div class='error'>" . $e->getMessage() . "</div>" ;
 						}
 						if ($resultSelect->rowCount()==1) {
 							$rowSelect=$resultSelect->fetch() ;
@@ -126,13 +126,13 @@ else {
 					print "<td style='padding-top: 15px; vertical-align: top'>" ;
 						print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Roll Group at Entry') . "</span><br/>" ;
 						try {
-							$dataSelect=array("gibbonRollGroupID"=>$row["gibbonRollGroupID"]); 
+							$dataSelect=array("gibbonRollGroupID"=>$row["gibbonRollGroupID"]);
 							$sqlSelect="SELECT name FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID" ;
 							$resultSelect=$connection2->prepare($sqlSelect);
 							$resultSelect->execute($dataSelect);
 						}
-						catch(PDOException $e) { 
-							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+						catch(PDOException $e) {
+							print "<div class='error'>" . $e->getMessage() . "</div>" ;
 						}
 						if ($resultSelect->rowCount()==1) {
 							$rowSelect=$resultSelect->fetch() ;
@@ -146,7 +146,7 @@ else {
 					print "<td style='padding-top: 15px; vertical-align: top'>" ;
 						$currency=getSettingByScope($connection2, "System", "currency") ;
 						$applicationFee=getSettingByScope($connection2, "Application Form", "applicationFee") ;
-						if ($applicationFee>0 AND is_numeric($applicationFee)) {		
+						if ($applicationFee>0 AND is_numeric($applicationFee)) {
 							print "<span style='font-size: 115%; font-weight: bold'>Payment</span><br/>" ;
 							print "<i>" . htmlPrep($row["paymentMade"]) . "</i><br/>" ;
 							if ($row["paymentToken"]!="" OR $row["paymentPayerID"]!="" OR $row["paymentTransactionID"]!="" OR $row["paymentReceiptID"]!="") {
@@ -175,8 +175,8 @@ else {
 					print "</tr>" ;
 				}
 			print "</table>" ;
-			
-			
+
+
 			print "<h4>" . __($guid, 'Student Details') . "</h4>" ;
 			print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr>" ;
@@ -313,7 +313,7 @@ else {
 						print "</i>" ;
 					print "</td>" ;
 					print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-						
+
 					print "</td>" ;
 				print "</tr>" ;
 				if ($row["sen"]=="Y") {
@@ -333,11 +333,11 @@ else {
 					print "</tr>" ;
 				}
 			print "</table>" ;
+
+
+
 			
-			
-			
-			
-			print "<h4>" . __($guid, 'Parents/Gaurdians') . "</h4>" ;
+			print "<h4>" . __($guid, 'Parents/Guardians') . "</h4>" ;
 			//No family in Gibbon
 			if ($row["gibbonFamilyID"]=="") {
 
@@ -357,22 +357,22 @@ else {
 						print "</td>" ;
 					print "</tr>" ;
 				print "</table>" ;
-						
+
 				//Parent 1 in Gibbon
 				if ($row["parent1gibbonPersonID"]!="") {
 					$start=2 ;
-		
+
 					//Spit out parent 1 data from Gibbon
 					try {
-						$dataMember=array("gibbonPersonID"=>$row["parent1gibbonPersonID"]); 
+						$dataMember=array("gibbonPersonID"=>$row["parent1gibbonPersonID"]);
 						$sqlMember="SELECT * FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
 						$resultMember=$connection2->prepare($sqlMember);
 						$resultMember->execute($dataMember);
 					}
-					catch(PDOException $e) { 
-						print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+					catch(PDOException $e) {
+						print "<div class='error'>" . $e->getMessage() . "</div>" ;
 					}
-					
+
 					while ($rowMember=$resultMember->fetch()) {
 						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr>" ;
@@ -511,17 +511,17 @@ else {
 			}
 			//Yes family
 			else {
-				//Spit out parent1/parent2 data from Gibbon 
+				//Spit out parent1/parent2 data from Gibbon
 				try {
-					$dataFamily=array("gibbonFamilyID"=>$row["gibbonFamilyID"]); 
+					$dataFamily=array("gibbonFamilyID"=>$row["gibbonFamilyID"]);
 					$sqlFamily="SELECT * FROM gibbonFamily WHERE gibbonFamilyID=:gibbonFamilyID" ;
 					$resultFamily=$connection2->prepare($sqlFamily);
 					$resultFamily->execute($dataFamily);
 				}
-				catch(PDOException $e) { 
-					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				catch(PDOException $e) {
+					print "<div class='error'>" . $e->getMessage() . "</div>" ;
 				}
-				
+
 				if ($resultFamily->rowCount()<1) {
 					print "<div class='error'>" ;
 						print __($guid, "There is no family information available for the current student.") ;
@@ -561,19 +561,19 @@ else {
 								print "</td>" ;
 							print "</tr>" ;
 						print "</table>" ;
-						
-						
+
+
 						//Get adults
 						try {
-							$dataMember=array("gibbonFamilyID"=>$rowFamily["gibbonFamilyID"]); 
+							$dataMember=array("gibbonFamilyID"=>$rowFamily["gibbonFamilyID"]);
 							$sqlMember="SELECT * FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY contactPriority, surname, preferredName" ;
 							$resultMember=$connection2->prepare($sqlMember);
 							$resultMember->execute($dataMember);
 						}
-						catch(PDOException $e) { 
-							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+						catch(PDOException $e) {
+							print "<div class='error'>" . $e->getMessage() . "</div>" ;
 						}
-						
+
 						while ($rowMember=$resultMember->fetch()) {
 							print "<table cellspacing='0' style='width: 100%'>" ;
 								print "<tr>" ;
@@ -647,12 +647,12 @@ else {
 								print "</tr>" ;
 							print "</table>" ;
 							$count++ ;
-						}	
+						}
 					}
 				}
 			}
-			
-			$siblingCount=0 ; 
+
+			$siblingCount=0 ;
 			print "<h4>Siblings</h4>" ;
 			print "<table cellspacing='0' style='width: 100%'>" ;
 				//Get siblings from the application
@@ -678,15 +678,15 @@ else {
 				//Get siblings from Gibbon family
 				if ($row["gibbonFamilyID"]!="") {
 					try {
-						$dataMember=array("gibbonFamilyID"=>$row["gibbonFamilyID"]); 
+						$dataMember=array("gibbonFamilyID"=>$row["gibbonFamilyID"]);
 						$sqlMember="SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY surname, preferredName" ;
 						$resultMember=$connection2->prepare($sqlMember);
 						$resultMember->execute($dataMember);
 					}
-					catch(PDOException $e) { 
-						print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+					catch(PDOException $e) {
+						print "<div class='error'>" . $e->getMessage() . "</div>" ;
 					}
-				
+
 					if ($resultMember->rowCount()>0) {
 						while ($rowMember=$resultMember->fetch()) {
 							$siblingCount++ ;

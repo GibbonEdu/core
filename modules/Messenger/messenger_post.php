@@ -1320,7 +1320,7 @@ else {
 										$statusStr = $rowSelect["Type"];
 										$statusStr=explode(',', substr(str_replace("'", "", $statusStr), 5, -1));
 										foreach($statusStr as $status) {
-											print "<option value='" . $status . "'>" . htmlPrep(__($guid, $status)) . "</option>";
+											print "<option value='" . $status . "'" . ($status === 'Absent' ? ' selected' : '') . ">" . htmlPrep(__($guid, $status)) . "</option>";
 										}
 
 								}
