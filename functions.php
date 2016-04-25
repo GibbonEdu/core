@@ -21,7 +21,7 @@ require_once dirname(__FILE__).'/gibbon.php';
 //Get and store custom string replacements in session
 function setStringReplacementList($connection2, $guid) {
 	
-	$caller = debug_backtrace();
+	//$caller = debug_backtrace();
 	//error_log("DEPRECATED: ".$caller[0]['line'].":".$caller[0]['file']." called " . __METHOD__ . " in " . __FILE__ );
 	$trans = new Gibbon\trans();
 	$trans->setStringReplacementList();
@@ -31,7 +31,7 @@ function setStringReplacementList($connection2, $guid) {
 //Custom translation function to allow custom string replacement
 function __($guid, $text) {
 
-	$caller = debug_backtrace();
+	//$caller = debug_backtrace();
 	//error_log("DEPRECATED: ".$caller[0]['line'].":".$caller[0]['file']." called " . __METHOD__ . " in " . __FILE__ );
 	$trans = new Gibbon\trans();
 	$x = true; 
@@ -3045,80 +3045,9 @@ function sidebar($connection2, $guid) {
 		}
 	}
 
-	//Show Module Menu
-	//Check address to see if we are in the module area
-	if (substr($_SESSION[$guid]["address"],0,8)=="/modules") {
-		//Get and check the module name
-		$moduleID=checkModuleReady($_SESSION[$guid]["address"], $connection2 );
-		if ($moduleID!=FALSE) {
-			$gibbonRoleIDCurrent=NULL ;
-			if (isset($_SESSION[$guid]["gibbonRoleIDCurrent"])) {
-				$gibbonRoleIDCurrent=$_SESSION[$guid]["gibbonRoleIDCurrent"] ;
-			}
-			try {
-				$data=array("gibbonModuleID"=>$moduleID, "gibbonRoleID"=>$gibbonRoleIDCurrent);
-				$sql="SELECT gibbonModule.entryURL AS moduleEntry, gibbonModule.name AS moduleName, gibbonAction.name, gibbonAction.precedence, gibbonAction.category, gibbonAction.entryURL, URLList FROM gibbonModule, gibbonAction, gibbonPermission WHERE (gibbonModule.gibbonModuleID=:gibbonModuleID) AND (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) AND NOT gibbonAction.entryURL='' ORDER BY gibbonModule.name, category, gibbonAction.name, precedence DESC";
-				$result=$connection2->prepare($sql);
-				$result->execute($data);
-			}
-			catch(PDOException $e) { }
-
-			if ($result->rowCount()>0) {
-				$output="<ul class='moduleMenu'>" ;
-
-				$currentCategory="" ;
-				$lastCategory="" ;
-				$currentName="" ;
-				$lastName="" ;
-				$count=0;
-				$links=0 ;
-				while ($row=$result->fetch()) {
-					$moduleName=$row["moduleName"] ;
-					$moduleEntry=$row["moduleEntry"] ;
-
-					//Set active link class
-					$style="" ;
-					if (strpos($row["URLList"],getActionName($_SESSION[$guid]["address"]))===0) {
-						$style="class='active'" ;
-					}
-
-					$currentCategory=$row["category"] ;
-					if (strpos($row["name"],"_")>0) {
-						$currentName=__($guid, substr($row["name"],0,strpos($row["name"],"_"))) ;
-					}
-					else {
-						$currentName=__($guid, $row["name"]) ;
-					}
-
-					if ($currentName!=$lastName) {
-						if ($currentCategory!=$lastCategory) {
-							if ($count>0) {
-								$output.="</ul></li>";
-							}
-							$output.="<li><h4>" . __($guid, $currentCategory) . "</h4>" ;
-							$output.="<ul>" ;
-							$output.="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "'>" . __($guid, $currentName) . "</a></li>" ;
-						}
-						else {
-							$output.="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "'>" . __($guid, $currentName) . "</a></li>" ;
-						}
-						$links++ ;
-					}
-					$lastCategory=$currentCategory ;
-					$lastName=$currentName ;
-					$count++ ;
-				}
-				if ($count>0) {
-					$output.="</ul></li>";
-				}
-				$output.="</ul>" ;
-
-				if ($links>1 OR (isActionAccessible($guid, $connection2, "/modules/$moduleName/$moduleEntry")==FALSE)) {
-					print $output ;
-				}
-			}
-		}
-	}
+	//Invoke and show Module Menu
+	$menuModule = new Gibbon\menuModule();
+	print $menuModule->getMenu('full') ;
 
 	//Show custom sidebar content on homepage for logged in users
 	if ($_SESSION[$guid]["address"]=="" AND isset($_SESSION[$guid]["username"])) {
