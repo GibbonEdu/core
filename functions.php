@@ -16,61 +16,32 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+require_once dirname(__FILE__).'/gibbon.php';
 
 //Get and store custom string replacements in session
 function setStringReplacementList($connection2, $guid) {
-	$_SESSION[$guid]['stringReplacement']=array() ;
-	try {
-		$dataString=array(); 
-		$sqlString="SELECT * FROM gibbonString ORDER BY priority DESC, original" ; 
-		$resultString=$connection2->prepare($sqlString);
-		$resultString->execute($dataString);
-	}
-	catch(PDOException $e) { }
-	if ($resultString->rowCount()>0) {
-		$_SESSION[$guid]['stringReplacement']=$resultString->fetchAll() ;
-	}
+	
+	//$caller = debug_backtrace();
+	//error_log("DEPRECATED: ".$caller[0]['line'].":".$caller[0]['file']." called " . __METHOD__ . " in " . __FILE__ );
+	$trans = new Gibbon\trans();
+	$trans->setStringReplacementList();
+	
 }
 
 //Custom translation function to allow custom string replacement
 function __($guid, $text) {
-	$replacements=$_SESSION[$guid]['stringReplacement'] ;
+
+	//$caller = debug_backtrace();
+	//error_log("DEPRECATED: ".$caller[0]['line'].":".$caller[0]['file']." called " . __METHOD__ . " in " . __FILE__ );
+	$trans = new Gibbon\trans();
+	$x = true; 
+	if (empty($guid))
+		$x = false;
+	return $trans->__($text, $x);
 	
-	$text=_($text) ;
 	
-	if (isset($replacements)) {
-		if (is_array($replacements)) {
-			foreach ($replacements AS $replacement) {
-				if ($replacement["mode"]=="Partial") { //Partial match
-					if ($replacement["caseSensitive"]=="Y") {
-						if (strpos($text, $replacement["original"])!==FALSE) {
-							$text=str_replace($replacement["original"], $replacement["replacement"], $text) ;
-						}
-					}
-					else {
-						if (stripos($text, $replacement["original"])!==FALSE) {
-							$text=str_ireplace($replacement["original"], $replacement["replacement"], $text) ;
-						}
-					}
-				}
-				else { //Whole match
-					if ($replacement["caseSensitive"]=="Y") {
-						if ($replacement["original"]==$text) {
-							$text=$replacement["replacement"] ;
-						}
-					}
-					else {
-						if (strtolower($replacement["original"])==strtolower($text)) {
-							$text=$replacement["replacement"] ;
-						}
-					}
-				}
-				
-			}
-		}
-	}
-	
-	return $text ;
+
+
 }
 
 //$valueMode can be "value" or "id" according to what goes into option's value field
@@ -3074,80 +3045,9 @@ function sidebar($connection2, $guid) {
 		}
 	}
 
-	//Show Module Menu
-	//Check address to see if we are in the module area
-	if (substr($_SESSION[$guid]["address"],0,8)=="/modules") {
-		//Get and check the module name
-		$moduleID=checkModuleReady($_SESSION[$guid]["address"], $connection2 );
-		if ($moduleID!=FALSE) {
-			$gibbonRoleIDCurrent=NULL ;
-			if (isset($_SESSION[$guid]["gibbonRoleIDCurrent"])) {
-				$gibbonRoleIDCurrent=$_SESSION[$guid]["gibbonRoleIDCurrent"] ;
-			}
-			try {
-				$data=array("gibbonModuleID"=>$moduleID, "gibbonRoleID"=>$gibbonRoleIDCurrent);
-				$sql="SELECT gibbonModule.entryURL AS moduleEntry, gibbonModule.name AS moduleName, gibbonAction.name, gibbonAction.precedence, gibbonAction.category, gibbonAction.entryURL, URLList FROM gibbonModule, gibbonAction, gibbonPermission WHERE (gibbonModule.gibbonModuleID=:gibbonModuleID) AND (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) AND NOT gibbonAction.entryURL='' ORDER BY gibbonModule.name, category, gibbonAction.name, precedence DESC";
-				$result=$connection2->prepare($sql);
-				$result->execute($data);
-			}
-			catch(PDOException $e) { }
-
-			if ($result->rowCount()>0) {
-				$output="<ul class='moduleMenu'>" ;
-
-				$currentCategory="" ;
-				$lastCategory="" ;
-				$currentName="" ;
-				$lastName="" ;
-				$count=0;
-				$links=0 ;
-				while ($row=$result->fetch()) {
-					$moduleName=$row["moduleName"] ;
-					$moduleEntry=$row["moduleEntry"] ;
-
-					//Set active link class
-					$style="" ;
-					if (strpos($row["URLList"],getActionName($_SESSION[$guid]["address"]))===0) {
-						$style="class='active'" ;
-					}
-
-					$currentCategory=$row["category"] ;
-					if (strpos($row["name"],"_")>0) {
-						$currentName=__($guid, substr($row["name"],0,strpos($row["name"],"_"))) ;
-					}
-					else {
-						$currentName=__($guid, $row["name"]) ;
-					}
-
-					if ($currentName!=$lastName) {
-						if ($currentCategory!=$lastCategory) {
-							if ($count>0) {
-								$output.="</ul></li>";
-							}
-							$output.="<li><h4>" . __($guid, $currentCategory) . "</h4>" ;
-							$output.="<ul>" ;
-							$output.="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "'>" . __($guid, $currentName) . "</a></li>" ;
-						}
-						else {
-							$output.="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "'>" . __($guid, $currentName) . "</a></li>" ;
-						}
-						$links++ ;
-					}
-					$lastCategory=$currentCategory ;
-					$lastName=$currentName ;
-					$count++ ;
-				}
-				if ($count>0) {
-					$output.="</ul></li>";
-				}
-				$output.="</ul>" ;
-
-				if ($links>1 OR (isActionAccessible($guid, $connection2, "/modules/$moduleName/$moduleEntry")==FALSE)) {
-					print $output ;
-				}
-			}
-		}
-	}
+	//Invoke and show Module Menu
+	$menuModule = new Gibbon\menuModule();
+	print $menuModule->getMenu('full') ;
 
 	//Show custom sidebar content on homepage for logged in users
 	if ($_SESSION[$guid]["address"]=="" AND isset($_SESSION[$guid]["username"])) {
@@ -3579,81 +3479,6 @@ function sidebar($connection2, $guid) {
 		print $_SESSION[$guid]["sidebarExtra"] ;
 		print "</div>" ;
 	}
-}
-
-//Create the main menu
-function mainMenu($connection2, $guid) {
-	$output="" ;
-
-	if (isset($_SESSION[$guid]["gibbonRoleIDCurrent"])==FALSE) {
-		$output.="<ul id='nav'>" ;
-		$output.="<li class='active'><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" . __($guid, 'Home') . "</a></li>" ;
-		$output.="</ul>" ;
-	}
-	else {
-		try {
-			$data=array("gibbonRoleID"=>$_SESSION[$guid]["gibbonRoleIDCurrent"]);
-			$sql="SELECT DISTINCT gibbonModule.name, gibbonModule.category, gibbonModule.entryURL FROM `gibbonModule`, gibbonAction, gibbonPermission WHERE (active='Y') AND (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) ORDER BY (gibbonModule.category='Other') ASC, category, name";
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) {
-			$output.="<div class='error'>" ;
-			$output.=$e->getMessage() ;
-			$output.="</div>" ;
-		}
-
-		if ($result->rowCount()<1) {
-			$output.="<ul id='nav'>" ;
-			$output.="<li class='active'><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" . __($guid, 'Home') . "</a></li>" ;
-			$output.="</ul>" ;
-		}
-		else {
-			$output.="<ul id='nav'>" ;
-			$output.="<li><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" . __($guid, 'Home') . "</a></li>" ;
-
-			$currentCategory="" ;
-			$lastCategory="" ;
-			$count=0;
-			while ($row=$result->fetch()) {
-				$currentCategory=$row["category"] ;
-
-				$entryURL=$row["entryURL"] ;
-				if (isActionAccessible($guid, $connection2, "/modules/" . $row["name"] . "/" . $entryURL)==FALSE AND $entryURL!="index.php") {
-					try {
-						$dataEntry=array("gibbonRoleID"=>$_SESSION[$guid]["gibbonRoleIDCurrent"],"name"=>$row["name"]);
-						$sqlEntry="SELECT DISTINCT gibbonAction.entryURL FROM gibbonModule, gibbonAction, gibbonPermission WHERE (active='Y') AND (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) AND gibbonModule.name=:name ORDER BY gibbonAction.name";
-						$resultEntry=$connection2->prepare($sqlEntry);
-						$resultEntry->execute($dataEntry);
-					}
-					catch(PDOException $e) { }
-					if ($resultEntry->rowCount()>0) {
-						$rowEntry=$resultEntry->fetch() ;
-						$entryURL=$rowEntry["entryURL"] ;
-					}
-				}
-
-				if ($currentCategory!=$lastCategory) {
-					if ($count>0) {
-						$output.="</ul></li>";
-					}
-					$output.="<li><a href='#'>" . __($guid, $currentCategory) . "</a>" ;
-					$output.="<ul>" ;
-					$output.="<li><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $row["name"] . "/" . $entryURL . "'>" . __($guid, $row["name"]) . "</a></li>" ;
-				}
-				else {
-					$output.="<li><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $row["name"] . "/" . $entryURL . "'>" . __($guid, $row["name"]) . "</a></li>" ;
-				}
-				$lastCategory=$currentCategory ;
-				$count++ ;
-			}
-			if ($count>0) {
-				$output.="</ul></li>";
-			}
-			$output.="</ul>" ;
-		}
-	}
-	return $output ;
 }
 
 //Format address according to supplied inputs

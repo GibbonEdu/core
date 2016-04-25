@@ -16,3 +16,98 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
+
+
+/* These could be moved to style.css */
+.hidden {
+	display: none;
+}
+
+.infoTitle {
+	font-size: 115%;
+	font-weight: bold;
+}
+
+table.colorOddEven tr:nth-of-type(even) td {
+	background: -webkit-gradient(linear, center top, center bottom, from(#F2F2F2), to(#F0F0F0));
+	background: -webkit-linear-gradient(center top , #F2F2F2, #F0F0F0);
+	background: -o-linear-gradient(center top , #F2F2F2, #F0F0F0);
+	background: -moz-linear-gradient(center top , #F2F2F2, #F0F0F0);
+	background: linear-gradient(center top , #F2F2F2, #F0F0F0);
+}
+
+/* Double-scroll */
+
+.doublescroll-wrapper {
+	position: relative;
+	background: #FBFBFB none repeat scroll 0% 0%;
+	border: 1px solid #CCC;
+	border-radius: 3px;
+
+}
+
+.doublescroll-top {
+	overflow-x:auto;
+	margin-left:175px;
+}
+
+.doublescroll-top-tablewidth {
+	width: 1400px;
+	height: 0.1px;
+}
+
+.doublescroll-container {
+	overflow-x: auto;
+	overflow-y:visible;
+	margin-left:175px;
+}
+
+.doublescroll-container table {
+	margin:0;
+	border-width: 0px 1px 0px 0px;
+}
+
+.doublescroll-container .highlight,
+.doublescroll-container table tr[data-student]:hover td,
+.doublescroll-container table tr[data-student]:focus td {
+	background: #EDF7FF !important;
+}
+
+.doublescroll-container tr.head th:first-of-type,
+.doublescroll-container td:first-of-type {
+	position:absolute; 
+    width:150px; 
+    left:1px;
+    top:auto;
+    padding: 5px 12px 5px !important;
+    border-right: 1px solid #666;
+    margin:0;
+    z-index: 1;
+}
+
+.doublescroll-container td {
+	height: 15px;
+	text-align: center;
+}
+
+.doublescroll-container::after {
+	content: "";
+	position: absolute;
+	top: 60px;
+	left: 175px;
+	background: #666 none repeat scroll 0% 0%;
+	height: calc(100% - 60px);
+	width: 1px;
+	z-index: 1;
+}
+
+/* Print Styles */
+
+@media all {
+	.page-break	{ display: none; }
+}
+
+@media print {
+	.page-break	{ display: block; page-break-before: always; }
+}
+

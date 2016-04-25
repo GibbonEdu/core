@@ -123,7 +123,7 @@ else {
 						<span class="emphasis small"></span>
 					</td>
 					<td class="right">
-						<input name="nameShort" id="nameShort" maxlength=4 value="<?php if (isset($row["nameShort"])) { print htmlPrep(__($guid, $row["nameShort"])) ; } ?>" type="text" class="standardWidth">
+						<input name="nameShort" id="nameShort" maxlength=5 value="<?php if (isset($row["nameShort"])) { print htmlPrep(__($guid, $row["nameShort"])) ; } ?>" type="text" class="standardWidth">
 						<script type="text/javascript">
 							var nameShort=new LiveValidation('nameShort');
 							nameShort.add(Validate.Presence);

@@ -26,6 +26,7 @@ v12.0.00
 		New workflows for advertising job openings, accepting and processing applications
 	
 	Changes With Important Notices
+		System: initial phase of object oriented PHP rewrite: expect errors during upload of the update.
 		Students: moved student application form from its own module into Students
 		Students: moved application form management from User Admin to Students module
 		Students: moved student enrolment from User Admin to Students module
@@ -34,6 +35,7 @@ v12.0.00
 	Significant Changes
 		System: replaced float with version_compare, fixing cases where minor (system and module) updates could not be installed.
 		System Admin: added system setting to allow choice of Sunday or Monday as first day of the week
+		Activities: added ability to digitally mark and export activity attendance
 		Individual Needs: new interface for parents to view individual education plans for their children (off by default)
 		Messenger: added Canned Response functionality for defining commonly sent messages.
 		School Admin: changed "Spaces" to "Facilities" and integrated borrowable Library items into Booking (to support laptop carts)
@@ -55,6 +57,7 @@ v12.0.00
 		System: added a password generator to new password setting fields
 		System: updated jquery autosize library, to fix Chrome's disappearing textareas
 		System: replaced many instances of style=, moving minor styles into CSS (long over due)
+		System: updated jQuery to v2.2.3
 		System Admin: Improved version comparison in module updater
 		System Admin: Improved version comparison in non-login database updater
 		Activities: fixed error in adding and editing activities when payment is turned off
@@ -79,6 +82,7 @@ v12.0.00
 		Markbook: fixed uploaded response file selector gigantism issue
 		Markbook: added line break display to full comment in various viewing locations
 		Messenger: stripped JavaScript out of widget preview text.
+		Messenger: removed signature from Quick Wall messages
 		Planner: fixed surplus slash issue in Crowd Assessment settings in Lesson Planner add page
 		Planner: fixed style mismatch in Guest section of lesson planner full view
 		Planner: attendance alignment tweak
@@ -88,6 +92,7 @@ v12.0.00
 		Planner: fixed lesson ordering bug in unit dump
 		Rubrics: added course/class name to historical view result listing
 		School Admin: fixed bug preventing non-contiguous primary external assessment settings from being saved in Formal Assessment settings
+		School Admin: increased length of grade scale short name to 5 chars
 		Staff: adjusted role drop down to offer all Staff roles (from gibbonRole), not just Teaching & Support
 		Students: added year group to New Students report when using Date Range setting 
 		Students: added All Students filter persistence to Back To Search link on student details page
