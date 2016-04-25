@@ -362,5 +362,6 @@ INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '2', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Activities' AND gibbonAction.name='Printable Attendance Sheet'));end
 CREATE TABLE `gibbonActivityAttendance` ( `gibbonActivityAttendanceID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT, `gibbonActivityID` int(8) unsigned zerofill NOT NULL, `gibbonPersonIDTaker` int(8) unsigned zerofill NOT NULL, `attendance` text NOT NULL, `date` date DEFAULT NULL, `timestampTaken` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, PRIMARY KEY (`gibbonActivityAttendanceID`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;end
 UPDATE gibbonAction SET name='Attendance History by Activity', category='Attendance' WHERE name='Attendance by Activity' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Activities');end
+ALTER TABLE `gibbonScale` CHANGE `nameShort` `nameShort` VARCHAR(5) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
 ";
 ?>
