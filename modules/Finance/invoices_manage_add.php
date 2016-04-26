@@ -291,7 +291,7 @@ else {
 												<?php
 												print "<option value='Ad Hoc'>Ad Hoc Fee</option>" ;
 												$switchContents="case \"Ad Hoc\": " ;
-												$switchContents.="$(\"#fee\").append('<div id=\'feeOuter' + feeCount + '\'><img style=\'margin: 10px 0 5px 0\' src=\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/loading.gif\' alt=\'Loading\' onclick=\'return false;\' /><br/>Loading</div>');" ;
+												$switchContents.="$(\"#fee\").append('<div id=\'feeOuter' + feeCount + '\'><img style=\'margin: 10px 0 5px 0\' src=\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/loading.gif\' alt=\'Loading\' onclick=\'return false;\' /><br/>Loading</div>');" ;
 												$switchContents.="$(\"#feeOuter\" + feeCount).load(\"" . $_SESSION[$guid]["absoluteURL"] . "/modules/Finance/invoices_manage_add_blockFeeAjax.php\",\"mode=add&id=\" + feeCount + \"&feeType=" . urlencode("Ad Hoc") . "&gibbonFinanceFeeID=&name=" . urlencode("Ad Hoc Fee") . "&description=&gibbonFinanceFeeCategoryID=1&fee=\") ;" ;
 												$switchContents.="feeCount++ ;" ;
 												$switchContents.="$('#newFee').val('0');" ;
@@ -322,7 +322,7 @@ else {
 														}
 														print "<option value='" . $rowSelect["gibbonFinanceFeeID"] . "'>" . $rowSelect["name"] . "</option>" ;
 														$switchContents.="case \"" . $rowSelect["gibbonFinanceFeeID"] . "\": " ;
-														$switchContents.="$(\"#fee\").append('<div id=\'feeOuter' + feeCount + '\'><img style=\'margin: 10px 0 5px 0\' src=\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/loading.gif\' alt=\'Loading\' onclick=\'return false;\' /><br/>Loading</div>');" ;
+														$switchContents.="$(\"#fee\").append('<div id=\'feeOuter' + feeCount + '\'><img style=\'margin: 10px 0 5px 0\' src=\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/loading.gif\' alt=\'Loading\' onclick=\'return false;\' /><br/>Loading</div>');" ;
 														$switchContents.="$(\"#feeOuter\" + feeCount).load(\"" . $_SESSION[$guid]["absoluteURL"] . "/modules/Finance/invoices_manage_add_blockFeeAjax.php\",\"mode=add&id=\" + feeCount + \"&feeType=Standard&gibbonFinanceFeeID=" .  urlencode($rowSelect["gibbonFinanceFeeID"]) . "&name=" . urlencode($rowSelect["name"]) . "&description=" . urlencode($rowSelect["description"]) . "&gibbonFinanceFeeCategoryID=" . urlencode($rowSelect["gibbonFinanceFeeCategoryID"]) . "&fee=" . urlencode($rowSelect["fee"]) . "&category=" . urlencode($rowSelect["category"]) . "\") ;" ;
 														$switchContents.="feeCount++ ;" ;
 														$switchContents.="$('#newFee').val('0');" ;

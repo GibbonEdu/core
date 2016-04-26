@@ -46,7 +46,7 @@ $output.="<script type='text/javascript'>" ;
 	 
 		$output.="$('#" . $id . "ajaxForm').submit(function() {" ; 
 			$output.="$(this).ajaxSubmit(options);" ; 
-			$output.="$(\"." .$id . "resourceQuickSlider\").html(\"<div class='resourceAddSlider'><img style='margin: 10px 0 5px 0' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/loading.gif' alt='" . __($guid, 'Uploading') . "' onclick='return false;' /><br/>" . __($guid, 'Loading') . "</div>\");" ;
+			$output.="$(\"." .$id . "resourceQuickSlider\").html(\"<div class='resourceAddSlider'><img style='margin: 10px 0 5px 0' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/loading.gif' alt='" . __($guid, 'Uploading') . "' onclick='return false;' /><br/>" . __($guid, 'Loading') . "</div>\");" ;
 			$output.="return false;" ; 
 		$output.="});" ; 
 	$output.="});" ; 

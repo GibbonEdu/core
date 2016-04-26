@@ -250,7 +250,7 @@ else {
 								}
 							}
 							if ($row["description"]!="") {
-								print "<a title='" . __($guid, 'View Description') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-left: 0px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' ' onclick='return false;' /></a>" ;
+								print "<a title='" . __($guid, 'View Description') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-left: 0px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_down.png' ' onclick='return false;' /></a>" ;
 							}
 						print "</td>" ;
 					print "</tr>" ;
