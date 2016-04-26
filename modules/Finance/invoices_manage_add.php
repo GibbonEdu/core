@@ -35,14 +35,20 @@ else {
 	print "</div>" ;
 
 	$error3=__($guid, "Some aspects of your update failed, effecting the following areas:") . "<ul>" ;	
-	if ($_GET["studentFailCount"]) {
-		$error3.="<li>" . $_GET["studentFailCount"] . " " . __($guid, 'students encountered problems.') . "</li>" ;
+	if (isset($_GET["studentFailCount"])) {
+		if ($_GET["studentFailCount"]) {
+			$error3.="<li>" . $_GET["studentFailCount"] . " " . __($guid, 'students encountered problems.') . "</li>" ;
+		}
 	}
-	if ($_GET["invoiceFailCount"]) {
-		$error3.="<li>" . $_GET["invoiceFailCount"] . " " . __($guid, 'invoices encountered problems.') . "</li>" ;
+	if (isset($_GET["invoiceFailCount"])) {
+		if ($_GET["invoiceFailCount"]) {
+			$error3.="<li>" . $_GET["invoiceFailCount"] . " " . __($guid, 'invoices encountered problems.') . "</li>" ;
+		}
 	}
-	if ($_GET["invoiceFeeFailCount"]) {
-		$error3.="<li>" . $_GET["invoiceFeeFailCount"] . " " . __($guid, 'fee entires encountered problems.') . "</li>" ;
+	if (isset($_GET["invoiceFeeFailCount"])) {
+		if ($_GET["invoiceFeeFailCount"]) {
+			$error3.="<li>" . $_GET["invoiceFeeFailCount"] . " " . __($guid, 'fee entires encountered problems.') . "</li>" ;
+		}
 	}
 	$error3.="</ul>" . __($guid, 'It is recommended that you remove all pending invoices and try to recreate them.') ;
 
