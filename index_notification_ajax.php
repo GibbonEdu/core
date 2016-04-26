@@ -29,8 +29,13 @@ $connection2 = $pdo->getConnection();
 
 $output="" ;
 
+$themeName="Default" ;
+if (isset($_SESSION[$guid]["gibbonThemeName"])) {
+	$themeName=$_SESSION[$guid]["gibbonThemeName"] ;
+}
+
 if (isset($_SESSION[$guid])==FALSE OR isset($_SESSION[$guid]["gibbonPersonID"])==FALSE) {
-	$output.=" . 0 x " . "<img style='margin-left: 2px; opacity: 0.8; vertical-align: -75%' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_off.png'>" ;
+	$output.=" . 0 x " . "<img style='margin-left: 2px; opacity: 0.8; vertical-align: -75%' src='./themes/" . $themeName . "/img/notifications_off.png'>" ;
 }
 else {
 	//CHECK FOR SYSTEM ALARM
@@ -81,20 +86,10 @@ else {
 	catch(PDOException $e) { $return.="<div class='error'>" . $e->getMessage() . "</div>" ; }
 
 	if ($resultNotifications->rowCount()>0) {
-		if (is_file($_SESSION[$guid]["absolutePath"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_on.png")) {
-			$output.=" . <a title='" . __($guid, 'Notifications') . "' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=notifications.php'>" . $resultNotifications->rowCount() . " x " . "<img style='margin-left: 2px; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_on.png'></a>" ;
-		}
-		else {
-			$output.=" . <a title='" . __($guid, 'Notifications') . "' href='./index.php?q=notifications.php'>" . $resultNotifications->rowCount() . " x " . "<img style='margin-left: 2px; vertical-align: -75%' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_on.png'></a>" ;
-		}
+		$output.=" . <a title='" . __($guid, 'Notifications') . "' href='./index.php?q=notifications.php'>" . $resultNotifications->rowCount() . " x " . "<img style='margin-left: 2px; vertical-align: -75%' src='./themes/" . $themeName . "/img/notifications_on.png'></a>" ;
 	}
 	else {
-		if (is_file($_SESSION[$guid]["absolutePath"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_off.png")) {
-			$output.=" . 0 x " . "<img style='margin-left: 2px; opacity: 0.8; vertical-align: -75%' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_off.png'>" ;
-		}
-		else {
-			$output.=" . 0 x " . "<img style='margin-left: 2px; opacity: 0.8; vertical-align: -75%' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/notifications_off.png'>" ;
-		}
+		$output.=" . 0 x " . "<img style='margin-left: 2px; opacity: 0.8; vertical-align: -75%' src='./themes/" . $themeName . "/img/notifications_off.png'>" ;
 	}
 }
 
