@@ -91,10 +91,10 @@ else {
 				//COLOR ROW BY STATUS!
 				print "<tr class=$rowNum>" ;
 					print "<td>" ;
-						print __($guid, $row["subject"]) ;
+						print $row["subject"] ;
 					print "</td>" ;
 					print "<td>" ;
-						print __($guid, $row["body"]) ;
+						print $row["body"] ;
 					print "</td>" ;
 					print "<td>" ;
 						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/cannedResponse_manage_edit.php&gibbonMessengerCannedResponseID=" . $row["gibbonMessengerCannedResponseID"] . "'><img title='" . __($guid, 'Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
