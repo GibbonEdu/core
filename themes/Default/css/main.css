@@ -1218,3 +1218,6 @@ select.standardWidth {
 table.fullWidth {
 	width: 100% ;
 }
+div.blockOuter {
+	text-align: center;
+}
