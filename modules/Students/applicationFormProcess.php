@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include "../../functions.php" ;
 include "../../config.php" ;
+require "../../lib/PHPMailer/class.phpmailer.php";
 
 //New PDO DB connection
 $pdo = new Gibbon\sqlConnection();
