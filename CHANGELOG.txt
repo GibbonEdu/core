@@ -59,6 +59,7 @@ v12.0.00
 		System: replaced many instances of style=, moving minor styles into CSS (long over due)
 		System: updated jQuery to v2.2.3
 		System: themeability enhancements
+		System: added menuShow switch to allow actions to be hidden from the main menu (in case they should only be seen in a hook)
 		System Admin: Improved version comparison in module updater
 		System Admin: Improved version comparison in non-login database updater
 		Activities: fixed error in adding and editing activities when payment is turned off

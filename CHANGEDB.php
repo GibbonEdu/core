@@ -365,7 +365,6 @@ UPDATE gibbonAction SET name='Attendance History by Activity', category='Attenda
 ALTER TABLE `gibbonScale` CHANGE `nameShort` `nameShort` VARCHAR(5) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
 INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Formal Assessment'), 'View External Assessments_mine', 0, 'External Assessment', 'Allows a student to view their own external assessment records.', 'externalAssessment_view.php', 'externalAssessment_view.php', 'Y', 'N', 'N', 'N', 'N', 'N', 'Y', 'N', 'N') ;end
 INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Formal Assessment'), 'View External Assessments_myChildrens', 1, 'External Assessment', 'Allows a parent to view external assessment records for their children.', 'externalAssessment_view.php', 'externalAssessment_view.php', 'Y', 'N', 'N', 'N', 'N', 'N', 'N', 'Y', 'N') ;end
-
-
+ALTER TABLE `gibbonAction` ADD `menuShow` ENUM('Y','N') NOT NULL DEFAULT 'Y' AFTER `entrySidebar`;end
 ";
 ?>

@@ -89,7 +89,7 @@ class menuModule
 					$gibbonRoleIDCurrent=$_SESSION[$this->config->get('guid')]["gibbonRoleIDCurrent"] ;
 				}
 				$data=array("gibbonModuleID"=>$moduleID, "gibbonRoleID"=>$gibbonRoleIDCurrent);
-				$sql="SELECT gibbonModule.entryURL AS moduleEntry, gibbonModule.name AS moduleName, gibbonAction.name, gibbonAction.precedence, gibbonAction.category, gibbonAction.entryURL, URLList FROM gibbonModule, gibbonAction, gibbonPermission WHERE (gibbonModule.gibbonModuleID=:gibbonModuleID) AND (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) AND NOT gibbonAction.entryURL='' ORDER BY gibbonModule.name, category, gibbonAction.name, precedence DESC";
+				$sql="SELECT gibbonModule.entryURL AS moduleEntry, gibbonModule.name AS moduleName, gibbonAction.name, gibbonAction.precedence, gibbonAction.category, gibbonAction.entryURL, URLList FROM gibbonModule JOIN gibbonAction ON (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) JOIN gibbonPermission ON (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) WHERE (gibbonModule.gibbonModuleID=:gibbonModuleID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) AND NOT gibbonAction.entryURL='' AND menuShow='Y' ORDER BY gibbonModule.name, category, gibbonAction.name, precedence DESC";
 				$result = $this->pdo->executeQuery($data, $sql);
 
 				if ($result->rowCount()>0) {

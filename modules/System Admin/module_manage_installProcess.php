@@ -186,10 +186,16 @@ else {
 									$entrySidebar="N" ;
 								}
 							}
+							$menuShow="Y" ;
+							if (isset($actionRows[$i]["menuShow"])) {
+								if ($actionRows[$i]["menuShow"]=="N") {
+									$menuShow="N" ;
+								}
+							}
 					
 							try {
-								$dataModule=array("gibbonModuleID"=>$gibbonModuleID, "name"=>$actionRows[$i]["name"], "precedence"=>$actionRows[$i]["precedence"], "category"=>$actionRows[$i]["category"], "description"=>$actionRows[$i]["description"], "URLList"=>$actionRows[$i]["URLList"], "entryURL"=>$actionRows[$i]["entryURL"], "entrySidebar"=>$entrySidebar, "defaultPermissionAdmin"=>$actionRows[$i]["defaultPermissionAdmin"], "defaultPermissionTeacher"=>$actionRows[$i]["defaultPermissionTeacher"], "defaultPermissionStudent"=>$actionRows[$i]["defaultPermissionStudent"], "defaultPermissionParent"=>$actionRows[$i]["defaultPermissionParent"], "defaultPermissionSupport"=>$actionRows[$i]["defaultPermissionSupport"], "categoryPermissionStaff"=>$categoryPermissionStaff, "categoryPermissionStudent"=>$categoryPermissionStudent, "categoryPermissionParent"=>$categoryPermissionParent, "categoryPermissionOther"=>$categoryPermissionOther); 
-								$sqlModule="INSERT INTO gibbonAction SET gibbonModuleID=:gibbonModuleID, name=:name, precedence=:precedence, category=:category, description=:description, URLList=:URLList, entryURL=:entryURL, entrySidebar=:entrySidebar, defaultPermissionAdmin=:defaultPermissionAdmin, defaultPermissionTeacher=:defaultPermissionTeacher, defaultPermissionStudent=:defaultPermissionStudent, defaultPermissionParent=:defaultPermissionParent, defaultPermissionSupport=:defaultPermissionSupport, categoryPermissionStaff=:categoryPermissionStaff, categoryPermissionStudent=:categoryPermissionStudent, categoryPermissionParent=:categoryPermissionParent, categoryPermissionOther=:categoryPermissionOther" ;
+								$dataModule=array("gibbonModuleID"=>$gibbonModuleID, "name"=>$actionRows[$i]["name"], "precedence"=>$actionRows[$i]["precedence"], "category"=>$actionRows[$i]["category"], "description"=>$actionRows[$i]["description"], "URLList"=>$actionRows[$i]["URLList"], "entryURL"=>$actionRows[$i]["entryURL"], "entrySidebar"=>$entrySidebar, "menuShow"=>$menuShow, "defaultPermissionAdmin"=>$actionRows[$i]["defaultPermissionAdmin"], "defaultPermissionTeacher"=>$actionRows[$i]["defaultPermissionTeacher"], "defaultPermissionStudent"=>$actionRows[$i]["defaultPermissionStudent"], "defaultPermissionParent"=>$actionRows[$i]["defaultPermissionParent"], "defaultPermissionSupport"=>$actionRows[$i]["defaultPermissionSupport"], "categoryPermissionStaff"=>$categoryPermissionStaff, "categoryPermissionStudent"=>$categoryPermissionStudent, "categoryPermissionParent"=>$categoryPermissionParent, "categoryPermissionOther"=>$categoryPermissionOther); 
+								$sqlModule="INSERT INTO gibbonAction SET gibbonModuleID=:gibbonModuleID, name=:name, precedence=:precedence, category=:category, description=:description, URLList=:URLList, entryURL=:entryURL, entrySidebar=:entrySidebar, menuShow=:menuShow, defaultPermissionAdmin=:defaultPermissionAdmin, defaultPermissionTeacher=:defaultPermissionTeacher, defaultPermissionStudent=:defaultPermissionStudent, defaultPermissionParent=:defaultPermissionParent, defaultPermissionSupport=:defaultPermissionSupport, categoryPermissionStaff=:categoryPermissionStaff, categoryPermissionStudent=:categoryPermissionStudent, categoryPermissionParent=:categoryPermissionParent, categoryPermissionOther=:categoryPermissionOther" ;
 								$resultModule=$connection2->prepare($sqlModule);
 								$resultModule->execute($dataModule);
 							}
