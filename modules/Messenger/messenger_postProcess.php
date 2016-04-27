@@ -1648,12 +1648,24 @@ else {
 
       //Target Absent students / Attendance Status
      if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_attendance")) {
-       if ($_POST["absent"]=="Y") {
+       if ($_POST["attendance"]=="Y") {
+				 $statuses=$_POST["attendanceStatus"] ;
          $students=$_POST["attendanceStudents"] ;
          $parents=$_POST["attendanceParents"] ;
          $thisDate=date('Y-m-d'); //Using current date time for now - should replace with user input date
-         $statuses=$_POST["attendanceStatus"] ;; //To Add: a multiselect for messenger to select which status to target
          if ($statuses!="") {
+					 // Make posts to message wall
+					 foreach ($choices as $t) {
+						 try {
+							 $data=array("gibbonMessengerID"=>$AI, "id"=>$t);
+							 $sql="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:gibbonMessengerID, type='Absentee', id=:id" ;
+							 $result=$connection2->prepare($sql);
+							 $result->execute($data);
+						 }
+						 catch(PDOException $e) {
+							 $partialFail=TRUE;
+						 }
+					 }
            //Get all logs by student, with latest log entry first.
            try {
              $data=array("selectedDate"=>$thisDate, "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "nowDate"=>date("Y-m-d"));

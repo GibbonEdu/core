@@ -192,7 +192,7 @@ else {
 								var date1=new LiveValidation('date1');
 								date1.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } );
 							</script>
-							 <script type="text/javascript">
+							<script type="text/javascript">
 								$(function() {
 									$( "#date1" ).datepicker();
 								});
@@ -1304,7 +1304,7 @@ else {
 							<span style="font-size: 90%"><i><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></i></span>
 						</td>
 						<td class="hiddenReveal right">
-							<select name="statuses[]" id="statuses[]" multiple style="width: 302px; height: 100px">
+							<select name="attendanceStatus[]" id="attendanceStatus[]" multiple style="width: 302px; height: 100px">
 								<?php
 								// Get all possible attendance statuses
 								try {
@@ -1326,6 +1326,24 @@ else {
 								}
 								?>
 							</select>
+						</td>
+					</tr>
+					<tr class="attendanceRow">
+						<td class='hiddenReveal'>
+							<b><?php print __($guid, 'Date') ?> *</b><br/>
+						</td>
+						<td class='hiddenReveal right'>
+							<input name="attendanceDate" id="attendanceDate" maxlength=10 value=" type="text" style="width: 300px">
+							<script type="text/javascript">
+								var attendanceDate=new LiveValidation('date1');
+								attendanceDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } );
+							</script>
+							<script type="text/javascript">
+								$(function() {
+									$("#attendanceDate").datepicker();
+									$( "#attendanceDate" ).datepicker('setDate', new Date());
+								});
+							</script>
 						</td>
 					</tr>
 					<tr class="attendanceRow">
