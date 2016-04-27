@@ -611,7 +611,7 @@ else {
 					<span class="emphasis small"><?php print __($guid, 'Are there any known or suspected SEN concerns, or previous SEN assessments?') ?></span><br/>
 				</td>
 				<td class="right">
-					<select name="sen" id="sen" class='sen' class="standardWidth">
+					<select name="sen" id="sen" class='sen standardWidth'>
 						<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
 						<option value="Y" /> <?php print ynExpander($guid, 'Y') ?>
 						<option value="N" /> <?php print ynExpander($guid, 'N') ?>

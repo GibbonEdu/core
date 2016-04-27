@@ -584,7 +584,7 @@ else {
 			<tr id='entryDisplayRow' style='display: none'>
 				<td colspan=2 style='text-align: center'>
 					<div id='details' name='details' style='min-height: 100px; text-align: center'>
-						<img style='margin: 10px 0 5px 0' src='<?php print $_SESSION[$guid]["absoluteURL"] ?>/themes/Default/img/loading.gif' alt='Loading' onclick='return false;' /><br/>Loading
+						<img style='margin: 10px 0 5px 0' src='<?php print $_SESSION[$guid]["absoluteURL"] ?>/themes<?php print "/" . $_SESSION[$guid]["gibbonThemeName"] . "/" ?>img/loading.gif' alt='Loading' onclick='return false;' /><br/>Loading
 					</div>
 				</td>
 			</tr>

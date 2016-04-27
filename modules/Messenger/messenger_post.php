@@ -319,8 +319,13 @@ else {
 										print "if ($('#cannedResponse option:selected').val()==\"" . $rowSelect["gibbonMessengerCannedResponseID"] . "\" ) {" ;
 											print "$('#subject').val('" . htmlPrep($rowSelect["subject"]) . "');" ;
 											print "tinyMCE.execCommand('mceRemoveEditor', false, 'body') ;" ;
-											print "$('#body').val('" . $rowSelect["body"] . addSlashes($signature) . "');" ;
-											print "tinyMCE.execCommand('mceAddEditor', false, 'body') ;" ;
+											print "
+												$.get('./modules/Messenger/messenger_post_ajax.php?gibbonMessengerCannedResponseID=" . $rowSelect["gibbonMessengerCannedResponseID"] . "', function(response) {
+													 var result = response;
+													$('#body').val(result + '" . addSlashes($signature) . "');
+													tinyMCE.execCommand('mceAddEditor', false, 'body') ;
+												});
+											" ;
 										print "}" ;
 									}
 								print "}" ;
