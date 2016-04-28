@@ -45,7 +45,7 @@ else {
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Formal Assessment/externalAssessment_manage_details_edit.php")==FALSE) {
 		//Fail 0
-		$URL.="&updateReturn=fail0" ;
+		$URL.="&return=error0" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -53,7 +53,7 @@ else {
 		//Check if tt specified
 		if ($gibbonExternalAssessmentStudentID=="") {
 			//Fail1
-			$URL.="&updateReturn=fail1" ;
+			$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -65,13 +65,13 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail2
-				$URL.="&updateReturn=fail2" ;
+				$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
 			if ($result->rowCount()!=1) {
 				//Fail 2
-				$URL.="&updateReturn=fail2" ;
+				$URL.="&return=error2" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -106,7 +106,7 @@ else {
 				
 						if (!(move_uploaded_file($_FILES["file"]["tmp_name"],$path . "/" . $attachment))) {
 							//Fail 5
-							$URL.="&updateReturn=fail5" ;
+							$URL.="&return=error1" ;
 							header("Location: {$URL}");
 						}
 					}
@@ -120,7 +120,7 @@ else {
 
 				if ($date=="") {
 					//Fail 3
-					$URL.="&updateReturn=fail3" ;
+					$URL.="&return=error1" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -173,13 +173,13 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail 2
-						$URL.="&updateReturn=fail2" ;
+						$URL.="&return=error2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
 					
 					//Success 0
-					$URL.="&updateReturn=success0" ;
+					$URL.="&return=success0" ;
 					header("Location: {$URL}");
 				}
 			}

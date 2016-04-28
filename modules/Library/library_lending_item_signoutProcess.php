@@ -64,7 +64,7 @@ $URLSuccess=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModu
 
 if (isActionAccessible($guid, $connection2, "/modules/Library/library_lending_item_signOut.php")==FALSE) {
 	//Fail 0
-	$URL.="&addReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -72,7 +72,7 @@ else {
 	//Validate Inputs
 	if ($gibbonLibraryItemID=="" OR $status=="" OR $gibbonPersonIDStatusResponsible=="" OR $statusCurrent!="Available") {
 		//Fail 3
-		$URL.="&addReturn=fail3" ;
+		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -84,14 +84,14 @@ else {
 		}
 		catch(PDOException $e) { 
 			//Fail 2
-			$URL.="&addReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
 
 		if ($result->rowCount()!=1) {
 			//Fail 4
-			$URL.="&addReturn=fail4" ;
+			$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
 		else {	
@@ -104,7 +104,7 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail 2
-				$URL.="&addReturn=fail2" . $e->getMessage() ;
+				$URL.="&return=error2" . $e->getMessage() ;
 				header("Location: {$URL}");
 				exit() ;
 			}
@@ -117,13 +117,13 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail 2
-				$URL.="&addReturn=fail2" ;
+				$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
 
 			//Success 0
-			$URL=$URLSuccess . "&addReturn=success0" ;
+			$URL=$URLSuccess . "&return=success0" ;
 			header("Location: {$URL}");
 		}
 	}

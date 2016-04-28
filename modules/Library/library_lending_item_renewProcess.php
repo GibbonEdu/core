@@ -40,7 +40,7 @@ else {
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Library/library_lending_item_renew.php")==FALSE) {
 		//Fail 0
-		$URL.="&updateReturn=fail0" ;
+		$URL.="&return=error0" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -48,7 +48,7 @@ else {
 		//Check if event specified
 		if ($gibbonLibraryItemEventID=="" OR $gibbonLibraryItemID=="") {
 			//Fail1
-			$URL.="&updateReturn=fail1" ;
+			$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -60,14 +60,14 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail 2
-				$URL.="&updateReturn=fail2" ;
+				$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
 			
 			if ($result->rowCount()!=1) {
 				//Fail 2
-				$URL.="&updateReturn=fail2" ;
+				$URL.="&return=error2" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -86,7 +86,7 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail 2
-					$URL.="&addReturn=fail2" . $e->getMessage() ;
+					$URL.="&return=error2" . $e->getMessage() ;
 					header("Location: {$URL}");
 					exit() ;
 				}
@@ -99,13 +99,13 @@ else {
 				}
 				catch(PDOException $e) { 
 					//Fail 2
-					$URL.="&addReturn=fail2" ;
+					$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
 						
 				//Success 0
-				$URL.="&updateReturn=success0" ;
+				$URL.="&return=success0" ;
 				header("Location: {$URL}");
 			}
 		}

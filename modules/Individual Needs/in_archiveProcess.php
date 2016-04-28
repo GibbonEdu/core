@@ -33,7 +33,7 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/Individual Needs/in_archive.php")==FALSE) {
 	//Fail 0
-	$URL.="&updateReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -43,7 +43,7 @@ else {
 
 	if ($deleteCurrentPlans=="" OR $title=="" OR count($gibbonPersonIDs)<1) {
 		//Fail 3
-		$URL.="&updateReturn=fail3" ;
+		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -122,12 +122,12 @@ else {
 		//DEAL WITH OUTCOME
 		if ($partialFail) {
 			//Fail 5
-			$URL.="&updateReturn=fail5" ;
+			$URL.="&return=warning1" ;
 			header("Location: {$URL}");
 		}
 		else {
 			//Success 0
-			$URL.="&updateReturn=success0" ;
+			$URL.="&return=success0" ;
 			header("Location: {$URL}");
 		}
 	}
