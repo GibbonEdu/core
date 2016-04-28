@@ -147,7 +147,7 @@ else {
 				}
 			
 				//Success 0
-				$URL.="&addReturn=success1&step=2&gibbonBehaviourID=$gibbonBehaviourID" ;
+				$URL.="&return=success1&step=2&gibbonBehaviourID=$gibbonBehaviourID" ;
 				header("Location: {$URL}");
 			}
 		}
