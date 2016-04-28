@@ -34,7 +34,6 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/feeCategories_manage_add.php" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Finance/feeCategories_manage_add.php")==FALSE) {
-	//Fail 0
 	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
@@ -46,7 +45,6 @@ else {
 	$description=$_POST["description"] ;
 			
 	if ($name=="" OR $nameShort=="" OR $active=="") {
-		//Fail 3
 		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
@@ -59,7 +57,6 @@ else {
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
-			//Fail 2
 			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;

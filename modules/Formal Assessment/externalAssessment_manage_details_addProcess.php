@@ -45,7 +45,6 @@ if (isset($_GET["allStudents"])) {
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/externalAssessment_manage_details_add.php&gibbonExternalAssessmentID=$gibbonExternalAssessmentID&gibbonPersonID=$gibbonPersonID&step=2&search=$search&allStudents=$allStudents" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Formal Assessment/externalAssessment_manage_details_add.php")==FALSE) {
-	//Fail 0
 	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
@@ -53,7 +52,6 @@ else {
 	//Proceed!
 	//Validate Inputs
 	if ($gibbonPersonID=="" OR $gibbonExternalAssessmentID=="" OR $date=="") {
-		//Fail 3
 		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
@@ -64,7 +62,6 @@ else {
 			$resultLock=$connection2->query($sqlLock);   
 		}
 		catch(PDOException $e) { 
-			//Fail 2
 			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
@@ -76,7 +73,6 @@ else {
 			$resultAI=$connection2->query($sqlAI);   
 		}
 		catch(PDOException $e) { 
-			//Fail 2
 			$URL.="&return=error3" ;
 			header("Location: {$URL}");
 			exit() ;
@@ -107,7 +103,6 @@ else {
 				}
 			
 				if (!(move_uploaded_file($_FILES["file"]["tmp_name"],$path . "/" . $attachment))) {
-					//Fail 5
 					$URL.="&return=error1" ;
 					header("Location: {$URL}");
 				}
@@ -162,7 +157,6 @@ else {
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
-			//Fail 2
 			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
@@ -176,12 +170,10 @@ else {
 		catch(PDOException $e) { }
 
 		if ($partialFail==TRUE) {
-			//Fail 5
 			$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
 		else {
-			//Success 0
 			$URL.="&return=success0" ;
 			header("Location: {$URL}");
 		}

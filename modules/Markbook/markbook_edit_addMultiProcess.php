@@ -33,13 +33,12 @@ $gibbonCourseClassID=$_GET["gibbonCourseClassID"] ;
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["address"]) . "/markbook_edit_addMulti.php&gibbonCourseClassID=$gibbonCourseClassID" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit_addMulti.php")==FALSE) {
-	//Fail 0
-	$URL.="&addReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
 	if (empty($_POST)) {
-		$URL.="&addReturn=fail5" ;
+		$URL.="&return=warning1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -119,8 +118,7 @@ else {
 			$resultLock=$connection2->query($sqlLock);   
 		}
 		catch(PDOException $e) { 
-			//Fail 2
-			$URL.="&addReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}			
@@ -131,8 +129,7 @@ else {
 			$resultGrouping=$connection2->query($sqlGrouping);   
 		}
 		catch(PDOException $e) { 
-			//Fail 2
-			$URL.="&addReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}			
@@ -164,8 +161,7 @@ else {
 				$count++ ;
 			}
 			if (!(move_uploaded_file($_FILES["file"]["tmp_name"],$path . "/" . $attachment))) {
-				//Fail 5
-				$URL.="&updateReturn=fail5" ;
+				$URL.="&return=warning1" ;
 				header("Location: {$URL}");
 			}
 		}
@@ -174,8 +170,7 @@ else {
 		}
 		
 		if (count($gibbonCourseClassIDMulti)<1 OR is_numeric($groupingID)==FALSE or $groupingID<1 OR $name=="" OR $description=="" OR $type=="" OR $viewableStudents=="" OR $viewableParents=="") {
-			//Fail 3
-			$URL.="&addReturn=fail3" ;
+			$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -190,8 +185,7 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-					//Fail 2
-					$partialFail=TRUE ;
+							$partialFail=TRUE ;
 				}
 			}
 		
@@ -203,13 +197,11 @@ else {
 			catch(PDOException $e) { }			
 			
 			if ($partialFail!=FALSE) {
-				//Success 0
-				$URL.="&addReturn=fail6" ;
+					$URL.="&return=warning1" ;
 				header("Location: {$URL}");
 			}
 			else {
-				//Success 0
-				$URL.="&addReturn=success0" ;
+					$URL.="&return=success0" ;
 				header("Location: {$URL}");
 			}
 		}

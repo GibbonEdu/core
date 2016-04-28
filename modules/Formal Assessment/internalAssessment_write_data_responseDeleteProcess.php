@@ -39,7 +39,6 @@ $gibbonPersonID=$_GET["gibbonPersonID"] ;
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Formal Assessment/internalAssessment_write_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonInternalAssessmentColumnID=$gibbonInternalAssessmentColumnID" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Formal Assessment/internalAssessment_write_data.php")==FALSE) {
-	//Fail 0
 	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
@@ -47,7 +46,6 @@ else {
 	//Proceed!
 	//Check if planner specified
 	if ($gibbonPersonID=="" OR $gibbonCourseClassID=="" OR $gibbonInternalAssessmentColumnID=="") {
-		//Fail1
 		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
@@ -59,7 +57,6 @@ else {
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
-			//Fail 2
 			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;

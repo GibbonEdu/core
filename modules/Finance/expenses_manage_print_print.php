@@ -36,26 +36,6 @@ else {
 		print "</div>" ;
 	}
 	else {
-		if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
-		//Proceed!
-		if (isset($_GET["approveReturn"])) { $approveReturn=$_GET["approveReturn"] ; } else { $approveReturn="" ; }
-		$approveReturnMessage="" ;
-		$class="error" ;
-		if (!($approveReturn=="")) {
-			if ($approveReturn=="fail0") {
-				$approveReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-			}
-			else if ($approveReturn=="fail2") {
-				$approveReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-			}
-			else if ($approveReturn=="fail3") {
-				$approveReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-			}
-			print "<div class='$class'>" ;
-				print $approveReturnMessage;
-			print "</div>" ;
-		} 
-	
 		//Check if params are specified
 		$gibbonFinanceExpenseID=$_GET["gibbonFinanceExpenseID"] ;
 		$gibbonFinanceBudgetCycleID=$_GET["gibbonFinanceBudgetCycleID"] ;

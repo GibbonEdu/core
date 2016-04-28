@@ -47,16 +47,14 @@ if (isset($_GET["gibbonCourseClassID"])) {
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID$params" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Planner/planner_view_full.php")==FALSE) {
-	//Fail 0
-	$URL.="&updateReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
 	//Proceed!
 	//Check if planner specified
 	if ($gibbonPlannerEntryID=="") {
-		//Fail1
-		$URL.="&updateReturn=fail1" ;
+		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -67,15 +65,13 @@ else {
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
-			//Fail2
-			$URL.="&updateReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
 
 		if ($result->rowCount()!=1) {
-			//Fail 2
-			$URL.="&updateReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 		}
 		else {	
@@ -111,14 +107,12 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-					//Fail2
-					$URL.="&updateReturn=fail2" ;
+							$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
 				
-				//Success 0
-				$URL.="&updateReturn=success0" ;
+					$URL.="&return=success0" ;
 				header("Location: {$URL}");
 			}
 			else { //IF HOMEWORK YES, DEAL WITH RECORDS
@@ -130,15 +124,13 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-					//Fail2
-					$URL.="&updateReturn=fail2" ;
+							$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
 			
 				if ($result->rowCount()>1) { //Error!
-					//Fail2
-					$URL.="&updateReturn=fail2" ;
+							$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
@@ -150,14 +142,12 @@ else {
 						$result->execute($data);
 					}
 					catch(PDOException $e) { 
-						//Fail 2
-						$URL.="&updateReturn=fail2" ;
+									$URL.="&return=error2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
 					
-					//Success 0
-					$URL.="&updateReturn=success0" ;
+							$URL.="&return=success0" ;
 					header("Location: {$URL}");
 				}
 				else { //Does not exist, so create
@@ -169,14 +159,12 @@ else {
 						$result->execute($data);
 					}
 					catch(PDOException $e) { 
-						//Fail 2
-						$URL.="&updateReturn=fail2" ;
+									$URL.="&return=error2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
 					
-					//Success 0
-					$URL.="&updateReturn=success0" ;
+							$URL.="&return=success0" ;
 					header("Location: {$URL}");
 				}
 			}

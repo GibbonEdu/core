@@ -57,8 +57,7 @@ else {
 
 
 if ($proceed==FALSE) {
-	//Fail 0
-	$URL.="&addReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -555,8 +554,7 @@ else {
 			}
 		}
 		if ($surname=="" OR $firstName=="" OR $preferredName=="" OR $officialName=="" OR $gender=="" OR $dob=="" OR $languageHomePrimary=="" OR $languageFirst=="" OR $countryOfBirth=="" OR $citizenship1="" OR $gibbonSchoolYearIDEntry=="" OR $dateStart=="" OR $gibbonYearGroupIDEntry=="" OR $sen=="" OR $howDidYouHear=="" OR (isset($_POST["agreement"]) AND $agreement!="Y") OR $familyFail) {
-			//Fail 3
-			$URL.="&addReturn=fail3" ;
+			$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -638,8 +636,7 @@ else {
 			}
 			
 			if ($customRequireFail) {
-				//Fail 3
-				$URL.="&addReturn=fail3" ;
+					$URL.="&return=error1" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -665,8 +662,7 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-					//Fail 2
-					$URL.="&addReturn=fail2" ;
+							$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
@@ -779,8 +775,7 @@ else {
 					header("Location: {$URL}");
 				}
 				else {
-					//Success 0
-					$URL.="&addReturn=success0&id=$AI" ;
+							$URL.="&return=success0&id=$AI" ;
 					header("Location: {$URL}");
 				}
 			}
@@ -863,13 +858,11 @@ else {
 					$body=__($guid, 'Payment via PayPal was successful, but has not been recorded due to a system error. Please check your PayPal account for details. The following may be useful:') . "\n\nPayment Token: $paymentToken\n\nPayer ID: $paymentPayerID\n\nApplication Form ID: $gibbonApplicationFormID\n\nApplication Fee: $applicationFee\n\n" . $_SESSION[$guid]["systemName"] . " " . __($guid, 'Administrator');
 					mail($to, $subject, $body, $headers) ;
 			
-					//Success 3
 					$URL.="&addReturn=success3&id=" . $_GET["id"] ;
 					header("Location: {$URL}");
 					exit ;
 				}
 				
-				//Success 1
 				$URL.="&addReturn=success1&id=" . $_GET["id"] ;
 				header("Location: {$URL}");
 			}

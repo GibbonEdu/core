@@ -36,8 +36,7 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 $URLReject=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/applicationForm_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Students/applicationForm_manage_reject.php")==FALSE) {
-	//Fail 0
-	$URL.="&rejectReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -45,8 +44,7 @@ else {
 	//Check if school year specified
 	
 	if ($gibbonApplicationFormID=="" OR $gibbonSchoolYearID=="") {
-		//Fail1
-		$URL.="&rejectReturn=fail1" ;
+		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -57,15 +55,13 @@ else {
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
-			//Fail2
-			$URL.="&rejectReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
 		
 		if ($result->rowCount()!=1) {
-			//Fail 2
-			$URL.="&rejectReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -77,14 +73,12 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-				//Fail 2
-				$URL.="&rejectReturn=fail2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
 
-			//Success 0
-			$URLReject=$URLReject . "&rejectReturn=success0" ;
+			$URLReject=$URLReject . "&return=success0" ;
 			header("Location: {$URLReject}");
 		}
 	}

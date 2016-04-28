@@ -50,13 +50,13 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=preferences.php&forceReset=
 
 //Check passwords are not blank
 if ($password=="" OR $passwordNew=="" or $passwordConfirm=="") {
-	$URL.="&editReturn=fail0" ;
+	$URL.="&return=error1" ;
 	header("Location: {$URL}");
 }
 else {
 	//Check that new password is not same as old password
 	if ($password==$passwordNew) {
-		$URL.="&editReturn=fail7" ;
+		$URL.="&return=error7" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -64,20 +64,19 @@ else {
 		$passwordMatch=doesPasswordMatchPolicy($connection2, $passwordNew) ;
 		
 		if ($passwordMatch==FALSE) {
-			//Fail 6
-			$URL.="&editReturn=fail6" ;
+			$URL.="&return=error6" ;
 			header("Location: {$URL}");
 		}
 		else {
 			//Check new passwords match
 			if ($passwordNew!=$passwordConfirm) {
-				$URL.="&editReturn=fail2" ;
+				$URL.="&return=error4" ;
 				header("Location: {$URL}");
 			}
 			else {
 				//Check current password
 				if (hash("sha256", $_SESSION[$guid]["passwordStrongSalt"].$password)!=$_SESSION[$guid]["passwordStrong"]) {
-					$URL.="&editReturn=fail3" ;
+					$URL.="&return=error3" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -91,7 +90,7 @@ else {
 						$result->execute($data);
 					}
 					catch(PDOException $e) { 
-						$URL.="&editReturn=fail1" ;
+						$URL.="&return=error2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
@@ -106,19 +105,19 @@ else {
 							$result->execute($data);
 						}
 						catch(PDOException $e) { 
-							$URL.="&forceResetReturn=fail0" ;
+							$URL.="&return=faila" ;
 							header("Location: {$URL}");
 							exit() ;
 						}
 						$_SESSION[$guid]["passwordForceReset"]="N" ;
-						$URL.="&forceResetReturn=success0" ;
+						$URL.="&return=successa" ;
 					}
 					
 					
 					$_SESSION[$guid]["passwordStrongSalt"]=$salt ;
 					$_SESSION[$guid]["passwordStrong"]=$passwordStrong ;
 					$_SESSION[$guid]["pageLoads"]=NULL ;
-					$URL.="&editReturn=success0" ;
+					$URL.="&return=success0" ;
 					header("Location: {$URL}");	
 				}
 			}

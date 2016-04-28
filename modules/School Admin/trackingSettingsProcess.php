@@ -32,8 +32,7 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/trackingSettings.php" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/trackingSettings.php")==FALSE) {
-	//Fail 0
-	$URL.="&updateReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -76,7 +75,10 @@ else {
    $yearCount=$_POST["internal_year_count"] ;
    $count=0 ;
    for ($i=0; $i<$assessmentCount; $i++) {
-      $internalAssessmentDataPoints[$count]["type"]=$_POST["internal_type_" . $i] ;
+   	  $internalAssessmentDataPoints[$count]["type"]=NULL ;
+   	  if (isset($_POST["internal_type_" . $i])) {
+      	$internalAssessmentDataPoints[$count]["type"]=$_POST["internal_type_" . $i] ;
+      }
       $internalAssessmentDataPoints[$count]["gibbonYearGroupIDList"]="" ;
       for ($j=0; $j<$yearCount; $j++) {
          if (isset($_POST["internal_type_" . $i . "_gibbonYearGroupID_" . $j])) {
@@ -102,13 +104,12 @@ else {
 
    //RETURN RESULTS
    if ($fail==TRUE) {
-		//Fail 2
-		$URL.="&updateReturn=fail2" ;
+		$URL.="&return=error2" ;
 		header("Location: {$URL}");
 	}
 	else {
 		//Success 0
-		$URL.="&updateReturn=success0" ;
+		$URL.="&return=success0" ;
 		header("Location: {$URL}");
 	}
 }

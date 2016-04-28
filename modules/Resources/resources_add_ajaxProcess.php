@@ -32,14 +32,12 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 $time=time() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Resources/resources_manage_add.php")==FALSE) {
-	//Fail 0
 	print "<span style='font-weight: bold; color: #ff0000'>" ;
 		print __($guid, "Your request failed because you do not have access to this action.") ;
 	print "</span>" ;
 }
 else {
 	if (empty($_POST)) {
-		//Fail 5
 		print "<span style='font-weight: bold; color: #ff0000'>" ;
 			print "Your request failed due to an attachment error." ;
 		print "</span>" ;
@@ -70,7 +68,6 @@ else {
 		$description=$_POST[$id . "description"] ; 
 			
 		if (($type!="File" AND $type!="Link") OR is_null($content) OR $name=="" OR $category=="" OR $tags=="" OR $id=="") {
-			//Fail 3
 			print "<span style='font-weight: bold; color: #ff0000'>" ;
 				print __($guid, "Your request failed because your inputs were invalid.") ;
 			print "</span>" ;
@@ -94,7 +91,6 @@ else {
 						$count++ ;
 					}
 					if (!(move_uploaded_file($_FILES[$id . "file"]["tmp_name"],$path . "/" . $attachment))) {
-						//Fail 5
 						print "<span style='font-weight: bold; color: #ff0000'>" ;
 							print "Your request failed due to an attachment error." ;
 						print "</span>" ;
@@ -109,8 +105,7 @@ else {
 				$result=$connection2->query($sql);   
 			}
 			catch(PDOException $e) { 
-				//Fail 2
-				print "<span style='font-weight: bold; color: #ff0000'>" ;
+					print "<span style='font-weight: bold; color: #ff0000'>" ;
 					print __($guid, "Your request failed due to a database error.") ;
 				print "</span>" ;
 				exit() ;
@@ -166,8 +161,7 @@ else {
 				$result=$connection2->query($sql);   
 			}
 			catch(PDOException $e) { 
-				//Fail 2
-				print "<span style='font-weight: bold; color: #ff0000'>" ;
+					print "<span style='font-weight: bold; color: #ff0000'>" ;
 					print __($guid, "Your request failed due to a database error.") ;
 				print "</span>" ;
 				exit() ;
@@ -181,8 +175,7 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-				//Fail 2
-				print "<span style='font-weight: bold; color: #ff0000'>" ;
+					print "<span style='font-weight: bold; color: #ff0000'>" ;
 					print $e->getMessage() ;
 				print "</span>" ;
 				exit() ;
@@ -194,8 +187,7 @@ else {
 				print "</span>" ;
 			}
 			else {
-				//Success 0
-				$html="" ;
+					$html="" ;
 				$extension="" ;
 				if ($type=="Link") {
 					$extension=strrchr($content, ".") ;

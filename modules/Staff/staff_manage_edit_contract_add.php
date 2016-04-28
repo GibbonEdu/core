@@ -31,36 +31,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a>  > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Staff/staff_manage.php'>" . __($guid, 'Manage Staff') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Staff/staff_manage_edit.php&gibbonStaffID=" . $_GET["gibbonStaffID"] . "'>" . __($guid, 'Edit Staff') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Add Contract') . "</div>" ;
 	print "</div>" ;
 	
-	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
-	$addReturnMessage="" ;
-	$class="error" ;
-	if (!($addReturn=="")) {
-		if ($addReturn=="fail0") {
-			$addReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-		}
-		else if ($addReturn=="fail2") {
-			$addReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-		}
-		else if ($addReturn=="fail3") {
-			$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($addReturn=="fail4") {
-			$addReturnMessage=__($guid, "Your request failed because some inputs did not meet a requirement for uniqueness.") ;	
-		}
-		else if ($addReturn=="fail5") {
-			$addReturnMessage="Your request failed because your passwords did not match." ;	
-		}
-		else if ($addReturn=="fail6") {
-			$addReturnMessage="Your request failed because your inputs were invalid." ;	
-		}
-		else if ($addReturn=="success0") {
-			$addReturnMessage=__($guid, "Your request was completed successfully. You can now add another record if you wish.") ;	
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $addReturnMessage;
-		print "</div>" ;
-	} 
+	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
 	
 	//Check if school year specified
 	$gibbonStaffID=$_GET["gibbonStaffID"] ;
@@ -121,15 +92,20 @@ else {
 					</tr>
 					<tr>
 						<td style='width: 275px'> 
-							<b><?php print __($guid, 'Status') ?></b><br/>
+							<b><?php print __($guid, 'Status') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<select class="standardWidth" name="status">
-								<option value=""></option>
+							<select class="standardWidth" name="status" id="status2">
+								<option value='Please select...'><?php print __($guid, 'Please select...') ?></option>" ;
 								<option value="Pending"><?php print __($guid, 'Pending') ?></option>
 								<option value="Active"><?php print __($guid, 'Active') ?></option>
 								<option value="Expired"><?php print __($guid, 'Expired') ?></option>
 							</select>
+							<script type="text/javascript">
+								var status2=new LiveValidation('status2');
+								status2.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
+							</script>
+						</td>
 						</td>
 					</tr>
 					<tr>

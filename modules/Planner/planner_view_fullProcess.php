@@ -39,23 +39,20 @@ $today=date("Y-m-d");
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID" . $_POST["params"] ;
 							
 if (isActionAccessible($guid, $connection2, "/modules/Planner/planner_view_full.php")==FALSE) {
-	//Fail 0
-	$URL.="&updateReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, $_POST["address"], $connection2) ;
 	if ($highestAction==FALSE) {
-		//Fail 0
-		$URL.="&updateReturn=fail0$params" ;
+			$URL.="&return=error0$params" ;
 		header("Location: {$URL}");
 	}
 	else {
 		//Proceed!
 		//Check if planner specified
 		if ($gibbonPlannerEntryID=="") {
-			//Fail1
-			$URL.="&updateReturn=fail1" ;
+				$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -66,29 +63,25 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-				//Fail2
-				$URL.="&updateReturn=fail2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
 			
 			if ($result->rowCount()!=1) {
-				//Fail 2
-				$URL.="&updateReturn=fail2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 			}
 			else {	
 				//Check that date is not in the future
 				if ($currentDate>$today) {
-					//Fail 4
-					$URL.="&updateReturn=fail4" ;
+					$URL.="&return=error3" ;
 					header("Location: {$URL}");
 				}
 				else {
 					//Check that date is a school day
 					if (isSchoolOpen($guid, $currentDate, $connection2)==FALSE) {
-						//Fail 5
-						$URL.="&updateReturn=fail5" ;
+						$URL.="&return=warning1" ;
 						header("Location: {$URL}");
 					}
 					else {
@@ -100,8 +93,7 @@ else {
 							$result->execute($data);
 						}
 						catch(PDOException $e) { 
-							//Fail 2
-							$URL.="&updateReturn=fail2" ;
+											$URL.="&return=error2" ;
 							header("Location: {$URL}");
 							exit() ;
 						}
@@ -156,13 +148,11 @@ else {
 					}
 					
 					if ($partialFail==TRUE) {
-						//Fail 3
-						$URL.="&updateReturn=fail3" ;
+									$URL.="&return=error3" ;
 						header("Location: {$URL}");
 					}
 					else {
-						//Success 0
-						$URL.="&updateReturn=success0" ;
+									$URL.="&return=success0" ;
 						header("Location: {$URL}");
 					}
 				}

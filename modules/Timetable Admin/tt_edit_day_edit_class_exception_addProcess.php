@@ -43,16 +43,14 @@ else {
 	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/tt_edit_day_edit_class_exception_add.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClass=$gibbonTTDayRowClassID&gibbonCourseClassID=$gibbonCourseClassID" ;
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/tt_edit_day_edit_class_exception_add.php")==FALSE) {
-		//Fail 0
-		$URL.="&updateReturn=fail0" ;
+			$URL.="&return=error0" ;
 		header("Location: {$URL}");
 	}
 	else {
 		//Proceed!
 		//Check if school year specified
 		if ($gibbonTTDayID=="") {
-			//Fail1
-			$URL.="&updateReturn=fail1" ;
+				$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -63,15 +61,13 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-				//Fail2
-				$URL.="&updateReturn=fail2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
 			
 			if ($result->rowCount()<1) {
-				//Fail 2
-				$URL.="&updateReturn=fail2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -80,8 +76,7 @@ else {
 				$choices=$_POST["Members"] ;
 				
 				if (count($choices)<1) {
-					//Fail 2
-					$URL.="&updateReturn=fail1" ;
+							$URL.="&return=error1" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -112,13 +107,11 @@ else {
 					}
 					//Write to database
 					if ($update==FALSE) {
-						//Fail 2
-						$URL.="&updateReturn=fail2" ;
+									$URL.="&return=error2" ;
 						header("Location: {$URL}");
 					}
 					else {
-						//Success 0
-						$URL.="&updateReturn=success0" ;
+									$URL.="&return=success0" ;
 						header("Location: {$URL}");
 					}
 				}

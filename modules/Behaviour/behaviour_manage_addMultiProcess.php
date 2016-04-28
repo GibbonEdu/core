@@ -35,7 +35,6 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/behaviour_manage_addMulti.php&gibbonPersonID=" . $_GET["gibbonPersonID"] . "&gibbonRollGroupID=" . $_GET["gibbonRollGroupID"] . "&gibbonYearGroupID=" . $_GET["gibbonYearGroupID"] . "&type=" .$_GET["type"] ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_manage_add.php")==FALSE) {
-	//Fail 0
 	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
@@ -61,7 +60,6 @@ else {
 	$followup=$_POST["followup"] ; 
 		
 	if (is_null($gibbonPersonIDMulti)==TRUE OR $date=="" OR $type=="" OR ($descriptor=="" AND $enableDescriptors=="Y")) {
-		//Fail 3
 		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
@@ -129,12 +127,10 @@ else {
 		}
 		
 		if ($partialFail==TRUE) {
-			//Fail 5
 			$URL.="&return=warning1" ;
 			header("Location: {$URL}");
 		}
 		else {
-			//Success 0
 			$URL.="&return=success0" ;
 			header("Location: {$URL}");
 		}

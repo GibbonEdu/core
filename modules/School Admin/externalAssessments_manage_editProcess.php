@@ -39,15 +39,13 @@ $allowFileUpload=$_POST["allowFileUpload"] ;
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/externalAssessments_manage_edit.php&gibbonExternalAssessmentID=" . $gibbonExternalAssessmentID ;
 
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/externalAssessments_manage_edit.php")==FALSE) {
-	//Fail 0
-	$URL.="&updateReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
 	//Proceed!
 	if ($gibbonExternalAssessmentID=="") {
-		//Fail1
-		$URL.="&updateReturn=fail1" ;
+		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -58,22 +56,19 @@ else {
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
-			//Fail2
-			$URL.="&deleteReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
 		
 		if ($result->rowCount()!=1) {
-			//Fail 2
-			$URL.="&updateReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 		}
 		else {
 			//Validate Inputs
 			if ($name=="" OR $nameShort=="" OR $description=="" OR $active=="") {
-				//Fail 3
-				$URL.="&updateReturn=fail3" ;
+					$URL.="&return=error3" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -85,15 +80,13 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-					//Fail 2
-					$URL.="&updateReturn=fail2" ;
+							$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
 				
 				if ($result->rowCount()>0) {
-					//Fail 4
-					$URL.="&updateReturn=fail4" ;
+					$URL.="&return=error3" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -105,14 +98,12 @@ else {
 						$result->execute($data);
 					}
 					catch(PDOException $e) { 
-						//Fail 2
-						$URL.="&updateReturn=fail2" ;
+									$URL.="&return=error2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
 					
-					//Success 0
-					$URL.="&updateReturn=success0" ;
+							$URL.="&return=success0" ;
 					header("Location: {$URL}");
 				}
 			}

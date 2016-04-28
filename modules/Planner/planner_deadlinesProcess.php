@@ -58,16 +58,14 @@ else {
 }
 
 if (isActionAccessible($guid, $connection2, "/modules/Planner/planner_deadlines.php")==FALSE) {
-	//Fail 0
 	print "gere" ;
-	$URL.="&updateReturn=fail0$params" ;
+	$URL.="&return=error0$params" ;
 	header("Location: {$URL}");
 }
 else {
 	$category=getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2) ;
 	if ($category!="Student") {
-		//Fail 0
-		$URL.="&updateReturn=fail0$params" ;
+			$URL.="&return=error0$params" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -85,8 +83,7 @@ else {
 			$resultCompletion->execute($dataCompletion);
 		}
 		catch(PDOException $e) { 
-			//Fail2
-			$URL.="&updateReturn=fail2$params" ;
+			$URL.="&return=error2$params" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
@@ -164,13 +161,11 @@ else {
 		}
 		
 		if ($partialFail==TRUE) {
-			//Fail 5
-			$URL.="&updateReturn=fail5$params" ;
+			$URL.="&return=warning1$params" ;
 			header("Location: {$URL}");
 		}
 		else {
-			//Success 0
-			$URL.="&updateReturn=success0$params" ;
+			$URL.="&return=success0$params" ;
 			header("Location: {$URL}");
 		}
 	}

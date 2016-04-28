@@ -65,7 +65,7 @@ else {
 				$updateReturnMessage=__($guid, "Your request was successful, but some data was not properly saved.") ;
 			}
 			else if ($addReturn=="success0") {
-				$addReturnMessage=__($guid, "Your request was completed successfully. You can now add another record if you wish.") ;	
+				$addReturnMessage=__($guid, "Your request was completed successfully.") ;	
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;

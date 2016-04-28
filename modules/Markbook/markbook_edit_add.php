@@ -99,7 +99,7 @@ else {
 						$addReturnMessage=__($guid, "Your request failed because you already have one \"End of Year\" column for this class.") ;	
 					}
 					else if ($addReturn=="success0") {
-						$addReturnMessage=__($guid, "Your request was completed successfully. You can now add another record if you wish.") ;	
+						$addReturnMessage=__($guid, "Your request was completed successfully.") ;	
 						$class="success" ;
 					}
 					print "<div class='$class'>" ;

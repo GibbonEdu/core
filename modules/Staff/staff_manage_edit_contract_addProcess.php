@@ -39,16 +39,14 @@ else {
 	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/staff_manage_edit_contract_add.php&gibbonStaffID=$gibbonStaffID&search=$search" ;
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Staff/staff_manage_edit_contract_add.php")==FALSE) {
-		//Fail 0
-		$URL.="&addReturn=fail0" ;
+			$URL.="&return=error0" ;
 		header("Location: {$URL}");
 	}
 	else {
 		//Proceed!
 		//Check if person specified
 		if ($gibbonStaffID=="") {
-			//Fail1
-			$URL.="&addReturn=fail1" ;
+				$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -59,15 +57,13 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-				//Fail2
-				$URL.="&addReturn=fail2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
 
 			if ($result->rowCount()!=1) {
-				//Fail 2
-				$URL.="&addReturn=fail2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -82,7 +78,9 @@ else {
 				}
 				$dateEnd=NULL ;
 				if (isset($_POST["dateEnd"])) {
-					$dateEnd=dateConvert($guid, $_POST["dateEnd"]) ;
+					if ($_POST["dateEnd"]!="") {
+						$dateEnd=dateConvert($guid, $_POST["dateEnd"]) ;
+					}
 				}
 				$salaryScale=NULL ;
 				if (isset($_POST["salaryScale"])) {
@@ -185,8 +183,7 @@ else {
 				}
 			
 				if ($title=="" OR $status=="") {
-					//Fail 3
-					$URL.="&addReturn=fail3&step=1" ;
+							$URL.="&return=error1&step=1" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -198,14 +195,12 @@ else {
 						$result->execute($data);
 					}
 					catch(PDOException $e) { 
-						//Fail2
-						$URL.="&addReturn=fail2" ;
+									$URL.="&return=error2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
 			
-					//Success 0
-					$URL.="&addReturn=success0" ;
+							$URL.="&return=success0" ;
 					header("Location: {$URL}");
 				}
 			}

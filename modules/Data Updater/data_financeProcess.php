@@ -33,7 +33,6 @@ $gibbonFinanceInvoiceeID=$_GET["gibbonFinanceInvoiceeID"] ;
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/data_finance.php&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Data Updater/data_finance.php")==FALSE) {
-	//Fail 0
 	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
@@ -41,7 +40,6 @@ else {
 	//Proceed!
 	//Check if school year specified
 	if ($gibbonFinanceInvoiceeID=="") {
-		//Fail1
 		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
@@ -49,8 +47,7 @@ else {
 		//Get action with highest precendence
 		$highestAction=getHighestGroupedAction($guid, $_POST["address"], $connection2) ;
 		if ($highestAction==FALSE) {
-			//Fail 0
-			$URL.="&return=error0$params" ;
+					$URL.="&return=error0$params" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -91,7 +88,6 @@ else {
 			}
 			
 			if ($checkCount<1) {
-			//Fail 2
 				$URL.="&return=error2" ;
 				header("Location: {$URL}");
 			}
@@ -151,14 +147,12 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-					//Fail 2
-					$URL.="&return=error2" ;
+							$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
 				
-				//Success 0
-				$URL.="&return=success0" ;
+					$URL.="&return=success0" ;
 				header("Location: {$URL}");
 			}
 		}

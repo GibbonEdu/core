@@ -1707,18 +1707,7 @@ else {
 								print "</div>" ; 
 							}
 							else {
-								if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-								$deleteReturnMessage="" ;
-								$class="error" ;
-								if (!($deleteReturn=="")) {
-									if ($deleteReturn=="success0") {
-										$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;		
-										$class="success" ;
-									}
-									print "<div class='$class'>" ;
-										print $deleteReturnMessage;
-									print "</div>" ;
-								} 
+								if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
 							
 								print "<p>" ;
 									print __($guid, "Student Notes provide a way to store information on students which does not fit elsewhere in the system, or which you want to be able to see quickly in one place.") . " <b>" . __($guid, 'Please remember that notes are visible to other users who have access to full student profiles (this should not generally include parents).') . "</b>" ;

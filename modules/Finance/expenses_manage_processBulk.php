@@ -42,8 +42,7 @@ else {
 	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/expenses_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID" ;
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Finance/expenses_manage.php")==FALSE) {
-		//Fail 0
-		$URL.="&return=error0" ;
+			$URL.="&return=error0" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -62,8 +61,7 @@ else {
 				$exp->exportWithPage($guid, "./expenses_manage_processBulkExportContents.php","invoices.xls", "&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID");
 				
 				// THIS CODE HAS BEEN COMMENTED OUT, AS THE EXPORT RETURNS WITHOUT IT...NOT SURE WHY!
-				//Success 0
-				//$URL.="&bulkReturn=success0" ;
+					//$URL.="&bulkReturn=success0" ;
 				//header("Location: {$URL}");
 			}
 			else {

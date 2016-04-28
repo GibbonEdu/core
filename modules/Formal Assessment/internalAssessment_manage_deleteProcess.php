@@ -35,7 +35,6 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 $URLDelete=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/internalAssessment_manage.php&gibbonCourseClassID=$gibbonCourseClassID" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Formal Assessment/internalAssessment_manage_delete.php")==FALSE) {
-	//Fail 0
 	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
@@ -43,7 +42,6 @@ else {
 	//Proceed!
 	//Check if school year specified
 	if ($gibbonInternalAssessmentColumnID=="" OR $gibbonCourseClassID=="") {
-		//Fail1
 		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
@@ -55,14 +53,12 @@ else {
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
-			//Fail2
 			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
 
 		if ($result->rowCount()!=1) {
-			//Fail 2
 			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 		}
@@ -75,13 +71,11 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-				//Fail 2
-				$URL.="&return=error2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
 
-			//Success 0
 			$URLDelete=$URLDelete . "&return=success0" ;
 			header("Location: {$URLDelete}");
 		}

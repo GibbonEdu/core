@@ -36,8 +36,7 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php" ;
 //Proceed!
 //Check if planner specified
 if ($gibbonPersonID=="" OR $gibbonPersonID!=$_SESSION[$guid]["gibbonPersonID"]) {
-	//Fail1
-	$URL.="?deleteReturn=fail1" ;
+	$URL.="?return=error1" ;
 	header("Location: {$URL}");
 }
 else {
@@ -48,15 +47,13 @@ else {
 		$result->execute($data);
 	}
 	catch(PDOException $e) { 
-		//Fail2
-		$URL.="?deleteReturn=fail2" ;
+		$URL.="?return=error2" ;
 		header("Location: {$URL}");
 		exit() ;
 	}
 
 	if ($result->rowCount()!=1) {
-		//Fail 2
-		$URL.="?deleteReturn=fail2" ;
+		$URL.="?return=error2" ;
 		header("Location: {$URL}");
 	}
 	else {	
@@ -68,8 +65,7 @@ else {
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
-			//Fail 2
-			$URL.="?deleteReturn=fail2" ;
+			$URL.="?return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
@@ -80,7 +76,7 @@ else {
 		//Clear cusotm sidebar
 		unset($_SESSION[$guid]["index_customSidebar.php"]) ;
 		
-		$URL.="?deleteReturn=success0" ;
+		$URL.="?return=success0" ;
 		//Success 0
 		header("Location: {$URL}");
 	}

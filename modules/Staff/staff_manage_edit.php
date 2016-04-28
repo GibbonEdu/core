@@ -48,33 +48,7 @@ else {
 			$search=$_GET["search"] ;
 		}
 	
-		if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-		$updateReturnMessage="" ;
-		$class="error" ;
-		if (!($updateReturn=="")) {
-			if ($updateReturn=="fail0") {
-				$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-			}
-			else if ($updateReturn=="fail1") {
-				$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-			}
-			else if ($updateReturn=="fail2") {
-				$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-			}
-			else if ($updateReturn=="fail3") {
-				$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-			}
-			else if ($updateReturn=="fail4") {
-				$updateReturnMessage=__($guid, "Your request failed because some inputs did not meet a requirement for uniqueness.") ;	
-			}
-			else if ($updateReturn=="success0") {
-				$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
-				$class="success" ;
-			}
-			print "<div class='$class'>" ;
-				print $updateReturnMessage;
-			print "</div>" ;
-		} 
+		if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
 	
 		//Check if school year specified
 		$gibbonStaffID=$_GET["gibbonStaffID"] ;
@@ -439,10 +413,6 @@ else {
 							}
 						print "</table>" ;
 					}
-					
-					
-					print "<h3>" . __($guid, 'Document Storage') . "</h3>" ;
-				
 				}
 			}
 		}

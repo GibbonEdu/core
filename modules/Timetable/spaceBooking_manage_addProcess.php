@@ -35,16 +35,14 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/spaceBooking_manage_add.php" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Timetable/spaceBooking_manage_add.php")==FALSE) {
-	//Fail 0
-	$URL.="&addReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
 	//Get action with highest precendence
 	$highestAction=getHighestGroupedAction($guid, $_POST["address"], $connection2) ;
 	if ($highestAction==FALSE) {
-		//Fail 0
-		$URL.="&updateReturn=fail0$params" ;
+			$URL.="&return=error0$params" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -66,8 +64,7 @@ else {
 		
 		//Validate Inputs
 		if ($foreignKey=="" OR $foreignKeyID=="" OR $timeStart=="" OR $timeEnd=="" OR $repeat=="" OR count($dates)<1) {
-			//Fail 3
-			$URL.="&addReturn=fail3" ;
+			$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -77,8 +74,7 @@ else {
 				$result=$connection2->query($sql);   
 			}
 			catch(PDOException $e) { 
-				//Fail 2
-				$URL.="&duplicateReturn=fail2" ;
+				$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}	
@@ -115,18 +111,15 @@ else {
 			catch(PDOException $e) { }	
 
 			if ($successCount==0) {
-				//Fail 4
-				$URL.="&addReturn=fail4" ;
+				$URL.="&return=error3" ;
 				header("Location: {$URL}");
 			}
 			else if ($successCount<count($dates)) {
-				//Fail 5
-				$URL.="&addReturn=fail5" ;
+				$URL.="&return=warning1" ;
 				header("Location: {$URL}");
 			}
 			else {
-				//Success 0
-				$URL.="&addReturn=success0" ;
+					$URL.="&return=success0" ;
 				header("Location: {$URL}");
 			}	
 		}

@@ -36,37 +36,6 @@ else {
 	
 	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
 
-	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
-	$addReturnMessage="" ;
-	$class="error" ;
-	if (!($addReturn=="")) {
-		if ($addReturn=="fail0") {
-			$addReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-		}
-		else if ($addReturn=="fail1") {
-			$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($addReturn=="fail2") {
-			$addReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-		}
-		else if ($addReturn=="fail3") {
-			$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($addReturn=="fail4") {
-			$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($addReturn=="fail5") {
-			$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($addReturn=="success0") {
-			$addReturnMessage=__($guid, "Your request was completed successfully.") ;	
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $addReturnMessage;
-		print "</div>" ;
-	} 
-	
 	$gibbonActivityID=$_GET["gibbonActivityID"] ;
 	
 	if ($gibbonActivityID=="") {

@@ -32,7 +32,6 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/in_archive.php" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Individual Needs/in_archive.php")==FALSE) {
-	//Fail 0
 	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
@@ -42,7 +41,6 @@ else {
 	$gibbonPersonIDs=$_POST["gibbonPersonID"] ; 
 
 	if ($deleteCurrentPlans=="" OR $title=="" OR count($gibbonPersonIDs)<1) {
-		//Fail 3
 		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
@@ -121,12 +119,10 @@ else {
 		
 		//DEAL WITH OUTCOME
 		if ($partialFail) {
-			//Fail 5
 			$URL.="&return=warning1" ;
 			header("Location: {$URL}");
 		}
 		else {
-			//Success 0
 			$URL.="&return=success0" ;
 			header("Location: {$URL}");
 		}

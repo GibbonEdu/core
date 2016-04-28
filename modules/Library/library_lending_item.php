@@ -36,20 +36,6 @@ else {
 
 	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, array("success0" => "Your request was completed successfully.")); }
 		
-	//Proceed!
-	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
-	$addReturnMessage="" ;
-	$class="error" ;
-	if (!($addReturn=="")) {
-		if ($addReturn=="success0") {
-			$addReturnMessage=__($guid, "Your request was was successful.") ;	
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $addReturnMessage;
-		print "</div>" ;
-	} 
-	
 	//Check if school year specified
 	$gibbonLibraryItemID=$_GET["gibbonLibraryItemID"];
 	if ($gibbonLibraryItemID=="") {

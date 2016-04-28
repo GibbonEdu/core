@@ -51,7 +51,6 @@ if ($paid!="Y") { //IF PAID IS NOT Y, LET'S REDIRECT TO MAKE PAYMENT
 
 	//Check variables
 	if ($gibbonFinanceInvoiceID=="" OR $key=="") {
-		//Fail 3
 		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
@@ -65,14 +64,12 @@ if ($paid!="Y") { //IF PAID IS NOT Y, LET'S REDIRECT TO MAKE PAYMENT
 			$resultKeyRead->execute($dataKeyRead); 
 		}
 		catch(PDOException $e) { 
-			//Fail 2
 			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
 
 		if ($resultKeyRead->rowCount()!=1) { //If not exists, report error
-			//Fail 2
 			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
@@ -90,8 +87,7 @@ if ($paid!="Y") { //IF PAID IS NOT Y, LET'S REDIRECT TO MAKE PAYMENT
 			}
 			catch(PDOException $e) { 
 				$feeOK=FALSE ;
-				//Fail 2
-				$URL.="&return=error2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
@@ -119,21 +115,18 @@ if ($paid!="Y") { //IF PAID IS NOT Y, LET'S REDIRECT TO MAKE PAYMENT
 							header("Location: {$URL}");
 						}
 						else {
-							//Fail 2
 							$URL.="&return=error2" ;
 							header("Location: {$URL}");
 							exit() ;
 						}
 					}
 					else {
-						//Fail 2
 						$URL.="&return=error2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
 				}
 				else {
-					//Fail 2
 					$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ;
@@ -188,8 +181,7 @@ else { //IF PAID IS Y WE ARE JUST RETURNING TO FINALISE PAYMENT AND RECORD OF PA
 	
 	//Check return values to see if we can proceed
 	if ($paymentToken=="" OR $feeTotal=="" OR $gibbonFinanceInvoiceID=="" OR $key=="" OR $gibbonFinanceInvoiceeID=="" OR $invoiceTo="" OR $gibbonSchoolYearID=="") {
-		//Success 2
-		$URL.="&addReturn=success2&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&key=$key" ;
+		//Success $URL.="&addReturn=success2&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&key=$key" ;
 		header("Location: {$URL}");
 		exit() ;
 	}
@@ -228,7 +220,6 @@ else { //IF PAID IS Y WE ARE JUST RETURNING TO FINALISE PAYMENT AND RECORD OF PA
 			}
 			
 			if ($updateFail==true) {
-				//Success 3
 				$URL.="&addReturn=success3&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&key=$key" ;
 				header("Location: {$URL}");
 				exit ;
@@ -337,7 +328,6 @@ else { //IF PAID IS Y WE ARE JUST RETURNING TO FINALISE PAYMENT AND RECORD OF PA
 				$mail->Send() ;
 			}
 			
-			//Success 1
 			$URL.="&return=success1&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&key=$key" ;
 			header("Location: {$URL}");
 		}

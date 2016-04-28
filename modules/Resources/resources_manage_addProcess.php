@@ -33,21 +33,18 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 $time=time() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Resources/resources_manage_add.php")==FALSE) {
-	//Fail 0
-	$URL.="&addReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
 	if (empty($_POST)) {
-		//Fail 5
-		$URL.="&addReturn=fail5" ;
+		$URL.="&return=warning1" ;
 		header("Location: {$URL}");
 	}
 	else {
 		$highestAction=getHighestGroupedAction($guid, $_POST["address"], $connection2) ;
 		if ($highestAction==FALSE) {
-			//Fail 0
-			$URL.="&updateReturn=fail0" ;
+			$URL.="&return=error0" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -78,8 +75,7 @@ else {
 			$description=$_POST["description"] ; 
 				
 			if (($type!="File" AND $type!="HTML" AND $type!="Link") OR is_null($content) OR $name=="" OR $category=="" OR $tags=="") {
-				//Fail 3
-				$URL.="&addReturn=fail3" ;
+					$URL.="&return=error1" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -101,8 +97,7 @@ else {
 							$count++ ;
 						}
 						if (!(move_uploaded_file($_FILES["file"]["tmp_name"],$path . "/" . $attachment))) {
-							//Fail 5
-							$URL.="&addReturn=fail5" ;
+							$URL.="&return=warning1" ;
 							header("Location: {$URL}");
 						}
 					}
@@ -115,8 +110,7 @@ else {
 					$result=$connection2->query($sql);   
 				}
 				catch(PDOException $e) { 
-					//Fail 2
-					$URL.="&addReturn=fail2" ;
+							$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}		
@@ -171,8 +165,7 @@ else {
 					$result=$connection2->query($sql);   
 				}
 				catch(PDOException $e) { 
-					//Fail 2
-					$URL.="&addReturn=fail2" ;
+					$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}		
@@ -185,19 +178,17 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-					//Fail 2
-					$URL.="&addReturn=fail2" ;
+					$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
 				
 				if ($partialFail==TRUE) {
-					$URL.="&addReturn=fail6" ;
+					$URL.="&return=warning1" ;
 					header("Location: {$URL}");
 				}
 				else {
-					//Success 0
-					$URL.="&addReturn=success0" ;
+					$URL.="&return=success0" ;
 					header("Location: {$URL}");
 				}
 			}

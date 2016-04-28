@@ -416,6 +416,10 @@ else {
 							print "<div id='content'>" ;
 						}
 						
+						if ($_SESSION[$guid]["address"]=="") {
+							if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
+						}
+						
 						//Show index page Content
 							if ($_SESSION[$guid]["address"]=="") {
 								//Welcome message

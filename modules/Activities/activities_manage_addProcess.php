@@ -32,7 +32,6 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/activities_manage_add.php&search=" . $_GET["search"] ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Activities/activities_manage_add.php")==FALSE) {
-	//Fail 0
 	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
@@ -82,7 +81,6 @@ else {
 
 	
 	if ($dateType=="" OR $name=="" OR $provider=="" OR $active=="" OR $registration=="" OR $maxParticipants=="" OR ($paymentOn AND $payment=="") OR ($dateType=="Date" AND ($listingStart=="" OR $listingEnd=="" OR $programStart=="" OR $programEnd==""))) {
-		//Fail 3
 		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
@@ -106,7 +104,6 @@ else {
 			$result->execute($data); 
 		}
 		catch(PDOException $e) { 
-			//Fail 2
 			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ; 
@@ -192,12 +189,10 @@ else {
 		
 		
 		if ($partialFail==TRUE) {
-			//Fail 5
 			$URL.="&return=warning1" ;
 			header("Location: {$URL}");
 		}
 		else {
-			//Success 0
 			$URL.="&return=success0" ;
 			header("Location: {$URL}");
 		}

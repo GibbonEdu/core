@@ -34,40 +34,22 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Update') . "</div>" ;
 	print "</div>" ;
 	
-	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-	$updateReturnMessage="" ;
-	$class="error" ;
-	if (!($updateReturn=="")) {
-		if ($updateReturn=="fail0") {
-			$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
+	$return=NULL ;
+	if (isset($_GET["return"])) {
+		$return=$_GET["return"] ;
+	}
+	$returns=array() ;
+	$returns["warning1"] = __($guid, "Some aspects of your request failed, but others were successful. The elements that failed are shown below:") ;
+	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, $returns); }
+	
+	if (isset($_SESSION[$guid]["systemUpdateError"])) {
+		if ($_SESSION[$guid]["systemUpdateError"]!="") {
+			print "<div class='error'>" ;
+				print __($guid, "The following SQL statements caused errors:") . " " . $_SESSION[$guid]["systemUpdateError"] ;
+			print "</div>" ;
 		}
-		else if ($updateReturn=="fail1") {
-			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($updateReturn=="fail2") {
-			$updateReturnMessage=__($guid, "One or more of the fields in your request failed due to a database error.") ;	
-		}
-		else if ($updateReturn=="fail3") {
-			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($updateReturn=="fail5") {
-			$updateReturnMessage=__($guid, "Some aspects of your request failed, but others were successful. The elements that failed are shown below:") ;	
-		}
-		else if ($updateReturn=="success0") {
-			$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $updateReturnMessage ;
-			if (isset($_SESSION[$guid]["systemUpdateError"])) {
-				if ($_SESSION[$guid]["systemUpdateError"]!="") {
-					print "<br/><br/>" ;
-					print __($guid, "The following SQL statements caused errors:") . " " . $_SESSION[$guid]["systemUpdateError"] ;
-				}
-				$_SESSION[$guid]["systemUpdateError"]=NULL ;
-			}
-		print "</div>" ;
-	} 
+		$_SESSION[$guid]["systemUpdateError"]=NULL ;
+	}
 	
 	getSystemSettings($guid, $connection2) ;
 	
@@ -83,7 +65,7 @@ else {
 		//Check for new version of Gibbon
 		print getCurrentVersion($guid, $connection2, $version) ;
 	
-		if ($updateReturn=="success0") {
+		if ($return=="success0") {
 			print "<p>" ;
 				print "<b>" . __($guid, 'You seem to be all up to date, good work buddy!') . "</b>" ;
 			print "</p>" ;
@@ -157,7 +139,7 @@ else {
 			print __($guid, 'Your system is set up to run Cutting Edge code, which may or may not be as reliable as regular release code. Backup before installing, and avoid using cutting edge in production.') ;
 		print "</div>" ;
 		
-		if ($updateReturn=="success0") {
+		if ($return=="success0") {
 			print "<p>" ;
 				print "<b>" . __($guid, 'You seem to be all up to date, good work buddy!') . "</b>" ;
 			print "</p>" ;

@@ -34,8 +34,7 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/System Admin/modul
 $_SESSION[$guid]["moduleInstallError"]="" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/System Admin/module_manage.php")==FALSE) {
-	//Fail 0
-	$URL.="&addReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -45,21 +44,18 @@ else {
 	}
 	
 	if ($moduleName==NULL OR $moduleName=="") {
-		//Fail 3
-		$URL.="&addReturn=fail3" ;
+		$URL.="&return=error5" ;
 		header("Location: {$URL}");
 	}
 	else {
 		if (!(include $_SESSION[$guid]["absolutePath"] . "/modules/$moduleName/manifest.php")) {
-			//Fail 3
-			$URL.="&addReturn=fail3" ;
+			$URL.="&return=error5" ;
 			header("Location: {$URL}");
 		}
 		else {
 			//Validate Inputs
 			if ($name=="" OR $description=="" OR $type=="" OR $type!="Additional" OR $version=="" ) {
-				//Fail 3
-				$URL.="&addReturn=fail3" ;
+					$URL.="&return=error1" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -69,8 +65,7 @@ else {
 					$result=$connection2->query($sql);   
 				}
 				catch(PDOException $e) { 
-					//Fail 2
-					$URL.="&addReturn=fail2" ;
+							$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
@@ -83,15 +78,13 @@ else {
 					$resultModule->execute($dataModule);
 				}
 				catch(PDOException $e) { 
-					//Fail 2
-					$URL.="&addReturn=fail2" ;
+					$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ; 
 				}
 
 				if ($resultModule->rowCount()>0) {
-					//Fail 4
-					$URL.="&addReturn=fail4" ;
+					$URL.="&return=error6" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -103,8 +96,7 @@ else {
 						$resultModule->execute($dataModule);
 					}
 					catch(PDOException $e) { 
-						//Fail 2
-						$URL.="&addReturn=fail2" ;
+						$URL.="&return=error2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
@@ -117,8 +109,7 @@ else {
 						$result=$connection2->query($sql);   
 					}
 					catch(PDOException $e) { 
-						//Fail 5
-						$URL.="&addReturn=fail5" ;
+						$URL.="&return=warning1" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
@@ -133,7 +124,7 @@ else {
 								$result=$connection2->query($sql);   
 							}
 							catch(PDOException $e) {
-								$_SESSION[$guid]["moduleInstallError"].=$sql . "<br/><b>" . $e->getMessage() . "</b></br><br/>" ; 
+								$_SESSION[$guid]["moduleInstallError"].=htmlPrep($sqlToken) . "<br/><b>" . $e->getMessage() . "</b><br/><br/>" ; 
 								$partialFail=TRUE ;
 							}
 						}
@@ -148,7 +139,7 @@ else {
 								$result=$connection2->query($sql);   
 							}
 							catch(PDOException $e) {
-								$_SESSION[$guid]["moduleInstallError"].=$sql . "<br/><b>" . $e->getMessage() . "</b></br><br/>" ; 
+								$_SESSION[$guid]["moduleInstallError"].=htmlPrep($sqlToken) . "<br/><b>" . $e->getMessage() . "</b><br/><br/>" ; 
 								$partialFail=TRUE ;
 							}
 						}
@@ -213,8 +204,7 @@ else {
 						$resultActions->execute($dataActions);
 					}
 					catch(PDOException $e) { 
-						//Fail 5
-						$URL.="&addReturn=fail5" ;
+						$URL.="&return=warning1" ;
 						header("Location: {$URL}");
 						exit() ; 
 					}
@@ -290,7 +280,8 @@ else {
 								$result=$connection2->query($sql);   
 							}
 							catch(PDOException $e) { 
-								$_SESSION[$guid]["moduleInstallError"].=$sql . "<br/><b>" . $e->getMessage() . "</b></br><br/>" ; 
+								
+								$_SESSION[$guid]["moduleInstallError"].=htmlPrep($sqlToken) . "<br/><b>" . $e->getMessage() . "</b><br/><br/>" ; 
 								$partialFail=TRUE ;
 							}
 						}
@@ -298,8 +289,7 @@ else {
 
 					//The reckoning!
 					if ($partialFail==TRUE) {
-						//Fail 5
-						$URL.="&addReturn=fail5" ;
+						$URL.="&return=warning1" ;
 						header("Location: {$URL}");
 					}
 					else {
@@ -311,8 +301,7 @@ else {
 							$result->execute($data);
 						}
 						catch(PDOException $e) { 
-							//Fail 6 
-							$URL.="&addReturn=fail6" ;
+							$URL.="&return=warning2" ;
 							header("Location: {$URL}");
 							exit() ;
 						}
@@ -322,8 +311,7 @@ else {
 						$mainMenu->setMenu() ;
 			
 						//We made it!
-						//Success 0
-						$URL.="&addReturn=success0" ;
+						$URL.="&return=success0" ;
 						header("Location: {$URL}");
 					}
 				}

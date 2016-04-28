@@ -34,33 +34,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/library_manage_catalog.php'>" . __($guid, 'Manage Catalog') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Add Item') . "</div>" ;
 	print "</div>" ;
 	
-	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
-	$addReturnMessage="" ;
-	$class="error" ;
-	if (!($addReturn=="")) {
-		if ($addReturn=="fail0") {
-			$addReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-		}
-		else if ($addReturn=="fail2") {
-			$addReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-		}
-		else if ($addReturn=="fail3") {
-			$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($addReturn=="fail4") {
-			$addReturnMessage=__($guid, "Your request failed because some inputs did not meet a requirement for uniqueness.") ;	
-		}
-		else if ($addReturn=="fail5") {
-			$addReturnMessage=__($guid, "Your request was successful, but some data was not properly saved.") ;	
-		}
-		else if ($addReturn=="success0") {
-			$addReturnMessage=__($guid, "Your request was completed successfully. You can now add another record if you wish.") ;	
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $addReturnMessage;
-		print "</div>" ;
-	} 
+	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
 	
 	if ($_GET["name"]!="" OR $_GET["gibbonLibraryTypeID"]!="" OR $_GET["gibbonSpaceID"]!="" OR $_GET["status"]!="" OR $_GET["gibbonPersonIDOwnership"]!="" OR $_GET["typeSpecificFields"]!="") {
 		print "<div class='linkTop'>" ;
@@ -114,7 +88,7 @@ else {
 					<b><?php print __($guid, 'Type') ?> *</b><br/>
 				</td>
 				<td class="right">
-					<select name="type" id="type" class='type' class="standardWidth">
+					<select name="type" id="type" class='type standardWidth'>
 						<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
 						<?php
 						try {
@@ -263,7 +237,7 @@ else {
 					<span class="emphasis small"><?php print __($guid, '240px x 240px or smaller.') ?></span>
 				</td>
 				<td class="right">
-					<select name="imageType" id="imageType" class='imageType' class="standardWidth">
+					<select name="imageType" id="imageType" class='imageType standardWidth'>
 						<option value=""></option>
 						<option value="File" /> <?php print __($guid, 'File') ?>
 						<option value="Link" /> <?php print __($guid, 'Link') ?>
@@ -357,7 +331,7 @@ else {
 					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
-					<select name="ownershipType" id="ownershipType" class='ownershipType' class="standardWidth">
+					<select name="ownershipType" id="ownershipType" class='ownershipType standardWidth'>
 						<option value=""></option>
 						<option value="School" /> <?php print __($guid, 'School') ?>
 						<option value="Individual" /> <?php print __($guid, 'Individual') ?>
@@ -457,7 +431,7 @@ else {
 					<span class="emphasis small"><?php print __($guid, 'Is item available for loan?') ?></span>
 				</td>
 				<td class="right">
-					<select name="borrowable" id="borrowable" class="standardWidth">
+					<select name="borrowable" id="borrowable standardWidth">
 						<option value="Y" /> <?php print __($guid, 'Yes') ?>
 						<option value="N" /> <?php print __($guid, 'No') ?>
 					</select>

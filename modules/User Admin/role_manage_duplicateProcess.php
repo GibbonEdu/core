@@ -36,8 +36,7 @@ $gibbonRoleID=$_GET["gibbonRoleID"] ;
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/role_manage.php&gibbonRoleID=$gibbonRoleID" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/role_manage_duplicate.php")==FALSE) {
-	//Fail 0
-	$URL.="&duplicateReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -47,8 +46,7 @@ else {
 	$nameShort=$_POST["nameShort"] ;
 	
 	if ($gibbonRoleID=="" OR $name=="" OR $nameShort=="") {
-		//Fail 3
-		$URL.="&duplicateReturn=fail3" ;
+		$URL.="&return=error3" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -58,8 +56,7 @@ else {
 			$result=$connection2->query($sql);   
 		}
 		catch(PDOException $e) { 
-			//Fail 2
-			$URL.="&duplicateReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}			
@@ -70,8 +67,7 @@ else {
 			$resultAI=$connection2->query($sqlAI);   
 		}
 		catch(PDOException $e) { 
-			//Fail 2
-			$URL.="&duplicateReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}			
@@ -81,8 +77,7 @@ else {
 		$partialFail=FALSE ; 
 		
 		if ($AI=="") {
-			//Fail 2
-			$URL.="&duplicateReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -94,15 +89,13 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-				//Fail 2
-				$URL.="&duplicateReturn=fail2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
 			
 			if ($result->rowCount()!=1) {
-				//Fail 2
-				$URL.="&duplicateReturn=fail2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -114,8 +107,7 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-					//Fail 2
-					$URL.="&duplicateReturn=fail2" ;
+							$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
@@ -154,13 +146,11 @@ else {
 				catch(PDOException $e) { }	
 				
 				if ($partialFail==TRUE) {
-					//Fail 6
 					$URL.="&duplicateReturn=fail6" ;
 					header("Location: {$URL}");
 				}
 				else {
-					//Success 0
-					$URL.="&duplicateReturn=success0" ;
+							$URL.="&return=success0" ;
 					header("Location: {$URL}");
 				}
 			}

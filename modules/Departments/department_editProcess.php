@@ -36,7 +36,6 @@ $gibbonDepartmentID=$_GET["gibbonDepartmentID"] ;
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["address"]) . "/department_edit.php&gibbonDepartmentID=$gibbonDepartmentID" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Departments/department_edit.php")==FALSE) {
-	//Fail 0
 	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
@@ -51,7 +50,6 @@ else {
 		$blurb=$_POST["blurb"] ;
 		
 		if ($gibbonDepartmentID=="") {
-			//Fail 3
 			$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
@@ -64,14 +62,12 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-				//Fail 2
-				$URL.="&return=error2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
 			
 			if ($result->rowCount()!=1) {
-				//Fail 4
 				$URL.="&return=error1" ;
 				header("Location: {$URL}");
 			}
@@ -80,8 +76,7 @@ else {
 				$role=getRole($_SESSION[$guid]["gibbonPersonID"], $gibbonDepartmentID, $connection2 ) ;
 				
 				if ($role!="Coordinator" AND $role!="Assistant Coordinator" AND $role!="Teacher (Curriculum)" AND $role!="Director" AND $role!="Manager") {
-					//Fail 0
-					$URL.="&return=error0" ;
+									$URL.="&return=error0" ;
 					header("Location: {$URL}");
 				}
 				else{
@@ -129,8 +124,7 @@ else {
 										}
 										
 										if (!(move_uploaded_file($_FILES["file" . $i]["tmp_name"],$path . "/" . $attachment))) {
-											//Fail 5
-											$URL.="&updateReturn=fail5" ;
+											$URL.="&return=warning1" ;
 											header("Location: {$URL}");
 										}
 										else {
@@ -158,20 +152,17 @@ else {
 						$result->execute($data);
 					}
 					catch(PDOException $e) { 
-						//Fail 2
-						$URL.="&return=error2" ;
+									$URL.="&return=error2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
 					
 					if ($partialFail==true) {
-						//Fail 5
 						$URL.="&return=error3" ;
 						header("Location: {$URL}");
 					}
 					else {
-						//Success 0
-						$URL.="&return=success0" ;
+									$URL.="&return=success0" ;
 						header("Location: {$URL}");
 					}
 				}

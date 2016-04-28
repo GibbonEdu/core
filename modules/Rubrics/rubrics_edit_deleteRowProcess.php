@@ -44,29 +44,25 @@ $gibbonRubricRowID=$_GET["gibbonRubricRowID"] ;
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["address"]) . "/rubrics_edit.php&gibbonRubricID=$gibbonRubricID&sidebar=false&search=$search&filter2=$filter2" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Rubrics/rubrics_edit.php")==FALSE) {
-	//Fail 0
-	$URL.="&rowDeleteReturn=fail0" ;
+	$URL.="&&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["address"], $connection2) ;
 	if ($highestAction==FALSE) {
-		//Fail2
-		$URL.="&rowDeleteReturn=fail2" ;
+		$URL.="&&return=error2" ;
 		header("Location: {$URL}");
 	}
 	else {
 		if ($highestAction!="Manage Rubrics_viewEditAll" AND $highestAction!="Manage Rubrics_viewAllEditLearningArea") {
-			//Fail 0
-			$URL.="&rowDeleteReturn=fail0" ;
+					$URL.="&&return=error0" ;
 			header("Location: {$URL}");
 		}
 		else {
 			//Proceed!
 			//Check if school year specified
 			if ($gibbonRubricID=="" OR $gibbonRubricRowID=="") {
-				//Fail1
-				$URL.="&rowDeleteReturn=fail1" ;
+						$URL.="&&return=error1" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -83,15 +79,13 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-					//Fail2
-					$URL.="&columnDeleteReturn=fail2" ;
+							$URL.="&columnDeleteReturn=fail2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
 				
 				if ($result->rowCount()!=1) {
-					//Fail 2
-					$URL.="&rowDeleteReturn=fail2" ;
+							$URL.="&&return=error2" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -103,15 +97,13 @@ else {
 						$resultRow->execute($dataRow);
 					}
 					catch(PDOException $e) { 
-						//Fail2
-						$URL.="&rowDeleteReturn=fail2" ;
+									$URL.="&&return=error2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
 					
 					if ($resultRow->rowCount()!=1) {
-						//Fail 2
-						$URL.="&rowDeleteReturn=fail2" ;
+						$URL.="&&return=error2" ;
 						header("Location: {$URL}");
 					}
 					else {
@@ -123,8 +115,7 @@ else {
 							$result->execute($data);
 						}
 						catch(PDOException $e) { 
-							//Fail 2
-							$URL.="&rowDeleteReturn=fail2" ;
+							$URL.="&&return=error2" ;
 							header("Location: {$URL}");
 							exit() ;
 						}
@@ -137,8 +128,7 @@ else {
 						}
 						catch(PDOException $e) { }
 						
-						//Success 0
-						$URL.="&rowDeleteReturn=success0" ;
+						$URL.="&return=success0" ;
 						header("Location: {$URL}");
 					}
 				}

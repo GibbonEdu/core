@@ -40,16 +40,14 @@ else {
 	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/studentEnrolment_manage_edit_edit.php&gibbonCourseID=$gibbonCourseID&gibbonPersonID=$gibbonPersonID&gibbonCourseClassID=$gibbonCourseClassID" ;
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Timetable/studentEnrolment_manage_edit_edit.php")==FALSE) {
-		//Fail 0
-		$URL.="&updateReturn=fail0" ;
+			$URL.="&return=error0" ;
 		header("Location: {$URL}");
 	}
 	else {
 		//Proceed!
 		//Check if person specified
 		if ($gibbonPersonID=="") {
-			//Fail1
-			$URL.="&updateReturn=fail1" ;
+				$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -60,15 +58,13 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-				//Fail2
-				$URL.="&updateReturn=fail2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
 			
 			if ($result->rowCount()!=1) {
-				//Fail 2
-				$URL.="&updateReturn=fail2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -76,8 +72,7 @@ else {
 				$role=$_POST["role"] ;
 				
 				if ($role=="") {
-					//Fail 3
-					$URL.="&updateReturn=fail3" ;
+							$URL.="&return=error3" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -89,14 +84,12 @@ else {
 						$result->execute($data);
 					}
 					catch(PDOException $e) { 
-						//Fail 2
-						$URL.="&updateReturn=fail2" ;
+									$URL.="&return=error2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
 					
-					//Success 0
-					$URL.="&updateReturn=success0" ;
+							$URL.="&return=success0" ;
 					header("Location: {$URL}");
 				}
 			}

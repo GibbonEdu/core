@@ -46,29 +46,25 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 $URLSuccess=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/rubrics_edit.php&gibbonRubricID=$gibbonRubricID&sidebar=false&search=$search&filter2=$filter2" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Rubrics/rubrics_edit.php")==FALSE) {
-	//Fail 0
-	$URL.="&updateReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, $_POST["address"], $connection2) ;
 	if ($highestAction==FALSE) {
-		//Fail2
-		$URL.="&updateReturn=fail2" ;
+		$URL.="&return=error2" ;
 		header("Location: {$URL}");
 	}
 	else {
 		if ($highestAction!="Manage Rubrics_viewEditAll" AND $highestAction!="Manage Rubrics_viewAllEditLearningArea") {
-			//Fail 0
-			$URL.="&updateReturn=fail0" ;
+					$URL.="&return=error0" ;
 			header("Location: {$URL}");
 		}
 		else {
 			//Proceed!
 			//Check if school year specified
 			if ($gibbonRubricID=="") {
-				//Fail1
-				$URL.="&updateReturn=fail1" ;
+						$URL.="&return=error1" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -85,15 +81,13 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-					//Fail2
-					$URL.="&columnDeleteReturn=fail2" ;
+					$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
 				
 				if ($result->rowCount()!=1) {
-					//Fail 2
-					$URL.="&updateReturn=fail2" ;
+					$URL.="&return=error2" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -176,13 +170,11 @@ else {
 					
 					
 					if ($partialFail) {
-						//Fail 2
-						$URL.="&updateReturn=fail4" ;
+									$URL.="&return=warning1" ;
 						header("Location: {$URL}");
 					}
 					else {
-						//Success 0
-						$URL=$URLSuccess . "&updateReturn=success0#rubricDesign" ;
+									$URL=$URLSuccess . "&return=success0#rubricDesign" ;
 						header("Location: {$URL}");
 					}
 				}

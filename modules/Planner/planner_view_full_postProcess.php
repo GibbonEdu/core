@@ -37,23 +37,20 @@ $gibbonPlannerEntryID=$_POST["gibbonPlannerEntryID"] ;
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&search=" . $_POST["search"] . $_POST["params"] ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Planner/planner_view_full.php")==FALSE) {
-	//Fail 0
 	$URL.="&postReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, $_POST["address"], $connection2) ;
 	if ($highestAction==FALSE) {
-		//Fail 0
-		$URL.="&updateReturn=fail0$params" ;
+			$URL.="&return=error0$params" ;
 		header("Location: {$URL}");
 	}
 	else {
 		//Proceed!
 		//Check if planner specified
 		if ($gibbonPlannerEntryID=="") {
-			//Fail1
-			$URL.="&postReturn=fail1" ;
+				$URL.="&postReturn=fail1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -64,15 +61,13 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-				//Fail2
-				$URL.="&postReturn=fail2" ;
+					$URL.="&postReturn=fail2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
 
 			if ($result->rowCount()!=1) {
-				//Fail 2
-				$URL.="&postReturn=fail2" ;
+					$URL.="&postReturn=fail2" ;
 				header("Location: {$URL}");
 			}
 			else {	
@@ -94,8 +89,7 @@ else {
 					$resultInsert->execute($dataInsert);
 				}
 				catch(PDOException $e) { 
-					//Fail2
-					$URL.="&postReturn=fail2" ;
+							$URL.="&postReturn=fail2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
@@ -129,8 +123,7 @@ else {
 					setNotification($connection2, $guid, $replyToID, $notificationText, "Planner", "/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=date&date=" . $row["date"] . "&gibbonCourseClassID=&search=#chat") ;
 				}
 						
-				//Success 0
-				$URL.="&postReturn=success0" ;
+					$URL.="&postReturn=success0" ;
 				header("Location: {$URL}");	
 			}
 		}

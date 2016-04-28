@@ -39,8 +39,7 @@ else {
 	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/activities_manage_enrolment_edit.php&gibbonPersonID=$gibbonPersonID&gibbonActivityID=$gibbonActivityID&search=" . $_GET["search"] ;
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Activities/activities_manage_enrolment_edit.php")==FALSE) {
-		//Fail 0
-		$URL.="&return=error0" ;
+			$URL.="&return=error0" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -48,8 +47,7 @@ else {
 		//Check if school year specified
 		$status=$_POST["status"] ;
 		if ($status=="") {
-			//Fail1
-			$URL.="&return=error1" ;
+				$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -60,15 +58,13 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-				//Fail2
-				$URL.="&return=error2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
 		
 			if ($result->rowCount()!=1) {
-				//Fail 2
-				$URL.="&return=error2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -80,13 +76,11 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-					//Fail 2
-					$URL.="&return=error2" ;
+							$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
 
-				//Success 0
 				$URL.="&return=success0" ;
 				header("Location: {$URL}");
 			}

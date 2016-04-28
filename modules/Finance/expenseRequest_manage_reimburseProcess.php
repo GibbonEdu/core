@@ -47,14 +47,12 @@ else {
 	$URLSuccess=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/expenseRequest_manage.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2&status2=$status2" ;
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Finance/expenseRequest_manage_reimburse.php")==FALSE) {
-		//Fail 0
-		$URL.="&editReturn=fail0" ;
+			$URL.="&return=error0" ;
 		header("Location: {$URL}");
 	}
 	else {
 		if ($gibbonFinanceExpenseID=="" OR $status=="" OR $status!="Paid" OR $_FILES['file']["tmp_name"]=="") {
-			//Fail 0
-			$URL.="&editReturn=fail0" ;
+					$URL.="&return=error0" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -63,8 +61,7 @@ else {
 			$budgetLevelExpenseApproval=getSettingByScope($connection2, "Finance", "budgetLevelExpenseApproval") ;
 			$expenseRequestTemplate=getSettingByScope($connection2, "Finance", "expenseRequestTemplate") ;
 			if ($expenseApprovalType=="" OR $budgetLevelExpenseApproval=="") {
-				//Fail 0
-				$URL.="&editReturn=fail0" ;
+							$URL.="&return=error0" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -78,8 +75,7 @@ else {
 				catch(PDOException $e) { print $e->getMessage() ; }
 	
 				if ($result->rowCount()<1) {
-					//Fail 0
-					$URL.="&editReturn=fail0" ;
+									$URL.="&return=error0" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -96,15 +92,13 @@ else {
 						$result->execute($data);
 					}
 					catch(PDOException $e) { 
-						//Fail2
-						$URL.="&editReturn=fail2" ;
+									$URL.="&return=error2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
 
 					if ($result->rowCount()!=1) {
-						//Fail 0
-						$URL.="&editReturn=fail0" ;
+											$URL.="&return=error0" ;
 						header("Location: {$URL}");
 					}
 					else {
@@ -136,8 +130,7 @@ else {
 						}
 		
 						if (!(move_uploaded_file($_FILES["file"]["tmp_name"],$path . "/" . $attachment))) {
-							//Fail 5
-							$URL.="&editReturn=fail5" ;
+							$URL.="&return=error5" ;
 							header("Location: {$URL}");
 							exit() ;
 						}
@@ -150,8 +143,7 @@ else {
 							$result->execute($data);
 						}
 						catch(PDOException $e) { 
-							//Fail2
-							$URL.="&editReturn=fail2" ;
+											$URL.="&return=error2" ;
 							header("Location: {$URL}");
 							exit() ;
 						}
@@ -171,8 +163,7 @@ else {
 							$result->execute($data);
 						}
 						catch(PDOException $e) { 
-							//Fail2
-							$URL.="&editReturn=fail2" ;
+							$URL.="&return=error2" ;
 							header("Location: {$URL}");
 							exit() ;
 						}
@@ -185,14 +176,12 @@ else {
 							$result->execute($data);
 						}
 						catch(PDOException $e) { 
-							//Fail2
-							$URL.="&editReturn=fail2" ;
+							$URL.="&return=error2" ;
 							header("Location: {$URL}");
 							exit() ;
 						}
 						
-						//Success 0
-						$URLSuccess.="&editReturn=success0" ;
+						$URLSuccess.="&return=success0" ;
 						header("Location: {$URLSuccess}");
 							
 					}

@@ -34,53 +34,9 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage.php'>" . __($guid, 'Manage Users') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Edit User') . "</div>" ;
 	print "</div>" ;
 	
-	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-	$updateReturnMessage="" ;
-	$class="error" ;
-	if (!($updateReturn=="")) {
-		if ($updateReturn=="fail0") {
-			$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-		}
-		else if ($updateReturn=="fail1") {
-			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($updateReturn=="fail2") {
-			$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-		}
-		else if ($updateReturn=="fail3") {
-			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($updateReturn=="fail4") {
-			$updateReturnMessage=__($guid, "Your request failed because some inputs did not meet a requirement for uniqueness.") ;	
-		}
-		else if ($updateReturn=="fail5") {
-			$updateReturnMessage=__($guid, "Your request was successful, but some data was not properly saved.") ;
-		}
-		else if ($updateReturn=="success0") {
-			$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
-			$class="success" ;
-		}
-		else if ($updateReturn=="success1") {
-			$updateReturnMessage=__($guid, "Your request was completed successfully, but one or more images were the wrong size and so were not saved. You can now add another record if you wish.") ;	
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $updateReturnMessage;
-		print "</div>" ;
-	} 
-	
-	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-	$deleteReturnMessage="" ;
-	$class="error" ;
-	if (!($deleteReturn=="")) {
-		if ($deleteReturn=="success0") {
-			$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;		
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $deleteReturnMessage;
-		print "</div>" ;
-	} 
+	$returns=array() ;
+	$returns["warning1"] = __($guid, "Your request was completed successfully, but one or more images were the wrong size and so were not saved.") ;	
+	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, $returns); }
 	
 	//Check if school year specified
 	$gibbonPersonID=$_GET["gibbonPersonID"] ;

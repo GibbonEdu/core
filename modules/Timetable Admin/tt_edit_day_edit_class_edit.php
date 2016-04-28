@@ -84,30 +84,8 @@ else {
 				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > ... > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . __($guid, 'Manage Timetables') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt_edit.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . __($guid, 'Edit Timetable') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt_edit_day_edit.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID'>" . __($guid, 'Edit Timetable Day') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt_edit_day_edit_class.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID'>" . __($guid, 'Classes in Period') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Edit Class in Period') . "</div>" ; 
 				print "</div>" ;
 				
-				if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-				$updateReturnMessage="" ;
-				$classOut="error" ;
-				if (!($updateReturn=="")) {
-					if ($updateReturn=="fail0") {
-						$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-					}
-					else if ($updateReturn=="fail1") {
-						$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-					}
-					else if ($updateReturn=="fail2") {
-						$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-					}
-					else if ($updateReturn=="fail3") {
-						$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-					}
-					else if ($updateReturn=="success0") {
-						$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
-						$classOut="success" ;
-					}
-					print "<div class='$classOut'>" ;
-						print $updateReturnMessage;
-					print "</div>" ;
-				} 
+				if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
+				
 				?>
 				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/tt_edit_day_edit_class_editProcess.php?&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClassID=$gibbonTTDayRowClassID&gibbonCourseClassID=$gibbonCourseClassID" ?>">
 					<table class='smallIntBorder fullWidth' cellspacing='0'>	

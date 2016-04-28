@@ -57,33 +57,8 @@ else {
 			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . __($guid, 'Manage Timetables') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt_edit.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . __($guid, 'Edit Timetable') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Add Timetable Day') . "</div>" ; 
 			print "</div>" ;
 			
-			if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
-			$addReturnMessage="" ;
-			$class="error" ;
-			if (!($addReturn=="")) {
-				if ($addReturn=="fail0") {
-					$addReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-				}
-				else if ($addReturn=="fail2") {
-					$addReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-				}
-				else if ($addReturn=="fail3") {
-					$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-				}
-				else if ($addReturn=="fail4") {
-					$addReturnMessage=__($guid, "Your request failed because some inputs did not meet a requirement for uniqueness.") ;	
-				}
-				else if ($addReturn=="fail5") {
-					$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-				}
-				else if ($addReturn=="success0") {
-					$addReturnMessage=__($guid, "Your request was completed successfully.") ;	
-					$class="success" ;
-				}
-				print "<div class='$class'>" ;
-					print $addReturnMessage;
-				print "</div>" ;
-			} 
+			if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
+			
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/tt_edit_day_addProcess.php" ?>">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>	

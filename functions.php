@@ -409,28 +409,6 @@ function getStaffDashboardContents($connection2, $guid, $gibbonPersonID) {
 			$planner.="</div>" ;
 		}
 		else {
-			if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-			$updateReturnMessage="" ;
-			$class="error" ;
-			if (!($updateReturn=="")) {
-				if ($updateReturn=="fail0") {
-					$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-				}
-				else if ($updateReturn=="fail1") {
-					$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-				}
-				else if ($updateReturn=="fail2") {
-					$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-				}
-				else if ($updateReturn=="success0") {
-					$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
-					$class="success" ;
-				}
-				$planner.="<div class='$class'>" ;
-					$planner.=$updateReturnMessage;
-				$planner.="</div>" ;
-			} 
-		
 			$planner.="<div class='linkTop'>" ;
 				$planner.="<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner.php'>" . __($guid, 'View Planner') . "</a>" ;
 			$planner.="</div>" ;
@@ -865,28 +843,6 @@ function getStudentDashboardContents($connection2, $guid, $gibbonPersonID) {
 			$planner.="</div>" ;
 		}
 		else {
-			if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-			$updateReturnMessage="" ;
-			$class="error" ;
-			if (!($updateReturn=="")) {
-				if ($updateReturn=="fail0") {
-					$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-				}
-				else if ($updateReturn=="fail1") {
-					$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-				}
-				else if ($updateReturn=="fail2") {
-					$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-				}
-				else if ($updateReturn=="success0") {
-					$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
-					$class="success" ;
-				}
-				$planner.="<div class='$class'>" ;
-					$planner.=$updateReturnMessage;
-				$planner.="</div>" ;
-			} 
-		
 			$planner.="<div class='linkTop'>" ;
 				$planner.="<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner.php'>" . __($guid, 'View Planner') . "</a>" ;
 			$planner.="</div>" ;
@@ -1118,28 +1074,6 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID) {
 
 	//PREPARE PLANNER SUMMARY
 	$plannerOutput="<span style='font-size: 85%; font-weight: bold'>" . __($guid, 'Today\'s Classes') . "</span> . <span style='font-size: 70%'><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner.php&search=" . $gibbonPersonID . "'>" . __($guid, 'View Planner') . "</a></span>" ;
-
-	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-	$updateReturnMessage="" ;
-	$class="error" ;
-	if (!($updateReturn=="")) {
-		if ($updateReturn=="fail0") {
-			$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;
-		}
-		else if ($updateReturn=="fail1") {
-			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;
-		}
-		else if ($updateReturn=="fail2") {
-			$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;
-		}
-		else if ($updateReturn=="success0") {
-			$updateReturnMessage=__($guid, "Your request was completed successfully.") ;
-			$class="success" ;
-		}
-		$plannerOutput.="<div class='$class'>" ;
-			$plannerOutput.=$updateReturnMessage;
-		$plannerOutput.="</div>" ;
-	}
 
 	$classes=FALSE ;
 	$date=date("Y-m-d") ;
@@ -2300,44 +2234,6 @@ function getParentPhotoUploader($connection2, $guid) {
 			$output.="Profile Photo" ;
 		$output.="</h2>" ;
 
-		if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-		$deleteReturnMessage="" ;
-		$class="error" ;
-		if (!($deleteReturn=="")) {
-			if ($deleteReturn=="fail1") {
-				$deleteReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;
-			}
-			else if ($deleteReturn=="fail2") {
-				$deleteReturnMessage=__($guid, "Your request failed due to a database error.") ;
-			}
-			else if ($deleteReturn=="success0") {
-				$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;
-				$class="success" ;
-			}
-			$output.="<div class='$class'>" ;
-				$output.=$deleteReturnMessage;
-			$output.="</div>" ;
-		}
-
-		if (isset($_GET["uploadReturn"])) { $uploadReturn=$_GET["uploadReturn"] ; } else { $uploadReturn="" ; }
-		$uploadReturnMessage="" ;
-		$class="error" ;
-		if (!($uploadReturn=="")) {
-			if ($uploadReturn=="fail1") {
-				$uploadReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;
-			}
-			else if ($uploadReturn=="fail2") {
-				$uploadReturnMessage=__($guid, "Your request failed due to a database error.") ;
-			}
-			else if ($uploadReturn=="success0") {
-				$uploadReturnMessage=__($guid, "Your request was completed successfully.") ;
-				$class="success" ;
-			}
-			$output.="<div class='$class'>" ;
-				$output.=$uploadReturnMessage;
-			$output.="</div>" ;
-		}
-
 		if ($_SESSION[$guid]["image_240"]=="") { //No photo, so show uploader
 			$output.="<p>" ;
 				$output.=__($guid, "Please upload a passport photo to use as a profile picture.") . " " . __($guid, '240px by 320px') . "." ;
@@ -3432,30 +3328,6 @@ function sidebar($connection2, $guid) {
 			print "<h2 style='margin-bottom: 10px' class='sidebar'>" ;
 			print __($guid, "Role Switcher") ;
 			print "</h2>" ;
-
-			if (isset($_GET["switchReturn"])) {
-				$switchReturn=$_GET["switchReturn"] ;
-			}
-			else {
-				$switchReturn="" ;
-			}
-			$switchReturnMessage="" ;
-			$class="error" ;
-			if (!($switchReturn=="")) {
-				if ($switchReturn=="fail0") {
-					$switchReturnMessage=__($guid, "Role ID not specified.") ;
-				}
-				else if ($switchReturn=="fail1") {
-					$switchReturnMessage=__($guid, "You do not have access to the specified role.") ;
-				}
-				else if ($switchReturn=="success0") {
-					$switchReturnMessage=__($guid, "Role switched successfully.") ;
-					$class="success" ;
-				}
-				print "<div class='$class'>" ;
-					print $switchReturnMessage;
-				print "</div>" ;
-			}
 
 			print "<p>" ;
 				print __($guid, "You have multiple roles within the system. Use the list below to switch role:") ;
@@ -4877,18 +4749,23 @@ function returnProcess($guid, $return, $editLink = null, $customReturns=null) {
 		$class="error";
 		$returnMessage = "Unknown Return";
 		$returns = array();
-		$returns["success0"] = "Your request was completed successfully. You can now add another record if you wish.";
-		$returns["error0"] = "Your request failed because you do not have access to this action.";
-		$returns["error1"] = "Your request failed because your inputs were invalid.";
-		$returns["error2"] = "Your request failed due to a database error.";
-		$returns["warning0"] = "Your optional extra data failed to save.";
-		$returns["warning1"] = "Your request was successful, but some data was not properly saved.";
+		$returns["success0"] = __($guid, "Your request was completed successfully.");
+		$returns["error0"] = __($guid, "Your request failed because you do not have access to this action.");
+		$returns["error1"] = __($guid, "Your request failed because your inputs were invalid.");
+		$returns["error2"] = __($guid, "Your request failed due to a database error.");
+		$returns["error3"] = __($guid, "Your request failed because some inputs did not meet a requirement for uniqueness.");
+		$returns["error4"] = __($guid, "Your request failed because your passwords did not match.");
+		$returns["error5"] = __($guid, "Your request failed because there are no records to show.");
+		$returns["error6"] = __($guid, "Your request was completed successfully, but one or more images were the wrong size and so were not saved.");
+		$returns["warning0"] = __($guid, "Your optional extra data failed to save.");
+		$returns["warning1"] = __($guid, "Your request was successful, but some data was not properly saved.");
+		$returns["warning2"] = __($guid, "Your request was successful, but some data was not properly deleted.");
 
 		if(isset($customReturns)) {
 			if(is_array($customReturns)) {
 				$customReturnKeys = array_keys($customReturns);
 				foreach($customReturnKeys as $customReturnKey) {
-					$customReturn = "Unknown Return" ;
+					$customReturn = __($guid, "Unknown Return") ;
 					if (isset($customReturns[$customReturnKey])) {
 						$customReturn = $customReturns[$customReturnKey];
 					}
@@ -4907,7 +4784,7 @@ function returnProcess($guid, $return, $editLink = null, $customReturns=null) {
 			}
 		}
 		if($class == "success" && $editLink != null) {
-			$returnMessage .= " You can edit your record <a href='$editLink'>here</a>.";
+			$returnMessage .= " " . sprintf(__($guid, 'You can edit your record %1$shere%2$s.'), "<a href='$editLink'>", "</a>");
 		}
 
 		print "<div class='$class'>" ;

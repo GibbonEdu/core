@@ -46,27 +46,24 @@ else {
 	$URLApprove=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/expenses_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2&status2=$status2" ;
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Finance/expenses_manage_approve.php")==FALSE) {
-		//Fail 0
-		$URL.="&approveReturn=fail0" ;
+		$URL.="&return=error0" ;
 		header("Location: {$URL}");
 	}
 	else {
 		$highestAction=getHighestGroupedAction($guid, $_POST["address"], $connection2) ;
 		if ($highestAction==FALSE) {
-			//Fail 0
-			$URL.="&approveReturn=fail0" ;
+			$URL.="&return=error0" ;
 			header("Location: {$URL}");
 		}
 		else {
 			//Check if params are specified
 			if ($gibbonFinanceExpenseID=="" OR $gibbonFinanceBudgetCycleID=="") {
-				//Fail 0
-				$URL.="&approveReturn=fail0" ;
+				$URL.="&return=error0" ;
 				header("Location: {$URL}");
 			}
 			else {
 				$budgetsAccess=FALSE ;
-				if ($highestAction=="Manage Expenses_all") { //Access to everything {
+				if ($highestAction=="Manage Expenses_all") { //Access to everything 
 					$budgetsAccess=TRUE ;
 				}
 				else {
@@ -80,8 +77,7 @@ else {
 				}
 				
 				if ($budgetsAccess==FALSE) {
-					//Fail 0
-					$URL.="&approveReturn=fail0" ;
+					$URL.="&return=error0" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -90,8 +86,7 @@ else {
 					$budgetLevelExpenseApproval=getSettingByScope($connection2, "Finance", "budgetLevelExpenseApproval") ;
 					$expenseRequestTemplate=getSettingByScope($connection2, "Finance", "expenseRequestTemplate") ;
 					if ($expenseApprovalType=="" OR $budgetLevelExpenseApproval=="") {
-						//Fail 0
-						$URL.="&approveReturn=fail0" ;
+						$URL.="&return=error0" ;
 						header("Location: {$URL}");
 					}
 					else {
@@ -105,8 +100,7 @@ else {
 						catch(PDOException $e) { print $e->getMessage() ; }
 			
 						if ($result->rowCount()<1) {
-							//Fail 0
-							$URL.="&approveReturn=fail0" ;
+							$URL.="&return=error0" ;
 							header("Location: {$URL}");
 						}
 						else {
@@ -135,15 +129,13 @@ else {
 								$result->execute($data);
 							}
 							catch(PDOException $e) { 
-								//Fail2
-								$URL.="&approveReturn=fail2" ;
+													$URL.="&return=error2" ;
 								header("Location: {$URL}");
 								exit() ;
 							}
 		
 							if ($result->rowCount()!=1) {
-								//Fail 0
-								$URL.="&approveReturn=fail0" ;
+															$URL.="&return=error0" ;
 								header("Location: {$URL}");
 							}
 							else {
@@ -168,8 +160,7 @@ else {
 											$approval="Approval - Partial - School" ;
 										}
 										else {
-											//Fail 0
-											$URL.="&approveReturn=fail0" ;
+																					$URL.="&return=error0" ;
 											header("Location: {$URL}");
 											exit() ;
 										}
@@ -178,8 +169,7 @@ else {
 								$comment=$_POST["comment"] ;
 		
 								if ($approval=="") {
-									//Fail 3
-									$URL.="&approveReturn=fail3" ;
+															$URL.="&return=error3" ;
 									header("Location: {$URL}");
 								}
 								else {
@@ -191,8 +181,7 @@ else {
 										$resultBudgetChange->execute($dataBudgetChange);
 									}
 									catch(PDOException $e) { 
-										//Fail2
-										$URL.="&approveReturn=fail2" ;
+										$URL.="&return=error2" ;
 										header("Location: {$URL}");
 										exit() ;
 									}
@@ -209,8 +198,7 @@ else {
 											$result->execute($data);
 										}
 										catch(PDOException $e) { 
-											//Fail2
-											$URL.="&approveReturn=fail2" ;
+											$URL.="&return=error2" ;
 											header("Location: {$URL}");
 											exit() ;
 										}
@@ -223,8 +211,7 @@ else {
 											$result->execute($data);
 										}
 										catch(PDOException $e) { 
-											//Fail2
-											$URL.="&approveReturn=fail2" ;
+											$URL.="&return=error2" ;
 											header("Location: {$URL}");
 											exit() ;
 										}
@@ -233,8 +220,7 @@ else {
 										$notificationText=sprintf(__($guid, 'Your expense request for "%1$s" in budget "%2$s" has been rejected.'), $row["title"], $row["budget"]) ;
 										setNotification($connection2, $guid, $row["gibbonPersonIDCreator"], $notificationText, "Finance", "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=" . $row["gibbonFinanceBudgetID"]) ;
 										
-										//Success 0
-										$URLApprove.="&approveReturn=success0" ;
+										$URLApprove.="&return=success0" ;
 										header("Location: {$URLApprove}");
 									}
 									else if ($approval=="Comment") { //COMMENT!
@@ -246,8 +232,7 @@ else {
 											$result->execute($data);
 										}
 										catch(PDOException $e) { 
-											//Fail2
-											$URL.="&approveReturn=fail2" ;
+											$URL.="&return=error2" ;
 											header("Location: {$URL}");
 											exit() ;
 										}
@@ -256,14 +241,12 @@ else {
 										$notificationText=sprintf(__($guid, 'Someone has commented on your expense request for "%1$s" in budget "%2$s".'), $row["title"], $row["budget"]) ;
 										setNotification($connection2, $guid, $row["gibbonPersonIDCreator"], $notificationText, "Finance", "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=" . $row["gibbonFinanceBudgetID"]) ;
 										
-										//Success 0
-										$URLApprove.="&approveReturn=success0" ;
+										$URLApprove.="&return=success0" ;
 										header("Location: {$URLApprove}");
 									}
 									else { //APPROVE!
 										if (approvalRequired($guid, $_SESSION[$guid]["gibbonPersonID"], $row["gibbonFinanceExpenseID"], $gibbonFinanceBudgetCycleID, $connection2, TRUE)==FALSE) {
-											//Fail 0
-											$URL.="&approveReturn=fail0" ;
+											$URL.="&return=error0" ;
 											header("Location: {$URL}");
 										}
 										else {
@@ -275,8 +258,7 @@ else {
 												$result->execute($data);
 											}
 											catch(PDOException $e) { 
-												//Fail2
-												$URL.="&approveReturn=fail2" ;
+												$URL.="&return=error2" ;
 												header("Location: {$URL}");
 												exit() ;
 											}
@@ -289,8 +271,7 @@ else {
 													$result->execute($data);
 												}
 												catch(PDOException $e) { 
-													//Fail2
-													$URL.="&approveReturn=fail2" ;
+													$URL.="&return=error2" ;
 													header("Location: {$URL}");
 													exit() ;
 												}
@@ -300,14 +281,12 @@ else {
 											$partialFail=FALSE ;
 											$completion=checkLogForApprovalComplete($guid, $gibbonFinanceExpenseID, $connection2) ;
 											if ($completion==FALSE) { //If false
-												//Fail2
-												$URL.="&approveReturn=fail2" ;
+												$URL.="&return=error2" ;
 												header("Location: {$URL}");
 												exit() ;
 											}
 											else if ($completion=="none") { //If none
-												//Fail2
-												$URL.="&approveReturn=fail2" ;
+												$URL.="&return=error2" ;
 												header("Location: {$URL}");
 												exit() ;
 											}
@@ -325,20 +304,17 @@ else {
 													$result->execute($data);
 												}
 												catch(PDOException $e) { 
-													//Fail2
-													$URL.="&approveReturn=fail2" ;
+													$URL.="&return=error2" ;
 													header("Location: {$URL}");
 													exit() ;
 												}
 										
 												if ($partialFail==TRUE) {
-													//Success 1
-													$URLApprove.="&approveReturn=success1" ;
+													$URLApprove.="&return=success1" ;
 													header("Location: {$URLApprove}");
 												}
 												else {
-													//Success 0
-													$URLApprove.="&approveReturn=success0" ;
+													$URLApprove.="&return=success0" ;
 													header("Location: {$URLApprove}");
 												}
 											}
@@ -351,8 +327,7 @@ else {
 													$result->execute($data);
 												}
 												catch(PDOException $e) { 
-													//Fail2
-													$URL.="&approveReturn=fail2" ;
+													$URL.="&return=error2" ;
 													header("Location: {$URL}");
 													exit() ;
 												}
@@ -365,8 +340,7 @@ else {
 													$result->execute($data);
 												}
 												catch(PDOException $e) { 
-													//Fail2
-													$URL.="&approveReturn=fail2" ;
+													$URL.="&return=error2" ;
 													header("Location: {$URL}");
 													exit() ;
 												}
@@ -385,8 +359,7 @@ else {
 												setNotification($connection2, $guid, $row["gibbonPersonIDCreator"], $notificationText, "Finance", "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=" . $row["gibbonFinanceBudgetID"]) ;
 										
 												
-												//Success 0
-												$URLApprove.="&approveReturn=success0" ;
+												$URLApprove.="&return=success0" ;
 												header("Location: {$URLApprove}");
 											}		
 										}

@@ -42,40 +42,12 @@ else {
 	
 	$publicRegistrationMinimumAge=getSettingByScope($connection2, 'User Admin', 'publicRegistrationMinimumAge') ;
 	
-	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
-	$addReturnMessage="" ;
-	$class="error" ;
-	if (!($addReturn=="")) {
-		if ($addReturn=="fail0") {
-			$addReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-		}
-		else if ($addReturn=="fail2") {
-			$addReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-		}
-		else if ($addReturn=="fail3") {
-			$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($addReturn=="fail4") {
-			$addReturnMessage=__($guid, "Your request failed because some inputs did not meet a requirement for uniqueness.") ;	
-		}
-		else if ($addReturn=="fail5") {
-			$addReturnMessage=sprintf(__($guid, 'Your request failed because you do not meet the minimum age for joining this site (%1$s years of age).'), $publicRegistrationMinimumAge) ;	
-		}
-		else if ($addReturn=="fail7") {
-			$addReturnMessage=__($guid, "Your request failed because your password to not meet the minimum requirements for strength.") ;	
-		}
-		else if ($addReturn=="success1") {
-			$addReturnMessage=__($guid, "Your registration was successfully submitted and is now pending approval. Our team will review your registration and be in touch in due course.") ;
-			$class="success" ;
-		}
-		else if ($addReturn=="success0") {
-			$addReturnMessage=__($guid, "Your registration was successfully submitted, and you may now log into the system using your new username and password.") ;
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $addReturnMessage;
-		print "</div>" ;
-	} 
+	$returns=array() ;
+	$returns["fail5"] = sprintf(__($guid, 'Your request failed because you do not meet the minimum age for joining this site (%1$s years of age).'), $publicRegistrationMinimumAge) ;
+	$returns["fail7"] = __($guid, "Your request failed because your password to not meet the minimum requirements for strength.") ;
+	$returns["success1"] = __($guid, "Your registration was successfully submitted and is now pending approval. Our team will review your registration and be in touch in due course.") ;
+	$returns["success0"] = __($guid, "Your registration was successfully submitted, and you may now log into the system using your new username and password.") ;
+	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, $returns); }
 	
 	//Get intro
 	$intro=getSettingByScope($connection2, 'User Admin', 'publicRegistrationIntro') ;
