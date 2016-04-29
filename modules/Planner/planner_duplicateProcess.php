@@ -309,14 +309,14 @@ else {
 						header("Location: {$URL}");
 					}
 					else {
-									if ($gibbonSchoolYearID==$_SESSION[$guid]["gibbonSchoolYearID"]) {
+						if ($gibbonSchoolYearID==$_SESSION[$guid]["gibbonSchoolYearID"]) {
 							$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/planner_edit.php&gibbonPlannerEntryID=$AI" ;
-							$URL.="&return=success0$params" ;
+							$URL.="&return=success1$params" ;
 						}
 						else {
-							$URL.="&return=success0$params" ;
+							$URL.="&return=success1$params" ;
 						}
-						$URL.="&return=success0$params" ;
+						$URL.="&return=success1$params" ;
 						header("Location: {$URL}");
 					}
 				}

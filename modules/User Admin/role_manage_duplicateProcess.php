@@ -146,11 +146,11 @@ else {
 				catch(PDOException $e) { }	
 				
 				if ($partialFail==TRUE) {
-					$URL.="&duplicateReturn=fail6" ;
+					$URL.="&return=error6" ;
 					header("Location: {$URL}");
 				}
 				else {
-							$URL.="&return=success0" ;
+					$URL.="&return=success0" ;
 					header("Location: {$URL}");
 				}
 			}

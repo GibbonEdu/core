@@ -42,26 +42,7 @@ else {
 		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>" . __($guid, 'Unit Planner') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units_edit.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "&gibbonUnitID=" . $_GET["gibbonUnitID"] . "'>" . __($guid, 'Edit Unit') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Copy Unit Forward') . "</div>" ;
 		print "</div>" ;
 		
-		if (isset($_GET["copyForwardReturn"])) { $copyForwardReturn=$_GET["copyForwardReturn"] ; } else { $copyForwardReturn="" ; }
-		$copyForwardReturnMessage="" ;
-		$class="error" ;
-		if (!($copyForwardReturn=="")) {
-			if ($copyForwardReturn=="fail0") {
-				$copyForwardReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-			}
-			else if ($copyForwardReturn=="fail2") {
-				$copyForwardReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-			}
-			else if ($copyForwardReturn=="fail3") {
-				$copyForwardReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-			}
-			else if ($copyForwardReturn=="fail6") {
-				$copyForwardReturnMessage=__($guid, "Your request was successful, but some data was not properly saved.") ;	
-			}
-			print "<div class='$class'>" ;
-				print $copyForwardReturnMessage;
-			print "</div>" ;
-		} 
+		if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
 		
 		//Check if courseschool year specified
 		$gibbonSchoolYearID=$_GET["gibbonSchoolYearID"];

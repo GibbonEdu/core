@@ -257,7 +257,7 @@ else {
 						header("Location: {$URL}");
 					}
 					else {
-									$URLSuccess=$URLSuccess . "&return=success0&gibbonUnitID=$AI" ;
+						$URLSuccess=$URLSuccess . "&return=success3&gibbonUnitID=$AI" ;
 						header("Location: {$URLSuccess}") ;
 					}
 				}

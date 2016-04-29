@@ -263,11 +263,11 @@ else {
 					}
 					
 					if ($partialFail==TRUE) {
-						$URL.="&updateReturn=fail6" ;
+						$URL.="&return=error6" ;
 						header("Location: {$URL}");
 					}
 					else {
-									$URL.="&return=success0" ;
+						$URL.="&return=success0" ;
 						header("Location: {$URL}");
 					}
 				}

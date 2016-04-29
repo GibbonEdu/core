@@ -546,7 +546,7 @@ else {
 				//header("Location: {$URL}");
 			}
 			else {
-				$URL.="&return=fail1" ;
+				$URL.="&return=error1" ;
 				header("Location: {$URL}");
 			}
 		}

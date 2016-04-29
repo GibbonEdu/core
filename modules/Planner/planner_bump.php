@@ -114,27 +114,8 @@ else {
 					print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner.php$params'>" . __($guid, 'Planner') . " $extra</a> > </div><div class='trailEnd'>" . __($guid, 'Bump Forward Lesson Plan') . "</div>" ;
 					print "</div>" ;
 					
-					//Proceed!
-					if (isset($_GET["bumpReturn"])) { $bumpReturn=$_GET["bumpReturn"] ; } else { $bumpReturn="" ; }
-					$bumpReturnMessage="" ;
-					$class="error" ;
-					if (!($bumpReturn=="")) {
-						if ($bumpReturn=="fail0") {
-							$bumpReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-						}
-						else if ($bumpReturn=="fail1") {
-							$bumpReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-						}
-						else if ($bumpReturn=="fail2") {
-							$bumpReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-						}
-						else if ($bumpReturn=="fail3") {
-							$bumpReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-						}
-						print "<div class='$class'>" ;
-							print $bumpReturnMessage;
-						print "</div>" ;
-					} 
+					if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
+					
 					?>
 					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/planner_bumpProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID" ?>">
 						<table class='smallIntBorder fullWidth' cellspacing='0'>	

@@ -35,7 +35,7 @@ $return=$_GET["return"] ;
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Markbook/$return" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_view.php")==FALSE) {
-	$URL.="&return=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -46,7 +46,7 @@ else {
 		$result->execute($data);
 	}
 	catch(PDOException $e) { 
-			$URL.="&return=fail0" ;
+			$URL.="&return=error0" ;
 		header("Location: {$URL}");
 		exit() ;
 	}

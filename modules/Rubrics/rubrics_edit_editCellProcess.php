@@ -78,7 +78,7 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-							$URL.="&columnDeleteReturn=fail2" ;
+							$URL.="&columnDeleteReturn=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}

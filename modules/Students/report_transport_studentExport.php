@@ -35,7 +35,7 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["address"]) . "/report_transport_student.php" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Students/report_transport_student.php")==FALSE) {
-	$URL.="&return=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {

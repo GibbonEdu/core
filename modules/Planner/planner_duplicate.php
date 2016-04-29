@@ -121,18 +121,9 @@ else {
 			if ($result->rowCount()!=1) {
 				$otherYearDuplicateSuccess=FALSE ;
 				//Deal with duplicate to other year
-				if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-				$updateReturnMessage="" ;
-				$class="success" ;
-				if (!($updateReturn=="")) {
-					if ($updateReturn=="success0") {
-						$updateReturnMessage=__($guid, "Your request was completed successfully, but the target class is in another year, so you cannot see the results here.") ;	
-						$otherYearDuplicateSuccess=TRUE ;
-					}
-					print "<div class='$class'>" ;
-						print $updateReturnMessage;
-					print "</div>" ;
-				}
+				$returns=array() ;
+				$returns["success0"] = __($guid, "Your request was completed successfully, but the target class is in another year, so you cannot see the results here.") ;	
+				if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, $returns); }
 				if ($otherYearDuplicateSuccess!=TRUE) {
 					print "<div class='error'>" ;
 						print __($guid, "The selected record does not exist, or you do not have access to it.") ;
@@ -154,32 +145,7 @@ else {
 				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner.php$params'>" . __($guid, 'Planner') . " $extra</a> > </div><div class='trailEnd'>" . __($guid, 'Duplicate Lesson Plan') . "</div>" ;
 				print "</div>" ;
 				
-				if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-				$updateReturnMessage="" ;
-				$class="error" ;
-				if (!($updateReturn=="")) {
-					if ($updateReturn=="fail0") {
-						$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-					}
-					else if ($updateReturn=="fail1") {
-						$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-					}
-					else if ($updateReturn=="fail2") {
-						$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-					}
-					else if ($updateReturn=="fail3") {
-						$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-					}
-					else if ($updateReturn=="fail4") {
-						$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-					}
-					else if ($updateReturn=="fail5") {
-						$updateReturnMessage=__($guid, "Your request failed due to an attachment error.") ;	
-					}
-					print "<div class='$class'>" ;
-						print $updateReturnMessage;
-					print "</div>" ;
-				}
+				if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
 				
 				$step=NULL ;
 				if (isset($_GET["step"])) {

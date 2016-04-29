@@ -53,7 +53,7 @@ else {
 		//Proceed!
 		//Validate Inputs
 		if ($gibbonSchoolYearID=="" OR $gibbonCourseID=="" OR $gibbonUnitID=="" OR $gibbonCourseClassID=="" OR $gibbonUnitClassID=="") {
-			$URL.="&copyReturn=fail3" ;
+			$URL.="&copyReturn=error3" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -77,7 +77,7 @@ else {
 			}
 			
 			if ($result->rowCount()!=1) {
-				$URL.="&copyReturn=fail4" ;
+				$URL.="&copyReturn=error4" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -95,7 +95,7 @@ else {
 				}
 				
 				if ($result->rowCount()!=1) {
-					$URL.="&copyReturn=fail4" ;
+					$URL.="&copyReturn=error4" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -128,7 +128,7 @@ else {
 						
 					//RETURN
 					if ($partialFail==TRUE) {
-						$URL.="&copyReturn=fail6" ;
+						$URL.="&copyReturn=error6" ;
 						header("Location: {$URL}");
 					}
 					else {

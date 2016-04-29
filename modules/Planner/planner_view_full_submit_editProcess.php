@@ -193,7 +193,7 @@ else {
 							
 							//Deal with partial fail
 							if ($partialFail==TRUE) {
-								$URL.="&updateReturn=fail6" ;
+								$URL.="&return=error6" ;
 								header("Location: {$URL}");
 							}
 							else {
