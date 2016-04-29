@@ -230,7 +230,7 @@ else {
 				}
 			
 				if ($customRequireFail) {
-							$URL.="&return=error3" ;
+					$URL.="&return=error3" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -244,12 +244,12 @@ else {
 						$result->execute($data);
 					}
 					catch(PDOException $e) { 
-									$URL.="&return=error2" ;
+						$URL.="&return=error2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
 				
-							$URL.="&return=success0" ;
+					$URL.="&return=success0" ;
 					header("Location: {$URL}");
 				}
 			}

@@ -69,45 +69,20 @@ else {
 		print "<div class='warning' style='font-weight: bold'>" . sprintf(__($guid, 'If you already have an account for %1$s %2$s, please log in now to prevent creation of duplicate data about you! Once logged in, you can find the form under People > Staff in the main menu.'), $_SESSION[$guid]["organisationNameShort"], $_SESSION[$guid]["systemName"]) . " " . sprintf(__($guid, 'If you do not have an account for %1$s %2$s, please use the form below.'), $_SESSION[$guid]["organisationNameShort"], $_SESSION[$guid]["systemName"]) . "</div>" ;
 	}
 	
-	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
-	$addReturnMessage="" ;
-	$class="error" ;
-	if (!($addReturn=="")) {
-		if ($addReturn=="fail0") {
-			$addReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
+	$returnExtra="" ;
+	if (isset($_GET["id"])) {
+		if ($_GET["id"]!="") {
+			$returnExtra.="<br/><br/>" . __($guid, 'If you need to contact the school in reference to this application, please quote the following number(s):') . " <b><u>" . $_GET["id"] . "</b></u>." ;
 		}
-		else if ($addReturn=="fail2") {
-			$addReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-		}
-		else if ($addReturn=="fail3") {
-			$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($addReturn=="fail4") {
-			$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($addReturn=="success0" OR $addReturn=="success1") {
-			if ($addReturn=="success0") {
-				$addReturnMessage=__($guid, "Your application was successfully submitted. Our Human Resources team will review your application and be in touch in due course.") ;
-				$class="success" ;
-			}
-			else if ($addReturn=="success1") {
-				$addReturnMessage=__($guid, "Your application was submitted, but some errors occured. We recommend you contact our Human Resources team to review your application.") ;
-				$class="warning" ;
-			}
-			
-			if (isset($_GET["id"])) {
-				if ($_GET["id"]!="") {
-					$addReturnMessage=$addReturnMessage . "<br/><br/>" . __($guid, 'If you need to contact the school in reference to this application, please quote the following number(s):') . " <b><u>" . $_GET["id"] . "</b></u>." ;
-				}
-			}
-			if ($_SESSION[$guid]["organisationHRName"]!="" AND $_SESSION[$guid]["organisationHREmail"]!="") {
-				$addReturnMessage=$addReturnMessage . "<br/><br/>Please contact <a href='mailto:" . $_SESSION[$guid]["organisationHREmail"] . "'>" . $_SESSION[$guid]["organisationHRName"] . "</a> if you have any questions, comments or complaints." ;	
-			}
-		}
-		print "<div class='$class'>" ;
-			print $addReturnMessage;
-		print "</div>" ;
-	} 
+	}
+	if ($_SESSION[$guid]["organisationHRName"]!="" AND $_SESSION[$guid]["organisationHREmail"]!="") {
+		$returnExtra.="<br/><br/>" . sprintf(__($guid, 'Please contact %1$s if you have any questions, comments or complaints.'), "<a href='mailto:" . $_SESSION[$guid]["organisationHREmail"] . "'>" . $_SESSION[$guid]["organisationHRName"] . "</a>") ;	
+	}
+	
+	$returns=array() ;
+	$returns["success0"] = __($guid, "Your application was successfully submitted. Our Human Resources team will review your application and be in touch in due course.") . $returnExtra ;
+	$returns["warning1"] = __($guid, "Your application was submitted, but some errors occured. We recommend you contact our Human Resources team to review your application.") . $returnExtra ;
+	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, $returns); }
 	
 	//Check for job openings
 	try {

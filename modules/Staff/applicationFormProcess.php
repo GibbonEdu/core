@@ -342,7 +342,7 @@ else {
 			}
 			
 			if ($partialFail==TRUE) {
-				$URL.="&addReturn=success1&id=$ids" ;
+				$URL.="&add=warning1&id=$ids" ;
 				header("Location: {$URL}");
 			}
 			else {

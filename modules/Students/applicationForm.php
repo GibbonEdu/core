@@ -76,58 +76,36 @@ else {
 		print "<div class='warning' style='font-weight: bold'>" . sprintf(__($guid, 'If you already have an account for %1$s %2$s, please log in now to prevent creation of duplicate data about you! Once logged in, you can find the form under People > Students in the main menu.'), $_SESSION[$guid]["organisationNameShort"], $_SESSION[$guid]["systemName"]) . " " . sprintf(__($guid, 'If you do not have an account for %1$s %2$s, please use the form below.'), $_SESSION[$guid]["organisationNameShort"], $_SESSION[$guid]["systemName"]) . "</div>" ;
 	}
 	
-	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
-	$addReturnMessage="" ;
-	$class="error" ;
-	if (!($addReturn=="")) {
-		if ($addReturn=="fail0") {
-			$addReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-		}
-		else if ($addReturn=="fail2") {
-			$addReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-		}
-		else if ($addReturn=="fail3") {
-			$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($addReturn=="fail4") {
-			$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($addReturn=="success0" OR $addReturn=="success1" OR $addReturn=="success2"  OR $addReturn=="success4") {
-			print "<script type='text/javascript'>" ;
-				print "$(document).ready(function(){" ;
-					print "alert('Your application was successfully submitted. Please read the information in the green box above the application form for additional information.') ;" ;
-				print "});" ;
-			print "</script>" ;
-			if ($addReturn=="success0") {
-				$addReturnMessage=__($guid, "Your application was successfully submitted. Our admissions team will review your application and be in touch in due course.") ;
-			}
-			else if ($addReturn=="success1") {
-				$addReturnMessage=__($guid, "Your application was successfully submitted and payment has been made to your credit card. Our admissions team will review your application and be in touch in due course.") ;
-			}
-			else if ($addReturn=="success2") {
-				$addReturnMessage=__($guid, "Your application was successfully submitted, but payment could not be made to your credit card. Our admissions team will review your application and be in touch in due course.") ;
-			}
-			else if ($addReturn=="success3") {
-				$addReturnMessage=__($guid, "Your application was successfully submitted, payment has been made to your credit card, but there has been an error recording your payment. Please print this screen and contact the school ASAP. Our admissions team will review your application and be in touch in due course.") ;
-			}
-			else if ($addReturn=="success4") {
-				$addReturnMessage=__($guid, "Your application was successfully submitted, but payment could not be made as the payment gateway does not support the system's currency. Our admissions team will review your application and be in touch in due course.") ;
-			}
-			if (isset($_GET["id"])) {
-				if ($_GET["id"]!="") {
-					$addReturnMessage=$addReturnMessage . "<br/><br/>" . __($guid, 'If you need to contact the school in reference to this application, please quote the following number:') . " <b><u>" . $_GET["id"] . "</b></u>." ;
-				}
-			}
-			if ($_SESSION[$guid]["organisationAdmissionsName"]!="" AND $_SESSION[$guid]["organisationAdmissionsEmail"]!="") {
-				$addReturnMessage=$addReturnMessage . "<br/><br/>Please contact <a href='mailto:" . $_SESSION[$guid]["organisationAdmissionsEmail"] . "'>" . $_SESSION[$guid]["organisationAdmissionsName"] . "</a> if you have any questions, comments or complaints." ;	
-			}
 			
-			$class="success" ;
+	
+	
+	$returnExtra="" ;
+	if (isset($_GET["id"])) {
+		if ($_GET["id"]!="") {
+			$returnExtra="<br/><br/>" . __($guid, 'If you need to contact the school in reference to this application, please quote the following number:') . " <b><u>" . $_GET["id"] . "</b></u>." ;
 		}
-		print "<div class='$class'>" ;
-			print $addReturnMessage;
-		print "</div>" ;
-	} 
+	}
+	if ($_SESSION[$guid]["organisationAdmissionsName"]!="" AND $_SESSION[$guid]["organisationAdmissionsEmail"]!="") {
+		$returnExtra.="<br/><br/>" . sprintf(__($guid, 'Please contact %1$s if you have any questions, comments or complaints.'), "<a href='mailto:" . $_SESSION[$guid]["organisationAdmissionsEmail"] . "'>" . $_SESSION[$guid]["organisationAdmissionsName"] . "</a>") ;	
+	}
+	$returns=array() ;
+	$returns["success0"] = __($guid, "Your application was successfully submitted. Our admissions team will review your application and be in touch in due course.") . $returnExtra ;
+	$returns["success1"] = __($guid, "Your application was successfully submitted and payment has been made to your credit card. Our admissions team will review your application and be in touch in due course.") . $returnExtra ;
+	$returns["success2"] = __($guid, "Your application was successfully submitted, but payment could not be made to your credit card. Our admissions team will review your application and be in touch in due course.") . $returnExtra ;
+	$returns["success3"] = __($guid, "Your application was successfully submitted, payment has been made to your credit card, but there has been an error recording your payment. Please print this screen and contact the school ASAP. Our admissions team will review your application and be in touch in due course.") . $returnExtra ;
+	$returns["success4"] = __($guid, "Your application was successfully submitted, but payment could not be made as the payment gateway does not support the system's currency. Our admissions team will review your application and be in touch in due course.") . $returnExtra ;
+	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, $returns); }
+	
+	//JS success return addition
+	if (isset($_GET["return"])) { $return=$_GET["return"] ; } else { $return="" ; }
+	if ($return=="success0" OR $return=="success1" OR $return=="success2"  OR $return=="success4") {
+		print "<script type='text/javascript'>" ;
+			print "$(document).ready(function(){" ;
+				print "alert('Your application was successfully submitted. Please read the information in the green box above the application form for additional information.') ;" ;
+			print "});" ;
+		print "</script>" ;
+	}			
+			
 	
 	$currency=getSettingByScope($connection2, "System", "currency") ;
 	$applicationFee=getSettingByScope($connection2, "Application Form", "applicationFee") ;

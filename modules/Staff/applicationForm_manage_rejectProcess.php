@@ -43,7 +43,7 @@ else {
 	//Check if school year specified
 	
 	if ($gibbonStaffApplicationFormID=="") {
-		$URL.="&rejectReturn=fail1" ;
+		$URL.="&return=fail1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -54,13 +54,13 @@ else {
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
-			$URL.="&rejectReturn=fail2" ;
+			$URL.="&return=fail2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
 		
 		if ($result->rowCount()!=1) {
-			$URL.="&rejectReturn=fail2" ;
+			$URL.="&eeturn=fail2" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -72,12 +72,12 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-					$URL.="&rejectReturn=fail2" ;
+					$URL.="&return=fail2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
 
-			$URLReject=$URLReject . "&rejectReturn=success0" ;
+			$URLReject=$URLReject . "&return=success0" ;
 			header("Location: {$URLReject}");
 		}
 	}

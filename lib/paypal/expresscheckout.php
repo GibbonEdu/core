@@ -60,7 +60,9 @@ $cancelURL=$_SESSION[$guid]["absoluteURL"] . "/" . $_GET["fail"];
 //' it is included at the top of this file.
 //'-------------------------------------------------
 $resArray=CallShortcutExpressCheckout ($paymentAmount, $currencyCodeType, $paymentType, urlencode($returnURL), urlencode($cancelURL), $guid);
-$ack=strtoupper($resArray["ACK"]);
+$ack=strtoupper(@$resArray["ACK"]);
+
+	
 if($ack=="SUCCESS" || $ack=="SUCCESSWITHWARNING")
 {
 	RedirectToPayPal ( $resArray["TOKEN"] );
@@ -72,6 +74,8 @@ else
 	$ErrorShortMsg=urldecode($resArray["L_SHORTMESSAGE0"]);
 	$ErrorLongMsg=urldecode($resArray["L_LONGMESSAGE0"]);
 	$ErrorSeverityCode=urldecode($resArray["L_SEVERITYCODE0"]);
+	
+	print $ErrorLongMsg ; exit() ;
 	
 	if ($ErrorLongMsg="Currency is not supported") {
 		$URL=$_SESSION[$guid]["gatewayCurrencyNoSupportReturnURL"] ;
