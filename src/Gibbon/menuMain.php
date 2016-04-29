@@ -82,16 +82,10 @@ class menuMain
 		}
 		else {
 			$data=array("gibbonRoleID"=>$_SESSION[$this->config->get('guid')]["gibbonRoleIDCurrent"]);
-			$sql="SELECT DISTINCT gibbonModule.name, gibbonModule.category, gibbonModule.entryURL FROM `gibbonModule`, gibbonAction, gibbonPermission WHERE (active='Y') AND (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) ORDER BY (gibbonModule.category='Other') ASC, category, name";
+			$sql="SELECT DISTINCT gibbonModule.name, gibbonModule.category, gibbonModule.entryURL FROM gibbonModule JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) WHERE active='Y' AND menuShow='Y' AND gibbonPermission.gibbonRoleID=:gibbonRoleID ORDER BY (gibbonModule.category='Other') ASC, category, name";
 			$result = $this->pdo->executeQuery($data, $sql);
 			if (! $this->pdo->getQuerySuccess()) {
 				$menu.="<div class='error'>" . $this->pdo->getError() . "</div>" ;
-			}
-			
-			if (! $this->pdo->getQuerySuccess()) {
-				$menu.="<div class='error'>" ;
-				$menu.=$e->getMessage() ;
-				$menu.="</div>" ;
 			}
 			
 			if ($result->rowCount()<1) {
@@ -112,7 +106,7 @@ class menuMain
 					$entryURL=$row["entryURL"] ;
 					if (isActionAccessible($this->config->get('guid'), $this->pdo->getConnection(), "/modules/" . $row["name"] . "/" . $entryURL)==FALSE AND $entryURL!="index.php") {
 						$dataEntry=array("gibbonRoleID"=>$_SESSION[$this->config->get('guid')]["gibbonRoleIDCurrent"],"name"=>$row["name"]);
-						$sqlEntry="SELECT DISTINCT gibbonAction.entryURL FROM gibbonModule, gibbonAction, gibbonPermission WHERE (active='Y') AND (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) AND gibbonModule.name=:name ORDER BY gibbonAction.name";
+						$sqlEntry="SELECT DISTINCT gibbonAction.entryURL FROM gibbonModule JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) WHERE active='Y' AND menuShow='Y' AND gibbonPermission.gibbonRoleID=:gibbonRoleID AND gibbonModule.name=:name ORDER BY gibbonAction.name";
 						$resultEntry = $this->pdo->executeQuery($dataEntry, $sqlEntry);
 						if ($resultEntry->rowCount()>0) {
 							$rowEntry=$resultEntry->fetch() ;

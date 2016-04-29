@@ -35,16 +35,14 @@ $gibbonLibraryItemID=$_POST["gibbonLibraryItemID"] ;
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/library_manage_catalog_duplicate.php&gibbonLibraryItemID=$gibbonLibraryItemID&name=" . $_GET["name"] . "&gibbonLibraryTypeID=" . $_GET["gibbonLibraryTypeID"] . "&gibbonSpaceID=" . $_GET["gibbonSpaceID"] . "&status=" . $_GET["status"] . "&gibbonPersonIDOwnership=" . $_GET["gibbonPersonIDOwnership"] . "&typeSpecificFields=" . $_GET["typeSpecificFields"] ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Library/library_manage_catalog_edit.php")==FALSE) {
-	//Fail 0
-	$URL.="&duplicateReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
 	//Proceed!
 	//Check if school year specified
 	if ($gibbonLibraryItemID=="") {
-		//Fail1
-		$URL.="&duplicateReturn=fail1" ;
+		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -55,15 +53,13 @@ else {
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
-			//Fail2
-			$URL.="&deleteReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
 		
 		if ($result->rowCount()!=1) {
-			//Fail 2
-			$URL.="&duplicateReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -174,13 +170,11 @@ else {
 			}
 			
 			if ($partialFail==TRUE) {
-				//Fail 2
-				$URL.="&duplicateReturn=fail2" ;
+				$URL.="&return=error2" ;
 				header("Location: {$URL}");
 			}
 			else {
-				//Success 0
-				$URL.="&duplicateReturn=success0" ;
+				$URL.="&return=success0" ;
 				header("Location: {$URL}");
 			}
 		}

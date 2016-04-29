@@ -34,16 +34,14 @@ $partialFail=FALSE;
 $_SESSION[$guid]["systemUpdateError"]="" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/System Admin/update.php")==FALSE) {
-	//Fail 0
-	$URL.="&updateReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
 	//Proceed!
 	$type=$_GET["type"] ;
 	if ($type!="regularRelease" AND $type!="cuttingEdge") {
-		//Fail 3
-		$URL.="&updateReturn=fail3" ;
+		$URL.="&return=error3" ;
 		header("Location: {$URL}");
 	}
 	else if ($type=="regularRelease") { //Do regular release update
@@ -52,8 +50,7 @@ else {
 	
 		//Validate Inputs
 		if ($versionDB=="" OR $versionCode=="" OR version_compare($versionDB, $versionCode)!=-1) {
-			//Fail 3
-			$URL.="&updateReturn=fail3" ;
+			$URL.="&return=error3" ;
 			header("Location: {$URL}");
 		}
 		else {	
@@ -69,7 +66,7 @@ else {
 							}
 							catch(PDOException $e) { 
 								$partialFail=TRUE;
-								$_SESSION[$guid]["systemUpdateError"].=$sqlToken . "<br/><b>" . $e->getMessage() . "</b></br><br/>" ;  
+								$_SESSION[$guid]["systemUpdateError"].=htmlPrep($sqlToken) . "<br/><b>" . $e->getMessage() . "</b><br/><br/>" ; 
 							}
 						}
 					}
@@ -77,8 +74,7 @@ else {
 			}
 		
 			if ($partialFail==TRUE) {
-				//Fail 5
-				$URL.="&updateReturn=fail5" ;
+				$URL.="&return=warning1" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -90,14 +86,12 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-					//Fail 2
-					$URL.="&updateReturn=fail2" ;
+							$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
 			
-				//Success 0
-				$URL.="&updateReturn=success0" ;
+					$URL.="&return=success0" ;
 				header("Location: {$URL}");
 			}
 		}
@@ -122,8 +116,7 @@ else {
 		}
 		
 		if ($update==FALSE) { //Something went wrong...abandon!
-			//Fail 3
-			$URL.="&updateReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
@@ -142,7 +135,7 @@ else {
 										}
 										catch(PDOException $e) { 
 											$partialFail=TRUE;
-											$_SESSION[$guid]["systemUpdateError"].=$sqlToken . "<br/><b>" . $e->getMessage() . "</b></br><br/>" ; 
+											$_SESSION[$guid]["systemUpdateError"].=htmlPrep($sqlToken) . "<br/><b>" . $e->getMessage() . "</b><br/><br/>" ; 
 										}
 									}
 								}
@@ -157,7 +150,7 @@ else {
 									}
 									catch(PDOException $e) { 
 										$partialFail=TRUE;
-										$_SESSION[$guid]["systemUpdateError"].=$sqlToken . "<br/><b>" . $e->getMessage() . "</b></br><br/>" ;   
+										$_SESSION[$guid]["systemUpdateError"].=htmlPrep($sqlToken) . "<br/><b>" . $e->getMessage() . "</b><br/><br/>" ; 
 									}
 								}
 							}
@@ -179,7 +172,7 @@ else {
 									}
 									catch(PDOException $e) { 
 										$partialFail=TRUE;
-										$_SESSION[$guid]["systemUpdateError"].=$sqlToken . "<br/><b>" . $e->getMessage() . "</b></br><br/>" ; 
+										$_SESSION[$guid]["systemUpdateError"].=htmlPrep($sqlToken) . "<br/><b>" . $e->getMessage() . "</b><br/><br/>" ; 
 									}
 								}
 							}
@@ -190,8 +183,7 @@ else {
 			}
 			
 			if ($partialFail==TRUE) {
-				//Fail 5
-				$URL.="&updateReturn=fail5" ;
+				$URL.="&return=warning1" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -203,8 +195,7 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-					//Fail 2
-					$URL.="&updateReturn=fail2" ;
+							$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
@@ -217,8 +208,7 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-					//Fail 2
-					$URL.="&updateReturn=fail2" ;
+					$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
@@ -226,8 +216,7 @@ else {
 				//Reset cache to force top-menu reload
 				$_SESSION[$guid]["pageLoads"]=NULL ;
 			
-				//Success 0
-				$URL.="&updateReturn=success0" ;
+				$URL.="&return=success0" ;
 				header("Location: {$URL}");
 			}
 		}

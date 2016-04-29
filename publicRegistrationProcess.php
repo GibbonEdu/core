@@ -41,8 +41,7 @@ if (isset($_SESSION[$guid]["username"])==FALSE) {
 }
 
 if ($proceed==FALSE) {
-	//Fail 0
-	$URL.="&addReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -54,8 +53,7 @@ else {
 		$result->execute($data);
 	}
 	catch(PDOException $e) { 
-		//Fail 2
-		$URL.="&addReturn=fail2" ;
+		$URL.="&return=error2" ;
 		header("Location: {$URL}");
 		exit() ;
 	}
@@ -83,8 +81,7 @@ else {
 	$gibbonRoleIDAll=$gibbonRoleIDPrimary ;
 	
 	if ($surname=="" OR $firstName=="" OR $preferredName=="" OR $officialName=="" OR $gender=="" OR $dob=="" OR $email=="" OR $username=="" OR $password=="" OR $gibbonRoleIDPrimary=="" OR $gibbonRoleIDPrimary=="" OR ($status!="Pending Approval" AND $status!="Full")) {
-		//Fail 3
-		$URL.="&addReturn=fail3" ;
+		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -92,8 +89,7 @@ else {
 		$passwordMatch=doesPasswordMatchPolicy($connection2, $password) ;
 		
 		if ($passwordMatch==FALSE) {
-			//Fail 7
-			$URL.="&addReturn=fail7" ;
+			$URL.="&return=error7" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -105,15 +101,13 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-				//Fail 2
-				$URL.="&addReturn=fail2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
 		
 			if ($result->rowCount()>0) {
-				//Fail 4
-				$URL.="&addReturn=fail4" ;
+				$URL.="&return=error3" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -129,8 +123,7 @@ else {
 				}
 			
 				if ($ageFail==TRUE) {
-					//Fail 5
-					$URL.="&addReturn=fail5" ;
+					$URL.="&return=warning1" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -142,9 +135,8 @@ else {
 						$result->execute($data);
 					}
 					catch(PDOException $e) { 
-						//Fail 2
-						print $e->getMessage() ; exit() ;
-						$URL.="&addReturn=fail2" ;
+									print $e->getMessage() ; exit() ;
+						$URL.="&return=error2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
@@ -158,13 +150,11 @@ else {
 							setNotification($connection2, $guid, $_SESSION[$guid]["organisationAdmissions"], $notificationText, "User Admin", "/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID&search=") ;
 						}
 						
-						//Success 1
-						$URL.="&addReturn=success1" ;
+						$URL.="&return=success1" ;
 						header("Location: {$URL}");
 					}
 					else {
-						//Success 0
-						$URL.="&addReturn=success0" ;
+						$URL.="&return=success0" ;
 						header("Location: {$URL}");
 					}
 				}

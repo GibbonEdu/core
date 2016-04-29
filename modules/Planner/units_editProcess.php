@@ -36,20 +36,18 @@ $classCount=$_POST["classCount"] ;
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["address"]) . "/units_edit.php&gibbonUnitID=$gibbonUnitID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Planner/units_edit.php")==FALSE) {
-	//Fail 0
-	$URL.="&updateReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["address"], $connection2) ;
 	if ($highestAction==FALSE) {
-		//Fail 0
-		$URL.="&updateReturn=fail0$params" ;
+			$URL.="&return=error0$params" ;
 		header("Location: {$URL}");
 	}
 	else {
 		if (empty($_POST)) {
-			$URL.="&updateReturn=fail5" ;
+			$URL.="&return=warning1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -67,8 +65,7 @@ else {
 			$embeddable=$_POST["embeddable"] ;
 			
 			if ($gibbonSchoolYearID=="" OR $gibbonCourseID=="" OR $gibbonUnitID=="" OR $name=="" OR $description=="" OR $ordering=="" OR $embeddable=="") {
-				//Fail 3
-				$URL.="&updateReturn=fail3" ;
+					$URL.="&return=error3" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -86,15 +83,13 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-					//Fail 2
-					$URL.="&addReturn=fail2" ;
+							$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
 				
 				if ($result->rowCount()!=1) {
-					//Fail 4
-					$URL.="&updateReturn=fail4" ;
+					$URL.="&return=error3" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -106,15 +101,13 @@ else {
 						$result->execute($data);
 					}
 					catch(PDOException $e) { 
-						//Fail 2
-						$URL.="&addReturn=fail2" ;
+									$URL.="&return=error2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
 
 					if ($result->rowCount()!=1) {
-						//Fail 4
-						$URL.="&updateReturn=fail4" ;
+						$URL.="&return=error3" ;
 						header("Location: {$URL}");
 					}
 					else {
@@ -142,8 +135,7 @@ else {
 								}
 								
 								if (!(move_uploaded_file($_FILES["file"]["tmp_name"],$path . "/" . $attachment))) {
-									//Fail 5
-									$URL.="&addReturn=fail5" ;
+									$URL.="&return=warning1" ;
 									header("Location: {$URL}");
 								}
 							}
@@ -206,8 +198,7 @@ else {
 						$dataRemove=array() ;
 						$whereRemove="" ;
 						if (count($order)<0) {
-							//Fail 3
-							$URL.="&addReturn=fail3" ;
+											$URL.="&return=error1" ;
 							header("Location: {$URL}");
 						}
 						else {
@@ -295,8 +286,7 @@ else {
 							$resultDelete->execute($dataDelete);  
 						}
 						catch(PDOException $e) { 
-							//Fail2
-							$URL.="&updateReturn=fail2" ;
+											$URL.="&return=error2" ;
 							header("Location: {$URL}");
 							exit() ;
 						}
@@ -330,20 +320,17 @@ else {
 							$result->execute($data);
 						}
 						catch(PDOException $e) { 
-							//Fail 2
-							$URL.="&updateReturn=fail2" ;
+											$URL.="&return=error2" ;
 							header("Location: {$URL}");
 							exit() ;
 						}
 
 						if ($partialFail) {
-							//Fail 6
 							$URL.="&updateReturn=fail6" ;
 							header("Location: {$URL}");
 						}
 						else {
-							//Success 0
-							$URL.="&updateReturn=success0" ;
+											$URL.="&return=success0" ;
 							header("Location: {$URL}");
 						}
 					}

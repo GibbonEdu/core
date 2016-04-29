@@ -46,29 +46,25 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 $URLDelete=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/rubrics.php&search=$search&filter2=$filter2" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Rubrics/rubrics_delete.php")==FALSE) {
-	//Fail 0
-	$URL.="&deleteReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
 	//Get action with highest precendence
 	$highestAction=getHighestGroupedAction($guid, $_POST["address"], $connection2) ;
 	if ($highestAction==FALSE) {
-		//Fail2
-		$URL.="&deleteReturn=fail2" ;
+		$URL.="&return=error2" ;
 		header("Location: {$URL}");
 	}
 	else {
 		if ($highestAction!="Manage Rubrics_viewEditAll" AND $highestAction!="Manage Rubrics_viewAllEditLearningArea") {
-			//Fail 0
-			$URL.="&deleteReturn=fail0" ;
+					$URL.="&return=error0" ;
 			header("Location: {$URL}");
 		}
 		else {
 			//Proceed!
 			if ($gibbonRubricID=="") {
-				//Fail1
-				$URL.="&deleteReturn=fail1" ;
+						$URL.="&return=error1" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -85,15 +81,13 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-					//Fail2
-					$URL.="&deleteReturn=fail2" ;
+							$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
 				
 				if ($result->rowCount()!=1) {
-					//Fail 2
-					$URL.="&deleteReturn=fail2" ;
+							$URL.="&return=error2" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -105,14 +99,12 @@ else {
 						$result->execute($data);
 					}
 					catch(PDOException $e) { 
-						//Fail 2
-						$URL.="&deleteReturn=fail2" ;
+									$URL.="&return=error2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
 
-					//Success 0
-					$URLDelete=$URLDelete . "&deleteReturn=success0" ;
+							$URLDelete=$URLDelete . "&return=success0" ;
 					header("Location: {$URLDelete}");
 				}
 			}

@@ -34,16 +34,14 @@ $gibbonFinanceInvoiceeID=$_POST["gibbonFinanceInvoiceeID"] ;
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/data_finance_edit.php&gibbonFinanceInvoiceeUpdateID=$gibbonFinanceInvoiceeUpdateID" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/data_finance_edit.php")==FALSE) {
-	//Fail 0
-	$URL.="&updateReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
 	//Proceed!
 	//Check if school year specified
 	if ($gibbonFinanceInvoiceeUpdateID=="" OR $gibbonFinanceInvoiceeID=="") {
-		//Fail1
-		$URL.="&updateReturn=fail1" ;
+		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -54,15 +52,13 @@ else {
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
-			//Fail2
-			$URL.="&updateReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
 		
 		if ($result->rowCount()!=1) {
-			//Fail 2
-			$URL.="&updateReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -133,8 +129,7 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-					//Fail 2
-					$URL.="&updateReturn=fail2" ;
+							$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
@@ -147,14 +142,12 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-					//Fail 2
-					$URL.="&updateReturn=success1" ;
+					$URL.="&return=warning1" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
 				
-				//Success 0
-				$URL.="&updateReturn=success0" ;
+				$URL.="&return=success0" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -166,14 +159,12 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-					//Fail 2
 					$URL.="&updateReturn=success1" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
 				
-				//Success 0
-				$URL.="&updateReturn=success0" ;
+				$URL.="&return=success0" ;
 				header("Location: {$URL}");
 			}
 		}

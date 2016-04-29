@@ -23202,7 +23202,7 @@ msgstr "安裝成功, 但是不能啟動程式組件。"
 #: modules/System Admin/module_manage.php:74
 #: modules/System Admin/theme_manage.php:70
 msgid ""
-"Your request was successful. You can now add another record if you wish."
+"Your request was successful."
 msgstr "你的請求成功了. 如果你想, 現在可以再加一個記錄。"
 
 #: modules/System Admin/module_manage_install.php:64
@@ -62499,7 +62499,7 @@ msgstr "短名稱"
 #: modules/User Admin/user_manage_edit.php:64
 msgid ""
 "Your request was completed successfully, but one or more images were the "
-"wrong size and so were not saved. You can now add another record if you wish."
+"wrong size and so were not saved."
 msgstr ""
 "你的要求已順利地完成，但是一個或多個圖片的尺寸，所以沒有儲蓄。如果需要再加新"
 "的紀錄。"
@@ -69333,7 +69333,7 @@ msgstr ""
 #: modules/School Admin/house_manage_add.php:55
 msgid ""
 "Your request was completed successfully, but one or more images could not be "
-"saved. You can now add another record if you wish."
+"saved."
 msgstr ""
 
 #: modules/School Admin/spaceSettings.php:31

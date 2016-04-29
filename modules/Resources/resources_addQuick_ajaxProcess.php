@@ -32,7 +32,6 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 $time=time() ;
 	
 if (empty($_POST) OR empty($_FILES)) {
-	//Fail 5
 	print "<span style='font-weight: bold; color: #ff0000'>" ;
 		print "Your request failed due to an attachment error." ;
 	print "</span>" ;
@@ -46,7 +45,6 @@ else {
 	}
 	
 	if ($id=="") {
-		//Fail 3
 		print "<span style='font-weight: bold; color: #ff0000'>" ;
 			print __($guid, "Your request failed because your inputs were invalid.") ;
 		print "</span>" ;
@@ -86,7 +84,6 @@ else {
 						$count++ ;
 					}
 					if (!(move_uploaded_file($_FILES[$id . "file" . $i]["tmp_name"],$path . "/" . $attachment))) {
-						//Fail 5
 						print "<span style='font-weight: bold; color: #ff0000'>" ;
 							print "Your request failed due to an attachment error." ;
 						print "</span>" ;

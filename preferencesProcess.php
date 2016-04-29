@@ -62,7 +62,7 @@ try {
 	$result->execute($data);
 }
 catch(PDOException $e) { 
-	$URL.="&editReturn=fail1" ;
+	$URL.="&return=error2" ;
 	header("Location: {$URL}");
 	exit() ;
 }
@@ -104,6 +104,6 @@ else {
 
 
 $_SESSION[$guid]["pageLoads"]=NULL ;
-$URL.="&editReturn=success0" ;
+$URL.="&return=success0" ;
 header("Location: {$URL}");
 ?>

@@ -35,7 +35,6 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php" ;
 
 //Proceed!
 if ($gibbonAlarmID=="") {
-	//Fail1
 	header("Location: {$URL}");
 }
 else {

@@ -33,7 +33,6 @@ $gibbonFinanceBudgetCycleID=$_GET["gibbonFinanceBudgetCycleID"] ;
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/budgetCycles_manage_edit.php&gibbonFinanceBudgetCycleID=" . $gibbonFinanceBudgetCycleID ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Finance/budgetCycles_manage_edit.php")==FALSE) {
-	//Fail 0
 	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
@@ -41,7 +40,6 @@ else {
 	//Proceed!
 	//Check if school year specified
 	if ($gibbonFinanceBudgetCycleID=="") {
-		//Fail1
 		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
@@ -53,14 +51,12 @@ else {
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
-			//Fail2
 			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
 		
 		if ($result->rowCount()!=1) {
-			//Fail 2
 			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 		}
@@ -73,8 +69,7 @@ else {
 			$dateEnd=dateConvert($guid, $_POST["dateEnd"]) ;
 			
 			if ($name=="" OR $status=="" OR $sequenceNumber=="" OR is_numeric($sequenceNumber)==FALSE OR $dateStart=="" OR $dateEnd=="") {
-				//Fail 3
-				$URL.="&return=error1" ;
+					$URL.="&return=error1" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -86,14 +81,12 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-					//Fail 2
-					$URL.="&return=error2" ;
+							$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ; 
 				}
 				
 				if ($result->rowCount()>0) {
-					//Fail 4
 					$URL.="&return=error3" ;
 					header("Location: {$URL}");
 				}
@@ -106,8 +99,7 @@ else {
 						$result->execute($data);
 					}
 					catch(PDOException $e) { 
-						//Fail 2
-						$URL.="&return=error2" ;
+									$URL.="&return=error2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
@@ -153,12 +145,10 @@ else {
 					}
 					
 					if ($partialFail==TRUE) {
-						//Fail 5
 						$URL.="&return=warning1" ;
 						header("Location: {$URL}");
 					}
 					else {
-						//Success 0
 						$URL.="&return=success0" ;
 						header("Location: {$URL}");
 					}

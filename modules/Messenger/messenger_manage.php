@@ -39,18 +39,7 @@ else {
 		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Manage Messages') . "</div>" ;
 		print "</div>" ;
 		
-		if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-		$deleteReturnMessage="" ;
-		$class="error" ;
-		if (!($deleteReturn=="")) {
-			if ($deleteReturn=="success0") {
-				$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;		
-				$class="success" ;
-			}
-			print "<div class='$class'>" ;
-				print $deleteReturnMessage;
-			print "</div>" ;
-		} 
+		if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
 		
 		print "<h2>" ;
 		print __($guid, "Search") ;
@@ -413,7 +402,7 @@ else {
 								print "});" ;
 							print "</script>" ;
 							if ($row["smsReport"]!="" OR $row["emailReport"]!="") {
-								print "<a title='" . __($guid, 'View Send Report') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='" . __($guid, 'Show Comment') . "' onclick='return false;' /></a>" ;
+								print "<a title='" . __($guid, 'View Send Report') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_down.png' alt='" . __($guid, 'Show Comment') . "' onclick='return false;' /></a>" ;
 							}
 						print "</td>" ;
 					print "</tr>" ;

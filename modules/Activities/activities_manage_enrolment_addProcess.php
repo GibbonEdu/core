@@ -37,7 +37,6 @@ $gibbonActivityID=$_GET["gibbonActivityID"] ;
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/activities_manage_enrolment_add.php&gibbonActivityID=$gibbonActivityID&search=" . $_GET["search"] ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Activities/activities_manage_enrolment_add.php")==FALSE) {
-	//Fail 0
 	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
@@ -47,7 +46,6 @@ else {
 	$status=$_POST["status"] ;
 	
 	if ($gibbonActivityID=="" OR $status=="") {
-		//Fail 3
 		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
@@ -60,8 +58,7 @@ else {
 		}
 		
 		if (count($choices)<1) {
-			//Fail 1
-			$URL.="&return=error1" ;
+				$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -92,13 +89,11 @@ else {
 			}
 			//Write to database
 			if ($update==FALSE) {
-				//Fail 2
-				$URL.="&return=error2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 			}
 			else {
-				//Success 0
-				$URL.="&return=success0" ;
+					$URL.="&return=success0" ;
 				header("Location: {$URL}");
 			}
 		}

@@ -39,8 +39,7 @@ else {
 	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/activities_payment.php" ;
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Activities/activities_payment.php")==FALSE) {
-		//Fail 0
-		$URL.="&return=error0" ;
+			$URL.="&return=error0" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -58,7 +57,6 @@ else {
 		//Proceed!
 		//Check if person specified
 		if (count($students)<1) {
-			//Fail4
 			$URL.="&return=erorr1" ;
 			header("Location: {$URL}");
 		}
@@ -71,8 +69,7 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) {
-				//Fail 2
-				$URL.="&error=error2" ;
+					$URL.="&error=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
@@ -266,8 +263,7 @@ else {
 				header("Location: {$URL}");
 			}
 			else {
-				//Success 0
-				$URL.="&return=success0" ;
+					$URL.="&return=success0" ;
 				header("Location: {$URL}");
 			}
 		}

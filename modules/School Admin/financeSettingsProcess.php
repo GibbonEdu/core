@@ -32,8 +32,7 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/financeSettings.php" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/financeSettings.php")==FALSE) {
-	//Fail 0
-	$URL.="&updateReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -59,8 +58,7 @@ else {
 	$reimbursementOfficer=$_POST["reimbursementOfficer"] ;
 	
 	if ($email=="" OR $financeOnlinePaymentEnabled=="" OR $invoiceNumber=="" OR $hideItemisation=="" OR $budgetCategories=="" OR $expenseApprovalType=="" OR $budgetLevelExpenseApproval=="" OR $allowExpenseAdd=="") {
-		//Fail 3
-		$URL.="&addReturn=fail3" ;
+		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -258,14 +256,12 @@ else {
 		}
 		
 		if ($fail==TRUE) {
-			//Fail 2
-			$URL.="&updateReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 		}
 		else {
-			//Success 0
 			getSystemSettings($guid, $connection2) ;
-			$URL.="&updateReturn=success0" ;
+			$URL.="&return=success0" ;
 			header("Location: {$URL}");
 		}
 	}

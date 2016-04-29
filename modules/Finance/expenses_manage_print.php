@@ -41,24 +41,6 @@ else {
 		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/expenses_manage.php&gibbonFinanceBudgetCycleID=" . $_GET["gibbonFinanceBudgetCycleID"] . "'>" . __($guid, 'Manage Expenses') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Print Expense') . "</div>" ;
 		print "</div>" ;
 		
-		if (isset($_GET["approveReturn"])) { $approveReturn=$_GET["approveReturn"] ; } else { $approveReturn="" ; }
-		$approveReturnMessage="" ;
-		$class="error" ;
-		if (!($approveReturn=="")) {
-			if ($approveReturn=="fail0") {
-				$approveReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-			}
-			else if ($approveReturn=="fail2") {
-				$approveReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-			}
-			else if ($approveReturn=="fail3") {
-				$approveReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-			}
-			print "<div class='$class'>" ;
-				print $approveReturnMessage;
-			print "</div>" ;
-		} 
-	
 		//Check if params are specified
 		$gibbonFinanceExpenseID=$_GET["gibbonFinanceExpenseID"] ;
 		$gibbonFinanceBudgetCycleID=$_GET["gibbonFinanceBudgetCycleID"] ;

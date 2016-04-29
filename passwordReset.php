@@ -25,30 +25,13 @@ print "</div>" ;
 	<?php print sprintf(__($guid, 'Enter your %1$s username, or the email address you have listed in the system, and press submit: your password will be reset and emailed to you.'), $_SESSION[$guid]["systemName"]) ; ?>
 </p>
 <?php
-if (isset($_GET["editReturn"])) { $editReturn=$_GET["editReturn"] ; } else { $editReturn="" ; }
-$editReturnMessage="" ;
-$class="error" ;
-if (!($editReturn=="")) {
-	if ($editReturn=="fail0") {
-		$editReturnMessage="Email address not set." ;	
-	}
-	else if ($editReturn=="fail1") {
-		$editReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-	}
-	else if ($editReturn=="fail2") {
-		$editReturnMessage="Your request failed due to incorrect or non-unique email address." ;	
-	}
-	else if ($editReturn=="fail3") {
-		$editReturnMessage="Failed to send update email." ;	
-	}
-	else if ($editReturn=="success0") {
-		$editReturnMessage="Password changed successfully, please check your email." ;	
-		$class="success" ;
-	}
-	print "<div class='$class'>" ;
-		print $editReturnMessage;
-	print "</div>" ;
-} 
+$returns=array() ;
+$returns["error0"] = __($guid, "Email address not set.") ;
+$returns["error4"] = __($guid, "Your request failed due to incorrect or non-existent or non-unique email address.") ;
+$returns["error3"] = __($guid, "Failed to send update email.") ;
+$returns["success0"] = __($guid, "Password changed successfully, please check your email.") ;
+if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, $returns); }
+
 ?>
 
 <form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] ?>/passwordResetProcess.php">

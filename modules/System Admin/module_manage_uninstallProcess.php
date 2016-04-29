@@ -41,16 +41,14 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 $URLDelete=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/module_manage.php" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/System Admin/module_manage_uninstall.php")==FALSE) {
-	//Fail 0
-	$URL.="&deleteReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
 	//Proceed!
 	//Check if role specified
 	if ($gibbonModuleID=="") {
-		//Fail1
-		$URL.="&deleteReturn=fail1" ;
+		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -61,15 +59,13 @@ else {
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
-			//Fail2
-			$URL.="&deleteReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
 		
 		if ($result->rowCount()!=1) {
-			//Fail 2
-			$URL.="&deleteReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -119,8 +115,7 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-				//Fail2
-				$URL.="&deleteReturn=fail2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
@@ -184,8 +179,7 @@ else {
 			
 			
 			if ($partialFail==TRUE) {
-				//Fail3
-				$URL.="&deleteReturn=fail3" ;
+				$URL.="&return=warning2" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -193,12 +187,11 @@ else {
 				$mainMenu = new Gibbon\menuMain();
 				$mainMenu->setMenu() ;
 			
-				//Success 0
-				if ($orphaned!="true") {
-					$URLDelete=$URLDelete . "&deleteReturn=success0" ;
+					if ($orphaned!="true") {
+					$URLDelete=$URLDelete . "&return=warning0" ;
 				}
 				else {
-					$URLDelete=$URLDelete . "&deleteReturn=success1" ;
+					$URLDelete=$URLDelete . "&return=success0" ;
 				}
 				header("Location: {$URLDelete}");
 			}

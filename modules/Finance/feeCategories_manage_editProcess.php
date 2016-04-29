@@ -35,7 +35,6 @@ $gibbonFinanceFeeCategoryID=$_GET["gibbonFinanceFeeCategoryID"] ;
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/feeCategories_manage_edit.php&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Finance/feeCategories_manage_edit.php")==FALSE) {
-	//Fail 0
 	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
@@ -43,7 +42,6 @@ else {
 	//Proceed!
 	//Check if school year specified
 	if ($gibbonFinanceFeeCategoryID=="") {
-		//Fail1
 		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
@@ -55,14 +53,12 @@ else {
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
-			//Fail2
 			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
 	
 		if ($result->rowCount()!=1) {
-			//Fail 2
 			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 		}
@@ -73,8 +69,7 @@ else {
 			$active=$_POST["active"] ;
 			$description=$_POST["description"] ;
 			if ($name=="" OR $nameShort=="" OR $active=="") {
-				//Fail 3
-				$URL.="&return=error1" ;
+					$URL.="&return=error1" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -86,14 +81,12 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-					//Fail 2
-					$URL.="&return=error2" ;
+							$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
 				
-				//Success 0
-				$URL.="&return=success0" ;
+					$URL.="&return=success0" ;
 				header("Location: {$URL}");
 			}
 		}

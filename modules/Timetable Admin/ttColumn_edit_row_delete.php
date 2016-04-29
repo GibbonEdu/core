@@ -58,26 +58,7 @@ else {
 			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/ttColumn.php'>" . __($guid, 'Manage Columns') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/ttColumn_edit.php&gibbonTTColumnID=$gibbonTTColumnID'>" . __($guid, 'Edit Column') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Delete Column Row') . "</div>" ;
 			print "</div>" ;
 			
-			if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-			$deleteReturnMessage="" ;
-			$class="error" ;
-			if (!($deleteReturn=="")) {
-				if ($deleteReturn=="fail0") {
-					$deleteReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-				}
-				else if ($deleteReturn=="fail1") {
-					$deleteReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-				}
-				else if ($deleteReturn=="fail2") {
-					$deleteReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-				}
-				else if ($deleteReturn=="fail3") {
-					$deleteReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-				}
-				print "<div class='$class'>" ;
-					print $deleteReturnMessage;
-				print "</div>" ;
-			} 
+			if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
 			
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/ttColumn_edit_row_deleteProcess.php?gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTColumnID=$gibbonTTColumnID" ?>">

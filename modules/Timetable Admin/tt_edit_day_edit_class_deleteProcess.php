@@ -45,16 +45,14 @@ else {
 	$URLDelete=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/tt_edit_day_edit_class.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClassID=$gibbonTTDayRowClassID" ;
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/tt_edit_day_edit_class_delete.php")==FALSE) {
-		//Fail 0
-		$URL.="&deleteReturn=fail0" ;
+			$URL.="&return=error0" ;
 		header("Location: {$URL}");
 	}
 	else {
 		//Proceed!
 		//Check if school year specified
 		if ($gibbonTTDayID=="") {
-			//Fail1
-			$URL.="&deleteReturn=fail1" ;
+				$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -65,15 +63,13 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-				//Fail2
-				$URL.="&deleteReturn=fail2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
 			
 			if ($result->rowCount()<1) {
-				//Fail 2
-				$URL.="&deleteReturn=fail2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -85,14 +81,12 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-					//Fail2
-					$URL.="&deleteReturn=fail2" ;
+							$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}	
 				
-				//Success 0
-				$URLDelete=$URLDelete . "&deleteReturn=success0" ;
+					$URLDelete=$URLDelete . "&return=success0" ;
 				header("Location: {$URLDelete}");
 			}
 		}

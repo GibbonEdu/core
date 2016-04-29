@@ -1707,18 +1707,7 @@ else {
 								print "</div>" ; 
 							}
 							else {
-								if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-								$deleteReturnMessage="" ;
-								$class="error" ;
-								if (!($deleteReturn=="")) {
-									if ($deleteReturn=="success0") {
-										$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;		
-										$class="success" ;
-									}
-									print "<div class='$class'>" ;
-										print $deleteReturnMessage;
-									print "</div>" ;
-								} 
+								if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
 							
 								print "<p>" ;
 									print __($guid, "Student Notes provide a way to store information on students which does not fit elsewhere in the system, or which you want to be able to see quickly in one place.") . " <b>" . __($guid, 'Please remember that notes are visible to other users who have access to full student profiles (this should not generally include parents).') . "</b>" ;
@@ -2446,7 +2435,7 @@ else {
 					}
 					
 					else if ($subpage=="External Assessment") {
-						if (isActionAccessible($guid, $connection2, "/modules/Formal Assessment/externalAssessment_details.php")==FALSE) {
+						if (isActionAccessible($guid, $connection2, "/modules/Formal Assessment/externalAssessment_details.php")==FALSE AND isActionAccessible($guid, $connection2, "/modules/Formal Assessment/externalAssessment_view.php")==FALSE) {
 							print "<div class='error'>" ;
 								print __($guid, "Your request failed because you do not have access to this action.");
 							print "</div>" ;
@@ -2455,7 +2444,12 @@ else {
 							//Module includes
 							include "./modules/Formal Assessment/moduleFunctions.php" ;
 							
-							print externalAssessmentDetails($guid, $gibbonPersonID, $connection2) ;
+							//Print assessments
+							$gibbonYearGroupID="" ;
+							if (isset($row["gibbonYearGroupID"])) {
+								$gibbonYearGroupID=$row["gibbonYearGroupID"] ;
+							}
+							externalAssessmentDetails($guid, $gibbonPersonID, $connection2, $gibbonYearGroupID) ;
 						}
 					}
 					else if ($subpage=="Individual Needs") {
@@ -2561,23 +2555,6 @@ else {
 									print __($guid, "There are no records to display.") ;
 								print "</div>" ;
 							}
-						}
-					}
-					else if ($subpage=="External Assessment") {
-						if (isActionAccessible($guid, $connection2, "/modules/Formal Assessment/externalAssessment_details.php")==FALSE) {
-							print "<div class='error'>" ;
-								print __($guid, "Your request failed because you do not have access to this action.");
-							print "</div>" ;
-						}
-						else {
-							include "./modules/Formal Assessment/moduleFunctions.php" ;
-							
-							//Print assessments
-							$gibbonYearGroupID="" ;
-							if (isset($row["gibbonYearGroupID"])) {
-								$gibbonYearGroupID=$row["gibbonYearGroupID"] ;
-							}
-							externalAssessmentDetails($guid, $gibbonPersonID, $connection2, $gibbonYearGroupID) ;
 						}
 					}
 					else if ($subpage=="Activities") {
@@ -3168,7 +3145,7 @@ else {
 						$studentMenuLink[$studentMenuCount]="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=" . $_GET["q"] . "&gibbonPersonID=$gibbonPersonID&search=" . $search . "&search=$search&allStudents=$allStudents&subpage=Internal%20Assessment'>" . __($guid, 'Internal Assessment') . "</a></li>" ;
 						$studentMenuCount++ ;
 					}
-					if (isActionAccessible($guid, $connection2, "/modules/Formal Assessment/externalAssessment_details.php")) {
+					if (isActionAccessible($guid, $connection2, "/modules/Formal Assessment/externalAssessment_details.php") OR isActionAccessible($guid, $connection2, "/modules/Formal Assessment/externalAssessment_view.php")) {
 						$style="" ;
 						if ($subpage=="External Assessment") {
 							$style="style='font-weight: bold'" ;

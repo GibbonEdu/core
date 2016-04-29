@@ -30,11 +30,6 @@ $connection2 = $pdo->getConnection();
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
-//Check to see if academic year id variables are set, if not set them 
-if (($_SESSION[$guid]["gibbonAcademicYearID"]=="") OR ($_SESSION[$guid]["gibbonAcademicYearID"]=="")) {
-	setCurrentSchoolYear($guid, $connection2) ;
-}
-
 //Create password
 $password=randomPassword(8);
 
@@ -44,7 +39,7 @@ $input=$_POST["email"] ;
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=passwordReset.php" ;
 	
 if ($input=="") {
-	$URL=$URL. "&editReturn=fail0" ;
+	$URL=$URL. "&return=error0" ;
 	header("Location: {$URL}");
 }
 //Otherwise proceed
@@ -59,13 +54,13 @@ else {
 		$result->execute($data);
 	}
 	catch(PDOException $e) { 
-		$URL=$URL. "&editReturn=fail1" ;
+		$URL=$URL. "&return=error2" ;
 		header("Location: {$URL}");
 		exit() ;
 	}
 
 	if ($result->rowCount()!=1) {
-		$URL=$URL. "&editReturn=fail2" ;
+		$URL=$URL. "&return=error4" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -81,13 +76,13 @@ else {
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
-			$URL=$URL. "&editReturn=fail1" ;
+			$URL=$URL. "&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
 		
 		if ($result->rowCount()!=1) {
-			$URL=$URL. "&editReturn=fail2" ;
+			$URL=$URL. "&return=error2" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -97,12 +92,11 @@ else {
 			$headers="From: " . $_SESSION[$guid]["organisationAdministratorEmail"] ;
 
 			if (mail($to, $subject, $body, $headers)) {
-				$_SESSION[$guid]["password"]=$passwordHash ;
-				$URL=$URL. "&editReturn=success0" ;
+				$URL=$URL. "&return=success0" ;
 				header("Location: {$URL}");
 			}
 			else {
-				$URL=$URL. "&editReturn=fail3" ;
+				$URL=$URL. "&return=error3" ;
 				header("Location: {$URL}");
 			}
 		}

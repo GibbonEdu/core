@@ -21,73 +21,28 @@ print "<div class='trail'>" ;
 print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > </div><div class='trailEnd'>Preferences</div>" ;
 print "</div>" ;
 	
+//Deal with force reset notification
 if (isset($_GET["forceReset"])) {
 	$forceReset=$_GET["forceReset"] ;
 }
 else {
 	$forceReset=NULL ;
 }
-
-if (isset($_GET["forceResetReturn"])) {
-	$forceResetReturn=$_GET["forceResetReturn"] ;
-}
-else {
-	$forceResetReturn="" ;
-}
-$forceResetReturnMessage="" ;
-$class="error" ;
-if ($forceResetReturn!="" OR $forceReset=="Y") {
-	if ($forceReset=="Y") {
-		$forceResetReturnMessage="<b><u>Your account has been flagged for a password reset. You cannot continue into the system until you change your password.</b></u>";
-	}
-	if ($forceResetReturn=="fail0") {
-		$forceResetReturnMessage="<b><u>Your account status could not be updated, and so you cannot continue to use the system. Please contact <a href='mailto:" . $_SESSION[$guid]["organisationAdministratorEmail"] . "'>" . $_SESSION[$guid]["organisationAdministratorName"] . "</a> if you have any questions.</b></u>";
-	}
-	if ($forceResetReturn=="success0") {
-		$forceResetReturnMessage="<b><u>Your account has been successfully updated. You can now continue to use the system as per normal.</b></u>";
-		$class="success" ;
-	}
-	print "<div class='$class'>" ;
+if ($forceReset=="Y") {
+	$forceResetReturnMessage="<b><u>" . __($guid, "Your account has been flagged for a password reset. You cannot continue into the system until you change your password.") . "</b></u>";
+	print "<div class='error'>" ;
 		print $forceResetReturnMessage ;
 	print "</div>" ;
 }
 
-
-if (isset($_GET["editReturn"])) {
-	$editReturn=$_GET["editReturn"] ;
-}
-else {
-	$editReturn="" ;
-}
-$editReturnMessage="" ;
-$class="error" ;
-if (!($editReturn=="")) {
-	if ($editReturn=="fail0") {
-		$editReturnMessage="Required fields not set." ;	
-	}
-	else if ($editReturn=="fail1") {
-		$editReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-	}
-	else if ($editReturn=="fail2") {
-		$editReturnMessage="Your request failed due to non-matching passwords." ;	
-	}
-	else if ($editReturn=="fail3") {
-		$editReturnMessage="Your request failed due to incorrect current password." ;	
-	}
-	else if ($editReturn=="fail6") {
-		$editReturnMessage="Your request failed because your password to not meet the minimum requirements for strength." ;	
-	}
-	else if ($editReturn=="fail7") {
-		$editReturnMessage="Your request failed because your new password is the same as your current password." ;	
-	}	
-	else if ($editReturn=="success0") {
-		$editReturnMessage=__($guid, "Your request was completed successfully.") ;	
-		$class="success" ;
-	}
-	print "<div class='$class'>" ;
-		print $editReturnMessage;
-	print "</div>" ;
-} 
+$returns=array() ;
+$returns["faila"] = sprintf(__($guid, 'Your account status could not be updated, and so you cannot continue to use the system. Please contact %1$s if you have any questions.'), "<a href='mailto:" . $_SESSION[$guid]["organisationAdministratorEmail"] . "'>" . $_SESSION[$guid]["organisationAdministratorName"] . "</a>") ;
+$returns["successa"] = __($guid, "Your account has been successfully updated. You can now continue to use the system as per normal.") ;
+$returns["error4"] = __($guid, "Your request failed due to non-matching passwords.") ;
+$returns["error3"] = __($guid, "Your request failed due to incorrect current password.") ;
+$returns["error6"] = __($guid, "Your request failed because your password to not meet the minimum requirements for strength.") ;
+$returns["error7"] = __($guid, "Your request failed because your new password is the same as your current password.") ;
+if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, $returns); }
 
 try {
 	$data=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 

@@ -31,60 +31,24 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Manage Modules') . "</div>" ;
 	print "</div>" ;
 	
-	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-	$deleteReturnMessage="" ;
-	$class="error" ;
-	if (!($deleteReturn=="")) {
-		if ($deleteReturn=="success0") {
-			$deleteReturnMessage="Uninstall was successful. You will still need to remove the module's files yourself." ;	
-			$class="success" ;
-		}
-		if ($deleteReturn=="success1") {
-			$deleteReturnMessage="Uninstall was successful." ;	
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $deleteReturnMessage;
-		print "</div>" ;
-	} 
+	$returns=array() ;
+	$returns["warning0"] = __($guid, "Uninstall was successful. You will still need to remove the module's files yourself.") ;
+	$returns["success0"] = __($guid, "Uninstall was successful.") ;
+	$returns["error5"] = __($guid, "Install failed because either the module name was not given or the manifest file was invalid.") ;
+	$returns["error6"] = __($guid, "Install failed because a module with the same name is already installed.") ;	
+	$returns["warning1"] = __($guid, "Install failed, but module was added to the system and set non-active.") ;
+	$returns["warning2"] = __($guid, "Install was successful, but module could not be activated.") ;
+	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, $returns); }
 	
-	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
-	$addReturnMessage ="" ;
-	$class="error" ;
-	if (!($addReturn=="")) {
-		if ($addReturn=="fail0") {
-			$addReturnMessage =__($guid, "Your request failed because you do not have access to this action.") ;	
+	
+	if (isset($_SESSION[$guid]["moduleInstallError"])) {
+		if ($_SESSION[$guid]["moduleInstallError"]!="") {
+			print "<div class='error'>" ;
+				print __($guid, "The following SQL statements caused errors:") . " " . $_SESSION[$guid]["moduleInstallError"] ;
+			print "</div>" ;
 		}
-		else if ($addReturn=="fail2") {
-			$addReturnMessage =__($guid, "Your request failed due to a database error.") ;	
-		}
-		else if ($addReturn=="fail3") {
-			$addReturnMessage =__($guid, "Install failed because either the module name was not given or the manifest file was invalid.") ;	
-		}
-		else if ($addReturn=="fail4") {
-			$addReturnMessage =("Install failed because a module with the same name is already installed.") ;	
-		}
-		else if ($addReturn=="fail5") {
-			$addReturnMessage =__($guid, "Install failed, but module was added to the system and set non-active.") ;	
-		}
-		else if ($addReturn=="fail6") {
-			$addReturnMessage =__($guid, "Install was successful, but module could not be activated.") ;
-		}
-		else if ($addReturn=="success0") {
-			$addReturnMessage =__($guid, "Your request was successful. You can now add another record if you wish.") ;	
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $addReturnMessage ;
-			if (isset($_SESSION[$guid]["moduleInstallError"])) {
-				if ($_SESSION[$guid]["moduleInstallError"]!="") {
-					print "<br/><br/>" ;
-					print __($guid, "The following SQL statements caused errors:") . " " . $_SESSION[$guid]["moduleInstallError"] ;
-				}
-				$_SESSION[$guid]["moduleInstallError"]=NULL ;
-			}
-		print "</div>" ;
-	} 
+		$_SESSION[$guid]["moduleInstallError"]=NULL ;
+	}
 	
 	//Get modules from database, and store in an array
 	try {

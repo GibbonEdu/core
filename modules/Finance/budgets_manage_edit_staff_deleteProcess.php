@@ -34,7 +34,6 @@ $gibbonFinanceBudgetPersonID=$_GET["gibbonFinanceBudgetPersonID"] ;
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["address"]) . "/budgets_manage_edit.php&gibbonFinanceBudgetID=$gibbonFinanceBudgetID" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/department_manage_edit.php")==FALSE) {
-	//Fail 0
 	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
@@ -43,7 +42,6 @@ else {
 	
 	//Check if school year specified
 	if ($gibbonFinanceBudgetID=="" OR $gibbonFinanceBudgetPersonID=="") {
-		//Fail1
 		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
@@ -55,14 +53,12 @@ else {
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
-			//Fail2
 			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
 		
 		if ($result->rowCount()!=1) {
-			//Fail 2
 			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 		}
@@ -75,13 +71,11 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-				//Fail 2
-				$URL.="&return=error2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
 			
-			//Success 0
 			$URL.="&return=success0" ;
 			header("Location: {$URL}");
 		}

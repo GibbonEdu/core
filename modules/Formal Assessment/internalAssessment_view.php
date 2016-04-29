@@ -181,7 +181,7 @@ else {
 					print "Choose Student" ;
 					print "</h2>" ;
 					
-					print "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Behaviour/behaviour_manage.php'>" ;
+					print "<form method='get' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" ;
 						print "<table class='noIntBorder' cellspacing='0' style='width: 100%'>" ;
 							?>
 							<tr>

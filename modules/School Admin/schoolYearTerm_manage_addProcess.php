@@ -32,8 +32,7 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/schoolYearTerm_manage_add.php" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/schoolYearTerm_manage_add.php")==FALSE) {
-	//Fail 0
-	$URL.="&addReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -47,8 +46,7 @@ else {
 	$lastDay=dateConvert($guid, $_POST["lastDay"]) ;
 	
 	if ($gibbonSchoolYearID=="" OR $name=="" OR $nameShort=="" OR $sequenceNumber=="" OR is_numeric($sequenceNumber)==FALSE OR $firstDay=="" OR $lastDay=="") {
-		//Fail 3
-		$URL.="&addReturn=fail3" ;
+		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -60,15 +58,13 @@ else {
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
-			//Fail 2
-			$URL.="&addReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
 		
 		if ($result->rowCount()>0) {
-			//Fail 4
-			$URL.="&addReturn=fail4" ;
+			$URL.="&return=error3" ;
 			header("Location: {$URL}");
 		}
 		else {	
@@ -80,14 +76,12 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-				//Fail 2
-				$URL.="&addReturn=fail2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
 			
-			//Success 0
-			$URL.="&addReturn=success0" ;
+			$URL.="&return=success0" ;
 			header("Location: {$URL}");
 		}
 	}

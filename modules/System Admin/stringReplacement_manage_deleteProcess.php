@@ -38,16 +38,14 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 $URLDelete=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/stringReplacement_manage.php&search=$search" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/System Admin/stringReplacement_manage_delete.php")==FALSE) {
-	//Fail 0
-	$URL.="&deleteReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
 	//Proceed!
 	//Check if school year specified
 	if ($gibbonStringID=="") {
-		//Fail1
-		$URL.="&deleteReturn=fail1" ;
+		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -58,15 +56,13 @@ else {
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
-			//Fail2
-			$URL.="&deleteReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
 		
 		if ($result->rowCount()!=1) {
-			//Fail 2
-			$URL.="&deleteReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -78,8 +74,7 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-				//Fail2
-				$URL.="&deleteReturn=fail2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
@@ -88,8 +83,7 @@ else {
 			setStringReplacementList($connection2, $guid) ;
 			$_SESSION[$guid]["pageLoads"]=NULL ;
 			
-			//Success 0
-			$URLDelete=$URLDelete . "&deleteReturn=success0" ;
+			$URLDelete=$URLDelete . "&return=success0" ;
 			header("Location: {$URLDelete}");
 		}
 	}

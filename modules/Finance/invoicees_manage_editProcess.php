@@ -35,7 +35,6 @@ $gibbonFinanceInvoiceeID=$_GET["gibbonFinanceInvoiceeID"] ;
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/invoicees_manage_edit.php&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&search=" . $_GET["search"] . "&allUsers=" . $_GET["allUsers"] ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Finance/invoicees_manage_edit.php")==FALSE) {
-	//Fail 0
 	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
@@ -43,7 +42,6 @@ else {
 	//Proceed!
 	//Check if school year specified
 	if ($gibbonFinanceInvoiceeID=="") {
-		//Fail1
 		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
@@ -55,14 +53,12 @@ else {
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
-			//Fail2
 			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
 	
 		if ($result->rowCount()!=1) {
-			//Fail 2
 			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 		}
@@ -100,8 +96,7 @@ else {
 				$gibbonFinanceFeeCategoryIDList=NULL ;
 			}
 			if ($invoiceTo=="") {
-				//Fail 3
-				$URL.="&return=error1" ;
+					$URL.="&return=error1" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -113,14 +108,12 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-					//Fail 2
-					$URL.="&return=error2" ;
+							$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
 				
-				//Success 0
-				$URL.="&return=success0" ;
+					$URL.="&return=success0" ;
 				header("Location: {$URL}");
 			}
 		}

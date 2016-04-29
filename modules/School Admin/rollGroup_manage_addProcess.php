@@ -33,8 +33,7 @@ $gibbonSchoolYearID=$_POST["gibbonSchoolYearID"] ;
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/rollGroup_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/rollGroup_manage_add.php")==FALSE) {
-	//Fail 0
-	$URL.="&addReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -68,8 +67,7 @@ else {
 	}
 	
 	if ($gibbonSchoolYearID=="" OR $name=="" OR $nameShort=="") {
-		//Fail 3
-		$URL.="&addReturn=fail3" ;
+		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -81,15 +79,13 @@ else {
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
-			//Fail 2
-			$URL.="&addReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
 		
 		if ($result->rowCount()>0) {
-			//Fail 4
-			$URL.="&addReturn=fail4" ;
+			$URL.="&return=error3" ;
 			header("Location: {$URL}");
 		}
 		else {	
@@ -101,14 +97,12 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-				//Fail 2
-				$URL.="&addReturn=fail2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ; 
 			}
 			
-			//Success 0
-			$URL.="&addReturn=success0" ;
+			$URL.="&return=success0" ;
 			header("Location: {$URL}");
 		}
 	}

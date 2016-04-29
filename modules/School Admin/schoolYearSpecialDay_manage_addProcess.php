@@ -57,16 +57,14 @@ if (is_numeric($_POST["schoolCloseH"]) AND is_numeric($_POST["schoolCloseM"])) {
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/schoolYearSpecialDay_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/schoolYearSpecialDay_manage_add.php")==FALSE) {
-	//Fail 0
-	$URL.="&addReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
 	//Proceed!
 	//Validate Inputs
 	if ($date=="" OR $type=="" OR $name=="" OR $gibbonSchoolYearID=="" OR $dateStamp=="" OR $gibbonSchoolYearTermID=="" OR $firstDay=="" OR $lastDay=="") {
-		//Fail 3
-		$URL.="&addReturn=fail3" ;
+		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -76,8 +74,7 @@ else {
 			$result=$connection2->query($sql);   
 		}
 		catch(PDOException $e) { 
-			//Fail 2
-			$URL.="&duplicateReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}		
@@ -90,21 +87,18 @@ else {
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
-			//Fail 2
-			$URL.="&addReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
 		
 		if ($dateStamp<$firstDay OR $dateStamp>$lastDay) {
-			//Fail 5
-			$URL.="&addReturn=fail5" ;
+			$URL.="&return=warning1" ;
 			header("Location: {$URL}");
 		}
 		else {
 			if ($result->rowCount()>0) {
-				//Fail 4
-				$URL.="&addReturn=fail4" ;
+				$URL.="&return=error3" ;
 				header("Location: {$URL}");
 			}
 			else {	
@@ -116,8 +110,7 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-					//Fail 2
-					$URL.="&addReturn=fail2" ;
+					$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
@@ -129,8 +122,7 @@ else {
 				}
 				catch(PDOException $e) { }	
 				
-				//Success 0
-				$URL.="&addReturn=success0" ;
+				$URL.="&return=success0" ;
 				header("Location: {$URL}");
 			}
 		}

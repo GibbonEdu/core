@@ -40,22 +40,19 @@ $gibbonUnitClassID=$_GET["gibbonUnitClassID"];
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/units_edit_working_copyback.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitID=$gibbonUnitID&gibbonUnitBlockID=$gibbonUnitBlockID&gibbonUnitClassBlockID=$gibbonUnitClassBlockID&gibbonUnitClassID=$gibbonUnitClassID" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Planner/units_edit_working_copyback.php")==FALSE) {
-	//Fail 0
-	$URL.="&copyReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, "/modules/Planner/units_edit_working_copyback.php", $connection2) ;
 	if ($highestAction==FALSE) {
-		//Fail 0
-		$URL.="&copyReturn=fail0" ;
+			$URL.="&return=error0" ;
 		header("Location: {$URL}");
 	}
 	else {
 		//Proceed!
 		//Validate Inputs
 		if ($gibbonSchoolYearID=="" OR $gibbonCourseID=="" OR $gibbonUnitID=="" OR $gibbonCourseClassID=="" OR $gibbonUnitClassID=="") {
-			//Fail 3
 			$URL.="&copyReturn=fail3" ;
 			header("Location: {$URL}");
 		}
@@ -74,14 +71,12 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-				//Fail 2
-				$URL.="&copyReturn=fail2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
 			
 			if ($result->rowCount()!=1) {
-				//Fail 4
 				$URL.="&copyReturn=fail4" ;
 				header("Location: {$URL}");
 			}
@@ -94,14 +89,12 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-					//Fail 2
-					$URL.="&copyReturn=fail2" ;
+							$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
 				
 				if ($result->rowCount()!=1) {
-					//Fail 4
 					$URL.="&copyReturn=fail4" ;
 					header("Location: {$URL}");
 				}
@@ -135,12 +128,11 @@ else {
 						
 					//RETURN
 					if ($partialFail==TRUE) {
-						//Fail 6
 						$URL.="&copyReturn=fail6" ;
 						header("Location: {$URL}");
 					}
 					else {
-						$URL.="&copyReturn=success0" ;
+						$URL.="&return=success0" ;
 						header("Location: {$URL}") ;
 					}
 				}

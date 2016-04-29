@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include "../../functions.php" ;
 include "../../config.php" ;
+require "../../lib/PHPMailer/class.phpmailer.php";
 
 //New PDO DB connection
 $pdo = new Gibbon\sqlConnection();
@@ -56,8 +57,7 @@ else {
 
 
 if ($proceed==FALSE) {
-	//Fail 0
-	$URL.="&addReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -554,8 +554,7 @@ else {
 			}
 		}
 		if ($surname=="" OR $firstName=="" OR $preferredName=="" OR $officialName=="" OR $gender=="" OR $dob=="" OR $languageHomePrimary=="" OR $languageFirst=="" OR $countryOfBirth=="" OR $citizenship1="" OR $gibbonSchoolYearIDEntry=="" OR $dateStart=="" OR $gibbonYearGroupIDEntry=="" OR $sen=="" OR $howDidYouHear=="" OR (isset($_POST["agreement"]) AND $agreement!="Y") OR $familyFail) {
-			//Fail 3
-			$URL.="&addReturn=fail3" ;
+			$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -637,8 +636,7 @@ else {
 			}
 			
 			if ($customRequireFail) {
-				//Fail 3
-				$URL.="&addReturn=fail3" ;
+					$URL.="&return=error1" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -664,8 +662,7 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-					//Fail 2
-					$URL.="&addReturn=fail2" ;
+							$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
@@ -773,13 +770,12 @@ else {
 				$paypalAPISignature=getSettingByScope($connection2, "System", "paypalAPISignature") ;
 	
 				if ($applicationFee>0 AND is_numeric($applicationFee) AND $enablePayments=="Y" AND $paypalAPIUsername!="" AND $paypalAPIPassword!="" AND $paypalAPISignature!="") {
-					$_SESSION[$guid]["gatewayCurrencyNoSupportReturnURL"]=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/applicationForm.php&addReturn=success4&id=$AI" ;
-					$URL=$_SESSION[$guid]["absoluteURL"] . "/lib/paypal/expresscheckout.php?Payment_Amount=$applicationFee&return=" . urlencode("modules/Students/applicationFormProcess.php?addReturn=success1&id=$AI&applicationFee=$applicationFee") . "&fail=" . urlencode("modules/Students/applicationFormProcess.php?addReturn=success2&id=$AI&applicationFee=$applicationFee") ;
+					$_SESSION[$guid]["gatewayCurrencyNoSupportReturnURL"]=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/applicationForm.php&return=success4&id=$AI" ;
+					$URL=$_SESSION[$guid]["absoluteURL"] . "/lib/paypal/expresscheckout.php?Payment_Amount=$applicationFee&return=" . urlencode("modules/Students/applicationFormProcess.php?return=success1&id=$AI&applicationFee=$applicationFee") . "&fail=" . urlencode("modules/Students/applicationFormProcess.php?return=success2&id=$AI&applicationFee=$applicationFee") ;
 					header("Location: {$URL}");
 				}
 				else {
-					//Success 0
-					$URL.="&addReturn=success0&id=$AI" ;
+							$URL.="&return=success0&id=$AI" ;
 					header("Location: {$URL}");
 				}
 			}
@@ -789,7 +785,7 @@ else {
 	else {
 		//Get returned paypal tokens, ids, etc
 		$paymentMade='N' ;
-		if ($_GET["addReturn"]=="success1") {
+		if ($_GET["return"]=="success1") {
 			$paymentMade='Y' ;
 		}
 		$paymentToken=NULL ;
@@ -820,7 +816,7 @@ else {
 			mail($to, $subject, $body, $headers) ;
 			
 			//Success 2
-			$URL.="&addReturn=success2&id=" . $_GET["id"] ;
+			$URL.="&return=success2&id=" . $_GET["id"] ;
 			header("Location: {$URL}");
 			exit() ;
 		}
@@ -862,14 +858,12 @@ else {
 					$body=__($guid, 'Payment via PayPal was successful, but has not been recorded due to a system error. Please check your PayPal account for details. The following may be useful:') . "\n\nPayment Token: $paymentToken\n\nPayer ID: $paymentPayerID\n\nApplication Form ID: $gibbonApplicationFormID\n\nApplication Fee: $applicationFee\n\n" . $_SESSION[$guid]["systemName"] . " " . __($guid, 'Administrator');
 					mail($to, $subject, $body, $headers) ;
 			
-					//Success 3
-					$URL.="&addReturn=success3&id=" . $_GET["id"] ;
+					$URL.="&return=success3&id=" . $_GET["id"] ;
 					header("Location: {$URL}");
 					exit ;
 				}
 				
-				//Success 1
-				$URL.="&addReturn=success1&id=" . $_GET["id"] ;
+				$URL.="&return=success1&id=" . $_GET["id"] ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -899,13 +893,13 @@ else {
 					mail($to, $subject, $body, $headers) ;
 			
 					//Success 2
-					$URL.="&addReturn=success2&id=" . $_GET["id"] ;
+					$URL.="&return=success2&id=" . $_GET["id"] ;
 					header("Location: {$URL}");
 					exit ;
 				}
 				
 				//Success 2
-				$URL.="&addReturn=success2&id=" . $_GET["id"] ;
+				$URL.="&return=success2&id=" . $_GET["id"] ;
 				header("Location: {$URL}");
 			}
 		}

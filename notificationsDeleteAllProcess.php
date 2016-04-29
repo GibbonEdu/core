@@ -39,12 +39,12 @@ try {
 	$result->execute($data);
 }
 catch(PDOException $e) { 
-	$URL=$URL. "&deleteReturn=fail2" ;
+	$URL=$URL. "&return=error2" ;
 	header("Location: {$URL}");
 	exit() ;
 }
 
-$URL=$URL. "&deleteReturn=success0" ;
+$URL=$URL. "&return=success0" ;
 header("Location: {$URL}");
 
 ?>

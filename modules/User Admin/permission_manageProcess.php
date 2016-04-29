@@ -32,14 +32,12 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/permission_manage.php" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/permission_manage.php")==FALSE) {
-	//Fail 0
-	$URL.="&updateReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
 	if (is_null(ini_get("max_input_vars"))!=FALSE AND ini_get("max_input_vars")<=count($_POST)) {
-		//Fail 3
-		$URL.="&updateReturn=fail3" ;
+		$URL.="&return=error3" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -50,8 +48,7 @@ else {
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
-			//Fail 2
-			$URL.="&updateReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
@@ -79,15 +76,14 @@ else {
 		}
 		
 		if ($insertFail==TRUE) {
-			//Fail 2
-			$URL.="&updateReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 		}
 		else {
 			$_SESSION[$guid]["pageLoads"]=NULL ;
 			
 			//Success0
-			$URL.="&updateReturn=success0" ;
+			$URL.="&return=success0" ;
 			header("Location: {$URL}");
 		}
 	}

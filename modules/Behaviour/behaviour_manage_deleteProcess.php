@@ -34,22 +34,19 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 $URLDelete=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/behaviour_manage.php&gibbonPersonID=" . $_GET["gibbonPersonID"] . "&gibbonRollGroupID=" . $_GET["gibbonRollGroupID"] . "&gibbonYearGroupID=" . $_GET["gibbonYearGroupID"] . "&type=" .$_GET["type"] ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_manage_delete.php")==FALSE) {
-	//Fail 0
 	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, $_POST["address"], $connection2) ;
 	if ($highestAction==FALSE) {
-		//Fail 0
-		$URL.="&return=error0$params" ;
+			$URL.="&return=error0$params" ;
 		header("Location: {$URL}");
 	}
 	else {
 		//Proceed!
 		if ($gibbonBehaviourID=="") {
-			//Fail1
-			$URL.="&return=error1" ;
+				$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -60,15 +57,13 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-				//Fail2
-				$URL.="&return=error2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
 			
 			if ($result->rowCount()!=1) {
-				//Fail 2
-				$URL.="&return=error2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -82,16 +77,14 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-					//Fail2
-					$URL.="&return=error2" ;
+							$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
 				
 				$return=deleteLike($connection2, "Behaviour", "gibbonBehaviourID", $gibbonBehaviourID, $_SESSION[$guid]["gibbonPersonID"], $row["gibbonPersonID"], "Positive Behaviour") ;
 				
-				//Success 0
-				$URLDelete=$URLDelete . "&return=success0" ;
+					$URLDelete=$URLDelete . "&return=success0" ;
 				header("Location: {$URLDelete}");
 			}
 		}

@@ -24081,7 +24081,7 @@ msgstr "تم التثبيت بنجاح، ولكن تعذر تنشيط المود
 #: Admin/theme_manage.php:70 modules/System Admin/module_manage.php:74
 #: modules/System Admin/theme_manage.php:70
 msgid ""
-"Your request was successful. You can now add another record if you wish."
+"Your request was successful."
 msgstr "تم طلبك بنجاح. يمكنك الآن إضافة سجل آخر إذا كنت ترغب."
 
 #: modules/System Admin/module_manage_install.php:64
@@ -65050,7 +65050,7 @@ msgstr "الاسم المختصر"
 #: modules/User Admin/user_manage_edit.php:64
 msgid ""
 "Your request was completed successfully, but one or more images were the "
-"wrong size and so were not saved. You can now add another record if you wish."
+"wrong size and so were not saved."
 msgstr ""
 "تم الانتهاء من طلبك بنجاح، ولكن واحدة أو أكثر من الصور بحجم خطأ ولذلك لم يتم "
 "حفظها .يمكنك الآن إضافة سجل آخر إذا كنت ترغب في ذلك."
@@ -70514,7 +70514,7 @@ msgstr ""
 #: modules/School Admin/house_manage_add.php:55
 msgid ""
 "Your request was completed successfully, but one or more images could not be "
-"saved. You can now add another record if you wish."
+"saved."
 msgstr ""
 
 #: modules/School Admin/spaceSettings.php:31

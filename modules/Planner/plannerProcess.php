@@ -75,24 +75,21 @@ else {
 }
 	
 if (isActionAccessible($guid, $connection2, "/modules/Planner/planner.php")==FALSE) {
-	//Fail 0
-	$URL.="&updateReturn=fail0$params" ;
+	$URL.="&return=error0$params" ;
 	header("Location: {$URL}");
 }
 else {
 	//Proceed!
 	//Check if school year specified
 	if ($gibbonPlannerEntryID=="" OR ($viewBy=="class" AND $gibbonCourseClassID=="")) {
-		//Fail1
-		$URL.="&updateReturn=fail1$params" ;
+		$URL.="&return=error1$params" ;
 		header("Location: {$URL}");
 	}
 	else {
 		//Get action with highest precendence
 		$highestAction=getHighestGroupedAction($guid, $_GET["address"], $connection2) ;
 		if ($highestAction==FALSE) {
-			//Fail 0
-			$URL.="&updateReturn=fail0$params" ;
+					$URL.="&return=error0$params" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -137,8 +134,7 @@ else {
 			}
 			
 			if ($proceed==false) {
-				//Fail2
-				$URL.="&updateReturn=fail2$params" ;
+					$URL.="&return=error2$params" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -147,15 +143,13 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-					//Fail 2
-					$URL.="&updateReturn=fail2$params" ;
+							$URL.="&return=error2$params" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
 				
 				if ($result->rowCount()!=1) {
-					//Fail 2
-					$URL.="&updateReturn=fail2$params" ;
+							$URL.="&return=error2$params" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -180,13 +174,11 @@ else {
 						}
 						
 						if ($insertFail==TRUE) {
-							//Fail 2
-							$URL.="&updateReturn=fail2$params" ;
+											$URL.="&return=error2$params" ;
 							header("Location: {$URL}");
 						}
 						else {
-							//Success 0
-							$URL.="&updateReturn=success0$params" ;
+											$URL.="&return=success0$params" ;
 							header("Location: {$URL}");
 						}
 					}
@@ -210,13 +202,11 @@ else {
 						}
 						
 						if ($insertFail==TRUE) {
-							//Fail 2
-							$URL.="&updateReturn=fail2$params" ;
+											$URL.="&return=error2$params" ;
 							header("Location: {$URL}");
 						}
 						else {
-							//Success 0
-							$URL.="&updateReturn=success0$params" ;
+											$URL.="&return=success0$params" ;
 							header("Location: {$URL}");
 						}
 					}

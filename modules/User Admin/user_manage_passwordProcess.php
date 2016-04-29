@@ -33,16 +33,14 @@ $gibbonPersonID=$_GET["gibbonPersonID"] ;
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/user_manage_password.php&gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] ;
 
 if (isActionAccessible($guid, $connection2, "/modules/User Admin/user_manage_password.php")==FALSE) {
-	//Fail 0
-	$URL.="&updateReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
 	//Proceed!
 	//Check if person specified
 	if ($gibbonPersonID=="") {
-		//Fail1
-		$URL.="&updateReturn=fail1" ;
+		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -53,15 +51,13 @@ else {
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
-			//Fail2
-			$URL.="&updateReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
 		
 		if ($result->rowCount()!=1) {
-			//Fail 2
-			$URL.="&updateReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -71,8 +67,7 @@ else {
 			
 			//Validate Inputs
 			if ($passwordNew=="" OR $passwordConfirm=="") {
-				//Fail 3
-				$URL.="&updateReturn=fail3" ;
+					$URL.="&return=error3" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -80,14 +75,13 @@ else {
 				$passwordMatch=doesPasswordMatchPolicy($connection2, $passwordNew) ;
 				
 				if ($passwordMatch==FALSE) {
-					//Fail 6
-					$URL.="&updateReturn=fail6" ;
+					$URL.="&return=error6" ;
 					header("Location: {$URL}");
 				}
 				else {
 					//Check new passwords match
 					if ($passwordNew!=$passwordConfirm) {
-						$URL.="&editReturn=fail5" ;
+						$URL.="&return=error5" ;
 						header("Location: {$URL}");
 					}
 					else {	
@@ -102,14 +96,12 @@ else {
 							$result->execute($data);
 						}
 						catch(PDOException $e) { 
-							//Fail 2
-							$URL.="&updateReturn=fail2" ;
+							$URL.="&return=error2" ;
 							header("Location: {$URL}");
 							exit() ;
 						}
 	
-						//Success 0
-						$URL.="&updateReturn=success0" ;
+						$URL.="&return=success0" ;
 						header("Location: {$URL}");
 					}
 				}

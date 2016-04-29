@@ -39,16 +39,14 @@ else {
 	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/ttColumn_edit_row_edit.php&gibbonTTColumnID=$gibbonTTColumnID&gibbonTTColumnRowID=$gibbonTTColumnRowID" ;
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/ttColumn_edit_row_edit.php")==FALSE) {
-		//Fail 0
-		$URL.="&updateReturn=fail0" ;
+			$URL.="&return=error0" ;
 		header("Location: {$URL}");
 	}
 	else {
 		//Proceed!
 		//Check if tt specified
 		if ($gibbonTTColumnRowID=="") {
-			//Fail1
-			$URL.="&updateReturn=fail1" ;
+				$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -59,15 +57,13 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-				//Fail 2
-				$URL.="&deleteReturn=fail2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
 			
 			if ($result->rowCount()!=1) {
-				//Fail 2
-				$URL.="&updateReturn=fail2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -79,8 +75,7 @@ else {
 				$type=$_POST["type"] ;
 
 				if ($name=="" OR $nameShort=="" OR $timeStart=="" OR $timeEnd=="" OR $type=="") {
-					//Fail 3
-					$URL.="&updateReturn=fail3" ;
+							$URL.="&return=error3" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -92,15 +87,13 @@ else {
 						$result->execute($data);
 					}
 					catch(PDOException $e) { 
-						//Fail 2
-						$URL.="&updateReturn=fail2" ;
+									$URL.="&return=error2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
 					
 					if ($result->rowCount()>0) {
-						//Fail 4
-						$URL.="&updateReturn=fail4" ;
+						$URL.="&return=error3" ;
 						header("Location: {$URL}");
 					}
 					else {	
@@ -112,14 +105,12 @@ else {
 							$result->execute($data);
 						}
 						catch(PDOException $e) { 
-							//Fail 2
-							$URL.="&updateReturn=fail2" ;
+											$URL.="&return=error2" ;
 							header("Location: {$URL}");
 							exit() ;
 						}
 						
-						//Success 0
-						$URL.="&updateReturn=success0" ;
+									$URL.="&return=success0" ;
 						header("Location: {$URL}");
 					}
 				}

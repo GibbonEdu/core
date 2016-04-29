@@ -39,14 +39,12 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 $time=time() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php")==FALSE) {
-	//Fail 0
-	$URL.="&addReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
 	if (empty($_POST)) {
-		//Fail 5
-		$URL.="&addReturn=fail5" ;
+		$URL.="&return=warning1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -104,8 +102,7 @@ else {
 		$body=stripslashes($_POST["body"]) ;
 
 		if ($subject=="" OR $body=="" OR ($email=="Y" AND $from=="")) {
-			//Fail 3
-			$URL.="&addReturn=fail3" ;
+			$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -115,8 +112,7 @@ else {
 				$result=$connection2->query($sql);
 			}
 			catch(PDOException $e) {
-				//Fail 2
-				$URL.="&addReturn=fail2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
@@ -127,8 +123,7 @@ else {
 				$resultAI=$connection2->query($sqlAI);
 			}
 			catch(PDOException $e) {
-				//Fail 2
-				$URL.="&addReturn=fail2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
@@ -144,8 +139,7 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) {
-				//Fail 2
-				$URL.="&addReturn=fail2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
@@ -155,8 +149,7 @@ else {
 				$result=$connection2->query($sql);
 			}
 			catch(PDOException $e) {
-				//Fail 2
-				$URL.="&addReturn=fail2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
@@ -1820,13 +1813,11 @@ else {
 
 
 			if ($partialFail==TRUE) {
-				//Fail 4
-				$URL.="&addReturn=fail4" ;
+				$URL.="&return=warning1" ;
 				header("Location: {$URL}");
 			}
 			else {
-				//Success 0
-				$URL.="&addReturn=success0&emailCount=" . $emailCount . "&smsCount=" . $smsCount . "&smsBatchCount=" . $smsBatchCount ;
+					$URL.="&return=success0&emailCount=" . $emailCount . "&smsCount=" . $smsCount . "&smsBatchCount=" . $smsBatchCount ;
 				header("Location: {$URL}") ;
 			}
 		}

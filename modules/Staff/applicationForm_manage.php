@@ -31,31 +31,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Manage Applications') . "</div>" ;
 	print "</div>" ;
 	
-	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-	$deleteReturnMessage="" ;
-	$class="error" ;
-	if (!($deleteReturn=="")) {
-		if ($deleteReturn=="success0") {
-			$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;		
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $deleteReturnMessage;
-		print "</div>" ;
-	}
-	
-	if (isset($_GET["rejectReturn"])) { $rejectReturn=$_GET["rejectReturn"] ; } else { $rejectReturn="" ; }
-	$rejectReturnMessage="" ;
-	$class="error" ;
-	if (!($rejectReturn=="")) {
-		if ($rejectReturn=="success0") {
-			$rejectReturnMessage="Application was sucessfully rejected." ;	
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $rejectReturnMessage;
-		print "</div>" ;
-	} 
+	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
 	
 	//Set pagination variable
 	$page=1 ; if (isset($_GET["page"])) { $page=$_GET["page"] ; }
