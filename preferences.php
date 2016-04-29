@@ -36,7 +36,7 @@ if ($forceReset=="Y") {
 }
 
 $returns=array() ;
-$returns["faila"] = sprintf(__($guid, 'Your account status could not be updated, and so you cannot continue to use the system. Please contact %1$s if you have any questions.'), "<a href='mailto:" . $_SESSION[$guid]["organisationAdministratorEmail"] . "'>" . $_SESSION[$guid]["organisationAdministratorName"] . "</a>") ;
+$returns["errora"] = sprintf(__($guid, 'Your account status could not be updated, and so you cannot continue to use the system. Please contact %1$s if you have any questions.'), "<a href='mailto:" . $_SESSION[$guid]["organisationAdministratorEmail"] . "'>" . $_SESSION[$guid]["organisationAdministratorName"] . "</a>") ;
 $returns["successa"] = __($guid, "Your account has been successfully updated. You can now continue to use the system as per normal.") ;
 $returns["error4"] = __($guid, "Your request failed due to non-matching passwords.") ;
 $returns["error3"] = __($guid, "Your request failed due to incorrect current password.") ;

@@ -100,7 +100,7 @@ else {
 						$result->execute($data);
 					}
 					catch(PDOException $e) { 
-									$URL.="&deployReturn=fail2" ;
+									$URL.="&deployReturn=error2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
@@ -113,7 +113,7 @@ else {
 						$resultHooks->execute($dataHooks);
 					}
 					catch(PDOException $e) { 
-									$URL.="&deployReturn=fail2" ;
+									$URL.="&deployReturn=error2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
@@ -128,7 +128,7 @@ else {
 								$result->execute($data);
 							}
 							catch(PDOException $e) { 
-													$URL.="&deployReturn=fail2" ;
+													$URL.="&deployReturn=error2" ;
 								header("Location: {$URL}");
 								exit() ;
 							}									
@@ -244,7 +244,7 @@ else {
 
 					//RETURN
 					if ($partialFail==TRUE) {
-						$URL.="&updateReturn=fail6" ;
+						$URL.="&updateReturn=error6" ;
 						header("Location: {$URL}");
 					}
 					else {

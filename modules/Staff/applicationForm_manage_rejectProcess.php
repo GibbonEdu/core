@@ -35,7 +35,7 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 $URLReject=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/applicationForm_manage.php&search=$search" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Staff/applicationForm_manage_reject.php")==FALSE) {
-	$URL.="&rejectReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -43,7 +43,7 @@ else {
 	//Check if school year specified
 	
 	if ($gibbonStaffApplicationFormID=="") {
-		$URL.="&return=fail1" ;
+		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -54,13 +54,13 @@ else {
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
-			$URL.="&return=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
 		
 		if ($result->rowCount()!=1) {
-			$URL.="&eeturn=fail2" ;
+			$URL.="&eeturn=error2" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -72,7 +72,7 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-					$URL.="&return=fail2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}

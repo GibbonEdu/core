@@ -301,7 +301,7 @@ else {
 				}
 						
 				if ($partialFail==TRUE) {
-					$URL.="&return=fail1" ;
+					$URL.="&return=error1" ;
 					header("Location: {$URL}");
 				}
 				else {

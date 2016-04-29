@@ -105,7 +105,7 @@ else {
 							$result->execute($data);
 						}
 						catch(PDOException $e) { 
-							$URL.="&return=faila" ;
+							$URL.="&return=errora" ;
 							header("Location: {$URL}");
 							exit() ;
 						}

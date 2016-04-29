@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Planner/units_delete.php")
 else {
 	$highestAction=getHighestGroupedAction($guid, $_POST["address"], $connection2) ;
 	if ($highestAction==FALSE) {
-			$URL.="&return=error0$params" ;
+		$URL.="&return=error0$params" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -66,13 +66,13 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-					$URL.="&return=error2" ;
+				$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
 			
 			if ($result->rowCount()!=1) {
-				$URL.="&deleteReturn=fail4" ;
+				$URL.="&deleteReturn=error4" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -88,7 +88,7 @@ else {
 				}
 				
 				if ($result->rowCount()!=1) {
-					$URL.="&deleteReturn=fail4" ;
+					$URL.="&deleteReturn=error4" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -136,12 +136,12 @@ else {
 						$result->execute($data);
 					}
 					catch(PDOException $e) { 
-									$URL.="&return=error2" ;
+						$URL.="&return=error2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
 
-							$URLDelete=$URLDelete . "&return=success0" ;
+					$URLDelete=$URLDelete . "&return=success0" ;
 					header("Location: {$URLDelete}");
 				}
 			}

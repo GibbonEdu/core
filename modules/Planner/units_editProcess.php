@@ -320,17 +320,17 @@ else {
 							$result->execute($data);
 						}
 						catch(PDOException $e) { 
-											$URL.="&return=error2" ;
+							$URL.="&return=error2" ;
 							header("Location: {$URL}");
 							exit() ;
 						}
 
 						if ($partialFail) {
-							$URL.="&updateReturn=fail6" ;
+							$URL.="&updateReturn=error6" ;
 							header("Location: {$URL}");
 						}
 						else {
-											$URL.="&return=success0" ;
+							$URL.="&return=success0" ;
 							header("Location: {$URL}");
 						}
 					}

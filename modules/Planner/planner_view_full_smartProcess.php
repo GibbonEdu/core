@@ -213,11 +213,11 @@ else {
 				
 				//Return final verdict
 				if ($partialFail==true) {
-							$URL.="&return=error3" ;
+					$URL.="&return=error3" ;
 					header("Location: {$URL}");
 				}
 				else {
-							$URL.="&return=success0" ;
+					$URL.="&return=success0" ;
 					header("Location: {$URL}");
 				}
 			}

@@ -45,7 +45,7 @@ $URLBump=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleN
 $params="&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView" ;
 	
 if (isActionAccessible($guid, $connection2, "/modules/Planner/planner_bump.php")==FALSE) {
-	$URL.="&bumpReturn=fail0$params" ;
+	$URL.="&return=error0$params" ;
 	header("Location: {$URL}");
 }
 else {
@@ -57,7 +57,7 @@ else {
 	else {
 		//Proceed!
 		if (($direction!="forward" AND $direction!="backward") OR $gibbonPlannerEntryID=="" OR $viewBy=="date" OR ($viewBy=="class" AND $gibbonCourseClassID=="Y")) {
-				$URL.="&bumpReturn=fail1$params" ;
+				$URL.="&return=error1$params" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -74,13 +74,13 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-					$URL.="&bumpReturn=fail2$params" ;
+					$URL.="&return=error2$params" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
 			
 			if ($result->rowCount()!=1) {
-					$URL.="&bumpReturn=fail2$params" ;
+					$URL.="&return=error2$params" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -95,7 +95,7 @@ else {
 						$resultList->execute($dataList);
 					}
 					catch(PDOException $e) { 
-									$URL.="&bumpReturn=fail2$params" ;
+									$URL.="&return=error2$params" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
@@ -145,7 +145,7 @@ else {
 						$resultList->execute($dataList);
 					}
 					catch(PDOException $e) { 
-									$URL.="&bumpReturn=fail2$params" ;
+									$URL.="&return=error2$params" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
@@ -191,11 +191,11 @@ else {
 				
 				//Write to database
 				if ($partialFail==TRUE) {
-					$URL.="&bumpReturn=fail5$params" ;
+					$URL.="&return=error5$params" ;
 					header("Location: {$URL}");
 				}
 				else {
-							$URL=$URLBump . "&bumpReturn=success0$params" ;
+					$URL=$URLBump . "&return=success1$params" ;
 					header("Location: {$URL}");
 				}
 			}

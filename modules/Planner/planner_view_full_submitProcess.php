@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Planner/planner_view_full.
 }
 else {
 	if (empty($_POST)) {
-		$URL.="&updateReturn=fail6" ;
+		$URL.="&return=error6" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -167,7 +167,7 @@ else {
 							
 							//Deal with partial fail
 							if ($partialFail==TRUE) {
-								$URL.="&updateReturn=fail6" ;
+								$URL.="&return=error6" ;
 								header("Location: {$URL}");
 							}
 							else {

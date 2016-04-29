@@ -107,39 +107,10 @@ else {
 						print "</div>" ;
 					}
 					else {
-						if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-						$updateReturnMessage="" ;
-						$class="error" ;
-						if (!($updateReturn=="")) {
-							if ($updateReturn=="fail0") {
-								$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-							}
-							else if ($updateReturn=="fail1") {
-								$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-							}
-							else if ($updateReturn=="fail2") {
-								$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-							}
-							else if ($updateReturn=="fail3") {
-								$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-							}
-							else if ($updateReturn=="fail4") {
-								$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-							}
-							else if ($updateReturn=="fail5") {
-								$updateReturnMessage=__($guid, "Your request failed due to an attachment error.") ;	
-							}
-							else if ($updateReturn=="fail6") {
-								$updateReturnMessage=__($guid, "Your request failed because you already have one \"End of Year\" column for this class.") ;	
-							}
-							else if ($updateReturn=="success0") {
-								$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
-								$class="success" ;
-							}
-							print "<div class='$class'>" ;
-								print $updateReturnMessage;
-							print "</div>" ;
-						} 
+						$returns=array() ;
+						$returns["error6"] = __($guid, "Your request failed because you already have one \"End of Year\" column for this class.") ;	
+						$returns["success1"] = __($guid, "Planner was successfully added: you opted to add a linked Markbook column, and you can now do so below.") ;	
+						if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, $returns); }
 				
 						print "<div class='linkTop'>" ;
 						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=$gibbonMarkbookColumnID'>" . __($guid, 'Enter Data') . "<img style='margin: 0 0 0px 5px' title='" . __($guid, 'Enter Data') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/markbook.png'/></a> " ;

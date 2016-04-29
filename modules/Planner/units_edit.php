@@ -53,111 +53,11 @@ else {
 		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/units.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "&gibbonCourseID=" . $_GET["gibbonCourseID"] . "'>" . __($guid, 'Unit Planner') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Edit Unit') . "</div>" ;
 		print "</div>" ;
 		
-		if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-		$updateReturnMessage="" ;
-		$class="error" ;
-		if (!($updateReturn=="")) {
-			if ($updateReturn=="fail0") {
-				$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-			}
-			else if ($updateReturn=="fail1") {
-				$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-			}
-			else if ($updateReturn=="fail2") {
-				$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-			}
-			else if ($updateReturn=="fail3") {
-				$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-			}
-			else if ($updateReturn=="fail4") {
-				$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-			}
-			else if ($updateReturn=="fail5") {
-				$updateReturnMessage=__($guid, "Your request failed due to an attachment error.") ;	
-			}
-			else if ($updateReturn=="fail6") {
-				$updateReturnMessage=__($guid, "Your request was successful, but some data was not properly saved.") ;
-			}
-			else if ($updateReturn=="success0") {
-				$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
-				$class="success" ;
-			}
-			print "<div class='$class'>" ;
-				print $updateReturnMessage;
-			print "</div>" ;
-		} 
-		
-		if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
-		$addReturnMessage="" ;
-		$class="error" ;
-		if (!($addReturn=="")) {
-			if ($addReturn=="success0") {
-				$addReturnMessage=__($guid, "Your Smart Unit was successfully created: you can now edit and deploy it using the form below.") ;	
-				$class="success" ;
-			}
-			print "<div class='$class'>" ;
-				print $addReturnMessage;
-			print "</div>" ;
-		} 
-		
-		if (isset($_GET["deployReturn"])) { $deployReturn=$_GET["deployReturn"] ; } else { $deployReturn="" ; }
-		$deployReturnMessage="" ;
-		$class="error" ;
-		if (!($deployReturn=="")) {
-			if ($deployReturn=="fail0") {
-				$deployReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-			}
-			else if ($deployReturn=="fail2") {
-				$deployReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-			}
-			else if ($deployReturn=="fail3") {
-				$deployReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-			}
-			else if ($deployReturn=="fail4") {
-				$deployReturnMessage=__($guid, "The selected record does not exist, or you do not have access to it.") ;	
-			}
-			else if ($deployReturn=="fail6") {
-				$deployReturnMessage=__($guid, "Your request was successful, but some data was not properly saved.") ;
-				$class="success" ;	
-			}
-			else if ($deployReturn=="success0") {
-				$deployReturnMessage=__($guid, "Your request was completed successfully.") ;	
-				$class="success" ;
-			}
-			print "<div class='$class'>" ;
-				print $deployReturnMessage;
-			print "</div>" ;
-		} 
-		
-		if (isset($_GET["copyReturn"])) { $copyReturn=$_GET["copyReturn"] ; } else { $copyReturn="" ; }
-		$copyReturnMessage="" ;
-		$class="error" ;
-		if (!($copyReturn=="")) {
-			if ($copyReturn=="success0") {
-				$copyReturnMessage=__($guid, "Copy was successful. The blocks from the selected working unit have replaced those in the master unit (see below for the new block listing).") ;	
-				$class="success" ;
-			}
-			if ($copyReturn=="success1") {
-				$copyReturnMessage=__($guid, "Smart Blockify was successful.") ;	
-				$class="success" ;
-			}
-			print "<div class='$class'>" ;
-				print $copyReturnMessage;
-			print "</div>" ;
-		} 
-		
-		if (isset($_GET["copyForwardReturn"])) { $copyForwardReturn=$_GET["copyForwardReturn"] ; } else { $copyForwardReturn="" ; }
-		$copyForwardReturnMessage="" ;
-		$class="error" ;
-		if (!($copyForwardReturn=="")) {
-			if ($copyForwardReturn=="success0") {
-				$copyForwardReturnMessage=__($guid, "Your request was completed successfully.") ;	
-				$class="success" ;
-			}
-			print "<div class='$class'>" ;
-				print $copyForwardReturnMessage;
-			print "</div>" ;
-		} 
+		$returns=array() ;
+		$returns["success1"] = __($guid, "Smart Blockify was successful.") ;	
+		$returns["success2"] = __($guid, "Copy was successful. The blocks from the selected working unit have replaced those in the master unit (see below for the new block listing).") ;	
+		$returns["success3"] = __($guid, "Your unit was successfully created: you can now edit and deploy it using the form below.") ;	
+		if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, $returns); }
 									
 		//Check if courseschool year specified
 		$gibbonSchoolYearID=$_GET["gibbonSchoolYearID"];

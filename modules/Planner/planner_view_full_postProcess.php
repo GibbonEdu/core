@@ -37,7 +37,7 @@ $gibbonPlannerEntryID=$_POST["gibbonPlannerEntryID"] ;
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&search=" . $_POST["search"] . $_POST["params"] ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Planner/planner_view_full.php")==FALSE) {
-	$URL.="&postReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -50,7 +50,7 @@ else {
 		//Proceed!
 		//Check if planner specified
 		if ($gibbonPlannerEntryID=="") {
-				$URL.="&postReturn=fail1" ;
+				$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -61,13 +61,13 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-					$URL.="&postReturn=fail2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
 
 			if ($result->rowCount()!=1) {
-					$URL.="&postReturn=fail2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 			}
 			else {	
@@ -89,7 +89,7 @@ else {
 					$resultInsert->execute($dataInsert);
 				}
 				catch(PDOException $e) { 
-							$URL.="&postReturn=fail2" ;
+							$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
@@ -122,8 +122,8 @@ else {
 					$notificationText=sprintf(__($guid, 'Someone has replied to a comment you made on lesson plan "%1$s".'), $row["name"]) ;
 					setNotification($connection2, $guid, $replyToID, $notificationText, "Planner", "/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=date&date=" . $row["date"] . "&gibbonCourseClassID=&search=#chat") ;
 				}
-						
-					$URL.="&postReturn=success0" ;
+				
+				$URL.="&return=success0" ;
 				header("Location: {$URL}");	
 			}
 		}

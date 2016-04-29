@@ -158,11 +158,11 @@ else {
 					}
 					
 					if ($partialFail==true) {
-									$URL.="&copyReturn=fail6" ;
+						$URL.="&copyReturn=error6" ;
 						header("Location: {$URL}");
 					}
 					else {
-									$URLCopy=$URLCopy . "&copyReturn=success1" ;
+						$URLCopy=$URLCopy . "&copyReturn=success1" ;
 						header("Location: {$URLCopy}");
 					}
 				}

@@ -59,14 +59,14 @@ else {
 	}
 	else {
 		if (empty($_POST)) {
-			$URL.="&updateReturn=fail6" ;
+			$URL.="&return=error6" ;
 			header("Location: {$URL}");
 		}
 		else {	
 			//Proceed!
 			//Check if school year specified
 			if ($gibbonPlannerEntryID=="" OR ($viewBy=="class" AND $gibbonCourseClassID=="")) {
-						$URL.="&return=error1$params" ;
+				$URL.="&return=error1$params" ;
 				header("Location: {$URL}");
 			}
 			else {

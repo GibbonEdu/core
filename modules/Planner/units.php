@@ -50,18 +50,7 @@ else {
 			}
 		}
 		
-		if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-		$deleteReturnMessage="" ;
-		$class="error" ;
-		if (!($deleteReturn=="")) {
-			if ($deleteReturn=="success0") {
-				$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;		
-				$class="success" ;
-			}
-			print "<div class='$class'>" ;
-				print $deleteReturnMessage;
-			print "</div>" ;
-		} 
+		if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
 		
 		$gibbonSchoolYearID="" ;
 		if (isset($_GET["gibbonSchoolYearID"])) {
