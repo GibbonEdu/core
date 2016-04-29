@@ -34,7 +34,11 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/library_manage_catalog.php'>" . __($guid, 'Manage Catalog') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Add Item') . "</div>" ;
 	print "</div>" ;
 	
-	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
+	$editLink="" ;
+	if (isset($_GET["editID"])) {
+		$editLink=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Library/library_manage_catalog_edit.php&gibbonLibraryItemID=" . $_GET["editID"] . "&name=" . $_GET["name"] . "&gibbonLibraryTypeID=" . $_GET["gibbonLibraryTypeID"] . "&gibbonSpaceID=" . $_GET["gibbonSpaceID"] . "&status=" . $_GET["status"] . "&gibbonPersonIDOwnership=" . $_GET["gibbonPersonIDOwnership"] . "&typeSpecificFields=" . $_GET["typeSpecificFields"] ;
+	}
+	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], $editLink, null); }
 	
 	if ($_GET["name"]!="" OR $_GET["gibbonLibraryTypeID"]!="" OR $_GET["gibbonSpaceID"]!="" OR $_GET["status"]!="" OR $_GET["gibbonPersonIDOwnership"]!="" OR $_GET["typeSpecificFields"]!="") {
 		print "<div class='linkTop'>" ;
@@ -431,7 +435,7 @@ else {
 					<span class="emphasis small"><?php print __($guid, 'Is item available for loan?') ?></span>
 				</td>
 				<td class="right">
-					<select name="borrowable" id="borrowable standardWidth">
+					<select name="borrowable" id="borrowable" class="class standardWidth">
 						<option value="Y" /> <?php print __($guid, 'Yes') ?>
 						<option value="N" /> <?php print __($guid, 'No') ?>
 					</select>

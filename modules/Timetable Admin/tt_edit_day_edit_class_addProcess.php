@@ -54,7 +54,7 @@ else {
 		//Proceed!
 		//Check if school year specified
 		if ($gibbonTTDayID=="") {
-				$URL.="&return=error1" ;
+			$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -69,7 +69,7 @@ else {
 			}
 			
 			if ($result->rowCount()!=1) {
-					$URL.="&return=error2" ;
+				$URL.="&return=error2" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -81,12 +81,15 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-							$URL.="&return=error2" ;
+					$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ; 
 				}
 				
-					$URL.="&return=success0" ;
+				//Last insert ID
+				$AI=str_pad($connection2->lastInsertID(), 8, "0", STR_PAD_LEFT) ;
+				
+				$URL.="&return=success0&editID=$AI&gibbonCourseClassID=gibbonCourseClassID" ;
 				header("Location: {$URL}");
 			}
 		}

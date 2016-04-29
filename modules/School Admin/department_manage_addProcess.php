@@ -168,7 +168,7 @@ else {
 			header("Location: {$URL}");
 		}
 		else {
-			$URL.="&return=success0" ;
+			$URL.="&return=success0&editID=$AI" ;
 			header("Location: {$URL}");
 		}
 	}

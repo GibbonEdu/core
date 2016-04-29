@@ -79,7 +79,11 @@ else {
 				$returns=array() ;
 				$returns["error6"] = __($guid, "Your request failed because you already have one \"End of Year\" column for this class.") ;	
 				$returns["success1"] = __($guid, "Planner was successfully added: you opted to add a linked Markbook column, and you can now do so below.") ;	
-				if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, $returns); }
+				$editLink="" ;
+				if (isset($_GET["editID"])) {
+					$editLink=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Markbook/markbook_edit_edit.php&gibbonMarkbookColumnID=" . $_GET["editID"] . "&gibbonCourseClassID=" . $gibbonCourseClassID ;
+				}
+				if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], $editLink, $returns); }
 			
 				?>
 	

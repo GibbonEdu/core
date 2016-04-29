@@ -31,7 +31,11 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/medicalForm_manage.php'>" . __($guid, 'Manage Medical Forms') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/medicalForm_manage_edit.php&&gibbonPersonMedicalID=" . $_GET["gibbonPersonMedicalID"] . "'>" . __($guid, 'Edit Medical Form') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Add Condition') . "</div>" ;
 	print "</div>" ;
 	
-	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
+	$editLink="" ;
+	if (isset($_GET["editID"])) {
+		$editLink=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/medicalForm_manage_condition_edit.php&gibbonPersonMedicalConditionID=" . $_GET["editID"] . "&search=" . $_GET["search"] . "&gibbonPersonMedicalID=" . $_GET["gibbonPersonMedicalID"] ;
+	}
+	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], $editLink, null); }
 	
 	//Check if school year specified
 	$gibbonPersonMedicalID=$_GET["gibbonPersonMedicalID"] ;

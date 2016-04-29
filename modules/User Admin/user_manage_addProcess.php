@@ -394,6 +394,9 @@ else {
 						exit() ;
 					}
 					
+					//Last insert ID
+					$AI=str_pad($connection2->lastInsertID(), 10, "0", STR_PAD_LEFT) ;
+
 					//Unlock tables
 					try {
 						$sql="UNLOCK TABLES" ;
@@ -402,11 +405,11 @@ else {
 					catch(PDOException $e) { }
 					
 					if ($imageFail) {
-						$URL.="&return=warning1" ;
+						$URL.="&return=warning1&editID=$AI" ;
 						header("Location: {$URL}");
 					}
 					else {
-						$URL.="&return=success0" ;
+						$URL.="&return=success0&editID=$AI" ;
 						header("Location: {$URL}");
 					}
 				}

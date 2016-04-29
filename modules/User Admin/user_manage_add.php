@@ -36,7 +36,11 @@ else {
 	$returns["error6"] = __($guid, "Your request failed due to an attachment error.") ;
 	$returns["error7"] = __($guid, "Your request failed because your password to not meet the minimum requirements for strength.") ;
 	$returns["warning1"] = __($guid, "Your request was completed successfully, but one or more images were the wrong size and so were not saved.") ;
-	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, $returns); }
+	$editLink="" ;
+	if (isset($_GET["editID"])) {
+		$editLink=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=" . $_GET["editID"] . "&search=" . $_GET["search"] ;
+	}
+	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], $editLink, $returns); }
 	
 	if ($_GET["search"]!="") {
 		print "<div class='linkTop'>" ;

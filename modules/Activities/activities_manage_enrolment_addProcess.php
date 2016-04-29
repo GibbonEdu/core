@@ -58,7 +58,7 @@ else {
 		}
 		
 		if (count($choices)<1) {
-				$URL.="&return=error1" ;
+			$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -89,11 +89,11 @@ else {
 			}
 			//Write to database
 			if ($update==FALSE) {
-					$URL.="&return=error2" ;
+				$URL.="&return=error2" ;
 				header("Location: {$URL}");
 			}
 			else {
-					$URL.="&return=success0" ;
+				$URL.="&return=success0" ;
 				header("Location: {$URL}");
 			}
 		}

@@ -117,7 +117,7 @@ else {
 				$AI=str_pad($rowAI['Auto_increment'], 8, "0", STR_PAD_LEFT) ;
 				
 				if ($AI=="") {
-							$URL.="&return=error2" ;
+					$URL.="&return=error2" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -129,7 +129,7 @@ else {
 						$result->execute($data);
 					}
 					catch(PDOException $e) { 
-									$URL.="&return=error2" ;
+						$URL.="&return=error2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
@@ -140,7 +140,7 @@ else {
 						$result=$connection2->query($sql);   
 					}
 					catch(PDOException $e) { 
-									$URL.="&return=error2" ;
+						$URL.="&return=error2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
@@ -165,7 +165,7 @@ else {
 						catch(PDOException $e) { }
 					}
 					
-							$URL=$URLSuccess . "&return=success0&gibbonRubricID=$AI" ;
+					$URL=$URLSuccess . "&return=success0&gibbonRubricID=$AI" ;
 					header("Location: {$URL}");
 				}
 			}

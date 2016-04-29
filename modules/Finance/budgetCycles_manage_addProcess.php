@@ -80,7 +80,7 @@ else {
 				header("Location: {$URL}");
 			}
 			
-			$gibbonFinanceBudgetCycleID=$connection2->lastInsertID() ;
+			$gibbonFinanceBudgetCycleID=str_pad($connection2->lastInsertID(), 14, "0", STR_PAD_LEFT) ;
 			
 			//UPDATE CYCLE ALLOCATION VALUES
 			$partialFail=FALSE ;
@@ -107,7 +107,7 @@ else {
 				header("Location: {$URL}");
 			}
 			else {
-					$URL.="&return=success0" ;
+				$URL.="&return=success0&editID=$gibbonFinanceBudgetCycleID" ;
 				header("Location: {$URL}");
 			}
 		}

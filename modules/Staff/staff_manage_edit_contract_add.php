@@ -31,7 +31,11 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a>  > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Staff/staff_manage.php'>" . __($guid, 'Manage Staff') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Staff/staff_manage_edit.php&gibbonStaffID=" . $_GET["gibbonStaffID"] . "'>" . __($guid, 'Edit Staff') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Add Contract') . "</div>" ;
 	print "</div>" ;
 	
-	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
+	$editLink="" ;
+	if (isset($_GET["editID"])) {
+		$editLink=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Staff/staff_manage_edit_contract_edit.php&gibbonStaffContractID=" . $_GET["editID"] . "&search=" . $_GET["search"] . "&gibbonStaffID=" . $_GET["gibbonStaffID"] ;
+	}
+	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], $editLink, null); }
 	
 	//Check if school year specified
 	$gibbonStaffID=$_GET["gibbonStaffID"] ;

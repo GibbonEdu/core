@@ -29,7 +29,7 @@ $connection2 = $pdo->getConnection();
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/resources_manage_add.php" ;
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/resources_manage_add.php&search=" . $_GET["search"] ;
 $time=time() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Resources/resources_manage_add.php")==FALSE) {
@@ -183,12 +183,15 @@ else {
 					exit() ;
 				}
 				
+				//Last insert ID
+				$AI=str_pad($connection2->lastInsertID(), 14, "0", STR_PAD_LEFT) ;
+
 				if ($partialFail==TRUE) {
-					$URL.="&return=warning1" ;
+					$URL.="&return=warning1&editID=$AI" ;
 					header("Location: {$URL}");
 				}
 				else {
-					$URL.="&return=success0" ;
+					$URL.="&return=success0&editID=$AI" ;
 					header("Location: {$URL}");
 				}
 			}

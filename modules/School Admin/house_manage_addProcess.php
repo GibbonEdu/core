@@ -104,17 +104,20 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-					$URL.="&return=error2" ;
+				$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
 			
+			//Last insert ID
+			$AI=str_pad($connection2->lastInsertID(), 3, "0", STR_PAD_LEFT) ;
+			
 			if ($imageFail) {
-				$URL.="&return=warning1" ;
+				$URL.="&return=warning1&editID=$AI" ;
 				header("Location: {$URL}");
 			}
 			else {
-					$URL.="&return=success0" ;
+				$URL.="&return=success0&editID=$AI" ;
 				header("Location: {$URL}");
 			}
 		}

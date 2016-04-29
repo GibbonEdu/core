@@ -84,12 +84,15 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-					$URL.="&return=error2" ;
+				$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
+		
+			//Last insert ID
+			$AI=str_pad($connection2->lastInsertID(), 8, "0", STR_PAD_LEFT) ;
 			
-			$URL.="&return=success0" ;
+			$URL.="&return=success0&editID=$AI" ;
 			header("Location: {$URL}");
 		}
 	}

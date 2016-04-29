@@ -31,7 +31,11 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/role_manage.php'>" . __($guid, 'Manage Roles') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Add Role') . "</div>" ;
 	print "</div>" ;
 	
-	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
+	$editLink="" ;
+	if (isset($_GET["editID"])) {
+		$editLink=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/role_manage_edit.php&gibbonRoleID=" . $_GET["editID"] ;
+	}
+	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], $editLink, null); }
 	
 	?>
 	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/role_manage_addProcess.php" ?>">

@@ -61,9 +61,12 @@ else {
 			header("Location: {$URL}");
 			exit() ;
 		}
+		
+		//Last insert ID
+		$AI=str_pad($connection2->lastInsertID(), 4, "0", STR_PAD_LEFT) ;
 
 		//Success 0
-		$URL.="&return=success0" ;
+		$URL.="&return=success0&editID=$AI" ;
 		header("Location: {$URL}");
 	}
 }

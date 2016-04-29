@@ -41,10 +41,25 @@ else {
 		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/resources_manage.php'>" . __($guid, 'Manage Resources') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Add Resource') . "</div>" ;
 		print "</div>" ;
 		
-		if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
+		$search=NULL ;
+		if (isset($_GET["search"])) {
+			$search=$_GET["search"] ;
+		}
+			
+		$editLink="" ;
+		if (isset($_GET["editID"])) {
+			$editLink=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Resources/resources_manage_edit.php&gibbonResourceID=" . $_GET["editID"] . "&search=" . $_GET["search"] ;
+		}
+		if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], $editLink, null); }
 		
+		
+		if ($search!="") {
+			print "<div class='linkTop'>" ;
+				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Resources/resources_manage.php&search=" . $search . "'>" . __($guid, 'Back to Search Results') . "</a>" ;
+			print "</div>" ;
+		}
 		?>
-		<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/resources_manage_addProcess.php" ?>" enctype="multipart/form-data">
+		<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/resources_manage_addProcess.php?search=$search" ?>" enctype="multipart/form-data">
 			<table class='smallIntBorder fullWidth' cellspacing='0'>	
 				<tr class='break'>
 					<td colspan=2> 

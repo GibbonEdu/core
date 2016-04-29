@@ -4784,11 +4784,11 @@ function returnProcess($guid, $return, $editLink = null, $customReturns=null) {
 			}
 		}
 		if($class == "success" && $editLink != null) {
-			$returnMessage .= " " . sprintf(__($guid, 'You can edit your record %1$shere%2$s.'), "<a href='$editLink'>", "</a>");
+			$returnMessage .= " " . sprintf(__($guid, 'You can edit your newly created record %1$shere%2$s.'), "<a href='$editLink'>", "</a>");
 		}
 
 		print "<div class='$class'>" ;
-			print __($guid, $returnMessage);
+			print $returnMessage;
 		print "</div>" ;
 	}
 }

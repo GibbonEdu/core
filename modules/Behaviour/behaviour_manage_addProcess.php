@@ -87,10 +87,13 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-							$URL.="&return=erorr2&step=1" ;
+					$URL.="&return=erorr2&step=1" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
+				
+				//Last insert ID
+				$AI=str_pad($connection2->lastInsertID(), 12, "0", STR_PAD_LEFT) ;
 			
 				$gibbonBehaviourID=$connection2->lastInsertID() ;
 			
@@ -136,7 +139,7 @@ else {
 					}
 				}
 			
-					$URL.="&return=success1&step=2&gibbonBehaviourID=$gibbonBehaviourID" ;
+				$URL.="&return=success1&step=2&gibbonBehaviourID=$gibbonBehaviourID&editID=$AI" ;
 				header("Location: {$URL}");
 			}
 		}
@@ -148,6 +151,10 @@ else {
 			}
 			else {
 				$gibbonPlannerEntryID=$_POST["gibbonPlannerEntryID"] ; 
+			}
+			$AI="" ;
+			if (isset($_GET["editID"])) {
+				$AI=$_GET["editID"] ;
 			}
 			
 			if ($gibbonPersonID=="") {
@@ -162,12 +169,12 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-							$URL.="&return=warning0&step=2" ;
+					$URL.="&return=warning0&step=2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
 				if ($result->rowCount()!=1) {
-							$URL.="&return=error2&step=2" ;
+					$URL.="&return=error2&step=2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
@@ -180,12 +187,12 @@ else {
 						$result->execute($data);
 					}
 					catch(PDOException $e) { 
-									$URL.="&return=warning0&step=2" ;
+						$URL.="&return=warning0&step=2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
 			
-							$URL.="&return=success0" ;
+					$URL.="&return=success0&editID=$AI" ;
 					header("Location: {$URL}");
 				}
 			}

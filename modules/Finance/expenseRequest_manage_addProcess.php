@@ -106,12 +106,15 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-					print $e->getMessage() ;
+				print $e->getMessage() ;
 				$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
 			
+			//Last insert ID
+			$AI=str_pad($connection2->lastInsertID(), 14, "0", STR_PAD_LEFT) ;
+
 			//Do notifications
 			$partialFail=FALSE ;
 			if (setExpenseNotification($guid, $gibbonFinanceExpenseID, $gibbonFinanceBudgetCycleID, $connection2)==FALSE) {
@@ -119,11 +122,11 @@ else {
 			}
 	
 			if ($partialFail==TRUE) {
-				$URL.="&return=success1" ;
+				$URL.="&return=success1&editID=$AI" ;
 				header("Location: {$URL}");
 			}
 			else {
-					$URL.="&return=success0" ;
+				$URL.="&return=success0&editID=$AI" ;
 				header("Location: {$URL}");
 			}
 			

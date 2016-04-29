@@ -34,6 +34,8 @@ v12.0.00
 	
 	Significant Changes
 		System: replaced float with version_compare, fixing cases where minor (system and module) updates could not be installed.
+		System: improved return message handling
+		System: link to Edit shown to user after new record is added
 		System Admin: added system setting to allow choice of Sunday or Monday as first day of the week
 		Activities: added ability to digitally mark and export activity attendance
 		Individual Needs: new interface for parents to view individual education plans for their children (off by default)
