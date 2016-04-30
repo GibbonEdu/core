@@ -47,16 +47,14 @@ else {
 	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/tt_edit_day_edit_class_add.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID" ;
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/tt_edit_day_edit_class_add.php")==FALSE) {
-		//Fail 0
-		$URL.="&addReturn=fail0" ;
+			$URL.="&return=error0" ;
 		header("Location: {$URL}");
 	}
 	else {
 		//Proceed!
 		//Check if school year specified
 		if ($gibbonTTDayID=="") {
-			//Fail1
-			$URL.="&addReturn=fail1" ;
+			$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -71,8 +69,7 @@ else {
 			}
 			
 			if ($result->rowCount()!=1) {
-				//Fail 2
-				$URL.="&addReturn=fail2" ;
+				$URL.="&return=error2" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -84,14 +81,15 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-					//Fail 2
-					$URL.="&addReturn=fail2" ;
+					$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ; 
 				}
 				
-				//Success 0
-				$URL.="&addReturn=success0" ;
+				//Last insert ID
+				$AI=str_pad($connection2->lastInsertID(), 8, "0", STR_PAD_LEFT) ;
+				
+				$URL.="&return=success0&editID=$AI&gibbonCourseClassID=gibbonCourseClassID" ;
 				header("Location: {$URL}");
 			}
 		}

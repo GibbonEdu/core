@@ -34,8 +34,7 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/library_manage_catalog_add.php&name=" . $_GET["name"] . "&gibbonLibraryTypeID=" . $_GET["gibbonLibraryTypeID"] . "&gibbonSpaceID=" . $_GET["gibbonSpaceID"] . "&status=" . $_GET["status"] . "&gibbonPersonIDOwnership=" . $_GET["gibbonPersonIDOwnership"] . "&typeSpecificFields=" . $_GET["typeSpecificFields"] ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Library/library_manage_catalog_add.php")==FALSE) {
-	//Fail 0
-	$URL.="&addReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -120,8 +119,7 @@ else {
 	
 				
 	if ($gibbonLibraryTypeID=="" OR $name=="" OR $id=="" OR $producer=="" OR $bookable=="" OR $borrowable==""  OR $status=="" OR $replacement=="") {
-		//Fail 3
-		$URL.="&addReturn=fail3" ;
+		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -133,15 +131,13 @@ else {
 			$resultUnique->execute($dataUnique);
 		}
 		catch(PDOException $e) { 
-			//Fail 2
-			$URL.="&addReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
 		
 		if ($resultUnique->rowCount()>0) {
-			//Fail 4
-			$URL.="&addReturn=fail4" ;
+			$URL.="&return=error3" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -168,8 +164,7 @@ else {
 						}
 					
 						if (!(move_uploaded_file($_FILES["imageFile"]["tmp_name"],$path . "/" . $imageLocation))) {
-							//Fail 5
-							$URL.="&addReturn=fail5" ;
+							$URL.="&return=warning1" ;
 							header("Location: {$URL}");
 						}
 					}
@@ -184,14 +179,15 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-				//Fail 2
-				$URL.="&addReturn=fail2" ;
+				$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
 			
-			//Success 0
-			$URL.="&addReturn=success0" ;
+			//Last insert ID
+			$AI=str_pad($connection2->lastInsertID(), 10, "0", STR_PAD_LEFT) ;
+			
+			$URL.="&return=success0&editID=$AI" ;
 			header("Location: {$URL}");
 		}
 	}

@@ -34,16 +34,14 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 $_SESSION[$guid]["moduleUpdateError"]="" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/System Admin/module_manage_update.php")==FALSE) {
-	//Fail 0
-	$URL.="&updateReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
 	//Proceed!
 	//Check if role specified
 	if ($gibbonModuleID=="") {
-		//Fail1
-		$URL.="&updateReturn=fail1" ;
+		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -55,15 +53,13 @@ else {
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
-			//Fail2
-			$URL.="&updateReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
 		
 		if ($result->rowCount()!=1) {
-			//Fail 2
-			$URL.="&updateReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -74,8 +70,7 @@ else {
 			
 			//Validate Inputs
 			if ($versionDB=="" OR $versionCode=="" OR version_compare($versionDB, $versionCode)!=-1) {
-				//Fail 3
-				$URL.="&updateReturn=fail3" ;
+					$URL.="&return=error3" ;
 				header("Location: {$URL}");
 			}
 			else {	
@@ -91,7 +86,7 @@ else {
 									$result=$connection2->query($sqlToken);   
 								}
 								catch(PDOException $e) { 
-									$_SESSION[$guid]["moduleUpdateError"].=$sqlToken . "<br/><b>" . $e->getMessage() . "</b></br><br/>" ; 
+									$_SESSION[$guid]["moduleUpdateError"].=htmlPrep($sqlToken) . "<br/><b>" . $e->getMessage() . "</b><br/><br/>" ; 
 									$partialFail=TRUE;
 								}
 							}
@@ -100,8 +95,7 @@ else {
 				}
 				
 				if ($partialFail==TRUE) {
-					//Fail 5
-					$URL.="&updateReturn=fail5" ;
+					$URL.="&return=warning1" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -113,14 +107,12 @@ else {
 						$result->execute($data);
 					}
 					catch(PDOException $e) { 
-						//Fail 2
-						$URL.="&updateReturn=fail2" ;
+									$URL.="&return=error2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
 					
-					//Success 0
-					$URL.="&updateReturn=success0" ;
+							$URL.="&return=success0" ;
 					header("Location: {$URL}");
 				}
 			}

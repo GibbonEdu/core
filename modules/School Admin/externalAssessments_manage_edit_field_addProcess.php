@@ -33,8 +33,7 @@ $gibbonExternalAssessmentID=$_POST["gibbonExternalAssessmentID"] ;
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/externalAssessments_manage_edit_field_add.php&gibbonExternalAssessmentID=$gibbonExternalAssessmentID" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/externalAssessments_manage_edit_field_add.php")==FALSE) {
-	//Fail 0
-	$URL.="&addReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -55,8 +54,7 @@ else {
 	$gibbonYearGroupIDList=substr($gibbonYearGroupIDList,0,(strlen($gibbonYearGroupIDList)-1)) ;
 
 	if ($gibbonExternalAssessmentID=="" OR $name=="" OR $category=="" OR $order=="" OR $gibbonScaleID=="") {
-		//Fail 3
-		$URL.="&addReturn=fail3" ;
+		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -68,17 +66,16 @@ else {
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
-			print
-			$e->getMessage() ;
-			exit() ;
-			//Fail 2
-			$URL.="&addReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
 
+		//Last insert ID
+		$AI=str_pad($connection2->lastInsertID(), 6, "0", STR_PAD_LEFT) ;
+
 		//Success 0
-		$URL.="&addReturn=success0" ;
+		$URL.="&return=success0&editID=$AI" ;
 		header("Location: {$URL}");
 	}
 }

@@ -43,15 +43,13 @@ else {
 	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/expenses_manage_add.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2&status2=$status2" ;
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Finance/expenses_manage_add.php", "Manage Expenses_all")==FALSE) {
-		//Fail 0
-		$URL.="&return=error0" ;
+			$URL.="&return=error0" ;
 		header("Location: {$URL}");
 	}
 	else {
 		$allowExpenseAdd=getSettingByScope($connection2, "Finance", "allowExpenseAdd") ;
 		if ($allowExpenseAdd!="Y") {
-			//Fail 0
-			$URL.="&return=error0" ;
+					$URL.="&return=error0" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -79,8 +77,7 @@ else {
 			}
 			
 			if ($status=="" OR $title=="" OR $cost=="" OR $countAgainstBudget=="" OR $purchaseBy=="" OR ($status=="Paid" AND ($paymentDate=="" OR $paymentAmount=="" OR $gibbonPersonIDPayment=="" OR $paymentMethod==""))) {
-				//Fail 3
-				$URL.="&return=error1" ;
+					$URL.="&return=error1" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -92,8 +89,7 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-					//Fail2
-					$URL.="&return=error2" ;
+							$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
@@ -108,12 +104,14 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-					//Fail2
 					$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
-			
+				
+				//Last insert ID
+				$AI=str_pad($connection2->lastInsertID(), 14, "0", STR_PAD_LEFT) ;
+
 				//Add Payment log entry if needed
 				if ($status=="Paid") {
 					try {
@@ -123,15 +121,13 @@ else {
 						$result->execute($data);
 					}
 					catch(PDOException $e) { 
-						//Fail2
 						$URL.="&return=error2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
 				}
 			
-				//Success 0
-				$URL.="&return=success0" ;
+				$URL.="&return=success0&editID=$AI" ;
 				header("Location: {$URL}");
 			}
 		}

@@ -45,21 +45,18 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 $URLSuccess=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/rubrics_edit.php&sidebar=false&search=$search&filter2=$filter2" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Rubrics/rubrics_add.php")==FALSE) {
-	//Fail 0
-	$URL.="&addReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, $_POST["address"], $connection2) ;
 	if ($highestAction==FALSE) {
-		//Fail2
-		$URL.="&addReturn=fail2" ;
+		$URL.="&return=error2" ;
 		header("Location: {$URL}");
 	}
 	else {
 		if ($highestAction!="Manage Rubrics_viewEditAll" AND $highestAction!="Manage Rubrics_viewAllEditLearningArea") {
-			//Fail 0
-			$URL.="&addReturn=fail0" ;
+					$URL.="&return=error0" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -90,8 +87,7 @@ else {
 			}
 						
 			if ($scope=="" OR ($scope=="Learning Area" AND $gibbonDepartmentID=="") OR $name=="" OR $active=="") {
-				//Fail 3
-				$URL.="&addReturn=fail3" ;
+					$URL.="&return=error1" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -101,8 +97,7 @@ else {
 					$result=$connection2->query($sql);   
 				}
 				catch(PDOException $e) { 
-					//Fail 2
-					$URL.="&addReturn=fail2" ;
+							$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}		
@@ -113,8 +108,7 @@ else {
 					$resultAI=$connection2->query($sqlAI);   
 				}
 				catch(PDOException $e) { 
-					//Fail 2
-					$URL.="&addReturn=fail2" ;
+							$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
@@ -123,8 +117,7 @@ else {
 				$AI=str_pad($rowAI['Auto_increment'], 8, "0", STR_PAD_LEFT) ;
 				
 				if ($AI=="") {
-					//Fail 2
-					$URL.="&addReturn=fail2" ;
+					$URL.="&return=error2" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -136,8 +129,7 @@ else {
 						$result->execute($data);
 					}
 					catch(PDOException $e) { 
-						//Fail 2
-						$URL.="&addReturn=fail2" ;
+						$URL.="&return=error2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
@@ -148,8 +140,7 @@ else {
 						$result=$connection2->query($sql);   
 					}
 					catch(PDOException $e) { 
-						//Fail 2
-						$URL.="&addReturn=fail2" ;
+						$URL.="&return=error2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
@@ -174,8 +165,7 @@ else {
 						catch(PDOException $e) { }
 					}
 					
-					//Success 0
-					$URL=$URLSuccess . "&addReturn=success0&gibbonRubricID=$AI" ;
+					$URL=$URLSuccess . "&return=success0&gibbonRubricID=$AI" ;
 					header("Location: {$URL}");
 				}
 			}

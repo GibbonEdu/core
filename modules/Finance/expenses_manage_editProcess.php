@@ -47,21 +47,18 @@ else {
 	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/expenses_manage_edit.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2&status2=$status2" ;
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Finance/expenses_manage_add.php", "Manage Expenses_all")==FALSE) {
-		//Fail 0
-		$URL.="&return=error0" ;
+			$URL.="&return=error0" ;
 		header("Location: {$URL}");
 	}
 	else {
 		$highestAction=getHighestGroupedAction($guid, $_POST["address"], $connection2) ;
 		if ($highestAction==FALSE) {
-			//Fail 0
-			$URL.="&return=error0" ;
+					$URL.="&return=error0" ;
 			header("Location: {$URL}");
 		}
 		else {
 			if ($gibbonFinanceExpenseID=="" OR $status=="" OR $countAgainstBudget=="") {
-				//Fail 0
-				$URL.="&return=error1" ;
+							$URL.="&return=error1" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -70,8 +67,7 @@ else {
 				$budgetLevelExpenseApproval=getSettingByScope($connection2, "Finance", "budgetLevelExpenseApproval") ;
 				$expenseRequestTemplate=getSettingByScope($connection2, "Finance", "expenseRequestTemplate") ;
 				if ($expenseApprovalType=="" OR $budgetLevelExpenseApproval=="") {
-					//Fail 0
-					$URL.="&return=error1" ;
+									$URL.="&return=error1" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -85,8 +81,7 @@ else {
 					catch(PDOException $e) { print $e->getMessage() ; }
 		
 					if ($result->rowCount()<1) {
-						//Fail 0
-						$URL.="&return=error0" ;
+											$URL.="&return=error0" ;
 						header("Location: {$URL}");
 					}
 					else {
@@ -103,15 +98,13 @@ else {
 							$result->execute($data);
 						}
 						catch(PDOException $e) { 
-							//Fail2
-							$URL.="&return=error2" ;
+											$URL.="&return=error2" ;
 							header("Location: {$URL}");
 							exit() ;
 						}
 	
 						if ($result->rowCount()!=1) {
-							//Fail 0
-							$URL.="&return=error2" ;
+													$URL.="&return=error2" ;
 							header("Location: {$URL}");
 						}
 						else {
@@ -156,8 +149,7 @@ else {
 										$result->execute($data);
 									}
 									catch(PDOException $e) { 
-										//Fail2
-										$URL.="&return=error2" ;
+																	$URL.="&return=error2" ;
 										header("Location: {$URL}");
 										exit() ;
 									}
@@ -172,8 +164,7 @@ else {
 								$result->execute($data);
 							}
 							catch(PDOException $e) { 
-								//Fail2
-								$URL.="&return=error2" ;
+													$URL.="&return=error2" ;
 								header("Location: {$URL}");
 								exit() ;
 							}
@@ -213,15 +204,13 @@ else {
 									$result->execute($data);
 								}
 								catch(PDOException $e) { 
-									//Fail2
-									$URL.="&return=error2" ;
+															$URL.="&return=error2" ;
 									header("Location: {$URL}");
 									exit() ;
 								}
 							}
 							
-							//Success 0
-							$URL.="&return=success0" ;
+											$URL.="&return=success0" ;
 							header("Location: {$URL}");
 								
 						}

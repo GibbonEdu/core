@@ -39,16 +39,14 @@ else {
 	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/medicalForm_manage_condition_add.php&gibbonPersonMedicalID=$gibbonPersonMedicalID&search=$search" ;
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Students/medicalForm_manage_condition_add.php")==FALSE) {
-		//Fail 0
-		$URL.="&addReturn=fail0" ;
+			$URL.="&return=error0" ;
 		header("Location: {$URL}");
 	}
 	else {
 		//Proceed!
 		//Check if person specified
 		if ($gibbonPersonMedicalID=="") {
-			//Fail1
-			$URL.="&addReturn=fail1" ;
+				$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -59,15 +57,13 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-				//Fail2
-				$URL.="&addReturn=fail2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
 			
 			if ($result->rowCount()!=1) {
-				//Fail 2
-				$URL.="&addReturn=fail2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -88,8 +84,7 @@ else {
 				$comment=$_POST["comment"] ;
 				
 				if ($name=="" OR $gibbonAlertLevelID=="") {
-					//Fail 3
-					$URL.="&addReturn=fail3" ;
+							$URL.="&return=error1" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -101,14 +96,15 @@ else {
 						$result->execute($data);
 					}
 					catch(PDOException $e) { 
-						//Fail 2
-						$URL.="&addReturn=fail2" ;
+						$URL.="&return=error2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
 					
-					//Success 0
-					$URL.="&addReturn=success0" ;
+					//Last insert ID
+					$AI=str_pad($connection2->lastInsertID(), 12, "0", STR_PAD_LEFT) ;
+
+					$URL.="&return=success0&editID=$AI" ;
 					header("Location: {$URL}");
 				}
 			}

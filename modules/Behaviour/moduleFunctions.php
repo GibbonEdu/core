@@ -165,7 +165,7 @@ function getBehaviourRecord($guid, $gibbonPersonID, $connection2) {
 									print "});" ;
 								print "</script>" ;
 								if ($row["comment"]!="" OR $row["followup"]!="") {
-									print "<a title='" . __($guid, 'View Description') . "' class='show_hide-$count-$yearCount' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='" . __($guid, 'Show Comment') . "' onclick='return false;' /></a>" ;
+									print "<a title='" . __($guid, 'View Description') . "' class='show_hide-$count-$yearCount' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_down.png' alt='" . __($guid, 'Show Comment') . "' onclick='return false;' /></a>" ;
 								}
 							print "</td>" ;
 						print "</tr>" ;

@@ -40,22 +40,19 @@ $nameTarget=$_POST["nameTarget"] ;
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/units_edit_copyForward.php&gibbonUnitID=$gibbonUnitID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonSchoolYearID=$gibbonSchoolYearID" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Planner/units_edit_copyForward.php")==FALSE) {
-	//Fail 0
-	$URL.="&copyForwardReturn=fail0" ;
+	$URL.="&copyForwardReturn=error0" ;
 	header("Location: {$URL}");
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, $_POST["address"], $connection2) ;
 	if ($highestAction==FALSE) {
-		//Fail 0
-		$URL.="&copyForwardReturn=fail0$params" ;
+			$URL.="&copyForwardReturn=error0$params" ;
 		header("Location: {$URL}");
 	}
 	else {
 		//Proceed!
 		if ($gibbonSchoolYearID=="" OR $gibbonCourseID=="" OR $gibbonCourseClassID=="" OR $gibbonUnitID=="" OR $gibbonSchoolYearIDCopyTo=="" OR $gibbonCourseIDTarget=="" OR $nameTarget=="") {
-			//Fail 3
-			$URL.="&copyForwardReturn=fail3" ;
+			$URL.="&copyForwardReturn=error3" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -73,14 +70,12 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-				//Fail 2
-				$URL.="&copyForwardReturn=fail2" ;
+					$URL.="&copyForwardReturn=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
 			if ($result->rowCount()!=1) {
-				//Fail 4
-				$URL.="&copyForwardReturn=fail4" ;
+				$URL.="&copyForwardReturn=error4" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -92,14 +87,12 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-					//Fail 2
-					$URL.="&copyForwardReturn=fail2" ;
+							$URL.="&copyForwardReturn=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
 				if ($result->rowCount()!=1) {
-					//Fail 4
-					$URL.="&copyForwardReturn=fail4" ;
+					$URL.="&copyForwardReturn=error4" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -115,8 +108,7 @@ else {
 						$result->execute($data);
 					}
 					catch(PDOException $e) { 
-						//Fail 2
-						$URL.="&copyForwardReturn=fail2" ;
+									$URL.="&copyForwardReturn=error2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
@@ -181,14 +173,12 @@ else {
 					}
 					
 					if ($partialFail==true) {
-						//Fail 2
-						$URL.="&copyForwardReturn=fail6" ;
+									$URL.="&copyForwardReturn=error6" ;
 						header("Location: {$URL}");
 					}
 					else {
-						//Success 0
 						$URLCopy=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/units_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseIDTarget&gibbonUnitID=$gibbinUnitIDNew" ;
-						$URLCopy=$URLCopy . "&copyForwardReturn=success0" ;
+						$URLCopy=$URLCopy . "&copyForwardReturn=success2" ;
 						header("Location: {$URLCopy}");
 					}
 				}

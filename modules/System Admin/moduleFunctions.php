@@ -155,7 +155,7 @@ function getCurrentVersion($guid, $connection2, $version) {
 	if ($cuttingEdgeCode!="Y") {
 		$output.="<div id='status' class='warning'>" ;
 			$output.="<div style='width: 100%; text-align: center'>" ;
-				$output.="<img style='margin: 10px 0 5px 0' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/loading.gif' alt='Loading'/><br/>" ;
+				$output.="<img style='margin: 10px 0 5px 0' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/loading.gif' alt='Loading'/><br/>" ;
 				$output.=__($guid, "Checking for Gibbon updates.") ;
 			$output.="</div>" ;
 		$output.="</div>" ;

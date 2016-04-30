@@ -427,23 +427,7 @@ else {
 								}
 								else {
 							
-									if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-									$updateReturnMessage="" ;
-									$class="error" ;
-									if (!($updateReturn=="")) {
-										if ($updateReturn=="fail0") {
-											$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-										}
-										else if ($updateReturn=="fail2") {
-											$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-										}
-										else if ($updateReturn=="fail5") {
-											$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-										}
-										print "<div class='$class'>" ;
-											print $updateReturnMessage;
-										print "</div>" ;
-									} 
+									if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
 									
 									?>
 									<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/activities_view_registerProcess.php?search=" . $_GET["search"] ?>">

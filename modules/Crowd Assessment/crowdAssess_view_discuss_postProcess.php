@@ -39,7 +39,6 @@ $gibbonPersonID=$_GET["gibbonPersonID"] ;
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["address"]) . "/crowdAssess_view_discuss.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID&gibbonPersonID=$gibbonPersonID" ;
 								
 if (isActionAccessible($guid, $connection2, "/modules/Crowd Assessment/crowdAssess_view_discuss_post.php")==FALSE) {
-	//Fail 0
 	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
@@ -47,7 +46,6 @@ else {
 	//Proceed!
 	//Check if school year specified
 	if ($gibbonPlannerEntryID=="" OR $gibbonPlannerEntryHomeworkID=="" OR $gibbonPersonID=="") {
-		//Fail1
 		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
@@ -59,14 +57,12 @@ else {
 			$result->execute($sql[0]);
 		}
 		catch(PDOException $e) { 
-			//Fail2
 			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
 		
 		if ($result->rowCount()!=1) {
-			//Fail 5
 			$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
@@ -76,8 +72,7 @@ else {
 			$role=getCARole($guid, $connection2, $row["gibbonCourseClassID"]) ;
 			
 			if ($role=="") {
-				//Fail2
-				$URL.="&return=error2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -89,15 +84,13 @@ else {
 						$resultList->execute($sqlList[0]);
 					}
 					catch(PDOException $e) { 
-						//Fail2
-						$URL.="&return=erorr2" ;
+									$URL.="&return=erorr2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
 					
 					if ($resultList->rowCount()!=1) {
-						//Fail2
-						$URL.="&return=error2" ;
+									$URL.="&return=error2" ;
 						header("Location: {$URL}");
 					}
 					else {
@@ -118,8 +111,7 @@ else {
 							$result->execute($data);
 						}
 						catch(PDOException $e) { 
-							//Fail 2
-							$URL.="&return=erorr2" ;
+											$URL.="&return=erorr2" ;
 							header("Location: {$URL}");
 							exit() ;
 						}
@@ -161,8 +153,7 @@ else {
 							setNotification($connection2, $guid, $replyToID, $notificationText, "Crowd Assessment", "/index.php?q=/modules/Crowd Assessment/crowdAssess_view_discuss.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID&gibbonPersonID=$gibbonPersonID") ;
 						}
 						
-						//Success 0
-						$URL.="&return=success0$hash" ;
+									$URL.="&return=success0$hash" ;
 						header("Location: {$URL}");
 					}
 				}

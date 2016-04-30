@@ -22789,7 +22789,7 @@ msgstr "Instale tuvo &eacutexito, pero el m&oacutedulo no se pudo activar."
 #: Admin/theme_manage.php:70 modules/Finance/billingSchedule_manage_add.php:57
 #: modules/System Admin/module_manage.php:74
 #: modules/System Admin/theme_manage.php:70
-msgid "Your request was successful. You can now add another record if you wish."
+msgid "Your request was successful."
 msgstr "Su petici&oacuten se ha realizado correctamente. Ahora puede a&ntildeadir otro registro si lo desea."
 
 #: modules/System Admin/module_manage_install.php:64
@@ -59810,7 +59810,7 @@ msgstr "Por favor, sube una foto de pasaporte para utilizar como foto de perfil.
 #: modules/User Admin/studentEnrolment_manage_add.php:57
 #: modules/User Admin/user_manage_add.php:60
 #: modules/User Admin/userFields_add.php:54
-msgid "Your request was completed successfully. You can now add another record if you wish."
+msgid "Your request was completed successfully."
 msgstr "Su petici&oacuten se ha completado correctamente. Ahora puede a&ntildeadir otro r&eacutecord si lo desea."
 
 #: modules/Attendance/attendance_future_byPerson.php:162
@@ -59848,7 +59848,7 @@ msgstr "Nombre corto"
 #: modules/User Admin/user_manage_add.php:64 Admin/user_manage_edit.php:61
 #: Admin/user_manage_edit.php:64 modules/User Admin/user_manage_add.php:64
 #: modules/User Admin/user_manage_edit.php:64
-msgid "Your request was completed successfully, but one or more images were the wrong size and so were not saved. You can now add another record if you wish."
+msgid "Your request was completed successfully, but one or more images were the wrong size and so were not saved."
 msgstr "Su solicitud se complet&oacute con &eacutexito, pero una o m&aacutes im&aacutegenes eran el tama&ntildeo incorrecto y as&iacute no se salvaron. Ahora puede a&ntildeadir otro r&eacutecord si lo desea."
 
 #: cli/planner_parentWeeklyEmailSummary.php:56
@@ -64574,7 +64574,7 @@ msgstr "Configuraci&oacuten de la evaluaci&oacuten interna"
 
 #: modules/School Admin/house_manage_add.php:55
 #: modules/School Admin/house_manage_add.php:55
-msgid "Your request was completed successfully, but one or more images could not be saved. You can now add another record if you wish."
+msgid "Your request was completed successfully, but one or more images could not be saved."
 msgstr "Su petici&oacuten se ha completado correctamente, pero una o m&aacutes im&aacutegenes no se pudo guardar. Ahora puede a&ntildeadir otro r&eacutecord si lo desea."
 
 #: modules/School Admin/spaceSettings.php:31

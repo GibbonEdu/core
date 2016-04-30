@@ -88,7 +88,7 @@ if (isset($_SESSION[$guid]['googleAPIAccessToken'] ) && $_SESSION[$guid]['google
 if (isset($authUrl)){
 	//show login url
 	print '<div style="margin:20px">';
-		print '<a target=\'_top\' class="login" href="' . $authUrl . '"><img style=\'width: 260px; height: 55px; margin: -20px 0 0 -24px\' src="themes/Default/img/g_login_btn.png" /></a>';
+		print '<a target=\'_top\' class="login" href="' . $authUrl . '"><img style=\'width: 260px; height: 55px; margin: -20px 0 0 -24px\' src="themes/' . $_SESSION[$guid]["gibbonThemeName"] . '/img/g_login_btn.png" /></a>';
 	print '</div>';
 } else {
 	$user = $service->userinfo->get(); //get user info

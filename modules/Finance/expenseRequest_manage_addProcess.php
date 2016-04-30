@@ -45,8 +45,7 @@ else {
 	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/expenseRequest_manage_add.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2&status2=$status2" ;
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Finance/expenseRequest_manage_add.php")==FALSE) {
-		//Fail 0
-		$URL.="&return=error0" ;
+			$URL.="&return=error0" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -58,7 +57,6 @@ else {
 		$purchaseDetails=$_POST["purchaseDetails"] ;
 			
 		if ($title=="" OR $cost=="" OR $purchaseBy=="" OR $countAgainstBudget=="") {
-			//Fail 3
 			$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
@@ -66,8 +64,7 @@ else {
 			//Prepare approval settings
 			$budgetLevelExpenseApproval=getSettingByScope($connection2, "Finance", "budgetLevelExpenseApproval") ;
 			if ($budgetLevelExpenseApproval=="") {
-				//Fail2
-				$URL.="&return=error2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
@@ -94,8 +91,7 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-				//Fail2
-				$URL.="&return=error2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
@@ -110,13 +106,15 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-				//Fail2
 				print $e->getMessage() ;
 				$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
 			
+			//Last insert ID
+			$AI=str_pad($connection2->lastInsertID(), 14, "0", STR_PAD_LEFT) ;
+
 			//Do notifications
 			$partialFail=FALSE ;
 			if (setExpenseNotification($guid, $gibbonFinanceExpenseID, $gibbonFinanceBudgetCycleID, $connection2)==FALSE) {
@@ -124,13 +122,11 @@ else {
 			}
 	
 			if ($partialFail==TRUE) {
-				//Success 1
-				$URL.="&return=success1" ;
+				$URL.="&return=success1&editID=$AI" ;
 				header("Location: {$URL}");
 			}
 			else {
-				//Success 0
-				$URL.="&return=success0" ;
+				$URL.="&return=success0&editID=$AI" ;
 				header("Location: {$URL}");
 			}
 			

@@ -32,8 +32,7 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/alertLevelSettings.php" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/alertLevelSettings.php")==FALSE) {
-	//Fail 0
-	$URL.="&updateReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -41,8 +40,7 @@ else {
 	$partialFail=FALSE ;
 	//Proceed!
 	if ($count<1) {
-		//Fail 2
-		$URL.="&updateReturn=fail2" ;
+		$URL.="&return=error2" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -73,13 +71,11 @@ else {
 		
 		//Deal with failed update
 		if ($partialFail==TRUE) {
-			//Fail 4
-			$URL.="&updateReturn=fail4" ;
+			$URL.="&return=warning1" ;
 			header("Location: {$URL}");
 		}	
 		else {
-			//Success 0
-			$URL.="&updateReturn=success0" ;
+			$URL.="&return=success0" ;
 			header("Location: {$URL}");
 		}
 	}

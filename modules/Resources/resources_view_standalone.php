@@ -27,7 +27,7 @@ include "../../config.php" ;
 $pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
-print "<link rel='stylesheet' type='text/css' href='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/css/main.css' />" ;
+print "<link rel='stylesheet' type='text/css' href='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/css/main.css' />" ;
 ?>
 
 <div id="wrap">

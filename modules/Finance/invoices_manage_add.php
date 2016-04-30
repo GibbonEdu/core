@@ -35,14 +35,20 @@ else {
 	print "</div>" ;
 
 	$error3=__($guid, "Some aspects of your update failed, effecting the following areas:") . "<ul>" ;	
-	if ($_GET["studentFailCount"]) {
-		$error3.="<li>" . $_GET["studentFailCount"] . " " . __($guid, 'students encountered problems.') . "</li>" ;
+	if (isset($_GET["studentFailCount"])) {
+		if ($_GET["studentFailCount"]) {
+			$error3.="<li>" . $_GET["studentFailCount"] . " " . __($guid, 'students encountered problems.') . "</li>" ;
+		}
 	}
-	if ($_GET["invoiceFailCount"]) {
-		$error3.="<li>" . $_GET["invoiceFailCount"] . " " . __($guid, 'invoices encountered problems.') . "</li>" ;
+	if (isset($_GET["invoiceFailCount"])) {
+		if ($_GET["invoiceFailCount"]) {
+			$error3.="<li>" . $_GET["invoiceFailCount"] . " " . __($guid, 'invoices encountered problems.') . "</li>" ;
+		}
 	}
-	if ($_GET["invoiceFeeFailCount"]) {
-		$error3.="<li>" . $_GET["invoiceFeeFailCount"] . " " . __($guid, 'fee entires encountered problems.') . "</li>" ;
+	if (isset($_GET["invoiceFeeFailCount"])) {
+		if ($_GET["invoiceFeeFailCount"]) {
+			$error3.="<li>" . $_GET["invoiceFeeFailCount"] . " " . __($guid, 'fee entires encountered problems.') . "</li>" ;
+		}
 	}
 	$error3.="</ul>" . __($guid, 'It is recommended that you remove all pending invoices and try to recreate them.') ;
 
@@ -291,7 +297,7 @@ else {
 												<?php
 												print "<option value='Ad Hoc'>Ad Hoc Fee</option>" ;
 												$switchContents="case \"Ad Hoc\": " ;
-												$switchContents.="$(\"#fee\").append('<div id=\'feeOuter' + feeCount + '\'><img style=\'margin: 10px 0 5px 0\' src=\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/loading.gif\' alt=\'Loading\' onclick=\'return false;\' /><br/>Loading</div>');" ;
+												$switchContents.="$(\"#fee\").append('<div id=\'feeOuter' + feeCount + '\'><img style=\'margin: 10px 0 5px 0\' src=\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/loading.gif\' alt=\'Loading\' onclick=\'return false;\' /><br/>Loading</div>');" ;
 												$switchContents.="$(\"#feeOuter\" + feeCount).load(\"" . $_SESSION[$guid]["absoluteURL"] . "/modules/Finance/invoices_manage_add_blockFeeAjax.php\",\"mode=add&id=\" + feeCount + \"&feeType=" . urlencode("Ad Hoc") . "&gibbonFinanceFeeID=&name=" . urlencode("Ad Hoc Fee") . "&description=&gibbonFinanceFeeCategoryID=1&fee=\") ;" ;
 												$switchContents.="feeCount++ ;" ;
 												$switchContents.="$('#newFee').val('0');" ;
@@ -322,7 +328,7 @@ else {
 														}
 														print "<option value='" . $rowSelect["gibbonFinanceFeeID"] . "'>" . $rowSelect["name"] . "</option>" ;
 														$switchContents.="case \"" . $rowSelect["gibbonFinanceFeeID"] . "\": " ;
-														$switchContents.="$(\"#fee\").append('<div id=\'feeOuter' + feeCount + '\'><img style=\'margin: 10px 0 5px 0\' src=\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/loading.gif\' alt=\'Loading\' onclick=\'return false;\' /><br/>Loading</div>');" ;
+														$switchContents.="$(\"#fee\").append('<div id=\'feeOuter' + feeCount + '\'><img style=\'margin: 10px 0 5px 0\' src=\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/loading.gif\' alt=\'Loading\' onclick=\'return false;\' /><br/>Loading</div>');" ;
 														$switchContents.="$(\"#feeOuter\" + feeCount).load(\"" . $_SESSION[$guid]["absoluteURL"] . "/modules/Finance/invoices_manage_add_blockFeeAjax.php\",\"mode=add&id=\" + feeCount + \"&feeType=Standard&gibbonFinanceFeeID=" .  urlencode($rowSelect["gibbonFinanceFeeID"]) . "&name=" . urlencode($rowSelect["name"]) . "&description=" . urlencode($rowSelect["description"]) . "&gibbonFinanceFeeCategoryID=" . urlencode($rowSelect["gibbonFinanceFeeCategoryID"]) . "&fee=" . urlencode($rowSelect["fee"]) . "&category=" . urlencode($rowSelect["category"]) . "\") ;" ;
 														$switchContents.="feeCount++ ;" ;
 														$switchContents.="$('#newFee').val('0');" ;

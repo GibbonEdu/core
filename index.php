@@ -392,7 +392,8 @@ else {
 							<?php 
 								//Get main menu
 								if ($cacheLoad) {
-									$_SESSION[$guid]["mainMenu"]=mainMenu($connection2, $guid) ;
+									$mainMenu = new Gibbon\menuMain();
+									$mainMenu->setMenu() ;
 								}
 								if (isset($_SESSION[$guid]["mainMenu"])) {
 									print $_SESSION[$guid]["mainMenu"] ;
@@ -405,83 +406,18 @@ else {
 						//Allow for wide pages (no sidebar)
 						if ($sidebar=="false") {
 							print "<div id='content-wide'>" ;
-								//Get floating module menu
-								if (substr($_SESSION[$guid]["address"],0,8)=="/modules") {
-									$moduleID=checkModuleReady($_SESSION[$guid]["address"], $connection2 );
-									if ($moduleID!=FALSE) {
-										$gibbonRoleIDCurrent=NULL ;
-										if (isset($_SESSION[$guid]["gibbonRoleIDCurrent"])) {
-											$gibbonRoleIDCurrent=$_SESSION[$guid]["gibbonRoleIDCurrent"] ;
-										}
-										try {
-											$data=array("gibbonModuleID"=>$moduleID, "gibbonRoleID"=>$gibbonRoleIDCurrent); 
-											$sql="SELECT gibbonModule.entryURL AS moduleEntry, gibbonModule.name AS moduleName, gibbonAction.name, gibbonAction.precedence, gibbonAction.category, gibbonAction.entryURL, URLList FROM gibbonModule, gibbonAction, gibbonPermission WHERE (gibbonModule.gibbonModuleID=:gibbonModuleID) AND (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) AND NOT gibbonAction.entryURL='' ORDER BY gibbonModule.name, category, gibbonAction.name, precedence DESC";
-											$result=$connection2->prepare($sql);
-											$result->execute($data);
-										}
-										catch(PDOException $e) { }
-	
-										if ($result->rowCount()>0) {			
-											
-											$currentCategory="" ;
-											$lastCategory="" ;
-											$currentName="" ;
-											$lastName="" ;
-											$count=0;
-											$links=0 ;
-											$menu="" ;
-											while ($row=$result->fetch()) {
-												$moduleName=$row["moduleName"] ;
-												$moduleEntry=$row["moduleEntry"] ;
-			
-												$currentCategory=$row["category"] ;
-												if (strpos($row["name"],"_")>0) {
-													$currentName=__($guid, substr($row["name"],0,strpos($row["name"],"_"))) ;
-												}
-												else {
-													$currentName=__($guid, $row["name"]) ;
-												}
-					
-												if ($currentName!=$lastName) {
-													if ($currentCategory!=$lastCategory) {
-														$menu.="<optgroup label='--" .  __($guid, $currentCategory) . "--'/>" ;
-													}
-													$selected="" ;
-													if ($_GET["q"]=="/modules/" . $row["moduleName"] . "/" . $row["entryURL"]) {
-														$selected="selected" ;
-													}
-													$menu.="<option value='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "' $selected>" . __($guid, $currentName) . "</option>" ;
-													$links++ ;
-												}
-												$lastCategory=$currentCategory ;
-												$lastName=$currentName ;
-												$count++ ;
-											}
-											
-											$menu.="<script>
-												$(\"#floatingModuleMenu\").change(function() {
-													document.location.href = $(this).val();
-												});
-											</script>" ;
-		
-											if ($links>1) {
-												print "<div class='linkTop'>" ;
-													print "<select id='floatingModuleMenu' style='width: 200px'>" ;
-														print $menu ;
-													print "</select>" ;
-													print "<div style='float: right; padding-top: 10px'>" ;
-														print __($guid, "Module Menu") ;
-													print "</div>" ;
-												print "</div>" ;
-											}
-										}
-									}
-								}
+								//Invoke and show Module Menu
+								$menuModule = new Gibbon\menuModule();
+								print $menuModule->getMenu("mini") ;
 								
 							//No closing </div> required here
 						}
 						else {
 							print "<div id='content'>" ;
+						}
+						
+						if ($_SESSION[$guid]["address"]=="") {
+							if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
 						}
 						
 						//Show index page Content

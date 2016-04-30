@@ -34,16 +34,14 @@ $gibbonSchoolYearIDNext=$_GET["gibbonSchoolYearIDNext"] ;
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Timetable Admin/course_manage.php&gibbonSchoolYearID=$gibbonSchoolYearIDNext" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/course_manage.php")==FALSE) {
-	//Fail 0
-	$URL.="&copyReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
 	//Proceed!
 	//Check if school years specified (current and next)
 	if ($gibbonSchoolYearID=="" OR $gibbonSchoolYearIDNext=="") {
-		//Fail1
-		$URL.="&copyReturn=fail1" ;
+		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -55,15 +53,13 @@ else {
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
-			//Fail2
-			$URL.="&copyReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
 
 		if ($result->rowCount()<1) {
-			//Fail 2
-			$URL.="&copyReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -111,13 +107,11 @@ else {
 			}
 		
 			if ($partialFail==TRUE) {
-				//Fail 5
-				$URL.="&copyReturn=fail5" ;
+				$URL.="&return=error5" ;
 				header("Location: {$URL}");
 			}
 			else {
-				//Success 0
-				$URL.="&copyReturn=success0" ;
+				$URL.="&return=success0" ;
 				header("Location: {$URL}");
 			}
 					

@@ -21,8 +21,8 @@ require_once dirname(__FILE__).'/gibbon.php';
 //Get and store custom string replacements in session
 function setStringReplacementList($connection2, $guid) {
 	
-	$caller = debug_backtrace();
-	error_log("DEPRECATED: ".$caller[0]['line'].":".$caller[0]['file']." called " . __METHOD__ . " in " . __FILE__ );
+	//$caller = debug_backtrace();
+	//error_log("DEPRECATED: ".$caller[0]['line'].":".$caller[0]['file']." called " . __METHOD__ . " in " . __FILE__ );
 	$trans = new Gibbon\trans();
 	$trans->setStringReplacementList();
 	
@@ -31,8 +31,8 @@ function setStringReplacementList($connection2, $guid) {
 //Custom translation function to allow custom string replacement
 function __($guid, $text) {
 
-	$caller = debug_backtrace();
-	error_log("DEPRECATED: ".$caller[0]['line'].":".$caller[0]['file']." called " . __METHOD__ . " in " . __FILE__ );
+	//$caller = debug_backtrace();
+	//error_log("DEPRECATED: ".$caller[0]['line'].":".$caller[0]['file']." called " . __METHOD__ . " in " . __FILE__ );
 	$trans = new Gibbon\trans();
 	$x = true; 
 	if (empty($guid))
@@ -409,28 +409,6 @@ function getStaffDashboardContents($connection2, $guid, $gibbonPersonID) {
 			$planner.="</div>" ;
 		}
 		else {
-			if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-			$updateReturnMessage="" ;
-			$class="error" ;
-			if (!($updateReturn=="")) {
-				if ($updateReturn=="fail0") {
-					$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-				}
-				else if ($updateReturn=="fail1") {
-					$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-				}
-				else if ($updateReturn=="fail2") {
-					$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-				}
-				else if ($updateReturn=="success0") {
-					$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
-					$class="success" ;
-				}
-				$planner.="<div class='$class'>" ;
-					$planner.=$updateReturnMessage;
-				$planner.="</div>" ;
-			} 
-		
 			$planner.="<div class='linkTop'>" ;
 				$planner.="<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner.php'>" . __($guid, 'View Planner') . "</a>" ;
 			$planner.="</div>" ;
@@ -865,28 +843,6 @@ function getStudentDashboardContents($connection2, $guid, $gibbonPersonID) {
 			$planner.="</div>" ;
 		}
 		else {
-			if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-			$updateReturnMessage="" ;
-			$class="error" ;
-			if (!($updateReturn=="")) {
-				if ($updateReturn=="fail0") {
-					$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-				}
-				else if ($updateReturn=="fail1") {
-					$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-				}
-				else if ($updateReturn=="fail2") {
-					$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-				}
-				else if ($updateReturn=="success0") {
-					$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
-					$class="success" ;
-				}
-				$planner.="<div class='$class'>" ;
-					$planner.=$updateReturnMessage;
-				$planner.="</div>" ;
-			} 
-		
 			$planner.="<div class='linkTop'>" ;
 				$planner.="<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner.php'>" . __($guid, 'View Planner') . "</a>" ;
 			$planner.="</div>" ;
@@ -1118,28 +1074,6 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID) {
 
 	//PREPARE PLANNER SUMMARY
 	$plannerOutput="<span style='font-size: 85%; font-weight: bold'>" . __($guid, 'Today\'s Classes') . "</span> . <span style='font-size: 70%'><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner.php&search=" . $gibbonPersonID . "'>" . __($guid, 'View Planner') . "</a></span>" ;
-
-	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-	$updateReturnMessage="" ;
-	$class="error" ;
-	if (!($updateReturn=="")) {
-		if ($updateReturn=="fail0") {
-			$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;
-		}
-		else if ($updateReturn=="fail1") {
-			$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;
-		}
-		else if ($updateReturn=="fail2") {
-			$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;
-		}
-		else if ($updateReturn=="success0") {
-			$updateReturnMessage=__($guid, "Your request was completed successfully.") ;
-			$class="success" ;
-		}
-		$plannerOutput.="<div class='$class'>" ;
-			$plannerOutput.=$updateReturnMessage;
-		$plannerOutput.="</div>" ;
-	}
 
 	$classes=FALSE ;
 	$date=date("Y-m-d") ;
@@ -2300,44 +2234,6 @@ function getParentPhotoUploader($connection2, $guid) {
 			$output.="Profile Photo" ;
 		$output.="</h2>" ;
 
-		if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-		$deleteReturnMessage="" ;
-		$class="error" ;
-		if (!($deleteReturn=="")) {
-			if ($deleteReturn=="fail1") {
-				$deleteReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;
-			}
-			else if ($deleteReturn=="fail2") {
-				$deleteReturnMessage=__($guid, "Your request failed due to a database error.") ;
-			}
-			else if ($deleteReturn=="success0") {
-				$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;
-				$class="success" ;
-			}
-			$output.="<div class='$class'>" ;
-				$output.=$deleteReturnMessage;
-			$output.="</div>" ;
-		}
-
-		if (isset($_GET["uploadReturn"])) { $uploadReturn=$_GET["uploadReturn"] ; } else { $uploadReturn="" ; }
-		$uploadReturnMessage="" ;
-		$class="error" ;
-		if (!($uploadReturn=="")) {
-			if ($uploadReturn=="fail1") {
-				$uploadReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;
-			}
-			else if ($uploadReturn=="fail2") {
-				$uploadReturnMessage=__($guid, "Your request failed due to a database error.") ;
-			}
-			else if ($uploadReturn=="success0") {
-				$uploadReturnMessage=__($guid, "Your request was completed successfully.") ;
-				$class="success" ;
-			}
-			$output.="<div class='$class'>" ;
-				$output.=$uploadReturnMessage;
-			$output.="</div>" ;
-		}
-
 		if ($_SESSION[$guid]["image_240"]=="") { //No photo, so show uploader
 			$output.="<p>" ;
 				$output.=__($guid, "Please upload a passport photo to use as a profile picture.") . " " . __($guid, '240px by 320px') . "." ;
@@ -3045,80 +2941,9 @@ function sidebar($connection2, $guid) {
 		}
 	}
 
-	//Show Module Menu
-	//Check address to see if we are in the module area
-	if (substr($_SESSION[$guid]["address"],0,8)=="/modules") {
-		//Get and check the module name
-		$moduleID=checkModuleReady($_SESSION[$guid]["address"], $connection2 );
-		if ($moduleID!=FALSE) {
-			$gibbonRoleIDCurrent=NULL ;
-			if (isset($_SESSION[$guid]["gibbonRoleIDCurrent"])) {
-				$gibbonRoleIDCurrent=$_SESSION[$guid]["gibbonRoleIDCurrent"] ;
-			}
-			try {
-				$data=array("gibbonModuleID"=>$moduleID, "gibbonRoleID"=>$gibbonRoleIDCurrent);
-				$sql="SELECT gibbonModule.entryURL AS moduleEntry, gibbonModule.name AS moduleName, gibbonAction.name, gibbonAction.precedence, gibbonAction.category, gibbonAction.entryURL, URLList FROM gibbonModule, gibbonAction, gibbonPermission WHERE (gibbonModule.gibbonModuleID=:gibbonModuleID) AND (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) AND NOT gibbonAction.entryURL='' ORDER BY gibbonModule.name, category, gibbonAction.name, precedence DESC";
-				$result=$connection2->prepare($sql);
-				$result->execute($data);
-			}
-			catch(PDOException $e) { }
-
-			if ($result->rowCount()>0) {
-				$output="<ul class='moduleMenu'>" ;
-
-				$currentCategory="" ;
-				$lastCategory="" ;
-				$currentName="" ;
-				$lastName="" ;
-				$count=0;
-				$links=0 ;
-				while ($row=$result->fetch()) {
-					$moduleName=$row["moduleName"] ;
-					$moduleEntry=$row["moduleEntry"] ;
-
-					//Set active link class
-					$style="" ;
-					if (strpos($row["URLList"],getActionName($_SESSION[$guid]["address"]))===0) {
-						$style="class='active'" ;
-					}
-
-					$currentCategory=$row["category"] ;
-					if (strpos($row["name"],"_")>0) {
-						$currentName=__($guid, substr($row["name"],0,strpos($row["name"],"_"))) ;
-					}
-					else {
-						$currentName=__($guid, $row["name"]) ;
-					}
-
-					if ($currentName!=$lastName) {
-						if ($currentCategory!=$lastCategory) {
-							if ($count>0) {
-								$output.="</ul></li>";
-							}
-							$output.="<li><h4>" . __($guid, $currentCategory) . "</h4>" ;
-							$output.="<ul>" ;
-							$output.="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "'>" . __($guid, $currentName) . "</a></li>" ;
-						}
-						else {
-							$output.="<li><a $style href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $row["moduleName"] . "/" . $row["entryURL"] . "'>" . __($guid, $currentName) . "</a></li>" ;
-						}
-						$links++ ;
-					}
-					$lastCategory=$currentCategory ;
-					$lastName=$currentName ;
-					$count++ ;
-				}
-				if ($count>0) {
-					$output.="</ul></li>";
-				}
-				$output.="</ul>" ;
-
-				if ($links>1 OR (isActionAccessible($guid, $connection2, "/modules/$moduleName/$moduleEntry")==FALSE)) {
-					print $output ;
-				}
-			}
-		}
-	}
+	//Invoke and show Module Menu
+	$menuModule = new Gibbon\menuModule();
+	print $menuModule->getMenu('full') ;
 
 	//Show custom sidebar content on homepage for logged in users
 	if ($_SESSION[$guid]["address"]=="" AND isset($_SESSION[$guid]["username"])) {
@@ -3504,30 +3329,6 @@ function sidebar($connection2, $guid) {
 			print __($guid, "Role Switcher") ;
 			print "</h2>" ;
 
-			if (isset($_GET["switchReturn"])) {
-				$switchReturn=$_GET["switchReturn"] ;
-			}
-			else {
-				$switchReturn="" ;
-			}
-			$switchReturnMessage="" ;
-			$class="error" ;
-			if (!($switchReturn=="")) {
-				if ($switchReturn=="fail0") {
-					$switchReturnMessage=__($guid, "Role ID not specified.") ;
-				}
-				else if ($switchReturn=="fail1") {
-					$switchReturnMessage=__($guid, "You do not have access to the specified role.") ;
-				}
-				else if ($switchReturn=="success0") {
-					$switchReturnMessage=__($guid, "Role switched successfully.") ;
-					$class="success" ;
-				}
-				print "<div class='$class'>" ;
-					print $switchReturnMessage;
-				print "</div>" ;
-			}
-
 			print "<p>" ;
 				print __($guid, "You have multiple roles within the system. Use the list below to switch role:") ;
 			print "</p>" ;
@@ -3550,81 +3351,6 @@ function sidebar($connection2, $guid) {
 		print $_SESSION[$guid]["sidebarExtra"] ;
 		print "</div>" ;
 	}
-}
-
-//Create the main menu
-function mainMenu($connection2, $guid) {
-	$output="" ;
-
-	if (isset($_SESSION[$guid]["gibbonRoleIDCurrent"])==FALSE) {
-		$output.="<ul id='nav'>" ;
-		$output.="<li class='active'><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" . __($guid, 'Home') . "</a></li>" ;
-		$output.="</ul>" ;
-	}
-	else {
-		try {
-			$data=array("gibbonRoleID"=>$_SESSION[$guid]["gibbonRoleIDCurrent"]);
-			$sql="SELECT DISTINCT gibbonModule.name, gibbonModule.category, gibbonModule.entryURL FROM `gibbonModule`, gibbonAction, gibbonPermission WHERE (active='Y') AND (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) ORDER BY (gibbonModule.category='Other') ASC, category, name";
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) {
-			$output.="<div class='error'>" ;
-			$output.=$e->getMessage() ;
-			$output.="</div>" ;
-		}
-
-		if ($result->rowCount()<1) {
-			$output.="<ul id='nav'>" ;
-			$output.="<li class='active'><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" . __($guid, 'Home') . "</a></li>" ;
-			$output.="</ul>" ;
-		}
-		else {
-			$output.="<ul id='nav'>" ;
-			$output.="<li><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php'>" . __($guid, 'Home') . "</a></li>" ;
-
-			$currentCategory="" ;
-			$lastCategory="" ;
-			$count=0;
-			while ($row=$result->fetch()) {
-				$currentCategory=$row["category"] ;
-
-				$entryURL=$row["entryURL"] ;
-				if (isActionAccessible($guid, $connection2, "/modules/" . $row["name"] . "/" . $entryURL)==FALSE AND $entryURL!="index.php") {
-					try {
-						$dataEntry=array("gibbonRoleID"=>$_SESSION[$guid]["gibbonRoleIDCurrent"],"name"=>$row["name"]);
-						$sqlEntry="SELECT DISTINCT gibbonAction.entryURL FROM gibbonModule, gibbonAction, gibbonPermission WHERE (active='Y') AND (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) AND gibbonModule.name=:name ORDER BY gibbonAction.name";
-						$resultEntry=$connection2->prepare($sqlEntry);
-						$resultEntry->execute($dataEntry);
-					}
-					catch(PDOException $e) { }
-					if ($resultEntry->rowCount()>0) {
-						$rowEntry=$resultEntry->fetch() ;
-						$entryURL=$rowEntry["entryURL"] ;
-					}
-				}
-
-				if ($currentCategory!=$lastCategory) {
-					if ($count>0) {
-						$output.="</ul></li>";
-					}
-					$output.="<li><a href='#'>" . __($guid, $currentCategory) . "</a>" ;
-					$output.="<ul>" ;
-					$output.="<li><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $row["name"] . "/" . $entryURL . "'>" . __($guid, $row["name"]) . "</a></li>" ;
-				}
-				else {
-					$output.="<li><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $row["name"] . "/" . $entryURL . "'>" . __($guid, $row["name"]) . "</a></li>" ;
-				}
-				$lastCategory=$currentCategory ;
-				$count++ ;
-			}
-			if ($count>0) {
-				$output.="</ul></li>";
-			}
-			$output.="</ul>" ;
-		}
-	}
-	return $output ;
 }
 
 //Format address according to supplied inputs
@@ -5023,18 +4749,23 @@ function returnProcess($guid, $return, $editLink = null, $customReturns=null) {
 		$class="error";
 		$returnMessage = "Unknown Return";
 		$returns = array();
-		$returns["success0"] = "Your request was completed successfully. You can now add another record if you wish.";
-		$returns["error0"] = "Your request failed because you do not have access to this action.";
-		$returns["error1"] = "Your request failed because your inputs were invalid.";
-		$returns["error2"] = "Your request failed due to a database error.";
-		$returns["warning0"] = "Your optional extra data failed to save.";
-		$returns["warning1"] = "Your request was successful, but some data was not properly saved.";
+		$returns["success0"] = __($guid, "Your request was completed successfully.");
+		$returns["error0"] = __($guid, "Your request failed because you do not have access to this action.");
+		$returns["error1"] = __($guid, "Your request failed because your inputs were invalid.");
+		$returns["error2"] = __($guid, "Your request failed due to a database error.");
+		$returns["error3"] = __($guid, "Your request failed because some inputs did not meet a requirement for uniqueness.");
+		$returns["error4"] = __($guid, "Your request failed because your passwords did not match.");
+		$returns["error5"] = __($guid, "Your request failed because there are no records to show.");
+		$returns["error6"] = __($guid, "Your request was completed successfully, but one or more images were the wrong size and so were not saved.");
+		$returns["warning0"] = __($guid, "Your optional extra data failed to save.");
+		$returns["warning1"] = __($guid, "Your request was successful, but some data was not properly saved.");
+		$returns["warning2"] = __($guid, "Your request was successful, but some data was not properly deleted.");
 
 		if(isset($customReturns)) {
 			if(is_array($customReturns)) {
 				$customReturnKeys = array_keys($customReturns);
 				foreach($customReturnKeys as $customReturnKey) {
-					$customReturn = "Unknown Return" ;
+					$customReturn = __($guid, "Unknown Return") ;
 					if (isset($customReturns[$customReturnKey])) {
 						$customReturn = $customReturns[$customReturnKey];
 					}
@@ -5053,11 +4784,11 @@ function returnProcess($guid, $return, $editLink = null, $customReturns=null) {
 			}
 		}
 		if($class == "success" && $editLink != null) {
-			$returnMessage .= " You can edit your record <a href='$editLink'>here</a>.";
+			$returnMessage .= " " . sprintf(__($guid, 'You can edit your newly created record %1$shere%2$s.'), "<a href='$editLink'>", "</a>");
 		}
 
 		print "<div class='$class'>" ;
-			print __($guid, $returnMessage);
+			print $returnMessage;
 		print "</div>" ;
 	}
 }

@@ -55,8 +55,7 @@ else {
 	}
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Finance/invoices_manage.php")==FALSE) {
-		//Fail 0
-		$URL.="&return=error0" ;
+			$URL.="&return=error0" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -95,8 +94,7 @@ else {
 					header("Location: {$URL}");
 				}
 				else {
-					//Success 0
-					$URL.="&return=success0" ;
+							$URL.="&return=success0" ;
 					header("Location: {$URL}");
 				}
 			}
@@ -154,8 +152,7 @@ else {
 									$result->execute($data);
 								}
 								catch(PDOException $e) { 
-									//Fail 2
-									$URL.="&issueReturn=fail2" ;
+									$URL.="&return=error2" ;
 									header("Location: {$URL}");
 									exit() ;
 								}
@@ -371,12 +368,10 @@ else {
 					header("Location: {$URL}");
 				}
 				else if ($emailFail==TRUE) { 
-					//Success 1
 					$URL.="&return=success1" ;
 					header("Location: {$URL}");
 				}
 				else {
-					//Success 0
 					$URL.="&return=success0" ;
 					header("Location: {$URL}");
 				}
@@ -531,12 +526,10 @@ else {
 					header("Location: {$URL}");
 				}
 				else if ($emailFail==TRUE) { 
-					//Success 1
 					$URL.="&return=success1" ;
 					header("Location: {$URL}");
 				}
 				else {
-					//Success 0
 					$URL.="&return=success0" ;
 					header("Location: {$URL}");
 				}
@@ -549,12 +542,11 @@ else {
 				$exp->exportWithPage($guid, "./invoices_manage_processBulkExportContents.php","invoices.xls", "&gibbonSchoolYearID=$gibbonSchoolYearID");
 				
 				// THIS CODE HAS BEEN COMMENTED OUT, AS THE EXPORT RETURNS WITHOUT IT...NOT SURE WHY!
-				//Success 0
 				//$URL.="&bulkReturn=success0" ;
 				//header("Location: {$URL}");
 			}
 			else {
-				$URL.="&return=fail1" ;
+				$URL.="&return=error1" ;
 				header("Location: {$URL}");
 			}
 		}

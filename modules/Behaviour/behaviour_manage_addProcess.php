@@ -35,15 +35,13 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/behaviour_manage_add.php&gibbonPersonID=" . $_GET["gibbonPersonID"] . "&gibbonRollGroupID=" . $_GET["gibbonRollGroupID"] . "&gibbonYearGroupID=" . $_GET["gibbonYearGroupID"] . "&type=" .$_GET["type"] ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Behaviour/behaviour_manage_add.php")==FALSE) {
-	//Fail 0
 	$URL.="&return=error0&step=1" ;
 	header("Location: {$URL}");
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, $_POST["address"], $connection2) ;
 	if ($highestAction==FALSE) {
-		//Fail 0
-		$URL.="&return=error0&step=1" ;
+			$URL.="&return=error0&step=1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -77,8 +75,7 @@ else {
 			$followup=$_POST["followup"] ; 
 			
 			if ($gibbonPersonID=="" OR $date=="" OR $type=="" OR ($descriptor=="" AND $enableDescriptors=="Y")) {
-				//Fail 3
-				$URL.="&return=error1&step=1" ;
+					$URL.="&return=error1&step=1" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -90,11 +87,13 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-					//Fail 2
 					$URL.="&return=erorr2&step=1" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
+				
+				//Last insert ID
+				$AI=str_pad($connection2->lastInsertID(), 12, "0", STR_PAD_LEFT) ;
 			
 				$gibbonBehaviourID=$connection2->lastInsertID() ;
 			
@@ -140,8 +139,7 @@ else {
 					}
 				}
 			
-				//Success 0
-				$URL.="&addReturn=success1&step=2&gibbonBehaviourID=$gibbonBehaviourID" ;
+				$URL.="&return=success1&step=2&gibbonBehaviourID=$gibbonBehaviourID&editID=$AI" ;
 				header("Location: {$URL}");
 			}
 		}
@@ -154,10 +152,13 @@ else {
 			else {
 				$gibbonPlannerEntryID=$_POST["gibbonPlannerEntryID"] ; 
 			}
+			$AI="" ;
+			if (isset($_GET["editID"])) {
+				$AI=$_GET["editID"] ;
+			}
 			
 			if ($gibbonPersonID=="") {
-				//Fail 3
-				$URL.="&return=error1" ;
+					$URL.="&return=error1" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -168,13 +169,11 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-					//Fail 2
 					$URL.="&return=warning0&step=2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
 				if ($result->rowCount()!=1) {
-					//Fail 2
 					$URL.="&return=error2&step=2" ;
 					header("Location: {$URL}");
 					exit() ;
@@ -188,14 +187,12 @@ else {
 						$result->execute($data);
 					}
 					catch(PDOException $e) { 
-						//Fail 2
 						$URL.="&return=warning0&step=2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
 			
-					//Success 0
-					$URL.="&return=success0" ;
+					$URL.="&return=success0&editID=$AI" ;
 					header("Location: {$URL}");
 				}
 			}

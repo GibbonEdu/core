@@ -37,22 +37,19 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 $URLCopy=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/units_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Planner/units_edit_copyBack.php")==FALSE) {
-	//Fail 0
-	$URL.="&addReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, $_POST["address"], $connection2) ;
 	if ($highestAction==FALSE) {
-		//Fail 0
-		$URL.="&updateReturn=fail0$params" ;
+			$URL.="&return=error0$params" ;
 		header("Location: {$URL}");
 	}
 	else {
 		//Proceed!
 		if ($gibbonSchoolYearID=="" OR $gibbonCourseID=="" OR $gibbonCourseClassID=="" OR $gibbonUnitID=="") {
-			//Fail 3
-			$URL.="&addReturn=fail3" ;
+			$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -70,14 +67,12 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-				//Fail 2
-				$URL.="&addReturn=fail2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
 			if ($result->rowCount()!=1) {
-				//Fail 4
-				$URL.="&addReturn=fail4" ;
+				$URL.="&return=error3" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -89,14 +84,12 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-					//Fail 2
-					$URL.="&addReturn=fail2" ;
+							$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
 				if ($result->rowCount()!=1) {
-					//Fail 4
-					$URL.="&addReturn=fail4" ;
+					$URL.="&return=error3" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -108,8 +101,7 @@ else {
 						$result->execute($data);
 					}
 					catch(PDOException $e) { 
-						//Fail 2
-						$URL.="&copyReturn=fail2" ;
+									$URL.="&return=error2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
@@ -121,8 +113,7 @@ else {
 						$resultBlocks->execute($dataBlocks);
 					}
 					catch(PDOException $e) { 
-						//Fail 2
-						$URL.="&copyReturn=fail2" ;
+									$URL.="&return=error2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
@@ -141,13 +132,11 @@ else {
 					}
 				
 					if ($partialFail==true) {
-						//Fail 2
-						$URL.="&copyReturn=fail6" ;
+						$URL.="&copyReturn=error6" ;
 						header("Location: {$URL}");
 					}
 					else {
-						//Success 0
-						$URLCopy=$URLCopy . "&copyReturn=success0" ;
+						$URLCopy=$URLCopy . "&return=success2" ;
 						header("Location: {$URLCopy}");
 					}
 				}

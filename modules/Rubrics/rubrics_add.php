@@ -64,27 +64,7 @@ else {
 				print "</div>" ;
 			}
 			
-			if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
-			$addReturnMessage="" ;
-			$class="error" ;
-			if (!($addReturn=="")) {
-				if ($addReturn=="fail0") {
-					$addReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-				}
-				else if ($addReturn=="fail2") {
-					$addReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-				}
-				else if ($addReturn=="fail3") {
-					$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-				}
-				else if ($addReturn=="success0") {
-					$addReturnMessage=__($guid, "Your request was completed successfully. You can now add another record if you wish.") ;	
-					$class="success" ;
-				}
-				print "<div class='$class'>" ;
-					print $addReturnMessage;
-				print "</div>" ;
-			} 
+			if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
 			
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/rubrics_addProcess.php?search=$search&filter2=$filter2" ?>">

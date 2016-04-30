@@ -252,84 +252,7 @@ else {
 					print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner.php$params'>" . __($guid, 'Planner') . " $extra</a> > </div><div class='trailEnd'>" . __($guid, 'View Lesson Plan') . "</div>" ;
 					print "</div>" ;
 				
-					if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-					$updateReturnMessage="" ;
-					$class="error" ;
-					if (!($updateReturn=="")) {
-						if ($updateReturn=="fail0") {
-							$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-						}
-						else if ($updateReturn=="fail1") {
-							$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-						}
-						else if ($updateReturn=="fail2") {
-							$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-						}
-						else if ($updateReturn=="fail3") {
-							$updateReturnMessage=__($guid, "Your request was successful, but some data was not properly saved.") ;
-						}
-						else if ($updateReturn=="fail4") {
-							$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-						}
-						else if ($updateReturn=="fail5") {
-							$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-						}
-						else if ($updateReturn=="fail6") {
-							$updateReturnMessage=__($guid, "Your request failed due to an attachment error.") ;	
-						}
-						else if ($updateReturn=="success0") {
-							$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
-							$class="success" ;
-						}
-						print "<div class='$class'>" ;
-							print $updateReturnMessage;
-						print "</div>" ;
-					} 
-				
-					if (isset($_GET["postReturn"])) { $postReturn=$_GET["postReturn"] ; } else { $postReturn="" ; }
-					$postReturnMessage="" ;
-					$class="error" ;
-					if (!($postReturn=="")) {
-						if ($postReturn=="fail0") {
-							$postReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-						}
-						else if ($postReturn=="fail1") {
-							$postReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-						}
-						else if ($postReturn=="fail2") {
-							$postReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-						}
-						else if ($postReturn=="success0") {
-							$postReturnMessage=__($guid, "Your request was completed successfully.") ;	
-							$class="success" ;
-						}
-						print "<div class='$class'>" ;
-							print $postReturnMessage;
-						print "</div>" ;
-					} 
-				
-					if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-					$deleteReturnMessage="" ;
-					$class="error" ;
-					if (!($deleteReturn=="")) {
-						if ($deleteReturn=="fail0") {
-							$deleteReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-						}
-						else if ($deleteReturn=="fail1") {
-							$deleteReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-						}
-						else if ($deleteReturn=="fail2") {
-							$deleteReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-						}
-						else if ($deleteReturn=="success0") {
-							$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;		
-							$class="success" ;
-						}
-						print "<div class='$class'>" ;
-							print $deleteReturnMessage;
-						print "</div>" ;
-					} 
-		
+					if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
 
 					if ($gibbonCourseClassID=="") {
 						$gibbonCourseClassID=$row["gibbonCourseClassID"] ;
@@ -578,7 +501,7 @@ else {
 												print "});" ;
 											print "</script>" ;
 											if ($rowOutcomes["content"]!="") {
-												print "<a title='" . __($guid, 'View Description') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-left: 0px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='" . __($guid, 'Show Comment') . "' onclick='return false;' /></a>" ;
+												print "<a title='" . __($guid, 'View Description') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-left: 0px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_down.png' alt='" . __($guid, 'Show Comment') . "' onclick='return false;' /></a>" ;
 											}
 										print "</td>" ;
 									print "</tr>" ;
@@ -1721,7 +1644,7 @@ else {
 																			print "});" ;
 																		print "</script>" ;
 																		if ($rowOutcomes["content"]!="") {
-																			print "<a class='unitShow_hide-$count' onclick='false' href='#'><img style='padding-left: 0px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='" . __($guid, 'Show Comment') . "' onclick='return false;' /></a>" ;
+																			print "<a class='unitShow_hide-$count' onclick='false' href='#'><img style='padding-left: 0px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_down.png' alt='" . __($guid, 'Show Comment') . "' onclick='return false;' /></a>" ;
 																		}
 																	print "</td>" ;
 																print "</tr>" ;

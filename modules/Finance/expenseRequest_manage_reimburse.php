@@ -34,26 +34,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/expenseRequest_manage.php&gibbonFinanceBudgetCycleID=" . $_GET["gibbonFinanceBudgetCycleID"] . "'>" . __($guid, 'My Expense Requests') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Request Reimbursement') . "</div>" ;
 	print "</div>" ;
 	
-	if (isset($_GET["editReturn"])) { $editReturn=$_GET["editReturn"] ; } else { $editReturn="" ; }
-	$editReturnMessage="" ;
-	$class="error" ;
-	if (!($editReturn=="")) {
-		if ($editReturn=="fail0") {
-			$editReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-		}
-		else if ($editReturn=="fail2") {
-			$editReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-		}
-		else if ($editReturn=="fail3") {
-			$editReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($editReturn=="fail5") {
-			$editReturnMessage=__($guid, "Your request failed due to an attachment error.") ;	
-		}
-		print "<div class='$class'>" ;
-			print $editReturnMessage;
-		print "</div>" ;
-	} 
+	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
 
 	//Check if params are specified
 	$gibbonFinanceExpenseID=$_GET["gibbonFinanceExpenseID"] ;
@@ -331,7 +312,7 @@ else {
 									<b><?php print __($guid, 'Payment Method') ?> *</b><br/>
 								</td>
 								<td class="right">
-									<?
+									<?php
 									print "<select name='paymentMethod' id='paymentMethod' style='width:302px'>" ;
 										print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
 										print "<option value='Bank Transfer'>Bank Transfer</option>" ;

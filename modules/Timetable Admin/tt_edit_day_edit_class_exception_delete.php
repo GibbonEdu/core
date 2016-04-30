@@ -84,30 +84,8 @@ else {
 					print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > ... > ... > ... > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt_edit_day_edit.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID'>" . __($guid, 'Edit Timetable Day') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt_edit_day_edit_class.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClass=$gibbonTTDayRowClassID'>" . __($guid, 'Classes in Period') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt_edit_day_edit_class_exception.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClass=$gibbonTTDayRowClassID&gibbonCourseClassID=$gibbonCourseClassID'>" . __($guid, 'Class List Exception') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Delete Exception') . "</div>" ; 
 					print "</div>" ;
 					
-					if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-					$deleteReturnMessage="" ;
-					$class="error" ;
-					if (!($deleteReturn=="")) {
-						if ($deleteReturn=="fail0") {
-							$deleteReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-						}
-						else if ($deleteReturn=="fail1") {
-							$deleteReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-						}
-						else if ($deleteReturn=="fail2") {
-							$deleteReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-						}
-						else if ($deleteReturn=="fail3") {
-							$deleteReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-						}
-						else if ($deleteReturn=="success0") {
-							$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;	
-							$class="success" ;
-						}
-						print "<div class='$class'>" ;
-							print $deleteReturnMessage;
-						print "</div>" ;
-					} 
+					if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
+					
 					?>
 					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/tt_edit_day_edit_class_exception_deleteProcess.php?&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClassID=$gibbonTTDayRowClassID&gibbonCourseClassID=$gibbonCourseClassID&gibbonTTDayRowClassExceptionID=$gibbonTTDayRowClassExceptionID" ?>">
 						<table class='smallIntBorder fullWidth' cellspacing='0'>	

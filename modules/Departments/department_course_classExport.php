@@ -36,13 +36,11 @@ $gibbonCourseClassID=$_GET["gibbonCourseClassID"] ;
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["address"]) . "/department_course_class.php&gibbonCourseClassID=$gibbonCourseClassID" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Departments/department_course_class.php")==FALSE OR getHighestGroupedAction($guid, "/modules/Students/student_view_details.php", $connection2)!="View Student Profile_full") {
-	//Fail 0
 	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
 	if ($gibbonCourseClassID=="") {
-		//Fail 1
 		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
@@ -57,7 +55,6 @@ else {
 			print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 		}
 		if ($result->rowCount()<1) {
-			//Fail 3
 			$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
@@ -71,8 +68,7 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-				//Fail 2
-				$URL.="&return=error2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}

@@ -36,7 +36,7 @@ $_SESSION[$guid]["pageLoads"]=NULL ;
 
 //Check for parameter
 if ($role=="") {
-	$URL.="?switchReturn=fail0" ;
+	$URL.="?return=error0" ;
 	header("Location: {$URL}");
 }
 //Check for access to role
@@ -52,14 +52,15 @@ else {
 	}
 	
 	if ($result->rowCount()!=1) {
-		$URL.="?switchReturn=fail1" ;
+		$URL.="?return=error1" ;
 		header("Location: {$URL}");
 	}
 	else {
 		//Make the switch
 		$_SESSION[$guid]["gibbonRoleIDCurrent"]=$role;
-		$_SESSION[$guid]["mainMenu"]=mainMenu($connection2, $guid) ;
-		$URL.="?switchReturn=success0" ;
+		$mainMenu = new Gibbon\menuMain();
+		$mainMenu->setMenu() ;
+		$URL.="?return=success0" ;
 		header("Location: {$URL}");
 	}
 }

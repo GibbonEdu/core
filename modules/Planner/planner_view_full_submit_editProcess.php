@@ -37,23 +37,20 @@ $gibbonPlannerEntryID=$_POST["gibbonPlannerEntryID"] ;
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&search=" . $_POST["search"] . $_POST["params"] ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Planner/planner_view_full_submit_edit.php")==FALSE) {
-	//Fail 0
-	$URL.="&updateReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, $_POST["address"], $connection2) ;
 	if ($highestAction==FALSE) {
-		//Fail 0
-		$URL.="&updateReturn=fail0$params" ;
+			$URL.="&return=error0$params" ;
 		header("Location: {$URL}");
 	}
 	else {
 		//Proceed!
 		//Check if planner specified
 		if ($gibbonPlannerEntryID=="") {
-			//Fail1
-			$URL.="&updateReturn=fail1a" ;
+				$URL.="&return=error1a" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -64,21 +61,18 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-				//Fail2
-				$URL.="&updateReturn=fail2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
 			
 			if ($result->rowCount()!=1) {
-				//Fail 2
-				$URL.="&updateReturn=fail2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 			}
 			else {
 				if ($_POST["submission"]!="true" AND $_POST["submission"]!="false") {
-					//Fail1
-					$URL.="&updateReturn=fail1b" ;
+								$URL.="&return=error1b" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -121,8 +115,7 @@ else {
 					}
 					
 					if (($submission==true AND $gibbonPlannerEntryHomeworkID=="") OR ($submission==false AND ($gibbonPersonID=="" OR $type=="" OR $version=="" OR ($type=="File" AND $_FILES['file']["name"]=="") OR ($type=="Link" AND $link=="") OR $status=="" OR $lesson=="" OR $count==""))) {
-						//Fail1
-						$URL.="&updateReturn=fail1c" ;
+										$URL.="&return=error1c" ;
 						header("Location: {$URL}");
 					}
 					else {
@@ -134,14 +127,12 @@ else {
 								$result->execute($data);
 							}
 							catch(PDOException $e) { 
-								//Fail 2
-								$URL.="&updateReturn=fail2" ;
+													$URL.="&return=error2" ;
 								header("Location: {$URL}");
 								exit() ;
 							}
-							$URL.="&updateReturn=success0" ;
-							//Success 0
-							header("Location: {$URL}");
+							$URL.="&return=success0" ;
+											header("Location: {$URL}");
 						}
 						else {
 							$partialFail=FALSE ;
@@ -190,8 +181,7 @@ else {
 											$count++ ;
 										}
 										if (!(move_uploaded_file($_FILES["file"]["tmp_name"],$path . "/" . $location))) {
-											//Fail 5
-											$URL.="&addReturn=fail5" ;
+											$URL.="&return=warning1" ;
 											header("Location: {$URL}");
 										}
 									}
@@ -203,8 +193,7 @@ else {
 							
 							//Deal with partial fail
 							if ($partialFail==TRUE) {
-								//Fail 6
-								$URL.="&updateReturn=fail6" ;
+								$URL.="&return=error6" ;
 								header("Location: {$URL}");
 							}
 							else {
@@ -216,14 +205,12 @@ else {
 									$result->execute($data);
 								}
 								catch(PDOException $e) { 
-									//Fail 2
-									$URL.="&updateReturn=fail2" ;
+															$URL.="&return=error2" ;
 									header("Location: {$URL}");
 									exit() ;
 								}
 								
-								//Success 0
-								$URL.="&updateReturn=success0" ;
+													$URL.="&return=success0" ;
 								header("Location: {$URL}");
 							}
 						}	

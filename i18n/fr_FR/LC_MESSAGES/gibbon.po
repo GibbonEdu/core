@@ -23152,7 +23152,7 @@ msgstr ""
 #: modules/System Admin/module_manage.php:74
 #: modules/System Admin/theme_manage.php:70
 msgid ""
-"Your request was successful. You can now add another record if you wish."
+"Your request was successful."
 msgstr ""
 "Votre requête s'est exécutée avec succès. Vous pouvez ajouter un autre "
 "enregistrement si vous le souhaitez."
@@ -62432,7 +62432,7 @@ msgstr "Intitulé abrégé"
 #: modules/User Admin/user_manage_edit.php:64
 msgid ""
 "Your request was completed successfully, but one or more images were the "
-"wrong size and so were not saved. You can now add another record if you wish."
+"wrong size and so were not saved."
 msgstr ""
 "Votre requête s'est exécuté avec succès, mais un ou plusieurs images etaient "
 "au mauvais format et n'ont pas été enregistrées. Vous pouvez maintenant "
@@ -67794,7 +67794,7 @@ msgstr ""
 #: modules/School Admin/house_manage_add.php:55
 msgid ""
 "Your request was completed successfully, but one or more images could not be "
-"saved. You can now add another record if you wish."
+"saved."
 msgstr ""
 
 #: modules/School Admin/spaceSettings.php:31

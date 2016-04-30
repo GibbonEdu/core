@@ -150,7 +150,7 @@ else {
 							<h3><?php print __($guid, 'Budget Allocations') ?></h3>
 						</td>
 					</tr>
-					<?
+					<?php
 					try {
 						$dataBudget=array("gibbonFinanceBudgetCycleID"=>$gibbonFinanceBudgetCycleID); 
 						$sqlBudget="SELECT gibbonFinanceBudget.*, value FROM gibbonFinanceBudget LEFT JOIN gibbonFinanceBudgetCycleAllocation ON (gibbonFinanceBudgetCycleAllocation.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID AND gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID) ORDER BY name" ; 

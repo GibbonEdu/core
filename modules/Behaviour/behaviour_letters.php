@@ -190,7 +190,7 @@ else {
 							print "});" ;
 						print "</script>" ;
 						if ($row["body"]!="" OR $row["recipientList"]!="") {
-							print "<a title='" . __($guid, 'View Details') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='" . __($guid, 'View Details') . "' onclick='return false;' /></a>" ;
+							print "<a title='" . __($guid, 'View Details') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_down.png' alt='" . __($guid, 'View Details') . "' onclick='return false;' /></a>" ;
 						}
 					print "</td>" ;
 				print "</tr>" ;

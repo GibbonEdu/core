@@ -48,41 +48,21 @@ else {
 		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'New Message') . "</div>" ;
 		print "</div>" ;
 		
-		if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
-		$addReturnMessage="" ;
-		$class="error" ;
-		if (!($addReturn=="")) {
-			if ($addReturn=="fail0") {
-				$addReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
+		$returnExtra="" ;
+		if (isset($_GET["emailCount"])) {
+			if (is_numeric($_GET["emailCount"])) {
+				$returnExtra.=" " . sprintf(__($guid, '%1$s email(s) were dispatched.'), $_GET["emailCount"]) ;	
 			}
-			else if ($addReturn=="fail2") {
-				$addReturnMessage=__($guid, "Your request failed due to a database error.") ;	
+		}
+		if (isset($_GET["smsCount"])) {
+			if (is_numeric($_GET["smsCount"]) AND is_numeric($_GET["smsBatchCount"])) {
+				$returnExtra.=" " . sprintf(__($guid, '%1$s SMS(es) were dispatched in %2$s batch(es).'), $_GET["smsCount"], $_GET["smsBatchCount"]) ;	
 			}
-			else if ($addReturn=="fail3") {
-				$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-			}
-			else if ($addReturn=="fail4") {
-				$addReturnMessage=__($guid, "Your request was completed successfully, but some or all messages could not be delivered.") ;	
-			}
-			else if ($addReturn=="fail5") {
-				$addReturnMessage=__($guid, "Your request failed due to an attachment error.") ;	
-			}
-			else if ($addReturn=="success0") {
-				$addReturnMessage=__($guid, "Your request was completed successfully: not all messages may arrive at their destination, but an attempt has been made to get them all out.") ;
-				if (is_numeric($_GET["emailCount"])) {
-					$addReturnMessage.=" " . sprintf(__($guid, '%1$s email(s) were dispatched.'), $_GET["emailCount"]) ;	
-				}
-				if (is_numeric($_GET["smsCount"]) AND is_numeric($_GET["smsBatchCount"])) {
-					$addReturnMessage.=" " . sprintf(__($guid, '%1$s SMS(es) were dispatched in %2$s batch(es).'), $_GET["smsCount"], $_GET["smsBatchCount"]) ;	
-				}
-				
-				$class="success" ;
-			}
-			print "<div class='$class'>" ;
-				print $addReturnMessage;
-			print "</div>" ;
-		} 
-		
+		}
+		$returns=array() ;
+		$returns["success0"] = __($guid, "Your request was completed successfully: not all messages may arrive at their destination, but an attempt has been made to get them all out.") . $returnExtra ;
+		if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, $returns); }
+	
 		print "<div class='warning'>" ;
 			print sprintf(__($guid, 'Each family in Gibbon must have one parent who is contact priority 1, and who must be enabled to receive email and SMS messages from %1$s. As a result, when targetting parents, you can be fairly certain that messages should get through to each family.'), $_SESSION[$guid]["organisationNameShort"]) ;
 		print "</div>" ;
@@ -319,8 +299,13 @@ else {
 										print "if ($('#cannedResponse option:selected').val()==\"" . $rowSelect["gibbonMessengerCannedResponseID"] . "\" ) {" ;
 											print "$('#subject').val('" . htmlPrep($rowSelect["subject"]) . "');" ;
 											print "tinyMCE.execCommand('mceRemoveEditor', false, 'body') ;" ;
-											print "$('#body').val('" . $rowSelect["body"] . addSlashes($signature) . "');" ;
-											print "tinyMCE.execCommand('mceAddEditor', false, 'body') ;" ;
+											print "
+												$.get('./modules/Messenger/messenger_post_ajax.php?gibbonMessengerCannedResponseID=" . $rowSelect["gibbonMessengerCannedResponseID"] . "', function(response) {
+													 var result = response;
+													$('#body').val(result + '" . addSlashes($signature) . "');
+													tinyMCE.execCommand('mceAddEditor', false, 'body') ;
+												});
+											" ;
 										print "}" ;
 									}
 								print "}" ;

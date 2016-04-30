@@ -82,19 +82,8 @@ else {
 			print "<div class='trail'>" ;
 			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Manage') . " " . $row["course"] . "." . $row["class"] . " " . __($guid, 'Internal Assessments') . "</div>" ;
 			print "</div>" ;
-			
-			if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-			$deleteReturnMessage="" ;
-			$class="error" ;
-			if (!($deleteReturn=="")) {
-				if ($deleteReturn=="success0") {
-					$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;		
-					$class="success" ;
-				}
-				print "<div class='$class'>" ;
-					print $deleteReturnMessage;
-				print "</div>" ;
-			} 
+
+			if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, array("success0" => "Your request was completed successfully.")); }
 		
 			//Add multiple columns
 			print "<div class='linkTop'>" ;

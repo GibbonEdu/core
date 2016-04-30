@@ -23151,7 +23151,7 @@ msgstr "Instalarea s-a făcut cu succes, dar modulul nu a putut fi activat."
 #: modules/System Admin/module_manage.php:74
 #: modules/System Admin/theme_manage.php:70
 msgid ""
-"Your request was successful. You can now add another record if you wish."
+"Your request was successful."
 msgstr ""
 "Cererea dvs. a fost reușit. Puteți adăuga acum o altă înregistrare, dacă "
 "doriți .."
@@ -62303,7 +62303,7 @@ msgstr "Nume scurt"
 #: modules/User Admin/user_manage_edit.php:64
 msgid ""
 "Your request was completed successfully, but one or more images were the "
-"wrong size and so were not saved. You can now add another record if you wish."
+"wrong size and so were not saved."
 msgstr ""
 "Cererea dvs. a fost finalizată cu succes, dar una sau mai multe imagini au "
 "fost dimensionate greșit și astfel nu au fost salvate. Puteți adăuga acum o "
@@ -67724,7 +67724,7 @@ msgstr ""
 #: modules/School Admin/house_manage_add.php:55
 msgid ""
 "Your request was completed successfully, but one or more images could not be "
-"saved. You can now add another record if you wish."
+"saved."
 msgstr ""
 
 #: modules/School Admin/spaceSettings.php:31

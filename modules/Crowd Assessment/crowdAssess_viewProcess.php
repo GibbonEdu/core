@@ -38,7 +38,6 @@ $gibbonPersonID=$_GET["gibbonPersonID"] ;
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["address"]) . "/crowdAssess_view.php&gibbonPlannerEntryID=$gibbonPlannerEntryID" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Crowd Assessment/crowdAssess_view.php")==FALSE) {
-	//Fail 0
 	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
@@ -46,7 +45,6 @@ else {
 	//Proceed!
 	//Check if school year specified
 	if ($gibbonPlannerEntryID=="" OR $gibbonPlannerEntryHomeworkID=="" OR $gibbonPersonID=="") {
-		//Fail1
 		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
@@ -58,14 +56,12 @@ else {
 			$result->execute($sql[0]);
 		}
 		catch(PDOException $e) { 
-			//Fail2
 			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
 		
 		if ($result->rowCount()!=1) {
-			//Fail 5
 			$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
@@ -75,8 +71,7 @@ else {
 			$role=getCARole($guid, $connection2, $row["gibbonCourseClassID"]) ;
 			
 			if ($role=="") {
-				//Fail2
-				$URL.="&return=error2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -88,15 +83,13 @@ else {
 						$resultList->execute($sqlList[0]);
 					}
 					catch(PDOException $e) { 
-						//Fail2
-						$URL.="&return=error2" ;
+									$URL.="&return=error2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
 					
 					if ($resultList->rowCount()!=1) {
-						//Fail2
-						$URL.="&return=error2" ;
+									$URL.="&return=error2" ;
 						header("Location: {$URL}");
 					}
 					else {
@@ -105,26 +98,22 @@ else {
 						if ($likesGiven!=1) { //INSERT LIKE
 							$return=setLike($connection2, "Crowd Assessment", $_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPlannerEntryHomeworkID", $gibbonPlannerEntryHomeworkID, $_SESSION[$guid]["gibbonPersonID"], $gibbonPersonID, "Crowd Assessment Feedback", $row["course"] . "." . $row["class"] . ": " . $row["name"]) ;
 							if ($return==FALSE) {
-								//Fail 2
-								$URL.="&return=error2" ;
+													$URL.="&return=error2" ;
 								header("Location: {$URL}");
 							}
 							else {
-								//Success 0
-								$URL.="&return=success0" ;
+													$URL.="&return=success0" ;
 								header("Location: {$URL}");
 							}
 						}
 						else { //DELETE LIKE
 							$return=deleteLike($connection2, "Crowd Assessment", "gibbonPlannerEntryHomeworkID", $gibbonPlannerEntryHomeworkID, $_SESSION[$guid]["gibbonPersonID"], $gibbonPersonID, "Crowd Assessment Feedback") ;
 							if ($return==FALSE) {
-								//Fail 2
-								$URL.="&updateReturn=fail2" ;
+													$URL.="&return=error2" ;
 								header("Location: {$URL}");
 							}
 							else {
-								//Success 0
-								$URL.="&updateReturn=success0" ;
+													$URL.="&return=success0" ;
 								header("Location: {$URL}");
 							}
 						}

@@ -39,8 +39,7 @@ else {
 	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/fees_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search" ;
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Finance/fees_manage_add.php")==FALSE) {
-		//Fail 0
-		$URL.="&return=error0" ;
+			$URL.="&return=error0" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -52,7 +51,6 @@ else {
 		$fee=$_POST["fee"] ;
 			
 		if ($name=="" OR $nameShort=="" OR $active=="" OR $gibbonFinanceFeeCategoryID=="" OR $fee=="") {
-			//Fail 3
 			$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
@@ -66,14 +64,15 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-				//Fail2
 				$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
+			
+			//Last insert ID
+			$AI=str_pad($connection2->lastInsertID(), 6, "0", STR_PAD_LEFT) ;
 	
-			//Success 0
-			$URL.="&return=success0" ;
+			$URL.="&return=success0&editID=$AI" ;
 			header("Location: {$URL}");
 		}
 	}

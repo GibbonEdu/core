@@ -24164,7 +24164,7 @@ msgstr "Instalação foi bem-sucedida, mas o módulo não pôde ser ativado."
 #: Admin/theme_manage.php:70 modules/System Admin/module_manage.php:74
 #: modules/System Admin/theme_manage.php:70
 msgid ""
-"Your request was successful. You can now add another record if you wish."
+"Your request was successful."
 msgstr ""
 "Seu pedido foi concluído com êxito. Agora, você pode adicionar outro "
 "registro, se desejar."
@@ -65894,7 +65894,7 @@ msgstr "Nome"
 #: modules/User Admin/user_manage_edit.php:64
 msgid ""
 "Your request was completed successfully, but one or more images were the "
-"wrong size and so were not saved. You can now add another record if you wish."
+"wrong size and so were not saved."
 msgstr ""
 "Seu pedido foi concluído com êxito, mas uma ou mais imagens eram do tamanho "
 "errado e por isso não foram salvas. Agora, você pode adicionar outro "
@@ -71522,7 +71522,7 @@ msgstr ""
 #: modules/School Admin/house_manage_add.php:55
 msgid ""
 "Your request was completed successfully, but one or more images could not be "
-"saved. You can now add another record if you wish."
+"saved."
 msgstr ""
 
 #: modules/School Admin/spaceSettings.php:31

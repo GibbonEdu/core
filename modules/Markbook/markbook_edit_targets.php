@@ -73,31 +73,7 @@ else {
 				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/markbook_view.php&gibbonCourseClassID=" . $_GET["gibbonCourseClassID"] . "'>" . __($guid, 'View') . " " . $row["course"] . "." . $row["class"] . " " . __($guid, 'Markbook') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Set Personalised Attainment Targets') . "</div>" ;
 				print "</div>" ;
 			
-				if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-				$updateReturnMessage="" ;
-				$class="error" ;
-				if (!($updateReturn=="")) {
-					if ($updateReturn=="fail0") {
-						$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-					}
-					else if ($updateReturn=="fail1") {
-						$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-					}
-					else if ($updateReturn=="fail2") {
-						$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-					}
-					else if ($updateReturn=="fail3") {
-						$updateReturnMessage=__($guid, "Some updates failed due to a database error.") ;	
-					}
-					else if ($updateReturn=="success0") {
-						$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
-						$class="success" ;
-					}
-					print "<div class='$class'>" ;
-						print $updateReturnMessage;
-					print "</div>" ;
-				} 
-			
+				if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
 				
 				print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_targetsProcess.php?gibbonCourseClassID=$gibbonCourseClassID&address=" . $_SESSION[$guid]["address"] . "'>" ;
 					print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;

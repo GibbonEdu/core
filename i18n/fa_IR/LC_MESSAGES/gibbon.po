@@ -29717,7 +29717,7 @@ msgstr ""
 #: modules/System Admin/module_manage.php:74
 #: modules/System Admin/theme_manage.php:70
 msgid ""
-"Your request was successful. You can now add another record if you wish."
+"Your request was successful."
 msgstr ""
 
 #: modules/Finance/billingSchedule_manage_add.php:147
@@ -38624,7 +38624,7 @@ msgstr ""
 #: modules/School Admin/house_manage_add.php:55
 msgid ""
 "Your request was completed successfully, but one or more images could not be "
-"saved. You can now add another record if you wish."
+"saved."
 msgstr ""
 
 #: modules/School Admin/house_manage_delete.php:31
@@ -44537,7 +44537,7 @@ msgstr ""
 #: modules/User Admin/user_manage_edit.php:64
 msgid ""
 "Your request was completed successfully, but one or more images were the "
-"wrong size and so were not saved. You can now add another record if you wish."
+"wrong size and so were not saved."
 msgstr ""
 
 #: modules/User Admin/user_manage_add.php:199 Admin/user_manage_edit.php:275

@@ -42,8 +42,7 @@ else {
 	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/invoices_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID" ;
 	
 	if (isActionAccessible($guid, $connection2, "/modules/Finance/invoices_manage_add.php")==FALSE) {
-		//Fail 0
-		$URL.="&return=error0" ;
+			$URL.="&return=error0" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -61,7 +60,6 @@ else {
 		$order=$_POST["order"] ;
 			
 		if (count($gibbonFinanceInvoiceeIDs)==0 OR $scheduling=="" OR ($scheduling=="Scheduled" AND $gibbonFinanceBillingScheduleID=="") OR ($scheduling=="Ad Hoc" AND $invoiceDueDate=="") OR count($order)==0) {
-			//Fail 3
 			$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
@@ -87,7 +85,6 @@ else {
 			}
 			
 			if ($feeFail==TRUE) {
-				//Fail3
 				$URL.="&return=error1" ;
 				header("Location: {$URL}");
 				exit() ;
@@ -101,8 +98,7 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-					//Fail 2
-					$URL.="&return=error2" ;
+							$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
@@ -238,8 +234,7 @@ else {
 									}
 
 									if ($continue==FALSE) {
-										//Fail 2
-										$URL.="&return=error2" ;
+																	$URL.="&return=error2" ;
 										header("Location: {$URL}");
 										exit() ;
 									}
@@ -408,8 +403,7 @@ else {
 									}
 
 									if ($continue==FALSE) {
-										//Fail 2
-										$URL.="&return=error2" ;
+																	$URL.="&return=error2" ;
 										header("Location: {$URL}");
 										exit() ;
 									}
@@ -521,13 +515,11 @@ else {
 				
 				//Return results, include three types of fail and counts
 				if ($studentFailCount!=0 OR $invoiceFailCount!=0 OR $invoiceFeeFailCount!=0) {
-					//Fail 4
 					$URL.="&return=error3&studentFailCount=$studentFailCount&invoiceFailCount=$invoiceFailCount&invoiceFeeFailCount=$invoiceFeeFailCount" ;
 					header("Location: {$URL}");
 				}
 				else {
-					//Success 0
-					$URL.="&return=success0" ;
+							$URL.="&return=success0" ;
 					header("Location: {$URL}");	
 				}
 			}			

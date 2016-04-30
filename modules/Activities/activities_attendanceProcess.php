@@ -39,7 +39,6 @@ $gibbonActivityID=$_GET["gibbonActivityID"] ;
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/activities_attendance.php&gibbonActivityID=$gibbonActivityID" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Activities/activities_attendanceProcess.php")==FALSE) {
-	//Fail 0
 	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
@@ -52,12 +51,10 @@ else {
 	$attendance = (isset($_POST['attendance']))? $_POST['attendance'] : NULL;
 
 	if ($gibbonActivityID=="" || $gibbonPersonID=="") {
-		//Fail1
 		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
 	else if (empty($sessions)) {
-		//Fail1
 		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
@@ -125,12 +122,10 @@ else {
 		}
 
 		if ($partialFail==TRUE) {
-			//Fail 5
 			$URL.="&return=warning1" ;
 			header("Location: {$URL}");
 		}
 		else {
-			//Success 0
 			$URL.="&return=success0" ;
 			header("Location: {$URL}");
 		}

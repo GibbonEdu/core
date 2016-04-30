@@ -37,7 +37,6 @@ $gibbonDepartmentResourceID=$_GET["gibbonDepartmentResourceID"] ;
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["address"]) . "/department_edit.php&gibbonDepartmentID=$gibbonDepartmentID" ;
 	
 if (isActionAccessible($guid, $connection2, "/modules/Departments/department_edit.php")==FALSE) {
-	//Fail 0
 	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
@@ -46,7 +45,6 @@ else {
 	
 	//Check if school year specified
 	if ($gibbonDepartmentID=="" OR $gibbonDepartmentResourceID=="") {
-		//Fail1
 		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
@@ -58,13 +56,11 @@ else {
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
-			//Fail2
 			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
 		if ($result->rowCount()!=1) {
-			//Fail 2
 			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 		}
@@ -73,8 +69,7 @@ else {
 			$role=getRole($_SESSION[$guid]["gibbonPersonID"], $gibbonDepartmentID, $connection2 ) ;
 			
 			if ($role!="Coordinator" AND $role!="Assistant Coordinator" AND $role!="Teacher (Curriculum)" AND $role!="Director" AND $role!="Manager") {
-				//Fail 0
-				$URL.="&return=error0" ;
+							$URL.="&return=error0" ;
 				header("Location: {$URL}");
 			}
 			else{
@@ -86,14 +81,12 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-					//Fail 2
-					$URL.="&return=error2" ;
+							$URL.="&return=error2" ;
 					header("Location: {$URL}");
 					exit() ; 
 				}
 				
-				//Success 0
-				$URL.="&return=success0" ;
+					$URL.="&return=success0" ;
 				header("Location: {$URL}");
 			}
 		}

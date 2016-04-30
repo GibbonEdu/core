@@ -90,27 +90,7 @@ else {
 			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'My Children\'s Classes') . "</div>" ;
 			print "</div>" ;
 			
-			if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-			$updateReturnMessage="" ;
-			$class="error" ;
-			if (!($updateReturn=="")) {
-				if ($updateReturn=="fail0") {
-					$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-				}
-				else if ($updateReturn=="fail1") {
-					$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-				}
-				else if ($updateReturn=="fail2") {
-					$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-				}
-				else if ($updateReturn=="success0") {
-					$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
-					$class="success" ;
-				}
-				print "<div class='$class'>" ;
-					print $updateReturnMessage;
-				print "</div>" ;
-			} 
+			if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
 				
 			//Test data access field for permission
 			try {
@@ -228,19 +208,6 @@ else {
 								print "</div>" ;
 							}
 							else {
-								if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-								$deleteReturnMessage="" ;
-								$class="error" ;
-								if (!($deleteReturn=="")) {
-									if ($deleteReturn=="success0") {
-										$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;		
-										$class="success" ;
-									}
-									print "<div class='$class'>" ;
-										print $deleteReturnMessage;
-									print "</div>" ;
-								} 
-							
 								try {
 									$data=array("date1"=>$date, "gibbonPersonID1"=>$gibbonPersonID, "date2"=>$date, "gibbonPersonID2"=>$gibbonPersonID); 
 									$sql="(SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, role, homeworkSubmission, homeworkCrowdAssess, date, gibbonPlannerEntryStudentHomework.homeworkDueDateTime AS myHomeworkDueDateTime FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) LEFT JOIN gibbonPlannerEntryStudentHomework ON (gibbonPlannerEntryStudentHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID AND gibbonPlannerEntryStudentHomework.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE date=:date1 AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID1 AND NOT role='Student - Left' AND NOT role='Teacher - Left') UNION (SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, role, homeworkSubmission, homeworkCrowdAssess, date, NULL AS myHomeworkDueDateTime FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonPlannerEntryGuest ON (gibbonPlannerEntryGuest.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE date=:date2 AND gibbonPlannerEntryGuest.gibbonPersonID=:gibbonPersonID2) ORDER BY date, timeStart" ; 
@@ -401,19 +368,6 @@ else {
 								}
 								else {
 									$row=$result->fetch() ;
-									
-									if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-									$deleteReturnMessage="" ;
-									$class="error" ;
-									if (!($deleteReturn=="")) {
-										if ($deleteReturn=="success0") {
-											$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;		
-											$class="success" ;
-										}
-										print "<div class='$class'>" ;
-											print $deleteReturnMessage;
-										print "</div>" ;
-									} 
 									
 									try {
 										$data=array("gibbonCourseClassID1"=>$gibbonCourseClassID, "gibbonPersonID1"=>$gibbonPersonID, "gibbonCourseClassID2"=>$gibbonCourseClassID, "gibbonPersonID2"=>$gibbonPersonID); 
@@ -578,27 +532,7 @@ else {
 					}
 				}
 				
-				if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-				$updateReturnMessage="" ;
-				$class="error" ;
-				if (!($updateReturn=="")) {
-					if ($updateReturn=="fail0") {
-						$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-					}
-					else if ($updateReturn=="fail1") {
-						$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-					}
-					else if ($updateReturn=="fail2") {
-						$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-					}
-					else if ($updateReturn=="success0") {
-						$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
-						$class="success" ;
-					}
-					print "<div class='$class'>" ;
-						print $updateReturnMessage;
-					print "</div>" ;
-				} 
+				if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
 				
 				if (isSchoolOpen($guid, date("Y-m-d", $dateStamp), $connection2)==FALSE) {
 					print "<div class='warning'>" ;
@@ -606,19 +540,6 @@ else {
 					print "</div>" ;
 				}
 				else {
-					if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-					$deleteReturnMessage="" ;
-					$class="error" ;
-					if (!($deleteReturn=="")) {
-						if ($deleteReturn=="success0") {
-							$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;		
-							$class="success" ;
-						}
-						print "<div class='$class'>" ;
-							print $deleteReturnMessage;
-						print "</div>" ;
-					} 
-				
 					//Set pagination variable
 					$page=1 ; if (isset($_GET["page"])) { $page=$_GET["page"] ; }
 					if ((!is_numeric($page)) OR $page<1) {
@@ -843,54 +764,10 @@ else {
 							}
 						}
 	
-						if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-						$updateReturnMessage="" ;
-						$class="error" ;
-						if (!($updateReturn=="")) {
-							if ($updateReturn=="fail0") {
-								$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-							}
-							else if ($updateReturn=="fail1") {
-								$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-							}
-							else if ($updateReturn=="fail2") {
-								$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-							}
-							else if ($updateReturn=="success0") {
-								$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
-								$class="success" ;
-							}
-							print "<div class='$class'>" ;
-								print $updateReturnMessage;
-							print "</div>" ;
-						} 
+						$returns=array() ;
+						$returns["success1"] = __($guid, "Bump was successful. It is possible that some lessons have not been moved (if there was no space for them), but a reasonable effort has been made.") ;	
+						if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, $returns); }
 						
-						if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-						$deleteReturnMessage="" ;
-						$class="error" ;
-						if (!($deleteReturn=="")) {
-							if ($deleteReturn=="success0") {
-								$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;		
-								$class="success" ;
-							}
-							print "<div class='$class'>" ;
-								print $deleteReturnMessage;
-							print "</div>" ;
-						}
-						
-						if (isset($_GET["bumpReturn"])) { $bumpReturn=$_GET["bumpReturn"] ; } else { $bumpReturn="" ; }
-						$bumpReturnMessage="" ;
-						$class="error" ;
-						if (!($bumpReturn=="")) {
-							if ($bumpReturn=="success0") {
-								$bumpReturnMessage=__($guid, "Bump was successful. It is possible that some lessons have not been moved (if there was no space for them), but a reasonable effort has been made.") ;	
-								$class="success" ;
-							}
-							print "<div class='$class'>" ;
-								print $bumpReturnMessage;
-							print "</div>" ;
-						}  
-					
 						try {
 							if ($highestAction=="Lesson Planner_viewEditAllClasses" OR $highestAction=="Lesson Planner_viewAllEditMyClasses") {
 								if ($subView=="lesson" OR $subView=="") {

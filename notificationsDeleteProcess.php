@@ -33,7 +33,7 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=notifications.php" ;
 
 if (isset($_GET["gibbonNotificationID"])==FALSE) {
-	$URL=$URL. "&deleteReturn=fail1" ;
+	$URL=$URL. "&return=error1" ;
 	header("Location: {$URL}");
 	exit() ;
 }
@@ -49,13 +49,13 @@ else {
 	}
 	catch(PDOException $e) { 
 		print $e->getMessage() ;
-		$URL=$URL. "&deleteReturn=fail2" ;
+		$URL=$URL. "&return=error2" ;
 		header("Location: {$URL}");
 		exit() ;
 	}
 	
 	if ($result->rowCount()!=1) {
-		$URL=$URL. "&deleteReturn=fail2" ;
+		$URL=$URL. "&return=error2" ;
 		header("Location: {$URL}");
 		exit() ;
 	}
@@ -68,13 +68,13 @@ else {
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
-			$URL=$URL. "&deleteReturn=fail2" ;
+			$URL=$URL. "&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
 		
 		//Success 0
-		$URL=$URL. "&deleteReturn=success0" ;
+		$URL=$URL. "&return=success0" ;
 		header("Location: {$URL}");
 	}
 }

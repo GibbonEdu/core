@@ -35,8 +35,7 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["address"]) . "/report_catalogSummary.php" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Library/report_catalogSummary.php")==FALSE) {
-	//Fail 0
-	$URL.="&exportReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -97,8 +96,7 @@ else {
 	}
 
 	if ($result->rowCount()<1) {
-		//Fail 3
-		$URL.="&exportReturn=fail3" ;
+		$URL.="&return=error3" ;
 		header("Location: {$URL}");
 	}
 	else {

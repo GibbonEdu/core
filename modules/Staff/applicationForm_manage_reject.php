@@ -60,29 +60,7 @@ else {
 			print "</div>" ;
 		}
 		else {
-			if (isset($_GET["rejectReturn"])) { $rejectReturn=$_GET["rejectReturn"] ; } else { $rejectReturn="" ; }
-			$rejectReturnMessage="" ;
-			$class="error" ;
-			if (!($rejectReturn=="")) {
-				if ($rejectReturn=="fail0") {
-					$rejectReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-				}
-				else if ($rejectReturn=="fail1") {
-					$rejectReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-				}
-				else if ($rejectReturn=="fail2") {
-					$rejectReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-				}
-				else if ($rejectReturn=="fail3") {
-					$rejectReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-				}
-				else if ($rejectReturn=="success1") {
-					$rejectReturnMessage=__($guid, "Your request was completed successfully., but status could not be updated.") ;	
-				}
-				print "<div class='$class'>" ;
-					print $rejectReturnMessage;
-				print "</div>" ;
-			} 
+			if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
 
 			//Let's go!
 			$row=$result->fetch() ;

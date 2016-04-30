@@ -34,6 +34,8 @@ v12.0.00
 	
 	Significant Changes
 		System: replaced float with version_compare, fixing cases where minor (system and module) updates could not be installed.
+		System: improved return message handling
+		System: link to Edit shown to user after new record is added
 		System Admin: added system setting to allow choice of Sunday or Monday as first day of the week
 		Activities: added ability to digitally mark and export activity attendance
 		Individual Needs: new interface for parents to view individual education plans for their children (off by default)
@@ -59,6 +61,8 @@ v12.0.00
 		System: updated jquery autosize library, to fix Chrome's disappearing textareas
 		System: replaced many instances of style=, moving minor styles into CSS (long over due)
 		System: updated jQuery to v2.2.3
+		System: themeability enhancements
+		System: added menuShow switch to allow actions to be hidden from the main menu (in case they should only be seen in a hook)
 		System Admin: Improved version comparison in module updater
 		System Admin: Improved version comparison in non-login database updater
 		Activities: fixed error in adding and editing activities when payment is turned off
@@ -71,8 +75,10 @@ v12.0.00
 		Departments: fixed filter in Homework link from Class view page
 		Finance: fixed <? bug
 		Finance: added ability to provide multiple company email addresses
+		Form Groups: adjusted labels in Sort By select
 		Formal Assessment: fixed issue with View Classes menu not appearing for a user with no classes (e.g. admin)
 		Formal Assessment: fixed uploaded response file selector gigantism issue
+		Formal Assessment: added interface for parents and students to view External Assessments (off by default)
 		Library: added item count column to lending log
 		Library: added count of records to Manage Catalog
 		Library: removed required status from ISBN10 field in Print Publication
@@ -93,6 +99,7 @@ v12.0.00
 		Planner: fixed lesson ordering bug in unit dump
 		Rubrics: added course/class name to historical view result listing
 		School Admin: fixed bug preventing non-contiguous primary external assessment settings from being saved in Formal Assessment settings
+		School Admin: increased length of grade scale short name to 5 chars
 		Staff: adjusted role drop down to offer all Staff roles (from gibbonRole), not just Teaching & Support
 		Students: added year group to New Students report when using Date Range setting 
 		Students: added All Students filter persistence to Back To Search link on student details page

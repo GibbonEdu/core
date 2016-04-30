@@ -34,7 +34,6 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/budgets_manage_add.php" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Finance/budgets_manage_add.php")==FALSE) {
-	//Fail 0
 	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
@@ -51,7 +50,6 @@ else {
 		$result=$connection2->query($sql);   
 	}
 	catch(PDOException $e) { 
-		//Fail 2
 		$URL.="&return=error2" ;
 		header("Location: {$URL}");
 		exit() ;
@@ -63,7 +61,6 @@ else {
 		$resultAI=$connection2->query($sqlAI);   
 	}
 	catch(PDOException $e) { 
-		//Fail 2
 		$URL.="&return=error2" ;
 		header("Location: {$URL}");
 		exit() ;
@@ -74,7 +71,6 @@ else {
 	
 			
 	if ($name=="" OR $nameShort=="" OR $active=="" OR $category=="") {
-		//Fail 3
 		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
@@ -87,14 +83,12 @@ else {
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
-			//Fail 2
 			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 			exit() ;
 		}
 		
 		if ($result->rowCount()>0) {
-			//Fail 4
 			$URL.="&return=error3" ;
 			header("Location: {$URL}");
 		}
@@ -107,7 +101,6 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-				//Fail 2
 				$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
@@ -157,13 +150,11 @@ else {
 			catch(PDOException $e) { }
 
 			if ($partialFail==TRUE) {
-				//Fail 5
 				$URL.="&return=warning1" ;
 				header("Location: {$URL}");
 			}
 			else {
-				//Success 0
-				$URL.="&return=success0" ;
+				$URL.="&return=success0&editID=$AI" ;
 				header("Location: {$URL}");
 			}
 		}

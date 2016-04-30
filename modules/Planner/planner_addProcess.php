@@ -32,20 +32,18 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["address"]) . "/planner_add.php" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Planner/planner_add.php")==FALSE) {
-	//Fail 0
-	$URL.="&addReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["address"], $connection2) ;
 	if ($highestAction==FALSE) {
-		//Fail 0
-		$URL.="&updateReturn=fail0$params" ;
+			$URL.="&return=error0$params" ;
 		header("Location: {$URL}");
 	}
 	else {
 		if (empty($_POST)) {
-			$URL.="&addReturn=fail6" ;
+			$URL.="&return=warning1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -208,8 +206,7 @@ else {
 				$result=$connection2->query($sql);   
 			}
 			catch(PDOException $e) { 
-				//Fail 2
-				$URL.="&addReturn=fail2$params" ;
+					$URL.="&return=error2$params" ;
 				header("Location: {$URL}");
 				exit() ;
 			}	
@@ -220,8 +217,7 @@ else {
 				$resultAI=$connection2->query($sqlAI);   
 			}
 			catch(PDOException $e) { 
-				//Fail 2
-				$URL.="&addReturn=fail2$params" ;
+					$URL.="&return=error2$params" ;
 				header("Location: {$URL}");
 				exit() ;
 			}	
@@ -230,8 +226,7 @@ else {
 			$AI=str_pad($rowAI['Auto_increment'], 14, "0", STR_PAD_LEFT) ;
 			
 			if ($viewBy=="" OR $gibbonCourseClassID=="" OR $date=="" OR $timeStart=="" OR $timeEnd=="" OR $name=="" OR $summary=="" OR $homework=="" OR $viewableParents=="" OR $viewableStudents=="" OR ($homework=="Y" AND ($homeworkDetails=="" OR $homeworkDueDate==""))) {
-				//Fail 3
-				$URL.="&addReturn=fail3$params" ;
+					$URL.="&return=error1$params" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -302,8 +297,7 @@ else {
 					$result->execute($data);
 				}
 				catch(PDOException $e) { 
-					//Fail 2
-					$URL.="&addReturn=fail2$params" ;
+							$URL.="&return=error2$params" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
@@ -316,20 +310,18 @@ else {
 				catch(PDOException $e) { }	
 				
 				if ($partialFail==TRUE) {
-					//Fail 5
-					$URL.="&addReturn=fail5$params" ;
+					$URL.="&return=warning1$params" ;
 					header("Location: {$URL}");
 				}
 				else {
 					//Jump to Markbook?
 					$markbook=$_POST["markbook"] ;
 					if ($markbook=="Y") {
-						$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Markbook/markbook_edit_add.php&gibbonPlannerEntryID=$AI&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitID=" . $_POST["gibbonUnitID"] . "&viewableParents=$viewableParents&viewableStudents=$viewableStudents&name=$name&summary=$summary&addReturnPlanner=success0" ;
+						$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Markbook/markbook_edit_add.php&gibbonPlannerEntryID=$AI&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitID=" . $_POST["gibbonUnitID"] . "&viewableParents=$viewableParents&viewableStudents=$viewableStudents&name=$name&summary=$summary&return=1" ;
 						header("Location: {$URL}");
 					}
 					else {
-						//Success 0
-						$URL.="&addReturn=success0$params" ;
+						$URL.="&return=success0$params" ;
 						header("Location: {$URL}");
 					}
 				}

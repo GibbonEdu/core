@@ -39,21 +39,18 @@ try {
 	$result->execute($data);
 }
 catch(PDOException $e) { 
-	//Fail 0
-	$URL.="?exportReturn=fail0" ;
+	$URL.="?return=error0" ;
 	header("Location: {$URL}");
 }
 
 if ($result) {
 	if ($gibbonRollGroupID=="") {
-		//Fail 1
-		$URL.="?exportReturn=fail1" ;
+		$URL.="?return=error1" ;
 		header("Location: {$URL}");
 	}
 	else {
 		if ($result->rowCount()<1) {
-			//Fail 3
-			$URL.="?exportReturn=fail3" ;
+			$URL.="?return=error3" ;
 			header("Location: {$URL}");
 		}
 		else {

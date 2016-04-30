@@ -33,7 +33,7 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 $URLBack=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=notifications.php" ;
 
 if (isset($_GET["action"])==FALSE OR isset($_GET["gibbonNotificationID"])==FALSE) {
-	$URLBack=$URLBack. "&updateReturn=fail1" ;
+	$URLBack=$URLBack. "&return=error1" ;
 	header("Location: {$URLBack}");
 	exit() ;
 }
@@ -50,13 +50,13 @@ else {
 	}
 	catch(PDOException $e) { 
 		print $e->getMessage() ;
-		$URLBack=$URLBack. "&updateReturn=fail2" ;
+		$URLBack=$URLBack. "&return=error2" ;
 		header("Location: {$URLBack}");
 		exit() ;
 	}
 	
 	if ($result->rowCount()!=1) {
-		$URLBack=$URLBack. "&updateReturn=fail2" ;
+		$URLBack=$URLBack. "&return=error2" ;
 		header("Location: {$URLBack}");
 		exit() ;
 	}
@@ -69,7 +69,7 @@ else {
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
-			$URLBack=$URLBack. "&updateReturn=fail2" ;
+			$URLBack=$URLBack. "&return=error2" ;
 			header("Location: {$URLBack}");
 			exit() ;
 		}

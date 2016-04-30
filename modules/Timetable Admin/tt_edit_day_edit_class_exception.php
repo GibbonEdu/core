@@ -82,43 +82,7 @@ else {
 				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > ... > ... > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt_edit.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . __($guid, 'Edit Timetable') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt_edit_day_edit.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID'>" . __($guid, 'Edit Timetable Day') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt_edit_day_edit_class.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClass=$gibbonTTDayRowClassID'>" . __($guid, 'Classes in Period') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Class List Exception') . "</div>" ; 
 				print "</div>" ;
 				
-				if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-				$updateReturnMessage="" ;
-				$class="error" ;
-				if (!($updateReturn=="")) {
-					if ($updateReturn=="fail0") {
-						$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-					}
-					else if ($updateReturn=="fail1") {
-						$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-					}
-					else if ($updateReturn=="fail2") {
-						$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-					}
-					else if ($updateReturn=="fail3") {
-						$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-					}
-					else if ($updateReturn=="success0") {
-						$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
-						$class="success" ;
-					}
-					print "<div class='$class'>" ;
-						print $updateReturnMessage;
-					print "</div>" ;
-				} 
-				
-				if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-				$deleteReturnMessage="" ;
-				$class="error" ;
-				if (!($deleteReturn=="")) {
-					if ($deleteReturn=="success0") {
-						$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;		
-						$class="success" ;
-					}
-					print "<div class='$class'>" ;
-						print $deleteReturnMessage;
-					print "</div>" ;
-				} 
+				if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
 		
 				print "<div class='linkTop'>" ;
 				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/tt_edit_day_edit_class_exception_add.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClass=$gibbonTTDayRowClassID&gibbonCourseClassID=$gibbonCourseClassID'>" .  __($guid, 'Add') . "<img style='margin-left: 5px' title='" . __($guid, 'Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;

@@ -38,15 +38,13 @@ if (isset($_GET["allStudents"])) {
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/student_view_details_notes_add.php&gibbonPersonID=$gibbonPersonID&search=" . $_GET["search"] . "&subpage=$subpage&category=" . $_GET["category"] . "&allStudents=$allStudents" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Students/student_view_details_notes_add.php")==FALSE) {
-	//Fail 0
-	$URL.="&addReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
 	$enableStudentNotes=getSettingByScope($connection2, "Students", "enableStudentNotes") ;
 	if ($enableStudentNotes!="Y") {
-		//Fail 0
-		$URL.="&addReturn=fail0" ;
+			$URL.="&return=error0" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -62,15 +60,13 @@ else {
 				$result->execute($data);
 			}
 			catch(PDOException $e) { 
-				//Fail 2
-				$URL.="&addReturn=fail2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
 		
 			if ($result->rowCount()!=1) {
-				//Fail 2
-				$URL.="&addReturn=fail2" ;
+					$URL.="&return=error2" ;
 				header("Location: {$URL}");
 				exit() ;
 			}
@@ -89,8 +85,7 @@ else {
 				$note=$_POST["note"] ;
 		
 				if ($note=="" OR $title=="") {
-					//Fail 3
-					$URL.="&addReturn=fail3" ;
+							$URL.="&return=error1" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -102,8 +97,7 @@ else {
 						$result->execute($data);
 					}
 					catch(PDOException $e) { 
-						//Fail 2
-						$URL.="&addReturn=fail2" ;
+									$URL.="&return=error2" ;
 						header("Location: {$URL}");
 						exit() ;
 					}
@@ -144,8 +138,7 @@ else {
 						}
 					}
 			
-					//Success 0
-					$URL.="&addReturn=success0" ;
+							$URL.="&return=success0" ;
 					header("Location: {$URL}");
 				}
 			}

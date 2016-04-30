@@ -200,78 +200,10 @@ else {
 				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/planner.php$params'>" . __($guid, 'Planner') . " $extra</a> > </div><div class='trailEnd'>" . __($guid, 'Edit Lesson Plan') . "</div>" ;
 				print "</div>" ;
 				
-				if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-				$updateReturnMessage="" ;
-				$class="error" ;
-				if (!($updateReturn=="")) {
-					if ($updateReturn=="fail0") {
-						$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-					}
-					else if ($updateReturn=="fail1") {
-						$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-					}
-					else if ($updateReturn=="fail2") {
-						$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-					}
-					else if ($updateReturn=="fail3") {
-						$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-					}
-					else if ($updateReturn=="fail4") {
-						$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-					}
-					else if ($updateReturn=="fail5") {
-						$updateReturnMessage=__($guid, "Your request failed due to an attachment error.") ;	
-					}
-					else if ($updateReturn=="fail6") {
-						$updateReturnMessage=__($guid, "Your request failed due to an attachment error.") ;	
-					}
-					else if ($updateReturn=="success0") {
-						$updateReturnMessage=__($guid, "Your request was completed successfully.") ;	
-						$class="success" ;
-					}
-					print "<div class='$class'>" ;
-						print $updateReturnMessage;
-					print "</div>" ;
-				} 
-				
-				if (isset($_GET["duplicateReturn"])) { $duplicateReturn=$_GET["duplicateReturn"] ; } else { $duplicateReturn="" ; }
-				$duplicateReturnMessage="" ;
-				$class="error" ;
-				if (!($duplicateReturn=="")) {
-					if ($duplicateReturn=="success0") {
-						$duplicateReturnMessage=__($guid, "Your request was completed successfully.") . __($guid, 'You can now edit more details of your newly duplicated entry.') ;	
-						$class="success" ;
-					}
-					print "<div class='$class'>" ;
-						print $duplicateReturnMessage;
-					print "</div>" ;
-				} 
-				
-				if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-				$deleteReturnMessage="" ;
-				$class="error" ;
-				if (!($deleteReturn=="")) {
-					if ($deleteReturn=="fail0") {
-						$deleteReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-					}
-					else if ($deleteReturn=="fail1") {
-						$deleteReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-					}
-					else if ($deleteReturn=="fail2") {
-						$deleteReturnMessage=__($guid, "Your request was successful, but some data was not properly saved.") ;	
-					}
-					else if ($deleteReturn=="fail3") {
-						$deleteReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-					}
-					else if ($deleteReturn=="success0") {
-						$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;		
-						$class="success" ;
-					}
-					print "<div class='$class'>" ;
-						print $deleteReturnMessage;
-					print "</div>" ;
-				} 
-				
+				$returns=array() ;
+				$returns["success1"] = __($guid, "Your request was completed successfully.") . __($guid, 'You can now edit more details of your newly duplicated entry.') ;	
+				if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, $returns); }
+		
 				print "<div class='linkTop' style='margin-bottom: 7px'>" ;
 					if ($row["gibbonUnitID"]!="") {
 						print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/Planner/planner_unitOverview.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&gibbonPlannerEntryID=$gibbonPlannerEntryID&date=" . $row["date"] . "&subView=$subView&gibbonUnitID=" . $row["gibbonUnitID"] . "&width=1000&height=550'>" . __($guid, 'Unit Overview') . "</a> | " ;
@@ -1179,7 +1111,7 @@ else {
 																}
 																print "<option class='all " . $rowSelect["category"] . "'   value='" . $rowSelect["gibbonOutcomeID"] . "'>" . $rowSelect["name"] . "</option>" ;
 																$switchContents.="case \"" . $rowSelect["gibbonOutcomeID"] . "\": " ;
-																$switchContents.="$(\"#outcome\").append('<div id=\'outcomeOuter' + outcomeCount + '\'><img style=\'margin: 10px 0 5px 0\' src=\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/loading.gif\' alt=\'Loading\' onclick=\'return false;\' /><br/>Loading</div>');" ;
+																$switchContents.="$(\"#outcome\").append('<div id=\'outcomeOuter' + outcomeCount + '\'><img style=\'margin: 10px 0 5px 0\' src=\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/loading.gif\' alt=\'Loading\' onclick=\'return false;\' /><br/>Loading</div>');" ;
 																$switchContents.="$(\"#outcomeOuter\" + outcomeCount).load(\"" . $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/units_add_blockOutcomeAjax.php\",\"type=outcome&id=\" + outcomeCount + \"&title=" . urlencode($rowSelect["name"]) . "\&category=" . ($rowSelect["category"]) . "&gibbonOutcomeID=" . $rowSelect["gibbonOutcomeID"] . "&contents=" . urlencode($rowSelect["description"]) . "&allowOutcomeEditing=" . urlencode($allowOutcomeEditing) . "\") ;" ;
 																$switchContents.="outcomeCount++ ;" ;
 																$switchContents.="$('#newOutcome').val('0');" ;
@@ -1221,7 +1153,7 @@ else {
 																}
 																print "<option class='all " . $rowSelect["category"] . "'   value='" . $rowSelect["gibbonOutcomeID"] . "'>" . $rowSelect["name"] . "</option>" ;
 																$switchContents.="case \"" . $rowSelect["gibbonOutcomeID"] . "\": " ;
-																$switchContents.="$(\"#outcome\").append('<div id=\'outcomeOuter' + outcomeCount + '\'><img style=\'margin: 10px 0 5px 0\' src=\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/loading.gif\' alt=\'Loading\' onclick=\'return false;\' /><br/>Loading</div>');" ;
+																$switchContents.="$(\"#outcome\").append('<div id=\'outcomeOuter' + outcomeCount + '\'><img style=\'margin: 10px 0 5px 0\' src=\'" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/loading.gif\' alt=\'Loading\' onclick=\'return false;\' /><br/>Loading</div>');" ;
 																$switchContents.="$(\"#outcomeOuter\" + outcomeCount).load(\"" . $_SESSION[$guid]["absoluteURL"] . "/modules/Planner/units_add_blockOutcomeAjax.php\",\"type=outcome&id=\" + outcomeCount + \"&title=" . urlencode($rowSelect["name"]) . "\&category=" . urlencode($rowSelect["category"]) . "&gibbonOutcomeID=" . $rowSelect["gibbonOutcomeID"] . "&contents=" . urlencode($rowSelect["description"]) . "&allowOutcomeEditing=" . urlencode($allowOutcomeEditing) . "\") ;" ;
 																$switchContents.="outcomeCount++ ;" ;
 																$switchContents.="$('#newOutcome').val('0');" ;

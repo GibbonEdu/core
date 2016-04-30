@@ -41,39 +41,25 @@ else {
 		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/resources_manage.php'>" . __($guid, 'Manage Resources') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Add Resource') . "</div>" ;
 		print "</div>" ;
 		
-		if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
-		$addReturnMessage="" ;
-		$class="error" ;
-		if (!($addReturn=="")) {
-			if ($addReturn=="fail0") {
-				$addReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-			}
-			else if ($addReturn=="fail2") {
-				$addReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-			}
-			else if ($addReturn=="fail3") {
-				$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-			}
-			else if ($addReturn=="fail4") {
-				$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-			}
-			else if ($addReturn=="fail5") {
-				$addReturnMessage=__($guid, "Your request failed due to an attachment error.") ;	
-			}
-			else if ($addReturn=="fail6") {
-				$updateReturnMessage=__($guid, "Your request was successful, but some data was not properly saved.") ;
-			}
-			else if ($addReturn=="success0") {
-				$addReturnMessage=__($guid, "Your request was completed successfully. You can now add another record if you wish.") ;	
-				$class="success" ;
-			}
-			print "<div class='$class'>" ;
-				print $addReturnMessage;
-			print "</div>" ;
-		} 
+		$search=NULL ;
+		if (isset($_GET["search"])) {
+			$search=$_GET["search"] ;
+		}
+			
+		$editLink="" ;
+		if (isset($_GET["editID"])) {
+			$editLink=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Resources/resources_manage_edit.php&gibbonResourceID=" . $_GET["editID"] . "&search=" . $_GET["search"] ;
+		}
+		if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], $editLink, null); }
 		
+		
+		if ($search!="") {
+			print "<div class='linkTop'>" ;
+				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Resources/resources_manage.php&search=" . $search . "'>" . __($guid, 'Back to Search Results') . "</a>" ;
+			print "</div>" ;
+		}
 		?>
-		<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/resources_manage_addProcess.php" ?>" enctype="multipart/form-data">
+		<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/resources_manage_addProcess.php?search=$search" ?>" enctype="multipart/form-data">
 			<table class='smallIntBorder fullWidth' cellspacing='0'>	
 				<tr class='break'>
 					<td colspan=2> 
@@ -125,7 +111,7 @@ else {
 						<b><?php print __($guid, 'Type') ?> *</b><br/>
 					</td>
 					<td class="right">
-						<select name="type" id="type" class='type' class="standardWidth">
+						<select name="type" id="type" class='type standardWidth'>
 							<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
 							<option id='type' name="type" value="File" /> <?php print __($guid, 'File') ?>
 							<option id='type' name="type" value="HTML" /> <?php print __($guid, 'HTML') ?>

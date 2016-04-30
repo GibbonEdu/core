@@ -32,8 +32,7 @@ date_default_timezone_set($_SESSION[$guid]["timezone"]);
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/behaviourSettings.php" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/School Admin/behaviourSettings.php")==FALSE) {
-	//Fail 0
-	$URL.="&updateReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -79,8 +78,7 @@ else {
 	
 	//Validate Inputs
 	if ($enableDescriptors=="" OR $enableLevels=="" OR ($positiveDescriptors=="" AND $enableDescriptors=="Y") OR ($negativeDescriptors=="" AND $enableDescriptors=="Y") OR ($levels=="" AND $enableLevels=="Y") OR (($behaviourLettersLetter1Count=="" OR $behaviourLettersLetter1Text=="" OR $behaviourLettersLetter2Count=="" OR $behaviourLettersLetter2Text=="" OR $behaviourLettersLetter3Count=="" OR $behaviourLettersLetter3Text=="") AND $enableBehaviourLetters=="Y")) {
-		//Fail 3
-		$URL.="&updateReturn=fail3" ;
+		$URL.="&return=error3" ;
 		header("Location: {$URL}");
 	}
 	else {	
@@ -215,14 +213,12 @@ else {
 		}
 		
 		if ($fail==TRUE) {
-			//Fail 2
-			$URL.="&updateReturn=fail2" ;
+			$URL.="&return=error2" ;
 			header("Location: {$URL}");
 		}
 		else {
-			//Success 0
 			getSystemSettings($guid, $connection2) ;
-			$URL.="&updateReturn=success0" ;
+			$URL.="&return=success0" ;
 			header("Location: {$URL}");
 		}
 	}

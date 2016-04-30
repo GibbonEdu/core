@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include "../../functions.php" ;
 include "../../config.php" ;
+require "../../lib/PHPMailer/class.phpmailer.php";
 
 //New PDO DB connection
 $pdo = new Gibbon\sqlConnection();
@@ -47,8 +48,7 @@ else {
 }
 
 if ($proceed==FALSE) {
-	//Fail 0
-	$URL.="&addReturn=fail0" ;
+	$URL.="&return=error0" ;
 	header("Location: {$URL}");
 }
 else {
@@ -177,8 +177,7 @@ else {
 
 	//VALIDATE INPUTS
 	if (count($gibbonStaffJobOpeningIDs)<1 OR ($gibbonPersonID==NULL AND ($surname=="" OR $firstName=="" OR $preferredName=="" OR $officialName=="" OR $gender=="" OR $dob=="" OR $languageFirst=="" OR $email=="" OR $homeAddress=="" OR $homeAddressDistrict=="" OR $homeAddressCountry=="" OR $phone1=="")) OR (isset($_POST["referenceEmail1"]) AND $referenceEmail1=="") OR (isset($_POST["referenceEmail2"]) AND $referenceEmail2=="") OR (isset($_POST["agreement"]) AND $agreement!="Y")) {
-		//Fail 3
-		$URL.="&addReturn=fail3" ;
+		$URL.="&return=error1" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -209,8 +208,7 @@ else {
 		}
 		
 		if ($customRequireFail) {
-			//Fail 3
-			$URL.="&addReturn=fail3" ;
+			$URL.="&return=error1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -344,13 +342,11 @@ else {
 			}
 			
 			if ($partialFail==TRUE) {
-				//Fail 5
-				$URL.="&addReturn=success1&id=$ids" ;
+				$URL.="&add=warning1&id=$ids" ;
 				header("Location: {$URL}");
 			}
 			else {
-				//Success 0
-				$URL.="&addReturn=success0&id=$ids" ;
+					$URL.="&return=success0&id=$ids" ;
 				header("Location: {$URL}");
 			}
 		}
