@@ -24,14 +24,14 @@ v12.0.00
 		PHP 7 compatible
 		Dashboards, with hooks, for staff and students
 		New workflows for advertising job openings, accepting and processing applications
-	
+
 	Changes With Important Notices
 		System: initial phase of object oriented PHP rewrite: expect errors during upload of the update.
 		Students: moved student application form from its own module into Students
 		Students: moved application form management from User Admin to Students module
 		Students: moved student enrolment from User Admin to Students module
 		Students: moved medical form management from User Admin to Students module
-	
+
 	Significant Changes
 		System: replaced float with version_compare, fixing cases where minor (system and module) updates could not be installed.
 		System: improved return message handling
@@ -41,13 +41,13 @@ v12.0.00
 		Individual Needs: new interface for parents to view individual education plans for their children (off by default)
 		Messenger: added Canned Response functionality for defining commonly sent messages.
 		School Admin: changed "Spaces" to "Facilities" and integrated borrowable Library items into Booking (to support laptop carts)
-		Staff: added ability to manage contract information	
+		Staff: added ability to manage contract information
 		User Admin: added bulk import of user photos from a zip file
-		
+
 	Security
 		System: converted links to GNU GPL to HTTPS
 		System: converted links to Gibbon website to HTTPS
-	
+
 	Tweaks & Bug Fixes
 		System: Added Danish, Persian, Brazilian Portugese, Dutch, Georgian and Hungarian as development languages
 		System: improved MIME type checking on CSV import
@@ -62,11 +62,12 @@ v12.0.00
 		System: updated jQuery to v2.2.3
 		System: themeability enhancements
 		System: added menuShow switch to allow actions to be hidden from the main menu (in case they should only be seen in a hook)
+		System: added Ghanaian Cedi as currency
 		System Admin: Improved version comparison in module updater
 		System Admin: Improved version comparison in non-login database updater
 		Activities: fixed error in adding and editing activities when payment is turned off
 		Attendance: added client side warning in case attendance is taken for a day in the past (happens when user not logged out over night)
-		Attendance: added ability to see date range in Form Groups Not Registered 
+		Attendance: added ability to see date range in Form Groups Not Registered
 		Attendance: added reason as title/hover over type in Student History report function
 		Behaviour: made column widths consistent when viewing behaviour log
 		Behaviour: increased min-width for Action column
@@ -100,7 +101,7 @@ v12.0.00
 		School Admin: fixed bug preventing non-contiguous primary external assessment settings from being saved in Formal Assessment settings
 		School Admin: increased length of grade scale short name to 5 chars
 		Staff: adjusted role drop down to offer all Staff roles (from gibbonRole), not just Teaching & Support
-		Students: added year group to New Students report when using Date Range setting 
+		Students: added year group to New Students report when using Date Range setting
 		Students: added All Students filter persistence to Back To Search link on student details page
 		Students: made more fields searchable in full profile
 		Students: fixed bug preventing student images from showing up on History tab of student profile
@@ -112,14 +113,14 @@ v12.0.00
 		Timetable: fixed rendering bug preventing some time labels from being displayed
 		Timetable: made "Back To Search" link persistent when timetable controls used
 		Tracking: adjusted Data Points export to combine multiple column internal assessments for one subject into a column
-		User Admin: added notification to form tutor(s) when a student's privacy options change (via Edit or Data Update).		
+		User Admin: added notification to form tutor(s) when a student's privacy options change (via Edit or Data Update).
 		User Admin: made max_input_vars test a little more generous
 		User Admin: added link to family for each user in User Admin screen, making it easier to find students based on parents
 		User Admin: fixed bug preventing family import
 		User Admin: added ability to allow control over formatting of usernames
 		User Admin: made list of religions settable via a comma-separated list in User Settings
 
-		
+
 v11.0.00
 --------
 	Headlines
@@ -131,13 +132,13 @@ v11.0.00
 		Improved Class overview page within the Departments module
 
 	Changes With Important Notices
-		System: generalised stars, so that they are all in one table, with common methods, usable to additional modules. 
+		System: generalised stars, so that they are all in one table, with common methods, usable to additional modules.
 			NOTE: RESETS STARS/LIKES TO ZERO
-		System admin: changed administrator, DBA and admissions contacts to system users, not addresses. 
+		System admin: changed administrator, DBA and admissions contacts to system users, not addresses.
 			NOTE: THIS MEANS ADMINS NEED TO BE RESET UNLESS THEY HAVE gibbonPersonID=1
-		Google: migrated OAuth authentication to use main Google libraries. 
+		Google: migrated OAuth authentication to use main Google libraries.
 			NOTE: REQUIRES REDIRECT URL RESET IN BOTH GOOGLE DEV CONSOLE AND IN GIBBON
-		
+
 	Significant Changes
 		System: added module actions to Fast Finder, in order to allow quick access to any functionality in the system
 		System: set all current users, and future users, to have email notifications on by default (makes notifications more obvious)
@@ -156,12 +157,12 @@ v11.0.00
 		Timetable: added ability for those with coordinator/assistant coordinator permissions within a department to manage student enrolment. Off by default.
 		User Admin: enhanced granularity on login controles, so that roles can be prevented from logging into past and/or future years
 		User Admin: added option to automatically assign newly accepted students to a house
-		
+
 	Security
 		Messenger: fixed reply-to bug causing multiple reply addresses
 		System: added system log of logins, both failed and successful
 		System: increased max password length to 30 characters (for the paranoid amongst us ; )
-		
+
 	Tweaks & Bug Fixes
 		System Admin: added Saudi Riyal to the list of currencies
 		System: added Nepalese Rupee as currency option
@@ -186,7 +187,7 @@ v11.0.00
 		System: updated Google library to latest Version
 		System: added new library for export to Excel, not loaded by default (old functions have been deprecated)
 		System: fixed birthday alert bug causing leap year issues
-		System: fixed page expiry on back issue 
+		System: fixed page expiry on back issue
 		System: increased lowest-upgrade-version to v8.3.00 to reduce file size
 		System: added new visualisation library (not loaded by default)
 		System: added Bangladeshi Taka as currency option
@@ -278,8 +279,8 @@ v11.0.00
 		User Admin: improved acceptance of applications to us student note title
 		User Admin: added roll order field to student enrolment import
 		User Admin: fixed application status display bug in application form edit
-		
-		
+
+
 v10.0.00 and earlier
 -------------------
 Removed to reduce file size
