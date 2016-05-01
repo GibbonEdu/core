@@ -18,53 +18,49 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Gibbon system-wide includes
-include "../../functions.php" ;
-include "../../config.php" ;
+include '../../functions.php';
+include '../../config.php';
 
 //Module includes
-include "./moduleFunctions.php" ;
+include './moduleFunctions.php';
 
 //New PDO DB connection
 $pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$gibbonCourseClassID=$_GET["gibbonCourseClassID"] ;
-$gibbonInternalAssessmentColumnID=$_GET["gibbonInternalAssessmentColumnID"] ;
-$gibbonPersonID=$_GET["gibbonPersonID"] ;
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Formal Assessment/internalAssessment_write_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonInternalAssessmentColumnID=$gibbonInternalAssessmentColumnID" ;
+$gibbonCourseClassID = $_GET['gibbonCourseClassID'];
+$gibbonInternalAssessmentColumnID = $_GET['gibbonInternalAssessmentColumnID'];
+$gibbonPersonID = $_GET['gibbonPersonID'];
+$URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Formal Assessment/internalAssessment_write_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonInternalAssessmentColumnID=$gibbonInternalAssessmentColumnID";
 
-if (isActionAccessible($guid, $connection2, "/modules/Formal Assessment/internalAssessment_write_data.php")==FALSE) {
-	$URL.="&return=error0" ;
-	header("Location: {$URL}");
+if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internalAssessment_write_data.php') == false) {
+    $URL .= '&return=error0';
+    header("Location: {$URL}");
+} else {
+    //Proceed!
+    //Check if planner specified
+    if ($gibbonPersonID == '' or $gibbonCourseClassID == '' or $gibbonInternalAssessmentColumnID == '') {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+    } else {
+        try {
+            $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID);
+            $sql = "UPDATE gibbonInternalAssessmentEntry SET response='' WHERE gibbonPersonIDStudent=:gibbonPersonID AND gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+            exit();
+        }
+
+        $URL .= '&return=success0';
+        //Success 0
+        header("Location: {$URL}");
+    }
 }
-else {
-	//Proceed!
-	//Check if planner specified
-	if ($gibbonPersonID=="" OR $gibbonCourseClassID=="" OR $gibbonInternalAssessmentColumnID=="") {
-		$URL.="&return=error1" ;
-		header("Location: {$URL}");
-	}
-	else {
-		try {
-			$data=array("gibbonPersonID"=>$gibbonPersonID, "gibbonInternalAssessmentColumnID"=>$gibbonInternalAssessmentColumnID); 
-			$sql="UPDATE gibbonInternalAssessmentEntry SET response='' WHERE gibbonPersonIDStudent=:gibbonPersonID AND gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$URL.="&return=error2" ;
-			header("Location: {$URL}");
-			exit() ;
-		}
-		
-		$URL.="&return=success0" ;
-		//Success 0
-		header("Location: {$URL}");
-	}
-}
-?>

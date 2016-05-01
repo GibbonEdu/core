@@ -17,94 +17,85 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "../../functions.php" ;
-include "../../config.php" ;
+include '../../functions.php';
+include '../../config.php';
 
 //New PDO DB connection
 $pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$gibbonDistrictID=$_GET["gibbonDistrictID"] ;
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/district_manage_edit.php&gibbonDistrictID=" . $gibbonDistrictID ;
+$gibbonDistrictID = $_GET['gibbonDistrictID'];
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/district_manage_edit.php&gibbonDistrictID='.$gibbonDistrictID;
 
-if (isActionAccessible($guid, $connection2, "/modules/User Admin/district_manage_edit.php")==FALSE) {
-	$URL.="&return=error0" ;
-	header("Location: {$URL}");
+if (isActionAccessible($guid, $connection2, '/modules/User Admin/district_manage_edit.php') == false) {
+    $URL .= '&return=error0';
+    header("Location: {$URL}");
+} else {
+    //Proceed!
+    //Check if districts specified
+    if ($gibbonDistrictID == '') {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+    } else {
+        try {
+            $data = array('gibbonDistrictID' => $gibbonDistrictID);
+            $sql = 'SELECT * FROM gibbonDistrict WHERE gibbonDistrictID=:gibbonDistrictID';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+            exit();
+        }
+
+        if ($result->rowCount() != 1) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+        } else {
+            //Validate Inputs
+            $name = $_POST['name'];
+
+            if ($name == '') {
+                $URL .= '&return=error3';
+                header("Location: {$URL}");
+            } else {
+                //Check unique inputs for uniquness
+                try {
+                    $data = array('name' => $name, 'gibbonDistrictID' => $gibbonDistrictID);
+                    $sql = 'SELECT * FROM gibbonDistrict WHERE name=:name AND NOT gibbonDistrictID=:gibbonDistrictID';
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    $URL .= '&return=error2';
+                    header("Location: {$URL}");
+                    exit();
+                }
+
+                if ($result->rowCount() > 0) {
+                    $URL .= '&return=error3';
+                    header("Location: {$URL}");
+                } else {
+                    //Write to database
+                    try {
+                        $data = array('name' => $name, 'gibbonDistrictID' => $gibbonDistrictID);
+                        $sql = 'UPDATE gibbonDistrict SET name=:name WHERE gibbonDistrictID=:gibbonDistrictID';
+                        $result = $connection2->prepare($sql);
+                        $result->execute($data);
+                    } catch (PDOException $e) {
+                        $URL .= '&return=error2';
+                        header("Location: {$URL}");
+                        exit();
+                    }
+
+                    $URL .= '&return=success0';
+                    header("Location: {$URL}");
+                }
+            }
+        }
+    }
 }
-else {
-	//Proceed!
-	//Check if districts specified
-	if ($gibbonDistrictID=="") {
-		$URL.="&return=error1" ;
-		header("Location: {$URL}");
-	}
-	else {
-		try {
-			$data=array("gibbonDistrictID"=>$gibbonDistrictID); 
-			$sql="SELECT * FROM gibbonDistrict WHERE gibbonDistrictID=:gibbonDistrictID" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$URL.="&return=error2" ;
-			header("Location: {$URL}");
-			exit() ;
-		}
-		
-		if ($result->rowCount()!=1) {
-			$URL.="&return=error2" ;
-			header("Location: {$URL}");
-		}
-		else {
-			//Validate Inputs
-			$name=$_POST["name"] ;
-			
-			if ($name=="") {
-					$URL.="&return=error3" ;
-				header("Location: {$URL}");
-			}
-			else {
-				//Check unique inputs for uniquness
-				try {
-					$data=array("name"=>$name, "gibbonDistrictID"=>$gibbonDistrictID); 
-					$sql="SELECT * FROM gibbonDistrict WHERE name=:name AND NOT gibbonDistrictID=:gibbonDistrictID" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { 
-							$URL.="&return=error2" ;
-					header("Location: {$URL}");
-					exit() ;
-				}
-				
-				if ($result->rowCount()>0) {
-					$URL.="&return=error3" ;
-					header("Location: {$URL}");
-				}
-				else {
-					//Write to database
-					try {
-						$data=array("name"=>$name, "gibbonDistrictID"=>$gibbonDistrictID); 
-						$sql="UPDATE gibbonDistrict SET name=:name WHERE gibbonDistrictID=:gibbonDistrictID" ;
-						$result=$connection2->prepare($sql);
-						$result->execute($data);
-					}
-					catch(PDOException $e) { 
-									$URL.="&return=error2" ;
-						header("Location: {$URL}");
-						exit() ;
-					}
-					
-							$URL.="&return=success0" ;
-					header("Location: {$URL}");
-				}
-			}
-		}
-	}
-}
-?>

@@ -17,68 +17,62 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "../../functions.php" ;
-include "../../config.php" ;
+include '../../functions.php';
+include '../../config.php';
 
 //New PDO DB connection
 $pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$gibbonPersonFieldID=$_GET["gibbonPersonFieldID"] ;
+$gibbonPersonFieldID = $_GET['gibbonPersonFieldID'];
 
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/userFields_delete.php&gibbonPersonFieldID=$gibbonPersonFieldID" ;
-$URLDelete=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/userFields.php" ;
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/userFields_delete.php&gibbonPersonFieldID=$gibbonPersonFieldID";
+$URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/userFields.php';
 
-if (isActionAccessible($guid, $connection2, "/modules/User Admin/userFields_delete.php")==FALSE) {
-	$URL.="&return=error0" ;
-	header("Location: {$URL}");
+if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_delete.php') == false) {
+    $URL .= '&return=error0';
+    header("Location: {$URL}");
+} else {
+    //Proceed!
+    //Check if school year specified
+    if ($gibbonPersonFieldID == '') {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+    } else {
+        try {
+            $data = array('gibbonPersonFieldID' => $gibbonPersonFieldID);
+            $sql = 'SELECT * FROM gibbonPersonField WHERE gibbonPersonFieldID=:gibbonPersonFieldID';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+            exit();
+        }
+
+        if ($result->rowCount() != 1) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+        } else {
+            //Write to database
+            try {
+                $data = array('gibbonPersonFieldID' => $gibbonPersonFieldID);
+                $sql = 'DELETE FROM gibbonPersonField WHERE gibbonPersonFieldID=:gibbonPersonFieldID';
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                $URL .= '&return=error2';
+                header("Location: {$URL}");
+                exit();
+            }
+
+            $URLDelete = $URLDelete.'&return=success0';
+            header("Location: {$URLDelete}");
+        }
+    }
 }
-else {
-	//Proceed!
-	//Check if school year specified
-	if ($gibbonPersonFieldID=="") {
-		$URL.="&return=error1" ;
-		header("Location: {$URL}");
-	}
-	else {
-		try {
-			$data=array("gibbonPersonFieldID"=>$gibbonPersonFieldID); 
-			$sql="SELECT * FROM gibbonPersonField WHERE gibbonPersonFieldID=:gibbonPersonFieldID" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$URL.="&return=error2" ;
-			header("Location: {$URL}");
-			exit() ;
-		}
-		
-		if ($result->rowCount()!=1) {
-			$URL.="&return=error2" ;
-			header("Location: {$URL}");
-		}
-		else {
-			//Write to database
-			try {
-				$data=array("gibbonPersonFieldID"=>$gibbonPersonFieldID); 
-				$sql="DELETE FROM gibbonPersonField WHERE gibbonPersonFieldID=:gibbonPersonFieldID" ;
-				$result=$connection2->prepare($sql);
-				$result->execute($data);
-			}
-			catch(PDOException $e) { 
-					$URL.="&return=error2" ;
-				header("Location: {$URL}");
-				exit() ;
-			}
-			
-			$URLDelete=$URLDelete . "&return=success0" ;
-			header("Location: {$URLDelete}");
-		}
-	}
-}
-?>

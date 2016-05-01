@@ -17,101 +17,94 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "../../functions.php" ;
-include "../../config.php" ;
+include '../../functions.php';
+include '../../config.php';
 
 //New PDO DB connection
 $pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$allStaff="" ;
-if (isset($_GET["allStaff"])) {
-	$allStaff=$_GET["allStaff"] ;
+$allStaff = '';
+if (isset($_GET['allStaff'])) {
+    $allStaff = $_GET['allStaff'];
 }
-$search="" ;
-if (isset($_GET["search"])) {
-	$search=$_GET["search"] ;
+$search = '';
+if (isset($_GET['search'])) {
+    $search = $_GET['search'];
 }
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/staff_manage_add.php&search=$search&allStaff=$allStaff" ;
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/staff_manage_add.php&search=$search&allStaff=$allStaff";
 
-if (isActionAccessible($guid, $connection2, "/modules/Staff/staff_manage_add.php")==FALSE) {
-	$URL.="&return=error0" ;
-	header("Location: {$URL}");
+if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php') == false) {
+    $URL .= '&return=error0';
+    header("Location: {$URL}");
+} else {
+    //Proceed!
+    $gibbonPersonID = $_POST['gibbonPersonID'];
+    $initials = $_POST['initials'];
+    if ($initials == '') {
+        $initials = null;
+    }
+    $type = $_POST['type'];
+    $jobTitle = $_POST['jobTitle'];
+    $firstAidQualified = $_POST['firstAidQualified'];
+    $firstAidExpiry = null;
+    if ($firstAidQualified == 'Y' and $_POST['firstAidExpiry'] != '') {
+        $firstAidExpiry = dateConvert($guid, $_POST['firstAidExpiry']);
+    }
+    $countryOfOrigin = $_POST['countryOfOrigin'];
+    $qualifications = $_POST['qualifications'];
+    $biographicalGrouping = $_POST['biographicalGrouping'];
+    $biographicalGroupingPriority = $_POST['biographicalGroupingPriority'];
+    $biography = $_POST['biography'];
+
+    //Validate Inputs
+    if ($gibbonPersonID == '' or $type == '') {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+    } else {
+        //Check unique inputs for uniquness
+        try {
+            if ($initials == '') {
+                $data = array('gibbonPersonID' => $gibbonPersonID);
+                $sql = 'SELECT * FROM gibbonStaff WHERE gibbonPersonID=:gibbonPersonID';
+            } else {
+                $data = array('gibbonPersonID' => $gibbonPersonID, 'initials' => $initials);
+                $sql = 'SELECT * FROM gibbonStaff WHERE gibbonPersonID=:gibbonPersonID OR initials=:initials';
+            }
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+            exit();
+        }
+
+        if ($result->rowCount() > 0) {
+            $URL .= '&return=error3';
+            header("Location: {$URL}");
+        } else {
+            //Write to database
+            try {
+                $data = array('gibbonPersonID' => $gibbonPersonID, 'initials' => $initials, 'type' => $type, 'jobTitle' => $jobTitle, 'firstAidQualified' => $firstAidQualified, 'firstAidExpiry' => $firstAidExpiry, 'countryOfOrigin' => $countryOfOrigin, 'qualifications' => $qualifications, 'biographicalGrouping' => $biographicalGrouping, 'biographicalGroupingPriority' => $biographicalGroupingPriority, 'biography' => $biography);
+                $sql = 'INSERT INTO gibbonStaff SET gibbonPersonID=:gibbonPersonID, initials=:initials, type=:type, jobTitle=:jobTitle, firstAidQualified=:firstAidQualified, firstAidExpiry=:firstAidExpiry, countryOfOrigin=:countryOfOrigin, qualifications=:qualifications, biographicalGrouping=:biographicalGrouping, biographicalGroupingPriority=:biographicalGroupingPriority, biography=:biography';
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                $URL .= '&return=error2';
+                header("Location: {$URL}");
+                exit();
+            }
+
+            //Last insert ID
+            $AI = str_pad($connection2->lastInsertID(), 10, '0', STR_PAD_LEFT);
+
+            $URL .= "&return=success0&editID=$AI";
+            header("Location: {$URL}");
+        }
+    }
 }
-else {
-	//Proceed!
-	$gibbonPersonID=$_POST["gibbonPersonID"] ; 
-	$initials=$_POST["initials"] ;
-	if ($initials=="") {
-		$initials=NULL ;
-	}
-	$type=$_POST["type"] ;
-	$jobTitle=$_POST["jobTitle"] ;
-	$firstAidQualified=$_POST["firstAidQualified"] ;
-	$firstAidExpiry=NULL ;
-	if ($firstAidQualified=="Y" AND $_POST["firstAidExpiry"]!="") {
-		$firstAidExpiry=dateConvert($guid, $_POST["firstAidExpiry"]) ;
-	}
-	$countryOfOrigin=$_POST["countryOfOrigin"] ;
-	$qualifications=$_POST["qualifications"] ;
-	$biographicalGrouping=$_POST["biographicalGrouping"] ;
-	$biographicalGroupingPriority=$_POST["biographicalGroupingPriority"] ;
-	$biography=$_POST["biography"] ;
-	
-	//Validate Inputs
-	if ($gibbonPersonID=="" OR $type=="") {
-		$URL.="&return=error1" ;
-		header("Location: {$URL}");
-	}
-	else {
-		//Check unique inputs for uniquness
-		try {
-			if ($initials=="") {
-				$data=array("gibbonPersonID"=>$gibbonPersonID); 
-				$sql="SELECT * FROM gibbonStaff WHERE gibbonPersonID=:gibbonPersonID" ;
-			}
-			else {
-				$data=array("gibbonPersonID"=>$gibbonPersonID, "initials"=>$initials); 
-				$sql="SELECT * FROM gibbonStaff WHERE gibbonPersonID=:gibbonPersonID OR initials=:initials" ;
-			}
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$URL.="&return=error2" ;
-			header("Location: {$URL}");
-			exit() ;
-		}
-		
-		if ($result->rowCount()>0) {
-			$URL.="&return=error3" ;
-			header("Location: {$URL}");
-		}
-		else {	
-			//Write to database
-			try {
-				$data=array("gibbonPersonID"=>$gibbonPersonID, "initials"=>$initials, "type"=>$type, "jobTitle"=>$jobTitle, "firstAidQualified"=>$firstAidQualified, "firstAidExpiry"=>$firstAidExpiry, "countryOfOrigin"=>$countryOfOrigin, "qualifications"=>$qualifications, "biographicalGrouping"=>$biographicalGrouping, "biographicalGroupingPriority"=>$biographicalGroupingPriority, "biography"=>$biography); 
-				$sql="INSERT INTO gibbonStaff SET gibbonPersonID=:gibbonPersonID, initials=:initials, type=:type, jobTitle=:jobTitle, firstAidQualified=:firstAidQualified, firstAidExpiry=:firstAidExpiry, countryOfOrigin=:countryOfOrigin, qualifications=:qualifications, biographicalGrouping=:biographicalGrouping, biographicalGroupingPriority=:biographicalGroupingPriority, biography=:biography" ;
-				$result=$connection2->prepare($sql);
-				$result->execute($data);
-			}
-			catch(PDOException $e) { 
-				$URL.="&return=error2" ;
-				header("Location: {$URL}");
-				exit() ;
-			}
-			
-			//Last insert ID
-			$AI=str_pad($connection2->lastInsertID(), 10, "0", STR_PAD_LEFT) ;
-			
-			$URL.="&return=success0&editID=$AI" ;
-			header("Location: {$URL}");
-		}
-	}
-}
-?>

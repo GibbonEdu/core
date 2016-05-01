@@ -17,109 +17,107 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+@session_start();
 
 //Gibbon system-wide includes
-include "../../functions.php" ;
-include "../../config.php" ;
+include '../../functions.php';
+include '../../config.php';
 
 //New PDO DB connection
 $pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
 //Module includes
-include $_SESSION[$guid]["absolutePath"] . "/modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
+include $_SESSION[$guid]['absolutePath'].'/modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
 //Setup variables
-$output="" ;
-$id=$_GET["id"] ;
+$output = '';
+$id = $_GET['id'];
 
-$output.="<script type='text/javascript'>" ;
-	$output.="$(document).ready(function() {" ; 
-		$output.="var options={" ;
-			$output.="success: function(response) {" ;
-				$output.="tinymce.execCommand(\"mceFocus\",false,\"$id\"); tinyMCE.execCommand(\"mceInsertContent\", 0, response); formReset(); \$(\"." .$id . "resourceQuickSlider\").slideUp();" ;
-			$output.="}, " ;
-			$output.="url: '" . $_SESSION[$guid]["absoluteURL"] . "/modules/Resources/resources_addQuick_ajaxProcess.php'," ;
-			$output.="type: 'POST'" ;
-		$output.="};" ; 
-	 
-		$output.="$('#" . $id . "ajaxForm').submit(function() {" ; 
-			$output.="$(this).ajaxSubmit(options);" ; 
-			$output.="$(\"." .$id . "resourceQuickSlider\").html(\"<div class='resourceAddSlider'><img style='margin: 10px 0 5px 0' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/loading.gif' alt='" . __($guid, 'Uploading') . "' onclick='return false;' /><br/>" . __($guid, 'Loading') . "</div>\");" ;
-			$output.="return false;" ; 
-		$output.="});" ; 
-	$output.="});" ; 
-	
-	$output.="var formReset=function() {" ;
-		$output.="$('#" . $id . "resourceQuick').css('display','none');" ;
-	$output.="};" ;
-$output.="</script>" ;
+$output .= "<script type='text/javascript'>";
+    $output .= '$(document).ready(function() {';
+        $output .= 'var options={';
+            $output .= 'success: function(response) {';
+                $output .= "tinymce.execCommand(\"mceFocus\",false,\"$id\"); tinyMCE.execCommand(\"mceInsertContent\", 0, response); formReset(); \$(\".".$id.'resourceQuickSlider").slideUp();';
+            $output .= '}, ';
+            $output .= "url: '".$_SESSION[$guid]['absoluteURL']."/modules/Resources/resources_addQuick_ajaxProcess.php',";
+            $output .= "type: 'POST'";
+        $output .= '};';
 
-$output.="<table cellspacing='0' style='width: 100%'>" ;	
-	$output.="<tr id='" . $id . "resourceQuick'>" ;
-		$output.="<td colspan=2 style='border: none; padding-top: 0px'>" ; 
-			$output.="<div style='margin: 0px' class='linkTop'><a href='javascript:void(0)' onclick='formReset(); \$(\"." .$id . "resourceQuickSlider\").slideUp();'><img title='" . __($guid, 'Close') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/></a></div>" ;
-			$output.="<form id='" . $id . "ajaxForm'>" ;
-				$output.="<table cellspacing='0' style='border: none; width: 100%'>" ;
-					//Get list of acceptable file extensions
-					try {
-						$dataExt=array(); 
-						$sqlExt="SELECT * FROM gibbonFileExtension" ;
-						$resultExt=$connection2->prepare($sqlExt);
-						$resultExt->execute($dataExt);
-					}
-					catch(PDOException $e) { }
-					$ext="" ;
-					while ($rowExt=$resultExt->fetch()) {
-						$ext=$ext . "'." . $rowExt["extension"] . "'," ;
-					}
-							
-					//Produce 4 file input boxes
-					for ($i=1; $i<5; $i++) {
-						$output.="<tr id='" . $id . "resourceFile'>" ;
-							$output.="<td>" ;
-								$output.="<b>" . sprintf(__($guid, 'File %1$s'), $i) . "</b><br/>" ;
-							$output.="</td>" ;
-							$output.="<td class='right'>" ;
-								$output.="<input type='file' name='" . $id . "file" . $i . "' id='" . $id . "file" . $i . "' style='max-width: 235px'><br/><br/>" ;
-								$output.="<script type='text/javascript'>" ;
-								$output.="var " . $id . "file" . $i . "=new LiveValidation('" . $id . "file" . $i . "');" ;
-									$output.=$id . "file" . $i . ".add( Validate.Inclusion, { within: [" . $ext . "], failureMessage: 'Illegal file type!', partialMatch: true, caseSensitive: false } );" ;
-								$output.="</script>" ;
-							$output.="</td>" ;
-						$output.="</tr>" ;
-					}
-					
-					$output.="<tr>" ;
-						$output.="<td>" ;
-							$output.="<b>" . __($guid, "Insert Images As") . "*</b><br/>" ;
-						$output.="</td>" ;
-						$output.="<td class=\"right\">" ;
-							$output.="<select name=\"imagesAsLinks\" id=\"imagesAsLinks\" style=\"width: 302px\">" ;
-								$output.="<option value='N'>" . __($guid, 'Image') . "</option>" ;		
-								$output.="<option value='Y'>" . __($guid, 'Link') . "</option>" ;	
-							$output.="</select>" ;
-						$output.="</td>" ;
-					$output.="</tr>" ;
-					
-					$output.="<tr>" ;
-						$output.="<td>" ;
-							$output.=getMaxUpload($guid, TRUE) ;
-						$output.="</td>" ;
-						$output.="<td class='right'>" ;
-							$output.="<input type='hidden' name='id' value='" . $id . "'>" ;
-							$output.="<input type='hidden' name='" . $id . "address' value='" . $_SESSION[$guid]["address"] . "'>" ;
-							$output.="<input type='submit' value='Submit'>" ;
-						$output.="</td>" ;
-					$output.="</tr>" ;
-				
-				
-				$output.="</table>" ;
-			$output.="</form>" ;
-		$output.="</td>" ; 
-	$output.="</tr>" ;
-$output.="</table>" ;
+        $output .= "$('#".$id."ajaxForm').submit(function() {";
+            $output .= '$(this).ajaxSubmit(options);';
+            $output .= '$(".'.$id."resourceQuickSlider\").html(\"<div class='resourceAddSlider'><img style='margin: 10px 0 5px 0' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/loading.gif' alt='".__($guid, 'Uploading')."' onclick='return false;' /><br/>".__($guid, 'Loading').'</div>");';
+            $output .= 'return false;';
+        $output .= '});';
+    $output .= '});';
 
-print $output ;
-?>
+    $output .= 'var formReset=function() {';
+        $output .= "$('#".$id."resourceQuick').css('display','none');";
+    $output .= '};';
+$output .= '</script>';
+
+$output .= "<table cellspacing='0' style='width: 100%'>";
+    $output .= "<tr id='".$id."resourceQuick'>";
+        $output .= "<td colspan=2 style='border: none; padding-top: 0px'>";
+            $output .= "<div style='margin: 0px' class='linkTop'><a href='javascript:void(0)' onclick='formReset(); \$(\".".$id."resourceQuickSlider\").slideUp();'><img title='".__($guid, 'Close')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/></a></div>";
+            $output .= "<form id='".$id."ajaxForm'>";
+                $output .= "<table cellspacing='0' style='border: none; width: 100%'>";
+                    //Get list of acceptable file extensions
+                    try {
+                        $dataExt = array();
+                        $sqlExt = 'SELECT * FROM gibbonFileExtension';
+                        $resultExt = $connection2->prepare($sqlExt);
+                        $resultExt->execute($dataExt);
+                    } catch (PDOException $e) {
+                    }
+                    $ext = '';
+                    while ($rowExt = $resultExt->fetch()) {
+                        $ext = $ext."'.".$rowExt['extension']."',";
+                    }
+
+                    //Produce 4 file input boxes
+                    for ($i = 1; $i < 5; ++$i) {
+                        $output .= "<tr id='".$id."resourceFile'>";
+                        $output .= '<td>';
+                        $output .= '<b>'.sprintf(__($guid, 'File %1$s'), $i).'</b><br/>';
+                        $output .= '</td>';
+                        $output .= "<td class='right'>";
+                        $output .= "<input type='file' name='".$id.'file'.$i."' id='".$id.'file'.$i."' style='max-width: 235px'><br/><br/>";
+                        $output .= "<script type='text/javascript'>";
+                        $output .= 'var '.$id.'file'.$i."=new LiveValidation('".$id.'file'.$i."');";
+                        $output .= $id.'file'.$i.'.add( Validate.Inclusion, { within: ['.$ext."], failureMessage: 'Illegal file type!', partialMatch: true, caseSensitive: false } );";
+                        $output .= '</script>';
+                        $output .= '</td>';
+                        $output .= '</tr>';
+                    }
+
+                    $output .= '<tr>';
+                        $output .= '<td>';
+                            $output .= '<b>'.__($guid, 'Insert Images As').'*</b><br/>';
+                        $output .= '</td>';
+                        $output .= '<td class="right">';
+                            $output .= '<select name="imagesAsLinks" id="imagesAsLinks" style="width: 302px">';
+                                $output .= "<option value='N'>".__($guid, 'Image').'</option>';
+                                $output .= "<option value='Y'>".__($guid, 'Link').'</option>';
+                            $output .= '</select>';
+                        $output .= '</td>';
+                    $output .= '</tr>';
+
+                    $output .= '<tr>';
+                        $output .= '<td>';
+                            $output .= getMaxUpload($guid, true);
+                        $output .= '</td>';
+                        $output .= "<td class='right'>";
+                            $output .= "<input type='hidden' name='id' value='".$id."'>";
+                            $output .= "<input type='hidden' name='".$id."address' value='".$_SESSION[$guid]['address']."'>";
+                            $output .= "<input type='submit' value='Submit'>";
+                        $output .= '</td>';
+                    $output .= '</tr>';
+
+                $output .= '</table>';
+            $output .= '</form>';
+        $output .= '</td>';
+    $output .= '</tr>';
+$output .= '</table>';
+
+echo $output;

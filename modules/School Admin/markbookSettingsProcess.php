@@ -17,181 +17,165 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "../../functions.php" ;
-include "../../config.php" ;
+include '../../functions.php';
+include '../../config.php';
 
 //New PDO DB connection
 $pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/markbookSettings.php" ;
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/markbookSettings.php';
 
-if (isActionAccessible($guid, $connection2, "/modules/School Admin/markbookSettings.php")==FALSE) {
-	$URL.="&return=error0" ;
-	header("Location: {$URL}");
+if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSettings.php') == false) {
+    $URL .= '&return=error0';
+    header("Location: {$URL}");
+} else {
+    //Proceed!
+    $markbookType = '';
+    foreach (explode(',', $_POST['markbookType']) as $type) {
+        $markbookType .= trim($type).',';
+    }
+    $markbookType = substr($markbookType, 0, -1);
+    $enableColumnWeighting = $_POST['enableColumnWeighting'];
+    $attainmentAlternativeName = $_POST['attainmentAlternativeName'];
+    $attainmentAlternativeNameAbrev = $_POST['attainmentAlternativeNameAbrev'];
+    $effortAlternativeName = $_POST['effortAlternativeName'];
+    $effortAlternativeNameAbrev = $_POST['effortAlternativeNameAbrev'];
+    $wordpressCommentPush = $_POST['wordpressCommentPush'];
+    $showStudentAttainmentWarning = $_POST['showStudentAttainmentWarning'];
+    $showStudentEffortWarning = $_POST['showStudentEffortWarning'];
+    $showParentAttainmentWarning = $_POST['showParentAttainmentWarning'];
+    $showParentEffortWarning = $_POST['showParentEffortWarning'];
+    $personalisedWarnings = $_POST['personalisedWarnings'];
+
+    //Validate Inputs
+    if ($markbookType == '' or $enableColumnWeighting == '') {
+        $URL .= '&return=error3';
+        header("Location: {$URL}");
+    } else {
+        //Write to database
+        $fail = false;
+
+        try {
+            $data = array('value' => $markbookType);
+            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='markbookType'";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $fail = true;
+        }
+
+        try {
+            $data = array('value' => $enableColumnWeighting);
+            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='enableColumnWeighting'";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $fail = true;
+        }
+
+        try {
+            $data = array('value' => $attainmentAlternativeName);
+            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='attainmentAlternativeName'";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $fail = true;
+        }
+
+        try {
+            $data = array('value' => $attainmentAlternativeNameAbrev);
+            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='attainmentAlternativeNameAbrev'";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $fail = true;
+        }
+
+        try {
+            $data = array('value' => $effortAlternativeName);
+            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='effortAlternativeName'";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $fail = true;
+        }
+
+        try {
+            $data = array('value' => $effortAlternativeNameAbrev);
+            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='effortAlternativeNameAbrev'";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $fail = true;
+        }
+
+        try {
+            $data = array('value' => $wordpressCommentPush);
+            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='wordpressCommentPush'";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $fail = true;
+        }
+
+        try {
+            $data = array('value' => $showStudentAttainmentWarning);
+            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='showStudentAttainmentWarning'";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $fail = true;
+        }
+
+        try {
+            $data = array('value' => $showStudentEffortWarning);
+            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='showStudentEffortWarning'";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $fail = true;
+        }
+
+        try {
+            $data = array('value' => $showParentAttainmentWarning);
+            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='showParentAttainmentWarning'";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $fail = true;
+        }
+
+        try {
+            $data = array('value' => $showParentEffortWarning);
+            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='showParentEffortWarning'";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $fail = true;
+        }
+
+        try {
+            $data = array('value' => $personalisedWarnings);
+            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='personalisedWarnings'";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $fail = true;
+        }
+
+        if ($fail == true) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+        } else {
+            getSystemSettings($guid, $connection2);
+            $URL .= '&return=success0';
+            header("Location: {$URL}");
+        }
+    }
 }
-else {
-	//Proceed!
-	$markbookType="" ; 
-	foreach (explode(",", $_POST["markbookType"]) as $type) {
-		$markbookType.=trim($type) . "," ;
-	}
-	$markbookType=substr($markbookType,0,-1) ;
-	$enableColumnWeighting=$_POST["enableColumnWeighting"] ;
-	$attainmentAlternativeName=$_POST["attainmentAlternativeName"] ;
-	$attainmentAlternativeNameAbrev=$_POST["attainmentAlternativeNameAbrev"] ;
-	$effortAlternativeName=$_POST["effortAlternativeName"] ;
-	$effortAlternativeNameAbrev=$_POST["effortAlternativeNameAbrev"] ;
-	$wordpressCommentPush=$_POST["wordpressCommentPush"] ;
-	$showStudentAttainmentWarning=$_POST["showStudentAttainmentWarning"] ;
-	$showStudentEffortWarning=$_POST["showStudentEffortWarning"] ;
-	$showParentAttainmentWarning=$_POST["showParentAttainmentWarning"] ;
-	$showParentEffortWarning=$_POST["showParentEffortWarning"] ;
-	$personalisedWarnings=$_POST["personalisedWarnings"] ;
-	
-	//Validate Inputs
-	if ($markbookType=="" OR $enableColumnWeighting=="") {
-		$URL.="&return=error3" ;
-		header("Location: {$URL}");
-	}
-	else {	
-		//Write to database
-		$fail=FALSE ;
-		
-		try {
-			$data=array("value"=>$markbookType); 
-			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='markbookType'" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$fail=TRUE ;
-		}
-		
-		try {
-			$data=array("value"=>$enableColumnWeighting); 
-			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='enableColumnWeighting'" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$fail=TRUE ;
-		}
-		
-		try {
-			$data=array("value"=>$attainmentAlternativeName); 
-			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='attainmentAlternativeName'" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$fail=TRUE ;
-		}
-		
-		try {
-			$data=array("value"=>$attainmentAlternativeNameAbrev); 
-			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='attainmentAlternativeNameAbrev'" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$fail=TRUE ;
-		}
-		
-		try {
-			$data=array("value"=>$effortAlternativeName); 
-			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='effortAlternativeName'" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$fail=TRUE ;
-		}
-		
-		try {
-			$data=array("value"=>$effortAlternativeNameAbrev); 
-			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='effortAlternativeNameAbrev'" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$fail=TRUE ;
-		}
-		
-		try {
-			$data=array("value"=>$wordpressCommentPush); 
-			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='wordpressCommentPush'" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$fail=TRUE ;
-		}
-		
-		try {
-			$data=array("value"=>$showStudentAttainmentWarning); 
-			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='showStudentAttainmentWarning'" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$fail=TRUE ;
-		}
-		
-		try {
-			$data=array("value"=>$showStudentEffortWarning); 
-			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='showStudentEffortWarning'" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$fail=TRUE ;
-		}
-		
-		try {
-			$data=array("value"=>$showParentAttainmentWarning); 
-			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='showParentAttainmentWarning'" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$fail=TRUE ;
-		}
-		
-		try {
-			$data=array("value"=>$showParentEffortWarning); 
-			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='showParentEffortWarning'" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$fail=TRUE ;
-		}
-		
-		try {
-			$data=array("value"=>$personalisedWarnings); 
-			$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='personalisedWarnings'" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$fail=TRUE ;
-		}
-		
-		if ($fail==TRUE) {
-			$URL.="&return=error2" ;
-			header("Location: {$URL}");
-		}
-		else {
-			getSystemSettings($guid, $connection2) ;
-			$URL.="&return=success0" ;
-			header("Location: {$URL}");
-		}
-	}
-}
-?>

@@ -18,87 +18,78 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Gibbon system-wide includes
-include "../../functions.php" ;
-include "../../config.php" ;
+include '../../functions.php';
+include '../../config.php';
 
 //Module includes
-include "./moduleFunctions.php" ;
+include './moduleFunctions.php';
 
 //New PDO DB connection
 $pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$gibbonPersonID=$_GET["gibbonPersonID"] ;
-$search="";
-if (isset($_GET["search"])) {
-	$search=$_GET["search"] ;
+$gibbonPersonID = $_GET['gibbonPersonID'];
+$search = '';
+if (isset($_GET['search'])) {
+    $search = $_GET['search'];
 }
-$size=$_GET["size"] ;
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID&search=$search" ;
+$size = $_GET['size'];
+$URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID&search=$search";
 
-if (isActionAccessible($guid, $connection2, "/modules/User Admin/user_manage_edit.php")==FALSE) {
-	$URL.="&return=error0" ;
-	header("Location: {$URL}");
-}
-else {
-	//Proceed!
-	//Check if planner specified
-	if ($gibbonPersonID=="" OR $size=="") {
-		$URL.="&return=error1" ;
-		header("Location: {$URL}");
-	}
-	else {
-		try {
-			$data=array("gibbonPersonID"=>$gibbonPersonID); 
-			$sql="SELECT * FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$URL.="&return=error2" ;
-			header("Location: {$URL}");
-			exit() ;
-		}
+if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edit.php') == false) {
+    $URL .= '&return=error0';
+    header("Location: {$URL}");
+} else {
+    //Proceed!
+    //Check if planner specified
+    if ($gibbonPersonID == '' or $size == '') {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+    } else {
+        try {
+            $data = array('gibbonPersonID' => $gibbonPersonID);
+            $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+            exit();
+        }
 
-		if ($result->rowCount()!=1) {
-			$URL.="&return=error2" ;
-			header("Location: {$URL}");
-		}
-		else {	
-			//UPDATE
-			try {
-				$sizeField=NULL ;
-				if ($size=="240") {
-					$sizeField="image_240" ;
-				}
-				else if ($size=="75") {
-					$sizeField="image_75" ;
-				}
-				else if ($size=="passport") {
-					$sizeField="citizenship1PassportScan" ;
-				}
-				else if ($size=="id") {
-					$sizeField="nationalIDCardScan" ;
-				}
-				$data=array("gibbonPersonID"=>$gibbonPersonID); 
-				$sql="UPDATE gibbonPerson SET $sizeField='' WHERE gibbonPersonID=:gibbonPersonID" ;
-				$result=$connection2->prepare($sql);
-				$result->execute($data);
-			}
-			catch(PDOException $e) { 
-					$URL.="&return=error2" ;
-				header("Location: {$URL}");
-				exit() ;
-			}
-			
-			$URL.="&return=success0" ;
-			header("Location: {$URL}");
-		}
-	}
+        if ($result->rowCount() != 1) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+        } else {
+            //UPDATE
+            try {
+                $sizeField = null;
+                if ($size == '240') {
+                    $sizeField = 'image_240';
+                } elseif ($size == '75') {
+                    $sizeField = 'image_75';
+                } elseif ($size == 'passport') {
+                    $sizeField = 'citizenship1PassportScan';
+                } elseif ($size == 'id') {
+                    $sizeField = 'nationalIDCardScan';
+                }
+                $data = array('gibbonPersonID' => $gibbonPersonID);
+                $sql = "UPDATE gibbonPerson SET $sizeField='' WHERE gibbonPersonID=:gibbonPersonID";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                $URL .= '&return=error2';
+                header("Location: {$URL}");
+                exit();
+            }
+
+            $URL .= '&return=success0';
+            header("Location: {$URL}");
+        }
+    }
 }
-?>

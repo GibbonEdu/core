@@ -17,89 +17,83 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "./functions.php" ;
-include "./config.php" ;
+include './functions.php';
+include './config.php';
 
 //New PDO DB connection
 $pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
 //Start session
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
 //Create password
-$password=randomPassword(8);
+$password = randomPassword(8);
 
 //Check email address is not blank
-$input=$_POST["email"] ;
+$input = $_POST['email'];
 
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=passwordReset.php" ;
-	
-if ($input=="") {
-	$URL=$URL. "&return=error0" ;
-	header("Location: {$URL}");
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=passwordReset.php';
+
+if ($input == '') {
+    $URL = $URL.'&return=error0';
+    header("Location: {$URL}");
 }
 //Otherwise proceed
 else {
-	//If answer insert fails...
-	$salt=getSalt() ;
-	$passwordStrong=hash("sha256", $salt.$password) ;
-	try {
-		$data=array("email"=>$input, "username"=>$input); 
-		$sql="SELECT gibbonPersonID, email, username FROM gibbonPerson WHERE (email=:email OR username=:username) AND gibbonPerson.status='Full' AND NOT email=''";
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { 
-		$URL=$URL. "&return=error2" ;
-		header("Location: {$URL}");
-		exit() ;
-	}
+    //If answer insert fails...
+    $salt = getSalt();
+    $passwordStrong = hash('sha256', $salt.$password);
+    try {
+        $data = array('email' => $input, 'username' => $input);
+        $sql = "SELECT gibbonPersonID, email, username FROM gibbonPerson WHERE (email=:email OR username=:username) AND gibbonPerson.status='Full' AND NOT email=''";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $URL = $URL.'&return=error2';
+        header("Location: {$URL}");
+        exit();
+    }
 
-	if ($result->rowCount()!=1) {
-		$URL=$URL. "&return=error4" ;
-		header("Location: {$URL}");
-	}
-	else {
-		$row=$result->fetch() ; 
-		$gibbonPersonID=$row["gibbonPersonID"] ;
-		$email=$row["email"] ;
-		$username=$row["username"] ;
-		
-		try {
-			$data=array("passwordStrong"=>$passwordStrong, "passwordStrongSalt"=>$salt, "gibbonPersonID"=>$gibbonPersonID); 
-			$sql="UPDATE gibbonPerson SET password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, failCount=0, passwordForceReset='Y' WHERE gibbonPersonID=:gibbonPersonID";
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$URL=$URL. "&return=error2" ;
-			header("Location: {$URL}");
-			exit() ;
-		}
-		
-		if ($result->rowCount()!=1) {
-			$URL=$URL. "&return=error2" ;
-			header("Location: {$URL}");
-		}
-		else {
-			$to=$email;
-			$subject=$_SESSION[$guid]["organisationNameShort"] . " Gibbon Password Reset";
-			$body="Your new password for account $username is as follows:\n\n$password\n\nPlease log in an change your password as soon as possible.\n\n" . $_SESSION[$guid]["systemName"] . " Administrator";
-			$headers="From: " . $_SESSION[$guid]["organisationAdministratorEmail"] ;
+    if ($result->rowCount() != 1) {
+        $URL = $URL.'&return=error4';
+        header("Location: {$URL}");
+    } else {
+        $row = $result->fetch();
+        $gibbonPersonID = $row['gibbonPersonID'];
+        $email = $row['email'];
+        $username = $row['username'];
 
-			if (mail($to, $subject, $body, $headers)) {
-				$URL=$URL. "&return=success0" ;
-				header("Location: {$URL}");
-			}
-			else {
-				$URL=$URL. "&return=error3" ;
-				header("Location: {$URL}");
-			}
-		}
-	}
+        try {
+            $data = array('passwordStrong' => $passwordStrong, 'passwordStrongSalt' => $salt, 'gibbonPersonID' => $gibbonPersonID);
+            $sql = "UPDATE gibbonPerson SET password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, failCount=0, passwordForceReset='Y' WHERE gibbonPersonID=:gibbonPersonID";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $URL = $URL.'&return=error2';
+            header("Location: {$URL}");
+            exit();
+        }
+
+        if ($result->rowCount() != 1) {
+            $URL = $URL.'&return=error2';
+            header("Location: {$URL}");
+        } else {
+            $to = $email;
+            $subject = $_SESSION[$guid]['organisationNameShort'].' Gibbon Password Reset';
+            $body = "Your new password for account $username is as follows:\n\n$password\n\nPlease log in an change your password as soon as possible.\n\n".$_SESSION[$guid]['systemName'].' Administrator';
+            $headers = 'From: '.$_SESSION[$guid]['organisationAdministratorEmail'];
+
+            if (mail($to, $subject, $body, $headers)) {
+                $URL = $URL.'&return=success0';
+                header("Location: {$URL}");
+            } else {
+                $URL = $URL.'&return=error3';
+                header("Location: {$URL}");
+            }
+        }
+    }
 }
-?>

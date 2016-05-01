@@ -17,38 +17,36 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "../../functions.php" ;
-include "../../config.php" ;
+include '../../functions.php';
+include '../../config.php';
 
-include "./moduleFunctions.php" ;
+include './moduleFunctions.php';
 
 //New PDO DB connection
 $pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$mode=$_GET["mode"] ;
-if ($mode=="Add") {
-	try {
-		$data=array("gibbonRubricID"=>$_GET["gibbonRubricID"], "gibbonPersonID"=>$_GET["gibbonPersonID"], "gibbonRubricCellID"=>$_GET["gibbonRubricCellID"], "contextDBTable"=>$_GET["contextDBTable"], "contextDBTableID"=>$_GET["contextDBTableID"]); 
-		$sql="INSERT INTO gibbonRubricEntry SET gibbonRubricID=:gibbonRubricID, gibbonPersonID=:gibbonPersonID, gibbonRubricCellID=:gibbonRubricCellID, contextDBTable=:contextDBTable, contextDBTableID=:contextDBTableID" ;
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { }
+$mode = $_GET['mode'];
+if ($mode == 'Add') {
+    try {
+        $data = array('gibbonRubricID' => $_GET['gibbonRubricID'], 'gibbonPersonID' => $_GET['gibbonPersonID'], 'gibbonRubricCellID' => $_GET['gibbonRubricCellID'], 'contextDBTable' => $_GET['contextDBTable'], 'contextDBTableID' => $_GET['contextDBTableID']);
+        $sql = 'INSERT INTO gibbonRubricEntry SET gibbonRubricID=:gibbonRubricID, gibbonPersonID=:gibbonPersonID, gibbonRubricCellID=:gibbonRubricCellID, contextDBTable=:contextDBTable, contextDBTableID=:contextDBTableID';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+    }
 }
-if ($mode=="Remove") {
-	try {
-		$data=array("gibbonRubricID"=>$_GET["gibbonRubricID"], "gibbonPersonID"=>$_GET["gibbonPersonID"], "gibbonRubricCellID"=>$_GET["gibbonRubricCellID"], "contextDBTable"=>$_GET["contextDBTable"], "contextDBTableID"=>$_GET["contextDBTableID"]); 
-		$sql="DELETE FROM gibbonRubricEntry WHERE gibbonRubricID=:gibbonRubricID AND gibbonPersonID=:gibbonPersonID AND gibbonRubricCellID=:gibbonRubricCellID AND contextDBTable=:contextDBTable AND contextDBTableID=:contextDBTableID" ;
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { }
+if ($mode == 'Remove') {
+    try {
+        $data = array('gibbonRubricID' => $_GET['gibbonRubricID'], 'gibbonPersonID' => $_GET['gibbonPersonID'], 'gibbonRubricCellID' => $_GET['gibbonRubricCellID'], 'contextDBTable' => $_GET['contextDBTable'], 'contextDBTableID' => $_GET['contextDBTableID']);
+        $sql = 'DELETE FROM gibbonRubricEntry WHERE gibbonRubricID=:gibbonRubricID AND gibbonPersonID=:gibbonPersonID AND gibbonRubricCellID=:gibbonRubricCellID AND contextDBTable=:contextDBTable AND contextDBTableID=:contextDBTableID';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+    }
 }
-
-?>

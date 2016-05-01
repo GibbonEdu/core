@@ -17,71 +17,65 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "../../functions.php" ;
-include "../../config.php" ;
+include '../../functions.php';
+include '../../config.php';
 
 //New PDO DB connection
 $pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/System Admin/alarm.php" ;
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/System Admin/alarm.php';
 
-if (isActionAccessible($guid, $connection2, "/modules/System Admin/alarm.php")==FALSE) {
-	$URL.="&return=error0" ;
-	header("Location: {$URL}");
+if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') == false) {
+    $URL .= '&return=error0';
+    header("Location: {$URL}");
+} else {
+    //Proceed!
+    $gibbonAlarmID = '';
+    if (isset($_GET['gibbonAlarmID'])) {
+        $gibbonAlarmID = $_GET['gibbonAlarmID'];
+    }
+
+    //Validate Inputs
+    if ($gibbonAlarmID == '') {
+        $URL .= '&return=error3';
+        header("Location: {$URL}");
+    } else {
+        $fail = false;
+
+        //DEAL WITH ALARM SETTING
+        //Write setting to database
+        try {
+            $data = array();
+            $sql = "UPDATE gibbonSetting SET value='None' WHERE scope='System' AND name='alarm'";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $fail = true;
+        }
+
+        //Deal with alarm record
+        try {
+            $data = array('timestampEnd' => date('Y-m-d H:i:s'), 'gibbonAlarmID' => $gibbonAlarmID);
+            $sql = "UPDATE gibbonAlarm SET status='Past', timestampEnd=:timestampEnd WHERE gibbonAlarmID=:gibbonAlarmID";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $fail = true;
+        }
+
+        if ($fail == true) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+        } else {
+            getSystemSettings($guid, $connection2);
+            $URL .= '&return=success0';
+            header("Location: {$URL}");
+        }
+    }
 }
-else {
-	//Proceed!
-	$gibbonAlarmID="" ;
-	if (isset($_GET["gibbonAlarmID"])) {
-		$gibbonAlarmID=$_GET["gibbonAlarmID"] ;
-	}
-	
-	//Validate Inputs
-	if ($gibbonAlarmID=="") {
-		$URL.="&return=error3" ;
-		header("Location: {$URL}");
-	}
-	else {	
-		$fail=FALSE ;
-			
-		//DEAL WITH ALARM SETTING
-		//Write setting to database
-		try {
-			$data=array(); 
-			$sql="UPDATE gibbonSetting SET value='None' WHERE scope='System' AND name='alarm'" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$fail=TRUE ;
-		}	
-		
-		//Deal with alarm record
-		try {
-			$data=array("timestampEnd"=>date("Y-m-d H:i:s"), "gibbonAlarmID"=>$gibbonAlarmID); 
-			$sql="UPDATE gibbonAlarm SET status='Past', timestampEnd=:timestampEnd WHERE gibbonAlarmID=:gibbonAlarmID" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$fail=TRUE ;
-		}	 
-			
-		if ($fail==TRUE) {
-			$URL.="&return=error2" ;
-			header("Location: {$URL}");
-		}
-		else {
-			getSystemSettings($guid, $connection2) ;
-			$URL.="&return=success0" ;
-			header("Location: {$URL}");
-		}
-	}
-}
-?>
