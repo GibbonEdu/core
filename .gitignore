@@ -1,2 +1,3 @@
 uploads/*
 /config.php
+/vendor/

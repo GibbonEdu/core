@@ -971,158 +971,47 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
 						<optgroup label='--<?php echo __($guid, 'PAYPAL SUPPORTED') ?>--'/>
-							<option <?php if ($row['value'] == 'AUD $') {
-    echo 'selected';
-}
-    ?> value='AUD $'>Australian Dollar (A$)</option>
-							<option <?php if ($row['value'] == 'BRL R$') {
-    echo 'selected';
-}
-    ?> value='BRL R$'>Brazilian Real</option>
-							<option <?php if ($row['value'] == 'GBP £') {
-    echo 'selected';
-}
-    ?> value='GBP £'>British Pound (£)</option>
-							<option <?php if ($row['value'] == 'CAD $') {
-    echo 'selected';
-}
-    ?> value='CAD $'>Canadian Dollar (C$)</option>
-							<option <?php if ($row['value'] == 'CZK Kč') {
-    echo 'selected';
-}
-    ?> value='CZK Kč'>Czech Koruna</option>
-							<option <?php if ($row['value'] == 'DKK kr') {
-    echo 'selected';
-}
-    ?> value='DKK kr'>Danish Krone</option>
-							<option <?php if ($row['value'] == 'EUR €') {
-    echo 'selected';
-}
-    ?> value='EUR €'>Euro (€)</option>
-							<option <?php if ($row['value'] == 'HKD $') {
-    echo 'selected';
-}
-    ?> value='HKD $'>Hong Kong Dollar ($)</option>
-							<option <?php if ($row['value'] == 'HUF Ft') {
-    echo 'selected';
-}
-    ?> value='HUF Ft'>Hungarian Forint</option>
-							<option <?php if ($row['value'] == 'ILS ₪') {
-    echo 'selected';
-}
-    ?> value='ILS ₪'>Israeli New Shekel</option>
-							<option <?php if ($row['value'] == 'JPY ¥') {
-    echo 'selected';
-}
-    ?> value='JPY ¥'>Japanese Yen (¥)</option>
-							<option <?php if ($row['value'] == 'MYR RM') {
-    echo 'selected';
-}
-    ?> value='MYR RM'>Malaysian Ringgit</option>
-							<option <?php if ($row['value'] == 'MXN $') {
-    echo 'selected';
-}
-    ?> value='MXN $'>Mexican Peso</option>
-							<option <?php if ($row['value'] == 'TWD $') {
-    echo 'selected';
-}
-    ?> value='TWD $'>New Taiwan Dollar</option>
-							<option <?php if ($row['value'] == 'NZD $') {
-    echo 'selected';
-}
-    ?> value='NZD $'>New Zealand Dollar ($)</option>
-							<option <?php if ($row['value'] == 'NOK kr') {
-    echo 'selected';
-}
-    ?> value='NOK kr'>Norwegian Krone</option>
-							<option <?php if ($row['value'] == 'PHP ₱') {
-    echo 'selected';
-}
-    ?> value='PHP ₱'>Philippine Peso</option>
-							<option <?php if ($row['value'] == 'PLN zł') {
-    echo 'selected';
-}
-    ?> value='PLN zł'>Polish Zloty</option>
-							<option <?php if ($row['value'] == 'SGD $') {
-    echo 'selected';
-}
-    ?> value='SGD $'>Singapore Dollar ($)</option>
-							<option <?php if ($row['value'] == 'CHF') {
-    echo 'selected';
-}
-    ?> value='CHF'>Swiss Franc</option>
-							<option <?php if ($row['value'] == 'THB ฿') {
-    echo 'selected';
-}
-    ?> value='THB ฿'>Thai Baht</option>
-							<option <?php if ($row['value'] == 'TRY') {
-    echo 'selected';
-}
-    ?> value='TRY'>Turkish Lira</option>
-							<option <?php if ($row['value'] == 'USD $') {
-    echo 'selected';
-}
-    ?> value='USD $'>U.S. Dollar ($)</option>
+							<option <?php if ($row['value'] == 'AUD $') {echo 'selected';}?> value='AUD $'>Australian Dollar (A$)</option>
+							<option <?php if ($row['value'] == 'BRL R$') {echo 'selected';}?> value='BRL R$'>Brazilian Real</option>
+							<option <?php if ($row['value'] == 'GBP £') {echo 'selected';}?> value='GBP £'>British Pound (£)</option>
+							<option <?php if ($row['value'] == 'CAD $') {echo 'selected';}?> value='CAD $'>Canadian Dollar (C$)</option>
+							<option <?php if ($row['value'] == 'CZK Kč') {echo 'selected';}?> value='CZK Kč'>Czech Koruna</option>
+							<option <?php if ($row['value'] == 'DKK kr') {echo 'selected';}?> value='DKK kr'>Danish Krone</option>
+							<option <?php if ($row['value'] == 'EUR €') {echo 'selected';}?> value='EUR €'>Euro (€)</option>
+							<option <?php if ($row['value'] == 'HKD $') {echo 'selected';}?> value='HKD $'>Hong Kong Dollar ($)</option>
+							<option <?php if ($row['value'] == 'HUF Ft') {echo 'selected';}?> value='HUF Ft'>Hungarian Forint</option>
+							<option <?php if ($row['value'] == 'ILS ₪') {echo 'selected';}?> value='ILS ₪'>Israeli New Shekel</option>
+							<option <?php if ($row['value'] == 'JPY ¥') {echo 'selected';}?> value='JPY ¥'>Japanese Yen (¥)</option>
+							<option <?php if ($row['value'] == 'MYR RM') {echo 'selected';}?> value='MYR RM'>Malaysian Ringgit</option>
+							<option <?php if ($row['value'] == 'MXN $') {echo 'selected';}?> value='MXN $'>Mexican Peso</option>
+							<option <?php if ($row['value'] == 'TWD $') {echo 'selected';}?> value='TWD $'>New Taiwan Dollar</option>
+							<option <?php if ($row['value'] == 'NZD $') {echo 'selected';}?> value='NZD $'>New Zealand Dollar ($)</option>
+							<option <?php if ($row['value'] == 'NOK kr') {echo 'selected';}?> value='NOK kr'>Norwegian Krone</option>
+							<option <?php if ($row['value'] == 'PHP ₱') {echo 'selected';}?> value='PHP ₱'>Philippine Peso</option>
+							<option <?php if ($row['value'] == 'PLN zł') {echo 'selected';}?> value='PLN zł'>Polish Zloty</option>
+							<option <?php if ($row['value'] == 'SGD $') {echo 'selected';}?> value='SGD $'>Singapore Dollar ($)</option>
+							<option <?php if ($row['value'] == 'CHF') {echo 'selected';}?> value='CHF'>Swiss Franc</option>
+							<option <?php if ($row['value'] == 'THB ฿') {echo 'selected';}?> value='THB ฿'>Thai Baht</option>
+							<option <?php if ($row['value'] == 'TRY') {echo 'selected';}?> value='TRY'>Turkish Lira</option>
+							<option <?php if ($row['value'] == 'USD $') {echo 'selected';}?> value='USD $'>U.S. Dollar ($)</option>
 						</optgroup>
 						<optgroup label='--<?php echo __($guid, 'OTHERS') ?>--'/>
-							<option <?php if ($row['value'] == 'BDT ó') {
-    echo 'selected';
-}
-    ?> value='BDT ó'>Bangladeshi Taka (ó)</option>
-							<option <?php if ($row['value'] == 'BTC') {
-    echo 'selected';
-}
-    ?> value='BTC'>Bitcoin</option>
-							<option <?php if ($row['value'] == 'XAF FCFA') {
-    echo 'selected';
-}
-    ?> value='XAF FCFA'>Central African Francs (FCFA)</option>
-		<option <?php if ($row['value'] == 'EGP £') { echo 'selected' ; } ?> value='EGP £'>Egyptian Pound (£)</option>
-    <option <?php if ($row['value'] == 'GHS GH₵') { echo 'selected'; } ?> value='GHS GH₵'>Ghanaian Cedi (GH₵)</option>
-    <option <?php if ($row['value'] == 'INR ₹') {
-    echo 'selected';
-}
-    ?> value='INR ₹'>Indian Rupee (₹)</option>
-							<option <?php if ($row['value'] == 'IDR Rp') {
-    echo 'selected';
-}
-    ?> value='IDR Rp'>Indonesian Rupiah (Rp)</option>
-							<option <?php if ($row['value'] == 'JMD $') {
-    echo 'selected';
-}
-    ?> value='JMD $'>Jamaican Dollar ($)</option>
-							<option <?php if ($row['value'] == 'KES KSh') {
-    echo 'selected';
-}
-    ?> value='KES KSh'>Kenyan Shilling (KSh)</option>
-							<option <?php if ($row['value'] == 'MOP MOP$') {
-    echo 'selected';
-}
-    ?> value='MOP MOP$'>Macanese Pataca (MOP$)</option>
-							<option <?php if ($row['value'] == 'NPR ₨') {
-    echo 'selected';
-}
-    ?> value='NPR ₨'>Nepalese Rupee (₨)</option>
-							<option <?php if ($row['value'] == 'NGN ₦') {
-    echo 'selected';
-}
-    ?> value='NGN ₦'>Nigerian Naira (₦)</option>
-							<option <?php if ($row['value'] == 'PKR ₨') {
-    echo 'selected';
-}
-    ?> value='PKR ₨'>Pakistani Rupee (₨)</option>
-							<option <?php if ($row['value'] == 'SAR ﷼‎') {
-    echo 'selected';
-}
-    ?> value='SAR ﷼‎'>Saudi Riyal (﷼‎)</option>
-							<option <?php if ($row['value'] == 'TZS TSh') {
-    echo 'selected';
-}
-    ?> value='TZS TSh'>Tanzania Shilling (TSh)</option>
-							<option <?php if ($row['value'] == 'VND ₫‎') {
-    echo 'selected';
-}
-    ?> value='VND ₫‎'>Vietnamese Dong (₫‎)</option>
+							<option <?php if ($row['value'] == 'BDT ó') {echo 'selected';}?> value='BDT ó'>Bangladeshi Taka (ó)</option>
+							<option <?php if ($row['value'] == 'BTC') {echo 'selected';}?> value='BTC'>Bitcoin</option>
+							<option <?php if ($row['value'] == 'XAF FCFA') {echo 'selected';}?> value='XAF FCFA'>Central African Francs (FCFA)</option>
+          		<option <?php if ($row['value'] == 'EGP £') { echo 'selected' ; } ?> value='EGP £'>Egyptian Pound (£)</option>
+              <option <?php if ($row['value'] == 'GHS GH₵') { echo 'selected'; } ?> value='GHS GH₵'>Ghanaian Cedi (GH₵)</option>
+              <option <?php if ($row['value'] == 'INR ₹') {echo 'selected';}?> value='INR ₹'>Indian Rupee (₹)</option>
+							<option <?php if ($row['value'] == 'IDR Rp') {echo 'selected';}?> value='IDR Rp'>Indonesian Rupiah (Rp)</option>
+							<option <?php if ($row['value'] == 'JMD $') {echo 'selected';}?> value='JMD $'>Jamaican Dollar ($)</option>
+							<option <?php if ($row['value'] == 'KES KSh') {echo 'selected';}?> value='KES KSh'>Kenyan Shilling (KSh)</option>
+							<option <?php if ($row['value'] == 'MOP MOP$') {echo 'selected';}?> value='MOP MOP$'>Macanese Pataca (MOP$)</option>
+							<option <?php if ($row['value'] == 'NPR ₨') {echo 'selected';}?> value='NPR ₨'>Nepalese Rupee (₨)</option>
+							<option <?php if ($row['value'] == 'NGN ₦') {echo 'selected';}?> value='NGN ₦'>Nigerian Naira (₦)</option>
+							<option <?php if ($row['value'] == 'PKR ₨') {echo 'selected';}?> value='PKR ₨'>Pakistani Rupee (₨)</option>
+							<option <?php if ($row['value'] == 'SAR ﷼‎') {echo 'selected';}?> value='SAR ﷼‎'>Saudi Riyal (﷼‎)</option>
+							<option <?php if ($row['value'] == 'TZS TSh') {echo 'selected';}?> value='TZS TSh'>Tanzania Shilling (TSh)</option>
+							<option <?php if ($row['value'] == 'VND ₫‎') {echo 'selected';}?> value='VND ₫‎'>Vietnamese Dong (₫‎)</option>
 						</optgroup>
 					</select>
 				</td>
