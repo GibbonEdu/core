@@ -17,50 +17,46 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "../../functions.php" ;
-include "../../config.php" ;
+include '../../functions.php';
+include '../../config.php';
 
 //New PDO DB connection
 $pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/department_manage.php" ;
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/department_manage.php';
 
-if (isActionAccessible($guid, $connection2, "/modules/School Admin/department_manage.php")==FALSE) {
-	$URL.="&return=error0" ;
-	header("Location: {$URL}");
+if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_manage.php') == false) {
+    $URL .= '&return=error0';
+    header("Location: {$URL}");
+} else {
+    //Proceed!
+    $makeDepartmentsPublic = $_POST['makeDepartmentsPublic'];
+
+    //Write to database
+    $fail = false;
+
+    try {
+        $data = array('value' => $makeDepartmentsPublic);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Departments' AND name='makeDepartmentsPublic'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    if ($fail == true) {
+        $URL .= '&return=error2';
+        header("Location: {$URL}");
+    } else {
+        //Success 0
+        getSystemSettings($guid, $connection2);
+        $URL .= '&return=success0';
+        header("Location: {$URL}");
+    }
 }
-else {
-	//Proceed!
-	$makeDepartmentsPublic=$_POST["makeDepartmentsPublic"] ;
-	
-	//Write to database
-	$fail=FALSE ;
-	
-	try {
-		$data=array("value"=>$makeDepartmentsPublic); 
-		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='Departments' AND name='makeDepartmentsPublic'" ;
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { 
-		$fail=TRUE ;
-	}
-	
-	if ($fail==TRUE) {
-		$URL.="&return=error2" ;
-		header("Location: {$URL}");
-	}
-	else {
-		//Success 0
-		getSystemSettings($guid, $connection2) ;
-		$URL.="&return=success0" ;
-		header("Location: {$URL}");
-	}
-}
-?>

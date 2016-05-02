@@ -17,243 +17,234 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+@session_start();
 
 //Module includes
-include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
+include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, "/modules/Staff/applicationForm_manage_edit.php")==FALSE) {
-	//Acess denied
-	print "<div class='error'>" ;
-		print __($guid, "You do not have access to this action.") ;
-	print "</div>" ;
+if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_manage_edit.php') == false) {
+    //Acess denied
+    echo "<div class='error'>";
+    echo __($guid, 'You do not have access to this action.');
+    echo '</div>';
+} else {
+    echo '<h2>';
+    echo __($guid, 'Staff Application Form Printout');
+    echo '</h2>';
+
+    $gibbonStaffApplicationFormID = $_GET['gibbonStaffApplicationFormID'];
+    $search = '';
+    if (isset($_GET['search'])) {
+        $search = $_GET['search'];
+    }
+
+    if ($gibbonStaffApplicationFormID == '') {
+        echo "<div class='error'>";
+        echo __($guid, 'You have not specified one or more required parameters.');
+        echo '</div>';
+    } else {
+        //Proceed!
+        try {
+            $data = array('gibbonStaffApplicationFormID' => $gibbonStaffApplicationFormID);
+            $sql = 'SELECT gibbonStaffApplicationForm.*, gibbonStaffJobOpening.jobTitle, gibbonStaffJobOpening.type FROM gibbonStaffApplicationForm JOIN gibbonStaffJobOpening ON (gibbonStaffApplicationForm.gibbonStaffJobOpeningID=gibbonStaffJobOpening.gibbonStaffJobOpeningID) LEFT JOIN gibbonPerson ON (gibbonStaffApplicationForm.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStaffApplicationFormID=:gibbonStaffApplicationFormID';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            echo "<div class='error'>".$e->getMessage().'</div>';
+        }
+
+        if ($result->rowCount() != 1) {
+            echo "<div class='error'>";
+            echo __($guid, 'There is no data to display, or an error has occurred.');
+            echo '</div>';
+        } else {
+            $row = $result->fetch();
+            echo '<h4>'.__($guid, 'For Office Use').'</h4>';
+            echo "<table cellspacing='0' style='width: 100%'>";
+            echo '<tr>';
+            echo "<td style='width: 25%; padding-top: 15px; vertical-align: top'>";
+            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Application ID').'</span><br/>';
+            echo '<i>'.htmlPrep($row['gibbonStaffApplicationFormID']).'</i>';
+            echo '</td>';
+            echo "<td style='width: 25%; padding-top: 15px; vertical-align: top'>";
+            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Priority').'</span><br/>';
+            echo '<i>'.htmlPrep($row['priority']).'</i>';
+            echo '</td>';
+            echo "<td style='width: 50%; padding-top: 15px; vertical-align: top'>";
+            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Status').'</span><br/>';
+            echo '<i>'.htmlPrep($row['status']).'</i>';
+            echo '</td>';
+            echo '</tr>';
+            echo '<tr>';
+            echo "<td style='padding-top: 15px; vertical-align: top'>";
+            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Start Date').'</span><br/>';
+            echo '<i>'.dateConvertBack($guid, $row['dateStart']).'</i>';
+            echo '</td>';
+            echo "<td style='padding-top: 15px; vertical-align: top'>";
+            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Milestones').'</span><br/>';
+            echo '<i>'.htmlPrep($row['milestones']).'</i>';
+            echo '</td>';
+            echo "<td style='padding-top: 15px; vertical-align: top'>";
+
+            echo '</td>';
+            echo '</tr>';
+            if ($row['notes'] != '') {
+                echo '<tr>';
+                echo "<td style='padding-top: 15px; vertical-align: top' colspan=3>";
+                echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Notes').'</span><br/>';
+                echo '<i>'.$row['notes'].'</i>';
+                echo '</td>';
+                echo '</tr>';
+            }
+            echo '</table>';
+
+            echo '<h4>'.__($guid, 'Job Related Information').'</h4>';
+            echo "<table cellspacing='0' style='width: 100%'>";
+            echo '<tr>';
+            echo "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=2>";
+            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Job Opening').'</span><br/>';
+            echo '<i>'.htmlPrep($row['jobTitle']).'</i>';
+            echo '</td>';
+            echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
+            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Job Type').'</span><br/>';
+            echo '<i>'.htmlPrep($row['type']).'</i>';
+            echo '</td>';
+            echo '</tr>';
+            echo '<tr>';
+            echo "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=3>";
+            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Application Questions').'</span><br/>';
+            echo '<i>'.addSlashes($row['questions']).'</i>';
+            echo '</td>';
+            echo '</tr>';
+            echo '</table>';
+
+            echo '<h4>'.__($guid, 'Applicant Details').'</h4>';
+            echo "<table cellspacing='0' style='width: 100%'>";
+            if ($row['gibbonPersonID'] != '') {
+                echo '<tr>';
+                echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
+                echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Internal Candidate').'</span><br/>';
+                echo '</td>';
+                echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
+                echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Surname').'</span><br/>';
+                echo '<i>'.htmlPrep($row['surname']).'</i>';
+                echo '</td>';
+                echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
+                echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Preferred Name').'</span><br/>';
+                echo '<i>'.htmlPrep($row['preferredName']).'</i>';
+                echo '</td>';
+                echo '</tr>';
+            } else {
+                echo '<tr>';
+                echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
+                echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Surname').'</span><br/>';
+                echo '<i>'.htmlPrep($row['surname']).'</i>';
+                echo '</td>';
+                echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
+                echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Preferred Name').'</span><br/>';
+                echo '<i>'.htmlPrep($row['preferredName']).'</i>';
+                echo '</td>';
+                echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
+                echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Official Name').'</span><br/>';
+                echo '<i>'.htmlPrep($row['officialName']).'</i>';
+                echo '</td>';
+                echo '</tr>';
+                echo '<tr>';
+                echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
+                echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Gender').'</span><br/>';
+                echo '<i>'.htmlPrep($row['gender']).'</i>';
+                echo '</td>';
+                echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
+                echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Date of Birth').'</span><br/>';
+                echo '<i>'.dateConvertBack($guid, $row['dob']).'</i>';
+                echo '</td>';
+                echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
+
+                echo '</td>';
+                echo '</tr>';
+                echo '<tr>';
+                echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
+                echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'First Language').'</span><br/>';
+                echo '<i>'.htmlPrep($row['languageFirst']).'</i>';
+                echo '</td>';
+                echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
+                echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Second Language').'</span><br/>';
+                echo '<i>'.htmlPrep($row['languageSecond']).'</i>';
+                echo '</td>';
+                echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
+                echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Third Language').'</span><br/>';
+                echo '<i>'.htmlPrep($row['languageThird']).'</i>';
+                echo '</td>';
+                echo '</tr>';
+                echo '<tr>';
+                echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
+                echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Country of Birth').'</span><br/>';
+                echo '<i>'.htmlPrep($row['countryOfBirth']).'</i>';
+                echo '</td>';
+                echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
+                echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Citizenship').'</span><br/>';
+                echo '<i>'.htmlPrep($row['citizenship1']).'</i>';
+                echo '</td>';
+                echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
+                echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Passport Number').'</span><br/>';
+                echo '<i>'.htmlPrep($row['citizenship1Passport']).'</i>';
+                echo '</td>';
+                echo '</tr>';
+                echo '<tr>';
+                echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
+                echo "<span style='font-size: 115%; font-weight: bold'>";
+                if ($_SESSION[$guid]['country'] == '') {
+                    echo '<b>'.__($guid, 'National ID Card Number').'</b>';
+                } else {
+                    echo '<b>'.$_SESSION[$guid]['country'].' '.__($guid, 'ID Card Number').'</b>';
+                }
+                echo '</span><br/>';
+                echo '<i>'.htmlPrep($row['nationalIDCardNumber']).'</i>';
+                echo '</td>';
+                echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
+                echo "<span style='font-size: 115%; font-weight: bold'>";
+                if ($_SESSION[$guid]['country'] == '') {
+                    echo '<b>'.__($guid, 'Residency/Visa Type').'</b>';
+                } else {
+                    echo '<b>'.$_SESSION[$guid]['country'].' '.__($guid, 'Residency/Visa Type').'</b>';
+                }
+                echo '</span><br/>';
+                echo '<i>'.htmlPrep($row['residencyStatus']).'</i>';
+                echo '</td>';
+                echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
+                echo "<span style='font-size: 115%; font-weight: bold'>";
+                if ($_SESSION[$guid]['country'] == '') {
+                    echo '<b>'.__($guid, 'Visa Expiry Date').'</b>';
+                } else {
+                    echo '<b>'.$_SESSION[$guid]['country'].' '.__($guid, 'Visa Expiry Date').'</b>';
+                }
+                echo '</span><br/>';
+                echo '<i>'.dateConvertBack($guid, $row['visaExpiryDate']).'</i>';
+                echo '</td>';
+                echo '</tr>';
+                echo '<tr>';
+                echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
+                echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Email').'</span><br/>';
+                echo '<i>'.htmlPrep($row['email']).'</i>';
+                echo '</td>';
+                echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
+                echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Phone').'</span><br/>';
+                echo '<i>';
+                if ($row['phone1Type'] != '') {
+                    echo htmlPrep($row['phone1Type']).': ';
+                }
+                if ($row['phone1CountryCode'] != '') {
+                    echo htmlPrep($row['phone1CountryCode']).' ';
+                }
+                echo htmlPrep(formatPhone($row['phone1'])).' ';
+                echo '</i>';
+                echo '</td>';
+                echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
+
+                echo '</td>';
+                echo '</tr>';
+            }
+            echo '</table>';
+        }
+    }
 }
-else {
-	print "<h2>" ;
-	print __($guid, "Staff Application Form Printout") ;
-	print "</h2>" ;
-		
-	$gibbonStaffApplicationFormID=$_GET["gibbonStaffApplicationFormID"] ;
-	$search="" ;
-	if (isset($_GET["search"])) {
-		$search=$_GET["search"] ;
-	}
-	
-	if ($gibbonStaffApplicationFormID=="") {
-		print "<div class='error'>" ;
-		print __($guid, "You have not specified one or more required parameters.") ;
-		print "</div>" ;
-	}
-	else {
-		//Proceed!
-		try {
-			$data=array("gibbonStaffApplicationFormID"=>$gibbonStaffApplicationFormID);
-			$sql="SELECT gibbonStaffApplicationForm.*, gibbonStaffJobOpening.jobTitle, gibbonStaffJobOpening.type FROM gibbonStaffApplicationForm JOIN gibbonStaffJobOpening ON (gibbonStaffApplicationForm.gibbonStaffJobOpeningID=gibbonStaffJobOpening.gibbonStaffJobOpeningID) LEFT JOIN gibbonPerson ON (gibbonStaffApplicationForm.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStaffApplicationFormID=:gibbonStaffApplicationFormID" ; 
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-		}
-	
-		if ($result->rowCount()!=1) {
-			print "<div class='error'>" ;
-				print __($guid, "There is no data to display, or an error has occurred.") ;
-			print "</div>" ;
-		}
-		else {
-			$row=$result->fetch() ;
-			print "<h4>" . __($guid, 'For Office Use') . "</h4>" ;
-			print "<table cellspacing='0' style='width: 100%'>" ;
-				print "<tr>" ;
-					print "<td style='width: 25%; padding-top: 15px; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Application ID') . "</span><br/>" ;
-						print "<i>" . htmlPrep($row["gibbonStaffApplicationFormID"]) . "</i>" ;
-					print "</td>" ;
-					print "<td style='width: 25%; padding-top: 15px; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Priority') . "</span><br/>" ;
-						print "<i>" . htmlPrep($row["priority"]) . "</i>" ;
-					print "</td>" ;
-					print "<td style='width: 50%; padding-top: 15px; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Status') . "</span><br/>" ;
-						print "<i>" . htmlPrep($row["status"]) . "</i>" ;
-					print "</td>" ;
-				print "</tr>" ;
-				print "<tr>" ;
-					print "<td style='padding-top: 15px; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Start Date') . "</span><br/>" ;
-						print "<i>" . dateConvertBack($guid, $row["dateStart"]). "</i>" ;
-					print "</td>" ;
-					print "<td style='padding-top: 15px; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Milestones') . "</span><br/>" ;
-						print "<i>" . htmlPrep($row["milestones"]) . "</i>" ;
-					print "</td>" ;
-					print "<td style='padding-top: 15px; vertical-align: top'>" ;
-						
-					print "</td>" ;
-				print "</tr>" ;
-				if ($row["notes"]!="") {
-					print "<tr>" ;
-						print "<td style='padding-top: 15px; vertical-align: top' colspan=3>" ;
-							print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Notes') . "</span><br/>" ;
-							print "<i>" . $row["notes"] . "</i>" ;
-						print "</td>" ;
-					print "</tr>" ;
-				}
-			print "</table>" ;
-			
-			print "<h4>" . __($guid, 'Job Related Information') . "</h4>" ;
-			print "<table cellspacing='0' style='width: 100%'>" ;
-				print "<tr>" ;
-					print "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=2>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Job Opening') . "</span><br/>" ;
-						print "<i>" . htmlPrep($row["jobTitle"]) . "</i>" ;
-					print "</td>" ;
-					print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Job Type') . "</span><br/>" ;
-						print "<i>" . htmlPrep($row["type"]) . "</i>" ;
-					print "</td>" ;
-				print "</tr>" ;
-				print "<tr>" ;
-					print "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=3>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Application Questions') . "</span><br/>" ;
-						print "<i>" . addSlashes($row["questions"]) . "</i>" ;
-					print "</td>" ;
-				print "</tr>" ;
-			print "</table>" ;
-			
-			print "<h4>" . __($guid, 'Applicant Details') . "</h4>" ;
-			print "<table cellspacing='0' style='width: 100%'>" ;
-				if ($row["gibbonPersonID"]!="") {
-					print "<tr>" ;
-						print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-							print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Internal Candidate') . "</span><br/>" ;
-						print "</td>" ;
-						print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-							print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Surname') . "</span><br/>" ;
-							print "<i>" . htmlPrep($row["surname"]) . "</i>" ;
-						print "</td>" ;
-						print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-							print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Preferred Name') . "</span><br/>" ;
-							print "<i>" . htmlPrep($row["preferredName"]) . "</i>" ;
-						print "</td>" ;
-					print "</tr>" ;
-				}
-				else {
-					print "<tr>" ;
-						print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-							print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Surname') . "</span><br/>" ;
-							print "<i>" . htmlPrep($row["surname"]) . "</i>" ;
-						print "</td>" ;
-						print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-							print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Preferred Name') . "</span><br/>" ;
-							print "<i>" . htmlPrep($row["preferredName"]) . "</i>" ;
-						print "</td>" ;
-						print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-							print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Official Name') . "</span><br/>" ;
-							print "<i>" . htmlPrep($row["officialName"]) . "</i>" ;
-						print "</td>" ;
-					print "</tr>" ;
-					print "<tr>" ;
-						print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-							print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Gender') . "</span><br/>" ;
-							print "<i>" . htmlPrep($row["gender"]). "</i>" ;
-						print "</td>" ;
-						print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-							print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Date of Birth') . "</span><br/>" ;
-							print "<i>" . dateConvertBack($guid, $row["dob"]). "</i>" ;
-						print "</td>" ;
-						print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-							
-						print "</td>" ;
-					print "</tr>" ;
-					print "<tr>" ;
-						print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-							print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'First Language') . "</span><br/>" ;
-							print "<i>" . htmlPrep($row["languageFirst"]). "</i>" ;
-						print "</td>" ;
-						print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-							print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Second Language') . "</span><br/>" ;
-							print "<i>" . htmlPrep($row["languageSecond"]). "</i>" ;
-						print "</td>" ;
-						print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-							print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Third Language') . "</span><br/>" ;
-							print "<i>" . htmlPrep($row["languageThird"]). "</i>" ;
-						print "</td>" ;
-					print "</tr>" ;
-					print "<tr>" ;
-						print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-							print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Country of Birth') . "</span><br/>" ;
-							print "<i>" . htmlPrep($row["countryOfBirth"]). "</i>" ;
-						print "</td>" ;
-						print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-							print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Citizenship') . "</span><br/>" ;
-							print "<i>" . htmlPrep($row["citizenship1"]). "</i>" ;
-						print "</td>" ;
-						print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-							print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Passport Number') . "</span><br/>" ;
-							print "<i>" . htmlPrep($row["citizenship1Passport"]). "</i>" ;
-						print "</td>" ;
-					print "</tr>" ;
-					print "<tr>" ;
-						print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-							print "<span style='font-size: 115%; font-weight: bold'>" ;
-								if ($_SESSION[$guid]["country"]=="") {
-									print "<b>" . __($guid, 'National ID Card Number') . "</b>" ;
-								}
-								else {
-									print "<b>" . $_SESSION[$guid]["country"] . " " . __($guid, 'ID Card Number') . "</b>" ;
-								}
-							print "</span><br/>" ;
-							print "<i>" . htmlPrep($row["nationalIDCardNumber"]). "</i>" ;
-						print "</td>" ;
-						print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-							print "<span style='font-size: 115%; font-weight: bold'>" ;
-								if ($_SESSION[$guid]["country"]=="") {
-									print "<b>" . __($guid, 'Residency/Visa Type') . "</b>" ;
-								}
-								else {
-									print "<b>" . $_SESSION[$guid]["country"] . " " . __($guid, 'Residency/Visa Type') . "</b>" ;
-								}
-							print "</span><br/>" ;
-							print "<i>" . htmlPrep($row["residencyStatus"]). "</i>" ;
-						print "</td>" ;
-						print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-							print "<span style='font-size: 115%; font-weight: bold'>" ;
-								if ($_SESSION[$guid]["country"]=="") {
-									print "<b>" . __($guid, 'Visa Expiry Date') . "</b>" ;
-								}
-								else {
-									print "<b>" . $_SESSION[$guid]["country"] . " " . __($guid, 'Visa Expiry Date') . "</b>" ;
-								}
-							print "</span><br/>" ;
-							print "<i>" . dateConvertBack($guid, $row["visaExpiryDate"]). "</i>" ;
-						print "</td>" ;
-					print "</tr>" ;
-					print "<tr>" ;
-						print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-							print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Email') . "</span><br/>" ;
-							print "<i>" . htmlPrep($row["email"]). "</i>" ;
-						print "</td>" ;
-						print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-							print "<span style='font-size: 115%; font-weight: bold'>" . __($guid, 'Phone') . "</span><br/>" ;
-							print "<i>" ;
-							if ($row["phone1Type"]!="") {
-								print htmlPrep($row["phone1Type"]) . ": " ;
-							}
-							if ($row["phone1CountryCode"]!="") {
-								print htmlPrep($row["phone1CountryCode"]) . " " ;
-							}
-							print htmlPrep(formatPhone($row["phone1"])) . " " ;
-							print "</i>" ;
-						print "</td>" ;
-						print "<td style='width: 33%; padding-top: 15px; vertical-align: top'>" ;
-						
-						print "</td>" ;
-					print "</tr>" ;
-				}
-			print "</table>" ;
-		}
-	}
-}
-?>

@@ -18,53 +18,49 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Gibbon system-wide includes
-include "../../functions.php" ;
-include "../../config.php" ;
+include '../../functions.php';
+include '../../config.php';
 
 //Module includes
-include "./moduleFunctions.php" ;
+include './moduleFunctions.php';
 
 //New PDO DB connection
 $pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$gibbonPersonID=$_GET["gibbonPersonID"] ;
-$date=$_GET["date"] ;
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Attendance/attendance_future_byPerson.php&gibbonPersonID=$gibbonPersonID" ;
+$gibbonPersonID = $_GET['gibbonPersonID'];
+$date = $_GET['date'];
+$URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Attendance/attendance_future_byPerson.php&gibbonPersonID=$gibbonPersonID";
 
-if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_future_byPerson.php")==FALSE) {
-	$URL.="&reutrn=error0" ;
-	header("Location: {$URL}");
+if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_future_byPerson.php') == false) {
+    $URL .= '&reutrn=error0';
+    header("Location: {$URL}");
+} else {
+    //Proceed!
+    //Check if planner specified
+    if ($gibbonPersonID == '' or $date == '') {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+    } else {
+        //UPDATE
+        try {
+            $data = array('gibbonPersonID' => $gibbonPersonID, 'date' => $date);
+            $sql = 'DELETE FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date=:date';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+            exit();
+        }
+
+        //Success 0
+        $URL .= '&return=success0';
+        header("Location: {$URL}");
+    }
 }
-else {
-	//Proceed!
-	//Check if planner specified
-	if ($gibbonPersonID=="" OR $date=="") {
-		$URL.="&return=error1" ;
-		header("Location: {$URL}");
-	}
-	else {
-		//UPDATE
-		try {
-			$data=array("gibbonPersonID"=>$gibbonPersonID, "date"=>$date); 
-			$sql="DELETE FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date=:date" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$URL.="&return=error2" ;
-			header("Location: {$URL}");
-			exit() ;
-		}
-			
-		//Success 0
-		$URL.="&return=success0" ;
-		header("Location: {$URL}");
-	}
-}
-?>

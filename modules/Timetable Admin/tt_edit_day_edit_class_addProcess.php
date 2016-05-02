@@ -17,82 +17,75 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "../../functions.php" ;
-include "../../config.php" ;
+include '../../functions.php';
+include '../../config.php';
 
 //New PDO DB connection
 $pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$gibbonTTDayID=$_GET["gibbonTTDayID"] ;
-$gibbonTTID=$_GET["gibbonTTID"] ;
-$gibbonSchoolYearID=$_GET["gibbonSchoolYearID"] ;
-$gibbonTTColumnRowID=$_GET["gibbonTTColumnRowID"] ;
-$gibbonCourseClassID=$_POST["gibbonCourseClassID"] ;
+$gibbonTTDayID = $_GET['gibbonTTDayID'];
+$gibbonTTID = $_GET['gibbonTTID'];
+$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
+$gibbonTTColumnRowID = $_GET['gibbonTTColumnRowID'];
+$gibbonCourseClassID = $_POST['gibbonCourseClassID'];
 
-$gibbonSpaceID=NULL ;
-if ($_POST["gibbonSpaceID"]!="") {
-	$gibbonSpaceID=$_POST["gibbonSpaceID"] ;
+$gibbonSpaceID = null;
+if ($_POST['gibbonSpaceID'] != '') {
+    $gibbonSpaceID = $_POST['gibbonSpaceID'];
 }
 
-if ($gibbonTTDayID=="" OR $gibbonTTID=="" OR $gibbonSchoolYearID=="" OR $gibbonTTColumnRowID=="") {
-	print "Fatal error loading this page!" ;
+if ($gibbonTTDayID == '' or $gibbonTTID == '' or $gibbonSchoolYearID == '' or $gibbonTTColumnRowID == '') {
+    echo 'Fatal error loading this page!';
+} else {
+    $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/tt_edit_day_edit_class_add.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID";
+
+    if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_day_edit_class_add.php') == false) {
+        $URL .= '&return=error0';
+        header("Location: {$URL}");
+    } else {
+        //Proceed!
+        //Check if school year specified
+        if ($gibbonTTDayID == '') {
+            $URL .= '&return=error1';
+            header("Location: {$URL}");
+        } else {
+            try {
+                $data = array('gibbonTTDayID' => $gibbonTTDayID, 'gibbonTTID' => $gibbonTTID, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonTTColumnRowID' => $gibbonTTColumnRowID);
+                $sql = 'SELECT gibbonTT.name AS ttName, gibbonTTDay.name AS dayName, gibbonTTColumnRow.name AS rowName FROM gibbonTT JOIN gibbonTTDay ON (gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID) JOIN gibbonTTColumn ON (gibbonTTDay.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) JOIN gibbonTTColumnRow ON (gibbonTTColumn.gibbonTTColumnID=gibbonTTColumnRow.gibbonTTColumnID) WHERE gibbonTTDay.gibbonTTDayID=:gibbonTTDayID AND gibbonTT.gibbonTTID=:gibbonTTID AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonTTColumnRowID=:gibbonTTColumnRowID';
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                echo "<div class='error'>".$e->getMessage().'</div>';
+            }
+
+            if ($result->rowCount() != 1) {
+                $URL .= '&return=error2';
+                header("Location: {$URL}");
+            } else {
+                //Write to database
+                try {
+                    $data = array('gibbonTTColumnRowID' => $gibbonTTColumnRowID, 'gibbonTTDayID' => $gibbonTTDayID, 'gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonSpaceID' => $gibbonSpaceID);
+                    $sql = 'INSERT INTO gibbonTTDayRowClass SET gibbonTTColumnRowID=:gibbonTTColumnRowID, gibbonTTDayID=:gibbonTTDayID, gibbonCourseClassID=:gibbonCourseClassID, gibbonSpaceID=:gibbonSpaceID';
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    $URL .= '&return=error2';
+                    header("Location: {$URL}");
+                    exit();
+                }
+
+                //Last insert ID
+                $AI = str_pad($connection2->lastInsertID(), 8, '0', STR_PAD_LEFT);
+
+                $URL .= "&return=success0&editID=$AI&gibbonCourseClassID=gibbonCourseClassID";
+                header("Location: {$URL}");
+            }
+        }
+    }
 }
-else {
-	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/tt_edit_day_edit_class_add.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID" ;
-	
-	if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/tt_edit_day_edit_class_add.php")==FALSE) {
-			$URL.="&return=error0" ;
-		header("Location: {$URL}");
-	}
-	else {
-		//Proceed!
-		//Check if school year specified
-		if ($gibbonTTDayID=="") {
-			$URL.="&return=error1" ;
-			header("Location: {$URL}");
-		}
-		else {
-			try {
-				$data=array("gibbonTTDayID"=>$gibbonTTDayID, "gibbonTTID"=>$gibbonTTID, "gibbonSchoolYearID"=>$gibbonSchoolYearID, "gibbonTTColumnRowID"=>$gibbonTTColumnRowID); 
-				$sql="SELECT gibbonTT.name AS ttName, gibbonTTDay.name AS dayName, gibbonTTColumnRow.name AS rowName FROM gibbonTT JOIN gibbonTTDay ON (gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID) JOIN gibbonTTColumn ON (gibbonTTDay.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) JOIN gibbonTTColumnRow ON (gibbonTTColumn.gibbonTTColumnID=gibbonTTColumnRow.gibbonTTColumnID) WHERE gibbonTTDay.gibbonTTDayID=:gibbonTTDayID AND gibbonTT.gibbonTTID=:gibbonTTID AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonTTColumnRowID=:gibbonTTColumnRowID" ;
-				$result=$connection2->prepare($sql);
-				$result->execute($data);
-			}
-			catch(PDOException $e) { 
-				print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-			}
-			
-			if ($result->rowCount()!=1) {
-				$URL.="&return=error2" ;
-				header("Location: {$URL}");
-			}
-			else {
-				//Write to database
-				try {
-					$data=array("gibbonTTColumnRowID"=>$gibbonTTColumnRowID, "gibbonTTDayID"=>$gibbonTTDayID, "gibbonCourseClassID"=>$gibbonCourseClassID, "gibbonSpaceID"=>$gibbonSpaceID); 
-					$sql="INSERT INTO gibbonTTDayRowClass SET gibbonTTColumnRowID=:gibbonTTColumnRowID, gibbonTTDayID=:gibbonTTDayID, gibbonCourseClassID=:gibbonCourseClassID, gibbonSpaceID=:gibbonSpaceID" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { 
-					$URL.="&return=error2" ;
-					header("Location: {$URL}");
-					exit() ; 
-				}
-				
-				//Last insert ID
-				$AI=str_pad($connection2->lastInsertID(), 8, "0", STR_PAD_LEFT) ;
-				
-				$URL.="&return=success0&editID=$AI&gibbonCourseClassID=gibbonCourseClassID" ;
-				header("Location: {$URL}");
-			}
-		}
-	}
-}
-?>

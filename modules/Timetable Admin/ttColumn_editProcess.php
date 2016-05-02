@@ -17,95 +17,86 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "../../functions.php" ;
-include "../../config.php" ;
+include '../../functions.php';
+include '../../config.php';
 
 //New PDO DB connection
 $pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$name=$_POST["name"] ;
-$nameShort=$_POST["nameShort"] ;
-$gibbonTTColumnID=$_POST["gibbonTTColumnID"] ;
+$name = $_POST['name'];
+$nameShort = $_POST['nameShort'];
+$gibbonTTColumnID = $_POST['gibbonTTColumnID'];
 
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/ttColumn_edit.php&gibbonTTColumnID=" . $gibbonTTColumnID ;
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/ttColumn_edit.php&gibbonTTColumnID='.$gibbonTTColumnID;
 
-if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/ttColumn_edit.php")==FALSE) {
-	$URL.="&return=error0" ;
-	header("Location: {$URL}");
+if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_edit.php') == false) {
+    $URL .= '&return=error0';
+    header("Location: {$URL}");
+} else {
+    //Proceed!
+    //Check if special day specified
+    if ($gibbonTTColumnID == '') {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+    } else {
+        try {
+            $data = array('gibbonTTColumnID' => $gibbonTTColumnID);
+            $sql = 'SELECT * FROM gibbonTTColumn WHERE gibbonTTColumnID=:gibbonTTColumnID';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+            exit();
+        }
+
+        if ($result->rowCount() != 1) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+        } else {
+            //Validate Inputs
+            if ($name == '' or $nameShort == '') {
+                $URL .= '&return=error3';
+                header("Location: {$URL}");
+            } else {
+                //Check unique inputs for uniquness
+                try {
+                    $data = array('name' => $name, 'gibbonTTColumnID' => $gibbonTTColumnID);
+                    $sql = 'SELECT * FROM gibbonTTColumn WHERE name=:name AND NOT gibbonTTColumnID=:gibbonTTColumnID';
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    $URL .= '&return=error2';
+                    header("Location: {$URL}");
+                    exit();
+                }
+
+                if ($result->rowCount() > 0) {
+                    $URL .= '&return=error3';
+                    header("Location: {$URL}");
+                } else {
+                    //Write to database
+                    try {
+                        $data = array('name' => $name, 'nameShort' => $nameShort, 'gibbonTTColumnID' => $gibbonTTColumnID);
+                        $sql = 'UPDATE gibbonTTColumn SET name=:name, nameShort=:nameShort WHERE gibbonTTColumnID=:gibbonTTColumnID';
+                        $result = $connection2->prepare($sql);
+                        $result->execute($data);
+                    } catch (PDOException $e) {
+                        $URL .= '&return=error2';
+                        header("Location: {$URL}");
+                        exit();
+                    }
+
+                    $URL .= '&return=success0';
+                    header("Location: {$URL}");
+                }
+            }
+        }
+    }
 }
-else {
-	//Proceed!
-	//Check if special day specified
-	if ($gibbonTTColumnID=="") {
-		$URL.="&return=error1" ;
-		header("Location: {$URL}");
-	}
-	else {
-		try {
-			$data=array("gibbonTTColumnID"=>$gibbonTTColumnID); 
-			$sql="SELECT * FROM gibbonTTColumn WHERE gibbonTTColumnID=:gibbonTTColumnID" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$URL.="&return=error2" ;
-			header("Location: {$URL}");
-			exit() ;
-		}
-		
-		if ($result->rowCount()!=1) {
-			$URL.="&return=error2" ;
-			header("Location: {$URL}");
-		}
-		else {
-			//Validate Inputs
-			if ($name=="" OR $nameShort=="") {
-					$URL.="&return=error3" ;
-				header("Location: {$URL}");
-			}
-			else {
-				//Check unique inputs for uniquness
-				try {
-					$data=array("name"=>$name, "gibbonTTColumnID"=>$gibbonTTColumnID); 
-					$sql="SELECT * FROM gibbonTTColumn WHERE name=:name AND NOT gibbonTTColumnID=:gibbonTTColumnID" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { 
-							$URL.="&return=error2" ;
-					header("Location: {$URL}");
-					exit() ;
-				}
-				
-				if ($result->rowCount()>0) {
-					$URL.="&return=error3" ;
-					header("Location: {$URL}");
-				}
-				else {
-					//Write to database
-					try {
-						$data=array("name"=>$name, "nameShort"=>$nameShort, "gibbonTTColumnID"=>$gibbonTTColumnID); 
-						$sql="UPDATE gibbonTTColumn SET name=:name, nameShort=:nameShort WHERE gibbonTTColumnID=:gibbonTTColumnID" ;
-						$result=$connection2->prepare($sql);
-						$result->execute($data);
-					}
-					catch(PDOException $e) { 
-									$URL.="&return=error2" ;
-						header("Location: {$URL}");
-						exit() ;
-					}
-					
-							$URL.="&return=success0" ;
-					header("Location: {$URL}");
-				}
-			}
-		}
-	}
-}
-?>

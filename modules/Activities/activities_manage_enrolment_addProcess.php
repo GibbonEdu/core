@@ -17,86 +17,79 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "../../functions.php" ;
-include "../../config.php" ;
+include '../../functions.php';
+include '../../config.php';
 
 //New PDO DB connection
 $pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
-@session_start() ;
+@session_start();
 
 //Module includes
-include $_SESSION[$guid]["absolutePath"] . "/modules/Activities/moduleFunctions.php" ;
+include $_SESSION[$guid]['absolutePath'].'/modules/Activities/moduleFunctions.php';
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$gibbonActivityID=$_GET["gibbonActivityID"] ;
+$gibbonActivityID = $_GET['gibbonActivityID'];
 
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/activities_manage_enrolment_add.php&gibbonActivityID=$gibbonActivityID&search=" . $_GET["search"] ;
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/activities_manage_enrolment_add.php&gibbonActivityID=$gibbonActivityID&search=".$_GET['search'];
 
-if (isActionAccessible($guid, $connection2, "/modules/Activities/activities_manage_enrolment_add.php")==FALSE) {
-	$URL.="&return=error0" ;
-	header("Location: {$URL}");
+if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage_enrolment_add.php') == false) {
+    $URL .= '&return=error0';
+    header("Location: {$URL}");
+} else {
+    //Proceed!
+    //Validate Inputs
+    $status = $_POST['status'];
+
+    if ($gibbonActivityID == '' or $status == '') {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+    } else {
+        //Run through each of the selected participants.
+        $update = true;
+        $choices = null;
+        if (isset($_POST['Members'])) {
+            $choices = $_POST['Members'];
+        }
+
+        if (count($choices) < 1) {
+            $URL .= '&return=error1';
+            header("Location: {$URL}");
+        } else {
+            foreach ($choices as $t) {
+                //Check to see if student is already registered in this class
+                try {
+                    $data = array('gibbonPersonID' => $t, 'gibbonActivityID' => $gibbonActivityID);
+                    $sql = 'SELECT * FROM gibbonActivityStudent WHERE gibbonPersonID=:gibbonPersonID AND gibbonActivityID=:gibbonActivityID';
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    echo "<div class='error'>".$e->getMessage().'</div>';
+                }
+
+                //If student not in course, add them
+                if ($result->rowCount() == 0) {
+                    try {
+                        $data = array('gibbonPersonID' => $t, 'gibbonActivityID' => $gibbonActivityID, 'status' => $status, 'timestamp' => date('Y-m-d H:i:s', time()));
+                        $sql = 'INSERT INTO gibbonActivityStudent SET gibbonPersonID=:gibbonPersonID, gibbonActivityID=:gibbonActivityID, status=:status, timestamp=:timestamp';
+                        $result = $connection2->prepare($sql);
+                        $result->execute($data);
+                    } catch (PDOException $e) {
+                        $update = false;
+                    }
+                }
+            }
+            //Write to database
+            if ($update == false) {
+                $URL .= '&return=error2';
+                header("Location: {$URL}");
+            } else {
+                $URL .= '&return=success0';
+                header("Location: {$URL}");
+            }
+        }
+    }
 }
-else {
-	//Proceed!
-	//Validate Inputs
-	$status=$_POST["status"] ;
-	
-	if ($gibbonActivityID=="" OR $status=="") {
-		$URL.="&return=error1" ;
-		header("Location: {$URL}");
-	}
-	else {
-		//Run through each of the selected participants.
-		$update=TRUE ;
-		$choices=NULL ;
-		if (isset($_POST["Members"])) {
-			$choices=$_POST["Members"] ;
-		}
-		
-		if (count($choices)<1) {
-			$URL.="&return=error1" ;
-			header("Location: {$URL}");
-		}
-		else {
-			foreach ($choices as $t) {
-				//Check to see if student is already registered in this class
-				try {
-					$data=array("gibbonPersonID"=>$t, "gibbonActivityID"=>$gibbonActivityID); 
-					$sql="SELECT * FROM gibbonActivityStudent WHERE gibbonPersonID=:gibbonPersonID AND gibbonActivityID=:gibbonActivityID" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { 
-					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-				}
-				
-				//If student not in course, add them
-				if ($result->rowCount()==0) {
-					try {
-						$data=array("gibbonPersonID"=>$t, "gibbonActivityID"=>$gibbonActivityID, "status"=>$status, "timestamp"=>date('Y-m-d H:i:s', time())); 
-						$sql="INSERT INTO gibbonActivityStudent SET gibbonPersonID=:gibbonPersonID, gibbonActivityID=:gibbonActivityID, status=:status, timestamp=:timestamp" ;
-						$result=$connection2->prepare($sql);
-						$result->execute($data);
-					}
-					catch(PDOException $e) { 
-						$update=FALSE;
-					}
-				}
-			}
-			//Write to database
-			if ($update==FALSE) {
-				$URL.="&return=error2" ;
-				header("Location: {$URL}");
-			}
-			else {
-				$URL.="&return=success0" ;
-				header("Location: {$URL}");
-			}
-		}
-	}
-}
-?>

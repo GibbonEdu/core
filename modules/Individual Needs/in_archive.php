@@ -17,42 +17,43 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+@session_start();
 
 //Module includes
-include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
+include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, "/modules/Individual Needs/in_archive.php")==FALSE) {
-	//Acess denied
-	print "<div class='error'>" ;
-		print __($guid, "You do not have access to this action.") ;
-	print "</div>" ;
-}
-else {
-	print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Archive Records') . "</div>" ;
-	print "</div>" ;
+if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_archive.php') == false) {
+    //Acess denied
+    echo "<div class='error'>";
+    echo __($guid, 'You do not have access to this action.');
+    echo '</div>';
+} else {
+    echo "<div class='trail'>";
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Archive Records').'</div>';
+    echo '</div>';
 
-	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, array("success0" => "Your request was completed successfully.")); }
-	
-	?>
-	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/in_archiveProcess.php"?>">
+    if (isset($_GET['return'])) {
+        returnProcess($guid, $_GET['return'], null, array('success0' => 'Your request was completed successfully.'));
+    }
+
+    ?>
+	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/in_archiveProcess.php'?>">
 		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr>
 				<td> 
-					<b><?php print __($guid, 'Delete Current Plans?') ?> *</b><br/>
-					<span class="emphasis small"><?php print __($guid, 'Deletes Individual Education Plan fields only, not Individual Needs Status fields.') ?></span>
+					<b><?php echo __($guid, 'Delete Current Plans?') ?> *</b><br/>
+					<span class="emphasis small"><?php echo __($guid, 'Deletes Individual Education Plan fields only, not Individual Needs Status fields.') ?></span>
 				</td>
 				<td class="right">
 					<select name="deleteCurrentPlans" id="deleteCurrentPlans" class="standardWidth">
-						<option value="N"><?php print ynExpander($guid, 'N') ?></option>
-						<option value="Y"><?php print ynExpander($guid, 'Y') ?></option>
+						<option value="N"><?php echo ynExpander($guid, 'N') ?></option>
+						<option value="Y"><?php echo ynExpander($guid, 'Y') ?></option>
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print __($guid, 'Archive Title') ?> *</b><br/>
+					<b><?php echo __($guid, 'Archive Title') ?> *</b><br/>
 					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
@@ -65,12 +66,12 @@ else {
 			</tr>
 			<tr>
 				<td style='width: 275px; vertical-align: top'> 
-					<b><?php print __($guid, 'Students') ?> *</b><br/>
+					<b><?php echo __($guid, 'Students') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<?php
-					print "<fieldset style='border: none'>" ;
-					?>
+                    echo "<fieldset style='border: none'>";
+    ?>
 					<script type="text/javascript">
 						$(function () {
 							$('.checkall').click(function () {
@@ -79,42 +80,43 @@ else {
 						});
 					</script>
 					<?php
-					try {
-						$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-						$sqlSelect="SELECT surname, preferredName, gibbonIN.* FROM gibbonPerson JOIN gibbonIN ON (gibbonIN.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName" ;
-						$resultSelect=$connection2->prepare($sqlSelect);
-						$resultSelect->execute($dataSelect);
-					}
-					catch(PDOException $e) { 
-						print "<div class='error'>" ;
-							print $e->getMessage();
-						print "</div>" ;
-					}
-					print __($guid, "All/None") . " <input type='checkbox' class='checkall'><br/>" ;
-					if ($resultSelect->rowCount()<1) {
-						print "<i>" . __($guid, 'No year groups available.') . "</i>" ;
-					}
-					else {
-						while ($rowSelect=$resultSelect->fetch()) {
-							print formatName("", $rowSelect["preferredName"], $rowSelect["surname"], "Student", TRUE) . " <input type='checkbox' value='" . $rowSelect["gibbonPersonID"] . "' name='gibbonPersonID[]'><br/>" ; 
-						}
-					}
-					print "</fieldset>" ;
-					?>
+                    try {
+                        $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                        $sqlSelect = "SELECT surname, preferredName, gibbonIN.* FROM gibbonPerson JOIN gibbonIN ON (gibbonIN.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
+                        $resultSelect = $connection2->prepare($sqlSelect);
+                        $resultSelect->execute($dataSelect);
+                    } catch (PDOException $e) {
+                        echo "<div class='error'>";
+                        echo $e->getMessage();
+                        echo '</div>';
+                    }
+    echo __($guid, 'All/None')." <input type='checkbox' class='checkall'><br/>";
+    if ($resultSelect->rowCount() < 1) {
+        echo '<i>'.__($guid, 'No year groups available.').'</i>';
+    } else {
+        while ($rowSelect = $resultSelect->fetch()) {
+            echo formatName('', $rowSelect['preferredName'], $rowSelect['surname'], 'Student', true)." <input type='checkbox' value='".$rowSelect['gibbonPersonID']."' name='gibbonPersonID[]'><br/>";
+        }
+    }
+    echo '</fieldset>';
+    ?>
 				</td>
 			</tr>
 			
 			<tr>
 				<td>
-					<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
+					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
+    ?></span>
 				</td>
 				<td class="right">
-					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
+					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit');
+    ?>">
 				</td>
 			</tr>
 		</table>
 	</form>
 	<?php
+
 }
 ?>

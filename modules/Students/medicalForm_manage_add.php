@@ -17,71 +17,71 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+@session_start();
 
-if (isActionAccessible($guid, $connection2, "/modules/Students/medicalForm_manage_add.php")==FALSE) {
-	//Acess denied
-	print "<div class='error'>" ;
-		print __($guid, "You do not have access to this action.") ;
-	print "</div>" ;
-}
-else {
-	//Proceed!
-	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/medicalForm_manage.php'>" . __($guid, 'Manage Medical Forms') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Add Medical Form') . "</div>" ;
-	print "</div>" ;
+if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manage_add.php') == false) {
+    //Acess denied
+    echo "<div class='error'>";
+    echo __($guid, 'You do not have access to this action.');
+    echo '</div>';
+} else {
+    //Proceed!
+    echo "<div class='trail'>";
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/medicalForm_manage.php'>".__($guid, 'Manage Medical Forms')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Medical Form').'</div>';
+    echo '</div>';
+
+    $editLink = '';
+    if (isset($_GET['editID'])) {
+        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/medicalForm_manage_edit.php&gibbonPersonMedicalID='.$_GET['editID'].'&search='.$_GET['search'];
+    }
+    if (isset($_GET['return'])) {
+        returnProcess($guid, $_GET['return'], $editLink, null);
+    }
+
+    $search = $_GET['search'];
+    if ($search != '') {
+        echo "<div class='linkTop'>";
+        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/medicalForm_manage.php&search=$search'>".__($guid, 'Back to Search Results').'</a>';
+        echo '</div>';
+    }
+
+    ?>
 	
-	$editLink="" ;
-	if (isset($_GET["editID"])) {
-		$editLink=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/medicalForm_manage_edit.php&gibbonPersonMedicalID=" . $_GET["editID"] . "&search=" . $_GET["search"] ;
-	}
-	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], $editLink, null); }
-	
-	$search=$_GET["search"] ;
-	if ($search!="") {
-		print "<div class='linkTop'>" ;
-			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Students/medicalForm_manage.php&search=$search'>" . __($guid, 'Back to Search Results') . "</a>" ;
-		print "</div>" ;
-	}
-	
-	?>
-	
-	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/medicalForm_manage_addProcess.php?search=$search" ?>">
+	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/medicalForm_manage_addProcess.php?search=$search" ?>">
 		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr>
 				<td style='width: 275px'> 
-					<b><?php print __($guid, 'Person') ?> *</b><br/>
+					<b><?php echo __($guid, 'Person') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select class="standardWidth" name="gibbonPersonID" id="gibbonPersonID">
 						<?php
-						print "<option value='Please select...'>" . __($guid, 'Please select...') . "</option>" ;
-						try {
-							$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-							$sqlSelect="SELECT * FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' ORDER BY surname, preferredName" ;
-							$resultSelect=$connection2->prepare($sqlSelect);
-							$resultSelect->execute($dataSelect);
-						}
-						catch(PDOException $e) { }
-						while ($rowSelect=$resultSelect->fetch()) {
-							if ($gibbonPersonID==$rowSelect["gibbonPersonID"]) {
-								print "<option selected value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . " (" . htmlPrep($rowSelect["nameShort"]) . ")</option>" ;
-							}
-							else {
-								print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Student", true) . " (" . htmlPrep($rowSelect["nameShort"]) . ")</option>" ;
-							}
-						}
-						?>					
+                        echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
+    try {
+        $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+        $sqlSelect = "SELECT * FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' ORDER BY surname, preferredName";
+        $resultSelect = $connection2->prepare($sqlSelect);
+        $resultSelect->execute($dataSelect);
+    } catch (PDOException $e) {
+    }
+    while ($rowSelect = $resultSelect->fetch()) {
+        if ($gibbonPersonID == $rowSelect['gibbonPersonID']) {
+            echo "<option selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['nameShort']).')</option>';
+        } else {
+            echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['nameShort']).')</option>';
+        }
+    }
+    ?>					
 					</select>
 					<script type="text/javascript">
 						var gibbonPersonID=new LiveValidation('gibbonPersonID');
-						gibbonPersonID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
+						gibbonPersonID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
 					</script>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print __($guid, 'Blood Type') ?></b><br/>
+					<b><?php echo __($guid, 'Blood Type') ?></b><br/>
 					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
@@ -100,20 +100,20 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print __($guid, 'Long-Term Medication?') ?></b><br/>
+					<b><?php echo __($guid, 'Long-Term Medication?') ?></b><br/>
 					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
 					<select class="standardWidth" name="longTermMedication">
 						<option value=""></option>
-						<option value="Y"><?php print __($guid, 'Yes') ?></option>
-						<option value="N"><?php print __($guid, 'No') ?></option>
+						<option value="Y"><?php echo __($guid, 'Yes') ?></option>
+						<option value="N"><?php echo __($guid, 'No') ?></option>
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print __($guid, 'Medication Details') ?></b><br/>
+					<b><?php echo __($guid, 'Medication Details') ?></b><br/>
 				</td>
 				<td class="right">
 					<textarea name="longTermMedicationDetails" id="longTermMedicationDetails" rows=8 class="standardWidth"></textarea>
@@ -121,28 +121,31 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print __($guid, 'Tetanus Within Last 10 Years?') ?></b><br/>
+					<b><?php echo __($guid, 'Tetanus Within Last 10 Years?') ?></b><br/>
 					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
 					<select class="standardWidth" name="tetanusWithin10Years">
 						<option value=""></option>
-						<option value="Y"><?php print __($guid, 'Yes') ?></option>
-						<option value="N"><?php print __($guid, 'No') ?></option>
+						<option value="Y"><?php echo __($guid, 'Yes') ?></option>
+						<option value="N"><?php echo __($guid, 'No') ?></option>
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<td>
-					<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
+					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
+    ?></span>
 				</td>
 				<td class="right">
-					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
+					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit');
+    ?>">
 				</td>
 			</tr>
 		</table>
 	</form>
 	<?php
+
 }
 ?>

@@ -17,24 +17,22 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "functions.php" ;
-include "config.php" ;
+include 'functions.php';
+include 'config.php';
 
-@session_start() ;
+@session_start();
 
-$URL="./index.php" ;
-if (isset($_GET["timeout"])) {
-	if ($_GET["timeout"]=="true") {
-		$URL="./index.php?timeout=true" ;
-	}
+$URL = './index.php';
+if (isset($_GET['timeout'])) {
+    if ($_GET['timeout'] == 'true') {
+        $URL = './index.php?timeout=true';
+    }
 }
-
 
 unset($_SESSION[$guid]['googleAPIAccessToken']);
 unset($_SESSION[$guid]['gplusuer']);
- 
+
 session_destroy();
 
-$_SESSION[$guid]=NULL ;
+$_SESSION[$guid] = null;
 header("Location: {$URL}");
-?>

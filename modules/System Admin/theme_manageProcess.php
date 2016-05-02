@@ -17,80 +17,73 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "../../functions.php" ;
-include "../../config.php" ;
+include '../../functions.php';
+include '../../config.php';
 
 //New PDO DB connection
 $pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$gibbonThemeID=$_POST["gibbonThemeID"] ;
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/theme_manage.php" ;
+$gibbonThemeID = $_POST['gibbonThemeID'];
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/theme_manage.php';
 
-if (isActionAccessible($guid, $connection2, "/modules/System Admin/theme_manage.php")==FALSE) {
-	$URL.="&return=error0" ;
-	header("Location: {$URL}");
+if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.php') == false) {
+    $URL .= '&return=error0';
+    header("Location: {$URL}");
+} else {
+    //Proceed!
+    //Check if theme specified
+    if ($gibbonThemeID == '') {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+    } else {
+        try {
+            $data = array('gibbonThemeID' => $gibbonThemeID);
+            $sql = 'SELECT * FROM gibbonTheme WHERE gibbonThemeID=:gibbonThemeID';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+            exit();
+        }
+
+        if ($result->rowCount() != 1) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+        } else {
+            //Deactivate all themes
+            try {
+                $data = array();
+                $sql = "UPDATE gibbonTheme SET active='N'";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                $URL .= '&return=error3';
+                header("Location: {$URL}");
+                exit();
+            }
+
+            //Write to database
+            try {
+                $data = array('gibbonThemeID' => $gibbonThemeID);
+                $sql = "UPDATE gibbonTheme SET active='Y' WHERE gibbonThemeID=:gibbonThemeID ";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                $URL .= '&return=error2';
+                header("Location: {$URL}");
+                exit();
+            }
+
+            $_SESSION[$guid]['pageLoads'] = null;
+            $URL .= '&return=success0';
+            header("Location: {$URL}");
+        }
+    }
 }
-else {
-	//Proceed!
-	//Check if theme specified
-	if ($gibbonThemeID=="") {
-		$URL.="&return=error1" ;
-		header("Location: {$URL}");
-	}
-	else {
-		try {
-			$data=array("gibbonThemeID"=>$gibbonThemeID); 
-			$sql="SELECT * FROM gibbonTheme WHERE gibbonThemeID=:gibbonThemeID" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			$URL.="&return=error2" ;
-			header("Location: {$URL}");
-			exit() ;
-		}
-
-		if ($result->rowCount()!=1) {
-			$URL.="&return=error2" ;
-			header("Location: {$URL}");
-		}
-		else {
-			//Deactivate all themes
-			try {
-				$data=array(); 
-				$sql="UPDATE gibbonTheme SET active='N'" ;
-				$result=$connection2->prepare($sql);
-				$result->execute($data);
-			}
-			catch(PDOException $e) { 
-				$URL.="&return=error3" ;
-				header("Location: {$URL}");
-				exit() ;
-			}
-
-			//Write to database
-			try {
-				$data=array("gibbonThemeID"=>$gibbonThemeID); 
-				$sql="UPDATE gibbonTheme SET active='Y' WHERE gibbonThemeID=:gibbonThemeID " ;
-				$result=$connection2->prepare($sql);
-				$result->execute($data);
-			}
-			catch(PDOException $e) { 
-				$URL.="&return=error2" ;
-				header("Location: {$URL}");
-				exit() ;
-			}
-
-			$_SESSION[$guid]["pageLoads"]=NULL ;
-			$URL.="&return=success0" ;
-			header("Location: {$URL}");
-		}
-	}
-}
-?>

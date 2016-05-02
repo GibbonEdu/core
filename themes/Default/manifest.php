@@ -20,10 +20,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //This file describes the module, including database tables
 
 //Basic variables
-$name="Default" ;
-$description="Gibbon's 2015 look and feel." ;
-$version="1.0.00" ;
-$author="Ross Parker" ;
-$url="http://rossparker.org" ;
-$responsive="N" ;
-?>
+$name = 'Default';
+$description = "Gibbon's 2015 look and feel.";
+$version = '1.0.00';
+$author = 'Ross Parker';
+$url = 'http://rossparker.org';
+$responsive = 'N';

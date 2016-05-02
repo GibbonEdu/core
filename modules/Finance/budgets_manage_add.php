@@ -17,41 +17,42 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+@session_start();
 
 //Module includes
-include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
+include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, "/modules/Finance/budgets_manage_add.php")==FALSE) {
-	//Acess denied
-	print "<div class='error'>" ;
-		print __($guid, "You do not have access to this action.") ;
-	print "</div>" ;
-}
-else {
-	//Proceed!
-	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/budgets_manage.php'>" . __($guid, 'Manage Budgets') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Add Budget') . "</div>" ;
-	print "</div>" ;
+if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_add.php') == false) {
+    //Acess denied
+    echo "<div class='error'>";
+    echo __($guid, 'You do not have access to this action.');
+    echo '</div>';
+} else {
+    //Proceed!
+    echo "<div class='trail'>";
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/budgets_manage.php'>".__($guid, 'Manage Budgets')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Budget').'</div>';
+    echo '</div>';
 
-	$editLink="" ;
-	if (isset($_GET["editID"])) {
-		$editLink=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Finance/budgets_manage_edit.php&gibbonFinanceBudgetID=" . $_GET["editID"] ;
-	}
-	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], $editLink, array("error3" => "Your request failed because some inputs did not meet a requirement for uniqueness.", "warning1" => "Your request was successful, but some data was not properly saved.")); }
-	
-	?>
-	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/budgets_manage_addProcess.php" ?>">
+    $editLink = '';
+    if (isset($_GET['editID'])) {
+        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/budgets_manage_edit.php&gibbonFinanceBudgetID='.$_GET['editID'];
+    }
+    if (isset($_GET['return'])) {
+        returnProcess($guid, $_GET['return'], $editLink, array('error3' => 'Your request failed because some inputs did not meet a requirement for uniqueness.', 'warning1' => 'Your request was successful, but some data was not properly saved.'));
+    }
+
+    ?>
+	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/budgets_manage_addProcess.php' ?>">
 		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><?php print __($guid, 'General Settings') ?></h3>
+					<h3><?php echo __($guid, 'General Settings') ?></h3>
 				</td>
 			</tr>
 			<tr>
 				<td style='width: 275px'> 
-					<b><?php print __($guid, 'Name') ?> *</b><br/>
-					<span class="emphasis small"><?php print __($guid, 'Must be unique.') ?></span>
+					<b><?php echo __($guid, 'Name') ?> *</b><br/>
+					<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?></span>
 				</td>
 				<td class="right">
 					<input name="name" id="name" maxlength=100 value="" type="text" class="standardWidth">
@@ -63,8 +64,8 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print __($guid, 'Short Name') ?> *</b><br/>
-					<span class="emphasis small"><?php print __($guid, 'Must be unique.') ?></span>
+					<b><?php echo __($guid, 'Short Name') ?> *</b><br/>
+					<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?></span>
 				</td>
 				<td class="right">
 					<input name="nameShort" id="nameShort" maxlength=14 value="" type="text" class="standardWidth">
@@ -76,50 +77,51 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print __($guid, 'Active') ?> *</b><br/>
+					<b><?php echo __($guid, 'Active') ?> *</b><br/>
 					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
 					<select name="active" id="active" class="standardWidth">
-						<option value="Y"><?php print __($guid, 'Yes') ?></option>
-						<option value="N"><?php print __($guid, 'No') ?></option>
+						<option value="Y"><?php echo __($guid, 'Yes') ?></option>
+						<option value="N"><?php echo __($guid, 'No') ?></option>
 					</select>
 				</td>
 			</tr>
 			<?php
-			$categories=getSettingByScope($connection2, "Finance", "budgetCategories") ;
-			if ($categories!=FALSE) {
-				$categories=explode(",", $categories) ;
-				?>
+            $categories = getSettingByScope($connection2, 'Finance', 'budgetCategories');
+    if ($categories != false) {
+        $categories = explode(',', $categories);
+        ?>
 				<tr>
 					<td> 
-						<b><?php print __($guid, 'Category') ?> *</b><br/>
+						<b><?php echo __($guid, 'Category') ?> *</b><br/>
 						<span class="emphasis small"></span>
 					</td>
 					<td class="right">
 						<select name="category" id="category" class="standardWidth">
-							<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
+							<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
 							<?php
-							for ($i=0; $i<count($categories); $i++) {
-								?>
-								<option value="<?php print trim($categories[$i]) ?>"><?php print trim($categories[$i]) ?></option>
+                            for ($i = 0; $i < count($categories); ++$i) {
+                                ?>
+								<option value="<?php echo trim($categories[$i]) ?>"><?php echo trim($categories[$i]) ?></option>
 							<?php
-							}
-							?>
+
+                            }
+        ?>
 						</select>
 						<script type="text/javascript">
 							var category=new LiveValidation('category');
-							category.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
+							category.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
 						</script>
 					</td>
 				</tr>
 				<?php
-			}
-			else {
-				?>
+
+    } else {
+        ?>
 				<tr>
 					<td> 
-						<b><?php print __($guid, 'Category') ?> *</b><br/>
+						<b><?php echo __($guid, 'Category') ?> *</b><br/>
 						<span class="emphasis small"></span>
 					</td>
 					<td class="right">
@@ -127,57 +129,61 @@ else {
 					</td>
 				</tr>
 				<?php
-			}
-			?>
+
+    }
+    ?>
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><?php print __($guid, 'Staff') ?></h3>
+					<h3><?php echo __($guid, 'Staff') ?></h3>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print __($guid, 'Staff') ?></b><br/>
-					<span class="emphasis small"><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
+					<b><?php echo __($guid, 'Staff') ?></b><br/>
+					<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 				</td>
 				<td class="right">
 					<select name="staff[]" id="staff[]" multiple style="width: 302px; height: 150px">
 						<?php
-						try {
-							$dataSelect=array(); 
-							$sqlSelect="SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName" ;
-							$resultSelect=$connection2->prepare($sqlSelect);
-							$resultSelect->execute($dataSelect);
-						}
-						catch(PDOException $e) { }
-						while ($rowSelect=$resultSelect->fetch()) {
-							print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Staff", true, true) . "</option>" ;
-						}
-						?>
+                        try {
+                            $dataSelect = array();
+                            $sqlSelect = "SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
+                            $resultSelect = $connection2->prepare($sqlSelect);
+                            $resultSelect->execute($dataSelect);
+                        } catch (PDOException $e) {
+                        }
+    while ($rowSelect = $resultSelect->fetch()) {
+        echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
+    }
+    ?>
 					</select>
 				</td>
 			<tr>
 				<td> 
-					<b><?php print __($guid, 'Access') ?></b><br/>
+					<b><?php echo __($guid, 'Access') ?></b><br/>
 				</td>
 				<td class="right">
 					<select name="access" id="access" class="standardWidth">
-						<option value="Full"><?php print __($guid, 'Full') ?></option>
-						<option value="Write"><?php print __($guid, 'Write') ?></option>
-						<option value="Read"><?php print __($guid, 'Read') ?></option>
+						<option value="Full"><?php echo __($guid, 'Full') ?></option>
+						<option value="Write"><?php echo __($guid, 'Write') ?></option>
+						<option value="Read"><?php echo __($guid, 'Read') ?></option>
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<td>
-					<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
+					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
+    ?></span>
 				</td>
 				<td class="right">
-					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
+					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit');
+    ?>">
 				</td>
 			</tr>
 		</table>
 	</form>
 	<?php
+
 }
 ?>

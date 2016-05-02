@@ -17,117 +17,144 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+@session_start();
 
 //Module includes
-include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
+include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, "/modules/System Admin/alarm.php")==FALSE) {
-	//Acess denied
-	print "<div class='error'>" ;
-		print __($guid, "You do not have access to this action.") ;
-	print "</div>" ;
-}
-else {
-	//Proceed!
-	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Sound Alarm') . "</div>" ;
-	print "</div>" ;
+if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') == false) {
+    //Acess denied
+    echo "<div class='error'>";
+    echo __($guid, 'You do not have access to this action.');
+    echo '</div>';
+} else {
+    //Proceed!
+    echo "<div class='trail'>";
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Sound Alarm').'</div>';
+    echo '</div>';
+
+    if (isset($_GET['return'])) {
+        returnProcess($guid, $_GET['return'], null, null);
+    }
+    ?>
 	
-	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
-	?>
-	
-	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/alarmProcess.php" ?>" enctype="multipart/form-data">
+	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/alarmProcess.php' ?>" enctype="multipart/form-data">
 		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr>
 				<?php
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='System Admin' AND name='customAlarmSound'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { }
-				$row=$result->fetch() ;
-				?>
+                try {
+                    $data = array();
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='System Admin' AND name='customAlarmSound'";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                }
+    $row = $result->fetch();
+    ?>
 				<td> 
-					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span><br/>
-					<?php if ($row["value"]!="") { ?>
-						<span class="emphasis small"><?php print __($guid, 'Will overwrite existing attachment.') ?></span>
-					<?php } ?>
+					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row['description'] != '') {
+    echo __($guid, $row['description']);
+}
+    ?></span><br/>
+					<?php if ($row['value'] != '') {
+    ?>
+						<span class="emphasis small"><?php echo __($guid, 'Will overwrite existing attachment.') ?></span>
+					<?php 
+}
+    ?>
 				</td>
 				<td class="right">
 					<?php
-					if ($row["value"]!="") {
-						print __($guid, "Current attachment:") . " <a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $row["value"] . "'>" . $row["value"] . "</a><br/><br/>" ;
-					}
-					?>
+                    if ($row['value'] != '') {
+                        echo __($guid, 'Current attachment:')." <a href='".$_SESSION[$guid]['absoluteURL'].'/'.$row['value']."'>".$row['value'].'</a><br/><br/>';
+                    }
+    ?>
 					<input type="file" name="file" id="file"><br/><br/>
 					<?php
-					//Get list of acceptable file extensions
-					try {
-						$dataExt=array(); 
-						$sqlExt="SELECT * FROM gibbonFileExtension WHERE type='Audio'" ;
-						$resultExt=$connection2->prepare($sqlExt);
-						$resultExt->execute($dataExt);
-					}
-					catch(PDOException $e) { }
-					$ext="" ;
-					while ($rowExt=$resultExt->fetch()) {
-						$ext=$ext . "'." . $rowExt["extension"] . "'," ;
-					}
-					?>
+                    //Get list of acceptable file extensions
+                    try {
+                        $dataExt = array();
+                        $sqlExt = "SELECT * FROM gibbonFileExtension WHERE type='Audio'";
+                        $resultExt = $connection2->prepare($sqlExt);
+                        $resultExt->execute($dataExt);
+                    } catch (PDOException $e) {
+                    }
+    $ext = '';
+    while ($rowExt = $resultExt->fetch()) {
+        $ext = $ext."'.".$rowExt['extension']."',";
+    }
+    ?>
 			
 					<script type="text/javascript">
 						var file=new LiveValidation('file');
-						file.add( Validate.Inclusion, { within: [<?php print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+						file.add( Validate.Inclusion, { within: [<?php echo $ext;
+    ?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 					</script>
-					<input type="hidden" name="attachmentCurrent" value="<?php print $row["value"] ?>">
+					<input type="hidden" name="attachmentCurrent" value="<?php echo $row['value'] ?>">
 				</td>
 			</tr>
 			<tr>
 				<?php
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='System' AND name='alarm'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { }
-				$row=$result->fetch() ;
-				?>
+                try {
+                    $data = array();
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='System' AND name='alarm'";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                }
+    $row = $result->fetch();
+    ?>
 				<td> 
-					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
+					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row['description'] != '') {
+    echo __($guid, $row['description']);
+}
+    ?></span>
 				</td>
 				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
-						<option <?php if ($row["value"]=="None") {print "selected ";} ?>value="None"><?php print __($guid, 'None') ?></option>
-						<option <?php if ($row["value"]=="General") {print "selected ";} ?>value="General"><?php print __($guid, 'General') ?></option>
-						<option <?php if ($row["value"]=="Lockdown") {print "selected ";} ?>value="Lockdown"><?php print __($guid, 'Lockdown') ?></option>
+					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
+						<option <?php if ($row['value'] == 'None') {
+    echo 'selected ';
+}
+    ?>value="None"><?php echo __($guid, 'None') ?></option>
+						<option <?php if ($row['value'] == 'General') {
+    echo 'selected ';
+}
+    ?>value="General"><?php echo __($guid, 'General') ?></option>
+						<option <?php if ($row['value'] == 'Lockdown') {
+    echo 'selected ';
+}
+    ?>value="Lockdown"><?php echo __($guid, 'Lockdown') ?></option>
 						<?php
-						if ($row["value"]!="") {
-							?>
-							<option <?php if ($row["value"]=="Custom") {print "selected ";} ?>value="Custom"><?php print __($guid, 'Custom') ?></option>
+                        if ($row['value'] != '') {
+                            ?>
+							<option <?php if ($row['value'] == 'Custom') {
+    echo 'selected ';
+}
+                            ?>value="Custom"><?php echo __($guid, 'Custom') ?></option>
 							<?php
-						}
-						?>
+
+                        }
+    ?>
 					</select>
-					<input type="hidden" name="alarmCurrent" value="<?php print $row["value"] ?>">
+					<input type="hidden" name="alarmCurrent" value="<?php echo $row['value'] ?>">
 				</td>
 			</tr>
             <tr>
 				<td>
-					<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
+					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
+    ?></span>
 				</td>
 				<td class="right">
-					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
+					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit');
+    ?>">
 				</td>
 			</tr>
 		</table>
 	</form>
 <?php
+
 }
 ?>

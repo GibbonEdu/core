@@ -17,34 +17,31 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "./functions.php" ;
-include "./config.php" ;
+include './functions.php';
+include './config.php';
 
 //New PDO DB connection
 $pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
 //Start session
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=notifications.php" ;
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=notifications.php';
 
 try {
-	$data=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-	$sql="DELETE FROM gibbonNotification WHERE gibbonPersonID=:gibbonPersonID";
-	$result=$connection2->prepare($sql);
-	$result->execute($data);
-}
-catch(PDOException $e) { 
-	$URL=$URL. "&return=error2" ;
-	header("Location: {$URL}");
-	exit() ;
+    $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+    $sql = 'DELETE FROM gibbonNotification WHERE gibbonPersonID=:gibbonPersonID';
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
+} catch (PDOException $e) {
+    $URL = $URL.'&return=error2';
+    header("Location: {$URL}");
+    exit();
 }
 
-$URL=$URL. "&return=success0" ;
+$URL = $URL.'&return=success0';
 header("Location: {$URL}");
-
-?>
