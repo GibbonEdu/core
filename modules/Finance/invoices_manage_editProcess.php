@@ -244,7 +244,10 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') {
                         $from = $_POST['email'];
                         if ($partialFail == false and $from != '') {
                             //Send emails
-                            $emails = $_POST['emails2'];
+                            $emails = array() ;
+                            if (isset($_POST['emails2'])) {
+                                $emails = $_POST['emails2'];
+                            }
                             if (count($emails) > 0) {
                                 require $_SESSION[$guid]['absolutePath'].'/lib/PHPMailer/class.phpmailer.php';
 
