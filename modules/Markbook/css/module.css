@@ -16,3 +16,192 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
+
+table.colorOddEven tr:nth-of-type(even) td {
+	background: -webkit-gradient(linear, center top, center bottom, from(#F2F2F2), to(#F0F0F0));
+	background: -webkit-linear-gradient(center top , #F2F2F2, #F0F0F0);
+	background: -o-linear-gradient(center top , #F2F2F2, #F0F0F0);
+	background: -moz-linear-gradient(center top , #F2F2F2, #F0F0F0);
+	background: linear-gradient(center top , #F2F2F2, #F0F0F0);
+}
+
+tr.odd:target td,
+tr.even:target td {
+	background: #EDF7FF;
+}
+
+.verticalText {
+	-webkit-transform: rotate(-90deg);
+	-moz-transform: rotate(-90deg);
+	-ms-transform: rotate(-90deg);
+	-o-transform: rotate(-90deg);
+	transform: rotate(-90deg);
+}
+
+/*.markbook-data,
+.markbook-data:link,
+.markbook-data:visited {
+	opacity: 0;
+	display: block;
+	color: #666;
+	text-decoration: none;
+	margin: -6px 0px -3px;
+}
+
+.markbook-data:hover {
+	opacity: 1;
+}*/
+
+/* Double-scroll */
+
+.doublescroll-wrapper {
+	position: relative;
+	background: #FBFBFB none repeat scroll 0% 0%;
+	border: 1px solid #CCC;
+	border-radius: 3px;
+}
+
+/*.doublescroll-wrapper,
+.doublescroll-top,
+.doublescroll-container {
+	display: table;
+}*/
+
+.doublescroll-top {
+	overflow-x:auto;
+	margin-left:175px;
+}
+
+.doublescroll-top-tablewidth {
+	height: 0.1px;
+}
+
+.doublescroll-container {
+	overflow-x: auto;
+	overflow-y:visible;
+	margin-left:175px;
+}
+
+.doublescroll-container table {
+	margin:0;
+	border-width: 0px;
+}
+
+.doublescroll-container .highlight,
+.doublescroll-container table tr[data-student]:hover td,
+.doublescroll-container table tr[data-student]:focus td {
+	background: #EDF7FF !important;
+}
+
+.doublescroll-container tr.head th:first-of-type {
+	position:absolute; 
+    width:151px; 
+    height: 155px;
+    left:1px;
+    top:0;
+    padding: 5px 12px 5px !important;
+    margin:0;
+    z-index: 1;
+}
+
+.doublescroll-container tr.head th:first-of-type span {
+	height: 140px;
+	vertical-align: middle;
+	display: table-cell;
+}
+
+.doublescroll-container tr.head th:first-of-type:not([rowspan]) {
+	background: transparent;
+	border: 0;
+}
+
+.doublescroll-container td:first-of-type {
+	position:absolute; 
+    width:150px; 
+    left:1px;
+    top:auto;
+    padding: 5px 12px 5px !important;
+    border-right: 1px solid #666;
+    margin:0;
+    z-index: 1;
+}
+
+.doublescroll-container td {
+	height: 15px;
+	text-align: center;
+}
+
+.doublescroll-container::after {
+	content: "";
+	position: absolute;
+	top: 0px;
+	left: 175px;
+	background: #666 none repeat scroll 0% 0%;
+	height: calc(100% );
+	width: 1px;
+	z-index: 1;
+}
+
+
+
+/* 
+ * dragtable
+ *
+ * @Version 1.0.3
+ *
+ * default css
+ *
+ */
+
+
+.dragtable-drag-handle{
+	cursor: move;
+	height: 2px;
+	width: 31px;
+	background: transparent;
+	margin: -4px auto 10px auto;
+	border-color: #bbbbbb;
+	border-style: dotted;
+	border-width: 3px 0px 3px 0px;
+}
+
+/*
+ * gets wrapped around placeholder table
+ */
+  
+.dragtable-drag-wrapper{
+	position: absolute;
+    z-index: 1000;
+} 
+ /*
+  * this gets applied to the table copy of the col that we are dragging 
+  */ 
+.dragtable-drag-wrapper .dragtable-drag-col{
+    opacity: 0.7;
+    filter: alpha(opacity=70);
+    cursor:move;
+}
+
+.dragtable-drag-col td:first-of-type {
+	position: static;
+}
+
+/*
+	placeholder is just a name for the real table col
+*/
+.dragtable-col-placeholder { 
+    border-left: 1px dotted black;
+    border-right: 1px dotted black; 
+    color:#EFEFEF;
+    background: #EFEFEF !important; 
+    visibility: visible !important;
+}
+table .dragtable-col-placeholder:first{
+	border-top:1px dotted black;
+}
+
+
+.dragtable-col-placeholder * { 
+    opacity: 0.0; 
+    visibility: hidden; 
+}

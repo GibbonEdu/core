@@ -194,18 +194,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                         if ($x == '') {
                             $x = 0;
                         }
-                        $columnsPerPage = 4;
-                        $columnsThisPage = 4;
+                        $columnsPerPage = 12;
+                        $columnsThisPage = $columnsPerPage;
 
-                        if ($columns < 4) {
+                        if ($columns < $columnsPerPage) {
                             $columnsThisPage = $columns;
                         }
-                        if ($columns - ($x * $columnsPerPage) < 4) {
+                        if ($columns - ($x * $columnsPerPage) < $columnsPerPage) {
                             $columnsThisPage = $columns - ($x * $columnsPerPage);
                         }
                         try {
                             $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                            $sql = 'SELECT * FROM gibbonMarkbookColumn WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY complete, completeDate DESC LIMIT '.($x * $columnsPerPage).', '.$columnsPerPage;
+                            $sql = 'SELECT * FROM gibbonMarkbookColumn WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY sequenceNumber, complete, completeDate DESC LIMIT '.($x * $columnsPerPage).', '.$columnsPerPage;
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {
@@ -294,15 +294,47 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                         }
                         echo '</div>';
 
-                        echo "<table id='myTable' class='mini' cellspacing='0' style='width: 100%; margin-top: 0px'>";
+                        ?>
+                        <script type='text/javascript'> 
+                            $(document).ready(function(){
+                                $("#myTable").on('dragtablestop', function( event ) {
+                                    $.ajax({ 
+                                        url: "<?php echo $_SESSION[$guid]['absoluteURL'] ?>/modules/Markbook/markbook_viewAjax.php",
+                                        data: { order: $(this).dragtable('order') },
+                                        method: "POST",
+                                    })
+                                    .done(function( data ) {
+                                        //alert( "success" );
+                                        if (data != '') alert( data );
+                                    })
+                                    .fail(function() {
+                                        alert( '<?php echo __($guid, 'Error'); ?>'  );
+                                    });
+                                });
+                            });
+                        </script>
+
+                        <?php
+
+                        echo '<div class="doublescroll-wrapper">';
+
+                        echo '<span id="loading"></span>';
+
+                        echo "<div class='doublescroll-top'><div class='doublescroll-top-tablewidth'></div></div>";
+                        echo "<div class='doublescroll-container'>";
+
+                        echo "<table id='myTable' class='mini' cellspacing='0' style='margin-top: 0px'>";
+                        echo "<thead>";
                         echo "<tr class='head' style='height: 120px'>";
-                        echo "<th style='width: 120px; min-width: 120px; max-width: 120px' rowspan=2>";
-                        echo __($guid, 'Student');
+                        echo "<th class='notdraggable' data-header='student' rowspan=2>";
+                            echo "<span>";
+                            echo __($guid, 'Student');
+                            echo "</span>";
                         echo '</th>';
 
                                 //Show Baseline data header
                                 if ($externalAssessment == true) {
-                                    echo "<th style='width: 40px; min-width: 40px; max-width: 40px' rowspan=2>";
+                                    echo "<th data-header='assessment' style='width: 40px; min-width: 40px; max-width: 40px' rowspan=2>";
                                     $title = __($guid, $externalAssessmentFields[2]).' | ';
                                     $title .= __($guid, substr($externalAssessmentFields[3], (strpos($externalAssessmentFields[3], '_') + 1))).' | ';
                                     $title .= __($guid, $externalAssessmentFields[1]);
@@ -321,14 +353,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                                         $title .= ' | '.$rowPAS['name'].' '.__($guid, 'Scale').' ';
                                     }
 
-                                    echo "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);' title='$title'>";
+                                    echo "<div class='verticalText' title='$title'>";
                                     echo __($guid, 'Baseline').'<br/>';
                                     echo '</div>';
                                     echo '</th>';
                                 }
 
                                 //Show target grade header
-                            echo "<th style='width: 40px; min-width: 40px; max-width: 40px' rowspan=2>";
+                            echo "<th class='notdraggable dragtable-drag-boundary' data-header='target' style='width: 40px; min-width: 40px; max-width: 40px' rowspan=2>";
                         $title = __($guid, 'Personalised attainment target grade');
 
                                     //Get PAS
@@ -345,21 +377,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                             $title .= ' | '.$rowPAS['name'].' Scale ';
                         }
 
-                        echo "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);' title='$title'>";
+                        echo "<div class='verticalText' title='$title'>";
                         echo __($guid, 'Target').'<br/>';
                         echo '</div>';
                         echo '</th>';
 
                                 //Show weighted scrore
                                 if ($enableColumnWeighting == 'Y') {
-                                    echo "<th style='width: 40px; min-width: 40px; max-width: 40px' rowspan=2>";
+                                    echo "<th class='notdraggable dragtable-drag-boundary' data-header='weighting' style='width: 40px; min-width: 40px; max-width: 40px' rowspan=2>";
                                     if ($attainmentAlternativeName != '' and $attainmentAlternativeNameAbrev != '') {
                                         $title = sprintf(__($guid, 'Weighted mean of all marked columns using Primary Assessment Scale for %1$s, if numeric'), $attainmentAlternativeName);
                                     } else {
                                         $title = sprintf(__($guid, 'Weighted mean of all marked columns using Primary Assessment Scale for %1$s, if numeric'), 'Attainment');
                                     }
 
-                                    echo "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);' title='$title'>";
+                                    echo "<div class='verticalText' title='$title'>";
                                     echo __($guid, 'Total').'<br/>';
                                     echo '</div>';
                                     echo '</th>';
@@ -445,7 +477,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                                 $contents = false;
                             }
 
-                            echo "<th style='margin-left: 100px; text-align: center; min-width: 140px' colspan=$span>";
+                            echo "<th class='notdraggable' data-header='".$row['gibbonMarkbookColumnID']."' style='margin-left: 100px; text-align: center; min-width: 140px' colspan=$span>";
+                            echo "<div class='dragtable-drag-handle'></div>";
                             echo "<span title='".htmlPrep($row['description'])."'>".$row['name'].'</span><br/>';
                             echo "<span style='font-size: 90%; font-style: italic; font-weight: normal'>";
                             $unit = getUnit($connection2, $row['gibbonUnitID'], '', $row['gibbonCourseClassID']);
@@ -476,106 +509,111 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                             echo '</th>';
                         }
                         echo '</tr>';
+                        echo "</thead>";
 
-                        echo "<tr class='head'>";
-                        for ($i = 0; $i < $columnsThisPage; ++$i) {
-                            if ($columnID[$i] == false or $contents == false) {
-                                echo "<th style='text-align: center' colspan=$span>";
+                        echo "<tbody>";
+                        // echo "<tr class='head'>";
 
-                                echo '</th>';
-                            } else {
-                                $leftBorder = false;
-                                if ($attainmentOn[$i] == 'Y' and ($attainmentID[$i] != '' or $gibbonRubricIDAttainment[$i] != '')) {
-                                    $leftBorder = true;
-                                    echo "<th style='border-left: 2px solid #666; text-align: center; width: 40px'>";
-                                    try {
-                                        $dataScale = array('gibbonScaleID' => $attainmentID[$i]);
-                                        $sqlScale = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
-                                        $resultScale = $connection2->prepare($sqlScale);
-                                        $resultScale->execute($dataScale);
-                                    } catch (PDOException $e) {
-                                        echo "<div class='error'>".$e->getMessage().'</div>';
-                                    }
-                                    $scale = '';
-                                    if ($resultScale->rowCount() == 1) {
-                                        $rowScale = $resultScale->fetch();
-                                        $scale = ' - '.$rowScale['name'];
-                                        if ($rowScale['usage'] != '') {
-                                            $scale = $scale.': '.$rowScale['usage'];
-                                        }
-                                    }
-                                    if ($attainmentAlternativeName != '' and $attainmentAlternativeNameAbrev != '') {
-                                        echo "<span title='".$attainmentAlternativeName.htmlPrep($scale)."'>".$attainmentAlternativeNameAbrev.'</span>';
-                                    } else {
-                                        echo "<span title='".__($guid, 'Attainment').htmlPrep($scale)."'>".__($guid, 'Att').'</span>';
-                                    }
-                                    echo '</th>';
-                                }
-                                if ($effortOn[$i] == 'Y' and ($effortID[$i] != '' or $gibbonRubricIDEffort[$i] != '')) {
-                                    $leftBorderStyle = '';
-                                    if ($leftBorder == false) {
-                                        $leftBorder = true;
-                                        $leftBorderStyle = 'border-left: 2px solid #666;';
-                                    }
-                                    echo "<th style='$leftBorderStyle text-align: center; width: 40px'>";
-                                    try {
-                                        $dataScale = array('gibbonScaleID' => $effortID[$i]);
-                                        $sqlScale = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
-                                        $resultScale = $connection2->prepare($sqlScale);
-                                        $resultScale->execute($dataScale);
-                                    } catch (PDOException $e) {
-                                        echo "<div class='error'>".$e->getMessage().'</div>';
-                                    }
-                                    $scale = '';
-                                    if ($resultScale->rowCount() == 1) {
-                                        $rowScale = $resultScale->fetch();
-                                        $scale = ' - '.$rowScale['name'];
-                                        if ($rowScale['usage'] != '') {
-                                            $scale = $scale.': '.$rowScale['usage'];
-                                        }
-                                    }
-                                    if ($effortAlternativeName != '' and $effortAlternativeNameAbrev != '') {
-                                        echo "<span title='".$effortAlternativeName.htmlPrep($scale)."'>".$effortAlternativeNameAbrev.'</span>';
-                                    } else {
-                                        echo "<span title='".__($guid, 'Effort').htmlPrep($scale)."'>".__($guid, 'Eff').'</span>';
-                                    }
-                                    echo '</th>';
-                                }
-                                if ($comment[$i] == 'Y') {
-                                    $leftBorderStyle = '';
-                                    if ($leftBorder == false) {
-                                        $leftBorder = true;
-                                        $leftBorderStyle = 'border-left: 2px solid #666;';
-                                    }
-                                    echo "<th style='$leftBorderStyle text-align: center; width: 80px'>";
-                                    echo "<span title='".__($guid, 'Comment')."'>".__($guid, 'Com').'</span>';
-                                    echo '</th>';
-                                }
-                                if ($uploadedResponse[$i] == 'Y') {
-                                    $leftBorderStyle = '';
-                                    if ($leftBorder == false) {
-                                        $leftBorder = true;
-                                        $leftBorderStyle = 'border-left: 2px solid #666;';
-                                    }
-                                    echo "<th style='$leftBorderStyle text-align: center; width: 30px'>";
-                                    echo "<span title='".__($guid, 'Uploaded Response')."'>".__($guid, 'Upl').'</span>';
-                                    echo '</th>';
-                                }
-                                if (isset($submission[$i])) {
-                                    if ($submission[$i] == true) {
-                                        $leftBorderStyle = '';
-                                        if ($leftBorder == false) {
-                                            $leftBorder = true;
-                                            $leftBorderStyle = 'border-left: 2px solid #666;';
-                                        }
-                                        echo "<th style='$leftBorderStyle text-align: center; width: 30px'>";
-                                        echo "<span title='".__($guid, 'Submitted Work')."'>".__($guid, 'Sub').'</span>';
-                                        echo '</th>';
-                                    }
-                                }
-                            }
-                        }
-                        echo '</tr>';
+                        // echo "<th style='text-align: center'></th>";
+
+                        // for ($i = 0; $i < $columnsThisPage; ++$i) {
+                        //     if ($columnID[$i] == false or $contents == false) {
+                        //         echo "<th style='text-align: center' colspan=$span>";
+
+                        //         echo '</th>';
+                        //     } else {
+                        //         $leftBorder = false;
+                        //         if ($attainmentOn[$i] == 'Y' and ($attainmentID[$i] != '' or $gibbonRubricIDAttainment[$i] != '')) {
+                        //             $leftBorder = true;
+                        //             echo "<th style='border-left: 2px solid #666; text-align: center; width: 40px'>";
+                        //             try {
+                        //                 $dataScale = array('gibbonScaleID' => $attainmentID[$i]);
+                        //                 $sqlScale = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
+                        //                 $resultScale = $connection2->prepare($sqlScale);
+                        //                 $resultScale->execute($dataScale);
+                        //             } catch (PDOException $e) {
+                        //                 echo "<div class='error'>".$e->getMessage().'</div>';
+                        //             }
+                        //             $scale = '';
+                        //             if ($resultScale->rowCount() == 1) {
+                        //                 $rowScale = $resultScale->fetch();
+                        //                 $scale = ' - '.$rowScale['name'];
+                        //                 if ($rowScale['usage'] != '') {
+                        //                     $scale = $scale.': '.$rowScale['usage'];
+                        //                 }
+                        //             }
+                        //             if ($attainmentAlternativeName != '' and $attainmentAlternativeNameAbrev != '') {
+                        //                 echo "<span title='".$attainmentAlternativeName.htmlPrep($scale)."'>".$attainmentAlternativeNameAbrev.'</span>';
+                        //             } else {
+                        //                 echo "<span title='".__($guid, 'Attainment').htmlPrep($scale)."'>".__($guid, 'Att').'</span>';
+                        //             }
+                        //             echo '</th>';
+                        //         }
+                        //         if ($effortOn[$i] == 'Y' and ($effortID[$i] != '' or $gibbonRubricIDEffort[$i] != '')) {
+                        //             $leftBorderStyle = '';
+                        //             if ($leftBorder == false) {
+                        //                 $leftBorder = true;
+                        //                 $leftBorderStyle = 'border-left: 2px solid #666;';
+                        //             }
+                        //             echo "<th style='$leftBorderStyle text-align: center; width: 40px'>";
+                        //             try {
+                        //                 $dataScale = array('gibbonScaleID' => $effortID[$i]);
+                        //                 $sqlScale = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
+                        //                 $resultScale = $connection2->prepare($sqlScale);
+                        //                 $resultScale->execute($dataScale);
+                        //             } catch (PDOException $e) {
+                        //                 echo "<div class='error'>".$e->getMessage().'</div>';
+                        //             }
+                        //             $scale = '';
+                        //             if ($resultScale->rowCount() == 1) {
+                        //                 $rowScale = $resultScale->fetch();
+                        //                 $scale = ' - '.$rowScale['name'];
+                        //                 if ($rowScale['usage'] != '') {
+                        //                     $scale = $scale.': '.$rowScale['usage'];
+                        //                 }
+                        //             }
+                        //             if ($effortAlternativeName != '' and $effortAlternativeNameAbrev != '') {
+                        //                 echo "<span title='".$effortAlternativeName.htmlPrep($scale)."'>".$effortAlternativeNameAbrev.'</span>';
+                        //             } else {
+                        //                 echo "<span title='".__($guid, 'Effort').htmlPrep($scale)."'>".__($guid, 'Eff').'</span>';
+                        //             }
+                        //             echo '</th>';
+                        //         }
+                        //         if ($comment[$i] == 'Y') {
+                        //             $leftBorderStyle = '';
+                        //             if ($leftBorder == false) {
+                        //                 $leftBorder = true;
+                        //                 $leftBorderStyle = 'border-left: 2px solid #666;';
+                        //             }
+                        //             echo "<th style='$leftBorderStyle text-align: center; width: 80px'>";
+                        //             echo "<span title='".__($guid, 'Comment')."'>".__($guid, 'Com').'</span>';
+                        //             echo '</th>';
+                        //         }
+                        //         if ($uploadedResponse[$i] == 'Y') {
+                        //             $leftBorderStyle = '';
+                        //             if ($leftBorder == false) {
+                        //                 $leftBorder = true;
+                        //                 $leftBorderStyle = 'border-left: 2px solid #666;';
+                        //             }
+                        //             echo "<th style='$leftBorderStyle text-align: center; width: 30px'>";
+                        //             echo "<span title='".__($guid, 'Uploaded Response')."'>".__($guid, 'Upl').'</span>';
+                        //             echo '</th>';
+                        //         }
+                        //         if (isset($submission[$i])) {
+                        //             if ($submission[$i] == true) {
+                        //                 $leftBorderStyle = '';
+                        //                 if ($leftBorder == false) {
+                        //                     $leftBorder = true;
+                        //                     $leftBorderStyle = 'border-left: 2px solid #666;';
+                        //                 }
+                        //                 echo "<th style='$leftBorderStyle text-align: center; width: 30px'>";
+                        //                 echo "<span title='".__($guid, 'Submitted Work')."'>".__($guid, 'Sub').'</span>';
+                        //                 echo '</th>';
+                        //             }
+                        //         }
+                        //     }
+                        // }
+                        // echo '</tr>';
 
                         $count = 0;
                         $rowNum = 'odd';
@@ -853,7 +891,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                                 echo '</tr>';
                             }
                         }
+                        echo "</tbody>";
                         echo '</table>';
+
+                        echo '</div>';
+                        echo '</div><br/>';
                     }
                 }
             }
