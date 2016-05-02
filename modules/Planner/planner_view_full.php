@@ -115,21 +115,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                 $teacher = false;
                 try {
                     $dataTeacher = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPlannerEntryID2' => $gibbonPlannerEntryID, 'date2' => $date);
-                    $sqlTeacher = "(SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonCourseClass.gibbonCourseClassID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntry.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, date, timeStart, timeEnd, summary, gibbonPlannerEntry.description, teachersNotes, homework, homeworkDueDateTime, homeworkDetails, viewableStudents, viewableParents, role, homeworkSubmission, homeworkSubmissionDateOpen, homeworkSubmissionDrafts, homeworkSubmissionType, homeworkSubmissionRequired 
-						FROM gibbonPlannerEntry 
-						JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) 
-						JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) 
-						JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) 
-						WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID 
-							AND role='Teacher' 
-							AND gibbonPlannerEntry.gibbonPlannerEntryID=:gibbonPlannerEntryID) 
-						UNION 
-						(SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonCourseClass.gibbonCourseClassID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntry.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, date, timeStart, timeEnd, summary, gibbonPlannerEntry.description, teachersNotes, homework, homeworkDueDateTime, homeworkDetails, viewableStudents, viewableParents, role, homeworkSubmission, homeworkSubmissionDateOpen, homeworkSubmissionDrafts, homeworkSubmissionType, homeworkSubmissionRequired 
-						FROM gibbonPlannerEntry 
-						JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) 
-						JOIN gibbonPlannerEntryGuest ON (gibbonPlannerEntryGuest.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) 
-						JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) 
-						WHERE date=:date2 AND gibbonPlannerEntryGuest.gibbonPersonID=:gibbonPersonID2 AND gibbonPlannerEntry.gibbonPlannerEntryID=:gibbonPlannerEntryID2) 
+                    $sqlTeacher = "(SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonCourseClass.gibbonCourseClassID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntry.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, date, timeStart, timeEnd, summary, gibbonPlannerEntry.description, teachersNotes, homework, homeworkDueDateTime, homeworkDetails, viewableStudents, viewableParents, role, homeworkSubmission, homeworkSubmissionDateOpen, homeworkSubmissionDrafts, homeworkSubmissionType, homeworkSubmissionRequired
+						FROM gibbonPlannerEntry
+						JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+						JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID)
+						JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
+						WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID
+							AND role='Teacher'
+							AND gibbonPlannerEntry.gibbonPlannerEntryID=:gibbonPlannerEntryID)
+						UNION
+						(SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonCourseClass.gibbonCourseClassID, gibbonUnitID, gibbonHookID, gibbonPlannerEntry.gibbonCourseClassID, gibbonPlannerEntry.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, date, timeStart, timeEnd, summary, gibbonPlannerEntry.description, teachersNotes, homework, homeworkDueDateTime, homeworkDetails, viewableStudents, viewableParents, role, homeworkSubmission, homeworkSubmissionDateOpen, homeworkSubmissionDrafts, homeworkSubmissionType, homeworkSubmissionRequired
+						FROM gibbonPlannerEntry
+						JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+						JOIN gibbonPlannerEntryGuest ON (gibbonPlannerEntryGuest.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID)
+						JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
+						WHERE date=:date2 AND gibbonPlannerEntryGuest.gibbonPersonID=:gibbonPersonID2 AND gibbonPlannerEntry.gibbonPlannerEntryID=:gibbonPlannerEntryID2)
 						ORDER BY date, timeStart";
                     $resultTeacher = $connection2->prepare($sqlTeacher);
                     $resultTeacher->execute($dataTeacher);
@@ -539,7 +539,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 												<script type="text/javascript">
 													$(document).ready(function(){
 														$("#smartEdit").hide() ;
-												
+
 														$('#viewBlocks').click(function() {
 															$("#smartView").show() ;
 															$("#viewBlocks").addClass("active") ;
@@ -573,9 +573,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 																});
 															});
 														</script>
-												
+
 														<div class="sortable" id="sortable" style='width: 100%; padding: 5px 0px 0px 0px; border-top: 1px dotted #666; border-bottom: 1px dotted #666'>
-															<?php 
+															<?php
                                                             //Get outcomes
                                                             try {
                                                                 $dataOutcomes = array('gibbonUnitID' => $gibbonUnitID);
@@ -745,21 +745,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                         $rowNum = 'odd';
                                         if ($resultVersion->rowCount() > 0) {
                                             ?>
-														<table cellspacing='0' style="width: 100%">	
+														<table cellspacing='0' style="width: 100%">
 															<tr class='head'>
-																<th> 
+																<th>
 																	<?php echo __($guid, 'Count') ?><br/>
 																</th>
-																<th> 
+																<th>
 																	<?php echo __($guid, 'Version') ?><br/>
 																</th>
-																<th> 
+																<th>
 																	<?php echo __($guid, 'Status') ?><br/>
 																</th>
-																<th> 
+																<th>
 																	<?php echo __($guid, 'Date/Time') ?><br/>
 																</th>
-																<th> 
+																<th>
 																	<?php echo __($guid, 'View') ?><br/>
 																</td>
 																<?php
@@ -781,8 +781,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                                                                 echo "<tr class=$rowNum>";
                                                                 ?>
-															
-																	<td> 
+
+																	<td>
 																		<?php echo $rowVersion['count'] ?><br/>
 																	</td>
 																	<td>
@@ -795,7 +795,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 																		<?php echo substr($rowVersion['timestamp'], 11, 5).' '.dateConvertBack($guid, substr($rowVersion['timestamp'], 0, 10)) ?><br/>
 																	</td>
 																	<td style='max-width: 180px; word-wrap: break-word;'>
-																		<?php 
+																		<?php
                                                                         if ($rowVersion['type'] == 'File') {
                                                                             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowVersion['location']."'>".$rowVersion['location'].'</a>';
                                                                         } else {
@@ -829,9 +829,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                                             ?>
 														<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/planner_view_full_submitProcess.php?address='.$_GET['q'].$params.'&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID'] ?>" enctype="multipart/form-data">
-															<table class='smallIntBorder fullWidth' cellspacing='0'>	
+															<table class='smallIntBorder fullWidth' cellspacing='0'>
 																<tr>
-																	<td> 
+																	<td>
 																		<b><?php echo __($guid, 'Type') ?> *</b><br/>
 																	</td>
 																	<td class="right">
@@ -851,7 +851,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 																	</td>
 																</tr>
 																<tr>
-																	<td> 
+																	<td>
 																		<b><?php echo __($guid, 'Version') ?> *</b><br/>
 																	</td>
 																	<td class="right">
@@ -865,7 +865,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                             ?>
 																	</td>
 																</tr>
-															
+
 																<script type="text/javascript">
 																	/* Subbmission type control */
 																	$(document).ready(function(){
@@ -883,26 +883,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                                                         } else {
                                                                             ?>
 																			$("#fileRow").css("display","none");
-																			$("#linkRow").slideDown("fast", $("#linkRow").css("display","table-row")); 
+																			$("#linkRow").slideDown("fast", $("#linkRow").css("display","table-row"));
 																			<?php
 
                                                                         }
                                             ?>
-																	
+
 																		$(".type").click(function(){
 																			if ($('input[name=type]:checked').val()=="Link" ) {
 																				$("#fileRow").css("display","none");
-																				$("#linkRow").slideDown("fast", $("#linkRow").css("display","table-row")); 
+																				$("#linkRow").slideDown("fast", $("#linkRow").css("display","table-row"));
 																			} else {
 																				$("#linkRow").css("display","none");
-																				$("#fileRow").slideDown("fast", $("#fileRow").css("display","table-row")); 
+																				$("#fileRow").slideDown("fast", $("#fileRow").css("display","table-row"));
 																			}
 																		 });
 																	});
 																</script>
-															
+
 																<tr id="fileRow">
-																	<td> 
+																	<td>
 																		<b><?php echo __($guid, 'Submit File') ?> *</b><br/>
 																	</td>
 																	<td class="right">
@@ -923,7 +923,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                                 $ext = $ext."'.".$rowExt['extension']."',";
                                             }
                                             ?>
-																	
+
 																		<script type="text/javascript">
 																			var file=new LiveValidation('file');
 																			file.add( Validate.Inclusion, { within: [<?php echo $ext;
@@ -932,7 +932,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 																	</td>
 																</tr>
 																<tr id="linkRow">
-																	<td> 
+																	<td>
 																		<b><?php echo __($guid, 'Submit Link') ?> *</b><br/>
 																	</td>
 																	<td class="right">
@@ -945,7 +945,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 																</tr>
 																<tr>
 																	<td class="right" colspan=2>
-																		<?php	
+																		<?php
                                                                         echo "<input type='hidden' name='lesson' value='".$row['name']."'>";
                                             echo "<input type='hidden' name='count' value='$count'>";
                                             echo "<input type='hidden' name='status' value='$status'>";
@@ -986,21 +986,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                             }
                                         } else {
                                             ?>
-														<table cellspacing='0' style="width: 100%">	
+														<table cellspacing='0' style="width: 100%">
 															<tr class='head'>
-																<th> 
+																<th>
 																	<?php echo __($guid, 'Count') ?><br/>
 																</th>
-																<th> 
+																<th>
 																	<?php echo __($guid, 'Version') ?><br/>
 																</th>
-																<th> 
+																<th>
 																	<?php echo __($guid, 'Status') ?><br/>
 																</th>
-																<th> 
+																<th>
 																	<?php echo __($guid, 'Date/Time') ?><br/>
 																</th>
-																<th> 
+																<th>
 																	<?php echo __($guid, 'View') ?><br/>
 																</td>
 															</tr>
@@ -1015,7 +1015,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                                                                 echo "<tr class=$rowNum>";
                                                                 ?>
-																	<td> 
+																	<td>
 																		<?php echo $rowVersion['count'] ?><br/>
 																	</td>
 																	<td>
@@ -1028,7 +1028,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 																		<?php echo substr($rowVersion['timestamp'], 11, 5).' '.dateConvertBack($guid, substr($rowVersion['timestamp'], 0, 10)) ?><br/>
 																	</td>
 																	<td>
-																		<?php 
+																		<?php
                                                                         if ($rowVersion['type'] == 'File') {
                                                                             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowVersion['location']."'>".$rowVersion['location'].'</a>';
                                                                         } else {
@@ -1064,21 +1064,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                         $rowNum = 'odd';
                                         if ($resultClass->rowCount() > 0) {
                                             ?>
-														<table cellspacing='0' style="width: 100%">	
+														<table cellspacing='0' style="width: 100%">
 															<tr class='head'>
-																<th> 
+																<th>
 																	<?php echo __($guid, 'Student') ?><br/>
 																</th>
-																<th> 
+																<th>
 																	<?php echo __($guid, 'Status') ?><br/>
 																</th>
-																<th> 
+																<th>
 																	<?php echo __($guid, 'Version') ?><br/>
 																</th>
-																<th> 
+																<th>
 																	<?php echo __($guid, 'Date/Time') ?><br/>
 																</th>
-																<th> 
+																<th>
 																	<?php echo __($guid, 'View') ?><br/>
 																</th>
 																<th>
@@ -1096,11 +1096,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                                                                 echo "<tr class=$rowNum>";
                                                                 ?>
-																
-																	<td> 
+
+																	<td>
 																		<?php echo "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowClass['gibbonPersonID']."'>".formatName('', $rowClass['preferredName'], $rowClass['surname'], 'Student', true).'</a>' ?><br/>
 																	</td>
-																
+
 																	<?php
 
                                                                     try {
@@ -1113,7 +1113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                                                     }
                                                                 if ($resultVersion->rowCount() < 1) {
                                                                     ?>
-																		<td colspan=4> 
+																		<td colspan=4>
 																			<?php
                                                                             //Before deadline
                                                                             if (date('Y-m-d H:i:s') < $row['homeworkDueDateTime']) {
@@ -1134,7 +1134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                                                     ?>
 																		</td>
 																		<td>
-																			<?php 
+																			<?php
                                                                             echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_view_full_submit_edit.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&search=".$gibbonPersonID.'&gibbonPersonID='.$rowClass['gibbonPersonID']."&submission=false'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
                                                                     ?>
 																		</td>
@@ -1144,7 +1144,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                                                     $rowVersion = $resultVersion->fetch();
                                                                     ?>
 																		<td>
-																			<?php 
+																			<?php
                                                                             if ($rowVersion['status'] == 'On Time' or $rowVersion['status'] == 'Exemption') {
                                                                                 echo $rowVersion['status'];
                                                                             } else {
@@ -1153,7 +1153,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                                                     ?>
 																		</td>
 																		<td>
-																			<?php 
+																			<?php
                                                                             echo $rowVersion['version'];
                                                                     if ($rowVersion['version'] == 'Draft') {
                                                                         echo ' '.$rowVersion['count'];
@@ -1177,7 +1177,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                                                     ?>
 																		</td>
 																		<td>
-																			<?php 
+																			<?php
                                                                             echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_view_full_submit_edit.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&search=".$gibbonPersonID.'&gibbonPlannerEntryHomeworkID='.$rowVersion['gibbonPlannerEntryHomeworkID']."&submission=true'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
                                                                     echo "<a onclick='return confirm(\"".__($guid, 'Are you sure you wish to delete this record?')."\")' href='".$_SESSION[$guid]['absoluteURL']."/modules/Planner/planner_view_full_submit_deleteProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&search=$gibbonPersonID&gibbonPlannerEntryHomeworkID=".$rowVersion['gibbonPlannerEntryHomeworkID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
                                                                     ?>
@@ -1245,7 +1245,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 if ($roleCategory != 'Student') { //Parent, so show readonly
                                             ?>
 											<tr>
-												<td> 
+												<td>
 													<b><?php echo __($guid, 'Homework?') ?> *</b><br/>
 												</td>
 												<td>
@@ -1258,12 +1258,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                     ?>
 												</td>
 											</tr>
-											
+
 											<?php
                                             if ($rowMyHomework['homework'] == 'Y') {
                                                 ?>
 												<tr>
-													<td> 
+													<td>
 														<b><?php echo __($guid, 'Homework Due Date') ?> *</b><br/>
 													</td>
 													<td>
@@ -1274,7 +1274,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 													</td>
 												</tr>
 												<tr >
-													<td> 
+													<td>
 														<b><?php echo __($guid, 'Homework Due Date Time') ?></b><br/>
 														<span class="emphasis small"><?php echo __($guid, 'Format: hh:mm (24hr)') ?><br/></span>
 													</td>
@@ -1285,10 +1285,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                                 ?>
 													</td>
 												</tr>
-											
-											
+
+
 												<tr>
-													<td> 
+													<td>
 														<b><?php echo __($guid, 'Homework Details') ?></b><br/>
 													</td>
 													<td class="right">
@@ -1307,7 +1307,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                         $checkedNo = 'checked';
                                     }
                                     ?>
-								
+
 											<script type="text/javascript">
 												/* Homework Control */
 												$(document).ready(function(){
@@ -1321,15 +1321,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                                                     }
                                     ?>
-							
+
 													//Response to clicking on homework control
 													$(".homework").click(function(){
 														if ($('input[name=homework]:checked').val()=="Yes" ) {
 															homeworkDueDate.enable();
 															homeworkDetails.enable();
-															$("#homeworkDueDateRow").slideDown("fast", $("#homeworkDueDateRow").css("display","table-row")); 
-															$("#homeworkDueDateTimeRow").slideDown("fast", $("#homeworkDueDateTimeRow").css("display","table-row")); 
-															$("#homeworkDetailsRow").slideDown("fast", $("#homeworkDetailsRow").css("display","table-row")); 
+															$("#homeworkDueDateRow").slideDown("fast", $("#homeworkDueDateRow").css("display","table-row"));
+															$("#homeworkDueDateTimeRow").slideDown("fast", $("#homeworkDueDateTimeRow").css("display","table-row"));
+															$("#homeworkDetailsRow").slideDown("fast", $("#homeworkDetailsRow").css("display","table-row"));
 														} else {
 															homeworkDueDate.disable();
 															homeworkDetails.disable();
@@ -1340,7 +1340,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 													 });
 												});
 											</script>
-											
+
 											<?php
                                             //Try and find the next slot for this class, to use as default HW deadline
                                             if ($rowMyHomework['homework'] == 'N' and $row['date'] != '' and $row['timeStart'] != '' and $row['timeEnd'] != '') {
@@ -1363,11 +1363,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                                 }
                                             }
                                     ?>
-								
+
 											<?php echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/planner_view_full_myHomeworkProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&address=".$_SESSION[$guid]['address']."&gibbonCourseClassID=$gibbonCourseClassID&date=$date'>";
                                     ?>
 												<tr>
-													<td> 
+													<td>
 														<b><?php echo __($guid, 'Homework?') ?> *</b><br/>
 													</td>
 													<td class="right">
@@ -1376,7 +1376,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 													</td>
 												</tr>
 												<tr id="homeworkDueDateRow">
-													<td> 
+													<td>
 														<b><?php echo __($guid, 'Homework Due Date') ?> *</b><br/>
 														<span class="emphasis small"><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
     echo 'dd/mm/yyyy';
@@ -1404,7 +1404,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 } else {
     echo $_SESSION[$guid]['i18n']['dateFormat'];
 }
-                                    ?>." } ); 
+                                    ?>." } );
 															homeworkDueDate.add(Validate.Presence);
 															<?php
                                                             if ($rowMyHomework['homework'] != 'Y') {
@@ -1420,7 +1420,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 													</td>
 												</tr>
 												<tr id="homeworkDueDateTimeRow">
-													<td> 
+													<td>
 														<b><?php echo __($guid, 'Homework Due Date Time') ?></b><br/>
 														<span class="emphasis small"><?php echo __($guid, 'Format: hh:mm (24hr)') ?><br/></span>
 													</td>
@@ -1433,7 +1433,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                     ?>" type="text" class="standardWidth">
 														<script type="text/javascript">
 															var homeworkDueDateTime=new LiveValidation('homeworkDueDateTime');
-															homeworkDueDateTime.add( Validate.Format, {pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use hh:mm" } ); 
+															homeworkDueDateTime.add( Validate.Format, {pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use hh:mm" } );
 														</script>
 														<script type="text/javascript">
 															$(function() {
@@ -1457,8 +1457,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 													</td>
 												</tr>
 												<tr id="homeworkDetailsRow">
-													<td colspan=2> 
-														<b><?php echo __($guid, 'Homework Details') ?> *</b> 
+													<td colspan=2>
+														<b><?php echo __($guid, 'Homework Details') ?> *</b>
 														<?php
                                                         $initiallyHidden = true;
                                     if ($rowMyHomework['homework'] == 'Y') {
@@ -1528,7 +1528,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                     }
                                     echo '</table>';
 
-                                    if ($rowResources['attachment'] != '' or $rowResources['details'] != '' or $resultOutcomes->rowCount() > 0) {
+                                    if (@$rowResources['attachment'] != '' or @$rowResources['details'] != '' or $resultOutcomes->rowCount() > 0) {
                                         echo "<h2 style='padding-top: 30px'>".__($guid, 'Unit Content').'</h2>';
                                         echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%;'>";
                                         echo '<tr>';
@@ -1935,27 +1935,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                                 }
                         ?>
-							
+
 								$(".confidentialPlan").click(function(){
 									if ($('input[name=confidentialPlan]:checked').val()=="Yes" ) {
-										$("#teachersNotes").slideDown("fast", $(".teachersNotes").css("{'display' : 'table-row', 'border' : 'right'}")); 
-										$(".teachersNotes").slideDown("fast", $("#teachersNotes").css("{'display' : 'table-row', 'border' : 'right'}")); 
+										$("#teachersNotes").slideDown("fast", $(".teachersNotes").css("{'display' : 'table-row', 'border' : 'right'}"));
+										$(".teachersNotes").slideDown("fast", $("#teachersNotes").css("{'display' : 'table-row', 'border' : 'right'}"));
 										<?php
                                         for ($i = 0; $i < $count; ++$i) {
                                             ?>
-											$("#confidentialPlan<?php echo $i ?>").slideDown("fast", $("#confidentialPlan<?php echo $i ?>").css("{'display' : 'table-row', 'border' : 'right'}")); 
+											$("#confidentialPlan<?php echo $i ?>").slideDown("fast", $("#confidentialPlan<?php echo $i ?>").css("{'display' : 'table-row', 'border' : 'right'}"));
 											<?php
 
                                         }
                         ?>
-									} 
+									}
 									else {
-										$("#teachersNotes").slideUp("fast"); 
-										$(".teachersNotes").slideUp("fast"); 
+										$("#teachersNotes").slideUp("fast");
+										$(".teachersNotes").slideUp("fast");
 										<?php
                                         for ($i = 0; $i < $count; ++$i) {
                                             ?>
-											$("#confidentialPlan<?php echo $i ?>").slideUp("fast"); 
+											$("#confidentialPlan<?php echo $i ?>").slideUp("fast");
 											<?php
 
                                         }

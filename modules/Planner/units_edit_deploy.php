@@ -643,7 +643,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
                                                     ++$deployCount;
                                                 } else {
                                                     if (($length - $blocks[$deployCount][3]) >= 0) {
-                                                        makeBlock($guid,  $connection2, $blockCount2, $mode = 'workingDeploy', $blocks[$deployCount][1], $blocks[$deployCount][2], $blocks[$deployCount][3], $blocks[$deployCount][4], 'N', $blocks[$deployCount][0], '', $blocks[$deployCount][5], true, $unitOutcomes, $blocks[$deployCount][6]);
+                                                        makeBlock($guid,  $connection2, $blockCount2, $mode = 'workingDeploy', $blocks[$deployCount][1], $blocks[$deployCount][2], $blocks[$deployCount][3], $blocks[$deployCount][4], 'N', $blocks[$deployCount][0], '', $blocks[$deployCount][5], true, $unitOutcomes, @$blocks[$deployCount][6]);
                                                         $length = $length - $blocks[$deployCount][3];
                                                         ++$deployCount;
                                                     }
@@ -664,9 +664,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
 
                             ?>
 									<b><?php echo __($guid, 'Access') ?></b><br/>
-									<table cellspacing='0' style="width: 100%">	
+									<table cellspacing='0' style="width: 100%">
 										<tr id="accessRowStudents">
-											<td> 
+											<td>
 												<b><?php echo __($guid, 'Viewable to Students') ?> *</b><br/>
 												<span class="emphasis small"></span>
 											</td>
@@ -687,7 +687,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
 											</td>
 										</tr>
 										<tr id="accessRowParents">
-											<td> 
+											<td>
 												<b><?php echo __($guid, 'Viewable to Parents') ?> *</b><br/>
 												<span class="emphasis small"></span>
 											</td>
@@ -708,7 +708,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
 											</td>
 										</tr>
 									</table>
-									
+
 									<table class='blank' style='width: 100%' cellspacing=0>
 										<tr>
 											<td>
@@ -732,25 +732,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
 								.drop { border: none; background-color: #eeeeee }
 								.hover { border: none; background-color: #D4F6DC }
 							</style>
-											
+
 							<script type="text/javascript">
 								$(function() {
 									var receiveCount=0 ;
-									
+
 									//Create list of lesson sortables
 									<?php for ($i = 0; $i < $cells; ++$i) {
     ?>
 										<?php $sortableList .= "#sortable$i, " ?>
-									<?php 
+									<?php
 }
                             ?>
-									
+
 									//Create lesson sortables
 									<?php for ($i = 0; $i < $cells; ++$i) {
     ?>
 										$( "#sortable<?php echo $i ?>" ).sortable({
 											revert: false,
-											tolerance: 15, 
+											tolerance: 15,
 											connectWith: "<?php echo substr($sortableList, 0, -2) ?>",
 											items: "div.blockOuter",
 											receive: function(event,ui) {
@@ -758,8 +758,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
 												var receiveid='receive'+receiveCount ;
 												$('#' + receiveid + ' .delete').show() ;
 												$('#' + receiveid + ' .delete').click(function() {
-													$('#' + receiveid).fadeOut(600, function(){ 
-														$('#' + receiveid).remove(); 
+													$('#' + receiveid).fadeOut(600, function(){
+														$('#' + receiveid).remove();
 													});
 												});
 												receiveCount++ ;
@@ -768,10 +768,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
 											 newItem=ui.item;
 											}
 										});
-									<?php 
+									<?php
 }
                             ?>
-									
+
 									//Draggables
 									<?php for ($i = 0; $i < $blockCount; ++$i) {
     ?>
@@ -779,10 +779,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
 											connectToSortable: "<?php echo substr($sortableList, 0, -2) ?>",
 											helper: "clone"
 										});
-									<?php 
+									<?php
 }
                             ?>
-									
+
 								});
 							</script>
 							<?php
