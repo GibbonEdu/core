@@ -33,211 +33,193 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 	</head>
 	<body>
 		<?php
-		include "./functions.php" ;
-		include "./config.php" ;
-		include "./version.php" ;
+        include './functions.php';
+        include './config.php';
+        include './version.php';
 
-		$partialFail=FALSE ;
-		
-		//New PDO DB connection
-		$pdo = new Gibbon\sqlConnection();
+        $partialFail = false;
+
+        //New PDO DB connection
+        $pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
-		@session_start() ;
+        @session_start();
 
-		$cuttingEdgeCode=getSettingByScope( $connection2, "System", "cuttingEdgeCode" ) ;
-		if ($cuttingEdgeCode!="Y") {
-			$type="regularRelease" ;
-		}
-		else {
-			$type="cuttingEdge" ;
-		}
+        $cuttingEdgeCode = getSettingByScope($connection2, 'System', 'cuttingEdgeCode');
+        if ($cuttingEdgeCode != 'Y') {
+            $type = 'regularRelease';
+        } else {
+            $type = 'cuttingEdge';
+        }
 
-		if ($type!="regularRelease" AND $type!="cuttingEdge") {
-			print "<div class='error'>" ;
-				print __($guid, "Your request failed because your inputs were invalid.") ;
-			print "</div>" ;
-		}
-		else if ($type=="regularRelease") { //Do regular release update
-			$versionDB=getSettingByScope( $connection2, "System", "version" ) ;
-			$versionCode=$version ;
+        if ($type != 'regularRelease' and $type != 'cuttingEdge') {
+            echo "<div class='error'>";
+            echo __($guid, 'Your request failed because your inputs were invalid.');
+            echo '</div>';
+        } elseif ($type == 'regularRelease') { //Do regular release update
+            $versionDB = getSettingByScope($connection2, 'System', 'version');
+            $versionCode = $version;
 
-			//Validate Inputs
-			if ($versionDB=="" OR $versionCode=="" OR version_compare($versionDB, $versionCode)!=-1) {
-				print "<div class='error'>" ;
-					print __($guid, "Your request failed because your inputs were invalid, or no update was required.") ;
-				print "</div>" ;
-			}
-			else {	
-				include "./CHANGEDB.php" ;
+            //Validate Inputs
+            if ($versionDB == '' or $versionCode == '' or version_compare($versionDB, $versionCode) != -1) {
+                echo "<div class='error'>";
+                echo __($guid, 'Your request failed because your inputs were invalid, or no update was required.');
+                echo '</div>';
+            } else {
+                include './CHANGEDB.php';
 
-				foreach ($sql AS $version) {
-					if (version_compare($version[0], $versionDB, ">") AND version_compare($version[0], $versionCode, "<=")) {
-						$sqlTokens=explode(";end", $version[1]) ;
-						foreach ($sqlTokens AS $sqlToken) {
-							if (trim($sqlToken)!="") {
-								try {
-									$result=$connection2->query($sqlToken);   
-								}
-								catch(PDOException $e) { 
-									$partialFail=TRUE;
-								}
-							}
-						}
-					}
-				}
+                foreach ($sql as $version) {
+                    if (version_compare($version[0], $versionDB, '>') and version_compare($version[0], $versionCode, '<=')) {
+                        $sqlTokens = explode(';end', $version[1]);
+                        foreach ($sqlTokens as $sqlToken) {
+                            if (trim($sqlToken) != '') {
+                                try {
+                                    $result = $connection2->query($sqlToken);
+                                } catch (PDOException $e) {
+                                    $partialFail = true;
+                                }
+                            }
+                        }
+                    }
+                }
 
-				if ($partialFail==TRUE) {
-					print "<div class='error'>" ;
-						print __($guid, "Some aspects of your update failed.") ;
-					print "</div>" ;
-				}
-				else {
-					//Update DB version
-					try {
-						$data=array("value"=>$versionCode); 
-						$sql="UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='version'" ;
-						$result=$connection2->prepare($sql);
-						$result->execute($data);
-					}
-					catch(PDOException $e) { 
-						print "<div class='error'>" ;
-							print __($guid, "Some aspects of your update failed.") ;
-						print "</div>" ;
-						exit ;
-					}
-	
-					print "<div class='success'>" ;
-						print __($guid, "Your request was completed successfully.") ;
-					print "</div>" ;
-				}
-			}
-		}
-		else if ($type=="cuttingEdge") { //Do cutting edge update
-			$versionDB=getSettingByScope( $connection2, "System", "version" ) ;
-			$versionCode=$version ;
-			$cuttingEdgeCodeLine=getSettingByScope( $connection2, "System", "cuttingEdgeCodeLine" ) ;
+                if ($partialFail == true) {
+                    echo "<div class='error'>";
+                    echo __($guid, 'Some aspects of your update failed.');
+                    echo '</div>';
+                } else {
+                    //Update DB version
+                    try {
+                        $data = array('value' => $versionCode);
+                        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='version'";
+                        $result = $connection2->prepare($sql);
+                        $result->execute($data);
+                    } catch (PDOException $e) {
+                        echo "<div class='error'>";
+                        echo __($guid, 'Some aspects of your update failed.');
+                        echo '</div>';
+                        exit;
+                    }
 
-			include "./CHANGEDB.php" ;
-			$versionMax=$sql[(count($sql))][0] ;
-			$sqlTokens=explode(";end", $sql[(count($sql))][1]) ;
-			$versionMaxLinesMax=(count($sqlTokens)-1) ;	
-			$update=FALSE ;
-			if (version_compare($versionMax, $versionDB, ">")) {
-				$update=TRUE ;
-			}
-			else {
-				if ($versionMaxLinesMax>$cuttingEdgeCodeLine) {
-					$update=TRUE ;
-				}
-			}
+                    echo "<div class='success'>";
+                    echo __($guid, 'Your request was completed successfully.');
+                    echo '</div>';
+                }
+            }
+        } elseif ($type == 'cuttingEdge') { //Do cutting edge update
+            $versionDB = getSettingByScope($connection2, 'System', 'version');
+            $versionCode = $version;
+            $cuttingEdgeCodeLine = getSettingByScope($connection2, 'System', 'cuttingEdgeCodeLine');
 
-			if ($update==FALSE) { //Something went wrong...abandon!
-				print "<div class='error'>" ;
-					print __($guid, "Some aspects of your update failed.") ;
-				print "</div>" ;
-				exit ;
-			}
-			else { //Let's do it
-				if (version_compare($versionMax, $versionDB, ">")) { //At least one whole verison needs to be done
-					foreach ($sql AS $version) {
-						$tokenCount=0 ;		
-						if (version_compare($version[0], $versionDB, ">=") AND version_compare($version[0], $versionCode, "<=")) {
-							$sqlTokens=explode(";end", $version[1]) ;
-							if ($version[0]==$versionDB) { //Finish current version
-								foreach ($sqlTokens AS $sqlToken) {
-									if ($tokenCount>=$cuttingEdgeCodeLine) {
-										if (trim($sqlToken)!="") { //Decide whether this has been run or not
-											try {
-												$result=$connection2->query($sqlToken);   
-											}
-											catch(PDOException $e) { 
-												$partialFail=TRUE;
-											}
-										}
-									}
-									$tokenCount++ ;
-								}
-							}
-							else { //Update intermediate versions and max version
-								foreach ($sqlTokens AS $sqlToken) {
-									if (trim($sqlToken)!="") { //Decide whether this has been run or not
-										try {
-											$result=$connection2->query($sqlToken);   
-										}
-										catch(PDOException $e) { 
-											$partialFail=TRUE;
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-				else { //Less than one whole version
-					//Get up to speed in max version
-					foreach ($sql AS $version) {
-						$tokenCount=0 ;
-						if (version_compare($version[0], $versionDB, ">=") AND version_compare($version[0], $versionCode, "<=")) {
-							$sqlTokens=explode(";end", $version[1]) ;
-							foreach ($sqlTokens AS $sqlToken) {
-								if ($tokenCount>=$cuttingEdgeCodeLine) {
-									if (trim($sqlToken)!="") { //Decide whether this has been run or not
-										try {
-											$result=$connection2->query($sqlToken);   
-										}
-										catch(PDOException $e) { 
-											$partialFail=TRUE;
-										}
-									}
-								}
-								$tokenCount++ ;
-							}
-						}
-					}
-				}
-	
-				if ($partialFail==TRUE) {
-					print "<div class='error'>" ;
-						print __($guid, "Some aspects of your update failed.") ;
-					print "</div>" ;
-				}
-				else {
-					//Update DB version
-					try {
-						$data=array("value"=>$versionMax); 
-						$sql="UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='version'" ;
-						$result=$connection2->prepare($sql);
-						$result->execute($data);
-					}
-					catch(PDOException $e) { 
-						print "<div class='error'>" ;
-							print __($guid, "Some aspects of your update failed.") ;
-						print "</div>" ;
-						exit ;
-					}
-		
-					//Update DB line count
-					try {
-						$data=array("value"=>$versionMaxLinesMax); 
-						$sql="UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='cuttingEdgeCodeLine'" ;
-						$result=$connection2->prepare($sql);
-						$result->execute($data);
-					}
-					catch(PDOException $e) { 
-						print "<div class='error'>" ;
-							print __($guid, "Some aspects of your update failed.") ;
-						print "</div>" ;
-						exit ;
-					}
-		
-					print "<div class='success'>" ;
-						print __($guid, "Your request was completed successfully.") ;
-					print "</div>" ;
-				}
-			}
+            include './CHANGEDB.php';
+            $versionMax = $sql[(count($sql))][0];
+            $sqlTokens = explode(';end', $sql[(count($sql))][1]);
+            $versionMaxLinesMax = (count($sqlTokens) - 1);
+            $update = false;
+            if (version_compare($versionMax, $versionDB, '>')) {
+                $update = true;
+            } else {
+                if ($versionMaxLinesMax > $cuttingEdgeCodeLine) {
+                    $update = true;
+                }
+            }
 
-		}
-		?>
+            if ($update == false) { //Something went wrong...abandon!
+                echo "<div class='error'>";
+                echo __($guid, 'Some aspects of your update failed.');
+                echo '</div>';
+                exit;
+            } else { //Let's do it
+                if (version_compare($versionMax, $versionDB, '>')) { //At least one whole verison needs to be done
+                    foreach ($sql as $version) {
+                        $tokenCount = 0;
+                        if (version_compare($version[0], $versionDB, '>=') and version_compare($version[0], $versionCode, '<=')) {
+                            $sqlTokens = explode(';end', $version[1]);
+                            if ($version[0] == $versionDB) { //Finish current version
+                                foreach ($sqlTokens as $sqlToken) {
+                                    if ($tokenCount >= $cuttingEdgeCodeLine) {
+                                        if (trim($sqlToken) != '') { //Decide whether this has been run or not
+                                            try {
+                                                $result = $connection2->query($sqlToken);
+                                            } catch (PDOException $e) {
+                                                $partialFail = true;
+                                            }
+                                        }
+                                    }
+                                    ++$tokenCount;
+                                }
+                            } else { //Update intermediate versions and max version
+                                foreach ($sqlTokens as $sqlToken) {
+                                    if (trim($sqlToken) != '') { //Decide whether this has been run or not
+                                        try {
+                                            $result = $connection2->query($sqlToken);
+                                        } catch (PDOException $e) {
+                                            $partialFail = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else { //Less than one whole version
+                    //Get up to speed in max version
+                    foreach ($sql as $version) {
+                        $tokenCount = 0;
+                        if (version_compare($version[0], $versionDB, '>=') and version_compare($version[0], $versionCode, '<=')) {
+                            $sqlTokens = explode(';end', $version[1]);
+                            foreach ($sqlTokens as $sqlToken) {
+                                if ($tokenCount >= $cuttingEdgeCodeLine) {
+                                    if (trim($sqlToken) != '') { //Decide whether this has been run or not
+                                        try {
+                                            $result = $connection2->query($sqlToken);
+                                        } catch (PDOException $e) {
+                                            $partialFail = true;
+                                        }
+                                    }
+                                }
+                                ++$tokenCount;
+                            }
+                        }
+                    }
+                }
+
+                if ($partialFail == true) {
+                    echo "<div class='error'>";
+                    echo __($guid, 'Some aspects of your update failed.');
+                    echo '</div>';
+                } else {
+                    //Update DB version
+                    try {
+                        $data = array('value' => $versionMax);
+                        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='version'";
+                        $result = $connection2->prepare($sql);
+                        $result->execute($data);
+                    } catch (PDOException $e) {
+                        echo "<div class='error'>";
+                        echo __($guid, 'Some aspects of your update failed.');
+                        echo '</div>';
+                        exit;
+                    }
+
+                    //Update DB line count
+                    try {
+                        $data = array('value' => $versionMaxLinesMax);
+                        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='System' AND name='cuttingEdgeCodeLine'";
+                        $result = $connection2->prepare($sql);
+                        $result->execute($data);
+                    } catch (PDOException $e) {
+                        echo "<div class='error'>";
+                        echo __($guid, 'Some aspects of your update failed.');
+                        echo '</div>';
+                        exit;
+                    }
+
+                    echo "<div class='success'>";
+                    echo __($guid, 'Your request was completed successfully.');
+                    echo '</div>';
+                }
+            }
+        }
+        ?>
 	</body>
 </html>

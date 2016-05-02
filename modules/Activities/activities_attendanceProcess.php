@@ -17,119 +17,107 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "../../functions.php" ;
-include "../../config.php" ;
+include '../../functions.php';
+include '../../config.php';
 
 //New PDO DB connection
 try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
+    $connection2 = new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
+    $connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    echo $e->getMessage();
 }
 
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$gibbonActivityID=$_GET["gibbonActivityID"] ;
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/activities_attendance.php&gibbonActivityID=$gibbonActivityID" ;
+$gibbonActivityID = $_GET['gibbonActivityID'];
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/activities_attendance.php&gibbonActivityID=$gibbonActivityID";
 
-if (isActionAccessible($guid, $connection2, "/modules/Activities/activities_attendanceProcess.php")==FALSE) {
-	$URL.="&return=error0" ;
-	header("Location: {$URL}");
+if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_attendanceProcess.php') == false) {
+    $URL .= '&return=error0';
+    header("Location: {$URL}");
+} else {
+    //Proceed!
+
+    $gibbonPersonID = $_POST['gibbonPersonID'];
+
+    $sessions = (isset($_POST['sessions'])) ? $_POST['sessions'] : null;
+    $attendance = (isset($_POST['attendance'])) ? $_POST['attendance'] : null;
+
+    if ($gibbonActivityID == '' || $gibbonPersonID == '') {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+    } elseif (empty($sessions)) {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+    } else {
+        $partialFail = false;
+
+        // Iterate through the session columns
+        foreach ($sessions as $i => $session) {
+            $sessionTimestamp = $session;
+            $sessionDate = date('Y-m-d', $sessionTimestamp);
+
+            if (empty($sessionTimestamp) || empty($sessionDate)) {
+                $URL .= '&return=error1';
+                header("Location: {$URL}");
+
+                return;
+            }
+
+            $sessionAttendance = (isset($attendance[$i])) ? serialize($attendance[$i]) : '';
+
+            try {
+                $data = array('gibbonActivityID' => $gibbonActivityID, 'date' => $sessionDate);
+                $sql = 'SELECT gibbonActivityAttendanceID FROM gibbonActivityAttendance WHERE gibbonActivityID=:gibbonActivityID AND date=:date';
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                $partialFail = true;
+            }
+
+            // INSERT
+            if ($result->rowCount() <= 0) {
+
+                // Skip sessions we're not recording attendance for
+                if (!isset($attendance[$i]) || empty($attendance[$i]) || !is_array($attendance[$i])) {
+                    continue;
+                }
+
+                try {
+                    $data = array('gibbonActivityID' => $gibbonActivityID, 'gibbonPersonIDTaker' => $gibbonPersonID, 'attendance' => $sessionAttendance, 'date' => $sessionDate);
+                    $sql = 'INSERT INTO gibbonActivityAttendance SET gibbonActivityID=:gibbonActivityID, gibbonPersonIDTaker=:gibbonPersonIDTaker, attendance=:attendance, date=:date ';
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    $partialFail = true;
+                }
+            }
+            // UPDATE
+            else {
+                $gibbonActivityAttendanceID = $result->fetchColumn(0);
+
+                try {
+                    $data = array('gibbonActivityAttendanceID' => $gibbonActivityAttendanceID, 'gibbonPersonIDTaker' => $gibbonPersonID, 'attendance' => $sessionAttendance, 'date' => $sessionDate);
+                    $sql = 'UPDATE gibbonActivityAttendance SET gibbonPersonIDTaker=:gibbonPersonIDTaker, attendance=:attendance, date=:date WHERE gibbonActivityAttendanceID=:gibbonActivityAttendanceID';
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    $partialFail = true;
+                }
+            }
+        }
+
+        if ($partialFail == true) {
+            $URL .= '&return=warning1';
+            header("Location: {$URL}");
+        } else {
+            $URL .= '&return=success0';
+            header("Location: {$URL}");
+        }
+    }
 }
-else {
-	//Proceed!
-
-	$gibbonPersonID=$_POST["gibbonPersonID"] ;
-
-	$sessions = (isset($_POST['sessions']))? $_POST['sessions'] : NULL;
-	$attendance = (isset($_POST['attendance']))? $_POST['attendance'] : NULL;
-
-	if ($gibbonActivityID=="" || $gibbonPersonID=="") {
-		$URL.="&return=error1" ;
-		header("Location: {$URL}");
-	}
-	else if (empty($sessions)) {
-		$URL.="&return=error1" ;
-		header("Location: {$URL}");
-	}
-	else {
-
-		$partialFail = FALSE;
-
-		// Iterate through the session columns
-		foreach ($sessions as $i => $session ) {
-
-			$sessionTimestamp = $session;
-			$sessionDate = date("Y-m-d", $sessionTimestamp);
-
-			if (empty($sessionTimestamp) || empty($sessionDate)) {
-				$URL.="&return=error1" ;
-				header("Location: {$URL}");
-				return;
-			}
-
-			$sessionAttendance = (isset($attendance[$i]))? serialize( $attendance[$i] ) : '';
-
-			try {
-				$data=array("gibbonActivityID"=>$gibbonActivityID, "date"=>$sessionDate ); 
-				$sql="SELECT gibbonActivityAttendanceID FROM gibbonActivityAttendance WHERE gibbonActivityID=:gibbonActivityID AND date=:date" ;
-				$result=$connection2->prepare($sql);
-				$result->execute($data); 
-			}
-			catch(PDOException $e) { 
-				$partialFail=TRUE ;
-			}
-
-			// INSERT
-			if ($result->rowCount() <= 0) {
-
-				// Skip sessions we're not recording attendance for
-				if (!isset($attendance[$i]) || empty($attendance[$i]) || !is_array($attendance[$i])) continue;
-
-				try {
-					$data=array("gibbonActivityID"=>$gibbonActivityID, "gibbonPersonIDTaker"=>$gibbonPersonID, "attendance"=>$sessionAttendance, "date"=>$sessionDate ); 
-					$sql="INSERT INTO gibbonActivityAttendance SET gibbonActivityID=:gibbonActivityID, gibbonPersonIDTaker=:gibbonPersonIDTaker, attendance=:attendance, date=:date " ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data); 
-				}
-				catch(PDOException $e) { 
-					$partialFail=TRUE ;
-				}
-
-			}
-			// UPDATE
-			else {
-				$gibbonActivityAttendanceID=$result->fetchColumn(0);
-
-				try {
-					$data=array("gibbonActivityAttendanceID"=>$gibbonActivityAttendanceID, "gibbonPersonIDTaker"=>$gibbonPersonID, "attendance"=>$sessionAttendance, "date"=>$sessionDate ); 
-					$sql="UPDATE gibbonActivityAttendance SET gibbonPersonIDTaker=:gibbonPersonIDTaker, attendance=:attendance, date=:date WHERE gibbonActivityAttendanceID=:gibbonActivityAttendanceID" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data); 
-				}
-				catch(PDOException $e) { 
-					$partialFail=TRUE ;
-				}
-
-			}
-			
-		}
-
-		if ($partialFail==TRUE) {
-			$URL.="&return=warning1" ;
-			header("Location: {$URL}");
-		}
-		else {
-			$URL.="&return=success0" ;
-			header("Location: {$URL}");
-		}
-	}
-}
-
-?>

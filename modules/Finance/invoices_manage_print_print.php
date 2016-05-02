@@ -17,152 +17,137 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+@session_start();
 
 //Module includes
-include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
+include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, "/modules/Finance/invoices_manage_print.php")==FALSE) {
-	//Acess denied
-	print "<div class='error'>" ;
-		print __($guid, "You do not have access to this action.") ;
-	print "</div>" ;
+if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_print.php') == false) {
+    //Acess denied
+    echo "<div class='error'>";
+    echo __($guid, 'You do not have access to this action.');
+    echo '</div>';
+} else {
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
+    $gibbonFinanceInvoiceID = $_GET['gibbonFinanceInvoiceID'];
+    $type = $_GET['type'];
+    $preview = null;
+    if (isset($_GET['preview'])) {
+        $preview = $_GET['preview'];
+    }
+    $receiptNumber = null;
+    if (isset($_GET['receiptNumber'])) {
+        $receiptNumber = $_GET['receiptNumber'];
+    }
+
+    if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '' or $type == '') {
+        echo "<div class='error'>";
+        echo __($guid, 'You have not specified one or more required parameters.');
+        echo '</div>';
+    } else {
+        try {
+            $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
+            $sql = 'SELECT surname, preferredName, gibbonFinanceInvoice.* FROM gibbonFinanceInvoice JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            echo "<div class='error'>".$e->getMessage().'</div>';
+        }
+
+        if ($result->rowCount() != 1) {
+            echo "<div class='error'>";
+            echo __($guid, 'The specified record cannot be found.');
+            echo '</div>';
+        } else {
+            //Let's go!
+            $row = $result->fetch();
+
+            $statusExtra = '';
+            if ($row['status'] == 'Issued' and $row['invoiceDueDate'] < date('Y-m-d')) {
+                $statusExtra = 'Overdue';
+            }
+            if ($row['status'] == 'Paid' and $row['invoiceDueDate'] < $row['paidDate']) {
+                $statusExtra = 'Late';
+            }
+
+            if ($type == 'invoice') {
+                echo '<h2>';
+                echo 'Invoice';
+                echo '</h2>';
+                if ($preview) {
+                    echo "<p style='font-weight: bold; color: #c00; font-size: 100%; letter-spacing: -0.5px'>";
+                    echo __($guid, 'THIS INVOICE IS A PREVIEW: IT HAS NOT YET BEEN ISSUED AND IS FOR TESTING PURPOSES ONLY!');
+                    echo '</p>';
+                }
+
+                $invoiceContents = invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency'], false, true);
+                if ($invoiceContents == false) {
+                    echo "<div class='error'>";
+                    echo __($guid, 'An error occurred.');
+                    echo '</div>';
+                } else {
+                    echo $invoiceContents;
+                }
+            } elseif ($type == 'reminder1' or $type == 'reminder2' or $type == 'reminder3') {
+                //Update reminder count
+                if ($row['reminderCount'] < 3) {
+                    try {
+                        $data = array('gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
+                        $sql = 'UPDATE gibbonFinanceInvoice SET reminderCount='.($row['reminderCount'] + 1).' WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID';
+                        $result = $connection2->prepare($sql);
+                        $result->execute($data);
+                    } catch (PDOException $e) {
+                        echo "<div class='error'>".$e->getMessage().'</div>';
+                    }
+                }
+
+                //Reminder Text
+                if ($type == 'reminder1') {
+                    echo '<h2>';
+                    echo 'Reminder 1';
+                    echo '</h2>';
+                    $reminderText = getSettingByScope($connection2, 'Finance', 'reminder1Text');
+                } elseif ($type == 'reminder2') {
+                    echo '<h2>';
+                    echo 'Reminder 2';
+                    echo '</h2>';
+                    $reminderText = getSettingByScope($connection2, 'Finance', 'reminder2Text');
+                } elseif ($type == 'reminder3') {
+                    echo '<h2>';
+                    echo 'Reminder 3';
+                    echo '</h2>';
+                    $reminderText = getSettingByScope($connection2, 'Finance', 'reminder3Text');
+                }
+                if ($reminderText != '') {
+                    echo '<p>';
+                    echo $reminderText;
+                    echo '</p>';
+                }
+
+                echo '<h2>';
+                echo __($guid, 'Invoice');
+                echo '</h2>';
+                $invoiceContents = invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency']);
+                if ($invoiceContents == false) {
+                    echo "<div class='error'>";
+                    echo __($guid, 'An error occurred.');
+                    echo '</div>';
+                } else {
+                    echo $invoiceContents;
+                }
+            } elseif ($type = 'Receipt') {
+                echo '<h2>';
+                echo __($guid, 'Receipt');
+                echo '</h2>';
+                $receiptContents = receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency'], false, $receiptNumber);
+                if ($receiptContents == false) {
+                    echo "<div class='error'>";
+                    echo __($guid, 'An error occurred.');
+                    echo '</div>';
+                } else {
+                    echo $receiptContents;
+                }
+            }
+        }
+    }
 }
-else {
-	$gibbonSchoolYearID=$_GET["gibbonSchoolYearID"] ;
-	$gibbonFinanceInvoiceID=$_GET["gibbonFinanceInvoiceID"] ;
-	$type=$_GET["type"] ;
-	$preview=NULL ;
-	if (isset($_GET["preview"])) {
-		$preview=$_GET["preview"] ;
-	}
-	$receiptNumber=NULL ;
-	if (isset($_GET["receiptNumber"])) {
-		$receiptNumber=$_GET["receiptNumber"] ;
-	}
-	
-	if ($gibbonFinanceInvoiceID=="" OR $gibbonSchoolYearID=="" OR $type=="") {
-		print "<div class='error'>" ;
-			print __($guid, "You have not specified one or more required parameters.") ;
-		print "</div>" ;
-	}
-	else {
-		try {
-			$data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "gibbonFinanceInvoiceID"=>$gibbonFinanceInvoiceID); 
-			$sql="SELECT surname, preferredName, gibbonFinanceInvoice.* FROM gibbonFinanceInvoice JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID" ; 
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-		}
-		
-		if ($result->rowCount()!=1) {
-			print "<div class='error'>" ;
-				print __($guid, "The specified record cannot be found.") ;
-			print "</div>" ;
-		}
-		else {
-			//Let's go!
-			$row=$result->fetch() ;
-			
-			$statusExtra="" ;
-			if ($row["status"]=="Issued" AND $row["invoiceDueDate"]<date("Y-m-d")) {
-				$statusExtra="Overdue" ;
-			}
-			if ($row["status"]=="Paid" AND $row["invoiceDueDate"]<$row["paidDate"]) {
-				$statusExtra="Late" ;
-			}
-			
-			if ($type=="invoice") {
-				print "<h2>" ;
-					print "Invoice" ;
-				print "</h2>" ;
-				if ($preview) {
-					print "<p style='font-weight: bold; color: #c00; font-size: 100%; letter-spacing: -0.5px'>" ;
-						print __($guid, "THIS INVOICE IS A PREVIEW: IT HAS NOT YET BEEN ISSUED AND IS FOR TESTING PURPOSES ONLY!") ;
-					print "</p>" ;
-				}
-				
-				$invoiceContents=invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]["currency"], FALSE, TRUE) ;
-				if ($invoiceContents==FALSE) {
-					print "<div class='error'>" ;
-						print __($guid, "An error occurred.") ;
-					print "</div>" ;
-				}
-				else {
-					print $invoiceContents ;
-				}
-			}
-			else if ($type=="reminder1" OR $type=="reminder2" OR $type=="reminder3") {
-				//Update reminder count
-				if ($row["reminderCount"]<3) {
-					try {
-						$data=array("gibbonFinanceInvoiceID"=>$gibbonFinanceInvoiceID); 
-						$sql="UPDATE gibbonFinanceInvoice SET reminderCount=" . ($row["reminderCount"]+1) . " WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID" ; 
-						$result=$connection2->prepare($sql);
-						$result->execute($data);
-					}
-					catch(PDOException $e) { 
-						print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-					}
-				} 
-				
-				//Reminder Text
-				if ($type=="reminder1") {
-					print "<h2>" ;
-						print "Reminder 1" ;
-					print "</h2>" ;
-					$reminderText=getSettingByScope( $connection2, "Finance", "reminder1Text" ) ;
-				}
-				else if ($type=="reminder2") {
-					print "<h2>" ;
-						print "Reminder 2" ;
-					print "</h2>" ;
-					$reminderText=getSettingByScope( $connection2, "Finance", "reminder2Text" ) ;
-				}
-				else if ($type=="reminder3") {
-					print "<h2>" ;
-						print "Reminder 3" ;
-					print "</h2>" ;
-					$reminderText=getSettingByScope( $connection2, "Finance", "reminder3Text" ) ;
-				}
-				if ($reminderText!="") {
-					print "<p>" ;
-						print $reminderText ;
-					print "</p>" ;
-				}
-				
-				print "<h2>" ;
-					print __($guid, "Invoice") ;
-				print "</h2>" ;
-				$invoiceContents=invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]["currency"]) ;
-				if ($invoiceContents==FALSE) {
-					print "<div class='error'>" ;
-						print __($guid, "An error occurred.") ;
-					print "</div>" ;
-				}
-				else {
-					print $invoiceContents ;
-				}
-				
-				
-			}
-			else if ($type="Receipt") {
-				print "<h2>" ;
-					print __($guid, "Receipt") ;
-				print "</h2>" ;
-				$receiptContents=receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]["currency"], FALSE, $receiptNumber) ;
-				if ($receiptContents==FALSE) {
-					print "<div class='error'>" ;
-						print __($guid, "An error occurred.") ;
-					print "</div>" ;
-				}
-				else {
-					print $receiptContents ;
-				}
-			}
-		}
-	}
-}
-?>

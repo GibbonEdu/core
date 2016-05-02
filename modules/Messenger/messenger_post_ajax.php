@@ -17,37 +17,36 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+@session_start();
 
 //Gibbon system-wide includes
-include "../../functions.php" ;
-include "../../config.php" ;
+include '../../functions.php';
+include '../../config.php';
 
 //New PDO DB connection
 $pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
-$output="" ;
+$output = '';
 
-if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php")) {
-	if (isset($_SESSION[$guid]["username"])) {
-		if (isset($_GET["gibbonMessengerCannedResponseID"])) {
-			$gibbonMessengerCannedResponseID=$_GET["gibbonMessengerCannedResponseID"] ;
-			
-			try {
-				$data=array("gibbonMessengerCannedResponseID"=>$gibbonMessengerCannedResponseID); 
-				$sql="SELECT body FROM gibbonMessengerCannedResponse WHERE gibbonMessengerCannedResponseID=:gibbonMessengerCannedResponseID" ; 
-				$result=$connection2->prepare($sql);
-				$result->execute($data);
-			}
-			catch(PDOException $e) { }
-			if ($result->rowCount()==1) {
-				$row=$result->fetch() ;
-				$output.=$row["body"] ;
-			}
-		}
-	}
+if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php')) {
+    if (isset($_SESSION[$guid]['username'])) {
+        if (isset($_GET['gibbonMessengerCannedResponseID'])) {
+            $gibbonMessengerCannedResponseID = $_GET['gibbonMessengerCannedResponseID'];
+
+            try {
+                $data = array('gibbonMessengerCannedResponseID' => $gibbonMessengerCannedResponseID);
+                $sql = 'SELECT body FROM gibbonMessengerCannedResponse WHERE gibbonMessengerCannedResponseID=:gibbonMessengerCannedResponseID';
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+            }
+            if ($result->rowCount() == 1) {
+                $row = $result->fetch();
+                $output .= $row['body'];
+            }
+        }
+    }
 }
 
-print $output ;
-?>
+echo $output;

@@ -17,26 +17,31 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+@session_start();
 
 //Module includes
-include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
+include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, "/modules/School Admin/department_manage_add.php")==FALSE) {
-	//Acess denied
-	print "<div class='error'>" ;
-		print __($guid, "You do not have access to this action.") ;
-	print "</div>" ;
-}
-else {
-	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/department_manage.php'>" . __($guid, 'Manage Departments') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Add Learning Area') . "</div>" ;
-	print "</div>" ;
-	
-	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
-	
-	?>
-	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/department_manage_addProcess.php?address=" . $_SESSION[$guid]["address"] ?>" enctype="multipart/form-data">
+if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_manage_add.php') == false) {
+    //Acess denied
+    echo "<div class='error'>";
+    echo __($guid, 'You do not have access to this action.');
+    echo '</div>';
+} else {
+    echo "<div class='trail'>";
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/department_manage.php'>".__($guid, 'Manage Departments')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Learning Area').'</div>';
+    echo '</div>';
+
+    $editLink = '';
+    if (isset($_GET['editID'])) {
+        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/School Admin/department_manage_edit.php&gibbonDepartmentID='.$_GET['editID'];
+    }
+    if (isset($_GET['return'])) {
+        returnProcess($guid, $_GET['return'], $editLink, null);
+    }
+
+    ?>
+	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/department_manage_addProcess.php?address='.$_SESSION[$guid]['address'] ?>" enctype="multipart/form-data">
 		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<!-- FIELDS & CONTROLS FOR TYPE -->
 			<script type="text/javascript">
@@ -54,7 +59,7 @@ else {
 			</script>
 			<tr>
 				<td style='width: 275px'> 
-					<b><?php print __($guid, 'Type') ?> *</b><br/>
+					<b><?php echo __($guid, 'Type') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select name="type" id="type" class='type standardWidth'>
@@ -65,7 +70,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print __($guid, 'Name') ?> *</b><br/>
+					<b><?php echo __($guid, 'Name') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<input name="name" id="name" maxlength=40 value="" type="text" class="standardWidth">
@@ -77,7 +82,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print __($guid, 'Short Name') ?> *</b><br/>
+					<b><?php echo __($guid, 'Short Name') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<input name="nameShort" id="nameShort" maxlength=4 value="" type="text" class="standardWidth">
@@ -89,7 +94,7 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print __($guid, 'Subject Listing') ?></b><br/>
+					<b><?php echo __($guid, 'Subject Listing') ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="subjectListing" id="subjectListing" maxlength=255 value="" type="text" class="standardWidth">
@@ -97,61 +102,62 @@ else {
 			</tr>
 			<tr>
 				<td colspan=2> 
-					<b><?php print __($guid, 'Blurb') ?></b> 
-					<?php print getEditor($guid,  TRUE, "blurb", "", 20 ) ?>
+					<b><?php echo __($guid, 'Blurb') ?></b> 
+					<?php echo getEditor($guid,  true, 'blurb', '', 20) ?>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print __($guid, 'Logo') ?></b><br/>
+					<b><?php echo __($guid, 'Logo') ?></b><br/>
 					<span class="emphasis small">125x125px jpg/png/gif</span>
 				</td>
 				<td class="right">
 					<input type="file" name="file" id="file"><br/><br/>
 					<?php
-					print getMaxUpload($guid) ;
-					$ext="'.png','.jpeg','.jpg','.gif'" ;
-					?>
+                    echo getMaxUpload($guid);
+    $ext = "'.png','.jpeg','.jpg','.gif'";
+    ?>
 					
 					<script type="text/javascript">
 						var file=new LiveValidation('file');
-						file.add( Validate.Inclusion, { within: [<?php print $ext ;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+						file.add( Validate.Inclusion, { within: [<?php echo $ext;
+    ?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 					</script>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print __($guid, 'Staff') ?></b><br/>
-					<span class="emphasis small"><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
+					<b><?php echo __($guid, 'Staff') ?></b><br/>
+					<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 				</td>
 				<td class="right">
 					<select name="staff[]" id="staff[]" multiple style="width: 302px; height: 150px">
 						<?php
-						try {
-							$dataSelect=array(); 
-							$sqlSelect="SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName" ;
-							$resultSelect=$connection2->prepare($sqlSelect);
-							$resultSelect->execute($dataSelect);
-						}
-						catch(PDOException $e) { }
-						while ($rowSelect=$resultSelect->fetch()) {
-							print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", htmlPrep($rowSelect["preferredName"]), htmlPrep($rowSelect["surname"]), "Staff", true, true) . "</option>" ;
-						}
-						?>
+                        try {
+                            $dataSelect = array();
+                            $sqlSelect = "SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
+                            $resultSelect = $connection2->prepare($sqlSelect);
+                            $resultSelect->execute($dataSelect);
+                        } catch (PDOException $e) {
+                        }
+    while ($rowSelect = $resultSelect->fetch()) {
+        echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
+    }
+    ?>
 					</select>
 				</td>
 			</tr>
 			<tr id='roleLARow'>
 				<td> 
-					<b><?php print __($guid, 'Role') ?></b><br/>
+					<b><?php echo __($guid, 'Role') ?></b><br/>
 				</td>
 				<td class="right">
 					<select name="roleLA" id="roleLA" class="standardWidth">
-						<option value="Coordinator"><?php print __($guid, 'Coordinator') ?></option>
-						<option value="Assistant Coordinator"><?php print __($guid, 'Assistant Coordinator') ?></option>
-						<option value="Teacher (Curriculum)"><?php print __($guid, 'Teacher (Curriculum)') ?></option>
-						<option value="Teacher"><?php print __($guid, 'Teacher') ?></option>
-						<option value="Other"><?php print __($guid, 'Other') ?></option>
+						<option value="Coordinator"><?php echo __($guid, 'Coordinator') ?></option>
+						<option value="Assistant Coordinator"><?php echo __($guid, 'Assistant Coordinator') ?></option>
+						<option value="Teacher (Curriculum)"><?php echo __($guid, 'Teacher (Curriculum)') ?></option>
+						<option value="Teacher"><?php echo __($guid, 'Teacher') ?></option>
+						<option value="Other"><?php echo __($guid, 'Other') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -161,23 +167,26 @@ else {
 				</td>
 				<td class="right">
 					<select name="roleAdmin" id="roleAdmin" class="standardWidth">
-						<option value="Director"><?php print __($guid, 'Director') ?></option>
-						<option value="Manager"><?php print __($guid, 'Manager') ?></option>
-						<option value="Administrator"><?php print __($guid, 'Administrator') ?></option>
-						<option value="Other"><?php print __($guid, 'Other') ?></option>
+						<option value="Director"><?php echo __($guid, 'Director') ?></option>
+						<option value="Manager"><?php echo __($guid, 'Manager') ?></option>
+						<option value="Administrator"><?php echo __($guid, 'Administrator') ?></option>
+						<option value="Other"><?php echo __($guid, 'Other') ?></option>
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<td>
-					<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
+					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
+    ?></span>
 				</td>
 				<td class="right">
-					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit');
+    ?>">
 				</td>
 			</tr>
 		</table>
 	</form>
 	<?php
+
 }
 ?>

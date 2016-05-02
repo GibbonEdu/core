@@ -17,83 +17,76 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+@session_start();
 
 //Get variables
-$gibbonSchoolYearID="" ;
-if (isset($_GET["gibbonSchoolYearID"])) {
-	$gibbonSchoolYearID=$_GET["gibbonSchoolYearID"] ;
+$gibbonSchoolYearID = '';
+if (isset($_GET['gibbonSchoolYearID'])) {
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
 }
-$key="" ;
-if (isset($_GET["key"])) {
-	$key=$_GET["key"] ;
+$key = '';
+if (isset($_GET['key'])) {
+    $key = $_GET['key'];
 }
-$gibbonPersonIDStudent="" ;
-if (isset($_GET["gibbonPersonIDStudent"])) {
-	$gibbonPersonIDStudent=$_GET["gibbonPersonIDStudent"] ;
+$gibbonPersonIDStudent = '';
+if (isset($_GET['gibbonPersonIDStudent'])) {
+    $gibbonPersonIDStudent = $_GET['gibbonPersonIDStudent'];
 }
-$gibbonPersonIDParent="" ;
-if (isset($_GET["gibbonPersonIDParent"])) {
-	$gibbonPersonIDParent=$_GET["gibbonPersonIDParent"] ;
+$gibbonPersonIDParent = '';
+if (isset($_GET['gibbonPersonIDParent'])) {
+    $gibbonPersonIDParent = $_GET['gibbonPersonIDParent'];
 }
 
 //Check variables
-if ($gibbonSchoolYearID=="" OR $key=="" OR $gibbonPersonIDStudent=="" OR $gibbonPersonIDParent=="") {
-	print "<div class='error'>" ;
-		print __($guid, "You have not specified one or more required parameters.") ;
-	print "</div>" ;
+if ($gibbonSchoolYearID == '' or $key == '' or $gibbonPersonIDStudent == '' or $gibbonPersonIDParent == '') {
+    echo "<div class='error'>";
+    echo __($guid, 'You have not specified one or more required parameters.');
+    echo '</div>';
+} else {
+    //Check for record
+    $keyReadFail = false;
+    try {
+        $dataKeyRead = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonIDStudent' => $gibbonPersonIDStudent, 'gibbonPersonIDParent' => $gibbonPersonIDParent, 'key' => $key);
+        $sqlKeyRead = 'SELECT * FROM gibbonPlannerParentWeeklyEmailSummary WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonIDStudent=:gibbonPersonIDStudent AND gibbonPersonIDParent=:gibbonPersonIDParent AND `key`=:key';
+        $resultKeyRead = $connection2->prepare($sqlKeyRead);
+        $resultKeyRead->execute($dataKeyRead);
+    } catch (PDOException $e) {
+        echo "<div class='error'>";
+        echo __($guid, 'Your request failed due to a database error.');
+        echo '</div>';
+    }
+
+    if ($resultKeyRead->rowCount() != 1) { //If not exists, report error
+        echo "<div class='error'>";
+        echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+        echo '</div>';
+    } else {    //If exists check confirmed
+        $rowKeyRead = $resultKeyRead->fetch();
+
+        if ($rowKeyRead['confirmed'] == 'Y') { //If already confirmed, report success
+            echo "<div class='success'>";
+            echo __($guid, 'Thank you for confirmed receipt and reading of this email.');
+            echo '</div>';
+        } else { //If not confirmed, confirm
+            $keyWriteFail = false;
+            try {
+                $dataKeyWrite = array('gibbonPersonIDStudent' => $gibbonPersonIDStudent, 'gibbonPersonIDParent' => $gibbonPersonIDParent, 'key' => $key);
+                $sqlKeyWrite = "UPDATE gibbonPlannerParentWeeklyEmailSummary SET confirmed='Y' WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent AND gibbonPersonIDParent=:gibbonPersonIDParent AND `key`=:key";
+                $resultKeyWrite = $connection2->prepare($sqlKeyWrite);
+                $resultKeyWrite->execute($dataKeyWrite);
+            } catch (PDOException $e) {
+                $keyWriteFail = true;
+            }
+
+            if ($keyWriteFail == true) { //Report error
+                echo "<div class='error'>";
+                echo __($guid, 'Your request failed due to a database error.');
+                echo '</div>';
+            } else { //Report success
+                echo "<div class='success'>";
+                echo __($guid, 'Thank you for confirmed receipt and reading of this email.');
+                echo '</div>';
+            }
+        }
+    }
 }
-else {
-	//Check for record
-	$keyReadFail=FALSE ;
-	try {
-		$dataKeyRead=array("gibbonSchoolYearID"=>$gibbonSchoolYearID, "gibbonPersonIDStudent"=>$gibbonPersonIDStudent, "gibbonPersonIDParent"=>$gibbonPersonIDParent, "key"=>$key);  
-		$sqlKeyRead="SELECT * FROM gibbonPlannerParentWeeklyEmailSummary WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonIDStudent=:gibbonPersonIDStudent AND gibbonPersonIDParent=:gibbonPersonIDParent AND `key`=:key" ; 
-		$resultKeyRead=$connection2->prepare($sqlKeyRead);
-		$resultKeyRead->execute($dataKeyRead); 
-	}
-	catch(PDOException $e) { 
-		print "<div class='error'>" ;
-			print __($guid, "Your request failed due to a database error.") ;
-		print "</div>" ;
-	}
-	
-	if ($resultKeyRead->rowCount()!=1) { //If not exists, report error
-		print "<div class='error'>" ;
-			print __($guid, "The selected record does not exist, or you do not have access to it.") ;
-		print "</div>" ;
-	}
-	else { 	//If exists check confirmed
-		$rowKeyRead=$resultKeyRead->fetch() ;
-		
-		if ($rowKeyRead["confirmed"]=="Y") { //If already confirmed, report success
-			print "<div class='success'>" ;
-				print __($guid, "Thank you for confirmed receipt and reading of this email.") ;
-			print "</div>" ;
-		}
-		else { //If not confirmed, confirm
-			$keyWriteFail=FALSE ;
-			try {
-				$dataKeyWrite=array("gibbonPersonIDStudent"=>$gibbonPersonIDStudent, "gibbonPersonIDParent"=>$gibbonPersonIDParent, "key"=>$key);  
-				$sqlKeyWrite="UPDATE gibbonPlannerParentWeeklyEmailSummary SET confirmed='Y' WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent AND gibbonPersonIDParent=:gibbonPersonIDParent AND `key`=:key" ; 
-				$resultKeyWrite=$connection2->prepare($sqlKeyWrite);
-				$resultKeyWrite->execute($dataKeyWrite); 
-			}
-			catch(PDOException $e) { 
-				$keyWriteFail=TRUE ;
-			}
-			
-			if ($keyWriteFail==TRUE) { //Report error
-				print "<div class='error'>" ;
-					print __($guid, "Your request failed due to a database error.") ;
-				print "</div>" ;
-			}
-			else { //Report success
-				print "<div class='success'>" ;
-					print __($guid, "Thank you for confirmed receipt and reading of this email.") ;
-				print "</div>" ;
-			}
-		}	
-	}				
-}
-?>

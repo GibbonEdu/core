@@ -17,139 +17,131 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+@session_start();
 
 //Module includes
-include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
+include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, "/modules/Crowd Assessment/crowdAssess_view_discuss.php")==FALSE) {
-	//Acess denied
-	print "<div class='error'>" ;
-		print __($guid, "You do not have access to this action.") ;
-	print "</div>" ;
+if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAssess_view_discuss.php') == false) {
+    //Acess denied
+    echo "<div class='error'>";
+    echo __($guid, 'You do not have access to this action.');
+    echo '</div>';
+} else {
+    echo "<div class='trail'>";
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/crowdAssess.php'>".__($guid, 'View All Assessments')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/crowdAssess_view.php&gibbonPlannerEntryID='.$_GET['gibbonPlannerEntryID']."'>".__($guid, 'View Assessment')."</a> > </div><div class='trailEnd'>".__($guid, 'Discuss').'</div>';
+    echo '</div>';
+
+    if (isset($_GET['return'])) {
+        returnProcess($guid, $_GET['return'], null, null);
+    }
+
+    //Get class variable
+    $gibbonPersonID = $_GET['gibbonPersonID'];
+    $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
+    $gibbonPlannerEntryHomeworkID = $_GET['gibbonPlannerEntryHomeworkID'];
+    if ($gibbonPersonID == '' or $gibbonPlannerEntryID == '' or $gibbonPlannerEntryHomeworkID == '') {
+        echo "<div class='warning'>";
+        echo 'Student, lesson or homework has not been specified .';
+        echo '</div>';
+    }
+    //Check existence of and access to this class.
+    else {
+        $and = " AND gibbonPlannerEntryID=$gibbonPlannerEntryID";
+        $sql = getLessons($guid, $connection2, $and);
+        try {
+            $result = $connection2->prepare($sql[1]);
+            $result->execute($sql[0]);
+        } catch (PDOException $e) {
+            echo "<div class='error'>".$e->getMessage().'</div>';
+        }
+
+        if ($result->rowCount() != 1) {
+            echo "<div class='error'>";
+            echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+            echo '</div>';
+        } else {
+            $row = $result->fetch();
+
+            $role = getCARole($guid, $connection2, $row['gibbonCourseClassID']);
+
+            $sqlList = getStudents($guid, $connection2, $role, $row['gibbonCourseClassID'], $row['homeworkCrowdAssessOtherTeachersRead'], $row['homeworkCrowdAssessOtherParentsRead'], $row['homeworkCrowdAssessSubmitterParentsRead'], $row['homeworkCrowdAssessClassmatesParentsRead'], $row['homeworkCrowdAssessOtherStudentsRead'], $row['homeworkCrowdAssessClassmatesRead'], " AND gibbonPerson.gibbonPersonID=$gibbonPersonID");
+
+            if ($sqlList[1] != '') {
+                try {
+                    $resultList = $connection2->prepare($sqlList[1]);
+                    $resultList->execute($sqlList[0]);
+                } catch (PDOException $e) {
+                    echo "<div class='error'>".$e->getMessage().'</div>';
+                }
+
+                if ($resultList->rowCount() != 1) {
+                    echo "<div class='error'>";
+                    echo __($guid, 'There is currently no work to assess.');
+                    echo '</div>';
+                } else {
+                    $rowList = $resultList->fetch();
+
+                    //Get details of homework
+                    try {
+                        $dataWork = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $gibbonPersonID, 'gibbonPlannerEntryHomeworkID' => $gibbonPlannerEntryHomeworkID);
+                        $sqlWork = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID AND gibbonPlannerEntryHomeworkID=:gibbonPlannerEntryHomeworkID ORDER BY count DESC';
+                        $resultWork = $connection2->prepare($sqlWork);
+                        $resultWork->execute($dataWork);
+                    } catch (PDOException $e) {
+                        echo "<div class='error'>".$e->getMessage().'</div>';
+                    }
+
+                    if ($resultWork->rowCount() != 1) {
+                        echo "<div class='error'>";
+                        echo __($guid, 'There is currently no work to assess.');
+                        echo '</div>';
+                    } else {
+                        $rowWork = $resultWork->fetch();
+
+                        echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
+                        echo '<tr>';
+                        echo "<td style='width: 33%; vertical-align: top'>";
+                        echo "<span style='font-size: 115%; font-weight: bold'>Student</span><br/>";
+                        echo "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowList['gibbonPersonID']."'>".formatName('', $rowList['preferredName'], $rowList['surname'], 'Student').'</a>';
+                        echo '</td>';
+                        echo "<td style='width: 34%; vertical-align: top'>";
+                        echo "<span style='font-size: 115%; font-weight: bold'>Version</span><br/>";
+                        if ($rowWork['version'] == 'Final') {
+                            $linkText = __($guid, 'Final');
+                        } else {
+                            $linkText = __($guid, 'Draft').$rowWork['count'];
+                        }
+
+                        if ($rowWork['type'] == 'File') {
+                            echo "<span title='".$rowWork['version'].'. Submitted at '.substr($rowWork['timestamp'], 11, 5).' on '.dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10))."'><a href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowWork['location']."'>$linkText</a></span>";
+                        } else {
+                            echo "<span title='".$rowWork['version'].'. Submitted at '.substr($rowWork['timestamp'], 11, 5).' on '.dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10))."'><a target='_blank' href='".$rowWork['location']."'>$linkText</a></span>";
+                        }
+                        echo '</td>';
+                        echo "<td style='width: 34%; vertical-align: top'>";
+                        echo "<span style='font-size: 115%; font-weight: bold'>Like Count</span><br/>";
+                        $likesTotal = countLikesByContext($connection2, 'Crowd Assessment', 'gibbonPlannerEntryHomeworkID', $rowWork['gibbonPlannerEntryHomeworkID']);
+                        echo ' x '.$likesTotal;
+                        echo '</td>';
+                        echo '</tr>';
+                        echo '</table>';
+
+                        echo "<div style='margin: 0px' class='linkTop'>";
+                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/crowdAssess_view_discuss_post.php&gibbonPersonID=$gibbonPersonID&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+                        echo '</div>';
+
+                        echo "<div style='margin-bottom: 0px' class='success'>";
+                        echo sprintf(__($guid, 'Items in %1$sred%2$s are new since your last login. Items in green are older.'), " <span style='color: #c00'>", '</span>');
+                        echo '</div>';
+
+                        //Get discussion
+                        echo getThread($guid, $connection2, $rowWork['gibbonPlannerEntryHomeworkID'], null, 0, null, $gibbonPersonID, $gibbonPlannerEntryID);
+
+                        echo '<br/><br/>';
+                    }
+                }
+            }
+        }
+    }
 }
-else {
-	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/crowdAssess.php'>" . __($guid, 'View All Assessments') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/crowdAssess_view.php&gibbonPlannerEntryID=" . $_GET["gibbonPlannerEntryID"] . "'>" . __($guid, 'View Assessment') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Discuss') . "</div>" ;
-	print "</div>" ;
-
-	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
-	
-	//Get class variable
-	$gibbonPersonID=$_GET["gibbonPersonID"] ;
-	$gibbonPlannerEntryID=$_GET["gibbonPlannerEntryID"] ;
-	$gibbonPlannerEntryHomeworkID=$_GET["gibbonPlannerEntryHomeworkID"] ;
-	if ($gibbonPersonID=="" OR $gibbonPlannerEntryID=="" OR $gibbonPlannerEntryHomeworkID=="") {
-		print "<div class='warning'>" ;
-			print "Student, lesson or homework has not been specified ." ;
-		print "</div>" ;
-	}
-	//Check existence of and access to this class.
-	else {	
-		$and=" AND gibbonPlannerEntryID=$gibbonPlannerEntryID" ;
-		$sql=getLessons($guid, $connection2, $and) ;
-		try {
-			$result=$connection2->prepare($sql[1]);
-			$result->execute($sql[0]);
-		}
-		catch(PDOException $e) { 
-			print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-		}
-		
-		if ($result->rowCount()!=1) {
-			print "<div class='error'>" ;
-				print __($guid, "The selected record does not exist, or you do not have access to it.") ;
-			print "</div>" ;
-		}
-		else {
-			$row=$result->fetch() ;
-			
-			$role=getCARole($guid, $connection2, $row["gibbonCourseClassID"]) ;
-			
-			$sqlList=getStudents($guid, $connection2, $role, $row["gibbonCourseClassID"], $row["homeworkCrowdAssessOtherTeachersRead"], $row["homeworkCrowdAssessOtherParentsRead"], $row["homeworkCrowdAssessSubmitterParentsRead"], $row["homeworkCrowdAssessClassmatesParentsRead"], $row["homeworkCrowdAssessOtherStudentsRead"], $row["homeworkCrowdAssessClassmatesRead"], " AND gibbonPerson.gibbonPersonID=$gibbonPersonID") ;
-			
-			if ($sqlList[1]!="") {
-				try {
-					$resultList=$connection2->prepare($sqlList[1]);
-					$resultList->execute($sqlList[0]);
-				}
-				catch(PDOException $e) { 
-					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-				}
-				
-				if ($resultList->rowCount()!=1) {
-					print "<div class='error'>" ;
-						print __($guid, "There is currently no work to assess.") ;
-					print "</div>" ;
-				}
-				else {
-					$rowList=$resultList->fetch() ;
-					
-					//Get details of homework
-					try {
-						$dataWork=array("gibbonPlannerEntryID"=>$gibbonPlannerEntryID, "gibbonPersonID"=>$gibbonPersonID, "gibbonPlannerEntryHomeworkID"=>$gibbonPlannerEntryHomeworkID); 
-						$sqlWork="SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID AND gibbonPlannerEntryHomeworkID=:gibbonPlannerEntryHomeworkID ORDER BY count DESC" ;
-						$resultWork=$connection2->prepare($sqlWork);
-						$resultWork->execute($dataWork);
-					}
-					catch(PDOException $e) { 
-						print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-					}
-
-					if ($resultWork->rowCount()!=1) {
-						print "<div class='error'>" ;
-							print __($guid, "There is currently no work to assess.") ;
-						print "</div>" ;
-					}
-					else {
-						$rowWork=$resultWork->fetch() ;
-						
-						print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
-							print "<tr>" ;
-								print "<td style='width: 33%; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>Student</span><br/>" ;
-									print "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=" . $rowList["gibbonPersonID"] . "'>" . formatName("", $rowList["preferredName"], $rowList["surname"], "Student") . "</a>" ;
-								print "</td>" ;
-								print "<td style='width: 34%; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>Version</span><br/>" ;
-									if ($rowWork["version"]=="Final") {
-										$linkText=__($guid, "Final") ;
-									}
-									else {
-										$linkText=__($guid, "Draft") . $rowWork["count"] ;
-									}
-									
-									if ($rowWork["type"]=="File") {
-										print "<span title='" . $rowWork["version"] . ". Submitted at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack($guid, substr($rowWork["timestamp"],0,10)) . "'><a href='" . $_SESSION[$guid]["absoluteURL"] . "/" . $rowWork["location"] ."'>$linkText</a></span>" ;
-									}
-									else {
-										print "<span title='" . $rowWork["version"] . ". Submitted at " . substr($rowWork["timestamp"],11,5) . " on " . dateConvertBack($guid, substr($rowWork["timestamp"],0,10)) . "'><a target='_blank' href='" . $rowWork["location"] ."'>$linkText</a></span>" ;
-									}
-								print "</td>" ;
-								print "<td style='width: 34%; vertical-align: top'>" ;
-									print "<span style='font-size: 115%; font-weight: bold'>Like Count</span><br/>" ;
-									$likesTotal=countLikesByContext($connection2, "Crowd Assessment", "gibbonPlannerEntryHomeworkID", $rowWork["gibbonPlannerEntryHomeworkID"]) ;
-									print " x " . $likesTotal ;
-								print "</td>" ;
-							print "</tr>" ;
-						print "</table>" ;
-						
-						print "<div style='margin: 0px' class='linkTop'>" ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/crowdAssess_view_discuss_post.php&gibbonPersonID=$gibbonPersonID&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID'>" .  __($guid, 'Add') . "<img style='margin-left: 5px' title='" . __($guid, 'Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
-						print "</div>" ;
-						
-						print "<div style='margin-bottom: 0px' class='success'>" ;
-							print sprintf(__($guid, 'Items in %1$sred%2$s are new since your last login. Items in green are older.')," <span style='color: #c00'>", "</span>") ;
-						print "</div>" ;
-						
-						//Get discussion
-						print getThread($guid, $connection2, $rowWork["gibbonPlannerEntryHomeworkID"], NULL, 0, NULL, $gibbonPersonID, $gibbonPlannerEntryID) ;
-						
-						print "<br/><br/>" ;
-					}
-				}
-			}
-		}
-	}
-}
-?>

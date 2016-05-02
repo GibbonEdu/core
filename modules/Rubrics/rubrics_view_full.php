@@ -18,51 +18,46 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Rubric includes
-include "./modules/Rubrics/moduleFunctions.php" ;
+include './modules/Rubrics/moduleFunctions.php';
 
-@session_start() ;
+@session_start();
 
-if (isActionAccessible($guid, $connection2, "/modules/Rubrics/rubrics_view_full.php")==FALSE) {
-	//Acess denied
-	print "<div class='error'>" ;
-		print __($guid, "Your request failed because you do not have access to this action.") ;
-	print "</div>" ;
+if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_view_full.php') == false) {
+    //Acess denied
+    echo "<div class='error'>";
+    echo __($guid, 'Your request failed because you do not have access to this action.');
+    echo '</div>';
+} else {
+    //Proceed!
+    //Check if school year specified
+    $gibbonRubricID = $_GET['gibbonRubricID'];
+    if ($gibbonRubricID == '') {
+        echo "<div class='error'>";
+        echo __($guid, 'You have not specified one or more required parameters.');
+        echo '</div>';
+    } else {
+        try {
+            $data3 = array('gibbonRubricID' => $gibbonRubricID);
+            $sql3 = 'SELECT * FROM gibbonRubric WHERE gibbonRubricID=:gibbonRubricID';
+            $result3 = $connection2->prepare($sql3);
+            $result3->execute($data3);
+        } catch (PDOException $e) {
+            echo "<div class='error'>".$e->getMessage().'</div>';
+        }
+
+        if ($result3->rowCount() != 1) {
+            echo "<div class='error'>";
+            echo __($guid, 'The specified record does not exist.');
+            echo '</div>';
+        } else {
+            //Let's go!
+            $row3 = $result3->fetch();
+
+            echo "<h2 style='margin-bottom: 10px;'>";
+            echo $row3['name'].'<br/>';
+            echo '</h2>';
+
+            echo rubricView($guid, $connection2, $gibbonRubricID, false);
+        }
+    }
 }
-else {
-	//Proceed!
-	//Check if school year specified
-	$gibbonRubricID=$_GET["gibbonRubricID"] ;
-	if ($gibbonRubricID=="") {
-		print "<div class='error'>" ;
-			print __($guid, "You have not specified one or more required parameters.") ;
-		print "</div>" ;
-	}
-	else {
-		try {
-		$data3=array("gibbonRubricID"=>$gibbonRubricID); 
-		$sql3="SELECT * FROM gibbonRubric WHERE gibbonRubricID=:gibbonRubricID" ;
-		$result3=$connection2->prepare($sql3);
-		$result3->execute($data3);
-	}
-	catch(PDOException $e) { 
-		print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-	}
-
-	if ($result3->rowCount()!=1) {
-		print "<div class='error'>" ;
-			print __($guid, "The specified record does not exist.") ;
-		print "</div>" ;
-	}
-	else {
-			//Let's go!
-			$row3=$result3->fetch() ;
-			
-			print "<h2 style='margin-bottom: 10px;'>" ;
-				print $row3["name"] . "<br/>" ;
-			print "</h2>" ;
-			
-			print rubricView($guid, $connection2, $gibbonRubricID, FALSE ) ;
-		}
-	}	
-}	
-?>

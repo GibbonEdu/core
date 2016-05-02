@@ -17,55 +17,64 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+@session_start();
 
-$enableDescriptors=getSettingByScope($connection2, "Behaviour", "enableDescriptors") ;
-$enableLevels=getSettingByScope($connection2, "Behaviour", "enableLevels") ;
-$enableBehaviourLetters=getSettingByScope($connection2, "Behaviour", "enableBehaviourLetters") ;
+$enableDescriptors = getSettingByScope($connection2, 'Behaviour', 'enableDescriptors');
+$enableLevels = getSettingByScope($connection2, 'Behaviour', 'enableLevels');
+$enableBehaviourLetters = getSettingByScope($connection2, 'Behaviour', 'enableBehaviourLetters');
 
-if (isActionAccessible($guid, $connection2, "/modules/School Admin/behaviourSettings.php")==FALSE) {
-	//Acess denied
-	print "<div class='error'>" ;
-		print __($guid, "You do not have access to this action.") ;
-	print "</div>" ;
-}
-else {
-	//Proceed!
-	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Manage Behaviour Settings') . "</div>" ;
-	print "</div>" ;
+if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSettings.php') == false) {
+    //Acess denied
+    echo "<div class='error'>";
+    echo __($guid, 'You do not have access to this action.');
+    echo '</div>';
+} else {
+    //Proceed!
+    echo "<div class='trail'>";
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Manage Behaviour Settings').'</div>';
+    echo '</div>';
+
+    if (isset($_GET['return'])) {
+        returnProcess($guid, $_GET['return'], null, null);
+    }
+    ?>
 	
-	if (isset($_GET["return"])) { returnProcess($guid, $_GET["return"], null, null); }
-	?>
-	
-	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/behaviourSettingsProcess.php" ?>">
+	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/behaviourSettingsProcess.php' ?>">
 		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><?php print __($guid, 'Descriptors') ?></h3>
+					<h3><?php echo __($guid, 'Descriptors') ?></h3>
 				</td>
 			</tr>
 			<tr>
 				<?php
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='enableDescriptors'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { 
-					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-				}
-				$row=$result->fetch() ;
-				?>
+                try {
+                    $data = array();
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='enableDescriptors'";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    echo "<div class='error'>".$e->getMessage().'</div>';
+                }
+    $row = $result->fetch();
+    ?>
 				<td> 
-					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
+					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row['description'] != '') {
+    echo __($guid, $row['description']);
+}
+    ?></span>
 				</td>
 				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
-						<option <?php if ($row["value"]=="Y") {print "selected ";} ?>value="Y"><?php print __($guid, 'Yes') ?></option>
-						<option <?php if ($row["value"]=="N") {print "selected ";} ?>value="N"><?php print __($guid, 'No') ?></option>
+					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
+						<option <?php if ($row['value'] == 'Y') {
+    echo 'selected ';
+}
+    ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
+						<option <?php if ($row['value'] == 'N') {
+    echo 'selected ';
+}
+    ?>value="N"><?php echo __($guid, 'No') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -83,49 +92,61 @@ else {
 					 });
 				});
 			</script>
-			<tr id='positiveRow' <?php if ($enableDescriptors=="N") { print " style='display: none'" ; }?>>
+			<tr id='positiveRow' <?php if ($enableDescriptors == 'N') {
+    echo " style='display: none'";
+}
+    ?>>
 				<?php
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='positiveDescriptors'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { }
-				$row=$result->fetch() ;
-				?>
+                try {
+                    $data = array();
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='positiveDescriptors'";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                }
+    $row = $result->fetch();
+    ?>
 				<td style='width: 275px'> 
-					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
+					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row['description'] != '') {
+    echo __($guid, $row['description']);
+}
+    ?></span>
 				</td>
 				<td class="right">
-					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" type="text" class="standardWidth" rows=4><?php print $row["value"] ?></textarea>
+					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
 					<script type="text/javascript">
-						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-						<?php print $row["name"] ?>.add(Validate.Presence);
+						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
+						<?php echo $row['name'] ?>.add(Validate.Presence);
 					</script> 
 				</td>
 			</tr>
-			<tr id='negativeRow' <?php if ($enableDescriptors=="N") { print " style='display: none'" ; }?>>
+			<tr id='negativeRow' <?php if ($enableDescriptors == 'N') {
+    echo " style='display: none'";
+}
+    ?>>
 				<?php
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='negativeDescriptors'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { }
-				$row=$result->fetch() ;
-				?>
+                try {
+                    $data = array();
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='negativeDescriptors'";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                }
+    $row = $result->fetch();
+    ?>
 				<td> 
-					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
+					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row['description'] != '') {
+    echo __($guid, $row['description']);
+}
+    ?></span>
 				</td>
 				<td class="right">
-					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" type="text" class="standardWidth" rows=4><?php print $row["value"] ?></textarea>
+					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
 					<script type="text/javascript">
-						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-						<?php print $row["name"] ?>.add(Validate.Presence);
+						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
+						<?php echo $row['name'] ?>.add(Validate.Presence);
 					</script> 
 				</td>
 			</tr>
@@ -133,30 +154,38 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><?php print __($guid, 'Levels') ?></h3>
+					<h3><?php echo __($guid, 'Levels') ?></h3>
 				</td>
 			</tr>
 			<tr>
 				<?php
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='enableLevels'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { 
-					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-				}
-				$row=$result->fetch() ;
-				?>
+                try {
+                    $data = array();
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='enableLevels'";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    echo "<div class='error'>".$e->getMessage().'</div>';
+                }
+    $row = $result->fetch();
+    ?>
 				<td> 
-					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
+					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row['description'] != '') {
+    echo __($guid, $row['description']);
+}
+    ?></span>
 				</td>
 				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
-						<option <?php if ($row["value"]=="Y") {print "selected ";} ?>value="Y"><?php print __($guid, 'Yes') ?></option>
-						<option <?php if ($row["value"]=="N") {print "selected ";} ?>value="N"><?php print __($guid, 'No') ?></option>
+					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
+						<option <?php if ($row['value'] == 'Y') {
+    echo 'selected ';
+}
+    ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
+						<option <?php if ($row['value'] == 'N') {
+    echo 'selected ';
+}
+    ?>value="N"><?php echo __($guid, 'No') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -172,26 +201,32 @@ else {
 					 });
 				});
 			</script>
-			<tr id='levelsRow' <?php if ($enableLevels=="N") { print " style='display: none'" ; }?>>
+			<tr id='levelsRow' <?php if ($enableLevels == 'N') {
+    echo " style='display: none'";
+}
+    ?>>
 				<?php
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='levels'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { }
-				$row=$result->fetch() ;
-				?>
+                try {
+                    $data = array();
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='levels'";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                }
+    $row = $result->fetch();
+    ?>
 				<td> 
-					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
+					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row['description'] != '') {
+    echo __($guid, $row['description']);
+}
+    ?></span>
 				</td>
 				<td class="right">
-					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" type="text" class="standardWidth" rows=4><?php print $row["value"] ?></textarea>
+					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
 					<script type="text/javascript">
-						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-						<?php print $row["name"] ?>.add(Validate.Presence);
+						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
+						<?php echo $row['name'] ?>.add(Validate.Presence);
 					</script> 
 				</td>
 			</tr>
@@ -199,31 +234,39 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><?php print __($guid, 'Behaviour Letters') ?></h3>
-					<p><?php print sprintf(__($guid, 'By using an %1$sincluded CLI script%2$s, %3$s can be configured to automatically generate and email behaviour letters to parents and tutors, once certain negative behaviour threshold levels have been reached. In your letter text you may use the following fields: %4$s'), "<a target='_blank' href='https://gibbonedu.org/support/administrators/command-line-tools/'>", "</a>", $_SESSION[$guid]["systemName"], "[studentName], [rollGroup], [behaviourCount], [behaviourRecord]") ?></p>
+					<h3><?php echo __($guid, 'Behaviour Letters') ?></h3>
+					<p><?php echo sprintf(__($guid, 'By using an %1$sincluded CLI script%2$s, %3$s can be configured to automatically generate and email behaviour letters to parents and tutors, once certain negative behaviour threshold levels have been reached. In your letter text you may use the following fields: %4$s'), "<a target='_blank' href='https://gibbonedu.org/support/administrators/command-line-tools/'>", '</a>', $_SESSION[$guid]['systemName'], '[studentName], [rollGroup], [behaviourCount], [behaviourRecord]') ?></p>
 				</td>
 			</tr>
 			<tr>
 				<?php
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='enableBehaviourLetters'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { 
-					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-				}
-				$row=$result->fetch() ;
-				?>
+                try {
+                    $data = array();
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='enableBehaviourLetters'";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    echo "<div class='error'>".$e->getMessage().'</div>';
+                }
+    $row = $result->fetch();
+    ?>
 				<td> 
-					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
+					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row['description'] != '') {
+    echo __($guid, $row['description']);
+}
+    ?></span>
 				</td>
 				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
-						<option <?php if ($row["value"]=="Y") {print "selected ";} ?>value="Y"><?php print __($guid, 'Yes') ?></option>
-						<option <?php if ($row["value"]=="N") {print "selected ";} ?>value="N"><?php print __($guid, 'No') ?></option>
+					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
+						<option <?php if ($row['value'] == 'Y') {
+    echo 'selected ';
+}
+    ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
+						<option <?php if ($row['value'] == 'N') {
+    echo 'selected ';
+}
+    ?>value="N"><?php echo __($guid, 'No') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -260,174 +303,240 @@ else {
 					 });
 				});
 			</script>
-			<tr id='behaviourLettersLetter1CountRow' <?php if ($enableBehaviourLetters=="N") { print " style='display: none'" ; }?>>
+			<tr id='behaviourLettersLetter1CountRow' <?php if ($enableBehaviourLetters == 'N') {
+    echo " style='display: none'";
+}
+    ?>>
 				<?php
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='behaviourLettersLetter1Count'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { }
-				$row=$result->fetch() ;
-				?>
+                try {
+                    $data = array();
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='behaviourLettersLetter1Count'";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                }
+    $row = $result->fetch();
+    ?>
 				<td> 
-					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
+					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row['description'] != '') {
+    echo __($guid, $row['description']);
+}
+    ?></span>
 				</td>
 				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
-						<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
+					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
+						<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
 						<?php
-						for ($i=1; $i<=20; $i++) {
-							?>
-							<option <?php if ($i==$row["value"]) { print "selected" ; } ?> value="<?php print $i ?>"><?php print $i ?></option>
+                        for ($i = 1; $i <= 20; ++$i) {
+                            ?>
+							<option <?php if ($i == $row['value']) {
+    echo 'selected';
+}
+                            ?> value="<?php echo $i ?>"><?php echo $i ?></option>
 						<?php
-						}
-						?>
+
+                        }
+    ?>
 					</select>
 					<script type="text/javascript">
-						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-						<?php print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
-						<?php if ($enableBehaviourLetters=="N") { print $row["name"] . ".disable() ;" ; } ?>
+						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
+						<?php echo $row['name'] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
+						<?php if ($enableBehaviourLetters == 'N') {
+    echo $row['name'].'.disable() ;';
+}
+    ?>
 					</script> 
 				</td>
 			</tr>
-			<tr id='behaviourLettersLetter1TextRow' <?php if ($enableBehaviourLetters=="N") { print " style='display: none'" ; }?>>
+			<tr id='behaviourLettersLetter1TextRow' <?php if ($enableBehaviourLetters == 'N') {
+    echo " style='display: none'";
+}
+    ?>>
 				<?php
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='behaviourLettersLetter1Text'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { }
-				$row=$result->fetch() ;
-				?>
+                try {
+                    $data = array();
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='behaviourLettersLetter1Text'";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                }
+    $row = $result->fetch();
+    ?>
 				<td> 
-					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
+					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row['description'] != '') {
+    echo __($guid, $row['description']);
+}
+    ?></span>
 				</td>
 				<td class="right">
-					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" type="text" class="standardWidth" rows=4><?php print $row["value"] ?></textarea>
+					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
 					<script type="text/javascript">
-						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-						<?php print $row["name"] ?>.add(Validate.Presence);
-						<?php if ($enableBehaviourLetters=="N") { print $row["name"] . ".disable() ;" ; } ?>
+						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
+						<?php echo $row['name'] ?>.add(Validate.Presence);
+						<?php if ($enableBehaviourLetters == 'N') {
+    echo $row['name'].'.disable() ;';
+}
+    ?>
 					</script> 
 				</td>
 			</tr>
-			<tr id='behaviourLettersLetter2CountRow' <?php if ($enableBehaviourLetters=="N") { print " style='display: none'" ; }?>>
+			<tr id='behaviourLettersLetter2CountRow' <?php if ($enableBehaviourLetters == 'N') {
+    echo " style='display: none'";
+}
+    ?>>
 				<?php
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='behaviourLettersLetter2Count'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { }
-				$row=$result->fetch() ;
-				?>
+                try {
+                    $data = array();
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='behaviourLettersLetter2Count'";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                }
+    $row = $result->fetch();
+    ?>
 				<td> 
-					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
+					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row['description'] != '') {
+    echo __($guid, $row['description']);
+}
+    ?></span>
 				</td>
 				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
-						<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
+					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
+						<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
 						<?php
-						for ($i=1; $i<=20; $i++) {
-							?>
-							<option <?php if ($i==$row["value"]) { print "selected" ; } ?> value="<?php print $i ?>"><?php print $i ?></option>
+                        for ($i = 1; $i <= 20; ++$i) {
+                            ?>
+							<option <?php if ($i == $row['value']) {
+    echo 'selected';
+}
+                            ?> value="<?php echo $i ?>"><?php echo $i ?></option>
 						<?php
-						}
-						?>
+
+                        }
+    ?>
 					</select>
 					<script type="text/javascript">
-						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-						<?php print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
-						<?php if ($enableBehaviourLetters=="N") { print $row["name"] . ".disable() ;" ; } ?>
+						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
+						<?php echo $row['name'] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
+						<?php if ($enableBehaviourLetters == 'N') {
+    echo $row['name'].'.disable() ;';
+}
+    ?>
 					</script> 
 				</td>
 			</tr>
-			<tr id='behaviourLettersLetter2TextRow' <?php if ($enableBehaviourLetters=="N") { print " style='display: none'" ; }?>>
+			<tr id='behaviourLettersLetter2TextRow' <?php if ($enableBehaviourLetters == 'N') {
+    echo " style='display: none'";
+}
+    ?>>
 				<?php
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='behaviourLettersLetter2Text'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { }
-				$row=$result->fetch() ;
-				?>
+                try {
+                    $data = array();
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='behaviourLettersLetter2Text'";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                }
+    $row = $result->fetch();
+    ?>
 				<td> 
-					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
+					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row['description'] != '') {
+    echo __($guid, $row['description']);
+}
+    ?></span>
 				</td>
 				<td class="right">
-					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" type="text" class="standardWidth" rows=4><?php print $row["value"] ?></textarea>
+					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
 					<script type="text/javascript">
-						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-						<?php print $row["name"] ?>.add(Validate.Presence);
-						<?php if ($enableBehaviourLetters=="N") { print $row["name"] . ".disable() ;" ; } ?>
+						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
+						<?php echo $row['name'] ?>.add(Validate.Presence);
+						<?php if ($enableBehaviourLetters == 'N') {
+    echo $row['name'].'.disable() ;';
+}
+    ?>
 					</script> 
 				</td>
 			</tr>
-			<tr id='behaviourLettersLetter3CountRow' <?php if ($enableBehaviourLetters=="N") { print " style='display: none'" ; }?>>
+			<tr id='behaviourLettersLetter3CountRow' <?php if ($enableBehaviourLetters == 'N') {
+    echo " style='display: none'";
+}
+    ?>>
 				<?php
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='behaviourLettersLetter3Count'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { }
-				$row=$result->fetch() ;
-				?>
+                try {
+                    $data = array();
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='behaviourLettersLetter3Count'";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                }
+    $row = $result->fetch();
+    ?>
 				<td> 
-					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
+					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row['description'] != '') {
+    echo __($guid, $row['description']);
+}
+    ?></span>
 				</td>
 				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" class="standardWidth">
-						<option value="Please select..."><?php print __($guid, 'Please select...') ?></option>
+					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
+						<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
 						<?php
-						for ($i=1; $i<=20; $i++) {
-							?>
-							<option <?php if ($i==$row["value"]) { print "selected" ; } ?> value="<?php print $i ?>"><?php print $i ?></option>
+                        for ($i = 1; $i <= 20; ++$i) {
+                            ?>
+							<option <?php if ($i == $row['value']) {
+    echo 'selected';
+}
+                            ?> value="<?php echo $i ?>"><?php echo $i ?></option>
 						<?php
-						}
-						?>
+
+                        }
+    ?>
 					</select>
 					<script type="text/javascript">
-						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-						<?php print $row["name"] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print __($guid, 'Select something!') ?>"});
-						<?php if ($enableBehaviourLetters=="N") { print $row["name"] . ".disable() ;" ; } ?>
+						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
+						<?php echo $row['name'] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
+						<?php if ($enableBehaviourLetters == 'N') {
+    echo $row['name'].'.disable() ;';
+}
+    ?>
 					</script> 
 				</td>
 			</tr>
-			<tr id='behaviourLettersLetter3TextRow' <?php if ($enableBehaviourLetters=="N") { print " style='display: none'" ; }?>>
+			<tr id='behaviourLettersLetter3TextRow' <?php if ($enableBehaviourLetters == 'N') {
+    echo " style='display: none'";
+}
+    ?>>
 				<?php
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='behaviourLettersLetter3Text'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { }
-				$row=$result->fetch() ;
-				?>
+                try {
+                    $data = array();
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='behaviourLettersLetter3Text'";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                }
+    $row = $result->fetch();
+    ?>
 				<td> 
-					<b><?php print __($guid, $row["nameDisplay"]) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
+					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row['description'] != '') {
+    echo __($guid, $row['description']);
+}
+    ?></span>
 				</td>
 				<td class="right">
-					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" type="text" class="standardWidth" rows=4><?php print $row["value"] ?></textarea>
+					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
 					<script type="text/javascript">
-						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-						<?php print $row["name"] ?>.add(Validate.Presence);
-						<?php if ($enableBehaviourLetters=="N") { print $row["name"] . ".disable() ;" ; } ?>
+						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
+						<?php echo $row['name'] ?>.add(Validate.Presence);
+						<?php if ($enableBehaviourLetters == 'N') {
+    echo $row['name'].'.disable() ;';
+}
+    ?>
 					</script> 
 				</td>
 			</tr>
@@ -435,44 +544,50 @@ else {
 			
 			<tr class='break'>
 				<td colspan=2> 
-					<h3><?php print __($guid, 'Miscellaneous') ?></h3>
+					<h3><?php echo __($guid, 'Miscellaneous') ?></h3>
 				</td>
 			</tr>
 			<tr>
 				<?php
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='policyLink'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { }
-				$row=$result->fetch() ;
-				?>
+                try {
+                    $data = array();
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Behaviour' AND name='policyLink'";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                }
+    $row = $result->fetch();
+    ?>
 				<td> 
-					<b><?php print __($guid, $row["nameDisplay"]) ?></b><br/>
-					<span class="emphasis small"><?php if ($row["description"]!="") { print __($guid, $row["description"]) ; } ?></span>
+					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
+					<span class="emphasis small"><?php if ($row['description'] != '') {
+    echo __($guid, $row['description']);
+}
+    ?></span>
 				</td>
 				<td class="right">
-					<input type='text' name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>"class="standardWidth" value='<?php print htmlPrep($row["value"]) ?>'>
+					<input type='text' name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>"class="standardWidth" value='<?php echo htmlPrep($row['value']) ?>'>
 					<script type="text/javascript">
-						var <?php print $row["name"] ?>=new LiveValidation('<?php print $row["name"] ?>');
-						<?php print $row["name"] ?>.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
+						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
+						<?php echo $row['name'] ?>.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
 					</script>	
 				</td>
 			</tr>
 			
 			<tr>
 				<td>
-					<span class="emphasis small">* <?php print __($guid, "denotes a required field") ; ?></span>
+					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
+    ?></span>
 				</td>
 				<td class="right">
-					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
+					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit');
+    ?>">
 				</td>
 			</tr>
 		</table>
 	</form>
 <?php
+
 }
 ?>

@@ -18,18 +18,17 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 //USE ;end TO SEPERATE SQL STATEMENTS. DON'T USE ;end IN ANY OTHER PLACES!
 
-$sql=array() ;
-$count=0 ;
+$sql = array();
+$count = 0;
 
 //v9.2.00 and earlier removed to reduce file size
 
 //v10.0.00
-$count++ ;
-$sql[$count][0]="10.0.00" ;
-$sql[$count][1]="
+++$count;
+$sql[$count][0] = '10.0.00';
+$sql[$count][1] = "
 ALTER TABLE `gibbonMarkbookColumn` ADD `uploadedResponse` ENUM('Y','N') NOT NULL DEFAULT 'Y' AFTER `comment`;end
 ALTER TABLE `gibbonMarkbookColumn` CHANGE `gibbonScaleIDAttainment` `gibbonScaleIDAttainment` INT(5) UNSIGNED ZEROFILL NULL DEFAULT NULL, CHANGE `gibbonScaleIDEffort` `gibbonScaleIDEffort` INT(5) UNSIGNED ZEROFILL NULL DEFAULT NULL;end
 ALTER TABLE `gibbonMarkbookEntry` CHANGE `attainmentDescriptor` `attainmentDescriptor` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `attainmentConcern` `attainmentConcern` ENUM('N','Y','P') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '''P'' denotes that student has exceed their personal target', CHANGE `effortDescriptor` `effortDescriptor` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `effortConcern` `effortConcern` ENUM('N','Y') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `comment` `comment` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
@@ -67,12 +66,12 @@ UPDATE gibboni18n SET active='Y' WHERE code='pt_PT';end
 ALTER TABLE `gibbonFinanceBudgetCycleAllocation` ENGINE = MYISAM ;end
 UPDATE gibboni18n SET active='Y' WHERE code='ar_SA';end
 UPDATE gibboni18n SET active='N' WHERE code='pt_PT';end
-" ;
+";
 
 //v11.0.00
-$count++ ;
-$sql[$count][0]="11.0.00" ;
-$sql[$count][1]="
+++$count;
+$sql[$count][0] = '11.0.00';
+$sql[$count][1] = "
 UPDATE gibbonAction SET name='Import Users' WHERE name='Sync Users' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='User Admin');end
 UPDATE gibbonAction SET name='Import Families' WHERE name='Sync Families' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='User Admin');end
 UPDATE gibbonAction SET name='Import Student Enrolment' WHERE name='Sync Student Enrolment' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='User Admin');end
@@ -251,9 +250,9 @@ UPDATE `gibboni18n` SET `active` = 'Y' WHERE `code` = 'RO_ro';end
 ";
 
 //v12.0.00
-$count++ ;
-$sql[$count][0]="12.0.00" ;
-$sql[$count][1]="
+++$count;
+$sql[$count][0] = '12.0.00';
+$sql[$count][1] = "
 INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('da_DK', 'Dansk - Danmark', 'N', 'N', 'Jørgen Mortensen', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\d\\\d$/i', 'd/m/Y', 'N');end
 ALTER TABLE `gibbonActivity` CHANGE `payment` `payment` DECIMAL(8,2) NULL DEFAULT NULL;end
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'Markbook', 'enableColumnWeighting', 'Enable Column Weighting', 'Should column weighting and total scores be enabled in the Markbook?', 'N');end
@@ -367,4 +366,3 @@ INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, 
 INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Formal Assessment'), 'View External Assessments_myChildrens', 1, 'External Assessment', 'Allows a parent to view external assessment records for their children.', 'externalAssessment_view.php', 'externalAssessment_view.php', 'Y', 'N', 'N', 'N', 'N', 'N', 'N', 'Y', 'N') ;end
 ALTER TABLE `gibbonAction` ADD `menuShow` ENUM('Y','N') NOT NULL DEFAULT 'Y' AFTER `entrySidebar`;end
 ";
-?>
