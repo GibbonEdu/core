@@ -25,111 +25,125 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
     echo __($guid, 'You do not have access to this action.');
     echo '</div>';
 } else {
-    $entryCount = 0;
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'View Invoices').'</div>';
-    echo '</div>';
-
-    echo '<p>';
-    echo __($guid, 'This section allows you to view invoices for children within your family.').'<br/>';
-    echo '</p>';
-
-    //Test data access field for permission
-    try {
-        $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-        $sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
-
-    if ($result->rowCount() < 1) {
+    //Get action with highest precendence
+    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'Access denied.');
+        echo __($guid, 'The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        //Get child list
-        $count = 0;
-        $options = '';
-        while ($row = $result->fetch()) {
+        $entryCount = 0;
+        echo "<div class='trail'>";
+        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'View Invoices').'</div>';
+        echo '</div>';
+
+        if ($highestAction=="View Invoices_myChildren") {
+            //Test data access field for permission
             try {
-                $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName ";
-                $resultChild = $connection2->prepare($sqlChild);
-                $resultChild->execute($dataChild);
+                $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                $sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
             } catch (PDOException $e) {
                 echo "<div class='error'>".$e->getMessage().'</div>';
             }
-            while ($rowChild = $resultChild->fetch()) {
-                $select = '';
-                if (isset($_GET['search'])) {
-                    if ($rowChild['gibbonPersonID'] == $_GET['search']) {
-                        $select = 'selected';
+
+            if ($result->rowCount() < 1) {
+                echo "<div class='error'>";
+                echo __($guid, 'Access denied.');
+                echo '</div>';
+            } else {
+                //Get child list
+                $count = 0;
+                $options = '';
+                while ($row = $result->fetch()) {
+                    try {
+                        $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                        $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName ";
+                        $resultChild = $connection2->prepare($sqlChild);
+                        $resultChild->execute($dataChild);
+                    } catch (PDOException $e) {
+                        echo "<div class='error'>".$e->getMessage().'</div>';
+                    }
+                    while ($rowChild = $resultChild->fetch()) {
+                        $select = '';
+                        if (isset($_GET['search'])) {
+                            if ($rowChild['gibbonPersonID'] == $_GET['search']) {
+                                $select = 'selected';
+                            }
+                        }
+
+                        $options = $options."<option $select value='".$rowChild['gibbonPersonID']."'>".formatName('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true).'</option>';
+                        $gibbonPersonID[$count] = $rowChild['gibbonPersonID'];
+                        ++$count;
                     }
                 }
 
-                $options = $options."<option $select value='".$rowChild['gibbonPersonID']."'>".formatName('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true).'</option>';
-                $gibbonPersonID[$count] = $rowChild['gibbonPersonID'];
-                ++$count;
+                if ($count == 0) {
+                    echo "<div class='error'>";
+                    echo __($guid, 'Access denied.');
+                    echo '</div>';
+                } elseif ($count == 1) {
+                    $_GET['search'] = $gibbonPersonID[0];
+                } else {
+                    echo '<h2>';
+                    echo 'Choose Student';
+                    echo '</h2>';
+
+                    ?>
+        			<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
+        				<table class='noIntBorder' cellspacing='0' style="width: 100%">
+        					<tr><td style="width: 30%"></td><td></td></tr>
+        					<tr>
+        						<td>
+        							<b><?php echo __($guid, 'Search For') ?></b><br/>
+        							<span class="emphasis small">Preferred, surname, username.</span>
+        						</td>
+        						<td class="right">
+        							<select name="search" id="search" class="standardWidth">
+        								<option value=""></value>
+        								<?php echo $options;
+                    ?>
+        							</select>
+        						</td>
+        					</tr>
+        					<tr>
+        						<td colspan=2 class="right">
+        							<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/invoices_view.php">
+        							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
+        							<?php
+                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/invoices_view.php'>".__($guid, 'Clear Search').'</a>';
+                    ?>
+        							<input type="submit" value="<?php echo __($guid, 'Submit');
+                    ?>">
+        						</td>
+        					</tr>
+        				</table>
+        			</form>
+        			<?php
+
+                }
+
+                $gibbonPersonID = null;
+                if (isset($_GET['search'])) {
+                    $gibbonPersonID = $_GET['search'];
+                }
             }
-        }
-
-        if ($count == 0) {
-            echo "<div class='error'>";
-            echo __($guid, 'Access denied.');
-            echo '</div>';
-        } elseif ($count == 1) {
-            $_GET['search'] = $gibbonPersonID[0];
-        } else {
-            echo '<h2>';
-            echo 'Choose Student';
-            echo '</h2>';
-
-            ?>
-			<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-				<table class='noIntBorder' cellspacing='0' style="width: 100%">	
-					<tr><td style="width: 30%"></td><td></td></tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Search For') ?></b><br/>
-							<span class="emphasis small">Preferred, surname, username.</span>
-						</td>
-						<td class="right">
-							<select name="search" id="search" class="standardWidth">
-								<option value=""></value>
-								<?php echo $options;
-            ?> 
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td colspan=2 class="right">
-							<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/invoices_view.php">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<?php
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/invoices_view.php'>".__($guid, 'Clear Search').'</a>';
-            ?>
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
-
-        }
-
-        $gibbonPersonID = null;
-        if (isset($_GET['search'])) {
-            $gibbonPersonID = $_GET['search'];
+        } else if ($highestAction=="View Invoices_mine") {
+            $count = 1;
+            $gibbonPersonID = $_SESSION[$guid]["gibbonPersonID"];
         }
 
         if ($gibbonPersonID != '' and $count > 0) {
             //Confirm access to this student
             try {
-                $dataChild = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
-                $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'";
+                if ($highestAction=="View Invoices_myChildren") {
+                    $dataChild = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
+                    $sqlChild = "SELECT gibbonPerson.gibbonPersonID FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'";
+                } else if ($highestAction=="View Invoices_mine") {
+                    $dataChild = array('gibbonPersonID' => $gibbonPersonID);
+                    $sqlChild = "SELECT gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonPersonID=:gibbonPersonID" ;
+                }
                 $resultChild = $connection2->prepare($sqlChild);
                 $resultChild->execute($dataChild);
             } catch (PDOException $e) {

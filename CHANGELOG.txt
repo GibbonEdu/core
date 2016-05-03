@@ -77,6 +77,7 @@ v12.0.00
 		Finance: fixed <? bug
 		Finance: added ability to provide multiple company email addresses
 		Finance: fixed bug preventing printing of receipts when status is 'Paid - Partial'
+		Finance: added ability (off by default) for students to view their own invoices
 		Form Groups: adjusted labels in Sort By select
 		Formal Assessment: fixed issue with View Classes menu not appearing for a user with no classes (e.g. admin)
 		Formal Assessment: fixed uploaded response file selector gigantism issue

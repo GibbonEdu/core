@@ -367,4 +367,8 @@ INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, 
 ALTER TABLE `gibbonAction` ADD `menuShow` ENUM('Y','N') NOT NULL DEFAULT 'Y' AFTER `entrySidebar`;end
 UPDATE gibbonAction SET category='Rubrics' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Rubrics');end
 UPDATE gibbonAction SET category='Crowd Assessment' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Crowd Assessment');end
+UPDATE gibbonAction SET name='View Invoices_myChildren', precedence='1' WHERE name='View Invoices' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Finance');end
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Finance'), 'View Invoices_mine', 0, 'Billing', 'Allows a student to view their own invoices.', 'invoices_view.php, invoices_view_print.php', 'invoices_view.php', 'N', 'N', 'N', 'N', 'N', 'N', 'Y', 'N', 'N') ;end
+UPDATE gibbonAction SET defaultPermissionAdmin='N' WHERE name='View External Assessments_myChildrens' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Formal Assessment');end
+UPDATE gibbonAction SET defaultPermissionAdmin='N' WHERE name='View External Assessments_mine' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Formal Assessment');end
 ";
