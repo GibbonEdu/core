@@ -1669,7 +1669,7 @@ else {
             //Get all logs by student, with latest log entry first.
             try {
               $data=array("selectedDate"=>$attendanceDate, "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "nowDate"=>date("Y-m-d"));
-              $sql="SELECT galp.gibbonPersonID, galp.gibbonAttendanceLogPersonID, galp.type, galp.data FROM gibbonAttendanceLogPerson AS galp JOIN gibbonStudentEnrolment AS gse ON (galp.gibbonPersonID=gse.gibbonPersonID) JOIN gibbonPerson AS gp ON (gse.gibbonPersonID=gp.gibbonPersonID) WHERE gp.status='Full' AND (gp.dateStart IS NULL OR gp.dateStart<=:nowDate) AND (gp.dateEnd IS NULL OR gp.dateEnd>=:nowDate) AND gse.gibbonSchoolYearID=:gibbonSchoolYearID AND galp.date=:selectedDate ORDER BY galp.gibbonPersonID, gibbonAttendanceLogPersonID DESC" ;
+              $sql="SELECT galp.gibbonPersonID, galp.gibbonAttendanceLogPersonID, galp.type, galp.date FROM gibbonAttendanceLogPerson AS galp JOIN gibbonStudentEnrolment AS gse ON (galp.gibbonPersonID=gse.gibbonPersonID) JOIN gibbonPerson AS gp ON (gse.gibbonPersonID=gp.gibbonPersonID) WHERE gp.status='Full' AND (gp.dateStart IS NULL OR gp.dateStart<=:nowDate) AND (gp.dateEnd IS NULL OR gp.dateEnd>=:nowDate) AND gse.gibbonSchoolYearID=:gibbonSchoolYearID AND galp.date=:selectedDate ORDER BY galp.gibbonPersonID, gibbonAttendanceLogPersonID DESC" ;
               $result=$connection2->prepare($sql);
               $result->execute($data);
             }
