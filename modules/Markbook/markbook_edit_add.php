@@ -391,7 +391,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                             ?></b><br/>
 								</td>
 								<td class="right">
-									<input name="attainmentWeighting" id="attainmentWeighting" maxlength=3 value="0" type="text" class="standardWidth">
+									<input name="attainmentWeighting" id="attainmentWeighting" maxlength=3 value="1" type="text" class="standardWidth">
 									<script type="text/javascript">
 										var attainmentWeighting=new LiveValidation('attainmentWeighting');
 										attainmentWeighting.add(Validate.Numericality);

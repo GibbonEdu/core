@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-function classChooser($guid, $connection2, $gibbonCourseClassID)
+function classChooser($guid, $pdo, $gibbonCourseClassID)
 {
     //Set timezone from session variable
     date_default_timezone_set($_SESSION[$guid]['timezone']);
@@ -38,12 +38,11 @@ function classChooser($guid, $connection2, $gibbonCourseClassID)
     
     $output .= "<span>".__($guid, 'Term').": </span>";
     $output .= "<select name='gibbonSchoolYearTermID' id='gibbonSchoolYearTermID' style='width:193px; float: none;'>";
-    $output .= "<option value=''>".__($guid, 'All Terms')."</option>";
+    $output .= "<option value='-1'>".__($guid, 'All Terms')."</option>";
     try {
         $data=array("gibbonSchoolYearID"=>$_SESSION[$guid]['gibbonSchoolYearID']);
         $sql="SELECT gibbonSchoolYearTermID, name, UNIX_TIMESTAMP(firstDay) AS firstTime, UNIX_TIMESTAMP(lastDay) AS lastTime FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber" ;
-        $resultTerms=$connection2->prepare($sql);
-        $resultTerms->execute($data);
+        $resultTerms=$pdo->executeQuery($data, $sql);
     }
     catch(PDOException $e) { }
 
@@ -51,21 +50,25 @@ function classChooser($guid, $connection2, $gibbonCourseClassID)
 
     while ($rowTerm = $resultTerms->fetch()) {
 
-        $selected = ( time() >= $rowTerm['firstTime'] && time() < $rowTerm['lastTime'] )? 'selected' : '';
-        $selected = ( !empty($selectTerm) && $selectTerm == $rowTerm['gibbonSchoolYearTermID'])? 'selected' : '';
+        if ($selectTerm != 0) {
+            $selected = ( $selectTerm == $rowTerm['gibbonSchoolYearTermID'])? 'selected' : '';
+        } else {
+            $selected = ( time() >= $rowTerm['firstTime'] && time() < $rowTerm['lastTime'] )? 'selected' : '';
+        }
+        
         $output .= "<option $selected value='".$rowTerm['gibbonSchoolYearTermID']."'>".htmlPrep($rowTerm['name']).'</option>';
     }
     $output .= '</select>';
 
-    $selectFilter = (isset($_GET['columnFilter']))? $_GET['columnFilter'] : 0;
+    $selectFilter = (isset($_GET['columnFilter']))? $_GET['columnFilter'] : '';
 
     $output .= "&nbsp;&nbsp;&nbsp;<span>".__($guid, 'Show').": </span>";
     $output .= "<select name='columnFilter' id='columnFilter' style='width:193px; float: none;'>";
     $output .= "<option value=''>".__($guid, 'All Columns')."</option>";
     $output .= "<option value='marked' ".(($selectFilter == 'marked')? 'selected' : '')." >".__($guid, 'Marked')."</option>";
     $output .= "<option value='unmarked' ".(($selectFilter == 'unmarked')? 'selected' : '')." >".__($guid, 'Unmarked')."</option>";
-    $output .= "<option value='week' ".(($selectFilter == 'week')? 'selected' : '').">".__($guid, 'This Week')."</option>";
-    $output .= "<option value='month' ".(($selectFilter == 'month')? 'selected' : '').">".__($guid, 'This Month')."</option>";
+    // $output .= "<option value='week' ".(($selectFilter == 'week')? 'selected' : '').">".__($guid, 'This Week')."</option>";
+    // $output .= "<option value='month' ".(($selectFilter == 'month')? 'selected' : '').">".__($guid, 'This Month')."</option>";
     $output .= '</select>';
 
 
@@ -75,8 +78,7 @@ function classChooser($guid, $connection2, $gibbonCourseClassID)
     try {
         $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
         $sqlSelect = 'SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClassPerson JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID ORDER BY course, class';
-        $resultSelect = $connection2->prepare($sqlSelect);
-        $resultSelect->execute($dataSelect);
+        $resultSelect = $pdo->executeQuery($dataSelect, $sqlSelect);
     } catch (PDOException $e) {
     }
     $selectCount = 0;
@@ -94,8 +96,7 @@ function classChooser($guid, $connection2, $gibbonCourseClassID)
     try {
         $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
         $sqlSelect = 'SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY course, class';
-        $resultSelect = $connection2->prepare($sqlSelect);
-        $resultSelect->execute($dataSelect);
+        $resultSelect = $pdo->executeQuery($dataSelect, $sqlSelect);
     } catch (PDOException $e) {
     }
     $output .= "<optgroup label='--".__($guid, 'All Classes')."--'>";
@@ -116,4 +117,64 @@ function classChooser($guid, $connection2, $gibbonCourseClassID)
     $output .= '</table>';
 
     return $output;
+}
+
+function isDepartmentCoordinator( $pdo, $gibbonPersonID ) {
+    try {
+        $data = array('gibbonPersonID' => $gibbonPersonID );
+        $sql = "SELECT count(*) FROM gibbonDepartmentStaff WHERE gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)')";
+        $result = $pdo->executeQuery($data, $sql);
+
+    } catch (PDOException $e) {
+        echo "<div class='error'>".$e->getMessage().'</div>';
+    }
+
+    return ($result->rowCount() > 0)? ($result->fetchColumn() >= 1) : false;
+}
+
+function getAnyTaughtClass( $pdo, $gibbonPersonID, $gibbonSchoolYearID ) {
+    try {
+        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID);
+        $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID ORDER BY course, class LIMIT 1';
+        $result = $pdo->executeQuery($data, $sql);
+    } catch (PDOException $e) {
+        echo "<div class='error'>".$e->getMessage().'</div>';
+    }
+
+    return ($result->rowCount() > 0)? $result->fetch() : NULL;
+}
+
+function getClass( $pdo, $gibbonPersonID, $gibbonCourseClassID ) {
+    try {
+        $data = array( 'gibbonPersonID' => $gibbonPersonID, 'gibbonCourseClassID' => $gibbonCourseClassID);
+        // $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourse.name AS courseName, gibbonCourseClass.nameShort AS class, gibbonYearGroupIDList FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassID=:gibbonCourseClassID';
+
+        $sql = "SELECT gibbonCourse.nameShort AS course, gibbonCourse.name AS courseName, gibbonCourseClass.nameShort AS class, gibbonCourse.gibbonYearGroupIDList, gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class";
+
+        $result = $pdo->executeQuery($data, $sql);
+    } catch (PDOException $e) {
+        echo "<div class='error'>".$e->getMessage().'</div>';
+    }
+
+    return ($result->rowCount() > 0)? $result->fetch() : NULL;
+}
+
+function getTeacherList( $pdo, $gibbonCourseClassID ) {
+    try {
+        $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
+        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Teacher' AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY surname, preferredName";
+        $result = $pdo->executeQuery($data, $sql);
+
+    } catch (PDOException $e) {
+        echo "<div class='error'>".$e->getMessage().'</div>';
+    }
+
+    $teacherList = array();
+    if ($result->rowCount() > 0) {
+        foreach ($result->fetchAll() as $teacher) {
+            $teacherList[ $teacher['gibbonPersonID'] ] = formatName($teacher['title'], $teacher['preferredName'], $teacher['surname'], 'Staff', false, true);
+        }
+    }
+
+    return $teacherList;
 }

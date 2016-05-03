@@ -47,12 +47,6 @@ class markbook
 	/**
 	 * Gibbon Settings
 	 */
-	//private $enableColumnWeighting;
-	//private $attainmentAlternativeName;
-	//private $attainmentAlternativeNameAbrev;
-	//private $effortAlternativeName;
-	//private $effortAlternativeNameAbrev;
-
 	private $settings = array();
 
 	/**
@@ -60,6 +54,19 @@ class markbook
 	 */
 	private $columnsPerPage = 12;
 	private $columnsThisPage;
+
+	private $columnCountTotal = -1;
+	private $minSequenceNumber = -1;
+
+	/**
+	 * Cache markbook values to reduce queries
+	 */
+	private $primaryAssessmentScale;
+	private $externalAssessmentFields;
+	private $personalizedTargets;
+	private $weightings;
+
+	public $gibbonCourseClassID;
 
 	/**
      * Constructor
@@ -71,7 +78,7 @@ class markbook
      * @param    Gibbon\sqlConnection
      * @return   void
      */
-    public function __construct(\Gibbon\session $session = NULL, \Gibbon\config $config = NULL, \Gibbon\sqlConnection $pdo = NULL)
+    public function __construct(\Gibbon\session $session = NULL, \Gibbon\config $config = NULL, \Gibbon\sqlConnection $pdo = NULL, $gibbonCourseClassID)
     {
         if ($session === NULL)
             $this->session = new \Gibbon\session();
@@ -88,9 +95,25 @@ class markbook
         else
             $this->pdo = $pdo ;
 
-        //Get alternative header names
+        $this->gibbonCourseClassID = $gibbonCourseClassID;
+
+        // Build the initial column counts for this class
+        try {
+            $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
+            $where = $this->getColumnFilters();
+            $sql = 'SELECT count(*) as count, min(sequenceNumber) as min FROM gibbonMarkbookColumn WHERE '.$where;
+            $result=$this->pdo->executeQuery($data, $sql);
+        } catch (PDOException $e) { $this->error( $e->getMessage() ); }
+
+        $row = $result->fetch();
+
+        $this->minSequenceNumber = (isset($row['min']))? $row['min'] : 0;
+        $this->columnCountTotal = (isset($row['count']))? $row['count'] : 0;
+
+        // Get Gibbon settings
 		$this->settings['enableColumnWeighting'] = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'enableColumnWeighting');
-		
+
+		// Get alternative header names
 		$attainmentAltName = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'attainmentAlternativeName');
 		$attainmentAltNameAbrev = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'attainmentAlternativeNameAbrev');
 		$effortAltName = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'effortAlternativeName');
@@ -104,7 +127,11 @@ class markbook
     }
 
     public function getSetting( $key ) {
-    	return (isset($this->setting[$key]))? $this->setting[$key] : NULL;
+    	return (isset($this->settings[$key]))? $this->settings[$key] : NULL;
+    }
+
+    public function getMinimumSequenceNumber() {
+    	return $this->minSequenceNumber;
     }
 
     public function getColumnsPerPage() {
@@ -115,10 +142,14 @@ class markbook
         return $this->columnsThisPage;
     }
 
-    public function getColumns( $gibbonCourseClassID, $columnCount, $pageNum ) {
+    public function getColumnCountTotal() {
+        return $this->columnCountTotal;
+    }
+
+    public function getColumns( $pageNum ) {
 
     	try {
-    		$data = array('gibbonCourseClassID' => $gibbonCourseClassID);
+    		$data = array('gibbonCourseClassID' => $this->gibbonCourseClassID);
     		$where = $this->getColumnFilters();
 
     		$sql = 'SELECT * FROM gibbonMarkbookColumn WHERE '.$where.' ORDER BY sequenceNumber, complete, completeDate DESC LIMIT '.($pageNum * $this->columnsPerPage).', '.$this->columnsPerPage;
@@ -126,27 +157,14 @@ class markbook
     		//echo $sql;
 
 	        $result=$this->pdo->executeQuery($data, $sql);
-	    } catch (PDOException $e) {
-	        echo "<div class='error'>".$e->getMessage().'</div>';
-	    }
+	    } catch (PDOException $e) { $this->error( $e->getMessage() ); }
 
 	    $this->columnsThisPage = $result->rowCount();
 
 	    return $result;
     }
 
-    public function getColumnCount( $gibbonCourseClassID ) {
-
-    	try {
-            $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-            $where = $this->getColumnFilters();
-            $sql = 'SELECT count(*) FROM gibbonMarkbookColumn WHERE '.$where;
-            $result=$this->pdo->executeQuery($data, $sql);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
-        return ($result->rowCount() > 0)? $result->fetchColumn() : 0;
-    }
+    
 
     private function getColumnFilters() {
 
@@ -161,8 +179,7 @@ class markbook
 		        $data=array("gibbonSchoolYearTermID"=>$gibbonSchoolYearTermID );
 		        $sql="SELECT firstDay, lastDay FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearTermID=:gibbonSchoolYearTermID" ;
 		        $resultTerms=$this->pdo->executeQuery($data, $sql);
-		    }
-		    catch(PDOException $e) { }
+		    } catch (PDOException $e) { $this->error( $e->getMessage() ); }
 
 		    if ($resultTerms->rowCount() > 0) {
 		    	$termRow = $resultTerms->fetch();
@@ -182,6 +199,144 @@ class markbook
         return $where;
     }
 
+    public function getTargetForStudent( $gibbonPersonID ) {
+    	return (isset($this->personalizedTargets[$gibbonPersonID]))? $this->personalizedTargets[$gibbonPersonID] : '';
+    }
+
+    public function getPersonalizedTargetsCount() {
+    	return (isset($this->personalizedTargets))? count($this->personalizedTargets) : 0;
+    }
+
+    public function cachePersonalizedTargets( ) {
+
+    	$this->personalizedTargets = array();
+
+     	try {
+            $data = array('gibbonCourseClassID' => $this->gibbonCourseClassID);
+            $sql = 'SELECT gibbonPersonIDStudent, value FROM gibbonMarkbookTarget JOIN gibbonScaleGrade ON (gibbonMarkbookTarget.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID) WHERE gibbonCourseClassID=:gibbonCourseClassID';
+            $result=$this->pdo->executeQuery($data, $sql);
+        } catch (PDOException $e) { $this->error( $e->getMessage() ); }
+        
+        if ($result->rowCount() > 0) {
+	        while ($row = $result->fetch() ) {
+	        	$this->personalizedTargets[ $row['gibbonPersonIDStudent'] ] = $row['value'];
+	        }
+	    }
+    }
+
+    public function getWeightingForStudent( $gibbonPersonID ) {
+    	$totalWeight = 0;
+        $cummulativeWeightedScore = 0;
+        $percent = false;
+        foreach ($this->weightings as $weighting) {
+            if ($weighting[2] ==  $gibbonPersonID ) {
+                $totalWeight += $weighting[0];
+                if (strpos($weighting[1], '%') !== 0) {
+                    $weighting[1] = str_replace('%', '', $weighting[1]);
+                    $percent = true;
+                }
+                $cummulativeWeightedScore += ($weighting[1] * $weighting[0]);
+            }
+        }
+        $output = '';
+        if ($totalWeight > 0) {
+            $output = round($cummulativeWeightedScore / $totalWeight, 0);
+            if ($percent) {
+                $output .= '%';
+            }
+        }
+
+        return $output;
+    }
+
+    public function cacheWeightings( ) {
+
+    	$this->weightings = array();
+        $weightingsCount = 0;
+        try {
+            $data = array('gibbonCourseClassID' => $this->gibbonCourseClassID);
+            $sql = "SELECT attainmentWeighting, attainmentValue, gibbonPersonIDStudent FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonScale ON (gibbonMarkbookColumn.gibbonScaleIDAttainment=gibbonScale.gibbonScaleID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonScale.numeric='Y' AND gibbonScaleID=(SELECT value FROM gibbonSetting WHERE scope='System' AND name='primaryAssessmentScale') AND complete='Y' AND NOT attainmentValue='' ORDER BY gibbonPersonIDStudent";
+            $result=$this->pdo->executeQuery($data, $sql);
+        } catch (PDOException $e) { $this->error( $e->getMessage() ); }
+
+        while ($rowWeightings = $result->fetch()) {
+            $this->weightings[$weightingsCount][0] = $rowWeightings['attainmentWeighting'];
+            $this->weightings[$weightingsCount][1] = $rowWeightings['attainmentValue'];
+            $this->weightings[$weightingsCount][2] = $rowWeightings['gibbonPersonIDStudent'];
+            ++$weightingsCount;
+        }
+    }
+
+    public function getPrimaryAssessmentScale() {
+
+    	if (!empty($this->primaryAssessmentScale)) return $this->primaryAssessmentScale; 
+
+    	$PAS = getSettingByScope($this->pdo->getConnection(), 'System', 'primaryAssessmentScale');
+        try {
+            $data = array('gibbonScaleID' => $PAS);
+            $sql = 'SELECT name FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
+            $result = $this->pdo->executeQuery($data, $sql);
+        } catch (PDOException $e) { $this->error( $e->getMessage() ); }
+
+        if ($result->rowCount() == 1) {
+            $row = $result->fetch();
+            $this->primaryAssessmentScale = (isset($row['name']))? $row['name'] : '';
+        }
+
+        return $this->primaryAssessmentScale;
+    }
+
+    public function hasExternalAssessments( $gibbonPersonID ) {
+    	return (isset($this->externalAssessmentFields))? (count($this->externalAssessmentFields) > 0) : false;
+    }
+
+    public function cacheExternalAssessments( $gibbonYearGroupIDList ) {
+
+		$gibbonYearGroupIDListArray = (explode(',', $gibbonYearGroupIDList));
+		if (count($gibbonYearGroupIDListArray) == 1) {
+		    $primaryExternalAssessmentByYearGroup = unserialize(getSettingByScope($this->pdo->getConnection(), 'School Admin', 'primaryExternalAssessmentByYearGroup'));
+
+
+		    if ($primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]] != '' and $primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]] != '-') {
+
+		        $gibbonExternalAssessmentID = substr($primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]], 0, strpos($primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]], '-'));
+		        $gibbonExternalAssessmentIDCategory = substr($primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]], (strpos($primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]], '-') + 1));
+
+		        try {
+		            $dataExternalAssessment = array('gibbonExternalAssessmentID' => $gibbonExternalAssessmentID, 'category' => $gibbonExternalAssessmentIDCategory);
+		            $courseNameTokens = explode(' ', $courseName);
+		            $courseWhere = ' AND (';
+		            $whereCount = 1;
+		            foreach ($courseNameTokens as $courseNameToken) {
+		                if (strlen($courseNameToken) > 3) {
+		                    $dataExternalAssessment['token'.$whereCount] = '%'.$courseNameToken.'%';
+		                    $courseWhere .= "gibbonExternalAssessmentField.name LIKE :token$whereCount OR ";
+		                    ++$whereCount;
+		                }
+		            }
+
+		            $courseWhere = ($whereCount < 1)? '' : substr($courseWhere, 0, -4).')';
+		            
+		            $sqlExternalAssessment = "SELECT gibbonExternalAssessment.name AS assessment, gibbonExternalAssessmentField.name, gibbonExternalAssessmentFieldID, category FROM gibbonExternalAssessmentField JOIN gibbonExternalAssessment ON (gibbonExternalAssessmentField.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) WHERE gibbonExternalAssessmentField.gibbonExternalAssessmentID=:gibbonExternalAssessmentID AND category=:category $courseWhere ORDER BY name LIMIT 1";
+		            $resultExternalAssessment = $this->pdo->executeQuery($dataExternalAssessment, $sqlExternalAssessment);
+		        } catch (PDOException $e) { $this->error( $e->getMessage() ); }
+
+		        if ($resultExternalAssessment->rowCount() >= 1) {
+		            $rowExternalAssessment = $resultExternalAssessment->fetch();
+		            $this->externalAssessmentFields = array();
+		            $this->externalAssessmentFields[0] = $rowExternalAssessment['gibbonExternalAssessmentFieldID'];
+		            $this->externalAssessmentFields[1] = $rowExternalAssessment['name'];
+		            $this->externalAssessmentFields[2] = $rowExternalAssessment['assessment'];
+		            $this->externalAssessmentFields[3] = $rowExternalAssessment['category'];
+		        }
+		    }
+		}
+
+    }
+
+    private function error( $message ) {
+    	echo "<div class='error'>".$e->getMessage().'</div>';
+    }
 
 
 }

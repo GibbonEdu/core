@@ -42,16 +42,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
     if ($order != '') {
 
         $columnOrder = array_slice($order, 2 );
+        $minSequence = (isset($_POST['sequence']))? $_POST['sequence'] : 0;
 
         for ($i = 0; $i < count($columnOrder); $i++) {
 
             try {
-                $data = array('gibbonMarkbookColumnID' => $columnOrder[$i], 'sequenceNumber' => $i );
+                $data = array('gibbonMarkbookColumnID' => $columnOrder[$i], 'sequenceNumber' => $i + $minSequence );
                 $sql = 'UPDATE gibbonMarkbookColumn SET sequenceNumber=:sequenceNumber WHERE gibbonMarkbookColumnID=:gibbonMarkbookColumnID';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                print $e->getMessage();
+                print __($guid, 'Your request failed due to a database error.');
             }
 
         }

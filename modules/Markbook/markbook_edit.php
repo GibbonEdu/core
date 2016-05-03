@@ -19,6 +19,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+//New PDO DB connection
+$pdo = new Gibbon\sqlConnection();
+$connection2 = $pdo->getConnection();
+
+
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -39,19 +44,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
         if (isset($_GET['gibbonCourseClassID'])) {
             $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
         } else {
-            try {
-                $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                $sql = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND gibbonCourse.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') ORDER BY course, class";
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-            if ($result->rowCount() > 0) {
-                $row = $result->fetch();
-                $gibbonCourseClassID = $row['gibbonCourseClassID'];
-            }
+            $row = getAnyTaughtClass( $pdo, $_SESSION[$guid]['gibbonPersonID'], $_SESSION[$guid]['gibbonSchoolYearID'] );
+            $gibbonCourseClassID = (isset($row['gibbonCourseClassID']))? $row['gibbonCourseClassID'] : '';
         }
+
         if ($gibbonCourseClassID == '') {
             echo '<h1>';
             echo 'Edit Markbook';
@@ -88,15 +84,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
                 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php')) {
                     $highestAction2 = getHighestGroupedAction($guid, '/modules/Markbook/markbook_edit.php', $connection2);
                     if ($highestAction2 == 'Edit Markbook_multipleClassesAcrossSchool' or $highestAction2 == 'Edit Markbook_multipleClassesInDepartment' or $highestAction2 == 'Edit Markbook_everything') {
+
                         //Check highest role in any department
-                        try {
-                            $dataRole = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                            $sqlRole = "SELECT role FROM gibbonDepartmentStaff WHERE gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)')";
-                            $resultRole = $connection2->prepare($sqlRole);
-                            $resultRole->execute($dataRole);
-                        } catch (PDOException $e) {
-                        }
-                        if ($resultRole->rowCount() >= 1 or $highestAction2 == 'Edit Markbook_multipleClassesAcrossSchool' or $highestAction2 == 'Edit Markbook_everything') {
+                        $isCoordinator = isDepartmentCoordinator( $pdo, $_SESSION[$guid]['gibbonPersonID'] );
+                        if ($isCoordinator == true or $highestAction2 == 'Edit Markbook_multipleClassesAcrossSchool' or $highestAction2 == 'Edit Markbook_everything') {
                             echo "<div class='linkTop'>";
                             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_addMulti.php&gibbonCourseClassID=$gibbonCourseClassID'>".__($guid, 'Add Multiple Columns')."<img style='margin-left: 5px' title='".__($guid, 'Add Multiple Columns')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new_multi.png'/></a>";
                             echo '</div>';
@@ -105,25 +96,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
                 }
 
                 //Get teacher list
-                $teaching = false;
-                try {
-                    $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                    $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Teacher' AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY surname, preferredName";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
-                if ($result->rowCount() > 0) {
+                $teacherList = getTeacherList( $pdo, $gibbonCourseClassID );
+                $teaching = (isset($teacherList[ $_SESSION[$guid]['gibbonPersonID'] ]) );
+
+                if (!empty($teacherList)) {
                     echo '<h3>';
                     echo __($guid, 'Teachers');
                     echo '</h3>';
                     echo '<ul>';
-                    while ($row = $result->fetch()) {
-                        echo '<li>'.formatName($row['title'], $row['preferredName'], $row['surname'], 'Staff').'</li>';
-                        if ($row['gibbonPersonID'] == $_SESSION[$guid]['gibbonPersonID']) {
-                            $teaching = true;
-                        }
+                    foreach ($teacherList as $teacher) {
+                        echo '<li>'. $teacher . '</li>';
                     }
                     echo '</ul>';
                 }
