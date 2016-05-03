@@ -49,16 +49,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                     $sql = "SELECT * FROM gibbonSetting WHERE scope='Finance' AND name='email'";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                }
-    $row = $result->fetch();
-    ?>
+                } catch (PDOException $e) {}
+                $row = $result->fetch();
+                ?>
 				<td style='width: 275px'> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<input name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" maxlength=255 value="<?php echo $row['value'] ?>" type="text" class="standardWidth">
@@ -79,14 +76,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 } catch (PDOException $e) {
                     echo "<div class='error'>".$e->getMessage().'</div>';
                 }
-    $row = $result->fetch();
-    ?>
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
@@ -115,8 +110,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 } catch (PDOException $e) {
                     echo "<div class='error'>".$e->getMessage().'</div>';
                 }
-    $row = $result->fetch();
-    ?>
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small">
@@ -153,16 +148,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                     $sql = "SELECT * FROM gibbonSetting WHERE scope='Finance' AND name='invoiceText'";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                }
-    $row = $result->fetch();
-    ?>
+                } catch (PDOException $e) {}
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
@@ -175,16 +167,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                     $sql = "SELECT * FROM gibbonSetting WHERE scope='Finance' AND name='invoiceNotes'";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                }
-    $row = $result->fetch();
-    ?>
+                } catch (PDOException $e) {}
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
@@ -200,14 +189,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 } catch (PDOException $e) {
                     echo "<div class='error'>".$e->getMessage().'</div>';
                 }
-    $row = $result->fetch();
-    ?>
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
@@ -244,16 +231,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                     $sql = "SELECT * FROM gibbonSetting WHERE scope='Finance' AND name='receiptText'";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                }
-    $row = $result->fetch();
-    ?>
+                } catch (PDOException $e) {}
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
@@ -266,16 +250,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                     $sql = "SELECT * FROM gibbonSetting WHERE scope='Finance' AND name='receiptNotes'";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                }
-    $row = $result->fetch();
-    ?>
+                } catch (PDOException $e) {}
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
@@ -291,14 +272,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 } catch (PDOException $e) {
                     echo "<div class='error'>".$e->getMessage().'</div>';
                 }
-    $row = $result->fetch();
-    ?>
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
@@ -330,16 +309,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                     $sql = "SELECT * FROM gibbonSetting WHERE scope='Finance' AND name='reminder1Text'";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                }
-    $row = $result->fetch();
-    ?>
+                } catch (PDOException $e) {}
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
@@ -352,16 +328,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                     $sql = "SELECT * FROM gibbonSetting WHERE scope='Finance' AND name='reminder2Text'";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                }
-    $row = $result->fetch();
-    ?>
+                } catch (PDOException $e) {}
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
@@ -374,16 +347,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                     $sql = "SELECT * FROM gibbonSetting WHERE scope='Finance' AND name='reminder3Text'";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                }
-    $row = $result->fetch();
-    ?>
+                } catch (PDOException $e) {}
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
@@ -405,8 +375,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 } catch (PDOException $e) {
                     echo "<div class='error'>".$e->getMessage().'</div>';
                 }
-    $row = $result->fetch();
-    ?>
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small">
@@ -435,14 +405,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 } catch (PDOException $e) {
                     echo "<div class='error'>".$e->getMessage().'</div>';
                 }
-    $row = $result->fetch();
-    ?>
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
@@ -476,14 +444,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 } catch (PDOException $e) {
                     echo "<div class='error'>".$e->getMessage().'</div>';
                 }
-    $row = $result->fetch();
-    ?>
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
@@ -509,16 +475,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                     $sql = "SELECT * FROM gibbonSetting WHERE scope='Finance' AND name='expenseRequestTemplate'";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                }
-    $row = $result->fetch();
-    ?>
+                } catch (PDOException $e) {}
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
@@ -534,14 +497,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 } catch (PDOException $e) {
                     echo "<div class='error'>".$e->getMessage().'</div>';
                 }
-    $row = $result->fetch();
-    ?>
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
@@ -567,16 +528,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                     $sql = "SELECT * FROM gibbonSetting WHERE scope='Finance' AND name='purchasingOfficer'";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                }
-    $row = $result->fetch();
-    ?>
+                } catch (PDOException $e) {}
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
@@ -607,16 +565,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                     $sql = "SELECT * FROM gibbonSetting WHERE scope='Finance' AND name='reimbursementOfficer'";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                }
-    $row = $result->fetch();
-    ?>
+                } catch (PDOException $e) {}
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">

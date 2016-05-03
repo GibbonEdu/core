@@ -50,16 +50,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formalAssessm
                     $sql = "SELECT * FROM gibbonSetting WHERE scope='Formal Assessment' AND name='internalAssessmentTypes'";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                }
-    $row = $result->fetch();
-    ?>
+                } catch (PDOException $e) {}
+                $row = $result->fetch();
+                ?>
 				<td style='width: 275px'> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right" colspan=2>
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php if (isset($row['value'])) {

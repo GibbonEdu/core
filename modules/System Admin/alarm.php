@@ -47,16 +47,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
                     $sql = "SELECT * FROM gibbonSetting WHERE scope='System Admin' AND name='customAlarmSound'";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                }
-    $row = $result->fetch();
-    ?>
+                } catch (PDOException $e) {}
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span><br/>
+    echo __($guid, $row['description']);}?></span><br/>
 					<?php if ($row['value'] != '') {
     ?>
 						<span class="emphasis small"><?php echo __($guid, 'Will overwrite existing attachment.') ?></span>
@@ -101,16 +98,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
                     $sql = "SELECT * FROM gibbonSetting WHERE scope='System' AND name='alarm'";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                }
-    $row = $result->fetch();
-    ?>
+                } catch (PDOException $e) {}
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">

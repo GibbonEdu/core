@@ -52,14 +52,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 } catch (PDOException $e) {
                     echo "<div class='error'>".$e->getMessage().'</div>';
                 }
-    $row = $result->fetch();
-    ?>
+                $row = $result->fetch();
+                ?>
 				<td style='width: 275px'> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=12 class="standardWidth"><?php echo $row['value'] ?></textarea>
@@ -75,14 +73,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 } catch (PDOException $e) {
                     echo "<div class='error'>".$e->getMessage().'</div>';
                 }
-    $row = $result->fetch();
-    ?>
+                $row = $result->fetch();
+                ?>
 				<td style='width: 275px'> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=12 class="standardWidth"><?php echo $row['value'] ?></textarea>
@@ -98,14 +94,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 } catch (PDOException $e) {
                     echo "<div class='error'>".$e->getMessage().'</div>';
                 }
-    $row = $result->fetch();
-    ?>
+                $row = $result->fetch();
+                ?>
 				<td style='width: 275px'> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td stclass="right">
 					<input name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" maxlength=255 value="<?php echo htmlPrep($row['value']) ?>" type="text" class="standardWidth">
@@ -127,14 +121,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 } catch (PDOException $e) {
                     echo "<div class='error'>".$e->getMessage().'</div>';
                 }
-    $row = $result->fetch();
-    ?>
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=12 class="standardWidth"><?php echo $row['value'] ?></textarea>
@@ -150,14 +142,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 } catch (PDOException $e) {
                     echo "<div class='error'>".$e->getMessage().'</div>';
                 }
-    $row = $result->fetch();
-    ?>
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=8 class="standardWidth"><?php echo $row['value'] ?></textarea>
@@ -173,14 +163,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 } catch (PDOException $e) {
                     echo "<div class='error'>".$e->getMessage().'</div>';
                 }
-    $row = $result->fetch();
-    ?>
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=8 class="standardWidth"><?php echo $row['value'] ?></textarea>
@@ -196,8 +184,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 } catch (PDOException $e) {
                     echo "<div class='error'>".$e->getMessage().'</div>';
                 }
-    $row = $result->fetch();
-    ?>
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small">
@@ -230,14 +218,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 } catch (PDOException $e) {
                     echo "<div class='error'>".$e->getMessage().'</div>';
                 }
-    $row = $result->fetch();
-    ?>
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
@@ -259,16 +245,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                     $sql = "SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='milestones'";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                }
-    $row = $result->fetch();
-    ?>
+                } catch (PDOException $e) {}
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=4 type="text" class="standardWidth"><?php echo $row['value'] ?></textarea>
@@ -281,16 +264,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                     $sql = "SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='howDidYouHear'";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                }
-    $row = $result->fetch();
-    ?>
+                } catch (PDOException $e) {}
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=4 type="text" class="standardWidth"><?php echo $row['value'] ?></textarea>
@@ -309,16 +289,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                     $sql = "SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='requiredDocuments'";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                }
-    $row = $result->fetch();
-    ?>
+                } catch (PDOException $e) {}
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=4 type="text" class="standardWidth"><?php echo $row['value'] ?></textarea>
@@ -331,16 +308,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                     $sql = "SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='requiredDocumentsText'";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                }
-    $row = $result->fetch();
-    ?>
+                } catch (PDOException $e) {}
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=4 type="text" class="standardWidth"><?php echo $row['value'] ?></textarea>
@@ -356,14 +330,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 } catch (PDOException $e) {
                     echo "<div class='error'>".$e->getMessage().'</div>';
                 }
-    $row = $result->fetch();
-    ?>
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
@@ -400,14 +372,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 } catch (PDOException $e) {
                     echo "<div class='error'>".$e->getMessage().'</div>';
                 }
-    $row = $result->fetch();
-    ?>
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
@@ -429,16 +399,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                     $sql = "SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='languageOptionsBlurb'";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                }
-    $row = $result->fetch();
-    ?>
+                } catch (PDOException $e) {}
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=4 type="text" class="standardWidth"><?php echo $row['value'] ?></textarea>
@@ -451,16 +418,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                     $sql = "SELECT * FROM gibbonSetting WHERE scope='Application Form' AND name='languageOptionsLanguageList'";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                }
-    $row = $result->fetch();
-    ?>
+                } catch (PDOException $e) {}
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=4 type="text" class="standardWidth"><?php echo $row['value'] ?></textarea>
@@ -482,14 +446,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 } catch (PDOException $e) {
                     echo "<div class='error'>".$e->getMessage().'</div>';
                 }
-    $row = $result->fetch();
-    ?>
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<input type='text' name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth" value='<?php echo htmlPrep($row['value']) ?>'>
@@ -505,14 +467,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 } catch (PDOException $e) {
                     echo "<div class='error'>".$e->getMessage().'</div>';
                 }
-    $row = $result->fetch();
-    ?>
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=8 class="standardWidth"><?php echo $row['value'] ?></textarea>
@@ -528,14 +488,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 } catch (PDOException $e) {
                     echo "<div class='error'>".$e->getMessage().'</div>';
                 }
-    $row = $result->fetch();
-    ?>
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
@@ -560,14 +518,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 } catch (PDOException $e) {
                     echo "<div class='error'>".$e->getMessage().'</div>';
                 }
-    $row = $result->fetch();
-    ?>
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=8 class="standardWidth"><?php echo $row['value'] ?></textarea>
@@ -583,14 +539,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 } catch (PDOException $e) {
                     echo "<div class='error'>".$e->getMessage().'</div>';
                 }
-    $row = $result->fetch();
-    ?>
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
@@ -615,14 +569,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 } catch (PDOException $e) {
                     echo "<div class='error'>".$e->getMessage().'</div>';
                 }
-    $row = $result->fetch();
-    ?>
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<input type='text' name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth" value='<?php echo htmlPrep($row['value']) ?>'>
@@ -638,14 +590,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 } catch (PDOException $e) {
                     echo "<div class='error'>".$e->getMessage().'</div>';
                 }
-    $row = $result->fetch();
-    ?>
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<input type='text' name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth" value='<?php echo htmlPrep($row['value']) ?>'>
@@ -661,14 +611,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 } catch (PDOException $e) {
                     echo "<div class='error'>".$e->getMessage().'</div>';
                 }
-    $row = $result->fetch();
-    ?>
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+    echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">

@@ -40,32 +40,32 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_a
 
     ?>
 	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/jobOpenings_manage_addProcess.php' ?>">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Type') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select name="type" id="type" class="standardWidth">
 						<?php
                         echo '<option value="Please select...">'.__($guid, 'Please select...').'</option>';
-    echo "<optgroup label='--".__($guid, 'Basic')."--'>";
-    echo '<option value="Teaching">'.__($guid, 'Teaching').'</option>';
-    echo '<option value="Support">'.__($guid, 'Support').'</option>';
-    echo '</optgroup>';
-    echo "<optgroup label='--".__($guid, 'System Roles')."--'>";
-    try {
-        $dataSelect = array();
-        $sqlSelect = "SELECT * FROM gibbonRole WHERE category='Staff' ORDER BY name";
-        $resultSelect = $connection2->prepare($sqlSelect);
-        $resultSelect->execute($dataSelect);
-    } catch (PDOException $e) {
-    }
-    while ($rowSelect = $resultSelect->fetch()) {
-        echo '<option value="'.$rowSelect['name'].'">'.__($guid, $rowSelect['name']).'</option>';
-    }
-    echo '</optgroup>';
-    ?>
+                        echo "<optgroup label='--".__($guid, 'Basic')."--'>";
+                            echo '<option value="Teaching">'.__($guid, 'Teaching').'</option>';
+                            echo '<option value="Support">'.__($guid, 'Support').'</option>';
+                        echo '</optgroup>';
+                        echo "<optgroup label='--".__($guid, 'System Roles')."--'>";
+                            try {
+                                $dataSelect = array();
+                                $sqlSelect = "SELECT * FROM gibbonRole WHERE category='Staff' ORDER BY name";
+                                $resultSelect = $connection2->prepare($sqlSelect);
+                                $resultSelect->execute($dataSelect);
+                            } catch (PDOException $e) {
+                            }
+                            while ($rowSelect = $resultSelect->fetch()) {
+                                echo '<option value="'.$rowSelect['name'].'">'.__($guid, $rowSelect['name']).'</option>';
+                            }
+                        echo '</optgroup>';
+                        ?>
 					</select>
 					<script type="text/javascript">
 						var type=new LiveValidation('type');
@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_a
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Job Title') ?> *</b><br/>
 				</td>
 				<td class="right">
@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_a
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Opening Date') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Format:').' ';
     if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
@@ -108,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_a
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Active') ?> *</b><br/>
 					<span class="emphasis small"></span>
 				</td>
@@ -120,9 +120,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_a
 				</td>
 			</tr>
 			<tr>
-				<td colspan=2> 
+				<td colspan=2>
 					<b><?php echo __($guid, 'Description') ?> *</b>
-					<?php 
+					<?php
                     //Attempt to build a signature for the user
                     $jobOpeningDescriptionTemplate = getSettingByScope($connection2, 'Staff', 'jobOpeningDescriptionTemplate');
     echo getEditor($guid,  true, 'description', $jobOpeningDescriptionTemplate, 20, true, true, false, true);
