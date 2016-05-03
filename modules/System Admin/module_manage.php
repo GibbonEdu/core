@@ -32,7 +32,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
 
     $returns = array();
     $returns['warning0'] = __($guid, "Uninstall was successful. You will still need to remove the module's files yourself.");
-    $returns['success0'] = __($guid, 'Uninstall was successful.');
     $returns['error5'] = __($guid, 'Install failed because either the module name was not given or the manifest file was invalid.');
     $returns['error6'] = __($guid, 'Install failed because a module with the same name is already installed.');
     $returns['warning1'] = __($guid, 'Install failed, but module was added to the system and set non-active.');
@@ -124,8 +123,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
 
             ++$count;
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$rowNum>";
             echo '<td>';
             echo __($guid, $moduleName);
             echo '</td>';

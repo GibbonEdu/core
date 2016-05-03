@@ -84,17 +84,15 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
             $row = $result->fetch();
             ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/module_manage_uninstallProcess.php?gibbonModuleID=$gibbonModuleID&orphaned=$orphaned" ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr>
-						<td style='width: 275px' colspan=2> 
-							<b><?php echo __($guid, 'Are you sure you want to delete this record?');
-            ?></b><br/>
-							<span style="font-size: 90%; color: #cc0000"><i><?php echo __($guid, 'This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!');
-            ?></span>
+						<td style='width: 275px' colspan=2>
+							<b><?php echo __($guid, 'Are you sure you want to delete this record?'); ?></b><br/>
+							<span style="font-size: 90%; color: #cc0000"><i><?php echo __($guid, 'This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!');?></span>
 						</td>
 					</tr>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'Remove Data') ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Would you like to remove the following tables and views from your database?') ?></span>
 						</td>
