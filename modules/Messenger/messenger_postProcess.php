@@ -1647,153 +1647,153 @@ else {
 			}
 
       //Target Absent students / Attendance Status
-     if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_attendance")) {
-       if ($_POST["attendance"]=="Y") {
-				 $statuses=$_POST["attendanceStatus"] ;
-         $students=$_POST["attendanceStudents"] ;
-         $parents=$_POST["attendanceParents"] ;
-         $thisDate=date('Y-m-d'); //Using current date time for now - should replace with user input date
-         if ($statuses!="") {
-					 // Make posts to message wall
-					 foreach ($choices as $t) {
-						 try {
-							 $data=array("gibbonMessengerID"=>$AI, "id"=>$t);
-							 $sql="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:gibbonMessengerID, type='Absentee', id=:id" ;
-							 $result=$connection2->prepare($sql);
-							 $result->execute($data);
-						 }
-						 catch(PDOException $e) {
-							 $partialFail=TRUE;
-						 }
-					 }
-           //Get all logs by student, with latest log entry first.
-           try {
-             $data=array("selectedDate"=>$thisDate, "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "nowDate"=>date("Y-m-d"));
-             $sql="SELECT galp.gibbonPersonID, galp.gibbonAttendanceLogPersonID, galp.type FROM gibbonAttendanceLogPerson AS galp JOIN gibbonStudentEnrolment AS gse ON (galp.gibbonPersonID=gse.gibbonPersonID) JOIN gibbonPerson AS gp ON (gse.gibbonPersonID=gp.gibbonPersonID) WHERE gp.status='Full' AND (gp.dateStart IS NULL OR gp.dateStart<=:nowDate) AND (gp.dateEnd IS NULL OR gp.dateEnd>=:nowDate) AND gse.gibbonSchoolYearID=:gibbonSchoolYearID AND galp.date=:selectedDate ORDER BY galp.gibbonPersonID, gibbonAttendanceLogPersonID DESC" ;
-             $result=$connection2->prepare($sql);
-             $result->execute($data);
-           }
-           catch(PDOException $e) {
-           }
-
-           if ($result->rowCount()<1) { //Check we have some attendance logs for this date
-             //No attendance data
-           }
-           else { //Log the personIDs of the students whose latest attendance log is in list of statuses submitted by user
-             $students=array() ;
-             $currentStudent="" ;
-             $lastStudent="" ;
-             while ($row=$result->fetch()) {
-               $currentStudent=$row["gibbonPersonID"] ;
-               if (in_array($row["type"], $statuses) AND $currentStudent!=$lastStudent) {
-                 $students[]=$currentStudent ;
-               }
-               $lastStudent=$currentStudent ;
-             }
-
-             if ($result->rowCount()<1) {
-                 //If we have no students
-             }
-             else {
-							 if ($email=="Y" OR $sms=="Y" AND $countryCode!="") {
-								 try { //Get the familyIDs for each student logged
-									 $dataFamily=array("gibbonPersonIDs"=>join(",",$students));
-									 $sqlFamily="SELECT DISTINCT gibbonFamily.gibbonFamilyID FROM gibbonFamily JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonPersonID IN (:gibbonPersonIDs)" ;
-									 $resultFamily=$connection2->prepare($sqlFamily);
-									 $resultFamily->execute($dataFamily);
-								 }
-								 catch(PDOException $e) { }
-							 }
-               //Get emails
-               if ($email=="Y") {
-                 if ($parents=="Y") {
-                   while ($rowFamily=$resultFamily->fetch()) { //Get the emails for each familyID
-                     try {
-                       $dataEmail=array("gibbonFamilyID"=>$rowFamily["gibbonFamilyID"] );
-                       $sqlEmail="SELECT DISTINCT email, title, surname, preferredName FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE NOT email='' AND status='Full' AND gibbonFamilyAdult.gibbonFamilyID=:gibbonFamilyID AND contactEmail='Y'" ;
-                       $resultEmail=$connection2->prepare($sqlEmail);
-                       $resultEmail->execute($dataEmail);
-                     }
-                     catch(PDOException $e) { }
-                     while ($rowEmail=$resultEmail->fetch()) { //Add emails to list of receivers
-                       $emails.=$rowEmail["email"] . "," ; $emailsReport.=formatName('', $rowEmail["preferredName"], $rowEmail["surname"], "Student", false) . " (" . $rowEmail["email"] . ")," ;
-                     }
-                   }
-                 }
-                 if ($students=="Y") {
-                   try { //Get the email for each student
-                     $dataEmail=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonIDs"=>join(",",$students));
-                     $sqlEmail="SELECT DISTINCT email, title, surname, preferredName FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE NOT email='' AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID IN (:gibbonPersonIDs)" ;
-                     $resultEmail=$connection2->prepare($sqlEmail);
-                     $resultEmail->execute($dataEmail);
-                   }
-                   catch(PDOException $e) { }
-                   while ($rowEmail=$resultEmail->fetch()) { //Add emails to list of receivers
-                     $emails.=$rowEmail["email"] . "," ; $emailsReport.=formatName('', $rowEmail["preferredName"], $rowEmail["surname"], "Student", false) . " (" . $rowEmail["email"] . ")," ;
-                   }
-                 }
-               } //end get emails
-
-               //Get SMS
-               if ($sms=="Y" AND $countryCode!="") {
-                 if ($parents=="Y") {
-									 while ($rowFamily=$resultFamily->fetch()) { //Get the people for each familyID
-										 try {
-                       $dataPerson=array("gibbonFamilyID"=>$rowFamily["gibbonFamilyID"] );
-                       $sqlPerson="SELECT DISTINCT gibbonPerson.gibbonPersonID FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND gibbonFamilyAdult.gibbonFamilyID=:gibbonFamilyID AND contactSMS='Y'" ;
-                       $resultPerson=$connection2->prepare($sqlPerson);
-                       $resultPerson->execute($dataPerson);
-                     }
-                     catch(PDOException $e) { }
-										 while ($rowPerson=$resultPerson->fetch()) { //Add phone numbers to SMS receivers
-											 try {
-												 $dataSMS=array("gibbonPersonID"=>$rowPerson["gibbonPersonID"] );
-												 $sqlSMS="(SELECT phone1 AS phone, phone1CountryCode AS countryCode, title, surname, preferredName FROM gibbonPerson WHERE NOT phone1='' AND phone1Type='Mobile' AND gibbonPersonID=:gibbonPersonID)" ;
-			 	 								 $sqlSMS.=" UNION (SELECT phone2 AS phone, phone2CountryCode AS countryCode, title, surname, preferredName FROM gibbonPerson WHERE NOT phone2='' AND phone2Type='Mobile' AND gibbonPersonID=:gibbonPersonID)" ;
-			 	 								 $sqlSMS.=" UNION (SELECT phone3 AS phone, phone3CountryCode AS countryCode, title, surname, preferredName FROM gibbonPerson WHERE NOT phone3='' AND phone3Type='Mobile' AND gibbonPersonID=:gibbonPersonID)" ;
-			 	 								 $sqlSMS.=" UNION (SELECT phone4 AS phone, phone4CountryCode AS countryCode, title, surname, preferredName FROM gibbonPerson WHERE NOT phone4='' AND phone4Type='Mobile' AND gibbonPersonID=:gibbonPersonID)" ;
-			 	 								 $resultSMS=$connection2->prepare($sqlSMS);
-			 	 								 $resultSMS->execute($dataSMS);
-			 	 								}
-			 	 								catch(PDOException $e) { }
-				 								while ($rowSMS=$resultSMS->fetch()) {
-				 									if ($rowSMS["countryCode"]=="") {
-				 										$phones.=$countryCode . $rowSMS["phone"] . "," ; $phonesReport.=formatName('', $rowSMS["preferredName"], $rowSMS["surname"], "Student", false) . " (" . $countryCode . $rowSMS["phone"] . ")," ;
-				 									}
-				 									else {
-				 						  			$phones.=$rowSMS["countryCode"] . $rowSMS["phone"] . "," ; $phonesReport.=formatName('', $rowSMS["preferredName"], $rowSMS["surname"], "Student", false) . " (" . $rowSMS["countryCode"] . $rowSMS["phone"] . ")," ;
-				 									}
-				 								}
-											}
-										}
-                 }
-                 if ($students=="Y") {
-									 try { //Get the phone numbers for each student
-										 foreach $students as $t {
-											 $dataSMS=array("gibbonPersonID"=>$t);
-											 $sqlSMS="(SELECT phone1 AS phone, phone1CountryCode AS countryCode, title, surname, preferredName FROM gibbonPerson WHERE NOT phone1='' AND phone1Type='Mobile' AND gibbonPersonID=:gibbonPersonID AND status='Full')" ;
-											 $sqlSMS.=" UNION (SELECT phone2 AS phone, phone2CountryCode AS countryCode, title, surname, preferredName FROM gibbonPerson WHERE NOT phone2='' AND phone2Type='Mobile' AND gibbonPersonID=:gibbonPersonID AND status='Full')" ;
-											 $sqlSMS.=" UNION (SELECT phone3 AS phone, phone3CountryCode AS countryCode, title, surname, preferredName FROM gibbonPerson WHERE NOT phone3='' AND phone3Type='Mobile' AND gibbonPersonID=:gibbonPersonID AND status='Full')" ;
-											 $sqlSMS.=" UNION (SELECT phone4 AS phone, phone4CountryCode AS countryCode, title, surname, preferredName FROM gibbonPerson WHERE NOT phone4='' AND phone4Type='Mobile' AND gibbonPersonID=:gibbonPersonID AND status='Full')" ;
-											 $resultSMS=$connection2->prepare($sqlSMS);
-											 $resultSMS->execute($dataSMS);
-										 }
-                   }
-                   catch(PDOException $e) { }
-		 							 while ($rowSMS=$resultSMS->fetch()) {
-			 							 if ($rowSMS["countryCode"]=="") {
-										   $phones.=$countryCode . $rowSMS["phone"] . "," ; $phonesReport.=formatName('', $rowSMS["preferredName"], $rowSMS["surname"], "Student", false) . " (" . $countryCode . $rowSMS["phone"] . ")," ;
-			 					     }
-			 				 			 else {
-										   $phones.=$rowSMS["countryCode"] . $rowSMS["phone"] . "," ; $phonesReport.=formatName('', $rowSMS["preferredName"], $rowSMS["surname"], "Student", false) . " (" . $rowSMS["countryCode"] . $rowSMS["phone"] . ")," ;
-										 }
-									 }
-                }
-              }//End SMS
+      if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_attendance")) {
+        if ($_POST["attendance"]=="Y") {
+          $statuses=$_POST["attendanceStatus"] ;
+          $attendanceStudents=$_POST["attendanceStudents"] ;
+          $attendanceParents=$_POST["attendanceParents"] ;
+          $attendanceDate=$_POST["attendanceDate"];
+          if ($statuses!="") {
+            // Make posts to message wall
+            foreach ($statuses as $t) {
+              try {
+                $data=array("gibbonMessengerID"=>$AI, "id"=>$t);
+                $sql="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:gibbonMessengerID, type='Absentee', id=:id" ;
+                $result=$connection2->prepare($sql);
+                $result->execute($data);
+              }
+              catch(PDOException $e) {
+                $partialFail=TRUE;
+              }
             }
-         }
-       }
-     }
+            //Get all logs by student, with latest log entry first.
+            try {
+              $data=array("selectedDate"=>$attendanceDate, "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "nowDate"=>date("Y-m-d"));
+              $sql="SELECT galp.gibbonPersonID, galp.gibbonAttendanceLogPersonID, galp.type, galp.data FROM gibbonAttendanceLogPerson AS galp JOIN gibbonStudentEnrolment AS gse ON (galp.gibbonPersonID=gse.gibbonPersonID) JOIN gibbonPerson AS gp ON (gse.gibbonPersonID=gp.gibbonPersonID) WHERE gp.status='Full' AND (gp.dateStart IS NULL OR gp.dateStart<=:nowDate) AND (gp.dateEnd IS NULL OR gp.dateEnd>=:nowDate) AND gse.gibbonSchoolYearID=:gibbonSchoolYearID AND galp.date=:selectedDate ORDER BY galp.gibbonPersonID, gibbonAttendanceLogPersonID DESC" ;
+              $result=$connection2->prepare($sql);
+              $result->execute($data);
+            }
+            catch(PDOException $e) { }
+
+            if ($result->rowCount()<1) { //Check we have some attendance logs for this date
+            //No attendance data
+            }
+            else { //Log the personIDs of the students whose latest attendance log is in list of statuses submitted by user
+              $students=array() ;
+              $currentStudent="" ;
+              $lastStudent="" ;
+              while ($row=$result->fetch()) {
+                $currentStudent=$row["gibbonPersonID"] ;
+                if (in_array($row["type"], $statuses) AND $currentStudent!=$lastStudent) {
+                  $students[]=$currentStudent ;
+                }
+                $lastStudent=$currentStudent ;
+              }
+
+              if ($students->rowCount()<1) {
+              //If we have no students
+              }
+              else {
+                if ($email=="Y" OR ($sms=="Y" AND $countryCode!="")) {
+                  try { //Get the familyIDs for each student logged
+                    $dataFamily=array("gibbonPersonIDs"=>join(",",$students));
+                    $sqlFamily="SELECT DISTINCT gibbonFamily.gibbonFamilyID FROM gibbonFamily JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonPersonID IN (:gibbonPersonIDs)" ;
+                    $resultFamily=$connection2->prepare($sqlFamily);
+                    $resultFamily->execute($dataFamily);
+                  }
+                catch(PDOException $e) { }
+                }
+                //Get emails
+                if ($email=="Y") {
+                  if ($attendanceParents=="Y") {
+                    while ($rowFamily=$resultFamily->fetch()) { //Get the emails for each familyID
+                      try {
+                        $dataEmail=array("gibbonFamilyID"=>$rowFamily["gibbonFamilyID"] );
+                        $sqlEmail="SELECT DISTINCT email, title, surname, preferredName FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE NOT email='' AND status='Full' AND gibbonFamilyAdult.gibbonFamilyID=:gibbonFamilyID AND contactEmail='Y'" ;
+                        $resultEmail=$connection2->prepare($sqlEmail);
+                        $resultEmail->execute($dataEmail);
+                      }
+                      catch(PDOException $e) { }
+                      while ($rowEmail=$resultEmail->fetch()) { //Add emails to list of receivers
+                        $emails.=$rowEmail["email"] . "," ; $emailsReport.=formatName('', $rowEmail["preferredName"], $rowEmail["surname"], "Student", false) . " (" . $rowEmail["email"] . ")," ;
+                      }
+                    }
+                  }
+                  if ($attendanceStudents=="Y") {
+                    try { //Get the email for each student
+                      $dataEmail=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonIDs"=>join(",",$students));
+                      $sqlEmail="SELECT DISTINCT email, title, surname, preferredName FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE NOT email='' AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID IN (:gibbonPersonIDs)" ;
+                      $resultEmail=$connection2->prepare($sqlEmail);
+                      $resultEmail->execute($dataEmail);
+                    }
+                    catch(PDOException $e) { }
+                    while ($rowEmail=$resultEmail->fetch()) { //Add emails to list of receivers
+                      $emails.=$rowEmail["email"] . "," ; $emailsReport.=formatName('', $rowEmail["preferredName"], $rowEmail["surname"], "Student", false) . " (" . $rowEmail["email"] . ")," ;
+                    }
+                  }
+                } //end get emails
+
+                //Get SMS
+                if ($sms=="Y" AND $countryCode!="") {
+                  if ($attendanceParents=="Y") {
+                    while ($rowFamily=$resultFamily->fetch()) { //Get the people for each familyID
+                      try {
+                        $dataPerson=array("gibbonFamilyID"=>$rowFamily["gibbonFamilyID"] );
+                        $sqlPerson="SELECT DISTINCT gibbonPerson.gibbonPersonID FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND gibbonFamilyAdult.gibbonFamilyID=:gibbonFamilyID AND contactSMS='Y'" ;
+                        $resultPerson=$connection2->prepare($sqlPerson);
+                        $resultPerson->execute($dataPerson);
+                      }
+                      catch(PDOException $e) { }
+                      while ($rowPerson=$resultPerson->fetch()) { //Add phone numbers to SMS receivers
+                        try {
+                          $dataSMS=array("gibbonPersonID"=>$rowPerson["gibbonPersonID"] );
+                          $sqlSMS="(SELECT phone1 AS phone, phone1CountryCode AS countryCode, title, surname, preferredName FROM gibbonPerson WHERE NOT phone1='' AND phone1Type='Mobile' AND gibbonPersonID=:gibbonPersonID)" ;
+                          $sqlSMS.=" UNION (SELECT phone2 AS phone, phone2CountryCode AS countryCode, title, surname, preferredName FROM gibbonPerson WHERE NOT phone2='' AND phone2Type='Mobile' AND gibbonPersonID=:gibbonPersonID)" ;
+                          $sqlSMS.=" UNION (SELECT phone3 AS phone, phone3CountryCode AS countryCode, title, surname, preferredName FROM gibbonPerson WHERE NOT phone3='' AND phone3Type='Mobile' AND gibbonPersonID=:gibbonPersonID)" ;
+                          $sqlSMS.=" UNION (SELECT phone4 AS phone, phone4CountryCode AS countryCode, title, surname, preferredName FROM gibbonPerson WHERE NOT phone4='' AND phone4Type='Mobile' AND gibbonPersonID=:gibbonPersonID)" ;
+                          $resultSMS=$connection2->prepare($sqlSMS);
+                          $resultSMS->execute($dataSMS);
+                        }
+                        catch(PDOException $e) { }
+                        while ($rowSMS=$resultSMS->fetch()) {
+                          if ($rowSMS["countryCode"]=="") {
+                            $phones.=$countryCode . $rowSMS["phone"] . "," ; $phonesReport.=formatName('', $rowSMS["preferredName"], $rowSMS["surname"], "Student", false) . " (" . $countryCode . $rowSMS["phone"] . ")," ;
+                          }
+                          else {
+                            $phones.=$rowSMS["countryCode"] . $rowSMS["phone"] . "," ; $phonesReport.=formatName('', $rowSMS["preferredName"], $rowSMS["surname"], "Student", false) . " (" . $rowSMS["countryCode"] . $rowSMS["phone"] . ")," ;
+                          }
+                        }
+                      }
+                    }
+                  }
+                  if ($attendanceStudents=="Y") {
+                    try { //Get the phone numbers for each student
+                      foreach ($students as $t) {
+                        $dataSMS=array("gibbonPersonID"=>$t);
+                        $sqlSMS="(SELECT phone1 AS phone, phone1CountryCode AS countryCode, title, surname, preferredName FROM gibbonPerson WHERE NOT phone1='' AND phone1Type='Mobile' AND gibbonPersonID=:gibbonPersonID AND status='Full')" ;
+                        $sqlSMS.=" UNION (SELECT phone2 AS phone, phone2CountryCode AS countryCode, title, surname, preferredName FROM gibbonPerson WHERE NOT phone2='' AND phone2Type='Mobile' AND gibbonPersonID=:gibbonPersonID AND status='Full')" ;
+                        $sqlSMS.=" UNION (SELECT phone3 AS phone, phone3CountryCode AS countryCode, title, surname, preferredName FROM gibbonPerson WHERE NOT phone3='' AND phone3Type='Mobile' AND gibbonPersonID=:gibbonPersonID AND status='Full')" ;
+                        $sqlSMS.=" UNION (SELECT phone4 AS phone, phone4CountryCode AS countryCode, title, surname, preferredName FROM gibbonPerson WHERE NOT  phone4='' AND phone4Type='Mobile' AND gibbonPersonID=:gibbonPersonID AND status='Full')" ;
+                        $resultSMS=$connection2->prepare($sqlSMS);
+                        $resultSMS->execute($dataSMS);
+                      }
+                    }
+                    catch(PDOException $e) { }
+                    while ($rowSMS=$resultSMS->fetch()) {
+                      if ($rowSMS["countryCode"]=="") {
+                        $phones.=$countryCode . $rowSMS["phone"] . "," ; $phonesReport.=formatName('', $rowSMS["preferredName"], $rowSMS["surname"], "Student", false) . " (" . $countryCode . $rowSMS["phone"] . ")," ;
+                      }
+                      else {
+                        $phones.=$rowSMS["countryCode"] . $rowSMS["phone"] . "," ; $phonesReport.=formatName('', $rowSMS["preferredName"], $rowSMS["surname"], "Student", false) . " (" . $rowSMS["countryCode"] . $rowSMS["phone"] . ")," ;
+                      }
+                    }
+                  }
+                } //End SMS
+              }
+            }
+          }
+        }
+      }
 
 			//Individuals
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_individuals")) {
