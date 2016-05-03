@@ -302,7 +302,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                                     ?></span>
                                 </td>
                                 <td class="right">
-                                    <input name="date" id="date" maxlength=10 value="<?php echo ($row2['date'] != '0000-00-00')? $row2['date'] : ''; ?>" type="text" class="standardWidth">
+                                    <input name="date" id="date" maxlength=10 value="<?php echo dateConvertBack($guid, $row2['date']); ?>" type="text" class="standardWidth">
                                     <script type="text/javascript">
                                         var date=new LiveValidation('date');
                                         date.add(Validate.Presence);

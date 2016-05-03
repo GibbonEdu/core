@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
         $name = $_POST['name'];
         $description = $_POST['description'];
         $type = $_POST['type'];
-        $date = $_POST['date'];
+        $date = (!empty($_POST['date']))? dateConvert($guid, $_POST['date']) : '';
         //Sort out attainment
         $attainment = $_POST['attainment'];
         $attainmentWeighting = null;
