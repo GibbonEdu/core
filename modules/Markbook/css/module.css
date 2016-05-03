@@ -55,17 +55,13 @@ tr.even:target td {
 /* Double-scroll */
 
 .doublescroll-wrapper {
+	display: inline-block;
+	max-width: 100%;
 	position: relative;
 	background: #FBFBFB none repeat scroll 0% 0%;
 	border: 1px solid #CCC;
 	border-radius: 3px;
 }
-
-/*.doublescroll-wrapper,
-.doublescroll-top,
-.doublescroll-container {
-	display: table;
-}*/
 
 .doublescroll-top {
 	overflow-x:auto;

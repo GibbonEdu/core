@@ -39,13 +39,6 @@ jQuery(function($){
 		appendTarget: ':parent',
 	});
 
-
-	// $("#myTable").on('dragtablestop', function( event ) {
-
-	// 	$(this).dragtable('order') );
-
-	// });
-
 }); 
 
 

@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 function classChooser($guid, $connection2, $gibbonCourseClassID)
 {
+    //Set timezone from session variable
+    date_default_timezone_set($_SESSION[$guid]['timezone']);
+
     $output = '';
 
     $output .= "<h3 style='margin-top: 0px'>";
@@ -31,9 +34,43 @@ function classChooser($guid, $connection2, $gibbonCourseClassID)
     $output .= '</td>';
     $output .= "<td style='vertical-align: top; text-align: right'>";
     $output .= "<form method='get' action='".$_SESSION[$guid]['absoluteURL']."/index.php'>";
-    $selectCount = 0;
     $output .= "<input name='q' id='q' type='hidden' value='/modules/Markbook/markbook_view.php'>";
-    $output .= "<select name='gibbonCourseClassID' id='gibbonCourseClassID' style='width:193px'>";
+    
+    $output .= "<span>".__($guid, 'Term').": </span>";
+    $output .= "<select name='gibbonSchoolYearTermID' id='gibbonSchoolYearTermID' style='width:193px; float: none;'>";
+    $output .= "<option value=''>".__($guid, 'All Terms')."</option>";
+    try {
+        $data=array("gibbonSchoolYearID"=>$_SESSION[$guid]['gibbonSchoolYearID']);
+        $sql="SELECT gibbonSchoolYearTermID, name, UNIX_TIMESTAMP(firstDay) AS firstTime, UNIX_TIMESTAMP(lastDay) AS lastTime FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber" ;
+        $resultTerms=$connection2->prepare($sql);
+        $resultTerms->execute($data);
+    }
+    catch(PDOException $e) { }
+
+    $selectTerm = (isset($_GET['gibbonSchoolYearTermID']))? $_GET['gibbonSchoolYearTermID'] : 0;
+
+    while ($rowTerm = $resultTerms->fetch()) {
+
+        $selected = ( time() >= $rowTerm['firstTime'] && time() < $rowTerm['lastTime'] )? 'selected' : '';
+        $selected = ( !empty($selectTerm) && $selectTerm == $rowTerm['gibbonSchoolYearTermID'])? 'selected' : '';
+        $output .= "<option $selected value='".$rowTerm['gibbonSchoolYearTermID']."'>".htmlPrep($rowTerm['name']).'</option>';
+    }
+    $output .= '</select>';
+
+    $selectFilter = (isset($_GET['columnFilter']))? $_GET['columnFilter'] : 0;
+
+    $output .= "&nbsp;&nbsp;&nbsp;<span>".__($guid, 'Show').": </span>";
+    $output .= "<select name='columnFilter' id='columnFilter' style='width:193px; float: none;'>";
+    $output .= "<option value=''>".__($guid, 'All Columns')."</option>";
+    $output .= "<option value='marked' ".(($selectFilter == 'marked')? 'selected' : '')." >".__($guid, 'Marked')."</option>";
+    $output .= "<option value='unmarked' ".(($selectFilter == 'unmarked')? 'selected' : '')." >".__($guid, 'Unmarked')."</option>";
+    $output .= "<option value='week' ".(($selectFilter == 'week')? 'selected' : '').">".__($guid, 'This Week')."</option>";
+    $output .= "<option value='month' ".(($selectFilter == 'month')? 'selected' : '').">".__($guid, 'This Month')."</option>";
+    $output .= '</select>';
+
+
+    $output .= "&nbsp;&nbsp;&nbsp;<span>".__($guid, 'Class').": </span>";
+    $output .= "<select name='gibbonCourseClassID' id='gibbonCourseClassID' style='width:193px; float: none;'>";
     $output .= "<option value=''></option>";
     try {
         $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
@@ -42,6 +79,8 @@ function classChooser($guid, $connection2, $gibbonCourseClassID)
         $resultSelect->execute($dataSelect);
     } catch (PDOException $e) {
     }
+    $selectCount = 0;
+
     $output .= "<optgroup label='--".__($guid, 'My Classes')."--'>";
     while ($rowSelect = $resultSelect->fetch()) {
         $selected = '';
