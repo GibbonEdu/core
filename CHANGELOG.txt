@@ -115,6 +115,7 @@ v12.0.00
 		Timetable: fixed rendering to allow Sunday as first day or the week, according to values in gibbonDaysOfWeek
 		Timetable: fixed rendering bug preventing some time labels from being displayed
 		Timetable: made "Back To Search" link persistent when timetable controls used
+		Timetable: added ability for department coordinator to manage facility changes within their department
 		Tracking: adjusted Data Points export to combine multiple column internal assessments for one subject into a column
 		User Admin: added notification to form tutor(s) when a student's privacy options change (via Edit or Data Update).
 		User Admin: made max_input_vars test a little more generous
