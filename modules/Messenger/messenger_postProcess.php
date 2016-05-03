@@ -1652,7 +1652,7 @@ else {
           $statuses=$_POST["attendanceStatus"] ;
           $attendanceStudents=$_POST["attendanceStudents"] ;
           $attendanceParents=$_POST["attendanceParents"] ;
-          $attendanceDate=$_POST["attendanceDate"];
+          $attendanceDate=dateConvert($guid, $_POST["attendanceDate"]);
           if ($statuses!="") {
             // Make posts to message wall
             foreach ($statuses as $t) {
@@ -1672,6 +1672,7 @@ else {
               $sql="SELECT galp.gibbonPersonID, galp.gibbonAttendanceLogPersonID, galp.type, galp.date FROM gibbonAttendanceLogPerson AS galp JOIN gibbonStudentEnrolment AS gse ON (galp.gibbonPersonID=gse.gibbonPersonID) JOIN gibbonPerson AS gp ON (gse.gibbonPersonID=gp.gibbonPersonID) WHERE gp.status='Full' AND (gp.dateStart IS NULL OR gp.dateStart<=:nowDate) AND (gp.dateEnd IS NULL OR gp.dateEnd>=:nowDate) AND gse.gibbonSchoolYearID=:gibbonSchoolYearID AND galp.date=:selectedDate ORDER BY galp.gibbonPersonID, gibbonAttendanceLogPersonID DESC" ;
               $result=$connection2->prepare($sql);
               $result->execute($data);
+
             }
             catch(PDOException $e) { }
 
@@ -1690,16 +1691,20 @@ else {
                 $lastStudent=$currentStudent ;
               }
 
-              if ($students->rowCount()<1) {
+
+
+              if (count($students)<1) {
               //If we have no students
               }
               else {
                 if ($email=="Y" OR ($sms=="Y" AND $countryCode!="")) {
                   try { //Get the familyIDs for each student logged
                     $dataFamily=array("gibbonPersonIDs"=>join(",",$students));
+
                     $sqlFamily="SELECT DISTINCT gibbonFamily.gibbonFamilyID FROM gibbonFamily JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonPersonID IN (:gibbonPersonIDs)" ;
                     $resultFamily=$connection2->prepare($sqlFamily);
                     $resultFamily->execute($dataFamily);
+											
                   }
                 catch(PDOException $e) { }
                 }
