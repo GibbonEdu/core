@@ -38,35 +38,35 @@ else {
 		print "<div class='trail'>" ;
 		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Manage Messages') . "</div>" ;
 		print "</div>" ;
-		
+
 		if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
 		$deleteReturnMessage="" ;
 		$class="error" ;
 		if (!($deleteReturn=="")) {
 			if ($deleteReturn=="success0") {
-				$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;		
+				$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;
 				print $deleteReturnMessage;
 			print "</div>" ;
-		} 
-		
+		}
+
 		print "<h2>" ;
 		print __($guid, "Search") ;
 		print "</h2>" ;
-		
+
 		$search=NULL;
 		if (isset($_GET["search"])) {
 			$search=$_GET["search"] ;
 		}
-		
+
 		?>
 		<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-			<table class='noIntBorder' cellspacing='0' style="width: 100%">	
+			<table class='noIntBorder' cellspacing='0' style="width: 100%">
 				<tr><td style="width: 30%"></td><td></td></tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php print __($guid, 'Search In') ?></b><br/>
 						<span class="emphasis small"><?php print __($guid, 'Subject, body.') ?></span>
 					</td>
@@ -87,47 +87,47 @@ else {
 			</table>
 		</form>
 		<?php
-		
+
 		print "<h2>" ;
 		print __($guid, "Messages") ;
 		print "</h2>" ;
-		
+
 		//Set pagination variable
 		$page=1 ; if (isset($_GET["page"])) { $page=$_GET["page"] ; }
 		if ((!is_numeric($page)) OR $page<1) {
 			$page=1 ;
 		}
-		
+
 		try {
 			if ($highestAction=="Manage Messages_all") {
 				if ($search=="") {
-					$data=array(); 
-					$sql="SELECT gibbonMessenger.*, title, surname, preferredName, category FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) ORDER BY timestamp DESC" ; 
+					$data=array();
+					$sql="SELECT gibbonMessenger.*, title, surname, preferredName, category FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) ORDER BY timestamp DESC" ;
 				}
 				else {
-					$data=array("search1"=>"%$search%", "search2"=>"%$search%"); 
-					$sql="SELECT gibbonMessenger.*, title, surname, preferredName, category FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE (subject LIKE :search1 OR body LIKE :search2) ORDER BY timestamp DESC" ; 
+					$data=array("search1"=>"%$search%", "search2"=>"%$search%");
+					$sql="SELECT gibbonMessenger.*, title, surname, preferredName, category FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE (subject LIKE :search1 OR body LIKE :search2) ORDER BY timestamp DESC" ;
 				}
 			}
 			else {
 				if ($search=="") {
-					$data=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-					$sql="SELECT gibbonMessenger.*, title, surname, preferredName, category FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonMessenger.gibbonPersonID=:gibbonPersonID ORDER BY timestamp DESC" ; 
+					$data=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]);
+					$sql="SELECT gibbonMessenger.*, title, surname, preferredName, category FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonMessenger.gibbonPersonID=:gibbonPersonID ORDER BY timestamp DESC" ;
 				}
 				else {
-					$data=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "search1"=>"%$search%", "search2"=>"%$search%"); 
-					$sql="SELECT gibbonMessenger.*, title, surname, preferredName, category FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonMessenger.gibbonPersonID=:gibbonPersonID AND (subject LIKE :search1 OR body LIKE :search2) ORDER BY timestamp DESC" ; 
+					$data=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "search1"=>"%$search%", "search2"=>"%$search%");
+					$sql="SELECT gibbonMessenger.*, title, surname, preferredName, category FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonMessenger.gibbonPersonID=:gibbonPersonID AND (subject LIKE :search1 OR body LIKE :search2) ORDER BY timestamp DESC" ;
 				}
 			}
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
-		catch(PDOException $e) { 
-			print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+		catch(PDOException $e) {
+			print "<div class='error'>" . $e->getMessage() . "</div>" ;
 		}
-		
-		$sqlPage=$sql ." LIMIT " . $_SESSION[$guid]["pagination"] . " OFFSET " . (($page-1)*$_SESSION[$guid]["pagination"]) ; 
-		
+
+		$sqlPage=$sql ." LIMIT " . $_SESSION[$guid]["pagination"] . " OFFSET " . (($page-1)*$_SESSION[$guid]["pagination"]) ;
+
 		if (isActionAccessible($guid, $connection2,"/modules/Messenger/messenger_post.php")==TRUE OR isActionAccessible($guid, $connection2,"/modules/Messenger/messenger_postQuickWall.php")==TRUE) {
 			print "<div class='linkTop'>" ;
 				if (isActionAccessible($guid, $connection2,"/modules/Messenger/messenger_post.php")==TRUE) {
@@ -141,7 +141,7 @@ else {
 				}
 			print "</div>" ;
 		}
-		
+
 		if ($result->rowCount()<1) {
 			print "<div class='error'>" ;
 			print __($guid, "There are no records to display.") ;
@@ -151,7 +151,7 @@ else {
 			if ($result->rowCount()>$_SESSION[$guid]["pagination"]) {
 				printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top") ;
 			}
-		
+
 			print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
 					print "<th>" ;
@@ -180,15 +180,15 @@ else {
 						print __($guid, "Actions") ;
 					print "</th>" ;
 				print "</tr>" ;
-				
+
 				$count=0;
 				$rowNum="odd" ;
 				try {
 					$resultPage=$connection2->prepare($sqlPage);
 					$resultPage->execute($data);
 				}
-				catch(PDOException $e) { 
-					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				catch(PDOException $e) {
+					print "<div class='error'>" . $e->getMessage() . "</div>" ;
 				}
 				while ($row=$resultPage->fetch()) {
 					if ($count%2==0) {
@@ -197,8 +197,8 @@ else {
 					else {
 						$rowNum="odd" ;
 					}
-					
-					
+
+
 					//COLOR ROW BY STATUS!
 					print "<tr class=$rowNum>" ;
 						print "<td>" ;
@@ -225,25 +225,25 @@ else {
 						print "</td>" ;
 						print "<td>" ;
 							try {
-								$dataTargets=array("gibbonMessengerID"=>$row["gibbonMessengerID"]); 
+								$dataTargets=array("gibbonMessengerID"=>$row["gibbonMessengerID"]);
 								$sqlTargets="SELECT type, id FROM gibbonMessengerTarget WHERE gibbonMessengerID=:gibbonMessengerID ORDER BY type, id" ;
 								$resultTargets=$connection2->prepare($sqlTargets);
 								$resultTargets->execute($dataTargets);
 							}
-							catch(PDOException $e) { 
-								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+							catch(PDOException $e) {
+								print "<div class='error'>" . $e->getMessage() . "</div>" ;
 							}
 							$targets="" ;
 							while ($rowTargets=$resultTargets->fetch()) {
 								if ($rowTargets["type"]=="Activity") {
 									try {
-										$dataTarget=array("gibbonActivityID"=>$rowTargets["id"]); 
+										$dataTarget=array("gibbonActivityID"=>$rowTargets["id"]);
 										$sqlTarget="SELECT name FROM gibbonActivity WHERE gibbonActivityID=:gibbonActivityID" ;
 										$resultTarget=$connection2->prepare($sqlTarget);
 										$resultTarget->execute($dataTarget);
 									}
-									catch(PDOException $e) { 
-										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+									catch(PDOException $e) {
+										print "<div class='error'>" . $e->getMessage() . "</div>" ;
 									}
 									if ($resultTarget->rowCount()==1) {
 										$rowTarget=$resultTarget->fetch() ;
@@ -252,13 +252,13 @@ else {
 								}
 								else if ($rowTargets["type"]=="Class") {
 									try {
-										$dataTarget=array("gibbonCourseClassID"=>$rowTargets["id"]); 
+										$dataTarget=array("gibbonCourseClassID"=>$rowTargets["id"]);
 										$sqlTarget="SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassID=:gibbonCourseClassID" ;
 										$resultTarget=$connection2->prepare($sqlTarget);
 										$resultTarget->execute($dataTarget);
 									}
-									catch(PDOException $e) { 
-										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+									catch(PDOException $e) {
+										print "<div class='error'>" . $e->getMessage() . "</div>" ;
 									}
 									if ($resultTarget->rowCount()==1) {
 										$rowTarget=$resultTarget->fetch() ;
@@ -267,13 +267,13 @@ else {
 								}
 								else if ($rowTargets["type"]=="Course") {
 									try {
-										$dataTarget=array("gibbonCourseID"=>$rowTargets["id"]); 
+										$dataTarget=array("gibbonCourseID"=>$rowTargets["id"]);
 										$sqlTarget="SELECT name FROM gibbonCourse WHERE gibbonCourseID=:gibbonCourseID" ;
 										$resultTarget=$connection2->prepare($sqlTarget);
 										$resultTarget->execute($dataTarget);
 									}
-									catch(PDOException $e) { 
-										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+									catch(PDOException $e) {
+										print "<div class='error'>" . $e->getMessage() . "</div>" ;
 									}
 									if ($resultTarget->rowCount()==1) {
 										$rowTarget=$resultTarget->fetch() ;
@@ -282,13 +282,13 @@ else {
 								}
 								else if ($rowTargets["type"]=="Role") {
 									try {
-										$dataTarget=array("gibbonRoleID"=>$rowTargets["id"]); 
+										$dataTarget=array("gibbonRoleID"=>$rowTargets["id"]);
 										$sqlTarget="SELECT name FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleID" ;
 										$resultTarget=$connection2->prepare($sqlTarget);
 										$resultTarget->execute($dataTarget);
 									}
-									catch(PDOException $e) { 
-										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+									catch(PDOException $e) {
+										print "<div class='error'>" . $e->getMessage() . "</div>" ;
 									}
 									if ($resultTarget->rowCount()==1) {
 										$rowTarget=$resultTarget->fetch() ;
@@ -300,13 +300,13 @@ else {
 								}
 								else if ($rowTargets["type"]=="Roll Group") {
 									try {
-										$dataTarget=array("gibbonRollGroupID"=>$rowTargets["id"]); 
+										$dataTarget=array("gibbonRollGroupID"=>$rowTargets["id"]);
 										$sqlTarget="SELECT name FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID" ;
 										$resultTarget=$connection2->prepare($sqlTarget);
 										$resultTarget->execute($dataTarget);
 									}
-									catch(PDOException $e) { 
-										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+									catch(PDOException $e) {
+										print "<div class='error'>" . $e->getMessage() . "</div>" ;
 									}
 									if ($resultTarget->rowCount()==1) {
 										$rowTarget=$resultTarget->fetch() ;
@@ -315,13 +315,13 @@ else {
 								}
 								else if ($rowTargets["type"]=="Year Group") {
 									try {
-										$dataTarget=array("gibbonYearGroupID"=>$rowTargets["id"]); 
+										$dataTarget=array("gibbonYearGroupID"=>$rowTargets["id"]);
 										$sqlTarget="SELECT name FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupID" ;
 										$resultTarget=$connection2->prepare($sqlTarget);
 										$resultTarget->execute($dataTarget);
 									}
-									catch(PDOException $e) { 
-										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+									catch(PDOException $e) {
+										print "<div class='error'>" . $e->getMessage() . "</div>" ;
 									}
 									if ($resultTarget->rowCount()==1) {
 										$rowTarget=$resultTarget->fetch() ;
@@ -330,13 +330,13 @@ else {
 								}
 								else if ($rowTargets["type"]=="Applicants") {
 									try {
-										$dataTarget=array("gibbonSchoolYearID"=>$rowTargets["id"]); 
+										$dataTarget=array("gibbonSchoolYearID"=>$rowTargets["id"]);
 										$sqlTarget="SELECT name FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID" ;
 										$resultTarget=$connection2->prepare($sqlTarget);
 										$resultTarget->execute($dataTarget);
 									}
-									catch(PDOException $e) { 
-										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+									catch(PDOException $e) {
+										print "<div class='error'>" . $e->getMessage() . "</div>" ;
 									}
 									if ($resultTarget->rowCount()==1) {
 										$rowTarget=$resultTarget->fetch() ;
@@ -345,28 +345,34 @@ else {
 								}
 								else if ($rowTargets["type"]=="Houses") {
 									try {
-										$dataTarget=array("gibbonHouseID"=>$rowTargets["id"]); 
+										$dataTarget=array("gibbonHouseID"=>$rowTargets["id"]);
 										$sqlTarget="SELECT name FROM gibbonHouse WHERE gibbonHouseID=:gibbonHouseID" ;
 										$resultTarget=$connection2->prepare($sqlTarget);
 										$resultTarget->execute($dataTarget);
 									}
-									catch(PDOException $e) { 
-										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+									catch(PDOException $e) {
+										print "<div class='error'>" . $e->getMessage() . "</div>" ;
 									}
 									if ($resultTarget->rowCount()==1) {
 										$rowTarget=$resultTarget->fetch() ;
 										$targets.="<b>" . __($guid, $rowTargets["type"]) . "</b> - " . $rowTarget["name"] . "<br/>" ;
 									}
 								}
+                else if ($rowTargets["type"]=="Transport") {
+									$targets.="<b>" . __($guid, $rowTargets["type"]) . "</b> - " . __($guid, $rowTargets["id"]) . "<br/>" ;
+								}
+                else if ($rowTargets["type"]=="Attendance") {
+                  $targets.="<b>" . __($guid, $rowTargets["type"]) . "</b> - " . __($guid, $rowTargets["id"]) . "<br/>" ;
+                }
 								else if ($rowTargets["type"]=="Individuals") {
 									try {
-										$dataTarget=array("gibbonPersonID"=>$rowTargets["id"]); 
+										$dataTarget=array("gibbonPersonID"=>$rowTargets["id"]);
 										$sqlTarget="SELECT preferredName, surname FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
 										$resultTarget=$connection2->prepare($sqlTarget);
 										$resultTarget->execute($dataTarget);
 									}
-									catch(PDOException $e) { 
-										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+									catch(PDOException $e) {
+										print "<div class='error'>" . $e->getMessage() . "</div>" ;
 									}
 									if ($resultTarget->rowCount()==1) {
 										$rowTarget=$resultTarget->fetch() ;
@@ -403,7 +409,7 @@ else {
 						print "<td>" ;
 							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_edit.php&gibbonMessengerID=" . $row["gibbonMessengerID"] . "&sidebar=true&search=$search'><img title='" . __($guid, 'Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_delete.php&gibbonMessengerID=" . $row["gibbonMessengerID"] . "&sidebar=true&search=$search'><img title='" . __($guid, 'Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
-							print "<script type='text/javascript'>" ;	
+							print "<script type='text/javascript'>" ;
 								print "$(document).ready(function(){" ;
 									print "\$(\".comment-$count\").hide();" ;
 									print "\$(\".show_hide-$count\").fadeIn(1000);" ;
@@ -441,11 +447,11 @@ else {
 							print "</td>" ;
 						print "</tr>" ;
 					}
-					
+
 					$count++ ;
 				}
 			print "</table>" ;
-			
+
 			if ($result->rowCount()>$_SESSION[$guid]["pagination"]) {
 				printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "bottom") ;
 			}

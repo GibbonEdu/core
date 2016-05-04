@@ -1327,7 +1327,6 @@ else {
 										foreach($statusStr as $status) {
 											print "<option value='" . $status . "'" . ($status === 'Absent' ? ' selected' : '') . ">" . htmlPrep(__($guid, $status)) . "</option>";
 										}
-
 								}
 								?>
 							</select>
@@ -1346,7 +1345,7 @@ else {
 							<script type="text/javascript">
 								$(function() {
 									$("#attendanceDate").datepicker();
-									$( "#attendanceDate" ).datepicker('setDate', new Date());
+									$("#attendanceDate").datepicker('setDate', new Date());
 								});
 							</script>
 						</td>
