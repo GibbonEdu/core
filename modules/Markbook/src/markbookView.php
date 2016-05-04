@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon;
+namespace Module\Markbook ;
 
 /**
  * Markbook display & edit class
@@ -26,7 +26,7 @@ namespace Gibbon;
  * @since	3rd May 2016
  * @author	Sandra Kuipers
  */
-class markbook
+class markbookView
 {
 
 	/**
@@ -65,6 +65,8 @@ class markbook
 	private $externalAssessmentFields;
 	private $personalizedTargets;
 	private $weightings;
+
+    private $columns = array();
 
 	public $gibbonCourseClassID;
 
@@ -160,10 +162,40 @@ class markbook
 	    } catch (PDOException $e) { $this->error( $e->getMessage() ); }
 
 	    $this->columnsThisPage = $result->rowCount();
+        $this->columns = array();
 
-	    return $result;
+        for ($i = 0; $i < $this->columnsThisPage; ++$i) {
+
+            $column = new markbookColumn( $result->fetch() );
+
+            if ($column != NULL) {
+                $this->columns[ $i ] = $column;
+
+                //WORK OUT IF THERE IS SUBMISSION
+                if ( !empty($column->getData('gibbonPlannerEntryID'))) {
+                    try {
+                        $dataSub=array("gibbonPlannerEntryID"=>$column->getData('gibbonPlannerEntryID') ); 
+                        $sqlSub="SELECT homeworkDueDateTime, date FROM gibbonPlannerEntry WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND homeworkSubmission='Y'" ;
+                        $result=$this->pdo->executeQuery($data, $sql);
+                    } catch (PDOException $e) { $this->error( $e->getMessage() ); }
+
+                    if ($resultSub->rowCount()==1) {
+                        $column->setSubmissionDetails( $resultSub->fetch() );
+                    }
+                }
+            }
+        }
+
+        if ($this->columnsThisPage != count($this->columns)) {
+            $this->error( "Column count mismatch. Something went horribly wrong loading column data." );
+        }
+
+	    return (count($this->columns) > 0);
     }
 
+    public function getColumn( $i ) {
+        return (isset($this->columns[$i]))? $this->columns[$i] : NULL;
+    }
     
 
     private function getColumnFilters() {
@@ -225,20 +257,23 @@ class markbook
     }
 
     public function getWeightingForStudent( $gibbonPersonID ) {
-    	$totalWeight = 0;
+    	
+        $output = '';
+        $totalWeight = 0;
         $cummulativeWeightedScore = 0;
         $percent = false;
-        foreach ($this->weightings as $weighting) {
-            if ($weighting[2] ==  $gibbonPersonID ) {
-                $totalWeight += $weighting[0];
-                if (strpos($weighting[1], '%') !== 0) {
-                    $weighting[1] = str_replace('%', '', $weighting[1]);
-                    $percent = true;
-                }
-                $cummulativeWeightedScore += ($weighting[1] * $weighting[0]);
+
+        if (!isset($this->weightings[$gibbonPersonID])) return $output;
+
+        foreach ($this->weightings[$gibbonPersonID] as $weighting) {
+            $totalWeight += $weighting['weighting'];
+            if (strpos($weighting['value'], '%') !== false) {
+                $weighting['value'] = str_replace('%', '', $weighting['value']);
+                $percent = true;
             }
+            $cummulativeWeightedScore += ($weighting['value'] * $weighting['weighting']);
         }
-        $output = '';
+        
         if ($totalWeight > 0) {
             $output = round($cummulativeWeightedScore / $totalWeight, 0);
             if ($percent) {
@@ -252,7 +287,7 @@ class markbook
     public function cacheWeightings( ) {
 
     	$this->weightings = array();
-        $weightingsCount = 0;
+        //$weightingsCount = 0;
         try {
             $data = array('gibbonCourseClassID' => $this->gibbonCourseClassID);
             $sql = "SELECT attainmentWeighting, attainmentValue, gibbonPersonIDStudent FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonScale ON (gibbonMarkbookColumn.gibbonScaleIDAttainment=gibbonScale.gibbonScaleID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonScale.numeric='Y' AND gibbonScaleID=(SELECT value FROM gibbonSetting WHERE scope='System' AND name='primaryAssessmentScale') AND complete='Y' AND NOT attainmentValue='' ORDER BY gibbonPersonIDStudent";
@@ -260,10 +295,9 @@ class markbook
         } catch (PDOException $e) { $this->error( $e->getMessage() ); }
 
         while ($rowWeightings = $result->fetch()) {
-            $this->weightings[$weightingsCount][0] = $rowWeightings['attainmentWeighting'];
-            $this->weightings[$weightingsCount][1] = $rowWeightings['attainmentValue'];
-            $this->weightings[$weightingsCount][2] = $rowWeightings['gibbonPersonIDStudent'];
-            ++$weightingsCount;
+
+            $id = $rowWeightings['gibbonPersonIDStudent'];
+            $this->weightings[$id][] = array( 'weighting' => $rowWeightings['attainmentWeighting'], 'value' => $rowWeightings['attainmentValue'] );
         }
     }
 
@@ -286,16 +320,17 @@ class markbook
         return $this->primaryAssessmentScale;
     }
 
-    public function hasExternalAssessments( $gibbonPersonID ) {
+    public function hasExternalAssessments() {
     	return (isset($this->externalAssessmentFields))? (count($this->externalAssessmentFields) > 0) : false;
     }
 
-    public function cacheExternalAssessments( $gibbonYearGroupIDList ) {
+    public function cacheExternalAssessments( $courseName, $gibbonYearGroupIDList ) {
 
 		$gibbonYearGroupIDListArray = (explode(',', $gibbonYearGroupIDList));
 		if (count($gibbonYearGroupIDListArray) == 1) {
 		    $primaryExternalAssessmentByYearGroup = unserialize(getSettingByScope($this->pdo->getConnection(), 'School Admin', 'primaryExternalAssessmentByYearGroup'));
 
+            if (!isset($primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]])) return;
 
 		    if ($primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]] != '' and $primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]] != '-') {
 
