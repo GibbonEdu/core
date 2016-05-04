@@ -59,8 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
-            ?>
+            $row = $result->fetch(); ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/gradeScales_manage_editProcess.php?gibbonScaleID=$gibbonScaleID" ?>">
 			<table class='smallIntBorder fullWidth' cellspacing='0'>	
 				<tr>
@@ -69,10 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
 						<span class="emphasis small"><?php echo __($guid, 'Must be unique for this school year.') ?></span>
 					</td>
 					<td class="right">
-						<input name="name" id="name" maxlength=40 value="<?php if (isset($row['name'])) {
-    echo htmlPrep(__($guid, $row['name']));
-}
-            ?>" type="text" class="standardWidth">
+						<input name="name" id="name" maxlength=40 value="<?php if (isset($row['name'])) { echo htmlPrep(__($guid, $row['name'])); } ?>" type="text" class="standardWidth">
 						<script type="text/javascript">
 							var name2=new LiveValidation('name');
 							name2.add(Validate.Presence);
@@ -85,10 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
 						<span class="emphasis small"></span>
 					</td>
 					<td class="right">
-						<input name="nameShort" id="nameShort" maxlength=5 value="<?php if (isset($row['nameShort'])) {
-    echo htmlPrep(__($guid, $row['nameShort']));
-}
-            ?>" type="text" class="standardWidth">
+						<input name="nameShort" id="nameShort" maxlength=5 value="<?php if (isset($row['nameShort'])) { echo htmlPrep(__($guid, $row['nameShort'])); } ?>" type="text" class="standardWidth">
 						<script type="text/javascript">
 							var nameShort=new LiveValidation('nameShort');
 							nameShort.add(Validate.Presence);
@@ -101,10 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
 						<span class="emphasis small"><?php echo __($guid, 'Brief description of how scale is used.') ?></span>
 					</td>
 					<td class="right">
-						<input name="usage" id="usage" maxlength=50 value="<?php if (isset($row['usage'])) {
-    echo htmlPrep(__($guid, $row['usage']));
-}
-            ?>" type="text" class="standardWidth">
+						<input name="usage" id="usage" maxlength=50 value="<?php if (isset($row['usage'])) { echo htmlPrep(__($guid, $row['usage'])); } ?>" type="text" class="standardWidth">
 						<script type="text/javascript">
 							var usage=new LiveValidation('usage');
 							usage.add(Validate.Presence);
@@ -143,21 +133,21 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
 						<select name="lowestAcceptable" id="lowestAcceptable" class="standardWidth">
 							<?php
                             echo "<option value=''></option>";
-            try {
-                $dataSelect = array('gibbonScaleID' => $gibbonScaleID);
-                $sqlSelect = 'SELECT * FROM gibbonScaleGrade WHERE gibbonScaleID=:gibbonScaleID ORDER BY sequenceNumber';
-                $resultSelect = $connection2->prepare($sqlSelect);
-                $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) {
-            }
-            while ($rowSelect = $resultSelect->fetch()) {
-                $selected = '';
-                if ($rowSelect['sequenceNumber'] == $row['lowestAcceptable']) {
-                    $selected = 'selected';
-                }
-                echo "<option $selected value='".$rowSelect['sequenceNumber']."'>".$rowSelect['value'].'</option>';
-            }
-            ?>
+							try {
+								$dataSelect = array('gibbonScaleID' => $gibbonScaleID);
+								$sqlSelect = 'SELECT * FROM gibbonScaleGrade WHERE gibbonScaleID=:gibbonScaleID ORDER BY sequenceNumber';
+								$resultSelect = $connection2->prepare($sqlSelect);
+								$resultSelect->execute($dataSelect);
+							} catch (PDOException $e) {
+							}
+							while ($rowSelect = $resultSelect->fetch()) {
+								$selected = '';
+								if ($rowSelect['sequenceNumber'] == $row['lowestAcceptable']) {
+									$selected = 'selected';
+								}
+								echo "<option $selected value='".$rowSelect['sequenceNumber']."'>".$rowSelect['value'].'</option>';
+							}
+							?>
 						</select>
 					</td>
 				</tr>

@@ -80,8 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 if ($search != '') {
                     echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/applicationForm_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__($guid, 'Back to Search Results').'</a>';
                 }
-                echo '</div>';
-                ?>
+                echo '</div>'; ?>
 				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/applicationForm_manage_accept.php&step=2&gibbonApplicationFormID=$gibbonApplicationFormID&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search" ?>">
 					<table class='smallIntBorder fullWidth' cellspacing='0'>	
 						<tr>
@@ -90,17 +89,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 								<br/>
 								<?php
                                 $checkedStudent = '';
-                if (getSettingByScope($connection2, 'Application Form', 'notificationStudentDefault') == 'Y') {
-                    $checkedStudent = 'checked';
-                }
-                ?>
+								if (getSettingByScope($connection2, 'Application Form', 'notificationStudentDefault') == 'Y') {
+									$checkedStudent = 'checked';
+								}
+								?>
 								<input <?php echo $checkedStudent ?> type='checkbox' name='informStudent'/> <?php echo __($guid, 'Automatically inform <u>student</u> of their Gibbon login details by email?') ?><br/>
 								<?php
                                 $checkedParents = '';
-                if (getSettingByScope($connection2, 'Application Form', 'notificationParentsDefault') == 'Y') {
-                    $checkedParents = 'checked';
-                }
-                ?>
+								if (getSettingByScope($connection2, 'Application Form', 'notificationParentsDefault') == 'Y') {
+									$checkedParents = 'checked';
+								}
+								?>
 								<input <?php echo $checkedParents ?> type='checkbox' name='informParents'/> <?php echo __($guid, 'Automatically inform <u>parents</u> of their Gibbon login details by email?') ?><br/>
 								
 								<br/>
@@ -111,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                     if ($row['gibbonRollGroupID'] != '') {
                                         echo '<li>'.__($guid, 'Enrol the student in the selected school year (as the student has been assigned to a roll group).').'</li>';
                                     }
-                ?>
+               		 				?>
 									<li><?php echo __($guid, 'Save the student\'s payment preferences.') ?></li>
 									<?php
                                     if ($row['gibbonFamilyID'] != '') {
@@ -121,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                         echo '<li>'.__($guid, 'Create user accounts for the parents.').'</li>';
                                         echo '<li>'.__($guid, 'Link student and parents to the family.').'</li>';
                                     }
-                ?>
+               		 				?>
 									<li><?php echo __($guid, 'Set the status of the application to "Accepted".') ?></li>
 								</ol>
 								<br/>
@@ -131,7 +130,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                     if ($row['gibbonRollGroupID'] == '') {
                                         echo '<li>'.__($guid, 'Enrol the student in the relevant academic year (this will not be done automatically, as the student has not been assigned to a roll group).').'</li>';
                                     }
-                ?>
+               		 				?>
 									<li><?php echo __($guid, 'Create a medical record for the student.') ?></li>
 									<li><?php echo __($guid, 'Create an individual needs record for the student.') ?></li>
 									<li><?php echo __($guid, 'Create a note of the student\'s scholarship information outside of Gibbon.') ?></li>

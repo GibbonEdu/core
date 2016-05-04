@@ -154,8 +154,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
 							<td class="right">
 								<select name="search" id="search" class="standardWidth">
 									<option value=""></value>
-									<?php echo $options;
-                ?> 
+									<?php echo $options; ?> 
 								</select>
 							</td>
 						</tr>
@@ -164,8 +163,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
 								<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/planner_deadlines.php">
 								<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 								<?php
-                                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/planner.php'>".__($guid, 'Clear Search').'</a>';
-                ?>
+                                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/planner.php'>".__($guid, 'Clear Search').'</a>'; ?>
 								<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 							</td>
 						</tr>
@@ -705,12 +703,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
 
             if ($category == 'Student') {
                 ?>
-						<tr>
-							<td class="right" colspan=7>
-								<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-							</td>
-						</tr>
-						<?php
+				<tr>
+					<td class="right" colspan=7>
+						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
+					</td>
+				</tr>
+				<?php
 
             }
             echo "<tr class='head'>";
@@ -755,81 +753,81 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
                     }
                     ++$count;
 
-                            //Deal with homework completion
-                            if ($category == 'Student') {
-                                $now = date('Y-m-d H:i:s');
-                                if (isset($completionArray[$row['gibbonPlannerEntryID']][0]) and isset($completionArray[$row['gibbonPlannerEntryID']][1])) {
-                                    if ($completionArray[$row['gibbonPlannerEntryID']][1] == $row['type']) {
-                                        $rowNum = 'current';
-                                    }
-                                } else {
-                                    if ($row['homeworkDueDateTime'] < $now) {
-                                        $rowNum = 'error';
-                                    }
-                                }
-                                $status = '';
-                                $completion = '';
-                                if ($row['homeworkSubmission'] == 'Y') {
-                                    $status = '<b>OS: '.$row['homeworkSubmissionRequired'].'</b><br/>';
-                                    try {
-                                        $dataVersion = array('gibbonPlannerEntryID' => $row['gibbonPlannerEntryID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                                        $sqlVersion = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC';
-                                        $resultVersion = $connection2->prepare($sqlVersion);
-                                        $resultVersion->execute($dataVersion);
-                                    } catch (PDOException $e) {
-                                        echo "<div class='error'>".$e->getMessage().'</div>';
-                                    }
-                                    if ($resultVersion->rowCount() < 1) {
-                                        //Before deadline
-                                        if (date('Y-m-d H:i:s') < $row['homeworkDueDateTime']) {
-                                            if ($row['homeworkSubmissionRequired'] == 'Compulsory') {
-                                                $status .= 'Pending';
-                                                $completion = "<input disabled type='checkbox'>";
-                                            } else {
-                                                $status .= __($guid, 'Pending');
-                                                $completion = '<input '.$completionArray[$row['gibbonPlannerEntryID']]." name='complete-$count' type='checkbox'>";
-                                            }
-                                        }
-                                        //After
-                                        else {
-                                            if ($row['homeworkSubmissionRequired'] == 'Compulsory') {
-                                                $status .= "<div style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px; margin: 2px 0px'>".__($guid, 'Incomplete').'</div>';
-                                                $completion = "<input disabled type='checkbox'>";
-                                            } else {
-                                                $status .= __($guid, 'Not submitted online');
-                                                @$completion = '<input '.$completionArray[$row['gibbonPlannerEntryID']]." name='complete-$count' type='checkbox'>";
-                                            }
-                                        }
-                                    } else {
-                                        $rowVersion = $resultVersion->fetch();
-                                        if ($rowVersion['status'] == 'On Time' or $rowVersion['status'] == 'Exemption') {
-                                            $status .= $rowVersion['status'];
-                                            $completion = "<input disabled checked type='checkbox'>";
-                                            $rowNum = 'current';
-                                        } else {
-                                            if ($row['homeworkSubmissionRequired'] == 'Compulsory') {
-                                                $status .= "<div style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px; margin: 2px 0px'>".$rowVersion['status'].'</div>';
-                                                $completion = "<input disabled checked type='checkbox'>";
-                                            } else {
-                                                $status .= $rowVersion['status'];
-                                                $completion = "<input disabled checked type='checkbox'>";
-                                            }
-                                        }
-                                    }
-                                } else {
-                                    $completion = '<input ';
-                                    if (isset($completionArray[$row['gibbonPlannerEntryID']][0]) and isset($completionArray[$row['gibbonPlannerEntryID']][1])) {
-                                        if ($completionArray[$row['gibbonPlannerEntryID']][1] == $row['type']) {
-                                            $completion .= $completionArray[$row['gibbonPlannerEntryID']][0];
-                                        }
-                                    }
-                                    $completion .= " name='complete-$count' type='checkbox'>";
-                                    $completion .= "<input type='hidden' name='completeType-$count' value='".$row['type']."'/>";
-                                }
-                            }
+					//Deal with homework completion
+					if ($category == 'Student') {
+						$now = date('Y-m-d H:i:s');
+						if (isset($completionArray[$row['gibbonPlannerEntryID']][0]) and isset($completionArray[$row['gibbonPlannerEntryID']][1])) {
+							if ($completionArray[$row['gibbonPlannerEntryID']][1] == $row['type']) {
+								$rowNum = 'current';
+							}
+						} else {
+							if ($row['homeworkDueDateTime'] < $now) {
+								$rowNum = 'error';
+							}
+						}
+						$status = '';
+						$completion = '';
+						if ($row['homeworkSubmission'] == 'Y') {
+							$status = '<b>OS: '.$row['homeworkSubmissionRequired'].'</b><br/>';
+							try {
+								$dataVersion = array('gibbonPlannerEntryID' => $row['gibbonPlannerEntryID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+								$sqlVersion = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC';
+								$resultVersion = $connection2->prepare($sqlVersion);
+								$resultVersion->execute($dataVersion);
+							} catch (PDOException $e) {
+								echo "<div class='error'>".$e->getMessage().'</div>';
+							}
+							if ($resultVersion->rowCount() < 1) {
+								//Before deadline
+								if (date('Y-m-d H:i:s') < $row['homeworkDueDateTime']) {
+									if ($row['homeworkSubmissionRequired'] == 'Compulsory') {
+										$status .= 'Pending';
+										$completion = "<input disabled type='checkbox'>";
+									} else {
+										$status .= __($guid, 'Pending');
+										$completion = '<input '.$completionArray[$row['gibbonPlannerEntryID']]." name='complete-$count' type='checkbox'>";
+									}
+								}
+								//After
+								else {
+									if ($row['homeworkSubmissionRequired'] == 'Compulsory') {
+										$status .= "<div style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px; margin: 2px 0px'>".__($guid, 'Incomplete').'</div>';
+										$completion = "<input disabled type='checkbox'>";
+									} else {
+										$status .= __($guid, 'Not submitted online');
+										@$completion = '<input '.$completionArray[$row['gibbonPlannerEntryID']]." name='complete-$count' type='checkbox'>";
+									}
+								}
+							} else {
+								$rowVersion = $resultVersion->fetch();
+								if ($rowVersion['status'] == 'On Time' or $rowVersion['status'] == 'Exemption') {
+									$status .= $rowVersion['status'];
+									$completion = "<input disabled checked type='checkbox'>";
+									$rowNum = 'current';
+								} else {
+									if ($row['homeworkSubmissionRequired'] == 'Compulsory') {
+										$status .= "<div style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px; margin: 2px 0px'>".$rowVersion['status'].'</div>';
+										$completion = "<input disabled checked type='checkbox'>";
+									} else {
+										$status .= $rowVersion['status'];
+										$completion = "<input disabled checked type='checkbox'>";
+									}
+								}
+							}
+						} else {
+							$completion = '<input ';
+							if (isset($completionArray[$row['gibbonPlannerEntryID']][0]) and isset($completionArray[$row['gibbonPlannerEntryID']][1])) {
+								if ($completionArray[$row['gibbonPlannerEntryID']][1] == $row['type']) {
+									$completion .= $completionArray[$row['gibbonPlannerEntryID']][0];
+								}
+							}
+							$completion .= " name='complete-$count' type='checkbox'>";
+							$completion .= "<input type='hidden' name='completeType-$count' value='".$row['type']."'/>";
+						}
+					}
 
-                            //COLOR ROW BY STATUS!
-                            echo "<tr class=$rowNum>";
+					//COLOR ROW BY STATUS!
+					echo "<tr class=$rowNum>";
                     echo '<td>';
                     echo '<b>'.$row['course'].'.'.$row['class'].'</b></br>';
                     echo "<span style='font-size: 85%; font-style: italic'>".dateConvertBack($guid, $row['date']).'</span>';
@@ -932,12 +930,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
             }
             if ($category == 'Student') {
                 ?>
-						<tr>
-							<td class="right" colspan=7>
-								<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-							</td>
-						</tr>
-						<?php
+				<tr>
+					<td class="right" colspan=7>
+						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
+					</td>
+				</tr>
+				<?php
 
             }
             echo '</table>';

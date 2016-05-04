@@ -128,14 +128,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                             } catch (PDOException $e) {
                             }
 
-            if ($resultSelect->rowCount() == 1) {
-                $rowSelect = $resultSelect->fetch();
-                ?>
+							if ($resultSelect->rowCount() == 1) {
+								$rowSelect = $resultSelect->fetch();
+								?>
 								<input readonly name="column" id="column" maxlength=20 value="<?php echo htmlPrep($rowSelect['name']) ?>" type="text" class="standardWidth">
 								<?php
 
-            }
-            ?>				
+								}
+								?>				
 						</td>
 					</tr>
 					<tr>

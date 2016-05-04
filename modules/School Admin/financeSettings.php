@@ -54,8 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 ?>
 				<td style='width: 275px'> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<input name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" maxlength=255 value="<?php echo $row['value'] ?>" type="text" class="standardWidth">
@@ -80,22 +79,21 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
 						<?php
                         $selected = '';
-    if ($row['value'] == 'Y') {
-        $selected = 'selected';
-    }
-    echo "<option $selected value='Y'>".ynExpander($guid, 'Y').'</option>';
-    $selected = '';
-    if ($row['value'] == 'N') {
-        $selected = 'selected';
-    }
-    echo "<option $selected value='N'>".ynExpander($guid, 'N').'</option>';?>			
+						if ($row['value'] == 'Y') {
+							$selected = 'selected';
+						}
+						echo "<option $selected value='Y'>".ynExpander($guid, 'Y').'</option>';
+						$selected = '';
+						if ($row['value'] == 'N') {
+							$selected = 'selected';
+						}
+						echo "<option $selected value='N'>".ynExpander($guid, 'N').'</option>';?>			
 					</select>
 				</td>
 			</tr>
@@ -115,15 +113,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small">
 						<?php 
-                            if ($row['description'] != '') {
-                                echo __($guid, $row['description']);
-                            }
-    $currency = getSettingByScope($connection2, 'System', 'currency');
-    if ($currency != false and $currency != '') {
-        echo ' '.sprintf(__($guid, 'In %1$s.'), $currency);
-    }
-    ?> 
-					
+						if ($row['description'] != '') {
+							echo __($guid, $row['description']);
+						}
+						$currency = getSettingByScope($connection2, 'System', 'currency');
+						if ($currency != false and $currency != '') {
+							echo ' '.sprintf(__($guid, 'In %1$s.'), $currency);
+						}
+						?> 
 					</span>
 				</td>
 				<td class="right">
@@ -152,8 +149,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
@@ -171,8 +167,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
@@ -192,28 +187,26 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
 						<?php
                         $selected = '';
-    if ($row['value'] == 'Invoice ID') {
-        $selected = 'selected';
-    }
-    echo "<option $selected value='Invoice ID'>Invoice ID</option>";
-    $selected = '';
-    if ($row['value'] == 'Person ID + Invoice ID') {
-        $selected = 'selected';
-    }
-    echo "<option $selected value='Person ID + Invoice ID'>Person ID + Invoice ID</option>";
-    $selected = '';
-    if ($row['value'] == 'Student ID + Invoice ID') {
-        $selected = 'selected';
-    }
-    echo "<option $selected value='Student ID + Invoice ID'>Student ID + Invoice ID</option>";
-    ?>			
+						if ($row['value'] == 'Invoice ID') {
+							$selected = 'selected';
+						}
+						echo "<option $selected value='Invoice ID'>Invoice ID</option>";
+						$selected = '';
+						if ($row['value'] == 'Person ID + Invoice ID') {
+							$selected = 'selected';
+						}
+						echo "<option $selected value='Person ID + Invoice ID'>Person ID + Invoice ID</option>";
+						$selected = '';
+						if ($row['value'] == 'Student ID + Invoice ID') {
+							$selected = 'selected';
+						}
+						echo "<option $selected value='Student ID + Invoice ID'>Student ID + Invoice ID</option>"; ?>			
 					</select>
 				</td>
 			</tr>
@@ -235,8 +228,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
@@ -254,8 +246,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
@@ -275,22 +266,21 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
 						<?php
                         $selected = '';
-    if ($row['value'] == 'Y') {
-        $selected = 'selected';
-    }
-    echo "<option $selected value='Y'>".ynExpander($guid, 'Y').'</option>';
-    $selected = '';
-    if ($row['value'] == 'N') {
-        $selected = 'selected';
-    }
-    echo "<option $selected value='N'>".ynExpander($guid, 'N').'</option>';?>			
+						if ($row['value'] == 'Y') {
+							$selected = 'selected';
+						}
+						echo "<option $selected value='Y'>".ynExpander($guid, 'Y').'</option>';
+						$selected = '';
+						if ($row['value'] == 'N') {
+							$selected = 'selected';
+						}
+						echo "<option $selected value='N'>".ynExpander($guid, 'N').'</option>';?>			
 					</select>
 				</td>
 			</tr>
@@ -312,8 +302,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
@@ -331,8 +320,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
@@ -350,8 +338,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
@@ -407,28 +394,26 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
 						<?php
                         $selected = '';
-    if ($row['value'] == 'One Of') {
-        $selected = 'selected';
-    }
-    echo "<option $selected value='One Of'>One Of</option>";
-    $selected = '';
-    if ($row['value'] == 'Two Of') {
-        $selected = 'selected';
-    }
-    echo "<option $selected value='Two Of'>Two Of</option>";
-    $selected = '';
-    if ($row['value'] == 'Chain Of All') {
-        $selected = 'selected';
-    }
-    echo "<option $selected value='Chain Of All'>Chain Of All</option>";
-    ?>			
+						if ($row['value'] == 'One Of') {
+							$selected = 'selected';
+						}
+						echo "<option $selected value='One Of'>One Of</option>";
+						$selected = '';
+						if ($row['value'] == 'Two Of') {
+							$selected = 'selected';
+						}
+						echo "<option $selected value='Two Of'>Two Of</option>";
+						$selected = '';
+						if ($row['value'] == 'Chain Of All') {
+							$selected = 'selected';
+						}
+						echo "<option $selected value='Chain Of All'>Chain Of All</option>"; ?>			
 					</select>
 				</td>
 			</tr>
@@ -446,22 +431,21 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
 						<?php
                         $selected = '';
-    if ($row['value'] == 'Y') {
-        $selected = 'selected';
-    }
-    echo "<option $selected value='Y'>".ynExpander($guid, 'Y').'</option>';
-    $selected = '';
-    if ($row['value'] == 'N') {
-        $selected = 'selected';
-    }
-    echo "<option $selected value='N'>".ynExpander($guid, 'N').'</option>';?>			
+						if ($row['value'] == 'Y') {
+							$selected = 'selected';
+						}
+						echo "<option $selected value='Y'>".ynExpander($guid, 'Y').'</option>';
+						$selected = '';
+						if ($row['value'] == 'N') {
+							$selected = 'selected';
+						}
+						echo "<option $selected value='N'>".ynExpander($guid, 'N').'</option>';?>			
 					</select>
 				</td>
 			</tr>
@@ -477,8 +461,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
@@ -498,22 +481,21 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
 						<?php
                         $selected = '';
-    if ($row['value'] == 'Y') {
-        $selected = 'selected';
-    }
-    echo "<option $selected value='Y'>".ynExpander($guid, 'Y').'</option>';
-    $selected = '';
-    if ($row['value'] == 'N') {
-        $selected = 'selected';
-    }
-    echo "<option $selected value='N'>".ynExpander($guid, 'N').'</option>';?>			
+						if ($row['value'] == 'Y') {
+							$selected = 'selected';
+						}
+						echo "<option $selected value='Y'>".ynExpander($guid, 'Y').'</option>';
+						$selected = '';
+						if ($row['value'] == 'N') {
+							$selected = 'selected';
+						}
+						echo "<option $selected value='N'>".ynExpander($guid, 'N').'</option>';?>			
 					</select>
 				</td>
 			</tr>
@@ -529,28 +511,27 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
 						<?php
                         echo "<option value=''></option>";
-    try {
-        $dataSelect = array();
-        $sqlSelect = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
-        $resultSelect = $connection2->prepare($sqlSelect);
-        $resultSelect->execute($dataSelect);
-    } catch (PDOException $e) {
-    }
-    while ($rowSelect = $resultSelect->fetch()) {
-        $selected = '';
-        if ($row['value'] == $rowSelect['gibbonPersonID']) {
-            $selected = 'selected';
-        }
-        echo "<option $selected value='".$rowSelect['gibbonPersonID']."'>".formatName(htmlPrep($rowSelect['title']), ($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
-    }
-    ?>
+						try {
+							$dataSelect = array();
+							$sqlSelect = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
+							$resultSelect = $connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						} catch (PDOException $e) {
+						}
+						while ($rowSelect = $resultSelect->fetch()) {
+							$selected = '';
+							if ($row['value'] == $rowSelect['gibbonPersonID']) {
+								$selected = 'selected';
+							}
+							echo "<option $selected value='".$rowSelect['gibbonPersonID']."'>".formatName(htmlPrep($rowSelect['title']), ($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
+						}
+						?>
 					</select>
 				</td>
 			</tr>
@@ -566,32 +547,30 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
 						<?php
                         echo "<option value=''></option>";
-    try {
-        $dataSelect = array();
-        $sqlSelect = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
-        $resultSelect = $connection2->prepare($sqlSelect);
-        $resultSelect->execute($dataSelect);
-    } catch (PDOException $e) {
-    }
-    while ($rowSelect = $resultSelect->fetch()) {
-        $selected = '';
-        if ($row['value'] == $rowSelect['gibbonPersonID']) {
-            $selected = 'selected';
-        }
-        echo "<option $selected value='".$rowSelect['gibbonPersonID']."'>".formatName(htmlPrep($rowSelect['title']), ($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
-    }
-    ?>
+						try {
+							$dataSelect = array();
+							$sqlSelect = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
+							$resultSelect = $connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						} catch (PDOException $e) {
+						}
+						while ($rowSelect = $resultSelect->fetch()) {
+							$selected = '';
+							if ($row['value'] == $rowSelect['gibbonPersonID']) {
+								$selected = 'selected';
+							}
+							echo "<option $selected value='".$rowSelect['gibbonPersonID']."'>".formatName(htmlPrep($rowSelect['title']), ($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
+						}
+						?>
 					</select>
 				</td>
 			</tr>
-			
 			
 			<tr>
 				<td>

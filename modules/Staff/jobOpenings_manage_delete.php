@@ -56,8 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_d
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
-            ?>
+            $row = $result->fetch(); ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/jobOpenings_manage_deleteProcess.php?gibbonStaffJobOpeningID=$gibbonStaffJobOpeningID" ?>">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>

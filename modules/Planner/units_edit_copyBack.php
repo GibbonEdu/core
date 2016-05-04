@@ -127,8 +127,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_copyBac
 							<table cellspacing='0' style="width: 100%">	
 								<tr>
 									<td> 
-										<b><?php echo __($guid, 'Are you sure you want to proceed with this request?');
-                        ?></b><br/>
+										<b><?php echo __($guid, 'Are you sure you want to proceed with this request?'); ?></b><br/>
 										<span style="font-size: 90%; color: #cc0000"><i><?php echo __($guid, 'This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!'); ?></span>
 									</td>
 									<td class="right">

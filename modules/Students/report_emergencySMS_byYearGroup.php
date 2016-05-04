@@ -68,27 +68,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_emergencyS
 					<select class="standardWidth" name="gibbonYearGroupID">
 						<?php
                         echo "<option value=''></option>";
-    if ($gibbonYearGroupID == '*') {
-        echo "<option selected value='*'>All</option>";
-    } else {
-        echo "<option value='*'>All</option>";
-    }
-    try {
-        $dataSelect = array();
-        $sqlSelect = 'SELECT * FROM gibbonYearGroup ORDER BY sequenceNumber';
-        $resultSelect = $connection2->prepare($sqlSelect);
-        $resultSelect->execute($dataSelect);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
-    while ($rowSelect = $resultSelect->fetch()) {
-        if ($gibbonYearGroupID == $rowSelect['gibbonYearGroupID']) {
-            echo "<option selected value='".$rowSelect['gibbonYearGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
-        } else {
-            echo "<option value='".$rowSelect['gibbonYearGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
-        }
-    }
-    ?>				
+						if ($gibbonYearGroupID == '*') {
+							echo "<option selected value='*'>All</option>";
+						} else {
+							echo "<option value='*'>All</option>";
+						}
+						try {
+							$dataSelect = array();
+							$sqlSelect = 'SELECT * FROM gibbonYearGroup ORDER BY sequenceNumber';
+							$resultSelect = $connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						} catch (PDOException $e) {
+							echo "<div class='error'>".$e->getMessage().'</div>';
+						}
+						while ($rowSelect = $resultSelect->fetch()) {
+							if ($gibbonYearGroupID == $rowSelect['gibbonYearGroupID']) {
+								echo "<option selected value='".$rowSelect['gibbonYearGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
+							} else {
+								echo "<option value='".$rowSelect['gibbonYearGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
+							}
+						}
+						?>				
 					</select>
 				</td>
 			</tr>
@@ -115,10 +115,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_emergencyS
 				<td class="right">
 					<?php
                     $checked = '';
-    if ($hideName == 'on') {
-        $checked = 'checked ';
-    }
-    ?>
+					if ($hideName == 'on') {
+						$checked = 'checked ';
+					}
+					?>
 					<input <?php echo $checked ?> type='checkbox' name='hideName'>
 				</td>
 			</tr>

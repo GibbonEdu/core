@@ -81,8 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
                                 $resultSelect->execute($dataSelect);
                             } catch (PDOException $e) {
                             }
-            $rowSelect = $resultSelect->fetch();
-            ?>	
+            				$rowSelect = $resultSelect->fetch(); ?>	
 							<input readonly name="personName" id="personName" maxlength=255 value="<?php echo formatName('', $rowSelect['preferredName'], $rowSelect['surname'], 'Student') ?>" type="text" class="standardWidth">
 						</td>
 					</tr>
@@ -94,21 +93,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
 							<select class="standardWidth" name="name" id="name">
 								<?php
                                 echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-            try {
-                $dataSelect = array();
-                $sqlSelect = 'SELECT * FROM gibbonMedicalCondition ORDER BY name';
-                $resultSelect = $connection2->prepare($sqlSelect);
-                $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) {
-            }
-            while ($rowSelect = $resultSelect->fetch()) {
-                if ($row['name'] == $rowSelect['name']) {
-                    echo "<option selected value='".htmlPrep($rowSelect['name'])."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-                } else {
-                    echo "<option value='".htmlPrep($rowSelect['name'])."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-                }
-            }
-            ?>				
+								try {
+									$dataSelect = array();
+									$sqlSelect = 'SELECT * FROM gibbonMedicalCondition ORDER BY name';
+									$resultSelect = $connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								} catch (PDOException $e) {
+								}
+								while ($rowSelect = $resultSelect->fetch()) {
+									if ($row['name'] == $rowSelect['name']) {
+										echo "<option selected value='".htmlPrep($rowSelect['name'])."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
+									} else {
+										echo "<option value='".htmlPrep($rowSelect['name'])."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
+									}
+								}
+								?>				
 							</select>
 							<script type="text/javascript">
 								var name2=new LiveValidation('name');
@@ -132,14 +131,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
                                 } catch (PDOException $e) {
                                 }
 
-            while ($rowSelect = $resultSelect->fetch()) {
-                $selected = '';
-                if ($row['gibbonAlertLevelID'] == $rowSelect['gibbonAlertLevelID']) {
-                    $selected = 'selected';
-                }
-                echo "<option $selected value='".$rowSelect['gibbonAlertLevelID']."'>".__($guid, $rowSelect['name']).'</option>';
-            }
-            ?>
+								while ($rowSelect = $resultSelect->fetch()) {
+									$selected = '';
+									if ($row['gibbonAlertLevelID'] == $rowSelect['gibbonAlertLevelID']) {
+										$selected = 'selected';
+									}
+									echo "<option $selected value='".$rowSelect['gibbonAlertLevelID']."'>".__($guid, $rowSelect['name']).'</option>';
+								}
+								?>
 							</select>
 							<script type="text/javascript">
 								var gibbonAlertLevelID=new LiveValidation('gibbonAlertLevelID');

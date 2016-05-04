@@ -161,17 +161,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 								</tr>
 								<?php
 
-                    }
-                    ?>
+								}
+								?>
 							<tr>
 								<td> 
 									<b><?php echo __($guid, 'Attachment') ?></b><br/>
-									<?php if ($row2['attachment'] != '') {
-    ?>
+									<?php if ($row2['attachment'] != '') { ?>
 									<span class="emphasis small"><?php echo __($guid, 'Will overwrite existing attachment.') ?></span>
-									<?php 
-}
-                    ?>
+									<?php } ?>
 								</td>
 								<td class="right">
 									<?php
@@ -189,16 +186,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                         $resultExt->execute($dataExt);
                                     } catch (PDOException $e) {
                                     }
-                    $ext = '';
-                    while ($rowExt = $resultExt->fetch()) {
-                        $ext = $ext."'.".$rowExt['extension']."',";
-                    }
-                    ?>
+									$ext = '';
+									while ($rowExt = $resultExt->fetch()) {
+										$ext = $ext."'.".$rowExt['extension']."',";
+									}
+									?>
 							
 									<script type="text/javascript">
 										var file=new LiveValidation('file');
-										file.add( Validate.Inclusion, { within: [<?php echo $ext;
-                    ?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+										file.add( Validate.Inclusion, { within: [<?php echo $ext; ?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 									</script>
 								</td>
 							</tr>
@@ -226,28 +222,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 							<tr>
 								<td> 
 									<b><?php if ($attainmentAlternativeName != '') {
-    echo sprintf(__($guid, 'Assess %1$s?'), $attainmentAlternativeName);
-} else {
-    echo __($guid, 'Assess Attainment?');
-}
-                    ?> *</b><br/>
+										echo sprintf(__($guid, 'Assess %1$s?'), $attainmentAlternativeName);
+									} else {
+										echo __($guid, 'Assess Attainment?');
+									}
+									?> *</b><br/>
 								</td>
 								<td class="right">
 									<input <?php if ($row2['attainment'] == 'Y')) { echo 'checked'; } ?> type="radio" name="attainment" value="Y" class="attainment" /> <?php echo __($guid, 'Yes') ?>
 									<input <?php if ($row2['attainment'] == 'N')) { echo 'checked'; } ?> type="radio" name="attainment" value="N" class="attainment" /> <?php echo __($guid, 'No') ?>
 								</td>
 							</tr>
-							<tr id='gibbonScaleIDAttainmentRow' <?php if ($row2['attainment'] == 'N') {
-    echo "style='display: none'";
-}
-                    ?>>
+							<tr id='gibbonScaleIDAttainmentRow' <?php if ($row2['attainment'] == 'N') { echo "style='display: none'"; } ?>>
 								<td> 
 									<b><?php if ($attainmentAlternativeName != '') {
-    echo $attainmentAlternativeName.' '.__($guid, 'Scale');
-} else {
-    echo __($guid, 'Attainment Scale');
-}
-                    ?> *</b><br/>
+										echo $attainmentAlternativeName.' '.__($guid, 'Scale');
+									} else {
+										echo __($guid, 'Attainment Scale');
+									}
+									?> *</b><br/>
 								</td>
 								<td class="right">
 									<select name="gibbonScaleIDAttainment" id="gibbonScaleIDAttainment" class="standardWidth">
@@ -259,15 +252,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                             $resultSelect->execute($dataSelect);
                                         } catch (PDOException $e) {
                                         }
-                    echo "<option value=''></option>";
-                    while ($rowSelect = $resultSelect->fetch()) {
-                        if ($row2['gibbonScaleIDAttainment'] == $rowSelect['gibbonScaleID']) {
-                            echo "<option selected value='".$rowSelect['gibbonScaleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-                        } else {
-                            echo "<option value='".$rowSelect['gibbonScaleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-                        }
-                    }
-                    ?>				
+										echo "<option value=''></option>";
+										while ($rowSelect = $resultSelect->fetch()) {
+											if ($row2['gibbonScaleIDAttainment'] == $rowSelect['gibbonScaleID']) {
+												echo "<option selected value='".$rowSelect['gibbonScaleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
+											} else {
+												echo "<option value='".$rowSelect['gibbonScaleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
+											}
+										}
+										?>				
 									</select>
 								</td>
 							</tr>
@@ -289,28 +282,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 							<tr>
 								<td> 
 									<b><?php if ($effortAlternativeName != '') {
-    echo sprintf(__($guid, 'Assess %1$s?'), $effortAlternativeName);
-} else {
-    echo __($guid, 'Assess Effort?');
-}
-                    ?> *</b><br/>
+										echo sprintf(__($guid, 'Assess %1$s?'), $effortAlternativeName);
+									} else {
+										echo __($guid, 'Assess Effort?');
+									}
+									?> *</b><br/>
 								</td>
 								<td class="right">
 									<input <?php if ($row2['effort'] == 'Y')) { echo 'checked'; } ?> type="radio" name="effort" value="Y" class="effort" /> <?php echo __($guid, 'Yes') ?>
 									<input <?php if ($row2['effort'] == 'N')) { echo 'checked'; } ?> type="radio" name="effort" value="N" class="effort" /> <?php echo __($guid, 'No') ?>
 								</td>
 							</tr>
-							<tr id='gibbonScaleIDEffortRow' <?php if ($row2['effort'] == 'N') {
-    echo "style='display: none'";
-}
-                    ?>>
+							<tr id='gibbonScaleIDEffortRow' <?php if ($row2['effort'] == 'N') { echo "style='display: none'"; } ?>>
 								<td> 
 									<b><?php if ($effortAlternativeName != '') {
-    echo $effortAlternativeName.' '.__($guid, 'Scale');
-} else {
-    echo __($guid, 'Effort Scale');
-}
-                    ?> *</b><br/>
+										echo $effortAlternativeName.' '.__($guid, 'Scale');
+									} else {
+										echo __($guid, 'Effort Scale');
+									}
+									?> *</b><br/>
 								</td>
 								<td class="right">
 									<select name="gibbonScaleIDEffort" id="gibbonScaleIDEffort" class="standardWidth">
@@ -322,15 +312,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                             $resultSelect->execute($dataSelect);
                                         } catch (PDOException $e) {
                                         }
-                    echo "<option value=''></option>";
-                    while ($rowSelect = $resultSelect->fetch()) {
-                        if ($row2['gibbonScaleIDEffort'] == $rowSelect['gibbonScaleID']) {
-                            echo "<option selected value='".$rowSelect['gibbonScaleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-                        } else {
-                            echo "<option value='".$rowSelect['gibbonScaleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-                        }
-                    }
-                    ?>				
+										echo "<option value=''></option>";
+										while ($rowSelect = $resultSelect->fetch()) {
+											if ($row2['gibbonScaleIDEffort'] == $rowSelect['gibbonScaleID']) {
+												echo "<option selected value='".$rowSelect['gibbonScaleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
+											} else {
+												echo "<option value='".$rowSelect['gibbonScaleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
+											}
+										}
+										?>				
 									</select>
 								</td>
 							</tr>
@@ -386,27 +376,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 								<td> 
 									<b><?php echo __($guid, 'Go Live Date') ?></b><br/>
 									<span class="emphasis small"><?php echo __($guid, '1. Format') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-                    ?><br/><?php echo __($guid, '2. Column is hidden until date is reached.') ?></span>
+										echo 'dd/mm/yyyy';
+									} else {
+										echo $_SESSION[$guid]['i18n']['dateFormat'];
+									}
+									?><br/>
+									<?php echo __($guid, '2. Column is hidden until date is reached.') ?></span>
 								</td>
 								<td class="right">
 									<input name="completeDate" id="completeDate" maxlength=10 value="<?php echo dateConvertBack($guid, $row2['completeDate']) ?>" type="text" class="standardWidth">
 									<script type="text/javascript">
 										var completeDate=new LiveValidation('completeDate');
 										completeDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-                    ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-                    ?>." } ); 
+											echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+										} else {
+											echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+										}
+										?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+											echo 'dd/mm/yyyy';
+										} else {
+											echo $_SESSION[$guid]['i18n']['dateFormat'];
+										}
+										?>." } ); 
 									</script>
 									 <script type="text/javascript">
 										$(function() {
@@ -417,10 +408,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 							</tr>
 							<tr>
 								<td>
-									<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-                    ?><br/>
-									<?php echo getMaxUpload($guid);
-                    ?>
+									<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?><br/>
+									<?php echo getMaxUpload($guid); ?>
 									</span>
 								</td>
 								<td class="right">

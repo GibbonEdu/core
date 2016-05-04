@@ -56,8 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
-            ?>
+            $row = $result->fetch(); ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/schoolYearSpecialDay_manage_editProcess.php?gibbonSchoolYearSpecialDayID=$gibbonSchoolYearSpecialDayID&gibbonSchoolYearID=".$_GET['gibbonSchoolYearID'] ?>">
 			<table class='smallIntBorder fullWidth' cellspacing='0'>	
 				<tr>
@@ -71,16 +70,16 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
 							var date=new LiveValidation('date');
 							date.add(Validate.Presence);
 							date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-								echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-								} else {
-									echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-								}
-											?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-									echo 'dd/mm/yyyy';
-								} else {
-									echo $_SESSION[$guid]['i18n']['dateFormat'];
-								}
-								?>." } ); 
+							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+							} else {
+								echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+							}
+										?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+								echo 'dd/mm/yyyy';
+							} else {
+								echo $_SESSION[$guid]['i18n']['dateFormat'];
+							}
+							?>." } ); 
 						</script>
 					</td>
 				</tr>
@@ -130,36 +129,36 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
 						<select style="width:100px" name="schoolOpenM" id="schoolOpenM">
 							<?php
                             echo "<option value='Minutes'>".__($guid, 'Minutes').'</option>';
-            for ($i = 0;$i < 60;++$i) {
-                $iPrint = $i;
-                if (strlen($i) == 1) {
-                    $iPrint = '0'.$i;
-                }
+							for ($i = 0;$i < 60;++$i) {
+								$iPrint = $i;
+								if (strlen($i) == 1) {
+									$iPrint = '0'.$i;
+								}
 
-                if (substr($row['schoolOpen'], 3, 2) == $i and $row['schoolOpen'] != null) {
-                    echo "<option selected value='".$iPrint."'>".$iPrint.'</option>';
-                } else {
-                    echo "<option value='".$iPrint."'>".$iPrint.'</option>';
-                }
-            }
-            ?>				
+								if (substr($row['schoolOpen'], 3, 2) == $i and $row['schoolOpen'] != null) {
+									echo "<option selected value='".$iPrint."'>".$iPrint.'</option>';
+								} else {
+									echo "<option value='".$iPrint."'>".$iPrint.'</option>';
+								}
+							}
+							?>				
 						</select>
 						<select style="width:100px" name="schoolOpenH" id="schoolOpenH">
 							<?php
                             echo "<option value='Hours'>".__($guid, 'Hours').'</option>';
-            for ($i = 0;$i < 24;++$i) {
-                $iPrint = $i;
-                if (strlen($i) == 1) {
-                    $iPrint = '0'.$i;
-                }
+							for ($i = 0;$i < 24;++$i) {
+								$iPrint = $i;
+								if (strlen($i) == 1) {
+									$iPrint = '0'.$i;
+								}
 
-                if (substr($row['schoolOpen'], 0, 2) == $i and $row['schoolOpen'] != null) {
-                    echo "<option selected value='".$iPrint."'>".$iPrint.'</option>';
-                } else {
-                    echo "<option value='".$iPrint."'>".$iPrint.'</option>';
-                }
-            }
-            ?>				
+								if (substr($row['schoolOpen'], 0, 2) == $i and $row['schoolOpen'] != null) {
+									echo "<option selected value='".$iPrint."'>".$iPrint.'</option>';
+								} else {
+									echo "<option value='".$iPrint."'>".$iPrint.'</option>';
+								}
+							}
+							?>				
 						</select>
 					</td>
 				</tr>
@@ -171,36 +170,36 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
 						<select style="width:100px" name="schoolStartM" id="schoolStartM">
 							<?php
                             echo "<option value='Minutes'>".__($guid, 'Minutes').'</option>';
-            for ($i = 0;$i < 60;++$i) {
-                $iPrint = $i;
-                if (strlen($i) == 1) {
-                    $iPrint = '0'.$i;
-                }
+							for ($i = 0;$i < 60;++$i) {
+								$iPrint = $i;
+								if (strlen($i) == 1) {
+									$iPrint = '0'.$i;
+								}
 
-                if (substr($row['schoolStart'], 3, 2) == $i and $row['schoolStart'] != null) {
-                    echo "<option selected value='".$iPrint."'>".$iPrint.'</option>';
-                } else {
-                    echo "<option value='".$iPrint."'>".$iPrint.'</option>';
-                }
-            }
-            ?>				
+								if (substr($row['schoolStart'], 3, 2) == $i and $row['schoolStart'] != null) {
+									echo "<option selected value='".$iPrint."'>".$iPrint.'</option>';
+								} else {
+									echo "<option value='".$iPrint."'>".$iPrint.'</option>';
+								}
+							}
+							?>				
 						</select>
 						<select style="width:100px" name="schoolStartH" id="schoolStartH">
 							<?php
                             echo "<option value='Hours'>".__($guid, 'Hours').'</option>';
-            for ($i = 0;$i < 24;++$i) {
-                $iPrint = $i;
-                if (strlen($i) == 1) {
-                    $iPrint = '0'.$i;
-                }
+							for ($i = 0;$i < 24;++$i) {
+								$iPrint = $i;
+								if (strlen($i) == 1) {
+									$iPrint = '0'.$i;
+								}
 
-                if (substr($row['schoolStart'], 0, 2) == $i and $row['schoolStart'] != null) {
-                    echo "<option selected value='".$iPrint."'>".$iPrint.'</option>';
-                } else {
-                    echo "<option value='".$iPrint."'>".$iPrint.'</option>';
-                }
-            }
-            ?>				
+								if (substr($row['schoolStart'], 0, 2) == $i and $row['schoolStart'] != null) {
+									echo "<option selected value='".$iPrint."'>".$iPrint.'</option>';
+								} else {
+									echo "<option value='".$iPrint."'>".$iPrint.'</option>';
+								}
+							}
+							?>				
 						</select>
 					</td>
 				</tr>
@@ -212,36 +211,36 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
 						<select style="width:100px" name="schoolEndM" id="schoolEndM">
 							<?php
                             echo "<option value='Minutes'>".__($guid, 'Minutes').'</option>';
-            for ($i = 0;$i < 60;++$i) {
-                $iPrint = $i;
-                if (strlen($i) == 1) {
-                    $iPrint = '0'.$i;
-                }
+							for ($i = 0;$i < 60;++$i) {
+								$iPrint = $i;
+								if (strlen($i) == 1) {
+									$iPrint = '0'.$i;
+								}
 
-                if (substr($row['schoolEnd'], 3, 2) == $i and $row['schoolEnd'] != null) {
-                    echo "<option selected value='".$iPrint."'>".$iPrint.'</option>';
-                } else {
-                    echo "<option value='".$iPrint."'>".$iPrint.'</option>';
-                }
-            }
-            ?>				
+								if (substr($row['schoolEnd'], 3, 2) == $i and $row['schoolEnd'] != null) {
+									echo "<option selected value='".$iPrint."'>".$iPrint.'</option>';
+								} else {
+									echo "<option value='".$iPrint."'>".$iPrint.'</option>';
+								}
+							}
+							?>				
 						</select>
 						<select style="width:100px" name="schoolEndH" id="schoolEndH">
 							<?php
                             echo "<option value='Hours'>".__($guid, 'Hours').'</option>';
-            for ($i = 0;$i < 24;++$i) {
-                $iPrint = $i;
-                if (strlen($i) == 1) {
-                    $iPrint = '0'.$i;
-                }
+							for ($i = 0;$i < 24;++$i) {
+								$iPrint = $i;
+								if (strlen($i) == 1) {
+									$iPrint = '0'.$i;
+								}
 
-                if (substr($row['schoolEnd'], 0, 2) == $i and $row['schoolEnd'] != null) {
-                    echo "<option selected value='".$iPrint."'>".$iPrint.'</option>';
-                } else {
-                    echo "<option value='".$iPrint."'>".$iPrint.'</option>';
-                }
-            }
-            ?>				
+								if (substr($row['schoolEnd'], 0, 2) == $i and $row['schoolEnd'] != null) {
+									echo "<option selected value='".$iPrint."'>".$iPrint.'</option>';
+								} else {
+									echo "<option value='".$iPrint."'>".$iPrint.'</option>';
+								}
+							}
+            				?>				
 						</select>
 					</td>
 				</tr>
@@ -253,36 +252,36 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
 						<select style="width:100px" name="schoolCloseM" id="schoolCloseM">
 							<?php
                             echo "<option value='Minutes'>".__($guid, 'Minutes').'</option>';
-            for ($i = 0;$i < 60;++$i) {
-                $iPrint = $i;
-                if (strlen($i) == 1) {
-                    $iPrint = '0'.$i;
-                }
+							for ($i = 0;$i < 60;++$i) {
+								$iPrint = $i;
+								if (strlen($i) == 1) {
+									$iPrint = '0'.$i;
+								}
 
-                if (substr($row['schoolClose'], 3, 2) == $i and $row['schoolClose'] != null) {
-                    echo "<option selected value='".$iPrint."'>".$iPrint.'</option>';
-                } else {
-                    echo "<option value='".$iPrint."'>".$iPrint.'</option>';
-                }
-            }
-            ?>				
+								if (substr($row['schoolClose'], 3, 2) == $i and $row['schoolClose'] != null) {
+									echo "<option selected value='".$iPrint."'>".$iPrint.'</option>';
+								} else {
+									echo "<option value='".$iPrint."'>".$iPrint.'</option>';
+								}
+							}
+							?>				
 						</select>
 						<select style="width:100px" name="schoolCloseH" id="schoolCloseH">
 							<?php
                             echo "<option value='Hours'>".__($guid, 'Hours').'</option>';
-            for ($i = 0;$i < 24;++$i) {
-                $iPrint = $i;
-                if (strlen($i) == 1) {
-                    $iPrint = '0'.$i;
-                }
+							for ($i = 0;$i < 24;++$i) {
+								$iPrint = $i;
+								if (strlen($i) == 1) {
+									$iPrint = '0'.$i;
+								}
 
-                if (substr($row['schoolClose'], 0, 2) == $i and $row['schoolClose'] != null) {
-                    echo "<option selected value='".$iPrint."'>".$iPrint.'</option>';
-                } else {
-                    echo "<option value='".$iPrint."'>".$iPrint.'</option>';
-                }
-            }
-            ?>				
+								if (substr($row['schoolClose'], 0, 2) == $i and $row['schoolClose'] != null) {
+									echo "<option selected value='".$iPrint."'>".$iPrint.'</option>';
+								} else {
+									echo "<option value='".$iPrint."'>".$iPrint.'</option>';
+								}
+							}
+							?>				
 						</select>
 					</td>
 				</tr>

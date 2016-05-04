@@ -62,10 +62,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_me
                                 $resultSelect->execute($dataSelect);
                             } catch (PDOException $e) {
                             }
-    while ($rowSelect = $resultSelect->fetch()) {
-        echo "<option value='".$rowSelect['gibbonPersonID']."'>".htmlPrep($rowSelect['name']).' - '.formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).'</option>';
-    }
-    ?>
+							while ($rowSelect = $resultSelect->fetch()) {
+								echo "<option value='".$rowSelect['gibbonPersonID']."'>".htmlPrep($rowSelect['name']).' - '.formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).'</option>';
+							}
+							?>
 						</optgroup>
 						<optgroup label='--<?php echo __($guid, 'Students by Name') ?>--'>
 							<?php
@@ -76,10 +76,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_me
                                 $resultSelect->execute($dataSelect);
                             } catch (PDOException $e) {
                             }
-    while ($rowSelect = $resultSelect->fetch()) {
-        echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['name']).')</option>';
-    }
-    ?>
+							while ($rowSelect = $resultSelect->fetch()) {
+								echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['name']).')</option>';
+							}
+							?>
 						</optgroup>
 					</select>
 				</td>

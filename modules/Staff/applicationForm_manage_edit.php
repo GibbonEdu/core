@@ -127,15 +127,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 							</td>
 							<td class="right">
 								<select name="status" id="status" class="standardWidth">
-									<option <?php if ($row['status'] == 'Pending') { echo 'selected';
-}
-                        ?> value="Pending"><?php echo __($guid, 'Pending') ?></option>
-									<option <?php if ($row['status'] == 'Rejected') { echo 'selected';
-}
-                        ?> value="Rejected"><?php echo __($guid, 'Rejected') ?></option>
-									<option <?php if ($row['status'] == 'Withdrawn') { echo 'selected';
-}
-                        ?> value="Withdrawn"><?php echo __($guid, 'Withdrawn') ?></option>
+									<option <?php if ($row['status'] == 'Pending') { echo 'selected'; } ?> value="Pending"><?php echo __($guid, 'Pending') ?></option>
+									<option <?php if ($row['status'] == 'Rejected') { echo 'selected'; } ?> value="Rejected"><?php echo __($guid, 'Rejected') ?></option>
+									<option <?php if ($row['status'] == 'Withdrawn') { echo 'selected'; } ?> value="Withdrawn"><?php echo __($guid, 'Withdrawn') ?></option>
 								</select>
 							</td>
 						</tr>
@@ -155,9 +149,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 						<?php
 
                     }
-            $milestonesMasterRaw = getSettingByScope($connection2, 'Staff', 'staffApplicationFormMilestones');
-            if ($milestonesMasterRaw != '') {
-                ?>
+					$milestonesMasterRaw = getSettingByScope($connection2, 'Staff', 'staffApplicationFormMilestones');
+					if ($milestonesMasterRaw != '') {
+                		?>
 						<tr>
 							<td>
 								<b><?php echo __($guid, 'Milestones') ?></b><br/>
@@ -165,49 +159,45 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 							<td class="right">
 								<?php
                                 $milestones = explode(',', $row['milestones']);
-                $milestonesMaster = explode(',', $milestonesMasterRaw);
-                foreach ($milestonesMaster as $milestoneMaster) {
-                    $checked = '';
-                    foreach ($milestones as $milestone) {
-                        if (trim($milestoneMaster) == trim($milestone)) {
-                            $checked = 'checked';
-                        }
-                    }
-                    echo trim($milestoneMaster)." <input $checked type='checkbox' name='milestone_".preg_replace('/\s+/', '', $milestoneMaster)."'></br>";
-                }
-
-                ?>
+								$milestonesMaster = explode(',', $milestonesMasterRaw);
+								foreach ($milestonesMaster as $milestoneMaster) {
+									$checked = '';
+									foreach ($milestones as $milestone) {
+										if (trim($milestoneMaster) == trim($milestone)) {
+											$checked = 'checked';
+										}
+									}
+									echo trim($milestoneMaster)." <input $checked type='checkbox' name='milestone_".preg_replace('/\s+/', '', $milestoneMaster)."'></br>";
+								}
+                			?>
 							</td>
 						</tr>
 						<?php
 
-            }
-            ?>
+					}
+					?>
 					<tr>
 						<td>
 							<b><?php echo __($guid, 'Start Date') ?></b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Intended first day at school.') ?><br/>Format <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-            ?></span>
+							<span class="emphasis small"><?php echo __($guid, 'Intended first day at school.') ?><br/>Format <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
+							} else {
+								echo $_SESSION[$guid]['i18n']['dateFormat'];
+							}
+							?></span>
 						</td>
 						<td class="right">
 							<input name="dateStart" id="dateStart" maxlength=10 value="<?php echo dateConvertBack($guid, $row['dateStart']) ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var dateStart=new LiveValidation('dateStart');
-								dateStart.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-            ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-            ?>." } );
+								dateStart.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') { echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+								}
+								?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormat'];
+								}
+								?>." } );
 							</script>
 							 <script type="text/javascript">
 								$(function() {
@@ -250,16 +240,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 					<?php
                     //Get application question
                     $staffApplicationFormQuestions = getSettingByScope($connection2, 'Staff', 'staffApplicationFormQuestions');
-            if ($staffApplicationFormQuestions != '') {
-                echo '<tr>';
-                echo '<td colspan=2>';
-                echo '<b>'.__($guid, 'Application Questions').'</b><br/>';
-                echo '<span style="font-size: 90%"><i>'.__($guid, 'This value cannot be changed.').'</span>';
-                echo '<p>'.$row['questions'].'</p>';
-                echo '</td>';
-                echo '</tr>';
-            }
-            ?>
+					if ($staffApplicationFormQuestions != '') {
+						echo '<tr>';
+						echo '<td colspan=2>';
+						echo '<b>'.__($guid, 'Application Questions').'</b><br/>';
+						echo '<span style="font-size: 90%"><i>'.__($guid, 'This value cannot be changed.').'</span>';
+						echo '<p>'.$row['questions'].'</p>';
+						echo '</td>';
+						echo '</tr>';
+					}
+					?>
 				
 					<tr class='break'>
 						<td colspan=2> 
@@ -360,12 +350,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 							<td class="right">
 								<select name="gender" id="gender" class="standardWidth">
 									<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
-									<option <?php if ($row['gender'] == 'F') { echo 'selected';
-}
-                        ?> value="F"><?php echo __($guid, 'Female') ?></option>
-									<option <?php if ($row['gender'] == 'M') { echo 'selected';
-}
-                        ?> value="M"><?php echo __($guid, 'Male') ?></option>
+									<option <?php if ($row['gender'] == 'F') { echo 'selected'; } ?> value="F"><?php echo __($guid, 'Female') ?></option>
+									<option <?php if ($row['gender'] == 'M') { echo 'selected'; } ?> value="M"><?php echo __($guid, 'Male') ?></option>
 								</select>
 								<script type="text/javascript">
 									var gender=new LiveValidation('gender');
@@ -379,10 +365,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 								<span class="emphasis small"><?php echo __($guid, 'Format:').' '.$_SESSION[$guid]['i18n']['dateFormat']  ?></span>
 							</td>
 							<td class="right">
-								<input name="dob" id="dob" maxlength=10 value="<?php if ($row['dob'] != '') {
-    echo dateConvertBack($guid, $row['dob']);
-}
-                        ?>" type="text" class="standardWidth">
+								<input name="dob" id="dob" maxlength=10 value="<?php if ($row['dob'] != '') { echo dateConvertBack($guid, $row['dob']); } ?>" type="text" class="standardWidth">
 								<script type="text/javascript">
 									var dob=new LiveValidation('dob');
 									dob.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
@@ -421,21 +404,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 								<select name="languageFirst" id="languageFirst" class="standardWidth">
 									<?php
                                     echo "<option value='Please select...'>Please select...</option>";
-                        try {
-                            $dataSelect = array();
-                            $sqlSelect = 'SELECT name FROM gibbonLanguage ORDER BY name';
-                            $resultSelect = $connection2->prepare($sqlSelect);
-                            $resultSelect->execute($dataSelect);
-                        } catch (PDOException $e) {
-                        }
-                        while ($rowSelect = $resultSelect->fetch()) {
-                            $selected = '';
-                            if ($row['languageFirst'] == $rowSelect['name']) {
-                                $selected = 'selected';
-                            }
-                            echo "<option $selected value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-                        }
-                        ?>				
+									try {
+										$dataSelect = array();
+										$sqlSelect = 'SELECT name FROM gibbonLanguage ORDER BY name';
+										$resultSelect = $connection2->prepare($sqlSelect);
+										$resultSelect->execute($dataSelect);
+									} catch (PDOException $e) {
+									}
+									while ($rowSelect = $resultSelect->fetch()) {
+										$selected = '';
+										if ($row['languageFirst'] == $rowSelect['name']) {
+											$selected = 'selected';
+										}
+										echo "<option $selected value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
+									}
+									?>				
 								</select>
 								<script type="text/javascript">
 									var languageFirst=new LiveValidation('languageFirst');
@@ -451,21 +434,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 								<select name="languageSecond" id="languageSecond" class="standardWidth">
 									<?php
                                     echo "<option value=''></option>";
-                        try {
-                            $dataSelect = array();
-                            $sqlSelect = 'SELECT name FROM gibbonLanguage ORDER BY name';
-                            $resultSelect = $connection2->prepare($sqlSelect);
-                            $resultSelect->execute($dataSelect);
-                        } catch (PDOException $e) {
-                        }
-                        while ($rowSelect = $resultSelect->fetch()) {
-                            $selected = '';
-                            if ($row['languageSecond'] == $rowSelect['name']) {
-                                $selected = 'selected';
-                            }
-                            echo "<option $selected value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-                        }
-                        ?>				
+									try {
+										$dataSelect = array();
+										$sqlSelect = 'SELECT name FROM gibbonLanguage ORDER BY name';
+										$resultSelect = $connection2->prepare($sqlSelect);
+										$resultSelect->execute($dataSelect);
+									} catch (PDOException $e) {
+									}
+									while ($rowSelect = $resultSelect->fetch()) {
+										$selected = '';
+										if ($row['languageSecond'] == $rowSelect['name']) {
+											$selected = 'selected';
+										}
+										echo "<option $selected value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
+									}
+									?>				
 								</select>
 							</td>
 						</tr>
@@ -477,21 +460,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 								<select name="languageThird" id="languageThird" class="standardWidth">
 									<?php
                                     echo "<option value=''></option>";
-                        try {
-                            $dataSelect = array();
-                            $sqlSelect = 'SELECT name FROM gibbonLanguage ORDER BY name';
-                            $resultSelect = $connection2->prepare($sqlSelect);
-                            $resultSelect->execute($dataSelect);
-                        } catch (PDOException $e) {
-                        }
-                        while ($rowSelect = $resultSelect->fetch()) {
-                            $selected = '';
-                            if ($row['languageThird'] == $rowSelect['name']) {
-                                $selected = 'selected';
-                            }
-                            echo "<option $selected value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-                        }
-                        ?>				
+									try {
+										$dataSelect = array();
+										$sqlSelect = 'SELECT name FROM gibbonLanguage ORDER BY name';
+										$resultSelect = $connection2->prepare($sqlSelect);
+										$resultSelect->execute($dataSelect);
+									} catch (PDOException $e) {
+									}
+									while ($rowSelect = $resultSelect->fetch()) {
+										$selected = '';
+										if ($row['languageThird'] == $rowSelect['name']) {
+											$selected = 'selected';
+										}
+										echo "<option $selected value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
+									}
+									?>				
 								</select>
 							</td>
 						</tr>
@@ -509,15 +492,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                                         $resultSelect->execute($dataSelect);
                                     } catch (PDOException $e) {
                                     }
-                        echo "<option value=''></option>";
-                        while ($rowSelect = $resultSelect->fetch()) {
-                            $selected = '';
-                            if ($row['countryOfBirth'] == $rowSelect['printable_name']) {
-                                $selected = 'selected';
-                            }
-                            echo "<option $selected value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
-                        }
-                        ?>				
+									echo "<option value=''></option>";
+									while ($rowSelect = $resultSelect->fetch()) {
+										$selected = '';
+										if ($row['countryOfBirth'] == $rowSelect['printable_name']) {
+											$selected = 'selected';
+										}
+										echo "<option $selected value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
+									}
+									?>				
 								</select>
 							</td>
 						</tr>
@@ -529,29 +512,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 								<select name="citizenship1" id="citizenship1" class="standardWidth">
 									<?php
                                     echo "<option value=''></option>";
-                        $nationalityList = getSettingByScope($connection2, 'User Admin', 'nationality');
-                        if ($nationalityList == '') {
-                            try {
-                                $dataSelect = array();
-                                $sqlSelect = 'SELECT printable_name FROM gibbonCountry ORDER BY printable_name';
-                                $resultSelect = $connection2->prepare($sqlSelect);
-                                $resultSelect->execute($dataSelect);
-                            } catch (PDOException $e) {
-                            }
-                            while ($rowSelect = $resultSelect->fetch()) {
-                                $selected = '';
-                                if ($row['citizenship1'] == $rowSelect['printable_name']) {
-                                    $selected = 'selected';
-                                }
-                                echo "<option $selected value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
-                            }
-                        } else {
-                            $nationalities = explode(',', $nationalityList);
-                            foreach ($nationalities as $nationality) {
-                                echo "<option value='".trim($nationality)."'>".trim($nationality).'</option>';
-                            }
-                        }
-                        ?>				
+									$nationalityList = getSettingByScope($connection2, 'User Admin', 'nationality');
+									if ($nationalityList == '') {
+										try {
+											$dataSelect = array();
+											$sqlSelect = 'SELECT printable_name FROM gibbonCountry ORDER BY printable_name';
+											$resultSelect = $connection2->prepare($sqlSelect);
+											$resultSelect->execute($dataSelect);
+										} catch (PDOException $e) {
+										}
+										while ($rowSelect = $resultSelect->fetch()) {
+											$selected = '';
+											if ($row['citizenship1'] == $rowSelect['printable_name']) {
+												$selected = 'selected';
+											}
+											echo "<option $selected value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
+										}
+									} else {
+										$nationalities = explode(',', $nationalityList);
+										foreach ($nationalities as $nationality) {
+											echo "<option value='".trim($nationality)."'>".trim($nationality).'</option>';
+										}
+									}
+									?>				
 								</select>
 							</td>
 						</tr>
@@ -571,7 +554,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                                 } else {
                                     echo '<b>'.$_SESSION[$guid]['country'].' '.__($guid, 'ID Card Number').'</b><br/>';
                                 }
-                        ?>
+                        		?>
 							</td>
 							<td class="right">
 								<input name="nationalIDCardNumber" id="nationalIDCardNumber" maxlength=30 value="<?php echo htmlPrep($row['nationalIDCardNumber']) ?>" type="text" class="standardWidth">
@@ -585,7 +568,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                                 } else {
                                     echo '<b>'.$_SESSION[$guid]['country'].' '.__($guid, 'Residency/Visa Type').'</b><br/>';
                                 }
-                        ?>
+                        		?>
 							</td>
 							<td class="right">
 								<?php
@@ -602,283 +585,268 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                             echo '</select>';
                         }
                         ?>
-							</td>
-						</tr>
-						<tr>
-							<td> 
-								<?php
-                                if ($_SESSION[$guid]['country'] == '') {
-                                    echo '<b>'.__($guid, 'Visa Expiry Date').'</b><br/>';
-                                } else {
-                                    echo '<b>'.$_SESSION[$guid]['country'].' '.__($guid, 'Visa Expiry Date').'</b><br/>';
-                                }
-                        echo "<span style='font-size: 90%'><i>Format: ";
-                        if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-                            echo 'dd/mm/yyyy';
-                        } else {
-                            echo $_SESSION[$guid]['i18n']['dateFormat'];
-                        }
-                        echo '. '.__($guid, 'If relevant.').'</span>';
-                        ?>
-							</td>
-							<td class="right">
-								<input name="visaExpiryDate" id="visaExpiryDate" maxlength=10 value="<?php if ($row['visaExpiryDate'] != '') {
-    echo dateConvertBack($guid, $row['visaExpiryDate']);
-}
-                        ?>" type="text" class="standardWidth">
-								<script type="text/javascript">
-									var visaExpiryDate=new LiveValidation('visaExpiryDate');
-									visaExpiryDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-										echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-									} else {
-										echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-									}
-															?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-										echo 'dd/mm/yyyy';
-									} else {
-										echo $_SESSION[$guid]['i18n']['dateFormat'];
-									}
-                       	 			?>." } );  
-								</script>
-								 <script type="text/javascript">
-									$(function() {
-										$( "#visaExpiryDate" ).datepicker();
-									});
-								</script>
-							</td>
-						</tr>
-			
-			
-						<tr class='break'>
-							<td colspan=2> 
-								<h3><?php echo __($guid, 'Contacts') ?></h3>
-							</td>
-						</tr>
-						<tr>
-							<td> 
-								<b><?php echo __($guid, 'Email') ?> *</b><br/>
-							</td>
-							<td class="right">
-								<input name="email" id="email" maxlength=50 value="<?php echo htmlPrep($row['email']) ?>" type="text" class="standardWidth">
-								<script type="text/javascript">
-									var email=new LiveValidation('email');
-									email.add(Validate.Email);
-									email.add(Validate.Presence);
-								</script>
-							</td>
-						</tr>
-						<tr>
-							<td> 
-								<b><?php echo __($guid, 'Phone') ?> *</b><br/>
-								<span class="emphasis small"><?php echo __($guid, 'Type, country code, number.') ?></span>
-							</td>
-							<td class="right">
-								<input name="phone1" id="phone1" maxlength=20 value="<?php echo htmlPrep($row['phone1']) ?>" type="text" style="width: 160px">
-								<script type="text/javascript">
-									var phone1=new LiveValidation('phone1');
-									phone1.add(Validate.Presence);
-								</script>
-								<select name="phone1CountryCode" id="phone1CountryCode" style="width: 60px">
-									<?php
-                                    echo "<option value=''></option>";
-                        try {
-                            $dataSelect = array();
-                            $sqlSelect = 'SELECT * FROM gibbonCountry ORDER BY printable_name';
-                            $resultSelect = $connection2->prepare($sqlSelect);
-                            $resultSelect->execute($dataSelect);
-                        } catch (PDOException $e) {
-                        }
-                        while ($rowSelect = $resultSelect->fetch()) {
-                            $selected = '';
-                            if ($row['phone1CountryCode'] == $rowSelect['iddCountryCode']) {
-                                $selected = 'selected';
-                            }
-                            echo "<option $selected value='".$rowSelect['iddCountryCode']."'>".htmlPrep($rowSelect['iddCountryCode']).' - '.htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
-                        }
-                        ?>				
-								</select>
-								<select style="width: 70px" name="phone1Type">
-									<option value=""></option>
-									<option <?php if ($row['phone1Type'] == 'Mobile') { echo 'selected';
-}
-                        ?> value="Mobile"><?php echo __($guid, 'Mobile') ?></option>
-									<option <?php if ($row['phone1Type'] == 'Home') { echo 'selected';
-}
-                        ?> value="Home"><?php echo __($guid, 'Home') ?></option>
-									<option <?php if ($row['phone1Type'] == 'Work') { echo 'selected';
-}
-                        ?> value="Work"><?php echo __($guid, 'Work') ?></option>
-									<option <?php if ($row['phone1Type'] == 'Fax') { echo 'selected';
-}
-                        ?> value="Fax"><?php echo __($guid, 'Fax') ?></option>
-									<option <?php if ($row['phone1Type'] == 'Pager') { echo 'selected';
-}
-                        ?> value="Pager"><?php echo __($guid, 'Pager') ?></option>
-									<option <?php if ($row['phone1Type'] == 'Other') { echo 'selected';
-}
-                        ?> value="Other"><?php echo __($guid, 'Other') ?></option>
-								</select>
-							</td>
-						</tr>
-						<tr>
-							<td> 
-								<b><?php echo __($guid, 'Home Address') ?> *</b><br/>
-								<span class="emphasis small"><?php echo __($guid, 'Unit, Building, Street') ?></span>
-							</td>
-							<td class="right">
-								<input name="homeAddress" id="homeAddress" maxlength=255 value="<?php echo htmlPrep($row['homeAddress']) ?>" type="text" class="standardWidth">
-								<script type="text/javascript">
-									var homeAddress=new LiveValidation('homeAddress');
-									homeAddress.add(Validate.Presence);
-								</script>
-							</td>
-						</tr>
-						<tr>
-							<td> 
-								<b><?php echo __($guid, 'Home Address (District)') ?> *</b><br/>
-								<span class="emphasis small"><?php echo __($guid, 'County, State, District') ?></span>
-							</td>
-							<td class="right">
-								<input name="homeAddressDistrict" id="homeAddressDistrict" maxlength=30 value="<?php echo htmlPrep($row['homeAddressDistrict']) ?>" type="text" class="standardWidth">
-							</td>
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<?php
+							if ($_SESSION[$guid]['country'] == '') {
+								echo '<b>'.__($guid, 'Visa Expiry Date').'</b><br/>';
+							} else {
+								echo '<b>'.$_SESSION[$guid]['country'].' '.__($guid, 'Visa Expiry Date').'</b><br/>';
+							}
+							echo "<span style='font-size: 90%'><i>Format: ";
+							if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+								echo 'dd/mm/yyyy';
+							} else {
+								echo $_SESSION[$guid]['i18n']['dateFormat'];
+							}
+							echo '. '.__($guid, 'If relevant.').'</span>';
+							?>
+						</td>
+						<td class="right">
+							<input name="visaExpiryDate" id="visaExpiryDate" maxlength=10 value="<?php if ($row['visaExpiryDate'] != '') { echo dateConvertBack($guid, $row['visaExpiryDate']); } ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
+								var visaExpiryDate=new LiveValidation('visaExpiryDate');
+								visaExpiryDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
+									echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+								}
+														?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+									echo 'dd/mm/yyyy';
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormat'];
+								}
+								?>." } );  
+							</script>
+							 <script type="text/javascript">
 								$(function() {
-									var availableTags=[
-										<?php
-                                        try {
-                                            $dataAuto = array();
-                                            $sqlAuto = 'SELECT DISTINCT name FROM gibbonDistrict ORDER BY name';
-                                            $resultAuto = $connection2->prepare($sqlAuto);
-                                            $resultAuto->execute($dataAuto);
-                                        } catch (PDOException $e) {
-                                        }
-                        while ($rowAuto = $resultAuto->fetch()) {
-                            echo '"'.$rowAuto['name'].'", ';
-                        }
-                        ?>
-									];
-									$( "#homeAddressDistrict" ).autocomplete({source: availableTags});
+									$( "#visaExpiryDate" ).datepicker();
 								});
 							</script>
+						</td>
+					</tr>
+		
+		
+					<tr class='break'>
+						<td colspan=2> 
+							<h3><?php echo __($guid, 'Contacts') ?></h3>
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<b><?php echo __($guid, 'Email') ?> *</b><br/>
+						</td>
+						<td class="right">
+							<input name="email" id="email" maxlength=50 value="<?php echo htmlPrep($row['email']) ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
-								var homeAddressDistrict=new LiveValidation('homeAddressDistrict');
-								homeAddressDistrict.add(Validate.Presence);
+								var email=new LiveValidation('email');
+								email.add(Validate.Email);
+								email.add(Validate.Presence);
 							</script>
-						</tr>
-						<tr>
-							<td> 
-								<b><?php echo __($guid, 'Home Address (Country)') ?> *</b><br/>
-							</td>
-							<td class="right">
-								<select name="homeAddressCountry" id="homeAddressCountry" class="standardWidth">
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<b><?php echo __($guid, 'Phone') ?> *</b><br/>
+							<span class="emphasis small"><?php echo __($guid, 'Type, country code, number.') ?></span>
+						</td>
+						<td class="right">
+							<input name="phone1" id="phone1" maxlength=20 value="<?php echo htmlPrep($row['phone1']) ?>" type="text" style="width: 160px">
+							<script type="text/javascript">
+								var phone1=new LiveValidation('phone1');
+								phone1.add(Validate.Presence);
+							</script>
+							<select name="phone1CountryCode" id="phone1CountryCode" style="width: 60px">
+								<?php
+								echo "<option value=''></option>";
+								try {
+									$dataSelect = array();
+									$sqlSelect = 'SELECT * FROM gibbonCountry ORDER BY printable_name';
+									$resultSelect = $connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								} catch (PDOException $e) {
+								}
+								while ($rowSelect = $resultSelect->fetch()) {
+									$selected = '';
+									if ($row['phone1CountryCode'] == $rowSelect['iddCountryCode']) {
+										$selected = 'selected';
+									}
+									echo "<option $selected value='".$rowSelect['iddCountryCode']."'>".htmlPrep($rowSelect['iddCountryCode']).' - '.htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
+								}
+								?>				
+							</select>
+							<select style="width: 70px" name="phone1Type">
+								<option value=""></option>
+								<option <?php if ($row['phone1Type'] == 'Mobile') { echo 'selected'; } ?> value="Mobile"><?php echo __($guid, 'Mobile') ?></option>
+								<option <?php if ($row['phone1Type'] == 'Home') { echo 'selected'; } ?> value="Home"><?php echo __($guid, 'Home') ?></option>
+								<option <?php if ($row['phone1Type'] == 'Work') { echo 'selected'; } ?> value="Work"><?php echo __($guid, 'Work') ?></option>
+								<option <?php if ($row['phone1Type'] == 'Fax') { echo 'selected'; } ?> value="Fax"><?php echo __($guid, 'Fax') ?></option>
+								<option <?php if ($row['phone1Type'] == 'Pager') { echo 'selected'; } ?> value="Pager"><?php echo __($guid, 'Pager') ?></option>
+								<option <?php if ($row['phone1Type'] == 'Other') { echo 'selected'; } ?> value="Other"><?php echo __($guid, 'Other') ?></option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<b><?php echo __($guid, 'Home Address') ?> *</b><br/>
+							<span class="emphasis small"><?php echo __($guid, 'Unit, Building, Street') ?></span>
+						</td>
+						<td class="right">
+							<input name="homeAddress" id="homeAddress" maxlength=255 value="<?php echo htmlPrep($row['homeAddress']) ?>" type="text" class="standardWidth">
+							<script type="text/javascript">
+								var homeAddress=new LiveValidation('homeAddress');
+								homeAddress.add(Validate.Presence);
+							</script>
+						</td>
+					</tr>
+					<tr>
+						<td> 
+							<b><?php echo __($guid, 'Home Address (District)') ?> *</b><br/>
+							<span class="emphasis small"><?php echo __($guid, 'County, State, District') ?></span>
+						</td>
+						<td class="right">
+							<input name="homeAddressDistrict" id="homeAddressDistrict" maxlength=30 value="<?php echo htmlPrep($row['homeAddressDistrict']) ?>" type="text" class="standardWidth">
+						</td>
+						<script type="text/javascript">
+							$(function() {
+								var availableTags=[
 									<?php
-                                    try {
-                                        $dataSelect = array();
-                                        $sqlSelect = 'SELECT printable_name FROM gibbonCountry ORDER BY printable_name';
-                                        $resultSelect = $connection2->prepare($sqlSelect);
-                                        $resultSelect->execute($dataSelect);
-                                    } catch (PDOException $e) {
-                                    }
-                        echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-                        while ($rowSelect = $resultSelect->fetch()) {
-                            $selected = '';
-                            if ($row['homeAddressCountry'] == $rowSelect['printable_name']) {
-                                $selected = 'selected';
-                            }
-                            echo "<option $selected value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
-                        }
-                        ?>				
-								</select>
-								<script type="text/javascript">
-									var homeAddressCountry=new LiveValidation('homeAddressCountry');
-									homeAddressCountry.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-								</script>
-							</td>
-						</tr>
+									try {
+										$dataAuto = array();
+										$sqlAuto = 'SELECT DISTINCT name FROM gibbonDistrict ORDER BY name';
+										$resultAuto = $connection2->prepare($sqlAuto);
+										$resultAuto->execute($dataAuto);
+									} catch (PDOException $e) {
+									}
+									while ($rowAuto = $resultAuto->fetch()) {
+										echo '"'.$rowAuto['name'].'", ';
+									}
+									?>
+								];
+								$( "#homeAddressDistrict" ).autocomplete({source: availableTags});
+							});
+						</script>
+						<script type="text/javascript">
+							var homeAddressDistrict=new LiveValidation('homeAddressDistrict');
+							homeAddressDistrict.add(Validate.Presence);
+						</script>
+					</tr>
+					<tr>
+						<td> 
+							<b><?php echo __($guid, 'Home Address (Country)') ?> *</b><br/>
+						</td>
+						<td class="right">
+							<select name="homeAddressCountry" id="homeAddressCountry" class="standardWidth">
+								<?php
+								try {
+									$dataSelect = array();
+									$sqlSelect = 'SELECT printable_name FROM gibbonCountry ORDER BY printable_name';
+									$resultSelect = $connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								} catch (PDOException $e) {
+								}
+					echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
+					while ($rowSelect = $resultSelect->fetch()) {
+						$selected = '';
+						if ($row['homeAddressCountry'] == $rowSelect['printable_name']) {
+							$selected = 'selected';
+						}
+						echo "<option $selected value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
+					}
+					?>				
+							</select>
+							<script type="text/javascript">
+								var homeAddressCountry=new LiveValidation('homeAddressCountry');
+								homeAddressCountry.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
+							</script>
+						</td>
+					</tr>
+				<?php
+
+				}
+
+				//CUSTOM FIELDS FOR STAFF
+				$fields = unserialize($row['fields']);
+				$resultFields = getCustomFields($connection2, $guid, false, true, false, false, true, null);
+				if ($resultFields->rowCount() > 0) {
+					?>
+					<tr class='break'>
+						<td colspan=2> 
+							<h3><?php echo __($guid, 'Other Information') ?></h3>
+						</td>
+					</tr>
+					<?php
+					while ($rowFields = $resultFields->fetch()) {
+						echo renderCustomFieldRow($connection2, $guid, $rowFields, $fields[$rowFields['gibbonPersonFieldID']]);
+					}
+				}
+
+				$staffApplicationFormRequiredDocuments = getSettingByScope($connection2, 'Staff', 'staffApplicationFormRequiredDocuments');
+				$staffApplicationFormRequiredDocumentsCompulsory = getSettingByScope($connection2, 'Staff', 'staffApplicationFormRequiredDocumentsCompulsory');
+				$count = 0;
+				if ($staffApplicationFormRequiredDocuments != '' and $staffApplicationFormRequiredDocuments != false) {
+					?>
+					<tr class='break'>
+						<td colspan=2>
+							<h3><?php echo __($guid, 'Supporting Documents') ?></h3>
+						</td>
+					</tr>
 					<?php
 
-                    }
+					//Get list of acceptable file extensions
+					try {
+						$dataExt = array();
+						$sqlExt = 'SELECT * FROM gibbonFileExtension';
+						$resultExt = $connection2->prepare($sqlExt);
+						$resultExt->execute($dataExt);
+					} catch (PDOException $e) {
+					}
+					$ext = '';
+					while ($rowExt = $resultExt->fetch()) {
+						$ext = $ext."'.".$rowExt['extension']."',";
+					}
 
-                    //CUSTOM FIELDS FOR STAFF
-                    $fields = unserialize($row['fields']);
-            $resultFields = getCustomFields($connection2, $guid, false, true, false, false, true, null);
-            if ($resultFields->rowCount() > 0) {
-                ?>
-						<tr class='break'>
-							<td colspan=2> 
-								<h3><?php echo __($guid, 'Other Information') ?></h3>
-							</td>
-						</tr>
-						<?php
-                        while ($rowFields = $resultFields->fetch()) {
-                            echo renderCustomFieldRow($connection2, $guid, $rowFields, $fields[$rowFields['gibbonPersonFieldID']]);
-                        }
-            }
+					$staffApplicationFormRequiredDocumentsList = explode(',', $staffApplicationFormRequiredDocuments);
+					foreach ($staffApplicationFormRequiredDocumentsList as $document) {
+						try {
+							$dataFile = array('gibbonStaffApplicationFormID' => $gibbonStaffApplicationFormID, 'name' => $document);
+							$sqlFile = 'SELECT * FROM gibbonStaffApplicationFormFile WHERE gibbonStaffApplicationFormID=:gibbonStaffApplicationFormID AND name=:name ORDER BY name';
+							$resultFile = $connection2->prepare($sqlFile);
+							$resultFile->execute($dataFile);
+						} catch (PDOException $e) {
+						}
+						if ($resultFile->rowCount() == 0) {
+							?>
+							<tr>
+								<td>
+									<b><?php echo $document;
+									if ($staffApplicationFormRequiredDocumentsCompulsory == 'Y') {
+										echo ' *';
+									}
+									?></b><br/>
+								</td>
+								<td class="right">
+									<?php
+									echo "<input type='file' name='file$count' id='file$count'><br/>";
+									echo "<input type='hidden' name='fileName$count' id='filefileName$count' value='$document'>";
+									if ($staffApplicationFormRequiredDocumentsCompulsory == 'Y') {
+										echo "<script type='text/javascript'>";
+										echo "var file$count=new LiveValidation('file$count');";
+										echo "file$count.add( Validate.Inclusion, { within: [".$ext."], failureMessage: 'Illegal file type!', partialMatch: true, caseSensitive: false } );";
+										echo "file$count.add(Validate.Presence);";
+										echo '</script>';
+									}
+									++$count;
+									?>
+								</td>
+							</tr>
+							<?php
 
-            $staffApplicationFormRequiredDocuments = getSettingByScope($connection2, 'Staff', 'staffApplicationFormRequiredDocuments');
-            $staffApplicationFormRequiredDocumentsCompulsory = getSettingByScope($connection2, 'Staff', 'staffApplicationFormRequiredDocumentsCompulsory');
-            $count = 0;
-            if ($staffApplicationFormRequiredDocuments != '' and $staffApplicationFormRequiredDocuments != false) {
-                ?>
-						<tr class='break'>
-							<td colspan=2>
-								<h3><?php echo __($guid, 'Supporting Documents') ?></h3>
-							</td>
-						</tr>
-						<?php
-
-                        //Get list of acceptable file extensions
-                        try {
-                            $dataExt = array();
-                            $sqlExt = 'SELECT * FROM gibbonFileExtension';
-                            $resultExt = $connection2->prepare($sqlExt);
-                            $resultExt->execute($dataExt);
-                        } catch (PDOException $e) {
-                        }
-                $ext = '';
-                while ($rowExt = $resultExt->fetch()) {
-                    $ext = $ext."'.".$rowExt['extension']."',";
-                }
-
-                $staffApplicationFormRequiredDocumentsList = explode(',', $staffApplicationFormRequiredDocuments);
-                foreach ($staffApplicationFormRequiredDocumentsList as $document) {
-                    try {
-                        $dataFile = array('gibbonStaffApplicationFormID' => $gibbonStaffApplicationFormID, 'name' => $document);
-                        $sqlFile = 'SELECT * FROM gibbonStaffApplicationFormFile WHERE gibbonStaffApplicationFormID=:gibbonStaffApplicationFormID AND name=:name ORDER BY name';
-                        $resultFile = $connection2->prepare($sqlFile);
-                        $resultFile->execute($dataFile);
-                    } catch (PDOException $e) {
-                    }
-                    if ($resultFile->rowCount() == 0) {
-                        ?>
-								<tr>
-									<td>
-										<b><?php echo $document;
-                        if ($staffApplicationFormRequiredDocumentsCompulsory == 'Y') {
-                            echo ' *';
-                        }
-                        ?></b><br/>
-									</td>
-									<td class="right">
-										<?php
-                                        echo "<input type='file' name='file$count' id='file$count'><br/>";
-                        echo "<input type='hidden' name='fileName$count' id='filefileName$count' value='$document'>";
-                        if ($staffApplicationFormRequiredDocumentsCompulsory == 'Y') {
-                            echo "<script type='text/javascript'>";
-                            echo "var file$count=new LiveValidation('file$count');";
-                            echo "file$count.add( Validate.Inclusion, { within: [".$ext."], failureMessage: 'Illegal file type!', partialMatch: true, caseSensitive: false } );";
-                            echo "file$count.add(Validate.Presence);";
-                            echo '</script>';
-                        }
-                        ++$count;
-                        ?>
-									</td>
-								</tr>
-								<?php
-
-                    } elseif ($resultFile->rowCount() == 1) {
-                        $rowFile = $resultFile->fetch();
-                        ?>
+							} elseif ($resultFile->rowCount() == 1) {
+								$rowFile = $resultFile->fetch();
+								?>
 								<tr>
 									<td>
 										<?php echo '<b>'.$rowFile['name'].'</b><br/>' ?>
@@ -886,41 +854,38 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 									</td>
 									<td class="right">
 										<?php
-                                        echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowFile['path']."'>Download</a>";
-                        ?>
+										echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowFile['path']."'>Download</a>";
+										?>
 									</td>
 								</tr>
 								<?php
 
-                    } else {
-                        //Error
-                    }
-                }
-            }
-            if ($count > 0) {
-                ?>
+							} else {
+								//Error
+							}
+						}
+					}
+					if ($count > 0) {
+						?>
 						<tr>
 							<td colspan=2>
-								<?php echo getMaxUpload($guid);
-                ?>
+								<?php echo getMaxUpload($guid);?>
 								<input type="hidden" name="fileCount" value="<?php echo $count ?>">
 							</td>
 						</tr>
 						<?php
+					}
 
-            }
-
-                    //REFERENCES
-                    $applicationFormRefereeLink = getSettingByScope($connection2, 'Staff', 'applicationFormRefereeLink');
-            if ($applicationFormRefereeLink != '') {
-                echo "<tr class='break'>";
-                echo '<td colspan=2>';
-                echo '<h3>';
-                echo __($guid, 'References');
-                echo '</h3>';
-                echo '</td>';
-                echo '</tr>';
-                ?>
+					//REFERENCES
+					$applicationFormRefereeLink = getSettingByScope($connection2, 'Staff', 'applicationFormRefereeLink');
+					if ($applicationFormRefereeLink != '') {
+						echo "<tr class='break'>";
+						echo '<td colspan=2>';
+						echo '<h3>';
+						echo __($guid, 'References');
+						echo '</h3>';
+						echo '</td>';
+						echo '</tr>'; ?>
 						<tr>
 							<td> 
 								<b><?php echo __($guid, 'Referee 1') ?> *</b><br/>
@@ -950,11 +915,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 							</td>
 						</tr>
 						<?php
+					}
 
-            }
-
-            if ($proceed == true) {
-                ?>
+					if ($proceed == true) {
+						?>
 						<tr>
 							<td>
 								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
@@ -967,13 +931,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 							</td>
 						</tr>
 						<?php
-
-            }
-            ?>
+					}
+					?>
 				</table>
 			</form>
 			<?php
-
         }
     }
 }

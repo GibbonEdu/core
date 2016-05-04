@@ -87,8 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_edit.php'
                     echo '</div>';
                 } else {
                     //Let's go!
-                    $row = $result->fetch();
-                    ?>
+                    $row = $result->fetch(); ?>
 					<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/outcomes_editProcess.php?gibbonOutcomeID=$gibbonOutcomeID&filter2=".$filter2 ?>">
 						<table class='smallIntBorder fullWidth' cellspacing='0'>	
 							<tr>
@@ -128,7 +127,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_edit.php'
 								<?php
 
                             }
-                    ?>
+                    		?>
 							
 							
 							<tr>
@@ -185,10 +184,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_edit.php'
                                                     $resultAuto->execute($dataAuto);
                                                 } catch (PDOException $e) {
                                                 }
-                    while ($rowAuto = $resultAuto->fetch()) {
-                        echo '"'.$rowAuto['category'].'", ';
-                    }
-                    ?>
+											while ($rowAuto = $resultAuto->fetch()) {
+												echo '"'.$rowAuto['category'].'", ';
+											}
+											?>
 											];
 											$( "#category" ).autocomplete({source: availableTags});
 										});
@@ -211,19 +210,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_edit.php'
 								<td class="right">
 									<?php 
                                     $yearGroups = getYearGroups($connection2);
-                    if ($yearGroups == '') {
-                        echo '<i>'.__($guid, 'No year groups available.').'</i>';
-                    } else {
-                        for ($i = 0; $i < count($yearGroups); $i = $i + 2) {
-                            $checked = '';
-                            if (is_numeric(strpos($row['gibbonYearGroupIDList'], $yearGroups[$i]))) {
-                                $checked = 'checked ';
-                            }
-                            echo __($guid, $yearGroups[($i + 1)])." <input $checked type='checkbox' name='gibbonYearGroupIDCheck".($i) / 2 ."'><br/>";
-                            echo "<input type='hidden' name='gibbonYearGroupID".($i) / 2 ."' value='".$yearGroups[$i]."'>";
-                        }
-                    }
-                    ?>
+									if ($yearGroups == '') {
+										echo '<i>'.__($guid, 'No year groups available.').'</i>';
+									} else {
+										for ($i = 0; $i < count($yearGroups); $i = $i + 2) {
+											$checked = '';
+											if (is_numeric(strpos($row['gibbonYearGroupIDList'], $yearGroups[$i]))) {
+												$checked = 'checked ';
+											}
+											echo __($guid, $yearGroups[($i + 1)])." <input $checked type='checkbox' name='gibbonYearGroupIDCheck".($i) / 2 ."'><br/>";
+											echo "<input type='hidden' name='gibbonYearGroupID".($i) / 2 ."' value='".$yearGroups[$i]."'>";
+										}
+									}
+									?>
 									<input type="hidden" name="count" value="<?php echo(count($yearGroups)) / 2 ?>">
 								</td>
 							</tr>

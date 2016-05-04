@@ -58,19 +58,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
 					<td class="right">
 						<?php
                         $yearName = '';
-        try {
-            $dataYear = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-            $sqlYear = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-            $resultYear = $connection2->prepare($sqlYear);
-            $resultYear->execute($dataYear);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
-        if ($resultYear->rowCount() == 1) {
-            $rowYear = $resultYear->fetch();
-            $yearName = $rowYear['name'];
-        }
-        ?>
+						try {
+							$dataYear = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+							$sqlYear = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
+							$resultYear = $connection2->prepare($sqlYear);
+							$resultYear->execute($dataYear);
+						} catch (PDOException $e) {
+							echo "<div class='error'>".$e->getMessage().'</div>';
+						}
+						if ($resultYear->rowCount() == 1) {
+							$rowYear = $resultYear->fetch();
+							$yearName = $rowYear['name'];
+						}
+						?>
 						<input readonly name="yearName" id="yearName" maxlength=20 value="<?php echo $yearName ?>" type="text" class="standardWidth">
 						<script type="text/javascript">
 							var yearName=new LiveValidation('yearName');
@@ -87,17 +87,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
 						<select name="gibbonPersonID" id="gibbonPersonID" class="standardWidth">
 							<?php
                             echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-        try {
-            $dataSelect = array();
-            $sqlSelect = "SELECT gibbonPersonID, preferredName, surname, username FROM gibbonPerson WHERE gibbonPerson.status='Full' ORDER BY surname, preferredName";
-            $resultSelect = $connection2->prepare($sqlSelect);
-            $resultSelect->execute($dataSelect);
-        } catch (PDOException $e) {
-        }
-        while ($rowSelect = $resultSelect->fetch()) {
-            echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.$rowSelect['username'].')</option>';
-        }
-        ?>				
+							try {
+								$dataSelect = array();
+								$sqlSelect = "SELECT gibbonPersonID, preferredName, surname, username FROM gibbonPerson WHERE gibbonPerson.status='Full' ORDER BY surname, preferredName";
+								$resultSelect = $connection2->prepare($sqlSelect);
+								$resultSelect->execute($dataSelect);
+							} catch (PDOException $e) {
+							}
+							while ($rowSelect = $resultSelect->fetch()) {
+								echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.$rowSelect['username'].')</option>';
+							}
+							?>				
 						</select>
 						<script type="text/javascript">
 							var gibbonPersonID=new LiveValidation('gibbonPersonID');
@@ -114,17 +114,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
 						<select name="gibbonYearGroupID" id="gibbonYearGroupID" class="standardWidth">
 							<?php
                             echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-        try {
-            $dataSelect = array();
-            $sqlSelect = 'SELECT gibbonYearGroupID, name FROM gibbonYearGroup ORDER BY sequenceNumber';
-            $resultSelect = $connection2->prepare($sqlSelect);
-            $resultSelect->execute($dataSelect);
-        } catch (PDOException $e) {
-        }
-        while ($rowSelect = $resultSelect->fetch()) {
-            echo "<option value='".$rowSelect['gibbonYearGroupID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-        }
-        ?>				
+							try {
+								$dataSelect = array();
+								$sqlSelect = 'SELECT gibbonYearGroupID, name FROM gibbonYearGroup ORDER BY sequenceNumber';
+								$resultSelect = $connection2->prepare($sqlSelect);
+								$resultSelect->execute($dataSelect);
+							} catch (PDOException $e) {
+							}
+							while ($rowSelect = $resultSelect->fetch()) {
+								echo "<option value='".$rowSelect['gibbonYearGroupID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
+							}
+							?>				
 						</select>
 						<script type="text/javascript">
 							var gibbonYearGroupID=new LiveValidation('gibbonYearGroupID');
@@ -141,17 +141,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
 						<select name="gibbonRollGroupID" id="gibbonRollGroupID" class="standardWidth">
 							<?php
                             echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-        try {
-            $dataSelect = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-            $sqlSelect = 'SELECT gibbonRollGroupID, name FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
-            $resultSelect = $connection2->prepare($sqlSelect);
-            $resultSelect->execute($dataSelect);
-        } catch (PDOException $e) {
-        }
-        while ($rowSelect = $resultSelect->fetch()) {
-            echo "<option value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
-        }
-        ?>				
+							try {
+								$dataSelect = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+								$sqlSelect = 'SELECT gibbonRollGroupID, name FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
+								$resultSelect = $connection2->prepare($sqlSelect);
+								$resultSelect->execute($dataSelect);
+							} catch (PDOException $e) {
+							}
+							while ($rowSelect = $resultSelect->fetch()) {
+								echo "<option value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
+							}
+							?>				
 						</select>
 						<script type="text/javascript">
 							var gibbonRollGroupID=new LiveValidation('gibbonRollGroupID');

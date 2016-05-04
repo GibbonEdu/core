@@ -124,17 +124,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
 							<select name="gibbonTTColumnID" id="gibbonTTColumnID" class="standardWidth">
 								<?php
                                 echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-            try {
-                $dataSelect = array();
-                $sqlSelect = 'SELECT * FROM gibbonTTColumn ORDER BY name';
-                $resultSelect = $connection2->prepare($sqlSelect);
-                $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) {
-            }
-            while ($rowSelect = $resultSelect->fetch()) {
-                echo "<option value='".$rowSelect['gibbonTTColumnID']."'>".htmlPrep($rowSelect['name']).'</option>';
-            }
-            ?>				
+								try {
+									$dataSelect = array();
+									$sqlSelect = 'SELECT * FROM gibbonTTColumn ORDER BY name';
+									$resultSelect = $connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								} catch (PDOException $e) {
+								}
+								while ($rowSelect = $resultSelect->fetch()) {
+									echo "<option value='".$rowSelect['gibbonTTColumnID']."'>".htmlPrep($rowSelect['name']).'</option>';
+								}
+								?>				
 							</select>
 							<script type="text/javascript">
 								var gibbonTTColumnID=new LiveValidation('gibbonTTColumnID');

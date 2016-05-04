@@ -59,8 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
-            ?>
+            $row = $result->fetch(); ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/department_manage_deleteProcess.php?gibbonDepartmentID=$gibbonDepartmentID" ?>">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>

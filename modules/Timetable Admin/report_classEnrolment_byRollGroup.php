@@ -53,21 +53,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/report_cla
 					<select class="standardWidth" name="gibbonRollGroupID">
 						<?php
                         echo "<option value=''></option>";
-    try {
-        $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-        $sqlSelect = 'SELECT * FROM gibbonRollGroup WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
-        $resultSelect = $connection2->prepare($sqlSelect);
-        $resultSelect->execute($dataSelect);
-    } catch (PDOException $e) {
-    }
-    while ($rowSelect = $resultSelect->fetch()) {
-        if ($gibbonRollGroupID == $rowSelect['gibbonRollGroupID']) {
-            echo "<option selected value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
-        } else {
-            echo "<option value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
-        }
-    }
-    ?>				
+						try {
+							$dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+							$sqlSelect = 'SELECT * FROM gibbonRollGroup WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
+							$resultSelect = $connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						} catch (PDOException $e) {
+						}
+						while ($rowSelect = $resultSelect->fetch()) {
+							if ($gibbonRollGroupID == $rowSelect['gibbonRollGroupID']) {
+								echo "<option selected value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
+							} else {
+								echo "<option value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
+							}
+						}
+						?>				
 					</select>
 				</td>
 			</tr>

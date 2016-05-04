@@ -167,9 +167,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 					</tr>
 					<?php
                     $types = getSettingByScope($connection2, 'Staff', 'salaryScalePositions');
-            if ($types != false) {
-                $types = explode(',', $types);
-                ?>
+					if ($types != false) {
+						$types = explode(',', $types);
+						?>
 						<tr>
 							<td> 
 								<b><?php echo __($guid, 'Salary Scale') ?></b><br/>
@@ -189,14 +189,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 									<?php
 
                                     }
-                ?>
+                					?>
 								</select>
 							</td>
 						</tr>
 						<?php
 
-            }
-            ?>
+					}
+					?>
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php echo __($guid, 'Salary') ?></b><br/>
@@ -219,9 +219,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 					</tr>
 					<?php
                     $types = getSettingByScope($connection2, 'Staff', 'responsibilityPosts');
-            if ($types != false) {
-                $types = explode(',', $types);
-                ?>
+					if ($types != false) {
+						$types = explode(',', $types);
+						?>
 						<tr>
 							<td> 
 								<b><?php echo __($guid, 'Responsibility Level') ?></b><br/>
@@ -241,14 +241,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 									<?php
 
                                     }
-                ?>
+                				?>
 								</select>
 							</td>
 						</tr>
 						<?php
 
-            }
-            ?>
+					}
+					?>
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php echo __($guid, 'Responsibility') ?></b><br/>

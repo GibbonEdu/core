@@ -148,10 +148,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
                                     $resultSelect->execute($dataSelect);
                                 } catch (PDOException $e) {
                                 }
-            while ($rowSelect = $resultSelect->fetch()) {
-                echo "<option value='".$rowSelect['gibbonDepartmentID']."'>".$rowSelect['name'].'</option>';
-            }
-            ?>
+								while ($rowSelect = $resultSelect->fetch()) {
+									echo "<option value='".$rowSelect['gibbonDepartmentID']."'>".$rowSelect['name'].'</option>';
+								}
+								?>
 							</select>
 							<script type="text/javascript">
 								var gibbonDepartmentID=new LiveValidation('gibbonDepartmentID');
@@ -206,10 +206,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
                                             $resultAuto->execute($dataAuto);
                                         } catch (PDOException $e) {
                                         }
-            while ($rowAuto = $resultAuto->fetch()) {
-                echo '"'.$rowAuto['category'].'", ';
-            }
-            ?>
+										while ($rowAuto = $resultAuto->fetch()) {
+											echo '"'.$rowAuto['category'].'", ';
+										}
+										?>
 									];
 									$( "#category" ).autocomplete({source: availableTags});
 								});
@@ -231,16 +231,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
 						<td class="right">
 							<?php 
                             $yearGroups = getYearGroups($connection2);
-            if ($yearGroups == '') {
-                echo '<i>'.__($guid, 'No year groups available.').'</i>';
-            } else {
-                for ($i = 0; $i < count($yearGroups); $i = $i + 2) {
-                    $checked = 'checked ';
-                    echo __($guid, $yearGroups[($i + 1)])." <input $checked type='checkbox' name='gibbonYearGroupIDCheck".($i) / 2 ."'><br/>";
-                    echo "<input type='hidden' name='gibbonYearGroupID".($i) / 2 ."' value='".$yearGroups[$i]."'>";
-                }
-            }
-            ?>
+							if ($yearGroups == '') {
+								echo '<i>'.__($guid, 'No year groups available.').'</i>';
+							} else {
+								for ($i = 0; $i < count($yearGroups); $i = $i + 2) {
+									$checked = 'checked ';
+									echo __($guid, $yearGroups[($i + 1)])." <input $checked type='checkbox' name='gibbonYearGroupIDCheck".($i) / 2 ."'><br/>";
+									echo "<input type='hidden' name='gibbonYearGroupID".($i) / 2 ."' value='".$yearGroups[$i]."'>";
+								}
+							}
+							?>
 							<input type="hidden" name="count" value="<?php echo(count($yearGroups)) / 2 ?>">
 						</td>
 					</tr>
@@ -253,22 +253,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
 							<select name="gibbonScaleID" id="gibbonScaleID" class="standardWidth">
 								<?php
                                 echo "<option value=''></option>";
-            try {
-                $dataSelect = array();
-                $sqlSelect = "SELECT * FROM gibbonScale WHERE (active='Y') ORDER BY name";
-                $resultSelect = $connection2->prepare($sqlSelect);
-                $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-            while ($rowSelect = $resultSelect->fetch()) {
-                if ($row['gibbonScaleID'] == $rowSelect['gibbonScaleID']) {
-                    echo "<option selected value='".$rowSelect['gibbonScaleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-                } else {
-                    echo "<option value='".$rowSelect['gibbonScaleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-                }
-            }
-            ?>				
+								try {
+									$dataSelect = array();
+									$sqlSelect = "SELECT * FROM gibbonScale WHERE (active='Y') ORDER BY name";
+									$resultSelect = $connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								} catch (PDOException $e) {
+									echo "<div class='error'>".$e->getMessage().'</div>';
+								}
+								while ($rowSelect = $resultSelect->fetch()) {
+									if ($row['gibbonScaleID'] == $rowSelect['gibbonScaleID']) {
+										echo "<option selected value='".$rowSelect['gibbonScaleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
+									} else {
+										echo "<option value='".$rowSelect['gibbonScaleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
+									}
+								}
+								?>				
 							</select>
 						</td>
 					</tr>

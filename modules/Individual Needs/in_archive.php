@@ -70,8 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_archiv
 				</td>
 				<td class="right">
 					<?php
-                    echo "<fieldset style='border: none'>";
-    ?>
+                    echo "<fieldset style='border: none'>"; ?>
 					<script type="text/javascript">
 						$(function () {
 							$('.checkall').click(function () {
@@ -90,15 +89,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_archiv
                         echo $e->getMessage();
                         echo '</div>';
                     }
-    echo __($guid, 'All/None')." <input type='checkbox' class='checkall'><br/>";
-    if ($resultSelect->rowCount() < 1) {
-        echo '<i>'.__($guid, 'No year groups available.').'</i>';
-    } else {
-        while ($rowSelect = $resultSelect->fetch()) {
-            echo formatName('', $rowSelect['preferredName'], $rowSelect['surname'], 'Student', true)." <input type='checkbox' value='".$rowSelect['gibbonPersonID']."' name='gibbonPersonID[]'><br/>";
-        }
-    }
-    echo '</fieldset>';?>
+					echo __($guid, 'All/None')." <input type='checkbox' class='checkall'><br/>";
+					if ($resultSelect->rowCount() < 1) {
+						echo '<i>'.__($guid, 'No year groups available.').'</i>';
+					} else {
+						while ($rowSelect = $resultSelect->fetch()) {
+							echo formatName('', $rowSelect['preferredName'], $rowSelect['surname'], 'Student', true)." <input type='checkbox' value='".$rowSelect['gibbonPersonID']."' name='gibbonPersonID[]'><br/>";
+						}
+					}
+					echo '</fieldset>';?>
 				</td>
 			</tr>
 			

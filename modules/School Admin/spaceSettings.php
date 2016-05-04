@@ -49,14 +49,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/spaceSettings
                 ?>
 				<td style='width: 275px'> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
-					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php if (isset($row['value'])) {
-    echo $row['value'];
-}
-    ?></textarea>
+					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php if (isset($row['value'])) { echo $row['value']; } ?></textarea>
 					<script type="text/javascript">
 						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
 						<?php echo $row['name'] ?>.add(Validate.Presence);

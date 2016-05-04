@@ -57,8 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
-            ?>
+            $row = $result->fetch(); ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/rollGroup_manage_deleteProcess.php?gibbonRollGroupID=$gibbonRollGroupID" ?>">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>

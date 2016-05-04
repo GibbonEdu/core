@@ -59,8 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
-            ?>
+            $row = $result->fetch(); ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/externalAssessments_manage_editProcess.php?gibbonExternalAssessmentID=$gibbonExternalAssessmentID" ?>">
 			<table class='smallIntBorder fullWidth' cellspacing='0'>	
 				<tr>
@@ -69,10 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
 						<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?></span>
 					</td>
 					<td class="right">
-						<input name="name" id="name" maxlength=50 value="<?php if (isset($row['name'])) {
-    echo htmlPrep(__($guid, $row['name']));
-}
-            ?>" type="text" class="standardWidth">
+						<input name="name" id="name" maxlength=50 value="<?php if (isset($row['name'])) { echo htmlPrep(__($guid, $row['name'])); } ?>" type="text" class="standardWidth">
 						<script type="text/javascript">
 							var name2=new LiveValidation('name');
 							name2.add(Validate.Presence);
@@ -85,10 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
 						<span class="emphasis small"></span>
 					</td>
 					<td class="right">
-						<input name="nameShort" id="nameShort" maxlength=10 value="<?php if (isset($row['nameShort'])) {
-    echo htmlPrep(__($guid, $row['nameShort']));
-}
-            ?>" type="text" class="standardWidth">
+						<input name="nameShort" id="nameShort" maxlength=10 value="<?php if (isset($row['nameShort'])) { echo htmlPrep(__($guid, $row['nameShort'])); } ?>" type="text" class="standardWidth">
 						<script type="text/javascript">
 							var nameShort=new LiveValidation('nameShort');
 							nameShort.add(Validate.Presence);
@@ -101,10 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
 						<span class="emphasis small"><?php echo __($guid, 'Brief description of how scale is used.') ?></span>
 					</td>
 					<td class="right">
-						<input name="description" id="description" maxlength=50 value="<?php if (isset($row['description'])) {
-    echo __($guid, $row['description']);
-}
-            ?>" type="text" class="standardWidth">
+						<input name="description" id="description" maxlength=50 value="<?php if (isset($row['description'])) { echo __($guid, $row['description']); } ?>" type="text" class="standardWidth">
 						<script type="text/javascript">
 							var description=new LiveValidation('description');
 							description.add(Validate.Presence);
@@ -124,10 +114,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
 				</tr>
 				<tr>
 					<td> 
-						<b><?php echo __($guid, 'Allow File Upload');
-            ?> *</b><br/>
-						<span class="emphasis small"><?php echo __($guid, 'Should the student record include the option of a file upload?');
-            ?> </span>
+						<b><?php echo __($guid, 'Allow File Upload'); ?> *</b><br/>
+						<span class="emphasis small"><?php echo __($guid, 'Should the student record include the option of a file upload?'); ?> </span>
 					</td>
 					<td class="right">
 						<select name="allowFileUpload" id="allowFileUpload" class="standardWidth">

@@ -68,17 +68,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
                         } catch (PDOException $e) {
                         }
 
-    while ($rowSelect = $resultSelect->fetch()) {
-        if ($resultSelect->rowCount() == 1) {
-            $gibbonTTID = $rowSelect['gibbonTTID'];
-        }
-        $selected = '';
-        if ($gibbonTTID == $rowSelect['gibbonTTID']) {
-            $selected = 'selected';
-        }
-        echo "<option $selected value='".$rowSelect['gibbonTTID']."'>".$rowSelect['name'].'</option>';
-    }
-    ?>
+						while ($rowSelect = $resultSelect->fetch()) {
+							if ($resultSelect->rowCount() == 1) {
+								$gibbonTTID = $rowSelect['gibbonTTID'];
+							}
+							$selected = '';
+							if ($gibbonTTID == $rowSelect['gibbonTTID']) {
+								$selected = 'selected';
+							}
+							echo "<option $selected value='".$rowSelect['gibbonTTID']."'>".$rowSelect['name'].'</option>';
+						}
+						?>
 					</select>
 					<script type="text/javascript">
 						var gibbonTTID=new LiveValidation('gibbonTTID');

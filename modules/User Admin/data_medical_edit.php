@@ -84,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_medical_ed
 				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/data_medical_editProcess.php?gibbonPersonMedicalUpdateID=$gibbonPersonMedicalUpdateID" ?>">
 					<?php
 
-                    echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
+                echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
                 echo "<tr class='head'>";
                 echo '<th>';
                 echo __($guid, 'Field');
@@ -108,8 +108,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_medical_ed
                 $rowNum = 'odd';
                 $rowNum = 'even';
 
-                        //COLOR ROW BY STATUS!
-                        echo "<tr class='odd'>";
+				//COLOR ROW BY STATUS!
+				echo "<tr class='odd'>";
                 echo '<td>';
                 echo __($guid, 'Blood Type');
                 echo '</td>';
@@ -697,8 +697,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_medical_ed
                 echo "<input type='submit' value='Submit'>";
                 echo '</td>';
                 echo '</tr>';
-                echo '</table>';
-                ?>
+                echo '</table>'; ?>
 				</form>
 			<?php
 

@@ -75,10 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
 							<span class="emphasis small"><?php echo __($guid, 'Must be unique for this grade scale.') ?></span>
 						</td>
 						<td class="right">
-							<input name="value" id="value" maxlength=10 value="<?php if (isset($row['value'])) {
-    echo __($guid, $row['value']);
-}
-            ?>" type="text" class="standardWidth">
+							<input name="value" id="value" maxlength=10 value="<?php if (isset($row['value'])) { echo __($guid, $row['value']); } ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var value=new LiveValidation('value');
 								value.add(Validate.Presence);
@@ -91,10 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
 							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
-							<input name="descriptor" id="descriptor" maxlength=50 value="<?php if (isset($row['descriptor'])) {
-    echo htmlPrep(__($guid, $row['descriptor']));
-}
-            ?>" type="text" class="standardWidth">
+							<input name="descriptor" id="descriptor" maxlength=50 value="<?php if (isset($row['descriptor'])) { echo htmlPrep(__($guid, $row['descriptor'])); } ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var descriptor=new LiveValidation('descriptor');
 								descriptor.add(Validate.Presence);
@@ -107,10 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
 							<span class="emphasis small"><?php echo __($guid, 'Must be unique for this grade scale.') ?></span>
 						</td>
 						<td class="right">
-							<input name="sequenceNumber" id="sequenceNumber" maxlength=5 value="<?php if (isset($row['sequenceNumber'])) {
-    echo $row['sequenceNumber'];
-}
-            ?>" type="text" class="standardWidth">
+							<input name="sequenceNumber" id="sequenceNumber" maxlength=5 value="<?php if (isset($row['sequenceNumber'])) { echo $row['sequenceNumber']; } ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var sequenceNumber=new LiveValidation('sequenceNumber');
 								sequenceNumber.add(Validate.Presence);

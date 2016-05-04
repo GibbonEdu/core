@@ -128,11 +128,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                                         $resultSelect->execute($dataSelect);
                                     } catch (PDOException $e) {
                                     }
-                echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-                while ($rowSelect = $resultSelect->fetch()) {
-                    echo "<option id='gibbonExternalAssessmentID' value='".$rowSelect['gibbonExternalAssessmentID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-                }
-                ?>				
+									echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
+									while ($rowSelect = $resultSelect->fetch()) {
+										echo "<option id='gibbonExternalAssessmentID' value='".$rowSelect['gibbonExternalAssessmentID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
+									}
+									?>				
 								</select>
 								<script type="text/javascript">
 									var gibbonExternalAssessmentID=new LiveValidation('gibbonExternalAssessmentID');
@@ -460,16 +460,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 										var date=new LiveValidation('date');
 										date.add(Validate.Presence);
 										date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-                    ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-                    ?>." } ); 
+											echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+										} else {
+											echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+										}
+										?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+											echo 'dd/mm/yyyy';
+										} else {
+											echo $_SESSION[$guid]['i18n']['dateFormat'];
+										}
+															?>." } ); 
 									</script>
 									 <script type="text/javascript">
 										$(function() {
@@ -561,67 +561,66 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                                 echo '</tr>';
                             }
                             ?>
-									<tr>
-										<td> 
-											<span style='font-weight: bold' title='<?php echo $rowField['usage'] ?>'><?php echo __($guid, $rowField['name']) ?></span><br/>
-										</td>
-										<td class="right">
-											<input name="<?php echo $count?>-gibbonExternalAssessmentFieldID" id="<?php echo $count?>-gibbonExternalAssessmentFieldID" value="<?php echo $rowField['gibbonExternalAssessmentFieldID'] ?>" type="hidden">
-											<?php
-                                                $preselectValue = null;
-                            if ($copyToGCSECheck == 'on' and $rowField['category'] == '0_Target Grade') {
-                                $preselectValue = $grades[$rowField['name']][0];
-                            }
-                            if (($copyToIBCheck == 'Target' or $copyToIBCheck == 'Final') and $rowField['category'] == '0_Target Grade') {
-                                //Compare subject name to $regression and find entry for current subject
-                                                    foreach ($regression as $subject) {
-                                                        $match = true;
-                                                        $subjectName = explode(' ', $subject[1]);
-                                                        foreach ($subjectName as $subjectToken) {
-                                                            //General/rough match check for all subjects
-                                                            if (stripos($rowField['name'], $subjectToken) === false) {
-                                                                $match = false;
-                                                            }
-                                                            //Exact check for mathematics SL & HL
-                                                            if (stripos($rowField['name'], 'Mathematics')) {
-                                                                if ($rowField['name'] != $subject) {
-                                                                    $match = false;
-                                                                }
-                                                            }
-                                                        }
-
-                                                        if ($match == true) {
-                                                            $preselectValue = $subject[4];
-                                                        }
-                                                    }
-                            }
-
-                            echo renderGradeScaleSelect($connection2, $guid, $rowField['gibbonScaleID'], "$count-gibbonScaleGradeID", 'id', false, '150', 'value', $preselectValue);
-                            ?>
-										</td>
-										<td class="right">
-											<?php 
-                                                echo renderGradeScaleSelect($connection2, $guid, $_SESSION[$guid]['primaryAssessmentScale'], "$count-gibbonScaleGradeIDPAS", 'id', false, '150');
-                            ?>
-										</td>
-									</tr>
+							<tr>
+								<td> 
+									<span style='font-weight: bold' title='<?php echo $rowField['usage'] ?>'><?php echo __($guid, $rowField['name']) ?></span><br/>
+								</td>
+								<td class="right">
+									<input name="<?php echo $count?>-gibbonExternalAssessmentFieldID" id="<?php echo $count?>-gibbonExternalAssessmentFieldID" value="<?php echo $rowField['gibbonExternalAssessmentFieldID'] ?>" type="hidden">
 									<?php
+										$preselectValue = null;
+										if ($copyToGCSECheck == 'on' and $rowField['category'] == '0_Target Grade') {
+											$preselectValue = $grades[$rowField['name']][0];
+										}
+										if (($copyToIBCheck == 'Target' or $copyToIBCheck == 'Final') and $rowField['category'] == '0_Target Grade') {
+											//Compare subject name to $regression and find entry for current subject
+											foreach ($regression as $subject) {
+												$match = true;
+												$subjectName = explode(' ', $subject[1]);
+												foreach ($subjectName as $subjectToken) {
+													//General/rough match check for all subjects
+													if (stripos($rowField['name'], $subjectToken) === false) {
+														$match = false;
+													}
+													//Exact check for mathematics SL & HL
+													if (stripos($rowField['name'], 'Mathematics')) {
+														if ($rowField['name'] != $subject) {
+															$match = false;
+														}
+													}
+												}
 
-                                    $lastCategory = $rowField['category'];
-                            ++$count;
-                        }
-                    }
-                }
-                ?>
+												if ($match == true) {
+													$preselectValue = $subject[4];
+												}
+											}
+										}
+
+										echo renderGradeScaleSelect($connection2, $guid, $rowField['gibbonScaleID'], "$count-gibbonScaleGradeID", 'id', false, '150', 'value', $preselectValue);
+										?>
+													</td>
+													<td class="right">
+														<?php 
+															echo renderGradeScaleSelect($connection2, $guid, $_SESSION[$guid]['primaryAssessmentScale'], "$count-gibbonScaleGradeIDPAS", 'id', false, '150');
+										?>
+													</td>
+												</tr>
+												<?php
+
+												$lastCategory = $rowField['category'];
+										++$count;
+									}
+								}
+							}
+							?>
 						<tr>
 							<td>
-								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-                ?>
+								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?>
 								<?php
                                 if ($rowSelect['allowFileUpload'] == 'Y') {
                                     echo getMaxUpload($guid);
                                 }
-                ?>
+                				?>
 								</span>
 							</td>
 							<td class="right" colspan=2>

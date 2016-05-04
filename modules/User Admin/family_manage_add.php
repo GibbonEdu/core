@@ -89,17 +89,17 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_a
 					<select name="languageHomePrimary" id="languageHomePrimary" class="standardWidth">
 						<?php
                         echo "<option value=''></option>";
-    try {
-        $dataSelect = array();
-        $sqlSelect = 'SELECT name FROM gibbonLanguage ORDER BY name';
-        $resultSelect = $connection2->prepare($sqlSelect);
-        $resultSelect->execute($dataSelect);
-    } catch (PDOException $e) {
-    }
-    while ($rowSelect = $resultSelect->fetch()) {
-        echo "<option value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-    }
-    ?>				
+						try {
+							$dataSelect = array();
+							$sqlSelect = 'SELECT name FROM gibbonLanguage ORDER BY name';
+							$resultSelect = $connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						} catch (PDOException $e) {
+						}
+						while ($rowSelect = $resultSelect->fetch()) {
+							echo "<option value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
+						}
+						?>				
 					</select>
 				</td>
 			</tr>
@@ -111,17 +111,17 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_a
 					<select name="languageHomeSecondary" id="languageHomeSecondary" class="standardWidth">
 						<?php
                         echo "<option value=''></option>";
-    try {
-        $dataSelect = array();
-        $sqlSelect = 'SELECT name FROM gibbonLanguage ORDER BY name';
-        $resultSelect = $connection2->prepare($sqlSelect);
-        $resultSelect->execute($dataSelect);
-    } catch (PDOException $e) {
-    }
-    while ($rowSelect = $resultSelect->fetch()) {
-        echo "<option value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-    }
-    ?>				
+						try {
+							$dataSelect = array();
+							$sqlSelect = 'SELECT name FROM gibbonLanguage ORDER BY name';
+							$resultSelect = $connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						} catch (PDOException $e) {
+						}
+						while ($rowSelect = $resultSelect->fetch()) {
+							echo "<option value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
+						}
+						?>				
 					</select>
 				</td>
 			</tr>
@@ -166,10 +166,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_a
                                 $resultAuto->execute($dataAuto);
                             } catch (PDOException $e) {
                             }
-    while ($rowAuto = $resultAuto->fetch()) {
-        echo '"'.$rowAuto['name'].'", ';
-    }
-    ?>
+							while ($rowAuto = $resultAuto->fetch()) {
+								echo '"'.$rowAuto['name'].'", ';
+							}
+							?>
 						];
 						$( "#homeAddressDistrict" ).autocomplete({source: availableTags});
 					});
@@ -183,17 +183,17 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_a
 					<select name="homeAddressCountry" id="homeAddressCountry" class="standardWidth">
 						<?php
                         echo "<option value=''></option>";
-    try {
-        $dataSelect = array();
-        $sqlSelect = 'SELECT printable_name FROM gibbonCountry ORDER BY printable_name';
-        $resultSelect = $connection2->prepare($sqlSelect);
-        $resultSelect->execute($dataSelect);
-    } catch (PDOException $e) {
-    }
-    while ($rowSelect = $resultSelect->fetch()) {
-        echo "<option value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
-    }
-    ?>				
+						try {
+							$dataSelect = array();
+							$sqlSelect = 'SELECT printable_name FROM gibbonCountry ORDER BY printable_name';
+							$resultSelect = $connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						} catch (PDOException $e) {
+						}
+						while ($rowSelect = $resultSelect->fetch()) {
+							echo "<option value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
+						}
+						?>				
 					</select>
 				</td>
 			</tr>

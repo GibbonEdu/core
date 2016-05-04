@@ -210,10 +210,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_add.php')
                                             $resultAuto->execute($dataAuto);
                                         } catch (PDOException $e) {
                                         }
-            while ($rowAuto = $resultAuto->fetch()) {
-                echo '"'.$rowAuto['category'].'", ';
-            }
-            ?>
+										while ($rowAuto = $resultAuto->fetch()) {
+											echo '"'.$rowAuto['category'].'", ';
+										}
+										?>
 									];
 									$( "#category" ).autocomplete({source: availableTags});
 								});
@@ -235,8 +235,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_add.php')
 						</td>
 						<td class="right">
 							<?php
-                            echo "<fieldset style='border: none'>";
-            ?>
+                            echo "<fieldset style='border: none'>"; ?>
 							<script type="text/javascript">
 								$(function () {
 									$('.checkall').click(function () {
@@ -246,16 +245,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_add.php')
 							</script>
 							<?php
                             echo __($guid, 'All/None')." <input type='checkbox' class='checkall'><br/>";
-            $yearGroups = getYearGroups($connection2);
-            if ($yearGroups == '') {
-                echo '<i>'.__($guid, 'No year groups available.').'</i>';
-            } else {
-                for ($i = 0; $i < count($yearGroups); $i = $i + 2) {
-                    echo __($guid, $yearGroups[($i + 1)])." <input type='checkbox' name='gibbonYearGroupIDCheck".($i) / 2 ."'><br/>";
-                    echo "<input type='hidden' name='gibbonYearGroupID".($i) / 2 ."' value='".$yearGroups[$i]."'>";
-                }
-            }
-            echo '</fieldset>'; ?>
+							$yearGroups = getYearGroups($connection2);
+							if ($yearGroups == '') {
+								echo '<i>'.__($guid, 'No year groups available.').'</i>';
+							} else {
+								for ($i = 0; $i < count($yearGroups); $i = $i + 2) {
+									echo __($guid, $yearGroups[($i + 1)])." <input type='checkbox' name='gibbonYearGroupIDCheck".($i) / 2 ."'><br/>";
+									echo "<input type='hidden' name='gibbonYearGroupID".($i) / 2 ."' value='".$yearGroups[$i]."'>";
+								}
+							}
+							echo '</fieldset>'; ?>
 							<input type="hidden" name="count" value="<?php echo(count($yearGroups)) / 2 ?>">
 						</td>
 					</tr>

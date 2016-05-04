@@ -88,8 +88,8 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName = '', $sear
         $output .= '</div>';
         $output .= "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/rubrics_edit_editCellProcess.php?gibbonRubricID=$gibbonRubricID&search=$search&filter2=$filter2'>";
         $output .= "<table cellspacing='0' class='rubric'>";
-                //Create header
-                $output .= "<tr class='head'>";
+		//Create header
+		$output .= "<tr class='head'>";
         $output .= "<td style='width: 100px; background-color: #fff; border-left: 1px solid #fff; border-top: 1px solid #fff'></td>";
         for ($n = 0; $n < $columnCount; ++$n) {
             $output .= "<td style='vertical-align: bottom'>";
@@ -116,53 +116,53 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName = '', $sear
         }
         $output .= '</tr>';
 
-                //Create body
-                for ($i = 0; $i < $rowCount; ++$i) {
-                    $output .= "<tr style='height: auto'>";
-                    $output .= "<td style='background-color: #666'>";
-                    if ($rows[$i][3] != '') {
-                        try {
-                            $dataOutcome = array('gibbonOutcomeID' => $rows[$i][3]);
-                            $sqlOutcome = 'SELECT * FROM gibbonOutcome WHERE gibbonOutcomeID=:gibbonOutcomeID';
-                            $resultOutcome = $connection2->prepare($sqlOutcome);
-                            $resultOutcome->execute($dataOutcome);
-                        } catch (PDOException $e) {
-                        }
-                        if ($resultOutcome->rowCount() != 1) {
-                            echo __($guid, 'Error');
-                        } else {
-                            $rowOutcome = $resultOutcome->fetch();
-                            if ($rowOutcome['category'] == '') {
-                                $output .= '<b>'.$rowOutcome['name'].'</b><br/>';
-                            } else {
-                                $output .= '<b>'.$rowOutcome['name'].'</b><i> - '.$rowOutcome['category'].'</i><br/>';
-                            }
+		//Create body
+		for ($i = 0; $i < $rowCount; ++$i) {
+			$output .= "<tr style='height: auto'>";
+			$output .= "<td style='background-color: #666'>";
+			if ($rows[$i][3] != '') {
+				try {
+					$dataOutcome = array('gibbonOutcomeID' => $rows[$i][3]);
+					$sqlOutcome = 'SELECT * FROM gibbonOutcome WHERE gibbonOutcomeID=:gibbonOutcomeID';
+					$resultOutcome = $connection2->prepare($sqlOutcome);
+					$resultOutcome->execute($dataOutcome);
+				} catch (PDOException $e) {
+				}
+				if ($resultOutcome->rowCount() != 1) {
+					echo __($guid, 'Error');
+				} else {
+					$rowOutcome = $resultOutcome->fetch();
+					if ($rowOutcome['category'] == '') {
+						$output .= '<b>'.$rowOutcome['name'].'</b><br/>';
+					} else {
+						$output .= '<b>'.$rowOutcome['name'].'</b><i> - '.$rowOutcome['category'].'</i><br/>';
+					}
 
-                            $output .= "<span style='font-size: 85%'><i>".$rowOutcome['scope'].' '.__($guid, 'Outcome').'</span><br/>';
-                        }
-                    } else {
-                        $output .= '<b>'.$rows[$i][1].'</b><br/>';
-                    }
-                    $output .= "<a onclick='return confirm(\"".__($guid, 'Are you sure you want to delete this row? Any unsaved changes will be lost.')."\")' href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/rubrics_edit_deleteRowProcess.php?gibbonRubricID=$gibbonRubricID&gibbonRubricRowID=".$rows[$i][0].'&address='.$_GET['q']."&search=$search&filter2=$filter2'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/ style='margin: 2px 0px 0px 0px'></a><br/>";
-                    $output .= '</td>';
-                    for ($n = 0; $n < $columnCount; ++$n) {
-                        $output .= "<td style='background: none; background-color: #fff; padding: 0px; margin: 0px'>";
-                        $output .= "<textarea name='cell[]' style='background-color: #fff!important; border: 1px none #fff; font-size: 85%; width: 100%; height: 100px; margin: 0; padding: 0; resize: none'>";
-                        if (isset($cells[$rows[$i][0]][$columns[$n][0]][0])) {
-                            $output .= $cells[$rows[$i][0]][$columns[$n][0]][0];
-                        }
-                        $output .= '</textarea>';
-                        $output .= "<input type='hidden' name='gibbonRubricCellID[]' value='";
-                        if (isset($cells[$rows[$i][0]][$columns[$n][0]][1])) {
-                            $output .= $cells[$rows[$i][0]][$columns[$n][0]][1];
-                        }
-                        $output .= "'>";
-                        $output .= "<input type='hidden' name='gibbonRubricColumnID[]' value='".$columns[$n][0]."'>";
-                        $output .= "<input type='hidden' name='gibbonRubricRowID[]' value='".$rows[$i][0]."'>";
-                        $output .= '</td>';
-                    }
-                    $output .= '</tr>';
-                }
+					$output .= "<span style='font-size: 85%'><i>".$rowOutcome['scope'].' '.__($guid, 'Outcome').'</span><br/>';
+				}
+			} else {
+				$output .= '<b>'.$rows[$i][1].'</b><br/>';
+			}
+			$output .= "<a onclick='return confirm(\"".__($guid, 'Are you sure you want to delete this row? Any unsaved changes will be lost.')."\")' href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/rubrics_edit_deleteRowProcess.php?gibbonRubricID=$gibbonRubricID&gibbonRubricRowID=".$rows[$i][0].'&address='.$_GET['q']."&search=$search&filter2=$filter2'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/ style='margin: 2px 0px 0px 0px'></a><br/>";
+			$output .= '</td>';
+			for ($n = 0; $n < $columnCount; ++$n) {
+				$output .= "<td style='background: none; background-color: #fff; padding: 0px; margin: 0px'>";
+				$output .= "<textarea name='cell[]' style='background-color: #fff!important; border: 1px none #fff; font-size: 85%; width: 100%; height: 100px; margin: 0; padding: 0; resize: none'>";
+				if (isset($cells[$rows[$i][0]][$columns[$n][0]][0])) {
+					$output .= $cells[$rows[$i][0]][$columns[$n][0]][0];
+				}
+				$output .= '</textarea>';
+				$output .= "<input type='hidden' name='gibbonRubricCellID[]' value='";
+				if (isset($cells[$rows[$i][0]][$columns[$n][0]][1])) {
+					$output .= $cells[$rows[$i][0]][$columns[$n][0]][1];
+				}
+				$output .= "'>";
+				$output .= "<input type='hidden' name='gibbonRubricColumnID[]' value='".$columns[$n][0]."'>";
+				$output .= "<input type='hidden' name='gibbonRubricRowID[]' value='".$rows[$i][0]."'>";
+				$output .= '</td>';
+			}
+			$output .= '</tr>';
+		}
         $output .= '</table>';
         $output .= "<table cellspacing='0' style='width: 100%;'>";
         $output .= "<tr style='border: 1px none #000'>";
@@ -315,8 +315,8 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
             $output .= '</style>';
             $output .= "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/rubrics_data_editProcess.php?gibbonRubricID=$gibbonRubricID&gibbonPersonID=$gibbonPersonID'>";
             $output .= "<table cellspacing='0' class='rubric'>";
-                    //Create header
-                    $output .= "<tr class='head'>";
+			//Create header
+			$output .= "<tr class='head'>";
             $output .= "<td style='width: 100px; background: none; background-color: #ffffff; border-left: 1px solid #fff; border-top: 1px solid #fff'></td>";
             for ($n = 0; $n < $columnCount; ++$n) {
                 $output .= "<td style='vertical-align: bottom'>";
@@ -333,21 +333,21 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
                     } else {
                         $rowOutcome = $resultOutcome->fetch();
                         $output .= '<b>'.__($guid, $rowOutcome['descriptor']).' ('.__($guid, $rowOutcome['value']).')</b><br/>';
-                                        //Try to get scale name
-                                        if ($row['gibbonScaleID'] != '') {
-                                            try {
-                                                $dataScale = array('gibbonScaleID' => $row['gibbonScaleID']);
-                                                $sqlScale = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
-                                                $resultScale = $connection2->prepare($sqlScale);
-                                                $resultScale->execute($dataScale);
-                                            } catch (PDOException $e) {
-                                                echo "<div class='error'>".$e->getMessage().'</div>';
-                                            }
+						//Try to get scale name
+						if ($row['gibbonScaleID'] != '') {
+							try {
+								$dataScale = array('gibbonScaleID' => $row['gibbonScaleID']);
+								$sqlScale = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
+								$resultScale = $connection2->prepare($sqlScale);
+								$resultScale->execute($dataScale);
+							} catch (PDOException $e) {
+								echo "<div class='error'>".$e->getMessage().'</div>';
+							}
 
-                                            if ($resultScale->rowCount() == 1) {
-                                                $rowScale = $resultScale->fetch();
-                                            }
-                                        }
+							if ($resultScale->rowCount() == 1) {
+								$rowScale = $resultScale->fetch();
+							}
+						}
                         if ($rowScale['name'] != '') {
                             $output .= "<span style='font-size: 85%'><i>".__($guid, $rowScale['name']).' Scale</span><br/>';
                         }
@@ -359,110 +359,110 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
             }
             $output .= '</tr>';
 
-                    //Create body
-                    for ($i = 0; $i < $rowCount; ++$i) {
-                        $output .= "<tr style='height: auto'>";
-                        $output .= "<td style='background: none!important; background-color: #666!important; color: #fff; vertical-align: top; padding: 0px!important'>";
-                        if ($rows[$i][3] != '') {
-                            try {
-                                $dataOutcome = array('gibbonOutcomeID' => $rows[$i][3]);
-                                $sqlOutcome = 'SELECT * FROM gibbonOutcome WHERE gibbonOutcomeID=:gibbonOutcomeID';
-                                $resultOutcome = $connection2->prepare($sqlOutcome);
-                                $resultOutcome->execute($dataOutcome);
-                            } catch (PDOException $e) {
-                            }
-                            if ($resultOutcome->rowCount() != 1) {
-                                echo __($guid, 'Error');
-                            } else {
-                                $rowOutcome = $resultOutcome->fetch();
+			//Create body
+			for ($i = 0; $i < $rowCount; ++$i) {
+				$output .= "<tr style='height: auto'>";
+				$output .= "<td style='background: none!important; background-color: #666!important; color: #fff; vertical-align: top; padding: 0px!important'>";
+				if ($rows[$i][3] != '') {
+					try {
+						$dataOutcome = array('gibbonOutcomeID' => $rows[$i][3]);
+						$sqlOutcome = 'SELECT * FROM gibbonOutcome WHERE gibbonOutcomeID=:gibbonOutcomeID';
+						$resultOutcome = $connection2->prepare($sqlOutcome);
+						$resultOutcome->execute($dataOutcome);
+					} catch (PDOException $e) {
+					}
+					if ($resultOutcome->rowCount() != 1) {
+						echo __($guid, 'Error');
+					} else {
+						$rowOutcome = $resultOutcome->fetch();
 
-                                        //Check if outcome is specified in unit
-                                        if ($contextDBTable != '' and $contextDBTableID != '' and $contextDBTableIDField != '') {
-                                            try {
-                                                $dataOutcome2 = array('gibbonOutcomeID' => $rows[$i][3], 'contextDBTableID' => $contextDBTableID);
-                                                $sqlOutcome2 = "SELECT * FROM gibbonOutcome JOIN gibbonUnitOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) JOIN $contextDBTable ON ($contextDBTable.gibbonUnitID=gibbonUnitOutcome.gibbonUnitID) WHERE gibbonOutcome.gibbonOutcomeID=:gibbonOutcomeID AND $contextDBTableIDField=:contextDBTableID";
-                                                $resultOutcome2 = $connection2->prepare($sqlOutcome2);
-                                                $resultOutcome2->execute($dataOutcome2);
-                                            } catch (PDOException $e) {
-                                            }
-                                            if ($resultOutcome2->rowCount()) {
-                                                $output .= "<img style='float: right' title='This outcome is one of the unit outcomes.' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> ";
-                                            }
-                                        }
+								//Check if outcome is specified in unit
+								if ($contextDBTable != '' and $contextDBTableID != '' and $contextDBTableIDField != '') {
+									try {
+										$dataOutcome2 = array('gibbonOutcomeID' => $rows[$i][3], 'contextDBTableID' => $contextDBTableID);
+										$sqlOutcome2 = "SELECT * FROM gibbonOutcome JOIN gibbonUnitOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) JOIN $contextDBTable ON ($contextDBTable.gibbonUnitID=gibbonUnitOutcome.gibbonUnitID) WHERE gibbonOutcome.gibbonOutcomeID=:gibbonOutcomeID AND $contextDBTableIDField=:contextDBTableID";
+										$resultOutcome2 = $connection2->prepare($sqlOutcome2);
+										$resultOutcome2->execute($dataOutcome2);
+									} catch (PDOException $e) {
+									}
+									if ($resultOutcome2->rowCount()) {
+										$output .= "<img style='float: right' title='This outcome is one of the unit outcomes.' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> ";
+									}
+								}
 
-                                if ($rowOutcome['category'] == '') {
-                                    $output .= "<span title='".htmlprep($rowOutcome['description'])."'><b>".$rowOutcome['name'].'</b></span><br/>';
-                                } else {
-                                    $output .= "<span title='".htmlprep($rowOutcome['description'])."'><b>".$rowOutcome['name'].'</b><i> - '.$rowOutcome['category'].'</span><br/>';
-                                }
-                                $output .= "<span style='font-size: 85%'><i>".$rowOutcome['scope'].' '.__($guid, 'Outcome').'</span><br/>';
-                            }
-                        } else {
-                            $output .= '<b>'.$rows[$i][1].'</b><br/>';
-                        }
-                        $output .= '</td>';
-                        for ($n = 0; $n < $columnCount; ++$n) {
-                            if ($mark == true) {
-                                $output .= "<script type='text/javascript'>";
-                                $output .= '$(document).ready(function(){';
-                                $output .= '$("#'.$rows[$i][0].'-'.$columns[$n][0].'").click(function(){';
-                                $output .= 'if ($("#'.$rows[$i][0].'-'.$columns[$n][0]."\").css('background-color')==\"rgb(251, 251, 251)\" ) {";
-                                $output .= '$("#'.$rows[$i][0].'-'.$columns[$n][0]."\").css('background', 'none').css('background-color', '#79FA74');";
-                                $output .= 'var request=$.ajax({ url: "'.$_SESSION[$guid]['absoluteURL'].'/modules/Rubrics/rubrics_data_saveAjax.php", type: "GET", data: {mode: "Add", gibbonRubricID : "'.$gibbonRubricID.'", gibbonPersonID : "'.$gibbonPersonID.'",gibbonRubricCellID : "'.$cells[$rows[$i][0]][$columns[$n][0]][1].'",contextDBTable : "'.$contextDBTable.'",contextDBTableID : "'.$contextDBTableID.'"}, dataType: "html"});';
-                                $output .= '}';
-                                $output .= 'else {';
-                                $output .= '$("#'.$rows[$i][0].'-'.$columns[$n][0]."\").css('background', 'none').css('background-color', '#fbfbfb');";
-                                $output .= 'var request=$.ajax({ url: "'.$_SESSION[$guid]['absoluteURL'].'/modules/Rubrics/rubrics_data_saveAjax.php", type: "GET", data: {mode: "Remove", gibbonRubricID : "'.$gibbonRubricID.'", gibbonPersonID : "'.$gibbonPersonID.'",gibbonRubricCellID : "'.$cells[$rows[$i][0]][$columns[$n][0]][1].'",contextDBTable : "'.$contextDBTable.'",contextDBTableID : "'.$contextDBTableID.'"}, dataType: "html"});';
-                                $output .= '}';
-                                $output .= '});';
-                                $output .= '});';
-                                $output .= '</script>';
-                            }
+						if ($rowOutcome['category'] == '') {
+							$output .= "<span title='".htmlprep($rowOutcome['description'])."'><b>".$rowOutcome['name'].'</b></span><br/>';
+						} else {
+							$output .= "<span title='".htmlprep($rowOutcome['description'])."'><b>".$rowOutcome['name'].'</b><i> - '.$rowOutcome['category'].'</span><br/>';
+						}
+						$output .= "<span style='font-size: 85%'><i>".$rowOutcome['scope'].' '.__($guid, 'Outcome').'</span><br/>';
+					}
+				} else {
+					$output .= '<b>'.$rows[$i][1].'</b><br/>';
+				}
+				$output .= '</td>';
+				for ($n = 0; $n < $columnCount; ++$n) {
+					if ($mark == true) {
+						$output .= "<script type='text/javascript'>";
+						$output .= '$(document).ready(function(){';
+						$output .= '$("#'.$rows[$i][0].'-'.$columns[$n][0].'").click(function(){';
+						$output .= 'if ($("#'.$rows[$i][0].'-'.$columns[$n][0]."\").css('background-color')==\"rgb(251, 251, 251)\" ) {";
+						$output .= '$("#'.$rows[$i][0].'-'.$columns[$n][0]."\").css('background', 'none').css('background-color', '#79FA74');";
+						$output .= 'var request=$.ajax({ url: "'.$_SESSION[$guid]['absoluteURL'].'/modules/Rubrics/rubrics_data_saveAjax.php", type: "GET", data: {mode: "Add", gibbonRubricID : "'.$gibbonRubricID.'", gibbonPersonID : "'.$gibbonPersonID.'",gibbonRubricCellID : "'.$cells[$rows[$i][0]][$columns[$n][0]][1].'",contextDBTable : "'.$contextDBTable.'",contextDBTableID : "'.$contextDBTableID.'"}, dataType: "html"});';
+						$output .= '}';
+						$output .= 'else {';
+						$output .= '$("#'.$rows[$i][0].'-'.$columns[$n][0]."\").css('background', 'none').css('background-color', '#fbfbfb');";
+						$output .= 'var request=$.ajax({ url: "'.$_SESSION[$guid]['absoluteURL'].'/modules/Rubrics/rubrics_data_saveAjax.php", type: "GET", data: {mode: "Remove", gibbonRubricID : "'.$gibbonRubricID.'", gibbonPersonID : "'.$gibbonPersonID.'",gibbonRubricCellID : "'.$cells[$rows[$i][0]][$columns[$n][0]][1].'",contextDBTable : "'.$contextDBTable.'",contextDBTableID : "'.$contextDBTableID.'"}, dataType: "html"});';
+						$output .= '}';
+						$output .= '});';
+						$output .= '});';
+						$output .= '</script>';
+					}
 
-                            try {
-                                $dataEntry = array('gibbonRubricCellID' => $cells[$rows[$i][0]][$columns[$n][0]][1], 'gibbonPersonID' => $gibbonPersonID, 'contextDBTable' => $contextDBTable, 'contextDBTableID' => $contextDBTableID);
-                                $sqlEntry = 'SELECT * FROM gibbonRubricEntry WHERE gibbonRubricCellID=:gibbonRubricCellID AND gibbonPersonID=:gibbonPersonID AND contextDBTable=:contextDBTable AND contextDBTableID=:contextDBTableID';
-                                $resultEntry = $connection2->prepare($sqlEntry);
-                                $resultEntry->execute($dataEntry);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
+					try {
+						$dataEntry = array('gibbonRubricCellID' => $cells[$rows[$i][0]][$columns[$n][0]][1], 'gibbonPersonID' => $gibbonPersonID, 'contextDBTable' => $contextDBTable, 'contextDBTableID' => $contextDBTableID);
+						$sqlEntry = 'SELECT * FROM gibbonRubricEntry WHERE gibbonRubricCellID=:gibbonRubricCellID AND gibbonPersonID=:gibbonPersonID AND contextDBTable=:contextDBTable AND contextDBTableID=:contextDBTableID';
+						$resultEntry = $connection2->prepare($sqlEntry);
+						$resultEntry->execute($dataEntry);
+					} catch (PDOException $e) {
+						echo "<div class='error'>".$e->getMessage().'</div>';
+					}
 
-                            $bgcolor = '#fbfbfb';
-                            if ($resultEntry->rowCount() == 1) {
-                                $bgcolor = '#79FA74';
-                            }
-                            $output .= "<td id='".$rows[$i][0].'-'.$columns[$n][0]."' style='background: none; background-color: $bgcolor; height: 100%; vertical-align: top'>";
-                            $output .= "<div class='currentView' style='font-size: 90%'>".$cells[$rows[$i][0]][$columns[$n][0]][0].'</div>';
-                            $output .= "<div class='historical' style='font-size: 90%'>";
+					$bgcolor = '#fbfbfb';
+					if ($resultEntry->rowCount() == 1) {
+						$bgcolor = '#79FA74';
+					}
+					$output .= "<td id='".$rows[$i][0].'-'.$columns[$n][0]."' style='background: none; background-color: $bgcolor; height: 100%; vertical-align: top'>";
+					$output .= "<div class='currentView' style='font-size: 90%'>".$cells[$rows[$i][0]][$columns[$n][0]][0].'</div>';
+					$output .= "<div class='historical' style='font-size: 90%'>";
 
-                            if (isset($cells[$rows[$i][0]][$columns[$n][0]][2])) {
-                                $arrayHistorical = explode('<br/>', $cells[$rows[$i][0]][$columns[$n][0]][2]);
-                                $countHistorical = count($arrayHistorical) - 1;
-                            } else {
-                                $arrayHistorical = array();
-                                $countHistorical = 0;
-                            }
-                            $countHistorical = count($arrayHistorical) - 1;
-                            if ($countHistorical > 0) {
-                                $output .= '<b><u>'.__($guid, 'Total Occurences:').' '.$countHistorical.'</u></b><br/>';
-                                for ($h = 0; $h < $countHistorical; ++$h) {
-                                    if ($h < 7) {
-                                        $output .= ($h + 1).') '.$arrayHistorical[$h].'<br/>';
-                                    }
-                                }
-                                if ($countHistorical > 7) {
-                                    $output .= '<b>'.__($guid, 'Older occurrences not shown...').'</b>';
-                                }
-                            }
-                            $output .= '</div>';
-                            $output .= "<input type='hidden' name='gibbonRubricColumnID[]' value='".$columns[$n][0]."'>";
-                            $output .= "<input type='hidden' name='gibbonRubricRowID[]' value='".$rows[$i][0]."'>";
-                            $output .= "<input type='hidden' name='gibbonRubricCellID[]' value='".$cells[$rows[$i][0]][$columns[$n][0]][1]."'>";
-                            $output .= '</td>';
-                        }
-                        $output .= '</tr>';
-                    }
+					if (isset($cells[$rows[$i][0]][$columns[$n][0]][2])) {
+						$arrayHistorical = explode('<br/>', $cells[$rows[$i][0]][$columns[$n][0]][2]);
+						$countHistorical = count($arrayHistorical) - 1;
+					} else {
+						$arrayHistorical = array();
+						$countHistorical = 0;
+					}
+					$countHistorical = count($arrayHistorical) - 1;
+					if ($countHistorical > 0) {
+						$output .= '<b><u>'.__($guid, 'Total Occurences:').' '.$countHistorical.'</u></b><br/>';
+						for ($h = 0; $h < $countHistorical; ++$h) {
+							if ($h < 7) {
+								$output .= ($h + 1).') '.$arrayHistorical[$h].'<br/>';
+							}
+						}
+						if ($countHistorical > 7) {
+							$output .= '<b>'.__($guid, 'Older occurrences not shown...').'</b>';
+						}
+					}
+					$output .= '</div>';
+					$output .= "<input type='hidden' name='gibbonRubricColumnID[]' value='".$columns[$n][0]."'>";
+					$output .= "<input type='hidden' name='gibbonRubricRowID[]' value='".$rows[$i][0]."'>";
+					$output .= "<input type='hidden' name='gibbonRubricCellID[]' value='".$cells[$rows[$i][0]][$columns[$n][0]][1]."'>";
+					$output .= '</td>';
+				}
+				$output .= '</tr>';
+			}
             $output .= '</table>';
             $output .= '</form>';
         }

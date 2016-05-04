@@ -142,19 +142,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_import.ph
 						<li><b><?php echo __($guid, 'Description') ?></b></li>
 						<?php
                         $yearGroupList = '';
-            for ($i = 0; $i < count($yearGroups); $i = $i + 2) {
-                $yearGroupList .= __($guid, $yearGroups[($i + 1)]).', ';
-            }
-            $yearGroupList = substr($yearGroupList, 0, -2);
-            ?>
+						for ($i = 0; $i < count($yearGroups); $i = $i + 2) {
+							$yearGroupList .= __($guid, $yearGroups[($i + 1)]).', ';
+						}
+						$yearGroupList = substr($yearGroupList, 0, -2); ?>
 						<li><b><?php echo __($guid, 'Year Groups') ?></b> - <?php echo sprintf(__($guid, 'Comma separated list, e.g: %1$s'), '<i>'.$yearGroupList.'</i>') ?></li>
 					</ol>
 				</li>
 				<li><?php echo __($guid, 'Do not include a header row in the CSV files.') ?></li>
 			</ol>
-		<?php
+			<?php
 
-        } elseif ($step == 2) {
+			} elseif ($step == 2) {
             ?>
 			<h2>
 				<?php echo __($guid, 'Step 2 - Data Check & Confirm') ?>

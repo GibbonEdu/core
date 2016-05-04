@@ -56,10 +56,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
                             $resultSelect->execute($dataSelect);
                         } catch (PDOException $e) {
                         }
-    while ($rowSelect = $resultSelect->fetch()) {
-        echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
-    }
-    ?>
+						while ($rowSelect = $resultSelect->fetch()) {
+							echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
+						}
+						?>
 					</select>
 					<script type="text/javascript">
 						var gibbonPersonID=new LiveValidation('gibbonPersonID');
@@ -69,8 +69,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
 			</tr>
 			<?php
             $expenseApprovalType = getSettingByScope($connection2, 'Finance', 'expenseApprovalType');
-    if ($expenseApprovalType == 'Chain Of All') {
-        ?>
+    		if ($expenseApprovalType == 'Chain Of All') {
+        	?>
 				<tr>
 					<td> 
 						<b><?php echo __($guid, 'Sequence Number') ?> *</b><br/>
@@ -86,9 +86,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
 					</td>
 				</tr>
 				<?php
-
-    }
-    ?>
+				}
+				?>
 			<tr>
 				<td>
 					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>

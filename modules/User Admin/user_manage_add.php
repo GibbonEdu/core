@@ -207,17 +207,17 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 					<select name="gibbonRoleIDPrimary" id="gibbonRoleIDPrimary" class="standardWidth">
 						<?php
                         echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-    try {
-        $dataSelect = array();
-        $sqlSelect = 'SELECT * FROM gibbonRole ORDER BY name';
-        $resultSelect = $connection2->prepare($sqlSelect);
-        $resultSelect->execute($dataSelect);
-    } catch (PDOException $e) {
-    }
-    while ($rowSelect = $resultSelect->fetch()) {
-        echo "<option value='".$rowSelect['gibbonRoleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-    }
-    ?>				
+						try {
+							$dataSelect = array();
+							$sqlSelect = 'SELECT * FROM gibbonRole ORDER BY name';
+							$resultSelect = $connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						} catch (PDOException $e) {
+						}
+						while ($rowSelect = $resultSelect->fetch()) {
+							echo "<option value='".$rowSelect['gibbonRoleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
+						}
+						?>				
 					</select>
 					<script type="text/javascript">
 						var gibbonRoleIDPrimary=new LiveValidation('gibbonRoleIDPrimary');
@@ -234,21 +234,20 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 					<input name="username" id="username" maxlength=20 value="" type="text" class="standardWidth">
 					<?php
                     $idList = '';
-    try {
-        $dataSelect = array();
-        $sqlSelect = 'SELECT username FROM gibbonPerson ORDER BY username';
-        $resultSelect = $connection2->prepare($sqlSelect);
-        $resultSelect->execute($dataSelect);
-    } catch (PDOException $e) {
-    }
-    while ($rowSelect = $resultSelect->fetch()) {
-        $idList .= "'".addslashes($rowSelect['username'])."',";
-    }
-    $idList = substr($idList, 0, -1); ?>
+					try {
+						$dataSelect = array();
+						$sqlSelect = 'SELECT username FROM gibbonPerson ORDER BY username';
+						$resultSelect = $connection2->prepare($sqlSelect);
+						$resultSelect->execute($dataSelect);
+					} catch (PDOException $e) {
+					}
+					while ($rowSelect = $resultSelect->fetch()) {
+						$idList .= "'".addslashes($rowSelect['username'])."',";
+					}
+					$idList = substr($idList, 0, -1); ?>
 					<script type="text/javascript">
 						var username=new LiveValidation('username');
-						username.add( Validate.Exclusion, { within: [<?php echo $idList;
-    ?>], failureMessage: "<?php echo __($guid, 'Value already in use!') ?>", partialMatch: false, caseSensitive: false } );
+						username.add( Validate.Exclusion, { within: [<?php echo $idList; ?>], failureMessage: "<?php echo __($guid, 'Value already in use!') ?>", partialMatch: false, caseSensitive: false } );
 						username.add(Validate.Presence);
 					</script>
 				</td>
@@ -257,12 +256,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				<td colspan=2>
 					<?php
                     $policy = getPasswordPolicy($guid, $connection2);
-    if ($policy != false) {
-        echo "<div class='warning'>";
-        echo $policy;
-        echo '</div>';
-    }
-    ?>
+					if ($policy != false) {
+						echo "<div class='warning'>";
+						echo $policy;
+						echo '</div>';
+					}
+					?>
 				</td>
 			</tr>
 			<tr>
@@ -279,22 +278,22 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 						passwordNew.add(Validate.Presence);
 						<?php
                         $alpha = getSettingByScope($connection2, 'System', 'passwordPolicyAlpha');
-    $numeric = getSettingByScope($connection2, 'System', 'passwordPolicyNumeric');
-    $punctuation = getSettingByScope($connection2, 'System', 'passwordPolicyNonAlphaNumeric');
-    $minLength = getSettingByScope($connection2, 'System', 'passwordPolicyMinLength');
-    if ($alpha == 'Y') {
-        echo 'passwordNew.add( Validate.Format, { pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
-    }
-    if ($numeric == 'Y') {
-        echo 'passwordNew.add( Validate.Format, { pattern: /.*[0-9]/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
-    }
-    if ($punctuation == 'Y') {
-        echo 'passwordNew.add( Validate.Format, { pattern: /[^a-zA-Z0-9]/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
-    }
-    if (is_numeric($minLength)) {
-        echo 'passwordNew.add( Validate.Length, { minimum: '.$minLength.'} );';
-    }
-    ?>
+						$numeric = getSettingByScope($connection2, 'System', 'passwordPolicyNumeric');
+						$punctuation = getSettingByScope($connection2, 'System', 'passwordPolicyNonAlphaNumeric');
+						$minLength = getSettingByScope($connection2, 'System', 'passwordPolicyMinLength');
+						if ($alpha == 'Y') {
+							echo 'passwordNew.add( Validate.Format, { pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
+						}
+						if ($numeric == 'Y') {
+							echo 'passwordNew.add( Validate.Format, { pattern: /.*[0-9]/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
+						}
+						if ($punctuation == 'Y') {
+							echo 'passwordNew.add( Validate.Format, { pattern: /[^a-zA-Z0-9]/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
+						}
+						if (is_numeric($minLength)) {
+							echo 'passwordNew.add( Validate.Length, { minimum: '.$minLength.'} );';
+						}
+						?>
 						
 						$(".generatePassword").click(function(){
 							var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789![]{}()%&*$#^<>~@|';
@@ -469,10 +468,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                                 $resultAuto->execute($dataAuto);
                             } catch (PDOException $e) {
                             }
-    while ($rowAuto = $resultAuto->fetch()) {
-        echo '"'.$rowAuto['name'].'", ';
-    }
-    ?>
+							while ($rowAuto = $resultAuto->fetch()) {
+								echo '"'.$rowAuto['name'].'", ';
+							}
+							?>
 						];
 						$( "#address1District" ).autocomplete({source: availableTags});
 					});
@@ -486,17 +485,17 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 					<select name="address1Country" id="address1Country" class="standardWidth">
 						<?php
                         echo "<option value=''></option>";
-    try {
-        $dataSelect = array();
-        $sqlSelect = 'SELECT printable_name FROM gibbonCountry ORDER BY printable_name';
-        $resultSelect = $connection2->prepare($sqlSelect);
-        $resultSelect->execute($dataSelect);
-    } catch (PDOException $e) {
-    }
-    while ($rowSelect = $resultSelect->fetch()) {
-        echo "<option value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
-    }
-    ?>				
+						try {
+							$dataSelect = array();
+							$sqlSelect = 'SELECT printable_name FROM gibbonCountry ORDER BY printable_name';
+							$resultSelect = $connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						} catch (PDOException $e) {
+						}
+						while ($rowSelect = $resultSelect->fetch()) {
+							echo "<option value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
+						}
+						?>				
 					</select>
 				</td>
 			</tr>
@@ -528,10 +527,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                                 $resultAuto->execute($dataAuto);
                             } catch (PDOException $e) {
                             }
-    while ($rowAuto = $resultAuto->fetch()) {
-        echo '"'.$rowAuto['name'].'", ';
-    }
-    ?>
+							while ($rowAuto = $resultAuto->fetch()) {
+								echo '"'.$rowAuto['name'].'", ';
+							}
+							?>
 						];
 						$( "#address2District" ).autocomplete({source: availableTags});
 					});
@@ -545,17 +544,17 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 					<select name="address2Country" id="address2Country" class="standardWidth">
 						<?php
                         echo "<option value=''></option>";
-    try {
-        $dataSelect = array();
-        $sqlSelect = 'SELECT printable_name FROM gibbonCountry ORDER BY printable_name';
-        $resultSelect = $connection2->prepare($sqlSelect);
-        $resultSelect->execute($dataSelect);
-    } catch (PDOException $e) {
-    }
-    while ($rowSelect = $resultSelect->fetch()) {
-        echo "<option value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
-    }
-    ?>				
+						try {
+							$dataSelect = array();
+							$sqlSelect = 'SELECT printable_name FROM gibbonCountry ORDER BY printable_name';
+							$resultSelect = $connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						} catch (PDOException $e) {
+						}
+						while ($rowSelect = $resultSelect->fetch()) {
+							echo "<option value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
+						}
+						?>				
 					</select>
 				</td>
 			</tr>
@@ -599,7 +598,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				<?php
 
             }
-    ?>
+   		 	?>
 			<tr>
 				<td> 
 					<b><?php echo __($guid, 'Website') ?></b><br/>
@@ -622,8 +621,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 			</tr>
 			<?php
                 $dayTypeOptions = getSettingByScope($connection2, 'User Admin', 'dayTypeOptions');
-    if ($dayTypeOptions != '') {
-        ?>
+				if ($dayTypeOptions != '') {
+					?>
 					<tr>
 						<td> 
 							<b><?php echo __($guid, 'Day Type') ?></b><br/>
@@ -634,17 +633,17 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 								<option value=''></option>
 								<?php
                                 $dayTypes = explode(',', $dayTypeOptions);
-        foreach ($dayTypes as $dayType) {
-            echo "<option value='".trim($dayType)."'>".trim($dayType).'</option>';
-        }
-        ?>				
+								foreach ($dayTypes as $dayType) {
+									echo "<option value='".trim($dayType)."'>".trim($dayType).'</option>';
+								}
+								?>				
 							</select>
 						</td>
 					</tr>
 					<?php
 
-    }
-    ?>
+				}
+				?>
 			<tr>
 				<td> 
 					<b><?php echo __($guid, 'Last School') ?></b><br/>
@@ -663,10 +662,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                                 $resultAuto->execute($dataAuto);
                             } catch (PDOException $e) {
                             }
-    while ($rowAuto = $resultAuto->fetch()) {
-        echo '"'.$rowAuto['lastSchool'].'", ';
-    }
-    ?>
+							while ($rowAuto = $resultAuto->fetch()) {
+								echo '"'.$rowAuto['lastSchool'].'", ';
+							}
+							?>
 						];
 						$( "#lastSchool" ).autocomplete({source: availableTags});
 					});
@@ -676,12 +675,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				<td> 
 					<b><?php echo __($guid, 'Start Date') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Users\'s first day at school.') ?><br/> <?php echo __($guid, 'Format:').' ';
-    if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-        echo 'dd/mm/yyyy';
-    } else {
-        echo $_SESSION[$guid]['i18n']['dateFormat'];
-    }
-    ?></span>
+					if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+						echo 'dd/mm/yyyy';
+					} else {
+						echo $_SESSION[$guid]['i18n']['dateFormat'];
+					}
+					?></span>
 				</td>
 				<td class="right">
 					<input name="dateStart" id="dateStart" maxlength=10 value="" type="text" class="standardWidth">
@@ -715,18 +714,18 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 					<select name="gibbonSchoolYearIDClassOf" id="gibbonSchoolYearIDClassOf" class="standardWidth">
 						<?php
                         echo "<option value=''></option>";
-    try {
-        $dataSelect = array();
-        $sqlSelect = 'SELECT * FROM gibbonSchoolYear ORDER BY sequenceNumber';
-        $resultSelect = $connection2->prepare($sqlSelect);
-        $resultSelect->execute($dataSelect);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
-    while ($rowSelect = $resultSelect->fetch()) {
-        echo "<option value='".$rowSelect['gibbonSchoolYearID']."'>".htmlPrep($rowSelect['name']).'</option>';
-    }
-    ?>				
+						try {
+							$dataSelect = array();
+							$sqlSelect = 'SELECT * FROM gibbonSchoolYear ORDER BY sequenceNumber';
+							$resultSelect = $connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						} catch (PDOException $e) {
+							echo "<div class='error'>".$e->getMessage().'</div>';
+						}
+						while ($rowSelect = $resultSelect->fetch()) {
+							echo "<option value='".$rowSelect['gibbonSchoolYearID']."'>".htmlPrep($rowSelect['name']).'</option>';
+						}
+						?>				
 					</select>
 				</td>
 			</tr>
@@ -744,17 +743,17 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 					<select name="languageFirst" id="languageFirst" class="standardWidth">
 						<?php
                         echo "<option value=''></option>";
-    try {
-        $dataSelect = array();
-        $sqlSelect = 'SELECT name FROM gibbonLanguage ORDER BY name';
-        $resultSelect = $connection2->prepare($sqlSelect);
-        $resultSelect->execute($dataSelect);
-    } catch (PDOException $e) {
-    }
-    while ($rowSelect = $resultSelect->fetch()) {
-        echo "<option value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-    }
-    ?>				
+						try {
+							$dataSelect = array();
+							$sqlSelect = 'SELECT name FROM gibbonLanguage ORDER BY name';
+							$resultSelect = $connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						} catch (PDOException $e) {
+						}
+						while ($rowSelect = $resultSelect->fetch()) {
+							echo "<option value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
+						}
+						?>				
 					</select>
 				</td>
 			</tr>
@@ -766,17 +765,17 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 					<select name="languageSecond" id="languageSecond" class="standardWidth">
 						<?php
                         echo "<option value=''></option>";
-    try {
-        $dataSelect = array();
-        $sqlSelect = 'SELECT name FROM gibbonLanguage ORDER BY name';
-        $resultSelect = $connection2->prepare($sqlSelect);
-        $resultSelect->execute($dataSelect);
-    } catch (PDOException $e) {
-    }
-    while ($rowSelect = $resultSelect->fetch()) {
-        echo "<option value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-    }
-    ?>				
+						try {
+							$dataSelect = array();
+							$sqlSelect = 'SELECT name FROM gibbonLanguage ORDER BY name';
+							$resultSelect = $connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						} catch (PDOException $e) {
+						}
+						while ($rowSelect = $resultSelect->fetch()) {
+							echo "<option value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
+						}
+						?>				
 					</select>
 				</td>
 			</tr>
@@ -788,17 +787,17 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 					<select name="languageThird" id="languageThird" class="standardWidth">
 						<?php
                         echo "<option value=''></option>";
-    try {
-        $dataSelect = array();
-        $sqlSelect = 'SELECT name FROM gibbonLanguage ORDER BY name';
-        $resultSelect = $connection2->prepare($sqlSelect);
-        $resultSelect->execute($dataSelect);
-    } catch (PDOException $e) {
-    }
-    while ($rowSelect = $resultSelect->fetch()) {
-        echo "<option value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-    }
-    ?>				
+						try {
+							$dataSelect = array();
+							$sqlSelect = 'SELECT name FROM gibbonLanguage ORDER BY name';
+							$resultSelect = $connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						} catch (PDOException $e) {
+						}
+						while ($rowSelect = $resultSelect->fetch()) {
+							echo "<option value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
+						}
+						?>				
 					</select>
 				</td>
 			</tr>
@@ -810,17 +809,17 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 					<select name="countryOfBirth" id="countryOfBirth" class="standardWidth">
 						<?php
                         echo "<option value=''></option>";
-    try {
-        $dataSelect = array();
-        $sqlSelect = 'SELECT printable_name FROM gibbonCountry ORDER BY printable_name';
-        $resultSelect = $connection2->prepare($sqlSelect);
-        $resultSelect->execute($dataSelect);
-    } catch (PDOException $e) {
-    }
-    while ($rowSelect = $resultSelect->fetch()) {
-        echo "<option value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
-    }
-    ?>				
+						try {
+							$dataSelect = array();
+							$sqlSelect = 'SELECT printable_name FROM gibbonCountry ORDER BY printable_name';
+							$resultSelect = $connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						} catch (PDOException $e) {
+						}
+						while ($rowSelect = $resultSelect->fetch()) {
+							echo "<option value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
+						}
+						?>				
 					</select>
 				</td>
 			</tr>
@@ -833,10 +832,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 						<option value=""></option>
 						<?php
                         $ethnicities = explode(',', getSettingByScope($connection2, 'User Admin', 'ethnicity'));
-    foreach ($ethnicities as $ethnicity) {
-        echo "<option value='".trim($ethnicity)."'>".trim($ethnicity).'</option>';
-    }
-    ?>
+						foreach ($ethnicities as $ethnicity) {
+							echo "<option value='".trim($ethnicity)."'>".trim($ethnicity).'</option>';
+						}
+						?>
 					</select>
 				</td>
 			</tr>
@@ -849,10 +848,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 						<option value=""></option>
 						<?php
                         $religions = explode(',', getSettingByScope($connection2, 'User Admin', 'religions'));
-    foreach ($religions as $religion) {
-        echo "<option value='".trim($religion)."'>".trim($religion).'</option>';
-    }
-    ?>
+						foreach ($religions as $religion) {
+							echo "<option value='".trim($religion)."'>".trim($religion).'</option>';
+						}
+						?>
 					</select>
 				</td>
 			</tr>
@@ -864,25 +863,25 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 					<select name="citizenship1" id="countryOfBirth" class="standardWidth">
 						<?php
                         echo "<option value=''></option>";
-    $nationalityList = getSettingByScope($connection2, 'User Admin', 'nationality');
-    if ($nationalityList == '') {
-        try {
-            $dataSelect = array();
-            $sqlSelect = 'SELECT printable_name FROM gibbonCountry ORDER BY printable_name';
-            $resultSelect = $connection2->prepare($sqlSelect);
-            $resultSelect->execute($dataSelect);
-        } catch (PDOException $e) {
-        }
-        while ($rowSelect = $resultSelect->fetch()) {
-            echo "<option value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
-        }
-    } else {
-        $nationalities = explode(',', $nationalityList);
-        foreach ($nationalities as $nationality) {
-            echo "<option value='".trim($nationality)."'>".trim($nationality).'</option>';
-        }
-    }
-    ?>				
+						$nationalityList = getSettingByScope($connection2, 'User Admin', 'nationality');
+						if ($nationalityList == '') {
+							try {
+								$dataSelect = array();
+								$sqlSelect = 'SELECT printable_name FROM gibbonCountry ORDER BY printable_name';
+								$resultSelect = $connection2->prepare($sqlSelect);
+								$resultSelect->execute($dataSelect);
+							} catch (PDOException $e) {
+							}
+							while ($rowSelect = $resultSelect->fetch()) {
+								echo "<option value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
+							}
+						} else {
+							$nationalities = explode(',', $nationalityList);
+							foreach ($nationalities as $nationality) {
+								echo "<option value='".trim($nationality)."'>".trim($nationality).'</option>';
+							}
+						}
+						?>				
 					</select>
 				</td>
 			</tr>
@@ -916,25 +915,25 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 					<select name="citizenship2" id="countryOfBirth" class="standardWidth">
 						<?php
                         echo "<option value=''></option>";
-    $nationalityList = getSettingByScope($connection2, 'User Admin', 'nationality');
-    if ($nationalityList == '') {
-        try {
-            $dataSelect = array();
-            $sqlSelect = 'SELECT printable_name FROM gibbonCountry ORDER BY printable_name';
-            $resultSelect = $connection2->prepare($sqlSelect);
-            $resultSelect->execute($dataSelect);
-        } catch (PDOException $e) {
-        }
-        while ($rowSelect = $resultSelect->fetch()) {
-            echo "<option value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
-        }
-    } else {
-        $nationalities = explode(',', $nationalityList);
-        foreach ($nationalities as $nationality) {
-            echo "<option $selected value='".trim($nationality)."'>".trim($nationality).'</option>';
-        }
-    }
-    ?>					
+						$nationalityList = getSettingByScope($connection2, 'User Admin', 'nationality');
+						if ($nationalityList == '') {
+							try {
+								$dataSelect = array();
+								$sqlSelect = 'SELECT printable_name FROM gibbonCountry ORDER BY printable_name';
+								$resultSelect = $connection2->prepare($sqlSelect);
+								$resultSelect->execute($dataSelect);
+							} catch (PDOException $e) {
+							}
+							while ($rowSelect = $resultSelect->fetch()) {
+								echo "<option value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
+							}
+						} else {
+							$nationalities = explode(',', $nationalityList);
+							foreach ($nationalities as $nationality) {
+								echo "<option $selected value='".trim($nationality)."'>".trim($nationality).'</option>';
+							}
+						}
+						?>					
 					</select>
 				</td>
 			</tr>
@@ -992,18 +991,18 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				<td class="right">
 					<?php
                     $residencyStatusList = getSettingByScope($connection2, 'User Admin', 'residencyStatus');
-    if ($residencyStatusList == '') {
-        echo "<input name='residencyStatus' id='residencyStatus' maxlength=30 value='' type='text' style='width: 300px'>";
-    } else {
-        echo "<select name='residencyStatus' id='residencyStatus' style='width: 302px'>";
-        echo "<option value=''></option>";
-        $residencyStatuses = explode(',', $residencyStatusList);
-        foreach ($residencyStatuses as $residencyStatus) {
-            echo "<option value='".trim($residencyStatus)."'>".trim($residencyStatus).'</option>';
-        }
-        echo '</select>';
-    }
-    ?>
+					if ($residencyStatusList == '') {
+						echo "<input name='residencyStatus' id='residencyStatus' maxlength=30 value='' type='text' style='width: 300px'>";
+					} else {
+						echo "<select name='residencyStatus' id='residencyStatus' style='width: 302px'>";
+						echo "<option value=''></option>";
+						$residencyStatuses = explode(',', $residencyStatusList);
+						foreach ($residencyStatuses as $residencyStatus) {
+							echo "<option value='".trim($residencyStatus)."'>".trim($residencyStatus).'</option>';
+						}
+						echo '</select>';
+					}
+					?>
 				</td>
 			</tr>
 			<tr>
@@ -1014,13 +1013,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                     } else {
                         echo '<b>'.$_SESSION[$guid]['country'].' '.__($guid, 'Visa Expiry Date').'</b><br/>';
                     }
-    echo "<span style='font-size: 90%'><i>Format ";
-    if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-        echo 'dd/mm/yyyy';
-    } else {
-        echo $_SESSION[$guid]['i18n']['dateFormat'];
-    }
-    echo '. '.__($guid, 'If relevant.').'</span>';?>
+					echo "<span style='font-size: 90%'><i>Format ";
+					if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+						echo 'dd/mm/yyyy';
+					} else {
+						echo $_SESSION[$guid]['i18n']['dateFormat'];
+					}
+					echo '. '.__($guid, 'If relevant.').'</span>';?>
 				</td>
 				<td class="right">
 					<input name="visaExpiryDate" id="visaExpiryDate" maxlength=10 value="" type="text" class="standardWidth">
@@ -1182,17 +1181,17 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 					<select name="gibbonHouseID" id="gibbonHouseID" class="standardWidth">
 						<?php
                         echo "<option value=''></option>";
-    try {
-        $dataSelect = array();
-        $sqlSelect = 'SELECT gibbonHouseID, name FROM gibbonHouse ORDER BY name';
-        $resultSelect = $connection2->prepare($sqlSelect);
-        $resultSelect->execute($dataSelect);
-    } catch (PDOException $e) {
-    }
-    while ($rowSelect = $resultSelect->fetch()) {
-        echo "<option value='".$rowSelect['gibbonHouseID']."'>".htmlPrep($rowSelect['name']).'</option>';
-    }
-    ?>				
+						try {
+							$dataSelect = array();
+							$sqlSelect = 'SELECT gibbonHouseID, name FROM gibbonHouse ORDER BY name';
+							$resultSelect = $connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						} catch (PDOException $e) {
+						}
+						while ($rowSelect = $resultSelect->fetch()) {
+							echo "<option value='".$rowSelect['gibbonHouseID']."'>".htmlPrep($rowSelect['name']).'</option>';
+						}
+						?>				
 					</select>
 				</td>
 			</tr>
@@ -1225,10 +1224,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                             $resultAuto->execute($dataAuto);
                         } catch (PDOException $e) {
                         }
-    while ($rowAuto = $resultAuto->fetch()) {
-        echo '"'.$rowAuto['transport'].'", ';
-    }
-    ?>
+						while ($rowAuto = $resultAuto->fetch()) {
+							echo '"'.$rowAuto['transport'].'", ';
+						}
+						?>
 					];
 					$( "#transport" ).autocomplete({source: availableTags});
 				});
@@ -1262,10 +1261,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 			</tr>
 			<?php
             $privacySetting = getSettingByScope($connection2, 'User Admin', 'privacy');
-    $privacyBlurb = getSettingByScope($connection2, 'User Admin', 'privacyBlurb');
-    $privacyOptions = getSettingByScope($connection2, 'User Admin', 'privacyOptions');
-    if ($privacySetting == 'Y' and $privacyBlurb != '' and $privacyOptions != '') {
-        ?>
+			$privacyBlurb = getSettingByScope($connection2, 'User Admin', 'privacyBlurb');
+			$privacyOptions = getSettingByScope($connection2, 'User Admin', 'privacyOptions');
+			if ($privacySetting == 'Y' and $privacyBlurb != '' and $privacyOptions != '') {
+				?>
 				<tr>
 					<td> 
 						<b><?php echo __($guid, 'Privacy') ?> *</b><br/>
@@ -1275,10 +1274,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 					<td class="right">
 						<?php
                         $options = explode(',', $privacyOptions);
-        foreach ($options as $option) {
-            echo $option." <input type='checkbox' name='privacyOptions[]' value='".htmlPrep(trim($option))."'/><br/>";
-        }
-        ?>
+						foreach ($options as $option) {
+							echo $option." <input type='checkbox' name='privacyOptions[]' value='".htmlPrep(trim($option))."'/><br/>";
+						}
+						?>
 						
 					</td>
 				</tr>
@@ -1300,17 +1299,17 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 					<td class="right">
 						<?php
                         $agreements = explode(',', $studentAgreementOptions);
-        foreach ($agreements as $agreement) {
-            echo $agreement." <input type='checkbox' name='studentAgreements[]' value='".htmlPrep(trim($agreement))."'/><br/>";
-        }
-        ?>
+						foreach ($agreements as $agreement) {
+							echo $agreement." <input type='checkbox' name='studentAgreements[]' value='".htmlPrep(trim($agreement))."'/><br/>";
+						}
+						?>
 		
 					</td>
 				</tr>
 				<?php
 
-    }
-    ?>
+			}
+			?>
 			
 			<tr>
 				<td>

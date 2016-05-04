@@ -89,12 +89,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_a
 				<td>
 					<b><?php echo __($guid, 'Opening Date') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Format:').' ';
-    if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-        echo 'dd/mm/yyyy';
-    } else {
-        echo $_SESSION[$guid]['i18n']['dateFormat'];
-    }
-    ?></span>
+					if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+						echo 'dd/mm/yyyy';
+					} else {
+						echo $_SESSION[$guid]['i18n']['dateFormat'];
+					}
+					?></span>
 				</td>
 				<td class="right">
 					<input name="dateOpen" id="dateOpen" maxlength=10 value="" type="text" class="standardWidth">
@@ -125,7 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_a
 					<?php
                     //Attempt to build a signature for the user
                     $jobOpeningDescriptionTemplate = getSettingByScope($connection2, 'Staff', 'jobOpeningDescriptionTemplate');
-    echo getEditor($guid,  true, 'description', $jobOpeningDescriptionTemplate, 20, true, true, false, true); ?>
+    				echo getEditor($guid,  true, 'description', $jobOpeningDescriptionTemplate, 20, true, true, false, true); ?>
 				</td>
 			</tr>
 			<tr>

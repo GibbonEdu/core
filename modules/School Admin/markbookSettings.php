@@ -54,14 +54,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
                 ?>
 				<td style='width: 275px'> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
-					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php if (isset($row['value'])) {
-    echo $row['value'];
-}
-    ?></textarea>
+					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php if (isset($row['value'])) { echo $row['value']; } ?></textarea>
 					<script type="text/javascript">
 						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
 						<?php echo $row['name'] ?>.add(Validate.Presence);
@@ -82,15 +78,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option <?php if ($row['value'] == 'Y') { echo 'selected '; }
-    ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-						<option <?php if ($row['value'] == 'N') { echo 'selected '; }
-    ?>value="N"><?php echo __($guid, 'No') ?></option>
+						<option <?php if ($row['value'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
+						<option <?php if ($row['value'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -106,8 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<input type='text' maxlength='25' name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>"class="standardWidth" value='<?php echo htmlPrep($row['value']) ?>'>	
@@ -125,8 +117,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<input type='text' maxlength='3' name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>"class="standardWidth" value='<?php echo htmlPrep($row['value']) ?>'>	
@@ -144,8 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<input type='text' maxlength='25' name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>"class="standardWidth" value='<?php echo htmlPrep($row['value']) ?>'>	
@@ -163,8 +153,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<input type='text' maxlength='3' name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>"class="standardWidth" value='<?php echo htmlPrep($row['value']) ?>'>	
@@ -189,15 +178,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option <?php if ($row['value'] == 'Y') { echo 'selected '; }
-    ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-						<option <?php if ($row['value'] == 'N') { echo 'selected '; }
-    ?>value="N"><?php echo __($guid, 'No') ?></option>
+						<option <?php if ($row['value'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
+						<option <?php if ($row['value'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -215,15 +201,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option <?php if ($row['value'] == 'Y') { echo 'selected '; }
-    ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-						<option <?php if ($row['value'] == 'N') { echo 'selected '; }
-    ?>value="N"><?php echo __($guid, 'No') ?></option>
+						<option <?php if ($row['value'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
+						<option <?php if ($row['value'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -241,15 +224,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option <?php if ($row['value'] == 'Y') { echo 'selected '; }
-    ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-						<option <?php if ($row['value'] == 'N') { echo 'selected '; }
-    ?>value="N"><?php echo __($guid, 'No') ?></option>
+						<option <?php if ($row['value'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
+						<option <?php if ($row['value'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -267,15 +247,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option <?php if ($row['value'] == 'Y') { echo 'selected '; }
-    ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-						<option <?php if ($row['value'] == 'N') { echo 'selected '; }
-    ?>value="N"><?php echo __($guid, 'No') ?></option>
+						<option <?php if ($row['value'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
+						<option <?php if ($row['value'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -293,15 +270,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option <?php if ($row['value'] == 'Y') { echo 'selected '; }
-    ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-						<option <?php if ($row['value'] == 'N') { echo 'selected '; }
-    ?>value="N"><?php echo __($guid, 'No') ?></option>
+						<option <?php if ($row['value'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
+						<option <?php if ($row['value'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -325,15 +299,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option <?php if ($row['value'] == 'On') { echo 'selected '; }
-    ?>value="On"><?php echo __($guid, 'On') ?></option>
-						<option <?php if ($row['value'] == 'Off') { echo 'selected '; }
-    ?>value="Off"><?php echo __($guid, 'Off') ?></option>
+						<option <?php if ($row['value'] == 'On') { echo 'selected '; } ?>value="On"><?php echo __($guid, 'On') ?></option>
+						<option <?php if ($row['value'] == 'Off') { echo 'selected '; } ?>value="Off"><?php echo __($guid, 'Off') ?></option>
 					</select>
 				</td>
 			</tr>

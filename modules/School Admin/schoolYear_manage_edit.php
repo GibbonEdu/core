@@ -56,8 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
-            ?>
+            $row = $result->fetch(); ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/schoolYear_manage_editProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID" ?>">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
@@ -66,10 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
 							<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?></span>
 						</td>
 						<td class="right">
-							<input name="name" id="name" maxlength=9 value="<?php if (isset($row['name'])) {
-    echo htmlPrep($row['name']);
-}
-            ?>" type="text" class="standardWidth">
+							<input name="name" id="name" maxlength=9 value="<?php if (isset($row['name'])) { echo htmlPrep($row['name']); } ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var name2=new LiveValidation('name');
 								name2.add(Validate.Presence);
@@ -94,10 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
 							<span class="emphasis small"><?php echo __($guid, 'Must be unique. Controls chronological ordering.') ?></span>
 						</td>
 						<td class="right">
-							<input name="sequenceNumber" id="sequenceNumber" maxlength=3 value="<?php if (isset($row['sequenceNumber'])) {
-    echo htmlPrep($row['sequenceNumber']);
-}
-            ?>" type="text" class="standardWidth">
+							<input name="sequenceNumber" id="sequenceNumber" maxlength=3 value="<?php if (isset($row['sequenceNumber'])) { echo htmlPrep($row['sequenceNumber']); } ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var sequenceNumber=new LiveValidation('sequenceNumber');
 								sequenceNumber.add(Validate.Numericality);
@@ -111,10 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
 							<span class="emphasis small"><?php echo $_SESSION[$guid]['i18n']['dateFormat']  ?></span>
 						</td>
 						<td class="right">
-							<input name="firstDay" id="firstDay" maxlength=10 value="<?php if (isset($row['firstDay'])) {
-    echo dateConvertBack($guid, $row['firstDay']);
-}
-            ?>" type="text" class="standardWidth">
+							<input name="firstDay" id="firstDay" maxlength=10 value="<?php if (isset($row['firstDay'])) { echo dateConvertBack($guid, $row['firstDay']); } ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var firstDay=new LiveValidation('firstDay');
 								firstDay.add(Validate.Presence);
@@ -143,10 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
 							<span class="emphasis small"><?php echo $_SESSION[$guid]['i18n']['dateFormat']  ?></span>
 						</td>
 						<td class="right">
-							<input name="lastDay" id="lastDay" maxlength=10 value="<?php if (isset($row['lastDay'])) {
-    echo dateConvertBack($guid, $row['lastDay']);
-}
-            ?>" type="text" class="standardWidth">
+							<input name="lastDay" id="lastDay" maxlength=10 value="<?php if (isset($row['lastDay'])) { echo dateConvertBack($guid, $row['lastDay']); } ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var lastDay=new LiveValidation('lastDay');
 								lastDay.add(Validate.Presence);

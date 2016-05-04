@@ -181,12 +181,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
 											<td class="right" colspan=2>
 												<?php
                                                 echo "<input type='hidden' name='search' value='".$_GET['search']."'>";
-                                echo "<input type='hidden' name='params' value='$params'>";
-                                echo "<input type='hidden' name='gibbonPlannerEntryID' value='$gibbonPlannerEntryID'>";
-                                echo "<input type='hidden' name='submission' value='true'>";
-                                echo "<input type='hidden' name='gibbonPlannerEntryHomeworkID' value='$gibbonPlannerEntryHomeworkID'>";
-                                echo "<input type='hidden' name='address' value='".$_SESSION[$guid]['address']."'>";
-                                ?>
+												echo "<input type='hidden' name='params' value='$params'>";
+												echo "<input type='hidden' name='gibbonPlannerEntryID' value='$gibbonPlannerEntryID'>";
+												echo "<input type='hidden' name='submission' value='true'>";
+												echo "<input type='hidden' name='gibbonPlannerEntryHomeworkID' value='$gibbonPlannerEntryHomeworkID'>";
+												echo "<input type='hidden' name='address' value='".$_SESSION[$guid]['address']."'>";
+												?>
 												
 												<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 											</td>
@@ -265,12 +265,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
 											<td class="right">
 												<?php
                                                 echo "<select style='float: none; width: 302px' name='version'>";
-                                if ($row['homeworkSubmissionDrafts'] > 0 and $status != 'Late' and $resultVersion->rowCount() < $row['homeworkSubmissionDrafts']) {
-                                    echo "<option value='Draft'>".__($guid, 'Draft').'</option>';
-                                }
-                                echo "<option value='Final'>".__($guid, 'Final').'</option>';
-                                echo '</select>';
-                                ?>
+												if ($row['homeworkSubmissionDrafts'] > 0 and $status != 'Late' and $resultVersion->rowCount() < $row['homeworkSubmissionDrafts']) {
+													echo "<option value='Draft'>".__($guid, 'Draft').'</option>';
+												}
+												echo "<option value='Final'>".__($guid, 'Final').'</option>';
+												echo '</select>';
+												?>
 											</td>
 										</tr>
 									
@@ -295,7 +295,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
 													<?php
 
                                                 }
-                               		 		?>
+                               		 			?>
 											
 												$(".type").click(function(){
 													if ($('input[name=type]:checked').val()=="Link" ) {
@@ -329,16 +329,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
                                                     $resultExt->execute($dataExt);
                                                 } catch (PDOException $e) {
                                                 }
-                                $ext = '';
-                                while ($rowExt = $resultExt->fetch()) {
-                                    $ext = $ext."'.".$rowExt['extension']."',";
-                                }
-                                ?>
+												$ext = '';
+												while ($rowExt = $resultExt->fetch()) {
+													$ext = $ext."'.".$rowExt['extension']."',";
+												}
+												?>
 											
 												<script type="text/javascript">
 													var file=new LiveValidation('file');
-													file.add( Validate.Inclusion, { within: [<?php echo $ext;
-                                ?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+													file.add( Validate.Inclusion, { within: [<?php echo $ext; ?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 												</script>
 											</td>
 										</tr>
@@ -373,40 +372,40 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
 											<td class="right" colspan=2>
 												<?php
                                                 $params = '';
-                                if ($_GET['date'] != '') {
-                                    $params = $params.'&date='.$_GET['date'];
-                                }
-                                if ($_GET['viewBy'] != '') {
-                                    $params = $params.'&viewBy='.$_GET['viewBy'];
-                                }
-                                if ($_GET['gibbonCourseClassID'] != '') {
-                                    $params = $params.'&gibbonCourseClassID='.$_GET['gibbonCourseClassID'];
-                                }
-                                $params = $params."&subView=$subView";
+												if ($_GET['date'] != '') {
+													$params = $params.'&date='.$_GET['date'];
+												}
+												if ($_GET['viewBy'] != '') {
+													$params = $params.'&viewBy='.$_GET['viewBy'];
+												}
+												if ($_GET['gibbonCourseClassID'] != '') {
+													$params = $params.'&gibbonCourseClassID='.$_GET['gibbonCourseClassID'];
+												}
+												$params = $params."&subView=$subView";
 
-                                $count = 0;
-                                try {
-                                    $dataVersion = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID);
-                                    $sqlVersion = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPersonID=:gibbonPersonID AND gibbonPlannerEntryID=:gibbonPlannerEntryID';
-                                    $resultVersion = $connection2->prepare($sqlVersion);
-                                    $resultVersion->execute($dataVersion);
-                                } catch (PDOException $e) {
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                }
+												$count = 0;
+												try {
+													$dataVersion = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID);
+													$sqlVersion = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPersonID=:gibbonPersonID AND gibbonPlannerEntryID=:gibbonPlannerEntryID';
+													$resultVersion = $connection2->prepare($sqlVersion);
+													$resultVersion->execute($dataVersion);
+												} catch (PDOException $e) {
+													echo "<div class='error'>".$e->getMessage().'</div>';
+												}
 
-                                if ($resultVersion->rowCount() < 1) {
-                                    $count = $resultVersion->rowCount();
-                                }
+												if ($resultVersion->rowCount() < 1) {
+													$count = $resultVersion->rowCount();
+												}
 
-                                echo "<input type='hidden' name='count' value='$count'>";
-                                echo "<input type='hidden' name='lesson' value='".$row['name']."'>";
-                                echo "<input type='hidden' name='search' value='".$_GET['search']."'>";
-                                echo "<input type='hidden' name='params' value='$params'>";
-                                echo "<input type='hidden' name='gibbonPlannerEntryID' value='$gibbonPlannerEntryID'>";
-                                echo "<input type='hidden' name='submission' value='false'>";
-                                echo "<input type='hidden' name='gibbonPersonID' value='$gibbonPersonID'>";
-                                echo "<input type='hidden' name='address' value='".$_SESSION[$guid]['address']."'>";
-                                ?>
+												echo "<input type='hidden' name='count' value='$count'>";
+												echo "<input type='hidden' name='lesson' value='".$row['name']."'>";
+												echo "<input type='hidden' name='search' value='".$_GET['search']."'>";
+												echo "<input type='hidden' name='params' value='$params'>";
+												echo "<input type='hidden' name='gibbonPlannerEntryID' value='$gibbonPlannerEntryID'>";
+												echo "<input type='hidden' name='submission' value='false'>";
+												echo "<input type='hidden' name='gibbonPersonID' value='$gibbonPersonID'>";
+												echo "<input type='hidden' name='address' value='".$_SESSION[$guid]['address']."'>";
+												?>
 											
 												<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 											</td>

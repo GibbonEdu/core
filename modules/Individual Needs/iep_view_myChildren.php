@@ -98,8 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/iep_view_
 						<td class="right">
 							<select name="search" id="search" class="standardWidth">
 								<option value=""></value>
-								<?php echo $options;
-            ?> 
+								<?php echo $options; ?> 
 							</select>
 						</td>
 					</tr>
@@ -162,31 +161,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/iep_view_
                     echo __($guid, 'View');
                     echo '</h3>';
 
-                    $row = $result->fetch();
-                    ?>	
+                    $row = $result->fetch(); ?>	
 					<table class='smallIntBorder fullWidth' cellspacing='0'>	
 						<tr>
 							<td colspan=2 style='padding-top: 25px'> 
 								<span style='font-weight: bold; font-size: 135%'><?php echo __($guid, 'Targets') ?></span><br/>
 								<?php
-                                echo '<p>'.$row['targets'].'</p>';
-                    ?>
+                                echo '<p>'.$row['targets'].'</p>'; ?>
 							</td>
 						</tr>
 						<tr>
 							<td colspan=2> 
 								<span style='font-weight: bold; font-size: 135%'><?php echo __($guid, 'Teaching Strategies') ?></span><br/>
 								<?php
-                                echo '<p>'.$row['strategies'].'</p>';
-                    ?>
+                                echo '<p>'.$row['strategies'].'</p>'; ?>
 							</td>
 						</tr>
 						<tr>
 							<td colspan=2 style='padding-top: 25px'> 
 								<span style='font-weight: bold; font-size: 135%'><?php echo __($guid, 'Notes & Review') ?></span><br/>
 								<?php
-                                echo '<p>'.$row['notes'].'</p>';
-                    ?>
+                                echo '<p>'.$row['notes'].'</p>'; ?>
 							</td>
 						</tr>
 					</table>

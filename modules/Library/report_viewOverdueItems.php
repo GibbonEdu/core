@@ -54,11 +54,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_viewOverdue
 				<td class="right">
 					<?php
                         $checked = '';
-    if ($ignoreStatus == 'on') {
-        $checked = 'checked';
-    }
-    echo "<input $checked name=\"ignoreStatus\" id=\"ignoreStatus\" type=\"checkbox\">";
-    ?>
+					if ($ignoreStatus == 'on') {
+						$checked = 'checked';
+					}
+					echo "<input $checked name=\"ignoreStatus\" id=\"ignoreStatus\" type=\"checkbox\">"; ?>
 				</td>
 			</tr>
 			
@@ -127,8 +126,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_viewOverdue
         }
         ++$count;
 
-            //COLOR ROW BY STATUS!
-            echo "<tr class=$rowNum>";
+		//COLOR ROW BY STATUS!
+		echo "<tr class=$rowNum>";
         echo '<td>';
         echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
         echo '</td>';

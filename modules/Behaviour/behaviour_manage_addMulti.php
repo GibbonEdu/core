@@ -201,8 +201,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     if ($enableLevels == 'Y') {
         $optionsLevels = getSettingByScope($connection2, 'Behaviour', 'levels');
         if ($optionsLevels != '') {
-            $optionsLevels = explode(',', $optionsLevels);
-            ?>
+            $optionsLevels = explode(',', $optionsLevels); ?>
 					<tr>
 						<td> 
 							<b><?php echo __($guid, 'Level') ?> *</b><br/>

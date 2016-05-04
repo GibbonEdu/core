@@ -39,8 +39,7 @@ $gibbonFinanceInvoiceeID = $_GET['gibbonFinanceInvoiceeID'];
 $monthOfIssue = $_GET['monthOfIssue'];
 $gibbonFinanceBillingScheduleID = $_GET['gibbonFinanceBillingScheduleID'];
 
-if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') {
-    echo 'Fatal error loading this page!';
+if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
 } else {
     $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/invoices_manage_edit.php&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID";
 

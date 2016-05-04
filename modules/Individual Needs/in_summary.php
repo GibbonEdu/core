@@ -57,118 +57,117 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     echo __($guid, 'Filter');
     echo '</h3>';
     echo "<form method='get' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Individual Needs/in_summary.php'>";
-    echo "<table class='noIntBorder' cellspacing='0' style='width: 100%'>";
-    ?>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Descriptor') ?></b><br/>
-					<span class="emphasis small"></span>
-				</td>
-				<td class="right">
-					<?php
-                    try {
-                        $dataPurpose = array();
-                        $sqlPurpose = 'SELECT * FROM gibbonINDescriptor ORDER BY sequenceNumber';
-                        $resultPurpose = $connection2->prepare($sqlPurpose);
-                        $resultPurpose->execute($dataPurpose);
-                    } catch (PDOException $e) {
-                    }
-
-    echo "<select name='gibbonINDescriptorID' id='gibbonINDescriptorID' style='width:302px'>";
-    echo "<option value=''></option>";
-    while ($rowPurpose = $resultPurpose->fetch()) {
-        $selected = '';
-        if ($rowPurpose['gibbonINDescriptorID'] == $gibbonINDescriptorID) {
-            $selected = 'selected';
-        }
-        echo "<option $selected value='".$rowPurpose['gibbonINDescriptorID']."'>".__($guid, $rowPurpose['name']).'</option>';
-    }
-    echo '</select>';?>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Alert Level') ?></b><br/>
-					<span class="emphasis small"></span>
-				</td>
-				<td class="right">
-					<?php
-                    try {
-                        $dataPurpose = array();
-                        $sqlPurpose = 'SELECT * FROM gibbonAlertLevel ORDER BY sequenceNumber';
-                        $resultPurpose = $connection2->prepare($sqlPurpose);
-                        $resultPurpose->execute($dataPurpose);
-                    } catch (PDOException $e) {
-                    }
-
-    echo "<select name='gibbonAlertLevelID' id='gibbonAlertLevelID' style='width:302px'>";
-    echo "<option value=''></option>";
-    while ($rowPurpose = $resultPurpose->fetch()) {
-        $selected = '';
-        if ($rowPurpose['gibbonAlertLevelID'] == $gibbonAlertLevelID) {
-            $selected = 'selected';
-        }
-        echo "<option $selected value='".$rowPurpose['gibbonAlertLevelID']."'>".__($guid, $rowPurpose['name']).'</option>';
-    }
-    echo '</select>';?>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Roll Group') ?></b><br/>
-					<span class="emphasis small"></span>
-				</td>
-				<td class="right">
-					<?php
-                    try {
-                        $dataPurpose = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                        $sqlPurpose = 'SELECT * FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
-                        $resultPurpose = $connection2->prepare($sqlPurpose);
-                        $resultPurpose->execute($dataPurpose);
-                    } catch (PDOException $e) {
-                    }
-
-    echo "<select name='gibbonRollGroupID' id='gibbonRollGroupID' style='width:302px'>";
-    echo "<option value=''></option>";
-    while ($rowPurpose = $resultPurpose->fetch()) {
-        $selected = '';
-        if ($rowPurpose['gibbonRollGroupID'] == $gibbonRollGroupID) {
-            $selected = 'selected';
-        }
-        echo "<option $selected value='".$rowPurpose['gibbonRollGroupID']."'>".$rowPurpose['name'].'</option>';
-    }
-    echo '</select>';?>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Year Group') ?></b><br/>
-					<span class="emphasis small"></span>
-				</td>
-				<td class="right">
-					<?php
-                    try {
-                        $dataPurpose = array();
-                        $sqlPurpose = 'SELECT * FROM gibbonYearGroup ORDER BY sequenceNumber';
-                        $resultPurpose = $connection2->prepare($sqlPurpose);
-                        $resultPurpose->execute($dataPurpose);
-                    } catch (PDOException $e) {
-                    }
-
-    echo "<select name='gibbonYearGroupID' id='gibbonYearGroupID' style='width:302px'>";
-    echo "<option value=''></option>";
-    while ($rowPurpose = $resultPurpose->fetch()) {
-        $selected = '';
-        if ($rowPurpose['gibbonYearGroupID'] == $gibbonYearGroupID) {
-            $selected = 'selected';
-        }
-        echo "<option $selected value='".$rowPurpose['gibbonYearGroupID']."'>".__($guid, $rowPurpose['name']).'</option>';
-    }
-    echo '</select>';?>
-				</td>
-			</tr>
+    echo "<table class='noIntBorder' cellspacing='0' style='width: 100%'>"; ?>
+	<tr>
+		<td> 
+			<b><?php echo __($guid, 'Descriptor') ?></b><br/>
+			<span class="emphasis small"></span>
+		</td>
+		<td class="right">
 			<?php
-            echo '<tr>';
+			try {
+				$dataPurpose = array();
+				$sqlPurpose = 'SELECT * FROM gibbonINDescriptor ORDER BY sequenceNumber';
+				$resultPurpose = $connection2->prepare($sqlPurpose);
+				$resultPurpose->execute($dataPurpose);
+			} catch (PDOException $e) {
+			}
+
+			echo "<select name='gibbonINDescriptorID' id='gibbonINDescriptorID' style='width:302px'>";
+			echo "<option value=''></option>";
+			while ($rowPurpose = $resultPurpose->fetch()) {
+				$selected = '';
+				if ($rowPurpose['gibbonINDescriptorID'] == $gibbonINDescriptorID) {
+					$selected = 'selected';
+				}
+				echo "<option $selected value='".$rowPurpose['gibbonINDescriptorID']."'>".__($guid, $rowPurpose['name']).'</option>';
+			}
+			echo '</select>';?>
+		</td>
+	</tr>
+	<tr>
+		<td> 
+			<b><?php echo __($guid, 'Alert Level') ?></b><br/>
+			<span class="emphasis small"></span>
+		</td>
+		<td class="right">
+			<?php
+			try {
+				$dataPurpose = array();
+				$sqlPurpose = 'SELECT * FROM gibbonAlertLevel ORDER BY sequenceNumber';
+				$resultPurpose = $connection2->prepare($sqlPurpose);
+				$resultPurpose->execute($dataPurpose);
+			} catch (PDOException $e) {
+			}
+
+			echo "<select name='gibbonAlertLevelID' id='gibbonAlertLevelID' style='width:302px'>";
+			echo "<option value=''></option>";
+			while ($rowPurpose = $resultPurpose->fetch()) {
+				$selected = '';
+				if ($rowPurpose['gibbonAlertLevelID'] == $gibbonAlertLevelID) {
+					$selected = 'selected';
+				}
+				echo "<option $selected value='".$rowPurpose['gibbonAlertLevelID']."'>".__($guid, $rowPurpose['name']).'</option>';
+			}
+			echo '</select>';?>
+		</td>
+	</tr>
+	<tr>
+		<td> 
+			<b><?php echo __($guid, 'Roll Group') ?></b><br/>
+			<span class="emphasis small"></span>
+		</td>
+		<td class="right">
+			<?php
+			try {
+				$dataPurpose = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+				$sqlPurpose = 'SELECT * FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
+				$resultPurpose = $connection2->prepare($sqlPurpose);
+				$resultPurpose->execute($dataPurpose);
+			} catch (PDOException $e) {
+			}
+
+			echo "<select name='gibbonRollGroupID' id='gibbonRollGroupID' style='width:302px'>";
+			echo "<option value=''></option>";
+			while ($rowPurpose = $resultPurpose->fetch()) {
+				$selected = '';
+				if ($rowPurpose['gibbonRollGroupID'] == $gibbonRollGroupID) {
+					$selected = 'selected';
+				}
+				echo "<option $selected value='".$rowPurpose['gibbonRollGroupID']."'>".$rowPurpose['name'].'</option>';
+			}
+			echo '</select>';?>
+		</td>
+	</tr>
+	<tr>
+		<td> 
+			<b><?php echo __($guid, 'Year Group') ?></b><br/>
+			<span class="emphasis small"></span>
+		</td>
+		<td class="right">
+			<?php
+			try {
+				$dataPurpose = array();
+				$sqlPurpose = 'SELECT * FROM gibbonYearGroup ORDER BY sequenceNumber';
+				$resultPurpose = $connection2->prepare($sqlPurpose);
+				$resultPurpose->execute($dataPurpose);
+			} catch (PDOException $e) {
+			}
+
+			echo "<select name='gibbonYearGroupID' id='gibbonYearGroupID' style='width:302px'>";
+			echo "<option value=''></option>";
+			while ($rowPurpose = $resultPurpose->fetch()) {
+				$selected = '';
+				if ($rowPurpose['gibbonYearGroupID'] == $gibbonYearGroupID) {
+					$selected = 'selected';
+				}
+				echo "<option $selected value='".$rowPurpose['gibbonYearGroupID']."'>".__($guid, $rowPurpose['name']).'</option>';
+			}
+			echo '</select>';?>
+		</td>
+	</tr>
+	<?php
+	echo '<tr>';
     echo "<td class='right' colspan=2>";
     echo "<input type='hidden' name='q' value='".$_GET['q']."'>";
     echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Individual Needs/in_summary.php'>".__($guid, 'Clear Filters').'</a> ';
@@ -267,10 +266,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             }
             ++$count;
 
-                //Color rows based on start and end date
-                if (!($row['dateStart'] == '' or $row['dateStart'] <= date('Y-m-d')) and ($row['dateEnd'] == '' or $row['dateEnd'] >= date('Y-m-d'))) {
-                    $rowNum = 'error';
-                }
+			//Color rows based on start and end date
+			if (!($row['dateStart'] == '' or $row['dateStart'] <= date('Y-m-d')) and ($row['dateEnd'] == '' or $row['dateEnd'] >= date('Y-m-d'))) {
+				$rowNum = 'error';
+			}
 
             //COLOR ROW BY STATUS!
             echo "<tr class=$rowNum>";

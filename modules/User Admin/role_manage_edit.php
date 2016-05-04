@@ -57,8 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_edi
         } else {
             //Let's go!
             $row = $result->fetch();
-            $type = $row['type'];
-            ?>
+            $type = $row['type']; ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/role_manage_editProcess.php?gibbonRoleID=$gibbonRoleID" ?>">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>

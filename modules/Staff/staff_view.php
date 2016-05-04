@@ -48,8 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
 
         echo '<h2>';
         echo __($guid, 'Search');
-        echo '</h2>';
-        ?>
+        echo '</h2>'; ?>
 		<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
 			<table class='noIntBorder' cellspacing='0' style="width: 100%">	
 				<tr><td style="width: 30%"></td><td></td></tr>
@@ -62,8 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
 						<input name="search" id="search" maxlength=20 value="<?php echo $search ?>" type="text" class="standardWidth">
 					</td>
 				</tr>
-				<?php if ($highestAction == 'View Staff Profile_full') {
-    ?>
+				<?php if ($highestAction == 'View Staff Profile_full') { ?>
 					<tr>
 						<td> 
 							<b><?php echo __($guid, 'All Staff') ?></b><br/>
@@ -72,23 +70,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
 						<td class="right">
 							<?php
                             $checked = '';
-    if ($allStaff == 'on') {
-        $checked = 'checked';
-    }
-    echo "<input $checked name=\"allStaff\" id=\"allStaff\" type=\"checkbox\">";
-    ?>
+							if ($allStaff == 'on') {
+								$checked = 'checked';
+							}
+							echo "<input $checked name=\"allStaff\" id=\"allStaff\" type=\"checkbox\">"; ?>
 						</td>
 					</tr>
 				<?php 
-}
-        ?>
+				}
+        		?>
 				<tr>
 					<td colspan=2 class="right">
 						<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/staff_view.php">
 						<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 						<?php
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/staff_view.php'>".__($guid, 'Clear Search').'</a>';
-        ?>
+                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/staff_view.php'>".__($guid, 'Clear Search').'</a>'; ?>
 						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 					</td>
 				</tr>

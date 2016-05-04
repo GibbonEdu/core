@@ -84,10 +84,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
                                 $resultSelect->execute($dataSelect);
                             } catch (PDOException $e) {
                             }
-            $rowSelect = $resultSelect->fetch();
-            ?>	
-							<input readonly name="name" id="name" maxlength=255 value="<?php echo formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student');
-            ?>" type="text" class="standardWidth">
+            				$rowSelect = $resultSelect->fetch(); ?>	
+							<input readonly name="name" id="name" maxlength=255 value="<?php echo formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student'); ?>" type="text" class="standardWidth">
 						</td>
 					</tr>
 					<tr>

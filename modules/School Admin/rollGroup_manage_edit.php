@@ -57,8 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
-            ?>
+            $row = $result->fetch(); ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/rollGroup_manage_editProcess.php?gibbonRollGroupID=$gibbonRollGroupID" ?>">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
@@ -109,21 +108,21 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 							<select class="standardWidth" name="gibbonPersonIDTutor">
 								<?php
                                 echo "<option value=''></option>";
-            try {
-                $dataSelect = array();
-                $sqlSelect = "SELECT * FROM gibbonPerson JOIN gibbonStaff on (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
-                $resultSelect = $connection2->prepare($sqlSelect);
-                $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) {
-            }
-            while ($rowSelect = $resultSelect->fetch()) {
-                if ($row['gibbonPersonIDTutor'] == $rowSelect['gibbonPersonID']) {
-                    echo "<option selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
-                } else {
-                    echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
-                }
-            }
-            ?>				
+								try {
+									$dataSelect = array();
+									$sqlSelect = "SELECT * FROM gibbonPerson JOIN gibbonStaff on (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
+									$resultSelect = $connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								} catch (PDOException $e) {
+								}
+								while ($rowSelect = $resultSelect->fetch()) {
+									if ($row['gibbonPersonIDTutor'] == $rowSelect['gibbonPersonID']) {
+										echo "<option selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
+									} else {
+										echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
+									}
+								}
+								?>				
 							</select>
 						</td>
 					</tr>
@@ -132,21 +131,21 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 							<select class="standardWidth" name="gibbonPersonIDTutor2">
 								<?php
                                 echo "<option value=''></option>";
-            try {
-                $dataSelect = array();
-                $sqlSelect = "SELECT * FROM gibbonPerson JOIN gibbonStaff on (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
-                $resultSelect = $connection2->prepare($sqlSelect);
-                $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) {
-            }
-            while ($rowSelect = $resultSelect->fetch()) {
-                if ($row['gibbonPersonIDTutor2'] == $rowSelect['gibbonPersonID']) {
-                    echo "<option selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
-                } else {
-                    echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
-                }
-            }
-            ?>				
+								try {
+									$dataSelect = array();
+									$sqlSelect = "SELECT * FROM gibbonPerson JOIN gibbonStaff on (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
+									$resultSelect = $connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								} catch (PDOException $e) {
+								}
+								while ($rowSelect = $resultSelect->fetch()) {
+									if ($row['gibbonPersonIDTutor2'] == $rowSelect['gibbonPersonID']) {
+										echo "<option selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
+									} else {
+										echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
+									}
+								}
+								?>				
 							</select>
 						</td>
 					</tr>
@@ -155,21 +154,21 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 							<select class="standardWidth" name="gibbonPersonIDTutor3">
 								<?php
                                 echo "<option value=''></option>";
-            try {
-                $dataSelect = array();
-                $sqlSelect = "SELECT * FROM gibbonPerson JOIN gibbonStaff on (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
-                $resultSelect = $connection2->prepare($sqlSelect);
-                $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) {
-            }
-            while ($rowSelect = $resultSelect->fetch()) {
-                if ($row['gibbonPersonIDTutor3'] == $rowSelect['gibbonPersonID']) {
-                    echo "<option selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
-                } else {
-                    echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
-                }
-            }
-            ?>				
+								try {
+									$dataSelect = array();
+									$sqlSelect = "SELECT * FROM gibbonPerson JOIN gibbonStaff on (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
+									$resultSelect = $connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								} catch (PDOException $e) {
+								}
+								while ($rowSelect = $resultSelect->fetch()) {
+									if ($row['gibbonPersonIDTutor3'] == $rowSelect['gibbonPersonID']) {
+										echo "<option selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
+									} else {
+										echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
+									}
+								}
+								?>				
 							</select>
 						</td>
 					</tr>
@@ -182,21 +181,21 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 							<select name="gibbonSpaceID" id="gibbonSpaceID" class="standardWidth">
 								<?php
                                 echo "<option value=''></option>";
-            try {
-                $dataSelect = array();
-                $sqlSelect = 'SELECT * FROM gibbonSpace ORDER BY name';
-                $resultSelect = $connection2->prepare($sqlSelect);
-                $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) {
-            }
-            while ($rowSelect = $resultSelect->fetch()) {
-                $selected = '';
-                if ($row['gibbonSpaceID'] == $rowSelect['gibbonSpaceID']) {
-                    $selected = 'selected';
-                }
-                echo "<option $selected value='".$rowSelect['gibbonSpaceID']."'>".htmlPrep($rowSelect['name']).'</option>';
-            }
-            ?>				
+								try {
+									$dataSelect = array();
+									$sqlSelect = 'SELECT * FROM gibbonSpace ORDER BY name';
+									$resultSelect = $connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								} catch (PDOException $e) {
+								}
+								while ($rowSelect = $resultSelect->fetch()) {
+									$selected = '';
+									if ($row['gibbonSpaceID'] == $rowSelect['gibbonSpaceID']) {
+										$selected = 'selected';
+									}
+									echo "<option $selected value='".$rowSelect['gibbonSpaceID']."'>".htmlPrep($rowSelect['name']).'</option>';
+								}
+								?>				
 							</select>
 						</td>
 					</tr>
@@ -209,30 +208,30 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 							<?php
                              $nextYear = getNextSchoolYearID($gibbonSchoolYearID, $connection2);
 
-            if ($nextYear == '') {
-                echo "<div class='warning'>";
-                echo 'The next school year cannot be determined, so this value cannot be set.';
-                echo '</div>';
-            } else {
-                echo "<select style='width: 302px' name='gibbonRollGroupIDNext'>";
-                echo "<option value=''></option>";
-                try {
-                    $dataSelect = array('gibbonSchoolYearID' => $nextYear);
-                    $sqlSelect = 'SELECT * FROM gibbonRollGroup WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
-                    $resultSelect = $connection2->prepare($sqlSelect);
-                    $resultSelect->execute($dataSelect);
-                } catch (PDOException $e) {
-                }
-                while ($rowSelect = $resultSelect->fetch()) {
-                    if ($row['gibbonRollGroupIDNext'] == $rowSelect['gibbonRollGroupID']) {
-                        echo "<option selected value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
-                    } else {
-                        echo "<option value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
-                    }
-                }
-                echo '</select>';
-            }
-            ?>		
+							if ($nextYear == '') {
+								echo "<div class='warning'>";
+								echo 'The next school year cannot be determined, so this value cannot be set.';
+								echo '</div>';
+							} else {
+								echo "<select style='width: 302px' name='gibbonRollGroupIDNext'>";
+								echo "<option value=''></option>";
+								try {
+									$dataSelect = array('gibbonSchoolYearID' => $nextYear);
+									$sqlSelect = 'SELECT * FROM gibbonRollGroup WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
+									$resultSelect = $connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								} catch (PDOException $e) {
+								}
+								while ($rowSelect = $resultSelect->fetch()) {
+									if ($row['gibbonRollGroupIDNext'] == $rowSelect['gibbonRollGroupID']) {
+										echo "<option selected value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
+									} else {
+										echo "<option value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
+									}
+								}
+								echo '</select>';
+							}
+							?>		
 						</td>
 					</tr>
 					<tr>

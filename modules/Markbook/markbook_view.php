@@ -300,39 +300,39 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                         echo __($guid, 'Student');
                         echo '</th>';
 
-                                //Show Baseline data header
-                                if ($externalAssessment == true) {
-                                    echo "<th style='width: 40px; min-width: 40px; max-width: 40px' rowspan=2>";
-                                    $title = __($guid, $externalAssessmentFields[2]).' | ';
-                                    $title .= __($guid, substr($externalAssessmentFields[3], (strpos($externalAssessmentFields[3], '_') + 1))).' | ';
-                                    $title .= __($guid, $externalAssessmentFields[1]);
+						//Show Baseline data header
+						if ($externalAssessment == true) {
+							echo "<th style='width: 40px; min-width: 40px; max-width: 40px' rowspan=2>";
+							$title = __($guid, $externalAssessmentFields[2]).' | ';
+							$title .= __($guid, substr($externalAssessmentFields[3], (strpos($externalAssessmentFields[3], '_') + 1))).' | ';
+							$title .= __($guid, $externalAssessmentFields[1]);
 
-                                        //Get PAS
-                                        $PAS = getSettingByScope($connection2, 'System', 'primaryAssessmentScale');
-                                    try {
-                                        $dataPAS = array('gibbonScaleID' => $PAS);
-                                        $sqlPAS = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
-                                        $resultPAS = $connection2->prepare($sqlPAS);
-                                        $resultPAS->execute($dataPAS);
-                                    } catch (PDOException $e) {
-                                    }
-                                    if ($resultPAS->rowCount() == 1) {
-                                        $rowPAS = $resultPAS->fetch();
-                                        $title .= ' | '.$rowPAS['name'].' '.__($guid, 'Scale').' ';
-                                    }
+								//Get PAS
+								$PAS = getSettingByScope($connection2, 'System', 'primaryAssessmentScale');
+							try {
+								$dataPAS = array('gibbonScaleID' => $PAS);
+								$sqlPAS = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
+								$resultPAS = $connection2->prepare($sqlPAS);
+								$resultPAS->execute($dataPAS);
+							} catch (PDOException $e) {
+							}
+							if ($resultPAS->rowCount() == 1) {
+								$rowPAS = $resultPAS->fetch();
+								$title .= ' | '.$rowPAS['name'].' '.__($guid, 'Scale').' ';
+							}
 
-                                    echo "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);' title='$title'>";
-                                    echo __($guid, 'Baseline').'<br/>';
-                                    echo '</div>';
-                                    echo '</th>';
-                                }
+							echo "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);' title='$title'>";
+							echo __($guid, 'Baseline').'<br/>';
+							echo '</div>';
+							echo '</th>';
+						}
 
-                                //Show target grade header
-                            echo "<th style='width: 40px; min-width: 40px; max-width: 40px' rowspan=2>";
+						//Show target grade header
+                        echo "<th style='width: 40px; min-width: 40px; max-width: 40px' rowspan=2>";
                         $title = __($guid, 'Personalised attainment target grade');
 
-                                    //Get PAS
-                                    $PAS = getSettingByScope($connection2, 'System', 'primaryAssessmentScale');
+						//Get PAS
+						$PAS = getSettingByScope($connection2, 'System', 'primaryAssessmentScale');
                         try {
                             $dataPAS = array('gibbonScaleID' => $PAS);
                             $sqlPAS = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
@@ -350,37 +350,37 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                         echo '</div>';
                         echo '</th>';
 
-                                //Show weighted scrore
-                                if ($enableColumnWeighting == 'Y') {
-                                    echo "<th style='width: 40px; min-width: 40px; max-width: 40px' rowspan=2>";
-                                    if ($attainmentAlternativeName != '' and $attainmentAlternativeNameAbrev != '') {
-                                        $title = sprintf(__($guid, 'Weighted mean of all marked columns using Primary Assessment Scale for %1$s, if numeric'), $attainmentAlternativeName);
-                                    } else {
-                                        $title = sprintf(__($guid, 'Weighted mean of all marked columns using Primary Assessment Scale for %1$s, if numeric'), 'Attainment');
-                                    }
+						//Show weighted scrore
+						if ($enableColumnWeighting == 'Y') {
+							echo "<th style='width: 40px; min-width: 40px; max-width: 40px' rowspan=2>";
+							if ($attainmentAlternativeName != '' and $attainmentAlternativeNameAbrev != '') {
+								$title = sprintf(__($guid, 'Weighted mean of all marked columns using Primary Assessment Scale for %1$s, if numeric'), $attainmentAlternativeName);
+							} else {
+								$title = sprintf(__($guid, 'Weighted mean of all marked columns using Primary Assessment Scale for %1$s, if numeric'), 'Attainment');
+							}
 
-                                    echo "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);' title='$title'>";
-                                    echo __($guid, 'Total').'<br/>';
-                                    echo '</div>';
-                                    echo '</th>';
+							echo "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);' title='$title'>";
+							echo __($guid, 'Total').'<br/>';
+							echo '</div>';
+							echo '</th>';
 
-                                    //Cache all weighting data for efficient use below
-                                    $weightings = array();
-                                    $weightingsCount = 0;
-                                    try {
-                                        $dataWeighting = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                                        $sqlWeighting = "SELECT attainmentWeighting, attainmentValue, gibbonPersonIDStudent FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonScale ON (gibbonMarkbookColumn.gibbonScaleIDAttainment=gibbonScale.gibbonScaleID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonScale.numeric='Y' AND gibbonScaleID=(SELECT value FROM gibbonSetting WHERE scope='System' AND name='primaryAssessmentScale') AND complete='Y' AND NOT attainmentValue='' ORDER BY gibbonPersonIDStudent";
-                                        $resultWeighting = $connection2->prepare($sqlWeighting);
-                                        $resultWeighting->execute($dataWeighting);
-                                    } catch (PDOException $e) {
-                                    }
-                                    while ($rowWeightings = $resultWeighting->fetch()) {
-                                        $weightings[$weightingsCount][0] = $rowWeightings['attainmentWeighting'];
-                                        $weightings[$weightingsCount][1] = $rowWeightings['attainmentValue'];
-                                        $weightings[$weightingsCount][2] = $rowWeightings['gibbonPersonIDStudent'];
-                                        ++$weightingsCount;
-                                    }
-                                }
+							//Cache all weighting data for efficient use below
+							$weightings = array();
+							$weightingsCount = 0;
+							try {
+								$dataWeighting = array('gibbonCourseClassID' => $gibbonCourseClassID);
+								$sqlWeighting = "SELECT attainmentWeighting, attainmentValue, gibbonPersonIDStudent FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonScale ON (gibbonMarkbookColumn.gibbonScaleIDAttainment=gibbonScale.gibbonScaleID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonScale.numeric='Y' AND gibbonScaleID=(SELECT value FROM gibbonSetting WHERE scope='System' AND name='primaryAssessmentScale') AND complete='Y' AND NOT attainmentValue='' ORDER BY gibbonPersonIDStudent";
+								$resultWeighting = $connection2->prepare($sqlWeighting);
+								$resultWeighting->execute($dataWeighting);
+							} catch (PDOException $e) {
+							}
+							while ($rowWeightings = $resultWeighting->fetch()) {
+								$weightings[$weightingsCount][0] = $rowWeightings['attainmentWeighting'];
+								$weightings[$weightingsCount][1] = $rowWeightings['attainmentValue'];
+								$weightings[$weightingsCount][2] = $rowWeightings['gibbonPersonIDStudent'];
+								++$weightingsCount;
+							}
+						}
 
                         $columnID = array();
                         $attainmentID = array();
@@ -403,28 +403,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                                 $uploadedResponse[$i] = $row['uploadedResponse'];
                                 $submission[$i] = false;
 
-                                        //WORK OUT IF THERE IS SUBMISSION
-                                        if (is_null($row['gibbonPlannerEntryID']) == false) {
-                                            try {
-                                                $dataSub = array('gibbonPlannerEntryID' => $row['gibbonPlannerEntryID']);
-                                                $sqlSub = "SELECT * FROM gibbonPlannerEntry WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND homeworkSubmission='Y'";
-                                                $resultSub = $connection2->prepare($sqlSub);
-                                                $resultSub->execute($dataSub);
-                                            } catch (PDOException $e) {
-                                                echo "<div class='error'>".$e->getMessage().'</div>';
-                                            }
+								//WORK OUT IF THERE IS SUBMISSION
+								if (is_null($row['gibbonPlannerEntryID']) == false) {
+									try {
+										$dataSub = array('gibbonPlannerEntryID' => $row['gibbonPlannerEntryID']);
+										$sqlSub = "SELECT * FROM gibbonPlannerEntry WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND homeworkSubmission='Y'";
+										$resultSub = $connection2->prepare($sqlSub);
+										$resultSub->execute($dataSub);
+									} catch (PDOException $e) {
+										echo "<div class='error'>".$e->getMessage().'</div>';
+									}
 
-                                            if ($resultSub->rowCount() == 1) {
-                                                $submission[$i] = true;
-                                                $rowSub = $resultSub->fetch();
-                                                $homeworkDueDateTime[$i] = $rowSub['homeworkDueDateTime'];
-                                                $lessonDate[$i] = $rowSub['date'];
-                                            }
-                                        }
+									if ($resultSub->rowCount() == 1) {
+										$submission[$i] = true;
+										$rowSub = $resultSub->fetch();
+										$homeworkDueDateTime[$i] = $rowSub['homeworkDueDateTime'];
+										$lessonDate[$i] = $rowSub['date'];
+									}
+								}
                             }
 
-                                    //Column count
-                                    $span = 0;
+							//Column count
+							$span = 0;
                             $contents = true;
                             if ($submission[$i] == true) {
                                 ++$span;
@@ -906,90 +906,89 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
             }
 
             echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."'>";
-            echo"<table class='noIntBorder' cellspacing='0' style='width: 100%'>";
-            ?>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Learning Area') ?></b><br/>
-							<span class="emphasis small"></span>
-						</td>
-						<td class="right">
-							<?php
-                            echo "<select name='filter2' id='filter2' style='width:302px'>";
-            echo "<option value=''>".__($guid, 'All Learning Areas').'</option>';
-            try {
-                $dataSelect = array();
-                $sqlSelect = "SELECT * FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
-                $resultSelect = $connection2->prepare($sqlSelect);
-                $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) {
-            }
-            while ($rowSelect = $resultSelect->fetch()) {
-                $selected = '';
-                if ($rowSelect['gibbonDepartmentID'] == $filter2) {
-                    $selected = 'selected';
-                }
-                echo "<option $selected value='".$rowSelect['gibbonDepartmentID']."'>".$rowSelect['name'].'</option>';
-            }
-            echo '</select>'; ?>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'School Year') ?></b><br/>
-							<span class="emphasis small"></span>
-						</td>
-						<td class="right">
-							<?php
-                            echo "<select name='filter' id='filter' style='width:302px'>";
-            echo "<option value='*'>".__($guid, 'All Years').'</option>';
-            try {
-                $dataSelect = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                $sqlSelect = 'SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonSchoolYear.name AS year, gibbonYearGroup.name AS yearGroup FROM gibbonStudentEnrolment JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY gibbonSchoolYear.sequenceNumber';
-                $resultSelect = $connection2->prepare($sqlSelect);
-                $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-            while ($rowSelect = $resultSelect->fetch()) {
-                $selected = '';
-                if ($rowSelect['gibbonSchoolYearID'] == $filter) {
-                    $selected = 'selected';
-                }
-                echo "<option $selected value='".$rowSelect['gibbonSchoolYearID']."'>".$rowSelect['year'].' ('.__($guid, $rowSelect['yearGroup']).')</option>';
-            }
-            echo '</select>'; ?>
-						</td>
-					</tr>
+            echo"<table class='noIntBorder' cellspacing='0' style='width: 100%'>"; ?>
+			<tr>
+				<td> 
+					<b><?php echo __($guid, 'Learning Area') ?></b><br/>
+					<span class="emphasis small"></span>
+				</td>
+				<td class="right">
 					<?php
-                    $types = getSettingByScope($connection2, 'Markbook', 'markbookType');
+					echo "<select name='filter2' id='filter2' style='width:302px'>";
+					echo "<option value=''>".__($guid, 'All Learning Areas').'</option>';
+					try {
+						$dataSelect = array();
+						$sqlSelect = "SELECT * FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
+						$resultSelect = $connection2->prepare($sqlSelect);
+						$resultSelect->execute($dataSelect);
+					} catch (PDOException $e) {
+					}
+					while ($rowSelect = $resultSelect->fetch()) {
+						$selected = '';
+						if ($rowSelect['gibbonDepartmentID'] == $filter2) {
+							$selected = 'selected';
+						}
+						echo "<option $selected value='".$rowSelect['gibbonDepartmentID']."'>".$rowSelect['name'].'</option>';
+					}
+					echo '</select>'; ?>
+				</td>
+			</tr>
+			<tr>
+				<td> 
+					<b><?php echo __($guid, 'School Year') ?></b><br/>
+					<span class="emphasis small"></span>
+				</td>
+				<td class="right">
+					<?php
+					echo "<select name='filter' id='filter' style='width:302px'>";
+					echo "<option value='*'>".__($guid, 'All Years').'</option>';
+					try {
+						$dataSelect = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+						$sqlSelect = 'SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonSchoolYear.name AS year, gibbonYearGroup.name AS yearGroup FROM gibbonStudentEnrolment JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY gibbonSchoolYear.sequenceNumber';
+						$resultSelect = $connection2->prepare($sqlSelect);
+						$resultSelect->execute($dataSelect);
+					} catch (PDOException $e) {
+						echo "<div class='error'>".$e->getMessage().'</div>';
+					}
+					while ($rowSelect = $resultSelect->fetch()) {
+						$selected = '';
+						if ($rowSelect['gibbonSchoolYearID'] == $filter) {
+							$selected = 'selected';
+						}
+						echo "<option $selected value='".$rowSelect['gibbonSchoolYearID']."'>".$rowSelect['year'].' ('.__($guid, $rowSelect['yearGroup']).')</option>';
+					}
+					echo '</select>'; ?>
+				</td>
+			</tr>
+			<?php
+			$types = getSettingByScope($connection2, 'Markbook', 'markbookType');
             if ($types != false) {
                 $types = explode(',', $types);
                 ?>
-						<tr>
-							<td> 
-								<b><?php echo __($guid, 'Type') ?></b><br/>
-								<span class="emphasis small"></span>
-							</td>
-							<td class="right">
-								<select name="filter3" id="filter3" class="standardWidth">
-									<option value=""></option>
-									<?php
-                                    for ($i = 0; $i < count($types); ++$i) {
-                                        $selected = '';
-                                        if ($filter3 == $types[$i]) {
-                                            $selected = 'selected';
-                                        }
-                                        ?>
-										<option <?php echo $selected ?> value="<?php echo trim($types[$i]) ?>"><?php echo trim($types[$i]) ?></option>
-									<?php
+				<tr>
+					<td> 
+						<b><?php echo __($guid, 'Type') ?></b><br/>
+						<span class="emphasis small"></span>
+					</td>
+					<td class="right">
+						<select name="filter3" id="filter3" class="standardWidth">
+							<option value=""></option>
+							<?php
+							for ($i = 0; $i < count($types); ++$i) {
+								$selected = '';
+								if ($filter3 == $types[$i]) {
+									$selected = 'selected';
+								}
+								?>
+								<option <?php echo $selected ?> value="<?php echo trim($types[$i]) ?>"><?php echo trim($types[$i]) ?></option>
+							<?php
 
-                                    }
-                ?>
-								</select>
-							</td>
-						</tr>
-						<?php
+							}
+						?>
+						</select>
+					</td>
+				</tr>
+				<?php
 
             }
             echo '<tr>';
@@ -997,21 +996,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
             echo "<input type='hidden' name='q' value='".$_GET['q']."'>";
             echo "<input checked type='checkbox' name='details' class='details' value='Yes' />";
             echo "<span style='font-size: 85%; font-weight: normal; font-style: italic'> ".__($guid, 'Show/Hide Details').'</span>'; ?>
-							<script type="text/javascript">
-								/* Show/Hide detail control */
-								$(document).ready(function(){
-									$(".details").click(function(){
-										if ($('input[name=details]:checked').val()=="Yes" ) {
-											$(".detailItem").slideDown("fast", $("#detailItem").css("{'display' : 'table-row'}")); 
-										} 
-										else {
-											$(".detailItem").slideUp("fast"); 
-										}
-									 });
-								});
-							</script>
-							<?php
-                            echo "<input type='submit' value='".__($guid, 'Go')."'>";
+			<script type="text/javascript">
+				/* Show/Hide detail control */
+				$(document).ready(function(){
+					$(".details").click(function(){
+						if ($('input[name=details]:checked').val()=="Yes" ) {
+							$(".detailItem").slideDown("fast", $("#detailItem").css("{'display' : 'table-row'}")); 
+						} 
+						else {
+							$(".detailItem").slideUp("fast"); 
+						}
+					 });
+				});
+			</script>
+			<?php
+			echo "<input type='submit' value='".__($guid, 'Go')."'>";
             echo '</td>';
             echo '</tr>';
             echo'</table>';
@@ -1394,8 +1393,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
 								<td class="right">
 									<select name="search" id="search" class="standardWidth">
 										<option value=""></value>
-										<?php echo $options;
-                    ?> 
+										<?php echo $options; ?> 
 									</select>
 								</td>
 							</tr>
@@ -1404,8 +1402,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
 									<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/markbook_view.php">
 									<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 									<?php
-                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_view.php'>".__($guid, 'Clear Search').'</a>';
-                    ?>
+                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_view.php'>".__($guid, 'Clear Search').'</a>'; ?>
 									<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 								</td>
 							</tr>
@@ -1482,90 +1479,90 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                         echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&search=$gibbonPersonID'>";
                         echo"<table class='noIntBorder' cellspacing='0' style='width: 100%'>";
                         ?>
-								<tr>
-									<td> 
-										<b>Learning Area</b><br/>
-										<span class="emphasis small"></span>
-									</td>
-									<td class="right">
-										<?php
-                                        echo "<select name='filter2' id='filter2' style='width:302px'>";
-                        echo "<option value=''>All Learning Areas</option>";
-                        try {
-                            $dataSelect = array();
-                            $sqlSelect = "SELECT * FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
-                            $resultSelect = $connection2->prepare($sqlSelect);
-                            $resultSelect->execute($dataSelect);
-                        } catch (PDOException $e) {
-                        }
-                        while ($rowSelect = $resultSelect->fetch()) {
-                            $selected = '';
-                            if ($rowSelect['gibbonDepartmentID'] == $filter2) {
-                                $selected = 'selected';
-                            }
-                            echo "<option $selected value='".$rowSelect['gibbonDepartmentID']."'>".$rowSelect['name'].'</option>';
-                        }
-                        echo '</select>';
-                        ?>
-									</td>
-								</tr>
-								<tr>
-									<td> 
-										<b><?php echo __($guid, 'School Year') ?></b><br/>
-										<span class="emphasis small"></span>
-									</td>
-									<td class="right">
-										<?php
-                                        echo "<select name='filter' id='filter' style='width:302px'>";
-                        echo "<option value='*'>All Years</option>";
-                        try {
-                            $dataSelect = array('gibbonPersonID' => $gibbonPersonID);
-                            $sqlSelect = 'SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonSchoolYear.name AS year, gibbonYearGroup.name AS yearGroup FROM gibbonStudentEnrolment JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY gibbonSchoolYear.sequenceNumber';
-                            $resultSelect = $connection2->prepare($sqlSelect);
-                            $resultSelect->execute($dataSelect);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
-                        while ($rowSelect = $resultSelect->fetch()) {
-                            $selected = '';
-                            if ($rowSelect['gibbonSchoolYearID'] == $filter) {
-                                $selected = 'selected';
-                            }
-                            echo "<option $selected value='".$rowSelect['gibbonSchoolYearID']."'>".$rowSelect['year'].' ('.__($guid, $rowSelect['yearGroup']).')</option>';
-                        }
-                        echo '</select>';
-                        ?>
-									</td>
-								</tr>
+						<tr>
+							<td> 
+								<b>Learning Area</b><br/>
+								<span class="emphasis small"></span>
+							</td>
+							<td class="right">
 								<?php
-                                $types = getSettingByScope($connection2, 'Markbook', 'markbookType');
+								echo "<select name='filter2' id='filter2' style='width:302px'>";
+								echo "<option value=''>All Learning Areas</option>";
+								try {
+									$dataSelect = array();
+									$sqlSelect = "SELECT * FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
+									$resultSelect = $connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								} catch (PDOException $e) {
+								}
+								while ($rowSelect = $resultSelect->fetch()) {
+									$selected = '';
+									if ($rowSelect['gibbonDepartmentID'] == $filter2) {
+										$selected = 'selected';
+									}
+									echo "<option $selected value='".$rowSelect['gibbonDepartmentID']."'>".$rowSelect['name'].'</option>';
+								}
+								echo '</select>';
+								?>
+							</td>
+						</tr>
+						<tr>
+							<td> 
+								<b><?php echo __($guid, 'School Year') ?></b><br/>
+								<span class="emphasis small"></span>
+							</td>
+							<td class="right">
+								<?php
+								echo "<select name='filter' id='filter' style='width:302px'>";
+								echo "<option value='*'>All Years</option>";
+								try {
+									$dataSelect = array('gibbonPersonID' => $gibbonPersonID);
+									$sqlSelect = 'SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonSchoolYear.name AS year, gibbonYearGroup.name AS yearGroup FROM gibbonStudentEnrolment JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY gibbonSchoolYear.sequenceNumber';
+									$resultSelect = $connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								} catch (PDOException $e) {
+									echo "<div class='error'>".$e->getMessage().'</div>';
+								}
+								while ($rowSelect = $resultSelect->fetch()) {
+									$selected = '';
+									if ($rowSelect['gibbonSchoolYearID'] == $filter) {
+										$selected = 'selected';
+									}
+									echo "<option $selected value='".$rowSelect['gibbonSchoolYearID']."'>".$rowSelect['year'].' ('.__($guid, $rowSelect['yearGroup']).')</option>';
+								}
+								echo '</select>';
+								?>
+							</td>
+						</tr>
+						<?php
+						$types = getSettingByScope($connection2, 'Markbook', 'markbookType');
                         if ($types != false) {
                             $types = explode(',', $types);
                             ?>
-									<tr>
-										<td> 
-											<b><?php echo __($guid, 'Type') ?></b><br/>
-											<span class="emphasis small"></span>
-										</td>
-										<td class="right">
-											<select name="filter3" id="filter3" class="standardWidth">
-												<option value=""></option>
-												<?php
-                                                for ($i = 0; $i < count($types); ++$i) {
-                                                    $selected = '';
-                                                    if ($filter3 == $types[$i]) {
-                                                        $selected = 'selected';
-                                                    }
-                                                    ?>
-													<option <?php echo $selected ?> value="<?php echo trim($types[$i]) ?>"><?php echo trim($types[$i]) ?></option>
-												<?php
+							<tr>
+								<td> 
+									<b><?php echo __($guid, 'Type') ?></b><br/>
+									<span class="emphasis small"></span>
+								</td>
+								<td class="right">
+									<select name="filter3" id="filter3" class="standardWidth">
+										<option value=""></option>
+										<?php
+										for ($i = 0; $i < count($types); ++$i) {
+											$selected = '';
+											if ($filter3 == $types[$i]) {
+												$selected = 'selected';
+											}
+											?>
+											<option <?php echo $selected ?> value="<?php echo trim($types[$i]) ?>"><?php echo trim($types[$i]) ?></option>
+										<?php
 
-                                                }
-                            ?>
-											</select>
-										</td>
-									</tr>
-									<?php
+										}
+										?>
+									</select>
+								</td>
+							</tr>
+							<?php
 
                         }
                         echo '<tr>';
@@ -1574,21 +1571,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                         echo "<input checked type='checkbox' name='details' class='details' value='Yes' />";
                         echo "<span style='font-size: 85%; font-weight: normal; font-style: italic'> Show/Hide Details</span>";
                         ?>
-										<script type="text/javascript">
-											/* Show/Hide detail control */
-											$(document).ready(function(){
-												$(".details").click(function(){
-													if ($('input[name=details]:checked').val()=="Yes" ) {
-														$(".detailItem").slideDown("fast", $("#detailItem").css("{'display' : 'table-row'}")); 
-													} 
-													else {
-														$(".detailItem").slideUp("fast"); 
-													}
-												 });
-											});
-										</script>
-										<?php
-                                        echo "<input type='submit' value='".__($guid, 'Go')."'>";
+						<script type="text/javascript">
+							/* Show/Hide detail control */
+							$(document).ready(function(){
+								$(".details").click(function(){
+									if ($('input[name=details]:checked').val()=="Yes" ) {
+										$(".detailItem").slideDown("fast", $("#detailItem").css("{'display' : 'table-row'}")); 
+									} 
+									else {
+										$(".detailItem").slideUp("fast"); 
+									}
+								 });
+							});
+						</script>
+						<?php
+						echo "<input type='submit' value='".__($guid, 'Go')."'>";
                         echo '</td>';
                         echo '</tr>';
                         echo'</table>';

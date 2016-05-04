@@ -37,8 +37,7 @@ if (isset($_GET['allStudents'])) {
     $allStudents = $_GET['allStudents'];
 }
 
-if ($gibbonPersonID == '' or $gibbonExternalAssessmentStudentID == '') {
-    echo 'Fatal error loading this page!';
+if ($gibbonPersonID == '' or $gibbonExternalAssessmentStudentID == '') { echo 'Fatal error loading this page!';
 } else {
     $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/externalAssessment_manage_details_delete.php&gibbonPersonID=$gibbonPersonID&gibbonExternalAssessmentStudentID=$gibbonExternalAssessmentStudentID&search=$search&allStudents=$allStudents";
     $URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/externalAssessment_details.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents";

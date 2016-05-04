@@ -98,10 +98,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                                     $resultSelect->execute($dataSelect);
                                 } catch (PDOException $e) {
                                 }
-            while ($rowSelect = $resultSelect->fetch()) {
-                echo "<option value='".$rowSelect['gibbonPersonID']."'>".htmlPrep($rowSelect['name']).' - '.formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).'</option>';
-            }
-            ?>
+								while ($rowSelect = $resultSelect->fetch()) {
+									echo "<option value='".$rowSelect['gibbonPersonID']."'>".htmlPrep($rowSelect['name']).' - '.formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).'</option>';
+								}
+								?>
 								</optgroup>
 								<optgroup label='--<?php echo __($guid, 'All Users') ?>--'>
 								<?php
@@ -112,14 +112,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                                     $resultSelect->execute($dataSelect);
                                 } catch (PDOException $e) {
                                 }
-            while ($rowSelect = $resultSelect->fetch()) {
-                $expected = '';
-                if ($rowSelect['status'] == 'Expected') {
-                    $expected = ' (Expected)';
-                }
-                echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.$rowSelect['username'].')'.$expected.'</option>';
-            }
-            ?>
+								while ($rowSelect = $resultSelect->fetch()) {
+									$expected = '';
+									if ($rowSelect['status'] == 'Expected') {
+										$expected = ' (Expected)';
+									}
+									echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.$rowSelect['username'].')'.$expected.'</option>';
+								}
+								?>
 								</optgroup>
 							</select>
 						</td>
@@ -202,17 +202,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 echo '<th>';
                 echo __($guid, 'Actions');
                 echo '</th>';
-                echo '<th>';
-                ?>
-								<script type="text/javascript">
-									$(function () {
-										$('.checkall').click(function () {
-											$(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
-										});
-									});
-								</script>
-								<?php
-                                echo "<input type='checkbox' class='checkall'>";
+                echo '<th>'; ?>
+				<script type="text/javascript">
+					$(function () {
+						$('.checkall').click(function () {
+							$(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
+						});
+					});
+				</script>
+				<?php
+				echo "<input type='checkbox' class='checkall'>";
                 echo '</th>';
                 echo '</tr>';
 

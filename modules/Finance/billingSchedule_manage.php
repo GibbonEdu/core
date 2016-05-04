@@ -85,8 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
 
         echo '<h3>';
         echo __($guid, 'Search');
-        echo '</h3>';
-        ?>
+        echo '</h3>'; ?>
 		<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
 			<table class='noIntBorder' cellspacing='0' style="width: 100%">	
 				<tr><td style="width: 30%"></td><td></td></tr>
@@ -96,8 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
 						<span class="emphasis small"><?php echo __($guid, 'Billing schedule name.') ?></span>
 					</td>
 					<td class="right">
-						<input name="search" id="search" maxlength=20 value="<?php if (isset($_GET['search'])) {
-    echo $_GET['search']; } ?>" type="text" class="standardWidth">
+						<input name="search" id="search" maxlength=20 value="<?php if (isset($_GET['search'])) { echo $_GET['search']; } ?>" type="text" class="standardWidth">
 					</td>
 				</tr>
 				<tr>
@@ -105,8 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
 						<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/billingSchedule_manage.php">
 						<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 						<?php
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/billingSchedule_manage.php'>".__($guid, 'Clear Search').'</a>';
-        ?>
+                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/billingSchedule_manage.php'>".__($guid, 'Clear Search').'</a>'; ?>
 						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 					</td>
 				</tr>
@@ -191,17 +188,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
                 }
                 ++$count;
 
-                    //Color rows based on start and end date
-                    if ($row['active'] != 'Y') {
-                        $rowNum = 'error';
-                    } else {
-                        if ($row['invoiceIssueDate'] < date('Y-m-d')) {
-                            $rowNum = 'warning';
-                        }
-                        if ($row['invoiceDueDate'] < date('Y-m-d')) {
-                            $rowNum = 'error';
-                        }
-                    }
+				//Color rows based on start and end date
+				if ($row['active'] != 'Y') {
+					$rowNum = 'error';
+				} else {
+					if ($row['invoiceIssueDate'] < date('Y-m-d')) {
+						$rowNum = 'warning';
+					}
+					if ($row['invoiceDueDate'] < date('Y-m-d')) {
+						$rowNum = 'error';
+					}
+				}
 
                 echo "<tr class=$rowNum>";
                 echo '<td>';

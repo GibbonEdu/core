@@ -56,8 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
-            ?>
+            $row = $result->fetch(); ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/expenseApprovers_manage_deleteProcess.php?gibbonFinanceExpenseApproverID=$gibbonFinanceExpenseApproverID" ?>">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>

@@ -117,11 +117,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
         }
         echo '<tr>';
         echo "<td colspan=6 class='right'>";
-        ?>
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						<?php
-                    echo '</td>';
+        	?>
+			<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
+			<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
+			<?php
+        echo '</td>';
         echo '</tr>';
         echo '</table>';
 

@@ -75,10 +75,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                                         $resultSelect->execute($dataSelect);
                                     } catch (PDOException $e) {
                                     }
-            while ($rowSelect = $resultSelect->fetch()) {
-                echo "<option value='gibbonSpaceID-".$rowSelect['gibbonSpaceID']."'>".$rowSelect['name'].'</option>';
-            }
-            ?>
+									while ($rowSelect = $resultSelect->fetch()) {
+										echo "<option value='gibbonSpaceID-".$rowSelect['gibbonSpaceID']."'>".$rowSelect['name'].'</option>';
+									}
+									?>
 								</optgroup>
 								<optgroup label='--<?php echo __($guid, 'Library') ?>--'/>" ;
 									<?php
@@ -89,10 +89,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                                         $resultSelect->execute($dataSelect);
                                     } catch (PDOException $e) {
                                     }
-            while ($rowSelect = $resultSelect->fetch()) {
-                echo "<option value='gibbonLibraryItemID-".$rowSelect['gibbonLibraryItemID']."'>".$rowSelect['name'].'</option>';
-            }
-            ?>
+									while ($rowSelect = $resultSelect->fetch()) {
+										echo "<option value='gibbonLibraryItemID-".$rowSelect['gibbonLibraryItemID']."'>".$rowSelect['name'].'</option>';
+									}
+									?>
 								</optgroup>
 							</select>
 							<script type="text/javascript">
@@ -300,8 +300,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                 } else {
                     $rowSelect = $resultSelect->fetch();
 
-                    $available = false;
-                    ?>
+                    $available = false; ?>
 					<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/spaceBooking_manage_addProcess.php' ?>">
 						<table class='smallIntBorder fullWidth' cellspacing='0'>	
 							<?php
@@ -313,30 +312,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                                         $available = isSpaceFree($guid, $connection2, $foreignKey, $foreignKeyID, $date, $timeStart, $timeEnd);
                                 if ($available == true) {
                                     ?>
-											<tr class='current'>
-												<td> 
-													<b><?php echo dateConvertBack($guid, $date) ?></b><br/>
-													<span class="emphasis small"><?php echo __($guid, 'Available') ?></span>
-												</td>
-												<td class="right">
-													<input checked type='checkbox' name='dates[]' value='<?php echo $date ?>'>
-												</td>
-											</tr>
-											<?php
-
-                                } else {
-                                    ?>
-											<tr class='error'>
-												<td> 
-													<b><?php echo dateConvertBack($guid, $date) ?></b><br/>
-													<span class="emphasis small"><?php echo __($guid, 'Not Available') ?></span>
-												</td>
-												<td class="right">
-													<input disabled type='checkbox' name='dates[]' value='<?php echo $date ?>'>
-												</td>
-											</tr>
-											<?php
-
+									<tr class='current'>
+										<td> 
+											<b><?php echo dateConvertBack($guid, $date) ?></b><br/>
+											<span class="emphasis small"><?php echo __($guid, 'Available') ?></span>
+										</td>
+										<td class="right">
+											<input checked type='checkbox' name='dates[]' value='<?php echo $date ?>'>
+										</td>
+									</tr>
+									<?php
+								} else {
+									?>
+									<tr class='error'>
+										<td> 
+											<b><?php echo dateConvertBack($guid, $date) ?></b><br/>
+											<span class="emphasis small"><?php echo __($guid, 'Not Available') ?></span>
+										</td>
+										<td class="right">
+											<input disabled type='checkbox' name='dates[]' value='<?php echo $date ?>'>
+										</td>
+									</tr>
+									<?php
                                 }
                                 ?>
 									</td>
@@ -448,7 +445,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                                 echo __($guid, 'Your request failed because your inputs were invalid.');
                                 echo '</div>';
                             }
-                    ?>
+                   			?>
 						
 							<tr>
 								<td colspan=2 class="right">

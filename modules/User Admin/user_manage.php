@@ -55,10 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
 					<span class="emphasis small"><?php echo __($guid, 'Preferred, surname, username, email, phone number, vehicle registration') ?></span>
 				</td>
 				<td class="right">
-					<input name="search" id="search" maxlength=20 value="<?php if (isset($_GET['search'])) {
-    echo $_GET['search'];
-}
-    ?>" type="text" class="standardWidth">
+					<input name="search" id="search" maxlength=20 value="<?php if (isset($_GET['search'])) { echo $_GET['search']; } ?>" type="text" class="standardWidth">
 				</td>
 			</tr>
 			<tr>
@@ -189,14 +186,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
             foreach ($families as $family) {
                 if ($family[1] == $row['gibbonPersonID']) {
                     if ($family[2] == 'child') { //Link child to self
-                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$family[1]."&search=&allStudents=on&sort=surname, preferredName&subpage=Family'>".$family[3].'</a><br/>';
+                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$family[1]."&search=&allStudents=on&sort=surname, preferredName&subpage=Family'>".$family[3].'</a><br/>';
                     } else { //Link adult to eldest child in family
-                                    foreach ($families as $family2) {
-                                        if ($family[0] == $family2[0] and $family2[2] == 'child' and $childCount == 0) {
-                                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$family2[1]."&search=&allStudents=on&sort=surname, preferredName&subpage=Family'>".$family[3].'</a><br/>';
-                                            ++$childCount;
-                                        }
-                                    }
+						foreach ($families as $family2) {
+							if ($family[0] == $family2[0] and $family2[2] == 'child' and $childCount == 0) {
+								echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$family2[1]."&search=&allStudents=on&sort=surname, preferredName&subpage=Family'>".$family[3].'</a><br/>';
+								++$childCount;
+							}
+						}
                     }
                 }
             }

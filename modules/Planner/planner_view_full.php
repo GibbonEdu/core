@@ -536,84 +536,83 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             if ($resultBlocks->rowCount() > 0) {
                                 if ($row['role'] == 'Teacher' and $teacher == true) {
                                     ?>
-												<script type="text/javascript">
-													$(document).ready(function(){
-														$("#smartEdit").hide() ;
+									<script type="text/javascript">
+										$(document).ready(function(){
+											$("#smartEdit").hide() ;
 
-														$('#viewBlocks').click(function() {
-															$("#smartView").show() ;
-															$("#viewBlocks").addClass("active") ;
-															$("#smartEdit").hide() ;
-															$("#editBlocks").removeClass("active") ;
-														}) ;
-														$('#editBlocks').click(function() {
-															$("#smartView").hide() ;
-															$("#viewBlocks").removeClass("active") ;
-															$("#smartEdit").show() ;
-															$("#editBlocks").addClass("active") ;
-														}) ;
-													}) ;
-												</script>
-												<?php
-                                                echo "<div id='smartEdit'>";
-                                    echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/planner_view_full_smartProcess.php'>";
-                                    ?>
-														<style>
-															#sortable { list-style-type: none; margin: 0; padding: 0; width: 100%; }
-															#sortable div.ui-state-default { margin: 0 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 58px; }
-															div.ui-state-default_dud { margin: 5px 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 58px; }
-															html>body #sortable li { min-height: 58px; line-height: 1.2em; }
-															#sortable .ui-state-highlight { margin-bottom: 5px; min-height: 58px; line-height: 1.2em; width: 100%; }
-														</style>
-														<script type="text/javascript">
-															$(function() {
-																$( "#sortable" ).sortable({
-																	placeholder: "ui-state-highlight",
-																	axis: 'y'
-																});
-															});
-														</script>
+											$('#viewBlocks').click(function() {
+												$("#smartView").show() ;
+												$("#viewBlocks").addClass("active") ;
+												$("#smartEdit").hide() ;
+												$("#editBlocks").removeClass("active") ;
+											}) ;
+											$('#editBlocks').click(function() {
+												$("#smartView").hide() ;
+												$("#viewBlocks").removeClass("active") ;
+												$("#smartEdit").show() ;
+												$("#editBlocks").addClass("active") ;
+											}) ;
+										}) ;
+									</script>
+									<?php
+									echo "<div id='smartEdit'>";
+                                    echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/planner_view_full_smartProcess.php'>"; ?>
+										<style>
+											#sortable { list-style-type: none; margin: 0; padding: 0; width: 100%; }
+											#sortable div.ui-state-default { margin: 0 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 58px; }
+											div.ui-state-default_dud { margin: 5px 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 58px; }
+											html>body #sortable li { min-height: 58px; line-height: 1.2em; }
+											#sortable .ui-state-highlight { margin-bottom: 5px; min-height: 58px; line-height: 1.2em; width: 100%; }
+										</style>
+										<script type="text/javascript">
+											$(function() {
+												$( "#sortable" ).sortable({
+													placeholder: "ui-state-highlight",
+													axis: 'y'
+												});
+											});
+										</script>
 
-														<div class="sortable" id="sortable" style='width: 100%; padding: 5px 0px 0px 0px; border-top: 1px dotted #666; border-bottom: 1px dotted #666'>
-															<?php
-                                                            //Get outcomes
-                                                            try {
-                                                                $dataOutcomes = array('gibbonUnitID' => $gibbonUnitID);
-                                                                $sqlOutcomes = "SELECT gibbonOutcome.gibbonOutcomeID, gibbonOutcome.name, gibbonOutcome.category, scope, gibbonDepartment.name AS department FROM gibbonUnitOutcome JOIN gibbonOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) LEFT JOIN gibbonDepartment ON (gibbonOutcome.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonUnitID=:gibbonUnitID AND active='Y' ORDER BY sequenceNumber";
-                                                                $resultOutcomes = $connection2->prepare($sqlOutcomes);
-                                                                $resultOutcomes->execute($dataOutcomes);
-                                                            } catch (PDOException $e) {
-                                                                echo "<div class='error'>".$e->getMessage().'</div>';
-                                                            }
-                                    $unitOutcomes = $resultOutcomes->fetchall();
+										<div class="sortable" id="sortable" style='width: 100%; padding: 5px 0px 0px 0px; border-top: 1px dotted #666; border-bottom: 1px dotted #666'>
+											<?php
+											//Get outcomes
+											try {
+												$dataOutcomes = array('gibbonUnitID' => $gibbonUnitID);
+												$sqlOutcomes = "SELECT gibbonOutcome.gibbonOutcomeID, gibbonOutcome.name, gibbonOutcome.category, scope, gibbonDepartment.name AS department FROM gibbonUnitOutcome JOIN gibbonOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) LEFT JOIN gibbonDepartment ON (gibbonOutcome.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonUnitID=:gibbonUnitID AND active='Y' ORDER BY sequenceNumber";
+												$resultOutcomes = $connection2->prepare($sqlOutcomes);
+												$resultOutcomes->execute($dataOutcomes);
+											} catch (PDOException $e) {
+												echo "<div class='error'>".$e->getMessage().'</div>';
+											}
+											$unitOutcomes = $resultOutcomes->fetchall();
 
-                                    $i = 1;
-                                    $minSeq = 0;
-                                    while ($rowBlocks = $resultBlocks->fetch()) {
-                                        if ($i == 1) {
-                                            $minSeq = $rowBlocks['sequenceNumber'];
-                                        }
-                                        if ($hooked == false) {
-                                            makeBlock($guid, $connection2, $i, 'plannerEdit', $rowBlocks['title'], $rowBlocks['type'], $rowBlocks['length'], $rowBlocks['contents'], $rowBlocks['complete'], '', $rowBlocks['gibbonUnitClassBlockID'], $rowBlocks['teachersNotes'], true, $unitOutcomes, $rowBlocks['gibbonOutcomeIDList']);
-                                        } else {
-                                            makeBlock($guid, $connection2, $i, 'plannerEdit', $rowBlocks[$hookOptions['classSmartBlockTitleField']], $rowBlocks[$hookOptions['classSmartBlockTypeField']], $rowBlocks[$hookOptions['classSmartBlockLengthField']], $rowBlocks[$hookOptions['classSmartBlockContentsField']], $rowBlocks[$hookOptions['classSmartBlockCompleteField']], '', $rowBlocks[$hookOptions['classSmartBlockIDField']], $rowBlocks[$hookOptions['classSmartBlockTeachersNotesField']]);
-                                        }
-                                        ++$i;
-                                    }
-                                    ?>
-														</div>
-														<?php
-                                                        echo "<div style='text-align: right; margin-top: 3px'>";
-                                    echo "<input type='hidden' name='minSeq' value='$minSeq'>";
-                                    echo "<input type='hidden' name='mode' value='edit'>";
-                                    echo "<input type='hidden' name='params' value='$params'>";
-                                    echo "<input type='hidden' name='gibbonPlannerEntryID' value='$gibbonPlannerEntryID'>";
-                                    echo "<input type='hidden' name='address' value='".$_SESSION[$guid]['address']."'>";
-                                    echo "<input type='submit' value='Submit'>";
-                                    echo '</div>';
-                                    echo '</form>';
-                                    echo '</div>';
-                                }
+											$i = 1;
+											$minSeq = 0;
+											while ($rowBlocks = $resultBlocks->fetch()) {
+												if ($i == 1) {
+													$minSeq = $rowBlocks['sequenceNumber'];
+												}
+												if ($hooked == false) {
+													makeBlock($guid, $connection2, $i, 'plannerEdit', $rowBlocks['title'], $rowBlocks['type'], $rowBlocks['length'], $rowBlocks['contents'], $rowBlocks['complete'], '', $rowBlocks['gibbonUnitClassBlockID'], $rowBlocks['teachersNotes'], true, $unitOutcomes, $rowBlocks['gibbonOutcomeIDList']);
+												} else {
+													makeBlock($guid, $connection2, $i, 'plannerEdit', $rowBlocks[$hookOptions['classSmartBlockTitleField']], $rowBlocks[$hookOptions['classSmartBlockTypeField']], $rowBlocks[$hookOptions['classSmartBlockLengthField']], $rowBlocks[$hookOptions['classSmartBlockContentsField']], $rowBlocks[$hookOptions['classSmartBlockCompleteField']], '', $rowBlocks[$hookOptions['classSmartBlockIDField']], $rowBlocks[$hookOptions['classSmartBlockTeachersNotesField']]);
+												}
+												++$i;
+											}
+											?>
+										</div>
+										<?php
+										echo "<div style='text-align: right; margin-top: 3px'>";
+										echo "<input type='hidden' name='minSeq' value='$minSeq'>";
+										echo "<input type='hidden' name='mode' value='edit'>";
+										echo "<input type='hidden' name='params' value='$params'>";
+										echo "<input type='hidden' name='gibbonPlannerEntryID' value='$gibbonPlannerEntryID'>";
+										echo "<input type='hidden' name='address' value='".$_SESSION[$guid]['address']."'>";
+										echo "<input type='submit' value='Submit'>";
+										echo '</div>';
+									echo '</form>';
+									echo '</div>';
+								}
                                 echo "<div id='smartView' class='hiddenReveal'>";
                                 echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/planner_view_full_smartProcess.php'>";
                                 $blockCount = 0;
@@ -731,93 +730,92 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                         echo '<i>Submission opens on '.dateConvertBack($guid, $row['homeworkSubmissionDateOpen']).'</i>';
                                     } else {
                                         //Check previous submissions!
-                                                    try {
-                                                        $dataVersion = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPlannerEntryID' => $row['gibbonPlannerEntryID']);
-                                                        $sqlVersion = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPersonID=:gibbonPersonID AND gibbonPlannerEntryID=:gibbonPlannerEntryID ORDER BY count';
-                                                        $resultVersion = $connection2->prepare($sqlVersion);
-                                                        $resultVersion->execute($dataVersion);
-                                                    } catch (PDOException $e) {
-                                                        echo "<div class='error'>".$e->getMessage().'</div>';
-                                                    }
+										try {
+											$dataVersion = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPlannerEntryID' => $row['gibbonPlannerEntryID']);
+											$sqlVersion = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPersonID=:gibbonPersonID AND gibbonPlannerEntryID=:gibbonPlannerEntryID ORDER BY count';
+											$resultVersion = $connection2->prepare($sqlVersion);
+											$resultVersion->execute($dataVersion);
+										} catch (PDOException $e) {
+											echo "<div class='error'>".$e->getMessage().'</div>';
+										}
 
                                         $latestVersion = '';
                                         $count = 0;
                                         $rowNum = 'odd';
                                         if ($resultVersion->rowCount() > 0) {
                                             ?>
-														<table cellspacing='0' style="width: 100%">
-															<tr class='head'>
-																<th>
-																	<?php echo __($guid, 'Count') ?><br/>
-																</th>
-																<th>
-																	<?php echo __($guid, 'Version') ?><br/>
-																</th>
-																<th>
-																	<?php echo __($guid, 'Status') ?><br/>
-																</th>
-																<th>
-																	<?php echo __($guid, 'Date/Time') ?><br/>
-																</th>
-																<th>
-																	<?php echo __($guid, 'View') ?><br/>
-																</td>
-																<?php
-                                                                if (date('Y-m-d H:i:s') < $row['homeworkDueDateTime']) {
-                                                                    echo '<th>';
-                                                                    echo __($guid, 'Actions').'<br/>';
-                                                                    echo '</td>';
-                                                                }
-                                            ?>
-															</tr>
+											<table cellspacing='0' style="width: 100%">
+												<tr class='head'>
+													<th>
+														<?php echo __($guid, 'Count') ?><br/>
+													</th>
+													<th>
+														<?php echo __($guid, 'Version') ?><br/>
+													</th>
+													<th>
+														<?php echo __($guid, 'Status') ?><br/>
+													</th>
+													<th>
+														<?php echo __($guid, 'Date/Time') ?><br/>
+													</th>
+													<th>
+														<?php echo __($guid, 'View') ?><br/>
+													</td>
+													<?php
+													if (date('Y-m-d H:i:s') < $row['homeworkDueDateTime']) {
+														echo '<th>';
+														echo __($guid, 'Actions').'<br/>';
+														echo '</td>';
+													}
+												?>
+												</tr>
+												<?php
+												while ($rowVersion = $resultVersion->fetch()) {
+													if ($count % 2 == 0) {
+														$rowNum = 'even';
+													} else {
+														$rowNum = 'odd';
+													}
+													++$count;
+
+													echo "<tr class=$rowNum>";
+													?>
+
+														<td>
+															<?php echo $rowVersion['count'] ?><br/>
+														</td>
+														<td>
+															<?php echo $rowVersion['version'] ?><br/>
+														</td>
+														<td>
+															<?php echo $rowVersion['status'] ?><br/>
+														</td>
+														<td>
+															<?php echo substr($rowVersion['timestamp'], 11, 5).' '.dateConvertBack($guid, substr($rowVersion['timestamp'], 0, 10)) ?><br/>
+														</td>
+														<td style='max-width: 180px; word-wrap: break-word;'>
 															<?php
-                                                            while ($rowVersion = $resultVersion->fetch()) {
-                                                                if ($count % 2 == 0) {
-                                                                    $rowNum = 'even';
-                                                                } else {
-                                                                    $rowNum = 'odd';
-                                                                }
-                                                                ++$count;
-
-                                                                echo "<tr class=$rowNum>";
-                                                                ?>
-
-																	<td>
-																		<?php echo $rowVersion['count'] ?><br/>
-																	</td>
-																	<td>
-																		<?php echo $rowVersion['version'] ?><br/>
-																	</td>
-																	<td>
-																		<?php echo $rowVersion['status'] ?><br/>
-																	</td>
-																	<td>
-																		<?php echo substr($rowVersion['timestamp'], 11, 5).' '.dateConvertBack($guid, substr($rowVersion['timestamp'], 0, 10)) ?><br/>
-																	</td>
-																	<td style='max-width: 180px; word-wrap: break-word;'>
-																		<?php
-                                                                        if ($rowVersion['type'] == 'File') {
-                                                                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowVersion['location']."'>".$rowVersion['location'].'</a>';
-                                                                        } else {
-                                                                            echo "<a href='".$rowVersion['location']."'>".$rowVersion['location'].'</a>';
-                                                                        }
-                                                                ?>
-																	</td>
-																	<?php
-                                                                    if (date('Y-m-d H:i:s') < $row['homeworkDueDateTime']) {
-                                                                        echo '<td>';
-                                                                        echo "<a onclick='return confirm(\"".__($guid, 'Are you sure you wish to delete this record?')."\")' href='".$_SESSION[$guid]['absoluteURL']."/modules/Planner/planner_view_full_submit_studentDeleteProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&search=$gibbonPersonID&gibbonPlannerEntryHomeworkID=".$rowVersion['gibbonPlannerEntryHomeworkID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a><br/>";
-                                                                        echo '</td>';
-                                                                    }
-                                                                ?>
-																</tr>
-																<?php
-                                                                $latestVersion = $rowVersion['version'];
-                                                            }
-                                            ?>
-														</table>
+															if ($rowVersion['type'] == 'File') {
+																echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowVersion['location']."'>".$rowVersion['location'].'</a>';
+															} else {
+																echo "<a href='".$rowVersion['location']."'>".$rowVersion['location'].'</a>';
+															}
+														?>
+														</td>
 														<?php
-
+														if (date('Y-m-d H:i:s') < $row['homeworkDueDateTime']) {
+															echo '<td>';
+															echo "<a onclick='return confirm(\"".__($guid, 'Are you sure you wish to delete this record?')."\")' href='".$_SESSION[$guid]['absoluteURL']."/modules/Planner/planner_view_full_submit_studentDeleteProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&search=$gibbonPersonID&gibbonPlannerEntryHomeworkID=".$rowVersion['gibbonPlannerEntryHomeworkID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a><br/>";
+															echo '</td>';
+														}
+													?>
+													</tr>
+													<?php
+													$latestVersion = $rowVersion['version'];
+												}
+											?>
+											</table>
+											<?php
                                         }
 
                                         if ($latestVersion != 'Final') {
@@ -828,137 +826,136 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                             }
 
                                             ?>
-														<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/planner_view_full_submitProcess.php?address='.$_GET['q'].$params.'&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID'] ?>" enctype="multipart/form-data">
-															<table class='smallIntBorder fullWidth' cellspacing='0'>
-																<tr>
-																	<td>
-																		<b><?php echo __($guid, 'Type') ?> *</b><br/>
-																	</td>
-																	<td class="right">
-																		<?php
-                                                                        if ($row['homeworkSubmissionType'] == 'Link') {
-                                                                            echo "<input readonly id='type' name='type' type='text' value='Link' style='width: 302px'>";
-                                                                        } elseif ($row['homeworkSubmissionType'] == 'File') {
-                                                                            echo "<input readonly id='type' name='type' type='text' value='File' style='width: 302px'>";
-                                                                        } else {
-                                                                            ?>
-																			<input checked type="radio" id="type" name="type" class="type" value="Link" /> Link
-																			<input type="radio" id="type" name="type" class="type" value="File" /> File
-																			<?php
+											<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/planner_view_full_submitProcess.php?address='.$_GET['q'].$params.'&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID'] ?>" enctype="multipart/form-data">
+												<table class='smallIntBorder fullWidth' cellspacing='0'>
+													<tr>
+														<td>
+															<b><?php echo __($guid, 'Type') ?> *</b><br/>
+														</td>
+														<td class="right">
+															<?php
+															if ($row['homeworkSubmissionType'] == 'Link') {
+																echo "<input readonly id='type' name='type' type='text' value='Link' style='width: 302px'>";
+															} elseif ($row['homeworkSubmissionType'] == 'File') {
+																echo "<input readonly id='type' name='type' type='text' value='File' style='width: 302px'>";
+															} else {
+																?>
+																<input checked type="radio" id="type" name="type" class="type" value="Link" /> Link
+																<input type="radio" id="type" name="type" class="type" value="File" /> File
+																<?php
 
-                                                                        }
-                                            ?>
-																	</td>
-																</tr>
-																<tr>
-																	<td>
-																		<b><?php echo __($guid, 'Version') ?> *</b><br/>
-																	</td>
-																	<td class="right">
-																		<?php
-                                                                        echo "<select style='float: none; width: 302px' name='version'>";
-                                            if ($row['homeworkSubmissionDrafts'] > 0 and $status != 'Late' and $resultVersion->rowCount() < $row['homeworkSubmissionDrafts']) {
-                                                echo "<option value='Draft'>".__($guid, 'Draft').'</option>';
-                                            }
-                                            echo "<option value='Final'>".__($guid, 'Final').'</option>';
-                                            echo '</select>';
-                                            ?>
-																	</td>
-																</tr>
+															}
+                                            				?>
+														</td>
+													</tr>
+													<tr>
+														<td>
+															<b><?php echo __($guid, 'Version') ?> *</b><br/>
+														</td>
+														<td class="right">
+															<?php
+															echo "<select style='float: none; width: 302px' name='version'>";
+															if ($row['homeworkSubmissionDrafts'] > 0 and $status != 'Late' and $resultVersion->rowCount() < $row['homeworkSubmissionDrafts']) {
+																echo "<option value='Draft'>".__($guid, 'Draft').'</option>';
+															}
+															echo "<option value='Final'>".__($guid, 'Final').'</option>';
+															echo '</select>';
+															?>
+														</td>
+													</tr>
 
-																<script type="text/javascript">
-																	/* Subbmission type control */
-																	$(document).ready(function(){
-																		<?php
-                                                                        if ($row['homeworkSubmissionType'] == 'Link') {
-                                                                            ?>
-																			$("#fileRow").css("display","none");
-																			<?php
+													<script type="text/javascript">
+														/* Subbmission type control */
+														$(document).ready(function(){
+															<?php
+															if ($row['homeworkSubmissionType'] == 'Link') {
+																?>
+																$("#fileRow").css("display","none");
+																<?php
 
-                                                                        } elseif ($row['homeworkSubmissionType'] == 'File') {
-                                                                            ?>
-																			$("#linkRow").css("display","none");
-																			<?php
+															} elseif ($row['homeworkSubmissionType'] == 'File') {
+																?>
+																$("#linkRow").css("display","none");
+																<?php
 
-                                                                        } else {
-                                                                            ?>
-																			$("#fileRow").css("display","none");
-																			$("#linkRow").slideDown("fast", $("#linkRow").css("display","table-row"));
-																			<?php
+															} else {
+																?>
+																$("#fileRow").css("display","none");
+																$("#linkRow").slideDown("fast", $("#linkRow").css("display","table-row"));
+																<?php
 
-                                                                        }
-                                            ?>
+															}
+                                            			?>
 
-																		$(".type").click(function(){
-																			if ($('input[name=type]:checked').val()=="Link" ) {
-																				$("#fileRow").css("display","none");
-																				$("#linkRow").slideDown("fast", $("#linkRow").css("display","table-row"));
-																			} else {
-																				$("#linkRow").css("display","none");
-																				$("#fileRow").slideDown("fast", $("#fileRow").css("display","table-row"));
-																			}
-																		 });
-																	});
-																</script>
+														$(".type").click(function(){
+															if ($('input[name=type]:checked').val()=="Link" ) {
+																$("#fileRow").css("display","none");
+																$("#linkRow").slideDown("fast", $("#linkRow").css("display","table-row"));
+															} else {
+																$("#linkRow").css("display","none");
+																$("#fileRow").slideDown("fast", $("#fileRow").css("display","table-row"));
+															}
+														 });
+													});
+												</script>
 
-																<tr id="fileRow">
-																	<td>
-																		<b><?php echo __($guid, 'Submit File') ?> *</b><br/>
-																	</td>
-																	<td class="right">
-																		<input type="file" name="file" id="file"><br/><br/>
-																		<?php
-                                                                        echo getMaxUpload($guid);
-
-                                                                        //Get list of acceptable file extensions
-                                                                        try {
-                                                                            $dataExt = array();
-                                                                            $sqlExt = 'SELECT * FROM gibbonFileExtension';
-                                                                            $resultExt = $connection2->prepare($sqlExt);
-                                                                            $resultExt->execute($dataExt);
-                                                                        } catch (PDOException $e) {
-                                                                        }
-                                            $ext = '';
-                                            while ($rowExt = $resultExt->fetch()) {
-                                                $ext = $ext."'.".$rowExt['extension']."',";
-                                            }
-                                            ?>
-
-																		<script type="text/javascript">
-																			var file=new LiveValidation('file');
-																			file.add( Validate.Inclusion, { within: [<?php echo $ext;
-                                            ?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
-																		</script>
-																	</td>
-																</tr>
-																<tr id="linkRow">
-																	<td>
-																		<b><?php echo __($guid, 'Submit Link') ?> *</b><br/>
-																	</td>
-																	<td class="right">
-																		<input name="link" id="link" maxlength=255 value="" type="text" class="standardWidth">
-																		<script type="text/javascript">
-																			var link=new LiveValidation('link');
-																			link.add( Validate.Inclusion, { within: ['http://', 'https://'], failureMessage: "Address must start with http:// or https://", partialMatch: true } );
-																		</script>
-																	</td>
-																</tr>
-																<tr>
-																	<td class="right" colspan=2>
-																		<?php
-                                                                        echo "<input type='hidden' name='lesson' value='".$row['name']."'>";
-                                            echo "<input type='hidden' name='count' value='$count'>";
-                                            echo "<input type='hidden' name='status' value='$status'>";
-                                            echo "<input type='hidden' name='gibbonPlannerEntryID' value='$gibbonPlannerEntryID'>";
-                                            echo "<input type='hidden' name='currentDate' value='".$row['date']."'>";
-                                            ?>
-																		<input type="submit" value="<?php echo __($guid, 'Submit');
-                                            ?>">
-																	</td>
-																</tr>
-															</table>
-														</form>
+												<tr id="fileRow">
+													<td>
+														<b><?php echo __($guid, 'Submit File') ?> *</b><br/>
+													</td>
+													<td class="right">
+														<input type="file" name="file" id="file"><br/><br/>
 														<?php
+														echo getMaxUpload($guid);
+
+														//Get list of acceptable file extensions
+														try {
+															$dataExt = array();
+															$sqlExt = 'SELECT * FROM gibbonFileExtension';
+															$resultExt = $connection2->prepare($sqlExt);
+															$resultExt->execute($dataExt);
+														} catch (PDOException $e) {
+														}
+														$ext = '';
+														while ($rowExt = $resultExt->fetch()) {
+															$ext = $ext."'.".$rowExt['extension']."',";
+														}
+														?>
+
+														<script type="text/javascript">
+															var file=new LiveValidation('file');
+															file.add( Validate.Inclusion, { within: [<?php echo $ext;?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+														</script>
+													</td>
+												</tr>
+												<tr id="linkRow">
+													<td>
+														<b><?php echo __($guid, 'Submit Link') ?> *</b><br/>
+													</td>
+													<td class="right">
+														<input name="link" id="link" maxlength=255 value="" type="text" class="standardWidth">
+														<script type="text/javascript">
+															var link=new LiveValidation('link');
+															link.add( Validate.Inclusion, { within: ['http://', 'https://'], failureMessage: "Address must start with http:// or https://", partialMatch: true } );
+														</script>
+													</td>
+												</tr>
+												<tr>
+													<td class="right" colspan=2>
+														<?php
+														echo "<input type='hidden' name='lesson' value='".$row['name']."'>";
+														echo "<input type='hidden' name='count' value='$count'>";
+														echo "<input type='hidden' name='status' value='$status'>";
+														echo "<input type='hidden' name='gibbonPlannerEntryID' value='$gibbonPlannerEntryID'>";
+														echo "<input type='hidden' name='currentDate' value='".$row['date']."'>";
+														?>
+														<input type="submit" value="<?php echo __($guid, 'Submit');
+                                           				?>">
+													</td>
+												</tr>
+											</table>
+										</form>
+										<?php
 
                                         }
                                     }
@@ -969,14 +966,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                         echo '<i>Submission opens on '.dateConvertBack($guid, $row['homeworkSubmissionDateOpen']).'</i>';
                                     } else {
                                         //Check previous submissions!
-                                                    try {
-                                                        $dataVersion = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPlannerEntryID' => $row['gibbonPlannerEntryID']);
-                                                        $sqlVersion = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPersonID=:gibbonPersonID AND gibbonPlannerEntryID=:gibbonPlannerEntryID';
-                                                        $resultVersion = $connection2->prepare($sqlVersion);
-                                                        $resultVersion->execute($dataVersion);
-                                                    } catch (PDOException $e) {
-                                                        echo "<div class='error'>".$e->getMessage().'</div>';
-                                                    }
+										try {
+											$dataVersion = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPlannerEntryID' => $row['gibbonPlannerEntryID']);
+											$sqlVersion = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPersonID=:gibbonPersonID AND gibbonPlannerEntryID=:gibbonPlannerEntryID';
+											$resultVersion = $connection2->prepare($sqlVersion);
+											$resultVersion->execute($dataVersion);
+										} catch (PDOException $e) {
+											echo "<div class='error'>".$e->getMessage().'</div>';
+										}
                                         $latestVersion = '';
                                         $count = 0;
                                         $rowNum = 'odd';
@@ -986,64 +983,63 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                             }
                                         } else {
                                             ?>
-														<table cellspacing='0' style="width: 100%">
-															<tr class='head'>
-																<th>
-																	<?php echo __($guid, 'Count') ?><br/>
-																</th>
-																<th>
-																	<?php echo __($guid, 'Version') ?><br/>
-																</th>
-																<th>
-																	<?php echo __($guid, 'Status') ?><br/>
-																</th>
-																<th>
-																	<?php echo __($guid, 'Date/Time') ?><br/>
-																</th>
-																<th>
-																	<?php echo __($guid, 'View') ?><br/>
-																</td>
-															</tr>
+											<table cellspacing='0' style="width: 100%">
+												<tr class='head'>
+													<th>
+														<?php echo __($guid, 'Count') ?><br/>
+													</th>
+													<th>
+														<?php echo __($guid, 'Version') ?><br/>
+													</th>
+													<th>
+														<?php echo __($guid, 'Status') ?><br/>
+													</th>
+													<th>
+														<?php echo __($guid, 'Date/Time') ?><br/>
+													</th>
+													<th>
+														<?php echo __($guid, 'View') ?><br/>
+													</td>
+												</tr>
+												<?php
+												while ($rowVersion = $resultVersion->fetch()) {
+													if ($count % 2 == 0) {
+														$rowNum = 'even';
+													} else {
+														$rowNum = 'odd';
+													}
+													++$count;
+
+													echo "<tr class=$rowNum>";
+													?>
+														<td>
+															<?php echo $rowVersion['count'] ?><br/>
+														</td>
+														<td>
+															<?php echo $rowVersion['version'] ?><br/>
+														</td>
+														<td>
+															<?php echo $rowVersion['status'] ?><br/>
+														</td>
+														<td>
+															<?php echo substr($rowVersion['timestamp'], 11, 5).' '.dateConvertBack($guid, substr($rowVersion['timestamp'], 0, 10)) ?><br/>
+														</td>
+														<td>
 															<?php
-                                                            while ($rowVersion = $resultVersion->fetch()) {
-                                                                if ($count % 2 == 0) {
-                                                                    $rowNum = 'even';
-                                                                } else {
-                                                                    $rowNum = 'odd';
-                                                                }
-                                                                ++$count;
-
-                                                                echo "<tr class=$rowNum>";
-                                                                ?>
-																	<td>
-																		<?php echo $rowVersion['count'] ?><br/>
-																	</td>
-																	<td>
-																		<?php echo $rowVersion['version'] ?><br/>
-																	</td>
-																	<td>
-																		<?php echo $rowVersion['status'] ?><br/>
-																	</td>
-																	<td>
-																		<?php echo substr($rowVersion['timestamp'], 11, 5).' '.dateConvertBack($guid, substr($rowVersion['timestamp'], 0, 10)) ?><br/>
-																	</td>
-																	<td>
-																		<?php
-                                                                        if ($rowVersion['type'] == 'File') {
-                                                                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowVersion['location']."'>".$rowVersion['location'].'</a>';
-                                                                        } else {
-                                                                            echo "<a href='".$rowVersion['location']."'>".$rowVersion['location'].'</a>';
-                                                                        }
-                                                                ?>
-																	</td>
-																</tr>
-																<?php
-                                                                $latestVersion = $rowVersion['version'];
-                                                            }
-                                            ?>
-														</table>
-														<?php
-
+															if ($rowVersion['type'] == 'File') {
+																echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowVersion['location']."'>".$rowVersion['location'].'</a>';
+															} else {
+																echo "<a href='".$rowVersion['location']."'>".$rowVersion['location'].'</a>';
+															}
+													?>
+														</td>
+													</tr>
+													<?php
+													$latestVersion = $rowVersion['version'];
+												}
+												?>
+											</table>
+											<?php
                                         }
                                     }
                                 } elseif ($row['role'] == 'Teacher') {
@@ -1052,148 +1048,147 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                                     if ($teacher == true) {
                                         //List submissions
-                                                    try {
-                                                        $dataClass = array('gibbonCourseClassID' => $row['gibbonCourseClassID']);
-                                                        $sqlClass = "SELECT * FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND role='Student' ORDER BY role DESC, surname, preferredName";
-                                                        $resultClass = $connection2->prepare($sqlClass);
-                                                        $resultClass->execute($dataClass);
-                                                    } catch (PDOException $e) {
-                                                        echo "<div class='error'>".$e->getMessage().'</div>';
-                                                    }
+										try {
+											$dataClass = array('gibbonCourseClassID' => $row['gibbonCourseClassID']);
+											$sqlClass = "SELECT * FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND role='Student' ORDER BY role DESC, surname, preferredName";
+											$resultClass = $connection2->prepare($sqlClass);
+											$resultClass->execute($dataClass);
+										} catch (PDOException $e) {
+											echo "<div class='error'>".$e->getMessage().'</div>';
+										}
                                         $count = 0;
                                         $rowNum = 'odd';
                                         if ($resultClass->rowCount() > 0) {
                                             ?>
-														<table cellspacing='0' style="width: 100%">
-															<tr class='head'>
-																<th>
-																	<?php echo __($guid, 'Student') ?><br/>
-																</th>
-																<th>
-																	<?php echo __($guid, 'Status') ?><br/>
-																</th>
-																<th>
-																	<?php echo __($guid, 'Version') ?><br/>
-																</th>
-																<th>
-																	<?php echo __($guid, 'Date/Time') ?><br/>
-																</th>
-																<th>
-																	<?php echo __($guid, 'View') ?><br/>
-																</th>
-																<th>
-																	<?php echo __($guid, 'Action') ?><br/>
-																</th>
-															</tr>
-															<?php
-                                                            while ($rowClass = $resultClass->fetch()) {
-                                                                if ($count % 2 == 0) {
-                                                                    $rowNum = 'even';
-                                                                } else {
-                                                                    $rowNum = 'odd';
-                                                                }
-                                                                ++$count;
+											<table cellspacing='0' style="width: 100%">
+												<tr class='head'>
+													<th>
+														<?php echo __($guid, 'Student') ?><br/>
+													</th>
+													<th>
+														<?php echo __($guid, 'Status') ?><br/>
+													</th>
+													<th>
+														<?php echo __($guid, 'Version') ?><br/>
+													</th>
+													<th>
+														<?php echo __($guid, 'Date/Time') ?><br/>
+													</th>
+													<th>
+														<?php echo __($guid, 'View') ?><br/>
+													</th>
+													<th>
+														<?php echo __($guid, 'Action') ?><br/>
+													</th>
+												</tr>
+												<?php
+												while ($rowClass = $resultClass->fetch()) {
+													if ($count % 2 == 0) {
+														$rowNum = 'even';
+													} else {
+														$rowNum = 'odd';
+													}
+													++$count;
 
-                                                                echo "<tr class=$rowNum>";
-                                                                ?>
+													echo "<tr class=$rowNum>";
+													?>
 
-																	<td>
-																		<?php echo "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowClass['gibbonPersonID']."'>".formatName('', $rowClass['preferredName'], $rowClass['surname'], 'Student', true).'</a>' ?><br/>
-																	</td>
+														<td>
+															<?php echo "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowClass['gibbonPersonID']."'>".formatName('', $rowClass['preferredName'], $rowClass['surname'], 'Student', true).'</a>' ?><br/>
+														</td>
 
-																	<?php
-
-                                                                    try {
-                                                                        $dataVersion = array('gibbonPlannerEntryID' => $row['gibbonPlannerEntryID'], 'gibbonPersonID' => $rowClass['gibbonPersonID']);
-                                                                        $sqlVersion = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC';
-                                                                        $resultVersion = $connection2->prepare($sqlVersion);
-                                                                        $resultVersion->execute($dataVersion);
-                                                                    } catch (PDOException $e) {
-                                                                        echo "<div class='error'>".$e->getMessage().'</div>';
-                                                                    }
-                                                                if ($resultVersion->rowCount() < 1) {
-                                                                    ?>
-																		<td colspan=4>
-																			<?php
-                                                                            //Before deadline
-                                                                            if (date('Y-m-d H:i:s') < $row['homeworkDueDateTime']) {
-                                                                                echo 'Pending';
-                                                                            }
-                                                                            //After
-                                                                            else {
-                                                                                if ($rowClass['dateStart'] > $row['date']) {
-                                                                                    echo "<span title='".__($guid, 'Student joined school after lesson was taught.')."' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>".__($guid, 'NA').'</span>';
-                                                                                } else {
-                                                                                    if ($row['homeworkSubmissionRequired'] == 'Compulsory') {
-                                                                                        echo "<span style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'>".__($guid, 'Incomplete').'</span>';
-                                                                                    } else {
-                                                                                        echo __($guid, 'Not submitted online');
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                    ?>
-																		</td>
-																		<td>
-																			<?php
-                                                                            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_view_full_submit_edit.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&search=".$gibbonPersonID.'&gibbonPersonID='.$rowClass['gibbonPersonID']."&submission=false'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                                                                    ?>
-																		</td>
-																		<?php
-
-                                                                } else {
-                                                                    $rowVersion = $resultVersion->fetch();
-                                                                    ?>
-																		<td>
-																			<?php
-                                                                            if ($rowVersion['status'] == 'On Time' or $rowVersion['status'] == 'Exemption') {
-                                                                                echo $rowVersion['status'];
-                                                                            } else {
-                                                                                echo "<span style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'>".$rowVersion['status'].'</span>';
-                                                                            }
-                                                                    ?>
-																		</td>
-																		<td>
-																			<?php
-                                                                            echo $rowVersion['version'];
-                                                                    if ($rowVersion['version'] == 'Draft') {
-                                                                        echo ' '.$rowVersion['count'];
-                                                                    }
-                                                                    ?>
-																		</td>
-																		<td>
-																			<?php echo substr($rowVersion['timestamp'], 11, 5).' '.dateConvertBack($guid, substr($rowVersion['timestamp'], 0, 10)) ?><br/>
-																		</td>
-																		<td>
-																			<?php
-                                                                            $locationPrint = $rowVersion['location'];
-                                                                    if (strlen($locationPrint) > 15) {
-                                                                        $locationPrint = substr($locationPrint, 0, 15).'...';
-                                                                    }
-                                                                    if ($rowVersion['type'] == 'File') {
-                                                                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowVersion['location']."'>".$locationPrint.'</a>';
-                                                                    } else {
-                                                                        echo "<a target='_blank' href='".$rowVersion['location']."'>".$locationPrint.'</a>';
-                                                                    }
-                                                                    ?>
-																		</td>
-																		<td>
-																			<?php
-                                                                            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_view_full_submit_edit.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&search=".$gibbonPersonID.'&gibbonPlannerEntryHomeworkID='.$rowVersion['gibbonPlannerEntryHomeworkID']."&submission=true'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                                                                    echo "<a onclick='return confirm(\"".__($guid, 'Are you sure you wish to delete this record?')."\")' href='".$_SESSION[$guid]['absoluteURL']."/modules/Planner/planner_view_full_submit_deleteProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&search=$gibbonPersonID&gibbonPlannerEntryHomeworkID=".$rowVersion['gibbonPlannerEntryHomeworkID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
-                                                                    ?>
-																		</td>
-																		<?php
-
-                                                                }
-                                                                ?>
-																</tr>
-																<?php
-
-                                                            }
-                                            ?>
-														</table>
 														<?php
 
+														try {
+															$dataVersion = array('gibbonPlannerEntryID' => $row['gibbonPlannerEntryID'], 'gibbonPersonID' => $rowClass['gibbonPersonID']);
+															$sqlVersion = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC';
+															$resultVersion = $connection2->prepare($sqlVersion);
+															$resultVersion->execute($dataVersion);
+														} catch (PDOException $e) {
+															echo "<div class='error'>".$e->getMessage().'</div>';
+														}
+													if ($resultVersion->rowCount() < 1) {
+														?>
+															<td colspan=4>
+																<?php
+																//Before deadline
+																if (date('Y-m-d H:i:s') < $row['homeworkDueDateTime']) {
+																	echo 'Pending';
+																}
+																//After
+																else {
+																	if ($rowClass['dateStart'] > $row['date']) {
+																		echo "<span title='".__($guid, 'Student joined school after lesson was taught.')."' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>".__($guid, 'NA').'</span>';
+																	} else {
+																		if ($row['homeworkSubmissionRequired'] == 'Compulsory') {
+																			echo "<span style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'>".__($guid, 'Incomplete').'</span>';
+																		} else {
+																			echo __($guid, 'Not submitted online');
+																		}
+																	}
+																}
+														?>
+															</td>
+															<td>
+																<?php
+																echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_view_full_submit_edit.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&search=".$gibbonPersonID.'&gibbonPersonID='.$rowClass['gibbonPersonID']."&submission=false'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+														?>
+															</td>
+															<?php
+
+													} else {
+														$rowVersion = $resultVersion->fetch();
+														?>
+															<td>
+																<?php
+																if ($rowVersion['status'] == 'On Time' or $rowVersion['status'] == 'Exemption') {
+																	echo $rowVersion['status'];
+																} else {
+																	echo "<span style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'>".$rowVersion['status'].'</span>';
+																}
+														?>
+															</td>
+															<td>
+																<?php
+																echo $rowVersion['version'];
+														if ($rowVersion['version'] == 'Draft') {
+															echo ' '.$rowVersion['count'];
+														}
+														?>
+															</td>
+															<td>
+																<?php echo substr($rowVersion['timestamp'], 11, 5).' '.dateConvertBack($guid, substr($rowVersion['timestamp'], 0, 10)) ?><br/>
+															</td>
+															<td>
+																<?php
+																$locationPrint = $rowVersion['location'];
+														if (strlen($locationPrint) > 15) {
+															$locationPrint = substr($locationPrint, 0, 15).'...';
+														}
+														if ($rowVersion['type'] == 'File') {
+															echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowVersion['location']."'>".$locationPrint.'</a>';
+														} else {
+															echo "<a target='_blank' href='".$rowVersion['location']."'>".$locationPrint.'</a>';
+														}
+														?>
+															</td>
+															<td>
+																<?php
+																echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_view_full_submit_edit.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&search=".$gibbonPersonID.'&gibbonPlannerEntryHomeworkID='.$rowVersion['gibbonPlannerEntryHomeworkID']."&submission=true'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+														echo "<a onclick='return confirm(\"".__($guid, 'Are you sure you wish to delete this record?')."\")' href='".$_SESSION[$guid]['absoluteURL']."/modules/Planner/planner_view_full_submit_deleteProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&search=$gibbonPersonID&gibbonPlannerEntryHomeworkID=".$rowVersion['gibbonPlannerEntryHomeworkID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+														?>
+															</td>
+															<?php
+
+													}
+													?>
+													</tr>
+													<?php
+
+												}
+                                            	?>
+											</table>
+											<?php
                                         }
                                     }
                                 }
@@ -1205,13 +1200,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         echo '</tr>';
 
                         if ($row['role'] == 'Student') { //MY HOMEWORK
-                                    $roleCategory = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
+                            $roleCategory = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
                             $myHomeworkFail = false;
                             try {
                                 if ($roleCategory != 'Student') { //Parent
-                                            $dataMyHomework = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID);
+                                    $dataMyHomework = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID);
                                 } else { //Student
-                                            $dataMyHomework = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPlannerEntryID' => $gibbonPlannerEntryID);
+                                    $dataMyHomework = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPlannerEntryID' => $gibbonPlannerEntryID);
                                 }
                                 $sqlMyHomework = 'SELECT * FROM gibbonPlannerEntryStudentHomework WHERE gibbonPersonID=:gibbonPersonID AND gibbonPlannerEntryID=:gibbonPlannerEntryID';
                                 $resultMyHomework = $connection2->prepare($sqlMyHomework);
@@ -1243,61 +1238,53 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 }
 
                                 if ($roleCategory != 'Student') { //Parent, so show readonly
-                                            ?>
-											<tr>
-												<td>
-													<b><?php echo __($guid, 'Homework?') ?> *</b><br/>
-												</td>
-												<td>
-													<?php
-                                                    if ($rowMyHomework['homework'] == 'Y') {
-                                                        echo __($guid, 'Yes');
-                                                    } else {
-                                                        echo __($guid, 'No');
-                                                    }
-                                    			?>
-												</td>
-											</tr>
-
+									?>
+									<tr>
+										<td>
+											<b><?php echo __($guid, 'Homework?') ?> *</b><br/>
+										</td>
+										<td>
 											<?php
-                                            if ($rowMyHomework['homework'] == 'Y') {
-                                                ?>
-												<tr>
-													<td>
-														<b><?php echo __($guid, 'Homework Due Date') ?> *</b><br/>
-													</td>
-													<td>
-														<?php if ($rowMyHomework['homework'] == 'Y') {
-    echo dateConvertBack($guid, substr($rowMyHomework['homeworkDueDateTime'], 0, 10));
-}
-                                                ?>
-													</td>
-												</tr>
-												<tr >
-													<td>
-														<b><?php echo __($guid, 'Homework Due Date Time') ?></b><br/>
-														<span class="emphasis small"><?php echo __($guid, 'Format: hh:mm (24hr)') ?><br/></span>
-													</td>
-													<td >
-														<?php if ($rowMyHomework['homework'] == 'Y') {
-    echo substr($rowMyHomework['homeworkDueDateTime'], 11, 5);
-}
-                                                ?>
-													</td>
-												</tr>
+											if ($rowMyHomework['homework'] == 'Y') {
+												echo __($guid, 'Yes');
+											} else {
+												echo __($guid, 'No');
+											}
+										?>
+										</td>
+									</tr>
 
+									<?php
+									if ($rowMyHomework['homework'] == 'Y') {
+										?>
+										<tr>
+											<td>
+												<b><?php echo __($guid, 'Homework Due Date') ?> *</b><br/>
+											</td>
+											<td>
+												<?php if ($rowMyHomework['homework'] == 'Y') { echo dateConvertBack($guid, substr($rowMyHomework['homeworkDueDateTime'], 0, 10)); } ?>
+											</td>
+										</tr>
+										<tr >
+											<td>
+												<b><?php echo __($guid, 'Homework Due Date Time') ?></b><br/>
+												<span class="emphasis small"><?php echo __($guid, 'Format: hh:mm (24hr)') ?><br/></span>
+											</td>
+											<td >
+												<?php if ($rowMyHomework['homework'] == 'Y') { echo substr($rowMyHomework['homeworkDueDateTime'], 11, 5); } ?>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<b><?php echo __($guid, 'Homework Details') ?></b><br/>
+											</td>
+											<td class="right">
+												<?php echo $rowMyHomework['homeworkDetails'] ?>
+											</td>
+										</tr>
+									<?php
 
-												<tr>
-													<td>
-														<b><?php echo __($guid, 'Homework Details') ?></b><br/>
-													</td>
-													<td class="right">
-														<?php echo $rowMyHomework['homeworkDetails'] ?>
-													</td>
-												</tr>
-											<?php
-
-                                            }
+									}
                                 } else { //Student so show edit view
                                             $checkedYes = '';
                                     $checkedNo = '';
@@ -1308,179 +1295,167 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                     }
                                     ?>
 
+									<script type="text/javascript">
+										/* Homework Control */
+										$(document).ready(function(){
+											<?php
+											if ($checkedNo == 'checked') {
+												?>
+												$("#homeworkDueDateRow").css("display","none");
+												$("#homeworkDueDateTimeRow").css("display","none");
+												$("#homeworkDetailsRow").css("display","none");
+												<?php
+
+											}
+										?>
+
+											//Response to clicking on homework control
+											$(".homework").click(function(){
+												if ($('input[name=homework]:checked').val()=="Yes" ) {
+													homeworkDueDate.enable();
+													homeworkDetails.enable();
+													$("#homeworkDueDateRow").slideDown("fast", $("#homeworkDueDateRow").css("display","table-row"));
+													$("#homeworkDueDateTimeRow").slideDown("fast", $("#homeworkDueDateTimeRow").css("display","table-row"));
+													$("#homeworkDetailsRow").slideDown("fast", $("#homeworkDetailsRow").css("display","table-row"));
+												} else {
+													homeworkDueDate.disable();
+													homeworkDetails.disable();
+													$("#homeworkDueDateRow").css("display","none");
+													$("#homeworkDueDateTimeRow").css("display","none");
+													$("#homeworkDetailsRow").css("display","none");
+												}
+											 });
+										});
+									</script>
+
+									<?php
+									//Try and find the next slot for this class, to use as default HW deadline
+									if ($rowMyHomework['homework'] == 'N' and $row['date'] != '' and $row['timeStart'] != '' and $row['timeEnd'] != '') {
+										//Get $_GET values
+										$homeworkDueDate = '';
+										$homeworkDueDateTime = '';
+
+										try {
+											$dataNext = array('gibbonCourseClassID' => $row['gibbonCourseClassID'], 'date' => $row['date']);
+											$sqlNext = 'SELECT timeStart, timeEnd, date FROM gibbonTTDayRowClass JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) JOIN gibbonTTColumn ON (gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) JOIN gibbonTTDay ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND date>:date ORDER BY date, timeStart LIMIT 0, 10';
+											$resultNext = $connection2->prepare($sqlNext);
+											$resultNext->execute($dataNext);
+										} catch (PDOException $e) {
+											echo "<div class='error'>".$e->getMessage().'</div>';
+										}
+										if ($resultNext->rowCount() > 0) {
+											$rowNext = $resultNext->fetch();
+											$homeworkDueDate = $rowNext['date'];
+											$homeworkDueDateTime = $rowNext['timeStart'];
+										}
+									}
+								?>
+
+								<?php echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/planner_view_full_myHomeworkProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&address=".$_SESSION[$guid]['address']."&gibbonCourseClassID=$gibbonCourseClassID&date=$date'>"; ?>
+									<tr>
+										<td>
+											<b><?php echo __($guid, 'Homework?') ?> *</b><br/>
+										</td>
+										<td class="right">
+											<input <?php echo $checkedYes ?> type="radio" name="homework" value="Yes" class="homework" /> <?php echo __($guid, 'Yes') ?>
+											<input <?php echo $checkedNo ?> type="radio" name="homework" value="No" class="homework" /> <?php echo __($guid, 'No') ?>
+										</td>
+									</tr>
+									<tr id="homeworkDueDateRow">
+										<td>
+											<b><?php echo __($guid, 'Homework Due Date') ?> *</b><br/>
+											<span class="emphasis small"><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
+											} else {
+												echo $_SESSION[$guid]['i18n']['dateFormat'];
+											} ?><br/></span>
+										</td>
+										<td class="right">
+											<input name="homeworkDueDate" id="homeworkDueDate" maxlength=10 value="<?php if ($rowMyHomework['homework'] == 'Y') { echo dateConvertBack($guid, substr($rowMyHomework['homeworkDueDateTime'], 0, 10));
+											} else {
+												echo dateConvertBack($guid, substr($homeworkDueDate, 0, 10));
+											} ?>" type="text" class="standardWidth">
 											<script type="text/javascript">
-												/* Homework Control */
-												$(document).ready(function(){
-													<?php
-                                                    if ($checkedNo == 'checked') {
-                                                        ?>
-														$("#homeworkDueDateRow").css("display","none");
-														$("#homeworkDueDateTimeRow").css("display","none");
-														$("#homeworkDetailsRow").css("display","none");
-														<?php
-
-                                                    }
+												var homeworkDueDate=new LiveValidation('homeworkDueDate');
+												homeworkDueDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') { echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+												} else {
+													echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+												}
+                                   	 			?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
+												} else {
+													echo $_SESSION[$guid]['i18n']['dateFormat'];
+												}
+                                    			?>." } );
+												homeworkDueDate.add(Validate.Presence);
+												<?php
+												if ($rowMyHomework['homework'] != 'Y') {
+													echo 'homeworkDueDate.disable();';
+												}
                                     			?>
-
-													//Response to clicking on homework control
-													$(".homework").click(function(){
-														if ($('input[name=homework]:checked').val()=="Yes" ) {
-															homeworkDueDate.enable();
-															homeworkDetails.enable();
-															$("#homeworkDueDateRow").slideDown("fast", $("#homeworkDueDateRow").css("display","table-row"));
-															$("#homeworkDueDateTimeRow").slideDown("fast", $("#homeworkDueDateTimeRow").css("display","table-row"));
-															$("#homeworkDetailsRow").slideDown("fast", $("#homeworkDetailsRow").css("display","table-row"));
-														} else {
-															homeworkDueDate.disable();
-															homeworkDetails.disable();
-															$("#homeworkDueDateRow").css("display","none");
-															$("#homeworkDueDateTimeRow").css("display","none");
-															$("#homeworkDetailsRow").css("display","none");
-														}
-													 });
+											</script>
+											<script type="text/javascript">
+												$(function() {
+													$( "#homeworkDueDate" ).datepicker();
 												});
 											</script>
-
-											<?php
-                                            //Try and find the next slot for this class, to use as default HW deadline
-                                            if ($rowMyHomework['homework'] == 'N' and $row['date'] != '' and $row['timeStart'] != '' and $row['timeEnd'] != '') {
-                                                //Get $_GET values
-                                                $homeworkDueDate = '';
-                                                $homeworkDueDateTime = '';
-
-                                                try {
-                                                    $dataNext = array('gibbonCourseClassID' => $row['gibbonCourseClassID'], 'date' => $row['date']);
-                                                    $sqlNext = 'SELECT timeStart, timeEnd, date FROM gibbonTTDayRowClass JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) JOIN gibbonTTColumn ON (gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) JOIN gibbonTTDay ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND date>:date ORDER BY date, timeStart LIMIT 0, 10';
-                                                    $resultNext = $connection2->prepare($sqlNext);
-                                                    $resultNext->execute($dataNext);
-                                                } catch (PDOException $e) {
-                                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                                }
-                                                if ($resultNext->rowCount() > 0) {
-                                                    $rowNext = $resultNext->fetch();
-                                                    $homeworkDueDate = $rowNext['date'];
-                                                    $homeworkDueDateTime = $rowNext['timeStart'];
-                                                }
-                                            }
-                                    ?>
-
-											<?php echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/planner_view_full_myHomeworkProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&address=".$_SESSION[$guid]['address']."&gibbonCourseClassID=$gibbonCourseClassID&date=$date'>";
-                                    ?>
-												<tr>
-													<td>
-														<b><?php echo __($guid, 'Homework?') ?> *</b><br/>
-													</td>
-													<td class="right">
-														<input <?php echo $checkedYes ?> type="radio" name="homework" value="Yes" class="homework" /> <?php echo __($guid, 'Yes') ?>
-														<input <?php echo $checkedNo ?> type="radio" name="homework" value="No" class="homework" /> <?php echo __($guid, 'No') ?>
-													</td>
-												</tr>
-												<tr id="homeworkDueDateRow">
-													<td>
-														<b><?php echo __($guid, 'Homework Due Date') ?> *</b><br/>
-														<span class="emphasis small"><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-                                    ?><br/></span>
-													</td>
-													<td class="right">
-														<input name="homeworkDueDate" id="homeworkDueDate" maxlength=10 value="<?php if ($rowMyHomework['homework'] == 'Y') {
-    echo dateConvertBack($guid, substr($rowMyHomework['homeworkDueDateTime'], 0, 10));
-} else {
-    echo dateConvertBack($guid, substr($homeworkDueDate, 0, 10));
-}
-                                    ?>" type="text" class="standardWidth">
-														<script type="text/javascript">
-															var homeworkDueDate=new LiveValidation('homeworkDueDate');
-															homeworkDueDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-                                    ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-                                    ?>." } );
-															homeworkDueDate.add(Validate.Presence);
-															<?php
-                                                            if ($rowMyHomework['homework'] != 'Y') {
-                                                                echo 'homeworkDueDate.disable();';
-                                                            }
-                                    			?>
-														</script>
-														 <script type="text/javascript">
-															$(function() {
-																$( "#homeworkDueDate" ).datepicker();
-															});
-														</script>
-													</td>
-												</tr>
-												<tr id="homeworkDueDateTimeRow">
-													<td>
-														<b><?php echo __($guid, 'Homework Due Date Time') ?></b><br/>
-														<span class="emphasis small"><?php echo __($guid, 'Format: hh:mm (24hr)') ?><br/></span>
-													</td>
-													<td class="right">
-														<input name="homeworkDueDateTime" id="homeworkDueDateTime" maxlength=5 value="<?php if ($rowMyHomework['homework'] == 'Y') {
-    echo substr($rowMyHomework['homeworkDueDateTime'], 11, 5);
-} else {
-    echo substr($homeworkDueDateTime, 0, 5);
-}
-                                    ?>" type="text" class="standardWidth">
-														<script type="text/javascript">
-															var homeworkDueDateTime=new LiveValidation('homeworkDueDateTime');
-															homeworkDueDateTime.add( Validate.Format, {pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use hh:mm" } );
-														</script>
-														<script type="text/javascript">
-															$(function() {
-																var availableTags=[
-																	<?php
-                                                                    try {
-                                                                        $dataAuto = array();
-                                                                        $sqlAuto = 'SELECT DISTINCT SUBSTRING(homeworkDueDateTime,12,5) AS homeworkDueTime FROM gibbonPlannerEntry ORDER BY homeworkDueDateTime';
-                                                                        $resultAuto = $connection2->prepare($sqlAuto);
-                                                                        $resultAuto->execute($dataAuto);
-                                                                    } catch (PDOException $e) {
-                                                                    }
-                                    while ($rowAuto = $resultAuto->fetch()) {
-                                        echo '"'.$rowAuto['homeworkDueTime'].'", ';
-                                    }
-                                    ?>
-																];
-																$( "#homeworkDueDateTime" ).autocomplete({source: availableTags});
-															});
-														</script>
-													</td>
-												</tr>
-												<tr id="homeworkDetailsRow">
-													<td colspan=2>
-														<b><?php echo __($guid, 'Homework Details') ?> *</b>
+										</td>
+									</tr>
+									<tr id="homeworkDueDateTimeRow">
+										<td>
+											<b><?php echo __($guid, 'Homework Due Date Time') ?></b><br/>
+											<span class="emphasis small"><?php echo __($guid, 'Format: hh:mm (24hr)') ?><br/></span>
+										</td>
+										<td class="right">
+											<input name="homeworkDueDateTime" id="homeworkDueDateTime" maxlength=5 value="<?php if ($rowMyHomework['homework'] == 'Y') { echo substr($rowMyHomework['homeworkDueDateTime'], 11, 5);
+											} else {
+												echo substr($homeworkDueDateTime, 0, 5);
+											} ?>" type="text" class="standardWidth">
+											<script type="text/javascript">
+												var homeworkDueDateTime=new LiveValidation('homeworkDueDateTime');
+												homeworkDueDateTime.add( Validate.Format, {pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use hh:mm" } );
+											</script>
+											<script type="text/javascript">
+												$(function() {
+													var availableTags=[
 														<?php
-                                                        $initiallyHidden = true;
-                                    if ($rowMyHomework['homework'] == 'Y') {
-                                        $initiallyHidden = false;
-                                    }
-                                    echo getEditor($guid,  true, 'homeworkDetails', $rowMyHomework['homeworkDetails'], 25, true, true, $initiallyHidden)
-                                                        ?>
-													</td>
-												</tr>
-												<tr>
-													<td>
-														<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-                                    ?></span>
-													</td>
-													<td class="right">
-														<input type="submit" value="<?php echo __($guid, 'Submit');
-                                    ?>">
-													</td>
-												</tr>
-											</form>
+														try {
+															$dataAuto = array();
+															$sqlAuto = 'SELECT DISTINCT SUBSTRING(homeworkDueDateTime,12,5) AS homeworkDueTime FROM gibbonPlannerEntry ORDER BY homeworkDueDateTime';
+															$resultAuto = $connection2->prepare($sqlAuto);
+															$resultAuto->execute($dataAuto);
+														} catch (PDOException $e) {
+														}
+														while ($rowAuto = $resultAuto->fetch()) {
+															echo '"'.$rowAuto['homeworkDueTime'].'", ';
+														}
+														?>
+													];
+													$( "#homeworkDueDateTime" ).autocomplete({source: availableTags});
+												});
+											</script>
+										</td>
+									</tr>
+									<tr id="homeworkDetailsRow">
+										<td colspan=2>
+											<b><?php echo __($guid, 'Homework Details') ?> *</b>
 											<?php
-
+											$initiallyHidden = true;
+											if ($rowMyHomework['homework'] == 'Y') {
+												$initiallyHidden = false;
+											}
+											echo getEditor($guid,  true, 'homeworkDetails', $rowMyHomework['homeworkDetails'], 25, true, true, $initiallyHidden)
+											?>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');?></span>
+										</td>
+										<td class="right">
+											<input type="submit" value="<?php echo __($guid, 'Submit');?>">
+										</td>
+									</tr>
+								</form>
+								<?php
                                 }
                             }
                         }
@@ -1496,8 +1471,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/planner_view_full.php$params#chat'>".__($guid, 'Refresh')."<img style='margin-left: 5px' title='".__($guid, 'Refresh')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/refresh.png'/></a> <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_view_full_post.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&search=".$gibbonPersonID."'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a> ";
                         echo '</div>';
 
-                                        //Get discussion
-                                        echo getThread($guid, $connection2, $gibbonPlannerEntryID, null, 0, null, $viewBy, $subView, $date, $class, $gibbonCourseClassID, $gibbonPersonID, $row['role']);
+						//Get discussion
+						echo getThread($guid, $connection2, $gibbonPlannerEntryID, null, 0, null, $viewBy, $subView, $date, $class, $gibbonCourseClassID, $gibbonPersonID, $row['role']);
 
                         echo '</td>';
                         echo '</tr>';
@@ -1577,8 +1552,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                                     $rowNum = 'odd';
                                                 }
 
-                                                                //COLOR ROW BY STATUS!
-                                                                echo "<tr class=$rowNum>";
+												//COLOR ROW BY STATUS!
+												echo "<tr class=$rowNum>";
                                                 echo '<td>';
                                                 echo '<b>'.$rowOutcomes['scope'].'</b><br/>';
                                                 if ($rowOutcomes['scope'] == 'Learning Area' and $gibbonDepartmentID != '') {
@@ -1700,40 +1675,40 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 $_SESSION[$guid]['sidebarExtra'] .= '<tr>';
                             }
 
-                                        //Get attendance status for students
-                                        $status = '';
+							//Get attendance status for students
+							$status = '';
                             if ($rowClassGroup['role'] == 'Student') {
                                 //Check for record
-                                            try {
-                                                $dataAtt = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $rowClassGroup['gibbonPersonID']);
-                                                $sqlAtt = 'SELECT * FROM gibbonPlannerEntryAttendance WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID';
-                                                $resultAtt = $connection2->prepare($sqlAtt);
-                                                $resultAtt->execute($dataAtt);
-                                            } catch (PDOException $e) {
-                                                $_SESSION[$guid]['sidebarExtra'] .= "<div class='error'>".$e->getMessage().'</div>';
-                                            }
+								try {
+									$dataAtt = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $rowClassGroup['gibbonPersonID']);
+									$sqlAtt = 'SELECT * FROM gibbonPlannerEntryAttendance WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID';
+									$resultAtt = $connection2->prepare($sqlAtt);
+									$resultAtt->execute($dataAtt);
+								} catch (PDOException $e) {
+									$_SESSION[$guid]['sidebarExtra'] .= "<div class='error'>".$e->getMessage().'</div>';
+								}
                                 if ($resultAtt->rowCount() == 1) {
                                     $rowAtt = $resultAtt->fetch();
                                     $status = $rowAtt['type'];
                                 }
 
-                                            //Check for school attendance
-                                            if ($status == '') {
-                                                try {
-                                                    $dataAtt = array('date' => $row['date'], 'gibbonPersonID' => $rowClassGroup['gibbonPersonID']);
-                                                    $sqlAtt = 'SELECT * FROM gibbonAttendanceLogPerson WHERE date=:date AND gibbonPersonID=:gibbonPersonID ORDER BY gibbonAttendanceLogPersonID DESC';
-                                                    $resultAtt = $connection2->prepare($sqlAtt);
-                                                    $resultAtt->execute($dataAtt);
-                                                } catch (PDOException $e) {
-                                                    $_SESSION[$guid]['sidebarExtra'] .= "<div class='error'>".$e->getMessage().'</div>';
-                                                }
-                                                if ($resultAtt->rowCount() > 0) {
-                                                    $rowAtt = $resultAtt->fetch();
-                                                    if ($rowAtt['type'] == 'Absent' or $rowAtt['type'] == 'Left - Early' or $rowAtt['type'] == 'Left' or $rowAtt['type'] == 'Present - Offsite') {
-                                                        $status = 'Absent';
-                                                    }
-                                                }
-                                            }
+								//Check for school attendance
+								if ($status == '') {
+									try {
+										$dataAtt = array('date' => $row['date'], 'gibbonPersonID' => $rowClassGroup['gibbonPersonID']);
+										$sqlAtt = 'SELECT * FROM gibbonAttendanceLogPerson WHERE date=:date AND gibbonPersonID=:gibbonPersonID ORDER BY gibbonAttendanceLogPersonID DESC';
+										$resultAtt = $connection2->prepare($sqlAtt);
+										$resultAtt->execute($dataAtt);
+									} catch (PDOException $e) {
+										$_SESSION[$guid]['sidebarExtra'] .= "<div class='error'>".$e->getMessage().'</div>';
+									}
+									if ($resultAtt->rowCount() > 0) {
+										$rowAtt = $resultAtt->fetch();
+										if ($rowAtt['type'] == 'Absent' or $rowAtt['type'] == 'Left - Early' or $rowAtt['type'] == 'Left' or $rowAtt['type'] == 'Present - Offsite') {
+											$status = 'Absent';
+										}
+									}
+								}
                             }
 
                             if ($status == 'Absent' or $status == 'Left - Early' or $status == 'Left' or $status == 'Present - Offsite') {
@@ -1742,13 +1717,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 $_SESSION[$guid]['sidebarExtra'] .= "<td style='border: 1px solid #rgba (1,1,1,0); width:20%; text-align: center; vertical-align: top'>";
                             }
 
-                                        //Alerts, if permission allows
-                                        if ($row['role'] == 'Teacher' and $teacher == true) {
-                                            $_SESSION[$guid]['sidebarExtra'] .= getAlertBar($guid, $connection2, $rowClassGroup['gibbonPersonID'], $rowClassGroup['privacy'], "id='confidentialPlan$count'");
-                                        }
+							//Alerts, if permission allows
+							if ($row['role'] == 'Teacher' and $teacher == true) {
+								$_SESSION[$guid]['sidebarExtra'] .= getAlertBar($guid, $connection2, $rowClassGroup['gibbonPersonID'], $rowClassGroup['privacy'], "id='confidentialPlan$count'");
+							}
 
-                                        //Get photos
-                                        $_SESSION[$guid]['sidebarExtra'] .= '<div>';
+							//Get photos
+							$_SESSION[$guid]['sidebarExtra'] .= '<div>';
                             $_SESSION[$guid]['sidebarExtra'] .= getUserPhoto($guid, $rowClassGroup['image_240'], 75);
 
                             if ($row['role'] == 'Teacher' and $teacher == true) {
@@ -1761,8 +1736,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                     } catch (PDOException $e) {
                                     }
 
-                                                    //HEY SHORTY IT'S YOUR BIRTHDAY!
-                                                    $daysUntilNextBirthday = daysUntilNextBirthday($rowClassGroup['dob']);
+									//HEY SHORTY IT'S YOUR BIRTHDAY!
+									$daysUntilNextBirthday = daysUntilNextBirthday($rowClassGroup['dob']);
                                     if ($daysUntilNextBirthday == 0) {
                                         $_SESSION[$guid]['sidebarExtra'] .= "<img title='".sprintf(__($guid, '%1$s  birthday today!'), $rowClassGroup['preferredName'].'&#39;s')."' style='margin: -24px 0 0 0; width: 25px; height: 25px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/gift_pink.png'/>";
                                     } elseif ($daysUntilNextBirthday > 0 and $daysUntilNextBirthday < 8) {
@@ -1773,8 +1748,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                         $_SESSION[$guid]['sidebarExtra'] .= ' until '.$rowClassGroup['preferredName']."&#39;s birthday!' style='margin: -24px 0 0 0; width: 25px; height: 25px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/gift.png'/>";
                                     }
 
-                                                    //DEAL WITH LIKES
-                                                    $likesGiven = countLikesByContextAndGiver($connection2, 'Planner', 'gibbonPlannerEntryID', $gibbonPlannerEntryID, $_SESSION[$guid]['gibbonPersonID'], $rowClassGroup['gibbonPersonID']);
+									//DEAL WITH LIKES
+									$likesGiven = countLikesByContextAndGiver($connection2, 'Planner', 'gibbonPlannerEntryID', $gibbonPlannerEntryID, $_SESSION[$guid]['gibbonPersonID'], $rowClassGroup['gibbonPersonID']);
                                     $comment = addSlashes($row['course'].'.'.$row['class'].': '.$row['name']);
                                     $_SESSION[$guid]['sidebarExtra'] .= "<div id='star".$rowClassGroup['gibbonPersonID']."'>";
                                     $_SESSION[$guid]['sidebarExtra'] .= '<script type="text/javascript">';
@@ -1934,7 +1909,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 									<?php
 
                                 }
-                        ?>
+                        		?>
 
 								$(".confidentialPlan").click(function(){
 									if ($('input[name=confidentialPlan]:checked').val()=="Yes" ) {
@@ -1945,9 +1920,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                             ?>
 											$("#confidentialPlan<?php echo $i ?>").slideDown("fast", $("#confidentialPlan<?php echo $i ?>").css("{'display' : 'table-row', 'border' : 'right'}"));
 											<?php
-
                                         }
-                        			?>									}
+                        			?>									
+                        			}
 									else {
 										$("#teachersNotes").slideUp("fast");
 										$(".teachersNotes").slideUp("fast");
@@ -1958,7 +1933,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 											<?php
 
                                         }
-                        			?>									}
+                        			?>	
+                        			}
 								 });
 							});
 						</script>

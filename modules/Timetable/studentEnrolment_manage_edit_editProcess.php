@@ -33,8 +33,7 @@ $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
 $gibbonCourseID = $_GET['gibbonCourseID'];
 $gibbonPersonID = $_POST['gibbonPersonID'];
 
-if ($gibbonCourseClassID == '' or $gibbonCourseID == '' or $gibbonPersonID == '') {
-    echo 'Fatal error loading this page!';
+if ($gibbonCourseClassID == '' or $gibbonCourseID == '' or $gibbonPersonID == '') { echo 'Fatal error loading this page!';
 } else {
     $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/studentEnrolment_manage_edit_edit.php&gibbonCourseID=$gibbonCourseID&gibbonPersonID=$gibbonPersonID&gibbonCourseClassID=$gibbonCourseClassID";
 

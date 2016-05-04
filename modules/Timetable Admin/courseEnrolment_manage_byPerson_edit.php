@@ -152,10 +152,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                                     $resultSelect->execute($dataSelect);
                                 } catch (PDOException $e) {
                                 }
-            while ($rowSelect = $resultSelect->fetch()) {
-                echo "<option value='".$rowSelect['gibbonCourseClassID']."'>".htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).' - '.$rowSelect['name'].'</option>';
-            }
-            ?>
+								while ($rowSelect = $resultSelect->fetch()) {
+									echo "<option value='".$rowSelect['gibbonCourseClassID']."'>".htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).' - '.$rowSelect['name'].'</option>';
+								}
+								?>
 								</optgroup>
 							</select>
 						</td>
@@ -208,19 +208,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_manage_byPerson_editProcessBulk.php?allUsers=$allUsers'>";
                 echo "<fieldset style='border: none'>";
                 echo "<div class='linkTop' style='height: 27px'>"; ?>
-						<input style='margin-top: 0px; float: right' type='submit' value='<?php echo __($guid, 'Go') ?>'>
-						<select name="action" id="action" style='width:120px; float: right; margin-right: 1px;'>
-							<option value="Select action"><?php echo __($guid, 'Select action') ?></option>
-							<option value="Mark as left"><?php echo __($guid, 'Mark as left') ?></option>
-							<option value="Delete"><?php echo __($guid, 'Delete') ?></option>
-						</select>
-						<script type="text/javascript">
-							var action=new LiveValidation('action');
-							action.add(Validate.Exclusion, { within: ['Select action'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-						</script>
-						<?php
-                    echo '</div>';
-
+					<input style='margin-top: 0px; float: right' type='submit' value='<?php echo __($guid, 'Go') ?>'>
+					<select name="action" id="action" style='width:120px; float: right; margin-right: 1px;'>
+						<option value="Select action"><?php echo __($guid, 'Select action') ?></option>
+						<option value="Mark as left"><?php echo __($guid, 'Mark as left') ?></option>
+						<option value="Delete"><?php echo __($guid, 'Delete') ?></option>
+					</select>
+					<script type="text/javascript">
+						var action=new LiveValidation('action');
+						action.add(Validate.Exclusion, { within: ['Select action'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
+					</script>
+					<?php
+				echo '</div>';
                 echo "<table cellspacing='0' style='width: 100%'>";
                 echo "<tr class='head'>";
                 echo '<th>';
@@ -238,17 +237,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 echo '<th>';
                 echo __($guid, 'Actions');
                 echo '</th>';
-                echo '<th>';
-                ?>
-								<script type="text/javascript">
-									$(function () {
-										$('.checkall').click(function () {
-											$(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
-										});
-									});
-								</script>
-								<?php
-                                echo "<input type='checkbox' class='checkall'>";
+                echo '<th>'; ?>
+				<script type="text/javascript">
+					$(function () {
+						$('.checkall').click(function () {
+							$(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
+						});
+					});
+				</script>
+				<?php
+				echo "<input type='checkbox' class='checkall'>";
                 echo '</th>';
                 echo '</tr>';
 
@@ -262,8 +260,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                     }
                     ++$count;
 
-                            //COLOR ROW BY STATUS!
-                            echo "<tr class=$rowNum>";
+					//COLOR ROW BY STATUS!
+					echo "<tr class=$rowNum>";
                     echo '<td>';
                     echo $row['course'].'.'.$row['class'];
                     echo '</td>';
@@ -368,8 +366,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                     }
                     ++$count;
 
-                            //COLOR ROW BY STATUS!
-                            echo "<tr class=$rowNum>";
+					//COLOR ROW BY STATUS!
+					echo "<tr class=$rowNum>";
                     echo '<td>';
                     echo $row['course'].'.'.$row['class'];
                     echo '</td>';

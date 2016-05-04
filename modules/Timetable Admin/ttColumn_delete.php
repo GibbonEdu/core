@@ -56,8 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_d
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
-            ?>
+            $row = $result->fetch(); ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/ttColumn_deleteProcess.php?gibbonTTColumnID=$gibbonTTColumnID" ?>">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>

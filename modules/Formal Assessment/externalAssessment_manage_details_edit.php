@@ -84,18 +84,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 						<td> 
 							<b><?php echo __($guid, 'Date') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Format:').' ';
-            if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-                echo 'dd/mm/yyyy';
-            } else {
-                echo $_SESSION[$guid]['i18n']['dateFormat'];
-            }
-            ?><br/></span>
+							if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+								echo 'dd/mm/yyyy';
+							} else {
+								echo $_SESSION[$guid]['i18n']['dateFormat'];
+							}
+							?><br/></span>
 						</td>
 						<td class="right" colspan=2>
-							<input name="date" id="date" maxlength=10 value="<?php if ($row['date'] != '') {
-    echo dateConvertBack($guid, $row['date']);
-}
-            ?>" type="text" class="standardWidth">
+							<input name="date" id="date" maxlength=10 value="<?php if ($row['date'] != '') { echo dateConvertBack($guid, $row['date']); } ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var date=new LiveValidation('date');
 								date.add(Validate.Presence);
@@ -125,19 +122,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 							<td style='width: 275px'> 
 								<b><?php echo __($guid, 'Upload File') ?></b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Use this to attach raw data, graphical summary, etc.') ?></i><br/></span>
-								<?php if ($row['attachment'] != '') {
-    ?>
+								<?php if ($row['attachment'] != '') { ?>
 									<span class="emphasis small"><?php echo __($guid, 'Will overwrite existing attachment.') ?></span>
 								<?php 
-}
-                        ?>
+								}
+                        	?>
 							</td>
 							<td class="right" colspan=2>
 								<?php
                                 if ($row['attachment'] != '') {
                                     echo __($guid, 'Current attachment:')." <a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/'.$row['attachment']."'>".$row['attachment'].'</a><br/><br/>';
                                 }
-                        ?>
+                        		?>
 								<input type="file" name="file" id="file"><br/><br/>
 								<?php
                                 //Get list of acceptable file extensions
@@ -148,16 +144,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                                     $resultExt->execute($dataExt);
                                 } catch (PDOException $e) {
                                 }
-                        $ext = '';
-                        while ($rowExt = $resultExt->fetch()) {
-                            $ext = $ext."'.".$rowExt['extension']."',";
-                        }
-                        ?>
+								$ext = '';
+								while ($rowExt = $resultExt->fetch()) {
+									$ext = $ext."'.".$rowExt['extension']."',";
+								}
+								?>
 					
 								<script type="text/javascript">
 									var file=new LiveValidation('file');
-									file.add( Validate.Inclusion, { within: [<?php echo $ext;
-                        ?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+									file.add( Validate.Inclusion, { within: [<?php echo $ext; ?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 								</script>
 							</td>
 						</tr>
@@ -175,70 +170,70 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                         echo "<div class='error'>".$e->getMessage().'</div>';
                     }
 
-            while ($rowCheck = $resultCheck->fetch()) {
-                try {
-                    $dataCheck2 = array('gibbonExternalAssessmentFieldID' => $rowCheck['gibbonExternalAssessmentFieldID'], 'gibbonExternalAssessmentStudentID' => $row['gibbonExternalAssessmentStudentID']);
-                    $sqlCheck2 = 'SELECT * FROM gibbonExternalAssessmentStudentEntry WHERE gibbonExternalAssessmentFieldID=:gibbonExternalAssessmentFieldID AND gibbonExternalAssessmentStudentID=:gibbonExternalAssessmentStudentID';
-                    $resultCheck2 = $connection2->prepare($sqlCheck2);
-                    $resultCheck2->execute($dataCheck2);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
+					while ($rowCheck = $resultCheck->fetch()) {
+						try {
+							$dataCheck2 = array('gibbonExternalAssessmentFieldID' => $rowCheck['gibbonExternalAssessmentFieldID'], 'gibbonExternalAssessmentStudentID' => $row['gibbonExternalAssessmentStudentID']);
+							$sqlCheck2 = 'SELECT * FROM gibbonExternalAssessmentStudentEntry WHERE gibbonExternalAssessmentFieldID=:gibbonExternalAssessmentFieldID AND gibbonExternalAssessmentStudentID=:gibbonExternalAssessmentStudentID';
+							$resultCheck2 = $connection2->prepare($sqlCheck2);
+							$resultCheck2->execute($dataCheck2);
+						} catch (PDOException $e) {
+							echo "<div class='error'>".$e->getMessage().'</div>';
+						}
 
-                if ($resultCheck2->rowCount() < 1) {
-                    try {
-                        $dataCheck3 = array('gibbonExternalAssessmentStudentID' => $row['gibbonExternalAssessmentStudentID'], 'gibbonExternalAssessmentFieldID' => $rowCheck['gibbonExternalAssessmentFieldID']);
-                        $sqlCheck3 = 'INSERT INTO gibbonExternalAssessmentStudentEntry SET gibbonExternalAssessmentStudentID=:gibbonExternalAssessmentStudentID, gibbonExternalAssessmentFieldID=:gibbonExternalAssessmentFieldID';
-                        $resultCheck3 = $connection2->prepare($sqlCheck3);
-                        $resultCheck3->execute($dataCheck3);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
-                }
-            }
+						if ($resultCheck2->rowCount() < 1) {
+							try {
+								$dataCheck3 = array('gibbonExternalAssessmentStudentID' => $row['gibbonExternalAssessmentStudentID'], 'gibbonExternalAssessmentFieldID' => $rowCheck['gibbonExternalAssessmentFieldID']);
+								$sqlCheck3 = 'INSERT INTO gibbonExternalAssessmentStudentEntry SET gibbonExternalAssessmentStudentID=:gibbonExternalAssessmentStudentID, gibbonExternalAssessmentFieldID=:gibbonExternalAssessmentFieldID';
+								$resultCheck3 = $connection2->prepare($sqlCheck3);
+								$resultCheck3->execute($dataCheck3);
+							} catch (PDOException $e) {
+								echo "<div class='error'>".$e->getMessage().'</div>';
+							}
+						}
+					}
 
-            try {
-                $dataField = array('gibbonExternalAssessmentID' => $row['gibbonExternalAssessmentID'], 'gibbonExternalAssessmentStudentID' => $gibbonExternalAssessmentStudentID);
-                $sqlField = 'SELECT gibbonExternalAssessmentStudentEntryID, gibbonExternalAssessmentField.*, gibbonScale.usage, gibbonExternalAssessmentStudentEntry.gibbonScaleGradeID, gibbonExternalAssessmentStudentEntry.gibbonScaleGradeIDPrimaryAssessmentScale FROM gibbonExternalAssessmentField JOIN gibbonScale ON (gibbonExternalAssessmentField.gibbonScaleID=gibbonScale.gibbonScaleID) LEFT JOIN gibbonExternalAssessmentStudentEntry ON (gibbonExternalAssessmentField.gibbonExternalAssessmentFieldID=gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentFieldID) WHERE gibbonExternalAssessmentID=:gibbonExternalAssessmentID AND gibbonExternalAssessmentStudentID=:gibbonExternalAssessmentStudentID ORDER BY category, gibbonExternalAssessmentField.order';
-                $resultField = $connection2->prepare($sqlField);
-                $resultField->execute($dataField);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
+					try {
+						$dataField = array('gibbonExternalAssessmentID' => $row['gibbonExternalAssessmentID'], 'gibbonExternalAssessmentStudentID' => $gibbonExternalAssessmentStudentID);
+						$sqlField = 'SELECT gibbonExternalAssessmentStudentEntryID, gibbonExternalAssessmentField.*, gibbonScale.usage, gibbonExternalAssessmentStudentEntry.gibbonScaleGradeID, gibbonExternalAssessmentStudentEntry.gibbonScaleGradeIDPrimaryAssessmentScale FROM gibbonExternalAssessmentField JOIN gibbonScale ON (gibbonExternalAssessmentField.gibbonScaleID=gibbonScale.gibbonScaleID) LEFT JOIN gibbonExternalAssessmentStudentEntry ON (gibbonExternalAssessmentField.gibbonExternalAssessmentFieldID=gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentFieldID) WHERE gibbonExternalAssessmentID=:gibbonExternalAssessmentID AND gibbonExternalAssessmentStudentID=:gibbonExternalAssessmentStudentID ORDER BY category, gibbonExternalAssessmentField.order';
+						$resultField = $connection2->prepare($sqlField);
+						$resultField->execute($dataField);
+					} catch (PDOException $e) {
+						echo "<div class='error'>".$e->getMessage().'</div>';
+					}
 
-            if ($resultField->rowCount() < 1) {
-                echo "<tr class='break'>";
-                echo '<td colspan=3> ';
-                echo "<div class='warning'>";
-                echo __($guid, 'There are no fields in this assessment.');
-                echo '</div>';
-                echo '</td>';
-                echo '</tr>';
-            } else {
-                $lastCategory = '';
-                $count = 0;
+					if ($resultField->rowCount() < 1) {
+						echo "<tr class='break'>";
+						echo '<td colspan=3> ';
+						echo "<div class='warning'>";
+						echo __($guid, 'There are no fields in this assessment.');
+						echo '</div>';
+						echo '</td>';
+						echo '</tr>';
+					} else {
+						$lastCategory = '';
+						$count = 0;
 
-                while ($rowField = $resultField->fetch()) {
-                    if ($rowField['category'] != $lastCategory) {
-                        echo "<tr class='break' >";
-                        echo '<td> ';
-                        echo '<h3>';
-                        if (strpos($rowField['category'], '_') === false) {
-                            echo $rowField['category'];
-                        } else {
-                            echo substr($rowField['category'], (strpos($rowField['category'], '_') + 1));
-                        }
-                        echo '</h3>';
-                        echo '</td>';
-                        echo "<td class='right'>";
-                        echo "<span style='font-weight: bold'>".__($guid, 'Grade').'</span>';
-                        echo '</td>';
-                        echo "<td class='right'>";
-                        echo "<span style='font-weight: bold' title='".__($guid, 'Primary Assessment Scale Grade')."'>".__($guid, 'PAS Grade').'</span>';
-                        echo '</td>';
-                        echo '</tr>';
-                    }
-                    ?>
+						while ($rowField = $resultField->fetch()) {
+							if ($rowField['category'] != $lastCategory) {
+								echo "<tr class='break' >";
+								echo '<td> ';
+								echo '<h3>';
+								if (strpos($rowField['category'], '_') === false) {
+									echo $rowField['category'];
+								} else {
+									echo substr($rowField['category'], (strpos($rowField['category'], '_') + 1));
+								}
+								echo '</h3>';
+								echo '</td>';
+								echo "<td class='right'>";
+								echo "<span style='font-weight: bold'>".__($guid, 'Grade').'</span>';
+								echo '</td>';
+								echo "<td class='right'>";
+								echo "<span style='font-weight: bold' title='".__($guid, 'Primary Assessment Scale Grade')."'>".__($guid, 'PAS Grade').'</span>';
+								echo '</td>';
+								echo '</tr>';
+							}
+							?>
 							<tr>
 								<td> 
 									<span style='font-weight: bold' title='<?php echo $rowField['usage'] ?>'><?php echo __($guid, $rowField['name']) ?></span><br/>
@@ -246,26 +241,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 								<td class="right">
 									<input name="<?php echo $count?>-gibbonExternalAssessmentStudentEntryID" id="<?php echo $count?>-gibbonExternalAssessmentStudentEntryID" value="<?php echo $rowField['gibbonExternalAssessmentStudentEntryID'] ?>" type="hidden">
 									<?php 
-                                        echo renderGradeScaleSelect($connection2, $guid, $rowField['gibbonScaleID'], "$count-gibbonScaleGradeID", 'id', false, '150', 'id', $rowField['gibbonScaleGradeID']);
-                    ?>
+                                        echo renderGradeScaleSelect($connection2, $guid, $rowField['gibbonScaleID'], "$count-gibbonScaleGradeID", 'id', false, '150', 'id', $rowField['gibbonScaleGradeID']); ?>
 								</td>
 								<td class="right">
 									<?php 
-                                        echo renderGradeScaleSelect($connection2, $guid, $_SESSION[$guid]['primaryAssessmentScale'], "$count-gibbonScaleGradeIDPAS", 'id', false, '150', 'id', $rowField['gibbonScaleGradeIDPrimaryAssessmentScale']);
-                    ?>
+                                        echo renderGradeScaleSelect($connection2, $guid, $_SESSION[$guid]['primaryAssessmentScale'], "$count-gibbonScaleGradeIDPAS", 'id', false, '150', 'id', $rowField['gibbonScaleGradeIDPrimaryAssessmentScale']); ?>
 								</td>
 							</tr>
 							<?php
 
                             $lastCategory = $rowField['category'];
-                    ++$count;
-                }
-            }
-            ?>
+							++$count;
+						}
+					}
+					?>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?>
 							<?php
                             if ($row['allowFileUpload'] == 'Y') {
                                 echo getMaxUpload($guid);

@@ -85,8 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage.php') 
 
         echo '<h3>';
         echo __($guid, 'Search');
-        echo '</h3>';
-        ?>
+        echo '</h3>'; ?>
 		<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
 			<table class='noIntBorder' cellspacing='0' style="width: 100%">	
 				<tr><td style="width: 30%"></td><td></td></tr>

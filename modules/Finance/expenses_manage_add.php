@@ -82,19 +82,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ad
 						<td class="right">
 							<?php
                             $yearName = '';
-            try {
-                $dataYear = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
-                $sqlYear = 'SELECT * FROM gibbonFinanceBudgetCycle WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID';
-                $resultYear = $connection2->prepare($sqlYear);
-                $resultYear->execute($dataYear);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-            if ($resultYear->rowCount() == 1) {
-                $rowYear = $resultYear->fetch();
-                $yearName = $rowYear['name'];
-            }
-            ?>
+							try {
+								$dataYear = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
+								$sqlYear = 'SELECT * FROM gibbonFinanceBudgetCycle WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID';
+								$resultYear = $connection2->prepare($sqlYear);
+								$resultYear->execute($dataYear);
+							} catch (PDOException $e) {
+								echo "<div class='error'>".$e->getMessage().'</div>';
+							}
+							if ($resultYear->rowCount() == 1) {
+								$rowYear = $resultYear->fetch();
+								$yearName = $rowYear['name'];
+							}
+							?>
 							<input readonly name="name" id="name" maxlength=20 value="<?php echo $yearName ?>" type="text" class="standardWidth">
 							<input name="gibbonFinanceBudgetCycleID" id="gibbonFinanceBudgetCycleID" maxlength=20 value="<?php echo $gibbonFinanceBudgetCycleID ?>" type="hidden" class="standardWidth">
 							<script type="text/javascript">
@@ -117,20 +117,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ad
                             } catch (PDOException $e) {
                             }
 
-            echo "<select name='gibbonFinanceBudgetID' id='gibbonFinanceBudgetID' style='width:302px'>";
-            $selected = '';
-            if ($gibbonFinanceBudgetID == '') {
-                $selected = 'selected';
-            }
-            echo "<option $selected value='Please select...'>".__($guid, 'Please select...').'</option>';
-            while ($row = $result->fetch()) {
-                $selected = '';
-                if ($gibbonFinanceBudgetID == $row['gibbonFinanceBudgetID']) {
-                    $selected = 'selected';
-                }
-                echo "<option $selected value='".$row['gibbonFinanceBudgetID']."'>".$row['name'].'</option>';
-            }
-            echo '</select>'; ?>
+							echo "<select name='gibbonFinanceBudgetID' id='gibbonFinanceBudgetID' style='width:302px'>";
+							$selected = '';
+							if ($gibbonFinanceBudgetID == '') {
+								$selected = 'selected';
+							}
+							echo "<option $selected value='Please select...'>".__($guid, 'Please select...').'</option>';
+							while ($row = $result->fetch()) {
+								$selected = '';
+								if ($gibbonFinanceBudgetID == $row['gibbonFinanceBudgetID']) {
+									$selected = 'selected';
+								}
+								echo "<option $selected value='".$row['gibbonFinanceBudgetID']."'>".$row['name'].'</option>';
+							}
+							echo '</select>'; ?>
 							<script type="text/javascript">
 								var gibbonFinanceBudgetID=new LiveValidation('gibbonFinanceBudgetID');
 								gibbonFinanceBudgetID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
@@ -156,11 +156,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ad
 						<td class="right">
 							<?php
                             echo "<select name='status' id='status3' style='width:302px'>";
-            echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-            echo "<option value='Approved'>".__($guid, 'Approved').'</option>';
-            echo "<option value='Ordered'>".__($guid, 'Ordered').'</option>';
-            echo "<option value='Paid'>".__($guid, 'Paid').'</option>';
-            echo '</select>'; ?>
+							echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
+							echo "<option value='Approved'>".__($guid, 'Approved').'</option>';
+							echo "<option value='Ordered'>".__($guid, 'Ordered').'</option>';
+							echo "<option value='Paid'>".__($guid, 'Paid').'</option>';
+							echo '</select>'; ?>
 							<script type="text/javascript">
 								var status3=new LiveValidation('status3');
 								status3.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
@@ -202,15 +202,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ad
 						<td> 
 							<b><?php echo __($guid, 'Count Against Budget') ?> *</b><br/>
 							<span class="emphasis small">
-								<?php echo __($guid, 'For tracking purposes, should the item be counted against the budget? If immediately offset by some revenue, perhaps not.');
-            ?>
+								<?php echo __($guid, 'For tracking purposes, should the item be counted against the budget? If immediately offset by some revenue, perhaps not.'); ?>
 							</span>
 						</td>
 						<td class="right">
 							<select name="countAgainstBudget" id="countAgainstBudget" class="standardWidth">
 								<?php
                                 echo "<option selected value='Y'>".ynExpander($guid, 'Y').'</option>';
-            echo "<option value='N'>".ynExpander($guid, 'N').'</option>'; ?>			
+            					echo "<option value='N'>".ynExpander($guid, 'N').'</option>'; ?>			
 							</select>
 						</td>
 					</tr>
@@ -222,9 +221,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ad
 						<td class="right">
 							<?php
                             echo "<select name='purchaseBy' id='purchaseBy' style='width:302px'>";
-            echo "<option value='School'>School</option>";
-            echo "<option value='Self'>Self</option>";
-            echo '</select>'; ?>
+							echo "<option value='School'>School</option>";
+							echo "<option value='Self'>Self</option>";
+							echo '</select>'; ?>
 						</td>
 					</tr>
 				
@@ -336,17 +335,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ad
 							<select name="gibbonPersonIDPayment" id="gibbonPersonIDPayment" class="standardWidth">
 								<?php
                                 echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-            try {
-                $dataSelect = array();
-                $sqlSelect = "SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
-                $resultSelect = $connection2->prepare($sqlSelect);
-                $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) {
-            }
-            while ($rowSelect = $resultSelect->fetch()) {
-                echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName(htmlPrep($rowSelect['title']), ($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
-            }
-            ?>
+								try {
+									$dataSelect = array();
+									$sqlSelect = "SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
+									$resultSelect = $connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								} catch (PDOException $e) {
+								}
+								while ($rowSelect = $resultSelect->fetch()) {
+									echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName(htmlPrep($rowSelect['title']), ($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
+								}
+								?>
 							</select>
 							<script type="text/javascript">
 								var gibbonPersonIDPayment=new LiveValidation('gibbonPersonIDPayment');
@@ -361,13 +360,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ad
 						<td class="right">
 							<?php
 							echo "<select name='paymentMethod' id='paymentMethod' style='width:302px'>";
-            echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-            echo "<option value='Bank Transfer'>Bank Transfer</option>";
-            echo "<option value='Cash'>Cash</option>";
-            echo "<option value='Cheque'>Cheque</option>";
-            echo "<option value='Credit Card'>Credit Card</option>";
-            echo "<option value='Other'>Other</option>";
-            echo '</select>'; ?>
+							echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
+							echo "<option value='Bank Transfer'>Bank Transfer</option>";
+							echo "<option value='Cash'>Cash</option>";
+							echo "<option value='Cheque'>Cheque</option>";
+							echo "<option value='Credit Card'>Credit Card</option>";
+							echo "<option value='Other'>Other</option>";
+							echo '</select>'; ?>
 							<script type="text/javascript">
 								var paymentMethod=new LiveValidation('paymentMethod');
 								paymentMethod.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});

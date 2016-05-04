@@ -97,8 +97,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             $resultCategories->execute($dataCategories);
                         } catch (PDOException $e) {
                         }
-                if ($resultCategories->rowCount() > 0) {
-                    ?>
+						if ($resultCategories->rowCount() > 0) {
+							?>
 							<tr>
 								<td style='width: 275px'> 
 									<b><?php echo __($guid, 'Category') ?> *</b><br/>
@@ -140,8 +140,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 							</tr>
 							<?php
 
-                }
-                ?>
+						}
+						?>
 						<tr>
 							<td colspan=2 style='padding-top: 15px;'> 
 								<b><?php echo __($guid, 'Note') ?> *</b><br/>

@@ -166,22 +166,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 						</td>
 						<td class="right">
 							<select name="sort" class="standardWidth">
-								<option value="surname, preferredName" <?php if ($sort == 'surname, preferredName') { echo 'selected';
-}
-            ?>><?php echo __($guid, 'Surname');
-            ?></option>
-								<option value="preferredName" <?php if ($sort == 'preferredName') { echo 'selected';
-}
-            ?>><?php echo __($guid, 'Given Name');
-            ?></option>
-								<option value="rollGroup" <?php if ($sort == 'rollGroup') { echo 'selected';
-}
-            ?>><?php echo __($guid, 'Roll Group');
-            ?></option>
-								<option value="yearGroup" <?php if ($sort == 'yearGroup') { echo 'selected';
-}
-            ?>><?php echo __($guid, 'Year Group');
-            ?></option>
+								<option value="surname, preferredName" <?php if ($sort == 'surname, preferredName') { echo 'selected'; } ?>><?php echo __($guid, 'Surname'); ?></option>
+								<option value="preferredName" <?php if ($sort == 'preferredName') { echo 'selected'; } ?>><?php echo __($guid, 'Given Name'); ?></option>
+								<option value="rollGroup" <?php if ($sort == 'rollGroup') { echo 'selected'; } ?>><?php echo __($guid, 'Roll Group'); ?></option>
+								<option value="yearGroup" <?php if ($sort == 'yearGroup') { echo 'selected'; } ?>><?php echo __($guid, 'Year Group'); ?></option>
 							</select>
 						</td>
 					</tr>
@@ -198,8 +186,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 			</form>
 
 			<h2>
-				<?php echo __($guid, 'Choose A Student');
-            ?>
+				<?php echo __($guid, 'Choose A Student'); ?>
 			</h2>
 
 			<?php
@@ -349,22 +336,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 						</td>
 						<td class="right">
 							<select name="sort" class="standardWidth">
-								<option value="surname, preferredName" <?php if ($sort == 'surname, preferredName') { echo 'selected';
-}
-            ?>><?php echo __($guid, 'Surname');
-            ?></option>
-								<option value="preferredName" <?php if ($sort == 'preferredName') { echo 'selected';
-}
-            ?>><?php echo __($guid, 'Given Name');
-            ?></option>
-								<option value="rollGroup" <?php if ($sort == 'rollGroup') { echo 'selected';
-}
-            ?>><?php echo __($guid, 'Roll Group');
-            ?></option>
-								<option value="yearGroup" <?php if ($sort == 'yearGroup') { echo 'selected';
-}
-            ?>><?php echo __($guid, 'Year Group');
-            ?></option>
+								<option value="surname, preferredName" <?php if ($sort == 'surname, preferredName') { echo 'selected'; } ?>><?php echo __($guid, 'Surname'); ?></option>
+								<option value="preferredName" <?php if ($sort == 'preferredName') { echo 'selected'; } ?>><?php echo __($guid, 'Given Name'); ?></option>
+								<option value="rollGroup" <?php if ($sort == 'rollGroup') { echo 'selected'; } ?>><?php echo __($guid, 'Roll Group'); ?></option>
+								<option value="yearGroup" <?php if ($sort == 'yearGroup') { echo 'selected'; } ?>><?php echo __($guid, 'Year Group'); ?></option>
 							</select>
 						</td>
 					</tr>
@@ -377,11 +352,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 						<td class="right">
 							<?php
                                 $checked = '';
-            if ($allStudents == 'on') {
-                $checked = 'checked';
-            }
-            echo "<input $checked name=\"allStudents\" id=\"allStudents\" type=\"checkbox\">";
-            ?>
+								if ($allStudents == 'on') {
+									$checked = 'checked';
+								}
+								echo "<input $checked name=\"allStudents\" id=\"allStudents\" type=\"checkbox\">"; ?>
 						</td>
 					</tr>
 					<tr>
@@ -397,8 +371,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 			</form>
 
 			<h2>
-				<?php echo __($guid, 'Choose A Student');
-            ?>
+				<?php echo __($guid, 'Choose A Student'); ?>
 			</h2>
 
 			<?php

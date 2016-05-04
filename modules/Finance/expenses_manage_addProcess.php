@@ -36,8 +36,7 @@ $gibbonFinanceBudgetCycleID = $_POST['gibbonFinanceBudgetCycleID'];
 $gibbonFinanceBudgetID2 = $_POST['gibbonFinanceBudgetID2'];
 $status2 = $_POST['status2'];
 
-if ($gibbonFinanceBudgetCycleID == '') {
-    echo 'Fatal error loading this page!';
+if ($gibbonFinanceBudgetCycleID == '') { echo 'Fatal error loading this page!';
 } else {
     $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/expenses_manage_add.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2&status2=$status2";
 

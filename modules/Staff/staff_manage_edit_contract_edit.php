@@ -137,10 +137,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 							<b><?php echo __($guid, 'End Date') ?></b><br/>
 						</td>
 						<td class="right">
-							<input name="dateEnd" id="dateEnd" maxlength=10 value="<?php if ($row['dateEnd'] != '') {
-    echo dateConvertBack($guid, $row['dateEnd']);
-}
-            ?>" type="text" class="standardWidth">
+							<input name="dateEnd" id="dateEnd" maxlength=10 value="<?php if ($row['dateEnd'] != '') { echo dateConvertBack($guid, $row['dateEnd']); } ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var dateEnd=new LiveValidation('dateEnd');
 								dateEnd.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
@@ -164,9 +161,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 					</tr>
 					<?php
                     $types = getSettingByScope($connection2, 'Staff', 'salaryScalePositions');
-            if ($types != false) {
-                $types = explode(',', $types);
-                ?>
+					if ($types != false) {
+						$types = explode(',', $types);
+						?>
 						<tr>
 							<td> 
 								<b><?php echo __($guid, 'Salary Scale') ?></b><br/>
@@ -186,14 +183,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 									<?php
 
                                     }
-                ?>
+               					?>
 								</select>
 							</td>
 						</tr>
 						<?php
 
-            }
-            ?>
+					}
+					?>
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php echo __($guid, 'Salary') ?></b><br/>
@@ -216,9 +213,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 					</tr>
 					<?php
                     $types = getSettingByScope($connection2, 'Staff', 'responsibilityPosts');
-            if ($types != false) {
-                $types = explode(',', $types);
-                ?>
+					if ($types != false) {
+						$types = explode(',', $types);
+                		?>
 						<tr>
 							<td> 
 								<b><?php echo __($guid, 'Responsibility Level') ?></b><br/>
@@ -238,14 +235,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 									<?php
 
                                     }
-                ?>
+                				?>
 								</select>
 							</td>
 						</tr>
 						<?php
 
-            }
-            ?>
+					}
+					?>
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php echo __($guid, 'Responsibility') ?></b><br/>
@@ -362,12 +359,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 						<td style='width: 275px'> 
 							<b><?php echo __($guid, 'Contract File') ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Accepts PDF, ODT, DOC, DOCX, RTF.') ?><br/></span>
-							<?php if ($row['contractUpload'] != '') {
-    ?>
+							<?php if ($row['contractUpload'] != '') { ?>
 							<span class="emphasis small"><?php echo __($guid, 'Will overwrite existing attachment.') ?></span>
 							<?php 
-}
-            ?>
+							}
+            				?>
 						</td>
 						<td class="right">
 							<?php

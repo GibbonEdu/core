@@ -88,36 +88,35 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_view.php')
     echo __($guid, 'Filter');
     echo '</h3>';
     echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."'>";
-    echo"<table class='noIntBorder' cellspacing='0' style='width: 100%'>";
-    ?>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Learning Areas') ?></b><br/>
-					<span class="emphasis small"></span>
-				</td>
-				<td class="right">
-					<?php
-                    echo "<select name='filter2' id='filter2' style='width:302px'>";
-    echo "<option value=''>".__($guid, 'All Learning Areas').'</option>';
-    try {
-        $dataSelect = array();
-        $sqlSelect = "SELECT * FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
-        $resultSelect = $connection2->prepare($sqlSelect);
-        $resultSelect->execute($dataSelect);
-    } catch (PDOException $e) {
-    }
-    while ($rowSelect = $resultSelect->fetch()) {
-        $selected = '';
-        if ($rowSelect['gibbonDepartmentID'] == $filter2) {
-            $selected = 'selected';
-        }
-        echo "<option $selected value='".$rowSelect['gibbonDepartmentID']."'>".$rowSelect['name'].'</option>';
-    }
-    echo '</select>';?>
-				</td>
-			</tr>
+    echo"<table class='noIntBorder' cellspacing='0' style='width: 100%'>"; ?>
+	<tr>
+		<td> 
+			<b><?php echo __($guid, 'Learning Areas') ?></b><br/>
+			<span class="emphasis small"></span>
+		</td>
+		<td class="right">
 			<?php
-            echo '<tr>';
+			echo "<select name='filter2' id='filter2' style='width:302px'>";
+			echo "<option value=''>".__($guid, 'All Learning Areas').'</option>';
+			try {
+				$dataSelect = array();
+				$sqlSelect = "SELECT * FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
+				$resultSelect = $connection2->prepare($sqlSelect);
+				$resultSelect->execute($dataSelect);
+			} catch (PDOException $e) {
+			}
+			while ($rowSelect = $resultSelect->fetch()) {
+				$selected = '';
+				if ($rowSelect['gibbonDepartmentID'] == $filter2) {
+					$selected = 'selected';
+				}
+				echo "<option $selected value='".$rowSelect['gibbonDepartmentID']."'>".$rowSelect['name'].'</option>';
+			}
+			echo '</select>';?>
+		</td>
+	</tr>
+	<?php
+	echo '<tr>';
     echo "<td class='right' colspan=2>";
     echo "<input type='hidden' name='q' value='".$_GET['q']."'>";
     echo "<input type='submit' value='".__($guid, 'Go')."'>";

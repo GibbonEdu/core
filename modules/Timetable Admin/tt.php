@@ -76,12 +76,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt.php') =
             } else {
                 echo __($guid, 'Previous Year').' ';
             }
-        echo ' | ';
-        if (getNextSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/tt.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__($guid, 'Next Year').'</a> ';
-        } else {
-            echo __($guid, 'Next Year').' ';
-        }
+			echo ' | ';
+			if (getNextSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
+				echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/tt.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__($guid, 'Next Year').'</a> ';
+			} else {
+				echo __($guid, 'Next Year').' ';
+			}
         echo '</div>';
 
         try {

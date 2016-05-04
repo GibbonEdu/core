@@ -147,8 +147,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
 										<select class="standardWidth" name="working">
 											<?php
                                             echo "<option value='N'>".__($guid, 'No').'</option>';
-                        echo "<option value='Y'>".__($guid, 'Yes').'</option>';
-                        ?>				
+                        					echo "<option value='Y'>".__($guid, 'Yes').'</option>';
+                        					?>				
 										</select>
 									</td>
 								</tr>

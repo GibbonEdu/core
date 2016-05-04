@@ -293,8 +293,7 @@ if ($result->rowCount() == 1) {
                     if ($_SESSION[$guid]['receiveNotificationEmails'] == 'Y') {
                         echo ' selected ';
                     }
-                    echo "value='Y'>".ynExpander($guid, 'Y').'</option>';
-                    ?>				
+                    echo "value='Y'>".ynExpander($guid, 'Y').'</option>'; ?>				
 				</select>
 			</td>
 		</tr>

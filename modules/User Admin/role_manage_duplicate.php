@@ -69,8 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_dup
 							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 						</td>
 						<td class="right">
-							<?php echo "<input readonly value='".$row['name']."' type='text' style='width: 300px'>";
-            ?>
+							<?php echo "<input readonly value='".$row['name']."' type='text' style='width: 300px'>"; ?>
 						</td>
 					</tr>
 					<tr>

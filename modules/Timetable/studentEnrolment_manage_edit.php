@@ -96,10 +96,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
                                     $resultSelect->execute($dataSelect);
                                 } catch (PDOException $e) {
                                 }
-            while ($rowSelect = $resultSelect->fetch()) {
-                echo "<option value='".$rowSelect['gibbonPersonID']."'>".htmlPrep($rowSelect['name']).' - '.formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).'</option>';
-            }
-            ?>
+								while ($rowSelect = $resultSelect->fetch()) {
+									echo "<option value='".$rowSelect['gibbonPersonID']."'>".htmlPrep($rowSelect['name']).' - '.formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).'</option>';
+								}
+								?>
 							</select>
 						</td>
 					</tr>
@@ -173,17 +173,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
                 echo '<th>';
                 echo __($guid, 'Actions');
                 echo '</th>';
-                echo '<th>';
-                ?>
-								<script type="text/javascript">
-									$(function () {
-										$('.checkall').click(function () {
-											$(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
-										});
-									});
-								</script>
-								<?php
-                                echo "<input type='checkbox' class='checkall'>";
+                echo '<th>'; ?>
+				<script type="text/javascript">
+					$(function () {
+						$('.checkall').click(function () {
+							$(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
+						});
+					});
+				</script>
+				<?php
+				echo "<input type='checkbox' class='checkall'>";
                 echo '</th>';
                 echo '</tr>';
 
@@ -197,8 +196,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
                     }
                     ++$count;
 
-                            //COLOR ROW BY STATUS!
-                            echo "<tr class=$rowNum>";
+					//COLOR ROW BY STATUS!
+					echo "<tr class=$rowNum>";
                     echo '<td>';
                     if ($row['role'] == 'Student') {
                         echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$row['gibbonPersonID']."&subpage=Timetable'>".formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true).'</a>';

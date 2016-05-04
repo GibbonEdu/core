@@ -55,8 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearTer
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
-            ?>
+            $row = $result->fetch(); ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/schoolYearTerm_manage_editProcess.php?gibbonSchoolYearTermID=$gibbonSchoolYearTermID" ?>">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
@@ -68,21 +67,21 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearTer
 							<select name="gibbonSchoolYearID" id="gibbonSchoolYearID" class="standardWidth">
 								<?php
                                 echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-            try {
-                $dataSelect = array();
-                $sqlSelect = 'SELECT * FROM gibbonSchoolYear ORDER BY sequenceNumber';
-                $resultSelect = $connection2->prepare($sqlSelect);
-                $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) {
-            }
-            while ($rowSelect = $resultSelect->fetch()) {
-                if ($rowSelect['gibbonSchoolYearID'] == $row['gibbonSchoolYearID']) {
-                    echo "<option selected value='".$rowSelect['gibbonSchoolYearID']."'>".htmlPrep($rowSelect['name']).'</option>';
-                } else {
-                    echo "<option value='".$rowSelect['gibbonSchoolYearID']."'>".htmlPrep($rowSelect['name']).'</option>';
-                }
-            }
-            ?>				
+								try {
+									$dataSelect = array();
+									$sqlSelect = 'SELECT * FROM gibbonSchoolYear ORDER BY sequenceNumber';
+									$resultSelect = $connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								} catch (PDOException $e) {
+								}
+								while ($rowSelect = $resultSelect->fetch()) {
+									if ($rowSelect['gibbonSchoolYearID'] == $row['gibbonSchoolYearID']) {
+										echo "<option selected value='".$rowSelect['gibbonSchoolYearID']."'>".htmlPrep($rowSelect['name']).'</option>';
+									} else {
+										echo "<option value='".$rowSelect['gibbonSchoolYearID']."'>".htmlPrep($rowSelect['name']).'</option>';
+									}
+								}
+								?>				
 							</select>
 							<script type="text/javascript">
 								var gibbonSchoolYearTermID=new LiveValidation('gibbonSchoolYearTermID');

@@ -93,8 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                     echo '</h2>';
 
                     echo "<form method='get' action='".$_SESSION[$guid]['absoluteURL']."/index.php'>";
-                    echo "<table class='noIntBorder' cellspacing='0' style='width: 100%'>";
-                    ?>
+                    echo "<table class='noIntBorder' cellspacing='0' style='width: 100%'>"; ?>
 							<tr>
 								<td> 
 									<b><?php echo __($guid, 'Student') ?></b><br/>
@@ -102,8 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 								<td class="right">
 									<select name="search" id="search" class="standardWidth">
 										<option value=""></value>
-										<?php echo $options;
-                    ?> 
+										<?php echo $options; ?> 
 									</select>
 								</td>
 							</tr>
@@ -112,8 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 									<input type="hidden" name="q" value="/modules/Formal Assessment/externalAssessment_view.php">
 									<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 									<?php
-                                    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Formal Assessment/externalAssessment_view.php'>".__($guid, 'Clear Search').'</a>';
-                    ?>
+                                    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Formal Assessment/externalAssessment_view.php'>".__($guid, 'Clear Search').'</a>'; ?>
 									<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 								</td>
 							</tr>

@@ -200,8 +200,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 							return confirm(\"".__($guid, 'The selected date for attendance is in the past. Are you sure you want to continue?').'")
 						}
 					}
-				</script>';
-                ?>
+				</script>'; ?>
 				
 				<form onsubmit="return dateCheck()" method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/attendance_take_byPersonProcess.php?gibbonPersonID=$gibbonPersonID" ?>">
 					<table class='smallIntBorder fullWidth' cellspacing='0'>	

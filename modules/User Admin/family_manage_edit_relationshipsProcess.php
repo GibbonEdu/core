@@ -32,8 +32,7 @@ date_default_timezone_set($_SESSION[$guid]['timezone']);
 $gibbonFamilyID = $_GET['gibbonFamilyID'];
 $search = $_GET['search'];
 
-if ($gibbonFamilyID == '') {
-    echo 'Fatal error loading this page!';
+if ($gibbonFamilyID == '') { echo 'Fatal error loading this page!';
 } else {
     $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/family_manage_edit.php&gibbonFamilyID=$gibbonFamilyID&search=$search";
 

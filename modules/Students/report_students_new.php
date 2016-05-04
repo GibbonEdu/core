@@ -91,18 +91,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
 					</select>
 				</td>
 			</tr>
-			<tr id='startDateFromRow' <?php if ($type != 'Date Range') {
-    echo "style='display: none'";
-}
-    ?>>
+			<tr id='startDateFromRow' <?php if ($type != 'Date Range') { echo "style='display: none'"; } ?>>
 				<td> 
 					<b><?php echo __($guid, 'From Date') ?></b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Earliest student start date to include.') ?><br/><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-    ?></span>
+					<span class="emphasis small"><?php echo __($guid, 'Earliest student start date to include.') ?><br/><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
+					} else {
+						echo $_SESSION[$guid]['i18n']['dateFormat'];
+					}
+    				?></span>
 				</td>
 				<td class="right">
 					<input name="startDateFrom" id="startDateFrom" maxlength=10 value="<?php echo $startDateFrom ?>" type="text" class="standardWidth">
@@ -127,18 +123,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
 					</script>
 				</td>
 			</tr>
-			<tr id='startDateToRow' <?php if ($type != 'Date Range') {
-    echo "style='display: none'";
-}
-    ?>>
+			<tr id='startDateToRow' <?php if ($type != 'Date Range') { echo "style='display: none'"; } ?>>
 				<td> 
 					<b><?php echo __($guid, 'To Date') ?></b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Latest student start date to include.') ?><br/><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-    ?></span>
+					<span class="emphasis small"><?php echo __($guid, 'Latest student start date to include.') ?><br/><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
+					} else {
+						echo $_SESSION[$guid]['i18n']['dateFormat'];
+					}
+    				?></span>
 				</td>
 				<td class="right">
 					<input name="startDateTo" id="startDateTo" maxlength=10 value="<?php echo $startDateTo ?>" type="text" class="standardWidth">
@@ -169,10 +161,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
 					<span class="emphasis small"><?php echo __($guid, 'This is useful for picking up students who are set to Full, have a start date but are not yet enroled.') ?></span>
 				</td>
 				<td class="right">
-					<input <?php if ($ignoreEnrolment == 'on') {
-    echo 'checked';
-}
-    ?> name="ignoreEnrolment" id="ignoreEnrolment" type="checkbox">
+					<input <?php if ($ignoreEnrolment == 'on') { echo 'checked'; } ?> name="ignoreEnrolment" id="ignoreEnrolment" type="checkbox">
 				</td>
 			</tr>
 			<tr>

@@ -256,32 +256,32 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                         echo __($guid, 'Student');
                         echo '</th>';
 
-                                //Show Baseline data header
-                                if ($externalAssessment == true) {
-                                    echo "<th rowspan=2 style='width: 20px'>";
-                                    $title = __($guid, $externalAssessmentFields[2]).' | ';
-                                    $title .= __($guid, substr($externalAssessmentFields[3], (strpos($externalAssessmentFields[3], '_') + 1))).' | ';
-                                    $title .= __($guid, $externalAssessmentFields[1]);
+						//Show Baseline data header
+						if ($externalAssessment == true) {
+							echo "<th rowspan=2 style='width: 20px'>";
+							$title = __($guid, $externalAssessmentFields[2]).' | ';
+							$title .= __($guid, substr($externalAssessmentFields[3], (strpos($externalAssessmentFields[3], '_') + 1))).' | ';
+							$title .= __($guid, $externalAssessmentFields[1]);
 
-                                        //Get PAS
-                                        $PAS = getSettingByScope($connection2, 'System', 'primaryAssessmentScale');
-                                    try {
-                                        $dataPAS = array('gibbonScaleID' => $PAS);
-                                        $sqlPAS = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
-                                        $resultPAS = $connection2->prepare($sqlPAS);
-                                        $resultPAS->execute($dataPAS);
-                                    } catch (PDOException $e) {
-                                    }
-                                    if ($resultPAS->rowCount() == 1) {
-                                        $rowPAS = $resultPAS->fetch();
-                                        $title .= ' | '.$rowPAS['name'].' '.__($guid, 'Scale').' ';
-                                    }
+								//Get PAS
+								$PAS = getSettingByScope($connection2, 'System', 'primaryAssessmentScale');
+							try {
+								$dataPAS = array('gibbonScaleID' => $PAS);
+								$sqlPAS = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
+								$resultPAS = $connection2->prepare($sqlPAS);
+								$resultPAS->execute($dataPAS);
+							} catch (PDOException $e) {
+							}
+							if ($resultPAS->rowCount() == 1) {
+								$rowPAS = $resultPAS->fetch();
+								$title .= ' | '.$rowPAS['name'].' '.__($guid, 'Scale').' ';
+							}
 
-                                    echo "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);' title='$title'>";
-                                    echo __($guid, 'Baseline').'<br/>';
-                                    echo '</div>';
-                                    echo '</th>';
-                                }
+							echo "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);' title='$title'>";
+							echo __($guid, 'Baseline').'<br/>';
+							echo '</div>';
+							echo '</th>';
+                        }
 
                         $columnID = array();
                         $attainmentID = array();

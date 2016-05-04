@@ -110,14 +110,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_view.p
     $output .= '</tr>';
     $output .= '<tr>';
     $output .= "<td style='padding: 0px 2px 0px 0px' colspan=4>";
-                                //Tag selector
-                                try {
-                                    $dataList = array();
-                                    $sqlList = 'SELECT * FROM gibbonResourceTag WHERE count>0 ORDER BY tag';
-                                    $resultList = $connection2->prepare($sqlList);
-                                    $resultList->execute($dataList);
-                                } catch (PDOException $e) {
-                                }
+	//Tag selector
+	try {
+		$dataList = array();
+		$sqlList = 'SELECT * FROM gibbonResourceTag WHERE count>0 ORDER BY tag';
+		$resultList = $connection2->prepare($sqlList);
+		$resultList->execute($dataList);
+	} catch (PDOException $e) {
+	}
     $list = '';
     while ($rowList = $resultList->fetch()) {
         $list = $list.'{id: "'.$rowList['tag'].'", name: "'.$rowList['tag'].' <i>('.$rowList['count'].')</i>"},';
@@ -247,46 +247,46 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_view.p
     $output .= '</table>';
     $output .= '</form>';
 
-                //Search with filters applied
-                try {
-                    $data = array();
-                    $sqlWhere = 'WHERE ';
-                    if ($tags != '') {
-                        $tagCount = 0;
-                        $tagArray = explode(',', $tags);
-                        foreach ($tagArray as $atag) {
-                            $data['tag'.$tagCount] = "'%".$atag."%'";
-                            $sqlWhere .= 'tags LIKE :tag'.$tagCount.' AND ';
-                            ++$tagCount;
-                        }
-                    }
-                    if ($category != '') {
-                        $data['category'] = $category;
-                        $sqlWhere .= 'category=:category AND ';
-                    }
-                    if ($purpose != '') {
-                        $data['purpose'] = $purpose;
-                        $sqlWhere .= 'purpose=:purpose AND ';
-                    }
-                    if ($gibbonYearGroupID != '') {
-                        $data['gibbonYearGroupID'] = "%$gibbonYearGroupID%";
-                        $sqlWhere .= 'gibbonYearGroupIDList LIKE :gibbonYearGroupID AND ';
-                    }
-                    if ($sqlWhere == 'WHERE ') {
-                        $sqlWhere = '';
-                    } else {
-                        $sqlWhere = substr($sqlWhere, 0, -5);
-                    }
-                    if ($alpha != 'true') {
-                        $sql = "SELECT gibbonResource.*, surname, preferredName, title FROM gibbonResource JOIN gibbonPerson ON (gibbonResource.gibbonPersonID=gibbonPerson.gibbonPersonID) $sqlWhere ORDER BY timestamp DESC LIMIT 50";
-                    } else {
-                        $sql = "SELECT gibbonResource.*, surname, preferredName, title FROM gibbonResource JOIN gibbonPerson ON (gibbonResource.gibbonPersonID=gibbonPerson.gibbonPersonID) $sqlWhere ORDER BY name LIMIT 50";
-                    }
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
+	//Search with filters applied
+	try {
+		$data = array();
+		$sqlWhere = 'WHERE ';
+		if ($tags != '') {
+			$tagCount = 0;
+			$tagArray = explode(',', $tags);
+			foreach ($tagArray as $atag) {
+				$data['tag'.$tagCount] = "'%".$atag."%'";
+				$sqlWhere .= 'tags LIKE :tag'.$tagCount.' AND ';
+				++$tagCount;
+			}
+		}
+		if ($category != '') {
+			$data['category'] = $category;
+			$sqlWhere .= 'category=:category AND ';
+		}
+		if ($purpose != '') {
+			$data['purpose'] = $purpose;
+			$sqlWhere .= 'purpose=:purpose AND ';
+		}
+		if ($gibbonYearGroupID != '') {
+			$data['gibbonYearGroupID'] = "%$gibbonYearGroupID%";
+			$sqlWhere .= 'gibbonYearGroupIDList LIKE :gibbonYearGroupID AND ';
+		}
+		if ($sqlWhere == 'WHERE ') {
+			$sqlWhere = '';
+		} else {
+			$sqlWhere = substr($sqlWhere, 0, -5);
+		}
+		if ($alpha != 'true') {
+			$sql = "SELECT gibbonResource.*, surname, preferredName, title FROM gibbonResource JOIN gibbonPerson ON (gibbonResource.gibbonPersonID=gibbonPerson.gibbonPersonID) $sqlWhere ORDER BY timestamp DESC LIMIT 50";
+		} else {
+			$sql = "SELECT gibbonResource.*, surname, preferredName, title FROM gibbonResource JOIN gibbonPerson ON (gibbonResource.gibbonPersonID=gibbonPerson.gibbonPersonID) $sqlWhere ORDER BY name LIMIT 50";
+		}
+		$result = $connection2->prepare($sql);
+		$result->execute($data);
+	} catch (PDOException $e) {
+		echo "<div class='error'>".$e->getMessage().'</div>';
+	}
 
     if ($result->rowCount() < 1) {
         $output .= "<div class='error'>";
@@ -327,8 +327,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_view.p
             }
             ++$count;
 
-                            //COLOR ROW BY STATUS!
-                            $output .= "<tr class=$rowNum>";
+			//COLOR ROW BY STATUS!
+			$output .= "<tr class=$rowNum>";
             $output .= '<td>';
             if ($row['type'] == 'Link') {
                 $output .= "<a target='_blank' style='font-weight: bold' href='".$row['content']."'>".$row['name'].'</a><br/>';

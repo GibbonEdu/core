@@ -79,8 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 if ($search != '') {
                     echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Staff/applicationForm_manage.php&search=$search'>".__($guid, 'Back to Search Results').'</a>';
                 }
-                echo '</div>';
-                ?>
+                echo '</div>'; ?>
 				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/applicationForm_manage_accept.php&step=2&gibbonStaffApplicationFormID=$gibbonStaffApplicationFormID&search=$search" ?>">
 					<table class='smallIntBorder fullWidth' cellspacing='0'>	
 						<tr>
@@ -89,10 +88,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 								<br/>
 								<?php
                                 $checkedapplicant = '';
-                if (getSettingByScope($connection2, 'Staff', 'staffApplicationFormNotificationDefault') == 'Y') {
-                    $checkedapplicant = 'checked';
-                }
-                ?>
+								if (getSettingByScope($connection2, 'Staff', 'staffApplicationFormNotificationDefault') == 'Y') {
+									$checkedapplicant = 'checked';
+								}
+								?>
 								<input <?php echo $checkedapplicant ?> type='checkbox' name='informApplicant'/> <?php echo __($guid, 'Automatically inform <u>applicant</u> of their Gibbon login details by email?') ?><br/>
 								
 								<br/>
@@ -107,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                                         echo '<li>'.__($guid, 'Register the user as a member of staff, if not already done.').'</li>';
                                         echo '<li>'.__($guid, 'Set the status of the application to "Accepted".').'</li>';
                                     }
-                ?>
+                                    ?>
 								</ol>
 								<br/>
 								<i><u><?php echo __($guid, 'But you may wish to manually do the following:') ?></u></i><br/>

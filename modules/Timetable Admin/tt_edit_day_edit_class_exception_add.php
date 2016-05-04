@@ -100,10 +100,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                                         $resultSelect->execute($dataSelect);
                                     } catch (PDOException $e) {
                                     }
-                while ($rowSelect = $resultSelect->fetch()) {
-                    echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).'</option>';
-                }
-                ?>
+									while ($rowSelect = $resultSelect->fetch()) {
+										echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).'</option>';
+									}
+									?>
 								</select>
 							</td>
 						</tr>

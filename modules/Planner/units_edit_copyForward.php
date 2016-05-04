@@ -121,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_copyFor
 									<td class="right">
 										<?php
                                         echo "<input readonly value='".$year."' type='text' style='width: 300px'>";
-                        ?>
+                        				?>
 									</td>
 								</tr>
 								<tr>
@@ -131,7 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_copyFor
 									</td>
 									<td class="right">
 										<?php echo "<input readonly value='".$course.'.'.$class."' type='text' style='width: 300px'>";
-                        ?>
+                       				 	?>
 									</td>
 								</tr>
 								<tr>
@@ -141,7 +141,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_copyFor
 									</td>
 									<td class="right">
 										<?php echo "<input readonly value='".$row['name']."' type='text' style='width: 300px'>";
-                        ?>
+                        				?>
 									</td>
 								</tr>
 								
@@ -159,27 +159,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_copyFor
 										<select name="gibbonSchoolYearIDCopyTo" id="gibbonSchoolYearIDCopyTo" class="standardWidth">
 											<?php
                                             echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-                        try {
-                            $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                            $sqlSelect = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-                            $resultSelect = $connection2->prepare($sqlSelect);
-                            $resultSelect->execute($dataSelect);
-                        } catch (PDOException $e) {
-                        }
-                        if ($resultSelect->rowCount() == 1) {
-                            $rowSelect = $resultSelect->fetch();
-                            try {
-                                $dataSelect2 = array('sequenceNumber' => $rowSelect['sequenceNumber']);
-                                $sqlSelect2 = 'SELECT * FROM gibbonSchoolYear WHERE sequenceNumber>=:sequenceNumber ORDER BY sequenceNumber ASC';
-                                $resultSelect2 = $connection2->prepare($sqlSelect2);
-                                $resultSelect2->execute($dataSelect2);
-                            } catch (PDOException $e) {
-                            }
-                            while ($rowSelect2 = $resultSelect2->fetch()) {
-                                echo "<option value='".$rowSelect2['gibbonSchoolYearID']."'>".htmlPrep($rowSelect2['name']).'</option>';
-                            }
-                        }
-                        ?>				
+											try {
+												$dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+												$sqlSelect = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
+												$resultSelect = $connection2->prepare($sqlSelect);
+												$resultSelect->execute($dataSelect);
+											} catch (PDOException $e) {
+											}
+											if ($resultSelect->rowCount() == 1) {
+												$rowSelect = $resultSelect->fetch();
+												try {
+													$dataSelect2 = array('sequenceNumber' => $rowSelect['sequenceNumber']);
+													$sqlSelect2 = 'SELECT * FROM gibbonSchoolYear WHERE sequenceNumber>=:sequenceNumber ORDER BY sequenceNumber ASC';
+													$resultSelect2 = $connection2->prepare($sqlSelect2);
+													$resultSelect2->execute($dataSelect2);
+												} catch (PDOException $e) {
+												}
+												while ($rowSelect2 = $resultSelect2->fetch()) {
+													echo "<option value='".$rowSelect2['gibbonSchoolYearID']."'>".htmlPrep($rowSelect2['name']).'</option>';
+												}
+											}
+											?>				
 										</select>
 										<script type="text/javascript">
 											var gibbonSchoolYearIDCopyTo=new LiveValidation('gibbonSchoolYearIDCopyTo');
@@ -206,10 +206,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_copyFor
                                                 $resultSelect->execute($dataSelect);
                                             } catch (PDOException $e) {
                                             }
-                        while ($rowSelect = $resultSelect->fetch()) {
-                            echo "<option class='".$rowSelect['gibbonSchoolYearID']."' value='".$rowSelect['gibbonCourseID']."'>".htmlPrep($rowSelect['course']).'</option>';
-                        }
-                        ?>				
+											while ($rowSelect = $resultSelect->fetch()) {
+												echo "<option class='".$rowSelect['gibbonSchoolYearID']."' value='".$rowSelect['gibbonCourseID']."'>".htmlPrep($rowSelect['course']).'</option>';
+											}
+											?>				
 										</select>
 										<script type="text/javascript">
 											$("#gibbonCourseIDTarget").chainedTo("#gibbonSchoolYearIDCopyTo");
@@ -222,8 +222,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_copyFor
 										<span class="emphasis small"></span>
 									</td>
 									<td class="right">
-										<?php echo "<input name='nameTarget' id='nameTarget' value='".$row['name']."' type='text' style='width: 300px'>";
-                        ?>
+										<?php echo "<input name='nameTarget' id='nameTarget' value='".$row['name']."' type='text' style='width: 300px'>"; ?>
 										<script type="text/javascript">
 											var nameTarget=new LiveValidation('nameTarget');
 											nameTarget.add(Validate.Presence);

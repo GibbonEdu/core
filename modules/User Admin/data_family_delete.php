@@ -59,8 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_family_del
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
-            ?>
+            $row = $result->fetch(); ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/data_family_deleteProcess.php?gibbonFamilyUpdateID=$gibbonFamilyUpdateID" ?>">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>

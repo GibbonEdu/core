@@ -56,8 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
-            ?>
+            $row = $result->fetch(); ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/budgetCycles_manage_editProcess.php?gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID" ?>">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr class='break'>
@@ -71,10 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
 							<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?></span>
 						</td>
 						<td class="right">
-							<input name="name" id="name" maxlength=9 value="<?php if (isset($row['name'])) {
-    echo htmlPrep($row['name']);
-}
-            ?>" type="text" class="standardWidth">
+							<input name="name" id="name" maxlength=9 value="<?php if (isset($row['name'])) { echo htmlPrep($row['name']); } ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var name2=new LiveValidation('name');
 								name2.add(Validate.Presence);
@@ -99,10 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
 							<span class="emphasis small"><?php echo __($guid, 'Must be unique. Controls chronological ordering.') ?></span>
 						</td>
 						<td class="right">
-							<input name="sequenceNumber" id="sequenceNumber" maxlength=3 value="<?php if (isset($row['sequenceNumber'])) {
-    echo htmlPrep($row['sequenceNumber']);
-}
-            ?>" type="text" class="standardWidth">
+							<input name="sequenceNumber" id="sequenceNumber" maxlength=3 value="<?php if (isset($row['sequenceNumber'])) { echo htmlPrep($row['sequenceNumber']); } ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var sequenceNumber=new LiveValidation('sequenceNumber');
 								sequenceNumber.add(Validate.Numericality);
@@ -117,9 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
 						</td>
 						<td class="right">
 							<input name="dateStart" id="dateStart" maxlength=10 value="<?php if (isset($row['dateStart'])) {
-    echo dateConvertBack($guid, $row['dateStart']);
-}
-            ?>" type="text" class="standardWidth">
+    echo dateConvertBack($guid, $row['dateStart']); } ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var dateStart=new LiveValidation('dateStart');
 								dateStart.add(Validate.Presence);
@@ -148,10 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
 							<span class="emphasis small"><?php echo $_SESSION[$guid]['i18n']['dateFormat']  ?></span>
 						</td>
 						<td class="right">
-							<input name="dateEnd" id="dateEnd" maxlength=10 value="<?php if (isset($row['dateEnd'])) {
-    echo dateConvertBack($guid, $row['dateEnd']);
-}
-            ?>" type="text" class="standardWidth">
+							<input name="dateEnd" id="dateEnd" maxlength=10 value="<?php if (isset($row['dateEnd'])) { echo dateConvertBack($guid, $row['dateEnd']); } ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var dateEnd=new LiveValidation('dateEnd');
 								dateEnd.add(Validate.Presence);
@@ -189,17 +177,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
                     } catch (PDOException $e) {
                         echo "<div class='error'>".$e->getMessage().'</div>';
                     }
-            if ($resultBudget->rowCount() < 1) {
-                echo '<tr>';
-                echo '<td colspan=2>';
-                echo "<div class='error'>";
-                echo __($guid, 'There are no records to display.');
-                echo '</div>';
-                echo '</td>';
-                echo '</tr>';
-            } else {
-                while ($rowBudget = $resultBudget->fetch()) {
-                    ?>
+					if ($resultBudget->rowCount() < 1) {
+						echo '<tr>';
+						echo '<td colspan=2>';
+						echo "<div class='error'>";
+						echo __($guid, 'There are no records to display.');
+						echo '</div>';
+						echo '</td>';
+						echo '</tr>';
+					} else {
+						while ($rowBudget = $resultBudget->fetch()) {
+							?>
 							<tr>
 								<td> 
 									<b><?php echo $rowBudget['name'] ?> *</b><br/>
@@ -216,12 +204,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
 									</span>
 								</td>
 								<td class="right">
-									<input name="values[]" id="values" maxlength=15 value="<?php if (is_null($rowBudget['value'])) {
-    echo '0.00';
-} else {
-    echo $rowBudget['value'];
-}
-                    ?>" type="text" class="standardWidth">
+									<input name="values[]" id="values" maxlength=15 value="<?php if (is_null($rowBudget['value'])) { echo '0.00'; } else { echo $rowBudget['value']; } ?>" type="text" class="standardWidth">
 									<input type="hidden" name="gibbonFinanceBudgetIDs[]" value="<?php echo $rowBudget['gibbonFinanceBudgetID'] ?>">
 									<script type="text/javascript">
 										var values=new LiveValidation('values');
@@ -230,13 +213,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
 									</script>
 								</td>
 							</tr>
-							<?php
-
-                }
-            }
-            ?>
-			
-			
+						<?php
+						}
+					}
+					?>
 					<tr>
 						<td>
 							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>

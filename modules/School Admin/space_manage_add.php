@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
 			</tr>
 			<?php
             $types = getSettingByScope($connection2, 'School Admin', 'facilityTypes');
-    $types = explode(',', $types); ?>
+    		$types = explode(',', $types); ?>
 			<tr>
 				<td> 
 					<b><?php echo __($guid, 'Type') ?> *</b><br/>
@@ -88,18 +88,18 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
 					<select class="standardWidth" name="gibbonPersonID1">
 						<?php
                         echo "<option value=''></option>";
-    try {
-        $data = array();
-        $sql = "SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
-    while ($row = $result->fetch()) {
-        echo "<option value='".$row['gibbonPersonID']."'>".formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Staff', true, true).'</option>';
-    }
-    ?>				
+						try {
+							$data = array();
+							$sql = "SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
+							$result = $connection2->prepare($sql);
+							$result->execute($data);
+						} catch (PDOException $e) {
+							echo "<div class='error'>".$e->getMessage().'</div>';
+						}
+						while ($row = $result->fetch()) {
+							echo "<option value='".$row['gibbonPersonID']."'>".formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Staff', true, true).'</option>';
+						}
+						?>				
 					</select>
 				</td>
 			</tr>
@@ -111,18 +111,18 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
 					<select class="standardWidth" name="gibbonPersonID2">
 						<?php
                         echo "<option value=''></option>";
-    try {
-        $data = array();
-        $sql = "SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
-    while ($row = $result->fetch()) {
-        echo "<option value='".$row['gibbonPersonID']."'>".formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Staff', true, true).'</option>';
-    }
-    ?>				
+						try {
+							$data = array();
+							$sql = "SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
+							$result = $connection2->prepare($sql);
+							$result->execute($data);
+						} catch (PDOException $e) {
+							echo "<div class='error'>".$e->getMessage().'</div>';
+						}
+						while ($row = $result->fetch()) {
+							echo "<option value='".$row['gibbonPersonID']."'>".formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Staff', true, true).'</option>';
+						}
+						?>				
 					</select>
 				</td>
 			</tr>

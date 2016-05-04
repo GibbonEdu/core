@@ -77,19 +77,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
 						<td class="right">
 							<?php
                             $yearName = '';
-            try {
-                $dataYear = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-                $sqlYear = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-                $resultYear = $connection2->prepare($sqlYear);
-                $resultYear->execute($dataYear);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-            if ($resultYear->rowCount() == 1) {
-                $rowYear = $resultYear->fetch();
-                $yearName = $rowYear['name'];
-            }
-            ?>
+							try {
+								$dataYear = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+								$sqlYear = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
+								$resultYear = $connection2->prepare($sqlYear);
+								$resultYear->execute($dataYear);
+							} catch (PDOException $e) {
+								echo "<div class='error'>".$e->getMessage().'</div>';
+							}
+							if ($resultYear->rowCount() == 1) {
+								$rowYear = $resultYear->fetch();
+								$yearName = $rowYear['name'];
+							}
+							?>
 							<input readonly name="yearName" id="yearName" maxlength=20 value="<?php echo $yearName ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var yearName=new LiveValidation('yearName');
@@ -133,11 +133,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
 						<td> 
 							<b><?php echo __($guid, 'Invoice Issue Date') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Intended issue date.').'<br/>'.__($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-            ?><br/></span>
+								echo 'dd/mm/yyyy';
+							} else {
+								echo $_SESSION[$guid]['i18n']['dateFormat'];
+							}
+							?><br/></span>
 						</td>
 						<td class="right">
 							<input name="invoiceIssueDate" id="invoiceIssueDate" maxlength=10 value="<?php echo dateConvertBack($guid, $row['invoiceIssueDate']) ?>" type="text" class="standardWidth">
@@ -168,11 +168,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
 						<td> 
 							<b><?php echo __($guid, 'Invoice Due Date') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Final Payment Date.').'<br/>'.__($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-            ?><br/></span>
+								echo 'dd/mm/yyyy';
+							} else {
+								echo $_SESSION[$guid]['i18n']['dateFormat'];
+							}
+            				?><br/></span>
 						</td>
 						<td class="right">
 							<input name="invoiceDueDate" id="invoiceDueDate" maxlength=10 value="<?php echo dateConvertBack($guid, $row['invoiceDueDate']) ?>" type="text" class="standardWidth">

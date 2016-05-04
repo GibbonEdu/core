@@ -234,8 +234,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
 
                 if ($proceed == true) {
                     //Let's go!
-                    $row = $result->fetch();
-                    ?>
+                    $row = $result->fetch(); ?>
 					<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/data_financeProcess.php?gibbonFinanceInvoiceeID='.$gibbonFinanceInvoiceeID ?>">
 						<table class='smallIntBorder fullWidth' cellspacing='0'>	
 							<tr class='break'>

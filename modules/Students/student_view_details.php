@@ -1688,13 +1688,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 													<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 													<?php
                                                     echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&subpage=Notes'>".__($guid, 'Clear Search').'</a>';
-                                    ?>
+                                    				?>
 													<input type="hidden" name="gibbonPersonID" value="<?php echo $gibbonPersonID ?>">
 													<input type="hidden" name="allStudents" value="<?php echo $allStudents ?>">
 													<input type="hidden" name="search" value="<?php echo $search ?>">
 													<input type="hidden" name="subpage" value="Notes">
-													<input type="submit" value="<?php echo __($guid, 'Submit');
-                                    ?>">
+													<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 												</td>
 											</tr>
 										</table>
@@ -1889,116 +1888,116 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&subpage=Markbook'>";
                                 echo"<table class='noIntBorder' cellspacing='0' style='width: 100%'>";
                                 ?>
+									<tr>
+										<td> 
+											<b><?php echo __($guid, 'Learning Areas') ?></b><br/>
+											<span class="emphasis small"></span>
+										</td>
+										<td class="right">
+											<?php
+											echo "<select name='filter2' id='filter2' style='width:302px'>";
+											echo "<option value=''>".__($guid, 'All Learning Areas').'</option>';
+											try {
+												$dataSelect = array();
+												$sqlSelect = "SELECT * FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
+												$resultSelect = $connection2->prepare($sqlSelect);
+												$resultSelect->execute($dataSelect);
+											} catch (PDOException $e) {
+											}
+											while ($rowSelect = $resultSelect->fetch()) {
+												$selected = '';
+												if ($rowSelect['gibbonDepartmentID'] == $filter2) {
+													$selected = 'selected';
+												}
+												echo "<option $selected value='".$rowSelect['gibbonDepartmentID']."'>".$rowSelect['name'].'</option>';
+											}
+											echo '</select>';
+											?>
+										</td>
+									</tr>
+									<tr>
+										<td> 
+											<b><?php echo __($guid, 'School Years') ?></b><br/>
+											<span class="emphasis small"></span>
+										</td>
+										<td class="right">
+											<?php
+											echo "<select name='filter' id='filter' style='width:302px'>";
+											echo "<option value='*'>".__($guid, 'All Years').'</option>';
+											try {
+												$dataSelect = array('gibbonPersonID' => $gibbonPersonID);
+												$sqlSelect = 'SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonSchoolYear.name AS year, gibbonYearGroup.name AS yearGroup FROM gibbonStudentEnrolment JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY gibbonSchoolYear.sequenceNumber';
+												$resultSelect = $connection2->prepare($sqlSelect);
+												$resultSelect->execute($dataSelect);
+											} catch (PDOException $e) {
+											}
+											while ($rowSelect = $resultSelect->fetch()) {
+												$selected = '';
+												if ($rowSelect['gibbonSchoolYearID'] == $filter) {
+													$selected = 'selected';
+												}
+												echo "<option $selected value='".$rowSelect['gibbonSchoolYearID']."'>".$rowSelect['year'].' ('.$rowSelect['yearGroup'].')</option>';
+											}
+											echo '</select>';
+											?>
+										</td>
+									</tr>
+									<?php
+									$types = getSettingByScope($connection2, 'Markbook', 'markbookType');
+									if ($types != false) {
+										$types = explode(',', $types);
+										?>
 										<tr>
 											<td> 
-												<b><?php echo __($guid, 'Learning Areas') ?></b><br/>
+												<b><?php echo __($guid, 'Type') ?></b><br/>
 												<span class="emphasis small"></span>
 											</td>
 											<td class="right">
-												<?php
-                                                echo "<select name='filter2' id='filter2' style='width:302px'>";
-                                echo "<option value=''>".__($guid, 'All Learning Areas').'</option>';
-                                try {
-                                    $dataSelect = array();
-                                    $sqlSelect = "SELECT * FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
-                                    $resultSelect = $connection2->prepare($sqlSelect);
-                                    $resultSelect->execute($dataSelect);
-                                } catch (PDOException $e) {
-                                }
-                                while ($rowSelect = $resultSelect->fetch()) {
-                                    $selected = '';
-                                    if ($rowSelect['gibbonDepartmentID'] == $filter2) {
-                                        $selected = 'selected';
-                                    }
-                                    echo "<option $selected value='".$rowSelect['gibbonDepartmentID']."'>".$rowSelect['name'].'</option>';
-                                }
-                                echo '</select>';
-                                ?>
-											</td>
-										</tr>
-										<tr>
-											<td> 
-												<b><?php echo __($guid, 'School Years') ?></b><br/>
-												<span class="emphasis small"></span>
-											</td>
-											<td class="right">
-												<?php
-                                                echo "<select name='filter' id='filter' style='width:302px'>";
-                                echo "<option value='*'>".__($guid, 'All Years').'</option>';
-                                try {
-                                    $dataSelect = array('gibbonPersonID' => $gibbonPersonID);
-                                    $sqlSelect = 'SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonSchoolYear.name AS year, gibbonYearGroup.name AS yearGroup FROM gibbonStudentEnrolment JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY gibbonSchoolYear.sequenceNumber';
-                                    $resultSelect = $connection2->prepare($sqlSelect);
-                                    $resultSelect->execute($dataSelect);
-                                } catch (PDOException $e) {
-                                }
-                                while ($rowSelect = $resultSelect->fetch()) {
-                                    $selected = '';
-                                    if ($rowSelect['gibbonSchoolYearID'] == $filter) {
-                                        $selected = 'selected';
-                                    }
-                                    echo "<option $selected value='".$rowSelect['gibbonSchoolYearID']."'>".$rowSelect['year'].' ('.$rowSelect['yearGroup'].')</option>';
-                                }
-                                echo '</select>';
-                                ?>
+												<select name="filter3" id="filter3" class="standardWidth">
+													<option value=""></option>
+													<?php
+													for ($i = 0; $i < count($types); ++$i) {
+														$selected = '';
+														if ($filter3 == $types[$i]) {
+															$selected = 'selected';
+														}
+														?>
+														<option <?php echo $selected ?> value="<?php echo trim($types[$i]) ?>"><?php echo trim($types[$i]) ?></option>
+													<?php
+
+													}
+											?>
+												</select>
 											</td>
 										</tr>
 										<?php
-                                        $types = getSettingByScope($connection2, 'Markbook', 'markbookType');
-                                if ($types != false) {
-                                    $types = explode(',', $types);
-                                    ?>
-											<tr>
-												<td> 
-													<b><?php echo __($guid, 'Type') ?></b><br/>
-													<span class="emphasis small"></span>
-												</td>
-												<td class="right">
-													<select name="filter3" id="filter3" class="standardWidth">
-														<option value=""></option>
-														<?php
-                                                        for ($i = 0; $i < count($types); ++$i) {
-                                                            $selected = '';
-                                                            if ($filter3 == $types[$i]) {
-                                                                $selected = 'selected';
-                                                            }
-                                                            ?>
-															<option <?php echo $selected ?> value="<?php echo trim($types[$i]) ?>"><?php echo trim($types[$i]) ?></option>
-														<?php
 
-                                                        }
-                                    			?>
-													</select>
-												</td>
-											</tr>
-											<?php
-
-                                }
-                                echo '<tr>';
-                                echo "<td class='right' colspan=2>";
-                                echo "<input type='hidden' name='q' value='".$_GET['q']."'>";
-                                echo "<input checked type='checkbox' name='details' class='details' value='Yes' />";
-                                echo "<span style='font-size: 85%; font-weight: normal; font-style: italic'> ".__($guid, 'Show/Hide Details').'</span>';
-                                ?>
-												<script type="text/javascript">
-													/* Show/Hide detail control */
-													$(document).ready(function(){
-														$(".details").click(function(){
-															if ($('input[name=details]:checked').val()=="Yes" ) {
-																$(".detailItem").slideDown("fast", $("#detailItem").css("{'display' : 'table-row'}")); 
-															} 
-															else {
-																$(".detailItem").slideUp("fast"); 
-															}
-														 });
-													});
-												</script>
-												<?php
-                                                echo "<input type='submit' value='".__($guid, 'Go')."'>";
-                                echo '</td>';
-                                echo '</tr>';
-                                echo'</table>';
-                                echo '</form>';
+										}
+										echo '<tr>';
+										echo "<td class='right' colspan=2>";
+										echo "<input type='hidden' name='q' value='".$_GET['q']."'>";
+										echo "<input checked type='checkbox' name='details' class='details' value='Yes' />";
+										echo "<span style='font-size: 85%; font-weight: normal; font-style: italic'> ".__($guid, 'Show/Hide Details').'</span>';
+										?>
+										<script type="text/javascript">
+											/* Show/Hide detail control */
+											$(document).ready(function(){
+												$(".details").click(function(){
+													if ($('input[name=details]:checked').val()=="Yes" ) {
+														$(".detailItem").slideDown("fast", $("#detailItem").css("{'display' : 'table-row'}")); 
+													} 
+													else {
+														$(".detailItem").slideUp("fast"); 
+													}
+												 });
+											});
+										</script>
+										<?php
+										echo "<input type='submit' value='".__($guid, 'Go')."'>";
+									echo '</td>';
+									echo '</tr>';
+								echo'</table>';
+								echo '</form>';
 
                                 //Get class list
                                 try {

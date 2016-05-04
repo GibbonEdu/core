@@ -71,17 +71,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_master.php') 
                             $resultSelect->execute($dataSelect);
                         } catch (PDOException $e) {
                         }
-    while ($rowSelect = $resultSelect->fetch()) {
-        if ($resultSelect->rowCount() == 1) {
-            $gibbonTTID = $rowSelect['gibbonTTID'];
-        }
-        $selected = '';
-        if ($gibbonTTID == $rowSelect['gibbonTTID']) {
-            $selected = 'selected';
-        }
-        echo "<option $selected value='".$rowSelect['gibbonTTID']."'>".htmlPrep($rowSelect['TT']).'</option>';
-    }
-    ?>				
+						while ($rowSelect = $resultSelect->fetch()) {
+							if ($resultSelect->rowCount() == 1) {
+								$gibbonTTID = $rowSelect['gibbonTTID'];
+							}
+							$selected = '';
+							if ($gibbonTTID == $rowSelect['gibbonTTID']) {
+								$selected = 'selected';
+							}
+							echo "<option $selected value='".$rowSelect['gibbonTTID']."'>".htmlPrep($rowSelect['TT']).'</option>';
+						}
+						?>				
 					</select>
 				</td>
 			</tr>
@@ -197,8 +197,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_master.php') 
                                         $rowNum = 'odd';
                                     }
 
-                                        //COLOR ROW BY STATUS!
-                                        echo "<tr class=$rowNum>";
+									//COLOR ROW BY STATUS!
+									echo "<tr class=$rowNum>";
                                     echo "<td style='padding-top: 3px; padding-bottom: 4px'>";
                                     echo $rowClasses['course'].'.'.$rowClasses['class'];
                                     echo '</td>';

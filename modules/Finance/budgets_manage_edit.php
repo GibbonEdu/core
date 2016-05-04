@@ -59,8 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_edi
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
-            ?>
+            $row = $result->fetch(); ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/budgets_manage_editProcess.php?gibbonFinanceBudgetID=$gibbonFinanceBudgetID" ?>">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr class='break'>
@@ -108,9 +107,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_edi
 					</tr>
 					<?php
                     $categories = getSettingByScope($connection2, 'Finance', 'budgetCategories');
-            if ($categories != false) {
-                $categories = explode(',', $categories);
-                ?>
+					if ($categories != false) {
+						$categories = explode(',', $categories);
+						?>
 						<tr>
 							<td> 
 								<b><?php echo __($guid, 'Category') ?> *</b><br/>
@@ -127,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_edi
                                         }
                                         echo "<option $selected value=\"".trim($categories[$i]).'">'.trim($categories[$i]).'</option>';
                                     }
-                ?>
+                					?>
 								</select>
 								<script type="text/javascript">
 									var category=new LiveValidation('category');
@@ -137,21 +136,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_edi
 						</tr>
 						<?php
 
-            } else {
-                ?>
-						<tr>
-							<td> 
-								<b><?php echo __($guid, 'Category') ?> *</b><br/>
-								<span class="emphasis small"></span>
-							</td>
-							<td class="right">
-								<input readonly name="category" id="category" value="Other" type="text" class="standardWidth">
-							</td>
-						</tr>
-						<?php
-
-            }
-            ?>
+						} else {
+							?>
+							<tr>
+								<td> 
+									<b><?php echo __($guid, 'Category') ?> *</b><br/>
+									<span class="emphasis small"></span>
+								</td>
+								<td class="right">
+									<input readonly name="category" id="category" value="Other" type="text" class="standardWidth">
+								</td>
+							</tr>
+							<?php
+						}
+						?>
 					<tr class='break'>
 						<td colspan=2> 
 							<h3><?php echo __($guid, 'Current Staff') ?></h3>
@@ -169,51 +167,51 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_edi
                                 echo "<div class='error'>".$e->getMessage().'</div>';
                             }
 
-            if ($result->rowCount() < 1) {
-                echo "<div class='error'>";
-                echo __($guid, 'There are no records to display.');
-                echo '</div>';
-            } else {
-                echo '<i><b>Warning</b>: If you delete a member of staff, any unsaved changes to this record will be lost!</i>';
-                echo "<table cellspacing='0' style='width: 100%'>";
-                echo "<tr class='head'>";
-                echo '<th>';
-                echo __($guid, 'Name');
-                echo '</th>';
-                echo '<th>';
-                echo __($guid, 'Access');
-                echo '</th>';
-                echo '<th>';
-                echo __($guid, 'Action');
-                echo '</th>';
-                echo '</tr>';
+							if ($result->rowCount() < 1) {
+								echo "<div class='error'>";
+								echo __($guid, 'There are no records to display.');
+								echo '</div>';
+							} else {
+								echo '<i><b>Warning</b>: If you delete a member of staff, any unsaved changes to this record will be lost!</i>';
+								echo "<table cellspacing='0' style='width: 100%'>";
+								echo "<tr class='head'>";
+								echo '<th>';
+								echo __($guid, 'Name');
+								echo '</th>';
+								echo '<th>';
+								echo __($guid, 'Access');
+								echo '</th>';
+								echo '<th>';
+								echo __($guid, 'Action');
+								echo '</th>';
+								echo '</tr>';
 
-                $count = 0;
-                $rowNum = 'odd';
-                while ($row = $result->fetch()) {
-                    if ($count % 2 == 0) {
-                        $rowNum = 'even';
-                    } else {
-                        $rowNum = 'odd';
-                    }
-                    ++$count;
+								$count = 0;
+								$rowNum = 'odd';
+								while ($row = $result->fetch()) {
+									if ($count % 2 == 0) {
+										$rowNum = 'even';
+									} else {
+										$rowNum = 'odd';
+									}
+									++$count;
 
-                                        //COLOR ROW BY STATUS!
-                                        echo "<tr class=$rowNum>";
-                    echo '<td>';
-                    echo formatName('', $row['preferredName'], $row['surname'], 'Staff', true, true);
-                    echo '</td>';
-                    echo '<td>';
-                    echo $row['access'];
-                    echo '</td>';
-                    echo '<td>';
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/budgets_manage_edit_staff_deleteProcess.php?address='.$_GET['q'].'&gibbonFinanceBudgetPersonID='.$row['gibbonFinanceBudgetPersonID']."&gibbonFinanceBudgetID=$gibbonFinanceBudgetID'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
-                    echo '</td>';
-                    echo '</tr>';
-                }
-                echo '</table>';
-            }
-            ?>
+									//COLOR ROW BY STATUS!
+									echo "<tr class=$rowNum>";
+									echo '<td>';
+									echo formatName('', $row['preferredName'], $row['surname'], 'Staff', true, true);
+									echo '</td>';
+									echo '<td>';
+									echo $row['access'];
+									echo '</td>';
+									echo '<td>';
+									echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/budgets_manage_edit_staff_deleteProcess.php?address='.$_GET['q'].'&gibbonFinanceBudgetPersonID='.$row['gibbonFinanceBudgetPersonID']."&gibbonFinanceBudgetID=$gibbonFinanceBudgetID'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+									echo '</td>';
+									echo '</tr>';
+								}
+								echo '</table>';
+							}
+							?>
 						</td>
 					</tr>
 					<tr class='break'>
@@ -236,10 +234,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_edi
                                 $resultSelect->execute($dataSelect);
                             } catch (PDOException $e) {
                             }
-            while ($rowSelect = $resultSelect->fetch()) {
-                echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
-            }
-            ?>
+							while ($rowSelect = $resultSelect->fetch()) {
+								echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
+							}
+							?>
 						</select>
 					</td>
 					

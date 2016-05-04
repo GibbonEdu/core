@@ -41,8 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_letter
     echo __($guid, 'Filter');
     echo '</h3>';
     echo "<form method='get' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Behaviour/behaviour_letters.php'>";
-    echo "<table class='noIntBorder' cellspacing='0' style='width: 100%'>";
-    ?>
+    echo "<table class='noIntBorder' cellspacing='0' style='width: 100%'>"; ?>
 			<tr>
 				<td> 
 					<b><?php echo __($guid, 'Student') ?></b><br/>

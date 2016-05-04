@@ -50,18 +50,18 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearTer
 					<select name="gibbonSchoolYearID" id="gibbonSchoolYearID" class="standardWidth">
 						<?php
                         echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-    try {
-        $data = array();
-        $sql = 'SELECT * FROM gibbonSchoolYear ORDER BY sequenceNumber';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
-    while ($row = $result->fetch()) {
-        echo "<option value='".$row['gibbonSchoolYearID']."'>".htmlPrep($row['name']).'</option>';
-    }
-    ?>				
+						try {
+							$data = array();
+							$sql = 'SELECT * FROM gibbonSchoolYear ORDER BY sequenceNumber';
+							$result = $connection2->prepare($sql);
+							$result->execute($data);
+						} catch (PDOException $e) {
+							echo "<div class='error'>".$e->getMessage().'</div>';
+						}
+						while ($row = $result->fetch()) {
+							echo "<option value='".$row['gibbonSchoolYearID']."'>".htmlPrep($row['name']).'</option>';
+						}
+						?>				
 					</select>
 					<script type="text/javascript">
 						var gibbonSchoolYearID=new LiveValidation('gibbonSchoolYearID');
@@ -78,24 +78,23 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearTer
 					<input name="sequenceNumber" id="sequenceNumber" maxlength=3 value="<?php echo $row['sequenceNumber'] ?>" type="text" class="standardWidth">
 					<?php
                     $idList = '';
-    try {
-        $dataSelect = array();
-        $sqlSelect = 'SELECT sequenceNumber FROM gibbonSchoolYearTerm ORDER BY sequenceNumber';
-        $resultSelect = $connection2->prepare($sqlSelect);
-        $resultSelect->execute($dataSelect);
-    } catch (PDOException $e) {
-    }
-    while ($rowSelect = $resultSelect->fetch()) {
-        $idList .= "'".$rowSelect['sequenceNumber']."',";
-    }
-    ?>
+					try {
+						$dataSelect = array();
+						$sqlSelect = 'SELECT sequenceNumber FROM gibbonSchoolYearTerm ORDER BY sequenceNumber';
+						$resultSelect = $connection2->prepare($sqlSelect);
+						$resultSelect->execute($dataSelect);
+					} catch (PDOException $e) {
+					}
+					while ($rowSelect = $resultSelect->fetch()) {
+						$idList .= "'".$rowSelect['sequenceNumber']."',";
+					}
+					?>
 					
 					<script type="text/javascript">
 						var sequenceNumber=new LiveValidation('sequenceNumber');
 						sequenceNumber.add(Validate.Numericality);
 						sequenceNumber.add(Validate.Presence);
-						sequenceNumber.add( Validate.Exclusion, { within: [<?php echo $idList;
-    ?>], failureMessage: "<?php echo __($guid, 'Value already in use!') ?>", partialMatch: false, caseSensitive: false } );
+						sequenceNumber.add( Validate.Exclusion, { within: [<?php echo $idList; ?>], failureMessage: "<?php echo __($guid, 'Value already in use!') ?>", partialMatch: false, caseSensitive: false } );
 						
 					</script>
 				</td>

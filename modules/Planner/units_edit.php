@@ -183,59 +183,41 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
 										</td>
 										<td class="right">
 											<select name="license" id="license" class="standardWidth">
-												<option <?php if ($row['license'] == '') { echo 'selected '; }
-                            ?>value=""></option>
-												<option <?php if ($row['license'] == 'Copyright') { echo 'selected '; }
-                            ?>value="Copyright"><?php echo __($guid, 'Copyright') ?></option>
-												<option <?php if ($row['license'] == 'Creative Commons BY') { echo 'selected '; }
-                            ?>value="Creative Commons BY"><?php echo __($guid, 'Creative Commons BY') ?></option>
-												<option <?php if ($row['license'] == 'Creative Commons BY-SA') { echo 'selected '; }
-                            ?>value="Creative Commons BY-SA"><?php echo __($guid, 'Creative Commons BY-SA') ?></option>
-												<option <?php if ($row['license'] == 'Creative Commons BY-SA-NC') { echo 'selected '; }
-                            ?>value="Creative Commons BY-SA-NC"><?php echo __($guid, 'Creative Commons BY-SA-NC') ?></option>
-												<option <?php if ($row['license'] == 'Public Domain') { echo 'selected '; }
-                            ?>value="Public Domain"><?php echo __($guid, 'Public Domain') ?></option>
+												<option <?php if ($row['license'] == '') { echo 'selected '; }?>value=""></option>
+												<option <?php if ($row['license'] == 'Copyright') { echo 'selected '; }?>value="Copyright"><?php echo __($guid, 'Copyright') ?></option>
+												<option <?php if ($row['license'] == 'Creative Commons BY') { echo 'selected '; }?>value="Creative Commons BY"><?php echo __($guid, 'Creative Commons BY') ?></option>
+												<option <?php if ($row['license'] == 'Creative Commons BY-SA') { echo 'selected '; }?>value="Creative Commons BY-SA"><?php echo __($guid, 'Creative Commons BY-SA') ?></option>
+												<option <?php if ($row['license'] == 'Creative Commons BY-SA-NC') { echo 'selected '; }?>value="Creative Commons BY-SA-NC"><?php echo __($guid, 'Creative Commons BY-SA-NC') ?></option>
+												<option <?php if ($row['license'] == 'Public Domain') { echo 'selected '; }?>value="Public Domain"><?php echo __($guid, 'Public Domain') ?></option>
 											</select>
 										</td>
 									</tr>
 									<?php
                                     $makeUnitsPublic = getSettingByScope($connection2, 'Planner', 'makeUnitsPublic');
-                            if ($makeUnitsPublic == 'Y') {
-                                ?>
+									if ($makeUnitsPublic == 'Y') {
+										?>
 										<tr>
 											<td> 
 												<b><?php echo __($guid, 'Shared Publically') ?> * </b><br/>
 												<span class="emphasis small"><?php echo __($guid, 'Share this unit via the public listing of units? Useful for building MOOCS.');?></span>
 											</td>
 											<td class="right">
-												<input <?php if ($row['sharedPublic'] == 'Y') {
-    echo 'checked';
-}
-                                ?> type="radio" name="sharedPublic" value="Y" /> <?php echo __($guid, 'Yes') ?>
-												<input <?php if ($row['sharedPublic'] == 'N' or $row['sharedPublic'] == '') {
-    echo 'checked';
-}
-                                ?> type="radio" name="sharedPublic" value="N" /> <?php echo __($guid, 'No') ?>
+												<input <?php if ($row['sharedPublic'] == 'Y') { echo 'checked'; } ?> type="radio" name="sharedPublic" value="Y" /> <?php echo __($guid, 'Yes') ?>
+												<input <?php if ($row['sharedPublic'] == 'N' or $row['sharedPublic'] == '') { echo 'checked'; } ?> type="radio" name="sharedPublic" value="N" /> <?php echo __($guid, 'No') ?>
 											</td>
 										</tr>
 										<?php
 
-                            }
-                            ?>
+									}
+									?>
 									<tr>
 										<td> 
 											<b><?php echo __($guid, 'Embeddable') ?> *</b><br/>
 											<span class="emphasis small"><?php echo __($guid, 'Can this unit be embedded and shared publicly in other websites?') ?></span>
 										</td>
 										<td class="right">
-											<input <?php if ($row['embeddable'] == 'Y') {
-    echo 'checked';
-}
-                            ?> type="radio" id="embeddable" name="embeddable" class="embeddable" value="Y" /> <?php echo __($guid, 'Yes') ?>
-											<input <?php if ($row['embeddable'] == 'N') {
-    echo 'checked';
-}
-                            ?> type="radio" id="embeddable" name="embeddable" class="embeddable" value="N" /> <?php echo __($guid, 'No') ?>
+											<input <?php if ($row['embeddable'] == 'Y') { echo 'checked'; } ?> type="radio" id="embeddable" name="embeddable" class="embeddable" value="Y" /> <?php echo __($guid, 'Yes') ?>
+											<input <?php if ($row['embeddable'] == 'N') { echo 'checked'; } ?> type="radio" id="embeddable" name="embeddable" class="embeddable" value="N" /> <?php echo __($guid, 'No') ?>
 										</td>
 									</tr>
 									<script type="text/javascript">
@@ -244,8 +226,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                                             if ($row['embeddable'] == 'Y') {
                                                 echo '$("#embeddableRow").slideDown("fast", $("#embeddableRow").css("display","table-row"));';
                                             }
-                            ?>
-											
+                           				 	?>
 											$(".embeddable").click(function(){
 												if ($('input[name=embeddable]:checked').val()=="Y" ) {
 													$("#embeddableRow").slideDown("fast", $("#embeddableRow").css("display","table-row"));
@@ -257,10 +238,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
 										});
 									</script>
 									
-									<tr id="embeddableRow" <?php if ($row['embeddable'] == 'N') {
-    echo "style='display: none'";
-}
-                            ?>>
+									<tr id="embeddableRow" <?php if ($row['embeddable'] == 'N') { echo "style='display: none'";} ?>>
 										<td> 
 											<b><?php echo __($guid, 'Embed Code') ?></b><br/>
 											<span class="emphasis small"><?php echo __($guid, 'Copy and paste this HTML code into the target website.') ?></span>
@@ -277,10 +255,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
 									</tr>
 									<?php 
                                     $type = 'outcome';
-                            $allowOutcomeEditing = getSettingByScope($connection2, 'Planner', 'allowOutcomeEditing');
-                            $categories = array();
-                            $categoryCount = 0;
-                            ?> 
+									$allowOutcomeEditing = getSettingByScope($connection2, 'Planner', 'allowOutcomeEditing');
+									$categories = array();
+									$categoryCount = 0;
+									?> 
 									<style>
 										#<?php echo $type ?> { list-style-type: none; margin: 0; padding: 0; width: 100%; }
 										#<?php echo $type ?> div.ui-state-default { margin: 0 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 58px; }
@@ -303,27 +281,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
 											<div class="outcome" id="outcome" style='width: 100%; padding: 5px 0px 0px 0px; min-height: 66px'>
 												<?php
                                                 $i = 1;
-                            $usedArrayFill = '';
-                            try {
-                                $dataBlocks = array('gibbonUnitID' => $gibbonUnitID);
-                                $sqlBlocks = "SELECT gibbonUnitOutcome.*, scope, name, category FROM gibbonUnitOutcome JOIN gibbonOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) WHERE gibbonUnitID=:gibbonUnitID AND active='Y' ORDER BY sequenceNumber";
-                                $resultBlocks = $connection2->prepare($sqlBlocks);
-                                $resultBlocks->execute($dataBlocks);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
-                            if ($resultBlocks->rowCount() < 1) {
-                                echo "<div id='outcomeOuter0'>";
-                                echo "<div style='color: #ddd; font-size: 230%; margin: 15px 0 0 6px'>".__($guid, 'Outcomes listed here...').'</div>';
-                                echo '</div>';
-                            } else {
-                                while ($rowBlocks = $resultBlocks->fetch()) {
-                                    makeBlockOutcome($guid, $i, 'outcome', $rowBlocks['gibbonOutcomeID'],  $rowBlocks['name'],  $rowBlocks['category'], $rowBlocks['content'], '', true, $allowOutcomeEditing);
-                                    $usedArrayFill .= '"'.$rowBlocks['gibbonOutcomeID'].'",';
-                                    ++$i;
-                                }
-                            }
-                            ?>
+												$usedArrayFill = '';
+												try {
+													$dataBlocks = array('gibbonUnitID' => $gibbonUnitID);
+													$sqlBlocks = "SELECT gibbonUnitOutcome.*, scope, name, category FROM gibbonUnitOutcome JOIN gibbonOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) WHERE gibbonUnitID=:gibbonUnitID AND active='Y' ORDER BY sequenceNumber";
+													$resultBlocks = $connection2->prepare($sqlBlocks);
+													$resultBlocks->execute($dataBlocks);
+												} catch (PDOException $e) {
+													echo "<div class='error'>".$e->getMessage().'</div>';
+												}
+												if ($resultBlocks->rowCount() < 1) {
+													echo "<div id='outcomeOuter0'>";
+													echo "<div style='color: #ddd; font-size: 230%; margin: 15px 0 0 6px'>".__($guid, 'Outcomes listed here...').'</div>';
+													echo '</div>';
+												} else {
+													while ($rowBlocks = $resultBlocks->fetch()) {
+														makeBlockOutcome($guid, $i, 'outcome', $rowBlocks['gibbonOutcomeID'],  $rowBlocks['name'],  $rowBlocks['category'], $rowBlocks['content'], '', true, $allowOutcomeEditing);
+														$usedArrayFill .= '"'.$rowBlocks['gibbonOutcomeID'].'",';
+														++$i;
+													}
+												}
+												?>
 											</div>
 											<div style='width: 100%; padding: 0px 0px 0px 0px'>
 												<div class="ui-state-default_dud" style='padding: 0px; min-height: 50px'>
@@ -337,85 +315,85 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
 																	<option class='all' value='0'><?php echo __($guid, 'Choose an outcome to add it to this unit') ?></option>
 																	<?php
                                                                     $currentCategory = '';
-                            $lastCategory = '';
-                            $switchContents = '';
-                            try {
-                                $countClause = 0;
-                                $years = explode(',', $gibbonYearGroupIDList);
-                                $dataSelect = array();
-                                $sqlSelect = '';
-                                foreach ($years as $year) {
-                                    $dataSelect['clause'.$countClause] = '%'.$year.'%';
-                                    $sqlSelect .= "(SELECT * FROM gibbonOutcome WHERE active='Y' AND scope='School' AND gibbonYearGroupIDList LIKE :clause".$countClause.') UNION ';
-                                    ++$countClause;
-                                }
-                                $resultSelect = $connection2->prepare(substr($sqlSelect, 0, -6).'ORDER BY category, name');
-                                $resultSelect->execute($dataSelect);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
-                            echo "<optgroup label='--".__($guid, 'SCHOOL OUTCOMES')."--'>";
-                            while ($rowSelect = $resultSelect->fetch()) {
-                                $currentCategory = $rowSelect['category'];
-                                if (($currentCategory != $lastCategory) and $currentCategory != '') {
-                                    echo "<optgroup label='--".$currentCategory."--'>";
-                                    echo "<option class='$currentCategory' value='0'>".__($guid, 'Choose an outcome to add it to this unit').'</option>';
-                                    $categories[$categoryCount] = $currentCategory;
-                                    ++$categoryCount;
-                                }
-                                echo "<option class='all ".$rowSelect['category']."'   value='".$rowSelect['gibbonOutcomeID']."'>".$rowSelect['name'].'</option>';
-                                $switchContents .= 'case "'.$rowSelect['gibbonOutcomeID'].'": ';
-                                $switchContents .= "$(\"#outcome\").append('<div id=\'outcomeOuter' + outcomeCount + '\'><img style=\'margin: 10px 0 5px 0\' src=\'".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/loading.gif\' alt=\'Loading\' onclick=\'return false;\' /><br/>Loading</div>');";
-                                $switchContents .= '$("#outcomeOuter" + outcomeCount).load("'.$_SESSION[$guid]['absoluteURL'].'/modules/Planner/units_add_blockOutcomeAjax.php","type=outcome&id=" + outcomeCount + "&title='.urlencode($rowSelect['name'])."\&category=".urlencode($rowSelect['category']).'&gibbonOutcomeID='.$rowSelect['gibbonOutcomeID'].'&contents='.urlencode($rowSelect['description']).'&allowOutcomeEditing='.urlencode($allowOutcomeEditing).'") ;';
-                                $switchContents .= 'outcomeCount++ ;';
-                                $switchContents .= "$('#newOutcome').val('0');";
-                                $switchContents .= 'break;';
-                                $lastCategory = $rowSelect['category'];
-                            }
+																	$lastCategory = '';
+																	$switchContents = '';
+																	try {
+																		$countClause = 0;
+																		$years = explode(',', $gibbonYearGroupIDList);
+																		$dataSelect = array();
+																		$sqlSelect = '';
+																		foreach ($years as $year) {
+																			$dataSelect['clause'.$countClause] = '%'.$year.'%';
+																			$sqlSelect .= "(SELECT * FROM gibbonOutcome WHERE active='Y' AND scope='School' AND gibbonYearGroupIDList LIKE :clause".$countClause.') UNION ';
+																			++$countClause;
+																		}
+																		$resultSelect = $connection2->prepare(substr($sqlSelect, 0, -6).'ORDER BY category, name');
+																		$resultSelect->execute($dataSelect);
+																	} catch (PDOException $e) {
+																		echo "<div class='error'>".$e->getMessage().'</div>';
+																	}
+																	echo "<optgroup label='--".__($guid, 'SCHOOL OUTCOMES')."--'>";
+																	while ($rowSelect = $resultSelect->fetch()) {
+																		$currentCategory = $rowSelect['category'];
+																		if (($currentCategory != $lastCategory) and $currentCategory != '') {
+																			echo "<optgroup label='--".$currentCategory."--'>";
+																			echo "<option class='$currentCategory' value='0'>".__($guid, 'Choose an outcome to add it to this unit').'</option>';
+																			$categories[$categoryCount] = $currentCategory;
+																			++$categoryCount;
+																		}
+																		echo "<option class='all ".$rowSelect['category']."'   value='".$rowSelect['gibbonOutcomeID']."'>".$rowSelect['name'].'</option>';
+																		$switchContents .= 'case "'.$rowSelect['gibbonOutcomeID'].'": ';
+																		$switchContents .= "$(\"#outcome\").append('<div id=\'outcomeOuter' + outcomeCount + '\'><img style=\'margin: 10px 0 5px 0\' src=\'".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/loading.gif\' alt=\'Loading\' onclick=\'return false;\' /><br/>Loading</div>');";
+																		$switchContents .= '$("#outcomeOuter" + outcomeCount).load("'.$_SESSION[$guid]['absoluteURL'].'/modules/Planner/units_add_blockOutcomeAjax.php","type=outcome&id=" + outcomeCount + "&title='.urlencode($rowSelect['name'])."\&category=".urlencode($rowSelect['category']).'&gibbonOutcomeID='.$rowSelect['gibbonOutcomeID'].'&contents='.urlencode($rowSelect['description']).'&allowOutcomeEditing='.urlencode($allowOutcomeEditing).'") ;';
+																		$switchContents .= 'outcomeCount++ ;';
+																		$switchContents .= "$('#newOutcome').val('0');";
+																		$switchContents .= 'break;';
+																		$lastCategory = $rowSelect['category'];
+																	}
 
-                            $currentCategory = '';
-                            $lastCategory = '';
-                            $currentLA = '';
-                            $lastLA = '';
-                            try {
-                                $countClause = 0;
-                                $years = explode(',', $gibbonYearGroupIDList);
-                                $dataSelect = array('gibbonDepartmentID' => $gibbonDepartmentID);
-                                $sqlSelect = '';
-                                foreach ($years as $year) {
-                                    $dataSelect['clause'.$countClause] = '%'.$year.'%';
-                                    $sqlSelect .= "(SELECT gibbonOutcome.*, gibbonDepartment.name AS learningArea FROM gibbonOutcome JOIN gibbonDepartment ON (gibbonOutcome.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE active='Y' AND scope='Learning Area' AND gibbonDepartment.gibbonDepartmentID=:gibbonDepartmentID AND gibbonYearGroupIDList LIKE :clause".$countClause.') UNION ';
-                                    ++$countClause;
-                                }
-                                $resultSelect = $connection2->prepare(substr($sqlSelect, 0, -6).'ORDER BY learningArea, category, name');
-                                $resultSelect->execute($dataSelect);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
-                            while ($rowSelect = $resultSelect->fetch()) {
-                                $currentCategory = $rowSelect['category'];
-                                $currentLA = $rowSelect['learningArea'];
-                                if (($currentLA != $lastLA) and $currentLA != '') {
-                                    echo "<optgroup label='--".strToUpper($currentLA).' '.__($guid, 'OUTCOMES')."--'>";
-                                }
-                                if (($currentCategory != $lastCategory) and $currentCategory != '') {
-                                    echo "<optgroup label='--".$currentCategory."--'>";
-                                    echo "<option class='$currentCategory' value='0'>".__($guid, 'Choose an outcome to add it to this unit').'</option>';
-                                    $categories[$categoryCount] = $currentCategory;
-                                    ++$categoryCount;
-                                }
-                                echo "<option class='all ".$rowSelect['category']."'   value='".$rowSelect['gibbonOutcomeID']."'>".$rowSelect['name'].'</option>';
-                                $switchContents .= 'case "'.$rowSelect['gibbonOutcomeID'].'": ';
-                                $switchContents .= "$(\"#outcome\").append('<div id=\'outcomeOuter' + outcomeCount + '\'><img style=\'margin: 10px 0 5px 0\' src=\'".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/loading.gif\' alt=\'Loading\' onclick=\'return false;\' /><br/>Loading</div>');";
-                                $switchContents .= '$("#outcomeOuter" + outcomeCount).load("'.$_SESSION[$guid]['absoluteURL'].'/modules/Planner/units_add_blockOutcomeAjax.php","type=outcome&id=" + outcomeCount + "&title='.urlencode($rowSelect['name'])."\&category=".urlencode($rowSelect['category']).'&gibbonOutcomeID='.$rowSelect['gibbonOutcomeID'].'&contents='.urlencode($rowSelect['description']).'&allowOutcomeEditing='.urlencode($allowOutcomeEditing).'") ;';
-                                $switchContents .= 'outcomeCount++ ;';
-                                $switchContents .= "$('#newOutcome').val('0');";
-                                $switchContents .= 'break;';
-                                $lastCategory = $rowSelect['category'];
-                                $lastLA = $rowSelect['learningArea'];
-                            }
+																	$currentCategory = '';
+																	$lastCategory = '';
+																	$currentLA = '';
+																	$lastLA = '';
+																	try {
+																		$countClause = 0;
+																		$years = explode(',', $gibbonYearGroupIDList);
+																		$dataSelect = array('gibbonDepartmentID' => $gibbonDepartmentID);
+																		$sqlSelect = '';
+																		foreach ($years as $year) {
+																			$dataSelect['clause'.$countClause] = '%'.$year.'%';
+																			$sqlSelect .= "(SELECT gibbonOutcome.*, gibbonDepartment.name AS learningArea FROM gibbonOutcome JOIN gibbonDepartment ON (gibbonOutcome.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE active='Y' AND scope='Learning Area' AND gibbonDepartment.gibbonDepartmentID=:gibbonDepartmentID AND gibbonYearGroupIDList LIKE :clause".$countClause.') UNION ';
+																			++$countClause;
+																		}
+																		$resultSelect = $connection2->prepare(substr($sqlSelect, 0, -6).'ORDER BY learningArea, category, name');
+																		$resultSelect->execute($dataSelect);
+																	} catch (PDOException $e) {
+																		echo "<div class='error'>".$e->getMessage().'</div>';
+																	}
+																	while ($rowSelect = $resultSelect->fetch()) {
+																		$currentCategory = $rowSelect['category'];
+																		$currentLA = $rowSelect['learningArea'];
+																		if (($currentLA != $lastLA) and $currentLA != '') {
+																			echo "<optgroup label='--".strToUpper($currentLA).' '.__($guid, 'OUTCOMES')."--'>";
+																		}
+																		if (($currentCategory != $lastCategory) and $currentCategory != '') {
+																			echo "<optgroup label='--".$currentCategory."--'>";
+																			echo "<option class='$currentCategory' value='0'>".__($guid, 'Choose an outcome to add it to this unit').'</option>';
+																			$categories[$categoryCount] = $currentCategory;
+																			++$categoryCount;
+																		}
+																		echo "<option class='all ".$rowSelect['category']."'   value='".$rowSelect['gibbonOutcomeID']."'>".$rowSelect['name'].'</option>';
+																		$switchContents .= 'case "'.$rowSelect['gibbonOutcomeID'].'": ';
+																		$switchContents .= "$(\"#outcome\").append('<div id=\'outcomeOuter' + outcomeCount + '\'><img style=\'margin: 10px 0 5px 0\' src=\'".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/loading.gif\' alt=\'Loading\' onclick=\'return false;\' /><br/>Loading</div>');";
+																		$switchContents .= '$("#outcomeOuter" + outcomeCount).load("'.$_SESSION[$guid]['absoluteURL'].'/modules/Planner/units_add_blockOutcomeAjax.php","type=outcome&id=" + outcomeCount + "&title='.urlencode($rowSelect['name'])."\&category=".urlencode($rowSelect['category']).'&gibbonOutcomeID='.$rowSelect['gibbonOutcomeID'].'&contents='.urlencode($rowSelect['description']).'&allowOutcomeEditing='.urlencode($allowOutcomeEditing).'") ;';
+																		$switchContents .= 'outcomeCount++ ;';
+																		$switchContents .= "$('#newOutcome').val('0');";
+																		$switchContents .= 'break;';
+																		$lastCategory = $rowSelect['category'];
+																		$lastLA = $rowSelect['learningArea'];
+																	}
 
-                            ?>
+																	?>
 																</select><br/>
 																<?php
                                                                 if (count($categories) > 0) {
@@ -436,7 +414,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
 																	<?php
 
                                                                 }
-                            ?>
+                            									?>
 																<script type='text/javascript'>
 																	var <?php echo $type ?>Used=new Array(<?php echo substr($usedArrayFill, 0, -1) ?>);
 																	var <?php echo $type ?>UsedCount=<?php echo $type ?>Used.length ;
@@ -537,22 +515,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                                                     $rowClassData = $resultClassData->fetch();
                                                 }
 
-                                                            //COLOR ROW BY STATUS!
-                                                            echo "<tr class=$rowNum>";
+												//COLOR ROW BY STATUS!
+												echo "<tr class=$rowNum>";
                                                 echo '<td>';
                                                 echo $row['courseName'].'.'.$rowClass['name'].'</a>';
                                                 echo '</td>';
                                                 echo '<td>';
                                                 ?>
-																	<input name="gibbonCourseClassID<?php echo $classCount?>" id="gibbonCourseClassID<?php echo $classCount?>" maxlength=10 value="<?php echo $rowClass['gibbonCourseClassID'] ?>" type="hidden" class="standardWidth">
-																	<select name="running<?php echo $classCount?>" id="running<?php echo $classCount?>" style="width:100%">
-																		<option <?php if ($rowClassData['running'] == 'N') { echo 'selected '; }
-                                                ?>value="N"><?php echo __($guid, 'No') ?></option>
-																		<option <?php if ($rowClassData['running'] == 'Y') { echo 'selected '; }
-                                                ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-																	</select>
-																	<?php
-                                                                echo '</td>';
+												<input name="gibbonCourseClassID<?php echo $classCount?>" id="gibbonCourseClassID<?php echo $classCount?>" maxlength=10 value="<?php echo $rowClass['gibbonCourseClassID'] ?>" type="hidden" class="standardWidth">
+												<select name="running<?php echo $classCount?>" id="running<?php echo $classCount?>" style="width:100%">
+													<option <?php if ($rowClassData['running'] == 'N') { echo 'selected '; }?>value="N"><?php echo __($guid, 'No') ?></option>
+													<option <?php if ($rowClassData['running'] == 'Y') { echo 'selected '; }?>value="Y"><?php echo __($guid, 'Yes') ?></option>
+													</select>
+													<?php
+												echo '</td>';
                                                 echo '<td>';
                                                 try {
                                                     $dataDate = array('gibbonCourseClassID' => $rowClass['gibbonCourseClassID'], 'gibbonUnitID' => $gibbonUnitID);
@@ -587,9 +563,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                                             echo '</table>';
                                         }
                                         ?>
-											</td>
-										</tr>
-										<?php
+										</td>
+									</tr>
+									<?php
 
                                     } else {
                                         echo '<tr>';
@@ -600,8 +576,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                                         echo '</td>';
                                         echo '</tr>';
                                     }
-                            ?>
-									
+                            		?>
 									
 									<tr class='break'>
 										<td colspan=2> 
@@ -618,19 +593,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
 										<td> 
 											<b><?php echo __($guid, 'Downloadable Unit Outline') ?></b><br/>
 											<span class="emphasis small"><?php echo __($guid, 'Available to most users.') ?></span>
-											<?php if ($row['attachment'] != '') {
-    ?>
+											<?php if ($row['attachment'] != '') { ?>
 												<span class="emphasis small"><?php echo __($guid, 'Will overwrite existing attachment.') ?></span>
-											<?php 
-}
-                            ?>
+											<?php } ?>
 										</td>
 										<td class="right">
 											<?php
                                             if ($row['attachment'] != '') {
                                                 echo __($guid, 'Current attachment:')." <a href='".$_SESSION[$guid]['absoluteURL'].'/'.$row['attachment']."'>".$row['attachment'].'</a><br/><br/>';
                                             }
-                            ?>
+                            				?>
 											<input type="file" name="file" id="file"><br/><br/>
 											<?php
                                             echo getMaxUpload($guid);
@@ -643,16 +615,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                                                 $resultExt->execute($dataExt);
                                             } catch (PDOException $e) {
                                             }
-                            $ext = '';
-                            while ($rowExt = $resultExt->fetch()) {
-                                $ext = $ext."'.".$rowExt['extension']."',";
-                            }
-                            ?>
+											$ext = '';
+											while ($rowExt = $resultExt->fetch()) {
+												$ext = $ext."'.".$rowExt['extension']."',";
+											}
+											?>
 										
 											<script type="text/javascript">
 												var file=new LiveValidation('file');
-												file.add( Validate.Inclusion, { within: [<?php echo $ext;
-                            ?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+												file.add( Validate.Inclusion, { within: [<?php echo $ext; ?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 											</script>
 										</td>
 									</tr>
@@ -695,21 +666,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                                                 } catch (PDOException $e) {
                                                     echo "<div class='error'>".$e->getMessage().'</div>';
                                                 }
-                            try {
-                                $dataOutcomes = array('gibbonUnitID' => $gibbonUnitID);
-                                $sqlOutcomes = "SELECT gibbonOutcome.gibbonOutcomeID, gibbonOutcome.name, gibbonOutcome.category, scope, gibbonDepartment.name AS department FROM gibbonUnitOutcome JOIN gibbonOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) LEFT JOIN gibbonDepartment ON (gibbonOutcome.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonUnitID=:gibbonUnitID AND active='Y' ORDER BY sequenceNumber";
-                                $resultOutcomes = $connection2->prepare($sqlOutcomes);
-                                $resultOutcomes->execute($dataOutcomes);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
-                            $unitOutcomes = $resultOutcomes->fetchall();
-                            $i = 1;
-                            while ($rowBlocks = $resultBlocks->fetch()) {
-                                makeBlock($guid, $connection2, $i, 'masterEdit', $rowBlocks['title'], $rowBlocks['type'], $rowBlocks['length'], $rowBlocks['contents'], 'N', $rowBlocks['gibbonUnitBlockID'], '', $rowBlocks['teachersNotes'], true, $unitOutcomes, $rowBlocks['gibbonOutcomeIDList']);
-                                ++$i;
-                            }
-                            ?>
+												try {
+													$dataOutcomes = array('gibbonUnitID' => $gibbonUnitID);
+													$sqlOutcomes = "SELECT gibbonOutcome.gibbonOutcomeID, gibbonOutcome.name, gibbonOutcome.category, scope, gibbonDepartment.name AS department FROM gibbonUnitOutcome JOIN gibbonOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) LEFT JOIN gibbonDepartment ON (gibbonOutcome.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonUnitID=:gibbonUnitID AND active='Y' ORDER BY sequenceNumber";
+													$resultOutcomes = $connection2->prepare($sqlOutcomes);
+													$resultOutcomes->execute($dataOutcomes);
+												} catch (PDOException $e) {
+													echo "<div class='error'>".$e->getMessage().'</div>';
+												}
+												$unitOutcomes = $resultOutcomes->fetchall();
+												$i = 1;
+												while ($rowBlocks = $resultBlocks->fetch()) {
+													makeBlock($guid, $connection2, $i, 'masterEdit', $rowBlocks['title'], $rowBlocks['type'], $rowBlocks['length'], $rowBlocks['contents'], 'N', $rowBlocks['gibbonUnitBlockID'], '', $rowBlocks['teachersNotes'], true, $unitOutcomes, $rowBlocks['gibbonOutcomeIDList']);
+													++$i;
+												}
+												?>
 											</div>
 											<div style='width: 100%; padding: 0px 0px 0px 0px'>
 												<div class="ui-state-default_dud" style='padding: 0px; height: 40px'>
@@ -856,90 +827,90 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
 									<td colspan=2> 
 										<?php
                                         $classCount = 0;
-                            try {
-                                $dataClass = array('unitIDField' => $row[$hookOptions['unitIDField']], 'gibbonCourseID' => $row[$hookOptions['unitCourseIDField']]);
-                                $sqlClass = 'SELECT gibbonCourseClass.nameShort AS className, gibbonCourse.nameShort AS courseName, '.$hookOptions['classLinkTable'].'.* FROM '.$hookOptions['classLinkTable'].' JOIN '.$hookOptions['unitTable'].' ON ('.$hookOptions['classLinkTable'].'.'.$hookOptions['unitIDField'].'='.$hookOptions['unitTable'].'.'.$hookOptions['unitIDField'].') JOIN gibbonCourseClass ON ('.$hookOptions['classLinkTable'].'.'.$hookOptions['classLinkJoinFieldClass'].'=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE '.$hookOptions['classLinkTable'].'.'.$hookOptions['unitIDField'].'=:unitIDField AND '.$hookOptions['unitTable'].'.'.$hookOptions['unitCourseIDField'].'=:gibbonCourseID ORDER BY courseName, className';
-                                $resultClass = $connection2->prepare($sqlClass);
-                                $resultClass->execute($dataClass);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
+										try {
+											$dataClass = array('unitIDField' => $row[$hookOptions['unitIDField']], 'gibbonCourseID' => $row[$hookOptions['unitCourseIDField']]);
+											$sqlClass = 'SELECT gibbonCourseClass.nameShort AS className, gibbonCourse.nameShort AS courseName, '.$hookOptions['classLinkTable'].'.* FROM '.$hookOptions['classLinkTable'].' JOIN '.$hookOptions['unitTable'].' ON ('.$hookOptions['classLinkTable'].'.'.$hookOptions['unitIDField'].'='.$hookOptions['unitTable'].'.'.$hookOptions['unitIDField'].') JOIN gibbonCourseClass ON ('.$hookOptions['classLinkTable'].'.'.$hookOptions['classLinkJoinFieldClass'].'=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE '.$hookOptions['classLinkTable'].'.'.$hookOptions['unitIDField'].'=:unitIDField AND '.$hookOptions['unitTable'].'.'.$hookOptions['unitCourseIDField'].'=:gibbonCourseID ORDER BY courseName, className';
+											$resultClass = $connection2->prepare($sqlClass);
+											$resultClass->execute($dataClass);
+										} catch (PDOException $e) {
+											echo "<div class='error'>".$e->getMessage().'</div>';
+										}
 
-                            if ($resultClass->rowCount() < 1) {
-                                echo "<div class='error'>";
-                                echo __($guid, 'There are no records to display.');
-                                echo '</div>';
-                            } else {
-                                echo "<table cellspacing='0' style='width: 100%'>";
-                                echo "<tr class='head'>";
-                                echo '<th>';
-                                echo __($guid, 'Class');
-                                echo '</th>';
-                                echo '<th>';
-                                echo __($guid, 'Running')."<br/><span style='font-size: 80%'>".__($guid, 'Is class studying this unit?').'</span>';
-                                echo '</th>';
-                                echo '<th>';
-                                echo __($guid, 'First Lesson')."<br/><span style='font-size: 80%'>";
-                                if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-                                    echo 'dd/mm/yyyy';
-                                } else {
-                                    echo $_SESSION[$guid]['i18n']['dateFormat'];
-                                };
-                                echo '</span>';
-                                echo '</th>';
-                                echo '<th>';
-                                echo __($guid, 'Actions');
-                                echo '</th>';
-                                echo '</tr>';
+										if ($resultClass->rowCount() < 1) {
+											echo "<div class='error'>";
+											echo __($guid, 'There are no records to display.');
+											echo '</div>';
+										} else {
+											echo "<table cellspacing='0' style='width: 100%'>";
+											echo "<tr class='head'>";
+											echo '<th>';
+											echo __($guid, 'Class');
+											echo '</th>';
+											echo '<th>';
+											echo __($guid, 'Running')."<br/><span style='font-size: 80%'>".__($guid, 'Is class studying this unit?').'</span>';
+											echo '</th>';
+											echo '<th>';
+											echo __($guid, 'First Lesson')."<br/><span style='font-size: 80%'>";
+											if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+												echo 'dd/mm/yyyy';
+											} else {
+												echo $_SESSION[$guid]['i18n']['dateFormat'];
+											};
+											echo '</span>';
+											echo '</th>';
+											echo '<th>';
+											echo __($guid, 'Actions');
+											echo '</th>';
+											echo '</tr>';
 
-                                $count = 0;
-                                $rowNum = 'odd';
+											$count = 0;
+											$rowNum = 'odd';
 
-                                while ($rowClass = $resultClass->fetch()) {
-                                    if ($count % 2 == 0) {
-                                        $rowNum = 'even';
-                                    } else {
-                                        $rowNum = 'odd';
-                                    }
-                                    ++$count;
+											while ($rowClass = $resultClass->fetch()) {
+												if ($count % 2 == 0) {
+													$rowNum = 'even';
+												} else {
+													$rowNum = 'odd';
+												}
+												++$count;
 
-                                                    //COLOR ROW BY STATUS!
-                                                    echo "<tr class=$rowNum>";
-                                    echo '<td>';
-                                    echo $rowClass['courseName'].'.'.$rowClass['className'].'</a>';
-                                    echo '</td>';
-                                    echo '<td>';
-                                    echo 'Y';
-                                    echo '</td>';
-                                    echo '<td>';
-                                    try {
-                                        $dataDate = array('gibbonCourseClassID' => $rowClass['gibbonCourseClassID'], 'gibbonHookID' => $gibbonHookIDToken, 'gibbonUnitID' => $gibbonUnitIDToken);
-                                        $sqlDate = 'SELECT date FROM gibbonPlannerEntry WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonHookID=:gibbonHookID AND gibbonUnitID=:gibbonUnitID ORDER BY date, timeStart';
-                                        $resultDate = $connection2->prepare($sqlDate);
-                                        $resultDate->execute($dataDate);
-                                    } catch (PDOException $e) {
-                                    }
-                                    if ($resultDate->rowCount() < 1) {
-                                        echo '<i>'.__($guid, 'There are no records to display.').'</i>';
-                                    } else {
-                                        $rowDate = $resultDate->fetch();
-                                        echo dateConvertBack($guid, $rowDate['date']);
-                                    }
-                                    echo '</td>';
-                                    echo '<td>';
-                                    if ($resultDate->rowCount() < 1) {
-                                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/units_edit_deploy.php&gibbonCourseClassID='.$rowClass['gibbonCourseClassID']."&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonUnitClassID=".$rowClass[$hookOptions['classLinkIDField']]."'><img title='Edit Unit' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                                    } else {
-                                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/units_edit_working.php&gibbonCourseClassID='.$rowClass['gibbonCourseClassID']."&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonUnitClassID=".$rowClass[$hookOptions['classLinkIDField']]."'><img title='Edit Unit' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                                    }
-                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/planner.php&gibbonCourseClassID='.$rowClass['gibbonCourseClassID']."&viewBy=class'><img style='margin-top: 3px' title='".__($guid, 'View Planner')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/planner.png'/></a> ";
-                                    echo '</td>';
-                                    echo '</tr>';
-                                    ++$classCount;
-                                }
-                                echo '</table>';
-                            }
-                            ?>
+												//COLOR ROW BY STATUS!
+												echo "<tr class=$rowNum>";
+												echo '<td>';
+												echo $rowClass['courseName'].'.'.$rowClass['className'].'</a>';
+												echo '</td>';
+												echo '<td>';
+												echo 'Y';
+												echo '</td>';
+												echo '<td>';
+												try {
+													$dataDate = array('gibbonCourseClassID' => $rowClass['gibbonCourseClassID'], 'gibbonHookID' => $gibbonHookIDToken, 'gibbonUnitID' => $gibbonUnitIDToken);
+													$sqlDate = 'SELECT date FROM gibbonPlannerEntry WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonHookID=:gibbonHookID AND gibbonUnitID=:gibbonUnitID ORDER BY date, timeStart';
+													$resultDate = $connection2->prepare($sqlDate);
+													$resultDate->execute($dataDate);
+												} catch (PDOException $e) {
+												}
+												if ($resultDate->rowCount() < 1) {
+													echo '<i>'.__($guid, 'There are no records to display.').'</i>';
+												} else {
+													$rowDate = $resultDate->fetch();
+													echo dateConvertBack($guid, $rowDate['date']);
+												}
+												echo '</td>';
+												echo '<td>';
+												if ($resultDate->rowCount() < 1) {
+													echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/units_edit_deploy.php&gibbonCourseClassID='.$rowClass['gibbonCourseClassID']."&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonUnitClassID=".$rowClass[$hookOptions['classLinkIDField']]."'><img title='Edit Unit' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+												} else {
+													echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/units_edit_working.php&gibbonCourseClassID='.$rowClass['gibbonCourseClassID']."&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonUnitClassID=".$rowClass[$hookOptions['classLinkIDField']]."'><img title='Edit Unit' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+												}
+												echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/planner.php&gibbonCourseClassID='.$rowClass['gibbonCourseClassID']."&viewBy=class'><img style='margin-top: 3px' title='".__($guid, 'View Planner')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/planner.png'/></a> ";
+												echo '</td>';
+												echo '</tr>';
+												++$classCount;
+											}
+											echo '</table>';
+										}
+										?>
 									</td>
 								</tr>
 							</table>

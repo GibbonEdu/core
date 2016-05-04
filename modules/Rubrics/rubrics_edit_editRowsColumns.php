@@ -87,8 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
                     echo '</div>';
                 } else {
                     //Let's go!
-                    $row = $result->fetch();
-                    ?>
+                    $row = $result->fetch(); ?>
 					<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/rubrics_edit_editRowsColumnsProcess.php?gibbonRubricID=$gibbonRubricID&search=$search&filter2=$filter2" ?>">
 						<table class='smallIntBorder' cellspacing='0' style="width: 760px">	
 							<tr class='break'>
@@ -134,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 								<?php
 
                             }
-                    ?>
+                    		?>
 							<tr>
 								<td> 
 									<b><?php echo __($guid, 'Name') ?> *</b><br/>
@@ -160,14 +159,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
                                 echo "<div class='error'>".$e->getMessage().'</div>';
                             }
 
-                    if ($resultRows->rowCount() < 1) {
-                        echo "<div class='error'>";
-                        echo __($guid, 'There are no records to display.');
-                        echo '</div>';
-                    } else {
-                        $count = 0;
-                        while ($rowRows = $resultRows->fetch()) {
-                            ?>
+							if ($resultRows->rowCount() < 1) {
+								echo "<div class='error'>";
+								echo __($guid, 'There are no records to display.');
+								echo '</div>';
+							} else {
+								$count = 0;
+								while ($rowRows = $resultRows->fetch()) {
+									?>
 									<tr>
 										<td> 
 											<b><?php echo sprintf(__($guid, 'Row %1$s Title'), ($count + 1)) ?></b><br/>
@@ -176,10 +175,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 										<td class="right">
 											<?php
                                             $outcomeBased = false;
-                            if ($rowRows['gibbonOutcomeID'] != '') {
-                                $outcomeBased = true;
-                            }
-                            ?>
+											if ($rowRows['gibbonOutcomeID'] != '') {
+												$outcomeBased = true;
+											}
+											?>
 											<script type="text/javascript">
 												$(document).ready(function(){
 													<?php
@@ -194,42 +193,36 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 														<?php
 
                                                     }
-                            ?>
+                            					?>
 													
-													$(".type-<?php echo $count ?>").click(function(){
-														if ($('input[name=type-<?php echo $count ?>]:checked').val()=="Standalone" ) {
-															$("#gibbonOutcomeID-<?php echo $count ?>").css("display","none");
-															$("#rowTitle-<?php echo $count ?>").css("display","block"); 
-														}
-														else if ($('input[name=type-<?php echo $count ?>]:checked').val()=="Outcome Based" ) {
-															$("#rowTitle-<?php echo $count ?>").css("display","none");
-															$("#gibbonOutcomeID-<?php echo $count ?>").css("display","block"); 
-														}
-													});
-													
+												$(".type-<?php echo $count ?>").click(function(){
+													if ($('input[name=type-<?php echo $count ?>]:checked').val()=="Standalone" ) {
+														$("#gibbonOutcomeID-<?php echo $count ?>").css("display","none");
+														$("#rowTitle-<?php echo $count ?>").css("display","block"); 
+													}
+													else if ($('input[name=type-<?php echo $count ?>]:checked').val()=="Outcome Based" ) {
+														$("#rowTitle-<?php echo $count ?>").css("display","none");
+														$("#gibbonOutcomeID-<?php echo $count ?>").css("display","block"); 
+													}
 												});
-											</script>
-											<?php
-                                                //Prep filtering base don year groups of rubric
-                                                $years = explode(',', $row['gibbonYearGroupIDList']);
-                            $dataSelect = array();
-                            $filterSelect = '';
-                            $count2 = 0;
-                            foreach ($years as $year) {
-                                $filterSelect .= " AND gibbonYearGroupIDList LIKE :gibbonSchoolYearID$count2";
-                                $dataSelect["gibbonSchoolYearID$count2"] = '%'.$year.'%';
-                                ++$count2;
-                            }
-                            ?>
 												
-											<input <?php if ($outcomeBased == false) {
-    echo 'checked';
-}
-                            ?> type="radio" name="type-<?php echo $count ?>" value="Standalone" class="type-<?php echo $count ?>" /> <?php echo __($guid, 'Standalone') ?> 
-											<input <?php if ($outcomeBased == true) {
-    echo 'checked';
-}
-                            ?> type="radio" name="type-<?php echo $count ?>" value="Outcome Based" class="type-<?php echo $count ?>" /> <?php echo __($guid, 'Outcome Based') ?><br/>
+											});
+										</script>
+											<?php
+											//Prep filtering base don year groups of rubric
+											$years = explode(',', $row['gibbonYearGroupIDList']);
+											$dataSelect = array();
+											$filterSelect = '';
+											$count2 = 0;
+											foreach ($years as $year) {
+												$filterSelect .= " AND gibbonYearGroupIDList LIKE :gibbonSchoolYearID$count2";
+												$dataSelect["gibbonSchoolYearID$count2"] = '%'.$year.'%';
+												++$count2;
+											}
+											?>
+												
+											<input <?php if ($outcomeBased == false) { echo 'checked'; } ?> type="radio" name="type-<?php echo $count ?>" value="Standalone" class="type-<?php echo $count ?>" /> <?php echo __($guid, 'Standalone') ?> 
+											<input <?php if ($outcomeBased == true) { echo 'checked'; } ?> type="radio" name="type-<?php echo $count ?>" value="Outcome Based" class="type-<?php echo $count ?>" /> <?php echo __($guid, 'Outcome Based') ?><br/>
 											<select name='gibbonOutcomeID[]' id='gibbonOutcomeID-<?php echo $count ?>' style='width: 304px'>
 												<option><option>
 												<optgroup label='--<?php echo __($guid, 'School Outcomes') ?>--'>
@@ -240,20 +233,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
                                                         $resultSelect->execute($dataSelect);
                                                     } catch (PDOException $e) {
                                                     }
-                            while ($rowSelect = $resultSelect->fetch()) {
-                                $label = '';
-                                if ($rowSelect['category'] == '') {
-                                    $label = $rowSelect['name'];
-                                } else {
-                                    $label = $rowSelect['category'].' - '.$rowSelect['name'];
-                                }
-                                $selected = '';
-                                if ($rowSelect['gibbonOutcomeID'] == $rowRows['gibbonOutcomeID']) {
-                                    $selected = 'selected';
-                                }
-                                echo "<option $selected value='".$rowSelect['gibbonOutcomeID']."'>$label</option>";
-                            }
-                            ?>
+													while ($rowSelect = $resultSelect->fetch()) {
+														$label = '';
+														if ($rowSelect['category'] == '') {
+															$label = $rowSelect['name'];
+														} else {
+															$label = $rowSelect['category'].' - '.$rowSelect['name'];
+														}
+														$selected = '';
+														if ($rowSelect['gibbonOutcomeID'] == $rowRows['gibbonOutcomeID']) {
+															$selected = 'selected';
+														}
+														echo "<option $selected value='".$rowSelect['gibbonOutcomeID']."'>$label</option>";
+													}
+													?>
 												</optgroup>
 												<?php
                                                 if ($row['scope'] == 'Learning Area') {
@@ -285,7 +278,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 													<?php
 
                                                 }
-                            ?>
+                            					?>
 											</select>
 											<input name="rowTitle[]" id="rowTitle-<?php echo $count ?>" value="<?php echo $rowRows['title'] ?>" type="text" class="standardWidth" maxlength=40>
 											<input name="gibbonRubricRowID[]" id="gibbonRubricRowID[]" value="<?php echo $rowRows['gibbonRubricRowID'] ?>" type="hidden">
@@ -293,9 +286,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 									</tr>
 									<?php
                                     ++$count;
-                        }
-                    }
-                    ?>
+								}
+							}
+							?>
 							
 							<?php //COLUMNS!?>
 							<tr class='break'>
@@ -313,12 +306,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
                                 echo "<div class='error'>".$e->getMessage().'</div>';
                             }
 
-                    if ($resultColumns->rowCount() < 1) {
-                        echo "<div class='error'>";
-                        echo __($guid, 'There are no records to display.');
-                        echo '</div>';
-                    } else {
-                        //If no grade scale specified
+							if ($resultColumns->rowCount() < 1) {
+								echo "<div class='error'>";
+								echo __($guid, 'There are no records to display.');
+								echo '</div>';
+							} else {
+                       			 //If no grade scale specified
                                 if ($row['gibbonScaleID'] == '') {
                                     $count = 0;
                                     while ($rowColumns = $resultColumns->fetch()) {
@@ -372,10 +365,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 										<?php
                                         ++$count;
                                     }
-                                }
-                    }
-                    ?>
-							
+								}
+							}
+							?>						
 							
 							<tr>
 								<td>

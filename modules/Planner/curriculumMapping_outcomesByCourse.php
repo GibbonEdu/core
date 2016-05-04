@@ -56,30 +56,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
 					<select class="standardWidth" name="gibbonCourseID">
 						<?php
                         echo "<option value=''></option>";
-    $currentDepartment = '';
-    $lastDepartment = '';
+						$currentDepartment = '';
+						$lastDepartment = '';
 
-    try {
-        $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-        $sqlSelect = "SELECT gibbonCourse.*, gibbonDepartment.name AS department FROM gibbonCourse LEFT JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonYearGroupIDList='' ORDER BY department, nameShort";
-        $resultSelect = $connection2->prepare($sqlSelect);
-        $resultSelect->execute($dataSelect);
-    } catch (PDOException $e) {
-    }
-    while ($rowSelect = $resultSelect->fetch()) {
-        $currentDepartment = $rowSelect['department'];
-        if (($currentDepartment != $lastDepartment) and $currentDepartment != '') {
-            echo "<optgroup label='--".$currentDepartment."--'>";
-        }
+						try {
+							$dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+							$sqlSelect = "SELECT gibbonCourse.*, gibbonDepartment.name AS department FROM gibbonCourse LEFT JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonYearGroupIDList='' ORDER BY department, nameShort";
+							$resultSelect = $connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						} catch (PDOException $e) {
+						}
+						while ($rowSelect = $resultSelect->fetch()) {
+							$currentDepartment = $rowSelect['department'];
+							if (($currentDepartment != $lastDepartment) and $currentDepartment != '') {
+								echo "<optgroup label='--".$currentDepartment."--'>";
+							}
 
-        if ($gibbonCourseID == $rowSelect['gibbonCourseID']) {
-            echo "<option selected value='".$rowSelect['gibbonCourseID']."'>".htmlPrep($rowSelect['name']).'</option>';
-        } else {
-            echo "<option value='".$rowSelect['gibbonCourseID']."'>".htmlPrep($rowSelect['name']).'</option>';
-        }
-        $lastDepartment = $rowSelect['department'];
-    }
-    ?>				
+							if ($gibbonCourseID == $rowSelect['gibbonCourseID']) {
+								echo "<option selected value='".$rowSelect['gibbonCourseID']."'>".htmlPrep($rowSelect['name']).'</option>';
+							} else {
+								echo "<option value='".$rowSelect['gibbonCourseID']."'>".htmlPrep($rowSelect['name']).'</option>';
+							}
+							$lastDepartment = $rowSelect['department'];
+						}
+						?>				
 					</select>
 				</td>
 			</tr>
@@ -179,14 +179,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
                 echo '</tr>';
 
                     //Prep where for year group matching of outcomes to course
-                    $where = '';
-                $yearGroups = explode(',', $row['gibbonYearGroupIDList']);
-                foreach ($yearGroups as $yearGroup) {
-                    $where .= " AND gibbonYearGroupIDList LIKE concat('%', $yearGroup, '%')";
-                }
+					$where = '';
+					$yearGroups = explode(',', $row['gibbonYearGroupIDList']);
+					foreach ($yearGroups as $yearGroup) {
+						$where .= " AND gibbonYearGroupIDList LIKE concat('%', $yearGroup, '%')";
+					}
 
-                    //SCHOOL OUTCOMES
-                    echo "<tr class='break'>";
+				//SCHOOL OUTCOMES
+				echo "<tr class='break'>";
                 echo '<td colspan='.(($classCount * 2) + 2).'>';
                 echo '<h4>'.__($guid, 'School Outcomes').'</h4>';
                 echo '</td>';
@@ -230,114 +230,113 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
                         echo $rowOutcomes['name'];
                         echo '</td>';
 
-                                //Deal with outcomes
-                                foreach ($classes as $class) {
-                                    echo '<td>';
-                                    $outcomeCount = 0;
-                                    foreach ($allOutcomes as $anOutcome) {
-                                        if ($anOutcome['type'] == 'Unit' and $anOutcome['scope'] == 'School' and $anOutcome['gibbonOutcomeID'] == $rowOutcomes['gibbonOutcomeID'] and $class['gibbonCourseClassID'] == $anOutcome['gibbonCourseClassID']) {
-                                            ++$outcomeCount;
-                                        }
-                                    }
-                                    if ($outcomeCount < 1) {
-                                        echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
-                                    } else {
-                                        echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> x ".$outcomeCount;
-                                    }
-                                    echo '</td>';
-                                    echo '<td>';
-                                    $outcomeCount = 0;
-                                    foreach ($allOutcomes as $anOutcome) {
-                                        if ($anOutcome['type'] != 'Unit' and $anOutcome['scope'] == 'School' and $anOutcome['gibbonOutcomeID'] == $rowOutcomes['gibbonOutcomeID'] and $class['gibbonCourseClassID'] == $anOutcome['gibbonCourseClassID']) {
-                                            ++$outcomeCount;
-                                        }
-                                    }
-                                    if ($outcomeCount < 1) {
-                                        echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
-                                    } else {
-                                        echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> x ".$outcomeCount;
-                                    }
-                                    echo '</td>';
-                                }
-
+						//Deal with outcomes
+						foreach ($classes as $class) {
+							echo '<td>';
+							$outcomeCount = 0;
+							foreach ($allOutcomes as $anOutcome) {
+								if ($anOutcome['type'] == 'Unit' and $anOutcome['scope'] == 'School' and $anOutcome['gibbonOutcomeID'] == $rowOutcomes['gibbonOutcomeID'] and $class['gibbonCourseClassID'] == $anOutcome['gibbonCourseClassID']) {
+									++$outcomeCount;
+								}
+							}
+							if ($outcomeCount < 1) {
+								echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
+							} else {
+								echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> x ".$outcomeCount;
+							}
+							echo '</td>';
+							echo '<td>';
+							$outcomeCount = 0;
+							foreach ($allOutcomes as $anOutcome) {
+								if ($anOutcome['type'] != 'Unit' and $anOutcome['scope'] == 'School' and $anOutcome['gibbonOutcomeID'] == $rowOutcomes['gibbonOutcomeID'] and $class['gibbonCourseClassID'] == $anOutcome['gibbonCourseClassID']) {
+									++$outcomeCount;
+								}
+							}
+							if ($outcomeCount < 1) {
+								echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
+							} else {
+								echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> x ".$outcomeCount;
+							}
+							echo '</td>';
+						}
                         echo '</tr>';
                     }
                 }
 
                     //LEARNING AREA OUTCOMES
                     echo "<tr class='break'>";
-                echo '<td colspan='.(($classCount * 2) + 2).'>';
-                echo '<h4>'.sprintf(__($guid, '%1$s Outcomes'), $row['department']).'</h4>';
-                echo '</td>';
-                echo '</tr>';
-                try {
-                    $dataOutcomes = array('gibbonDepartmentID' => $row['gibbonDepartmentID']);
-                    $sqlOutcomes = "SELECT * FROM gibbonOutcome WHERE scope='Learning Area' AND gibbonDepartmentID=:gibbonDepartmentID AND active='Y' $where ORDER BY category, name";
-                    $resultOutcomes = $connection2->prepare($sqlOutcomes);
-                    $resultOutcomes->execute($dataOutcomes);
-                } catch (PDOException $e) {
-                    echo '<tr>';
-                    echo '<td colspan='.(($classCount * 2) + 2).'>';
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                    echo '</td>';
-                    echo '</tr>';
-                }
+					echo '<td colspan='.(($classCount * 2) + 2).'>';
+					echo '<h4>'.sprintf(__($guid, '%1$s Outcomes'), $row['department']).'</h4>';
+					echo '</td>';
+					echo '</tr>';
+					try {
+						$dataOutcomes = array('gibbonDepartmentID' => $row['gibbonDepartmentID']);
+						$sqlOutcomes = "SELECT * FROM gibbonOutcome WHERE scope='Learning Area' AND gibbonDepartmentID=:gibbonDepartmentID AND active='Y' $where ORDER BY category, name";
+						$resultOutcomes = $connection2->prepare($sqlOutcomes);
+						$resultOutcomes->execute($dataOutcomes);
+					} catch (PDOException $e) {
+						echo '<tr>';
+						echo '<td colspan='.(($classCount * 2) + 2).'>';
+						echo "<div class='error'>".$e->getMessage().'</div>';
+						echo '</td>';
+						echo '</tr>';
+					}
 
-                if ($resultOutcomes->rowCount() < 1) {
-                    echo '<tr>';
-                    echo '<td colspan='.(($classCount * 2) + 2).'>';
-                    echo "<div class='error'>".__($guid, 'There are no records to display.').'</div>';
-                    echo '</td>';
-                    echo '</tr>';
-                } else {
-                    $count = 0;
-                    $rowNum = 'odd';
-                    while ($rowOutcomes = $resultOutcomes->fetch()) {
-                        if ($count % 2 == 0) {
-                            $rowNum = 'even';
-                        } else {
-                            $rowNum = 'odd';
-                        }
-                        ++$count;
+					if ($resultOutcomes->rowCount() < 1) {
+						echo '<tr>';
+						echo '<td colspan='.(($classCount * 2) + 2).'>';
+						echo "<div class='error'>".__($guid, 'There are no records to display.').'</div>';
+						echo '</td>';
+						echo '</tr>';
+					} else {
+						$count = 0;
+						$rowNum = 'odd';
+						while ($rowOutcomes = $resultOutcomes->fetch()) {
+							if ($count % 2 == 0) {
+								$rowNum = 'even';
+							} else {
+								$rowNum = 'odd';
+							}
+							++$count;
 
-                        //COLOR ROW BY STATUS!
-                        echo "<tr class=$rowNum>";
-                        echo '<td>';
-                        echo $rowOutcomes['category'];
-                        echo '</td>';
-                        echo '<td>';
-                        echo $rowOutcomes['name'];
-                        echo '</td>';
+							//COLOR ROW BY STATUS!
+							echo "<tr class=$rowNum>";
+							echo '<td>';
+							echo $rowOutcomes['category'];
+							echo '</td>';
+							echo '<td>';
+							echo $rowOutcomes['name'];
+							echo '</td>';
 
-                                //Deal with outcomes
-                                foreach ($classes as $class) {
-                                    echo '<td>';
-                                    $outcomeCount = 0;
-                                    foreach ($allOutcomes as $anOutcome) {
-                                        if ($anOutcome['type'] == 'Unit' and $anOutcome['scope'] == 'Learning Area' and $anOutcome['gibbonOutcomeID'] == $rowOutcomes['gibbonOutcomeID'] and $class['gibbonCourseClassID'] == $anOutcome['gibbonCourseClassID']) {
-                                            ++$outcomeCount;
-                                        }
-                                    }
-                                    if ($outcomeCount < 1) {
-                                        echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
-                                    } else {
-                                        echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> x ".$outcomeCount;
-                                    }
-                                    echo '</td>';
-                                    echo '<td>';
-                                    $outcomeCount = 0;
-                                    foreach ($allOutcomes as $anOutcome) {
-                                        if ($anOutcome['type'] != 'Unit' and $anOutcome['scope'] == 'Learning Area' and $anOutcome['gibbonOutcomeID'] == $rowOutcomes['gibbonOutcomeID'] and $class['gibbonCourseClassID'] == $anOutcome['gibbonCourseClassID']) {
-                                            ++$outcomeCount;
-                                        }
-                                    }
-                                    if ($outcomeCount < 1) {
-                                        echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
-                                    } else {
-                                        echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> x ".$outcomeCount;
-                                    }
-                                    echo '</td>';
-                                }
+							//Deal with outcomes
+							foreach ($classes as $class) {
+								echo '<td>';
+								$outcomeCount = 0;
+								foreach ($allOutcomes as $anOutcome) {
+									if ($anOutcome['type'] == 'Unit' and $anOutcome['scope'] == 'Learning Area' and $anOutcome['gibbonOutcomeID'] == $rowOutcomes['gibbonOutcomeID'] and $class['gibbonCourseClassID'] == $anOutcome['gibbonCourseClassID']) {
+										++$outcomeCount;
+									}
+								}
+								if ($outcomeCount < 1) {
+									echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
+								} else {
+									echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> x ".$outcomeCount;
+								}
+								echo '</td>';
+								echo '<td>';
+								$outcomeCount = 0;
+								foreach ($allOutcomes as $anOutcome) {
+									if ($anOutcome['type'] != 'Unit' and $anOutcome['scope'] == 'Learning Area' and $anOutcome['gibbonOutcomeID'] == $rowOutcomes['gibbonOutcomeID'] and $class['gibbonCourseClassID'] == $anOutcome['gibbonCourseClassID']) {
+										++$outcomeCount;
+									}
+								}
+								if ($outcomeCount < 1) {
+									echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
+								} else {
+									echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> x ".$outcomeCount;
+								}
+								echo '</td>';
+							}
 
                         echo '</tr>';
                     }

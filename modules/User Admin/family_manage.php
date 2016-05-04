@@ -56,10 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage.p
 					<span class="emphasis small"><?php echo __($guid, 'Family name.') ?></span>
 				</td>
 				<td class="right">
-					<input name="search" id="search" maxlength=20 value="<?php if (isset($_GET['search'])) {
-    echo $_GET['search'];
-}
-    ?>" type="text" class="standardWidth">
+					<input name="search" id="search" maxlength=20 value="<?php if (isset($_GET['search'])) { echo $_GET['search']; } ?>" type="text" class="standardWidth">
 				</td>
 			</tr>
 			<tr>

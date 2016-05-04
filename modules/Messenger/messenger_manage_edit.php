@@ -106,8 +106,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 							<?php
 
                         }
-                if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_byMessageWall')) {
-                    ?>
+						if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_byMessageWall')) {
+							?>
 							<script type="text/javascript">
 								$(document).ready(function(){
 									$(".messageWall").click(function(){
@@ -129,37 +129,32 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 									<input <?php if ($row['messageWall'] == 'N')) { echo 'checked'; } ?> type="radio" name="messageWall" class="messageWall" value="N"/> <?php echo __($guid, 'No') ?>
 								</td>
 							</tr>
-							<tr id="messageWallRow" <?php if ($row['messageWall'] == 'N') {
-    echo "style='display: none'";
-}
-                    ?>>
+							<tr id="messageWallRow" <?php if ($row['messageWall'] == 'N') { echo "style='display: none'"; } ?>>
 								<td> 
 									<b><?php echo __($guid, 'Publication Dates') ?> *</b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Select up to three individual dates.') ?></br><?php echo __($guid, 'Format:').' ';
-                    if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-                        echo 'dd/mm/yyyy';
-                    } else {
-                        echo $_SESSION[$guid]['i18n']['dateFormat'];
-                    }
-                    ?>.<br/></span>
+									if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+										echo 'dd/mm/yyyy';
+									} else {
+										echo $_SESSION[$guid]['i18n']['dateFormat'];
+									}
+									?>.<br/></span>
 								</td>
 								<td class="right">
 									<input name="date1" id="date1" maxlength=10 value="<?php echo dateConvertBack($guid, $row['messageWall_date1']) ?>" type="text" class="standardWidth">
 									<script type="text/javascript">
 										var date1=new LiveValidation('date1');
-										date1.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-                    ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-                    ?>." } ); 
+										date1.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') { echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+										} else {
+											echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+										}
+										?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
+										} else {
+											echo $_SESSION[$guid]['i18n']['dateFormat'];
+										}
+                    					?>." } ); 
 									</script>
-									 <script type="text/javascript">
+									<script type="text/javascript">
 										$(function() {
 											$( "#date1" ).datepicker();
 										});
@@ -168,17 +163,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 									<input name="date2" id="date2" maxlength=10 value="<?php echo dateConvertBack($guid, $row['messageWall_date2']) ?>" type="text" style="width: 300px; margin-top: 3px">
 									<script type="text/javascript">
 										var date2=new LiveValidation('date2');
-										date2.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-                    ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-                    ?>." } ); 
+										date2.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') { echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+										} else {
+											echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+										}
+										?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
+										} else {
+											echo $_SESSION[$guid]['i18n']['dateFormat'];
+										}
+                    					?>." } ); 
 									</script>
 									 <script type="text/javascript">
 										$(function() {
@@ -189,17 +182,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 									<input name="date3" id="date3" maxlength=10 value="<?php echo dateConvertBack($guid, $row['messageWall_date3']) ?>" type="text" style="width: 300px; margin-top: 3px">
 									<script type="text/javascript">
 										var date3=new LiveValidation('date3');
-										date3.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-                    ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-                    ?>." } ); 
+										date3.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') { echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+										} else {
+											echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+										}
+										?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
+										} else {
+											echo $_SESSION[$guid]['i18n']['dateFormat'];
+										}
+                    					?>." } ); 
 									</script>
 									 <script type="text/javascript">
 										$(function() {
@@ -210,9 +201,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 							</tr>
 							<?php
 
-                }
-                if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_bySMS')) {
-                    ?>
+						}
+						if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_bySMS')) {
+							?>
 							<tr>
 								<td> 
 									<b><?php echo __($guid, 'SMS') ?> *</b><br/>
@@ -230,8 +221,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 							</tr>
 							<?php
 
-                }
-                ?>
+						}
+						?>
 						
 						
 						<tr class='break'>
@@ -279,12 +270,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 							<script type="text/javascript">
 								/* Role Control */
 								$(document).ready(function(){
-									<?php if ($resultTarget->rowCount() <= 0) {
-    ?>
+									<?php if ($resultTarget->rowCount() <= 0) { ?>
 										$("#roleRow").css("display","none");
-									<?php 
-}
-                            ?>
+									<?php } ?>
 									$(".role").click(function(){
 										if ($('input[name=role]:checked').val()=="Y" ) {
 											$("#roleRow").slideDown("fast", $("#roleRow").css("display","table-row")); 
@@ -300,14 +288,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 									<span class="emphasis small"><?php echo __($guid, 'Users of a certain type.') ?><br/></span>
 								</td>
 								<td class="right">
-									<input <?php if ($resultTarget->rowCount() > 0) {
-    echo 'checked';
-}
-                            ?> type="radio" name="role" class="role" value="Y"/> <?php echo __($guid, 'Yes') ?>
-									<input <?php if ($resultTarget->rowCount() <= 0) {
-    echo 'checked';
-}
-                            ?> type="radio" name="role" class="role" value="N"/> <?php echo __($guid, 'No') ?>
+									<input <?php if ($resultTarget->rowCount() > 0) { echo 'checked'; } ?> type="radio" name="role" class="role" value="Y"/> <?php echo __($guid, 'Yes') ?>
+									<input <?php if ($resultTarget->rowCount() <= 0) { echo 'checked'; } ?> type="radio" name="role" class="role" value="N"/> <?php echo __($guid, 'No') ?>
 								</td>
 							</tr>
 							<?php
@@ -332,14 +314,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
                                             $resultSelect->execute($dataSelect);
                                         } catch (PDOException $e) {
                                         }
-                            while ($rowSelect = $resultSelect->fetch()) {
-                                $selected = '';
-                                if (is_numeric(strpos($selectedAll, str_pad($rowSelect['gibbonRoleID'], 3, '0', STR_PAD_LEFT)))) {
-                                    $selected = 'selected';
-                                }
-                                echo "<option $selected value='".$rowSelect['gibbonRoleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).' ('.htmlPrep(__($guid, $rowSelect['category'])).')</option>';
-                            }
-                            ?>
+										while ($rowSelect = $resultSelect->fetch()) {
+											$selected = '';
+											if (is_numeric(strpos($selectedAll, str_pad($rowSelect['gibbonRoleID'], 3, '0', STR_PAD_LEFT)))) {
+												$selected = 'selected';
+											}
+											echo "<option $selected value='".$rowSelect['gibbonRoleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).' ('.htmlPrep(__($guid, $rowSelect['category'])).')</option>';
+										}
+										?>
 									</select>
 								</td>
 							</tr>
@@ -358,12 +340,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 							<script type="text/javascript">
 								/* Role Category Control */
 								$(document).ready(function(){
-									<?php if ($resultTarget->rowCount() <= 0) {
-    ?>
+									<?php if ($resultTarget->rowCount() <= 0) { ?>
 										$("#roleCategoryRow").css("display","none");
-									<?php 
-}
-                            ?>
+									<?php } ?>
 									$(".roleCategory").click(function(){
 										if ($('input[name=roleCategory]:checked').val()=="Y" ) {
 											$("#roleCategoryRow").slideDown("fast", $("#roleCategoryRow").css("display","table-row")); 
@@ -379,14 +358,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 									<span class="emphasis small"><?php echo __($guid, 'Users of a certain type.') ?><br/></span>
 								</td>
 								<td class="right">
-									<input <?php if ($resultTarget->rowCount() > 0) {
-    echo 'checked';
-}
-                            ?> type="radio" name="roleCategory" class="roleCategory" value="Y"/> <?php echo __($guid, 'Yes') ?>
-									<input <?php if ($resultTarget->rowCount() <= 0) {
-    echo 'checked';
-}
-                            ?> type="radio" name="roleCategory" class="roleCategory" value="N"/> <?php echo __($guid, 'No') ?>
+									<input <?php if ($resultTarget->rowCount() > 0) { echo 'checked'; } ?> type="radio" name="roleCategory" class="roleCategory" value="Y"/> <?php echo __($guid, 'Yes') ?>
+									<input <?php if ($resultTarget->rowCount() <= 0) { echo 'checked'; } ?> type="radio" name="roleCategory" class="roleCategory" value="N"/> <?php echo __($guid, 'No') ?>
 								</td>
 							</tr>
 							<?php
@@ -411,43 +384,40 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
                                             $resultSelect->execute($dataSelect);
                                         } catch (PDOException $e) {
                                         }
-                            while ($rowSelect = $resultSelect->fetch()) {
-                                $selected = '';
-                                if (is_numeric(strpos($selectedAll, $rowSelect['category']))) {
-                                    $selected = 'selected';
-                                }
-                                echo "<option $selected value='".$rowSelect['category']."'>".htmlPrep(__($guid, $rowSelect['category'])).'</option>';
-                            }
-                            ?>
+									while ($rowSelect = $resultSelect->fetch()) {
+										$selected = '';
+										if (is_numeric(strpos($selectedAll, $rowSelect['category']))) {
+											$selected = 'selected';
+										}
+										echo "<option $selected value='".$rowSelect['category']."'>".htmlPrep(__($guid, $rowSelect['category'])).'</option>';
+									}
+									?>
 									</select>
 								</td>
 							</tr>
 							<?php
 
                         }
-                if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_yearGroups_any')) {
-                    try {
-                        $dataTarget = array('gibbonMessengerID' => $gibbonMessengerID);
-                        $sqlTarget = "SELECT * FROM gibbonMessengerTarget WHERE gibbonMessengerID=:gibbonMessengerID AND type='Year Group'";
-                        $resultTarget = $connection2->prepare($sqlTarget);
-                        $resultTarget->execute($dataTarget);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
+						if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_yearGroups_any')) {
+							try {
+								$dataTarget = array('gibbonMessengerID' => $gibbonMessengerID);
+								$sqlTarget = "SELECT * FROM gibbonMessengerTarget WHERE gibbonMessengerID=:gibbonMessengerID AND type='Year Group'";
+								$resultTarget = $connection2->prepare($sqlTarget);
+								$resultTarget->execute($dataTarget);
+							} catch (PDOException $e) {
+								echo "<div class='error'>".$e->getMessage().'</div>';
+							}
 
-                    ?>
+							?>
 							<script type="text/javascript">
 								/* yearGroup Control */
 								$(document).ready(function(){
-									<?php if ($resultTarget->rowCount() <= 0) {
-    ?>
+									<?php if ($resultTarget->rowCount() <= 0) { ?>
 										$("#yearGroupRow").css("display","none");
 										$("#yearGroupRow2").css("display","none");
 										$("#yearGroupRow3").css("display","none");
 										$("#yearGroupRow4").css("display","none");
-									<?php 
-}
-                    ?>
+									<?php } ?>
 									$(".yearGroup").click(function(){
 										if ($('input[name=yearGroup]:checked').val()=="Y" ) {
 											$("#yearGroupRow").slideDown("fast", $("#yearGroupRow").css("display","table-row")); 
@@ -475,23 +445,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 							</tr>
 							<?php
                             $selectedAll = '';
-                    $staff = true;
-                    $students = true;
-                    $parents = true;
-                    while ($rowTarget = $resultTarget->fetch()) {
-                        $selectedAll .= str_pad($rowTarget['id'], 3, '0', STR_PAD_LEFT).',';
-                        if ($rowTarget['staff'] == 'N') {
-                            $staff = false;
-                        }
-                        if ($rowTarget['students'] == 'N') {
-                            $students = false;
-                        }
-                        if ($rowTarget['parents'] == 'N') {
-                            $parents = false;
-                        }
-                    }
-                    $selectedAll = substr($selectedAll, 0, -1);
-                    ?>
+							$staff = true;
+							$students = true;
+							$parents = true;
+							while ($rowTarget = $resultTarget->fetch()) {
+								$selectedAll .= str_pad($rowTarget['id'], 3, '0', STR_PAD_LEFT).',';
+								if ($rowTarget['staff'] == 'N') {
+									$staff = false;
+								}
+								if ($rowTarget['students'] == 'N') {
+									$students = false;
+								}
+								if ($rowTarget['parents'] == 'N') {
+									$parents = false;
+								}
+							}
+							$selectedAll = substr($selectedAll, 0, -1); ?>
 							<tr id="yearGroupRow">
 								<td class='hiddenReveal'> 
 									<b><?php echo __($guid, 'Select Year Groups') ?></b><br/>
@@ -507,14 +476,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
                                             $resultSelect->execute($dataSelect);
                                         } catch (PDOException $e) {
                                         }
-                    while ($rowSelect = $resultSelect->fetch()) {
-                        $selected = '';
-                        if (is_numeric(strpos($selectedAll, str_pad($rowSelect['gibbonYearGroupID'], 3, '0', STR_PAD_LEFT)))) {
-                            $selected = 'selected';
-                        }
-                        echo "<option $selected value='".$rowSelect['gibbonYearGroupID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-                    }
-                    ?>
+									while ($rowSelect = $resultSelect->fetch()) {
+										$selected = '';
+										if (is_numeric(strpos($selectedAll, str_pad($rowSelect['gibbonYearGroupID'], 3, '0', STR_PAD_LEFT)))) {
+											$selected = 'selected';
+										}
+										echo "<option $selected value='".$rowSelect['gibbonYearGroupID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
+									}
+									?>
 									</select>
 								</td>
 							</tr>
@@ -526,12 +495,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 									<select name="yearGroupsStaff" id="yearGroupsStaff" class="standardWidth">
 										<?php
                                         $selected = '';
-                    if ($staff == false) {
-                        $selected = 'selected';
-                    }
-                    echo "<option value='Y'>Yes</option>";
-                    echo "<option $selected value='N'>No</option>";
-                    ?>
+										if ($staff == false) {
+											$selected = 'selected';
+										}
+										echo "<option value='Y'>Yes</option>";
+										echo "<option $selected value='N'>No</option>"; ?>
 									</select>
 								</td>
 							</tr>
@@ -543,12 +511,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 									<select name="yearGroupsStudents" id="yearGroupsStudents" class="standardWidth">
 										<?php
                                         $selected = '';
-                    if ($students == false) {
-                        $selected = 'selected';
-                    }
-                    echo "<option value='Y'>Yes</option>";
-                    echo "<option $selected value='N'>No</option>";
-                    ?>
+										if ($students == false) {
+											$selected = 'selected';
+										}
+										echo "<option value='Y'>Yes</option>";
+										echo "<option $selected value='N'>No</option>"; ?>
 									</select>
 								</td>
 							</tr>
@@ -575,29 +542,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 								<?php
 
                             }
-                }
-                if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_rollGroups_my') or isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_rollGroups_any')) {
-                    try {
-                        $dataTarget = array('gibbonMessengerID' => $gibbonMessengerID);
-                        $sqlTarget = "SELECT * FROM gibbonMessengerTarget WHERE gibbonMessengerID=:gibbonMessengerID AND type='RolL Group'";
-                        $resultTarget = $connection2->prepare($sqlTarget);
-                        $resultTarget->execute($dataTarget);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
-                    ?>
+						}
+						if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_rollGroups_my') or isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_rollGroups_any')) {
+							try {
+								$dataTarget = array('gibbonMessengerID' => $gibbonMessengerID);
+								$sqlTarget = "SELECT * FROM gibbonMessengerTarget WHERE gibbonMessengerID=:gibbonMessengerID AND type='RolL Group'";
+								$resultTarget = $connection2->prepare($sqlTarget);
+								$resultTarget->execute($dataTarget);
+							} catch (PDOException $e) {
+								echo "<div class='error'>".$e->getMessage().'</div>';
+							}
+							?>
 							<script type="text/javascript">
 								/* rollGroup Control */
 								$(document).ready(function(){
-									<?php if ($resultTarget->rowCount() <= 0) {
-    ?>
+									<?php if ($resultTarget->rowCount() <= 0) { ?>
 										$("#rollGroupRow").css("display","none");
 										$("#rollGroupRow2").css("display","none");
 										$("#rollGroupRow3").css("display","none");
 										$("#rollGroupRow4").css("display","none");
-									<?php 
-}
-                    ?>
+									<?php } ?>
 									$(".rollGroup").click(function(){
 										if ($('input[name=rollGroup]:checked').val()=="Y" ) {
 											$("#rollGroupRow").slideDown("fast", $("#rollGroupRow").css("display","table-row")); 
@@ -625,23 +589,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 							</tr>
 							<?php
                             $selectedAll = '';
-                    $staff = true;
-                    $students = true;
-                    $parents = true;
-                    while ($rowTarget = $resultTarget->fetch()) {
-                        $selectedAll .= str_pad($rowTarget['id'], 5, '0', STR_PAD_LEFT).',';
-                        if ($rowTarget['staff'] == 'N') {
-                            $staff = false;
-                        }
-                        if ($rowTarget['students'] == 'N') {
-                            $students = false;
-                        }
-                        if ($rowTarget['parents'] == 'N') {
-                            $parents = false;
-                        }
-                    }
-                    $selectedAll = substr($selectedAll, 0, -1);
-                    ?>
+							$staff = true;
+							$students = true;
+							$parents = true;
+							while ($rowTarget = $resultTarget->fetch()) {
+								$selectedAll .= str_pad($rowTarget['id'], 5, '0', STR_PAD_LEFT).',';
+								if ($rowTarget['staff'] == 'N') {
+									$staff = false;
+								}
+								if ($rowTarget['students'] == 'N') {
+									$students = false;
+								}
+								if ($rowTarget['parents'] == 'N') {
+									$parents = false;
+								}
+							}
+							$selectedAll = substr($selectedAll, 0, -1); ?>
 							<tr id="rollGroupRow">
 								<td class='hiddenReveal'> 
 									<b><?php echo __($guid, 'Select Roll Groups') ?></b><br/>
@@ -668,14 +631,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
                                             $resultSelect->execute($dataSelect);
                                         } catch (PDOException $e) {
                                         }
-                    while ($rowSelect = $resultSelect->fetch()) {
-                        $selected = '';
-                        if (is_numeric(strpos($selectedAll, str_pad($rowSelect['gibbonRollGroupID'], 5, '0', STR_PAD_LEFT)))) {
-                            $selected = 'selected';
-                        }
-                        echo "<option $selected value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
-                    }
-                    ?>
+										while ($rowSelect = $resultSelect->fetch()) {
+											$selected = '';
+											if (is_numeric(strpos($selectedAll, str_pad($rowSelect['gibbonRollGroupID'], 5, '0', STR_PAD_LEFT)))) {
+												$selected = 'selected';
+											}
+											echo "<option $selected value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
+										}
+										?>
 									</select>
 								</td>
 							</tr>
@@ -687,12 +650,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 									<select name="rollGroupsStaff" id="rollGroupsStaff" class="standardWidth">
 										<?php
                                         $selected = '';
-                    if ($staff == false) {
-                        $selected = 'selected';
-                    }
-                    echo "<option value='Y'>Yes</option>";
-                    echo "<option $selected value='N'>No</option>";
-                    ?>
+										if ($staff == false) {
+											$selected = 'selected';
+										}
+										echo "<option value='Y'>Yes</option>";
+										echo "<option $selected value='N'>No</option>"; ?>
 									</select>
 								</td>
 							</tr>
@@ -704,12 +666,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 									<select name="rollGroupsStudents" id="rollGroupsStudents" class="standardWidth">
 										<?php
                                         $selected = '';
-                    if ($students == false) {
-                        $selected = 'selected';
-                    }
-                    echo "<option value='Y'>Yes</option>";
-                    echo "<option $selected value='N'>No</option>";
-                    ?>
+										if ($students == false) {
+											$selected = 'selected';
+										}
+										echo "<option value='Y'>Yes</option>";
+										echo "<option $selected value='N'>No</option>"; ?>
 									</select>
 								</td>
 							</tr>
@@ -724,41 +685,38 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 										<select name="rollGroupsParents" id="rollGroupsParents" class="standardWidth">
 											<?php
                                             $selected = '';
-                                if ($parents == false) {
-                                    $selected = 'selected';
-                                }
-                                echo "<option value='Y'>Yes</option>";
-                                echo "<option $selected value='N'>No</option>";
-                                ?>
+											if ($parents == false) {
+												$selected = 'selected';
+											}
+											echo "<option value='Y'>Yes</option>";
+											echo "<option $selected value='N'>No</option>";
+											?>
 										</select>
 									</td>
 								</tr>
 								<?php
 
                             }
-                }
-                if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_courses_my') or isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_courses_any')) {
-                    try {
-                        $dataTarget = array('gibbonMessengerID' => $gibbonMessengerID);
-                        $sqlTarget = "SELECT * FROM gibbonMessengerTarget WHERE gibbonMessengerID=:gibbonMessengerID AND type='Course'";
-                        $resultTarget = $connection2->prepare($sqlTarget);
-                        $resultTarget->execute($dataTarget);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
-                    ?>
+						}
+						if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_courses_my') or isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_courses_any')) {
+							try {
+								$dataTarget = array('gibbonMessengerID' => $gibbonMessengerID);
+								$sqlTarget = "SELECT * FROM gibbonMessengerTarget WHERE gibbonMessengerID=:gibbonMessengerID AND type='Course'";
+								$resultTarget = $connection2->prepare($sqlTarget);
+								$resultTarget->execute($dataTarget);
+							} catch (PDOException $e) {
+								echo "<div class='error'>".$e->getMessage().'</div>';
+							}
+							?>
 							<script type="text/javascript">
 								/* course Control */
 								$(document).ready(function(){
-									<?php if ($resultTarget->rowCount() <= 0) {
-    ?>
+									<?php if ($resultTarget->rowCount() <= 0) { ?>
 										$("#courseRow").css("display","none");
 										$("#courseRow2").css("display","none");
 										$("#courseRow3").css("display","none");
 										$("#courseRow4").css("display","none");
-									<?php 
-}
-                    ?>
+									<?php } ?>
 									$(".course").click(function(){
 										if ($('input[name=course]:checked').val()=="Y" ) {
 											$("#courseRow").slideDown("fast", $("#courseRow").css("display","table-row")); 
@@ -786,23 +744,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 							</tr>
 							<?php
                             $selectedAll = '';
-                    $staff = true;
-                    $students = true;
-                    $parents = true;
-                    while ($rowTarget = $resultTarget->fetch()) {
-                        $selectedAll .= str_pad($rowTarget['id'], 8, '0', STR_PAD_LEFT).',';
-                        if ($rowTarget['staff'] == 'N') {
-                            $staff = false;
-                        }
-                        if ($rowTarget['students'] == 'N') {
-                            $students = false;
-                        }
-                        if ($rowTarget['parents'] == 'N') {
-                            $parents = false;
-                        }
-                    }
-                    $selectedAll = substr($selectedAll, 0, -1);
-                    ?>
+							$staff = true;
+							$students = true;
+							$parents = true;
+							while ($rowTarget = $resultTarget->fetch()) {
+								$selectedAll .= str_pad($rowTarget['id'], 8, '0', STR_PAD_LEFT).',';
+								if ($rowTarget['staff'] == 'N') {
+									$staff = false;
+								}
+								if ($rowTarget['students'] == 'N') {
+									$students = false;
+								}
+								if ($rowTarget['parents'] == 'N') {
+									$parents = false;
+								}
+							}
+							$selectedAll = substr($selectedAll, 0, -1); ?>
 							<tr id="courseRow">
 								<td class='hiddenReveal'> 
 									<b><?php echo __($guid, 'Select Courses') ?></b><br/>
@@ -823,14 +780,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
                                             $resultSelect->execute($dataSelect);
                                         } catch (PDOException $e) {
                                         }
-                    while ($rowSelect = $resultSelect->fetch()) {
-                        $selected = '';
-                        if (is_numeric(strpos($selectedAll, str_pad($rowSelect['gibbonCourseID'], 8, '0', STR_PAD_LEFT)))) {
-                            $selected = 'selected';
-                        }
-                        echo "<option $selected value='".$rowSelect['gibbonCourseID']."'>".htmlPrep($rowSelect['nameShort']).'</option>';
-                    }
-                    ?>
+										while ($rowSelect = $resultSelect->fetch()) {
+											$selected = '';
+											if (is_numeric(strpos($selectedAll, str_pad($rowSelect['gibbonCourseID'], 8, '0', STR_PAD_LEFT)))) {
+												$selected = 'selected';
+											}
+											echo "<option $selected value='".$rowSelect['gibbonCourseID']."'>".htmlPrep($rowSelect['nameShort']).'</option>';
+										}
+										?>
 									</select>
 								</td>
 							</tr>
@@ -842,12 +799,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 									<select name="coursesStaff" id="coursesStaff" class="standardWidth">
 										<?php
                                         $selected = '';
-                    if ($staff == true) {
-                        $selected = 'selected';
-                    }
-                    echo "<option value='N'>".__($guid, 'No').'</option>';
-                    echo "<option $selected value='Y'>Yes</option>";
-                    ?>
+										if ($staff == true) {
+											$selected = 'selected';
+										}
+										echo "<option value='N'>".__($guid, 'No').'</option>';
+										echo "<option $selected value='Y'>Yes</option>"; ?>
 									</select>
 								</td>
 							</tr>
@@ -859,12 +815,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 									<select name="coursesStudents" id="coursesStudents" class="standardWidth">
 										<?php
                                         $selected = '';
-                    if ($students == true) {
-                        $selected = 'selected';
-                    }
-                    echo "<option value='N'>".__($guid, 'No').'</option>';
-                    echo "<option $selected value='Y'>Yes</option>";
-                    ?>
+										if ($students == true) {
+											$selected = 'selected';
+										}
+										echo "<option value='N'>".__($guid, 'No').'</option>';
+										echo "<option $selected value='Y'>Yes</option>"; ?>
 									</select>
 								</td>
 							</tr>
@@ -879,41 +834,38 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 										<select name="coursesParents" id="coursesParents" class="standardWidth">
 											<?php
                                             $selected = '';
-                                if ($parents == true) {
-                                    $selected = 'selected';
-                                }
-                                echo "<option value='N'>".__($guid, 'No').'</option>';
-                                echo "<option $selected value='Y'>Yes</option>";
-                                ?>
+											if ($parents == true) {
+												$selected = 'selected';
+											}
+											echo "<option value='N'>".__($guid, 'No').'</option>';
+											echo "<option $selected value='Y'>Yes</option>";
+											?>
 										</select>
 									</td>
 								</tr>
 								<?php
 
                             }
-                }
-                if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_classes_my') or isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_classes_any')) {
-                    try {
-                        $dataTarget = array('gibbonMessengerID' => $gibbonMessengerID);
-                        $sqlTarget = "SELECT * FROM gibbonMessengerTarget WHERE gibbonMessengerID=:gibbonMessengerID AND type='Class'";
-                        $resultTarget = $connection2->prepare($sqlTarget);
-                        $resultTarget->execute($dataTarget);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
-                    ?>
+						}
+						if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_classes_my') or isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_classes_any')) {
+							try {
+								$dataTarget = array('gibbonMessengerID' => $gibbonMessengerID);
+								$sqlTarget = "SELECT * FROM gibbonMessengerTarget WHERE gibbonMessengerID=:gibbonMessengerID AND type='Class'";
+								$resultTarget = $connection2->prepare($sqlTarget);
+								$resultTarget->execute($dataTarget);
+							} catch (PDOException $e) {
+								echo "<div class='error'>".$e->getMessage().'</div>';
+							}
+							?>
 							<script type="text/javascript">
 								/* class Control */
 								$(document).ready(function(){
-									<?php if ($resultTarget->rowCount() <= 0) {
-    ?>
+									<?php if ($resultTarget->rowCount() <= 0) { ?>
 										$("#classRow").css("display","none");
 										$("#classRow2").css("display","none");
 										$("#classRow3").css("display","none");
 										$("#classRow4").css("display","none");
-									<?php 
-}
-                    ?>
+									<?php } ?>
 									$(".class").click(function(){
 										if ($('input[name=class]:checked').val()=="Y" ) {
 											$("#classRow").slideDown("fast", $("#classRow").css("display","table-row")); 
@@ -941,23 +893,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 							</tr>
 							<?php
                             $selectedAll = '';
-                    $staff = true;
-                    $students = true;
-                    $parents = true;
-                    while ($rowTarget = $resultTarget->fetch()) {
-                        $selectedAll .= str_pad($rowTarget['id'], 8, '0', STR_PAD_LEFT).',';
-                        if ($rowTarget['staff'] == 'N') {
-                            $staff = false;
-                        }
-                        if ($rowTarget['students'] == 'N') {
-                            $students = false;
-                        }
-                        if ($rowTarget['parents'] == 'N') {
-                            $parents = false;
-                        }
-                    }
-                    $selectedAll = substr($selectedAll, 0, -1);
-                    ?>
+							$staff = true;
+							$students = true;
+							$parents = true;
+							while ($rowTarget = $resultTarget->fetch()) {
+								$selectedAll .= str_pad($rowTarget['id'], 8, '0', STR_PAD_LEFT).',';
+								if ($rowTarget['staff'] == 'N') {
+									$staff = false;
+								}
+								if ($rowTarget['students'] == 'N') {
+									$students = false;
+								}
+								if ($rowTarget['parents'] == 'N') {
+									$parents = false;
+								}
+							}
+							$selectedAll = substr($selectedAll, 0, -1); ?>
 							<tr id="classRow">
 								<td class='hiddenReveal'> 
 									<b><?php echo __($guid, 'Select Classes') ?></b><br/>
@@ -978,14 +929,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
                                             $resultSelect->execute($dataSelect);
                                         } catch (PDOException $e) {
                                         }
-                    while ($rowSelect = $resultSelect->fetch()) {
-                        $selected = '';
-                        if (is_numeric(strpos($selectedAll, str_pad($rowSelect['gibbonCourseClassID'], 8, '0', STR_PAD_LEFT)))) {
-                            $selected = 'selected';
-                        }
-                        echo "<option $selected value='".$rowSelect['gibbonCourseClassID']."'>".htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).'</option>';
-                    }
-                    ?>
+										while ($rowSelect = $resultSelect->fetch()) {
+											$selected = '';
+											if (is_numeric(strpos($selectedAll, str_pad($rowSelect['gibbonCourseClassID'], 8, '0', STR_PAD_LEFT)))) {
+												$selected = 'selected';
+											}
+											echo "<option $selected value='".$rowSelect['gibbonCourseClassID']."'>".htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).'</option>';
+										}
+										?>
 									</select>
 								</td>
 							</tr>
@@ -997,12 +948,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 									<select name="classesStaff" id="classesStaff" class="standardWidth">
 										<?php
                                         $selected = '';
-                    if ($staff == false) {
-                        $selected = 'selected';
-                    }
-                    echo "<option value='Y'>Yes</option>";
-                    echo "<option $selected value='N'>No</option>";
-                    ?>
+										if ($staff == false) {
+											$selected = 'selected';
+										}
+										echo "<option value='Y'>Yes</option>";
+										echo "<option $selected value='N'>No</option>"; ?>
 									</select>
 								</td>
 							</tr>
@@ -1014,12 +964,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 									<select name="classesStudents" id="classesStudents" class="standardWidth">
 										<?php
                                         $selected = '';
-                    if ($students == false) {
-                        $selected = 'selected';
-                    }
-                    echo "<option value='Y'>Yes</option>";
-                    echo "<option $selected value='N'>No</option>";
-                    ?>
+										if ($students == false) {
+											$selected = 'selected';
+										}
+										echo "<option value='Y'>Yes</option>";
+										echo "<option $selected value='N'>No</option>"; ?>
 									</select>
 								</td>
 							</tr>
@@ -1046,29 +995,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 								<?php
 
                             }
-                }
-                if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_activities_my') or isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_activities_any')) {
-                    try {
-                        $dataTarget = array('gibbonMessengerID' => $gibbonMessengerID);
-                        $sqlTarget = "SELECT * FROM gibbonMessengerTarget WHERE gibbonMessengerID=:gibbonMessengerID AND type='Activity'";
-                        $resultTarget = $connection2->prepare($sqlTarget);
-                        $resultTarget->execute($dataTarget);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
-                    ?>
+						}
+						if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_activities_my') or isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_activities_any')) {
+							try {
+								$dataTarget = array('gibbonMessengerID' => $gibbonMessengerID);
+								$sqlTarget = "SELECT * FROM gibbonMessengerTarget WHERE gibbonMessengerID=:gibbonMessengerID AND type='Activity'";
+								$resultTarget = $connection2->prepare($sqlTarget);
+								$resultTarget->execute($dataTarget);
+							} catch (PDOException $e) {
+								echo "<div class='error'>".$e->getMessage().'</div>';
+							}
+							?>
 							<script type="text/javascript">
 								/* activity Control */
 								$(document).ready(function(){
-									<?php if ($resultTarget->rowCount() <= 0) {
-    ?>
+									<?php if ($resultTarget->rowCount() <= 0) { ?>
 										$("#activitiesRow").css("display","none");
 										$("#activitiesRow2").css("display","none");
 										$("#activitiesRow3").css("display","none");
 										$("#activitiesRow4").css("display","none");
-									<?php 
-}
-                    ?>
+									<?php } ?>
 									$(".activity").click(function(){
 										if ($('input[name=activity]:checked').val()=="Y" ) {
 											$("#activitiesRow").slideDown("fast", $("#activitiesRow").css("display","table-row")); 
@@ -1096,23 +1042,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 							</tr>
 							<?php
                             $selectedAll = '';
-                    $staff = true;
-                    $students = true;
-                    $parents = true;
-                    while ($rowTarget = $resultTarget->fetch()) {
-                        $selectedAll .= str_pad($rowTarget['id'], 8, '0', STR_PAD_LEFT).',';
-                        if ($rowTarget['staff'] == 'N') {
-                            $staff = false;
-                        }
-                        if ($rowTarget['students'] == 'N') {
-                            $students = false;
-                        }
-                        if ($rowTarget['parents'] == 'N') {
-                            $parents = false;
-                        }
-                    }
-                    $selectedAll = substr($selectedAll, 0, -1);
-                    ?>
+							$staff = true;
+							$students = true;
+							$parents = true;
+							while ($rowTarget = $resultTarget->fetch()) {
+								$selectedAll .= str_pad($rowTarget['id'], 8, '0', STR_PAD_LEFT).',';
+								if ($rowTarget['staff'] == 'N') {
+									$staff = false;
+								}
+								if ($rowTarget['students'] == 'N') {
+									$students = false;
+								}
+								if ($rowTarget['parents'] == 'N') {
+									$parents = false;
+								}
+							}
+							$selectedAll = substr($selectedAll, 0, -1); ?>
 							<tr id="activitiesRow">
 								<td class='hiddenReveal'> 
 									<b><?php echo __($guid, 'Select Activities') ?></b><br/>
@@ -1139,14 +1084,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
                                             $resultSelect->execute($dataSelect);
                                         } catch (PDOException $e) {
                                         }
-                    while ($rowSelect = $resultSelect->fetch()) {
-                        $selected = '';
-                        if (is_numeric(strpos($selectedAll, str_pad($rowSelect['gibbonActivityID'], 8, '0', STR_PAD_LEFT)))) {
-                            $selected = 'selected';
-                        }
-                        echo "<option $selected value='".$rowSelect['gibbonActivityID']."'>".htmlPrep($rowSelect['name']).'</option>';
-                    }
-                    ?>
+									while ($rowSelect = $resultSelect->fetch()) {
+										$selected = '';
+										if (is_numeric(strpos($selectedAll, str_pad($rowSelect['gibbonActivityID'], 8, '0', STR_PAD_LEFT)))) {
+											$selected = 'selected';
+										}
+										echo "<option $selected value='".$rowSelect['gibbonActivityID']."'>".htmlPrep($rowSelect['name']).'</option>';
+									}
+									?>
 									</select>
 								</td>
 							</tr>
@@ -1158,12 +1103,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 									<select name="activitiesStaff" id="activitiesStaff" class="standardWidth">
 										<?php
                                         $selected = '';
-                    if ($staff == false) {
-                        $selected = 'selected';
-                    }
-                    echo "<option value='Y'>Yes</option>";
-                    echo "<option $selected value='N'>No</option>";
-                    ?>
+										if ($staff == false) {
+											$selected = 'selected';
+										}
+										echo "<option value='Y'>Yes</option>";
+										echo "<option $selected value='N'>No</option>"; ?>
 									</select>
 								</td>
 							</tr>
@@ -1175,12 +1119,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 									<select name="activitiesStudents" id="activitiesStudents" class="standardWidth">
 										<?php
                                         $selected = '';
-                    if ($students == false) {
-                        $selected = 'selected';
-                    }
-                    echo "<option value='Y'>Yes</option>";
-                    echo "<option $selected value='N'>No</option>";
-                    ?>
+										if ($students == false) {
+											$selected = 'selected';
+										}
+										echo "<option value='Y'>Yes</option>";
+										echo "<option $selected value='N'>No</option>"; ?>
 									</select>
 								</td>
 							</tr>
@@ -1207,26 +1150,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 								<?php
 
                             }
-                }
-                if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_applicants')) {
-                    try {
-                        $dataTarget = array('gibbonMessengerID' => $gibbonMessengerID);
-                        $sqlTarget = "SELECT * FROM gibbonMessengerTarget WHERE gibbonMessengerID=:gibbonMessengerID AND type='Applicants'";
-                        $resultTarget = $connection2->prepare($sqlTarget);
-                        $resultTarget->execute($dataTarget);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
-                    ?>
+						}
+						if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_applicants')) {
+							try {
+								$dataTarget = array('gibbonMessengerID' => $gibbonMessengerID);
+								$sqlTarget = "SELECT * FROM gibbonMessengerTarget WHERE gibbonMessengerID=:gibbonMessengerID AND type='Applicants'";
+								$resultTarget = $connection2->prepare($sqlTarget);
+								$resultTarget->execute($dataTarget);
+							} catch (PDOException $e) {
+								echo "<div class='error'>".$e->getMessage().'</div>';
+							}
+							?>
 							<script type="text/javascript">
 								/* Role Control */
 								$(document).ready(function(){
-									<?php if ($resultTarget->rowCount() <= 0) {
-    ?>
+									<?php if ($resultTarget->rowCount() <= 0) { ?>
 										$("#applicantsRow").css("display","none");
-									<?php 
-}
-                    ?>
+									<?php } ?>
 									$(".applicants").click(function(){
 										if ($('input[name=applicants]:checked').val()=="Y" ) {
 											$("#applicantsRow").slideDown("fast", $("#applicantsRow").css("display","table-row")); 
@@ -1248,11 +1188,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 							</tr>
 							<?php
                             $selectedAll = '';
-                    while ($rowTarget = $resultTarget->fetch()) {
-                        $selectedAll .= str_pad($rowTarget['id'], 3, '0', STR_PAD_LEFT).',';
-                    }
-                    $selectedAll = substr($selectedAll, 0, -1);
-                    ?>
+							while ($rowTarget = $resultTarget->fetch()) {
+								$selectedAll .= str_pad($rowTarget['id'], 3, '0', STR_PAD_LEFT).',';
+							}
+							$selectedAll = substr($selectedAll, 0, -1); ?>
 							<tr id="applicantsRow">
 								<td class='hiddenReveal'> 
 									<b><?php echo __($guid, 'Select Years') ?></b><br/>
@@ -1268,39 +1207,36 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
                                             $resultSelect->execute($dataSelect);
                                         } catch (PDOException $e) {
                                         }
-                    while ($rowSelect = $resultSelect->fetch()) {
-                        $selected = '';
-                        if (is_numeric(strpos($selectedAll, str_pad($rowSelect['gibbonSchoolYearID'], 3, '0', STR_PAD_LEFT)))) {
-                            $selected = 'selected';
-                        }
-                        echo "<option $selected value='".$rowSelect['gibbonSchoolYearID']."'>".htmlPrep($rowSelect['name']).'</option>';
-                    }
-                    ?>
+										while ($rowSelect = $resultSelect->fetch()) {
+											$selected = '';
+											if (is_numeric(strpos($selectedAll, str_pad($rowSelect['gibbonSchoolYearID'], 3, '0', STR_PAD_LEFT)))) {
+												$selected = 'selected';
+											}
+											echo "<option $selected value='".$rowSelect['gibbonSchoolYearID']."'>".htmlPrep($rowSelect['name']).'</option>';
+										}
+										?>
 									</select>
 								</td>
 							</tr>
 							<?php
 
-                }
-                if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_houses_all') or isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_houses_my')) {
-                    try {
-                        $dataTarget = array('gibbonMessengerID' => $gibbonMessengerID);
-                        $sqlTarget = "SELECT * FROM gibbonMessengerTarget WHERE gibbonMessengerID=:gibbonMessengerID AND type='Houses'";
-                        $resultTarget = $connection2->prepare($sqlTarget);
-                        $resultTarget->execute($dataTarget);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
-                    ?>
+						}
+						if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_houses_all') or isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_houses_my')) {
+							try {
+								$dataTarget = array('gibbonMessengerID' => $gibbonMessengerID);
+								$sqlTarget = "SELECT * FROM gibbonMessengerTarget WHERE gibbonMessengerID=:gibbonMessengerID AND type='Houses'";
+								$resultTarget = $connection2->prepare($sqlTarget);
+								$resultTarget->execute($dataTarget);
+							} catch (PDOException $e) {
+								echo "<div class='error'>".$e->getMessage().'</div>';
+							}
+							?>
 							<script type="text/javascript">
 								/* Role Control */
 								$(document).ready(function(){
-									<?php if ($resultTarget->rowCount() <= 0) {
-    ?>
+									<?php if ($resultTarget->rowCount() <= 0) { ?>
 										$("#housesRow").css("display","none");
-									<?php 
-}
-                    ?>
+									<?php } ?>
 									$(".houses").click(function(){
 										if ($('input[name=houses]:checked').val()=="Y" ) {
 											$("#housesRow").slideDown("fast", $("#housesRow").css("display","table-row")); 
@@ -1322,11 +1258,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 							</tr>
 							<?php
                             $selectedAll = '';
-                    while ($rowTarget = $resultTarget->fetch()) {
-                        $selectedAll .= str_pad($rowTarget['id'], 3, '0', STR_PAD_LEFT).',';
-                    }
-                    $selectedAll = substr($selectedAll, 0, -1);
-                    ?>
+							while ($rowTarget = $resultTarget->fetch()) {
+								$selectedAll .= str_pad($rowTarget['id'], 3, '0', STR_PAD_LEFT).',';
+							}
+							$selectedAll = substr($selectedAll, 0, -1); ?>
 							<tr id="housesRow">
 								<td class='hiddenReveal'> 
 									<b><?php echo __($guid, 'Select Houses') ?></b><br/>
@@ -1348,39 +1283,36 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
                                             $resultSelect->execute($dataSelect);
                                         } catch (PDOException $e) {
                                         }
-                    while ($rowSelect = $resultSelect->fetch()) {
-                        $selected = '';
-                        if (is_numeric(strpos($selectedAll, str_pad($rowSelect['gibbonHouseID'], 3, '0', STR_PAD_LEFT)))) {
-                            $selected = 'selected';
-                        }
-                        echo "<option $selected value='".$rowSelect['gibbonHouseID']."'>".htmlPrep($rowSelect['name']).'</option>';
-                    }
-                    ?>
+										while ($rowSelect = $resultSelect->fetch()) {
+											$selected = '';
+											if (is_numeric(strpos($selectedAll, str_pad($rowSelect['gibbonHouseID'], 3, '0', STR_PAD_LEFT)))) {
+												$selected = 'selected';
+											}
+											echo "<option $selected value='".$rowSelect['gibbonHouseID']."'>".htmlPrep($rowSelect['name']).'</option>';
+										}
+										?>
 									</select>
 								</td>
 							</tr>
 							<?php
 
-                }
-                if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_individuals')) {
-                    try {
-                        $dataTarget = array('gibbonMessengerID' => $gibbonMessengerID);
-                        $sqlTarget = "SELECT * FROM gibbonMessengerTarget WHERE gibbonMessengerID=:gibbonMessengerID AND type='Individuals'";
-                        $resultTarget = $connection2->prepare($sqlTarget);
-                        $resultTarget->execute($dataTarget);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
-                    ?>
+						}
+						if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_individuals')) {
+							try {
+								$dataTarget = array('gibbonMessengerID' => $gibbonMessengerID);
+								$sqlTarget = "SELECT * FROM gibbonMessengerTarget WHERE gibbonMessengerID=:gibbonMessengerID AND type='Individuals'";
+								$resultTarget = $connection2->prepare($sqlTarget);
+								$resultTarget->execute($dataTarget);
+							} catch (PDOException $e) {
+								echo "<div class='error'>".$e->getMessage().'</div>';
+							}
+							?>
 							<script type="text/javascript">
 								/* Role Control */
 								$(document).ready(function(){
-									<?php if ($resultTarget->rowCount() <= 0) {
-    ?>
+									<?php if ($resultTarget->rowCount() <= 0) { ?>
 										$("#individualsRow").css("display","none");
-									<?php 
-}
-                    ?>
+									<?php } ?>
 									$(".individuals").click(function(){
 										if ($('input[name=individuals]:checked').val()=="Y" ) {
 											$("#individualsRow").slideDown("fast", $("#individualsRow").css("display","table-row")); 
@@ -1402,11 +1334,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 							</tr>
 							<?php
                             $selectedAll = '';
-                    while ($rowTarget = $resultTarget->fetch()) {
-                        $selectedAll .= str_pad($rowTarget['id'], 10, '0', STR_PAD_LEFT).',';
-                    }
-                    $selectedAll = substr($selectedAll, 0, -1);
-                    ?>
+							while ($rowTarget = $resultTarget->fetch()) {
+								$selectedAll .= str_pad($rowTarget['id'], 10, '0', STR_PAD_LEFT).',';
+							}
+							$selectedAll = substr($selectedAll, 0, -1); ?>
 							<tr id="individualsRow">
 								<td class='hiddenReveal'> 
 									<b><?php echo __($guid, 'Select Individuals') ?></b><br/>
@@ -1422,23 +1353,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
                                             $resultSelect->execute($dataSelect);
                                         } catch (PDOException $e) {
                                         }
-                    while ($rowSelect = $resultSelect->fetch()) {
-                        $selected = '';
-                        if (is_numeric(strpos($selectedAll, str_pad($rowSelect['gibbonPersonID'], 10, '0', STR_PAD_LEFT)))) {
-                            $selected = 'selected';
-                        }
-                        echo "<option $selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', $rowSelect['preferredName'], $rowSelect['surname'], 'Student', true).'</option>';
-                    }
-                    ?>
+										while ($rowSelect = $resultSelect->fetch()) {
+											$selected = '';
+											if (is_numeric(strpos($selectedAll, str_pad($rowSelect['gibbonPersonID'], 10, '0', STR_PAD_LEFT)))) {
+												$selected = 'selected';
+											}
+											echo "<option $selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', $rowSelect['preferredName'], $rowSelect['surname'], 'Student', true).'</option>';
+										}
+										?>
 									</select>
 								</td>
 							</tr>
 							<?php
 
-                }
-                ?>
+							}
+							?>
 
-						
 						<tr>
 							<td>
 								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>

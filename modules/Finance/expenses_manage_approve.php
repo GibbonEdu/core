@@ -151,19 +151,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
 										<td class="right">
 											<?php
                                             $yearName = '';
-                            try {
-                                $dataYear = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
-                                $sqlYear = 'SELECT * FROM gibbonFinanceBudgetCycle WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID';
-                                $resultYear = $connection2->prepare($sqlYear);
-                                $resultYear->execute($dataYear);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
-                            if ($resultYear->rowCount() == 1) {
-                                $rowYear = $resultYear->fetch();
-                                $yearName = $rowYear['name'];
-                            }
-                            ?>
+											try {
+												$dataYear = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
+												$sqlYear = 'SELECT * FROM gibbonFinanceBudgetCycle WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID';
+												$resultYear = $connection2->prepare($sqlYear);
+												$resultYear->execute($dataYear);
+											} catch (PDOException $e) {
+												echo "<div class='error'>".$e->getMessage().'</div>';
+											}
+											if ($resultYear->rowCount() == 1) {
+												$rowYear = $resultYear->fetch();
+												$yearName = $rowYear['name'];
+											}
+											?>
 											<input readonly name="name" id="name" maxlength=20 value="<?php echo $yearName ?>" type="text" class="standardWidth">
 											<input name="gibbonFinanceBudgetCycleID" id="gibbonFinanceBudgetCycleID" maxlength=20 value="<?php echo $gibbonFinanceBudgetCycleID ?>" type="hidden" class="standardWidth">
 											<script type="text/javascript">
@@ -216,7 +216,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
 												<?php
 
                                             }
-                            ?>
+                            			?>
 										</td>
 									</tr>
 									<tr>
@@ -240,8 +240,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
 											<b><?php echo __($guid, 'Description') ?></b>
 											<?php 
                                                 echo '<p>';
-                            echo $row['body'];
-                            echo '</p>'
+												echo $row['body'];
+												echo '</p>'
                                             ?>
 										</td>
 									</tr>
@@ -258,8 +258,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
 											<b><?php echo __($guid, 'Purchase Details') ?></b>
 											<?php 
                                                 echo '<p>';
-                            echo $row['purchaseDetails'];
-                            echo '</p>'
+												echo $row['purchaseDetails'];
+												echo '</p>'
                                             ?>
 										</td>
 									</tr>
@@ -281,7 +281,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
                                                 } else {
                                                     echo __($guid, 'Numeric value of the fee.');
                                                 }
-                            ?>
+                            					?>
 												</i>
 											</span>
 										</td>
@@ -318,29 +318,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
 											<td class="right">
 												<?php
                                                 $budgetAllocation = null;
-                                        $budgetAllocationFail = false;
-                                        try {
-                                            $dataCheck = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID, 'gibbonFinanceBudgetID' => $row['gibbonFinanceBudgetID']);
-                                            $sqlCheck = 'SELECT * FROM gibbonFinanceBudgetCycleAllocation WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID';
-                                            $resultCheck = $connection2->prepare($sqlCheck);
-                                            $resultCheck->execute($dataCheck);
-                                        } catch (PDOException $e) {
-                                            echo "<div class='error'>".$e->getMessage().'</div>';
-                                            $budgetAllocationFail = true;
-                                        }
-                                        if ($resultCheck->rowCount() != 1) {
-                                            echo '<input readonly name="name" id="name" maxlength=60 value="'.__($guid, 'NA').'" type="text" style="width: 300px">';
-                                            $budgetAllocationFail = true;
-                                        } else {
-                                            $rowCheck = $resultCheck->fetch();
-                                            $budgetAllocation = $rowCheck['value'];
-                                            ?>
-													<input readonly name="name" id="name" maxlength=60 value="<?php echo number_format($budgetAllocation, 2, '.', ',');
-                                            ?>" type="text" class="standardWidth">
-													<?php
+												$budgetAllocationFail = false;
+												try {
+													$dataCheck = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID, 'gibbonFinanceBudgetID' => $row['gibbonFinanceBudgetID']);
+													$sqlCheck = 'SELECT * FROM gibbonFinanceBudgetCycleAllocation WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID';
+													$resultCheck = $connection2->prepare($sqlCheck);
+													$resultCheck->execute($dataCheck);
+												} catch (PDOException $e) {
+													echo "<div class='error'>".$e->getMessage().'</div>';
+													$budgetAllocationFail = true;
+												}
+												if ($resultCheck->rowCount() != 1) {
+													echo '<input readonly name="name" id="name" maxlength=60 value="'.__($guid, 'NA').'" type="text" style="width: 300px">';
+													$budgetAllocationFail = true;
+												} else {
+													$rowCheck = $resultCheck->fetch();
+													$budgetAllocation = $rowCheck['value'];
+													?>
+															<input readonly name="name" id="name" maxlength=60 value="<?php echo number_format($budgetAllocation, 2, '.', ',');
+													?>" type="text" class="standardWidth">
+												<?php
 
-                                        }
-                                        ?>
+												}
+												?>
 											</td>
 										</tr>
 										<tr>
@@ -361,31 +361,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
 											<td class="right">
 												<?php
                                                 $budgetAllocated = 0;
-                                        $budgetAllocatedFail = false;
-                                        try {
-                                            $dataCheck = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID, 'gibbonFinanceBudgetID' => $row['gibbonFinanceBudgetID']);
-                                            $sqlCheck = "(SELECT cost FROM gibbonFinanceExpense WHERE countAgainstBudget='Y' AND gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID AND FIELD(status, 'Approved', 'Order'))
-													UNION
-													(SELECT paymentAmount AS cost FROM gibbonFinanceExpense WHERE countAgainstBudget='Y' AND gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID AND FIELD(status, 'Paid'))
-													";
-                                            $resultCheck = $connection2->prepare($sqlCheck);
-                                            $resultCheck->execute($dataCheck);
-                                        } catch (PDOException $e) {
-                                            echo "<div class='error'>".$e->getMessage().'</div>';
-                                            $budgetAllocatedFail = true;
-                                        }
-                                        if ($budgetAllocatedFail == false) {
-                                            while ($rowCheck = $resultCheck->fetch()) {
-                                                $budgetAllocated = $budgetAllocated + $rowCheck['cost'];
-                                            }
-                                            ?>
-													<input readonly name="name" id="name" maxlength=60 value="<?php echo number_format($budgetAllocated, 2, '.', ',');
-                                            ?>" type="text" class="standardWidth">
-													<?php
+												$budgetAllocatedFail = false;
+												try {
+													$dataCheck = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID, 'gibbonFinanceBudgetID' => $row['gibbonFinanceBudgetID']);
+													$sqlCheck = "(SELECT cost FROM gibbonFinanceExpense WHERE countAgainstBudget='Y' AND gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID AND FIELD(status, 'Approved', 'Order'))
+															UNION
+															(SELECT paymentAmount AS cost FROM gibbonFinanceExpense WHERE countAgainstBudget='Y' AND gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID AND FIELD(status, 'Paid'))
+															";
+													$resultCheck = $connection2->prepare($sqlCheck);
+													$resultCheck->execute($dataCheck);
+												} catch (PDOException $e) {
+													echo "<div class='error'>".$e->getMessage().'</div>';
+													$budgetAllocatedFail = true;
+												}
+												if ($budgetAllocatedFail == false) {
+													while ($rowCheck = $resultCheck->fetch()) {
+														$budgetAllocated = $budgetAllocated + $rowCheck['cost'];
+													}
+													?>
+															<input readonly name="name" id="name" maxlength=60 value="<?php echo number_format($budgetAllocated, 2, '.', ',');
+													?>" type="text" class="standardWidth">
+												<?php
+												}
 
-                                        }
-
-                                        ?>
+												?>
 											</td>
 										</tr>
 										<?php
@@ -402,26 +401,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
                                                     } else {
                                                         echo __($guid, 'Numeric value of the fee.');
                                                     }
-                                            ?>
+                                            		?>
 													</i>
 												</span>
 											</td>
 											<td class="right">
 												<?php
                                                 $color = 'red';
-                                            if (($budgetAllocation - $budgetAllocated) - $row['cost'] > 0) {
-                                                $color = 'green';
-                                            }
-                                            ?>
-												<input readonly name="name" id="name" maxlength=60 value="<?php echo number_format(($budgetAllocation - $budgetAllocated), 2, '.', ',');
-                                            ?>" type="text" style="width: 300px; font-weight: bold; color: <?php echo $color ?>">
+												if (($budgetAllocation - $budgetAllocated) - $row['cost'] > 0) {
+													$color = 'green';
+												}
+												?>
+												<input readonly name="name" id="name" maxlength=60 value="<?php echo number_format(($budgetAllocation - $budgetAllocated), 2, '.', ','); ?>" type="text" style="width: 300px; font-weight: bold; color: <?php echo $color ?>">
 											</td>
 										</tr>
 										<?php
 
                                         }
                                     }
-                            ?>
+                            		?>
 									
 									<tr class='break'>
 										<td colspan=2> 
@@ -432,7 +430,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
 										<td colspan=2> 
 											<?php
                                             echo getExpenseLog($guid, $gibbonFinanceExpenseID, $connection2);
-                            ?>
+                            				?>
 										</td>
 									</tr>
 									
@@ -444,7 +442,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
 									</tr>
 									<?php
                                     $approvalRequired = approvalRequired($guid, $_SESSION[$guid]['gibbonPersonID'], $row['gibbonFinanceExpenseID'], $gibbonFinanceBudgetCycleID, $connection2);
-                            if ($approvalRequired != true) { //Approval not required
+                            		if ($approvalRequired != true) { //Approval not required
                                         ?>
 										<tr>
 											<td colspan=2> 
@@ -453,8 +451,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
 										</tr>
 										<?php
 
-                            } else {
-                                ?>
+									} else {
+										?>
 										<tr>
 											<td style='width: 275px'> 
 												<b><?php echo __($guid, 'Approval') ?> *</b><br/>
@@ -462,12 +460,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
 											<td class="right">
 												<?php
                                                 echo "<select name='approval' id='approval' style='width:302px'>";
-                                echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-                                echo "<option value='Approval - Partial'>".__($guid, 'Approve').'</option>';
-                                echo "<option value='Rejection'>".__($guid, 'Reject').'</option>';
-                                echo "<option value='Comment'>".__($guid, 'Comment').'</option>';
-                                echo '</select>';
-                                ?>
+												echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
+												echo "<option value='Approval - Partial'>".__($guid, 'Approve').'</option>';
+												echo "<option value='Rejection'>".__($guid, 'Reject').'</option>';
+												echo "<option value='Comment'>".__($guid, 'Comment').'</option>';
+												echo '</select>';
+												?>
 												<script type="text/javascript">
 													var approval=new LiveValidation('approval');
 													approval.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
@@ -495,9 +493,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
 											</td>
 										</tr>
 										<?php
-
-                            }
-                            ?>
+									}
+									?>
 								</table>
 							</form>
 							<?php

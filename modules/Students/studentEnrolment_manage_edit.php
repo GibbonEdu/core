@@ -77,19 +77,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
 						<td class="right">
 							<?php
                             $yearName = '';
-            try {
-                $dataYear = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-                $sqlYear = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-                $resultYear = $connection2->prepare($sqlYear);
-                $resultYear->execute($dataYear);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-            if ($resultYear->rowCount() == 1) {
-                $rowYear = $resultYear->fetch();
-                $yearName = $rowYear['name'];
-            }
-            ?>
+							try {
+								$dataYear = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+								$sqlYear = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
+								$resultYear = $connection2->prepare($sqlYear);
+								$resultYear->execute($dataYear);
+							} catch (PDOException $e) {
+								echo "<div class='error'>".$e->getMessage().'</div>';
+							}
+							if ($resultYear->rowCount() == 1) {
+								$rowYear = $resultYear->fetch();
+								$yearName = $rowYear['name'];
+							}
+							?>
 							<input readonly name="yearName" id="yearName" maxlength=20 value="<?php echo htmlPrep($yearName) ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var yearName=new LiveValidation('yearName');
@@ -119,22 +119,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
 							<select name="gibbonYearGroupID" id="gibbonYearGroupID" class="standardWidth">
 								<?php
                                 echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-            try {
-                $dataSelect = array();
-                $sqlSelect = 'SELECT gibbonYearGroupID, name FROM gibbonYearGroup ORDER BY sequenceNumber';
-                $resultSelect = $connection2->prepare($sqlSelect);
-                $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-            while ($rowSelect = $resultSelect->fetch()) {
-                $selected = '';
-                if ($row['gibbonYearGroupID'] == $rowSelect['gibbonYearGroupID']) {
-                    $selected = 'selected';
-                }
-                echo "<option $selected value='".$rowSelect['gibbonYearGroupID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-            }
-            ?>				
+								try {
+									$dataSelect = array();
+									$sqlSelect = 'SELECT gibbonYearGroupID, name FROM gibbonYearGroup ORDER BY sequenceNumber';
+									$resultSelect = $connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								} catch (PDOException $e) {
+									echo "<div class='error'>".$e->getMessage().'</div>';
+								}
+								while ($rowSelect = $resultSelect->fetch()) {
+									$selected = '';
+									if ($row['gibbonYearGroupID'] == $rowSelect['gibbonYearGroupID']) {
+										$selected = 'selected';
+									}
+									echo "<option $selected value='".$rowSelect['gibbonYearGroupID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
+								}
+								?>				
 							</select>
 							<script type="text/javascript">
 								var gibbonYearGroupID=new LiveValidation('gibbonYearGroupID');
@@ -151,22 +151,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
 							<select name="gibbonRollGroupID" id="gibbonRollGroupID" class="standardWidth">
 								<?php
                                 echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-            try {
-                $dataSelect = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-                $sqlSelect = 'SELECT gibbonRollGroupID, name FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
-                $resultSelect = $connection2->prepare($sqlSelect);
-                $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-            while ($rowSelect = $resultSelect->fetch()) {
-                $selected = '';
-                if ($row['gibbonRollGroupID'] == $rowSelect['gibbonRollGroupID']) {
-                    $selected = 'selected';
-                }
-                echo "<option $selected value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
-            }
-            ?>				
+								try {
+									$dataSelect = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+									$sqlSelect = 'SELECT gibbonRollGroupID, name FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
+									$resultSelect = $connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								} catch (PDOException $e) {
+									echo "<div class='error'>".$e->getMessage().'</div>';
+								}
+								while ($rowSelect = $resultSelect->fetch()) {
+									$selected = '';
+									if ($row['gibbonRollGroupID'] == $rowSelect['gibbonRollGroupID']) {
+										$selected = 'selected';
+									}
+									echo "<option $selected value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
+								}
+								?>				
 							</select>
 							<script type="text/javascript">
 								var gibbonRollGroupID=new LiveValidation('gibbonRollGroupID');
@@ -197,21 +197,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
                             if ($row['dateStart'] != '') {
                                 echo '<u>'.__($guid, 'Start Date').'</u>: '.dateConvertBack($guid, $row['dateStart']).'</br>';
                             }
-            try {
-                $dataSelect = array('gibbonPersonID' => $row['gibbonPersonID']);
-                $sqlSelect = 'SELECT gibbonRollGroup.name AS rollGroup, gibbonSchoolYear.name AS schoolYear FROM gibbonStudentEnrolment JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY gibbonStudentEnrolment.gibbonSchoolYearID';
-                $resultSelect = $connection2->prepare($sqlSelect);
-                $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-            while ($rowSelect = $resultSelect->fetch()) {
-                echo '<u>'.$rowSelect['schoolYear'].'</u>: '.$rowSelect['rollGroup'].'<br/>';
-            }
-            if ($row['dateEnd'] != '') {
-                echo '<u>'.__($guid, 'End Date').'</u>: '.dateConvertBack($guid, $row['dateEnd']).'</br>';
-            }
-            ?>
+							try {
+								$dataSelect = array('gibbonPersonID' => $row['gibbonPersonID']);
+								$sqlSelect = 'SELECT gibbonRollGroup.name AS rollGroup, gibbonSchoolYear.name AS schoolYear FROM gibbonStudentEnrolment JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY gibbonStudentEnrolment.gibbonSchoolYearID';
+								$resultSelect = $connection2->prepare($sqlSelect);
+								$resultSelect->execute($dataSelect);
+							} catch (PDOException $e) {
+								echo "<div class='error'>".$e->getMessage().'</div>';
+							}
+							while ($rowSelect = $resultSelect->fetch()) {
+								echo '<u>'.$rowSelect['schoolYear'].'</u>: '.$rowSelect['rollGroup'].'<br/>';
+							}
+							if ($row['dateEnd'] != '') {
+								echo '<u>'.__($guid, 'End Date').'</u>: '.dateConvertBack($guid, $row['dateEnd']).'</br>';
+							}
+							?>
 						</td>
 					</tr>
 					<tr>

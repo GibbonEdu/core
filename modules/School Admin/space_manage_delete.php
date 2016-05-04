@@ -56,8 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
-            ?>
+            $row = $result->fetch(); ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/space_manage_deleteProcess.php?gibbonSpaceID=$gibbonSpaceID" ?>">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>

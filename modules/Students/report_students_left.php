@@ -56,12 +56,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_l
 			<tr>
 				<td style='width: 275px'> 
 					<b><?php echo __($guid, 'From Date') ?></b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Earliest student end date to include.') ?><br/><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-    ?></span>
+					<span class="emphasis small"><?php echo __($guid, 'Earliest student end date to include.') ?><br/><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
+					} else {
+						echo $_SESSION[$guid]['i18n']['dateFormat'];
+					}
+					?></span>
 				</td>
 				<td class="right">
 					<input name="endDateFrom" id="endDateFrom" maxlength=10 value="<?php echo $endDateFrom ?>" type="text" class="standardWidth">
@@ -90,12 +89,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_l
 			<tr>
 				<td> 
 					<b><?php echo __($guid, 'To Date') ?></b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Latest student end date to include.') ?><br/><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-    ?></span>
+					<span class="emphasis small"><?php echo __($guid, 'Latest student end date to include.') ?><br/><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
+					} else {
+						echo $_SESSION[$guid]['i18n']['dateFormat'];
+					}
+    				?></span>
 				</td>
 				<td class="right">
 					<input name="endDateTo" id="endDateTo" maxlength=10 value="<?php echo $endDateTo ?>" type="text" class="standardWidth">
@@ -127,10 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_l
 					<span class="emphasis small"><?php echo __($guid, 'This is useful for picking up students who have not yet left, but have an End Date set.') ?></span>
 				</td>
 				<td class="right">
-					<input <?php if ($ignoreStatus == 'on') {
-    echo 'checked';
-}
-    ?> name="ignoreStatus" id="ignoreStatus" type="checkbox">
+					<input <?php if ($ignoreStatus == 'on') { echo 'checked'; } ?> name="ignoreStatus" id="ignoreStatus" type="checkbox">
 				</td>
 			</tr>
 			<tr>

@@ -82,15 +82,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
 							<select class="standardWidth" name="active">
 								<?php
                                 echo '<option ';
-            if ($row['active'] == 'Y') {
-                echo 'selected';
-            }
-            echo " value='Y'>".__($guid, 'Yes').'</option>';
-            echo '<option ';
-            if ($row['active'] == 'N') {
-                echo 'selected';
-            }
-            echo " value='N'>".__($guid, 'No').'</option>'; ?>				
+								if ($row['active'] == 'Y') {
+									echo 'selected';
+								}
+								echo " value='Y'>".__($guid, 'Yes').'</option>';
+								echo '<option ';
+								if ($row['active'] == 'N') {
+									echo 'selected';
+								}
+								echo " value='N'>".__($guid, 'No').'</option>'; ?>				
 							</select>
 						</td>
 					</tr>
@@ -136,32 +136,31 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
 							<select class="standardWidth" name="type" id="type" class="type">
 								<?php
                                     echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-            echo '<option ';
-            if ($row['type'] == 'varchar') {
-                echo 'selected';
-            }
-            echo " value='varchar'>Short Text (max 255 characters)</option>";
-            echo '<option ';
-            if ($row['type'] == 'text') {
-                echo 'selected';
-            }
-            echo " value='text'>Long Text</option>";
-            echo '<option ';
-            if ($row['type'] == 'date') {
-                echo 'selected';
-            }
-            echo " value='date'>Date</option>";
-            echo '<option ';
-            if ($row['type'] == 'url') {
-                echo 'selected';
-            }
-            echo " value='url'>Link</option>";
-            echo '<option ';
-            if ($row['type'] == 'select') {
-                echo 'selected';
-            }
-            echo " value='select'>Dropdown</option>";
-            ?>				
+									echo '<option ';
+									if ($row['type'] == 'varchar') {
+										echo 'selected';
+									}
+									echo " value='varchar'>Short Text (max 255 characters)</option>";
+									echo '<option ';
+									if ($row['type'] == 'text') {
+										echo 'selected';
+									}
+									echo " value='text'>Long Text</option>";
+									echo '<option ';
+									if ($row['type'] == 'date') {
+										echo 'selected';
+									}
+									echo " value='date'>Date</option>";
+									echo '<option ';
+									if ($row['type'] == 'url') {
+										echo 'selected';
+									}
+									echo " value='url'>Link</option>";
+									echo '<option ';
+									if ($row['type'] == 'select') {
+										echo 'selected';
+									}
+									echo " value='select'>Dropdown</option>"; ?>				
 							</select>
 							<script type="text/javascript">
 								var type=new LiveValidation('type');
@@ -175,8 +174,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
 							<span class="emphasis small">
 								<?php 
                                     echo __($guid, 'Short Text: number of characters, up to 255.').'<br/>';
-            echo __($guid, 'Long Text: number of rows for field.').'<br/>';
-            echo __($guid, 'Dropdown: comma separated list of options.').'<br/>'; ?>
+									echo __($guid, 'Long Text: number of rows for field.').'<br/>';
+									echo __($guid, 'Dropdown: comma separated list of options.').'<br/>'; ?>
 								</span>
 						</td>
 						<td class="right">
@@ -192,15 +191,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
 							<select class="standardWidth" name="required">
 								<?php
                                 echo '<option ';
-            if ($row['required'] == 'Y') {
-                echo 'selected';
-            }
-            echo " value='Y'>".__($guid, 'Yes').'</option>';
-            echo '<option ';
-            if ($row['required'] == 'N') {
-                echo 'selected';
-            }
-            echo " value='N'>".__($guid, 'No').'</option>'; ?>				
+								if ($row['required'] == 'Y') {
+									echo 'selected';
+								}
+								echo " value='Y'>".__($guid, 'Yes').'</option>';
+								echo '<option ';
+								if ($row['required'] == 'N') {
+									echo 'selected';
+								}
+								echo " value='N'>".__($guid, 'No').'</option>'; ?>				
 							</select>
 						</td>
 					</tr>
@@ -211,26 +210,25 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
 						<td class="right">
 							<?php
                                 echo __($guid, 'Student').' <input ';
-            if ($row['activePersonStudent'] == '1') {
-                echo 'checked';
-            }
-            echo " type='checkbox' name='activePersonStudent' value='1'/><br/>";
-            echo __($guid, 'Staff').' <input ';
-            if ($row['activePersonStaff'] == '1') {
-                echo 'checked';
-            }
-            echo " type='checkbox' name='activePersonStaff' value='1'/><br/>";
-            echo __($guid, 'Parent').' <input ';
-            if ($row['activePersonParent'] == '1') {
-                echo 'checked';
-            }
-            echo " type='checkbox' name='activePersonParent' value='1'/><br/>";
-            echo __($guid, 'Other').' <input ';
-            if ($row['activePersonOther'] == '1') {
-                echo 'checked';
-            }
-            echo " type='checkbox' name='activePersonOther' value='1'/><br/>";
-            ?>
+								if ($row['activePersonStudent'] == '1') {
+									echo 'checked';
+								}
+								echo " type='checkbox' name='activePersonStudent' value='1'/><br/>";
+								echo __($guid, 'Staff').' <input ';
+								if ($row['activePersonStaff'] == '1') {
+									echo 'checked';
+								}
+								echo " type='checkbox' name='activePersonStaff' value='1'/><br/>";
+								echo __($guid, 'Parent').' <input ';
+								if ($row['activePersonParent'] == '1') {
+									echo 'checked';
+								}
+								echo " type='checkbox' name='activePersonParent' value='1'/><br/>";
+								echo __($guid, 'Other').' <input ';
+								if ($row['activePersonOther'] == '1') {
+									echo 'checked';
+								}
+								echo " type='checkbox' name='activePersonOther' value='1'/><br/>"; ?>
 						</td>
 					</tr>
 					<tr>
@@ -241,15 +239,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
 							<select class="standardWidth" name="activeDataUpdater">
 								<?php
                                 echo '<option ';
-            if ($row['activeDataUpdater'] == '1') {
-                echo 'selected';
-            }
-            echo " value='1'>".__($guid, 'Yes').'</option>';
-            echo '<option ';
-            if ($row['activeDataUpdater'] == '0') {
-                echo 'selected';
-            }
-            echo " value='0'>".__($guid, 'No').'</option>'; ?>				
+								if ($row['activeDataUpdater'] == '1') {
+									echo 'selected';
+								}
+								echo " value='1'>".__($guid, 'Yes').'</option>';
+								echo '<option ';
+								if ($row['activeDataUpdater'] == '0') {
+									echo 'selected';
+								}
+								echo " value='0'>".__($guid, 'No').'</option>'; ?>				
 							</select>
 						</td>
 					</tr>
@@ -261,15 +259,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
 							<select class="standardWidth" name="activeApplicationForm">
 								<?php
                                 echo '<option ';
-            if ($row['activeApplicationForm'] == '1') {
-                echo 'selected';
-            }
-            echo " value='1'>".__($guid, 'Yes').'</option>';
-            echo '<option ';
-            if ($row['activeApplicationForm'] == '0') {
-                echo 'selected';
-            }
-            echo " value='0'>".__($guid, 'No').'</option>'; ?>				
+								if ($row['activeApplicationForm'] == '1') {
+									echo 'selected';
+								}
+								echo " value='1'>".__($guid, 'Yes').'</option>';
+								echo '<option ';
+								if ($row['activeApplicationForm'] == '0') {
+									echo 'selected';
+								}
+								echo " value='0'>".__($guid, 'No').'</option>'; ?>				
 							</select>
 						</td>
 					</tr>

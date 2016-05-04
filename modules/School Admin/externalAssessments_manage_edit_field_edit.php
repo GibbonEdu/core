@@ -76,10 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
 							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
-							<input name="name" id="name" maxlength=50 value="<?php if (isset($row['name'])) {
-    echo __($guid, $row['name']);
-}
-            ?>" type="text" class="standardWidth">
+							<input name="name" id="name" maxlength=50 value="<?php if (isset($row['name'])) { echo __($guid, $row['name']); } ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var name2=new LiveValidation('name');
 								name2.add(Validate.Presence);
@@ -91,10 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
 							<b><?php echo __($guid, 'Category') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<input name="category" id="category" maxlength=50 value="<?php if (isset($row['category'])) {
-    echo $row['category'];
-}
-            ?>" type="text" class="standardWidth">
+							<input name="category" id="category" maxlength=50 value="<?php if (isset($row['category'])) { echo $row['category']; } ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var category=new LiveValidation('category');
 								category.add(Validate.Presence);
@@ -107,10 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
 							<span class="emphasis small"><?php echo __($guid, 'Order in which fields appear within category<br/>Should be unique for this category.') ?><br/></span>
 						</td>
 						<td class="right">
-							<input name="order" id="order" maxlength=4 value="<?php if (isset($row['order'])) {
-    echo $row['order'];
-}
-            ?>" type="text" class="standardWidth">
+							<input name="order" id="order" maxlength=4 value="<?php if (isset($row['order'])) { echo $row['order']; } ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var order=new LiveValidation('order');
 								order.add(Validate.Presence);
@@ -132,15 +123,15 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
                                     $resultSelect->execute($dataSelect);
                                 } catch (PDOException $e) {
                                 }
-            echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-            while ($rowSelect = $resultSelect->fetch()) {
-                if ($row['gibbonScaleID'] == $rowSelect['gibbonScaleID']) {
-                    echo "<option selected value='".$rowSelect['gibbonScaleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-                } else {
-                    echo "<option value='".$rowSelect['gibbonScaleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-                }
-            }
-            ?>				
+								echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
+								while ($rowSelect = $resultSelect->fetch()) {
+									if ($row['gibbonScaleID'] == $rowSelect['gibbonScaleID']) {
+										echo "<option selected value='".$rowSelect['gibbonScaleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
+									} else {
+										echo "<option value='".$rowSelect['gibbonScaleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
+									}
+								}
+								?>				
 							</select>
 							<script type="text/javascript">
 								var gibbonScaleID=new LiveValidation('gibbonScaleID');
@@ -155,8 +146,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
 						</td>
 						<td class="right">
 							<?php
-                            echo "<fieldset style='border: none'>";
-            ?>
+                            echo "<fieldset style='border: none'>"; ?>
 							<script type="text/javascript">
 								$(function () {
 									$('.checkall').click(function () {
@@ -166,24 +156,24 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
 							</script>
 							<?php
                             echo __($guid, 'All').' / '.__($guid, 'None')." <input type='checkbox' class='checkall'><br/>";
-            $yearGroups = getYearGroups($connection2);
-            if ($yearGroups == '') {
-                echo '<i>'.__($guid, 'No year groups available.').'</i>';
-            } else {
-                $selectedYears = explode(',', $row['gibbonYearGroupIDList']);
-                for ($i = 0; $i < count($yearGroups); $i = $i + 2) {
-                    $checked = '';
-                    foreach ($selectedYears as $selectedYear) {
-                        if ($selectedYear == $yearGroups[$i]) {
-                            $checked = 'checked';
-                        }
-                    }
+							$yearGroups = getYearGroups($connection2);
+							if ($yearGroups == '') {
+								echo '<i>'.__($guid, 'No year groups available.').'</i>';
+							} else {
+								$selectedYears = explode(',', $row['gibbonYearGroupIDList']);
+								for ($i = 0; $i < count($yearGroups); $i = $i + 2) {
+									$checked = '';
+									foreach ($selectedYears as $selectedYear) {
+										if ($selectedYear == $yearGroups[$i]) {
+											$checked = 'checked';
+										}
+									}
 
-                    echo __($guid, $yearGroups[($i + 1)])." <input $checked type='checkbox' name='gibbonYearGroupIDCheck".($i) / 2 ."'><br/>";
-                    echo "<input type='hidden' name='gibbonYearGroupID".($i) / 2 ."' value='".$yearGroups[$i]."'>";
-                }
-            }
-            echo '</fieldset>'; ?>
+									echo __($guid, $yearGroups[($i + 1)])." <input $checked type='checkbox' name='gibbonYearGroupIDCheck".($i) / 2 ."'><br/>";
+									echo "<input type='hidden' name='gibbonYearGroupID".($i) / 2 ."' value='".$yearGroups[$i]."'>";
+								}
+							}
+							echo '</fieldset>'; ?>
 							<input type="hidden" name="count" value="<?php echo(count($yearGroups)) / 2 ?>">
 						</td>
 					</tr>

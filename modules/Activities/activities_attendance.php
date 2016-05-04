@@ -314,8 +314,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
 
         echo '</table>';
         echo '</div>';
-        echo '</div>';
-        ?>
+        echo '</div>'; ?>
 			<table class='smallIntBorder fullWidth' cellspacing='0'>	
 				<tr>
 					<td>

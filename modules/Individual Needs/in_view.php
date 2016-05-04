@@ -66,8 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_view.p
 						<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/in_view.php">
 						<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 						<?php
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/in_view.php'>".__($guid, 'Clear Search').'</a>';
-        ?>
+                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/in_view.php'>".__($guid, 'Clear Search').'</a>'; ?>
 						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 					</td>
 				</tr>
@@ -146,10 +145,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_view.p
                 }
                 ++$count;
 
-                    //Color rows based on start and end date
-                    if (!($row['dateStart'] == '' or $row['dateStart'] <= date('Y-m-d')) and ($row['dateEnd'] == '' or $row['dateEnd'] >= date('Y-m-d'))) {
-                        $rowNum = 'error';
-                    }
+				//Color rows based on start and end date
+				if (!($row['dateStart'] == '' or $row['dateStart'] <= date('Y-m-d')) and ($row['dateEnd'] == '' or $row['dateEnd'] >= date('Y-m-d'))) {
+					$rowNum = 'error';
+				}
 
                 //COLOR ROW BY STATUS!
                 echo "<tr class=$rowNum>";

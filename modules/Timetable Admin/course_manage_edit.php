@@ -76,8 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
-            ?>				
+            $row = $result->fetch(); ?>				
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/course_manage_editProcess.php?gibbonCourseID='.$row['gibbonCourseID'] ?>">
 			<table class='smallIntBorder fullWidth' cellspacing='0'>	
 				<tr>
@@ -101,21 +100,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 						<select class="standardWidth" name="gibbonDepartmentID">
 							<?php
                             echo "<option value=''></option>";
-            try {
-                $dataSelect = array();
-                $sqlSelect = "SELECT * FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
-                $resultSelect = $connection2->prepare($sqlSelect);
-                $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) {
-            }
-            while ($rowSelect = $resultSelect->fetch()) {
-                if ($row['gibbonDepartmentID'] == $rowSelect['gibbonDepartmentID']) {
-                    echo "<option selected value='".$rowSelect['gibbonDepartmentID']."'>".htmlPrep($rowSelect['name']).'</option>';
-                } else {
-                    echo "<option value='".$rowSelect['gibbonDepartmentID']."'>".htmlPrep($rowSelect['name']).'</option>';
-                }
-            }
-            ?>				
+							try {
+								$dataSelect = array();
+								$sqlSelect = "SELECT * FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
+								$resultSelect = $connection2->prepare($sqlSelect);
+								$resultSelect->execute($dataSelect);
+							} catch (PDOException $e) {
+							}
+							while ($rowSelect = $resultSelect->fetch()) {
+								if ($row['gibbonDepartmentID'] == $rowSelect['gibbonDepartmentID']) {
+									echo "<option selected value='".$rowSelect['gibbonDepartmentID']."'>".htmlPrep($rowSelect['name']).'</option>';
+								} else {
+									echo "<option value='".$rowSelect['gibbonDepartmentID']."'>".htmlPrep($rowSelect['name']).'</option>';
+								}
+							}
+							?>				
 						</select>
 					</td>
 				</tr>
@@ -151,8 +150,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 						<span class="emphasis small"><?php echo __($guid, 'May be used to adjust arrangement of courses in reports.') ?></span>
 					</td>
 					<td class="right">
-						<input name="orderBy" id="orderBy" maxlength=6 value="<?php echo $row['orderBy'];
-            ?>" type="text" class="standardWidth">
+						<input name="orderBy" id="orderBy" maxlength=6 value="<?php echo $row['orderBy']; ?>" type="text" class="standardWidth">
 						<script type="text/javascript">
 							var orderBy=new LiveValidation('orderBy');
 							orderBy.add(Validate.Numericality);
@@ -173,19 +171,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 					<td class="right">
 						<?php 
                         $yearGroups = getYearGroups($connection2);
-            if ($yearGroups == '') {
-                echo '<i>'.__($guid, 'No year groups available.').'</i>';
-            } else {
-                for ($i = 0; $i < count($yearGroups); $i = $i + 2) {
-                    $checked = '';
-                    if (is_numeric(strpos($row['gibbonYearGroupIDList'], $yearGroups[$i]))) {
-                        $checked = 'checked ';
-                    }
-                    echo __($guid, $yearGroups[($i + 1)])." <input $checked type='checkbox' name='gibbonYearGroupIDCheck".($i) / 2 ."'><br/>";
-                    echo "<input type='hidden' name='gibbonYearGroupID".($i) / 2 ."' value='".$yearGroups[$i]."'>";
-                }
-            }
-            ?>
+						if ($yearGroups == '') {
+							echo '<i>'.__($guid, 'No year groups available.').'</i>';
+						} else {
+							for ($i = 0; $i < count($yearGroups); $i = $i + 2) {
+								$checked = '';
+								if (is_numeric(strpos($row['gibbonYearGroupIDList'], $yearGroups[$i]))) {
+									$checked = 'checked ';
+								}
+								echo __($guid, $yearGroups[($i + 1)])." <input $checked type='checkbox' name='gibbonYearGroupIDCheck".($i) / 2 ."'><br/>";
+								echo "<input type='hidden' name='gibbonYearGroupID".($i) / 2 ."' value='".$yearGroups[$i]."'>";
+							}
+						}
+						?>
 						<input type="hidden" name="count" value="<?php echo(count($yearGroups)) / 2 ?>">
 					</td>
 				</tr>

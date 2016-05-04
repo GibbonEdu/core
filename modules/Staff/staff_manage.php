@@ -55,10 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') =
 					<span class="emphasis small"><?php echo __($guid, 'Preferred, surname, username.') ?></span>
 				</td>
 				<td class="right">
-					<input name="search" id="search" maxlength=20 value="<?php if (isset($_GET['search'])) {
-    echo $_GET['search'];
-}
-    ?>" type="text" class="standardWidth">
+					<input name="search" id="search" maxlength=20 value="<?php if (isset($_GET['search'])) { echo $_GET['search']; } ?>" type="text" class="standardWidth">
 				</td>
 			</tr>
 			<tr>
@@ -69,11 +66,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') =
 				<td class="right">
 					<?php
                     $checked = '';
-    if ($allStaff == 'on') {
-        $checked = 'checked';
-    }
-    echo "<input $checked name=\"allStaff\" id=\"allStaff\" type=\"checkbox\">";
-    ?>
+					if ($allStaff == 'on') {
+						$checked = 'checked';
+					}
+					echo "<input $checked name=\"allStaff\" id=\"allStaff\" type=\"checkbox\">"; ?>
 				</td>
 			</tr>
 			<tr>

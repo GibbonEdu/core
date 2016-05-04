@@ -68,8 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 						<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/messenger_manage.php">
 						<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 						<?php
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/messenger_manage.php'>".__($guid, 'Clear Search').'</a>';
-        ?>
+                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/messenger_manage.php'>".__($guid, 'Clear Search').'</a>'; ?>
 						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 					</td>
 				</tr>

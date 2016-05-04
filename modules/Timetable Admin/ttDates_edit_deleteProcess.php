@@ -33,8 +33,7 @@ $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
 $dateStamp = $_GET['dateStamp'];
 $gibbonTTDayID = $_GET['gibbonTTDayID'];
 
-if ($gibbonSchoolYearID == '' or $dateStamp == '') {
-    echo 'Fatal error loading this page!';
+if ($gibbonSchoolYearID == '' or $dateStamp == '') { echo 'Fatal error loading this page!';
 } else {
     $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/ttDates_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=$dateStamp";
 

@@ -56,8 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 ?>
 				<td style='width: 275px'> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=12 class="standardWidth"><?php echo $row['value'] ?></textarea>
@@ -77,8 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 ?>
 				<td style='width: 275px'> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=12 class="standardWidth"><?php echo $row['value'] ?></textarea>
@@ -98,8 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 ?>
 				<td style='width: 275px'> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td stclass="right">
 					<input name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" maxlength=255 value="<?php echo htmlPrep($row['value']) ?>" type="text" class="standardWidth">
@@ -125,8 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=12 class="standardWidth"><?php echo $row['value'] ?></textarea>
@@ -146,8 +142,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=8 class="standardWidth"><?php echo $row['value'] ?></textarea>
@@ -167,8 +162,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=8 class="standardWidth"><?php echo $row['value'] ?></textarea>
@@ -191,11 +185,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
 					<span class="emphasis small">
 						<?php 
                             echo $row['description'];
-    $currency = getSettingByScope($connection2, 'System', 'currency');
-    if ($currency != false and $currency != '') {
-        echo ' '.sprintf(__($guid, 'In %1$s.'), $currency);
-    }
-    ?>
+							$currency = getSettingByScope($connection2, 'System', 'currency');
+							if ($currency != false and $currency != '') {
+								echo ' '.sprintf(__($guid, 'In %1$s.'), $currency);
+							}
+							?>
 					</span>
 				</td>
 				<td class="right">
@@ -222,15 +216,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option <?php if ($row['value'] == 'N') { echo 'selected '; }
-    ?>value="N"><?php echo __($guid, 'No') ?></option>
-						<option <?php if ($row['value'] == 'Y') { echo 'selected '; }
-    ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
+						<option <?php if ($row['value'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
+						<option <?php if ($row['value'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -246,8 +237,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=4 type="text" class="standardWidth"><?php echo $row['value'] ?></textarea>
@@ -265,8 +255,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=4 type="text" class="standardWidth"><?php echo $row['value'] ?></textarea>
@@ -290,8 +279,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=4 type="text" class="standardWidth"><?php echo $row['value'] ?></textarea>
@@ -309,8 +297,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=4 type="text" class="standardWidth"><?php echo $row['value'] ?></textarea>
@@ -330,15 +317,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option <?php if ($row['value'] == 'N') { echo 'selected '; }
-    ?>value="N">No</option>
-						<option <?php if ($row['value'] == 'Y') { echo 'selected '; }
-    ?>value="Y">Yes</option>
+						<option <?php if ($row['value'] == 'N') { echo 'selected '; } ?>value="N">No</option>
+						<option <?php if ($row['value'] == 'Y') { echo 'selected '; } ?>value="Y">Yes</option>
 					</select>
 				</td>
 			</tr>
@@ -368,15 +352,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option <?php if ($row['value'] == 'Y') { echo 'selected '; }
-    ?>value="Y"><?php echo ynExpander($guid, 'Y') ?></option>
-						<option <?php if ($row['value'] == 'N') { echo 'selected '; }
-    ?>value="N"><?php echo ynExpander($guid, 'N') ?></option>
+						<option <?php if ($row['value'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo ynExpander($guid, 'Y') ?></option>
+						<option <?php if ($row['value'] == 'N') { echo 'selected '; } ?>value="N"><?php echo ynExpander($guid, 'N') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -392,8 +373,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=4 type="text" class="standardWidth"><?php echo $row['value'] ?></textarea>
@@ -411,8 +391,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=4 type="text" class="standardWidth"><?php echo $row['value'] ?></textarea>
@@ -438,8 +417,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<input type='text' name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth" value='<?php echo htmlPrep($row['value']) ?>'>
@@ -459,8 +437,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=8 class="standardWidth"><?php echo $row['value'] ?></textarea>
@@ -480,15 +457,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option <?php if ($row['value'] == 'Y') { echo 'selected '; }
-    ?>value="Y"><?php echo ynExpander($guid, 'Y') ?></option>
-						<option <?php if ($row['value'] == 'N') { echo 'selected '; }
-    ?>value="N"><?php echo ynExpander($guid, 'N') ?></option>
+						<option <?php if ($row['value'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo ynExpander($guid, 'Y') ?></option>
+						<option <?php if ($row['value'] == 'N') { echo 'selected '; } ?>value="N"><?php echo ynExpander($guid, 'N') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -506,8 +480,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=8 class="standardWidth"><?php echo $row['value'] ?></textarea>
@@ -527,15 +500,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option <?php if ($row['value'] == 'Y') { echo 'selected '; }
-    ?>value="Y"><?php echo ynExpander($guid, 'Y') ?></option>
-						<option <?php if ($row['value'] == 'N') { echo 'selected '; }
-    ?>value="N"><?php echo ynExpander($guid, 'N') ?></option>
+						<option <?php if ($row['value'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo ynExpander($guid, 'Y') ?></option>
+						<option <?php if ($row['value'] == 'N') { echo 'selected '; } ?>value="N"><?php echo ynExpander($guid, 'N') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -553,8 +523,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<input type='text' name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth" value='<?php echo htmlPrep($row['value']) ?>'>
@@ -574,8 +543,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<input type='text' name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth" value='<?php echo htmlPrep($row['value']) ?>'>
@@ -595,15 +563,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option <?php if ($row['value'] == 'Y') { echo 'selected '; }
-    ?>value="Y"><?php echo ynExpander($guid, 'Y') ?></option>
-						<option <?php if ($row['value'] == 'N') { echo 'selected '; }
-    ?>value="N"><?php echo ynExpander($guid, 'N') ?></option>
+						<option <?php if ($row['value'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo ynExpander($guid, 'Y') ?></option>
+						<option <?php if ($row['value'] == 'N') { echo 'selected '; } ?>value="N"><?php echo ynExpander($guid, 'N') ?></option>
 					</select>
 				</td>
 			</tr>

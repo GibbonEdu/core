@@ -56,8 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
-            ?>
+            $row = $result->fetch(); ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/space_manage_editProcess.php?gibbonSpaceID='.$gibbonSpaceID ?>">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
@@ -75,8 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
 					</tr>
 					<?php
                     $types = getSettingByScope($connection2, 'School Admin', 'facilityTypes');
-            $types = explode(',', $types);
-            ?>
+            		$types = explode(',', $types); ?>
 					<tr>
 						<td> 
 							<b><?php echo __($guid, 'Type') ?> *</b><br/>
@@ -112,21 +110,21 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
 							<select class="standardWidth" name="gibbonPersonID1">
 								<?php
                                 echo "<option value=''></option>";
-            try {
-                $dataStaff = array();
-                $sqlStaff = "SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
-                $resultStaff = $connection2->prepare($sqlStaff);
-                $resultStaff->execute($dataStaff);
-            } catch (PDOException $e) {
-            }
-            while ($rowStaff = $resultStaff->fetch()) {
-                echo '<option';
-                if ($row['gibbonPersonID1'] == $rowStaff['gibbonPersonID']) {
-                    echo ' selected';
-                };
-                echo " value='".$rowStaff['gibbonPersonID']."'>".formatName('', htmlPrep($rowStaff['preferredName']), htmlPrep($rowStaff['surname']), 'Staff', true, true).'</option>';
-            }
-            ?>				
+								try {
+									$dataStaff = array();
+									$sqlStaff = "SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
+									$resultStaff = $connection2->prepare($sqlStaff);
+									$resultStaff->execute($dataStaff);
+								} catch (PDOException $e) {
+								}
+								while ($rowStaff = $resultStaff->fetch()) {
+									echo '<option';
+									if ($row['gibbonPersonID1'] == $rowStaff['gibbonPersonID']) {
+										echo ' selected';
+									};
+									echo " value='".$rowStaff['gibbonPersonID']."'>".formatName('', htmlPrep($rowStaff['preferredName']), htmlPrep($rowStaff['surname']), 'Staff', true, true).'</option>';
+								}
+								?>				
 							</select>
 						</td>
 					</tr>
@@ -138,21 +136,21 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
 							<select class="standardWidth" name="gibbonPersonID2">
 								<?php
                                 echo "<option value=''></option>";
-            try {
-                $dataStaff = array();
-                $sqlStaff = "SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
-                $resultStaff = $connection2->prepare($sqlStaff);
-                $resultStaff->execute($dataStaff);
-            } catch (PDOException $e) {
-            }
-            while ($rowStaff = $resultStaff->fetch()) {
-                echo '<option';
-                if ($row['gibbonPersonID2'] == $rowStaff['gibbonPersonID']) {
-                    echo ' selected';
-                };
-                echo " value='".$rowStaff['gibbonPersonID']."'>".formatName('', htmlPrep($rowStaff['preferredName']), htmlPrep($rowStaff['surname']), 'Staff', true, true).'</option>';
-            }
-            ?>				
+								try {
+									$dataStaff = array();
+									$sqlStaff = "SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
+									$resultStaff = $connection2->prepare($sqlStaff);
+									$resultStaff->execute($dataStaff);
+								} catch (PDOException $e) {
+								}
+								while ($rowStaff = $resultStaff->fetch()) {
+									echo '<option';
+									if ($row['gibbonPersonID2'] == $rowStaff['gibbonPersonID']) {
+										echo ' selected';
+									};
+									echo " value='".$rowStaff['gibbonPersonID']."'>".formatName('', htmlPrep($rowStaff['preferredName']), htmlPrep($rowStaff['surname']), 'Staff', true, true).'</option>';
+								}
+								?>				
 							</select>
 						</td>
 					</tr>

@@ -94,19 +94,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 							<tr id="resourceFile">
 								<td style='width: 275px'> 
 									<b><?php echo __($guid, 'File') ?></b><br/>
-									<?php if ($row['content'] != '') {
-    ?>
+									<?php if ($row['content'] != '') { ?>
 									<span class="emphasis small"><?php echo __($guid, 'Will overwrite existing attachment.') ?></span>
-									<?php 
-}
-                            ?>
+									<?php } ?>
 								</td>
 								<td class="right">
 									<?php
                                     if ($row['content'] != '') {
                                         echo __($guid, 'Current attachment:')." <a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/'.$row['content']."'>".$row['content'].'</a><br/><br/>';
                                     }
-                            ?>
+                            		?>
 									<input type="file" name="file" id="file"><br/><br/>
 									<script type="text/javascript">
 										<?php
@@ -118,18 +115,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
                                             $resultExt->execute($dataExt);
                                         } catch (PDOException $e) {
                                         }
-                            $ext = '';
-                            while ($rowExt = $resultExt->fetch()) {
-                                $ext = $ext."'.".$rowExt['extension']."',";
-                            }
-                            ?>
+										$ext = '';
+										while ($rowExt = $resultExt->fetch()) {
+											$ext = $ext."'.".$rowExt['extension']."',";
+										}
+										?>
 										var file=new LiveValidation('file');
-										file.add( Validate.Inclusion, { within: [<?php echo $ext;
-                            ?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+										file.add( Validate.Inclusion, { within: [<?php echo $ext; ?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 									</script>	
 									<?php
                                     echo getMaxUpload($guid);
-                            ?>
+                            		?>
 								</td>
 							</tr>
 							<?php
@@ -162,7 +158,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 							<?php
 
                         }
-                ?>
+                		?>
 						
 						<tr class='break'>
 							<td colspan=2> 
@@ -192,13 +188,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
                             echo "<div class='error'>".$e->getMessage().'</div>';
                         }
 
-                if ($resultCategory->rowCount() == 1) {
-                    $rowCategory = $resultCategory->fetch();
-                    $options = $rowCategory['value'];
+						if ($resultCategory->rowCount() == 1) {
+							$rowCategory = $resultCategory->fetch();
+							$options = $rowCategory['value'];
 
-                    if ($options != '') {
-                        $options = explode(',', $options);
-                        ?>
+							if ($options != '') {
+								$options = explode(',', $options);
+								?>
 								<tr>
 									<td> 
 										<b><?php echo __($guid, 'Category') ?> *</b><br/>
@@ -227,31 +223,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 								</tr>
 								<?php
 
-                    }
-                }
+							}
+						}
 
-                try {
-                    $dataPurpose = array();
-                    $sqlPurpose = "(SELECT * FROM gibbonSetting WHERE scope='Resources' AND name='purposesGeneral')";
-                    if ($highestAction == 'Manage Resources_all') {
-                        $sqlPurpose .= " UNION (SELECT * FROM gibbonSetting WHERE scope='Resources' AND name='purposesRestricted')";
-                    }
-                    $resultPurpose = $connection2->prepare($sqlPurpose);
-                    $resultPurpose->execute($dataPurpose);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
+						try {
+							$dataPurpose = array();
+							$sqlPurpose = "(SELECT * FROM gibbonSetting WHERE scope='Resources' AND name='purposesGeneral')";
+							if ($highestAction == 'Manage Resources_all') {
+								$sqlPurpose .= " UNION (SELECT * FROM gibbonSetting WHERE scope='Resources' AND name='purposesRestricted')";
+							}
+							$resultPurpose = $connection2->prepare($sqlPurpose);
+							$resultPurpose->execute($dataPurpose);
+						} catch (PDOException $e) {
+							echo "<div class='error'>".$e->getMessage().'</div>';
+						}
 
-                if ($resultPurpose->rowCount() > 0) {
-                    $options = '';
-                    while ($rowPurpose = $resultPurpose->fetch()) {
-                        $options .= $rowPurpose['value'].',';
-                    }
-                    $options = substr($options, 0, -1);
+						if ($resultPurpose->rowCount() > 0) {
+							$options = '';
+							while ($rowPurpose = $resultPurpose->fetch()) {
+								$options .= $rowPurpose['value'].',';
+							}
+							$options = substr($options, 0, -1);
 
-                    if ($options != '') {
-                        $options = explode(',', $options);
-                        ?>
+							if ($options != '') {
+								$options = explode(',', $options);
+								?>
 								<tr>
 									<td> 
 										<b><?php echo __($guid, 'Purpose') ?></b><br/>
@@ -271,14 +267,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 											<?php
 
                                             }
-                        			?>										</select>
+                        				?>
+                        				</select>
 									</td>
 								</tr>
 								<?php
 
-                    }
-                }
-                ?>
+								}
+							}
+							?>
 						<tr>
 							<td> 
 								<b><?php echo __($guid, 'Tags') ?> *</b><br/>
@@ -296,11 +293,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
                                     echo "<div class='error'>".$e->getMessage().'</div>';
                                 }
 
-                $list = '';
-                while ($rowList = $resultList->fetch()) {
-                    $list = $list.'{id: "'.$rowList['tag'].'", name: "'.$rowList['tag'].' <i>('.$rowList['count'].')</i>"},';
-                }
-                ?>
+								$list = '';
+								while ($rowList = $resultList->fetch()) {
+									$list = $list.'{id: "'.$rowList['tag'].'", name: "'.$rowList['tag'].' <i>('.$rowList['count'].')</i>"},';
+								}
+								?>
 								<style>
 									td.right ul.token-input-list-facebook { width: 302px; float: right } 
 									td.right div.token-input-dropdown-facebook { width: 120px } 
@@ -308,12 +305,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 								<input type="text" id="tags" name="tags" class='standardWidth' />
 								<?php
                                     $prepopulate = '';
-                $tags = explode(',', $row['tags']);
-                foreach ($tags as $tag) {
-                    $prepopulate .= '{id: '.$tag.', name: '.$tag.'}, ';
-                }
-                $prepopulate = substr($prepopulate, 0, -2);
-                ?>
+									$tags = explode(',', $row['tags']);
+									foreach ($tags as $tag) {
+										$prepopulate .= '{id: '.$tag.', name: '.$tag.'}, ';
+									}
+									$prepopulate = substr($prepopulate, 0, -2);
+									?>
 								<script type="text/javascript">
 									$(document).ready(function() {
 										 $("#tags").tokenInput([
@@ -326,7 +323,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
                                             if ($prepopulate != '{id: , name: }') {
                                                 echo "prePopulate: [ $prepopulate ],";
                                             }
-                ?>
+                						?>
 											preventDuplicates: true});
 									});
 								</script>
@@ -352,25 +349,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 								</script>
 								<?php
                                 echo __($guid, 'All/None')." <input type='checkbox' class='checkall'><br/>";
-                $yearGroups = getYearGroups($connection2);
-                if ($yearGroups == '') {
-                    echo '<i>'.__($guid, 'No year groups available.').'</i>';
-                } else {
-                    $selectedYears = explode(',', $row['gibbonYearGroupIDList']);
-                    for ($i = 0; $i < count($yearGroups); $i = $i + 2) {
-                        $checked = '';
-                        foreach ($selectedYears as $selectedYear) {
-                            if ($selectedYear == $yearGroups[$i]) {
-                                $checked = 'checked';
-                            }
-                        }
+								$yearGroups = getYearGroups($connection2);
+								if ($yearGroups == '') {
+									echo '<i>'.__($guid, 'No year groups available.').'</i>';
+								} else {
+									$selectedYears = explode(',', $row['gibbonYearGroupIDList']);
+									for ($i = 0; $i < count($yearGroups); $i = $i + 2) {
+										$checked = '';
+										foreach ($selectedYears as $selectedYear) {
+											if ($selectedYear == $yearGroups[$i]) {
+												$checked = 'checked';
+											}
+										}
 
-                        echo __($guid, $yearGroups[($i + 1)])." <input $checked type='checkbox' name='gibbonYearGroupIDCheck".($i) / 2 ."'><br/>";
-                        echo "<input type='hidden' name='gibbonYearGroupID".($i) / 2 ."' value='".$yearGroups[$i]."'>";
-                    }
-                }
-                echo '</fieldset>';
-                ?>
+										echo __($guid, $yearGroups[($i + 1)])." <input $checked type='checkbox' name='gibbonYearGroupIDCheck".($i) / 2 ."'><br/>";
+										echo "<input type='hidden' name='gibbonYearGroupID".($i) / 2 ."' value='".$yearGroups[$i]."'>";
+									}
+								}
+								echo '</fieldset>'; ?>
 								<input type="hidden" name="count" value="<?php echo(count($yearGroups)) / 2 ?>">
 							</td>
 						</tr>

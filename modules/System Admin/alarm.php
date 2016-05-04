@@ -52,14 +52,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span><br/>
-					<?php if ($row['value'] != '') {
-    ?>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span><br/>
+					<?php if ($row['value'] != '') { ?>
 						<span class="emphasis small"><?php echo __($guid, 'Will overwrite existing attachment.') ?></span>
 					<?php 
-}
-    ?>
+					}
+				?>
 				</td>
 				<td class="right">
 					<?php
@@ -77,16 +75,15 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
                         $resultExt->execute($dataExt);
                     } catch (PDOException $e) {
                     }
-    $ext = '';
-    while ($rowExt = $resultExt->fetch()) {
-        $ext = $ext."'.".$rowExt['extension']."',";
-    }
-    ?>
+					$ext = '';
+					while ($rowExt = $resultExt->fetch()) {
+						$ext = $ext."'.".$rowExt['extension']."',";
+					}
+					?>
 			
 					<script type="text/javascript">
 						var file=new LiveValidation('file');
-						file.add( Validate.Inclusion, { within: [<?php echo $ext;
-    ?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+						file.add( Validate.Inclusion, { within: [<?php echo $ext; ?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 					</script>
 					<input type="hidden" name="attachmentCurrent" value="<?php echo $row['value'] ?>">
 				</td>
@@ -103,17 +100,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option <?php if ($row['value'] == 'None') { echo 'selected '; }
-    ?>value="None"><?php echo __($guid, 'None') ?></option>
-						<option <?php if ($row['value'] == 'General') { echo 'selected '; }
-    ?>value="General"><?php echo __($guid, 'General') ?></option>
-						<option <?php if ($row['value'] == 'Lockdown') { echo 'selected '; }
-    ?>value="Lockdown"><?php echo __($guid, 'Lockdown') ?></option>
+						<option <?php if ($row['value'] == 'None') { echo 'selected '; } ?>value="None"><?php echo __($guid, 'None') ?></option>
+						<option <?php if ($row['value'] == 'General') { echo 'selected '; } ?>value="General"><?php echo __($guid, 'General') ?></option>
+						<option <?php if ($row['value'] == 'Lockdown') { echo 'selected '; } ?>value="Lockdown"><?php echo __($guid, 'Lockdown') ?></option>
 						<?php
                         if ($row['value'] != '') {
                             ?>

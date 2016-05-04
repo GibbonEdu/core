@@ -60,15 +60,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option <?php if ($row['value'] == 'Y') { echo 'selected '; }
-    ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-						<option <?php if ($row['value'] == 'N') { echo 'selected '; }
-    ?>value="N"><?php echo __($guid, 'No') ?></option>
+						<option <?php if ($row['value'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
+						<option <?php if ($row['value'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -86,10 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
 					 });
 				});
 			</script>
-			<tr id='positiveRow' <?php if ($enableDescriptors == 'N') {
-    echo " style='display: none'";
-}
-    ?>>
+			<tr id='positiveRow' <?php if ($enableDescriptors == 'N') { echo " style='display: none'"; } ?>>
 				<?php
                 try {
                     $data = array();
@@ -101,8 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
                 ?>
 				<td style='width: 275px'> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
@@ -112,10 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
 					</script> 
 				</td>
 			</tr>
-			<tr id='negativeRow' <?php if ($enableDescriptors == 'N') {
-    echo " style='display: none'";
-}
-    ?>>
+			<tr id='negativeRow' <?php if ($enableDescriptors == 'N') { echo " style='display: none'"; } ?>>
 				<?php
                 try {
                     $data = array();
@@ -127,8 +117,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
@@ -159,15 +148,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option <?php if ($row['value'] == 'Y') { echo 'selected '; }
-    ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-						<option <?php if ($row['value'] == 'N') { echo 'selected '; }
-    ?>value="N"><?php echo __($guid, 'No') ?></option>
+						<option <?php if ($row['value'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
+						<option <?php if ($row['value'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -183,10 +169,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
 					 });
 				});
 			</script>
-			<tr id='levelsRow' <?php if ($enableLevels == 'N') {
-    echo " style='display: none'";
-}
-    ?>>
+			<tr id='levelsRow' <?php if ($enableLevels == 'N') { echo " style='display: none'"; } ?>>
 				<?php
                 try {
                     $data = array();
@@ -198,8 +181,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
@@ -231,15 +213,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option <?php if ($row['value'] == 'Y') { echo 'selected '; }
-    ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-						<option <?php if ($row['value'] == 'N') { echo 'selected '; }
-    ?>value="N"><?php echo __($guid, 'No') ?></option>
+						<option <?php if ($row['value'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
+						<option <?php if ($row['value'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
 					</select>
 				</td>
 			</tr>
@@ -276,10 +255,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
 					 });
 				});
 			</script>
-			<tr id='behaviourLettersLetter1CountRow' <?php if ($enableBehaviourLetters == 'N') {
-    echo " style='display: none'";
-}
-    ?>>
+			<tr id='behaviourLettersLetter1CountRow' <?php if ($enableBehaviourLetters == 'N') { echo " style='display: none'"; } ?>>
 				<?php
                 try {
                     $data = array();
@@ -291,8 +267,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
@@ -300,10 +275,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
 						<?php
                         for ($i = 1; $i <= 20; ++$i) {
                             ?>
-							<option <?php if ($i == $row['value']) {
-    echo 'selected';
-}
-                            ?> value="<?php echo $i ?>"><?php echo $i ?></option>
+							<option <?php if ($i == $row['value']) { echo 'selected'; } ?> value="<?php echo $i ?>"><?php echo $i ?></option>
 						<?php
 
                         }
@@ -312,17 +284,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
 					<script type="text/javascript">
 						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
 						<?php echo $row['name'] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-						<?php if ($enableBehaviourLetters == 'N') {
-    echo $row['name'].'.disable() ;';
-}
-    ?>
+						<?php if ($enableBehaviourLetters == 'N') { echo $row['name'].'.disable() ;'; } ?>
 					</script> 
 				</td>
 			</tr>
-			<tr id='behaviourLettersLetter1TextRow' <?php if ($enableBehaviourLetters == 'N') {
-    echo " style='display: none'";
-}
-    ?>>
+			<tr id='behaviourLettersLetter1TextRow' <?php if ($enableBehaviourLetters == 'N') { echo " style='display: none'"; } ?>>
 				<?php
                 try {
                     $data = array();
@@ -334,25 +300,18 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
 					<script type="text/javascript">
 						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
 						<?php echo $row['name'] ?>.add(Validate.Presence);
-						<?php if ($enableBehaviourLetters == 'N') {
-    echo $row['name'].'.disable() ;';
-}
-    ?>
+						<?php if ($enableBehaviourLetters == 'N') { echo $row['name'].'.disable() ;'; } ?>
 					</script> 
 				</td>
 			</tr>
-			<tr id='behaviourLettersLetter2CountRow' <?php if ($enableBehaviourLetters == 'N') {
-    echo " style='display: none'";
-}
-    ?>>
+			<tr id='behaviourLettersLetter2CountRow' <?php if ($enableBehaviourLetters == 'N') { echo " style='display: none'"; } ?>>
 				<?php
                 try {
                     $data = array();
@@ -364,8 +323,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
@@ -373,10 +331,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
 						<?php
                         for ($i = 1; $i <= 20; ++$i) {
                             ?>
-							<option <?php if ($i == $row['value']) {
-    echo 'selected';
-}
-                            ?> value="<?php echo $i ?>"><?php echo $i ?></option>
+							<option <?php if ($i == $row['value']) { echo 'selected'; } ?> value="<?php echo $i ?>"><?php echo $i ?></option>
 						<?php
 
                         }
@@ -385,17 +340,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
 					<script type="text/javascript">
 						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
 						<?php echo $row['name'] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-						<?php if ($enableBehaviourLetters == 'N') {
-    echo $row['name'].'.disable() ;';
-}
-    ?>
+						<?php if ($enableBehaviourLetters == 'N') { echo $row['name'].'.disable() ;'; } ?>
 					</script> 
 				</td>
 			</tr>
-			<tr id='behaviourLettersLetter2TextRow' <?php if ($enableBehaviourLetters == 'N') {
-    echo " style='display: none'";
-}
-    ?>>
+			<tr id='behaviourLettersLetter2TextRow' <?php if ($enableBehaviourLetters == 'N') { echo " style='display: none'"; } ?>>
 				<?php
                 try {
                     $data = array();
@@ -407,25 +356,18 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
 					<script type="text/javascript">
 						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
 						<?php echo $row['name'] ?>.add(Validate.Presence);
-						<?php if ($enableBehaviourLetters == 'N') {
-    echo $row['name'].'.disable() ;';
-}
-    ?>
+						<?php if ($enableBehaviourLetters == 'N') { echo $row['name'].'.disable() ;'; } ?>
 					</script> 
 				</td>
 			</tr>
-			<tr id='behaviourLettersLetter3CountRow' <?php if ($enableBehaviourLetters == 'N') {
-    echo " style='display: none'";
-}
-    ?>>
+			<tr id='behaviourLettersLetter3CountRow' <?php if ($enableBehaviourLetters == 'N') { echo " style='display: none'"; } ?>>
 				<?php
                 try {
                     $data = array();
@@ -437,8 +379,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
@@ -446,10 +387,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
 						<?php
                         for ($i = 1; $i <= 20; ++$i) {
                             ?>
-							<option <?php if ($i == $row['value']) {
-    echo 'selected';
-}
-                            ?> value="<?php echo $i ?>"><?php echo $i ?></option>
+							<option <?php if ($i == $row['value']) { echo 'selected'; } ?> value="<?php echo $i ?>"><?php echo $i ?></option>
 						<?php
 
                         }
@@ -458,17 +396,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
 					<script type="text/javascript">
 						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
 						<?php echo $row['name'] ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-						<?php if ($enableBehaviourLetters == 'N') {
-    echo $row['name'].'.disable() ;';
-}
-    ?>
+						<?php if ($enableBehaviourLetters == 'N') { echo $row['name'].'.disable() ;'; } ?>
 					</script> 
 				</td>
 			</tr>
-			<tr id='behaviourLettersLetter3TextRow' <?php if ($enableBehaviourLetters == 'N') {
-    echo " style='display: none'";
-}
-    ?>>
+			<tr id='behaviourLettersLetter3TextRow' <?php if ($enableBehaviourLetters == 'N') { echo " style='display: none'"; } ?>>
 				<?php
                 try {
                     $data = array();
@@ -480,18 +412,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
 					<script type="text/javascript">
 						var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
 						<?php echo $row['name'] ?>.add(Validate.Presence);
-						<?php if ($enableBehaviourLetters == 'N') {
-    echo $row['name'].'.disable() ;';
-}
-    ?>
+						<?php if ($enableBehaviourLetters == 'N') { echo $row['name'].'.disable() ;'; } ?>
 					</script> 
 				</td>
 			</tr>
@@ -514,8 +442,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
                 ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);}?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<input type='text' name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>"class="standardWidth" value='<?php echo htmlPrep($row['value']) ?>'>

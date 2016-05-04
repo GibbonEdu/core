@@ -227,8 +227,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
 								<?php
 
                             }
-                    ?>
-							
+                    		?>
 							
 							<tr>
 								<td> 
@@ -272,10 +271,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
                                                     $resultAuto->execute($dataAuto);
                                                 } catch (PDOException $e) {
                                                 }
-                    while ($rowAuto = $resultAuto->fetch()) {
-                        echo '"'.$rowAuto['category'].'", ';
-                    }
-                    ?>
+												while ($rowAuto = $resultAuto->fetch()) {
+													echo '"'.$rowAuto['category'].'", ';
+												}
+												?>
 											];
 											$( "#category" ).autocomplete({source: availableTags});
 										});
@@ -297,19 +296,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
 								<td class="right">
 									<?php 
                                     $yearGroups = getYearGroups($connection2);
-                    if ($yearGroups == '') {
-                        echo '<i>'.__($guid, 'No year groups available.').'</i>';
-                    } else {
-                        for ($i = 0; $i < count($yearGroups); $i = $i + 2) {
-                            $checked = '';
-                            if (is_numeric(strpos($row['gibbonYearGroupIDList'], $yearGroups[$i]))) {
-                                $checked = 'checked ';
-                            }
-                            echo __($guid, $yearGroups[($i + 1)])." <input $checked type='checkbox' name='gibbonYearGroupIDCheck".($i) / 2 ."'><br/>";
-                            echo "<input type='hidden' name='gibbonYearGroupID".($i) / 2 ."' value='".$yearGroups[$i]."'>";
-                        }
-                    }
-                    ?>
+									if ($yearGroups == '') {
+										echo '<i>'.__($guid, 'No year groups available.').'</i>';
+									} else {
+										for ($i = 0; $i < count($yearGroups); $i = $i + 2) {
+											$checked = '';
+											if (is_numeric(strpos($row['gibbonYearGroupIDList'], $yearGroups[$i]))) {
+												$checked = 'checked ';
+											}
+											echo __($guid, $yearGroups[($i + 1)])." <input $checked type='checkbox' name='gibbonYearGroupIDCheck".($i) / 2 ."'><br/>";
+											echo "<input type='hidden' name='gibbonYearGroupID".($i) / 2 ."' value='".$yearGroups[$i]."'>";
+										}
+									}
+									?>
 									<input type="hidden" name="count" value="<?php echo(count($yearGroups)) / 2 ?>">
 								</td>
 							</tr>
@@ -333,19 +332,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
                                             $rowSelect = $resultSelect->fetch();
                                         }
                                     }
-                    if (isset($rowSelect['name']) == false) {
-                        ?>
+									if (isset($rowSelect['name']) == false) {
+										?>
 										<input readonly name="scale" id="scale" value="None" type="text" class="standardWidth">
 										<?php
 
-                    } else {
-                        ?>
+									} else {
+										?>
 										<input readonly name="scale" id="scale" value="<?php echo __($guid, $rowSelect['name']) ?>" type="text" class="standardWidth">
 										<input name="gibbonScaleID" id="gibbonScaleID" value="<?php echo $rowSelect['gibbonScaleID'] ?>" type="hidden" class="standardWidth">
 										<?php
 
-                    }
-                    ?>
+									}
+									?>
 								</td>
 							</tr>
 							<tr>

@@ -158,17 +158,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
             } catch (PDOException $e) {
                 echo "<div class='error'>".$e->getMessage().'</div>';
             }
-    if ($resultBudget->rowCount() < 1) {
-        echo '<tr>';
-        echo '<td colspan=2>';
-        echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
-        echo '</div>';
-        echo '</td>';
-        echo '</tr>';
-    } else {
-        while ($rowBudget = $resultBudget->fetch()) {
-            ?>
+			if ($resultBudget->rowCount() < 1) {
+				echo '<tr>';
+				echo '<td colspan=2>';
+				echo "<div class='error'>";
+				echo __($guid, 'There are no records to display.');
+				echo '</div>';
+				echo '</td>';
+				echo '</tr>';
+			} else {
+				while ($rowBudget = $resultBudget->fetch()) {
+					?>
 					<tr>
 						<td> 
 							<b><?php echo $rowBudget['name'] ?> *</b><br/>
@@ -194,11 +194,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
 							</script>
 						</td>
 					</tr>
-					<?php
+				<?php
 
-						}
-					}
-					?>
+				}
+			}
+			?>
 					
 			<tr>
 				<td>

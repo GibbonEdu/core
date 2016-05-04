@@ -108,21 +108,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
                                 $resultSelect->execute($dataSelect);
                             } catch (PDOException $e) {
                             }
-            if ($resultSelect->rowCount() == 1) {
-                $rowSelect = $resultSelect->fetch();
-                echo "<input readonly name='gibbonPersonIDStatusResponsiblename' id='gibbonPersonIDStatusResponsiblename' value='".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true)."' type='text' style='width: 300px'>";
-                echo "<input name='gibbonPersonIDStatusResponsible' id='gibbonPersonIDStatusResponsible' value='".$row['gibbonPersonIDStatusResponsible']."' type='hidden' style='width: 300px'>";
-            }
-            ?>
+							if ($resultSelect->rowCount() == 1) {
+								$rowSelect = $resultSelect->fetch();
+								echo "<input readonly name='gibbonPersonIDStatusResponsiblename' id='gibbonPersonIDStatusResponsiblename' value='".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true)."' type='text' style='width: 300px'>";
+								echo "<input name='gibbonPersonIDStatusResponsible' id='gibbonPersonIDStatusResponsible' value='".$row['gibbonPersonIDStatusResponsible']."' type='hidden' style='width: 300px'>";
+							}
+							?>
 						</td>
 					</tr>
 					<tr>
 						<?php
                         $loanLength = getSettingByScope($connection2, 'Library', 'defaultLoanLength');
-            if (is_numeric($loanLength) == false or $loanLength < 0) {
-                $loanLength = 7;
-            }
-            ?>
+						if (is_numeric($loanLength) == false or $loanLength < 0) {
+							$loanLength = 7;
+						}
+						?>
 						<td> 
 							<b><?php echo __($guid, 'Expected Return Date') ?> *</b><br/>
 							<span class="emphasis small"><?php echo sprintf(__($guid, 'Default renew length is today plus %1$s day(s)'), $loanLength) ?>.</span>

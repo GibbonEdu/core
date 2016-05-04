@@ -71,12 +71,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
 				<td> 
 					<b><?php echo __($guid, 'Publication Dates') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Select up to three individual dates.') ?></br><?php echo __($guid, 'Format:').' ';
-    if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-        echo 'dd/mm/yyyy';
-    } else {
-        echo $_SESSION[$guid]['i18n']['dateFormat'];
-    }
-    ?>.<br/></span>
+					if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+						echo 'dd/mm/yyyy';
+					} else {
+						echo $_SESSION[$guid]['i18n']['dateFormat'];
+					}
+					?>.<br/></span>
 				</td>
 				<td class="right">
 					<input name="date1" id="date1" maxlength=10 value="<?php echo dateConvertBack($guid, date('Y-m-d')); ?>" type="text" class="standardWidth">
@@ -179,10 +179,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
                     $resultSelect->execute($dataSelect);
                 } catch (PDOException $e) {
                 }
-    while ($rowSelect = $resultSelect->fetch()) {
-        echo "<option selected value='".$rowSelect['category']."'>".htmlPrep(__($guid, $rowSelect['category'])).'</option>';
-    }
-    ?>
+				while ($rowSelect = $resultSelect->fetch()) {
+					echo "<option selected value='".$rowSelect['category']."'>".htmlPrep(__($guid, $rowSelect['category'])).'</option>';
+				}
+				?>
 			</select>
 						
 			<tr>

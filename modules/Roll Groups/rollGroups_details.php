@@ -126,20 +126,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_det
 							<select name="orderBy" id="orderBy" class="standardWidth">
 								<?php
                                 echo '<option ';
-            if ($orderBy == 'normal') {
-                echo 'selected ';
-            }
-            echo "value='normal'>".__($guid, 'Roll Order').'</option>';
-            echo '<option ';
-            if ($orderBy == 'surname') {
-                echo 'selected ';
-            }
-            echo "value='surname'>".__($guid, 'Surname').'</option>';
-            echo '<option ';
-            if ($orderBy == 'preferredName') {
-                echo 'selected ';
-            }
-            echo "value='preferredName'>".__($guid, 'Preferred Name').'</option>'; ?>			
+								if ($orderBy == 'normal') {
+									echo 'selected ';
+								}
+								echo "value='normal'>".__($guid, 'Roll Order').'</option>';
+								echo '<option ';
+								if ($orderBy == 'surname') {
+									echo 'selected ';
+								}
+								echo "value='surname'>".__($guid, 'Surname').'</option>';
+								echo '<option ';
+								if ($orderBy == 'preferredName') {
+									echo 'selected ';
+								}
+								echo "value='preferredName'>".__($guid, 'Preferred Name').'</option>'; ?>			
 							</select>
 						</td>
 					</tr>

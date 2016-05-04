@@ -32,8 +32,7 @@ date_default_timezone_set($_SESSION[$guid]['timezone']);
 $gibbonPersonMedicalID = $_POST['gibbonPersonMedicalID'];
 $search = $_GET['search'];
 
-if ($gibbonPersonMedicalID == '') {
-    echo 'Fatal error loading this page!';
+if ($gibbonPersonMedicalID == '') { echo 'Fatal error loading this page!';
 } else {
     $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/medicalForm_manage_condition_add.php&gibbonPersonMedicalID=$gibbonPersonMedicalID&search=$search";
 

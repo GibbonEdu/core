@@ -539,29 +539,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_studentE
                                 //UPDATE STUDENT
                                 $updateFamilyFail = false;
 
-                                //NOTHING TO UPDATE YET, MAY NEED THIS ONE DAY
-                                /*try {
-                                    $data=array("familySync"=>$child["familySync"], "username"=>$child["username"]); 
-                                    $sql="UPDATE gibbonFamilyAdult SET WHERE gibbonPersonID=(SELECT gibbonPersonID FROM gibbonPerson WHERE username=:username) AND gibbonFamilyID=(SELECT gibbonFamilyID FROM gibbonFamily WHERE familySync=:familySync)" ;
-                                    $result=$connection2->prepare($sql);
-                                    $result->execute($data);
-                                }
-                                catch(PDOException $e) { 
-                                    $updateFamilyFail=TRUE ;
-                                }
-                                
-                                //Spit out results
-                                if ($updateFamilyFail==TRUE) {
-                                    print "<div class='error'>" ;
-                                        print __($guid, "There was an error student:") . " " . $child["username"] . "." ;
-                                    print "</div>" ;
-                                }
-                                else {
-                                    print "<div class='success'>" ;
-                                        print sprintf(__($guid, 'Student %1$s was successfully updated.'), $child["username"]) ;
-                                    print "</div>" ;
-                                }*/
-
                                 echo "<div class='success'>";
                                 echo sprintf(__($guid, 'Student %1$s was successfully updated.'), $child['username']);
                                 echo '</div>';

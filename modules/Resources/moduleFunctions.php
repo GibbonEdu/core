@@ -17,8 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-function getTagCloud($guid, $connection2, $tagCount = 50)
-{
+function getTagCloud($guid, $connection2, $tagCount = 50) {
     $output = '';
 
     //Get array of top $tagCount tags

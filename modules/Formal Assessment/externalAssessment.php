@@ -66,11 +66,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 				<td class="right">
 					<?php
                     $checked = '';
-    if ($allStudents == 'on') {
-        $checked = 'checked';
-    }
-    echo "<input $checked name=\"allStudents\" id=\"allStudents\" type=\"checkbox\">";
-    ?>
+					if ($allStudents == 'on') {
+						$checked = 'checked';
+					}
+					echo "<input $checked name=\"allStudents\" id=\"allStudents\" type=\"checkbox\">";
+					?>
 				</td>
 			</tr>
 			<tr>
