@@ -38,6 +38,24 @@ tr.even:target td {
 	transform: rotate(-90deg);
 }
 
+
+.columnLabel {
+
+}
+
+
+table.miniData {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	text-align: center;
+}
+
+table.miniData td {
+	padding: 0px 5px !important;
+}
+
+
 /*.markbook-data,
 .markbook-data:link,
 .markbook-data:visited {
@@ -89,7 +107,7 @@ tr.even:target td {
 	background: #EDF7FF !important;
 }
 
-.doublescroll-container tr.head th:first-of-type {
+.doublescroll-container tr.head th.firstColumn {
 	position:absolute; 
     width:151px; 
     height: 155px;
@@ -100,18 +118,18 @@ tr.even:target td {
     z-index: 1;
 }
 
-.doublescroll-container tr.head th:first-of-type span {
+.doublescroll-container tr.head th.firstColumn span {
 	height: 140px;
 	vertical-align: middle;
 	display: table-cell;
 }
 
-.doublescroll-container tr.head th:first-of-type:not([rowspan]) {
+.doublescroll-container tr.head th.blankColumn {
 	background: transparent;
 	border: 0;
 }
 
-.doublescroll-container td:first-of-type {
+.doublescroll-container td.firstColumn {
 	position:absolute; 
     width:150px; 
     left:1px;
@@ -137,7 +155,6 @@ tr.even:target td {
 	width: 1px;
 	z-index: 1;
 }
-
 
 
 /* 

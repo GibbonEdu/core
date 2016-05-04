@@ -1,7 +1,12 @@
 <?php
+	// Lock the file so other scripts cannot call it
+	if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $_SESSION[$guid]['gibbonPersonID'] ) . date('zWy') ) return;
 
     $showStudentAttainmentWarning = getSettingByScope($connection2, 'Markbook', 'showStudentAttainmentWarning');
     $showStudentEffortWarning = getSettingByScope($connection2, 'Markbook', 'showStudentEffortWarning');
+
+    $attainmentAltName = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeName');
+	$effortAltName = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName');
 
     $entryCount = 0;
     echo "<div class='trail'>";
@@ -213,10 +218,10 @@
                     echo __($guid, 'Assessment');
                 echo '</th>';
                 echo "<th style='width: 75px; text-align: center'>";
-                    echo $markbook->getSetting('attainmentName');
+                    echo (!empty($attainmentAltName))? $attainmentAltName : __($guid, 'Attainment');
                 echo '</th>';
                 echo "<th style='width: 75px; text-align: center'>";
-                    echo $markbook->getSetting('effortName');
+                    echo (!empty($effortAltName))? $effortAltName : __($guid, 'Effort');
                 echo '</th>';
                 echo '<th>';
                     echo __($guid, 'Comment');

@@ -1,5 +1,9 @@
 <?php
+	// Lock the file so other scripts cannot call it
+	if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $_SESSION[$guid]['gibbonPersonID'] ) . date('zWy') ) return;
 
+	require_once './modules/'.$_SESSION[$guid]['module'].'/src/markbookView.php';
+	require_once './modules/'.$_SESSION[$guid]['module'].'/src/markbookColumn.php';
 
     //Check for access to multiple column add
     $multiAdd = false;
@@ -89,7 +93,7 @@
     $teaching = (isset($teacherList[ $_SESSION[$guid]['gibbonPersonID'] ]) );
 
     // Build the markbook object for this class
-    $markbook = new Gibbon\markbook(NULL, NULL, $pdo, $gibbonCourseClassID );
+    $markbook = new Module\Markbook\markbookView(NULL, NULL, $pdo, $gibbonCourseClassID );
 
     if ($markbook == NULL || $markbook->getColumnCountTotal() < 1) {
         echo "<div class='linkTop'>";
@@ -103,13 +107,13 @@
         echo '</div>';
     } else {
 
+    	// Load the columns for the current page
         $pageNum = (isset($_GET['page']))? $_GET['page'] : 0;
-
-        $resultColumns = $markbook->getColumns( $pageNum );
+        $markbook->getColumns( $pageNum );
 
         //Work out details for external assessment display
         if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/externalAssessment_details.php')) {
-            $markbook->cacheExternalAssessments();
+            $markbook->cacheExternalAssessments( $courseName, $gibbonYearGroupIDList );
         }
 
         echo '<h3>';
@@ -178,7 +182,7 @@
         echo "<table id='myTable' class='mini' cellspacing='0' style='margin-top: 0px'>";
         echo "<thead>";
         echo "<tr class='head' style='height: 120px'>";
-        echo "<th class='notdraggable' data-header='student' rowspan=2>";
+        echo "<th class='notdraggable firstColumn' data-header='student' rowspan=2>";
             echo "<span>";
             echo __($guid, 'Student');
             echo "</span>";
@@ -242,93 +246,38 @@
         $attainmentID = array();
         $effortID = array();
         for ($i = 0; $i < $markbook->getColumnCountThisPage(); ++$i) {
-            $row = $resultColumns->fetch();
 
-            if ($row === false) {
-                $columnID[$i] = false;
-            } else {
-                $columnID[$i] = $row['gibbonMarkbookColumnID'];
-                $attainmentOn[$i] = $row['attainment'];
-                $attainmentID[$i] = $row['gibbonScaleIDAttainment'];
-                $effortOn[$i] = $row['effort'];
-                $effortID[$i] = $row['gibbonScaleIDEffort'];
-                $gibbonPlannerEntryID[$i] = $row['gibbonPlannerEntryID'];
-                $gibbonRubricIDAttainment[$i] = $row['gibbonRubricIDAttainment'];
-                $gibbonRubricIDEffort[$i] = $row['gibbonRubricIDEffort'];
-                $comment[$i] = $row['comment'];
-                $uploadedResponse[$i] = $row['uploadedResponse'];
-                $submission[$i] = false;
+            $column = $markbook->getColumn( $i );
 
-                        //WORK OUT IF THERE IS SUBMISSION
-                        if (is_null($row['gibbonPlannerEntryID']) == false) {
-                            try {
-                                $dataSub = array('gibbonPlannerEntryID' => $row['gibbonPlannerEntryID']);
-                                $sqlSub = "SELECT date, homeworkDueDateTime FROM gibbonPlannerEntry WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND homeworkSubmission='Y' LIMIT 1";
-                                $resultSub = $connection2->prepare($sqlSub);
-                                $resultSub->execute($dataSub);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
+            echo "<th class='notdraggable' data-header='".$column->gibbonMarkbookColumnID."' style='margin-left: 100px; text-align: center; min-width: 140px' >"; 
 
-                            if ($resultSub->rowCount() == 1) {
-                                $submission[$i] = true;
-                                $rowSub = $resultSub->fetch();
-                                $homeworkDueDateTime[$i] = $rowSub['homeworkDueDateTime'];
-                                $lessonDate[$i] = $rowSub['date'];
-                            }
-                        }
-            }
-
-                    //Column count
-                    $span = 0;
-            $contents = true;
-            if ($submission[$i] == true) {
-                ++$span;
-            }
-            if ($attainmentOn[$i] == 'Y' and ($attainmentID[$i] != '' or $gibbonRubricIDAttainment[$i] != '')) {
-                ++$span;
-            }
-            if ($effortOn[$i] == 'Y' and ($effortID[$i] != '' or $gibbonRubricIDEffort[$i] != '')) {
-                ++$span;
-            }
-            if ($comment[$i] == 'Y') {
-                ++$span;
-            }
-            if ($uploadedResponse[$i] == 'Y') {
-                ++$span;
-            }
-            if ($span == 0) {
-                $contents = false;
-            }
-
-            echo "<th class='notdraggable' data-header='".$row['gibbonMarkbookColumnID']."' style='margin-left: 100px; text-align: center; min-width: 140px' colspan=$span>";
             echo "<div class='dragtable-drag-handle'></div>";
-            echo "<span title='".htmlPrep($row['description'])."'>".$row['name'].'</span><br/>';
+            echo "<span title='".htmlPrep($column->getData('description') )."'>".$column->getData('name').'</span><br/>';
             echo "<span style='font-size: 90%; font-style: italic; font-weight: normal'>";
-            $unit = getUnit($connection2, $row['gibbonUnitID'], '', $row['gibbonCourseClassID']);
+            $unit = getUnit($connection2, $column->getData('gibbonUnitID'), '', $column->getData('gibbonCourseClassID') );
             if (isset($unit[0])) {
                 echo $unit[0].'<br/>';
             } else {
                 echo '<br/>';
             }
-            if ($row['completeDate'] != '') {
-                echo __($guid, 'Marked on').' '.dateConvertBack($guid, $row['completeDate']).'<br/>';
+            if ($column->getData('completeDate') != '') {
+                echo __($guid, 'Marked on').' '.dateConvertBack($guid, $column->getData('completeDate') ).'<br/>';
             } else {
                 echo __($guid, 'Unmarked').'<br/>';
             }
-            echo $row['type'];
-            if ($markbook->getSetting('enableColumnWeighting') == 'Y' and $row['attainmentWeighting'] != null and $row['attainmentWeighting'] != 0) {
-                echo ' . '.__($guid, 'Weighting').' '.$row['attainmentWeighting'];
+            echo $column->getData('type');
+            if ($markbook->getSetting('enableColumnWeighting') == 'Y' and $column->hasAttainmentWeighting() ) {
+                echo ' . '.__($guid, 'Weighting').' '.$column->getData('attainmentWeighting');
             }
-            if ($row['attachment'] != '' and file_exists($_SESSION[$guid]['absolutePath'].'/'.$row['attachment'])) {
-                echo " | <a 'title='".__($guid, 'Download more information')."' href='".$_SESSION[$guid]['absoluteURL'].'/'.$row['attachment']."'>More info</a>";
+            if ($column->hasAttachment( $_SESSION[$guid]['absolutePath'] )) {
+                echo " | <a 'title='".__($guid, 'Download more information')."' href='".$_SESSION[$guid]['absoluteURL'].'/'.$column->getData('attachment')."'>More info</a>";
             }
             echo '</span><br/>';
             if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php')) {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$row['gibbonMarkbookColumnID']."'><img style='margin-top: 3px' title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$row['gibbonMarkbookColumnID']."'><img style='margin-top: 3px' title='".__($guid, 'Enter Data')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/markbook.png'/></a> ";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_delete.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$row['gibbonMarkbookColumnID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/Markbook/markbook_viewExport.php?gibbonMarkbookColumnID='.$row['gibbonMarkbookColumnID']."&gibbonCourseClassID=$gibbonCourseClassID&return=markbook_view.php'><img title='".__($guid, 'Export to Excel')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png'/></a>";
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID."'><img style='margin-top: 3px' title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID."'><img style='margin-top: 3px' title='".__($guid, 'Enter Data')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/markbook.png'/></a> ";
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_delete.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/Markbook/markbook_viewExport.php?gibbonMarkbookColumnID='.$column->gibbonMarkbookColumnID."&gibbonCourseClassID=$gibbonCourseClassID&return=markbook_view.php'><img title='".__($guid, 'Export to Excel')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png'/></a>";
             }
             echo '</th>';
         }
@@ -336,103 +285,123 @@
         echo "</thead>";
 
         echo "<tbody>";
-        // echo "<tr class='head'>";
+        echo "<tr class='head'>";
 
-        // echo "<th style='text-align: center'></th>";
+        echo "<th class='firstColumn blankColumn' style='text-align: center'></th>";
 
-        // for ($i = 0; $i < $markbook->getColumnCountThisPage(); ++$i) {
-        //     if ($columnID[$i] == false or $contents == false) {
-        //         echo "<th style='text-align: center' colspan=$span>";
+        if ($markbook->hasExternalAssessments() == true) {
+        	echo "<th class='blankColumn' style='text-align: center'></th>";
+        }
 
-        //         echo '</th>';
-        //     } else {
-        //         $leftBorder = false;
-        //         if ($attainmentOn[$i] == 'Y' and ($attainmentID[$i] != '' or $gibbonRubricIDAttainment[$i] != '')) {
-        //             $leftBorder = true;
-        //             echo "<th style='border-left: 2px solid #666; text-align: center; width: 40px'>";
-        //             try {
-        //                 $dataScale = array('gibbonScaleID' => $attainmentID[$i]);
-        //                 $sqlScale = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
-        //                 $resultScale = $connection2->prepare($sqlScale);
-        //                 $resultScale->execute($dataScale);
-        //             } catch (PDOException $e) {
-        //                 echo "<div class='error'>".$e->getMessage().'</div>';
-        //             }
-        //             $scale = '';
-        //             if ($resultScale->rowCount() == 1) {
-        //                 $rowScale = $resultScale->fetch();
-        //                 $scale = ' - '.$rowScale['name'];
-        //                 if ($rowScale['usage'] != '') {
-        //                     $scale = $scale.': '.$rowScale['usage'];
-        //                 }
-        //             }
-        //             
-        //             echo "<span title='".$markbook->getSetting('attainmentName').htmlPrep($scale)."'>".$markbook->getSetting('attainmentAbrev')'</span>';
-        //             
-        //             echo '</th>';
-        //         }
-        //         if ($effortOn[$i] == 'Y' and ($effortID[$i] != '' or $gibbonRubricIDEffort[$i] != '')) {
-        //             $leftBorderStyle = '';
-        //             if ($leftBorder == false) {
-        //                 $leftBorder = true;
-        //                 $leftBorderStyle = 'border-left: 2px solid #666;';
-        //             }
-        //             echo "<th style='$leftBorderStyle text-align: center; width: 40px'>";
-        //             try {
-        //                 $dataScale = array('gibbonScaleID' => $effortID[$i]);
-        //                 $sqlScale = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
-        //                 $resultScale = $connection2->prepare($sqlScale);
-        //                 $resultScale->execute($dataScale);
-        //             } catch (PDOException $e) {
-        //                 echo "<div class='error'>".$e->getMessage().'</div>';
-        //             }
-        //             $scale = '';
-        //             if ($resultScale->rowCount() == 1) {
-        //                 $rowScale = $resultScale->fetch();
-        //                 $scale = ' - '.$rowScale['name'];
-        //                 if ($rowScale['usage'] != '') {
-        //                     $scale = $scale.': '.$rowScale['usage'];
-        //                 }
-        //             }
+        if ($markbook->getPersonalizedTargetsCount() > 0) {
+        	echo "<th class='blankColumn' style='text-align: center'></th>";
+        }
 
-        //             echo "<span title='".$markbook->getSetting('effortName').htmlPrep($scale)."'>".$markbook->getSetting('effortAbrev').'</span>';
-        //             echo '</th>';
-        //         }
-        //         if ($comment[$i] == 'Y') {
-        //             $leftBorderStyle = '';
-        //             if ($leftBorder == false) {
-        //                 $leftBorder = true;
-        //                 $leftBorderStyle = 'border-left: 2px solid #666;';
-        //             }
-        //             echo "<th style='$leftBorderStyle text-align: center; width: 80px'>";
-        //             echo "<span title='".__($guid, 'Comment')."'>".__($guid, 'Com').'</span>';
-        //             echo '</th>';
-        //         }
-        //         if ($uploadedResponse[$i] == 'Y') {
-        //             $leftBorderStyle = '';
-        //             if ($leftBorder == false) {
-        //                 $leftBorder = true;
-        //                 $leftBorderStyle = 'border-left: 2px solid #666;';
-        //             }
-        //             echo "<th style='$leftBorderStyle text-align: center; width: 30px'>";
-        //             echo "<span title='".__($guid, 'Uploaded Response')."'>".__($guid, 'Upl').'</span>';
-        //             echo '</th>';
-        //         }
-        //         if (isset($submission[$i])) {
-        //             if ($submission[$i] == true) {
-        //                 $leftBorderStyle = '';
-        //                 if ($leftBorder == false) {
-        //                     $leftBorder = true;
-        //                     $leftBorderStyle = 'border-left: 2px solid #666;';
-        //                 }
-        //                 echo "<th style='$leftBorderStyle text-align: center; width: 30px'>";
-        //                 echo "<span title='".__($guid, 'Submitted Work')."'>".__($guid, 'Sub').'</span>';
-        //                 echo '</th>';
-        //             }
-        //         }
-        //     }
-        // }
-        // echo '</tr>';
+        if ($markbook->getSetting('enableColumnWeighting') == 'Y') {
+        	echo "<th class='blankColumn' style='text-align: center'></th>";
+        }
+
+        for ($i = 0; $i < $markbook->getColumnCountThisPage(); ++$i) {
+
+        	$column = $markbook->getColumn( $i );
+
+        	echo '<th class="columnLabel" style="padding: 0 !important; text-align: center">';
+        	echo '<table class="blank miniData" cellspacing=0><tr>';
+
+            if ($column->gibbonMarkbookColumnID == false ) { //or $contents == false
+            	echo '<th>';
+            	echo '</th>';
+            } else {
+                $leftBorder = false;
+                if ($column->displayAttainment() AND ($column->hasAttainmentGrade() OR $column->hasAttainmentRuberic())) {
+                    $leftBorder = true;
+
+                    echo "<th style='border-left: 2px solid #666; text-align: center; width: 40px'>";
+                    try {
+                        $dataScale = array('gibbonScaleID' => $column->getData('gibbonScaleIDAttainment'));
+                        $sqlScale = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
+                        $resultScale = $connection2->prepare($sqlScale);
+                        $resultScale->execute($dataScale);
+                    } catch (PDOException $e) {
+                        echo "<div class='error'>".$e->getMessage().'</div>';
+                    }
+                    $scale = '';
+                    if ($resultScale->rowCount() == 1) {
+                        $rowScale = $resultScale->fetch();
+                        $scale = ' - '.$rowScale['name'];
+                        if ($rowScale['usage'] != '') {
+                            $scale = $scale.': '.$rowScale['usage'];
+                        }
+                    }
+                    
+                    echo "<span title='".$markbook->getSetting('attainmentName').htmlPrep($scale)."'>".$markbook->getSetting('attainmentAbrev').'</span>';
+                    echo '</th>';
+                }
+                if ($column->displayEffort() AND ($column->hasEffortGrade() OR $column->hasEffortRubric() )) {
+                    $leftBorderStyle = '';
+                    if ($leftBorder == false) {
+                        $leftBorder = true;
+                        $leftBorderStyle = 'border-left: 2px solid #666;';
+                    }
+ 
+                    echo "<th style='$leftBorderStyle text-align: center; width: 40px'>";
+                    try {
+                        $dataScale = array('gibbonScaleID' => $column->getData('gibbonScaleIDEffort'));
+                        $sqlScale = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
+                        $resultScale = $connection2->prepare($sqlScale);
+                        $resultScale->execute($dataScale);
+                    } catch (PDOException $e) {
+                        echo "<div class='error'>".$e->getMessage().'</div>';
+                    }
+                    $scale = '';
+                    if ($resultScale->rowCount() == 1) {
+                        $rowScale = $resultScale->fetch();
+                        $scale = ' - '.$rowScale['name'];
+                        if ($rowScale['usage'] != '') {
+                            $scale = $scale.': '.$rowScale['usage'];
+                        }
+                    }
+
+                    echo "<span title='".$markbook->getSetting('effortName').htmlPrep($scale)."'>".$markbook->getSetting('effortAbrev').'</span>';
+                    echo '</th>';
+                }
+                if ($column->displayComment()) {
+                    $leftBorderStyle = '';
+                    if ($leftBorder == false) {
+                        $leftBorder = true;
+                        $leftBorderStyle = 'border-left: 2px solid #666;';
+                    }
+                    echo "<th style='$leftBorderStyle text-align: center; width: 80px'>";
+                    echo "<span title='".__($guid, 'Comment')."'>".__($guid, 'Com').'</span>';
+                    echo '</th>';
+                }
+                if ($column->displayUploadedResponse()) {
+                    $leftBorderStyle = '';
+                    if ($leftBorder == false) {
+                        $leftBorder = true;
+                        $leftBorderStyle = 'border-left: 2px solid #666;';
+                    }
+                    echo "<th style='$leftBorderStyle text-align: center; width: 30px'>";
+                    echo "<span title='".__($guid, 'Uploaded Response')."'>".__($guid, 'Upl').'</span>';
+                    echo '</th>';
+                }
+                if ($column->displaySubmission()) {
+
+                    $leftBorderStyle = '';
+                    if ($leftBorder == false) {
+                        $leftBorder = true;
+                        $leftBorderStyle = 'border-left: 2px solid #666;';
+                    }
+                    echo "<th style='$leftBorderStyle text-align: center; width: 30px'>";
+                    echo "<span title='".__($guid, 'Submitted Work')."'>".__($guid, 'Sub').'</span>';
+                    echo '</th>';
+                
+                }
+            }
+            echo '</tr></table>';
+            echo '</th>';
+        }
+        echo '</tr>';
 
         $count = 0;
         $rowNum = 'odd';
@@ -462,7 +431,7 @@
 
                 //COLOR ROW BY STATUS!
                 echo "<tr class=$rowNum>";
-                echo '<td>';
+                echo '<td class="firstColumn">';
                 echo "<div style='padding: 2px 0px'><b><a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowStudents['gibbonPersonID'].'&subpage=Markbook#'.$gibbonCourseClassID."'>".formatName('', $rowStudents['preferredName'], $rowStudents['surname'], 'Student', true).'</a><br/></div>';
                 echo '</td>';
 
@@ -498,9 +467,14 @@
                 }
 
                 for ($i = 0; $i < $markbook->getColumnCountThisPage(); ++$i) {
+
+                	$column = $markbook->getColumn( $i );
+
+                	echo "<td style='padding: 0 !important;'>";
+                	echo '<table class="blank miniData" cellspacing=0><tr>';
                     //$row = $result->fetch();
                     try {
-                        $dataEntry = array('gibbonMarkbookColumnID' => $columnID[($i)], 'gibbonPersonIDStudent' => $rowStudents['gibbonPersonID']);
+                        $dataEntry = array('gibbonMarkbookColumnID' => $column->gibbonMarkbookColumnID, 'gibbonPersonIDStudent' => $rowStudents['gibbonPersonID']);
                         $sqlEntry = 'SELECT * FROM gibbonMarkbookEntry WHERE gibbonMarkbookColumnID=:gibbonMarkbookColumnID AND gibbonPersonIDStudent=:gibbonPersonIDStudent';
                         $resultEntry = $connection2->prepare($sqlEntry);
                         $resultEntry->execute($dataEntry);
@@ -511,10 +485,11 @@
                         $rowEntry = $resultEntry->fetch();
                         $leftBorder = false;
 
-                        if ($attainmentOn[$i] == 'Y' and ($attainmentID[$i] != '' or $gibbonRubricIDAttainment[$i] != '')) {
+                        if ($column->displayAttainment()) {
                             $leftBorder = true;
-                            echo "<td style='border-left: 2px solid #666; text-align: center'>";
-                            if ($attainmentID[$i] != '') {
+                            echo "<td style='border-left: 2px solid #666; text-align: center;width: 40px'>";
+
+                            if ($column->hasAttainmentGrade()) {
                                 $styleAttainment = '';
                                 if ($rowEntry['attainmentConcern'] == 'Y') {
                                     $styleAttainment = "style='color: #".$alert['color'].'; font-weight: bold; border: 2px solid #'.$alert['color'].'; padding: 2px 4px; background-color: #'.$alert['colorBG']."'";
@@ -530,25 +505,25 @@
                                 } elseif ($rowEntry['attainmentValue'] == 'Incomplete') {
                                     $attainment = __($guid, 'Inc');
                                 }
-                                echo "<div $styleAttainment title='".htmlPrep($rowEntry['attainmentDescriptor'])."'>$attainment";
+                                echo "<div $styleAttainment title='".htmlPrep($rowEntry['attainmentDescriptor'])."'>" . $attainment;
                             }
-                            if ($gibbonRubricIDAttainment[$i] != '') {
-                                echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/markbook_view_rubric.php&gibbonRubricID='.$gibbonRubricIDAttainment[$i]."&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$columnID[$i].'&gibbonPersonID='.$rowStudents['gibbonPersonID']."&mark=FALSE&type=attainment&width=1100&height=550'><img style='margin-bottom: -3px; margin-left: 3px' title='".__($guid, 'View Rubric')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/rubric.png'/></a>";
+                            if ($column->hasAttainmentRubric()) {
+                                echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/markbook_view_rubric.php&gibbonRubricID='.$column->getData('gibbonRubricIDAttainment')."&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID.'&gibbonPersonID='.$rowStudents['gibbonPersonID']."&mark=FALSE&type=attainment&width=1100&height=550'><img style='margin-bottom: -3px; margin-left: 3px' title='".__($guid, 'View Rubric')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/rubric.png'/></a>";
                             }
-                            if ($attainmentID[$i] != '') {
+                            if ($column->hasEffortGrade()) {
                                 echo '</div>';
                             }
                             echo '</td>';
                         }
 
-                        if ($effortOn[$i] == 'Y' and ($effortID[$i] != '' or $gibbonRubricIDEffort[$i] != '')) {
+                        if ($column->displayEffort()) {
                             $leftBorderStyle = '';
                             if ($leftBorder == false) {
                                 $leftBorder = true;
                                 $leftBorderStyle = 'border-left: 2px solid #666;';
                             }
-                            echo "<td style='$leftBorderStyle text-align: center;'>";
-                            if ($effortID[$i] != '') {
+                            echo "<td style='$leftBorderStyle text-align: center;width: 40px'>";
+                            if ($column->hasEffortGrade()) {
                                 $styleEffort = '';
                                 if ($rowEntry['effortConcern'] == 'Y') {
                                     $styleEffort = "style='color: #".$alert['color'].'; font-weight: bold; border: 2px solid #'.$alert['color'].'; padding: 2px 4px; background-color: #'.$alert['colorBG']."'";
@@ -562,23 +537,23 @@
                                 } elseif ($rowEntry['effortValue'] == 'Incomplete') {
                                     $effort = __($guid, 'Inc');
                                 }
-                                echo "<div $styleEffort title='".htmlPrep($rowEntry['effortDescriptor'])."'>$effort";
+                                echo "<div $styleEffort title='".htmlPrep($rowEntry['effortDescriptor'])."'>" . $effort;
                             }
-                            if ($gibbonRubricIDEffort[$i] != '') {
-                                echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/markbook_view_rubric.php&gibbonRubricID='.$gibbonRubricIDEffort[$i]."&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$columnID[$i].'&gibbonPersonID='.$rowStudents['gibbonPersonID']."&mark=FALSE&type=effort&width=1100&height=550'><img style='margin-bottom: -3px; margin-left: 3px' title='".__($guid, 'View Rubric')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/rubric.png'/></a>";
+                            if ($column->hasEffortRubric()) {
+                                echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/markbook_view_rubric.php&gibbonRubricID='.$column->getData('gibbonRubricIDEffort')."&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID.'&gibbonPersonID='.$rowStudents['gibbonPersonID']."&mark=FALSE&type=effort&width=1100&height=550'><img style='margin-bottom: -3px; margin-left: 3px' title='".__($guid, 'View Rubric')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/rubric.png'/></a>";
                             }
-                            if ($effortID[$i] != '') {
+                            if ($column->hasEffortGrade()) {
                                 echo '</div>';
                             }
                             echo '</td>';
                         }
-                        if ($comment[$i] == 'Y') {
+                        if ($column->displayComment()) {
                             $leftBorderStyle = '';
                             if ($leftBorder == false) {
                                 $leftBorder = true;
                                 $leftBorderStyle = 'border-left: 2px solid #666;';
                             }
-                            echo "<td style='$leftBorderStyle text-align: center;'>";
+                            echo "<td style='$leftBorderStyle text-align: center;width: 80px'>";
                             $style = '';
                             if ($rowEntry['comment'] != '') {
                                 if (strlen($rowEntry['comment']) < 11) {
@@ -589,97 +564,82 @@
                             }
                             echo '</td>';
                         }
-                        if ($uploadedResponse[$i] == 'Y') {
+                        if ($column->displayUploadedResponse()) {
                             $leftBorderStyle = '';
                             if ($leftBorder == false) {
                                 $leftBorder = true;
                                 $leftBorderStyle = 'border-left: 2px solid #666;';
                             }
-                            echo "<td style='$leftBorderStyle text-align: center;'>";
+                            echo "<td style='$leftBorderStyle text-align: center;width: 30px'>";
                             if ($rowEntry['response'] != '') {
                                 echo "<a title='".__($guid, 'Uploaded Response')."' href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowEntry['response']."'>Up</a><br/>";
                             }
                         }
                         echo '</td>';
-                    } else {
-                        $emptySpan = 0;
-                        if ($attainmentOn[$i] == 'Y' and ($attainmentID[$i] != '' or $gibbonRubricIDAttainment[$i] != '')) {
-                            ++$emptySpan;
-                        }
-                        if ($effortOn[$i] == 'Y' and ($effortID[$i] != '' or $gibbonRubricIDEffort[$i] != '')) {
-                            ++$emptySpan;
-                        }
-                        if ($comment[$i] == 'Y') {
-                            ++$emptySpan;
-                        }
-                        if ($uploadedResponse[$i] == 'Y') {
-                            ++$emptySpan;
-                        }
-                        if ($emptySpan > 0) {
-                            echo "<td style='border-left: 2px solid #666; text-align: center' colspan=$emptySpan></td>";
-                        }
                     }
-                    if (isset($submission[$i])) {
-                        if ($submission[$i] == true) {
-                            $leftBorderStyle = '';
-                            if ($leftBorder == false) {
-                                $leftBorder = true;
-                                $leftBorderStyle = 'border-left: 2px solid #666;';
-                            }
-                            echo "<td style='$leftBorderStyle text-align: center;'>";
-                            try {
-                                $dataWork = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID[$i], 'gibbonPersonID' => $rowStudents['gibbonPersonID']);
-                                $sqlWork = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC';
-                                $resultWork = $connection2->prepare($sqlWork);
-                                $resultWork->execute($dataWork);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
-                            if ($resultWork->rowCount() > 0) {
-                                $rowWork = $resultWork->fetch();
 
-                                if ($rowWork['status'] == 'Exemption') {
-                                    $linkText = __($guid, 'Exe');
-                                } elseif ($rowWork['version'] == 'Final') {
-                                    $linkText = __($guid, 'Fin');
-                                } else {
-                                    $linkText = __($guid, 'Dra').$rowWork['count'];
-                                }
+                    if ($column->displaySubmission()) {
 
-                                $style = '';
-                                $status = 'On Time';
-                                if ($rowWork['status'] == 'Exemption') {
-                                    $status = __($guid, 'Exemption');
-                                } elseif ($rowWork['status'] == 'Late') {
-                                    $style = "style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'";
-                                    $status = __($guid, 'Late');
-                                }
+                        $leftBorderStyle = '';
+                        if ($leftBorder == false) {
+                            $leftBorder = true;
+                            $leftBorderStyle = 'border-left: 2px solid #666;';
+                        }
+                        echo "<td style='$leftBorderStyle text-align: center;'>";
+                        try {
+                            $dataWork = array('gibbonPlannerEntryID' => $column->getData('gibbonPlannerEntryID'), 'gibbonPersonID' => $rowStudents['gibbonPersonID']);
+                            $sqlWork = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC';
+                            $resultWork = $connection2->prepare($sqlWork);
+                            $resultWork->execute($dataWork);
+                        } catch (PDOException $e) {
+                            echo "<div class='error'>".$e->getMessage().'</div>';
+                        }
+                        if ($resultWork->rowCount() > 0) {
+                            $rowWork = $resultWork->fetch();
 
-                                if ($rowWork['type'] == 'File') {
-                                    echo "<span title='".$rowWork['version'].". $status. ".__($guid, 'Submitted at').' '.substr($rowWork['timestamp'], 11, 5).' '.__($guid, 'on').' '.dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10))."' $style><a href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowWork['location']."'>$linkText</a></span>";
-                                } elseif ($rowWork['type'] == 'Link') {
-                                    echo "<span title='".$rowWork['version'].". $status. ".__($guid, 'Submitted at').' '.substr($rowWork['timestamp'], 11, 5).' '.__($guid, 'on').' '.dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10))."' $style><a target='_blank' href='".$rowWork['location']."'>$linkText</a></span>";
-                                } else {
-                                    echo "<span title='$status. ".__($guid, 'Recorded at').' '.substr($rowWork['timestamp'], 11, 5).' '.__($guid, 'on').' '.dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10))."' $style>$linkText</span>";
-                                }
+                            if ($rowWork['status'] == 'Exemption') {
+                                $linkText = __($guid, 'Exe');
+                            } elseif ($rowWork['version'] == 'Final') {
+                                $linkText = __($guid, 'Fin');
                             } else {
-                                if (date('Y-m-d H:i:s') < $homeworkDueDateTime[$i]) {
-                                    echo "<span title='".__($guid, 'Pending')."'>Pen</span>";
+                                $linkText = __($guid, 'Dra').$rowWork['count'];
+                            }
+
+                            $style = '';
+                            $status = 'On Time';
+                            if ($rowWork['status'] == 'Exemption') {
+                                $status = __($guid, 'Exemption');
+                            } elseif ($rowWork['status'] == 'Late') {
+                                $style = "style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'";
+                                $status = __($guid, 'Late');
+                            }
+
+                            if ($rowWork['type'] == 'File') {
+                                echo "<span title='".$rowWork['version'].". $status. ".__($guid, 'Submitted at').' '.substr($rowWork['timestamp'], 11, 5).' '.__($guid, 'on').' '.dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10))."' $style><a href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowWork['location']."'>$linkText</a></span>";
+                            } elseif ($rowWork['type'] == 'Link') {
+                                echo "<span title='".$rowWork['version'].". $status. ".__($guid, 'Submitted at').' '.substr($rowWork['timestamp'], 11, 5).' '.__($guid, 'on').' '.dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10))."' $style><a target='_blank' href='".$rowWork['location']."'>$linkText</a></span>";
+                            } else {
+                                echo "<span title='$status. ".__($guid, 'Recorded at').' '.substr($rowWork['timestamp'], 11, 5).' '.__($guid, 'on').' '.dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10))."' $style>$linkText</span>";
+                            }
+                        } else {
+                            if (date('Y-m-d H:i:s') < $column->getData('homeworkDueDateTime') ) {
+                                echo "<span title='".__($guid, 'Pending')."'>Pen</span>";
+                            } else {
+                                if ($rowStudents['dateStart'] > $column->getData('lessonDate') ) {
+                                    echo "<span title='".__($guid, 'Student joined school after assessment was given.')."' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>".__($guid, 'NA').'</span>';
                                 } else {
-                                    if ($rowStudents['dateStart'] > $lessonDate[$i]) {
-                                        echo "<span title='".__($guid, 'Student joined school after assessment was given.')."' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>".__($guid, 'NA').'</span>';
+                                    if ($column->getData('homeworkSubmissionRequired') == 'Compulsory') {
+                                        echo "<span title='".__($guid, 'Incomplete')."' style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'>".__($guid, 'Inc').'</span>';
                                     } else {
-                                        if ($rowSub['homeworkSubmissionRequired'] == 'Compulsory') {
-                                            echo "<span title='".__($guid, 'Incomplete')."' style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'>".__($guid, 'Inc').'</span>';
-                                        } else {
-                                            echo "<span title='".__($guid, 'Not submitted online')."'>".__($guid, 'NA').'</span>';
-                                        }
+                                        echo "<span title='".__($guid, 'Not submitted online')."'>".__($guid, 'NA').'</span>';
                                     }
                                 }
                             }
-                            echo '</td>';
                         }
+                        echo '</td>';
+
                     }
+                	echo '</tr></table>';
                 }
                 echo '</tr>';
             }
@@ -689,8 +649,9 @@
 
         echo '</div>';
         echo '</div><br/>';
+
     }
         
         
-        
+
 ?>

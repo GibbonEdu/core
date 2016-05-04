@@ -17,8 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Library\Gibbon\markbook ;
-
 @session_start();
 
 //New PDO DB connection
@@ -45,6 +43,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
         echo '</div>';
     } else {
         $alert = getAlert($guid, $connection2, 002);
+
+        // Define a randomized lock for this script
+        define("MARKBOOK_VIEW_LOCK", sha1( $highestAction . $_SESSION[$guid]['gibbonPersonID'] ) . date('zWy') );
 
         //VIEW ACCESS TO ALL MARKBOOK DATA
         if ($highestAction == 'View Markbook_allClassesAllData') {
