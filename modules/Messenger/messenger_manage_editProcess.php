@@ -338,7 +338,7 @@ else {
             if ($choices!="") {
               foreach ($choices as $t) {
                 try {
-                  $data=array("gibbonMessengerID"=>$gibbonMessengerID, "id"=>$t);
+                  $data=array("gibbonMessengerID"=>$gibbonMessengerID, "id"=>$t, "students"=>$students, "parents"=>$parents, "staff"=>$staff);
                   $sql="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:gibbonMessengerID, type='Transport', id=:id, students=:students, staff=:staff, parents=:parents" ;
                   $result=$connection2->prepare($sql);
                   $result->execute($data);
@@ -360,13 +360,12 @@ else {
             if ($choices!="") {
               foreach ($choices as $t) {
                 try {
-                  $data=array("gibbonMessengerID"=>$gibbonMessengerID, "id"=>$t);
+                  $data=array("gibbonMessengerID"=>$gibbonMessengerID, "id"=>$t, "students"=>$students, "parents"=>$parents);
                   $sql="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:gibbonMessengerID, type='Attendance', id=:id, students=:students, parents=:parents" ;
                   $result=$connection2->prepare($sql);
                   $result->execute($data);
                 }
                 catch(PDOException $e) {
-                  error_log('PDOException');
                   $partialFgibbonMessengerIDl=TRUE;
                 }
               }
