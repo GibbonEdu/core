@@ -143,9 +143,8 @@ class markbookColumn
     	$this->data['homeworkDueDateTime'] = (isset($row['homeworkDueDateTime']))? $row['homeworkDueDateTime'] : '';
     	$this->data['homeworkSubmissionRequired'] = (isset($row['homeworkSubmissionRequired']))? $row['homeworkSubmissionRequired'] : '';
 
-    	if (!empty($this->data['lessonDate']) && !empty($this->data['homeworkDueDateTime'])) {
-    		$this->data['submission'] = 'Y';
-    	}
+    	$this->data['submission'] = 'Y';
+
     }
 
 

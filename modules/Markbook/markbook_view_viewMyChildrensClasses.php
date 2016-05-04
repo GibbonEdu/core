@@ -396,10 +396,8 @@
                                         $attainmentExtra = '<br/>'.__($guid, $rowAttainment['usage']);
                                     }
                                     $styleAttainment = "style='font-weight: bold'";
-                                    if ($rowEntry['attainmentConcern'] == 'Y' and $showParentAttainmentWarning == 'Y') {
-                                        $styleAttainment = "style='color: #".$alert['color'].'; font-weight: bold; border: 2px solid #'.$alert['color'].'; padding: 2px 4px; background-color: #'.$alert['colorBG']."'";
-                                    } elseif ($rowEntry['attainmentConcern'] == 'P' and $showParentAttainmentWarning == 'Y') {
-                                        $styleAttainment = "style='color: #390; font-weight: bold; border: 2px solid #390; padding: 2px 4px; background-color: #D4F6DC'";
+                                    if ( ($rowEntry['attainmentConcern'] == 'Y' || $rowEntry['attainmentConcern'] == 'P') and $showParentAttainmentWarning == 'Y') {
+                                        $styleAttainment = getAlertStyle($alert, $rowEntry['attainmentConcern'] );
                                     }
                                     echo "<div $styleAttainment>".$rowEntry['attainmentValue'];
                                     if ($rowEntry['gibbonRubricIDAttainment'] != '') {
@@ -432,7 +430,7 @@
                                     }
                                     $styleEffort = "style='font-weight: bold'";
                                     if ($rowEntry['effortConcern'] == 'Y' and $showParentEffortWarning == 'Y') {
-                                        $styleEffort = "style='color: #".$alert['color'].'; font-weight: bold; border: 2px solid #'.$alert['color'].'; padding: 2px 4px; background-color: #'.$alert['colorBG']."'";
+                                        $styleEffort = getAlertStyle($alert, $rowEntry['effortConcern'] );
                                     }
                                     echo "<div $styleEffort>".$rowEntry['effortValue'];
                                     if ($rowEntry['gibbonRubricIDEffort'] != '') {

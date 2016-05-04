@@ -43,7 +43,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
         $gibbonCourseClassID = null;
         if (isset($_GET['gibbonCourseClassID'])) {
             $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-        } else {
+        }
+
+        if ($gibbonCourseClassID == '') {
+            $gibbonCourseClassID = (isset($_SESSION[$guid]['markbookClass']))? $_SESSION[$guid]['markbookClass'] : '';
+        }
+
+        if ($gibbonCourseClassID == '') {
             $row = getAnyTaughtClass( $pdo, $_SESSION[$guid]['gibbonPersonID'], $_SESSION[$guid]['gibbonSchoolYearID'] );
             $gibbonCourseClassID = (isset($row['gibbonCourseClassID']))? $row['gibbonCourseClassID'] : '';
         }

@@ -148,7 +148,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                             if ($rowSelect['gibbonUnitID'] == $row2['gibbonUnitID'] and $rowSelect['gibbonCourseClassID'] == $row2['gibbonCourseClassID']) {
                                 $selected = 'selected';
                             }
-                            $currentType = $rowSelect['type'];
+                            $currentType = (isset($rowSelect['type']))? $rowSelect['type'] : '';
                             if ($currentType != $lastType) {
                                 echo "<optgroup label='--".$currentType."--'>";
                             }

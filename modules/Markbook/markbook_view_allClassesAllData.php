@@ -25,6 +25,10 @@
         $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
     }
 
+    if ($gibbonCourseClassID == '') {
+    	$gibbonCourseClassID = (isset($_SESSION[$guid]['markbookClass']))? $_SESSION[$guid]['markbookClass'] : '';
+    }
+
     // Grab any taught class
     if ($gibbonCourseClassID == '') {
         $row = getAnyTaughtClass( $pdo, $_SESSION[$guid]['gibbonPersonID'], $_SESSION[$guid]['gibbonSchoolYearID'] );
@@ -38,7 +42,7 @@
         //Add multiple columns
         if ($multiAdd) {
             echo "<div class='linkTop'>";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_addMulti.php&gibbonCourseClassID=$gibbonCourseClassID'>".__($guid, 'Add Multiple Records')."<img style='margin-left: 5px' title='".__($guid, 'Add Multiple Records')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new_multi.png'/></a>";
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_addMulti.php&gibbonCourseClassID=$gibbonCourseClassID'>".__($guid, 'Add Multiple Records')."<img title='".__($guid, 'Add Multiple Records')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new_multi.png'/></a>";
             echo '</div>';
         }
         //Get class chooser
@@ -58,6 +62,8 @@
         echo '</div>';
         return;
     }
+
+    $_SESSION[$guid]['markbookClass'] = $gibbonCourseClassID;
 
     $courseName = $class['courseName'];
     $gibbonYearGroupIDList = $class['gibbonYearGroupIDList'];
@@ -81,7 +87,7 @@
     //Add multiple columns
     if ($multiAdd) {
         echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_addMulti.php&gibbonCourseClassID=$gibbonCourseClassID'>".__($guid, 'Add Multiple Records')."<img style='margin-left: 5px' title='".__($guid, 'Add Multiple Records')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new_multi.png'/></a>";
+        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_addMulti.php&gibbonCourseClassID=$gibbonCourseClassID'>".__($guid, 'Add Multiple Records')."<img title='".__($guid, 'Add Multiple Records')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new_multi.png'/></a>";
         echo '</div>';
     }
 
@@ -98,7 +104,7 @@
     if ($markbook == NULL || $markbook->getColumnCountTotal() < 1) {
         echo "<div class='linkTop'>";
         if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php') and $teaching) {
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID'>".__($guid, 'Add')."<img title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
         }
         echo '</div>';
 
@@ -134,22 +140,35 @@
         // Display the Top Links
         echo "<div class='linkTop'>";
         if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php')) {
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a> | ";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_targets.php&gibbonCourseClassID=$gibbonCourseClassID'>".__($guid, 'Targets')."<img style='margin-left: 5px' title='".__($guid, 'Set Personalised Attainment Targets')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/target.png'/></a> | ";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/modules/Markbook/markbook_viewExportAll.php?gibbonCourseClassID=$gibbonCourseClassID&return=markbook_view.php'>".__($guid, 'Export to Excel')."<img style='margin-left: 5px' title='".__($guid, 'Export to Excel')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png'/></a> | ";
-            echo "<div style='padding-top: 16px; margin-left: 10px; float: right'>";
-            if ($pageNum <= 0) {
-                echo __($guid, 'Newer');
-            } else {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_view.php&gibbonCourseClassID=$gibbonCourseClassID&page=".($pageNum - 1)."'>".__($guid, 'Newer').'</a>';
-            }
-            echo ' | ';
-            if ((($pageNum + 1) * $markbook->getColumnsPerPage() ) >= $markbook->getColumnCountTotal() ) {
-                echo __($guid, 'Older');
-            } else {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_view.php&gibbonCourseClassID=$gibbonCourseClassID&page=".($pageNum + 1)."'>".__($guid, 'Older').'</a>';
-            }
-            echo '</div>';
+
+        	echo "<div style='padding-top: 16px; margin-right: 10px; float: left'>";
+
+	        	echo ( ($_SESSION[$guid]['markbookTerm'] == -1)? __($guid, "All Terms") : $_SESSION[$guid]['markbookTermName'] ) ." : ";
+
+	        	echo __($guid, "Records") ." ". ($pageNum * $markbook->getColumnsPerPage()) ."-";
+	        	echo ( $markbook->getColumnCountThisPage() + ($pageNum * $markbook->getColumnsPerPage()) ) ;
+	        	echo " ". __($guid, 'of') ." ". $markbook->getColumnCountTotal() ;
+
+	        	if ($markbook->getColumnCountTotal() > $markbook->getColumnCountThisPage()) {
+	        		echo " : ";
+		            if ($pageNum <= 0) {
+		                echo __($guid, 'Older');
+		            } else {
+		                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_view.php&gibbonCourseClassID=$gibbonCourseClassID&page=".($pageNum - 1)."'>".__($guid, 'Older').'</a>';
+		            }
+		            echo ' | ';
+		            if ((($pageNum + 1) * $markbook->getColumnsPerPage() ) >= $markbook->getColumnCountTotal() ) {
+		                echo __($guid, 'Newer');
+		            } else {
+		                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_view.php&gibbonCourseClassID=$gibbonCourseClassID&page=".($pageNum + 1)."'>".__($guid, 'Newer').'</a>';
+		            }
+		        }
+	        echo '</div>';
+
+
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID'>".__($guid, 'Add')."<img title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a> | ";
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_targets.php&gibbonCourseClassID=$gibbonCourseClassID'>".__($guid, 'Targets')."<img title='".__($guid, 'Set Personalised Attainment Targets')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/target.png'/></a> | ";
+            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/modules/Markbook/markbook_viewExportAll.php?gibbonCourseClassID=$gibbonCourseClassID&return=markbook_view.php'>".__($guid, 'Export to Excel')."<img title='".__($guid, 'Export to Excel')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png'/></a>";
         }
         echo '</div>';
 
@@ -163,7 +182,6 @@
                         method: "POST",
                     })
                     .done(function( data ) {
-                        //alert( "success" );
                         if (data != '') alert( data );
                     })
                     .fail(function() {
@@ -179,18 +197,18 @@
         echo "<div class='doublescroll-top'><div class='doublescroll-top-tablewidth'></div></div>";
         echo "<div class='doublescroll-container'>";
 
-        echo "<table id='myTable' class='mini' cellspacing='0' style='margin-top: 0px'>";
+        echo "<table id='myTable' class='mini markbook colorOddEven' cellspacing='0'>";
         echo "<thead>";
-        echo "<tr class='head' style='height: 120px'>";
-        echo "<th class='notdraggable firstColumn' data-header='student' rowspan=2>";
-            echo "<span>";
-            echo __($guid, 'Student');
-            echo "</span>";
-        echo '</th>';
+        echo "<tr class='head'>";
+	        echo "<th class='notdraggable firstColumn' data-header='student'>";
+	            echo "<span>";
+	            echo __($guid, 'Student');
+	            echo "</span>";
+	        echo '</th>';
 
         //Show Baseline data header
         if ($markbook->hasExternalAssessments() == true) {
-            echo "<th data-header='assessment' class='notdraggable dragtable-drag-boundary' style='width: 40px; min-width: 40px; max-width: 40px' rowspan=2>";
+            echo "<th data-header='assessment' class='dataColumn notdraggable dragtable-drag-boundary'>";
             $title = __($guid, $externalAssessmentFields[2]).' | ';
             $title .= __($guid, substr($externalAssessmentFields[3], (strpos($externalAssessmentFields[3], '_') + 1))).' | ';
             $title .= __($guid, $externalAssessmentFields[1]);
@@ -211,7 +229,7 @@
 
         //Show target grade header
         if ($markbook->getPersonalizedTargetsCount() > 0) {
-            echo "<th class='notdraggable dragtable-drag-boundary' data-header='target' style='width: 40px; min-width: 40px; max-width: 40px' rowspan=2>";
+            echo "<th class='dataColumn notdraggable dragtable-drag-boundary' data-header='target'>";
             $title = __($guid, 'Personalised attainment target grade');
 
             //Get PAS
@@ -228,7 +246,7 @@
 
         //Show weighted scrore
         if ($markbook->getSetting('enableColumnWeighting') == 'Y') {
-            echo "<th class='notdraggable dragtable-drag-boundary' data-header='weighting' style='width: 40px; min-width: 40px; max-width: 40px' rowspan=2>";
+            echo "<th class='dataColumn notdraggable dragtable-drag-boundary' data-header='weighting'>";
            
             $title = sprintf(__($guid, 'Weighted mean of all marked columns using Primary Assessment Scale for %1$s, if numeric'), 
                     $markbook->getSetting('attainmentName') );
@@ -249,17 +267,15 @@
 
             $column = $markbook->getColumn( $i );
 
-            echo "<th class='notdraggable' data-header='".$column->gibbonMarkbookColumnID."' style='margin-left: 100px; text-align: center; min-width: 140px' >"; 
-
+            echo "<th class='marksColumn notdraggable' data-header='".$column->gibbonMarkbookColumnID."' style='text-align: center; padding: 0px !important'>"; 
             echo "<div class='dragtable-drag-handle'></div>";
+
             echo "<span title='".htmlPrep($column->getData('description') )."'>".$column->getData('name').'</span><br/>';
-            echo "<span style='font-size: 90%; font-style: italic; font-weight: normal'>";
+            echo "<span class='details'>";
+
             $unit = getUnit($connection2, $column->getData('gibbonUnitID'), '', $column->getData('gibbonCourseClassID') );
-            if (isset($unit[0])) {
-                echo $unit[0].'<br/>';
-            } else {
-                echo '<br/>';
-            }
+			echo (isset($unit[0]))? $unit[0].'<br/>' : '<br/>';
+
             if ($column->getData('completeDate') != '') {
                 echo __($guid, 'Marked on').' '.dateConvertBack($guid, $column->getData('completeDate') ).'<br/>';
             } else {
@@ -272,51 +288,26 @@
             if ($column->hasAttachment( $_SESSION[$guid]['absolutePath'] )) {
                 echo " | <a 'title='".__($guid, 'Download more information')."' href='".$_SESSION[$guid]['absoluteURL'].'/'.$column->getData('attachment')."'>More info</a>";
             }
-            echo '</span><br/>';
+            echo '</span>';
+            echo '<div class="columnActions">';
             if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php')) {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID."'><img style='margin-top: 3px' title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID."'><img style='margin-top: 3px' title='".__($guid, 'Enter Data')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/markbook.png'/></a> ";
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID."'><img title='".__($guid, 'Enter Data')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/markbook.png'/></a> ";
                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_delete.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/Markbook/markbook_viewExport.php?gibbonMarkbookColumnID='.$column->gibbonMarkbookColumnID."&gibbonCourseClassID=$gibbonCourseClassID&return=markbook_view.php'><img title='".__($guid, 'Export to Excel')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png'/></a>";
+                echo '</div>';
             }
-            echo '</th>';
-        }
-        echo '</tr>';
-        echo "</thead>";
 
-        echo "<tbody>";
-        echo "<tr class='head'>";
-
-        echo "<th class='firstColumn blankColumn' style='text-align: center'></th>";
-
-        if ($markbook->hasExternalAssessments() == true) {
-        	echo "<th class='blankColumn' style='text-align: center'></th>";
-        }
-
-        if ($markbook->getPersonalizedTargetsCount() > 0) {
-        	echo "<th class='blankColumn' style='text-align: center'></th>";
-        }
-
-        if ($markbook->getSetting('enableColumnWeighting') == 'Y') {
-        	echo "<th class='blankColumn' style='text-align: center'></th>";
-        }
-
-        for ($i = 0; $i < $markbook->getColumnCountThisPage(); ++$i) {
-
-        	$column = $markbook->getColumn( $i );
-
-        	echo '<th class="columnLabel" style="padding: 0 !important; text-align: center">';
-        	echo '<table class="blank miniData" cellspacing=0><tr>';
+            echo '<table class="columnLabels blank" cellspacing=0><tr>';
 
             if ($column->gibbonMarkbookColumnID == false ) { //or $contents == false
             	echo '<th>';
             	echo '</th>';
             } else {
-                $leftBorder = false;
-                if ($column->displayAttainment() AND ($column->hasAttainmentGrade() OR $column->hasAttainmentRuberic())) {
-                    $leftBorder = true;
 
-                    echo "<th style='border-left: 2px solid #666; text-align: center; width: 40px'>";
+                if ($column->displayAttainment() ) {
+
+                    echo "<th class='columnLabel medColumn'>";
                     try {
                         $dataScale = array('gibbonScaleID' => $column->getData('gibbonScaleIDAttainment'));
                         $sqlScale = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
@@ -337,14 +328,8 @@
                     echo "<span title='".$markbook->getSetting('attainmentName').htmlPrep($scale)."'>".$markbook->getSetting('attainmentAbrev').'</span>';
                     echo '</th>';
                 }
-                if ($column->displayEffort() AND ($column->hasEffortGrade() OR $column->hasEffortRubric() )) {
-                    $leftBorderStyle = '';
-                    if ($leftBorder == false) {
-                        $leftBorder = true;
-                        $leftBorderStyle = 'border-left: 2px solid #666;';
-                    }
- 
-                    echo "<th style='$leftBorderStyle text-align: center; width: 40px'>";
+                if ($column->displayEffort() ) {
+                    echo "<th class='columnLabel medColumn'>";
                     try {
                         $dataScale = array('gibbonScaleID' => $column->getData('gibbonScaleIDEffort'));
                         $sqlScale = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
@@ -366,45 +351,32 @@
                     echo '</th>';
                 }
                 if ($column->displayComment()) {
-                    $leftBorderStyle = '';
-                    if ($leftBorder == false) {
-                        $leftBorder = true;
-                        $leftBorderStyle = 'border-left: 2px solid #666;';
-                    }
-                    echo "<th style='$leftBorderStyle text-align: center; width: 80px'>";
+                    echo "<th class='columnLabel largeColumn'>";
                     echo "<span title='".__($guid, 'Comment')."'>".__($guid, 'Com').'</span>';
                     echo '</th>';
                 }
                 if ($column->displayUploadedResponse()) {
-                    $leftBorderStyle = '';
-                    if ($leftBorder == false) {
-                        $leftBorder = true;
-                        $leftBorderStyle = 'border-left: 2px solid #666;';
-                    }
-                    echo "<th style='$leftBorderStyle text-align: center; width: 30px'>";
+                    echo "<th class='columnLabel smallColumn'>";
                     echo "<span title='".__($guid, 'Uploaded Response')."'>".__($guid, 'Upl').'</span>';
                     echo '</th>';
                 }
                 if ($column->displaySubmission()) {
-
-                    $leftBorderStyle = '';
-                    if ($leftBorder == false) {
-                        $leftBorder = true;
-                        $leftBorderStyle = 'border-left: 2px solid #666;';
-                    }
-                    echo "<th style='$leftBorderStyle text-align: center; width: 30px'>";
+                    echo "<th class='columnLabel smallColumn'>";
                     echo "<span title='".__($guid, 'Submitted Work')."'>".__($guid, 'Sub').'</span>';
                     echo '</th>';
                 
                 }
             }
             echo '</tr></table>';
+
             echo '</th>';
         }
         echo '</tr>';
+        echo "</thead>";
+
+        echo "<tbody>";
 
         $count = 0;
-        $rowNum = 'odd';
 
         try {
             $dataStudents = array('gibbonCourseClassID' => $gibbonCourseClassID);
@@ -422,21 +394,16 @@
             echo '</tr>';
         } else {
             while ($rowStudents = $resultStudents->fetch()) {
-                if ($count % 2 == 0) {
-                    $rowNum = 'even';
-                } else {
-                    $rowNum = 'odd';
-                }
                 ++$count;
 
                 //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+                echo "<tr >";
                 echo '<td class="firstColumn">';
-                echo "<div style='padding: 2px 0px'><b><a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowStudents['gibbonPersonID'].'&subpage=Markbook#'.$gibbonCourseClassID."'>".formatName('', $rowStudents['preferredName'], $rowStudents['surname'], 'Student', true).'</a><br/></div>';
+                echo "<a class='studentName' href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowStudents['gibbonPersonID'].'&subpage=Markbook#'.$gibbonCourseClassID."'>".formatName('', $rowStudents['preferredName'], $rowStudents['surname'], 'Student', true).'</a>';
                 echo '</td>';
 
                 if ($markbook->hasExternalAssessments() == true) {
-                    echo "<td style='text-align: center'>";
+                    echo "<td>";
                     try {
                         $dataEntry = array('gibbonPersonID' => $rowStudents['gibbonPersonID'], 'gibbonExternalAssessmentFieldID' => $externalAssessmentFields[0]);
                         $sqlEntry = "SELECT gibbonScaleGrade.value, gibbonScaleGrade.descriptor, gibbonExternalAssessmentStudent.date FROM gibbonExternalAssessmentStudentEntry JOIN gibbonExternalAssessmentStudent ON (gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentStudentID=gibbonExternalAssessmentStudent.gibbonExternalAssessmentStudentID) JOIN gibbonScaleGrade ON (gibbonExternalAssessmentStudentEntry.gibbonScaleGradeIDPrimaryAssessmentScale=gibbonScaleGrade.gibbonScaleGradeID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonExternalAssessmentFieldID=:gibbonExternalAssessmentFieldID AND NOT gibbonScaleGradeIDPrimaryAssessmentScale='' ORDER BY date DESC";
@@ -454,14 +421,14 @@
 
                 // Display personalized target
                 if ($markbook->getPersonalizedTargetsCount() > 0) {
-                    echo "<td style='text-align: center'>";
+                    echo "<td>";
                         echo $markbook->getTargetForStudent( $rowStudents['gibbonPersonID'] );
                     echo '</td>';
                 }
 
                 //Calculate and output weighted totals
                 if ($markbook->getSetting('enableColumnWeighting') == 'Y') {
-                    echo "<td style='text-align: center'>";
+                    echo "<td>";
                         echo $markbook->getWeightingForStudent( $rowStudents['gibbonPersonID'] );
                     echo '</td>';
                 }
@@ -470,12 +437,13 @@
 
                 	$column = $markbook->getColumn( $i );
 
-                	echo "<td style='padding: 0 !important;'>";
-                	echo '<table class="blank miniData" cellspacing=0><tr>';
-                    //$row = $result->fetch();
+                	echo "<td class='columnLabel' style='padding: 0 !important;'>";
+                	echo '<table class="columnLabels blank" cellspacing=0><tr>';
+
+
                     try {
                         $dataEntry = array('gibbonMarkbookColumnID' => $column->gibbonMarkbookColumnID, 'gibbonPersonIDStudent' => $rowStudents['gibbonPersonID']);
-                        $sqlEntry = 'SELECT * FROM gibbonMarkbookEntry WHERE gibbonMarkbookColumnID=:gibbonMarkbookColumnID AND gibbonPersonIDStudent=:gibbonPersonIDStudent';
+                        $sqlEntry = 'SELECT * FROM gibbonMarkbookEntry WHERE gibbonMarkbookColumnID=:gibbonMarkbookColumnID AND gibbonPersonIDStudent=:gibbonPersonIDStudent LIMIT 1';
                         $resultEntry = $connection2->prepare($sqlEntry);
                         $resultEntry->execute($dataEntry);
                     } catch (PDOException $e) {
@@ -483,19 +451,13 @@
                     }
                     if ($resultEntry->rowCount() == 1) {
                         $rowEntry = $resultEntry->fetch();
-                        $leftBorder = false;
 
                         if ($column->displayAttainment()) {
-                            $leftBorder = true;
-                            echo "<td style='border-left: 2px solid #666; text-align: center;width: 40px'>";
+
+                            echo "<td class='medColumn'>";
 
                             if ($column->hasAttainmentGrade()) {
-                                $styleAttainment = '';
-                                if ($rowEntry['attainmentConcern'] == 'Y') {
-                                    $styleAttainment = "style='color: #".$alert['color'].'; font-weight: bold; border: 2px solid #'.$alert['color'].'; padding: 2px 4px; background-color: #'.$alert['colorBG']."'";
-                                } elseif ($rowEntry['attainmentConcern'] == 'P') {
-                                    $styleAttainment = "style='color: #390; font-weight: bold; border: 2px solid #390; padding: 2px 4px; background-color: #D4F6DC'";
-                                }
+                                $styleAttainment = getAlertStyle($alert, $rowEntry['attainmentConcern']);
                                 $attainment = '';
                                 if ($rowEntry['attainmentValue'] != '') {
                                     $attainment = __($guid, $rowEntry['attainmentValue']);
@@ -508,7 +470,7 @@
                                 echo "<div $styleAttainment title='".htmlPrep($rowEntry['attainmentDescriptor'])."'>" . $attainment;
                             }
                             if ($column->hasAttainmentRubric()) {
-                                echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/markbook_view_rubric.php&gibbonRubricID='.$column->getData('gibbonRubricIDAttainment')."&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID.'&gibbonPersonID='.$rowStudents['gibbonPersonID']."&mark=FALSE&type=attainment&width=1100&height=550'><img style='margin-bottom: -3px; margin-left: 3px' title='".__($guid, 'View Rubric')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/rubric.png'/></a>";
+                                echo "<a class='thickbox rubricIcon' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/markbook_view_rubric.php&gibbonRubricID='.$column->getData('gibbonRubricIDAttainment')."&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID.'&gibbonPersonID='.$rowStudents['gibbonPersonID']."&mark=FALSE&type=attainment&width=1100&height=550'><img title='".__($guid, 'View Rubric')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/rubric.png'/></a>";
                             }
                             if ($column->hasEffortGrade()) {
                                 echo '</div>';
@@ -517,17 +479,10 @@
                         }
 
                         if ($column->displayEffort()) {
-                            $leftBorderStyle = '';
-                            if ($leftBorder == false) {
-                                $leftBorder = true;
-                                $leftBorderStyle = 'border-left: 2px solid #666;';
-                            }
-                            echo "<td style='$leftBorderStyle text-align: center;width: 40px'>";
+
+                            echo "<td class='medColumn'>";
                             if ($column->hasEffortGrade()) {
-                                $styleEffort = '';
-                                if ($rowEntry['effortConcern'] == 'Y') {
-                                    $styleEffort = "style='color: #".$alert['color'].'; font-weight: bold; border: 2px solid #'.$alert['color'].'; padding: 2px 4px; background-color: #'.$alert['colorBG']."'";
-                                }
+                                $styleEffort = getAlertStyle($alert, $rowEntry['effortConcern']);
                                 $effort = '';
                                 if ($rowEntry['effortValue'] != '') {
                                     $effort = __($guid, $rowEntry['effortValue']);
@@ -540,7 +495,7 @@
                                 echo "<div $styleEffort title='".htmlPrep($rowEntry['effortDescriptor'])."'>" . $effort;
                             }
                             if ($column->hasEffortRubric()) {
-                                echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/markbook_view_rubric.php&gibbonRubricID='.$column->getData('gibbonRubricIDEffort')."&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID.'&gibbonPersonID='.$rowStudents['gibbonPersonID']."&mark=FALSE&type=effort&width=1100&height=550'><img style='margin-bottom: -3px; margin-left: 3px' title='".__($guid, 'View Rubric')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/rubric.png'/></a>";
+                                echo "<a class='thickbox rubricIcon' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/markbook_view_rubric.php&gibbonRubricID='.$column->getData('gibbonRubricIDEffort')."&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID.'&gibbonPersonID='.$rowStudents['gibbonPersonID']."&mark=FALSE&type=effort&width=1100&height=550'><img title='".__($guid, 'View Rubric')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/rubric.png'/></a>";
                             }
                             if ($column->hasEffortGrade()) {
                                 echo '</div>';
@@ -548,12 +503,8 @@
                             echo '</td>';
                         }
                         if ($column->displayComment()) {
-                            $leftBorderStyle = '';
-                            if ($leftBorder == false) {
-                                $leftBorder = true;
-                                $leftBorderStyle = 'border-left: 2px solid #666;';
-                            }
-                            echo "<td style='$leftBorderStyle text-align: center;width: 80px'>";
+
+                            echo "<td class='largeColumn'>";
                             $style = '';
                             if ($rowEntry['comment'] != '') {
                                 if (strlen($rowEntry['comment']) < 11) {
@@ -565,27 +516,23 @@
                             echo '</td>';
                         }
                         if ($column->displayUploadedResponse()) {
-                            $leftBorderStyle = '';
-                            if ($leftBorder == false) {
-                                $leftBorder = true;
-                                $leftBorderStyle = 'border-left: 2px solid #666;';
-                            }
-                            echo "<td style='$leftBorderStyle text-align: center;width: 30px'>";
+
+                            echo "<td class='smallColumn'>";
                             if ($rowEntry['response'] != '') {
                                 echo "<a title='".__($guid, 'Uploaded Response')."' href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowEntry['response']."'>Up</a><br/>";
                             }
                         }
                         echo '</td>';
+                    } else {
+                    	if ($column->displayAttainment()) echo "<td class='medColumn'></td>";
+                    	if ($column->displayEffort()) echo "<td class='medColumn'></td>";
+                    	if ($column->displayComment()) echo "<td class='largeColumn'></td>";
+                    	if ($column->displayUploadedResponse()) echo "<td class='smallColumn'></td>";
                     }
 
                     if ($column->displaySubmission()) {
 
-                        $leftBorderStyle = '';
-                        if ($leftBorder == false) {
-                            $leftBorder = true;
-                            $leftBorderStyle = 'border-left: 2px solid #666;';
-                        }
-                        echo "<td style='$leftBorderStyle text-align: center;'>";
+                        echo "<td class='smallColumn'>";
                         try {
                             $dataWork = array('gibbonPlannerEntryID' => $column->getData('gibbonPlannerEntryID'), 'gibbonPersonID' => $rowStudents['gibbonPersonID']);
                             $sqlWork = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC';

@@ -17,6 +17,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
+/**
+ * Stuff for the Core
+ */
+
+.linkTop a img {
+	margin-left: 5px;
+}
+
 table.colorOddEven tr:nth-of-type(even) td {
 	background: -webkit-gradient(linear, center top, center bottom, from(#F2F2F2), to(#F0F0F0));
 	background: -webkit-linear-gradient(center top , #F2F2F2, #F0F0F0);
@@ -30,6 +38,90 @@ tr.even:target td {
 	background: #EDF7FF;
 }
 
+.details {
+	font-size: 90%;
+	font-style: italic;
+	font-weight: normal;
+}
+
+
+/**
+ * Markbook Stuff
+ */
+
+table.markbook {
+	margin-top: 0px;
+}
+
+table.markbook thead tr.head {
+	min-height: 140px;
+}
+
+.dataColumn {
+	width: 40px;
+	min-width: 40px;
+	max-width: 40px
+}
+
+.marksColumn {
+	padding: 0px !important;
+	text-align: center;
+	min-width: 140px;
+}
+
+.marksColumn .columnActions {
+	margin-top: 6px;
+}
+
+.marksColumn .columnLabels {
+	margin-top: 2px;
+}
+
+
+table.columnLabels {
+	width: 100%;
+}
+
+th.columnLabel {
+	text-align: center !important;
+}
+
+td.columnLabel,
+th.columnLabel:first-of-type {
+	border-left: 1px solid #666;
+}
+
+.smallColumn {
+	min-width:20px;
+	width: 30px;
+}
+
+.medColumn {
+	min-width:40px;
+	width: 40px;
+}
+
+.largeColumn {
+	min-width:40px;
+	width: 80px;
+}
+
+.rubricIcon img {
+	margin-bottom: -3px;
+	margin-left: 3px;
+	max-width: 32%;
+}
+
+
+table.mini tr.head {
+	background: -webkit-gradient(linear, center top, center bottom, from(#EBEBEB), to(#DFDFDF));
+	background: -webkit-linear-gradient(center top , #EBEBEB, #DFDFDF);
+	background: -o-linear-gradient(center top , #EBEBEB, #DFDFDF);
+	background: -moz-linear-gradient(center top , #EBEBEB, #DFDFDF);
+	background: linear-gradient(center top , #EBEBEB, #DFDFDF);
+}
+
+
 .verticalText {
 	-webkit-transform: rotate(-90deg);
 	-moz-transform: rotate(-90deg);
@@ -38,20 +130,15 @@ tr.even:target td {
 	transform: rotate(-90deg);
 }
 
-
-.columnLabel {
-
+.studentName {
+	display: block;
+	font-weight: bold;
+	height: 15px;
 }
 
 
-table.miniData {
-	margin: 0;
-	padding: 0;
-	width: 100%;
+table.blank td {
 	text-align: center;
-}
-
-table.miniData td {
 	padding: 0px 5px !important;
 }
 
@@ -110,7 +197,7 @@ table.miniData td {
 .doublescroll-container tr.head th.firstColumn {
 	position:absolute; 
     width:151px; 
-    height: 155px;
+    height: 170px;
     left:1px;
     top:0;
     padding: 5px 12px 5px !important;
@@ -122,11 +209,6 @@ table.miniData td {
 	height: 140px;
 	vertical-align: middle;
 	display: table-cell;
-}
-
-.doublescroll-container tr.head th.blankColumn {
-	background: transparent;
-	border: 0;
 }
 
 .doublescroll-container td.firstColumn {
@@ -172,7 +254,7 @@ table.miniData td {
 	height: 2px;
 	width: 31px;
 	background: transparent;
-	margin: -4px auto 10px auto;
+	margin: 4px auto 10px auto;
 	border-color: #bbbbbb;
 	border-style: dotted;
 	border-width: 3px 0px 3px 0px;
@@ -197,6 +279,24 @@ table.miniData td {
 
 .dragtable-drag-col td:first-of-type {
 	position: static;
+}
+
+.dragtable-drag-col thead tr.head {
+	height: 120px;
+}
+
+.dragtable-drag-col .blankColumn {
+	border-top: 0px;
+}
+
+.dragtable-drag-col th {
+	border-bottom: 0px;
+	padding: 5px !important;
+}
+
+.dragtable-drag-col tbody td {
+	padding: 5px !important;
+	height: 15px;
 }
 
 /*

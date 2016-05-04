@@ -175,11 +175,11 @@ class markbookView
                 if ( !empty($column->getData('gibbonPlannerEntryID'))) {
                     try {
                         $dataSub=array("gibbonPlannerEntryID"=>$column->getData('gibbonPlannerEntryID') ); 
-                        $sqlSub="SELECT homeworkDueDateTime, date FROM gibbonPlannerEntry WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND homeworkSubmission='Y'" ;
-                        $result=$this->pdo->executeQuery($data, $sql);
+                        $sqlSub="SELECT homeworkDueDateTime, date FROM gibbonPlannerEntry WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND homeworkSubmission='Y' LIMIT 1" ;
+                        $resultSub=$this->pdo->executeQuery($data, $sql);
                     } catch (PDOException $e) { $this->error( $e->getMessage() ); }
 
-                    if ($resultSub->rowCount()==1) {
+                    if ($resultSub->rowCount()>=1) {
                         $column->setSubmissionDetails( $resultSub->fetch() );
                     }
                 }
@@ -204,6 +204,10 @@ class markbookView
 
     	$gibbonSchoolYearTermID = (isset($_GET['gibbonSchoolYearTermID']))? $_GET['gibbonSchoolYearTermID'] : '';
         $columnFilter = (isset($_GET['columnFilter']))? $_GET['columnFilter'] : '';
+
+        if (empty($gibbonSchoolYearTermID)) {
+            $gibbonSchoolYearTermID = $_SESSION[$this->config->get('guid')]['markbookTerm'];
+        }
 
     	if (!empty($gibbonSchoolYearTermID)) {
 

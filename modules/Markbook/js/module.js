@@ -33,8 +33,8 @@ jQuery(function($){
             .scrollLeft($(".doublescroll-container").scrollLeft());
     });
 
-    $("#myTable").dragtable({
-		items: 'thead th:not( .notdraggable ):not( :has( .dragtable-drag-handle ) ), .dragtable-drag-handle',
+    $("#myTable.markbook").dragtable({
+		items: 'thead .dragtable-drag-handle', //th:not( .notdraggable ):not( :has( .dragtable-drag-handle ) ),
 		scroll: true,
 		appendTarget: ':parent',
 	});

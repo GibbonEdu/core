@@ -46,19 +46,31 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
     }
     catch(PDOException $e) { }
 
-    $selectTerm = (isset($_GET['gibbonSchoolYearTermID']))? $_GET['gibbonSchoolYearTermID'] : 0;
+    $selectTerm = (isset($_SESSION[$guid]['markbookTerm']))? $_SESSION[$guid]['markbookTerm'] : 0;
+    $selectTerm = (isset($_GET['gibbonSchoolYearTermID']))? $_GET['gibbonSchoolYearTermID'] : $selectTerm;
 
     while ($rowTerm = $resultTerms->fetch()) {
 
+        $selected = '';
         if ($selectTerm != 0) {
-            $selected = ( $selectTerm == $rowTerm['gibbonSchoolYearTermID'])? 'selected' : '';
-        } else {
-            $selected = ( time() >= $rowTerm['firstTime'] && time() < $rowTerm['lastTime'] )? 'selected' : '';
+            if ($selectTerm == $rowTerm['gibbonSchoolYearTermID']) {
+                $selected = 'selected';
+                $selectTermName = $rowTerm['name'];
+            }
+        } else if (time() >= $rowTerm['firstTime'] && time() < $rowTerm['lastTime']) {
+            $selected = 'selected';
+            $selectTerm = $rowTerm['gibbonSchoolYearTermID'];
+            $selectTermName = $rowTerm['name'];
         }
-        
+
         $output .= "<option $selected value='".$rowTerm['gibbonSchoolYearTermID']."'>".htmlPrep($rowTerm['name']).'</option>';
     }
     $output .= '</select>';
+
+    if ($selectTerm != 0) {
+        $_SESSION[$guid]['markbookTerm'] = $selectTerm;
+        $_SESSION[$guid]['markbookTermName'] = $selectTermName;
+    }
 
     $selectFilter = (isset($_GET['columnFilter']))? $_GET['columnFilter'] : '';
 
@@ -177,4 +189,15 @@ function getTeacherList( $pdo, $gibbonCourseClassID ) {
     }
 
     return $teacherList;
+}
+
+function getAlertStyle( $alert, $concern ) {
+
+    if ($concern == 'Y') {
+        return "style='color: #".$alert['color'].'; font-weight: bold; border: 2px solid #'.$alert['color'].'; padding: 2px 4px; background-color: #'.$alert['colorBG'].";max-width:40px;margin:0 auto;'";
+    } else if ($concern == 'P') {
+        return "style='color: #390; font-weight: bold; border: 2px solid #390; padding: 2px 4px; background-color: #D4F6DC;max-width:40px;margin:0 auto;'";
+    } else {
+        return '';
+    }
 }
