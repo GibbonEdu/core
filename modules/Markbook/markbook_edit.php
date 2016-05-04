@@ -193,8 +193,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
                             $rowNum = 'odd';
                         }
 
-                            //COLOR ROW BY STATUS!
-                            echo "<tr class=$rowNum>";
+                        //COLOR ROW BY STATUS!
+                        echo "<tr class=$rowNum>";
                         echo '<td>';
                         echo '<b>'.$row['name'].'</b><br/>';
                         $unit = getUnit($connection2, $row['gibbonUnitID'], $row['gibbonHookID'], $row['gibbonCourseClassID']);

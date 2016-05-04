@@ -178,16 +178,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.p
 							<script type="text/javascript">
 								var date1=new LiveValidation('date1');
 								date1.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-            ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-            ?>." } ); 
+								echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+								}
+											?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+									echo 'dd/mm/yyyy';
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormat'];
+								}
+								?>." } ); 
 							</script>
 							 <script type="text/javascript">
 								$(function() {
@@ -199,16 +199,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.p
 							<script type="text/javascript">
 								var date2=new LiveValidation('date2');
 								date2.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-            ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-            ?>." } ); 
+								echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+								}
+											?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+									echo 'dd/mm/yyyy';
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormat'];
+								}
+								?>." } ); 
 							</script>
 							 <script type="text/javascript">
 								$(function() {
@@ -220,16 +220,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.p
 							<script type="text/javascript">
 								var date3=new LiveValidation('date3');
 								date3.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-            ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-            ?>." } ); 
+								echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+								}
+											?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+									echo 'dd/mm/yyyy';
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormat'];
+								}
+								?>." } ); 
 							</script>
 							 <script type="text/javascript">
 								$(function() {
@@ -353,8 +353,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.p
             echo '}';
             echo '});';
             echo '});';
-            echo '</script>';
-            ?>
+            echo '</script>'; ?>
 					<tr>
 						<td> 
 							<b><?php echo __($guid, 'Canned Response') ?></b><br/>
@@ -366,7 +365,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.p
                                 foreach ($cannedResponses as $rowSelect) {
                                     echo "<option value='".$rowSelect['gibbonMessengerCannedResponseID']."'>".$rowSelect['subject'].'</option>';
                                 }
-            ?>
+           	 					?>
 							</select>
 						</td>
 					</tr>
@@ -565,8 +564,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.p
 							<select name="yearGroupsStaff" id="yearGroupsStaff" class="standardWidth">
 								<?php
                                 echo "<option value='Y'>".__($guid, 'Yes').'</option>';
-            echo "<option value='N'>".__($guid, 'No').'</option>';
-            ?>
+            echo "<option value='N'>".__($guid, 'No').'</option>'; ?>
 							</select>
 						</td>
 					</tr>
@@ -578,8 +576,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.p
 							<select name="yearGroupsStudents" id="yearGroupsStudents" class="standardWidth">
 								<?php
                                 echo "<option value='Y'>".__($guid, 'Yes').'</option>';
-            echo "<option value='N'>".__($guid, 'No').'</option>';
-            ?>
+            echo "<option value='N'>".__($guid, 'No').'</option>'; ?>
 							</select>
 						</td>
 					</tr>
@@ -678,8 +675,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.p
 							<select name="rollGroupsStaff" id="rollGroupsStaff" class="standardWidth">
 								<?php
                                 echo "<option value='Y'>".__($guid, 'Yes').'</option>';
-            echo "<option value='N'>".__($guid, 'No').'</option>';
-            ?>
+            echo "<option value='N'>".__($guid, 'No').'</option>'; ?>
 							</select>
 						</td>
 					</tr>
@@ -691,8 +687,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.p
 							<select name="rollGroupsStudents" id="rollGroupsStudents" class="standardWidth">
 								<?php
                                 echo "<option value='Y'>".__($guid, 'Yes').'</option>';
-            echo "<option value='N'>".__($guid, 'No').'</option>';
-            ?>
+            echo "<option value='N'>".__($guid, 'No').'</option>'; ?>
 							</select>
 						</td>
 					</tr>
@@ -785,8 +780,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.p
 							<select name="coursesStaff" id="coursesStaff" class="standardWidth">
 								<?php
                                 echo "<option value='Y'>".__($guid, 'Yes').'</option>';
-            echo "<option value='N'>".__($guid, 'No').'</option>';
-            ?>
+            echo "<option value='N'>".__($guid, 'No').'</option>'; ?>
 							</select>
 						</td>
 					</tr>
@@ -798,8 +792,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.p
 							<select name="coursesStudents" id="coursesStudents" class="standardWidth">
 								<?php
                                 echo "<option value='Y'>".__($guid, 'Yes').'</option>';
-            echo "<option value='N'>".__($guid, 'No').'</option>';
-            ?>
+            echo "<option value='N'>".__($guid, 'No').'</option>'; ?>
 							</select>
 						</td>
 					</tr>
@@ -892,8 +885,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.p
 							<select name="classesStaff" id="classesStaff" class="standardWidth">
 								<?php
                                 echo "<option value='Y'>".__($guid, 'Yes').'</option>';
-            echo "<option value='N'>".__($guid, 'No').'</option>';
-            ?>
+            echo "<option value='N'>".__($guid, 'No').'</option>'; ?>
 							</select>
 						</td>
 					</tr>
@@ -905,8 +897,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.p
 							<select name="classesStudents" id="classesStudents" class="standardWidth">
 								<?php
                                 echo "<option value='Y'>".__($guid, 'Yes').'</option>';
-            echo "<option value='N'>".__($guid, 'No').'</option>';
-            ?>
+            echo "<option value='N'>".__($guid, 'No').'</option>'; ?>
 							</select>
 						</td>
 					</tr>
@@ -1005,8 +996,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.p
 							<select name="activitiesStaff" id="activitiesStaff" class="standardWidth">
 								<?php
                                 echo "<option value='Y'>".__($guid, 'Yes').'</option>';
-            echo "<option value='N'>".__($guid, 'No').'</option>';
-            ?>
+            echo "<option value='N'>".__($guid, 'No').'</option>'; ?>
 							</select>
 						</td>
 					</tr>
@@ -1018,8 +1008,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.p
 							<select name="activitiesStudents" id="activitiesStudents" class="standardWidth">
 								<?php
                                 echo "<option value='Y'>".__($guid, 'Yes').'</option>';
-            echo "<option value='N'>".__($guid, 'No').'</option>';
-            ?>
+            echo "<option value='N'>".__($guid, 'No').'</option>'; ?>
 							</select>
 						</td>
 					</tr>
@@ -1213,8 +1202,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.p
 							<select name="transportStaff" id="transportStaff" class="standardWidth">
 								<?php
                                 echo "<option value='Y'>".__($guid, 'Yes').'</option>';
-            echo "<option value='N'>".__($guid, 'No').'</option>';
-            ?>
+            echo "<option value='N'>".__($guid, 'No').'</option>'; ?>
 							</select>
 						</td>
 					</tr>
@@ -1226,8 +1214,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.p
 							<select name="transportStudents" id="transportStudents" class="standardWidth">
 								<?php
                                 echo "<option value='Y'>".__($guid, 'Yes').'</option>';
-            echo "<option value='N'>".__($guid, 'No').'</option>';
-            ?>
+            echo "<option value='N'>".__($guid, 'No').'</option>'; ?>
 							</select>
 						</td>
 					</tr>
@@ -1305,12 +1292,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.p
 				
 				<tr>
 					<td>
-						<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-        ?></span>
+						<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 					</td>
 					<td class="right">
-						<input type="submit" value="<?php echo __($guid, 'Submit');
-        ?>">
+						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 					</td>
 				</tr>
 			</table>

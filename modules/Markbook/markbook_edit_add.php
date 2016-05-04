@@ -235,7 +235,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
 										<?php
 
                                         }
-                    ?>
+                    					?>
 									</select>
 									<script type="text/javascript">
 										var type=new LiveValidation('type');
@@ -657,8 +657,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
 								</span>
 							</td>
 							<td class="right">
-								<input type="submit" value="<?php echo __($guid, 'Submit');
-                ?>">
+								<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 							</td>
 						</tr>
 					</table>

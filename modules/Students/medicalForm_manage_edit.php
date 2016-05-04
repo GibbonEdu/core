@@ -97,42 +97,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
 						</td>
 						<td class="right">
 							<select class="standardWidth" name="bloodType">
-								<option <?php if ($row['bloodType'] == '') {
-    echo 'selected ';
-}
-            ?>value=""></option>
-								<option <?php if ($row['bloodType'] == 'O+') {
-    echo 'selected ';
-}
-            ?>value="O+">O+</option>
-								<option <?php if ($row['bloodType'] == 'A+') {
-    echo 'selected ';
-}
-            ?>value="A+">A+</option>
-								<option <?php if ($row['bloodType'] == 'B+') {
-    echo 'selected ';
-}
-            ?>value="B+">B+</option>
-								<option <?php if ($row['bloodType'] == 'AB+') {
-    echo 'selected ';
-}
-            ?>value="AB+">AB+</option>
-								<option <?php if ($row['bloodType'] == 'O-') {
-    echo 'selected ';
-}
-            ?>value="O-">O-</option>
-								<option <?php if ($row['bloodType'] == 'A-') {
-    echo 'selected ';
-}
-            ?>value="A-">A-</option>
-								<option <?php if ($row['bloodType'] == 'B-') {
-    echo 'selected ';
-}
-            ?>value="B-">B-</option>
-								<option <?php if ($row['bloodType'] == 'AB-') {
-    echo 'selected ';
-}
-            ?>value="AB-">AB-</option>
+								<option <?php if ($row['bloodType'] == '') { echo 'selected '; } ?>value=""></option>
+								<option <?php if ($row['bloodType'] == 'O+') { echo 'selected '; } ?>value="O+">O+</option>
+								<option <?php if ($row['bloodType'] == 'A+') { echo 'selected '; } ?>value="A+">A+</option>
+								<option <?php if ($row['bloodType'] == 'B+') { echo 'selected '; } ?>value="B+">B+</option>
+								<option <?php if ($row['bloodType'] == 'AB+') { echo 'selected '; } ?>value="AB+">AB+</option>
+								<option <?php if ($row['bloodType'] == 'O-') { echo 'selected '; } ?>value="O-">O-</option>
+								<option <?php if ($row['bloodType'] == 'A-') { echo 'selected '; } ?>value="A-">A-</option>
+								<option <?php if ($row['bloodType'] == 'B-') { echo 'selected '; } ?>value="B-">B-</option>
+								<option <?php if ($row['bloodType'] == 'AB-') { echo 'selected '; } ?>value="AB-">AB-</option>
 							</select>
 						</td>
 					</tr>
@@ -143,18 +116,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
 						</td>
 						<td class="right">
 							<select class="standardWidth" name="longTermMedication">
-								<option <?php if ($row['longTermMedication'] == '') {
-    echo 'selected ';
-}
-            ?>value=""></option>
-								<option <?php if ($row['longTermMedication'] == 'Y') {
-    echo 'selected ';
-}
-            ?>value="Y">Y</option>
-								<option <?php if ($row['longTermMedication'] == 'N') {
-    echo 'selected ';
-}
-            ?>value="N">N</option>
+								<option <?php if ($row['longTermMedication'] == '') { echo 'selected '; } ?>value=""></option>
+								<option <?php if ($row['longTermMedication'] == 'Y') { echo 'selected '; } ?>value="Y">Y</option>
+								<option <?php if ($row['longTermMedication'] == 'N') { echo 'selected '; } ?>value="N">N</option>
 							</select>
 						</td>
 					</tr>
@@ -172,31 +136,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
 						</td>
 						<td class="right">
 							<select class="standardWidth" name="tetanusWithin10Years">
-								<option <?php if ($row['tetanusWithin10Years'] == '') {
-    echo 'selected ';
-}
-            ?>value=""></option>
-								<option <?php if ($row['tetanusWithin10Years'] == 'Y') {
-    echo 'selected ';
-}
-            ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-								<option <?php if ($row['tetanusWithin10Years'] == 'N') {
-    echo 'selected ';
-}
-            ?>value="N"><?php echo __($guid, 'No') ?></option>
+								<option <?php if ($row['tetanusWithin10Years'] == '') { echo 'selected '; } ?>value=""></option>
+								<option <?php if ($row['tetanusWithin10Years'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
+								<option <?php if ($row['tetanusWithin10Years'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
 							</select>
 						</td>
 					</tr>						
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="gibbonPersonMedicalID" value="<?php echo $row['gibbonPersonMedicalID'] ?>">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>
@@ -257,8 +210,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
                     }
                     ++$count;
 
-                        //COLOR ROW BY STATUS!
-                        echo "<tr class=$rowNum>";
+                    //COLOR ROW BY STATUS!
+                    echo "<tr class=$rowNum>";
                     echo '<td>';
                     echo __($guid, $row['name']);
                     echo '</td>';

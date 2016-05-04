@@ -94,46 +94,23 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/fileExtension
 						<td class="right">
 							<select name="type" id="type" class="standardWidth">
 								<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
-								<option <?php if ($row['type'] == 'Document') {
-    echo 'selected';
-}
-            ?> value="Document"><?php echo __($guid, 'Document') ?></option>
-								<option <?php if ($row['type'] == 'Spreadsheet') {
-    echo 'selected';
-}
-            ?> value="Spreadsheet"><?php echo __($guid, 'Spreadsheet') ?></option>
-								<option <?php if ($row['type'] == 'Presentation') {
-    echo 'selected';
-}
-            ?> value="Presentation"><?php echo __($guid, 'Presentation') ?></option>
-								<option <?php if ($row['type'] == 'Graphics/Design') {
-    echo 'selected';
-}
-            ?> value="Graphics/Design"><?php echo __($guid, 'Graphics/Design') ?></option>
-								<option <?php if ($row['type'] == 'Video') {
-    echo 'selected';
-}
-            ?> value="Video"><?php echo __($guid, 'Video') ?></option>
-								<option <?php if ($row['type'] == 'Audio') {
-    echo 'selected';
-}
-            ?> value="Audio"><?php echo __($guid, 'Audio') ?></option>
-								<option <?php if ($row['type'] == 'Other') {
-    echo 'selected';
-}
-            ?> value="Other"><?php echo __($guid, 'Other') ?></option>
+								<option <?php if ($row['type'] == 'Document') { echo 'selected'; } ?> value="Document"><?php echo __($guid, 'Document') ?></option>
+								<option <?php if ($row['type'] == 'Spreadsheet') { echo 'selected'; } ?> value="Spreadsheet"><?php echo __($guid, 'Spreadsheet') ?></option>
+								<option <?php if ($row['type'] == 'Presentation') { echo 'selected'; } ?> value="Presentation"><?php echo __($guid, 'Presentation') ?></option>
+								<option <?php if ($row['type'] == 'Graphics/Design') { echo 'selected'; } ?> value="Graphics/Design"><?php echo __($guid, 'Graphics/Design') ?></option>
+								<option <?php if ($row['type'] == 'Video') { echo 'selected'; } ?> value="Video"><?php echo __($guid, 'Video') ?></option>
+								<option <?php if ($row['type'] == 'Audio') { echo 'selected'; } ?> value="Audio"><?php echo __($guid, 'Audio') ?></option>
+								<option <?php if ($row['type'] == 'Other') { echo 'selected'; } ?> value="Other"><?php echo __($guid, 'Other') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

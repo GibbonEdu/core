@@ -95,8 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_e
                 }
                 echo "<option $selected value=\"".$rowSelect['name'].'">'.__($guid, $rowSelect['name']).'</option>';
             }
-            echo '</optgroup>';
-            ?>
+            echo '</optgroup>'; ?>
 							</select>
 							<script type="text/javascript">
 								var type=new LiveValidation('type');
@@ -145,14 +144,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_e
 						</td>
 						<td class="right">
 							<select name="active" id="active" class="standardWidth">
-								<option <?php if ($row['active'] == 'Y') {
-    echo 'selected';
-}
-            ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
-								<option <?php if ($row['active'] == 'N') {
-    echo 'selected';
-}
-            ?> value="N"><?php echo __($guid, 'No') ?></option>
+								<option <?php if ($row['active'] == 'Y') { echo 'selected'; } ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
+								<option <?php if ($row['active'] == 'N') { echo 'selected'; } ?> value="N"><?php echo __($guid, 'No') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -167,13 +160,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_e
 					</tr>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

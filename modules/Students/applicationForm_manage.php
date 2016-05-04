@@ -121,8 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 						<?php
                         echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/applicationForm_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID'>".__($guid, 'Clear Search').'</a>';
         ?>
-						<input type="submit" value="<?php echo __($guid, 'Submit');
-        ?>">
+						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 					</td>
 				</tr>
 			</table>
@@ -207,8 +206,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                 ++$count;
 
-                    //COLOR ROW BY STATUS!
-                    echo "<tr class=$rowNum>";
+                //COLOR ROW BY STATUS!
+                echo "<tr class=$rowNum>";
                 echo '<td>';
                 echo ltrim($row['gibbonApplicationFormID'], '0');
                 echo '</td>';

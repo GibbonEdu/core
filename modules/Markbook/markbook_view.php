@@ -931,8 +931,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                 }
                 echo "<option $selected value='".$rowSelect['gibbonDepartmentID']."'>".$rowSelect['name'].'</option>';
             }
-            echo '</select>';
-            ?>
+            echo '</select>'; ?>
 						</td>
 					</tr>
 					<tr>
@@ -959,8 +958,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                 }
                 echo "<option $selected value='".$rowSelect['gibbonSchoolYearID']."'>".$rowSelect['year'].' ('.__($guid, $rowSelect['yearGroup']).')</option>';
             }
-            echo '</select>';
-            ?>
+            echo '</select>'; ?>
 						</td>
 					</tr>
 					<?php
@@ -998,8 +996,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
             echo "<td class='right' colspan=2>";
             echo "<input type='hidden' name='q' value='".$_GET['q']."'>";
             echo "<input checked type='checkbox' name='details' class='details' value='Yes' />";
-            echo "<span style='font-size: 85%; font-weight: normal; font-style: italic'> ".__($guid, 'Show/Hide Details').'</span>';
-            ?>
+            echo "<span style='font-size: 85%; font-weight: normal; font-style: italic'> ".__($guid, 'Show/Hide Details').'</span>'; ?>
 							<script type="text/javascript">
 								/* Show/Hide detail control */
 								$(document).ready(function(){
@@ -1409,8 +1406,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
 									<?php
                                     echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_view.php'>".__($guid, 'Clear Search').'</a>';
                     ?>
-									<input type="submit" value="<?php echo __($guid, 'Submit');
-                    ?>">
+									<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 								</td>
 							</tr>
 						</table>

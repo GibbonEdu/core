@@ -125,14 +125,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 									<span class="emphasis small"><?php echo __($guid, 'Place this message on user\'s message wall?') ?><br/></span>
 								</td>
 								<td class="right">
-									<input <?php if ($row['messageWall'] == 'Y') {
-    echo 'checked';
-}
-                    ?> type="radio" name="messageWall" class="messageWall" value="Y"/> <?php echo __($guid, 'Yes') ?>
-									<input <?php if ($row['messageWall'] == 'N') {
-    echo 'checked';
-}
-                    ?> type="radio" name="messageWall" class="messageWall" value="N"/> <?php echo __($guid, 'No') ?>
+									<input <?php if ($row['messageWall'] == 'Y')) { echo 'checked'; } ?> type="radio" name="messageWall" class="messageWall" value="Y"/> <?php echo __($guid, 'Yes') ?>
+									<input <?php if ($row['messageWall'] == 'N')) { echo 'checked'; } ?> type="radio" name="messageWall" class="messageWall" value="N"/> <?php echo __($guid, 'No') ?>
 								</td>
 							</tr>
 							<tr id="messageWallRow" <?php if ($row['messageWall'] == 'N') {
@@ -231,7 +225,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
                                     } else {
                                         echo "<img title='".__($guid, 'Not sent by sms.')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
                                     }
-                    ?>
+                   		 			?>
 								</td>
 							</tr>
 							<?php
@@ -475,14 +469,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 									<span class="emphasis small"><?php echo __($guid, 'Students in year; all staff.') ?><br/></span>
 								</td>
 								<td class="right">
-									<input <?php if ($resultTarget->rowCount() > 0) {
-    echo 'checked';
-}
-                    ?> type="radio" name="yearGroup" class="yearGroup" value="Y"/> <?php echo __($guid, 'Yes') ?>
-									<input <?php if ($resultTarget->rowCount() <= 0) {
-    echo 'checked';
-}
-                    ?> type="radio" name="yearGroup" class="yearGroup" value="N"/> <?php echo __($guid, 'No') ?>
+									<input <?php if ($resultTarget->rowCount() > 0)) { echo 'checked'; } ?> type="radio" name="yearGroup" class="yearGroup" value="Y"/> <?php echo __($guid, 'Yes') ?>
+									<input <?php if ($resultTarget->rowCount() <= 0)) { echo 'checked'; } ?> type="radio" name="yearGroup" class="yearGroup" value="N"/> <?php echo __($guid, 'No') ?>
 								</td>
 							</tr>
 							<?php
@@ -631,14 +619,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 									<span class="emphasis small"><?php echo __($guid, 'Tutees and tutors.') ?><br/></span>
 								</td>
 								<td class="right">
-									<input <?php if ($resultTarget->rowCount() > 0) {
-    echo 'checked';
-}
-                    ?> type="radio" name="rollGroup" class="rollGroup" value="Y"/> <?php echo __($guid, 'Yes') ?>
-									<input <?php if ($resultTarget->rowCount() <= 0) {
-    echo 'checked';
-}
-                    ?> type="radio" name="rollGroup" class="rollGroup" value="N"/> <?php echo __($guid, 'No') ?>
+									<input <?php if ($resultTarget->rowCount() > 0)) { echo 'checked'; } ?> type="radio" name="rollGroup" class="rollGroup" value="Y"/> <?php echo __($guid, 'Yes') ?>
+									<input <?php if ($resultTarget->rowCount() <= 0)) { echo 'checked'; } ?> type="radio" name="rollGroup" class="rollGroup" value="N"/> <?php echo __($guid, 'No') ?>
 								</td>
 							</tr>
 							<?php
@@ -798,14 +780,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 									<span class="emphasis small"><?php echo __($guid, 'Members of a course of study.') ?><br/></span>
 								</td>
 								<td class="right">
-									<input <?php if ($resultTarget->rowCount() > 0) {
-    echo 'checked';
-}
-                    ?> type="radio" name="course" class="course" value="Y"/> <?php echo __($guid, 'Yes') ?>
-									<input <?php if ($resultTarget->rowCount() <= 0) {
-    echo 'checked';
-}
-                    ?> type="radio" name="course" class="course" value="N"/> <?php echo __($guid, 'No') ?>
+									<input <?php if ($resultTarget->rowCount() > 0)) { echo 'checked'; } ?> type="radio" name="course" class="course" value="Y"/> <?php echo __($guid, 'Yes') ?>
+									<input <?php if ($resultTarget->rowCount() <= 0)) { echo 'checked'; } ?> type="radio" name="course" class="course" value="N"/> <?php echo __($guid, 'No') ?>
 								</td>
 							</tr>
 							<?php
@@ -959,14 +935,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 									<span class="emphasis small"><?php echo __($guid, 'Members of a class within a course.') ?><br/></span>
 								</td>
 								<td class="right">
-									<input <?php if ($resultTarget->rowCount() > 0) {
-    echo 'checked';
-}
-                    ?> type="radio" name="class" class="class" value="Y"/> <?php echo __($guid, 'Yes') ?>
-									<input <?php if ($resultTarget->rowCount() <= 0) {
-    echo 'checked';
-}
-                    ?> type="radio" name="class" class="class" value="N"/> <?php echo __($guid, 'No') ?>
+									<input <?php if ($resultTarget->rowCount() > 0)) { echo 'checked'; } ?> type="radio" name="class" class="class" value="Y"/> <?php echo __($guid, 'Yes') ?>
+									<input <?php if ($resultTarget->rowCount() <= 0)) { echo 'checked'; } ?> type="radio" name="class" class="class" value="N"/> <?php echo __($guid, 'No') ?>
 								</td>
 							</tr>
 							<?php
@@ -1120,14 +1090,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 									<span class="emphasis small"><?php echo __($guid, 'Members of an activity.') ?><br/></span>
 								</td>
 								<td class="right">
-									<input <?php if ($resultTarget->rowCount() > 0) {
-    echo 'checked';
-}
-                    ?> type="radio" name="activity" class="activity" value="Y"/> <?php echo __($guid, 'Yes') ?>
-									<input <?php if ($resultTarget->rowCount() <= 0) {
-    echo 'checked';
-}
-                    ?> type="radio" name="activity" class="activity" value="N"/> <?php echo __($guid, 'No') ?>
+									<input <?php if ($resultTarget->rowCount() > 0)) { echo 'checked'; } ?> type="radio" name="activity" class="activity" value="Y"/> <?php echo __($guid, 'Yes') ?>
+									<input <?php if ($resultTarget->rowCount() <= 0)) { echo 'checked'; } ?> type="radio" name="activity" class="activity" value="N"/> <?php echo __($guid, 'No') ?>
 								</td>
 							</tr>
 							<?php
@@ -1278,14 +1242,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 									<span class="emphasis small"><?php echo __($guid, 'Applicants from a given year.').'<br/>'.__($guid, 'Does not apply to the message wall.') ?></span>
 								</td>
 								<td class="right">
-									<input <?php if ($resultTarget->rowCount() > 0) {
-    echo 'checked';
-}
-                    ?> type="radio" name="applicants" class="applicants" value="Y"/> <?php echo __($guid, 'Yes') ?>
-									<input <?php if ($resultTarget->rowCount() <= 0) {
-    echo 'checked';
-}
-                    ?> type="radio" name="applicants" class="applicants" value="N"/> <?php echo __($guid, 'No') ?>
+									<input <?php if ($resultTarget->rowCount() > 0)) { echo 'checked'; } ?> type="radio" name="applicants" class="applicants" value="Y"/> <?php echo __($guid, 'Yes') ?>
+									<input <?php if ($resultTarget->rowCount() <= 0)) { echo 'checked'; } ?> type="radio" name="applicants" class="applicants" value="N"/> <?php echo __($guid, 'No') ?>
 								</td>
 							</tr>
 							<?php
@@ -1358,14 +1316,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 									<span class="emphasis small"><?php echo __($guid, 'Houses for competitions, etc.') ?><br/></span>
 								</td>
 								<td class="right">
-									<input <?php if ($resultTarget->rowCount() > 0) {
-    echo 'checked';
-}
-                    ?> type="radio" name="houses" class="houses" value="Y"/> <?php echo __($guid, 'Yes') ?>
-									<input <?php if ($resultTarget->rowCount() <= 0) {
-    echo 'checked';
-}
-                    ?> type="radio" name="houses" class="houses" value="N"/> <?php echo __($guid, 'No') ?>
+									<input <?php if ($resultTarget->rowCount() > 0)) { echo 'checked'; } ?> type="radio" name="houses" class="houses" value="Y"/> <?php echo __($guid, 'Yes') ?>
+									<input <?php if ($resultTarget->rowCount() <= 0)) { echo 'checked'; } ?> type="radio" name="houses" class="houses" value="N"/> <?php echo __($guid, 'No') ?>
 								</td>
 							</tr>
 							<?php
@@ -1444,14 +1396,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 									<span class="emphasis small"><?php echo __($guid, 'Individuals from the whole school.') ?><br/></span>
 								</td>
 								<td class="right">
-									<input <?php if ($resultTarget->rowCount() > 0) {
-    echo 'checked';
-}
-                    ?> type="radio" name="individuals" class="individuals" value="Y"/> <?php echo __($guid, 'Yes') ?>
-									<input <?php if ($resultTarget->rowCount() <= 0) {
-    echo 'checked';
-}
-                    ?> type="radio" name="individuals" class="individuals" value="N"/> <?php echo __($guid, 'No') ?>
+									<input <?php if ($resultTarget->rowCount() > 0)) { echo 'checked'; } ?> type="radio" name="individuals" class="individuals" value="Y"/> <?php echo __($guid, 'Yes') ?>
+									<input <?php if ($resultTarget->rowCount() <= 0)) { echo 'checked'; } ?> type="radio" name="individuals" class="individuals" value="N"/> <?php echo __($guid, 'No') ?>
 								</td>
 							</tr>
 							<?php
@@ -1495,12 +1441,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 						
 						<tr>
 							<td>
-								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-                ?></span>
+								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 							</td>
 							<td class="right">
-								<input type="submit" value="<?php echo __($guid, 'Submit');
-                ?>">
+								<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 							</td>
 						</tr>
 					</table>

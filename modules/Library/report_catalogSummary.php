@@ -104,8 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
         echo 'selected ';
     }
     echo "value='Individual'>".__($guid, 'Individual').'</option>';
-    echo '</select>';
-    ?>
+    echo '</select>';?>
 				</td>
 			</tr>
 			<tr>
@@ -132,8 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
         }
         echo "<option $selected value='".$rowType['gibbonLibraryTypeID']."'>".__($guid, $rowType['name']).'</option>';
     }
-    echo '</select>';
-    ?>
+    echo '</select>';?>
 				</td>
 			</tr>
 			<tr>
@@ -160,8 +158,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
         }
         echo "<option $selected value='".$rowLocation['gibbonSpaceID']."'>".$rowLocation['name'].'</option>';
     }
-    echo '</select>';
-    ?>
+    echo '</select>';?>
 				</td>
 			</tr>
 			<tr>
@@ -208,8 +205,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
         echo 'selected ';
     }
     echo "value='Reserved'>".__($guid, 'Reserved').'</option>';
-    echo '</select>';
-    ?>
+    echo '</select>';?>
 				</td>
 			</tr>
 			<?php
@@ -304,8 +300,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
                 $rowNum = 'odd';
             }
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$rowNum>";
             echo '<td>';
             echo '<b>'.$row['id'].'</b><br/>';
             echo "<span style='font-style: italic; font-size: 85%'>";

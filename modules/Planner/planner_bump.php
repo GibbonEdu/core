@@ -133,8 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_bump.php')
 							</tr>
 							<tr>
 								<td>
-									<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-                    ?></span>
+									<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 								</td>
 								<td class="right">
 									<input name="viewBy" id="viewBy" value="<?php echo $viewBy ?>" type="hidden">
@@ -142,8 +141,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_bump.php')
 									<input name="date" id="date" value="<?php echo $date ?>" type="hidden">
 									<input name="gibbonCourseClassID" id="gibbonCourseClassID" value="<?php echo $gibbonCourseClassID ?>" type="hidden">
 									<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-									<input type="submit" value="<?php echo __($guid, 'Submit');
-                    ?>">
+									<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 								</td>
 							</tr>
 						</table>

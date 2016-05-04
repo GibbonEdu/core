@@ -160,16 +160,16 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 					<script type="text/javascript">
 						var dob=new LiveValidation('dob');
 						dob.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-    ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-    ?>." } ); 
+							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+						}
+							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+							echo 'dd/mm/yyyy';
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormat'];
+						}
+						?>." } ); 
 					</script>
 					 <script type="text/javascript">
 						$(function() {
@@ -244,8 +244,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     while ($rowSelect = $resultSelect->fetch()) {
         $idList .= "'".addslashes($rowSelect['username'])."',";
     }
-    $idList = substr($idList, 0, -1);
-    ?>
+    $idList = substr($idList, 0, -1); ?>
 					<script type="text/javascript">
 						var username=new LiveValidation('username');
 						username.add( Validate.Exclusion, { within: [<?php echo $idList;
@@ -628,8 +627,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 					<tr>
 						<td> 
 							<b><?php echo __($guid, 'Day Type') ?></b><br/>
-							<span class="emphasis small"><?php echo getSettingByScope($connection2, 'User Admin', 'dayTypeText');
-        ?></span>
+							<span class="emphasis small"><?php echo getSettingByScope($connection2, 'User Admin', 'dayTypeText'); ?></span>
 						</td>
 						<td class="right">
 							<select name="dayType" id="dayType" class="standardWidth">
@@ -690,16 +688,16 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 					<script type="text/javascript">
 						var dateStart=new LiveValidation('dateStart');
 						dateStart.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-    ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-    ?>." } ); 
+							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+						}
+							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+							echo 'dd/mm/yyyy';
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormat'];
+						}
+						?>." } ); 
 					</script>
 					 <script type="text/javascript">
 						$(function() {
@@ -956,7 +954,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                     } else {
                         echo '<b>'.$_SESSION[$guid]['country'].' '.__($guid, 'ID Card Number').'</b><br/>';
                     }
-    ?>
+   				 	?>
 				</td>
 				<td class="right">
 					<input name="nationalIDCardNumber" id="nationalIDCardNumber" maxlength=30 value="" type="text" class="standardWidth">
@@ -970,7 +968,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                     } else {
                         echo '<b>'.$_SESSION[$guid]['country'].' '.__($guid, 'ID Card Scan').'</b><br/>';
                     }
-    ?>
+   				 	?>
 					<span class="emphasis small"><?php echo __($guid, 'Less than 1440px by 900px') ?></span>
 				</td>
 				<td class="right">
@@ -989,7 +987,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                     } else {
                         echo '<b>'.$_SESSION[$guid]['country'].' '.__($guid, 'Residency/Visa Type').'</b><br/>';
                     }
-    ?>
+   				 	?>
 				</td>
 				<td class="right">
 					<?php
@@ -1022,24 +1020,23 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     } else {
         echo $_SESSION[$guid]['i18n']['dateFormat'];
     }
-    echo '. '.__($guid, 'If relevant.').'</span>';
-    ?>
+    echo '. '.__($guid, 'If relevant.').'</span>';?>
 				</td>
 				<td class="right">
 					<input name="visaExpiryDate" id="visaExpiryDate" maxlength=10 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var visaExpiryDate=new LiveValidation('visaExpiryDate');
 						visaExpiryDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-    ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-    ?>." } ); 
+							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+						}
+							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+							echo 'dd/mm/yyyy';
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormat'];
+						}
+						?>." } ); 
 					</script>
 					 <script type="text/javascript">
 						$(function() {
@@ -1317,17 +1314,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 			
 			<tr>
 				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-    ?></i><br/>
+					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></i><br/>
 					<?php
-                    echo getMaxUpload($guid, true);
-    ?>
+                    echo getMaxUpload($guid, true); ?>
 					</span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>

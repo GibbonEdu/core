@@ -177,7 +177,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 								<?php
 
                             }
-            ?>
+            				?>
 						</td>
 					</tr>
 				
@@ -304,7 +304,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 								<?php
 
                             }
-            ?>
+            				?>
 						</td>
 					</tr>
 					<tr>
@@ -380,7 +380,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                             }
                         }
                     }
-            ?>
+            		?>
 					
 					<tr>
 						<td> 
@@ -425,7 +425,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 								<?php
 
                             }
-            ?>
+            				?>
 						</td>
 					</tr>
 					<tr>
@@ -645,16 +645,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 							<script type="text/javascript">
 								var homeworkDueDate=new LiveValidation('homeworkDueDate');
 								homeworkDueDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-            ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-            ?>." } ); 
+								echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+								}
+											?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+									echo 'dd/mm/yyyy';
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormat'];
+								}
+								?>." } ); 
 							 	homeworkDueDate.add(Validate.Presence);
 								homeworkDueDate.disable();
 							</script>
@@ -727,16 +727,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 							<script type="text/javascript">
 								var homeworkSubmissionDateOpen=new LiveValidation('homeworkSubmissionDateOpen');
 								homeworkSubmissionDateOpen.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-            ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-            ?>." } ); 
+								echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+								}
+											?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+									echo 'dd/mm/yyyy';
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormat'];
+								}
+								?>." } ); 
 							</script>
 							 <script type="text/javascript">
 								$(function() {
@@ -876,8 +876,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
     echo "<input type='checkbox' name='homeworkCrowdAssessOtherParentsRead' />";
     echo '</td>';
     echo '</tr>';
-    echo '</table>';
-    ?>
+    echo '</table>';?>
 							</td>
 						</tr>
 					<?php 
@@ -1063,8 +1062,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 														<?php
 
                                                     }
-                        ?>
-													<script type='text/javascript'>
+                        			?>													<script type='text/javascript'>
 														var <?php echo $type ?>Used=new Array();
 														var <?php echo $type ?>UsedCount=0 ;
 														
@@ -1093,7 +1091,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 						<?php
 
                     }
-            ?>
+            		?>
 					
 								
 					<tr class='break'>
@@ -1154,8 +1152,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 						<td class="right">
 							<?php
                             echo "<input type='checkbox' name='advanced' class='advanced' id='advanced' value='Yes' />";
-            echo "<span style='font-size: 85%; font-weight: normal; font-style: italic'> ".__($guid, 'Show Advanced Options').'</span>';
-            ?>
+            echo "<span style='font-size: 85%; font-weight: normal; font-style: italic'> ".__($guid, 'Show Advanced Options').'</span>'; ?>
 						</td>
 					</tr>
 					
@@ -1174,14 +1171,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                             $sharingDefaultStudents = getSettingByScope($connection2, 'Planner', 'sharingDefaultStudents');
             ?>
 							<select name="viewableStudents" id="viewableStudents" class="standardWidth">
-								<option <?php if ($sharingDefaultStudents == 'Y') {
-    echo 'selected';
-}
-            ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
-								<option <?php if ($sharingDefaultStudents == 'N') {
-    echo 'selected';
-}
-            ?> value="N"><?php echo __($guid, 'No') ?></option>
+								<option <?php if ($sharingDefaultStudents == 'Y') { echo 'selected'; } ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
+								<option <?php if ($sharingDefaultStudents == 'N') { echo 'selected'; } ?> value="N"><?php echo __($guid, 'No') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -1195,14 +1186,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                             $sharingDefaultParents = getSettingByScope($connection2, 'Planner', 'sharingDefaultParents');
             ?>
 							<select name="viewableParents" id="viewableParents" class="standardWidth">
-								<option <?php if ($sharingDefaultParents == 'Y') {
-    echo 'selected';
-}
-            ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
-								<option <?php if ($sharingDefaultParents == 'N') {
-    echo 'selected';
-}
-            ?> value="N"><?php echo __($guid, 'No') ?></option>
+								<option <?php if ($sharingDefaultParents == 'Y') { echo 'selected'; } ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
+								<option <?php if ($sharingDefaultParents == 'N') { echo 'selected'; } ?> value="N"><?php echo __($guid, 'No') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -1251,12 +1236,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 					</tr>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

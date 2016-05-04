@@ -139,8 +139,8 @@ if ($makeUnitsPublic != 'Y') {
                 $rowNum = 'odd';
             }
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$rowNum>";
             echo '<td>';
             echo $row['course'];
             echo '</td>';

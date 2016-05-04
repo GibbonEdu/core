@@ -133,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
                             if ($row['logo'] != '') {
                                 echo __($guid, 'Current attachment:')." <a href='".$_SESSION[$guid]['absoluteURL'].'/'.$row['logo']."'>".$row['logo'].'</a><br/><br/>';
                             }
-            ?>
+            				?>
 							<input type="file" name="file" id="file"><br/><br/>
 							<?php
                             echo getMaxUpload($guid);
@@ -268,19 +268,17 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
 									<?php
 
                                 }
-            ?>
+           	 					?>
 							</select>
 						</td>
 					</tr>
 					
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

@@ -72,8 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space.php') =
 						<?php
                         echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/tt_space.php'>".__($guid, 'Clear Search').'</a>';
         ?>
-						<input type="submit" value="<?php echo __($guid, 'Submit');
-        ?>">
+						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 					</td>
 				</tr>
 			</table>
@@ -145,8 +144,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space.php') =
                 }
                 ++$count;
 
-                    //COLOR ROW BY STATUS!
-                    echo "<tr class=$rowNum>";
+                //COLOR ROW BY STATUS!
+                echo "<tr class=$rowNum>";
                 echo '<td>';
                 echo $row['name'];
                 echo '</td>';

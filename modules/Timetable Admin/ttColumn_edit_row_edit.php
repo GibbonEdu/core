@@ -202,21 +202,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
             if ($row['type'] == 'Other') {
                 echo 'selected ';
             };
-            echo " value='Other'>".__($guid, 'Other').'</option>';
-            ?>
+            echo " value='Other'>".__($guid, 'Other').'</option>'; ?>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input name="gibbonTTColumnID" id="gibbonTTColumnID" value="<?php echo $gibbonTTColumnID ?>" type="hidden">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

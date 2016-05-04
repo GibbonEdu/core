@@ -241,7 +241,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                                     } else {
                                         echo '<p>'.$rowIEP['targets'].'</p>';
                                     }
-                    ?>
+                   		 			?>
 								</td>
 							</tr>
 							<tr>
@@ -253,7 +253,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                                     } else {
                                         echo '<p>'.$rowIEP['strategies'].'</p>';
                                     }
-                    ?>
+                   		 			?>
 								</td>
 							</tr>
 							<tr>
@@ -265,7 +265,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                                     } else {
                                         echo '<p>'.$rowIEP['notes'].'</p>';
                                     }
-                    ?>
+                   		 			?>
 								</td>
 							</tr>
 							<?php
@@ -275,8 +275,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
 									<td class="right" colspan=2>
 										<input type="hidden" name="gibbonPersonID" value="<?php echo $gibbonPersonID ?>">
 										<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-										<input type="submit" value="<?php echo __($guid, 'Submit');
-                                ?>">
+										<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 									</td>
 								</tr>
 								<?php

@@ -90,8 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
             if ($row['active'] == 'N') {
                 echo 'selected';
             }
-            echo " value='N'>".__($guid, 'No').'</option>';
-            ?>				
+            echo " value='N'>".__($guid, 'No').'</option>'; ?>				
 							</select>
 						</td>
 					</tr>
@@ -114,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
                                 if ($row['type'] != 'varchar' and $row['type'] != 'text' and $row['type'] != 'select') {
                                     echo '$("#optionsRow").css("display","none");';
                                 }
-            ?>
+           	 					?>
 							
 							$("#type").change(function(){
 								//varchar = chars
@@ -177,8 +176,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
 								<?php 
                                     echo __($guid, 'Short Text: number of characters, up to 255.').'<br/>';
             echo __($guid, 'Long Text: number of rows for field.').'<br/>';
-            echo __($guid, 'Dropdown: comma separated list of options.').'<br/>';
-            ?>
+            echo __($guid, 'Dropdown: comma separated list of options.').'<br/>'; ?>
 								</span>
 						</td>
 						<td class="right">
@@ -202,8 +200,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
             if ($row['required'] == 'N') {
                 echo 'selected';
             }
-            echo " value='N'>".__($guid, 'No').'</option>';
-            ?>				
+            echo " value='N'>".__($guid, 'No').'</option>'; ?>				
 							</select>
 						</td>
 					</tr>
@@ -252,8 +249,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
             if ($row['activeDataUpdater'] == '0') {
                 echo 'selected';
             }
-            echo " value='0'>".__($guid, 'No').'</option>';
-            ?>				
+            echo " value='0'>".__($guid, 'No').'</option>'; ?>				
 							</select>
 						</td>
 					</tr>
@@ -273,21 +269,18 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
             if ($row['activeApplicationForm'] == '0') {
                 echo 'selected';
             }
-            echo " value='0'>".__($guid, 'No').'</option>';
-            ?>				
+            echo " value='0'>".__($guid, 'No').'</option>'; ?>				
 							</select>
 						</td>
 					</tr>
 			
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 

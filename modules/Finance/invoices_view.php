@@ -102,8 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
         						<td class="right">
         							<select name="search" id="search" class="standardWidth">
         								<option value=""></value>
-        								<?php echo $options;
-                    ?>
+        								<?php echo $options; ?>
         							</select>
         						</td>
         					</tr>
@@ -112,10 +111,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
         							<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/invoices_view.php">
         							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
         							<?php
-                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/invoices_view.php'>".__($guid, 'Clear Search').'</a>';
-                    ?>
-        							<input type="submit" value="<?php echo __($guid, 'Submit');
-                    ?>">
+                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/invoices_view.php'>".__($guid, 'Clear Search').'</a>'; ?>
+        							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
         						</td>
         					</tr>
         				</table>
@@ -279,10 +276,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                                 $statusExtra = 'Late';
                             }
 
-                                        //Color row by status
-                                        if ($row['status'] == 'Paid') {
-                                            $rowNum = 'current';
-                                        }
+							//Color row by status
+							if ($row['status'] == 'Paid') {
+								$rowNum = 'current';
+							}
                             if ($row['status'] == 'Issued' and $statusExtra == 'Overdue') {
                                 $rowNum = 'error';
                             }
@@ -309,8 +306,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                             }
                             echo '</td>';
                             echo '<td>';
-                                                //Calculate total value
-                                                $totalFee = 0;
+							//Calculate total value
+							$totalFee = 0;
                             $feeError = false;
                             try {
                                 $dataTotal = array('gibbonFinanceInvoiceID' => $row['gibbonFinanceInvoiceID']);

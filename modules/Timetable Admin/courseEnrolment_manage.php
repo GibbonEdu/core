@@ -146,8 +146,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                             $rowNum = 'odd';
                         }
 
-                            //COLOR ROW BY STATUS!
-                            echo "<tr class=$rowNum>";
+                        //COLOR ROW BY STATUS!
+                        echo "<tr class=$rowNum>";
                         echo '<td>';
                         echo $rowClass['name'];
                         echo '</td>';

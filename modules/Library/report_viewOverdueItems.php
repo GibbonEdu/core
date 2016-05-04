@@ -67,10 +67,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_viewOverdue
 					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/report_viewOverdueItems.php">
 					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 					<?php
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/report_viewOverdueItems.php'>".__($guid, 'Clear Search').'</a>';
-    ?>
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/report_viewOverdueItems.php'>".__($guid, 'Clear Search').'</a>';?>
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>

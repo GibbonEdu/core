@@ -122,34 +122,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 						</td>
 						<td class="right">
 							<select class="standardWidth" name="role">
-								<option <?php if ($row['role'] == 'Student') {
-    echo 'selected ';
-}
-            ?>value="Student"><?php echo __($guid, 'Student') ?></option>
-								<option <?php if ($row['role'] == 'Student - Left') {
-    echo 'selected ';
-}
-            ?>value="Student - Left"><?php echo __($guid, 'Student - Left') ?></option>
-								<option <?php if ($row['role'] == 'Teacher') {
-    echo 'selected ';
-}
-            ?>value="Teacher"><?php echo __($guid, 'Teacher') ?></option>
-								<option <?php if ($row['role'] == 'Teacher - Left') {
-    echo 'selected ';
-}
-            ?>value="Teacher - Left"><?php echo __($guid, 'Teacher - Left') ?></option>
-								<option <?php if ($row['role'] == 'Assistant') {
-    echo 'selected ';
-}
-            ?>value="Assistant"><?php echo __($guid, 'Assistant') ?></option>
-								<option <?php if ($row['role'] == 'Technician') {
-    echo 'selected ';
-}
-            ?>value="Technician"><?php echo __($guid, 'Technician') ?></option>
-								<option <?php if ($row['role'] == 'Parent') {
-    echo 'selected ';
-}
-            ?>value="Parent"><?php echo __($guid, 'Parent') ?></option>
+								<option <?php if ($row['role'] == 'Student') { echo 'selected '; } ?>value="Student"><?php echo __($guid, 'Student') ?></option>
+								<option <?php if ($row['role'] == 'Student - Left') { echo 'selected '; } ?>value="Student - Left"><?php echo __($guid, 'Student - Left') ?></option>
+								<option <?php if ($row['role'] == 'Teacher') { echo 'selected '; } ?>value="Teacher"><?php echo __($guid, 'Teacher') ?></option>
+								<option <?php if ($row['role'] == 'Teacher - Left') { echo 'selected '; } ?>value="Teacher - Left"><?php echo __($guid, 'Teacher - Left') ?></option>
+								<option <?php if ($row['role'] == 'Assistant') { echo 'selected '; } ?>value="Assistant"><?php echo __($guid, 'Assistant') ?></option>
+								<option <?php if ($row['role'] == 'Technician') { echo 'selected '; } ?>value="Technician"><?php echo __($guid, 'Technician') ?></option>
+								<option <?php if ($row['role'] == 'Parent') { echo 'selected '; } ?>value="Parent"><?php echo __($guid, 'Parent') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -160,27 +139,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 						</td>
 						<td class="right">
 							<select name="reportable" id="reportable" class="standardWidth">
-								<option <?php if ($row['reportable'] == 'Y') {
-    echo 'selected ';
-}
-            ?>value="Y"><?php echo ynExpander($guid, 'Y') ?></option>
-								<option <?php if ($row['reportable'] == 'N') {
-    echo 'selected ';
-}
-            ?>value="N"><?php echo ynExpander($guid, 'N') ?></option>
+								<option <?php if ($row['reportable'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo ynExpander($guid, 'Y') ?></option>
+								<option <?php if ($row['reportable'] == 'N') { echo 'selected '; } ?>value="N"><?php echo ynExpander($guid, 'N') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input name="gibbonPersonID" id="gibbonPersonID" value="<?php echo $gibbonPersonID ?>" type="hidden">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

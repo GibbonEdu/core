@@ -108,13 +108,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_import.ph
 					</tr>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>
@@ -136,7 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_import.ph
                         } elseif ($permission == 'School') {
                             echo '<li><b>'.__($guid, 'Scope').' *</b> - '.__($guid, 'School or Learning Area').'</li>';
                         }
-            ?>
+            		?>
 						<li><b><?php echo __($guid, 'Learning Area') ?></b> - <?php echo __($guid, 'Learning Area name, or blank if scope is School') ?></li>
 						<li><b><?php echo __($guid, 'Name') ?> *</b></li>
 						<li><b><?php echo __($guid, 'Short Name') ?> *</b></li>

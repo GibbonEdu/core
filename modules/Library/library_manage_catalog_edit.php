@@ -164,16 +164,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 							<script type="text/javascript">
 								var purchaseDate=new LiveValidation('purchaseDate');
 								purchaseDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-            ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-            ?>." } ); 
+								echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+								}
+											?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+									echo 'dd/mm/yyyy';
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormat'];
+								}
+								?>." } ); 
 							</script>
 							 <script type="text/javascript">
 								$(function() {
@@ -224,14 +224,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 						<td class="right">
 							<select name="imageType" id="imageType" class='imageType standardWidth'>
 								<option value=""></option>
-								<option <?php if ($row['imageType'] == 'File') {
-    echo 'selected';
-}
-            ?> value="File" /> <?php echo __($guid, 'File') ?>
-								<option <?php if ($row['imageType'] == 'Link') {
-    echo 'selected';
-}
-            ?> value="Link" /> <?php echo __($guid, 'Link') ?>
+								<option <?php if ($row['imageType'] == 'File') { echo 'selected'; } ?> value="File" /> <?php echo __($guid, 'File') ?>
+								<option <?php if ($row['imageType'] == 'Link') { echo 'selected'; } ?> value="Link" /> <?php echo __($guid, 'Link') ?>
 							</select>
 						</td>
 					</tr>
@@ -247,7 +241,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
                             if ($row['imageType'] == 'File' and $row['imageLocation'] != '') {
                                 echo __($guid, 'Current attachment:')." <a href='".$_SESSION[$guid]['absoluteURL'].'/'.$row['imageLocation']."'>".$row['imageLocation'].'</a><br/><br/>';
                             }
-            ?>
+            				?>
 							<input type="file" name="imageFile" id="imageFile"><br/><br/>
 							<script type="text/javascript">
 								var imageFile=new LiveValidation('imageFile');
@@ -350,14 +344,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 						<td class="right">
 							<select name="ownershipType" id="ownershipType" class='ownershipType standardWidth'>
 								<option value=""></option>
-								<option <?php if ($row['ownershipType'] == 'School') {
-    echo 'selected';
-}
-            ?> value="School" /> <?php echo __($guid, 'School') ?>
-								<option <?php if ($row['ownershipType'] == 'Individual') {
-    echo 'selected';
-}
-            ?> value="Individual" /> <?php echo __($guid, 'Individual') ?>
+								<option <?php if ($row['ownershipType'] == 'School') { echo 'selected'; } ?> value="School" /> <?php echo __($guid, 'School') ?>
+								<option <?php if ($row['ownershipType'] == 'Individual') { echo 'selected'; } ?> value="Individual" /> <?php echo __($guid, 'Individual') ?>
 							</select>
 						</td>
 					</tr>
@@ -394,8 +382,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
                 }
                 $selectContents .= "<option $selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.$rowSelect['username'].')'.$expected.'</option>';
             }
-            $selectContents .= '</optgroup>';
-            ?>
+            $selectContents .= '</optgroup>'; ?>
 					<tr id="ownershipTypeSchoolRow" <?php if ($row['ownershipType'] != 'School') {
     echo "style='display: none'";
 }
@@ -457,14 +444,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 						</td>
 						<td class="right">
 							<select name="bookable" id="bookable" class="standardWidth">
-								<option <?php if ($row['bookable'] == 'N') {
-    echo 'selected';
-}
-            ?> value="N" /> <?php echo __($guid, 'No') ?>
-								<option <?php if ($row['bookable'] == 'Y') {
-    echo 'selected';
-}
-            ?> value="Y" /> <?php echo __($guid, 'Yes') ?>
+								<option <?php if ($row['bookable'] == 'N') { echo 'selected'; } ?> value="N" /> <?php echo __($guid, 'No') ?>
+								<option <?php if ($row['bookable'] == 'Y') { echo 'selected'; } ?> value="Y" /> <?php echo __($guid, 'Yes') ?>
 							</select>
 						</td>
 					</tr>
@@ -475,14 +456,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 						</td>
 						<td class="right">
 							<select name="borrowable" id="borrowable" class="borrowable standardWidth">
-								<option <?php if ($row['borrowable'] == 'Y') {
-    echo 'selected';
-}
-            ?> value="Y" /> <?php echo __($guid, 'Yes') ?>
-								<option <?php if ($row['borrowable'] == 'N') {
-    echo 'selected';
-}
-            ?> value="N" /> <?php echo __($guid, 'No') ?>
+								<option <?php if ($row['borrowable'] == 'Y') { echo 'selected'; } ?> value="Y" /> <?php echo __($guid, 'Yes') ?>
+								<option <?php if ($row['borrowable'] == 'N') { echo 'selected'; } ?> value="N" /> <?php echo __($guid, 'No') ?>
 							</select>
 						</td>
 					</tr>
@@ -522,30 +497,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 						</td>
 						<td class="right">
 							<select name="statusNotBorrowable" id="status" class="standardWidth">
-								<option <?php if ($row['status'] == 'Available') {
-    echo 'selected';
-}
-            ?> value="Available" /> <?php echo __($guid, 'Available') ?>
-								<option <?php if ($row['status'] == 'In Use') {
-    echo 'selected';
-}
-            ?> value="In Use" /> <?php echo __($guid, 'In Use') ?>
-								<option <?php if ($row['status'] == 'Reserved') {
-    echo 'selected';
-}
-            ?> value="Reserved" /> <?php echo __($guid, 'Reserved') ?>
-								<option <?php if ($row['status'] == 'Decommissioned') {
-    echo 'selected';
-}
-            ?> value="Decommissioned" /> <?php echo __($guid, 'Decommissioned') ?>
-								<option <?php if ($row['status'] == 'Lost') {
-    echo 'selected';
-}
-            ?> value="Lost" /> <?php echo __($guid, 'Lost') ?>
-								<option <?php if ($row['status'] == 'Repair') {
-    echo 'selected';
-}
-            ?> value="Repair" /> <?php echo __($guid, 'Repair') ?>
+								<option <?php if ($row['status'] == 'Available') { echo 'selected'; } ?> value="Available" /> <?php echo __($guid, 'Available') ?>
+								<option <?php if ($row['status'] == 'In Use') { echo 'selected'; } ?> value="In Use" /> <?php echo __($guid, 'In Use') ?>
+								<option <?php if ($row['status'] == 'Reserved') { echo 'selected'; } ?> value="Reserved" /> <?php echo __($guid, 'Reserved') ?>
+								<option <?php if ($row['status'] == 'Decommissioned') { echo 'selected'; } ?> value="Decommissioned" /> <?php echo __($guid, 'Decommissioned') ?>
+								<option <?php if ($row['status'] == 'Lost') { echo 'selected'; } ?> value="Lost" /> <?php echo __($guid, 'Lost') ?>
+								<option <?php if ($row['status'] == 'Repair') { echo 'selected'; } ?> value="Repair" /> <?php echo __($guid, 'Repair') ?>
 							</select>
 						</td>
 					</tr>
@@ -570,14 +527,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 						</td>
 						<td class="right">
 							<select name="replacement" id="replacement" class="standardWidth">
-								<option <?php if ($row['replacement'] == 'N') {
-    echo 'selected';
-}
-            ?> value="N"><?php echo ynExpander($guid, 'N') ?></option>
-								<option <?php if ($row['replacement'] == 'Y') {
-    echo 'selected';
-}
-            ?> value="Y"><?php echo ynExpander($guid, 'Y') ?></option>
+								<option <?php if ($row['replacement'] == 'N') { echo 'selected'; } ?> value="N"><?php echo ynExpander($guid, 'N') ?></option>
+								<option <?php if ($row['replacement'] == 'Y') { echo 'selected'; } ?> value="Y"><?php echo ynExpander($guid, 'Y') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -586,8 +537,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 }
             ?>>
 						<td> 
-							<b><?php echo __($guid, 'Replacement Year');
-            ?></b><br/>
+							<b><?php echo __($guid, 'Replacement Year'); ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'When is this item scheduled for replacement.') ?></span>
 						</td>
 						<td class="right">
@@ -617,8 +567,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 }
             ?>>
 						<td> 
-							<b><?php echo __($guid, 'Replacement Cost');
-            ?></b><br/>
+							<b><?php echo __($guid, 'Replacement Cost'); ?></b><br/>
 							<span style="font-size: 90%">
 								<i>
 								<?php
@@ -627,7 +576,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
                                 } else {
                                     echo __($guid, 'Numeric value of the replacement cost.');
                                 }
-            ?>
+           	 					?>
 								</i>
 							</span>
 						</td>
@@ -645,30 +594,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 						</td>
 						<td class="right">
 							<select name="physicalCondition" id="physicalCondition" class="standardWidth">
-								<option <?php if ($row['physicalCondition'] == '') {
-    echo 'selected';
-}
-            ?> value="" />
-								<option <?php if ($row['physicalCondition'] == 'As New') {
-    echo 'selected';
-}
-            ?> value="As New" /> <?php echo __($guid, 'As New') ?>
-								<option <?php if ($row['physicalCondition'] == 'Lightly Worn') {
-    echo 'selected';
-}
-            ?> value="Lightly Worn" /> <?php echo __($guid, 'Lightly Worn') ?>
-								<option <?php if ($row['physicalCondition'] == 'Moderately Worn') {
-    echo 'selected';
-}
-            ?> value="Moderately Worn" /> <?php echo __($guid, 'Moderately Worn') ?>
-								<option <?php if ($row['physicalCondition'] == 'Damaged') {
-    echo 'selected';
-}
-            ?> value="Damaged" /> <?php echo __($guid, 'Damaged') ?>
-								<option <?php if ($row['physicalCondition'] == 'Unusable') {
-    echo 'selected';
-}
-            ?> value="Unusable" /> <?php echo __($guid, 'Unusable') ?>
+								<option <?php if ($row['physicalCondition'] == '') { echo 'selected'; } ?> value="" />
+								<option <?php if ($row['physicalCondition'] == 'As New') { echo 'selected'; } ?> value="As New" /> <?php echo __($guid, 'As New') ?>
+								<option <?php if ($row['physicalCondition'] == 'Lightly Worn') { echo 'selected'; } ?> value="Lightly Worn" /> <?php echo __($guid, 'Lightly Worn') ?>
+								<option <?php if ($row['physicalCondition'] == 'Moderately Worn') { echo 'selected'; } ?> value="Moderately Worn" /> <?php echo __($guid, 'Moderately Worn') ?>
+								<option <?php if ($row['physicalCondition'] == 'Damaged') { echo 'selected'; } ?> value="Damaged" /> <?php echo __($guid, 'Damaged') ?>
+								<option <?php if ($row['physicalCondition'] == 'Unusable') { echo 'selected'; } ?> value="Unusable" /> <?php echo __($guid, 'Unusable') ?>
 							</select>
 						</td>
 					</tr>
@@ -811,14 +742,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             ?>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="gibbonLibraryItemID" value="<?php echo $row['gibbonLibraryItemID'] ?>">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

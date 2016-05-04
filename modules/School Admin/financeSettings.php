@@ -95,8 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
     if ($row['value'] == 'N') {
         $selected = 'selected';
     }
-    echo "<option $selected value='N'>".ynExpander($guid, 'N').'</option>';
-    ?>			
+    echo "<option $selected value='N'>".ynExpander($guid, 'N').'</option>';?>			
 					</select>
 				</td>
 			</tr>
@@ -291,8 +290,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
     if ($row['value'] == 'N') {
         $selected = 'selected';
     }
-    echo "<option $selected value='N'>".ynExpander($guid, 'N').'</option>';
-    ?>			
+    echo "<option $selected value='N'>".ynExpander($guid, 'N').'</option>';?>			
 					</select>
 				</td>
 			</tr>
@@ -384,7 +382,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
                         if ($row['description'] != '') {
                             echo __($guid, $row['description']);
                         }
-    ?> 
+   				 		?> 
 					</span>
 				</td>
 				<td class="right">
@@ -463,8 +461,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
     if ($row['value'] == 'N') {
         $selected = 'selected';
     }
-    echo "<option $selected value='N'>".ynExpander($guid, 'N').'</option>';
-    ?>			
+    echo "<option $selected value='N'>".ynExpander($guid, 'N').'</option>';?>			
 					</select>
 				</td>
 			</tr>
@@ -516,8 +513,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
     if ($row['value'] == 'N') {
         $selected = 'selected';
     }
-    echo "<option $selected value='N'>".ynExpander($guid, 'N').'</option>';
-    ?>			
+    echo "<option $selected value='N'>".ynExpander($guid, 'N').'</option>';?>			
 					</select>
 				</td>
 			</tr>
@@ -599,13 +595,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
 			
 			<tr>
 				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-    ?></span>
+					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>

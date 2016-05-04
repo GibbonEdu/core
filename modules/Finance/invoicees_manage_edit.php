@@ -81,10 +81,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_e
 
             echo '</td>';
             echo '</tr>';
-            echo '</table>';
-            ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/invoicees_manage_editProcess.php?gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&search=".$_GET['search'].'&allUsers='.$_GET['allUsers'];
-            ?>">
+            echo '</table>'; ?>
+			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/invoicees_manage_editProcess.php?gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&search=".$_GET['search'].'&allUsers='.$_GET['allUsers']; ?>">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<script type="text/javascript">
 						/* Resource 1 Option Control */
@@ -162,14 +160,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_e
 							<b><?php echo __($guid, 'Send Invoices To') ?></b><br/>
 						</td>
 						<td class="right">
-							<input <?php if ($row['invoiceTo'] == 'Family') {
-    echo 'checked';
-}
-            ?> type="radio" name="invoiceTo" value="Family" class="invoiceTo" /> <?php echo __($guid, 'Family') ?>
-							<input <?php if ($row['invoiceTo'] == 'Company') {
-    echo 'checked';
-}
-            ?> type="radio" name="invoiceTo" value="Company" class="invoiceTo" /> <?php echo __($guid, 'Company') ?>
+							<input <?php if ($row['invoiceTo'] == 'Family') { echo 'checked'; } ?> type="radio" name="invoiceTo" value="Family" class="invoiceTo" /> <?php echo __($guid, 'Family') ?>
+							<input <?php if ($row['invoiceTo'] == 'Company') { echo 'checked'; } ?> type="radio" name="invoiceTo" value="Company" class="invoiceTo" /> <?php echo __($guid, 'Company') ?>
 						</td>
 					</tr>
 					<tr id="companyNameRow">
@@ -228,14 +220,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_e
 						</td>
 						<td class="right">
 							<select name="companyCCFamily" id="companyCCFamily" class="standardWidth">
-								<option <?php if ($row['companyCCFamily'] == 'N') {
-    echo 'selected';
-}
-            ?> value="N" /> <?php echo __($guid, 'No') ?>
-								<option <?php if ($row['companyCCFamily'] == 'Y') {
-    echo 'selected';
-}
-            ?> value="Y" /> <?php echo __($guid, 'Yes') ?>
+								<option <?php if ($row['companyCCFamily'] == 'N') { echo 'selected'; } ?> value="N" /> <?php echo __($guid, 'No') ?>
+								<option <?php if ($row['companyCCFamily'] == 'Y') { echo 'selected'; } ?> value="Y" /> <?php echo __($guid, 'Yes') ?>
 							</select>
 						</td>
 					</tr>
@@ -259,58 +245,48 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_e
                 echo '<input type="hidden" name="companyAll" value="Y" class="companyAll"/>';
             } else {
                 ?>
-						<tr id="companyAllRow">
-							<td> 
-								<b><?php echo __($guid, 'Company All?') ?></b><br/>
-								<span class="emphasis small"><?php echo __($guid, 'Should all items be billed to the specified company, or just some?') ?></span>
-							</td>
-							<td class="right">
-								<input type="radio" name="companyAll" value="Y" class="companyAll" <?php if ($row['companyAll'] == 'Y' or $row['companyAll'] == '') {
-    echo 'checked';
-}
-                ?> /> <?php echo __($guid, 'All') ?>
-								<input type="radio" name="companyAll" value="N" class="companyAll" <?php if ($row['companyAll'] == 'N') {
-    echo 'checked';
-}
-                ?> /> <?php echo __($guid, 'Selected') ?>
-							</td>
-						</tr>
-						<tr id="companyCategoriesRow">
-							<td> 
-								<b><?php echo __($guid, 'Company Fee Categories') ?></b><br/>
-								<span class="emphasis small"><?php echo __($guid, 'If the specified company is not paying all fees, which categories are they paying?') ?></span>
-							</td>
-							<td class="right">
-								<?php
-                                while ($rowCat = $resultCat->fetch()) {
-                                    $checked = '';
-                                    if (strpos($row['gibbonFinanceFeeCategoryIDList'], $rowCat['gibbonFinanceFeeCategoryID']) !== false) {
-                                        $checked = 'checked';
-                                    }
-                                    echo $rowCat['name']." <input $checked type='checkbox' name='gibbonFinanceFeeCategoryIDList[]' value='".$rowCat['gibbonFinanceFeeCategoryID']."'/><br/>";
-                                }
-                $checked = '';
-                if (strpos($row['gibbonFinanceFeeCategoryIDList'], '0001') !== false) {
-                    $checked = 'checked';
-                }
-                echo "Other <input $checked type='checkbox' name='gibbonFinanceFeeCategoryIDList[]' value='0001'/><br/>";
-                ?>
-							</td>
-						</tr>
-						<?php
+					<tr id="companyAllRow">
+						<td> 
+							<b><?php echo __($guid, 'Company All?') ?></b><br/>
+							<span class="emphasis small"><?php echo __($guid, 'Should all items be billed to the specified company, or just some?') ?></span>
+						</td>
+						<td class="right">
+							<input type="radio" name="companyAll" value="Y" class="companyAll" <?php if ($row['companyAll'] == 'Y' or $row['companyAll'] == '') { echo 'checked'; } ?> /> <?php echo __($guid, 'All') ?>
+							<input type="radio" name="companyAll" value="N" class="companyAll" <?php if ($row['companyAll'] == 'N') { echo 'checked'; } ?> /> <?php echo __($guid, 'Selected') ?>
+						</td>
+					</tr>
+					<tr id="companyCategoriesRow">
+						<td> 
+							<b><?php echo __($guid, 'Company Fee Categories') ?></b><br/>
+							<span class="emphasis small"><?php echo __($guid, 'If the specified company is not paying all fees, which categories are they paying?') ?></span>
+						</td>
+						<td class="right">
+							<?php
+							while ($rowCat = $resultCat->fetch()) {
+								$checked = '';
+								if (strpos($row['gibbonFinanceFeeCategoryIDList'], $rowCat['gibbonFinanceFeeCategoryID']) !== false) {
+									$checked = 'checked';
+								}
+								echo $rowCat['name']." <input $checked type='checkbox' name='gibbonFinanceFeeCategoryIDList[]' value='".$rowCat['gibbonFinanceFeeCategoryID']."'/><br/>";
+							}
+							$checked = '';
+							if (strpos($row['gibbonFinanceFeeCategoryIDList'], '0001') !== false) {
+								$checked = 'checked';
+							}
+							echo "Other <input $checked type='checkbox' name='gibbonFinanceFeeCategoryIDList[]' value='0001'/><br/>"; ?>
+						</td>
+					</tr>
+					<?php
 
-            }
-            ?>
-					
+					}
+					?>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

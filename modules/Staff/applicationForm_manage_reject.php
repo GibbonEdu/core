@@ -81,8 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 						<td class="right"> 
 							<input name="gibbonStaffApplicationFormID" id="gibbonStaffApplicationFormID" value="<?php echo $gibbonStaffApplicationFormID ?>" type="hidden">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Yes');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Yes'); ?>">
 						</td>
 					</tr>
 				</table>

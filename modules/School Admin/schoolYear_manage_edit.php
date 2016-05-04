@@ -82,18 +82,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
 						</td>
 						<td class="right">
 							<select class="standardWidth" name="status">
-								<option <?php if ($row['status'] == 'Past') {
-    echo 'selected ';
-}
-            ?>value="Past"><?php echo __($guid, 'Past') ?></option>
-								<option <?php if ($row['status'] == 'Current') {
-    echo 'selected ';
-}
-            ?>value="Current"><?php echo __($guid, 'Current') ?></option>
-								<option <?php if ($row['status'] == 'Upcoming') {
-    echo 'selected ';
-}
-            ?>value="Upcoming"><?php echo __($guid, 'Upcoming') ?></option>
+								<option <?php if ($row['status'] == 'Past') { echo 'selected '; } ?>value="Past"><?php echo __($guid, 'Past') ?></option>
+								<option <?php if ($row['status'] == 'Current') { echo 'selected '; } ?>value="Current"><?php echo __($guid, 'Current') ?></option>
+								<option <?php if ($row['status'] == 'Upcoming') { echo 'selected '; } ?>value="Upcoming"><?php echo __($guid, 'Upcoming') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -128,16 +119,16 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
 								var firstDay=new LiveValidation('firstDay');
 								firstDay.add(Validate.Presence);
 								firstDay.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-            ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-            ?>." } ); 
+								echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+								}
+											?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+									echo 'dd/mm/yyyy';
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormat'];
+								}
+								?>." } ); 
 							</script>
 							 <script type="text/javascript">
 								$(function() {
@@ -160,16 +151,16 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
 								var lastDay=new LiveValidation('lastDay');
 								lastDay.add(Validate.Presence);
 								lastDay.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-            ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-            ?>." } ); 
+								echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+								}
+											?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+									echo 'dd/mm/yyyy';
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormat'];
+								}
+								?>." } ); 
 							</script>
 							 <script type="text/javascript">
 								$(function() {
@@ -180,13 +171,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
 					</tr>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

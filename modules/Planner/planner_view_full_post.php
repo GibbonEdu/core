@@ -181,8 +181,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
                     echo "<input type='hidden' name='address' value='".$_SESSION[$guid]['address']."'>";
                     ?>
 									
-									<input type="submit" value="<?php echo __($guid, 'Submit');
-                    ?>">
+									<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 								</td>
 							</tr>
 						</table>

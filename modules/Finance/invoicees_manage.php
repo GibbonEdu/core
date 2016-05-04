@@ -106,11 +106,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage.p
 				<td class="right">
 					<?php
                     $checked = '';
-    if ($allUsers == 'on') {
-        $checked = 'checked';
-    }
-    echo "<input $checked name=\"allUsers\" id=\"allUsers\" type=\"checkbox\">";
-    ?>
+					if ($allUsers == 'on') {
+						$checked = 'checked';
+					}
+					echo "<input $checked name=\"allUsers\" id=\"allUsers\" type=\"checkbox\">";
+					?>
 				</td>
 			</tr>
 			<tr>
@@ -118,10 +118,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage.p
 					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/invoicees_manage.php">
 					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 					<?php
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/invoicees_manage.php'>".__($guid, 'Clear Filters').'</a>';
-    ?>
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/invoicees_manage.php'>".__($guid, 'Clear Filters').'</a>';?>
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>
@@ -199,13 +197,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage.p
                 $rowNum = 'odd';
             }
 
-                //Color rows based on start and end date
-                if ($row['status'] != 'Full' or (!($row['dateStart'] == '' or $row['dateStart'] <= date('Y-m-d')) and ($row['dateEnd'] == '' or $row['dateEnd'] >= date('Y-m-d')))) {
-                    $rowNum = 'error';
-                }
+			//Color rows based on start and end date
+			if ($row['status'] != 'Full' or (!($row['dateStart'] == '' or $row['dateStart'] <= date('Y-m-d')) and ($row['dateEnd'] == '' or $row['dateEnd'] >= date('Y-m-d')))) {
+				$rowNum = 'error';
+			}
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$rowNum>";
             echo '<td>';
             echo '<b>'.formatName('', $row['preferredName'], $row['surname'], 'Student', true).'</b><br/>';
             echo '</td>';

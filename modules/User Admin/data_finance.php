@@ -102,8 +102,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_finance.ph
 
             ++$count;
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$rowNum>";
             echo '<td>';
             echo formatName('', $row['preferredName'], $row['surname'], 'Student', false);
             echo '</td>';

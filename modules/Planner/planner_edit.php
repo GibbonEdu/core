@@ -879,21 +879,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 							</td>
 							<td class="right">
 								<select name="homeworkSubmissionDrafts" id="homeworkSubmissionDrafts" class="standardWidth">
-									<option <?php if ($row['homeworkSubmissionDrafts'] == '0') {
-    echo 'selected ';
-}
+									<option <?php if ($row['homeworkSubmissionDrafts'] == '0') { echo 'selected '; }
                 ?>value="0"><?php echo __($guid, 'None') ?></option>
-									<option <?php if ($row['homeworkSubmissionDrafts'] == '1') {
-    echo 'selected ';
-}
+									<option <?php if ($row['homeworkSubmissionDrafts'] == '1') { echo 'selected '; }
                 ?>value="1">1</option>
-									<option <?php if ($row['homeworkSubmissionDrafts'] == '2') {
-    echo 'selected ';
-}
+									<option <?php if ($row['homeworkSubmissionDrafts'] == '2') { echo 'selected '; }
                 ?>value="2">2</option>
-									<option <?php if ($row['homeworkSubmissionDrafts'] == '3') {
-    echo 'selected ';
-}
+									<option <?php if ($row['homeworkSubmissionDrafts'] == '3') { echo 'selected '; }
                 ?>value="3">3</option>
 								</select>
 							</td>
@@ -905,17 +897,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 							</td>
 							<td class="right">
 								<select name="homeworkSubmissionType" id="homeworkSubmissionType" class="standardWidth">
-									<option <?php if ($row['homeworkSubmissionType'] == 'Link') {
-    echo 'selected ';
-}
+									<option <?php if ($row['homeworkSubmissionType'] == 'Link') { echo 'selected '; }
                 ?>value="Link"><?php echo __($guid, 'Link') ?></option>
-									<option <?php if ($row['homeworkSubmissionType'] == 'File') {
-    echo 'selected ';
-}
+									<option <?php if ($row['homeworkSubmissionType'] == 'File') { echo 'selected '; }
                 ?>value="File"><?php echo __($guid, 'File') ?></option>
-									<option <?php if ($row['homeworkSubmissionType'] == 'Link/File') {
-    echo 'selected ';
-}
+									<option <?php if ($row['homeworkSubmissionType'] == 'Link/File') { echo 'selected '; }
                 ?>value="Link/File"><?php echo __($guid, 'Link/File') ?></option>
 								</select>
 							</td>
@@ -927,13 +913,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 							</td>
 							<td class="right">
 								<select name="homeworkSubmissionRequired" id="homeworkSubmissionRequired" class="standardWidth">
-									<option <?php if ($row['homeworkSubmissionRequired'] == 'Optional') {
-    echo 'selected ';
-}
+									<option <?php if ($row['homeworkSubmissionRequired'] == 'Optional') { echo 'selected '; }
                 ?>value="Optional"><?php echo __($guid, 'Optional') ?></option>
-									<option <?php if ($row['homeworkSubmissionRequired'] == 'Compulsory') {
-    echo 'selected ';
-}
+									<option <?php if ($row['homeworkSubmissionRequired'] == 'Compulsory') { echo 'selected '; }
                 ?>value="Compulsory"><?php echo __($guid, 'Compulsory') ?></option>
 								</select>
 							</td>
@@ -1054,8 +1036,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
     echo "type='checkbox' name='homeworkCrowdAssessOtherParentsRead' />";
     echo '</td>';
     echo '</tr>';
-    echo '</table>';
-    ?>
+    echo '</table>';?>
 								</td>
 							</tr>
 						<?php 
@@ -1303,13 +1284,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 							</td>
 							<td class="right">
 								<select name="viewableStudents" id="viewableStudents" class="standardWidth">
-									<option <?php if ($row['viewableStudents'] == 'N') {
-    echo 'selected ';
-}
+									<option <?php if ($row['viewableStudents'] == 'N') { echo 'selected '; }
                 ?>value="N"><?php echo __($guid, 'No') ?></option>
-									<option <?php if ($row['viewableStudents'] == 'Y') {
-    echo 'selected ';
-}
+									<option <?php if ($row['viewableStudents'] == 'Y') { echo 'selected '; }
                 ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
 								</select>
 							</td>
@@ -1321,13 +1298,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 							</td>
 							<td class="right">
 								<select name="viewableParents" id="viewableParents" class="standardWidth">
-									<option <?php if ($row['viewableParents'] == 'N') {
-    echo 'selected ';
-}
+									<option <?php if ($row['viewableParents'] == 'N') { echo 'selected '; }
                 ?>value="N"><?php echo __($guid, 'No') ?></option>
-									<option <?php if ($row['viewableParents'] == 'Y') {
-    echo 'selected ';
-}
+									<option <?php if ($row['viewableParents'] == 'Y') { echo 'selected '; }
                 ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
 								</select>
 							</td>
@@ -1440,12 +1413,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 						</tr>
 						<tr>
 							<td>
-								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-                ?></span>
+								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 							</td>
 							<td class="right">
-								<input type="submit" value="<?php echo __($guid, 'Submit');
-                ?>">
+								<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 							</td>
 						</tr>
 					</table>

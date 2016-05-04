@@ -113,8 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_view.php')
         }
         echo "<option $selected value='".$rowSelect['gibbonDepartmentID']."'>".$rowSelect['name'].'</option>';
     }
-    echo '</select>';
-    ?>
+    echo '</select>';?>
 				</td>
 			</tr>
 			<?php
@@ -173,8 +172,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_view.php')
                 $rowNum = 'odd';
             }
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$rowNum>";
             echo '<td>';
             echo '<b>'.$row['scope'].'</b><br/>';
             if ($row['scope'] == 'Learning Area' and $row['gibbonDepartmentID'] != '') {

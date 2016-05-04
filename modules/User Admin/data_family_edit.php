@@ -215,8 +215,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_family_edi
             echo "<input type='submit' value='Submit'>";
             echo '</td>';
             echo '</tr>';
-            echo '</table>';
-            ?>
+            echo '</table>'; ?>
 			</form>
 			<?php
 

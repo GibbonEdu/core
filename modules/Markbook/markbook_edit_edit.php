@@ -306,8 +306,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                                         if ($row2['attachment'] != '') {
                                             echo __($guid, 'Current attachment:')." <a href='".$_SESSION[$guid]['absoluteURL'].'/'.$row2['attachment']."'>".$row2['attachment'].'</a><br/><br/>';
                                         }
-                        ?>
-										<input type="file" name="file" id="file"><br/><br/>
+                        			?>										<input type="file" name="file" id="file"><br/><br/>
 										<?php
                                         //Get list of acceptable file extensions
                                         try {
@@ -366,14 +365,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                         ?> *</b><br/>
 									</td>
 									<td class="right">
-										<input <?php if ($row2['attainment'] == 'Y') {
-    echo 'checked';
-}
-                        ?> type="radio" name="attainment" value="Y" class="attainment" /> <?php echo __($guid, 'Yes') ?>
-										<input <?php if ($row2['attainment'] == 'N') {
-    echo 'checked';
-}
-                        ?> type="radio" name="attainment" value="N" class="attainment" /> <?php echo __($guid, 'No') ?>
+										<input <?php if ($row2['attainment'] == 'Y') { echo 'checked'; } ?> type="radio" name="attainment" value="Y" class="attainment" /> <?php echo __($guid, 'Yes') ?>
+										<input <?php if ($row2['attainment'] == 'N') { echo 'checked'; } ?> type="radio" name="attainment" value="N" class="attainment" /> <?php echo __($guid, 'No') ?>
 									</td>
 								</tr>
 								<tr id='gibbonScaleIDAttainmentRow' <?php if ($row2['attainment'] == 'N') {
@@ -542,14 +535,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                         ?> *</b><br/>
 									</td>
 									<td class="right">
-										<input <?php if ($row2['effort'] == 'Y') {
-    echo 'checked';
-}
-                        ?> type="radio" name="effort" value="Y" class="effort" /> <?php echo __($guid, 'Yes') ?>
-										<input <?php if ($row2['effort'] == 'N') {
-    echo 'checked';
-}
-                        ?> type="radio" name="effort" value="N" class="effort" /> <?php echo __($guid, 'No') ?>
+										<input <?php if ($row2['effort'] == 'Y') { echo 'checked'; } ?> type="radio" name="effort" value="Y" class="effort" /> <?php echo __($guid, 'Yes') ?>
+										<input <?php if ($row2['effort'] == 'N') { echo 'checked'; } ?> type="radio" name="effort" value="N" class="effort" /> <?php echo __($guid, 'No') ?>
 									</td>
 								</tr>
 								<tr id='gibbonScaleIDEffortRow' <?php if ($row2['effort'] == 'N') {
@@ -670,14 +657,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
 										<b><?php echo __($guid, 'Include Comment?') ?> *</b><br/>
 									</td>
 									<td class="right">
-										<input <?php if ($row2['comment'] == 'Y') {
-    echo 'checked';
-}
-                        ?> type="radio" name="comment" value="Y" class="comment" /> <?php echo __($guid, 'Yes') ?>
-										<input <?php if ($row2['comment'] == 'N') {
-    echo 'checked';
-}
-                        ?> type="radio" name="comment" value="N" class="comment" /> <?php echo __($guid, 'No') ?>
+										<input <?php if ($row2['comment'] == 'Y') { echo 'checked'; } ?> type="radio" name="comment" value="Y" class="comment" /> <?php echo __($guid, 'Yes') ?>
+										<input <?php if ($row2['comment'] == 'N') { echo 'checked'; } ?> type="radio" name="comment" value="N" class="comment" /> <?php echo __($guid, 'No') ?>
 									</td>
 								</tr>
 								<tr>
@@ -685,14 +666,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
 										<b><?php echo __($guid, 'Include Uploaded Response?') ?> *</b><br/>
 									</td>
 									<td class="right">
-										<input <?php if ($row2['uploadedResponse'] == 'Y') {
-    echo 'checked';
-}
-                        ?> type="radio" name="uploadedResponse" value="Y" class="uploadedResponse" /> <?php echo __($guid, 'Yes') ?>
-										<input <?php if ($row2['uploadedResponse'] == 'N') {
-    echo 'checked';
-}
-                        ?> type="radio" name="uploadedResponse" value="N" class="uploadedResponse" /> <?php echo __($guid, 'No') ?>
+										<input <?php if ($row2['uploadedResponse'] == 'Y') { echo 'checked'; } ?> type="radio" name="uploadedResponse" value="Y" class="uploadedResponse" /> <?php echo __($guid, 'Yes') ?>
+										<input <?php if ($row2['uploadedResponse'] == 'N') { echo 'checked'; } ?> type="radio" name="uploadedResponse" value="N" class="uploadedResponse" /> <?php echo __($guid, 'No') ?>
 									</td>
 								</tr>
 								
@@ -709,14 +684,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
 									</td>
 									<td class="right">
 										<select name="viewableStudents" id="viewableStudents" class="standardWidth">
-											<option <?php if ($row2['viewableStudents'] == 'N') {
-    echo 'selected ';
-}
-                        ?>value="N"><?php echo __($guid, 'No') ?></option>
-											<option <?php if ($row2['viewableStudents'] == 'Y') {
-    echo 'selected ';
-}
-                        ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
+											<option <?php if ($row2['viewableStudents'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
+											<option <?php if ($row2['viewableStudents'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
 										</select>
 									</td>
 								</tr>
@@ -727,14 +696,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
 									</td>
 									<td class="right">
 										<select name="viewableParents" id="viewableParents" class="standardWidth">
-											<option <?php if ($row2['viewableParents'] == 'N') {
-    echo 'selected ';
-}
-                        ?>value="N"><?php echo __($guid, 'No') ?></option>
-											<option <?php if ($row2['viewableParents'] == 'Y') {
-    echo 'selected ';
-}
-                        ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
+											<option <?php if ($row2['viewableParents'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
+											<option <?php if ($row2['viewableParents'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
 										</select>
 									</td>
 								</tr>
@@ -753,16 +716,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
 										<script type="text/javascript">
 											var completeDate=new LiveValidation('completeDate');
 											completeDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-                        ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-                        ?>." } ); 
+										echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+									} else {
+										echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+									}
+															?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+										echo 'dd/mm/yyyy';
+									} else {
+										echo $_SESSION[$guid]['i18n']['dateFormat'];
+									}
+                       	 			?>." } );  
 										</script>
 										 <script type="text/javascript">
 											$(function() {
@@ -780,8 +743,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
 										</span>
 									</td>
 									<td class="right">
-										<input type="submit" value="<?php echo __($guid, 'Submit');
-                        ?>">
+										<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 									</td>
 								</tr>
 							</table>

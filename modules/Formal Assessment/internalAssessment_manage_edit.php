@@ -152,8 +152,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 											<?php
 
                                             }
-                        ?>
-										</select>
+                        			?>										</select>
 										<script type="text/javascript">
 											var type=new LiveValidation('type');
 											type.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
@@ -179,7 +178,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                     if ($row2['attachment'] != '') {
                                         echo __($guid, 'Current attachment:')." <a href='".$_SESSION[$guid]['absoluteURL'].'/'.$row2['attachment']."'>".$row2['attachment'].'</a><br/><br/>';
                                     }
-                    ?>
+                   		 			?>
 									<input type="file" name="file" id="file"><br/><br/>
 									<?php
                                     //Get list of acceptable file extensions
@@ -234,14 +233,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                     ?> *</b><br/>
 								</td>
 								<td class="right">
-									<input <?php if ($row2['attainment'] == 'Y') {
-    echo 'checked';
-}
-                    ?> type="radio" name="attainment" value="Y" class="attainment" /> <?php echo __($guid, 'Yes') ?>
-									<input <?php if ($row2['attainment'] == 'N') {
-    echo 'checked';
-}
-                    ?> type="radio" name="attainment" value="N" class="attainment" /> <?php echo __($guid, 'No') ?>
+									<input <?php if ($row2['attainment'] == 'Y')) { echo 'checked'; } ?> type="radio" name="attainment" value="Y" class="attainment" /> <?php echo __($guid, 'Yes') ?>
+									<input <?php if ($row2['attainment'] == 'N')) { echo 'checked'; } ?> type="radio" name="attainment" value="N" class="attainment" /> <?php echo __($guid, 'No') ?>
 								</td>
 							</tr>
 							<tr id='gibbonScaleIDAttainmentRow' <?php if ($row2['attainment'] == 'N') {
@@ -303,14 +296,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                     ?> *</b><br/>
 								</td>
 								<td class="right">
-									<input <?php if ($row2['effort'] == 'Y') {
-    echo 'checked';
-}
-                    ?> type="radio" name="effort" value="Y" class="effort" /> <?php echo __($guid, 'Yes') ?>
-									<input <?php if ($row2['effort'] == 'N') {
-    echo 'checked';
-}
-                    ?> type="radio" name="effort" value="N" class="effort" /> <?php echo __($guid, 'No') ?>
+									<input <?php if ($row2['effort'] == 'Y')) { echo 'checked'; } ?> type="radio" name="effort" value="Y" class="effort" /> <?php echo __($guid, 'Yes') ?>
+									<input <?php if ($row2['effort'] == 'N')) { echo 'checked'; } ?> type="radio" name="effort" value="N" class="effort" /> <?php echo __($guid, 'No') ?>
 								</td>
 							</tr>
 							<tr id='gibbonScaleIDEffortRow' <?php if ($row2['effort'] == 'N') {
@@ -352,14 +339,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 									<b><?php echo __($guid, 'Include Comment?') ?> *</b><br/>
 								</td>
 								<td class="right">
-									<input <?php if ($row2['comment'] == 'Y') {
-    echo 'checked';
-}
-                    ?> type="radio" name="comment" value="Y" class="comment" /> <?php echo __($guid, 'Yes') ?>
-									<input <?php if ($row2['comment'] == 'N') {
-    echo 'checked';
-}
-                    ?> type="radio" name="comment" value="N" class="comment" /> <?php echo __($guid, 'No') ?>
+									<input <?php if ($row2['comment'] == 'Y')) { echo 'checked'; } ?> type="radio" name="comment" value="Y" class="comment" /> <?php echo __($guid, 'Yes') ?>
+									<input <?php if ($row2['comment'] == 'N')) { echo 'checked'; } ?> type="radio" name="comment" value="N" class="comment" /> <?php echo __($guid, 'No') ?>
 								</td>
 							</tr>
 							<tr>
@@ -367,14 +348,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 									<b><?php echo __($guid, 'Include Uploaded Response?') ?> *</b><br/>
 								</td>
 								<td class="right">
-									<input <?php if ($row2['uploadedResponse'] == 'Y') {
-    echo 'checked';
-}
-                    ?> type="radio" name="uploadedResponse" value="Y" class="uploadedResponse" /> <?php echo __($guid, 'Yes') ?>
-									<input <?php if ($row2['uploadedResponse'] == 'N') {
-    echo 'checked';
-}
-                    ?> type="radio" name="uploadedResponse" value="N" class="uploadedResponse" /> <?php echo __($guid, 'No') ?>
+									<input <?php if ($row2['uploadedResponse'] == 'Y')) { echo 'checked'; } ?> type="radio" name="uploadedResponse" value="Y" class="uploadedResponse" /> <?php echo __($guid, 'Yes') ?>
+									<input <?php if ($row2['uploadedResponse'] == 'N')) { echo 'checked'; } ?> type="radio" name="uploadedResponse" value="N" class="uploadedResponse" /> <?php echo __($guid, 'No') ?>
 								</td>
 							</tr>
 							
@@ -390,14 +365,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 								</td>
 								<td class="right">
 									<select name="viewableStudents" id="viewableStudents" class="standardWidth">
-										<option <?php if ($row2['viewableStudents'] == 'N') {
-    echo 'selected ';
-}
-                    ?>value="N"><?php echo __($guid, 'No') ?></option>
-										<option <?php if ($row2['viewableStudents'] == 'Y') {
-    echo 'selected ';
-}
-                    ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
+										<option <?php if ($row2['viewableStudents'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
+										<option <?php if ($row2['viewableStudents'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
 									</select>
 								</td>
 							</tr>
@@ -408,14 +377,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 								</td>
 								<td class="right">
 									<select name="viewableParents" id="viewableParents" class="standardWidth">
-										<option <?php if ($row2['viewableParents'] == 'N') {
-    echo 'selected ';
-}
-                    ?>value="N"><?php echo __($guid, 'No') ?></option>
-										<option <?php if ($row2['viewableParents'] == 'Y') {
-    echo 'selected ';
-}
-                    ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
+										<option <?php if ($row2['viewableParents'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
+										<option <?php if ($row2['viewableParents'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
 									</select>
 								</td>
 							</tr>
@@ -461,8 +424,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 									</span>
 								</td>
 								<td class="right">
-									<input type="submit" value="<?php echo __($guid, 'Submit');
-                    ?>">
+									<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 								</td>
 							</tr>
 						</table>

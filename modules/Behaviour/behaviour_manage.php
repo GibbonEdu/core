@@ -85,14 +85,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                                 $resultSelect->execute($dataSelect);
                             } catch (PDOException $e) {
                             }
-        while ($rowSelect = $resultSelect->fetch()) {
-            if ($gibbonPersonID == $rowSelect['gibbonPersonID']) {
-                echo "<option selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['nameShort']).')</option>';
-            } else {
-                echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['nameShort']).')</option>';
-            }
-        }
-        ?>			
+							while ($rowSelect = $resultSelect->fetch()) {
+								if ($gibbonPersonID == $rowSelect['gibbonPersonID']) {
+									echo "<option selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['nameShort']).')</option>';
+								} else {
+									echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['nameShort']).')</option>';
+								}
+							}
+							?>			
 						</select>
 					</td>
 				</tr>
@@ -111,17 +111,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                         } catch (PDOException $e) {
                         }
 
-        echo "<select name='gibbonRollGroupID' id='gibbonRollGroupID' style='width: 302px'>";
-        echo "<option value=''></option>";
-        while ($rowPurpose = $resultPurpose->fetch()) {
-            $selected = '';
-            if ($rowPurpose['gibbonRollGroupID'] == $gibbonRollGroupID) {
-                $selected = 'selected';
-            }
-            echo "<option $selected value='".$rowPurpose['gibbonRollGroupID']."'>".$rowPurpose['name'].'</option>';
-        }
-        echo '</select>';
-        ?>
+						echo "<select name='gibbonRollGroupID' id='gibbonRollGroupID' style='width: 302px'>";
+						echo "<option value=''></option>";
+						while ($rowPurpose = $resultPurpose->fetch()) {
+							$selected = '';
+							if ($rowPurpose['gibbonRollGroupID'] == $gibbonRollGroupID) {
+								$selected = 'selected';
+							}
+							echo "<option $selected value='".$rowPurpose['gibbonRollGroupID']."'>".$rowPurpose['name'].'</option>';
+						}
+						echo '</select>';
+						?>
 					</td>
 				</tr>
 				<tr>
@@ -139,17 +139,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                         } catch (PDOException $e) {
                         }
 
-        echo "<select name='gibbonYearGroupID' id='gibbonYearGroupID' style='width: 302px'>";
-        echo "<option value=''></option>";
-        while ($rowPurpose = $resultPurpose->fetch()) {
-            $selected = '';
-            if ($rowPurpose['gibbonYearGroupID'] == $gibbonYearGroupID) {
-                $selected = 'selected';
-            }
-            echo "<option $selected value='".$rowPurpose['gibbonYearGroupID']."'>".__($guid, $rowPurpose['name']).'</option>';
-        }
-        echo '</select>';
-        ?>
+						echo "<select name='gibbonYearGroupID' id='gibbonYearGroupID' style='width: 302px'>";
+						echo "<option value=''></option>";
+						while ($rowPurpose = $resultPurpose->fetch()) {
+							$selected = '';
+							if ($rowPurpose['gibbonYearGroupID'] == $gibbonYearGroupID) {
+								$selected = 'selected';
+							}
+							echo "<option $selected value='".$rowPurpose['gibbonYearGroupID']."'>".__($guid, $rowPurpose['name']).'</option>';
+						}
+						echo '</select>';
+						?>
 					</td>
 				</tr>
 				<tr>
@@ -160,30 +160,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 					<td class="right">
 						<?php
                         echo "<select name='type' id='type' style='width: 302px'>";
-        echo "<option value=''></option>";
-        $selected = '';
-        if ($type == 'Positive') {
-            $selected = 'selected';
-        }
-        echo "<option $selected value='Positive'>".__($guid, 'Positive').'</option>';
-        $selected = '';
-        if ($type == 'Negative') {
-            $selected = 'selected';
-        }
-        echo "<option $selected value='Negative'>".__($guid, 'Negative').'</option>';
-        echo '</select>';
-        ?>
+						echo "<option value=''></option>";
+						$selected = '';
+						if ($type == 'Positive') {
+							$selected = 'selected';
+						}
+						echo "<option $selected value='Positive'>".__($guid, 'Positive').'</option>';
+						$selected = '';
+						if ($type == 'Negative') {
+							$selected = 'selected';
+						}
+						echo "<option $selected value='Negative'>".__($guid, 'Negative').'</option>';
+						echo '</select>';
+						?>
 					</td>
 				</tr>
 				<?php
 
                 echo '<tr>';
-        echo "<td class='right' colspan=2>";
-        echo "<input type='hidden' name='q' value='".$_GET['q']."'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Behaviour/behaviour_manage.php'>".__($guid, 'Clear Filters').'</a> ';
-        echo "<input type='submit' value='".__($guid, 'Go')."'>";
-        echo '</td>';
-        echo '</tr>';
+				echo "<td class='right' colspan=2>";
+				echo "<input type='hidden' name='q' value='".$_GET['q']."'>";
+				echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Behaviour/behaviour_manage.php'>".__($guid, 'Clear Filters').'</a> ';
+				echo "<input type='submit' value='".__($guid, 'Go')."'>";
+				echo '</td>';
+			echo '</tr>';
         echo '</table>';
         echo '</form>';
 

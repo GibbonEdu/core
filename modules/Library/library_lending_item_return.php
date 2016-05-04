@@ -117,18 +117,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 						<td class="right">
 							<select name="returnAction" id="returnAction" class="standardWidth">
 								<option value="" />
-								<option <?php if ($row['returnAction'] == 'Reserve') {
-    echo 'selected';
-}
-            ?> value="Reserve" /> <?php echo __($guid, 'Reserve') ?>
-								<option <?php if ($row['returnAction'] == 'Decommission') {
-    echo 'selected';
-}
-            ?> value="Decommission" /> <?php echo __($guid, 'Decommission') ?>
-								<option <?php if ($row['returnAction'] == 'Repair') {
-    echo 'selected';
-}
-            ?> value="Repair" /> <?php echo __($guid, 'Repair') ?>
+								<option <?php if ($row['returnAction'] == 'Reserve') { echo 'selected'; } ?> value="Reserve" /> <?php echo __($guid, 'Reserve') ?>
+								<option <?php if ($row['returnAction'] == 'Decommission') { echo 'selected'; } ?> value="Decommission" /> <?php echo __($guid, 'Decommission') ?>
+								<option <?php if ($row['returnAction'] == 'Repair') { echo 'selected'; } ?> value="Repair" /> <?php echo __($guid, 'Repair') ?>
 							</select>
 						</td>
 					</tr>
@@ -169,15 +160,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
                 echo "<option $selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).'</option>';
             }
             echo '</optgroup>';
-            echo '</select>';
-            ?>
+            echo '</select>'; ?>
 						</td>
 					</tr>
 					
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input name="gibbonLibraryItemID" id="gibbonLibraryItemID" value="<?php echo $gibbonLibraryItemID ?>" type="hidden">

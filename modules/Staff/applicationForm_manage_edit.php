@@ -71,8 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Staff/applicationForm_manage.php&search=$search'>".__($guid, 'Back to Search Results').'</a> | ';
             }
             echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module']."/applicationForm_manage_edit_print.php&gibbonStaffApplicationFormID=$gibbonStaffApplicationFormID'>".__($guid, 'Print')."<img style='margin-left: 5px' title='".__($guid, 'Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
-            echo '</div>';
-            ?>
+            echo '</div>'; ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/applicationForm_manage_editProcess.php?search=$search" ?>" enctype="multipart/form-data">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr class='break'>
@@ -96,82 +95,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 						</td>
 						<td class="right">
 							<select name="priority" id="priority" class="standardWidth">
-								<option <?php if ($row['priority'] == '9') {
-    echo 'selected';
-}
-            ?> value="9">9</option>
-								<option <?php if ($row['priority'] == '8') {
-    echo 'selected';
-}
-            ?> value="8">8</option>
-								<option <?php if ($row['priority'] == '7') {
-    echo 'selected';
-}
-            ?> value="7">7</option>
-								<option <?php if ($row['priority'] == '6') {
-    echo 'selected';
-}
-            ?> value="6">6</option>
-								<option <?php if ($row['priority'] == '5') {
-    echo 'selected';
-}
-            ?> value="5">5</option>
-								<option <?php if ($row['priority'] == '4') {
-    echo 'selected';
-}
-            ?> value="4">4</option>
-								<option <?php if ($row['priority'] == '3') {
-    echo 'selected';
-}
-            ?> value="3">3</option>
-								<option <?php if ($row['priority'] == '2') {
-    echo 'selected';
-}
-            ?> value="2">2</option>
-								<option <?php if ($row['priority'] == '1') {
-    echo 'selected';
-}
-            ?> value="1">1</option>
-								<option <?php if ($row['priority'] == '0') {
-    echo 'selected';
-}
-            ?> value="0">0</option>
-								<option <?php if ($row['priority'] == '-1') {
-    echo 'selected';
-}
-            ?> value="-1">-1</option>
-								<option <?php if ($row['priority'] == '-2') {
-    echo 'selected';
-}
-            ?> value="-2">-2</option>
-								<option <?php if ($row['priority'] == '-3') {
-    echo 'selected';
-}
-            ?> value="-3">-3</option>
-								<option <?php if ($row['priority'] == '-4') {
-    echo 'selected';
-}
-            ?> value="-4">-4</option>
-								<option <?php if ($row['priority'] == '-5') {
-    echo 'selected';
-}
-            ?> value="-5">-5</option>
-								<option <?php if ($row['priority'] == '-6') {
-    echo 'selected';
-}
-            ?> value="-6">-6</option>
-								<option <?php if ($row['priority'] == '-7') {
-    echo 'selected';
-}
-            ?> value="-7">-7</option>
-								<option <?php if ($row['priority'] == '-8') {
-    echo 'selected';
-}
-            ?> value="-8">-8</option>
-								<option <?php if ($row['priority'] == '-9') {
-    echo 'selected';
-}
-            ?> value="-9">-9</option>
+								<option <?php if ($row['priority'] == '9') { echo 'selected'; } ?> value="9">9</option>
+								<option <?php if ($row['priority'] == '8') { echo 'selected'; } ?> value="8">8</option>
+								<option <?php if ($row['priority'] == '7') { echo 'selected'; } ?> value="7">7</option>
+								<option <?php if ($row['priority'] == '6') { echo 'selected'; } ?> value="6">6</option>
+								<option <?php if ($row['priority'] == '5') { echo 'selected'; } ?> value="5">5</option>
+								<option <?php if ($row['priority'] == '4') { echo 'selected'; } ?> value="4">4</option>
+								<option <?php if ($row['priority'] == '3') { echo 'selected'; } ?> value="3">3</option>
+								<option <?php if ($row['priority'] == '2') { echo 'selected'; } ?> value="2">2</option>
+								<option <?php if ($row['priority'] == '1') { echo 'selected'; } ?> value="1">1</option>
+								<option <?php if ($row['priority'] == '0') { echo 'selected'; } ?> value="0">0</option>
+								<option <?php if ($row['priority'] == '-1') { echo 'selected'; } ?> value="-1">-1</option>
+								<option <?php if ($row['priority'] == '-2') { echo 'selected'; } ?> value="-2">-2</option>
+								<option <?php if ($row['priority'] == '-3') { echo 'selected'; } ?> value="-3">-3</option>
+								<option <?php if ($row['priority'] == '-4') { echo 'selected'; } ?> value="-4">-4</option>
+								<option <?php if ($row['priority'] == '-5') { echo 'selected'; } ?> value="-5">-5</option>
+								<option <?php if ($row['priority'] == '-6') { echo 'selected'; } ?> value="-6">-6</option>
+								<option <?php if ($row['priority'] == '-7') { echo 'selected'; } ?> value="-7">-7</option>
+								<option <?php if ($row['priority'] == '-8') { echo 'selected'; } ?> value="-8">-8</option>
+								<option <?php if ($row['priority'] == '-9') { echo 'selected'; } ?> value="-9">-9</option>
 							</select>
 						</td>
 					</tr>
@@ -185,16 +127,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 							</td>
 							<td class="right">
 								<select name="status" id="status" class="standardWidth">
-									<option <?php if ($row['status'] == 'Pending') {
-    echo 'selected';
+									<option <?php if ($row['status'] == 'Pending') { echo 'selected';
 }
                         ?> value="Pending"><?php echo __($guid, 'Pending') ?></option>
-									<option <?php if ($row['status'] == 'Rejected') {
-    echo 'selected';
+									<option <?php if ($row['status'] == 'Rejected') { echo 'selected';
 }
                         ?> value="Rejected"><?php echo __($guid, 'Rejected') ?></option>
-									<option <?php if ($row['status'] == 'Withdrawn') {
-    echo 'selected';
+									<option <?php if ($row['status'] == 'Withdrawn') { echo 'selected';
 }
                         ?> value="Withdrawn"><?php echo __($guid, 'Withdrawn') ?></option>
 								</select>
@@ -421,12 +360,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 							<td class="right">
 								<select name="gender" id="gender" class="standardWidth">
 									<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
-									<option <?php if ($row['gender'] == 'F') {
-    echo 'selected';
+									<option <?php if ($row['gender'] == 'F') { echo 'selected';
 }
                         ?> value="F"><?php echo __($guid, 'Female') ?></option>
-									<option <?php if ($row['gender'] == 'M') {
-    echo 'selected';
+									<option <?php if ($row['gender'] == 'M') { echo 'selected';
 }
                         ?> value="M"><?php echo __($guid, 'Male') ?></option>
 								</select>
@@ -449,16 +386,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 								<script type="text/javascript">
 									var dob=new LiveValidation('dob');
 									dob.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-                        ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-                        ?>." } ); 
+										echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+									} else {
+										echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+									}
+															?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+										echo 'dd/mm/yyyy';
+									} else {
+										echo $_SESSION[$guid]['i18n']['dateFormat'];
+									}
+                       	 			?>." } );  
 									dob.add(Validate.Presence);
 								</script>
 								 <script type="text/javascript">
@@ -692,16 +629,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 								<script type="text/javascript">
 									var visaExpiryDate=new LiveValidation('visaExpiryDate');
 									visaExpiryDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-                        ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-                        ?>." } ); 
+										echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+									} else {
+										echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+									}
+															?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+										echo 'dd/mm/yyyy';
+									} else {
+										echo $_SESSION[$guid]['i18n']['dateFormat'];
+									}
+                       	 			?>." } );  
 								</script>
 								 <script type="text/javascript">
 									$(function() {
@@ -762,28 +699,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 								</select>
 								<select style="width: 70px" name="phone1Type">
 									<option value=""></option>
-									<option <?php if ($row['phone1Type'] == 'Mobile') {
-    echo 'selected';
+									<option <?php if ($row['phone1Type'] == 'Mobile') { echo 'selected';
 }
                         ?> value="Mobile"><?php echo __($guid, 'Mobile') ?></option>
-									<option <?php if ($row['phone1Type'] == 'Home') {
-    echo 'selected';
+									<option <?php if ($row['phone1Type'] == 'Home') { echo 'selected';
 }
                         ?> value="Home"><?php echo __($guid, 'Home') ?></option>
-									<option <?php if ($row['phone1Type'] == 'Work') {
-    echo 'selected';
+									<option <?php if ($row['phone1Type'] == 'Work') { echo 'selected';
 }
                         ?> value="Work"><?php echo __($guid, 'Work') ?></option>
-									<option <?php if ($row['phone1Type'] == 'Fax') {
-    echo 'selected';
+									<option <?php if ($row['phone1Type'] == 'Fax') { echo 'selected';
 }
                         ?> value="Fax"><?php echo __($guid, 'Fax') ?></option>
-									<option <?php if ($row['phone1Type'] == 'Pager') {
-    echo 'selected';
+									<option <?php if ($row['phone1Type'] == 'Pager') { echo 'selected';
 }
                         ?> value="Pager"><?php echo __($guid, 'Pager') ?></option>
-									<option <?php if ($row['phone1Type'] == 'Other') {
-    echo 'selected';
+									<option <?php if ($row['phone1Type'] == 'Other') { echo 'selected';
 }
                         ?> value="Other"><?php echo __($guid, 'Other') ?></option>
 								</select>
@@ -1026,15 +957,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 ?>
 						<tr>
 							<td>
-								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-                ?></span>
+								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 							</td>
 							<td class="right">
 								<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 								<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php echo $gibbonSchoolYearID ?>" type="hidden">
 								<input type="hidden" name="gibbonStaffApplicationFormID" value="<?php echo $row['gibbonStaffApplicationFormID'] ?>">
-								<input type="submit" value="<?php echo __($guid, 'Submit');
-                ?>">
+								<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 							</td>
 						</tr>
 						<?php

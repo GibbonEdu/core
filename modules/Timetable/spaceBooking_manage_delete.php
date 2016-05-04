@@ -74,10 +74,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
 					<table class='smallIntBorder fullWidth' cellspacing='0'>
 						<tr>
 							<td>
-								<b><?php echo _('Are you sure you want to delete this record?');
-                ?></b><br/>
-								<span style="font-size: 90%; color: #cc0000"><i><?php echo _('This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!');
-                ?></span>
+								<b><?php echo _('Are you sure you want to delete this record?'); ?></b><br/>
+								<span style="font-size: 90%; color: #cc0000"><i><?php echo _('This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!'); ?></span>
 							</td>
 							<td class="right">
 
@@ -86,8 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
 						<tr>
 							<td>
 								<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-								<input type="submit" value="<?php echo _('Yes');
-                ?>">
+								<input type="submit" value="<?php echo _('Yes'); ?>">
 							</td>
 							<td class="right">
 

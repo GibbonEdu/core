@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
                     if ($row['value'] != '') {
                         echo __($guid, 'Current attachment:')." <a href='".$_SESSION[$guid]['absoluteURL'].'/'.$row['value']."'>".$row['value'].'</a><br/><br/>';
                     }
-    ?>
+   				 	?>
 					<input type="file" name="file" id="file"><br/><br/>
 					<?php
                     //Get list of acceptable file extensions
@@ -108,42 +108,32 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option <?php if ($row['value'] == 'None') {
-    echo 'selected ';
-}
+						<option <?php if ($row['value'] == 'None') { echo 'selected '; }
     ?>value="None"><?php echo __($guid, 'None') ?></option>
-						<option <?php if ($row['value'] == 'General') {
-    echo 'selected ';
-}
+						<option <?php if ($row['value'] == 'General') { echo 'selected '; }
     ?>value="General"><?php echo __($guid, 'General') ?></option>
-						<option <?php if ($row['value'] == 'Lockdown') {
-    echo 'selected ';
-}
+						<option <?php if ($row['value'] == 'Lockdown') { echo 'selected '; }
     ?>value="Lockdown"><?php echo __($guid, 'Lockdown') ?></option>
 						<?php
                         if ($row['value'] != '') {
                             ?>
-							<option <?php if ($row['value'] == 'Custom') {
-    echo 'selected ';
-}
+							<option <?php if ($row['value'] == 'Custom') { echo 'selected '; }
                             ?>value="Custom"><?php echo __($guid, 'Custom') ?></option>
 							<?php
 
                         }
-    ?>
+   				 		?>
 					</select>
 					<input type="hidden" name="alarmCurrent" value="<?php echo $row['value'] ?>">
 				</td>
 			</tr>
             <tr>
 				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-    ?></span>
+					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>

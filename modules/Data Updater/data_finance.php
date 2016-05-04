@@ -129,15 +129,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
                                     }
                                 }
                             }
-        ?>				
+        					?>					
 						</select>
 					</td>
 				</tr>
 				<tr>
 					<td colspan=2 class="right">
 						<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/data_finance.php">
-						<input type="submit" value="<?php echo __($guid, 'Submit');
-        ?>">
+						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 					</td>
 				</tr>
 			</table>
@@ -321,14 +320,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
 									<b><?php echo __($guid, 'Send Invoices To') ?></b><br/>
 								</td>
 								<td class="right">
-									<input <?php if ($row['invoiceTo'] == 'Family' or $row['invoiceTo'] == '') {
-    echo 'checked';
-}
-                    ?> type="radio" name="invoiceTo" value="Family" class="invoiceTo" /> <?php echo __($guid, 'Family') ?>
-									<input <?php if ($row['invoiceTo'] == 'Company') {
-    echo 'checked';
-}
-                    ?> type="radio" name="invoiceTo" value="Company" class="invoiceTo" /> <?php echo __($guid, 'Company') ?>
+									<input <?php if ($row['invoiceTo'] == 'Family' or $row['invoiceTo'] == '') { echo 'checked'; } ?> type="radio" name="invoiceTo" value="Family" class="invoiceTo" /> <?php echo __($guid, 'Family') ?>
+									<input <?php if ($row['invoiceTo'] == 'Company')) { echo 'checked'; } ?> type="radio" name="invoiceTo" value="Company" class="invoiceTo" /> <?php echo __($guid, 'Company') ?>
 								</td>
 							</tr>
 							<tr id="companyNameRow">
@@ -387,14 +380,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
 								</td>
 								<td class="right">
 									<select name="companyCCFamily" id="companyCCFamily" class="standardWidth">
-										<option <?php if ($row['companyCCFamily'] == 'N') {
-    echo 'selected';
-}
-                    ?> value="N" /> <?php echo __($guid, 'No') ?>
-										<option <?php if ($row['companyCCFamily'] == 'Y') {
-    echo 'selected';
-}
-                    ?> value="Y" /> <?php echo __($guid, 'Yes') ?>
+										<option <?php if ($row['companyCCFamily'] == 'N') { echo 'selected'; } ?> value="N" /> <?php echo __($guid, 'No') ?>
+										<option <?php if ($row['companyCCFamily'] == 'Y') { echo 'selected'; } ?> value="Y" /> <?php echo __($guid, 'Yes') ?>
 									</select>
 								</td>
 							</tr>
@@ -414,24 +401,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
                                 $resultCat->execute($dataCat);
                             } catch (PDOException $e) {
                             }
-                    if ($resultCat->rowCount() < 1) {
-                        echo '<input type="hidden" name="companyAll" value="Y" class="companyAll"/>';
-                    } else {
-                        ?>
+							if ($resultCat->rowCount() < 1) {
+								echo '<input type="hidden" name="companyAll" value="Y" class="companyAll"/>';
+							} else {
+								?>
 								<tr id="companyAllRow">
 									<td> 
 										<b><?php echo __($guid, 'Company All?') ?></b><br/>
 										<span class="emphasis small"><?php echo __($guid, 'Should all items be billed to the specified company, or just some?') ?></span>
 									</td>
 									<td class="right">
-										<input type="radio" name="companyAll" value="Y" class="companyAll" <?php if ($row['companyAll'] == 'Y' or $row['companyAll'] == '') {
-    echo 'checked';
-}
-                        ?> /> <?php echo __($guid, 'All') ?>
-										<input type="radio" name="companyAll" value="N" class="companyAll" <?php if ($row['companyAll'] == 'N') {
-    echo 'checked';
-}
-                        ?> /> <?php echo __($guid, 'Selected') ?>
+										<input type="radio" name="companyAll" value="Y" class="companyAll" <?php if ($row['companyAll'] == 'Y' or $row['companyAll'] == '') { echo 'checked'; } ?> /> <?php echo __($guid, 'All') ?>
+										<input type="radio" name="companyAll" value="N" class="companyAll" <?php if ($row['companyAll'] == 'N') { echo 'checked'; } ?> /> <?php echo __($guid, 'Selected') ?>
 									</td>
 								</tr>
 								<tr id="companyCategoriesRow">
@@ -448,23 +429,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
                                             }
                                             echo $rowCat['name']." <input $checked type='checkbox' name='gibbonFinanceFeeCategoryIDList[]' value='".$rowCat['gibbonFinanceFeeCategoryID']."'/><br/>";
                                         }
-                        $checked = '';
-                        if (strpos($row['gibbonFinanceFeeCategoryIDList'], '0001') !== false) {
-                            $checked = 'checked';
-                        }
-                        echo __($guid, 'Other')." <input $checked type='checkbox' name='gibbonFinanceFeeCategoryIDList[]' value='0001'/><br/>";
-                        ?>
+										$checked = '';
+										if (strpos($row['gibbonFinanceFeeCategoryIDList'], '0001') !== false) {
+											$checked = 'checked';
+										}
+										echo __($guid, 'Other')." <input $checked type='checkbox' name='gibbonFinanceFeeCategoryIDList[]' value='0001'/><br/>";
+										?>
 									</td>
 								</tr>
 								<?php
-
-                    }
-                    ?>							
+							}
+							?>							
 							
 							<tr>
 								<td>
-									<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-                    ?></span>
+									<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 								</td>
 								<td class="right">
 									<?php
@@ -473,10 +452,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
                                     } else {
                                         echo "<input type='hidden' name='existing' value='N'>";
                                     }
-                    ?>
+                   		 			?>
 									<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-									<input type="submit" value="<?php echo __($guid, 'Submit');
-                    ?>">
+									<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 								</td>
 							</tr>
 						</table>

@@ -547,8 +547,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                     echo "<td class='right' colspan=".($span - 1).'>';
                     ?>
 									<input name="count" id="count" value="<?php echo $count ?>" type="hidden">
-									<input type="submit" value="<?php echo __($guid, 'Submit');
-                    ?>">
+									<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 								
 								</td>
 							</tr>

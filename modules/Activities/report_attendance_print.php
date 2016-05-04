@@ -115,8 +115,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
                 }
                 ++$count;
 
-                    //COLOR ROW BY STATUS!
-                    echo "<tr class=$rowNum>";
+                //COLOR ROW BY STATUS!
+                echo "<tr class=$rowNum>";
                 echo '<td>';
                 echo $count.'. '.formatName('', $row['preferredName'], $row['surname'], 'Student', true);
                 echo '</td>';

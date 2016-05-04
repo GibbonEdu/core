@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_edi
                             if ($type == 'Core') {
                                 echo '<span style="font-size: 90%"><i>'.__($guid, 'This value cannot be changed.').'</span>';
                             }
-            ?>
+            				?>
 						</td>
 						<td class="right">
 							<?php
@@ -81,22 +81,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_edi
                                 ?>
 								<select name="category" id="category" class="standardWidth">
 									<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
-									<option <?php if ($row['category'] == 'Staff') {
-    echo 'selected ';
-}
-                                ?>value="Staff"><?php echo __($guid, 'Staff') ?></option>
-									<option <?php if ($row['category'] == 'Student') {
-    echo 'selected ';
-}
-                                ?>value="Student"><?php echo __($guid, 'Student') ?></option>
-									<option <?php if ($row['category'] == 'Parent') {
-    echo 'selected ';
-}
-                                ?>value="Parent"><?php echo __($guid, 'Parent') ?></option>
-									<option <?php if ($row['category'] == 'Other') {
-    echo 'selected ';
-}
-                                ?>value="Other"><?php echo __($guid, 'Other') ?></option>
+									<option <?php if ($row['category'] == 'Staff') { echo 'selected '; } ?>value="Staff"><?php echo __($guid, 'Staff') ?></option>
+									<option <?php if ($row['category'] == 'Student') { echo 'selected '; } ?>value="Student"><?php echo __($guid, 'Student') ?></option>
+									<option <?php if ($row['category'] == 'Parent') { echo 'selected '; } ?>value="Parent"><?php echo __($guid, 'Parent') ?></option>
+									<option <?php if ($row['category'] == 'Other') { echo 'selected '; } ?>value="Other"><?php echo __($guid, 'Other') ?></option>
 								</select>
 								<script type="text/javascript">
 									var category=new LiveValidation('category');
@@ -105,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_edi
 								<?php
 
                             }
-            ?>
+            				?>
 						</td>
 					</tr>
 					<tr>
@@ -116,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_edi
                             if ($type == 'Core') {
                                 echo '<span style="font-size: 90%"><i>'.__($guid, 'This value cannot be changed.').'</span>';
                             }
-            ?>
+            				?>
 							
 						</td>
 						<td class="right">
@@ -136,7 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_edi
 								<?php
 
                             }
-            ?>
+            				?>
 						</td>
 					</tr>
 					<tr>
@@ -147,7 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_edi
                             if ($type == 'Core') {
                                 echo '<span style="font-size: 90%"><i>'.__($guid, 'This value cannot be changed.').'</span>';
                             }
-            ?>
+            				?>
 						</td>
 						<td class="right">
 							<?php
@@ -166,7 +154,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_edi
 								<?php
 
                             }
-            ?>
+            				?>
 						</td>
 					</tr>
 					<tr>
@@ -176,7 +164,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_edi
                             if ($type == 'Core') {
                                 echo '<span style="font-size: 90%"><i>'.__($guid, 'This value cannot be changed.').'</span>';
                             }
-            ?>
+            				?>
 						</td>
 						<td class="right">
 							<?php
@@ -195,7 +183,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_edi
 								<?php
 
                             }
-            ?>
+            				?>
 						</td>
 					</tr>
 					<tr>
@@ -212,14 +200,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_edi
 						</td>
 						<td class="right">
 							<select name="pastYearsLogin" id="pastYearsLogin" class="standardWidth">
-								<option <?php if ($row['pastYearsLogin'] == 'Y') {
-    echo 'selected';
-}
-            ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
-								<option <?php if ($row['pastYearsLogin'] == 'N') {
-    echo 'selected';
-}
-            ?> value="N"><?php echo __($guid, 'No') ?></option>
+								<option <?php if ($row['pastYearsLogin'] == 'Y') { echo 'selected'; } ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
+								<option <?php if ($row['pastYearsLogin'] == 'N') { echo 'selected'; } ?> value="N"><?php echo __($guid, 'No') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -229,26 +211,18 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_edi
 						</td>
 						<td class="right">
 							<select name="futureYearsLogin" id="futureYearsLogin" class="standardWidth">
-								<option <?php if ($row['futureYearsLogin'] == 'Y') {
-    echo 'selected';
-}
-            ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
-								<option <?php if ($row['futureYearsLogin'] == 'N') {
-    echo 'selected';
-}
-            ?> value="N"><?php echo __($guid, 'No') ?></option>
+								<option <?php if ($row['futureYearsLogin'] == 'Y') { echo 'selected'; } ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
+								<option <?php if ($row['futureYearsLogin'] == 'N') { echo 'selected'; } ?> value="N"><?php echo __($guid, 'No') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

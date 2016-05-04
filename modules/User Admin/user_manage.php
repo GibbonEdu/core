@@ -45,8 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
 
     echo '<h2>';
     echo __($guid, 'Search');
-    echo '</h2>';
-    ?>
+    echo '</h2>';?>
 	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
 		<table class='noIntBorder' cellspacing='0' style="width: 100%">	
 			<tr><td style="width: 30%"></td><td></td></tr>
@@ -67,10 +66,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
 					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/user_manage.php">
 					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 					<?php
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/user_manage.php'>".__($guid, 'Clear Search').'</a>';
-    ?>
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/user_manage.php'>".__($guid, 'Clear Search').'</a>';?>
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>
@@ -171,8 +168,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
             }
             ++$count;
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$rowNum>";
             echo '<td>';
             echo getUserPhoto($guid, $row['image_240'], 75);
             echo '</td>';

@@ -182,8 +182,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
                     echo "<script type='text/javascript'>$.datepicker.setDefaults($.datepicker.regional['".str_replace('_', '-', $_SESSION[$guid]['i18n']['code'])."']);</script>";
                 }
             }
-
-    ?>
+   			?>
 			<script type="text/javascript">$(function() { $( document ).tooltip({  show: 800, hide: false, content: function () { return $(this).prop('title')}, position: { my: "center bottom-20", at: "center top", using: function( position, feedback ) { $( this ).css( position ); $( "<div>" ).addClass( "arrow" ).addClass( feedback.vertical ).addClass( feedback.horizontal ).appendTo( this ); } } }); });</script>
 			<script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/jquery-jslatex/jquery.jslatex.js"></script>
 			<script type="text/javascript">$(function () { $(".latex").latex();});</script>
@@ -260,8 +259,8 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
                 }
             }
 
-    echo $_SESSION[$guid]['themeCSS'];
-    echo $_SESSION[$guid]['themeJS'];
+    		echo $_SESSION[$guid]['themeCSS'];
+    		echo $_SESSION[$guid]['themeJS'];
 
             //Set module CSS & JS
             if (isset($_GET['q'])) {
@@ -317,7 +316,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
                 echo $_SESSION[$guid]['analytics'];
             }
 
-    ?>
+    	?>
 		</head>
 		<body>
 			<?php
@@ -346,7 +345,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
                     echo '</div>';
                 }
             }
-    ?>
+    		?>
 
 			<div id="wrapOuter">
 				<?php
@@ -355,14 +354,12 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
                 } else {
                     echo "<div class='minorLinks'>";
                 }
-    echo getMinorLinks($connection2, $guid, $cacheLoad);
-    echo '</div>';
-    ?>
+				echo getMinorLinks($connection2, $guid, $cacheLoad);
+				echo '</div>';?>
 				<div id="wrap">
 					<div id="header">
 						<div id="header-logo">
-							<a href='<?php echo $_SESSION[$guid]['absoluteURL'] ?>'><img height='100px' width='400px' class="logo" alt="Logo" src="<?php echo $_SESSION[$guid]['absoluteURL'].'/'.$_SESSION[$guid]['organisationLogo'];
-    ?>"/></a>
+							<a href='<?php echo $_SESSION[$guid]['absoluteURL'] ?>'><img height='100px' width='400px' class="logo" alt="Logo" src="<?php echo $_SESSION[$guid]['absoluteURL'].'/'.$_SESSION[$guid]['organisationLogo'];?>"/></a>
 						</div>
 						<div id="header-finder">
 							<?php
@@ -375,7 +372,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
                                     echo $_SESSION[$guid]['studentFastFinder'];
                                 }
                             }
-    ?>
+   				 			?>
 						</div>
 						<div id="header-menu">
 							<?php
@@ -384,10 +381,10 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
                                     $mainMenu = new Gibbon\menuMain();
                                     $mainMenu->setMenu();
                                 }
-    if (isset($_SESSION[$guid]['mainMenu'])) {
-        echo $_SESSION[$guid]['mainMenu'];
-    }
-    ?>
+								if (isset($_SESSION[$guid]['mainMenu'])) {
+									echo $_SESSION[$guid]['mainMenu'];
+								}
+								?>
 						</div>
 					</div>
 					<div id="content-wrap">
@@ -404,11 +401,11 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
                             echo "<div id='content'>";
                         }
 
-    if ($_SESSION[$guid]['address'] == '') {
-        if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], null, null);
-        }
-    }
+						if ($_SESSION[$guid]['address'] == '') {
+							if (isset($_GET['return'])) {
+								returnProcess($guid, $_GET['return'], null, null);
+							}
+						}
 
                         //Show index page Content
                             if ($_SESSION[$guid]['address'] == '') {
@@ -640,7 +637,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
                                     }
                                 }
                             }
-    ?>
+   				 			?>
 						</div>
 						<?php
                         if ($sidebar != 'false') {
@@ -653,43 +650,39 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 							<?php
 
                         }
-    ?>
+   				 		?>
 					</div>
 					<div id="footer">
-						<?php echo __($guid, 'Powered by') ?> <a target='_blank' href="https://gibbonedu.org">Gibbon</a> v<?php echo $version ?><?php if ($_SESSION[$guid]['cuttingEdgeCode'] == 'Y') {
-    echo 'dev';
-}
-    ?> | &#169; <a target='_blank' href="http://rossparker.org">Ross Parker</a> 2010-<?php echo date('Y') ?><br/>
+						<?php echo __($guid, 'Powered by') ?> <a target='_blank' href="https://gibbonedu.org">Gibbon</a> v<?php echo $version ?><?php if ($_SESSION[$guid]['cuttingEdgeCode'] == 'Y') { echo 'dev';} ?> | &#169; <a target='_blank' href="http://rossparker.org">Ross Parker</a> 2010-<?php echo date('Y') ?><br/>
 						<span style='font-size: 90%; '>
-							<?php echo __($guid, 'Created under the') ?> <a target='_blank' href="https://www.gnu.org/licenses/gpl.html">GNU GPL</a> at <a target='_blank' href='http://www.ichk.edu.hk'>ICHK</a> | <a target='_blank' href='https://gibbonedu.org/contribute/'><?php echo __($guid, 'Credits');
-    ?></a><br/>
+							<?php echo __($guid, 'Created under the') ?> <a target='_blank' href="https://www.gnu.org/licenses/gpl.html">GNU GPL</a> at <a target='_blank' href='http://www.ichk.edu.hk'>ICHK</a> | <a target='_blank' href='https://gibbonedu.org/contribute/'><?php echo __($guid, 'Credits'); ?></a><br/>
 							<?php
                                 $seperator = false;
-    $thirdLine = false;
-    if ($_SESSION[$guid]['i18n']['maintainerName'] != '' and $_SESSION[$guid]['i18n']['maintainerName'] != 'Gibbon') {
-        if ($_SESSION[$guid]['i18n']['maintainerWebsite'] != '') {
-            echo __($guid, 'Translation led by')." <a target='_blank' href='".$_SESSION[$guid]['i18n']['maintainerWebsite']."'>".$_SESSION[$guid]['i18n']['maintainerName'].'</a>';
-        } else {
-            echo __($guid, 'Translation led by').' '.$_SESSION[$guid]['i18n']['maintainerName'];
-        }
-        $seperator = true;
-        $thirdLine = true;
-    }
-    if ($_SESSION[$guid]['gibbonThemeName'] != 'Default' and $_SESSION[$guid]['gibbonThemeAuthor'] != '') {
-        if ($seperator) {
-            echo ' | ';
-        }
-        if ($_SESSION[$guid]['gibbonThemeURL'] != '') {
-            echo __($guid, 'Theme by')." <a target='_blank' href='".$_SESSION[$guid]['gibbonThemeURL']."'>".$_SESSION[$guid]['gibbonThemeAuthor'].'</a>';
-        } else {
-            echo __($guid, 'Theme by').' '.$_SESSION[$guid]['gibbonThemeAuthor'];
-        }
-        $thirdLine = true;
-    }
-    if ($thirdLine == false) {
-        echo '<br/>';
-    }
-    ?>
+								$thirdLine = false;
+								if ($_SESSION[$guid]['i18n']['maintainerName'] != '' and $_SESSION[$guid]['i18n']['maintainerName'] != 'Gibbon') {
+									if ($_SESSION[$guid]['i18n']['maintainerWebsite'] != '') {
+										echo __($guid, 'Translation led by')." <a target='_blank' href='".$_SESSION[$guid]['i18n']['maintainerWebsite']."'>".$_SESSION[$guid]['i18n']['maintainerName'].'</a>';
+									} else {
+										echo __($guid, 'Translation led by').' '.$_SESSION[$guid]['i18n']['maintainerName'];
+									}
+									$seperator = true;
+									$thirdLine = true;
+								}
+								if ($_SESSION[$guid]['gibbonThemeName'] != 'Default' and $_SESSION[$guid]['gibbonThemeAuthor'] != '') {
+									if ($seperator) {
+										echo ' | ';
+									}
+									if ($_SESSION[$guid]['gibbonThemeURL'] != '') {
+										echo __($guid, 'Theme by')." <a target='_blank' href='".$_SESSION[$guid]['gibbonThemeURL']."'>".$_SESSION[$guid]['gibbonThemeAuthor'].'</a>';
+									} else {
+										echo __($guid, 'Theme by').' '.$_SESSION[$guid]['gibbonThemeAuthor'];
+									}
+									$thirdLine = true;
+								}
+								if ($thirdLine == false) {
+									echo '<br/>';
+								}
+								?>
 						</span>
 						<img style='z-index: 9999; margin-top: -82px; margin-left: 850px; opacity: 0.8' alt='Logo Small' src='./themes/<?php echo $_SESSION[$guid]['gibbonThemeName'] ?>/img/logoFooter.png'/>
 					</div>

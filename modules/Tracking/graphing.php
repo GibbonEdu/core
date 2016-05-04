@@ -134,12 +134,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
         }
         ?>
 						<select name="dataType" id="dataType" class="standardWidth">
-							<option <?php if ($dataType == 'attainment') {
-    echo 'selected';
+							<option <?php if ($dataType == 'attainment') { echo 'selected';
 }
         ?> value="attainment"><?php echo __($guid, $attainmentTitle) ?></option>
-							<option <?php if ($dataType == 'effort') {
-    echo 'selected';
+							<option <?php if ($dataType == 'effort') { echo 'selected';
 }
         ?> value="effort"><?php echo __($guid, $effortTitle) ?></option>
 						</select>
@@ -192,8 +190,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
 				</tr>
 				<tr>
 					<td colspan=2 class="right">
-						<input type="submit" value="<?php echo __($guid, 'Submit');
-        ?>">
+						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 					</td>
 				</tr>
 			</table>
@@ -469,8 +466,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
                                         foreach ($terms as $term) {
                                             echo "'".$term['termFullName']."',";
                                         }
-                        ?>
-								],
+                        			?>								],
 								datasets : [
 									<?php
                                         foreach ($departments as $department) {
@@ -497,8 +493,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
 										<?php
 
                                         }
-                        ?>
-								]
+                        			?>								]
 
 							}
 

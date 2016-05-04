@@ -121,28 +121,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 						</td>
 						<td class="right">
 							<select name="reportable" id="reportable" class="standardWidth">
-								<option <?php if ($row['reportable'] == 'Y') {
-    echo 'selected ';
-}
-            ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-								<option <?php if ($row['reportable'] == 'N') {
-    echo 'selected ';
-}
-            ?>value="N"><?php echo __($guid, 'No') ?></option>
+								<option <?php if ($row['reportable'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
+								<option <?php if ($row['reportable'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input name="gibbonCourseID" id="gibbonCourseID" value="<?php echo $gibbonCourseID ?>" type="hidden">
 							<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php echo $gibbonSchoolYearID ?>" type="hidden">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

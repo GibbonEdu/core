@@ -112,26 +112,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 						</td>
 						<td class="right">
 							<select name="status" id="status" class="standardWidth">
-								<option <?php if ($row['status'] == 'On Loan') {
-    echo 'selected';
-}
-            ?> value="On Loan" /> <?php echo __($guid, 'On Loan') ?>
-								<option <?php if ($row['status'] == 'Reserved') {
-    echo 'selected';
-}
-            ?> value="Reserved" /> <?php echo __($guid, 'Reserved') ?>
-								<option <?php if ($row['status'] == 'Decommissioned') {
-    echo 'selected';
-}
-            ?> value="Decommissioned" /> <?php echo __($guid, 'Decommissioned') ?>
-								<option <?php if ($row['status'] == 'Lost') {
-    echo 'selected';
-}
-            ?> value="Lost" /> <?php echo __($guid, 'Lost') ?>
-								<option <?php if ($row['status'] == 'Repair') {
-    echo 'selected';
-}
-            ?> value="Repair" /> <?php echo __($guid, 'Repair') ?>
+								<option <?php if ($row['status'] == 'On Loan') { echo 'selected'; } ?> value="On Loan" /> <?php echo __($guid, 'On Loan') ?>
+								<option <?php if ($row['status'] == 'Reserved') { echo 'selected'; } ?> value="Reserved" /> <?php echo __($guid, 'Reserved') ?>
+								<option <?php if ($row['status'] == 'Decommissioned') { echo 'selected'; } ?> value="Decommissioned" /> <?php echo __($guid, 'Decommissioned') ?>
+								<option <?php if ($row['status'] == 'Lost') { echo 'selected'; } ?> value="Lost" /> <?php echo __($guid, 'Lost') ?>
+								<option <?php if ($row['status'] == 'Repair') { echo 'selected'; } ?> value="Repair" /> <?php echo __($guid, 'Repair') ?>
 							</select>
 						</td>
 					</tr>
@@ -176,16 +161,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 							<script type="text/javascript">
 								var returnExpected=new LiveValidation('returnExpected');
 								returnExpected.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-            ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-            ?>." } ); 
+								echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+								}
+											?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+									echo 'dd/mm/yyyy';
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormat'];
+								}
+								?>." } ); 
 							</script>
 							 <script type="text/javascript">
 								$(function() {
@@ -206,22 +191,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 						</td>
 						<td class="right">
 							<select name="returnAction" id="returnAction" class="standardWidth">
-								<option <?php if ($row['status'] == '') {
-    echo 'selected';
-}
-            ?> value="" />
-								<option <?php if ($row['returnAction'] == 'Reserve') {
-    echo 'selected';
-}
-            ?> value="Reserve" /> <?php echo __($guid, 'Reserve') ?>
-								<option <?php if ($row['returnAction'] == 'Decommission') {
-    echo 'selected';
-}
-            ?> value="Decommission" /> <?php echo __($guid, 'Decommission') ?>
-								<option <?php if ($row['returnAction'] == 'Repair') {
-    echo 'selected';
-}
-            ?> value="Repair" /> <?php echo __($guid, 'Repair') ?>
+								<option <?php if ($row['status'] == '') { echo 'selected'; } ?> value="" />
+								<option <?php if ($row['returnAction'] == 'Reserve') { echo 'selected'; } ?> value="Reserve" /> <?php echo __($guid, 'Reserve') ?>
+								<option <?php if ($row['returnAction'] == 'Decommission') { echo 'selected'; } ?> value="Decommission" /> <?php echo __($guid, 'Decommission') ?>
+								<option <?php if ($row['returnAction'] == 'Repair') { echo 'selected'; } ?> value="Repair" /> <?php echo __($guid, 'Repair') ?>
 							</select>
 						</td>
 					</tr>
@@ -262,15 +235,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
                 echo "<option $selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true)."$expected</option>";
             }
             echo '</optgroup>';
-            echo '</select>';
-            ?>
+            echo '</select>'; ?>
 						</td>
 					</tr>
 					
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input name="gibbonLibraryItemID" id="gibbonLibraryItemID" value="<?php echo $gibbonLibraryItemID ?>" type="hidden">

@@ -97,9 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
 					</td>
 					<td class="right">
 						<input name="search" id="search" maxlength=20 value="<?php if (isset($_GET['search'])) {
-    echo $_GET['search'];
-}
-        ?>" type="text" class="standardWidth">
+    echo $_GET['search']; } ?>" type="text" class="standardWidth">
 					</td>
 				</tr>
 				<tr>
@@ -110,8 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
 						<?php
                         echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/studentEnrolment_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID'>".__($guid, 'Clear Search').'</a>';
         ?>
-						<input type="submit" value="<?php echo __($guid, 'Submit');
-        ?>">
+						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 					</td>
 				</tr>
 			</table>

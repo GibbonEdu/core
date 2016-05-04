@@ -270,16 +270,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
 							</td>
 							<td class="right">
 								<select class="standardWidth" name="firstAidQualified" id="firstAidQualified" class="firstAidQualified">
-									<option <?php if ($row['firstAidQualified'] == '') {
-    echo 'selected';
+									<option <?php if ($row['firstAidQualified'] == '') { echo 'selected';
 }
                 ?> value=""></option>
-									<option <?php if ($row['firstAidQualified'] == 'Y') {
-    echo 'selected';
+									<option <?php if ($row['firstAidQualified'] == 'Y') { echo 'selected';
 }
                 ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
-									<option <?php if ($row['firstAidQualified'] == 'N') {
-    echo 'selected';
+									<option <?php if ($row['firstAidQualified'] == 'N') { echo 'selected';
 }
                 ?> value="N"><?php echo __($guid, 'No') ?></option>
 								</select>
@@ -380,13 +377,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
 						</tr>
 						<tr>
 							<td>
-								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-                ?></span>
+								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 							</td>
 							<td class="right">
 								<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-								<input type="submit" value="<?php echo __($guid, 'Submit');
-                ?>">
+								<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 							</td>
 						</tr>
 					</table>

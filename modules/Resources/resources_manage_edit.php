@@ -218,8 +218,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 											<?php
 
                                             }
-                        ?>
-										</select>
+                        			?>										</select>
 										<script type="text/javascript">
 											var category=new LiveValidation('category');
 											category.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
@@ -272,8 +271,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 											<?php
 
                                             }
-                        ?>
-										</select>
+                        			?>										</select>
 									</td>
 								</tr>
 								<?php
@@ -344,8 +342,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 							</td>
 							<td class="right">
 								<?php
-                                echo "<fieldset style='border: none'>";
-                ?>
+                                echo "<fieldset style='border: none'>"; ?>
 								<script type="text/javascript">
 									$(function () {
 										$('.checkall').click(function () {
@@ -389,13 +386,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 						
 						<tr>
 							<td>
-								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-                ?></span>
+								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 							</td>
 							<td class="right">
 								<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-								<input type="submit" value="<?php echo __($guid, 'Submit');
-                ?>">
+								<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 							</td>
 						</tr>
 					</table>

@@ -196,10 +196,8 @@ if ($result->rowCount() == 1) {
             ?>
 			<tr>
 				<td> 
-					<b><?php echo __($guid, 'Personal Background');
-            ?></b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Set your own custom background image.').'<br/>'.__($guid, 'Please provide URL to image.');
-            ?></span>
+					<b><?php echo __($guid, 'Personal Background'); ?></b><br/>
+					<span class="emphasis small"><?php echo __($guid, 'Set your own custom background image.').'<br/>'.__($guid, 'Please provide URL to image.'); ?></span>
 				</td>
 				<td class="right">
 					<input name="personalBackground" id="personalBackground" value="<?php echo $row['personalBackground'] ?>" type="text" class="standardWidth">

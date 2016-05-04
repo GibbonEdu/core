@@ -86,8 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
 			<tr>
 				<td colspan=2 class="right">
 					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/curriculumMapping_outcomesByCourse.php">
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>
@@ -222,8 +221,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
                         }
                         ++$count;
 
-                            //COLOR ROW BY STATUS!
-                            echo "<tr class=$rowNum>";
+                        //COLOR ROW BY STATUS!
+                        echo "<tr class=$rowNum>";
                         echo '<td>';
                         echo $rowOutcomes['category'];
                         echo '</td>';
@@ -301,8 +300,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
                         }
                         ++$count;
 
-                            //COLOR ROW BY STATUS!
-                            echo "<tr class=$rowNum>";
+                        //COLOR ROW BY STATUS!
+                        echo "<tr class=$rowNum>";
                         echo '<td>';
                         echo $rowOutcomes['category'];
                         echo '</td>';

@@ -89,19 +89,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
 						<td class="right">
 							<?php
                             $yearName = '';
-            try {
-                $dataYear = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-                $sqlYear = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-                $resultYear = $connection2->prepare($sqlYear);
-                $resultYear->execute($dataYear);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-            if ($resultYear->rowCount() == 1) {
-                $rowYear = $resultYear->fetch();
-                $yearName = $rowYear['name'];
-            }
-            ?>
+							try {
+								$dataYear = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+								$sqlYear = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
+								$resultYear = $connection2->prepare($sqlYear);
+								$resultYear->execute($dataYear);
+							} catch (PDOException $e) {
+								echo "<div class='error'>".$e->getMessage().'</div>';
+							}
+							if ($resultYear->rowCount() == 1) {
+								$rowYear = $resultYear->fetch();
+								$yearName = $rowYear['name'];
+							}
+							?>
 							<input readonly name="yearName" id="yearName" value="<?php echo $yearName ?>" type="text" class="standardWidth">
 					</tr>
 					<tr>
@@ -112,19 +112,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
 						<td class="right">
 							<?php
                             $personName = '';
-            try {
-                $dataInvoicee = array('gibbonFinanceInvoiceeID' => $row['gibbonFinanceInvoiceeID']);
-                $sqlInvoicee = 'SELECT surname, preferredName FROM gibbonPerson JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID';
-                $resultInvoicee = $connection2->prepare($sqlInvoicee);
-                $resultInvoicee->execute($dataInvoicee);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-            if ($resultInvoicee->rowCount() == 1) {
-                $rowInvoicee = $resultInvoicee->fetch();
-                $personName = formatName('', htmlPrep($rowInvoicee['preferredName']), htmlPrep($rowInvoicee['surname']), 'Student', true);
-            }
-            ?>
+							try {
+								$dataInvoicee = array('gibbonFinanceInvoiceeID' => $row['gibbonFinanceInvoiceeID']);
+								$sqlInvoicee = 'SELECT surname, preferredName FROM gibbonPerson JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID';
+								$resultInvoicee = $connection2->prepare($sqlInvoicee);
+								$resultInvoicee->execute($dataInvoicee);
+							} catch (PDOException $e) {
+								echo "<div class='error'>".$e->getMessage().'</div>';
+							}
+							if ($resultInvoicee->rowCount() == 1) {
+								$rowInvoicee = $resultInvoicee->fetch();
+								$personName = formatName('', htmlPrep($rowInvoicee['preferredName']), htmlPrep($rowInvoicee['surname']), 'Student', true);
+							}
+							?>
 							<input readonly name="personName" id="personName" value="<?php echo $personName ?>" type="text" class="standardWidth">
 						</td>
 					</tr>
@@ -179,16 +179,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
 									<script type="text/javascript">
 										var invoiceDueDate=new LiveValidation('invoiceDueDate');
 										invoiceDueDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-                            ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-                            ?>." } ); 
+											echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+										} else {
+											echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+										}
+																	?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+											echo 'dd/mm/yyyy';
+										} else {
+											echo $_SESSION[$guid]['i18n']['dateFormat'];
+										}
+                            			?>." } ); 
 										invoiceDueDate.add(Validate.Presence);
 									</script>
 									 <script type="text/javascript">
@@ -214,8 +214,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
 							<?php
 
                         }
-                    }
-            ?>
+					}
+					?>
 					<tr>
 						<td> 
 							<b><?php echo __($guid, 'Status') ?> *</b><br/>
@@ -225,7 +225,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                             } else {
                                 echo '<span style="font-size: 90%"><i>'.__($guid, 'Available options are limited according to current status.').'</span>';
                             }
-            ?>
+            				?>
 						</td>
 						<td class="right">
 							<?php
@@ -250,7 +250,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                                 echo "<option value='Refunded'>".__($guid, 'Refunded').'</option>';
                                 echo '</select>';
                             }
-            ?>
+            				?>
 						</td>
 					</tr>
 					<?php
@@ -271,7 +271,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
 									<?php
 
                                 }
-                        ?>
+                        		?>
 								$("#status").change(function(){
 									if ($('#status option:selected').val()=="Paid" || $('#status option:selected').val()=="Paid - Partial" || $('#status option:selected').val()=="Paid - Complete") {
 										$("#paidDateRow").slideDown("fast", $("#paidDateRow").css("display","table-row")); 
@@ -300,14 +300,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
 							<td class="right">
 								<?php
                                 echo "<select name='paymentType' id='paymentType' style='width:302px'>";
-                        echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-                        echo "<option value='Online'>".__($guid, 'Online').'</option>';
-                        echo "<option value='Bank Transfer'>".__($guid, 'Bank Transfer').'</option>';
-                        echo "<option value='Cash'>".__($guid, 'Cash').'</option>';
-                        echo "<option value='Cheque'>".__($guid, 'Cheque').'</option>';
-                        echo "<option value='Other'>".__($guid, 'Other').'</option>';
-                        echo '</select>';
-                        ?>
+								echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
+								echo "<option value='Online'>".__($guid, 'Online').'</option>';
+								echo "<option value='Bank Transfer'>".__($guid, 'Bank Transfer').'</option>';
+								echo "<option value='Cash'>".__($guid, 'Cash').'</option>';
+								echo "<option value='Cheque'>".__($guid, 'Cheque').'</option>';
+								echo "<option value='Other'>".__($guid, 'Other').'</option>';
+								echo '</select>';
+								?>
 								<script type="text/javascript">
 									var paymentType=new LiveValidation('paymentType');
 									paymentType.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
@@ -333,16 +333,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
 								<script type="text/javascript">
 									var paidDate=new LiveValidation('paidDate');
 									paidDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-                        ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-                        ?>." } ); 
+										echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+									} else {
+										echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+									}
+															?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+										echo 'dd/mm/yyyy';
+									} else {
+										echo $_SESSION[$guid]['i18n']['dateFormat'];
+									}
+                       	 			?>." } ); 
 									paidDate.add(Validate.Presence);
 								</script>
 								 <script type="text/javascript">
@@ -360,7 +360,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                                 if ($_SESSION[$guid]['currency'] != '') {
                                     echo "<span style='font-style: italic; font-size: 85%'>".$_SESSION[$guid]['currency'].'</span>';
                                 }
-                        ?>
+                        		?>
 								</span>
 							</td>
 							<td class="right">
@@ -373,16 +373,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                                     $resultFees->execute($dataFees);
                                 } catch (PDOException $e) {
                                 }
-                        $paidAmountDefault = 0;
-                        while ($rowFees = $resultFees->fetch()) {
-                            $paidAmountDefault = $paidAmountDefault + $rowFees['fee'];
-                        }
+								$paidAmountDefault = 0;
+								while ($rowFees = $resultFees->fetch()) {
+									$paidAmountDefault = $paidAmountDefault + $rowFees['fee'];
+								}
                                 //If some paid already, work out amount, and subtract it off
                                 if ($row['status'] == 'Paid - Partial') {
                                     $alreadyPaid = getAmountPaid($connection2, $guid, 'gibbonFinanceInvoice', $gibbonFinanceInvoiceID);
                                     $paidAmountDefault -= $alreadyPaid;
                                 }
-                        ?>
+                        		?>
 								<input name="paidAmount" id="paidAmount" maxlength=14 value="<?php echo number_format($paidAmountDefault, 2, '.', '') ?>" type="text" class="standardWidth">
 								<script type="text/javascript">
 									var paidAmount=new LiveValidation('paidAmount');
@@ -392,9 +392,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
 							</td>
 						</tr>
 						<?php
-
-                    }
-            ?>
+					}
+                    ?>
 					<tr>
 						<td colspan=2> 
 							<b><?php echo __($guid, 'Notes') ?></b> 
@@ -426,11 +425,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                                     $feeCount = 0;
                         try {
                             //Standard
-                                        $dataFees['gibbonFinanceInvoiceID1'] = $row['gibbonFinanceInvoiceID'];
+                            $dataFees['gibbonFinanceInvoiceID1'] = $row['gibbonFinanceInvoiceID'];
                             $sqlFees = "(SELECT gibbonFinanceInvoiceFee.gibbonFinanceInvoiceFeeID, gibbonFinanceInvoiceFee.feeType, gibbonFinanceFeeCategory.name AS category, gibbonFinanceFee.name AS name, gibbonFinanceFee.fee AS fee, gibbonFinanceFee.description AS description, gibbonFinanceInvoiceFee.gibbonFinanceFeeID AS gibbonFinanceFeeID, gibbonFinanceInvoiceFee.gibbonFinanceFeeCategoryID AS gibbonFinanceFeeCategoryID, sequenceNumber FROM gibbonFinanceInvoiceFee JOIN gibbonFinanceFee ON (gibbonFinanceInvoiceFee.gibbonFinanceFeeID=gibbonFinanceFee.gibbonFinanceFeeID) JOIN gibbonFinanceFeeCategory ON (gibbonFinanceFee.gibbonFinanceFeeCategoryID=gibbonFinanceFeeCategory.gibbonFinanceFeeCategoryID) WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID1 AND feeType='Standard')";
                             $sqlFees .= ' UNION ';
-                                        //Ad Hoc
-                                        $dataFees['gibbonFinanceInvoiceID2'] = $row['gibbonFinanceInvoiceID'];
+							//Ad Hoc
+							$dataFees['gibbonFinanceInvoiceID2'] = $row['gibbonFinanceInvoiceID'];
                             $sqlFees .= "(SELECT gibbonFinanceInvoiceFee.gibbonFinanceInvoiceFeeID, gibbonFinanceInvoiceFee.feeType, gibbonFinanceFeeCategory.name AS category, gibbonFinanceInvoiceFee.name AS name, gibbonFinanceInvoiceFee.fee, gibbonFinanceInvoiceFee.description AS description, NULL AS gibbonFinanceFeeID, gibbonFinanceInvoiceFee.gibbonFinanceFeeCategoryID AS gibbonFinanceFeeCategoryID, sequenceNumber FROM gibbonFinanceInvoiceFee JOIN gibbonFinanceFeeCategory ON (gibbonFinanceInvoiceFee.gibbonFinanceFeeCategoryID=gibbonFinanceFeeCategory.gibbonFinanceFeeCategoryID) WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID2 AND feeType='Ad Hoc')";
                             $sqlFees .= ' ORDER BY sequenceNumber';
                             $resultFees = $connection2->prepare($sqlFees);
@@ -456,45 +455,45 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
 														<option class='all' value='0'><?php echo __($guid, 'Choose a fee to add it') ?></option>
 														<?php
                                                         echo "<option value='Ad Hoc'>Ad Hoc Fee</option>";
-                        $switchContents = 'case "Ad Hoc": ';
-                        $switchContents .= "$(\"#fee\").append('<div id=\'feeOuter' + feeCount + '\'><img style=\'margin: 10px 0 5px 0\' src=\'".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/loading.gif\' alt=\'Loading\' onclick=\'return false;\' /><br/>Loading</div>');";
-                        $switchContents .= '$("#feeOuter" + feeCount).load("'.$_SESSION[$guid]['absoluteURL'].'/modules/Finance/invoices_manage_add_blockFeeAjax.php","mode=add&id=" + feeCount + "&feeType='.urlencode('Ad Hoc').'&gibbonFinanceFeeID=&name='.urlencode('Ad Hoc Fee').'&description=&gibbonFinanceFeeCategoryID=1&fee=") ;';
-                        $switchContents .= 'feeCount++ ;';
-                        $switchContents .= "$('#newFee').val('0');";
-                        $switchContents .= 'break;';
-                        $currentCategory = '';
-                        $lastCategory = '';
-                        for ($i = 0; $i < 2; ++$i) {
-                            try {
-                                $dataSelect = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-                                if ($i == 0) {
-                                    $sqlSelect = "SELECT gibbonFinanceFee.*, gibbonFinanceFeeCategory.name AS category FROM gibbonFinanceFee LEFT JOIN gibbonFinanceFeeCategory ON (gibbonFinanceFee.gibbonFinanceFeeCategoryID=gibbonFinanceFeeCategory.gibbonFinanceFeeCategoryID) WHERE gibbonFinanceFee.active='Y' AND gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonFinanceFee.gibbonFinanceFeeCategoryID=1 ORDER BY gibbonFinanceFee.gibbonFinanceFeeCategoryID, gibbonFinanceFee.name";
-                                } else {
-                                    $sqlSelect = "SELECT gibbonFinanceFee.*, gibbonFinanceFeeCategory.name AS category FROM gibbonFinanceFee LEFT JOIN gibbonFinanceFeeCategory ON (gibbonFinanceFee.gibbonFinanceFeeCategoryID=gibbonFinanceFeeCategory.gibbonFinanceFeeCategoryID) WHERE gibbonFinanceFee.active='Y' AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceFee.gibbonFinanceFeeCategoryID=1 ORDER BY gibbonFinanceFee.gibbonFinanceFeeCategoryID, gibbonFinanceFee.name";
-                                }
-                                $resultSelect = $connection2->prepare($sqlSelect);
-                                $resultSelect->execute($dataSelect);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
-                            while ($rowSelect = $resultSelect->fetch()) {
-                                $currentCategory = $rowSelect['category'];
-                                if (($currentCategory != $lastCategory) and $currentCategory != '') {
-                                    echo "<optgroup label='--".$currentCategory."--'>";
-                                    $categories[$categoryCount] = $currentCategory;
-                                    ++$categoryCount;
-                                }
-                                echo "<option value='".$rowSelect['gibbonFinanceFeeID']."'>".$rowSelect['name'].'</option>';
-                                $switchContents .= 'case "'.$rowSelect['gibbonFinanceFeeID'].'": ';
-                                $switchContents .= "$(\"#fee\").append('<div id=\'feeOuter' + feeCount + '\'><img style=\'margin: 10px 0 5px 0\' src=\'".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/loading.gif\' alt=\'Loading\' onclick=\'return false;\' /><br/>Loading</div>');";
-                                $switchContents .= '$("#feeOuter" + feeCount).load("'.$_SESSION[$guid]['absoluteURL'].'/modules/Finance/invoices_manage_add_blockFeeAjax.php","mode=add&id=" + feeCount + "&feeType=Standard&gibbonFinanceFeeID='.urlencode($rowSelect['gibbonFinanceFeeID']).'&name='.urlencode($rowSelect['name']).'&description='.urlencode($rowSelect['description']).'&gibbonFinanceFeeCategoryID='.urlencode($rowSelect['gibbonFinanceFeeCategoryID']).'&fee='.urlencode($rowSelect['fee']).'&category='.urlencode($rowSelect['category']).'") ;';
-                                $switchContents .= 'feeCount++ ;';
-                                $switchContents .= "$('#newFee').val('0');";
-                                $switchContents .= 'break;';
-                                $lastCategory = $rowSelect['category'];
-                            }
-                        }
-                        ?>
+														$switchContents = 'case "Ad Hoc": ';
+														$switchContents .= "$(\"#fee\").append('<div id=\'feeOuter' + feeCount + '\'><img style=\'margin: 10px 0 5px 0\' src=\'".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/loading.gif\' alt=\'Loading\' onclick=\'return false;\' /><br/>Loading</div>');";
+														$switchContents .= '$("#feeOuter" + feeCount).load("'.$_SESSION[$guid]['absoluteURL'].'/modules/Finance/invoices_manage_add_blockFeeAjax.php","mode=add&id=" + feeCount + "&feeType='.urlencode('Ad Hoc').'&gibbonFinanceFeeID=&name='.urlencode('Ad Hoc Fee').'&description=&gibbonFinanceFeeCategoryID=1&fee=") ;';
+														$switchContents .= 'feeCount++ ;';
+														$switchContents .= "$('#newFee').val('0');";
+														$switchContents .= 'break;';
+														$currentCategory = '';
+														$lastCategory = '';
+														for ($i = 0; $i < 2; ++$i) {
+															try {
+																$dataSelect = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+																if ($i == 0) {
+																	$sqlSelect = "SELECT gibbonFinanceFee.*, gibbonFinanceFeeCategory.name AS category FROM gibbonFinanceFee LEFT JOIN gibbonFinanceFeeCategory ON (gibbonFinanceFee.gibbonFinanceFeeCategoryID=gibbonFinanceFeeCategory.gibbonFinanceFeeCategoryID) WHERE gibbonFinanceFee.active='Y' AND gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonFinanceFee.gibbonFinanceFeeCategoryID=1 ORDER BY gibbonFinanceFee.gibbonFinanceFeeCategoryID, gibbonFinanceFee.name";
+																} else {
+																	$sqlSelect = "SELECT gibbonFinanceFee.*, gibbonFinanceFeeCategory.name AS category FROM gibbonFinanceFee LEFT JOIN gibbonFinanceFeeCategory ON (gibbonFinanceFee.gibbonFinanceFeeCategoryID=gibbonFinanceFeeCategory.gibbonFinanceFeeCategoryID) WHERE gibbonFinanceFee.active='Y' AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceFee.gibbonFinanceFeeCategoryID=1 ORDER BY gibbonFinanceFee.gibbonFinanceFeeCategoryID, gibbonFinanceFee.name";
+																}
+																$resultSelect = $connection2->prepare($sqlSelect);
+																$resultSelect->execute($dataSelect);
+															} catch (PDOException $e) {
+																echo "<div class='error'>".$e->getMessage().'</div>';
+															}
+															while ($rowSelect = $resultSelect->fetch()) {
+																$currentCategory = $rowSelect['category'];
+																if (($currentCategory != $lastCategory) and $currentCategory != '') {
+																	echo "<optgroup label='--".$currentCategory."--'>";
+																	$categories[$categoryCount] = $currentCategory;
+																	++$categoryCount;
+																}
+																echo "<option value='".$rowSelect['gibbonFinanceFeeID']."'>".$rowSelect['name'].'</option>';
+																$switchContents .= 'case "'.$rowSelect['gibbonFinanceFeeID'].'": ';
+																$switchContents .= "$(\"#fee\").append('<div id=\'feeOuter' + feeCount + '\'><img style=\'margin: 10px 0 5px 0\' src=\'".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/loading.gif\' alt=\'Loading\' onclick=\'return false;\' /><br/>Loading</div>');";
+																$switchContents .= '$("#feeOuter" + feeCount).load("'.$_SESSION[$guid]['absoluteURL'].'/modules/Finance/invoices_manage_add_blockFeeAjax.php","mode=add&id=" + feeCount + "&feeType=Standard&gibbonFinanceFeeID='.urlencode($rowSelect['gibbonFinanceFeeID']).'&name='.urlencode($rowSelect['name']).'&description='.urlencode($rowSelect['description']).'&gibbonFinanceFeeCategoryID='.urlencode($rowSelect['gibbonFinanceFeeCategoryID']).'&fee='.urlencode($rowSelect['fee']).'&category='.urlencode($rowSelect['category']).'") ;';
+																$switchContents .= 'feeCount++ ;';
+																$switchContents .= "$('#newFee').val('0');";
+																$switchContents .= 'break;';
+																$lastCategory = $rowSelect['category'];
+															}
+														}
+														?>
 													</select>
 													<script type='text/javascript'>
 														function feeDisplayElements(number) {
@@ -597,15 +596,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
 
                     //PUT PAYMENT LOG
                     echo "<tr class='break'>";
-            echo '<td colspan=2>';
-            echo '<h3>'.__($guid, 'Payment Log').'</h3>';
-            echo '</td>';
-            echo '</tr>';
-            echo '<tr>';
-            echo '<td colspan=2>';
-            echo getPaymentLog($connection2, $guid, 'gibbonFinanceInvoice', $gibbonFinanceInvoiceID);
-            echo '</td>';
-            echo '</tr>';
+					echo '<td colspan=2>';
+					echo '<h3>'.__($guid, 'Payment Log').'</h3>';
+					echo '</td>';
+					echo '</tr>';
+					echo '<tr>';
+					echo '<td colspan=2>';
+					echo getPaymentLog($connection2, $guid, 'gibbonFinanceInvoice', $gibbonFinanceInvoiceID);
+					echo '</td>';
+					echo '</tr>';
 
                     //Receipt emailing
                     if ($row['status'] == 'Issued' or $row['status'] == 'Paid - Partial') {
@@ -903,17 +902,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                             }
                         }
                     }
-            ?>			
+            		?>			
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input name="gibbonFinanceInvoiceID" id="gibbonFinanceInvoiceID" value="<?php echo $gibbonFinanceInvoiceID ?>" type="hidden">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

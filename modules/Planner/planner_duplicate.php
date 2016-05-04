@@ -253,8 +253,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 							
 							<tr>
 								<td>
-									<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-                    ?></span>
+									<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 								</td>
 								<td class="right">
 									<input name="viewBy" id="viewBy" value="<?php echo $viewBy ?>" type="hidden">
@@ -406,16 +405,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 											var date=new LiveValidation('date');
 											date.add(Validate.Presence);
 											date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-                        ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-                        ?>." } ); 
+										echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+									} else {
+										echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+									}
+															?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+										echo 'dd/mm/yyyy';
+									} else {
+										echo $_SESSION[$guid]['i18n']['dateFormat'];
+									}
+                       	 			?>." } );  
 										</script>
 										 <script type="text/javascript">
 											$(function() {
@@ -492,8 +491,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 								</tr>
 								<tr>
 									<td>
-										<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-                        ?></span>
+										<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 									</td>
 									<td class="right">
 										<input name="duplicate" id="duplicate" value="<?php echo $duplicate ?>" type="hidden">
@@ -503,8 +501,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 										<input name="viewBy" id="viewBy" value="<?php echo $viewBy ?>" type="hidden">
 										<input name="subView" id="subView" value="<?php echo $subView ?>" type="hidden">
 										<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-										<input type="submit" value="<?php echo __($guid, 'Submit');
-                        ?>">
+										<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 									</td>
 								</tr>
 							</table>

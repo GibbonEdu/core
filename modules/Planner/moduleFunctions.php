@@ -312,7 +312,7 @@ function makeBlock($guid, $connection2, $i, $mode = 'masterAdd', $title = '', $t
                             echo '</table>';
                         }
                     }
-    ?>
+   				 	?>
 				</td>
 			</tr>
 		</table>
@@ -833,7 +833,7 @@ function makeBlockOutcome($guid,  $i, $type = '', $gibbonOutcomeID = '', $title 
                                 echo "<div style='padding: 5px'>$contents</div>";
                                 echo "<input type='hidden' name='".$type.'contents'.$i."' value='".htmlPrep($contents)."'/>";
                             }
-    ?>
+   				 			?>
 					</td>
 				</tr>
 			</table>

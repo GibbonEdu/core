@@ -53,8 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
         if ($step == 1) {
             echo '<h2>';
             echo __($guid, 'Step 1 - Choose Class');
-            echo '</h2>';
-            ?>
+            echo '</h2>'; ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/spaceChange_manage_add.php&step=2' ?>">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr>

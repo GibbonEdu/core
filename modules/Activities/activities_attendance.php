@@ -58,29 +58,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
 					<select class="standardWidth" name="gibbonActivityID">
 						<?php
                         echo "<option value=''></option>";
-    try {
-        $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-        $sqlSelect = "SELECT * FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ORDER BY name, programStart";
-        $resultSelect = $connection2->prepare($sqlSelect);
-        $resultSelect->execute($dataSelect);
-    } catch (PDOException $e) {
-    }
-    while ($rowSelect = $resultSelect->fetch()) {
-        $selected = '';
-        if ($gibbonActivityID == $rowSelect['gibbonActivityID']) {
-            $selected = 'selected';
-        }
-        echo "<option $selected value='".$rowSelect['gibbonActivityID']."'>".htmlPrep($rowSelect['name']).'</option>';
-    }
-    ?>				
+						try {
+							$dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+							$sqlSelect = "SELECT * FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ORDER BY name, programStart";
+							$resultSelect = $connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						} catch (PDOException $e) {
+						}
+						while ($rowSelect = $resultSelect->fetch()) {
+							$selected = '';
+							if ($gibbonActivityID == $rowSelect['gibbonActivityID']) {
+								$selected = 'selected';
+							}
+							echo "<option $selected value='".$rowSelect['gibbonActivityID']."'>".htmlPrep($rowSelect['name']).'</option>';
+						}
+						?>				
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<td colspan=2 class="right">
 					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/activities_attendance.php">
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>
@@ -320,15 +319,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
 			<table class='smallIntBorder fullWidth' cellspacing='0'>	
 				<tr>
 					<td>
-						<em><?php echo __($guid, 'All highlighted columns will be updated when you press submit.');
-        ?></em>
+						<em><?php echo __($guid, 'All highlighted columns will be updated when you press submit.'); ?></em>
 					</td>
 					<td class="right">
-						<input name="gibbonPersonID" id="gibbonPersonID" value="<?php echo $_SESSION[$guid]['gibbonPersonID'];
-        ?>" type="hidden">
+						<input name="gibbonPersonID" id="gibbonPersonID" value="<?php echo $_SESSION[$guid]['gibbonPersonID']; ?>" type="hidden">
 						<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-						<input type="submit" value="<?php echo __($guid, 'Submit');
-        ?>">
+						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 					</td>
 				</tr>
 			</table>

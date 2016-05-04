@@ -122,7 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_duplicate.
 										<?php
 
                                     }
-                    ?>
+                   		 			?>
 								</td>
 							</tr>
 					
@@ -182,7 +182,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_duplicate.
                                         if ($highestAction == 'Manage Rubrics_viewEditAll') {
                                             echo 'gibbonDepartmentID.disable();';
                                         }
-                    ?>
+                    					?>
 									</script>
 								</td>
 							</tr>
@@ -200,13 +200,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_duplicate.
 							</tr>
 							<tr>
 								<td>
-									<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-                    ?></span>
+									<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 								</td>
 								<td class="right">
 									<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-									<input type="submit" value="<?php echo __($guid, 'Submit');
-                    ?>">
+									<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 								</td>
 							</tr>
 						</table>

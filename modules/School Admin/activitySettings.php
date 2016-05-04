@@ -54,13 +54,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option <?php if ($row['value'] == 'Date') {
-    echo 'selected ';
-}
+						<option <?php if ($row['value'] == 'Date') { echo 'selected '; }
     ?>value="Date"><?php echo __($guid, 'Date') ?></option>
-						<option <?php if ($row['value'] == 'Term') {
-    echo 'selected ';
-}
+						<option <?php if ($row['value'] == 'Term') { echo 'selected '; }
     ?>value="Term"><?php echo __($guid, 'Term') ?></option>
 					</select>
 				</td>
@@ -101,29 +97,17 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option <?php if ($row['value'] == '0') {
-    echo 'selected ';
-}
+						<option <?php if ($row['value'] == '0') { echo 'selected '; }
     ?>value="0"><?php echo __($guid, '0') ?></option>
-						<option <?php if ($row['value'] == '1') {
-    echo 'selected ';
-}
+						<option <?php if ($row['value'] == '1') { echo 'selected '; }
     ?>value="1"><?php echo __($guid, '1') ?></option>
-						<option <?php if ($row['value'] == '2') {
-    echo 'selected ';
-}
+						<option <?php if ($row['value'] == '2') { echo 'selected '; }
     ?>value="2"><?php echo __($guid, '2') ?></option>
-						<option <?php if ($row['value'] == '3') {
-    echo 'selected ';
-}
+						<option <?php if ($row['value'] == '3') { echo 'selected '; }
     ?>value="3"><?php echo __($guid, '3') ?></option>
-						<option <?php if ($row['value'] == '4') {
-    echo 'selected ';
-}
+						<option <?php if ($row['value'] == '4') { echo 'selected '; }
     ?>value="4"><?php echo __($guid, '4') ?></option>
-						<option <?php if ($row['value'] == '5') {
-    echo 'selected ';
-}
+						<option <?php if ($row['value'] == '5') { echo 'selected '; }
     ?>value="5"><?php echo __($guid, '5') ?></option>
 					</select>
 				</td>
@@ -145,17 +129,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option <?php if ($row['value'] == 'None') {
-    echo 'selected ';
-}
+						<option <?php if ($row['value'] == 'None') { echo 'selected '; }
     ?>value="None"><?php echo __($guid, 'None') ?></option>
-						<option <?php if ($row['value'] == 'View') {
-    echo 'selected ';
-}
+						<option <?php if ($row['value'] == 'View') { echo 'selected '; }
     ?>value="View"><?php echo __($guid, 'View') ?></option>
-						<option <?php if ($row['value'] == 'Register') {
-    echo 'selected ';
-}
+						<option <?php if ($row['value'] == 'Register') { echo 'selected '; }
     ?>value="Register"><?php echo __($guid, 'Register') ?></option>
 					</select>
 				</td>
@@ -177,21 +155,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option <?php if ($row['value'] == 'None') {
-    echo 'selected ';
-}
+						<option <?php if ($row['value'] == 'None') { echo 'selected '; }
     ?>value="None"><?php echo __($guid, 'None') ?></option>
-						<option <?php if ($row['value'] == 'Single') {
-    echo 'selected ';
-}
+						<option <?php if ($row['value'] == 'Single') { echo 'selected '; }
     ?>value="Single"><?php echo __($guid, 'Single') ?></option>
-						<option <?php if ($row['value'] == 'Per Activity') {
-    echo 'selected ';
-}
+						<option <?php if ($row['value'] == 'Per Activity') { echo 'selected '; }
     ?>value="Per Activity"><?php echo __($guid, 'Per Activity') ?></option>
-						<option <?php if ($row['value'] == 'Single + Per Activity') {
-    echo 'selected ';
-}
+						<option <?php if ($row['value'] == 'Single + Per Activity') { echo 'selected '; }
     ?>value="Single + Per Activity"><?php echo __($guid, 'Single + Per Activity') ?></option>
 					</select>
 				</td>
@@ -213,13 +183,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option <?php if ($row['value'] == 'Competitive') {
-    echo 'selected ';
-}
+						<option <?php if ($row['value'] == 'Competitive') { echo 'selected '; }
     ?>value="Competitive"><?php echo __($guid, 'Competitive') ?></option>
-						<option <?php if ($row['value'] == 'Selection') {
-    echo 'selected ';
-}
+						<option <?php if ($row['value'] == 'Selection') { echo 'selected '; }
     ?>value="Selection"><?php echo __($guid, 'Selection') ?></option>
 					</select>
 				</td>
@@ -241,13 +207,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option <?php if ($row['value'] == 'N') {
-    echo 'selected ';
-}
+						<option <?php if ($row['value'] == 'N') { echo 'selected '; }
     ?>value="N"><?php echo __($guid, 'No') ?></option>
-						<option <?php if ($row['value'] == 'Y') {
-    echo 'selected ';
-}
+						<option <?php if ($row['value'] == 'Y') { echo 'selected '; }
     ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
 					</select>
 				</td>
@@ -289,13 +251,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option <?php if ($row['value'] == 'N') {
-    echo 'selected ';
-}
+						<option <?php if ($row['value'] == 'N') { echo 'selected '; }
     ?>value="N"><?php echo __($guid, 'No') ?></option>
-						<option <?php if ($row['value'] == 'Y') {
-    echo 'selected ';
-}
+						<option <?php if ($row['value'] == 'Y') { echo 'selected '; }
     ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
 					</select>
 				</td>
@@ -318,13 +276,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option <?php if ($row['value'] == 'N') {
-    echo 'selected ';
-}
+						<option <?php if ($row['value'] == 'N') { echo 'selected '; }
     ?>value="N"><?php echo __($guid, 'No') ?></option>
-						<option <?php if ($row['value'] == 'Y') {
-    echo 'selected ';
-}
+						<option <?php if ($row['value'] == 'Y') { echo 'selected '; }
     ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
 					</select>
 				</td>
@@ -332,13 +286,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
 			
 			<tr>
 				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-    ?></span>
+					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>

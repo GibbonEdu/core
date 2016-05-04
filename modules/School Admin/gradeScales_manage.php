@@ -87,8 +87,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
                 $rowNum = 'error';
             }
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$rowNum>";
             echo '<td>';
             echo '<b>'.$row['name'].'</b><br/>';
             echo __($guid, $row['nameShort']);

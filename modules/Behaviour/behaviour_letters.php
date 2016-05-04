@@ -59,27 +59,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_letter
                             $resultSelect->execute($dataSelect);
                         } catch (PDOException $e) {
                         }
-    while ($rowSelect = $resultSelect->fetch()) {
-        if ($gibbonPersonID == $rowSelect['gibbonPersonID']) {
-            echo "<option selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['nameShort']).')</option>';
-        } else {
-            echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['nameShort']).')</option>';
-        }
-    }
-    ?>			
+						while ($rowSelect = $resultSelect->fetch()) {
+							if ($gibbonPersonID == $rowSelect['gibbonPersonID']) {
+								echo "<option selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['nameShort']).')</option>';
+							} else {
+								echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['nameShort']).')</option>';
+							}
+						}
+						?>			
 					</select>
 				</td>
 			</tr>
 			<?php
 
             echo '<tr>';
-    echo "<td class='right' colspan=2>";
-    echo "<input type='hidden' name='q' value='".$_GET['q']."'>";
-    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Behaviour/behaviour_letters.php'>".__($guid, 'Clear Filters').'</a> ';
-    echo "<input type='submit' value='".__($guid, 'Go')."'>";
-    echo '</td>';
-    echo '</tr>';
-    echo '</table>';
+				echo "<td class='right' colspan=2>";
+				echo "<input type='hidden' name='q' value='".$_GET['q']."'>";
+				echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Behaviour/behaviour_letters.php'>".__($guid, 'Clear Filters').'</a> ';
+				echo "<input type='submit' value='".__($guid, 'Go')."'>";
+				echo '</td>';
+			echo '</tr>';
+    	echo '</table>';
     echo '</form>';
 
     echo '<h3>';
@@ -162,8 +162,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_letter
             }
             ++$count;
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$rowNum>";
             echo '<td>';
             echo "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$row['gibbonPersonID']."&subpage=Behaviour&search=&allStudents=&sort=surname, preferredName'>".formatName('', $row['preferredName'], $row['surname'], 'Student', true).'</a><br/>';
             echo "<span style='font-size: 85%; font-style: italic'>".dateConvertBack($guid, substr($row['timestamp'], 0, 10)).'<span>';

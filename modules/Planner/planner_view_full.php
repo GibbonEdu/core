@@ -1255,7 +1255,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                                     } else {
                                                         echo __($guid, 'No');
                                                     }
-                                    ?>
+                                    			?>
 												</td>
 											</tr>
 
@@ -1320,7 +1320,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 														<?php
 
                                                     }
-                                    ?>
+                                    			?>
 
 													//Response to clicking on homework control
 													$(".homework").click(function(){
@@ -1410,7 +1410,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                                             if ($rowMyHomework['homework'] != 'Y') {
                                                                 echo 'homeworkDueDate.disable();';
                                                             }
-                                    ?>
+                                    			?>
 														</script>
 														 <script type="text/javascript">
 															$(function() {
@@ -1947,8 +1947,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 											<?php
 
                                         }
-                        ?>
-									}
+                        			?>									}
 									else {
 										$("#teachersNotes").slideUp("fast");
 										$(".teachersNotes").slideUp("fast");
@@ -1959,8 +1958,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 											<?php
 
                                         }
-                        ?>
-									}
+                        			?>									}
 								 });
 							});
 						</script>

@@ -83,8 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         }
         echo "<option $selected value='".$rowPurpose['gibbonINDescriptorID']."'>".__($guid, $rowPurpose['name']).'</option>';
     }
-    echo '</select>';
-    ?>
+    echo '</select>';?>
 				</td>
 			</tr>
 			<tr>
@@ -111,8 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         }
         echo "<option $selected value='".$rowPurpose['gibbonAlertLevelID']."'>".__($guid, $rowPurpose['name']).'</option>';
     }
-    echo '</select>';
-    ?>
+    echo '</select>';?>
 				</td>
 			</tr>
 			<tr>
@@ -139,8 +137,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         }
         echo "<option $selected value='".$rowPurpose['gibbonRollGroupID']."'>".$rowPurpose['name'].'</option>';
     }
-    echo '</select>';
-    ?>
+    echo '</select>';?>
 				</td>
 			</tr>
 			<tr>
@@ -167,8 +164,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         }
         echo "<option $selected value='".$rowPurpose['gibbonYearGroupID']."'>".__($guid, $rowPurpose['name']).'</option>';
     }
-    echo '</select>';
-    ?>
+    echo '</select>';?>
 				</td>
 			</tr>
 			<?php
@@ -276,8 +272,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     $rowNum = 'error';
                 }
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$rowNum>";
             echo '<td>';
             echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
             echo '</td>';

@@ -89,8 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
 						<?php
                         echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/staff_view.php'>".__($guid, 'Clear Search').'</a>';
         ?>
-						<input type="submit" value="<?php echo __($guid, 'Submit');
-        ?>">
+						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 					</td>
 				</tr>
 			</table>
@@ -178,8 +177,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
                 }
                 ++$count;
 
-                    //COLOR ROW BY STATUS!
-                    echo "<tr class=$rowNum>";
+                //COLOR ROW BY STATUS!
+                echo "<tr class=$rowNum>";
                 echo '<td>';
                 echo formatName('', $row['preferredName'], $row['surname'], 'Student', true).'<br/>';
                 echo "<span style='font-size: 85%; font-style: italic'>".$row['initials'].'</span>';

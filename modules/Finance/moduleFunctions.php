@@ -568,8 +568,8 @@ function getExpenseLog($guid, $gibbonFinanceExpenseID, $connection2, $commentsOp
             }
             ++$count;
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$rowNum>";
             echo '<td>';
             echo formatName('', $row['preferredName'], $row['surname'], 'Staff', false, true);
             echo '</td>';
@@ -756,8 +756,7 @@ function makeFeeBlock($guid, $connection2, $i, $mode = 'add', $feeType, $gibbonF
 					}
 				});
 
-				<?php if ($mode == 'add' and $feeType == 'Ad Hoc') {
-    ?>
+				<?php if ($mode == 'add' and $feeType == 'Ad Hoc') {?>
 					var nameClick<?php echo $i ?>=false ;
 					$('#name<?php echo $i ?>').focus(function() {
 						if (nameClick<?php echo $i ?>==false) {
@@ -776,8 +775,8 @@ function makeFeeBlock($guid, $connection2, $i, $mode = 'add', $feeType, $gibbonF
 						}
 					});
 				<?php 
-}
-    ?>
+				}
+				?>
 
 				$('#delete<?php echo $i ?>').unbind('click').click(function() {
 					if (confirm("Are you sure you want to delete this record?")) {
@@ -793,17 +792,17 @@ function makeFeeBlock($guid, $connection2, $i, $mode = 'add', $feeType, $gibbonF
 					<td style='width: 70%'>
 						<input name='order[]' type='hidden' value='<?php echo $i ?>'>
 						<input <?php if ($feeType == 'Standard') {
-    echo 'readonly';
-}
-    ?> maxlength=100 id='name<?php echo $i ?>' name='name<?php echo $i ?>' type='text' style='float: none; border: 1px dotted #aaa; background: none; margin-left: 3px; <?php if ($mode == 'add' and $feeType == 'Ad Hoc') {
-    echo 'color: #999;';
-}
-    ?> margin-top: 0px; font-size: 140%; font-weight: bold; width: 350px' value='<?php if ($mode == 'add' and $feeType == 'Ad Hoc') {
-    echo __($guid, 'Fee Name')." $i";
-} else {
-    echo htmlPrep($name);
-}
-    ?>'><br/>
+							echo 'readonly';
+						}
+							?> maxlength=100 id='name<?php echo $i ?>' name='name<?php echo $i ?>' type='text' style='float: none; border: 1px dotted #aaa; background: none; margin-left: 3px; <?php if ($mode == 'add' and $feeType == 'Ad Hoc') {
+							echo 'color: #999;';
+						}
+							?> margin-top: 0px; font-size: 140%; font-weight: bold; width: 350px' value='<?php if ($mode == 'add' and $feeType == 'Ad Hoc') {
+							echo __($guid, 'Fee Name')." $i";
+						} else {
+							echo htmlPrep($name);
+						}
+							?>'><br/>
 						<?php
                         if ($mode == 'add' and $feeType == 'Ad Hoc') {
                             ?>
@@ -827,28 +826,28 @@ function makeFeeBlock($guid, $connection2, $i, $mode = 'add', $feeType, $gibbonF
                         } else {
                             ?>
 							<input <?php if ($feeType == 'Standard') {
-    echo 'readonly';
-}
+								echo 'readonly';
+							}
                             ?> maxlength=100 id='category<?php echo $i ?>' name='category<?php echo $i ?>' type='text' style='float: none; border: 1px dotted #aaa; background: none; margin-left: 3px; margin-top: 2px; font-size: 110%; font-style: italic; width: 250px' value='<?php echo htmlPrep($category) ?>'>
 							<input type='hidden' id='gibbonFinanceFeeCategoryID<?php echo $i ?>' name='gibbonFinanceFeeCategoryID<?php echo $i ?>' value='<?php echo htmlPrep($gibbonFinanceFeeCategoryID) ?>'>
 							<?php
 
                         }
-    ?>
+   				 		?>
 						<input <?php if ($feeType == 'Standard') {
-    echo 'readonly';
-}
-    ?> maxlength=13 id='fee<?php echo $i ?>' name='fee<?php echo $i ?>' type='text' style='float: none; border: 1px dotted #aaa; background: none; margin-left: 3px; <?php if ($mode == 'add' and $feeType == 'Ad Hoc') {
-    echo 'color: #999;';
-}
-    ?> margin-top: 2px; font-size: 110%; font-style: italic; width: 95px' value='<?php if ($mode == 'add' and $feeType == 'Ad Hoc') {
-    echo __($guid, 'Value'); if ($_SESSION[$guid]['currency'] != '') {
-     echo ' ('.$_SESSION[$guid]['currency'].')';
- }
-} else {
-    echo htmlPrep($fee);
-}
-    ?>'>
+							echo 'readonly';
+						}
+							?> maxlength=13 id='fee<?php echo $i ?>' name='fee<?php echo $i ?>' type='text' style='float: none; border: 1px dotted #aaa; background: none; margin-left: 3px; <?php if ($mode == 'add' and $feeType == 'Ad Hoc') {
+							echo 'color: #999;';
+						}
+							?> margin-top: 2px; font-size: 110%; font-style: italic; width: 95px' value='<?php if ($mode == 'add' and $feeType == 'Ad Hoc') {
+							echo __($guid, 'Value'); if ($_SESSION[$guid]['currency'] != '') {
+							 echo ' ('.$_SESSION[$guid]['currency'].')';
+						 }
+						} else {
+							echo htmlPrep($fee);
+						}
+						?>'>
 						<script type="text/javascript">
 							var fee<?php echo $i ?>=new LiveValidation('fee<?php echo $i ?>');
 							fee<?php echo $i ?>.add(Validate.Presence);
@@ -859,14 +858,14 @@ function makeFeeBlock($guid, $connection2, $i, $mode = 'add', $feeType, $gibbonF
 						<div style='margin-bottom: 5px'>
 							<?php
                             echo "<img id='delete$i' title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/> ";
-    echo "<div id='show$i'  title='".__($guid, 'Show/Hide')."' style='margin-top: -1px; margin-left: 3px; padding-right: 1px; float: right; width: 25px; height: 25px; background-image: url(\"".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/plus.png\")'></div></br>";
-    ?>
+							echo "<div id='show$i'  title='".__($guid, 'Show/Hide')."' style='margin-top: -1px; margin-left: 3px; padding-right: 1px; float: right; width: 25px; height: 25px; background-image: url(\"".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/plus.png\")'></div></br>";
+							?>
 						</div>
 						<?php
                         if ($mode == 'plannerEdit') {
                             echo '</br>';
                         }
-    ?>
+   				 		?>
 						<input type='hidden' name='feeType<?php echo $i ?>' value='<?php echo $feeType ?>'>
 						<input type='hidden' name='gibbonFinanceFeeID<?php echo $i ?>' value='<?php echo $gibbonFinanceFeeID ?>'>
 					</td>
@@ -875,13 +874,13 @@ function makeFeeBlock($guid, $connection2, $i, $mode = 'add', $feeType, $gibbonF
 					<td colspan=2 style='vertical-align: top'>
 						<?php
                         echo "<div style='text-align: left; font-weight: bold; margin-top: 15px'>Description</div>";
-    if ($gibbonFinanceFeeID == null) {
-        echo "<textarea style='width: 100%;' name='description".$i."'>".htmlPrep($description).'</textarea>';
-    } else {
-        echo "<div style='width: 100%;'>".htmlPrep($description).'</div>';
-        echo "<input type='hidden' name='description".$i."' value='".htmlPrep($description)."'>";
-    }
-    ?>
+						if ($gibbonFinanceFeeID == null) {
+							echo "<textarea style='width: 100%;' name='description".$i."'>".htmlPrep($description).'</textarea>';
+						} else {
+							echo "<div style='width: 100%;'>".htmlPrep($description).'</div>';
+							echo "<input type='hidden' name='description".$i."' value='".htmlPrep($description)."'>";
+						}
+						?>
 					</td>
 				</tr>
 			</table>

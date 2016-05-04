@@ -60,7 +60,6 @@ if ($proceed == false) {
         echo $intro;
         echo '</p>';
     }
-
     ?>
 	
 	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/publicRegistrationProcess.php' ?>" enctype="multipart/form-data">
@@ -69,8 +68,7 @@ if ($proceed == false) {
 			
 			<tr class='break'>
 				<th colspan=2> 
-					<?php echo __($guid, 'Account Details');
-    ?>
+					<?php echo __($guid, 'Account Details'); ?>
 				</td>
 			</tr>
 			<tr>
@@ -141,16 +139,16 @@ if ($proceed == false) {
 					<script type="text/javascript">
 						var dob=new LiveValidation('dob');
 						dob.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-    ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-    ?>." } ); 
+							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+						}
+							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+							echo 'dd/mm/yyyy';
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormat'];
+						}
+						?>." } ); 
 					 	dob.add(Validate.Presence);
 					</script>
 					 <script type="text/javascript">
@@ -169,21 +167,20 @@ if ($proceed == false) {
 					<input name="username" id="username" maxlength=20 value="" type="text" class="standardWidth">
 					<?php
                     $idList = '';
-    try {
-        $dataSelect = array();
-        $sqlSelect = 'SELECT username FROM gibbonPerson ORDER BY username';
-        $resultSelect = $connection2->prepare($sqlSelect);
-        $resultSelect->execute($dataSelect);
-    } catch (PDOException $e) {
-    }
-    while ($rowSelect = $resultSelect->fetch()) {
-        $idList .= "'".$rowSelect['username']."',";
-    }
-    ?>
+					try {
+						$dataSelect = array();
+						$sqlSelect = 'SELECT username FROM gibbonPerson ORDER BY username';
+						$resultSelect = $connection2->prepare($sqlSelect);
+						$resultSelect->execute($dataSelect);
+					} catch (PDOException $e) {
+					}
+					while ($rowSelect = $resultSelect->fetch()) {
+						$idList .= "'".$rowSelect['username']."',";
+					}
+					?>
 					<script type="text/javascript">
 						var username=new LiveValidation('username');
-						username.add( Validate.Exclusion, { within: [<?php echo $idList;
-    ?>], failureMessage: "<?php echo __($guid, 'Value already in use!') ?>", partialMatch: false, caseSensitive: false } );
+						username.add( Validate.Exclusion, { within: [<?php echo $idList;?>], failureMessage: "<?php echo __($guid, 'Value already in use!') ?>", partialMatch: false, caseSensitive: false } );
 						username.add(Validate.Presence);
 					</script>
 				</td>
@@ -192,12 +189,12 @@ if ($proceed == false) {
 				<td colspan=2>
 					<?php
                     $policy = getPasswordPolicy($guid, $connection2);
-    if ($policy != false) {
-        echo "<div class='warning'>";
-        echo $policy;
-        echo '</div>';
-    }
-    ?>
+					if ($policy != false) {
+						echo "<div class='warning'>";
+						echo $policy;
+						echo '</div>';
+					}
+					?>
 				</td>
 			</tr>
 			<tr>
@@ -214,22 +211,22 @@ if ($proceed == false) {
 						passwordNew.add(Validate.Presence);
 						<?php
                         $alpha = getSettingByScope($connection2, 'System', 'passwordPolicyAlpha');
-    $numeric = getSettingByScope($connection2, 'System', 'passwordPolicyNumeric');
-    $punctuation = getSettingByScope($connection2, 'System', 'passwordPolicyNonAlphaNumeric');
-    $minLength = getSettingByScope($connection2, 'System', 'passwordPolicyMinLength');
-    if ($alpha == 'Y') {
-        echo 'passwordNew.add( Validate.Format, { pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
-    }
-    if ($numeric == 'Y') {
-        echo 'passwordNew.add( Validate.Format, { pattern: /.*[0-9]/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
-    }
-    if ($punctuation == 'Y') {
-        echo 'passwordNew.add( Validate.Format, { pattern: /[^a-zA-Z0-9]/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
-    }
-    if (is_numeric($minLength)) {
-        echo 'passwordNew.add( Validate.Length, { minimum: '.$minLength.'} );';
-    }
-    ?>
+						$numeric = getSettingByScope($connection2, 'System', 'passwordPolicyNumeric');
+						$punctuation = getSettingByScope($connection2, 'System', 'passwordPolicyNonAlphaNumeric');
+						$minLength = getSettingByScope($connection2, 'System', 'passwordPolicyMinLength');
+						if ($alpha == 'Y') {
+							echo 'passwordNew.add( Validate.Format, { pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
+						}
+						if ($numeric == 'Y') {
+							echo 'passwordNew.add( Validate.Format, { pattern: /.*[0-9]/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
+						}
+						if ($punctuation == 'Y') {
+							echo 'passwordNew.add( Validate.Format, { pattern: /[^a-zA-Z0-9]/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
+						}
+						if (is_numeric($minLength)) {
+							echo 'passwordNew.add( Validate.Length, { minimum: '.$minLength.'} );';
+						}
+						?>
 						
 						$(".generatePassword").click(function(){
 							var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789![]{}()%&*$#^<>~@|';
@@ -253,61 +250,59 @@ if ($proceed == false) {
 			<?php
             //Privacy statement
             $privacyStatement = getSettingByScope($connection2, 'User Admin', 'publicRegistrationPrivacyStatement');
-    if ($privacyStatement != '') {
-        echo "<tr class='break'>";
-        echo '<th colspan=2>';
-        echo __($guid, 'Privacy Statement');
-        echo '</th>';
-        echo '</tr>';
-        echo '<tr>';
-        echo '<td colspan=2>';
-        echo '<p>';
-        echo $privacyStatement;
-        echo '</p>';
-        echo '</td>';
-        echo '</tr>';
-    }
+			if ($privacyStatement != '') {
+				echo "<tr class='break'>";
+				echo '<th colspan=2>';
+				echo __($guid, 'Privacy Statement');
+				echo '</th>';
+				echo '</tr>';
+				echo '<tr>';
+				echo '<td colspan=2>';
+				echo '<p>';
+				echo $privacyStatement;
+				echo '</p>';
+				echo '</td>';
+				echo '</tr>';
+			}
 
             //Get agreement
             $agreement = getSettingByScope($connection2, 'User Admin', 'publicRegistrationAgreement');
-    if ($agreement != '') {
-        echo "<tr class='break'>";
-        echo '<th colspan=2>';
-        echo __($guid, 'Agreement');
-        echo '</td>';
-        echo '</tr>';
+			if ($agreement != '') {
+				echo "<tr class='break'>";
+				echo '<th colspan=2>';
+				echo __($guid, 'Agreement');
+				echo '</td>';
+				echo '</tr>';
 
-        echo '<tr>';
-        echo '<td colspan=2>';
-        echo $agreement;
-        echo '</td>';
-        echo '</tr>';
-        echo '<tr>';
-        echo '<td>';
-        echo '<b>'.__($guid, 'Do you agree to the above?').'</b><br/>';
-        echo '</td>';
-        echo "<td class='right'>";
-        echo "Yes <input type='checkbox' name='agreement' id='agreement'>";
-        ?>
-						<script type="text/javascript">
-							var agreement=new LiveValidation('agreement');
-							agreement.add( Validate.Acceptance );
-						</script>
-						 <?php
-                    echo '</td>';
+				echo '<tr>';
+				echo '<td colspan=2>';
+				echo $agreement;
+				echo '</td>';
+				echo '</tr>';
+				echo '<tr>';
+				echo '<td>';
+				echo '<b>'.__($guid, 'Do you agree to the above?').'</b><br/>';
+				echo '</td>';
+				echo "<td class='right'>";
+				echo "Yes <input type='checkbox' name='agreement' id='agreement'>";
+				?>
+				<script type="text/javascript">
+					var agreement=new LiveValidation('agreement');
+					agreement.add( Validate.Acceptance );
+				</script>
+				 <?php
+			echo '</td>';
         echo '</tr>';
     }
 
     ?>
 			<tr>
 				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-    ?></span>
+					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>

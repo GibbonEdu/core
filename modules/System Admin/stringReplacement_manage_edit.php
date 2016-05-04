@@ -111,8 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
             if ($row['mode'] == 'Partial') {
                 $selected = 'selected';
             }
-            echo "<option $selected value=\"Partial\">".__($guid, 'Partial').'</option>';
-            ?>
+            echo "<option $selected value=\"Partial\">".__($guid, 'Partial').'</option>'; ?>
 							</select>
 						</td>
 					</tr>
@@ -133,8 +132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
             if ($row['caseSensitive'] == 'Y') {
                 $selected = 'selected';
             }
-            echo "<option $selected value='Y'>".ynExpander($guid, 'Y').'</option>';
-            ?>
+            echo "<option $selected value='Y'>".ynExpander($guid, 'Y').'</option>'; ?>
 							</select>
 						</td>
 					</tr>
@@ -154,13 +152,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
 					</tr>	
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

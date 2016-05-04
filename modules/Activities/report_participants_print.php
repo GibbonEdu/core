@@ -104,8 +104,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_particip
                 }
                 ++$count;
 
-                    //COLOR ROW BY STATUS!
-                    echo "<tr class=$rowNum>";
+				//COLOR ROW BY STATUS!
+				echo "<tr class=$rowNum>";
                 echo '<td>';
                 try {
                     $dataRollGroup = array('gibbonRollGroupID' => $row['gibbonRollGroupID']);
@@ -142,14 +142,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_particip
                 if ($resultFamily->rowCount() > 0) {
                     while ($rowFamily = $resultFamily->fetch()) {
                         //Get adults conditions
-                                    try {
-                                        $dataMember = array('gibbonFamilyID' => $rowFamily['gibbonFamilyID']);
-                                        $sqlMember = "SELECT * FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID AND contactCall='Y' ORDER BY contactPriority, surname, preferredName";
-                                        $resultMember = $connection2->prepare($sqlMember);
-                                        $resultMember->execute($dataMember);
-                                    } catch (PDOException $e) {
-                                        echo "<div class='error'>".$e->getMessage().'</div>';
-                                    }
+						try {
+							$dataMember = array('gibbonFamilyID' => $rowFamily['gibbonFamilyID']);
+							$sqlMember = "SELECT * FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID AND contactCall='Y' ORDER BY contactPriority, surname, preferredName";
+							$resultMember = $connection2->prepare($sqlMember);
+							$resultMember->execute($dataMember);
+						} catch (PDOException $e) {
+							echo "<div class='error'>".$e->getMessage().'</div>';
+						}
                         while ($rowMember = $resultMember->fetch()) {
                             if ($rowMember['phone1'] != '' or $rowMember['phone2'] != '' or $rowMember['phone3'] != '' or $rowMember['phone4'] != '') {
                                 echo '<b>'.formatName($rowMember['title'], $rowMember['preferredName'], $rowMember['surname'], 'Parent', false).'</b><br/>';

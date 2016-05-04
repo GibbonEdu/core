@@ -116,19 +116,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
 						<td class="right">
 							<?php
                             $personName = '';
-            try {
-                $dataInvoicee = array('gibbonFinanceInvoiceeID' => $row['gibbonFinanceInvoiceeID']);
-                $sqlInvoicee = 'SELECT surname, preferredName FROM gibbonPerson JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID';
-                $resultInvoicee = $connection2->prepare($sqlInvoicee);
-                $resultInvoicee->execute($dataInvoicee);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-            if ($resultInvoicee->rowCount() == 1) {
-                $rowInvoicee = $resultInvoicee->fetch();
-                $personName = formatName('', htmlPrep($rowInvoicee['preferredName']), htmlPrep($rowInvoicee['surname']), 'Student', true);
-            }
-            ?>
+							try {
+								$dataInvoicee = array('gibbonFinanceInvoiceeID' => $row['gibbonFinanceInvoiceeID']);
+								$sqlInvoicee = 'SELECT surname, preferredName FROM gibbonPerson JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID';
+								$resultInvoicee = $connection2->prepare($sqlInvoicee);
+								$resultInvoicee->execute($dataInvoicee);
+							} catch (PDOException $e) {
+								echo "<div class='error'>".$e->getMessage().'</div>';
+							}
+							if ($resultInvoicee->rowCount() == 1) {
+								$rowInvoicee = $resultInvoicee->fetch();
+								$personName = formatName('', htmlPrep($rowInvoicee['preferredName']), htmlPrep($rowInvoicee['surname']), 'Student', true);
+							}
+							?>
 							<input readonly name="personName" id="personName" value="<?php echo $personName ?>" type="text" class="standardWidth">
 						</td>
 					</tr>
@@ -153,20 +153,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
 							<td class="right">
 								<?php
                                 $schedule = '';
-                        try {
-                            $dataSchedule = array('gibbonFinanceBillingScheduleID' => $row['gibbonFinanceBillingScheduleID']);
-                            $sqlSchedule = 'SELECT * FROM gibbonFinanceBillingSchedule WHERE gibbonFinanceBillingScheduleID=:gibbonFinanceBillingScheduleID';
-                            $resultSchedule = $connection2->prepare($sqlSchedule);
-                            $resultSchedule->execute($dataSchedule);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
-                        if ($resultSchedule->rowCount() == 1) {
-                            $rowSchedule = $resultSchedule->fetch();
-                            $schedule = $rowSchedule['name'];
-                            $invoiceDueDate = $rowSchedule['invoiceDueDate'];
-                        }
-                        ?>
+								try {
+									$dataSchedule = array('gibbonFinanceBillingScheduleID' => $row['gibbonFinanceBillingScheduleID']);
+									$sqlSchedule = 'SELECT * FROM gibbonFinanceBillingSchedule WHERE gibbonFinanceBillingScheduleID=:gibbonFinanceBillingScheduleID';
+									$resultSchedule = $connection2->prepare($sqlSchedule);
+									$resultSchedule->execute($dataSchedule);
+								} catch (PDOException $e) {
+									echo "<div class='error'>".$e->getMessage().'</div>';
+								}
+								if ($resultSchedule->rowCount() == 1) {
+									$rowSchedule = $resultSchedule->fetch();
+									$schedule = $rowSchedule['name'];
+									$invoiceDueDate = $rowSchedule['invoiceDueDate'];
+								}
+								?>
 								<input readonly name="schedule" id="schedule" value="<?php echo $schedule ?>" type="text" class="standardWidth">
 								<input name="invoiceDueDate" id="invoiceDueDate" value="<?php echo dateConvertBack($guid, $invoiceDueDate) ?>" type="hidden" class="standardWidth">
 							</td>
@@ -185,9 +185,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
 							</td>
 						</tr>
 						<?php
-
-                    }
-            ?>
+					}
+                    ?>
 					<tr>
 						<td> 
 							<b><?php echo __($guid, 'Status') ?> *</b><br/>
@@ -197,7 +196,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
                             } else {
                                 echo '<span style="font-size: 90%"><i>'.__($guid, 'Available options are limited according to current status.').'</span>';
                             }
-            ?>
+            				?>
 						</td>
 						<td class="right">
 							<?php
@@ -205,7 +204,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
                                 echo '<input readonly name="status" id="status" value="'.$row['status'].'" type="text" style="width: 300px">';
                             } else {
                             }
-            ?>
+            				?>
 						</td>
 					</tr>
 					<tr>
@@ -222,32 +221,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
 					</tr>
 					<?php
                     $email = getSettingByScope($connection2, 'Finance', 'email');
-            if ($email == '') {
-                echo '<tr>';
-                echo '<td colspan=2>';
-                echo "<div class='error'>";
-                echo 'An outgoing email address has not been set up under Invoice & Receipt Settings, and so no emails can be sent.';
-                echo '</div>';
-                echo "<input type='hidden' name='email' value='$email'/>";
-                echo '<td>';
-                echo '<tr>';
-            } else {
-                echo "<input type='hidden' name='email' value='$email'/>";
-                if ($row['invoiceTo'] == 'Company') {
-                    if ($row['companyEmail'] != '' and $row['companyContact'] != '' and $row['companyName'] != '') {
-                        ?>
+					if ($email == '') {
+						echo '<tr>';
+						echo '<td colspan=2>';
+						echo "<div class='error'>";
+						echo 'An outgoing email address has not been set up under Invoice & Receipt Settings, and so no emails can be sent.';
+						echo '</div>';
+						echo "<input type='hidden' name='email' value='$email'/>";
+						echo '<td>';
+						echo '<tr>';
+					} else {
+						echo "<input type='hidden' name='email' value='$email'/>";
+						if ($row['invoiceTo'] == 'Company') {
+							if ($row['companyEmail'] != '' and $row['companyContact'] != '' and $row['companyName'] != '') {
+								?>
 								<tr>
 									<td> 
-										<b><?php echo $row['companyContact'] ?></b> (<?php echo $row['companyName'];
-                        ?>)
+										<b><?php echo $row['companyContact'] ?></b> (<?php echo $row['companyName']; ?>)
 										<span class="emphasis small"></span>
 									</td>
 									<td class="right">
 										<?php echo $row['companyEmail'];
-                        ?> <input checked type='checkbox' name='emails[]' value='<?php echo htmlPrep($row['companyEmail']);
-                        ?>'/>
-										<input type='hidden' name='names[]' value='<?php echo htmlPrep($row['companyContact']);
-                        ?>'/>
+										?> <input checked type='checkbox' name='emails[]' value='<?php echo htmlPrep($row['companyEmail']); ?>'/>
+										<input type='hidden' name='names[]' value='<?php echo htmlPrep($row['companyContact']); ?>'/>
 									</td>
 								</tr>
 								<?php
@@ -304,20 +300,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
                         while ($rowParents = $resultParents->fetch()) {
                             if ($rowParents['preferredName'] != '' and $rowParents['surname'] != '' and $rowParents['email'] != '') {
                                 ?>
-										<tr>
-											<td> 
-												<b><?php echo formatName(htmlPrep($rowParents['title']), htmlPrep($rowParents['preferredName']), htmlPrep($rowParents['surname']), 'Parent', false) ?></b>
-												<span class="emphasis small"></span>
-											</td>
-											<td class="right">
-												<?php echo $rowParents['email'];
-                                ?> <input checked type='checkbox' name='emails[]' value='<?php echo htmlPrep($rowParents['email']);
-                                ?>'/>
-												<input type='hidden' name='names[]' value='<?php echo htmlPrep(formatName(htmlPrep($rowParents['title']), htmlPrep($rowParents['preferredName']), htmlPrep($rowParents['surname']), 'Parent', false));
-                                ?>'/>
-											</td>
-										</tr>
-										<?php
+								<tr>
+									<td> 
+										<b><?php echo formatName(htmlPrep($rowParents['title']), htmlPrep($rowParents['preferredName']), htmlPrep($rowParents['surname']), 'Parent', false) ?></b>
+										<span class="emphasis small"></span>
+									</td>
+									<td class="right">
+										<?php echo $rowParents['email']; ?> <input checked type='checkbox' name='emails[]' value='<?php echo htmlPrep($rowParents['email']); ?>'/>
+										<input type='hidden' name='names[]' value='<?php echo htmlPrep(formatName(htmlPrep($rowParents['title']), htmlPrep($rowParents['preferredName']), htmlPrep($rowParents['surname']), 'Parent', false)); ?>'/>
+									</td>
+								</tr>
+								<?php
 
                             }
                         }
@@ -341,19 +334,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
 							</td>
 						</tr>
 						<?php
-
-                    }
-            ?>
+					}
+                    ?>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input name="gibbonFinanceInvoiceID" id="gibbonFinanceInvoiceID" value="<?php echo $gibbonFinanceInvoiceID ?>" type="hidden">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

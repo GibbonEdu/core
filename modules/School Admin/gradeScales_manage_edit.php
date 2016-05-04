@@ -117,14 +117,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
 					</td>
 					<td class="right">
 						<select name="active" id="active" class="standardWidth">
-							<option <?php if ($row['active'] == 'Y') {
-    echo 'selected';
-}
-            ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
-							<option <?php if ($row['active'] == 'N') {
-    echo 'selected';
-}
-            ?> value="N"><?php echo __($guid, 'No') ?></option>
+							<option <?php if ($row['active'] == 'Y') { echo 'selected'; } ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
+							<option <?php if ($row['active'] == 'N') { echo 'selected'; } ?> value="N"><?php echo __($guid, 'No') ?></option>
 						</select>
 					</td>
 				</tr>
@@ -135,14 +129,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
 					</td>
 					<td class="right">
 						<select name="numeric" id="numeric" class="standardWidth">
-							<option <?php if ($row['numeric'] == 'Y') {
-    echo 'selected';
-}
-            ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
-							<option <?php if ($row['numeric'] == 'N') {
-    echo 'selected';
-}
-            ?> value="N"><?php echo __($guid, 'No') ?></option>
+							<option <?php if ($row['numeric'] == 'Y') { echo 'selected'; } ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
+							<option <?php if ($row['numeric'] == 'N') { echo 'selected'; } ?> value="N"><?php echo __($guid, 'No') ?></option>
 						</select>
 					</td>
 				</tr>
@@ -175,14 +163,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
 				</tr>
 				<tr>
 					<td>
-						<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+						<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 					</td>
 					<td class="right">
 						<input name="gibbonScaleID" id="gibbonScaleID" value="<?php echo $_GET['gibbonScaleID'] ?>" type="hidden">
 						<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-						<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 					</td>
 				</tr>
 			</table>
@@ -239,8 +225,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
                         $rowNum = 'odd';
                     }
 
-                        //COLOR ROW BY STATUS!
-                        echo "<tr class=$rowNum>";
+                    //COLOR ROW BY STATUS!
+                    echo "<tr class=$rowNum>";
                     echo '<td>';
                     echo __($guid, $row['value']);
                     echo '</td>';

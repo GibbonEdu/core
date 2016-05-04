@@ -140,8 +140,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 						
 						<tr>
 							<td>
-								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-                ?></span>
+								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 							</td>
 							<td class="right">
 								<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
@@ -343,14 +342,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 								<td class="right">
 									<select name="ownershipType<?php echo $i ?>" id="ownershipType<?php echo $i ?>" class='ownershipType<?php echo $i ?>' class="standardWidth">
 										<option value=""></option>
-										<option <?php if ($row['ownershipType'] == 'School') {
-    echo 'selected';
-}
-                    ?> value="School" /> <?php echo __($guid, 'School') ?>
-										<option <?php if ($row['ownershipType'] == 'Individual') {
-    echo 'selected';
-}
-                    ?> value="Individual" /> <?php echo __($guid, 'Individual') ?>
+										<option <?php if ($row['ownershipType'] == 'School') { echo 'selected'; } ?> value="School" /> <?php echo __($guid, 'School') ?>
+										<option <?php if ($row['ownershipType'] == 'Individual') { echo 'selected'; } ?> value="Individual" /> <?php echo __($guid, 'Individual') ?>
 									</select>
 								</td>
 							</tr>
@@ -450,14 +443,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 								</td>
 								<td class="right">
 									<select name="borrowable<?php echo $i ?>" id="borrowable<?php echo $i ?>" class="standardWidth">
-										<option <?php if ($row['borrowable'] == 'Y') {
-    echo 'selected';
-}
-                    ?> value="Y" /> <?php echo __($guid, 'Yes') ?>
-										<option <?php if ($row['borrowable'] == 'N') {
-    echo 'selected';
-}
-                    ?> value="N" /> <?php echo __($guid, 'No') ?>
+										<option <?php if ($row['borrowable'] == 'Y') { echo 'selected'; } ?> value="Y" /> <?php echo __($guid, 'Yes') ?>
+										<option <?php if ($row['borrowable'] == 'N') { echo 'selected'; } ?> value="N" /> <?php echo __($guid, 'No') ?>
 									</select>
 								</td>
 							</tr>
@@ -511,7 +498,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
                                         } else {
                                             echo __($guid, 'Numeric value of the replacement cost.');
                                         }
-                    ?>
+                    					?>
 										</i>
 									</span>
 								</td>
@@ -634,16 +621,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
                 ?>
 						<tr>
 							<td>
-								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-                ?></span>
+								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 							</td>
 							<td class="right">
 								<input type="hidden" name="count" value="<?php echo $number ?>">
 								<input type='hidden' name='gibbonLibraryTypeID' value='<?php echo $_POST['gibbonLibraryTypeID'] ?>'>
 								<input type="hidden" name="gibbonLibraryItemID" value="<?php echo $row['gibbonLibraryItemID'] ?>">
 								<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-								<input type="submit" value="<?php echo __($guid, 'Submit');
-                ?>">
+								<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 							</td>
 						</tr>
 					</table>

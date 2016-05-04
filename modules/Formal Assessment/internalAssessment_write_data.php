@@ -169,7 +169,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                     if ($row2['attachment'] != '') {
                                         echo __($guid, 'Current attachment:')." <a href='".$_SESSION[$guid]['absoluteURL'].'/'.$row2['attachment']."'>".$row2['attachment'].'</a><br/><br/>';
                                     }
-                    ?>
+                   		 			?>
 									<input type="file" name="file" id="file"><br/><br/>
 									<?php
                                     //Get list of acceptable file extensions
@@ -493,8 +493,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                     echo "<td class='right' colspan=".($span - 1).'>';
                     ?>
 									<input name="count" id="count" value="<?php echo $count ?>" type="hidden">
-									<input type="submit" value="<?php echo __($guid, 'Submit');
-                    ?>">
+									<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 								
 								</td>
 							</tr>

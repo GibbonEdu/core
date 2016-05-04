@@ -68,8 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_view.p
 						<?php
                         echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/in_view.php'>".__($guid, 'Clear Search').'</a>';
         ?>
-						<input type="submit" value="<?php echo __($guid, 'Submit');
-        ?>">
+						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 					</td>
 				</tr>
 			</table>
@@ -152,8 +151,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_view.p
                         $rowNum = 'error';
                     }
 
-                    //COLOR ROW BY STATUS!
-                    echo "<tr class=$rowNum>";
+                //COLOR ROW BY STATUS!
+                echo "<tr class=$rowNum>";
                 echo '<td>';
                 echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
                 echo '</td>';

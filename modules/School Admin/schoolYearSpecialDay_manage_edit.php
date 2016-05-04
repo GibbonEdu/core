@@ -71,16 +71,16 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
 							var date=new LiveValidation('date');
 							date.add(Validate.Presence);
 							date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-            ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-            ?>." } ); 
+								echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+								}
+											?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+									echo 'dd/mm/yyyy';
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormat'];
+								}
+								?>." } ); 
 						</script>
 					</td>
 				</tr>
@@ -91,14 +91,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
 					<td class="right">
 						<select name="type" id="type" class="standardWidth">
 							<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
-							<option <?php if ($row['type'] == 'School Closure') {
-    echo 'selected ';
-}
-            ?>value="School Closure"><?php echo __($guid, 'School Closure') ?></option>
-							<option <?php if ($row['type'] == 'Timing Change') {
-    echo 'selected ';
-}
-            ?>value="Timing Change"><?php echo __($guid, 'Timing Change') ?></option>
+							<option <?php if ($row['type'] == 'School Closure') { echo 'selected '; } ?>value="School Closure"><?php echo __($guid, 'School Closure') ?></option>
+							<option <?php if ($row['type'] == 'Timing Change') { echo 'selected '; } ?>value="Timing Change"><?php echo __($guid, 'Timing Change') ?></option>
 						</select>
 						<script type="text/javascript">
 							var type=new LiveValidation('type');
@@ -294,14 +288,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
 				</tr>
 				<tr>
 					<td>
-						<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+						<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 					</td>
 					<td class="right">
 						<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php echo $_GET['gibbonSchoolYearID'] ?>" type="hidden">
 						<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-						<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 					</td>
 				</tr>
 			</table>

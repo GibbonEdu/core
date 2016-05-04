@@ -233,8 +233,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_copyFor
 								
 								<tr>
 									<td>
-										<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-                        ?></span>
+										<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 									</td>
 									<td class="right">
 										<input name="gibbonCourseClassID" id="gibbonCourseClassID" value="<?php echo $gibbonCourseClassID ?>" type="hidden">
@@ -242,8 +241,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_copyFor
 										<input name="gibbonUnitID" id="gibbonUnitID" value="<?php echo $gibbonUnitID ?>" type="hidden">
 										<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php echo $gibbonSchoolYearID ?>" type="hidden">
 										<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-										<input type="submit" value="<?php echo __($guid, 'Submit');
-                        ?>">
+										<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 									</td>
 								</tr>
 							</table>

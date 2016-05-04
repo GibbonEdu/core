@@ -39,8 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formalAssessm
 		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr class='break'>
 				<td colspan=3> 
-					<h3><?php echo __($guid, 'Internal Assessment Settings');
-    ?></h3>
+					<h3><?php echo __($guid, 'Internal Assessment Settings'); ?></h3>
 				</td>
 			</tr>
 			<tr>
@@ -72,10 +71,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formalAssessm
 			
 			<tr class='break'>
 				<td colspan=3> 
-					<h3><?php echo __($guid, 'Primary External Assessement');
-    ?></h3>
-					<?php echo __($guid, 'These settings allow a particular type of external assessment to be associated with each year group. The selected assessment will be used as the primary assessment to be used as a baseline for comparison (for example, within the Markbook). In addition, a particular field category can be chosen from which to draw data (if no category is chosen, the system will try to pick the best data automatically).');
-    ?>
+					<h3><?php echo __($guid, 'Primary External Assessement'); ?></h3>
+					<?php echo __($guid, 'These settings allow a particular type of external assessment to be associated with each year group. The selected assessment will be used as the primary assessment to be used as a baseline for comparison (for example, within the Markbook). In addition, a particular field category can be chosen from which to draw data (if no category is chosen, the system will try to pick the best data automatically).'); ?>
 				</td>
 			</tr>
 			
@@ -169,18 +166,15 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formalAssessm
     ?>
 			<tr>
 				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-    ?></span>
+					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 				</td>
 				<td class="right" colspan=2>
 					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 			<?php
-        echo '</table>';
-    ?>
+        echo '</table>';?>
 	</form>
 	<?php
 

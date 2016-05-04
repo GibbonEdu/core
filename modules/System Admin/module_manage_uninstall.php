@@ -133,14 +133,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                                     echo __($guid, 'There are no records to display.');
                                 }
                             }
-            ?>
+            				?>
 						</td>
 					</tr>
 					<tr>
 						<td class="right" colspan=2>
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

@@ -1142,8 +1142,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_personal_e
             echo "<input type='submit' value='Submit'>";
             echo '</td>';
             echo '</tr>';
-            echo '</table>';
-            ?>
+            echo '</table>'; ?>
 			</form>
 			<?php
 

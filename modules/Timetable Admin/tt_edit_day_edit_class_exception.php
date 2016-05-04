@@ -118,8 +118,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                         }
                         ++$count;
 
-                            //COLOR ROW BY STATUS!
-                            echo "<tr class=$rowNum>";
+                        //COLOR ROW BY STATUS!
+                        echo "<tr class=$rowNum>";
                         echo '<td>';
                         echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
                         echo '</td>';

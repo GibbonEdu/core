@@ -60,16 +60,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
 					<script type="text/javascript">
 						var dateStart=new LiveValidation('dateStart');
 						dateStart.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-    ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-    ?>." } ); 
+							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+						}
+							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+							echo 'dd/mm/yyyy';
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormat'];
+						}
+						?>." } ); 
 						dateStart.add(Validate.Presence);
 					</script>
 					 <script type="text/javascript">
@@ -89,16 +89,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
 					<script type="text/javascript">
 						var dateEnd=new LiveValidation('dateEnd');
 						dateEnd.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-    ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-    ?>." } ); 
+							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+						}
+							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+							echo 'dd/mm/yyyy';
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormat'];
+						}
+						?>." } ); 
 						dateEnd.add(Validate.Presence);
 					</script>
 					 <script type="text/javascript">
@@ -111,8 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
 			<tr>
 				<td colspan=2 class="right">
 					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/report_rollGroupsNotRegistered_byDate.php">
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>
@@ -175,8 +174,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
             $count = 0;
             $rowNum = 'odd';
 
-                //Loop through each date
-                $timestampStart = dateConvertToTimestamp($dateStart);
+			//Loop through each date
+			$timestampStart = dateConvertToTimestamp($dateStart);
             $timestampEnd = dateConvertToTimestamp($dateEnd);
             for ($i = $timestampStart; $i <= $timestampEnd; $i = ($i + (60 * 60 * 24))) {
                 if (isSchoolOpen($guid, date('Y-m-d', $i), $connection2, true)) {

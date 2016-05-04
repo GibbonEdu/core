@@ -99,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
 								<?php
 
                             }
-            ?>
+            				?>
 						</td>
 					</tr>
 					
@@ -126,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
 						<?php
 
                     }
-            ?>
+            		?>
 					<tr id='learningAreaRow'>
 						<td> 
 							<b><?php echo __($guid, 'Learning Area') ?> *</b><br/>
@@ -160,7 +160,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
                                 if ($highestAction == 'Manage Rubrics_viewEditAll') {
                                     echo 'gibbonDepartmentID.disable();';
                                 }
-            ?>
+           	 					?>
 							</script>
 						</td>
 					</tr>
@@ -289,7 +289,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
                                 for ($i = 1; $i <= 10; ++$i) {
                                     echo "<option value='$i'>$i</option>";
                                 }
-            ?>
+           	 					?>
 							</select>
 						</td>
 					</tr>
@@ -304,20 +304,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
                                 for ($i = 1; $i <= 10; ++$i) {
                                     echo "<option value='$i'>$i</option>";
                                 }
-            ?>
+           	 					?>
 							</select>
 						</td>
 					</tr>
 					
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

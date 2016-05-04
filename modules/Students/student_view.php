@@ -154,8 +154,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 						<td>
 							<b><?php echo __($guid, 'Search For') ?></b><br/>
 							<?php
-                                echo '<span style="font-size: 90%"><i>'.__($guid, 'Preferred, surname, username.').'</span>';
-            ?>
+                                echo '<span style="font-size: 90%"><i>'.__($guid, 'Preferred, surname, username.').'</span>'; ?>
 						</td>
 						<td class="right">
 							<input name="search" id="search" maxlength=20 value="<?php echo $search ?>" type="text" class="standardWidth">
@@ -167,23 +166,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 						</td>
 						<td class="right">
 							<select name="sort" class="standardWidth">
-								<option value="surname, preferredName" <?php if ($sort == 'surname, preferredName') {
-    echo 'selected';
+								<option value="surname, preferredName" <?php if ($sort == 'surname, preferredName') { echo 'selected';
 }
             ?>><?php echo __($guid, 'Surname');
             ?></option>
-								<option value="preferredName" <?php if ($sort == 'preferredName') {
-    echo 'selected';
+								<option value="preferredName" <?php if ($sort == 'preferredName') { echo 'selected';
 }
             ?>><?php echo __($guid, 'Given Name');
             ?></option>
-								<option value="rollGroup" <?php if ($sort == 'rollGroup') {
-    echo 'selected';
+								<option value="rollGroup" <?php if ($sort == 'rollGroup') { echo 'selected';
 }
             ?>><?php echo __($guid, 'Roll Group');
             ?></option>
-								<option value="yearGroup" <?php if ($sort == 'yearGroup') {
-    echo 'selected';
+								<option value="yearGroup" <?php if ($sort == 'yearGroup') { echo 'selected';
 }
             ?>><?php echo __($guid, 'Year Group');
             ?></option>
@@ -195,10 +190,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 							<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/student_view.php">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 							<?php
-                                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/student_view.php'>".__($guid, 'Clear Search').'</a>';
-            ?>
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+                                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/student_view.php'>".__($guid, 'Clear Search').'</a>'; ?>
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>
@@ -284,8 +277,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                     }
                     ++$count;
 
-                        //COLOR ROW BY STATUS!
-                        echo "<tr class=$rowNum>";
+                    //COLOR ROW BY STATUS!
+                    echo "<tr class=$rowNum>";
                     echo '<td>';
                     echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
                     echo '</td>';
@@ -344,8 +337,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 						<td>
 							<b><?php echo __($guid, 'Search For') ?></b><br/>
 							<?php
-                                echo '<span style="font-size: 90%"><i>'.__($guid, 'Preferred, surname, username, email, phone number, vehicle registration, parent email.').'</span>';
-            ?>
+                                echo '<span style="font-size: 90%"><i>'.__($guid, 'Preferred, surname, username, email, phone number, vehicle registration, parent email.').'</span>'; ?>
 						</td>
 						<td class="right">
 							<input name="search" id="search" maxlength=20 value="<?php echo $search ?>" type="text" class="standardWidth">
@@ -357,23 +349,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 						</td>
 						<td class="right">
 							<select name="sort" class="standardWidth">
-								<option value="surname, preferredName" <?php if ($sort == 'surname, preferredName') {
-    echo 'selected';
+								<option value="surname, preferredName" <?php if ($sort == 'surname, preferredName') { echo 'selected';
 }
             ?>><?php echo __($guid, 'Surname');
             ?></option>
-								<option value="preferredName" <?php if ($sort == 'preferredName') {
-    echo 'selected';
+								<option value="preferredName" <?php if ($sort == 'preferredName') { echo 'selected';
 }
             ?>><?php echo __($guid, 'Given Name');
             ?></option>
-								<option value="rollGroup" <?php if ($sort == 'rollGroup') {
-    echo 'selected';
+								<option value="rollGroup" <?php if ($sort == 'rollGroup') { echo 'selected';
 }
             ?>><?php echo __($guid, 'Roll Group');
             ?></option>
-								<option value="yearGroup" <?php if ($sort == 'yearGroup') {
-    echo 'selected';
+								<option value="yearGroup" <?php if ($sort == 'yearGroup') { echo 'selected';
 }
             ?>><?php echo __($guid, 'Year Group');
             ?></option>
@@ -401,10 +389,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 							<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/student_view.php">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 							<?php
-                                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/student_view.php'>".__($guid, 'Clear Search').'</a>';
-            ?>
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+                                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/student_view.php'>".__($guid, 'Clear Search').'</a>'; ?>
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>
@@ -520,8 +506,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                     }
                     ++$count;
 
-                        //COLOR ROW BY STATUS!
-                        echo "<tr class=$rowNum>";
+                    //COLOR ROW BY STATUS!
+                    echo "<tr class=$rowNum>";
                     echo '<td>';
                     echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
                     echo '</td>';

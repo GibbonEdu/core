@@ -61,13 +61,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/publicRegistrat
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option <?php if ($row['value'] == 'N') {
-    echo 'selected ';
-}
+						<option <?php if ($row['value'] == 'N') { echo 'selected '; }
     ?>value="N"><?php echo __($guid, 'No') ?></option>
-						<option <?php if ($row['value'] == 'Y') {
-    echo 'selected ';
-}
+						<option <?php if ($row['value'] == 'Y') { echo 'selected '; }
     ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
 					</select>
 				</td>
@@ -117,13 +113,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/publicRegistrat
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option <?php if ($row['value'] == 'Full') {
-    echo 'selected ';
-}
+						<option <?php if ($row['value'] == 'Full') { echo 'selected '; }
     ?>value="Full"><?php echo __($guid, 'Full') ?></option>
-						<option <?php if ($row['value'] == 'Pending Approval') {
-    echo 'selected ';
-}
+						<option <?php if ($row['value'] == 'Pending Approval') { echo 'selected '; }
     ?>value="Pending Approval"><?php echo __($guid, 'Pending Approval') ?></option>
 					</select>
 				</td>
@@ -261,13 +253,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/publicRegistrat
 						
 			<tr>
 				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-    ?></span>
+					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>

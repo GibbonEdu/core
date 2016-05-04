@@ -610,8 +610,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
     echo "<input type='submit' value='Submit'>";
     echo '</td>';
     echo '</tr>';
-    echo '</table>';
-    ?>
+    echo '</table>';?>
 	</form>
 <?php
 

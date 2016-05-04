@@ -223,16 +223,16 @@ if ($proceed == false) {
 					<script type="text/javascript">
 						var dob=new LiveValidation('dob');
 						dob.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-    ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-    ?>." } ); 
+							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+						}
+							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+							echo 'dd/mm/yyyy';
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormat'];
+						}
+						?>." } ); 
 					 	dob.add(Validate.Presence);
 					</script>
 					 <script type="text/javascript">
@@ -445,7 +445,7 @@ if ($proceed == false) {
                     } else {
                         echo '<b>'.$_SESSION[$guid]['country'].' '.__($guid, 'ID Card Number').'</b><br/>';
                     }
-    ?>
+   				 	?>
 				</td>
 				<td class="right">
 					<input name="nationalIDCardNumber" id="nationalIDCardNumber" maxlength=30 value="" type="text" class="standardWidth">
@@ -459,7 +459,7 @@ if ($proceed == false) {
                     } else {
                         echo '<b>'.$_SESSION[$guid]['country'].' '.__($guid, 'Residency/Visa Type').'</b><br/>';
                     }
-    ?>
+   				 	?>
 				</td>
 				<td class="right">
 					<?php
@@ -492,24 +492,23 @@ if ($proceed == false) {
     } else {
         echo $_SESSION[$guid]['i18n']['dateFormat'];
     }
-    echo '. '.__($guid, 'If relevant.').'</span>';
-    ?>
+    echo '. '.__($guid, 'If relevant.').'</span>';?>
 				</td>
 				<td class="right">
 					<input name="visaExpiryDate" id="visaExpiryDate" maxlength=10 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var visaExpiryDate=new LiveValidation('visaExpiryDate');
 						visaExpiryDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-    ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-    ?>." } ); 
+							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+						}
+							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+							echo 'dd/mm/yyyy';
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormat'];
+						}
+						?>." } ); 
 					</script>
 					 <script type="text/javascript">
 						$(function() {
@@ -685,16 +684,16 @@ if ($proceed == false) {
 					<script type="text/javascript">
 						var dateStart=new LiveValidation('dateStart');
 						dateStart.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-    ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-    ?>." } ); 
+							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+						}
+							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+							echo 'dd/mm/yyyy';
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormat'];
+						}
+						?>." } ); 
 					 	dateStart.add(Validate.Presence);
 					</script>
 					 <script type="text/javascript">
@@ -740,8 +739,7 @@ if ($proceed == false) {
 				<tr>
 					<td> 
 						<b><?php echo __($guid, 'Day Type') ?></b><br/>
-						<span class="emphasis small"><?php echo getSettingByScope($connection2, 'User Admin', 'dayTypeText');
-        ?></span>
+						<span class="emphasis small"><?php echo getSettingByScope($connection2, 'User Admin', 'dayTypeText'); ?></span>
 					</td>
 					<td class="right">
 						<select name="dayType" id="dayType" class="standardWidth">
@@ -868,8 +866,7 @@ if ($proceed == false) {
                                 echo '</td>';
         echo '</tr>';
     }
-    echo '</table>';
-    ?>
+    echo '</table>';?>
 				</td>
 			</tr>
 			
@@ -998,7 +995,7 @@ if ($proceed == false) {
                                 if ($i == 1) {
                                     echo "<span style='font-size: 75%'></span>";
                                 }
-                    ?>
+                    			?>
 							</h3>
 						</td>
 					</tr>
@@ -1084,7 +1081,7 @@ if ($proceed == false) {
                                 } elseif ($i == 2 and $gibbonPersonID == '') {
                                     echo "<span style='font-size: 75%'> ".__($guid, '(e.g. father)').'</span>';
                                 }
-            ?>
+           	 					?>
 							</h3>
 						</td>
 					</tr>
@@ -1158,7 +1155,7 @@ if ($proceed == false) {
 						<?php
 
                     }
-            ?>
+            		?>
 					<tr <?php if ($i == 2) {
     echo "class='secondParent'";
 }
@@ -1417,7 +1414,7 @@ if ($proceed == false) {
                             } else {
                                 echo '<b>'.$_SESSION[$guid]['country'].' '.__($guid, 'ID Card Number').'</b><br/>';
                             }
-            ?>
+            				?>
 						</td>
 						<td class="right">
 							<input name="<?php echo "parent$i" ?>nationalIDCardNumber" id="<?php echo "parent$i" ?>nationalIDCardNumber" maxlength=30 value="" type="text" class="standardWidth">
@@ -1434,7 +1431,7 @@ if ($proceed == false) {
                             } else {
                                 echo '<b>'.$_SESSION[$guid]['country'].' '.__($guid, 'Residency/Visa Type').'</b><br/>';
                             }
-            ?>
+            				?>
 						</td>
 						<td class="right">
 							<?php
@@ -1470,24 +1467,23 @@ if ($proceed == false) {
             } else {
                 echo $_SESSION[$guid]['i18n']['dateFormat'];
             }
-            echo '. '.__($guid, 'If relevant.').'</span>';
-            ?>
+            echo '. '.__($guid, 'If relevant.').'</span>'; ?>
 						</td>
 						<td class="right">
 							<input name="<?php echo "parent$i" ?>visaExpiryDate" id="<?php echo "parent$i" ?>visaExpiryDate" maxlength=10 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var <?php echo "parent$i" ?>visaExpiryDate=new LiveValidation('<?php echo "parent$i" ?>visaExpiryDate');
 								<?php echo "parent$i" ?>visaExpiryDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-            ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-            ?>." } ); 
+								echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+								}
+											?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+									echo 'dd/mm/yyyy';
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormat'];
+								}
+								?>." } ); 
 							</script>
 							 <script type="text/javascript">
 								$(function() {
@@ -1519,8 +1515,7 @@ if ($proceed == false) {
 								var <?php echo "parent$i" ?>email=new LiveValidation('<?php echo "parent$i" ?>email');
 								<?php 
                                 echo "parent$i".'email.add(Validate.Email);';
-            echo "parent$i".'email.add(Validate.Presence);';
-            ?>
+            echo "parent$i".'email.add(Validate.Presence);'; ?>
 							</script>
 						</td>
 					</tr>
@@ -1582,7 +1577,7 @@ if ($proceed == false) {
 						<?php
 
                     }
-            ?>
+            		?>
 					
 					<tr <?php if ($i == 2) {
     echo "class='secondParent'";
@@ -1713,12 +1708,10 @@ if ($proceed == false) {
                 echo formatName($rowRelationships['title'], $rowRelationships['preferredName'], $rowRelationships['surname'], 'Parent');
                 ?>
 												<select name="<?php echo $rowSelect['gibbonFamilyID'] ?>-relationships[]" id="relationships[]" style="width: 200px">
-													<option <?php if ($rowRelationships['gender'] == 'F') {
-    echo 'selected';
+													<option <?php if ($rowRelationships['gender'] == 'F') { echo 'selected';
 }
                 ?> value="Mother"><?php echo __($guid, 'Mother') ?></option>
-													<option <?php if ($rowRelationships['gender'] == 'M') {
-    echo 'selected';
+													<option <?php if ($rowRelationships['gender'] == 'M') { echo 'selected';
 }
                 ?> value="Father"><?php echo __($guid, 'Father') ?></option>
 													<option value="Step-Mother"><?php echo __($guid, 'Step-Mother') ?></option>
@@ -1868,8 +1861,7 @@ if ($proceed == false) {
                                 echo '</td>';
                             echo '</tr>';
                         }
-    echo '</table>';
-    ?>
+    echo '</table>';?>
 				</td>
 			</tr>
 			
@@ -2346,13 +2338,11 @@ if ($proceed == false) {
 		
 			<tr>
 				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-    ?></span>
+					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>

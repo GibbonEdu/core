@@ -105,11 +105,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                                     $resultSelect->execute($dataSelect);
                                 } catch (PDOException $e) {
                                 }
-                if ($resultSelect->rowCount() == 1) {
-                    $rowSelect = $resultSelect->fetch();
-                }
+								if ($resultSelect->rowCount() == 1) {
+									$rowSelect = $resultSelect->fetch();
+								}
 
-                ?>
+								?>
 								<input type="hidden" name="gibbonPersonID" value="<?php echo $row['gibbonPersonID'] ?>">
 								<input readonly name="name" id="name" value="<?php echo formatName('', $rowSelect['preferredName'], $rowSelect['surname'], 'Student') ?>" type="text" class="standardWidth">
 							</td>
@@ -118,11 +118,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 							<td> 
 								<b><?php echo __($guid, 'Date') ?> *</b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-                ?></span>
+									echo 'dd/mm/yyyy';
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormat'];
+								}
+                				?></span>
 							</td>
 							<td class="right">
 								<input readonly name="date" id="date" maxlength=10 value="<?php echo dateConvertBack($guid, $row['date']) ?>" type="text" class="standardWidth">
@@ -189,14 +189,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                                                     $selected = 'selected';
                                                 }
                                                 ?>
-												<option <?php echo $selected ?> <?php if ($row['descriptor'] == $options[$i]) {
-    echo 'selected ';
-}
+												<option <?php echo $selected ?> <?php if ($row['descriptor'] == $options[$i]) { echo 'selected '; }
                                                 ?>value="<?php echo trim($options[$i]) ?>"><?php echo trim($options[$i]) ?></option>
 												<?php
 
                                             }
-                                ?>
+											?>
 										</select>
 										<script type="text/javascript">
 											var descriptor=new LiveValidation('descriptor');
@@ -205,10 +203,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 									</td>
 								</tr>
 								<?php
-
                             }
                         }
-                ?>
+               			 ?>
 						
 						<?php
                         if ($enableLevels == 'Y') {
@@ -245,7 +242,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 												<?php
 
                                                 }
-                                    ?>
+                                    		?>
 											</select>
 											<script type="text/javascript">
 												var level=new LiveValidation('level');
@@ -258,7 +255,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                                 }
                             }
                         }
-                ?>
+                		?>
 						<script type='text/javascript'>
 							$(document).ready(function(){
 								autosize($('textarea'));
@@ -287,59 +284,57 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 									<?php
                                     $minDate = date('Y-m-d', (strtotime($row['date']) - (24 * 60 * 60 * 30)));
 
-                try {
-                    $dataSelect = array('date' => date('Y-m-d', strtotime($row['date'])), 'minDate' => $minDate, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $row['gibbonPersonID']);
-                    $sqlSelect = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.gibbonCourseClassID, gibbonPlannerEntry.name AS lesson, gibbonPlannerEntryID, date, homework, homeworkSubmission FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonPlannerEntry ON (gibbonCourseClass.gibbonCourseClassID=gibbonPlannerEntry.gibbonCourseClassID) WHERE (date<=:date AND date>=:minDate) AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Student' ORDER BY course, class, date, timeStart";
-                    $resultSelect = $connection2->prepare($sqlSelect);
-                    $resultSelect->execute($dataSelect);
-                } catch (PDOException $e) {
-                }
-                while ($rowSelect = $resultSelect->fetch()) {
-                    $show = true;
-                    if ($highestAction == 'Manage Behaviour Records_my') {
-                        try {
-                            $dataShow = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonCourseClassID' => $rowSelect['gibbonCourseClassID']);
-                            $sqlShow = "SELECT * FROM gibbonCourseClassPerson WHERE gibbonPersonID=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND role='Teacher'";
-                            $resultShow = $connection2->prepare($sqlShow);
-                            $resultShow->execute($dataShow);
-                        } catch (PDOException $e) {
-                        }
-                        if ($resultShow->rowCount() != 1) {
-                            $show = false;
-                        }
-                    }
-                    if ($show == true) {
-                        $submission = '';
-                        if ($rowSelect['homework'] == 'Y') {
-                            $submission = 'HW';
-                            if ($rowSelect['homeworkSubmission'] == 'Y') {
-                                $submission .= '+OS';
-                            }
-                        }
-                        if ($submission != '') {
-                            $submission = ' - '.$submission;
-                        }
-                        $selected = '';
-                        if ($rowSelect['gibbonPlannerEntryID'] == $row['gibbonPlannerEntryID']) {
-                            $selected = 'selected';
-                        }
-                        echo "<option $selected value='".$rowSelect['gibbonPlannerEntryID']."'>".htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).' - '.htmlPrep($rowSelect['lesson'])."$submission</option>";
-                    }
-                }
-                ?>			
+									try {
+										$dataSelect = array('date' => date('Y-m-d', strtotime($row['date'])), 'minDate' => $minDate, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $row['gibbonPersonID']);
+										$sqlSelect = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.gibbonCourseClassID, gibbonPlannerEntry.name AS lesson, gibbonPlannerEntryID, date, homework, homeworkSubmission FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonPlannerEntry ON (gibbonCourseClass.gibbonCourseClassID=gibbonPlannerEntry.gibbonCourseClassID) WHERE (date<=:date AND date>=:minDate) AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Student' ORDER BY course, class, date, timeStart";
+										$resultSelect = $connection2->prepare($sqlSelect);
+										$resultSelect->execute($dataSelect);
+									} catch (PDOException $e) {
+									}
+									while ($rowSelect = $resultSelect->fetch()) {
+										$show = true;
+										if ($highestAction == 'Manage Behaviour Records_my') {
+											try {
+												$dataShow = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonCourseClassID' => $rowSelect['gibbonCourseClassID']);
+												$sqlShow = "SELECT * FROM gibbonCourseClassPerson WHERE gibbonPersonID=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND role='Teacher'";
+												$resultShow = $connection2->prepare($sqlShow);
+												$resultShow->execute($dataShow);
+											} catch (PDOException $e) {
+											}
+											if ($resultShow->rowCount() != 1) {
+												$show = false;
+											}
+										}
+										if ($show == true) {
+											$submission = '';
+											if ($rowSelect['homework'] == 'Y') {
+												$submission = 'HW';
+												if ($rowSelect['homeworkSubmission'] == 'Y') {
+													$submission .= '+OS';
+												}
+											}
+											if ($submission != '') {
+												$submission = ' - '.$submission;
+											}
+											$selected = '';
+											if ($rowSelect['gibbonPlannerEntryID'] == $row['gibbonPlannerEntryID']) {
+												$selected = 'selected';
+											}
+											echo "<option $selected value='".$rowSelect['gibbonPlannerEntryID']."'>".htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).' - '.htmlPrep($rowSelect['lesson'])."$submission</option>";
+										}
+									}
+									?>			
 								</select>
 							</td>
 						</tr>
 						
 						<tr>
 							<td>
-								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-                ?></span>
+								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 							</td>
 							<td class="right">
 								<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-								<input type="submit" value="<?php echo __($guid, 'Submit');
-                ?>">
+								<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 							</td>
 						</tr>
 					</table>

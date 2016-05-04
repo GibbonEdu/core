@@ -60,8 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
             echo '<h2>';
             echo __($guid, 'Add Participants');
-            echo '</h2>';
-            ?>
+            echo '</h2>'; ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_manage_class_edit_addProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID" ?>">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
@@ -141,13 +140,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 					</tr>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>
@@ -174,8 +171,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             } else {
                 echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_manage_class_editProcessBulk.php'>";
                 echo "<fieldset style='border: none'>";
-                echo "<div class='linkTop' style='height: 27px'>";
-                ?>
+                echo "<div class='linkTop' style='height: 27px'>"; ?>
 						<input style='margin-top: 0px; float: right' type='submit' value='<?php echo __($guid, 'Go') ?>'>
 						<select name="action" id="action" style='width:120px; float: right; margin-right: 1px;'>
 							<option value="Select action"><?php echo __($guid, 'Select action') ?></option>

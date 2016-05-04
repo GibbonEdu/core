@@ -124,27 +124,19 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
 						</td>
 						<td class="right">
 							<select name="isDefault" id="isDefault" class="standardWidth">
-								<option <?php if ($row['isDefault'] == 'N') {
-    echo 'selected';
-}
-            ?> value="N"><?php echo ynExpander($guid, 'N') ?></option>
-								<option <?php if ($row['isDefault'] == 'Y') {
-    echo 'selected';
-}
-            ?> value="Y"><?php echo ynExpander($guid, 'Y') ?></option>
+								<option <?php if ($row['isDefault'] == 'N') { echo 'selected'; } ?> value="N"><?php echo ynExpander($guid, 'N') ?></option>
+								<option <?php if ($row['isDefault'] == 'Y') { echo 'selected'; } ?> value="Y"><?php echo ynExpander($guid, 'Y') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input name="gibbonScaleID" id="gibbonScaleID" value="<?php echo $gibbonScaleID ?>" type="hidden">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

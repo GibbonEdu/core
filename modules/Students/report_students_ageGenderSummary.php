@@ -117,8 +117,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_a
             }
             ++$count;
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$rowNum>";
             echo '<td>';
             echo "<b>$age</b>";
             echo '</td>';

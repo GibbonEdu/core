@@ -101,8 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_view.p
             $tagString .= "{id: '$tag', name: '$tag'},";
         }
     }
-    echo 'prePopulate: ['.substr($tagString, 0, -1).'],';
-    ?>
+    echo 'prePopulate: ['.substr($tagString, 0, -1).'],';?>
 								tokenLimit: null});
 						});
 					</script>
@@ -314,8 +313,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_view.p
             }
             ++$count;
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$rowNum>";
             echo '<td>';
             echo getResourceLink($guid, $row['gibbonResourceID'], $row['type'], $row['name'], $row['content']);
             echo "<span style='font-size: 85%; font-style: italic'>".formatName($row['title'], $row['preferredName'], $row['surname'], 'Staff').'</span>';

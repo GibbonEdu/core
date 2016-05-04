@@ -97,52 +97,40 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
 				</td>
 				<td class="right">
 					<select name="spaceType" id="spaceType" class="standardWidth">
-						<option <?php if ($spaceType == '') {
-    echo 'selected';
+						<option <?php if ($spaceType == '') { echo 'selected';
 }
     ?> value=''><?php echo __($guid, 'All') ?></option>
-						<option <?php if ($spaceType == 'Classroom') {
-    echo 'selected';
+						<option <?php if ($spaceType == 'Classroom') { echo 'selected';
 }
     ?> value='Classroom'><?php echo __($guid, 'Classroom') ?></option>
-						<option <?php if ($spaceType == 'Performance') {
-    echo 'selected';
+						<option <?php if ($spaceType == 'Performance') { echo 'selected';
 }
     ?> value='Performance'><?php echo __($guid, 'Performance') ?></option>
-						<option <?php if ($spaceType == 'Hall') {
-    echo 'selected';
+						<option <?php if ($spaceType == 'Hall') { echo 'selected';
 }
     ?> value='Hall'><?php echo __($guid, 'Hall') ?></option>
-						<option <?php if ($spaceType == 'Outdoor') {
-    echo 'selected';
+						<option <?php if ($spaceType == 'Outdoor') { echo 'selected';
 }
     ?> value='Outdoor'><?php echo __($guid, 'Outdoor') ?></option>
-						<option <?php if ($spaceType == 'Undercover') {
-    echo 'selected';
+						<option <?php if ($spaceType == 'Undercover') { echo 'selected';
 }
     ?> value='Undercover'><?php echo __($guid, 'Undercover') ?></option>
-						<option <?php if ($spaceType == 'Storage') {
-    echo 'selected';
+						<option <?php if ($spaceType == 'Storage') { echo 'selected';
 }
     ?> value='Storage'><?php echo __($guid, 'Storage') ?></option>
-						<option <?php if ($spaceType == 'Office') {
-    echo 'selected';
+						<option <?php if ($spaceType == 'Office') { echo 'selected';
 }
     ?> value='Office'><?php echo __($guid, 'Office') ?></option>
-						<option <?php if ($spaceType == 'Staffroom') {
-    echo 'selected';
+						<option <?php if ($spaceType == 'Staffroom') { echo 'selected';
 }
     ?> value='Staffroom'><?php echo __($guid, 'Staffroom') ?></option>
-						<option <?php if ($spaceType == 'Study') {
-    echo 'selected';
+						<option <?php if ($spaceType == 'Study') { echo 'selected';
 }
     ?> value='Study'><?php echo __($guid, 'Study') ?></option>
-						<option <?php if ($spaceType == 'Library') {
-    echo 'selected';
+						<option <?php if ($spaceType == 'Library') { echo 'selected';
 }
     ?> value='Library'><?php echo __($guid, 'Library') ?></option>
-						<option <?php if ($spaceType == 'Other') {
-    echo 'selected';
+						<option <?php if ($spaceType == 'Other') { echo 'selected';
 }
     ?> value='Other'><?php echo __($guid, 'Other') ?></option>
 					</select>
@@ -158,16 +146,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
 						var ttDate=new LiveValidation('ttDate');
 						ttDate.add(Validate.Presence);
 						ttDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-    ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-    ?>." } ); 
+							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+						}
+							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+							echo 'dd/mm/yyyy';
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormat'];
+						}
+						?>." } ); 
 					</script>
 					 <script type="text/javascript">
 						$(function() {
@@ -180,8 +168,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
 			<tr>
 				<td colspan=2 class="right">
 					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/report_viewAvailableSpaces.php">
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>

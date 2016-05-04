@@ -182,8 +182,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes.php') == 
                     $rowNum = 'error';
                 }
 
-                    //COLOR ROW BY STATUS!
-                    echo "<tr class=$rowNum>";
+                //COLOR ROW BY STATUS!
+                echo "<tr class=$rowNum>";
                 echo '<td>';
                 echo '<b>'.$row['scope'].'</b><br/>';
                 if ($row['scope'] == 'Learning Area' and $row['department'] != '') {

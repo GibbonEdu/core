@@ -53,21 +53,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
 					<select class="standardWidth" name="gibbonRollGroupID">
 						<?php
                         echo "<option value=''></option>";
-    try {
-        $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-        $sqlSelect = 'SELECT * FROM gibbonRollGroup WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
-        $resultSelect = $connection2->prepare($sqlSelect);
-        $resultSelect->execute($dataSelect);
-    } catch (PDOException $e) {
-    }
-    while ($rowSelect = $resultSelect->fetch()) {
-        if ($gibbonRollGroupID == $rowSelect['gibbonRollGroupID']) {
-            echo "<option selected value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
-        } else {
-            echo "<option value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
-        }
-    }
-    ?>				
+						try {
+							$dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+							$sqlSelect = 'SELECT * FROM gibbonRollGroup WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
+							$resultSelect = $connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						} catch (PDOException $e) {
+						}
+						while ($rowSelect = $resultSelect->fetch()) {
+							if ($gibbonRollGroupID == $rowSelect['gibbonRollGroupID']) {
+								echo "<option selected value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
+							} else {
+								echo "<option value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
+							}
+						}
+						?>				
 					</select>
 				</td>
 			</tr>
@@ -78,21 +78,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
 				<td class="right">
 					<select class="standardWidth" name="status">
 						<?php
-                        echo "<option value='Accepted'>".__($guid, 'Accepted').'</option>';
-    $selected = '';
-    if ($_GET['status'] == 'Registered') {
-        $selected = 'selected';
-    }
-    echo "<option $selected value='Registered'>".__($guid, 'Registered').'</option>';
-    ?>				
+						echo "<option value='Accepted'>".__($guid, 'Accepted').'</option>';
+						$selected = '';
+						if ($_GET['status'] == 'Registered') {
+							$selected = 'selected';
+						}
+						echo "<option $selected value='Registered'>".__($guid, 'Registered').'</option>';?>				
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<td colspan=2 class="right">
 					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/report_activityType_rollGroup.php">
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>
@@ -163,21 +161,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
                     $status = " AND status='Accepted'";
                 }
 
-                    //COLOR ROW BY STATUS!
-                    echo "<tr class=$rowNum>";
+                //COLOR ROW BY STATUS!
+                echo "<tr class=$rowNum>";
                 echo '<td>';
                 echo $row['name'];
                 echo '</td>';
                 echo '<td>';
-                            //List activities seleted in title of student name
-                            try {
-                                $dataActivities = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                                $sqlActivities = "SELECT gibbonActivity.* FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID $status ORDER BY name";
-                                $resultActivities = $connection2->prepare($sqlActivities);
-                                $resultActivities->execute($dataActivities);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
+				//List activities seleted in title of student name
+				try {
+					$dataActivities = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+					$sqlActivities = "SELECT gibbonActivity.* FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID $status ORDER BY name";
+					$resultActivities = $connection2->prepare($sqlActivities);
+					$resultActivities->execute($dataActivities);
+				} catch (PDOException $e) {
+					echo "<div class='error'>".$e->getMessage().'</div>';
+				}
 
                 $title = '';
                 while ($rowActivities = $resultActivities->fetch()) {
@@ -219,15 +217,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
                     echo '</td>';
                 }
                 echo '<td>';
-                            //Get total
-                            try {
-                                $dataCount = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                                $sqlCount = "SELECT gibbonActivity.*, gibbonActivityStudent.status FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) WHERE gibbonActivityStudent.gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' $status";
-                                $resultCount = $connection2->prepare($sqlCount);
-                                $resultCount->execute($dataCount);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
+				//Get total
+				try {
+					$dataCount = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+					$sqlCount = "SELECT gibbonActivity.*, gibbonActivityStudent.status FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) WHERE gibbonActivityStudent.gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' $status";
+					$resultCount = $connection2->prepare($sqlCount);
+					$resultCount->execute($dataCount);
+				} catch (PDOException $e) {
+					echo "<div class='error'>".$e->getMessage().'</div>';
+				}
                 if ($resultCount->rowCount() > 0) {
                     echo $resultCount->rowCount();
                 } else {

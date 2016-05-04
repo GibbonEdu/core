@@ -675,12 +675,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
                                                 $sharingDefaultStudents = getSettingByScope($connection2, 'Planner', 'sharingDefaultStudents');
                             ?>
 												<select name="viewableStudents" id="viewableStudents" class="standardWidth">
-													<option <?php if ($sharingDefaultStudents == 'Y') {
-    echo 'selected';
+													<option <?php if ($sharingDefaultStudents == 'Y') { echo 'selected';
 }
                             ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
-													<option <?php if ($sharingDefaultStudents == 'N') {
-    echo 'selected';
+													<option <?php if ($sharingDefaultStudents == 'N') { echo 'selected';
 }
                             ?> value="N"><?php echo __($guid, 'No') ?></option>
 												</select>
@@ -696,12 +694,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
                                                 $sharingDefaultParents = getSettingByScope($connection2, 'Planner', 'sharingDefaultParents');
                             ?>
 												<select name="viewableParents" id="viewableParents" class="standardWidth">
-													<option <?php if ($sharingDefaultParents == 'Y') {
-    echo 'selected';
+													<option <?php if ($sharingDefaultParents == 'Y') { echo 'selected';
 }
                             ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
-													<option <?php if ($sharingDefaultParents == 'N') {
-    echo 'selected';
+													<option <?php if ($sharingDefaultParents == 'N') { echo 'selected';
 }
                             ?> value="N"><?php echo __($guid, 'No') ?></option>
 												</select>

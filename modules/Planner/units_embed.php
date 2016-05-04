@@ -174,8 +174,8 @@ if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') {
                                 $rowNum = 'odd';
                             }
 
-                                //COLOR ROW BY STATUS!
-                                echo "<tr class=$rowNum>";
+                            //COLOR ROW BY STATUS!
+                            echo "<tr class=$rowNum>";
                             echo '<td>';
                             echo '<b>'.$rowBlocks['nameShort'].'</b><br/>';
                             echo "<span style='font-size: 75%; font-style: italic'>".$rowBlocks['name'].'</span>';

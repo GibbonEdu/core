@@ -139,8 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_det
             if ($orderBy == 'preferredName') {
                 echo 'selected ';
             }
-            echo "value='preferredName'>".__($guid, 'Preferred Name').'</option>';
-            ?>			
+            echo "value='preferredName'>".__($guid, 'Preferred Name').'</option>'; ?>			
 							</select>
 						</td>
 					</tr>
@@ -150,10 +149,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_det
 							<input type="hidden" name="gibbonRollGroupID" value="<?php echo $gibbonRollGroupID ?>">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 							<?php
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/rollGroups_details.php&gibbonRollGroupID=$gibbonRollGroupID'>".__($guid, 'Clear Filters').'</a>';
-            ?>
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/rollGroups_details.php&gibbonRollGroupID=$gibbonRollGroupID'>".__($guid, 'Clear Filters').'</a>'; ?>
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

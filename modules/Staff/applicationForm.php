@@ -664,7 +664,7 @@ if ($proceed == false) {
                                 }
                                 echo '</p>';
                             }
-            ?>
+            				?>
 						</td>
 					</tr>
 					<?php
@@ -736,8 +736,7 @@ if ($proceed == false) {
             echo __($guid, 'Your nominated referees will be emailed a confidential form to complete on your behalf.');
             echo '</p>';
             echo '</td>';
-            echo '</tr>';
-            ?>
+            echo '</tr>'; ?>
 					<tr>
 						<td> 
 							<b><?php echo __($guid, 'Referee 1') ?> *</b><br/>
@@ -802,13 +801,11 @@ if ($proceed == false) {
 		
 				<tr>
 					<td>
-						<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-        ?></span>
+						<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 					</td>
 					<td class="right">
 						<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-						<input type="submit" value="<?php echo __($guid, 'Submit');
-        ?>">
+						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 					</td>
 				</tr>
 			</table>

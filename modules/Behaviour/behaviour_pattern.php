@@ -89,27 +89,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                         } catch (PDOException $e) {
                         }
 
-        if ($resultNegative->rowCount() == 1) {
-            $rowNegative = $resultNegative->fetch();
-            $optionsNegative = $rowNegative['value'];
-            if ($optionsNegative != '') {
-                $optionsNegative = explode(',', $optionsNegative);
-            }
-        }
+						if ($resultNegative->rowCount() == 1) {
+							$rowNegative = $resultNegative->fetch();
+							$optionsNegative = $rowNegative['value'];
+							if ($optionsNegative != '') {
+								$optionsNegative = explode(',', $optionsNegative);
+							}
+						}
 
-        echo "<select name='descriptor' id='descriptor' style='width:302px;'>";
-        echo "<option value=''></option>";
-        for ($i = 0; $i < count($optionsNegative); ++$i) {
-            ?>
-								<option <?php if ($descriptor == $optionsNegative[$i]) {
-    echo 'selected ';
-}
-            ?>value="<?php echo trim($optionsNegative[$i]) ?>"><?php echo trim($optionsNegative[$i]) ?></option>
-							<?php
+						echo "<select name='descriptor' id='descriptor' style='width:302px;'>";
+						echo "<option value=''></option>";
+						for ($i = 0; $i < count($optionsNegative); ++$i) {
+							?>
+												<option <?php if ($descriptor == $optionsNegative[$i]) { echo 'selected '; } ?>value="<?php echo trim($optionsNegative[$i]) ?>"><?php echo trim($optionsNegative[$i]) ?></option>
+											<?php
 
-        }
-        echo '</select>';
-        ?>
+						}
+						echo '</select>';
+						?>
 					</td>
 				</tr>
 				<?php
@@ -117,67 +114,60 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     }
     if ($enableLevels == 'Y') {
         ?>
-				<tr>
-					<td> 
-						<b><?php echo __($guid, 'Level') ?></b><br/>
-						<span class="emphasis small"></span>
-					</td>
-					<td class="right">
+			<tr>
+				<td> 
+					<b><?php echo __($guid, 'Level') ?></b><br/>
+					<span class="emphasis small"></span>
+				</td>
+				<td class="right">
+					<?php
+					$optionsLevels = getSettingByScope($connection2, 'Behaviour', 'levels');
+					if ($optionsLevels != '') {
+						$optionsLevels = explode(',', $optionsLevels);
+					}
+
+					echo "<select name='level' id='level' style='width:302px'>";
+					echo "<option value=''></option>";
+					for ($i = 0; $i < count($optionsLevels); ++$i) {
+						?>
+						<option <?php if ($level == $optionsLevels[$i]) { echo 'selected '; } ?>value="<?php echo trim($optionsLevels[$i]) ?>"><?php echo trim($optionsLevels[$i]) ?></option>
 						<?php
-                        $optionsLevels = getSettingByScope($connection2, 'Behaviour', 'levels');
-        if ($optionsLevels != '') {
-            $optionsLevels = explode(',', $optionsLevels);
-        }
-
-        echo "<select name='level' id='level' style='width:302px'>";
-        echo "<option value=''></option>";
-        for ($i = 0; $i < count($optionsLevels); ++$i) {
-            ?>
-								<option <?php if ($level == $optionsLevels[$i]) {
-    echo 'selected ';
-}
-            ?>value="<?php echo trim($optionsLevels[$i]) ?>"><?php echo trim($optionsLevels[$i]) ?></option>
-							<?php
-
-        }
-        echo '</select>';
-        ?>
+						}
+						echo '</select>';
+						?>
 					</td>
 				</tr>
 				<?php
 
-    }
-    ?>
+			}
+			?>
 			
 			<tr>
 				<td> 
 					<b><?php echo __($guid, 'From Date') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Format:').' ';
-    if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-        echo 'dd/mm/yyyy';
-    } else {
-        echo $_SESSION[$guid]['i18n']['dateFormat'];
-    }
-    ?></span>
+					if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+						echo 'dd/mm/yyyy';
+					} else {
+						echo $_SESSION[$guid]['i18n']['dateFormat'];
+					}
+					?></span>
 				</td>
 				<td class="right">
-					<input name="fromDate" id="fromDate" maxlength=10 value="<?php if ($fromDate != '') {
-    echo $fromDate;
-}
-    ?>" type="text" class="standardWidth">
+					<input name="fromDate" id="fromDate" maxlength=10 value="<?php if ($fromDate != '') { echo $fromDate; } ?>" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var fromDate=new LiveValidation('fromDate');
 						fromDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-    ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-    ?>." } ); 
+							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+						}
+							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+							echo 'dd/mm/yyyy';
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormat'];
+						}
+						?>." } ); 
 					</script>
 					 <script type="text/javascript">
 						$(function() {
@@ -201,17 +191,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     } catch (PDOException $e) {
                     }
 
-    echo "<select name='gibbonRollGroupID' id='gibbonRollGroupID' style='width: 302px'>";
-    echo "<option value=''></option>";
-    while ($rowPurpose = $resultPurpose->fetch()) {
-        $selected = '';
-        if ($rowPurpose['gibbonRollGroupID'] == $gibbonRollGroupID) {
-            $selected = 'selected';
-        }
-        echo "<option $selected value='".$rowPurpose['gibbonRollGroupID']."'>".$rowPurpose['name'].'</option>';
-    }
-    echo '</select>';
-    ?>
+					echo "<select name='gibbonRollGroupID' id='gibbonRollGroupID' style='width: 302px'>";
+					echo "<option value=''></option>";
+					while ($rowPurpose = $resultPurpose->fetch()) {
+						$selected = '';
+						if ($rowPurpose['gibbonRollGroupID'] == $gibbonRollGroupID) {
+							$selected = 'selected';
+						}
+						echo "<option $selected value='".$rowPurpose['gibbonRollGroupID']."'>".$rowPurpose['name'].'</option>';
+					}
+					echo '</select>';?>
 				</td>
 			</tr>
 			<tr>
@@ -229,17 +218,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     } catch (PDOException $e) {
                     }
 
-    echo "<select name='gibbonYearGroupID' id='gibbonYearGroupID' style='width: 302px'>";
-    echo "<option value=''></option>";
-    while ($rowPurpose = $resultPurpose->fetch()) {
-        $selected = '';
-        if ($rowPurpose['gibbonYearGroupID'] == $gibbonYearGroupID) {
-            $selected = 'selected';
-        }
-        echo "<option $selected value='".$rowPurpose['gibbonYearGroupID']."'>".__($guid, $rowPurpose['name']).'</option>';
-    }
-    echo '</select>';
-    ?>
+					echo "<select name='gibbonYearGroupID' id='gibbonYearGroupID' style='width: 302px'>";
+					echo "<option value=''></option>";
+					while ($rowPurpose = $resultPurpose->fetch()) {
+						$selected = '';
+						if ($rowPurpose['gibbonYearGroupID'] == $gibbonYearGroupID) {
+							$selected = 'selected';
+						}
+						echo "<option $selected value='".$rowPurpose['gibbonYearGroupID']."'>".__($guid, $rowPurpose['name']).'</option>';
+					}
+					echo '</select>';?>
 				</td>
 			</tr>
 			<tr>
@@ -250,30 +238,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 				<td class="right">
 					<?php
                     echo "<select name='minimumCount' id='minimumCount' style='width:302px'>";
-    for ($i = 0; $i < 51; ++$i) {
-        if ($i == 0 or $i == 1 or $i == 2 or $i == 3 or $i == 4 or $i == 5 or $i == 10 or $i == 25 or $i == 50) {
-            ?>
-								<option <?php if ($minimumCount == $i) {
-    echo 'selected ';
-}
-            ?>value="<?php echo $i ?>"><?php echo $i ?></option>
+					for ($i = 0; $i < 51; ++$i) {
+						if ($i == 0 or $i == 1 or $i == 2 or $i == 3 or $i == 4 or $i == 5 or $i == 10 or $i == 25 or $i == 50) {
+							?>
+								<option <?php if ($minimumCount == $i) { echo 'selected '; } ?>value="<?php echo $i ?>"><?php echo $i ?></option>
 								<?php
 
-        }
-    }
-    echo '</select>';
-    ?>
+							}
+						}
+						echo '</select>';?>
 				</td>
 			</tr>
 			<?php
             echo '<tr>';
-    echo "<td class='right' colspan=2>";
-    echo "<input type='hidden' name='q' value='".$_GET['q']."'>";
-    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Behaviour/behaviour_pattern.php'>".__($guid, 'Clear Filters').'</a> ';
-    echo "<input type='submit' value='".__($guid, 'Go')."'>";
-    echo '</td>';
-    echo '</tr>';
-    ?>
+				echo "<td class='right' colspan=2>";
+				echo "<input type='hidden' name='q' value='".$_GET['q']."'>";
+				echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Behaviour/behaviour_pattern.php'>".__($guid, 'Clear Filters').'</a> ';
+				echo "<input type='submit' value='".__($guid, 'Go')."'>";
+				echo '</td>';
+    		echo '</tr>';?>
 		</table>
 		<?php
     echo '</form>';
@@ -397,8 +380,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     $rowNum = 'error';
                 }
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$rowNum>";
             echo '<td>';
             echo "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$row['gibbonPersonID']."&subpage=Behaviour&search=&allStudents=&sort=surname, preferredName'>".formatName('', $row['preferredName'], $row['surname'], 'Student', true).'</a>';
             echo '</td>';

@@ -56,9 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
 						<?php for ($i = 0; $i <= 31; ++$i) {
     ?>
-							<option <?php if ($row['value'] == $i) {
-    echo 'selected ';
-}
+							<option <?php if ($row['value'] == $i) { echo 'selected '; }
     ?>value="<?php echo $i ?>"><?php echo $i ?></option>
 						<?php 
 }
@@ -110,13 +108,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
 			</tr>
 			<tr>
 				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-    ?></span>
+					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>

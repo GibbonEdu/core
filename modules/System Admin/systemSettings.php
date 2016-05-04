@@ -267,8 +267,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     if ($row['value'] == 'N') {
         $selected = 'selected';
     }
-    echo "<option $selected value='N'>".ynExpander($guid, 'N').'</option>';
-    ?>
+    echo "<option $selected value='N'>".ynExpander($guid, 'N').'</option>';?>
 					</select>
 				</td>
 			</tr>
@@ -590,7 +589,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
                             }
                             echo "<option $selected value='$i'>$i</option>";
                         }
-    ?>
+   				 		?>
 					</select>
 				</td>
 			</tr>
@@ -623,8 +622,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     if ($row['value'] == 'N') {
         $selected = 'selected';
     }
-    echo "<option $selected value='N'>".ynExpander($guid, 'N').'</option>';
-    ?>
+    echo "<option $selected value='N'>".ynExpander($guid, 'N').'</option>';?>
 					</select>
 				</td>
 			</tr>
@@ -657,8 +655,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     if ($row['value'] == 'N') {
         $selected = 'selected';
     }
-    echo "<option $selected value='N'>".ynExpander($guid, 'N').'</option>';
-    ?>
+    echo "<option $selected value='N'>".ynExpander($guid, 'N').'</option>';?>
 					</select>
 				</td>
 			</tr>
@@ -691,8 +688,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     if ($row['value'] == 'N') {
         $selected = 'selected';
     }
-    echo "<option $selected value='N'>".ynExpander($guid, 'N').'</option>';
-    ?>
+    echo "<option $selected value='N'>".ynExpander($guid, 'N').'</option>';?>
 					</select>
 				</td>
 			</tr>
@@ -863,12 +859,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option <?php if ($row['value'] == 'Monday') {
-    echo 'selected';
+						<option <?php if ($row['value'] == 'Monday') { echo 'selected';
 }
     ?> value='Monday'>Monday</option>
-						<option <?php if ($row['value'] == 'Sunday') {
-    echo 'selected';
+						<option <?php if ($row['value'] == 'Sunday') { echo 'selected';
 }
     ?> value='Sunday'>Sunday</option>
 					</select>
@@ -1115,13 +1109,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
 
 			<tr>
 				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-    ?></span>
+					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>

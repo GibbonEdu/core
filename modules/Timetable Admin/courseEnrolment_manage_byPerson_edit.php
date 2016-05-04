@@ -91,8 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             //INTERFACE TO ADD NEW CLASSES
             echo '<h2>';
             echo __($guid, 'Add Classes');
-            echo '</h2>';
-            ?>
+            echo '</h2>'; ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_manage_byPerson_edit_addProcess.php?type=$type&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID&allUsers=$allUsers&search=$search" ?>">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
@@ -143,7 +142,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 								<?php
 
                                 }
-            ?>
+           	 					?>
 								<optgroup label='--<?php echo __($guid, 'All Classes') ?>--'>
 								<?php
                                 try {
@@ -167,14 +166,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 						</td>
 						<td class="right">
 							<select class="standardWidth" name="role">
-								<option <?php if ($type == 'Student') {
-    echo 'selected ';
-}
-            ?>value="Student"><?php echo __($guid, 'Student') ?></option>
-								<option <?php if ($type == 'Staff') {
-    echo 'selected ';
-}
-            ?>value="Teacher"><?php echo __($guid, 'Teacher') ?></option>
+								<option <?php if ($type == 'Student') { echo 'selected '; } ?>value="Student"><?php echo __($guid, 'Student') ?></option>
+								<option <?php if ($type == 'Staff') { echo 'selected '; } ?>value="Teacher"><?php echo __($guid, 'Teacher') ?></option>
 								<option value="Assistant"><?php echo __($guid, 'Assistant') ?></option>
 								<option value="Technician"><?php echo __($guid, 'Technician') ?></option>
 							</select>
@@ -182,13 +175,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 					</tr>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>
@@ -216,8 +207,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             } else {
                 echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_manage_byPerson_editProcessBulk.php?allUsers=$allUsers'>";
                 echo "<fieldset style='border: none'>";
-                echo "<div class='linkTop' style='height: 27px'>";
-                ?>
+                echo "<div class='linkTop' style='height: 27px'>"; ?>
 						<input style='margin-top: 0px; float: right' type='submit' value='<?php echo __($guid, 'Go') ?>'>
 						<select name="action" id="action" style='width:120px; float: right; margin-right: 1px;'>
 							<option value="Select action"><?php echo __($guid, 'Select action') ?></option>

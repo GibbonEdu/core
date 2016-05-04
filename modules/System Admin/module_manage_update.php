@@ -119,8 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
 								<input type="hidden" name="versionDB" value="<?php echo $versionDB ?>">
 								<input type="hidden" name="versionCode" value="<?php echo $versionCode ?>">
 								<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-								<input type="submit" value="<?php echo __($guid, 'Submit');
-                ?>">
+								<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 							</td>
 						</tr>
 					</table>

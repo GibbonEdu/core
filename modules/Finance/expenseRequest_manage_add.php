@@ -195,7 +195,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                                         } else {
                                             echo __($guid, 'Numeric value of the fee.');
                                         }
-                    ?>
+                    					?>
 										</i>
 									</span>
 								</td>
@@ -249,16 +249,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 				
 							<tr>
 								<td>
-									<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-                    ?></span>
+									<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 								</td>
 								<td class="right">
 									<input name="gibbonFinanceInvoiceID" id="gibbonFinanceInvoiceID" value="<?php echo $gibbonFinanceInvoiceID ?>" type="hidden">
 									<input name="status2" id="status2" value="<?php echo $status2 ?>" type="hidden">
 									<input name="gibbonFinanceBudgetID2" id="gibbonFinanceBudgetID2" value="<?php echo $gibbonFinanceBudgetID2 ?>" type="hidden">
 									<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-									<input type="submit" value="<?php echo __($guid, 'Submit');
-                    ?>">
+									<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 								</td>
 							</tr>
 						</table>

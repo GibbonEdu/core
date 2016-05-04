@@ -125,19 +125,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_a
 					<?php
                     //Attempt to build a signature for the user
                     $jobOpeningDescriptionTemplate = getSettingByScope($connection2, 'Staff', 'jobOpeningDescriptionTemplate');
-    echo getEditor($guid,  true, 'description', $jobOpeningDescriptionTemplate, 20, true, true, false, true);
-    ?>
+    echo getEditor($guid,  true, 'description', $jobOpeningDescriptionTemplate, 20, true, true, false, true); ?>
 				</td>
 			</tr>
 			<tr>
 				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-    ?></span>
+					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>

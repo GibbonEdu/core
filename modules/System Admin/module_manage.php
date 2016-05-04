@@ -235,8 +235,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
 
                 ++$count;
 
-                    //COLOR ROW BY STATUS!
-                    echo "<tr class=$rowNum>";
+                //COLOR ROW BY STATUS!
+                echo "<tr class=$rowNum>";
                 echo '<td>';
                 echo __($guid, $moduleName);
                 echo '</td>';
@@ -250,8 +250,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
         echo "<td colspan=7 class='right'>";
         ?>
 					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-        ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 					<?php
                 echo '</td>';
         echo '</tr>';

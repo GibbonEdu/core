@@ -68,10 +68,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.p
 							<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/behaviour_view.php">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 							<?php
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/behaviour_view.php'>".__($guid, 'Clear Search').'</a>';
-            ?>
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/behaviour_view.php'>".__($guid, 'Clear Search').'</a>'; ?>
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>
@@ -153,8 +151,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.p
                 }
                 ++$count;
 
-                    //COLOR ROW BY STATUS!
-                    echo "<tr class=$rowNum>";
+                //COLOR ROW BY STATUS!
+                echo "<tr class=$rowNum>";
                 echo '<td>';
                 echo "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$row['gibbonPersonID']."&subpage=Behaviour&search=&allStudents=&sort=surname, preferredName'>".formatName('', $row['preferredName'], $row['surname'], 'Student', true).'</a>';
                 echo '</td>';

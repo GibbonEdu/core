@@ -160,8 +160,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_tar
 						<tr>
 							<td colspan=2 class="right">
 								<input name="count" id="count" value="<?php echo $count ?>" type="hidden">
-								<input type="submit" value="<?php echo __($guid, 'Submit');
-                ?>">
+								<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 							</td>
 						</tr>
 						<?php

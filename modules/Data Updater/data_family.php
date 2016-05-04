@@ -119,15 +119,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
                                     }
                                 }
                             }
-        ?>				
+        					?>				
 						</select>
 					</td>
 				</tr>
 				<tr>
 					<td colspan=2 class="right">
 						<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/data_family.php">
-						<input type="submit" value="<?php echo __($guid, 'Submit');
-        ?>">
+						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 					</td>
 				</tr>
 			</table>
@@ -256,10 +255,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
                                                 $resultAuto->execute($dataAuto);
                                             } catch (PDOException $e) {
                                             }
-                    while ($rowAuto = $resultAuto->fetch()) {
-                        echo '"'.$rowAuto['name'].'", ';
-                    }
-                    ?>
+											while ($rowAuto = $resultAuto->fetch()) {
+												echo '"'.$rowAuto['name'].'", ';
+											}
+											?>
 										];
 										$( "#homeAddressDistrict" ).autocomplete({source: availableTags});
 									});
@@ -277,21 +276,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
 									<select name="homeAddressCountry" id="homeAddressCountry" class="standardWidth">
 										<?php
                                         echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-                    try {
-                        $dataSelect = array();
-                        $sqlSelect = 'SELECT printable_name FROM gibbonCountry ORDER BY printable_name';
-                        $resultSelect = $connection2->prepare($sqlSelect);
-                        $resultSelect->execute($dataSelect);
-                    } catch (PDOException $e) {
-                    }
-                    while ($rowSelect = $resultSelect->fetch()) {
-                        $selected = '';
-                        if ($rowSelect['printable_name'] == $row['homeAddressCountry']) {
-                            $selected = ' selected';
-                        }
-                        echo "<option $selected value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
-                    }
-                    ?>				
+										try {
+											$dataSelect = array();
+											$sqlSelect = 'SELECT printable_name FROM gibbonCountry ORDER BY printable_name';
+											$resultSelect = $connection2->prepare($sqlSelect);
+											$resultSelect->execute($dataSelect);
+										} catch (PDOException $e) {
+										}
+										while ($rowSelect = $resultSelect->fetch()) {
+											$selected = '';
+											if ($rowSelect['printable_name'] == $row['homeAddressCountry']) {
+												$selected = ' selected';
+											}
+											echo "<option $selected value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
+										}
+										?>				
 									</select>
 									<script type="text/javascript">
 										var homeAddressCountry=new LiveValidation('homeAddressCountry');
@@ -307,21 +306,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
 									<select name="languageHomePrimary" id="languageHomePrimary" class="standardWidth">
 										<?php
                                         echo "<option value='Please select...'>Please select...</option>";
-                    try {
-                        $dataSelect = array();
-                        $sqlSelect = 'SELECT name FROM gibbonLanguage ORDER BY name';
-                        $resultSelect = $connection2->prepare($sqlSelect);
-                        $resultSelect->execute($dataSelect);
-                    } catch (PDOException $e) {
-                    }
-                    while ($rowSelect = $resultSelect->fetch()) {
-                        $selected = '';
-                        if ($row['languageHomePrimary'] == $rowSelect['name']) {
-                            $selected = 'selected';
-                        }
-                        echo "<option $selected value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-                    }
-                    ?>				
+										try {
+											$dataSelect = array();
+											$sqlSelect = 'SELECT name FROM gibbonLanguage ORDER BY name';
+											$resultSelect = $connection2->prepare($sqlSelect);
+											$resultSelect->execute($dataSelect);
+										} catch (PDOException $e) {
+										}
+										while ($rowSelect = $resultSelect->fetch()) {
+											$selected = '';
+											if ($row['languageHomePrimary'] == $rowSelect['name']) {
+												$selected = 'selected';
+											}
+											echo "<option $selected value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
+										}
+										?>				
 									</select>
 									<script type="text/javascript">
 										var languageHomePrimary=new LiveValidation('languageHomePrimary');
@@ -337,28 +336,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
 									<select name="languageHomeSecondary" id="languageHomeSecondary" class="standardWidth">
 										<?php
                                         echo "<option value=''></option>";
-                    try {
-                        $dataSelect = array();
-                        $sqlSelect = 'SELECT name FROM gibbonLanguage ORDER BY name';
-                        $resultSelect = $connection2->prepare($sqlSelect);
-                        $resultSelect->execute($dataSelect);
-                    } catch (PDOException $e) {
-                    }
-                    while ($rowSelect = $resultSelect->fetch()) {
-                        $selected = '';
-                        if ($row['languageHomeSecondary'] == $rowSelect['name']) {
-                            $selected = 'selected';
-                        }
-                        echo "<option $selected value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-                    }
-                    ?>				
+										try {
+											$dataSelect = array();
+											$sqlSelect = 'SELECT name FROM gibbonLanguage ORDER BY name';
+											$resultSelect = $connection2->prepare($sqlSelect);
+											$resultSelect->execute($dataSelect);
+										} catch (PDOException $e) {
+										}
+										while ($rowSelect = $resultSelect->fetch()) {
+											$selected = '';
+											if ($row['languageHomeSecondary'] == $rowSelect['name']) {
+												$selected = 'selected';
+											}
+											echo "<option $selected value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
+										}
+										?>				
 									</select>
 								</td>
 							</tr>
 							<tr>
 								<td>
-									<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-                    ?></span>
+									<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 								</td>
 								<td class="right">
 									<?php
@@ -367,10 +365,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
                                     } else {
                                         echo "<input type='hidden' name='existing' value='N'>";
                                     }
-                    ?>
+                   		 			?>
 									<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-									<input type="submit" value="<?php echo __($guid, 'Submit');
-                    ?>">
+									<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 								</td>
 							</tr>
 						</table>

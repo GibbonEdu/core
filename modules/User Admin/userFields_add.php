@@ -63,8 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_add.
 					<select class="standardWidth" name="active">
 						<?php
                         echo "<option value='Y'>".__($guid, 'Yes').'</option>';
-    echo "<option value='N'>".__($guid, 'No').'</option>';
-    ?>				
+    echo "<option value='N'>".__($guid, 'No').'</option>';?>				
 					</select>
 				</td>
 			</tr>
@@ -126,8 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_add.
 						<?php 
                             echo __($guid, 'Short Text: number of characters, up to 255.').'<br/>';
     echo __($guid, 'Long Text: number of rows for field.').'<br/>';
-    echo __($guid, 'Dropdown: comma separated list of options.').'<br/>';
-    ?>
+    echo __($guid, 'Dropdown: comma separated list of options.').'<br/>';?>
 						</span>
 				</td>
 				<td class="right">
@@ -143,8 +141,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_add.
 					<select class="standardWidth" name="required">
 						<?php
                         echo "<option value='Y'>".__($guid, 'Yes').'</option>';
-    echo "<option value='N'>".__($guid, 'No').'</option>';
-    ?>				
+    echo "<option value='N'>".__($guid, 'No').'</option>';?>				
 					</select>
 				</td>
 			</tr>
@@ -169,8 +166,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_add.
 					<select class="standardWidth" name="activeDataUpdater">
 						<?php
                         echo "<option value='1'>".__($guid, 'Yes').'</option>';
-    echo "<option value='0'>".__($guid, 'No').'</option>';
-    ?>				
+    echo "<option value='0'>".__($guid, 'No').'</option>';?>				
 					</select>
 				</td>
 			</tr>
@@ -182,21 +178,18 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_add.
 					<select class="standardWidth" name="activeApplicationForm">
 						<?php
                         echo "<option value='1'>".__($guid, 'Yes').'</option>';
-    echo "<option selected value='0'>".__($guid, 'No').'</option>';
-    ?>				
+    echo "<option selected value='0'>".__($guid, 'No').'</option>';?>				
 					</select>
 				</td>
 			</tr>
 			
 			<tr>
 				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-    ?></span>
+					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>

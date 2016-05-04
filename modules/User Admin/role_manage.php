@@ -87,8 +87,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage.php
             }
             ++$count;
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$rowNum>";
             echo '<td>';
             echo __($guid, $row['category']);
             echo '</td>';

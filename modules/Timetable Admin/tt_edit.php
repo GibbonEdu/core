@@ -136,8 +136,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit.ph
             if ($row['active'] == 'N') {
                 echo 'selected ';
             };
-            echo " value='N'>".__($guid, 'No').'</option>';
-            ?>				
+            echo " value='N'>".__($guid, 'No').'</option>'; ?>				
 							</select>
 						</td>
 					</tr>
@@ -167,15 +166,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit.ph
 					</tr>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input name="gibbonTTID" id="gibbonTTID" value="<?php echo $_GET['gibbonTTID'] ?>" type="hidden">
 							<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php echo $_GET['gibbonSchoolYearID'] ?>" type="hidden">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>
@@ -229,8 +226,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit.ph
                         $rowNum = 'odd';
                     }
 
-                        //COLOR ROW BY STATUS!
-                        echo "<tr class=$rowNum>";
+                    //COLOR ROW BY STATUS!
+                    echo "<tr class=$rowNum>";
                     echo '<td>';
                     echo $row['name'];
                     echo '</td>';

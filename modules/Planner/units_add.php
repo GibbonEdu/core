@@ -146,8 +146,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 								<tr>
 									<td> 
 										<b><?php echo __($guid, 'Ordering') ?> *</b><br/>
-										<span class="emphasis small"><?php echo __($guid, 'Units are arranged form lowest to highest ordering value, then alphabetically.');
-                        ?></span>
+										<span class="emphasis small"><?php echo __($guid, 'Units are arranged form lowest to highest ordering value, then alphabetically.'); ?></span>
 									</td>
 									<td class="right">
 										<input name="ordering" id="ordering" maxlength=4 value="0" type="text" class="standardWidth">
@@ -161,8 +160,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 								<tr>
 									<td> 
 										<b><?php echo __($guid, 'License') ?></b><br/>
-										<span class="emphasis small"><?php echo __($guid, 'Under what conditions can this work be reused?');
-                        ?></span>
+										<span class="emphasis small"><?php echo __($guid, 'Under what conditions can this work be reused?'); ?></span>
 									</td>
 									<td class="right">
 										<select name="license" id="license" class="standardWidth">
@@ -182,8 +180,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 									<tr>
 										<td> 
 											<b><?php echo __($guid, 'Shared Publically') ?> * </b><br/>
-											<span class="emphasis small"><?php echo __($guid, 'Share this unit via the public listing of units? Useful for building MOOCS.');
-                            ?></span>
+											<span class="emphasis small"><?php echo __($guid, 'Share this unit via the public listing of units? Useful for building MOOCS.'); ?></span>
 										</td>
 										<td class="right">
 											<input type="radio" name="sharedPublic" value="Y" /> <?php echo __($guid, 'Yes') ?>
@@ -348,8 +345,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 																<?php
 
                                                             }
-                        ?>
-															<script type='text/javascript'>
+                        			?>															<script type='text/javascript'>
 																var <?php echo $type ?>Used=new Array();
 																var <?php echo $type ?>UsedCount=0 ;
 																	
@@ -519,8 +515,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                                             for ($i = 1; $i <= 5; ++$i) {
                                                 makeBlock($guid, $connection2, $i);
                                             }
-                        ?>
-										</div>
+                        			?>										</div>
 										
 										<div style='width: 100%; padding: 0px 0px 0px 0px'>
 											<div class="ui-state-default_dud" style='padding: 0px; height: 40px'>
@@ -563,8 +558,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 								</tr>
 								<tr>
 									<td class="right" colspan=2>
-										<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-                        ?></span>
+										<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 									</td>
 								</tr>
 							</table>

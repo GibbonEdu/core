@@ -224,8 +224,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
 											<b><?php echo __($guid, 'Title') ?> *</b><br/>
 										</td>
 										<td class="right">
-											<input readonly name="name" id="name" maxlength=60 value="<?php echo $row['title'];
-                            ?>" type="text" class="standardWidth">
+											<input readonly name="name" id="name" maxlength=60 value="<?php echo $row['title']; ?>" type="text" class="standardWidth">
 										</td>
 									</tr>
 									<tr>
@@ -233,8 +232,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
 											<b><?php echo __($guid, 'Status') ?> *</b><br/>
 										</td>
 										<td class="right">
-											<input readonly name="name" id="name" maxlength=60 value="<?php echo $row['status'];
-                            ?>" type="text" class="standardWidth">
+											<input readonly name="name" id="name" maxlength=60 value="<?php echo $row['status']; ?>" type="text" class="standardWidth">
 										</td>
 									</tr>
 									<tr>
@@ -252,8 +250,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
 											<b><?php echo __($guid, 'Purchase By') ?> *</b><br/>
 										</td>
 										<td class="right">
-											<input readonly name="purchaseBy" id="purchaseBy" maxlength=60 value="<?php echo $row['purchaseBy'];
-                            ?>" type="text" class="standardWidth">
+											<input readonly name="purchaseBy" id="purchaseBy" maxlength=60 value="<?php echo $row['purchaseBy']; ?>" type="text" class="standardWidth">
 										</td>
 									</tr>
 									<tr>
@@ -289,8 +286,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
 											</span>
 										</td>
 										<td class="right">
-											<input readonly name="name" id="name" maxlength=60 value="<?php echo number_format($row['cost'], 2, '.', ',');
-                            ?>" type="text" class="standardWidth">
+											<input readonly name="name" id="name" maxlength=60 value="<?php echo number_format($row['cost'], 2, '.', ','); ?>" type="text" class="standardWidth">
 										</td>
 									</tr>
 									<tr>
@@ -298,8 +294,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
 											<b><?php echo __($guid, 'Count Against Budget') ?> *</b><br/>
 										</td>
 										<td class="right">
-											<input readonly name="countAgainstBudget" id="countAgainstBudget" maxlength=60 value="<?php echo ynExpander($guid, $row['countAgainstBudget']);
-                            ?>" type="text" class="standardWidth">
+											<input readonly name="countAgainstBudget" id="countAgainstBudget" maxlength=60 value="<?php echo ynExpander($guid, $row['countAgainstBudget']); ?>" type="text" class="standardWidth">
 										</td>
 									</tr>
 									<?php 
@@ -316,7 +311,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
                                                     } else {
                                                         echo __($guid, 'Numeric value of the fee.');
                                                     }
-                                        ?>
+                                        			?>
 													</i>
 												</span>
 											</td>
@@ -359,7 +354,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
                                                     } else {
                                                         echo __($guid, 'Numeric value of the fee.');
                                                     }
-                                        ?>
+                                        			?>
 													</i>
 												</span>
 											</td>
@@ -487,8 +482,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
 										</tr>
 										<tr>
 											<td>
-												<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-                                ?></span>
+												<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');?></span>
 											</td>
 											<td class="right">
 												<input name="gibbonFinanceExpenseID" id="gibbonFinanceExpenseID" value="<?php echo $gibbonFinanceExpenseID ?>" type="hidden">
@@ -497,8 +491,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
 												<input name="gibbonFinanceBudgetID2" id="gibbonFinanceBudgetID2" value="<?php echo $gibbonFinanceBudgetID2 ?>" type="hidden">
 												<input name="status" id="status" value="<?php echo $status ?>" type="hidden">
 												<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-												<input type="submit" value="<?php echo __($guid, 'Submit');
-                                ?>">
+												<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 											</td>
 										</tr>
 										<?php

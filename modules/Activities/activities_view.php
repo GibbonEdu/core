@@ -166,7 +166,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 						<?php
 
                     }
-            ?>
+                    ?>
 					
 					<tr>
 						<td> 
@@ -182,10 +182,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 							<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/activities_view.php">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 							<?php
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/activities_view.php'>".__($guid, 'Clear Search').'</a>';
-            ?>
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/activities_view.php'>".__($guid, 'Clear Search').'</a>'; ?>
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>
@@ -402,8 +400,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                         ++$count;
 
-                            //COLOR ROW BY STATUS!
-                            echo "<tr class=$rowNum>";
+                        //COLOR ROW BY STATUS!
+                        echo "<tr class=$rowNum>";
                         echo '<td>';
                         echo $row['name'].'<br/>';
                         echo '<i>'.trim($row['type']).'</i>';

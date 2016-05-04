@@ -111,8 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_da
 			</tr>
 			<tr>
 				<td colspan=2 class="right">
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>

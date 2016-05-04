@@ -74,8 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/report_cla
 			<tr>
 				<td colspan=2 class="right">
 					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/report_classEnrolment_byRollGroup.php">
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>
@@ -119,8 +118,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/report_cla
             }
             ++$count;
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$rowNum>";
             echo '<td>';
             echo $row['name'];
             echo '</td>';

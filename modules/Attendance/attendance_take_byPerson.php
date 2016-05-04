@@ -70,23 +70,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 					<select class="standardWidth" name="gibbonPersonID">
 						<?php
                         echo "<option value=''></option>";
-    try {
-        $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-        $sqlSelect = "SELECT * FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName";
-        $resultSelect = $connection2->prepare($sqlSelect);
-        $resultSelect->execute($dataSelect);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
+						try {
+							$dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+							$sqlSelect = "SELECT * FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName";
+							$resultSelect = $connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						} catch (PDOException $e) {
+							echo "<div class='error'>".$e->getMessage().'</div>';
+						}
 
-    while ($rowSelect = $resultSelect->fetch()) {
-        if ($gibbonPersonID == $rowSelect['gibbonPersonID']) {
-            echo "<option selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['nameShort']).')</option>';
-        } else {
-            echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['nameShort']).')</option>';
-        }
-    }
-    ?>				
+						while ($rowSelect = $resultSelect->fetch()) {
+							if ($gibbonPersonID == $rowSelect['gibbonPersonID']) {
+								echo "<option selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['nameShort']).')</option>';
+							} else {
+								echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['nameShort']).')</option>';
+							}
+						}
+						?>				
 					</select>
 				</td>
 			</tr>
@@ -94,28 +94,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 				<td> 
 					<b><?php echo __($guid, 'Date') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Format:').' ';
-    if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-        echo 'dd/mm/yyyy';
-    } else {
-        echo $_SESSION[$guid]['i18n']['dateFormat'];
-    }
-    ?></span>
+					if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+						echo 'dd/mm/yyyy';
+					} else {
+						echo $_SESSION[$guid]['i18n']['dateFormat'];
+					}
+					?></span>
 				</td>
 				<td class="right">
 					<input name="currentDate" id="currentDate" maxlength=10 value="<?php echo dateConvertBack($guid, $currentDate) ?>" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var currentDate=new LiveValidation('currentDate');
 						currentDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-    ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-    ?>." } ); 
+							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+						}
+							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+							echo 'dd/mm/yyyy';
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormat'];
+						}
+							?>." } ); 
 						currentDate.add(Validate.Presence);
 					</script>
 					 <script type="text/javascript">
@@ -220,55 +220,55 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 							<td class="right">
 								<?php
                                 echo "<table cellspacing='0' style='float: right; width:134px; margin: 0px 0px 0px 8px; height: 35px' >";
-                echo '<tr>';
-                for ($i = 4; $i >= 0; --$i) {
-                    $link = '';
-                    if ($i > ($last5SchoolDaysCount - 1)) {
-                        $extraStyle = 'background-color: #eee;';
+								echo '<tr>';
+								for ($i = 4; $i >= 0; --$i) {
+									$link = '';
+									if ($i > ($last5SchoolDaysCount - 1)) {
+										$extraStyle = 'background-color: #eee;';
 
-                        echo "<td style='".$extraStyle."height: 25px; width: 20%'>";
-                        echo '<i>'.__($guid, 'NA').'</i>';
-                        echo '</td>';
-                    } else {
-                        try {
-                            $dataLast5SchoolDays = array('gibbonPersonID' => $gibbonPersonID, 'date' => date('Y-m-d', dateConvertToTimestamp($last5SchoolDays[$i])).'%');
-                            $sqlLast5SchoolDays = 'SELECT * FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY gibbonAttendanceLogPersonID DESC';
-                            $resultLast5SchoolDays = $connection2->prepare($sqlLast5SchoolDays);
-                            $resultLast5SchoolDays->execute($dataLast5SchoolDays);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
+										echo "<td style='".$extraStyle."height: 25px; width: 20%'>";
+										echo '<i>'.__($guid, 'NA').'</i>';
+										echo '</td>';
+									} else {
+										try {
+											$dataLast5SchoolDays = array('gibbonPersonID' => $gibbonPersonID, 'date' => date('Y-m-d', dateConvertToTimestamp($last5SchoolDays[$i])).'%');
+											$sqlLast5SchoolDays = 'SELECT * FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY gibbonAttendanceLogPersonID DESC';
+											$resultLast5SchoolDays = $connection2->prepare($sqlLast5SchoolDays);
+											$resultLast5SchoolDays->execute($dataLast5SchoolDays);
+										} catch (PDOException $e) {
+											echo "<div class='error'>".$e->getMessage().'</div>';
+										}
 
-                        if ($resultLast5SchoolDays->rowCount() == 0) {
-                            $extraStyle = 'color: #555; background-color: #eee; ';
-                        } else {
-                            $link = './index.php?q=/modules/'.$_SESSION[$guid]['module'].'/attendance_take_byPerson.php&gibbonPersonID='.$gibbonPersonID.'&currentDate='.date('d/m/Y', dateConvertToTimestamp($last5SchoolDays[$i]));
-                            $rowLast5SchoolDays = $resultLast5SchoolDays->fetch();
-                            if ($rowLast5SchoolDays['type'] == 'Absent') {
-                                $color = '#c00';
-                                $extraStyle = 'color: #c00; background-color: #F6CECB; ';
-                            } else {
-                                $color = '#390';
-                                $extraStyle = 'color: #390; background-color: #D4F6DC; ';
-                            }
-                        }
+										if ($resultLast5SchoolDays->rowCount() == 0) {
+											$extraStyle = 'color: #555; background-color: #eee; ';
+										} else {
+											$link = './index.php?q=/modules/'.$_SESSION[$guid]['module'].'/attendance_take_byPerson.php&gibbonPersonID='.$gibbonPersonID.'&currentDate='.date('d/m/Y', dateConvertToTimestamp($last5SchoolDays[$i]));
+											$rowLast5SchoolDays = $resultLast5SchoolDays->fetch();
+											if ($rowLast5SchoolDays['type'] == 'Absent') {
+												$color = '#c00';
+												$extraStyle = 'color: #c00; background-color: #F6CECB; ';
+											} else {
+												$color = '#390';
+												$extraStyle = 'color: #390; background-color: #D4F6DC; ';
+											}
+										}
 
-                        echo "<td style='".$extraStyle."height: 25px; width: 20%'>";
-                        if ($link != '') {
-                            echo "<a style='text-decoration: none; color: $color' href='$link'>";
-                            echo date('d', dateConvertToTimestamp($last5SchoolDays[$i])).'<br/>';
-                            echo "<span style='font-size: 65%'>".date('M', dateConvertToTimestamp($last5SchoolDays[$i])).'</span>';
-                            echo '</a>';
-                        } else {
-                            echo date('d', dateConvertToTimestamp($last5SchoolDays[$i])).'<br/>';
-                            echo "<span style='font-size: 65%'>".date('M', dateConvertToTimestamp($last5SchoolDays[$i])).'</span>';
-                        }
-                        echo '</td>';
-                    }
-                }
-                echo '</tr>';
-                echo '</table>';
-                ?>
+										echo "<td style='".$extraStyle."height: 25px; width: 20%'>";
+										if ($link != '') {
+											echo "<a style='text-decoration: none; color: $color' href='$link'>";
+											echo date('d', dateConvertToTimestamp($last5SchoolDays[$i])).'<br/>';
+											echo "<span style='font-size: 65%'>".date('M', dateConvertToTimestamp($last5SchoolDays[$i])).'</span>';
+											echo '</a>';
+										} else {
+											echo date('d', dateConvertToTimestamp($last5SchoolDays[$i])).'<br/>';
+											echo "<span style='font-size: 65%'>".date('M', dateConvertToTimestamp($last5SchoolDays[$i])).'</span>';
+										}
+										echo '</td>';
+									}
+								}
+								echo '</tr>';
+								echo '</table>';
+								?>
 							</td>
 						</tr>
 						<tr>
@@ -279,38 +279,38 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 							<td class="right">
 								<?php
                                 echo "<select style='float: none; width: 302px; margin-bottom: 3px' name='type'>";
-                echo '<option ';
-                if ($lastType == 'Present') {
-                    echo 'selected ';
-                };
-                echo "value='Present'>".__($guid, 'Present').'</option>';
-                echo '<option ';
-                if ($lastType == 'Present - Late') {
-                    echo 'selected ';
-                };
-                echo "value='Present - Late'>".__($guid, 'Present - Late').'</option>';
-                echo '<option ';
-                if ($lastType == 'Present - Offsite') {
-                    echo 'selected ';
-                };
-                echo "value='Present - Offsite'>".__($guid, 'Present - Offsite').'</option>';
-                echo '<option ';
-                if ($lastType == 'Absent') {
-                    echo 'selected ';
-                };
-                echo "value='Absent'>".__($guid, 'Absent').'</option>';
-                echo '<option ';
-                if ($lastType == 'Left') {
-                    echo 'selected ';
-                };
-                echo "value='Left'>".__($guid, 'Left').'</option>';
-                echo '<option ';
-                if ($lastType == 'Left - Early') {
-                    echo 'selected ';
-                };
-                echo "value='Left - Early'>".__($guid, 'Left - Early').'</option>';
-                echo '</select>';
-                ?>
+								echo '<option ';
+								if ($lastType == 'Present') {
+									echo 'selected ';
+								};
+								echo "value='Present'>".__($guid, 'Present').'</option>';
+								echo '<option ';
+								if ($lastType == 'Present - Late') {
+									echo 'selected ';
+								};
+								echo "value='Present - Late'>".__($guid, 'Present - Late').'</option>';
+								echo '<option ';
+								if ($lastType == 'Present - Offsite') {
+									echo 'selected ';
+								};
+								echo "value='Present - Offsite'>".__($guid, 'Present - Offsite').'</option>';
+								echo '<option ';
+								if ($lastType == 'Absent') {
+									echo 'selected ';
+								};
+								echo "value='Absent'>".__($guid, 'Absent').'</option>';
+								echo '<option ';
+								if ($lastType == 'Left') {
+									echo 'selected ';
+								};
+								echo "value='Left'>".__($guid, 'Left').'</option>';
+								echo '<option ';
+								if ($lastType == 'Left - Early') {
+									echo 'selected ';
+								};
+								echo "value='Left - Early'>".__($guid, 'Left - Early').'</option>';
+								echo '</select>';
+								?>
 							</td>
 						</tr>
 						<tr>
@@ -321,38 +321,38 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 							<td class="right">
 								<?php
                                 echo "<select style='float: none; width: 302px; margin-bottom: 10px' name='reason'>";
-                echo '<option ';
-                if ($lastReason == '') {
-                    echo 'selected ';
-                };
-                echo "value=''></option>";
-                echo '<option ';
-                if ($lastReason == 'Pending') {
-                    echo 'selected ';
-                };
-                echo "value='Pending'>".__($guid, 'Pending').'</option>';
-                echo '<option ';
-                if ($lastReason == 'Education') {
-                    echo 'selected ';
-                };
-                echo "value='Education'>".__($guid, 'Education').'</option>';
-                echo '<option ';
-                if ($lastReason == 'Family') {
-                    echo 'selected ';
-                };
-                echo "value='Family'>".__($guid, 'Family').'</option>';
-                echo '<option ';
-                if ($lastReason == 'Medical') {
-                    echo 'selected ';
-                };
-                echo "value='Medical'>".__($guid, 'Medical').'</option>';
-                echo '<option ';
-                if ($lastReason == 'Other') {
-                    echo 'selected ';
-                };
-                echo "value='Other'>".__($guid, 'Other').'</option>';
-                echo '</select>';
-                ?>
+								echo '<option ';
+								if ($lastReason == '') {
+									echo 'selected ';
+								};
+								echo "value=''></option>";
+								echo '<option ';
+								if ($lastReason == 'Pending') {
+									echo 'selected ';
+								};
+								echo "value='Pending'>".__($guid, 'Pending').'</option>';
+								echo '<option ';
+								if ($lastReason == 'Education') {
+									echo 'selected ';
+								};
+								echo "value='Education'>".__($guid, 'Education').'</option>';
+								echo '<option ';
+								if ($lastReason == 'Family') {
+									echo 'selected ';
+								};
+								echo "value='Family'>".__($guid, 'Family').'</option>';
+								echo '<option ';
+								if ($lastReason == 'Medical') {
+									echo 'selected ';
+								};
+								echo "value='Medical'>".__($guid, 'Medical').'</option>';
+								echo '<option ';
+								if ($lastReason == 'Other') {
+									echo 'selected ';
+								};
+								echo "value='Other'>".__($guid, 'Other').'</option>';
+								echo '</select>';
+								?>
 							</td>
 						</tr>
 						<tr>
@@ -362,8 +362,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 							</td>
 							<td class="right">
 								<?php
-                                echo "<textarea name='comment' id='comment' rows=3 style='width: 300px'>$lastComment</textarea>";
-                ?>
+                                echo "<textarea name='comment' id='comment' rows=3 style='width: 300px'>$lastComment</textarea>"; ?>
 								<script type="text/javascript">
 									var comment=new LiveValidation('comment');
 									comment.add( Validate.Length, { maximum: 255 } );
@@ -372,15 +371,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 						</tr>
 						<tr>
 							<td>
-								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-                ?></span>
+								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 							</td>
 							<td class="right">
-								<?php echo "<input type='hidden' name='currentDate' value='$currentDate'>";
-                ?>
+								<?php echo "<input type='hidden' name='currentDate' value='$currentDate'>"; ?>
 								<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-								<input type="submit" value="<?php echo __($guid, 'Submit');
-                ?>">
+								<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 							</td>
 						</tr>
 					</table>

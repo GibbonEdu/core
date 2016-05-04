@@ -101,8 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_delete.php')
 									<td> 
 										<b><?php echo __($guid, 'Are you sure you want to delete this record?');
                         ?></b><br/>
-										<span style="font-size: 90%; color: #cc0000"><i><?php echo __($guid, 'This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!');
-                        ?></span>
+										<span style="font-size: 90%; color: #cc0000"><i><?php echo __($guid, 'This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!'); ?></span>
 									</td>
 									<td class="right">
 										
@@ -114,8 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_delete.php')
 										<input name="gibbonUnitID" id="gibbonUnitID" value="<?php echo $gibbonUnitID ?>" type="hidden">
 										<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php echo $gibbonSchoolYearID ?>" type="hidden">
 										<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-										<input type="submit" value="<?php echo __($guid, 'Yes');
-                        ?>">
+										<input type="submit" value="<?php echo __($guid, 'Yes'); ?>">
 									</td>
 									<td class="right">
 										

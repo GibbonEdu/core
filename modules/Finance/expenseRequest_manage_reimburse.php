@@ -140,8 +140,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 									<b><?php echo __($guid, 'Budget') ?> *</b><br/>
 								</td>
 								<td class="right">
-									<input readonly name="name" id="name" maxlength=20 value="<?php echo $row['budget'];
-                    ?>" type="text" class="standardWidth">
+									<input readonly name="name" id="name" maxlength=20 value="<?php echo $row['budget']; ?>" type="text" class="standardWidth">
 								</td>
 							</tr>
 							<tr>
@@ -149,8 +148,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 									<b><?php echo __($guid, 'Title') ?> *</b><br/>
 								</td>
 								<td class="right">
-									<input readonly name="name" id="name" maxlength=60 value="<?php echo $row['title'];
-                    ?>" type="text" class="standardWidth">
+									<input readonly name="name" id="name" maxlength=60 value="<?php echo $row['title']; ?>" type="text" class="standardWidth">
 								</td>
 							</tr>
 							<tr>
@@ -174,7 +172,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 										<?php
 
                                     }
-                    ?>
+                   		 			?>
 									<script type="text/javascript">
 										var status=new LiveValidation('status');
 										status.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
@@ -196,8 +194,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 									<b><?php echo __($guid, 'Purchase By') ?> *</b><br/>
 								</td>
 								<td class="right">
-									<input readonly name="purchaseBy" id="purchaseBy" maxlength=60 value="<?php echo $row['purchaseBy'];
-                    ?>" type="text" class="standardWidth">
+									<input readonly name="purchaseBy" id="purchaseBy" maxlength=60 value="<?php echo $row['purchaseBy']; ?>" type="text" class="standardWidth">
 								</td>
 							</tr>
 							<tr>
@@ -295,7 +292,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                                     if ($_SESSION[$guid]['currency'] != '') {
                                         echo "<span style='font-style: italic; font-size: 85%'>".$_SESSION[$guid]['currency'].'</span>';
                                     }
-                    ?>
+                   		 			?>
 									</span>
 								</td>
 								<td class="right">
@@ -361,8 +358,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 							
 							<tr>
 								<td>
-									<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-                    ?></span>
+									<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 								</td>
 								<td class="right">
 									<input name="gibbonFinanceExpenseID" id="gibbonFinanceExpenseID" value="<?php echo $gibbonFinanceExpenseID ?>" type="hidden">
@@ -370,8 +366,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 									<input name="status2" id="status2" value="<?php echo $status2 ?>" type="hidden">
 									<input name="gibbonFinanceBudgetID2" id="gibbonFinanceBudgetID2" value="<?php echo $gibbonFinanceBudgetID2 ?>" type="hidden">
 									<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-									<input type="submit" value="<?php echo __($guid, 'Submit');
-                    ?>">
+									<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 								</td>
 							</tr>
 						</table>

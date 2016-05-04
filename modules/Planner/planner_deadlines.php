@@ -166,8 +166,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
 								<?php
                                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/planner.php'>".__($guid, 'Clear Search').'</a>';
                 ?>
-								<input type="submit" value="<?php echo __($guid, 'Submit');
-                ?>">
+								<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 							</td>
 						</tr>
 					</table>
@@ -708,8 +707,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
                 ?>
 						<tr>
 							<td class="right" colspan=7>
-								<input type="submit" value="<?php echo __($guid, 'Submit');
-                ?>">
+								<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 							</td>
 						</tr>
 						<?php
@@ -936,8 +934,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
                 ?>
 						<tr>
 							<td class="right" colspan=7>
-								<input type="submit" value="<?php echo __($guid, 'Submit');
-                ?>">
+								<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 							</td>
 						</tr>
 						<?php

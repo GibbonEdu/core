@@ -98,8 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/trackingSetti
                                         echo __($guid, $yearGroups[($i + 1)])." <input $checked type='checkbox' name='external_gibbonExternalAssessmentID_".$count.'_gibbonYearGroupID_'.($i) / 2 ."' value='".$yearGroups[$i]."'><br/>";
                                     }
                 echo "<input type='hidden' name='external_gibbonExternalAssessmentID_".$count."' value='".$row['gibbonExternalAssessmentID']."'/>";
-                echo "<input type='hidden' name='external_category_".$count."' value='".$row['category']."'/>";
-                ?>
+                echo "<input type='hidden' name='external_category_".$count."' value='".$row['category']."'/>"; ?>
 							</td>
 						</tr>
 						<?php
@@ -162,13 +161,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/trackingSetti
 
 			<tr>
 				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-    ?></span>
+					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>

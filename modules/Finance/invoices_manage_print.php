@@ -94,8 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
 						</td>
 						<td class="left">
 							<?php
-                            echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module'].'/invoices_manage_print_print.php&type=invoice&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID'>".__($guid, 'Print')."<img style='margin-left: 5px' title='".__($guid, 'Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
-                ?>
+                            echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module'].'/invoices_manage_print_print.php&type=invoice&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID'>".__($guid, 'Print')."<img style='margin-left: 5px' title='".__($guid, 'Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>"; ?>
 						</td>
 					</tr>
 					<?php
@@ -166,7 +165,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
 
                         }
                     }
-                if ($row['status'] == 'Paid' OR $row['status'] == 'Paid - Partial') {
+                	if ($row['status'] == 'Paid' OR $row['status'] == 'Paid - Partial') {
                     //Get individual payments that make up receipt
                         try {
                             $data = array('foreignTable' => 'gibbonFinanceInvoice', 'foreignTableID' => $gibbonFinanceInvoiceID);

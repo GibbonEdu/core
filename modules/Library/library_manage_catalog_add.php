@@ -195,16 +195,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 					<script type="text/javascript">
 						var purchaseDate=new LiveValidation('purchaseDate');
 						purchaseDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-    ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-    ?>." } ); 
+							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+						}
+							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+							echo 'dd/mm/yyyy';
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormat'];
+						}
+						?>." } ); 
 					</script>
 					 <script type="text/javascript">
 						$(function() {
@@ -272,8 +272,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 						imageFile.disable();
 					</script>	
 					<?php
-                    echo getMaxUpload($guid);
-    ?>
+                    echo getMaxUpload($guid); ?>
 				</td>
 			</tr>
 			<tr id="imageLinkRow" style='display: none'>
@@ -383,8 +382,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         }
         $selectContents .= "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.$rowSelect['username'].')'.$expected.'</option>';
     }
-    $selectContents .= '</optgroup>';
-    ?>
+    $selectContents .= '</optgroup>';?>
 			<tr id="ownershipTypeSchoolRow" style='display: none'>
 				<td> 
 					<b><?php echo __($guid, 'Main User') ?></b><br/>
@@ -497,8 +495,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 			</tr>
 			<tr id='gibbonSchoolYearIDReplacementRow' style='display: none'>
 				<td> 
-					<b><?php echo __($guid, 'Replacement Year');
-    ?></b><br/>
+					<b><?php echo __($guid, 'Replacement Year'); ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'When is this item scheduled for replacement.') ?></span>
 				</td>
 				<td class="right">
@@ -521,8 +518,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 			</tr>
 			<tr id='replacementCostRow' style='display: none'>
 				<td> 
-					<b><?php echo __($guid, 'Replacement Cost');
-    ?></b><br/>
+					<b><?php echo __($guid, 'Replacement Cost'); ?></b><br/>
 					<span style="font-size: 90%">
 						<i>
 						<?php
@@ -531,7 +527,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
                         } else {
                             echo __($guid, 'Numeric value of the replacement cost.');
                         }
-    ?>
+   				 		?>
 						</i>
 					</span>
 				</td>
@@ -581,13 +577,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 			</tr>
 			<tr>
 				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-    ?></span>
+					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>

@@ -126,8 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 						<?php
                         echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_manage_byPerson.php'>".__($guid, 'Clear Filters').'</a>';
         ?>
-						<input type="submit" value="<?php echo __($guid, 'Submit');
-        ?>">
+						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 					</td>
 				</tr>
 			</table>
@@ -214,8 +213,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 }
                 ++$count;
 
-                    //COLOR ROW BY STATUS!
-                    echo "<tr class=$rowNum>";
+                //COLOR ROW BY STATUS!
+                echo "<tr class=$rowNum>";
                 echo '<td>';
                 echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
                 echo '</td>';

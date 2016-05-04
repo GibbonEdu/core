@@ -72,8 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/applicationForm_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__($guid, 'Back to Search Results').'</a> | ';
             }
             echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module']."/applicationForm_manage_edit_print.php&gibbonApplicationFormID=$gibbonApplicationFormID'>".__($guid, 'Print')."<img style='margin-left: 5px' title='".__($guid, 'Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
-            echo '</div>';
-            ?>
+            echo '</div>'; ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/applicationForm_manage_editProcess.php?search=$search" ?>" enctype="multipart/form-data">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr class='break'>
@@ -97,82 +96,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 						</td>
 						<td class="right">
 							<select name="priority" id="priority" class="standardWidth">
-								<option <?php if ($row['priority'] == '9') {
-    echo 'selected';
-}
-            ?> value="9">9</option>
-								<option <?php if ($row['priority'] == '8') {
-    echo 'selected';
-}
-            ?> value="8">8</option>
-								<option <?php if ($row['priority'] == '7') {
-    echo 'selected';
-}
-            ?> value="7">7</option>
-								<option <?php if ($row['priority'] == '6') {
-    echo 'selected';
-}
-            ?> value="6">6</option>
-								<option <?php if ($row['priority'] == '5') {
-    echo 'selected';
-}
-            ?> value="5">5</option>
-								<option <?php if ($row['priority'] == '4') {
-    echo 'selected';
-}
-            ?> value="4">4</option>
-								<option <?php if ($row['priority'] == '3') {
-    echo 'selected';
-}
-            ?> value="3">3</option>
-								<option <?php if ($row['priority'] == '2') {
-    echo 'selected';
-}
-            ?> value="2">2</option>
-								<option <?php if ($row['priority'] == '1') {
-    echo 'selected';
-}
-            ?> value="1">1</option>
-								<option <?php if ($row['priority'] == '0') {
-    echo 'selected';
-}
-            ?> value="0">0</option>
-								<option <?php if ($row['priority'] == '-1') {
-    echo 'selected';
-}
-            ?> value="-1">-1</option>
-								<option <?php if ($row['priority'] == '-2') {
-    echo 'selected';
-}
-            ?> value="-2">-2</option>
-								<option <?php if ($row['priority'] == '-3') {
-    echo 'selected';
-}
-            ?> value="-3">-3</option>
-								<option <?php if ($row['priority'] == '-4') {
-    echo 'selected';
-}
-            ?> value="-4">-4</option>
-								<option <?php if ($row['priority'] == '-5') {
-    echo 'selected';
-}
-            ?> value="-5">-5</option>
-								<option <?php if ($row['priority'] == '-6') {
-    echo 'selected';
-}
-            ?> value="-6">-6</option>
-								<option <?php if ($row['priority'] == '-7') {
-    echo 'selected';
-}
-            ?> value="-7">-7</option>
-								<option <?php if ($row['priority'] == '-8') {
-    echo 'selected';
-}
-            ?> value="-8">-8</option>
-								<option <?php if ($row['priority'] == '-9') {
-    echo 'selected';
-}
-            ?> value="-9">-9</option>
+								<option <?php if ($row['priority'] == '9') { echo 'selected'; } ?> value="9">9</option>
+								<option <?php if ($row['priority'] == '8') { echo 'selected'; } ?> value="8">8</option>
+								<option <?php if ($row['priority'] == '7') { echo 'selected'; } ?> value="7">7</option>
+								<option <?php if ($row['priority'] == '6') { echo 'selected'; } ?> value="6">6</option>
+								<option <?php if ($row['priority'] == '5') { echo 'selected'; } ?> value="5">5</option>
+								<option <?php if ($row['priority'] == '4') { echo 'selected'; } ?> value="4">4</option>
+								<option <?php if ($row['priority'] == '3') { echo 'selected'; } ?> value="3">3</option>
+								<option <?php if ($row['priority'] == '2') { echo 'selected'; } ?> value="2">2</option>
+								<option <?php if ($row['priority'] == '1') { echo 'selected'; } ?> value="1">1</option>
+								<option <?php if ($row['priority'] == '0') { echo 'selected'; } ?> value="0">0</option>
+								<option <?php if ($row['priority'] == '-1') { echo 'selected'; } ?> value="-1">-1</option>
+								<option <?php if ($row['priority'] == '-2') { echo 'selected'; } ?> value="-2">-2</option>
+								<option <?php if ($row['priority'] == '-3') { echo 'selected'; } ?> value="-3">-3</option>
+								<option <?php if ($row['priority'] == '-4') { echo 'selected'; } ?> value="-4">-4</option>
+								<option <?php if ($row['priority'] == '-5') { echo 'selected'; } ?> value="-5">-5</option>
+								<option <?php if ($row['priority'] == '-6') { echo 'selected'; } ?> value="-6">-6</option>
+								<option <?php if ($row['priority'] == '-7') { echo 'selected'; } ?> value="-7">-7</option>
+								<option <?php if ($row['priority'] == '-8') { echo 'selected'; } ?> value="-8">-8</option>
+								<option <?php if ($row['priority'] == '-9') { echo 'selected'; } ?> value="-9">-9</option>
 							</select>
 						</td>
 					</tr>
@@ -186,20 +128,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 							</td>
 							<td class="right">
 								<select name="status" id="status" class="standardWidth">
-									<option <?php if ($row['applicationStatus'] == 'Pending') {
-    echo 'selected';
+									<option <?php if ($row['applicationStatus'] == 'Pending') { echo 'selected';
 }
                         ?> value="Pending"><?php echo __($guid, 'Pending') ?></option>
-									<option <?php if ($row['applicationStatus'] == 'Waiting List') {
-    echo 'selected';
+									<option <?php if ($row['applicationStatus'] == 'Waiting List') { echo 'selected';
 }
                         ?> value="Waiting List"><?php echo __($guid, 'Waiting List') ?></option>
-									<option <?php if ($row['applicationStatus'] == 'Rejected') {
-    echo 'selected';
+									<option <?php if ($row['applicationStatus'] == 'Rejected') { echo 'selected';
 }
                         ?> value="Rejected"><?php echo __($guid, 'Rejected') ?></option>
-									<option <?php if ($row['applicationStatus'] == 'Withdrawn') {
-    echo 'selected';
+									<option <?php if ($row['applicationStatus'] == 'Withdrawn') { echo 'selected';
 }
                         ?> value="Withdrawn"><?php echo __($guid, 'Withdrawn') ?></option>
 								</select>
@@ -354,8 +292,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 						<tr>
 							<td>
 								<b><?php echo __($guid, 'Day Type') ?></b><br/>
-								<span class="emphasis small"><?php echo getSettingByScope($connection2, 'User Admin', 'dayTypeText');
-                ?></span>
+								<span class="emphasis small"><?php echo getSettingByScope($connection2, 'User Admin', 'dayTypeText'); ?></span>
 							</td>
 							<td class="right">
 								<select name="dayType" id="dayType" class="standardWidth">
@@ -426,16 +363,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 							</td>
 							<td class="right">
 								<select name="paymentMade" id="paymentMade" class="standardWidth">
-									<option <?php if ($row['paymentMade'] == 'N') {
-    echo 'selected';
+									<option <?php if ($row['paymentMade'] == 'N') { echo 'selected';
 }
                 ?> value='N'>N</option>
-									<option <?php if ($row['paymentMade'] == 'Y') {
-    echo 'selected';
+									<option <?php if ($row['paymentMade'] == 'Y') { echo 'selected';
 }
                 ?> value='Y'>Y</option>
-									<option <?php if ($row['paymentMade'] == 'Exemption') {
-    echo 'selected';
+									<option <?php if ($row['paymentMade'] == 'Exemption') { echo 'selected';
 }
                 ?> value='Exemption'>Exemption</option>
 								</select>
@@ -556,14 +490,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 						<td class="right">
 							<select name="gender" id="gender" class="standardWidth">
 								<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
-								<option <?php if ($row['gender'] == 'F') {
-    echo 'selected';
-}
-            ?> value="F"><?php echo __($guid, 'Female') ?></option>
-								<option <?php if ($row['gender'] == 'M') {
-    echo 'selected';
-}
-            ?> value="M"><?php echo __($guid, 'Male') ?></option>
+								<option <?php if ($row['gender'] == 'F') { echo 'selected'; } ?> value="F"><?php echo __($guid, 'Female') ?></option>
+								<option <?php if ($row['gender'] == 'M') { echo 'selected'; } ?> value="M"><?php echo __($guid, 'Male') ?></option>
 							</select>
 							<script type="text/javascript">
 								var gender=new LiveValidation('gender');
@@ -825,7 +753,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         } else {
                             echo '<b>'.$_SESSION[$guid]['country'].' '.__($guid, 'ID Card Number').'</b><br/>';
                         }
-            ?>
+            		?>
 					</td>
 						<td class="right">
 							<input name="nationalIDCardNumber" id="nationalIDCardNumber" maxlength=30 value="<?php echo $row['nationalIDCardNumber'] ?>" type="text" class="standardWidth">
@@ -839,7 +767,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             } else {
                                 echo '<b>'.$_SESSION[$guid]['country'].' '.__($guid, 'Residency/Visa Type').'</b><br/>';
                             }
-            ?>
+            				?>
 						</td>
 						<td class="right">
 							<?php
@@ -876,8 +804,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             } else {
                 echo $_SESSION[$guid]['i18n']['dateFormat'];
             }
-            echo '. '.__($guid, 'If relevant.').'</span>';
-            ?>
+            echo '. '.__($guid, 'If relevant.').'</span>'; ?>
 						</td>
 						<td class="right">
 							<input name="visaExpiryDate" id="visaExpiryDate" maxlength=10 value="<?php echo dateConvertBack($guid, $row['visaExpiryDate']) ?>" type="text" class="standardWidth">
@@ -951,41 +878,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         ?>
 								</select>
 								<select style="width: 70px" name="phone<?php echo $i ?>Type">
-									<option <?php if ($row['phone'.$i.'Type'] == '') {
-    echo 'selected';
+									<option <?php if ($row['phone'.$i.'Type'] == '') { echo 'selected';
 }
                         ?> value=""></option>
-									<option <?php if ($row['phone'.$i.'Type'] == 'Mobile') {
-    echo 'selected';
+									<option <?php if ($row['phone'.$i.'Type'] == 'Mobile') { echo 'selected';
 }
                         ?> value="Mobile"><?php echo __($guid, 'Mobile') ?></option>
-									<option <?php if ($row['phone'.$i.'Type'] == 'Home') {
-    echo 'selected';
+									<option <?php if ($row['phone'.$i.'Type'] == 'Home') { echo 'selected';
 }
                         ?> value="Home"><?php echo __($guid, 'Home') ?></option>
-									<option <?php if ($row['phone'.$i.'Type'] == 'Work') {
-    echo 'selected';
+									<option <?php if ($row['phone'.$i.'Type'] == 'Work') { echo 'selected';
 }
                         ?> value="Work"><?php echo __($guid, 'Work') ?></option>
-									<option <?php if ($row['phone'.$i.'Type'] == 'Fax') {
-    echo 'selected';
+									<option <?php if ($row['phone'.$i.'Type'] == 'Fax') { echo 'selected';
 }
                         ?> value="Fax"><?php echo __($guid, 'Fax') ?></option>
-									<option <?php if ($row['phone'.$i.'Type'] == 'Pager') {
-    echo 'selected';
+									<option <?php if ($row['phone'.$i.'Type'] == 'Pager') { echo 'selected';
 }
                         ?> value="Pager"><?php echo __($guid, 'Pager') ?></option>
-									<option <?php if ($row['phone'.$i.'Type'] == 'Other') {
-    echo 'selected';
+									<option <?php if ($row['phone'.$i.'Type'] == 'Other') { echo 'selected';
 }
                         ?> value="Other"><?php echo __($guid, 'Other') ?></option>
 								</select>
 							</td>
 						</tr>
 						<?php
-
-                    }
-            ?>
+					}
+                    ?>
 					<tr>
 						<td colspan=2> 
 							<h4><?php echo __($guid, 'Special Educational Needs & Medical') ?></h4>
@@ -1018,14 +937,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 						<td class="right">
 							<select name="sen" id="sen" class='sen' class="standardWidth">
 								<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
-								<option <?php if ($row['sen'] == 'Y') {
-    echo 'selected';
-}
-            ?> value="Y" /> <?php echo ynExpander($guid, 'Y') ?>
-								<option <?php if ($row['sen'] == 'N') {
-    echo 'selected';
-}
-            ?> value="N" /> <?php echo ynExpander($guid, 'N') ?>
+								<option <?php if ($row['sen'] == 'Y') { echo 'selected'; } ?> value="Y" /> <?php echo ynExpander($guid, 'Y') ?>
+								<option <?php if ($row['sen'] == 'N') { echo 'selected'; } ?> value="N" /> <?php echo ynExpander($guid, 'N') ?>
 							</select>
 							<script type="text/javascript">
 								var sen=new LiveValidation('sen');
@@ -1126,8 +1039,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 echo "<input name='schoolGrades$i' id='schoolGrades$i' maxlength=20 value='".htmlPrep($row["schoolGrades$i"])."' type='text' style='width:70px; float: left'>";
                 echo '</td>';
                 echo '<td>';
-                echo "<input name='schoolLanguage$i' id='schoolLanguage$i' maxlength=50 value='".htmlPrep($row["schoolLanguage$i"])."' type='text' style='width:100px; float: left'>";
-                ?>
+                echo "<input name='schoolLanguage$i' id='schoolLanguage$i' maxlength=50 value='".htmlPrep($row["schoolLanguage$i"])."' type='text' style='width:100px; float: left'>"; ?>
 											<script type="text/javascript">
 												$(function() {
 													var availableTags=[
@@ -1162,8 +1074,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                         echo '</td>';
                 echo '</tr>';
             }
-            echo '</table>';
-            ?>
+            echo '</table>'; ?>
 						</td>
 					</tr>
 
@@ -1327,52 +1238,40 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 								<td class="right">
 									<select name="parent1relationship" id="parent1relationship" class="standardWidth">
 										<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
-										<option <?php if ($row['parent1relationship'] == 'Mother') {
-    echo 'selected';
+										<option <?php if ($row['parent1relationship'] == 'Mother') { echo 'selected';
 }
                             ?> value="Mother"><?php echo __($guid, 'Mother') ?></option>
-										<option <?php if ($row['parent1relationship'] == 'Father') {
-    echo 'selected';
+										<option <?php if ($row['parent1relationship'] == 'Father') { echo 'selected';
 }
                             ?> value="Father"><?php echo __($guid, 'Father') ?></option>
-										<option <?php if ($row['parent1relationship'] == 'Step-Mother') {
-    echo 'selected';
+										<option <?php if ($row['parent1relationship'] == 'Step-Mother') { echo 'selected';
 }
                             ?> value="Step-Mother"><?php echo __($guid, 'Step-Mother') ?></option>
-										<option <?php if ($row['parent1relationship'] == 'Step-Father') {
-    echo 'selected';
+										<option <?php if ($row['parent1relationship'] == 'Step-Father') { echo 'selected';
 }
                             ?> value="Step-Father"><?php echo __($guid, 'Step-Father') ?></option>
-										<option <?php if ($row['parent1relationship'] == 'Adoptive Parent') {
-    echo 'selected';
+										<option <?php if ($row['parent1relationship'] == 'Adoptive Parent') { echo 'selected';
 }
                             ?> value="Adoptive Parent"><?php echo __($guid, 'Adoptive Parent') ?></option>
-										<option <?php if ($row['parent1relationship'] == 'Guardian') {
-    echo 'selected';
+										<option <?php if ($row['parent1relationship'] == 'Guardian') { echo 'selected';
 }
                             ?> value="Guardian"><?php echo __($guid, 'Guardian') ?></option>
-										<option <?php if ($row['parent1relationship'] == 'Grandmother') {
-    echo 'selected';
+										<option <?php if ($row['parent1relationship'] == 'Grandmother') { echo 'selected';
 }
                             ?> value="Grandmother"><?php echo __($guid, 'Grandmother') ?></option>
-										<option <?php if ($row['parent1relationship'] == 'Grandfather') {
-    echo 'selected';
+										<option <?php if ($row['parent1relationship'] == 'Grandfather') { echo 'selected';
 }
                             ?> value="Grandfather"><?php echo __($guid, 'Grandfather') ?></option>
-										<option <?php if ($row['parent1relationship'] == 'Aunt') {
-    echo 'selected';
+										<option <?php if ($row['parent1relationship'] == 'Aunt') { echo 'selected';
 }
                             ?> value="Aunt"><?php echo __($guid, 'Aunt') ?></option>
-										<option <?php if ($row['parent1relationship'] == 'Uncle') {
-    echo 'selected';
+										<option <?php if ($row['parent1relationship'] == 'Uncle') { echo 'selected';
 }
                             ?> value="Uncle"><?php echo __($guid, 'Uncle') ?></option>
-										<option <?php if ($row['parent1relationship'] == 'Nanny/Helper') {
-    echo 'selected';
+										<option <?php if ($row['parent1relationship'] == 'Nanny/Helper') { echo 'selected';
 }
                             ?> value="Nanny/Helper"><?php echo __($guid, 'Nanny/Helper') ?></option>
-										<option <?php if ($row['parent1relationship'] == 'Other') {
-    echo 'selected';
+										<option <?php if ($row['parent1relationship'] == 'Other') { echo 'selected';
 }
                             ?> value="Other"><?php echo __($guid, 'Other') ?></option>
 									</select>
@@ -1410,7 +1309,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                         } elseif ($i == 2 and $row['parent1gibbonPersonID'] == '') {
                                             echo "<span style='font-size: 75%'>".__($guid, '(e.g. father)').'</span>';
                                         }
-                    ?>
+                    					?>
 									</h3>
 								</td>
 							</tr>
@@ -1441,27 +1340,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 											<?php
 
                                         }
-                    ?>
-										<option <?php if ($row["parent$i".'title'] == 'Ms.') {
-    echo 'selected';
-}
-                    ?> value="Ms."><?php echo __($guid, 'Ms.') ?></option>
-										<option <?php if ($row["parent$i".'title'] == 'Miss') {
-    echo 'selected';
-}
-                    ?> value="Miss"><?php echo __($guid, 'Miss') ?></option>
-										<option <?php if ($row["parent$i".'title'] == 'Mr.') {
-    echo 'selected';
-}
-                    ?> value="Mr."><?php echo __($guid, 'Mr.') ?></option>
-										<option <?php if ($row["parent$i".'title'] == 'Mrs.') {
-    echo 'selected';
-}
-                    ?> value="Mrs."><?php echo __($guid, 'Mrs.') ?></option>
-										<option <?php if ($row["parent$i".'title'] == 'Dr.') {
-    echo 'selected';
-}
-                    ?> value="Dr."><?php echo __($guid, 'Dr.') ?></option>
+                    					?>
+										<option <?php if ($row["parent$i".'title'] == 'Ms.') { echo 'selected'; } ?> value="Ms."><?php echo __($guid, 'Ms.') ?></option>
+										<option <?php if ($row["parent$i".'title'] == 'Miss') { echo 'selected'; } ?> value="Miss"><?php echo __($guid, 'Miss') ?></option>
+										<option <?php if ($row["parent$i".'title'] == 'Mr.') { echo 'selected'; } ?> value="Mr."><?php echo __($guid, 'Mr.') ?></option>
+										<option <?php if ($row["parent$i".'title'] == 'Mrs.') { echo 'selected'; } ?> value="Mrs."><?php echo __($guid, 'Mrs.') ?></option>
+										<option <?php if ($row["parent$i".'title'] == 'Dr.') { echo 'selected'; } ?> value="Dr."><?php echo __($guid, 'Dr.') ?></option>
 									</select>
 
 									<?php
@@ -1474,7 +1358,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 										 <?php
 
                                     }
-                    ?>
+                   		 			?>
 								</td>
 							</tr>
 							<tr>
@@ -1486,8 +1370,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 									<span class="emphasis small"><?php echo __($guid, 'Family name as shown in ID documents.') ?></span>
 								</td>
 								<td class="right">
-									<input name="<?php echo "parent$i" ?>surname" id="<?php echo "parent$i" ?>surname" maxlength=30 value="<?php echo $row["parent$i".'surname'];
-                    ?>" type="text" class="standardWidth">
+									<input name="<?php echo "parent$i" ?>surname" id="<?php echo "parent$i" ?>surname" maxlength=30 value="<?php echo $row["parent$i".'surname']; ?>" type="text" class="standardWidth">
 									<?php
                                     if ($i == 1) {
                                         ?>
@@ -1498,7 +1381,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 										 <?php
 
                                     }
-                    ?>
+                   		 			?>
 								</td>
 							</tr>
 							<tr>
@@ -1510,8 +1393,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 									<span class="emphasis small"><?php echo __($guid, 'First name as shown in ID documents.') ?></span>
 								</td>
 								<td class="right">
-									<input name="<?php echo "parent$i" ?>firstName" id="<?php echo "parent$i" ?>firstName" maxlength=30 value="<?php echo $row["parent$i".'firstName'];
-                    ?>" type="text" class="standardWidth">
+									<input name="<?php echo "parent$i" ?>firstName" id="<?php echo "parent$i" ?>firstName" maxlength=30 value="<?php echo $row["parent$i".'firstName']; ?>" type="text" class="standardWidth">
 									<?php
                                     if ($i == 1) {
                                         ?>
@@ -1522,7 +1404,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 										 <?php
 
                                     }
-                    ?>
+                   		 			?>
 								</td>
 							</tr>
 							<tr>
@@ -1534,8 +1416,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 									<span class="emphasis small"><?php echo __($guid, 'Most common name, alias, nickname, etc.') ?></span>
 								</td>
 								<td class="right">
-									<input name="<?php echo "parent$i" ?>preferredName" id="<?php echo "parent$i" ?>preferredName" maxlength=30 value="<?php echo $row["parent$i".'preferredName'];
-                    ?>" type="text" class="standardWidth">
+									<input name="<?php echo "parent$i" ?>preferredName" id="<?php echo "parent$i" ?>preferredName" maxlength=30 value="<?php echo $row["parent$i".'preferredName']; ?>" type="text" class="standardWidth">
 									<?php
                                     if ($i == 1) {
                                         ?>
@@ -1546,7 +1427,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 										 <?php
 
                                     }
-                    ?>
+                   		 			?>
 								</td>
 							</tr>
 							<tr>
@@ -1558,8 +1439,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 									<span class="emphasis small"><?php echo __($guid, 'Full name as shown in ID documents.') ?></span>
 								</td>
 								<td class="right">
-									<input name="<?php echo "parent$i" ?>officialName" id="<?php echo "parent$i" ?>officialName" maxlength=30 value="<?php echo $row["parent$i".'officialName'];
-                    ?>" type="text" class="standardWidth">
+									<input name="<?php echo "parent$i" ?>officialName" id="<?php echo "parent$i" ?>officialName" maxlength=30 value="<?php echo $row["parent$i".'officialName']; ?>" type="text" class="standardWidth">
 									<?php
                                     if ($i == 1) {
                                         ?>
@@ -1570,7 +1450,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 										 <?php
 
                                     }
-                    ?>
+                   		 			?>
 								</td>
 							</tr>
 							<tr>
@@ -1579,8 +1459,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 									<span class="emphasis small"><?php echo __($guid, 'Chinese or other character-based name.') ?></span>
 								</td>
 								<td class="right">
-									<input name="<?php echo "parent$i" ?>nameInCharacters" id="<?php echo "parent$i" ?>nameInCharacters" maxlength=20 value="<?php echo $row["parent$i".'nameInCharacters'];
-                    ?>" type="text" class="standardWidth">
+									<input name="<?php echo "parent$i" ?>nameInCharacters" id="<?php echo "parent$i" ?>nameInCharacters" maxlength=20 value="<?php echo $row["parent$i".'nameInCharacters']; ?>" type="text" class="standardWidth">
 								</td>
 							</tr>
 							<tr>
@@ -1604,15 +1483,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 											<?php
 
                                         }
-                    ?>
-										<option <?php if ($row["parent$i".'gender'] == 'F') {
-    echo 'selected';
-}
-                    ?> value="F">F</option>
-										<option <?php if ($row["parent$i".'gender'] == 'M') {
-    echo 'selected';
-}
-                    ?> value="M">M</option>
+                    					?>
+										<option <?php if ($row["parent$i".'gender'] == 'F') { echo 'selected'; } ?> value="F">F</option>
+										<option <?php if ($row["parent$i".'gender'] == 'M') { echo 'selected'; } ?> value="M">M</option>
 									</select>
 									<?php
                                     if ($i == 1) {
@@ -1624,7 +1497,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 										 <?php
 
                                     }
-                    ?>
+                   		 			?>
 								</td>
 							</tr>
 							<tr>
@@ -1642,55 +1515,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                         } else {
                                             echo '<option value=""></option>';
                                         }
-                    ?>
-										<option <?php if ($row['parent'.$i.'relationship'] == 'Mother') {
-    echo 'selected';
-}
-                    ?> value="Mother"><?php echo __($guid, 'Mother') ?></option>
-										<option <?php if ($row['parent'.$i.'relationship'] == 'Father') {
-    echo 'selected';
-}
-                    ?> value="Father"><?php echo __($guid, 'Father') ?></option>
-										<option <?php if ($row['parent'.$i.'relationship'] == 'Step-Mother') {
-    echo 'selected';
-}
-                    ?> value="Step-Mother"><?php echo __($guid, 'Step-Mother') ?></option>
-										<option <?php if ($row['parent'.$i.'relationship'] == 'Step-Father') {
-    echo 'selected';
-}
-                    ?> value="Step-Father"><?php echo __($guid, 'Step-Father') ?></option>
-										<option <?php if ($row['parent'.$i.'relationship'] == 'Adoptive Parent') {
-    echo 'selected';
-}
-                    ?> value="Adoptive Parent"><?php echo __($guid, 'Adoptive Parent') ?></option>
-										<option <?php if ($row['parent'.$i.'relationship'] == 'Guardian') {
-    echo 'selected';
-}
-                    ?> value="Guardian"><?php echo __($guid, 'Guardian') ?></option>
-										<option <?php if ($row['parent'.$i.'relationship'] == 'Grandmother') {
-    echo 'selected';
-}
-                    ?> value="Grandmother"><?php echo __($guid, 'Grandmother') ?></option>
-										<option <?php if ($row['parent'.$i.'relationship'] == 'Grandfather') {
-    echo 'selected';
-}
-                    ?> value="Grandfather"><?php echo __($guid, 'Grandfather') ?></option>
-										<option <?php if ($row['parent'.$i.'relationship'] == 'Aunt') {
-    echo 'selected';
-}
-                    ?> value="Aunt"><?php echo __($guid, 'Aunt') ?></option>
-										<option <?php if ($row['parent'.$i.'relationship'] == 'Uncle') {
-    echo 'selected';
-}
-                    ?> value="Uncle"><?php echo __($guid, 'Uncle') ?></option>
-										<option <?php if ($row['parent'.$i.'relationship'] == 'Nanny/Helper') {
-    echo 'selected';
-}
-                    ?> value="Nanny/Helper"><?php echo __($guid, 'Nanny/Helper') ?></option>
-										<option <?php if ($row['parent'.$i.'relationship'] == 'Other') {
-    echo 'selected';
-}
-                    ?> value="Other"><?php echo __($guid, 'Other') ?></option>
+                    					?>
+										<option <?php if ($row['parent'.$i.'relationship'] == 'Mother') { echo 'selected'; } ?> value="Mother"><?php echo __($guid, 'Mother') ?></option>
+										<option <?php if ($row['parent'.$i.'relationship'] == 'Father') { echo 'selected'; } ?> value="Father"><?php echo __($guid, 'Father') ?></option>
+										<option <?php if ($row['parent'.$i.'relationship'] == 'Step-Mother') { echo 'selected'; } ?> value="Step-Mother"><?php echo __($guid, 'Step-Mother') ?></option>
+										<option <?php if ($row['parent'.$i.'relationship'] == 'Step-Father') { echo 'selected'; } ?> value="Step-Father"><?php echo __($guid, 'Step-Father') ?></option>
+										<option <?php if ($row['parent'.$i.'relationship'] == 'Adoptive Parent') { echo 'selected'; } ?> value="Adoptive Parent"><?php echo __($guid, 'Adoptive Parent') ?></option>
+										<option <?php if ($row['parent'.$i.'relationship'] == 'Guardian') { echo 'selected'; } ?> value="Guardian"><?php echo __($guid, 'Guardian') ?></option>
+										<option <?php if ($row['parent'.$i.'relationship'] == 'Grandmother') { echo 'selected'; } ?> value="Grandmother"><?php echo __($guid, 'Grandmother') ?></option>
+										<option <?php if ($row['parent'.$i.'relationship'] == 'Grandfather') { echo 'selected'; } ?> value="Grandfather"><?php echo __($guid, 'Grandfather') ?></option>
+										<option <?php if ($row['parent'.$i.'relationship'] == 'Aunt') { echo 'selected'; } ?> value="Aunt"><?php echo __($guid, 'Aunt') ?></option>
+										<option <?php if ($row['parent'.$i.'relationship'] == 'Uncle') { echo 'selected'; } ?> value="Uncle"><?php echo __($guid, 'Uncle') ?></option>
+										<option <?php if ($row['parent'.$i.'relationship'] == 'Nanny/Helper') { echo 'selected'; } ?> value="Nanny/Helper"><?php echo __($guid, 'Nanny/Helper') ?></option>
+										<option <?php if ($row['parent'.$i.'relationship'] == 'Other') { echo 'selected'; } ?> value="Other"><?php echo __($guid, 'Other') ?></option>
 									</select>
 									<?php
                                     if ($i == 1) {
@@ -1702,7 +1539,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 										 <?php
 
                                     }
-                    ?>
+                   		 			?>
 								</td>
 							</tr>
 
@@ -1805,11 +1642,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                     } else {
                                         echo '<b>'.$_SESSION[$guid]['country'].' '.__($guid, 'ID Card Number').'</b><br/>';
                                     }
-                    ?>
+                   		 			?>
 								</td>
 								<td class="right">
-									<input name="<?php echo "parent$i" ?>nationalIDCardNumber" id="<?php echo "parent$i" ?>nationalIDCardNumber" maxlength=30 value="<?php echo $row["parent$i".'nationalIDCardNumber'];
-                    ?>" type="text" class="standardWidth">
+									<input name="<?php echo "parent$i" ?>nationalIDCardNumber" id="<?php echo "parent$i" ?>nationalIDCardNumber" maxlength=30 value="<?php echo $row["parent$i".'nationalIDCardNumber']; ?>" type="text" class="standardWidth">
 								</td>
 							</tr>
 							<tr>
@@ -1820,7 +1656,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                     } else {
                                         echo '<b>'.$_SESSION[$guid]['country'].' '.__($guid, 'Residency/Visa Type').'</b><br/>';
                                     }
-                    ?>
+                   		 			?>
 								</td>
 								<td class="right">
 									<?php
@@ -1898,8 +1734,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     ?></b><br/>
 								</td>
 								<td class="right">
-									<input name="<?php echo "parent$i" ?>email" id="<?php echo "parent$i" ?>email" maxlength=50 value="<?php echo $row["parent$i".'email'];
-                    ?>" type="text" class="standardWidth">
+									<input name="<?php echo "parent$i" ?>email" id="<?php echo "parent$i" ?>email" maxlength=50 value="<?php echo $row["parent$i".'email']; ?>" type="text" class="standardWidth">
 									<script type="text/javascript">
 										var <?php echo "parent$i" ?>email=new LiveValidation('<?php echo "parent$i" ?>email');
 										<?php echo "parent$i" ?>email.add(Validate.Email);
@@ -1907,7 +1742,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                         if ($i == 1) {
                                             echo "parent$i".'email.add(Validate.Presence);';
                                         }
-                    ?>
+                    					?>
 									</script>
 								</td>
 							</tr>
@@ -1956,32 +1791,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 ?>
 										</select>
 										<select style="width: 70px" name="<?php echo "parent$i" ?>phone<?php echo $y ?>Type">
-											<option <?php if ($row['parent'.$i.'phone'.$y.'Type'] == '') {
-    echo 'selected';
+											<option <?php if ($row['parent'.$i.'phone'.$y.'Type'] == '') { echo 'selected';
 }
                                 ?> value=""></option>
-											<option <?php if ($row['parent'.$i.'phone'.$y.'Type'] == 'Mobile') {
-    echo 'selected';
+											<option <?php if ($row['parent'.$i.'phone'.$y.'Type'] == 'Mobile') { echo 'selected';
 }
                                 ?> value="Mobile"><?php echo __($guid, 'Mobile') ?></option>
-											<option <?php if ($row['parent'.$i.'phone'.$y.'Type'] == 'Home') {
-    echo 'selected';
+											<option <?php if ($row['parent'.$i.'phone'.$y.'Type'] == 'Home') { echo 'selected';
 }
                                 ?> value="Home"><?php echo __($guid, 'Home') ?></option>
-											<option <?php if ($row['parent'.$i.'phone'.$y.'Type'] == 'Work') {
-    echo 'selected';
+											<option <?php if ($row['parent'.$i.'phone'.$y.'Type'] == 'Work') { echo 'selected';
 }
                                 ?> value="Work"><?php echo __($guid, 'Work') ?></option>
-											<option <?php if ($row['parent'.$i.'phone'.$y.'Type'] == 'Fax') {
-    echo 'selected';
+											<option <?php if ($row['parent'.$i.'phone'.$y.'Type'] == 'Fax') { echo 'selected';
 }
                                 ?> value="Fax"><?php echo __($guid, 'Fax') ?></option>
-											<option <?php if ($row['parent'.$i.'phone'.$y.'Type'] == 'Pager') {
-    echo 'selected';
+											<option <?php if ($row['parent'.$i.'phone'.$y.'Type'] == 'Pager') { echo 'selected';
 }
                                 ?> value="Pager"><?php echo __($guid, 'Pager') ?></option>
-											<option <?php if ($row['parent'.$i.'phone'.$y.'Type'] == 'Other') {
-    echo 'selected';
+											<option <?php if ($row['parent'.$i.'phone'.$y.'Type'] == 'Other') { echo 'selected';
 }
                                 ?> value="Other"><?php echo __($guid, 'Other') ?></option>
 										</select>
@@ -2002,8 +1830,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 									<b><?php echo __($guid, 'Profession') ?></b><br/>
 								</td>
 								<td class="right">
-									<input name="<?php echo "parent$i" ?>profession" id="<?php echo "parent$i" ?>profession" maxlength=30 value="<?php echo $row["parent$i".'profession'];
-                    ?>" type="text" class="standardWidth">
+									<input name="<?php echo "parent$i" ?>profession" id="<?php echo "parent$i" ?>profession" maxlength=30 value="<?php echo $row["parent$i".'profession']; ?>" type="text" class="standardWidth">
 								</td>
 							</tr>
 							<tr>
@@ -2011,8 +1838,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 									<b><?php echo __($guid, 'Employer') ?></b><br/>
 								</td>
 								<td class="right">
-									<input name="<?php echo "parent$i" ?>employer" id="<?php echo "parent$i" ?>employer" maxlength=30 value="<?php echo $row["parent$i".'employer'];
-                    ?>" type="text" class="standardWidth">
+									<input name="<?php echo "parent$i" ?>employer" id="<?php echo "parent$i" ?>employer" maxlength=30 value="<?php echo $row["parent$i".'employer']; ?>" type="text" class="standardWidth">
 								</td>
 							</tr>
 							<?php
@@ -2202,8 +2028,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                         echo '</td>';
                 echo '</tr>';
             }
-            echo '</table>';
-            ?>
+            echo '</table>'; ?>
 						</td>
 					</tr>
 
@@ -2289,14 +2114,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 							<span class="emphasis small"><?php echo __($guid, 'Indicate if you are interested in a scholarship.') ?></span><br/>
 						</td>
 						<td class="right">
-							<input <?php if ($row['scholarshipInterest'] == 'Y') {
-    echo 'checked';
-}
-            ?> type="radio" id="scholarshipInterest" name="scholarshipInterest" class="type" value="Y" /> <?php echo __($guid, 'Yes') ?>
-							<input <?php if ($row['scholarshipInterest'] == 'N') {
-    echo 'checked';
-}
-            ?> type="radio" id="scholarshipInterest" name="scholarshipInterest" class="type" value="N" /><?php echo __($guid, 'No') ?>
+							<input <?php if ($row['scholarshipInterest'] == 'Y') { echo 'checked'; } ?> type="radio" id="scholarshipInterest" name="scholarshipInterest" class="type" value="Y" /> <?php echo __($guid, 'Yes') ?>
+							<input <?php if ($row['scholarshipInterest'] == 'N') { echo 'checked'; } ?> type="radio" id="scholarshipInterest" name="scholarshipInterest" class="type" value="N" /><?php echo __($guid, 'No') ?>
 						</td>
 					</tr>
 					<tr>
@@ -2305,14 +2124,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 							<span class="emphasis small">Is a scholarship <b>required</b> for you to take up a place at <?php echo $_SESSION[$guid]['organisationNameShort'] ?>?</span><br/>
 						</td>
 						<td class="right">
-							<input <?php if ($row['scholarshipRequired'] == 'Y') {
-    echo 'checked';
-}
-            ?> type="radio" id="scholarshipRequired" name="scholarshipRequired" class="type" value="Y" /> <?php echo __($guid, 'Yes') ?>
-							<input <?php if ($row['scholarshipRequired'] == 'N') {
-    echo 'checked';
-}
-            ?> type="radio" id="scholarshipRequired" name="scholarshipRequired" class="type" value="N" /> <?php echo __($guid, 'No') ?>
+							<input <?php if ($row['scholarshipRequired'] == 'Y') { echo 'checked'; } ?> type="radio" id="scholarshipRequired" name="scholarshipRequired" class="type" value="Y" /> <?php echo __($guid, 'Yes') ?>
+							<input <?php if ($row['scholarshipRequired'] == 'N') { echo 'checked'; } ?> type="radio" id="scholarshipRequired" name="scholarshipRequired" class="type" value="N" /> <?php echo __($guid, 'No') ?>
 						</td>
 					</tr>
 
@@ -2398,14 +2211,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 							<b><?php echo __($guid, 'Send Invoices To') ?></b><br/>
 						</td>
 						<td class="right">
-							<input <?php if ($row['payment'] == 'Family') {
-    echo 'checked';
-}
-            ?> type="radio" name="payment" value="Family" class="payment" /> <?php echo __($guid, 'Family') ?>
-							<input <?php if ($row['payment'] == 'Company') {
-    echo 'checked';
-}
-            ?> type="radio" name="payment" value="Company" class="payment" /> <?php echo __($guid, 'Company') ?>
+							<input <?php if ($row['payment'] == 'Family') { echo 'checked'; } ?> type="radio" name="payment" value="Family" class="payment" /> <?php echo __($guid, 'Family') ?>
+							<input <?php if ($row['payment'] == 'Company') { echo 'checked'; } ?> type="radio" name="payment" value="Company" class="payment" /> <?php echo __($guid, 'Company') ?>
 						</td>
 					</tr>
 					<tr id="companyNameRow">
@@ -2464,14 +2271,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 						</td>
 						<td class="right">
 							<select name="companyCCFamily" id="companyCCFamily" class="standardWidth">
-								<option <?php if ($row['companyCCFamily'] == 'N') {
-    echo 'selected';
-}
-            ?> value="N" /> <?php echo __($guid, 'No') ?>
-								<option <?php if ($row['companyCCFamily'] == 'Y') {
-    echo 'selected';
-}
-            ?> value="Y" /> <?php echo __($guid, 'Yes') ?>
+								<option <?php if ($row['companyCCFamily'] == 'N') { echo 'selected'; } ?> value="N" /> <?php echo __($guid, 'No') ?>
+								<option <?php if ($row['companyCCFamily'] == 'Y') { echo 'selected'; } ?> value="Y" /> <?php echo __($guid, 'Yes') ?>
 							</select>
 						</td>
 					</tr>
@@ -2501,14 +2302,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 								<span class="emphasis small"><?php echo __($guid, 'Should all items be billed to the specified company, or just some?') ?></span>
 							</td>
 							<td class="right">
-								<input type="radio" name="companyAll" value="Y" class="companyAll" <?php if ($row['companyAll'] == 'Y' or $row['companyAll'] == '') {
-    echo 'checked';
-}
-                ?> /> <?php echo __($guid, 'All') ?>
-								<input type="radio" name="companyAll" value="N" class="companyAll" <?php if ($row['companyAll'] == 'N') {
-    echo 'checked';
-}
-                ?> /> <?php echo __($guid, 'Selected') ?>
+								<input type="radio" name="companyAll" value="Y" class="companyAll" <?php if ($row['companyAll'] == 'Y' or $row['companyAll'] == '') { echo 'checked'; } ?> /> <?php echo __($guid, 'All') ?>
+								<input type="radio" name="companyAll" value="N" class="companyAll" <?php if ($row['companyAll'] == 'N') { echo 'checked'; } ?> /> <?php echo __($guid, 'Selected') ?>
 							</td>
 						</tr>
 						<tr id="companyCategoriesRow">
@@ -2529,8 +2324,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 if (strpos($row['gibbonFinanceFeeCategoryIDList'], '0001') !== false) {
                     $checked = 'checked';
                 }
-                echo "Other <input $checked type='checkbox' name='gibbonFinanceFeeCategoryIDList[]' value='0001'/><br/>";
-                ?>
+                echo "Other <input $checked type='checkbox' name='gibbonFinanceFeeCategoryIDList[]' value='0001'/><br/>"; ?>
 							</td>
 						</tr>
 						<?php
@@ -2708,15 +2502,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 ?>
 						<tr>
 							<td>
-								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-                ?></span>
+								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 							</td>
 							<td class="right">
 								<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 								<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php echo $gibbonSchoolYearID ?>" type="hidden">
 								<input type="hidden" name="gibbonApplicationFormID" value="<?php echo $row['gibbonApplicationFormID'] ?>">
-								<input type="submit" value="<?php echo __($guid, 'Submit');
-                ?>">
+								<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 							</td>
 						</tr>
 						<?php

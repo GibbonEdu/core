@@ -165,8 +165,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
 									<tr>
 										<td> 
 											<b><?php echo __($guid, 'Ordering') ?> *</b><br/>
-											<span class="emphasis small"><?php echo __($guid, 'Units are arranged form lowest to highest ordering value, then alphabetically.');
-                            ?></span>
+											<span class="emphasis small"><?php echo __($guid, 'Units are arranged form lowest to highest ordering value, then alphabetically.'); ?></span>
 										</td>
 										<td class="right">
 											<input name="ordering" id="ordering" maxlength=4 value="<?php echo htmlPrep($row['ordering']) ?>" type="text" class="standardWidth">
@@ -180,34 +179,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
 									<tr>
 										<td> 
 											<b><?php echo __($guid, 'License') ?></b><br/>
-											<span class="emphasis small"><?php echo __($guid, 'Under what conditions can this work be reused?');
-                            ?></span>
+											<span class="emphasis small"><?php echo __($guid, 'Under what conditions can this work be reused?'); ?></span>
 										</td>
 										<td class="right">
 											<select name="license" id="license" class="standardWidth">
-												<option <?php if ($row['license'] == '') {
-    echo 'selected ';
-}
+												<option <?php if ($row['license'] == '') { echo 'selected '; }
                             ?>value=""></option>
-												<option <?php if ($row['license'] == 'Copyright') {
-    echo 'selected ';
-}
+												<option <?php if ($row['license'] == 'Copyright') { echo 'selected '; }
                             ?>value="Copyright"><?php echo __($guid, 'Copyright') ?></option>
-												<option <?php if ($row['license'] == 'Creative Commons BY') {
-    echo 'selected ';
-}
+												<option <?php if ($row['license'] == 'Creative Commons BY') { echo 'selected '; }
                             ?>value="Creative Commons BY"><?php echo __($guid, 'Creative Commons BY') ?></option>
-												<option <?php if ($row['license'] == 'Creative Commons BY-SA') {
-    echo 'selected ';
-}
+												<option <?php if ($row['license'] == 'Creative Commons BY-SA') { echo 'selected '; }
                             ?>value="Creative Commons BY-SA"><?php echo __($guid, 'Creative Commons BY-SA') ?></option>
-												<option <?php if ($row['license'] == 'Creative Commons BY-SA-NC') {
-    echo 'selected ';
-}
+												<option <?php if ($row['license'] == 'Creative Commons BY-SA-NC') { echo 'selected '; }
                             ?>value="Creative Commons BY-SA-NC"><?php echo __($guid, 'Creative Commons BY-SA-NC') ?></option>
-												<option <?php if ($row['license'] == 'Public Domain') {
-    echo 'selected ';
-}
+												<option <?php if ($row['license'] == 'Public Domain') { echo 'selected '; }
                             ?>value="Public Domain"><?php echo __($guid, 'Public Domain') ?></option>
 											</select>
 										</td>
@@ -219,8 +205,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
 										<tr>
 											<td> 
 												<b><?php echo __($guid, 'Shared Publically') ?> * </b><br/>
-												<span class="emphasis small"><?php echo __($guid, 'Share this unit via the public listing of units? Useful for building MOOCS.');
-                                ?></span>
+												<span class="emphasis small"><?php echo __($guid, 'Share this unit via the public listing of units? Useful for building MOOCS.');?></span>
 											</td>
 											<td class="right">
 												<input <?php if ($row['sharedPublic'] == 'Y') {
@@ -561,13 +546,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                                                 ?>
 																	<input name="gibbonCourseClassID<?php echo $classCount?>" id="gibbonCourseClassID<?php echo $classCount?>" maxlength=10 value="<?php echo $rowClass['gibbonCourseClassID'] ?>" type="hidden" class="standardWidth">
 																	<select name="running<?php echo $classCount?>" id="running<?php echo $classCount?>" style="width:100%">
-																		<option <?php if ($rowClassData['running'] == 'N') {
-    echo 'selected ';
-}
+																		<option <?php if ($rowClassData['running'] == 'N') { echo 'selected '; }
                                                 ?>value="N"><?php echo __($guid, 'No') ?></option>
-																		<option <?php if ($rowClassData['running'] == 'Y') {
-    echo 'selected ';
-}
+																		<option <?php if ($rowClassData['running'] == 'Y') { echo 'selected '; }
                                                 ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
 																	</select>
 																	<?php
@@ -756,8 +737,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
 								
 									<tr>
 										<td>
-											<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-                            ?></span>
+											<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 										</td>
 										<td class="right">
 											<input name="classCount" id="classCount" value="<?php echo $classCount ?>" type="hidden">

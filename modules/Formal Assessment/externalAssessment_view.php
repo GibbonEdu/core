@@ -114,8 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 									<?php
                                     echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Formal Assessment/externalAssessment_view.php'>".__($guid, 'Clear Search').'</a>';
                     ?>
-									<input type="submit" value="<?php echo __($guid, 'Submit');
-                    ?>">
+									<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 								</td>
 							</tr>
 						</table>

@@ -172,14 +172,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
 											</td>
 											<td class="right">
 												<select class="standardWidth" name="status">
-													<option <?php if ($rowSubmission['status'] == 'On Time') {
-    echo 'selected ';
-}
-                                ?>value="On Time"><?php echo __($guid, 'On Time') ?></option>
-													<option <?php if ($rowSubmission['status'] == 'Late') {
-    echo 'selected ';
-}
-                                ?>value="Late"><?php echo __($guid, 'Late') ?></option>
+													<option <?php if ($rowSubmission['status'] == 'On Time') { echo 'selected '; } ?>value="On Time"><?php echo __($guid, 'On Time') ?></option>
+													<option <?php if ($rowSubmission['status'] == 'Late') { echo 'selected '; } ?>value="Late"><?php echo __($guid, 'Late') ?></option>
 												</select>
 											</td>
 										</tr>
@@ -194,8 +188,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
                                 echo "<input type='hidden' name='address' value='".$_SESSION[$guid]['address']."'>";
                                 ?>
 												
-												<input type="submit" value="<?php echo __($guid, 'Submit');
-                                ?>">
+												<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 											</td>
 										</tr>
 									</table>
@@ -262,7 +255,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
 													<?php
 
                                                 }
-                                ?>
+                               		 		?>
 											</td>
 										</tr>
 										<tr>
@@ -302,7 +295,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
 													<?php
 
                                                 }
-                                ?>
+                               		 		?>
 											
 												$(".type").click(function(){
 													if ($('input[name=type]:checked').val()=="Link" ) {
@@ -415,8 +408,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
                                 echo "<input type='hidden' name='address' value='".$_SESSION[$guid]['address']."'>";
                                 ?>
 											
-												<input type="submit" value="<?php echo __($guid, 'Submit');
-                                ?>">
+												<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 											</td>
 										</tr>
 									</table>

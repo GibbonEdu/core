@@ -1967,7 +1967,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 														<?php
 
                                                         }
-                                    ?>
+                                    			?>
 													</select>
 												</td>
 											</tr>
