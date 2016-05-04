@@ -256,10 +256,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                                     } else {
                                         echo $_SESSION[$guid]['i18n']['dateFormat'];
                                     }
+                                    $startingDate = (isset($_GET['date'])) $_GET['date'] : dateConvertBack($guid, date('Y-m-d'));
                                 ?></span>
                             </td>
                             <td class="right">
-                                <input name="date" id="date" maxlength=10 value="<?php echo dateConvertBack($guid, date('Y-m-d')); ?>" type="text" class="standardWidth">
+                                <input name="date" id="date" maxlength=10 value="<?php echo $startingDate; ?>" type="text" class="standardWidth">
                                 <script type="text/javascript">
                                     var date=new LiveValidation('date');
                                     date.add(Validate.Presence);
