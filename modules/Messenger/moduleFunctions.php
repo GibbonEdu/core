@@ -471,8 +471,8 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
                 $return .= "<a name='".$output[$i]['gibbonMessengerID']."'></a>";
                 $return .= getUserPhoto($guid, $output[$i]['photo'], 75).'<br/>';
 
-                            //DEAL WITH LIKES
-                            $likesGiven = countLikesByContextAndGiver($connection2, 'Messenger', 'gibbonMessengerID', $output[$i]['gibbonMessengerID'], $_SESSION[$guid]['gibbonPersonID'], $output[$i]['gibbonPersonID']);
+				//DEAL WITH LIKES
+				$likesGiven = countLikesByContextAndGiver($connection2, 'Messenger', 'gibbonMessengerID', $output[$i]['gibbonMessengerID'], $_SESSION[$guid]['gibbonPersonID'], $output[$i]['gibbonPersonID']);
                 if ($output[$i]['gibbonPersonID'] == $_SESSION[$guid]['gibbonPersonID']) {
                     if ($likesGiven == 1) {
                         $return .= $likesGiven.'x '.__($guid, 'Like').'<br/><br/>';

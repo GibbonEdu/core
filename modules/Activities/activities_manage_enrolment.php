@@ -123,7 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 						<?php
 
                     }
-            ?>
+            		?>
 				</table>
 			</form>
 			
@@ -178,8 +178,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                     }
                     ++$count;
 
-                        //COLOR ROW BY STATUS!
-                        echo "<tr class=$rowNum>";
+                    //COLOR ROW BY STATUS!
+                    echo "<tr class=$rowNum>";
                     echo '<td>';
                     echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
                     echo '</td>';

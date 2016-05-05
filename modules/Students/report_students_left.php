@@ -56,12 +56,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_l
 			<tr>
 				<td style='width: 275px'> 
 					<b><?php echo __($guid, 'From Date') ?></b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Earliest student end date to include.') ?><br/><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-    ?></span>
+					<span class="emphasis small"><?php echo __($guid, 'Earliest student end date to include.') ?><br/><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
+					} else {
+						echo $_SESSION[$guid]['i18n']['dateFormat'];
+					}
+					?></span>
 				</td>
 				<td class="right">
 					<input name="endDateFrom" id="endDateFrom" maxlength=10 value="<?php echo $endDateFrom ?>" type="text" class="standardWidth">
@@ -69,16 +68,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_l
 						var endDateFrom=new LiveValidation('endDateFrom');
 						endDateFrom.add(Validate.Presence);
 						endDateFrom.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-    ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-    ?>." } ); 
+							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+						}
+							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+							echo 'dd/mm/yyyy';
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormat'];
+						}
+						?>." } ); 
 					</script>
 					<script type="text/javascript">
 						$(function() {
@@ -90,12 +89,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_l
 			<tr>
 				<td> 
 					<b><?php echo __($guid, 'To Date') ?></b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Latest student end date to include.') ?><br/><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-    ?></span>
+					<span class="emphasis small"><?php echo __($guid, 'Latest student end date to include.') ?><br/><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
+					} else {
+						echo $_SESSION[$guid]['i18n']['dateFormat'];
+					}
+    				?></span>
 				</td>
 				<td class="right">
 					<input name="endDateTo" id="endDateTo" maxlength=10 value="<?php echo $endDateTo ?>" type="text" class="standardWidth">
@@ -103,16 +101,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_l
 						var endDateTo=new LiveValidation('endDateTo');
 						endDateTo.add(Validate.Presence);
 						endDateTo.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-    ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-    ?>." } ); 
+							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+						}
+							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+							echo 'dd/mm/yyyy';
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormat'];
+						}
+						?>." } ); 
 					</script>
 					<script type="text/javascript">
 						$(function() {
@@ -127,17 +125,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_l
 					<span class="emphasis small"><?php echo __($guid, 'This is useful for picking up students who have not yet left, but have an End Date set.') ?></span>
 				</td>
 				<td class="right">
-					<input <?php if ($ignoreStatus == 'on') {
-    echo 'checked';
-}
-    ?> name="ignoreStatus" id="ignoreStatus" type="checkbox">
+					<input <?php if ($ignoreStatus == 'on') { echo 'checked'; } ?> name="ignoreStatus" id="ignoreStatus" type="checkbox">
 				</td>
 			</tr>
 			<tr>
 				<td colspan=2 class="right">
 					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/report_students_left.php">
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>

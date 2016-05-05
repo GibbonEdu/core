@@ -97,8 +97,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             $resultCategories->execute($dataCategories);
                         } catch (PDOException $e) {
                         }
-                if ($resultCategories->rowCount() > 0) {
-                    ?>
+						if ($resultCategories->rowCount() > 0) {
+							?>
 							<tr>
 								<td style='width: 275px'> 
 									<b><?php echo __($guid, 'Category') ?> *</b><br/>
@@ -111,7 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         while ($rowCategories = $resultCategories->fetch()) {
                                             echo "<option value='".$rowCategories['gibbonStudentNoteCategoryID']."'>".$rowCategories['name'].'</option>';
                                         }
-                    ?>
+                    					?>
 									</select>
 									<script type="text/javascript">
 										var gibbonStudentNoteCategoryID=new LiveValidation('gibbonStudentNoteCategoryID');
@@ -140,8 +140,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 							</tr>
 							<?php
 
-                }
-                ?>
+						}
+						?>
 						<tr>
 							<td colspan=2 style='padding-top: 15px;'> 
 								<b><?php echo __($guid, 'Note') ?> *</b><br/>
@@ -150,13 +150,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 						</tr>
 						<tr>
 							<td>
-								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-                ?></span>
+								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 							</td>
 							<td class="right">
 								<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-								<input type="submit" value="<?php echo __($guid, 'Submit');
-                ?>">
+								<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 							</td>
 						</tr>
 					</table>

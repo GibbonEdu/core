@@ -38,8 +38,7 @@ if (isset($_GET['gibbonPersonIDParent'])) {
 }
 
 //Check variables
-if ($gibbonSchoolYearID == '' or $key == '' or $gibbonPersonIDStudent == '' or $gibbonPersonIDParent == '') {
-    echo "<div class='error'>";
+if ($gibbonSchoolYearID == '' or $key == '' or $gibbonPersonIDStudent == '' or $gibbonPersonIDParent == '') { echo "<div class='error'>";
     echo __($guid, 'You have not specified one or more required parameters.');
     echo '</div>';
 } else {

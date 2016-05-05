@@ -126,11 +126,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
                                     $resultSelect->execute($dataSelect);
                                 } catch (PDOException $e) {
                                 }
-            echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-            while ($rowSelect = $resultSelect->fetch()) {
-                echo "<option value='".$rowSelect['gibbonScaleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-            }
-            ?>				
+								echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
+								while ($rowSelect = $resultSelect->fetch()) {
+									echo "<option value='".$rowSelect['gibbonScaleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
+								}
+								?>				
 							</select>
 							<script type="text/javascript">
 								var gibbonScaleID=new LiveValidation('gibbonScaleID');
@@ -145,8 +145,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
 						</td>
 						<td class="right">
 							<?php 
-                            echo "<fieldset style='border: none'>";
-            ?>
+                            echo "<fieldset style='border: none'>"; ?>
 							<script type="text/javascript">
 								$(function () {
 									$('.checkall').click(function () {
@@ -156,31 +155,28 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
 							</script>
 							<?php
                             echo __($guid, 'All').' / '.__($guid, 'None')." <input type='checkbox' class='checkall'><br/>";
-            $yearGroups = getYearGroups($connection2);
-            if ($yearGroups == '') {
-                echo '<i>'.__($guid, 'No year groups available.').'</i>';
-            } else {
-                for ($i = 0; $i < count($yearGroups); $i = $i + 2) {
-                    echo __($guid, $yearGroups[($i + 1)])." <input type='checkbox' name='gibbonYearGroupIDCheck".($i) / 2 ."'><br/>";
-                    echo "<input type='hidden' name='gibbonYearGroupID".($i) / 2 ."' value='".$yearGroups[$i]."'>";
-                }
-            }
-            echo '</fieldset>';
-            ?>
+							$yearGroups = getYearGroups($connection2);
+							if ($yearGroups == '') {
+								echo '<i>'.__($guid, 'No year groups available.').'</i>';
+							} else {
+								for ($i = 0; $i < count($yearGroups); $i = $i + 2) {
+									echo __($guid, $yearGroups[($i + 1)])." <input type='checkbox' name='gibbonYearGroupIDCheck".($i) / 2 ."'><br/>";
+									echo "<input type='hidden' name='gibbonYearGroupID".($i) / 2 ."' value='".$yearGroups[$i]."'>";
+								}
+							}
+							echo '</fieldset>'; ?>
 							<input type="hidden" name="count" value="<?php echo(count($yearGroups)) / 2 ?>">
 						</td>
 					</tr>
 					
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input name="gibbonExternalAssessmentID" id="gibbonExternalAssessmentID" value="<?php echo $gibbonExternalAssessmentID ?>" type="hidden">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

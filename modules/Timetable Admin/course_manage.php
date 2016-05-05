@@ -72,18 +72,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
         echo "<div class='linkTop'>";
             //Print year picker
             $previousYear = getPreviousSchoolYearID($gibbonSchoolYearID, $connection2);
-        $nextYear = getNextSchoolYearID($gibbonSchoolYearID, $connection2);
-        if ($previousYear != false) {
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/course_manage.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__($guid, 'Previous Year').'</a> ';
-        } else {
-            echo __($guid, 'Previous Year').' ';
-        }
-        echo ' | ';
-        if ($nextYear != false) {
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/course_manage.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__($guid, 'Next Year').'</a> ';
-        } else {
-            echo __($guid, 'Next Year').' ';
-        }
+			$nextYear = getNextSchoolYearID($gibbonSchoolYearID, $connection2);
+			if ($previousYear != false) {
+				echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/course_manage.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__($guid, 'Previous Year').'</a> ';
+			} else {
+				echo __($guid, 'Previous Year').' ';
+			}
+			echo ' | ';
+			if ($nextYear != false) {
+				echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/course_manage.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__($guid, 'Next Year').'</a> ';
+			} else {
+				echo __($guid, 'Next Year').' ';
+			}
         echo '</div>';
 
         //Set pagination variable
@@ -155,8 +155,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
                     $rowNum = 'odd';
                 }
 
-                    //COLOR ROW BY STATUS!
-                    echo "<tr class=$rowNum>";
+                //COLOR ROW BY STATUS!
+                echo "<tr class=$rowNum>";
                 echo '<td>';
                 echo $row['nameShort'];
                 echo '</td>';

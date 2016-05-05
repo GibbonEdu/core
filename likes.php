@@ -62,8 +62,8 @@ if ($resultLike == false) {
             }
             ++$count;
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+			//COLOR ROW BY STATUS!
+			echo "<tr class=$rowNum>";
             echo '<td>';
             echo getUserPhoto($guid, $row['image_240'], 75);
             echo '</td>';

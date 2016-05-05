@@ -376,8 +376,7 @@ class POP3 {
    * If debug is enabled, display the error message array
    * @access private
    */
-  private function displayErrors () {
-    echo '<pre>';
+  private function displayErrors () { echo '<pre>';
 
     foreach ($this->error as $single_error) {
       print_r($single_error);

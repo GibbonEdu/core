@@ -163,12 +163,10 @@ $_SESSION[$guid]['stringReplacement'] = array();
 												</tr>
 												<tr>
 													<td>
-														<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-                                        ?></span>
+														<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 													</td>
 													<td class="right">
-														<input type="submit" value="<?php echo __($guid, 'Submit');
-                                        ?>">
+														<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 													</td>
 												</tr>
 											</table>
@@ -254,21 +252,17 @@ $_SESSION[$guid]['stringReplacement'] = array();
 											<td class="right">
 												<select name="demoData" id="demoData" class="standardWidth">
 													<?php
-                                                    echo "<option selected value='N'>".ynExpander($guid, 'N').'</option>';
-                                echo "<option value='Y'>".ynExpander($guid, 'Y').'</option>';
-                                ?>
+                                                    echo "<option selected value='N'>".ynExpander($guid, 'N').'</option>';echo "<option value='Y'>".ynExpander($guid, 'Y').'</option>';?>
 												</select>
 											</td>
 										</tr>
 										<tr>
 											<td>
-												<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-                                ?></span>
+												<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');?></span>
 											</td>
 											<td class="right">
 												<input type="hidden" name="code" value="<?php echo $code ?>">
-												<input type="submit" value="<?php echo __($guid, 'Submit');
-                                ?>">
+												<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 											</td>
 										</tr>
 									</table>
@@ -495,17 +489,17 @@ $_SESSION[$guid]['stringReplacement'] = array();
 																<input name="username" id="username" maxlength=20 value="" type="text" class="standardWidth">
 																<?php
                                                                 $idList = '';
-                                                try {
-                                                    $dataSelect = array();
-                                                    $sqlSelect = 'SELECT username FROM gibbonPerson ORDER BY username';
-                                                    $resultSelect = $connection2->prepare($sqlSelect);
-                                                    $resultSelect->execute($dataSelect);
-                                                } catch (PDOException $e) {
-                                                }
-                                                while ($rowSelect = $resultSelect->fetch()) {
-                                                    $idList .= "'".$rowSelect['username']."',";
-                                                }
-                                                ?>
+																try {
+																	$dataSelect = array();
+																	$sqlSelect = 'SELECT username FROM gibbonPerson ORDER BY username';
+																	$resultSelect = $connection2->prepare($sqlSelect);
+																	$resultSelect->execute($dataSelect);
+																} catch (PDOException $e) {
+																}
+																while ($rowSelect = $resultSelect->fetch()) {
+																	$idList .= "'".$rowSelect['username']."',";
+																}
+																?>
 																<script type="text/javascript">
 																	var username=new LiveValidation('username');
 																	username.add(Validate.Presence);
@@ -516,12 +510,12 @@ $_SESSION[$guid]['stringReplacement'] = array();
 															<td colspan=2>
 																<?php
                                                                 $policy = getPasswordPolicy($guid, $connection2);
-                                                if ($policy != false) {
-                                                    echo "<div class='warning'>";
-                                                    echo $policy;
-                                                    echo '</div>';
-                                                }
-                                                ?>
+																if ($policy != false) {
+																	echo "<div class='warning'>";
+																	echo $policy;
+																	echo '</div>';
+																}
+																?>
 															</td>
 														</tr>
 														<tr>
@@ -538,22 +532,22 @@ $_SESSION[$guid]['stringReplacement'] = array();
 																	passwordNew.add(Validate.Presence);
 																	<?php
                                                                     $alpha = getSettingByScope($connection2, 'System', 'passwordPolicyAlpha');
-                                                $numeric = getSettingByScope($connection2, 'System', 'passwordPolicyNumeric');
-                                                $punctuation = getSettingByScope($connection2, 'System', 'passwordPolicyNonAlphaNumeric');
-                                                $minLength = getSettingByScope($connection2, 'System', 'passwordPolicyMinLength');
-                                                if ($alpha == 'Y') {
-                                                    echo 'passwordNew.add( Validate.Format, { pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
-                                                }
-                                                if ($numeric == 'Y') {
-                                                    echo 'passwordNew.add( Validate.Format, { pattern: /.*[0-9]/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
-                                                }
-                                                if ($punctuation == 'Y') {
-                                                    echo 'passwordNew.add( Validate.Format, { pattern: /[^a-zA-Z0-9]/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
-                                                }
-                                                if (is_numeric($minLength)) {
-                                                    echo 'passwordNew.add( Validate.Length, { minimum: '.$minLength.'} );';
-                                                }
-                                                ?>
+																	$numeric = getSettingByScope($connection2, 'System', 'passwordPolicyNumeric');
+																	$punctuation = getSettingByScope($connection2, 'System', 'passwordPolicyNonAlphaNumeric');
+																	$minLength = getSettingByScope($connection2, 'System', 'passwordPolicyMinLength');
+																	if ($alpha == 'Y') {
+																		echo 'passwordNew.add( Validate.Format, { pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
+																	}
+																	if ($numeric == 'Y') {
+																		echo 'passwordNew.add( Validate.Format, { pattern: /.*[0-9]/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
+																	}
+																	if ($punctuation == 'Y') {
+																		echo 'passwordNew.add( Validate.Format, { pattern: /[^a-zA-Z0-9]/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
+																	}
+																	if (is_numeric($minLength)) {
+																		echo 'passwordNew.add( Validate.Length, { minimum: '.$minLength.'} );';
+																	}
+																	?>
 
 																	$(".generatePassword").click(function(){
 																		var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789![]{}()%&*$#^<>~@|';
@@ -602,24 +596,24 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                             } catch (PDOException $e) {
                                                                 echo "<div class='error'>".$e->getMessage().'</div>';
                                                             }
-                                                $row = $result->fetch();
-                                                ?>
+															$row = $result->fetch();
+															?>
 															<td style='width: 275px'>
 																<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 																<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-                                                ?></span>
+																	echo __($guid, $row['description']);
+																}
+                                                				?></span>
 															</td>
 															<td stclass="right">
 																<?php
                                                                     $pageURL = (@$_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://';
-                                                $port = '';
-                                                if ($_SERVER['SERVER_PORT'] != '80') {
-                                                    $port = ':'.$_SERVER['SERVER_PORT'];
-                                                }
-                                                $uri_parts = explode('?', $_SERVER['REQUEST_URI'], 2);
-                                                ?>
+																	$port = '';
+																	if ($_SERVER['SERVER_PORT'] != '80') {
+																		$port = ':'.$_SERVER['SERVER_PORT'];
+																	}
+																	$uri_parts = explode('?', $_SERVER['REQUEST_URI'], 2);
+																	?>
 																<input name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" maxlength=50 value="<?php echo $pageURL.$_SERVER['SERVER_NAME'].$port.substr($uri_parts[0], 0, -22) ?>" type="text" class="standardWidth">
 																<script type="text/javascript">
 																	var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
@@ -638,14 +632,14 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                             } catch (PDOException $e) {
                                                                 echo "<div class='error'>".$e->getMessage().'</div>';
                                                             }
-                                                $row = $result->fetch();
-                                                ?>
+															$row = $result->fetch();
+															?>
 															<td>
 																<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 																<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-                                                ?></span>
+																	echo __($guid, $row['description']);
+																}
+                                                				?></span>
 															</td>
 															<td stclass="right">
 																<input name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" maxlength=50 value="<?php echo substr(__FILE__, 0, -22) ?>" type="text" class="standardWidth">
@@ -665,14 +659,14 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                             } catch (PDOException $e) {
                                                                 echo "<div class='error'>".$e->getMessage().'</div>';
                                                             }
-                                                $row = $result->fetch();
-                                                ?>
+															$row = $result->fetch();
+															?>
 															<td>
 																<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 																<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-                                                ?></span>
+																	echo __($guid, $row['description']);
+																}
+                                                				?></span>
 															</td>
 															<td class="right">
 																<input name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" maxlength=50 value="Gibbon" type="text" class="standardWidth">
@@ -692,36 +686,36 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                             } catch (PDOException $e) {
                                                                 echo "<div class='error'>".$e->getMessage().'</div>';
                                                             }
-                                                $row = $result->fetch();
-                                                ?>
+															$row = $result->fetch();
+															?>
 															<td>
 																<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 																<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-                                                ?></span>
+																		echo __($guid, $row['description']);
+																	}
+                                                				?></span>
 															</td>
 															<td class="right">
 																<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
 																	<?php
                                                                     echo "<option selected value='Testing'>Testing</option>";
-                                                echo "<option value='Production'>Production</option>";
-                                                echo "<option value='Development'>Development</option>";
-                                                ?>
-																</select>
-															</td>
-														</tr>
-														<?php
-                                                        echo '<tr>';
-                                                echo '<td colspan=2>';
-                                                echo "<div id='status' class='warning'>";
-                                                echo "<div style='width: 100%; text-align: center'>";
-                                                echo "<img style='margin: 10px 0 5px 0' src='../themes/Default/img/loading.gif' alt='Loading'/><br/>";
-                                                echo __($guid, 'Checking for Cutting Edge Code.');
-                                                echo '</div>';
-                                                echo '</div>';
-                                                echo '</td>';
-                                                echo '</tr>'
+																	echo "<option value='Production'>Production</option>";
+																	echo "<option value='Development'>Development</option>";
+																	?>
+																					</select>
+																				</td>
+																			</tr>
+																			<?php
+																			echo '<tr>';
+																	echo '<td colspan=2>';
+																	echo "<div id='status' class='warning'>";
+																	echo "<div style='width: 100%; text-align: center'>";
+																	echo "<img style='margin: 10px 0 5px 0' src='../themes/Default/img/loading.gif' alt='Loading'/><br/>";
+																	echo __($guid, 'Checking for Cutting Edge Code.');
+																	echo '</div>';
+																	echo '</div>';
+																echo '</td>';
+															echo '</tr>'
                                                         ?>
 														<tr>
 															<?php
@@ -733,8 +727,8 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                             } catch (PDOException $e) {
                                                                 echo "<div class='error'>".$e->getMessage().'</div>';
                                                             }
-                                                $row = $result->fetch();
-                                                ?>
+															$row = $result->fetch();
+															?>
 															<td>
 																<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 																<span class="emphasis small"><?php echo __($guid, $row['description']) ?>. <?php echo '<b>'.__($guid, 'Not recommended for non-experts!.').'<b>' ?></span>
@@ -743,8 +737,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
 																<select disabled name="<?php echo $row['name'] ?>Disabled" id="<?php echo $row['name'] ?>" class="standardWidth">
 																	<?php
                                                                     echo "<option selected value='N'>".ynExpander($guid, 'N').'</option>';
-                                                echo "<option value='Y'>".ynExpander($guid, 'Y').'</option>';
-                                                ?>
+                                                					echo "<option value='Y'>".ynExpander($guid, 'Y').'</option>';?>
 																</select>
 																<input type='hidden' name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>Hidden" value="N">
 															</td>
@@ -752,31 +745,30 @@ $_SESSION[$guid]['stringReplacement'] = array();
 														<?php
                                                         //Check and set cutting edge code based on gibbonedu.org services value
                                                         echo '<script type="text/javascript">';
-                                                echo '$(document).ready(function(){';
-                                                echo '$.ajax({';
-                                                echo 'crossDomain: true, type:"GET", contentType: "application/json; charset=utf-8",async:false,';
-                                                echo 'url: "https://gibbonedu.org/services/version/devCheck.php?version='.$version.'&callback=?",';
-                                                echo "data: \"\",dataType: \"jsonp\", jsonpCallback: 'fnsuccesscallback',jsonpResult: 'jsonpResult',";
-                                                echo 'success: function(data) {';
-                                                echo '$("#status").attr("class","success");';
-                                                echo "if (data['status']==='false') {";
-                                                echo "$(\"#status\").html('".__($guid, 'Cutting Edge Code check successful.')."') ;";
-                                                echo '}';
-                                                echo 'else {';
-                                                echo "$(\"#status\").html('".__($guid, 'Cutting Edge Code check successful.')."') ;";
-                                                echo "$(\"#cuttingEdgeCode\").val('Y');";
-                                                echo "$(\"#cuttingEdgeCodeHidden\").val('Y');";
-                                                echo '}';
-                                                echo '},';
-                                                echo 'error: function (data, textStatus, errorThrown) {';
-                                                echo '$("#status").attr("class","error");';
-                                                echo "$(\"#status\").html('".__($guid, 'Cutting Edge Code check failed').".') ;";
-                                                echo '}';
-                                                echo '});';
-                                                echo '});';
-                                                echo '</script>';
-                                                ?>
-
+														echo '$(document).ready(function(){';
+														echo '$.ajax({';
+														echo 'crossDomain: true, type:"GET", contentType: "application/json; charset=utf-8",async:false,';
+														echo 'url: "https://gibbonedu.org/services/version/devCheck.php?version='.$version.'&callback=?",';
+														echo "data: \"\",dataType: \"jsonp\", jsonpCallback: 'fnsuccesscallback',jsonpResult: 'jsonpResult',";
+														echo 'success: function(data) {';
+														echo '$("#status").attr("class","success");';
+														echo "if (data['status']==='false') {";
+														echo "$(\"#status\").html('".__($guid, 'Cutting Edge Code check successful.')."') ;";
+														echo '}';
+														echo 'else {';
+														echo "$(\"#status\").html('".__($guid, 'Cutting Edge Code check successful.')."') ;";
+														echo "$(\"#cuttingEdgeCode\").val('Y');";
+														echo "$(\"#cuttingEdgeCodeHidden\").val('Y');";
+														echo '}';
+														echo '},';
+														echo 'error: function (data, textStatus, errorThrown) {';
+														echo '$("#status").attr("class","error");';
+														echo "$(\"#status\").html('".__($guid, 'Cutting Edge Code check failed').".') ;";
+														echo '}';
+														echo '});';
+														echo '});';
+														echo '</script>';
+														?>
 														<tr>
 															<?php
                                                             try {
@@ -787,21 +779,21 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                             } catch (PDOException $e) {
                                                                 echo "<div class='error'>".$e->getMessage().'</div>';
                                                             }
-                                                $row = $result->fetch();
-                                                ?>
+															$row = $result->fetch();
+															?>
 															<td>
 																<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 																<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-                                                ?></span>
+																	echo __($guid, $row['description']);
+																}
+                                               				 	?></span>
 															</td>
 															<td class="right">
 																<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
 																	<?php
                                                                     echo "<option value='Y'>".ynExpander($guid, 'Y').'</option>';
-                                                echo "<option value='N'>".ynExpander($guid, 'N').'</option>';
-                                                ?>
+																	echo "<option value='N'>".ynExpander($guid, 'N').'</option>';
+																	?>
 																</select>
 															</td>
 														</tr>
@@ -821,14 +813,14 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                             } catch (PDOException $e) {
                                                                 echo "<div class='error'>".$e->getMessage().'</div>';
                                                             }
-                                                $row = $result->fetch();
-                                                ?>
+															$row = $result->fetch();
+															?>
 															<td>
 																<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 																<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-                                                ?></span>
+																	echo __($guid, $row['description']);
+																}
+                                               				 	?></span>
 															</td>
 															<td class="right">
 																<input name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" maxlength=50 value="" type="text" class="standardWidth">
@@ -848,14 +840,14 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                             } catch (PDOException $e) {
                                                                 echo "<div class='error'>".$e->getMessage().'</div>';
                                                             }
-                                                $row = $result->fetch();
-                                                ?>
+															$row = $result->fetch();
+															?>
 															<td>
 																<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 																<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-                                                ?></span>
+																	echo __($guid, $row['description']);
+																}
+																?></span>
 															</td>
 															<td class="right">
 																<input name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" maxlength=50 value="" type="text" class="standardWidth">
@@ -875,14 +867,14 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                         } catch (PDOException $e) {
                                                             echo "<div class='error'>".$e->getMessage().'</div>';
                                                         }
-                                                $row = $result->fetch();
-                                                ?>
+														$row = $result->fetch();
+														?>
 														<td>
 															<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 															<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-                                                ?></span>
+																	echo __($guid, $row['description']);
+																}
+																?></span>
 														</td>
 														<td class="right">
 															<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
@@ -948,14 +940,14 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                             } catch (PDOException $e) {
                                                                 echo "<div class='error'>".$e->getMessage().'</div>';
                                                             }
-                                                $row = $result->fetch();
-                                                ?>
+															$row = $result->fetch();
+															?>
 															<td>
 																<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 																<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-                                                ?></span>
+																	echo __($guid, $row['description']);
+																}
+																?></span>
 															</td>
 															<td class="right">
 																<input name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" maxlength=255 value="" type="text" class="standardWidth">
@@ -971,14 +963,14 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                             } catch (PDOException $e) {
                                                                 echo "<div class='error'>".$e->getMessage().'</div>';
                                                             }
-                                                $row = $result->fetch();
-                                                ?>
+															$row = $result->fetch();
+															?>
 															<td>
 																<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 																<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-                                                ?></span>
+																	echo __($guid, $row['description']);
+																}
+																?></span>
 															</td>
 															<td class="right">
 																<input name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" maxlength=255 value="" type="text" class="standardWidth">
@@ -1000,31 +992,31 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                             } catch (PDOException $e) {
                                                                 echo "<div class='error'>".$e->getMessage().'</div>';
                                                             }
-                                                $row = $result->fetch();
-                                                ?>
+															$row = $result->fetch();
+															?>
 															<td>
 																<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 																<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-                                                ?></span>
+																	echo __($guid, $row['description']);
+																}
+																?></span>
 															</td>
 															<td class="right">
 																<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
 																	<?php
                                                                     echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-                                                try {
-                                                    $dataSelect = array();
-                                                    $sqlSelect = 'SELECT printable_name FROM gibbonCountry ORDER BY printable_name';
-                                                    $resultSelect = $connection2->prepare($sqlSelect);
-                                                    $resultSelect->execute($dataSelect);
-                                                } catch (PDOException $e) {
-                                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                                }
-                                                while ($rowSelect = $resultSelect->fetch()) {
-                                                    echo "<option value='".$rowSelect['printable_name']."'>".__($guid, $rowSelect['printable_name']).'</option>';
-                                                }
-                                                ?>
+																	try {
+																		$dataSelect = array();
+																		$sqlSelect = 'SELECT printable_name FROM gibbonCountry ORDER BY printable_name';
+																		$resultSelect = $connection2->prepare($sqlSelect);
+																		$resultSelect->execute($dataSelect);
+																	} catch (PDOException $e) {
+																		echo "<div class='error'>".$e->getMessage().'</div>';
+																	}
+																	while ($rowSelect = $resultSelect->fetch()) {
+																		echo "<option value='".$rowSelect['printable_name']."'>".__($guid, $rowSelect['printable_name']).'</option>';
+																	}
+																	?>
 																</select>
 																<script type="text/javascript">
 																	var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
@@ -1042,14 +1034,14 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                             } catch (PDOException $e) {
                                                                 echo "<div class='error'>".$e->getMessage().'</div>';
                                                             }
-                                                $row = $result->fetch();
-                                                ?>
+															$row = $result->fetch();
+															?>
 															<td>
 																<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 																<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-                                                ?></span>
+																	echo __($guid, $row['description']);
+																}
+																?></span>
 															</td>
 															<td class="right">
 																<input name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" maxlength=50 value="Asia/Hong_Kong" type="text" class="standardWidth">
@@ -1069,31 +1061,31 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                             } catch (PDOException $e) {
                                                                 echo "<div class='error'>".$e->getMessage().'</div>';
                                                             }
-                                                $row = $result->fetch();
-                                                ?>
+															$row = $result->fetch();
+															?>
 															<td>
 																<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 																<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-                                                ?></span>
+																	echo __($guid, $row['description']);
+																}
+																?></span>
 															</td>
 															<td class="right">
 																<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
 																	<?php
                                                                     echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-                                                try {
-                                                    $dataSelect = array();
-                                                    $sqlSelect = "SELECT * FROM gibbonScale WHERE active='Y' ORDER BY name";
-                                                    $resultSelect = $connection2->prepare($sqlSelect);
-                                                    $resultSelect->execute($dataSelect);
-                                                } catch (PDOException $e) {
-                                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                                }
-                                                while ($rowSelect = $resultSelect->fetch()) {
-                                                    echo "<option value='".$rowSelect['gibbonScaleID']."'>".__($guid, $rowSelect['name']).'</option>';
-                                                }
-                                                ?>
+																	try {
+																		$dataSelect = array();
+																		$sqlSelect = "SELECT * FROM gibbonScale WHERE active='Y' ORDER BY name";
+																		$resultSelect = $connection2->prepare($sqlSelect);
+																		$resultSelect->execute($dataSelect);
+																	} catch (PDOException $e) {
+																		echo "<div class='error'>".$e->getMessage().'</div>';
+																	}
+																	while ($rowSelect = $resultSelect->fetch()) {
+																		echo "<option value='".$rowSelect['gibbonScaleID']."'>".__($guid, $rowSelect['name']).'</option>';
+																	}
+																	?>
 																</select>
 																<script type="text/javascript">
 																	var <?php echo $row['name'] ?>=new LiveValidation('<?php echo $row['name'] ?>');
@@ -1104,8 +1096,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
 
 														<tr>
 															<td>
-																<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-                                                ?></span>
+																<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 															</td>
 															<td class="right">
 																<input type="hidden" name="code" value="<?php echo $code ?>">
@@ -1113,8 +1104,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
 																<input type="hidden" name="databaseName" value="<?php echo $databaseName ?>">
 																<input type="hidden" name="databaseUsername" value="<?php echo $databaseUsername ?>">
 																<input type="hidden" name="databasePassword" value="<?php echo $databasePassword ?>">
-																<input type="submit" value="<?php echo __($guid, 'Submit');
-                                                ?>">
+																<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 															</td>
 														</tr>
 													</table>

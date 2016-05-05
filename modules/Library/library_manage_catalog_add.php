@@ -104,10 +104,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
                         } catch (PDOException $e) {
                         }
 
-    while ($rowSelect = $resultSelect->fetch()) {
-        echo "<option value='".$rowSelect['gibbonLibraryTypeID']."'>".__($guid, $rowSelect['name']).'</option>';
-    }
-    ?>
+						while ($rowSelect = $resultSelect->fetch()) {
+							echo "<option value='".$rowSelect['gibbonLibraryTypeID']."'>".__($guid, $rowSelect['name']).'</option>';
+						}
+						?>
 					</select>
 					<script type="text/javascript">
 						var type=new LiveValidation('type');
@@ -144,21 +144,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 					<?php
                     //Get list of all ids already in use
                     $idList = '';
-    try {
-        $dataSelect = array();
-        $sqlSelect = 'SELECT id FROM gibbonLibraryItem ORDER BY id';
-        $resultSelect = $connection2->prepare($sqlSelect);
-        $resultSelect->execute($dataSelect);
-    } catch (PDOException $e) {
-    }
-    while ($rowSelect = $resultSelect->fetch()) {
-        $idList .= "'".$rowSelect['id']."',";
-    }
-    ?>
+					try {
+						$dataSelect = array();
+						$sqlSelect = 'SELECT id FROM gibbonLibraryItem ORDER BY id';
+						$resultSelect = $connection2->prepare($sqlSelect);
+						$resultSelect->execute($dataSelect);
+					} catch (PDOException $e) {
+					}
+					while ($rowSelect = $resultSelect->fetch()) {
+						$idList .= "'".$rowSelect['id']."',";
+					}
+					?>
 					<script type="text/javascript">
 						var idCheck=new LiveValidation('idCheck');
-						idCheck.add( Validate.Exclusion, { within: [<?php echo $idList;
-    ?>], failureMessage: "ID already in use!", partialMatch: false, caseSensitive: false } );
+						idCheck.add( Validate.Exclusion, { within: [<?php echo $idList; ?>], failureMessage: "ID already in use!", partialMatch: false, caseSensitive: false } );
 						idCheck.add(Validate.Presence);
 					</script>
 				</td>
@@ -195,16 +194,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 					<script type="text/javascript">
 						var purchaseDate=new LiveValidation('purchaseDate');
 						purchaseDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-    ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-    ?>." } ); 
+							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+						}
+							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+							echo 'dd/mm/yyyy';
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormat'];
+						}
+						?>." } ); 
 					</script>
 					 <script type="text/javascript">
 						$(function() {
@@ -272,8 +271,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 						imageFile.disable();
 					</script>	
 					<?php
-                    echo getMaxUpload($guid);
-    ?>
+                    echo getMaxUpload($guid); ?>
 				</td>
 			</tr>
 			<tr id="imageLinkRow" style='display: none'>
@@ -299,17 +297,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 					<select name="gibbonSpaceID" id="gibbonSpaceID" class="standardWidth">
 						<?php
                         echo "<option value=''></option>";
-    try {
-        $dataSelect = array();
-        $sqlSelect = 'SELECT * FROM gibbonSpace ORDER BY name';
-        $resultSelect = $connection2->prepare($sqlSelect);
-        $resultSelect->execute($dataSelect);
-    } catch (PDOException $e) {
-    }
-    while ($rowSelect = $resultSelect->fetch()) {
-        echo "<option value='".$rowSelect['gibbonSpaceID']."'>".htmlPrep($rowSelect['name']).'</option>';
-    }
-    ?>				
+						try {
+							$dataSelect = array();
+							$sqlSelect = 'SELECT * FROM gibbonSpace ORDER BY name';
+							$resultSelect = $connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						} catch (PDOException $e) {
+						}
+						while ($rowSelect = $resultSelect->fetch()) {
+							echo "<option value='".$rowSelect['gibbonSpaceID']."'>".htmlPrep($rowSelect['name']).'</option>';
+						}
+						?>				
 					</select>
 				</td>
 			</tr>
@@ -355,36 +353,35 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 				</td>
 			</tr>
 			<?php
-                $selectContents = "<option value=''></option>";
-    $selectContents .= "<optgroup label='--".__($guid, 'Students By Roll Group')."--'>";
-    try {
-        $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-        $sqlSelect = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonRollGroup.name AS name FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND status='FULL' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name, surname, preferredName";
-        $resultSelect = $connection2->prepare($sqlSelect);
-        $resultSelect->execute($dataSelect);
-    } catch (PDOException $e) {
-    }
-    while ($rowSelect = $resultSelect->fetch()) {
-        $selectContents .= "<option value='".$rowSelect['gibbonPersonID']."'>".htmlPrep($rowSelect['name']).' - '.formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).'</option>';
-    }
-    $selectContents .= '</optgroup>';
-    $selectContents .= "<optgroup label='--<?php print __($guid, 'All Users') ?>--'>";
-    try {
-        $dataSelect = array();
-        $sqlSelect = "SELECT gibbonPersonID, surname, preferredName, status, username FROM gibbonPerson WHERE status='Full' OR status='Expected' ORDER BY surname, preferredName";
-        $resultSelect = $connection2->prepare($sqlSelect);
-        $resultSelect->execute($dataSelect);
-    } catch (PDOException $e) {
-    }
-    while ($rowSelect = $resultSelect->fetch()) {
-        $expected = '';
-        if ($rowSelect['status'] == 'Expected') {
-            $expected = ' ('.__($guid, 'Expected').')';
-        }
-        $selectContents .= "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.$rowSelect['username'].')'.$expected.'</option>';
-    }
-    $selectContents .= '</optgroup>';
-    ?>
+			$selectContents = "<option value=''></option>";
+			$selectContents .= "<optgroup label='--".__($guid, 'Students By Roll Group')."--'>";
+			try {
+				$dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+				$sqlSelect = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonRollGroup.name AS name FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND status='FULL' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name, surname, preferredName";
+				$resultSelect = $connection2->prepare($sqlSelect);
+				$resultSelect->execute($dataSelect);
+			} catch (PDOException $e) {
+			}
+			while ($rowSelect = $resultSelect->fetch()) {
+				$selectContents .= "<option value='".$rowSelect['gibbonPersonID']."'>".htmlPrep($rowSelect['name']).' - '.formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).'</option>';
+			}
+			$selectContents .= '</optgroup>';
+			$selectContents .= "<optgroup label='--<?php print __($guid, 'All Users') ?>--'>";
+			try {
+				$dataSelect = array();
+				$sqlSelect = "SELECT gibbonPersonID, surname, preferredName, status, username FROM gibbonPerson WHERE status='Full' OR status='Expected' ORDER BY surname, preferredName";
+				$resultSelect = $connection2->prepare($sqlSelect);
+				$resultSelect->execute($dataSelect);
+			} catch (PDOException $e) {
+			}
+			while ($rowSelect = $resultSelect->fetch()) {
+				$expected = '';
+				if ($rowSelect['status'] == 'Expected') {
+					$expected = ' ('.__($guid, 'Expected').')';
+				}
+				$selectContents .= "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.$rowSelect['username'].')'.$expected.'</option>';
+			}
+			$selectContents .= '</optgroup>';?>
 			<tr id="ownershipTypeSchoolRow" style='display: none'>
 				<td> 
 					<b><?php echo __($guid, 'Main User') ?></b><br/>
@@ -415,17 +412,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 					<select name="gibbonDepartmentID" id="gibbonDepartmentID" class="standardWidth">
 						<?php
                         echo "<option value=''></option>";
-    try {
-        $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-        $sqlSelect = 'SELECT * FROM gibbonDepartment ORDER BY name';
-        $resultSelect = $connection2->prepare($sqlSelect);
-        $resultSelect->execute($dataSelect);
-    } catch (PDOException $e) {
-    }
-    while ($rowSelect = $resultSelect->fetch()) {
-        echo "<option value='".$rowSelect['gibbonDepartmentID']."'>".htmlPrep($rowSelect['name']).'</option>';
-    }
-    ?>
+						try {
+							$dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+							$sqlSelect = 'SELECT * FROM gibbonDepartment ORDER BY name';
+							$resultSelect = $connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						} catch (PDOException $e) {
+						}
+						while ($rowSelect = $resultSelect->fetch()) {
+							echo "<option value='".$rowSelect['gibbonDepartmentID']."'>".htmlPrep($rowSelect['name']).'</option>';
+						}
+						?>
 					</select>
 				</td>
 			</tr>
@@ -497,8 +494,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 			</tr>
 			<tr id='gibbonSchoolYearIDReplacementRow' style='display: none'>
 				<td> 
-					<b><?php echo __($guid, 'Replacement Year');
-    ?></b><br/>
+					<b><?php echo __($guid, 'Replacement Year'); ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'When is this item scheduled for replacement.') ?></span>
 				</td>
 				<td class="right">
@@ -511,18 +507,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
                             $resultSelect->execute($dataSelect);
                         } catch (PDOException $e) {
                         }
-    echo "<option value=''></option>";
-    while ($rowSelect = $resultSelect->fetch()) {
-        echo "<option value='".$rowSelect['gibbonSchoolYearID']."'>".htmlPrep($rowSelect['name']).'</option>';
-    }
-    ?>				
+						echo "<option value=''></option>";
+						while ($rowSelect = $resultSelect->fetch()) {
+							echo "<option value='".$rowSelect['gibbonSchoolYearID']."'>".htmlPrep($rowSelect['name']).'</option>';
+						}
+						?>				
 					</select>
 				</td>
 			</tr>
 			<tr id='replacementCostRow' style='display: none'>
 				<td> 
-					<b><?php echo __($guid, 'Replacement Cost');
-    ?></b><br/>
+					<b><?php echo __($guid, 'Replacement Cost'); ?></b><br/>
 					<span style="font-size: 90%">
 						<i>
 						<?php
@@ -531,7 +526,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
                         } else {
                             echo __($guid, 'Numeric value of the replacement cost.');
                         }
-    ?>
+   				 		?>
 						</i>
 					</span>
 				</td>
@@ -581,13 +576,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 			</tr>
 			<tr>
 				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-    ?></span>
+					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>

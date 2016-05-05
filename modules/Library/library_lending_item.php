@@ -203,8 +203,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
                     }
                     ++$count;
 
-                        //COLOR ROW BY STATUS!
-                        echo "<tr class=$rowNum>";
+					//COLOR ROW BY STATUS!
+					echo "<tr class=$rowNum>";
                     if ($rowEvent['gibbonPersonIDStatusResponsible'] != '') {
                         try {
                             $dataPerson = array('gibbonPersonID' => $rowEvent['gibbonPersonIDStatusResponsible']);

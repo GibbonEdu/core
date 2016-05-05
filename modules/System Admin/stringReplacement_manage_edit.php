@@ -103,16 +103,15 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
 							<select name="mode" id="mode" class="standardWidth">
 								<?php
                                 $selected = '';
-            if ($row['mode'] == 'Whole') {
-                $selected = 'selected';
-            }
-            echo "<option $selected value=\"Whole\">".__($guid, 'Whole').'</option>';
-            $selected = '';
-            if ($row['mode'] == 'Partial') {
-                $selected = 'selected';
-            }
-            echo "<option $selected value=\"Partial\">".__($guid, 'Partial').'</option>';
-            ?>
+								if ($row['mode'] == 'Whole') {
+									$selected = 'selected';
+								}
+								echo "<option $selected value=\"Whole\">".__($guid, 'Whole').'</option>';
+								$selected = '';
+								if ($row['mode'] == 'Partial') {
+									$selected = 'selected';
+								}
+								echo "<option $selected value=\"Partial\">".__($guid, 'Partial').'</option>'; ?>
 							</select>
 						</td>
 					</tr>
@@ -125,16 +124,15 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
 							<select name="caseSensitive" id="caseSensitive" class="standardWidth">
 								<?php
                                 $selected = '';
-            if ($row['caseSensitive'] == 'N') {
-                $selected = 'selected';
-            }
-            echo "<option $selected value='N'>".ynExpander($guid, 'N').'</option>';
-            $selected = '';
-            if ($row['caseSensitive'] == 'Y') {
-                $selected = 'selected';
-            }
-            echo "<option $selected value='Y'>".ynExpander($guid, 'Y').'</option>';
-            ?>
+								if ($row['caseSensitive'] == 'N') {
+									$selected = 'selected';
+								}
+								echo "<option $selected value='N'>".ynExpander($guid, 'N').'</option>';
+								$selected = '';
+								if ($row['caseSensitive'] == 'Y') {
+									$selected = 'selected';
+								}
+								echo "<option $selected value='Y'>".ynExpander($guid, 'Y').'</option>'; ?>
 							</select>
 						</td>
 					</tr>
@@ -154,13 +152,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
 					</tr>	
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

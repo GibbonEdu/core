@@ -63,8 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_add.
 					<select class="standardWidth" name="active">
 						<?php
                         echo "<option value='Y'>".__($guid, 'Yes').'</option>';
-    echo "<option value='N'>".__($guid, 'No').'</option>';
-    ?>				
+    					echo "<option value='N'>".__($guid, 'No').'</option>';?>				
 					</select>
 				</td>
 			</tr>
@@ -106,12 +105,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_add.
 					<select class="standardWidth" name="type" id="type" class="type">
 						<?php
                             echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-    echo "<option value='varchar'>Short Text (max 255 characters)</option>";
-    echo "<option value='text'>Long Text</option>";
-    echo "<option value='date'>Date</option>";
-    echo "<option value='url'>Link</option>";
-    echo "<option value='select'>Dropdown</option>";
-    ?>				
+							echo "<option value='varchar'>Short Text (max 255 characters)</option>";
+							echo "<option value='text'>Long Text</option>";
+							echo "<option value='date'>Date</option>";
+							echo "<option value='url'>Link</option>";
+							echo "<option value='select'>Dropdown</option>"; ?>				
 					</select>
 					<script type="text/javascript">
 						var type=new LiveValidation('type');
@@ -124,11 +122,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_add.
 					<b><?php echo __($guid, 'Options') ?> *</b><br/>
 					<span class="emphasis small">
 						<?php 
-                            echo __($guid, 'Short Text: number of characters, up to 255.').'<br/>';
-    echo __($guid, 'Long Text: number of rows for field.').'<br/>';
-    echo __($guid, 'Dropdown: comma separated list of options.').'<br/>';
-    ?>
-						</span>
+						echo __($guid, 'Short Text: number of characters, up to 255.').'<br/>';
+						echo __($guid, 'Long Text: number of rows for field.').'<br/>';
+						echo __($guid, 'Dropdown: comma separated list of options.').'<br/>';?>
+					</span>
 				</td>
 				<td class="right">
 					<textarea name="options" id="options" class="standardWidth" rows='3'></textarea>
@@ -143,8 +140,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_add.
 					<select class="standardWidth" name="required">
 						<?php
                         echo "<option value='Y'>".__($guid, 'Yes').'</option>';
-    echo "<option value='N'>".__($guid, 'No').'</option>';
-    ?>				
+    					echo "<option value='N'>".__($guid, 'No').'</option>';?>				
 					</select>
 				</td>
 			</tr>
@@ -155,10 +151,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_add.
 				<td class="right">
 					<?php
                         echo __($guid, 'Student')." <input checked type='checkbox' name='activePersonStudent' value='1'/><br/>";
-    echo __($guid, 'Staff')." <input type='checkbox' name='activePersonStaff' value='1'/><br/>";
-    echo __($guid, 'Parent')." <input type='checkbox' name='activePersonParent' value='1'/><br/>";
-    echo __($guid, 'Other')." <input type='checkbox' name='activePersonOther' value='1'/><br/>";
-    ?>
+						echo __($guid, 'Staff')." <input type='checkbox' name='activePersonStaff' value='1'/><br/>";
+						echo __($guid, 'Parent')." <input type='checkbox' name='activePersonParent' value='1'/><br/>";
+						echo __($guid, 'Other')." <input type='checkbox' name='activePersonOther' value='1'/><br/>"; ?>
 				</td>
 			</tr>
 			<tr>
@@ -169,8 +164,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_add.
 					<select class="standardWidth" name="activeDataUpdater">
 						<?php
                         echo "<option value='1'>".__($guid, 'Yes').'</option>';
-    echo "<option value='0'>".__($guid, 'No').'</option>';
-    ?>				
+    					echo "<option value='0'>".__($guid, 'No').'</option>';?>				
 					</select>
 				</td>
 			</tr>
@@ -182,21 +176,18 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_add.
 					<select class="standardWidth" name="activeApplicationForm">
 						<?php
                         echo "<option value='1'>".__($guid, 'Yes').'</option>';
-    echo "<option selected value='0'>".__($guid, 'No').'</option>';
-    ?>				
+   						 echo "<option selected value='0'>".__($guid, 'No').'</option>';?>				
 					</select>
 				</td>
 			</tr>
 			
 			<tr>
 				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-    ?></span>
+					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>

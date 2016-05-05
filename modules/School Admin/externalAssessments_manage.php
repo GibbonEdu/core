@@ -84,8 +84,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
                 $rowNum = 'error';
             }
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$rowNum>";
             echo '<td>';
             echo '<b>'.__($guid, $row['name']).'</b><br/>';
             echo '</td>';

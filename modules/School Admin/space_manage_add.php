@@ -44,8 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
 			<tr>
 				<td style='width: 275px'> 
 					<b><?php echo __($guid, 'Name') ?> *</b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Must be unique.');
-    ?></span>
+					<span class="emphasis small"><?php echo __($guid, 'Must be unique.'); ?></span>
 				</td>
 				<td class="right">
 					<input name="name" id="name" maxlength=30 value="" type="text" class="standardWidth">
@@ -57,8 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
 			</tr>
 			<?php
             $types = getSettingByScope($connection2, 'School Admin', 'facilityTypes');
-    $types = explode(',', $types);
-    ?>
+    		$types = explode(',', $types); ?>
 			<tr>
 				<td> 
 					<b><?php echo __($guid, 'Type') ?> *</b><br/>
@@ -74,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
 						<?php
 
                         }
-    ?>
+   				 		?>
 					</select>
 					<script type="text/javascript">
 						var type=new LiveValidation('type');
@@ -90,18 +88,18 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
 					<select class="standardWidth" name="gibbonPersonID1">
 						<?php
                         echo "<option value=''></option>";
-    try {
-        $data = array();
-        $sql = "SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
-    while ($row = $result->fetch()) {
-        echo "<option value='".$row['gibbonPersonID']."'>".formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Staff', true, true).'</option>';
-    }
-    ?>				
+						try {
+							$data = array();
+							$sql = "SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
+							$result = $connection2->prepare($sql);
+							$result->execute($data);
+						} catch (PDOException $e) {
+							echo "<div class='error'>".$e->getMessage().'</div>';
+						}
+						while ($row = $result->fetch()) {
+							echo "<option value='".$row['gibbonPersonID']."'>".formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Staff', true, true).'</option>';
+						}
+						?>				
 					</select>
 				</td>
 			</tr>
@@ -113,18 +111,18 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
 					<select class="standardWidth" name="gibbonPersonID2">
 						<?php
                         echo "<option value=''></option>";
-    try {
-        $data = array();
-        $sql = "SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
-    while ($row = $result->fetch()) {
-        echo "<option value='".$row['gibbonPersonID']."'>".formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Staff', true, true).'</option>';
-    }
-    ?>				
+						try {
+							$data = array();
+							$sql = "SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
+							$result = $connection2->prepare($sql);
+							$result->execute($data);
+						} catch (PDOException $e) {
+							echo "<div class='error'>".$e->getMessage().'</div>';
+						}
+						while ($row = $result->fetch()) {
+							echo "<option value='".$row['gibbonPersonID']."'>".formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Staff', true, true).'</option>';
+						}
+						?>				
 					</select>
 				</td>
 			</tr>
@@ -264,13 +262,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
 			</tr>
 			<tr>
 				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-    ?></span>
+					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>

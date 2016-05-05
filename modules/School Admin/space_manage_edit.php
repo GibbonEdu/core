@@ -56,15 +56,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
-            ?>
+            $row = $result->fetch(); ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/space_manage_editProcess.php?gibbonSpaceID='.$gibbonSpaceID ?>">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php echo __($guid, 'Name') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Must be unique.');
-            ?></span>
+							<span class="emphasis small"><?php echo __($guid, 'Must be unique.'); ?></span>
 						</td>
 						<td class="right">
 							<input name="name" id="name" maxlength=30 value="<?php echo htmlPrep($row['name']) ?>" type="text" class="standardWidth">
@@ -76,8 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
 					</tr>
 					<?php
                     $types = getSettingByScope($connection2, 'School Admin', 'facilityTypes');
-            $types = explode(',', $types);
-            ?>
+            		$types = explode(',', $types); ?>
 					<tr>
 						<td> 
 							<b><?php echo __($guid, 'Type') ?> *</b><br/>
@@ -97,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
 								<?php
 
                                 }
-            ?>
+           	 					?>
 							</select>
 							<script type="text/javascript">
 								var type=new LiveValidation('type');
@@ -113,21 +110,21 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
 							<select class="standardWidth" name="gibbonPersonID1">
 								<?php
                                 echo "<option value=''></option>";
-            try {
-                $dataStaff = array();
-                $sqlStaff = "SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
-                $resultStaff = $connection2->prepare($sqlStaff);
-                $resultStaff->execute($dataStaff);
-            } catch (PDOException $e) {
-            }
-            while ($rowStaff = $resultStaff->fetch()) {
-                echo '<option';
-                if ($row['gibbonPersonID1'] == $rowStaff['gibbonPersonID']) {
-                    echo ' selected';
-                };
-                echo " value='".$rowStaff['gibbonPersonID']."'>".formatName('', htmlPrep($rowStaff['preferredName']), htmlPrep($rowStaff['surname']), 'Staff', true, true).'</option>';
-            }
-            ?>				
+								try {
+									$dataStaff = array();
+									$sqlStaff = "SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
+									$resultStaff = $connection2->prepare($sqlStaff);
+									$resultStaff->execute($dataStaff);
+								} catch (PDOException $e) {
+								}
+								while ($rowStaff = $resultStaff->fetch()) {
+									echo '<option';
+									if ($row['gibbonPersonID1'] == $rowStaff['gibbonPersonID']) {
+										echo ' selected';
+									};
+									echo " value='".$rowStaff['gibbonPersonID']."'>".formatName('', htmlPrep($rowStaff['preferredName']), htmlPrep($rowStaff['surname']), 'Staff', true, true).'</option>';
+								}
+								?>				
 							</select>
 						</td>
 					</tr>
@@ -139,21 +136,21 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
 							<select class="standardWidth" name="gibbonPersonID2">
 								<?php
                                 echo "<option value=''></option>";
-            try {
-                $dataStaff = array();
-                $sqlStaff = "SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
-                $resultStaff = $connection2->prepare($sqlStaff);
-                $resultStaff->execute($dataStaff);
-            } catch (PDOException $e) {
-            }
-            while ($rowStaff = $resultStaff->fetch()) {
-                echo '<option';
-                if ($row['gibbonPersonID2'] == $rowStaff['gibbonPersonID']) {
-                    echo ' selected';
-                };
-                echo " value='".$rowStaff['gibbonPersonID']."'>".formatName('', htmlPrep($rowStaff['preferredName']), htmlPrep($rowStaff['surname']), 'Staff', true, true).'</option>';
-            }
-            ?>				
+								try {
+									$dataStaff = array();
+									$sqlStaff = "SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
+									$resultStaff = $connection2->prepare($sqlStaff);
+									$resultStaff->execute($dataStaff);
+								} catch (PDOException $e) {
+								}
+								while ($rowStaff = $resultStaff->fetch()) {
+									echo '<option';
+									if ($row['gibbonPersonID2'] == $rowStaff['gibbonPersonID']) {
+										echo ' selected';
+									};
+									echo " value='".$rowStaff['gibbonPersonID']."'>".formatName('', htmlPrep($rowStaff['preferredName']), htmlPrep($rowStaff['surname']), 'Staff', true, true).'</option>';
+								}
+								?>				
 							</select>
 						</td>
 					</tr>
@@ -176,14 +173,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
 						</td>
 						<td class="right">
 							<select name="computer" id="computer" class="standardWidth">
-								<option <?php if ($row['computer'] == 'N') {
-    echo 'selected ';
-}
-            ?>value="N">N</option>
-								<option <?php if ($row['computer'] == 'Y') {
-    echo 'selected ';
-}
-            ?>value="Y">Y</option>
+								<option <?php if ($row['computer'] == 'N') { echo 'selected '; } ?>value="N">N</option>
+								<option <?php if ($row['computer'] == 'Y') { echo 'selected '; } ?>value="Y">Y</option>
 							</select>
 						</td>
 					</tr>
@@ -206,14 +197,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
 						</td>
 						<td class="right">
 							<select name="projector" id="projector" class="standardWidth">
-								<option <?php if ($row['projector'] == 'N') {
-    echo 'selected ';
-}
-            ?>value="N">N</option>
-								<option <?php if ($row['projector'] == 'Y') {
-    echo 'selected ';
-}
-            ?>value="Y">Y</option>
+								<option <?php if ($row['projector'] == 'N') { echo 'selected '; } ?>value="N">N</option>
+								<option <?php if ($row['projector'] == 'Y') { echo 'selected '; } ?>value="Y">Y</option>
 							</select>
 						</td>
 					</tr>
@@ -224,14 +209,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
 						</td>
 						<td class="right">
 							<select name="tv" id="tv" class="standardWidth">
-								<option <?php if ($row['tv'] == 'N') {
-    echo 'selected ';
-}
-            ?>value="N">N</option>
-								<option <?php if ($row['tv'] == 'Y') {
-    echo 'selected ';
-}
-            ?>value="Y">Y</option>
+								<option <?php if ($row['tv'] == 'N') { echo 'selected '; } ?>value="N">N</option>
+								<option <?php if ($row['tv'] == 'Y') { echo 'selected '; } ?>value="Y">Y</option>
 							</select>
 						</td>
 					</tr>
@@ -242,14 +221,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
 						</td>
 						<td class="right">
 							<select name="dvd" id="dvd" class="standardWidth">
-								<option <?php if ($row['dvd'] == 'N') {
-    echo 'selected ';
-}
-            ?>value="N">N</option>
-								<option <?php if ($row['dvd'] == 'Y') {
-    echo 'selected ';
-}
-            ?>value="Y">Y</option>
+								<option <?php if ($row['dvd'] == 'N') { echo 'selected '; } ?>value="N">N</option>
+								<option <?php if ($row['dvd'] == 'Y') { echo 'selected '; } ?>value="Y">Y</option>
 							</select>
 						</td>
 					</tr>
@@ -260,14 +233,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
 						</td>
 						<td class="right">
 							<select name="hifi" id="hifi" class="standardWidth">
-								<option <?php if ($row['hifi'] == 'N') {
-    echo 'selected ';
-}
-            ?>value="N">N</option>
-								<option <?php if ($row['hifi'] == 'Y') {
-    echo 'selected ';
-}
-            ?>value="Y">Y</option>
+								<option <?php if ($row['hifi'] == 'N') { echo 'selected '; } ?>value="N">N</option>
+								<option <?php if ($row['hifi'] == 'Y') { echo 'selected '; } ?>value="Y">Y</option>
 							</select>
 						</td>
 					</tr>
@@ -278,14 +245,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
 						</td>
 						<td class="right">
 							<select name="speakers" id="speakers" class="standardWidth">
-								<option <?php if ($row['speakers'] == 'N') {
-    echo 'selected ';
-}
-            ?>value="N">N</option>
-								<option <?php if ($row['speakers'] == 'Y') {
-    echo 'selected ';
-}
-            ?>value="Y">Y</option>
+								<option <?php if ($row['speakers'] == 'N') { echo 'selected '; } ?>value="N">N</option>
+								<option <?php if ($row['speakers'] == 'Y') { echo 'selected '; } ?>value="Y">Y</option>
 							</select>
 						</td>
 					</tr>
@@ -296,14 +257,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
 						</td>
 						<td class="right">
 							<select name="iwb" id="iwb" class="standardWidth">
-								<option <?php if ($row['iwb'] == 'N') {
-    echo 'selected ';
-}
-            ?>value="N">N</option>
-								<option <?php if ($row['iwb'] == 'Y') {
-    echo 'selected ';
-}
-            ?>value="Y">Y</option>
+								<option <?php if ($row['iwb'] == 'N') { echo 'selected '; } ?>value="N">N</option>
+								<option <?php if ($row['iwb'] == 'Y') { echo 'selected '; } ?>value="Y">Y</option>
 							</select>
 						</td>
 					</tr>
@@ -335,13 +290,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
 					</tr>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

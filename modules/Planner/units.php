@@ -163,12 +163,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                 } else {
                     echo __($guid, 'Previous Year').' ';
                 }
-            echo ' | ';
-            if (getNextSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/units.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."&gibbonCourseID=$gibbonCourseIDNext'>".__($guid, 'Next Year').'</a> ';
-            } else {
-                echo __($guid, 'Next Year').' ';
-            }
+				echo ' | ';
+				if (getNextSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
+					echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/units.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."&gibbonCourseID=$gibbonCourseIDNext'>".__($guid, 'Next Year').'</a> ';
+				} else {
+					echo __($guid, 'Next Year').' ';
+				}
             echo '</div>';
 
             if ($gibbonCourseID != '') {
@@ -238,8 +238,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                                 $rowNum = 'odd';
                             }
 
-                                //COLOR ROW BY STATUS!
-                                echo "<tr class=$rowNum>";
+                            //COLOR ROW BY STATUS!
+                            echo "<tr class=$rowNum>";
                             echo '<td>';
                             echo $row['name'];
                             echo '</td>';

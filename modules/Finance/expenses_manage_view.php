@@ -149,19 +149,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 										<td class="right">
 											<?php
                                             $yearName = '';
-                            try {
-                                $dataYear = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
-                                $sqlYear = 'SELECT * FROM gibbonFinanceBudgetCycle WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID';
-                                $resultYear = $connection2->prepare($sqlYear);
-                                $resultYear->execute($dataYear);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
-                            if ($resultYear->rowCount() == 1) {
-                                $rowYear = $resultYear->fetch();
-                                $yearName = $rowYear['name'];
-                            }
-                            ?>
+											try {
+												$dataYear = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
+												$sqlYear = 'SELECT * FROM gibbonFinanceBudgetCycle WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID';
+												$resultYear = $connection2->prepare($sqlYear);
+												$resultYear->execute($dataYear);
+											} catch (PDOException $e) {
+												echo "<div class='error'>".$e->getMessage().'</div>';
+											}
+											if ($resultYear->rowCount() == 1) {
+												$rowYear = $resultYear->fetch();
+												$yearName = $rowYear['name'];
+											}
+											?>
 											<input readonly name="name" id="name" maxlength=20 value="<?php echo $yearName ?>" type="text" class="standardWidth">
 											<input name="gibbonFinanceBudgetCycleID" id="gibbonFinanceBudgetCycleID" maxlength=20 value="<?php echo $gibbonFinanceBudgetCycleID ?>" type="hidden" class="standardWidth">
 											<script type="text/javascript">
@@ -175,8 +175,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 											<b><?php echo __($guid, 'Budget') ?></b><br/>
 										</td>
 										<td class="right">
-											<input readonly name="name" id="name" maxlength=20 value="<?php echo $row['budget'];
-                            ?>" type="text" class="standardWidth">
+											<input readonly name="name" id="name" maxlength=20 value="<?php echo $row['budget']; ?>" type="text" class="standardWidth">
 										</td>
 									</tr>
 									<tr>
@@ -184,8 +183,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 											<b><?php echo __($guid, 'Title') ?></b><br/>
 										</td>
 										<td class="right">
-											<input readonly name="name" id="name" maxlength=60 value="<?php echo $row['title'];
-                            ?>" type="text" class="standardWidth">
+											<input readonly name="name" id="name" maxlength=60 value="<?php echo $row['title']; ?>" type="text" class="standardWidth">
 										</td>
 									</tr>
 									<tr>
@@ -193,8 +191,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 											<b><?php echo __($guid, 'Status') ?></b><br/>
 										</td>
 										<td class="right">
-											<input readonly name="name" id="name" maxlength=60 value="<?php echo $row['status'];
-                            ?>" type="text" class="standardWidth">
+											<input readonly name="name" id="name" maxlength=60 value="<?php echo $row['status']; ?>" type="text" class="standardWidth">
 										</td>
 									</tr>
 									<tr>
@@ -202,8 +199,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 											<b><?php echo __($guid, 'Description') ?></b>
 											<?php 
                                                 echo '<p>';
-                            echo $row['body'];
-                            echo '</p>'
+												echo $row['body'];
+												echo '</p>'
                                             ?>
 										</td>
 									</tr>
@@ -218,13 +215,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                                                 } else {
                                                     echo __($guid, 'Numeric value of the fee.');
                                                 }
-                            ?>
+                            					?>
 												</i>
 											</span>
 										</td>
 										<td class="right">
-											<input readonly name="name" id="name" maxlength=60 value="<?php echo $row['cost'];
-                            ?>" type="text" class="standardWidth">
+											<input readonly name="name" id="name" maxlength=60 value="<?php echo $row['cost']; ?>" type="text" class="standardWidth">
 										</td>
 									</tr>
 									<tr>
@@ -232,8 +228,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 											<b><?php echo __($guid, 'Count Against Budget') ?> *</b><br/>
 										</td>
 										<td class="right">
-											<input readonly name="countAgainstBudget" id="countAgainstBudget" maxlength=60 value="<?php echo ynExpander($guid, $row['countAgainstBudget']);
-                            ?>" type="text" class="standardWidth">
+											<input readonly name="countAgainstBudget" id="countAgainstBudget" maxlength=60 value="<?php echo ynExpander($guid, $row['countAgainstBudget']); ?>" type="text" class="standardWidth">
 										</td>
 									</tr>
 									<tr>
@@ -241,8 +236,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 											<b><?php echo __($guid, 'Purchase By') ?></b><br/>
 										</td>
 										<td class="right">
-											<input readonly name="purchaseBy" id="purchaseBy" maxlength=60 value="<?php echo $row['purchaseBy'];
-                            ?>" type="text" class="standardWidth">
+											<input readonly name="purchaseBy" id="purchaseBy" maxlength=60 value="<?php echo $row['purchaseBy']; ?>" type="text" class="standardWidth">
 										</td>
 									</tr>
 									<tr>
@@ -250,8 +244,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 											<b><?php echo __($guid, 'Purchase Details') ?></b>
 											<?php 
                                                 echo '<p>';
-                            echo $row['purchaseDetails'];
-                            echo '</p>'
+												echo $row['purchaseDetails'];
+												echo '</p>'
                                             ?>
 										</td>
 									</tr>
@@ -265,7 +259,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 										<td colspan=2> 
 											<?php
                                             echo getExpenseLog($guid, $gibbonFinanceExpenseID, $connection2);
-                            ?>
+                            				?>
 										</td>
 									</tr>
 									
@@ -294,7 +288,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                                                 if ($_SESSION[$guid]['currency'] != '') {
                                                     echo "<span style='font-style: italic; font-size: 85%'>".$_SESSION[$guid]['currency'].'</span>';
                                                 }
-                                        ?>
+                                        		?>
 												</span>
 											</td>
 											<td class="right">
@@ -315,14 +309,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                                                     $resultSelect->execute($dataSelect);
                                                 } catch (PDOException $e) {
                                                 }
-                                        if ($resultSelect->rowCount() == 1) {
-                                            $rowSelect = $resultSelect->fetch();
-                                            ?>
-													<input readonly name="payee" id="payee" maxlength=10 value="<?php echo formatName(htmlPrep($rowSelect['title']), ($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true) ?>" type="text" class="standardWidth">
-													<?php
+												if ($resultSelect->rowCount() == 1) {
+													$rowSelect = $resultSelect->fetch();
+													?>
+															<input readonly name="payee" id="payee" maxlength=10 value="<?php echo formatName(htmlPrep($rowSelect['title']), ($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true) ?>" type="text" class="standardWidth">
+															<?php
 
-                                        }
-                                        ?>	
+												}
+												?>	
 											</td>
 										</tr>
 										<tr id="paymentMethodRow">
@@ -345,7 +339,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 										<?php
 
                                     }
-                            ?>
+                            		?>
 								</table>
 							</form>
 							<?php

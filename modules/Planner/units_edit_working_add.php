@@ -321,109 +321,109 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
                             $rowNum = 'odd';
                             $divide = false; //Have we passed gotten to today yet?
 
-                                    foreach ($lessons as $lesson) {
-                                        if ($count % 2 == 0) {
-                                            $rowNum = 'even';
-                                        } else {
-                                            $rowNum = 'odd';
-                                        }
+							foreach ($lessons as $lesson) {
+								if ($count % 2 == 0) {
+									$rowNum = 'even';
+								} else {
+									$rowNum = 'odd';
+								}
 
-                                        $style = '';
-                                        if ($lesson[1] >= date('Y-m-d') and $divide == false) {
-                                            $divide = true;
-                                            $style = "style='border-top: 2px solid #333'";
-                                        }
+								$style = '';
+								if ($lesson[1] >= date('Y-m-d') and $divide == false) {
+									$divide = true;
+									$style = "style='border-top: 2px solid #333'";
+								}
 
-                                        if ($divide == false) {
-                                            $rowNum = 'error';
-                                        }
-                                        ++$count;
+								if ($divide == false) {
+									$rowNum = 'error';
+								}
+								++$count;
 
-                                        //Spit out row for start of term
-                                        while ($lesson['1'] >= $terms[$termCount][0] and $termCount < (count($terms) - 1)) {
-                                            if (substr($terms[$termCount][1], 0, 3) == 'End' and $lesson['1'] == $terms[$termCount][0]) {
-                                                break;
-                                            } else {
-                                                echo "<tr class='dull'>";
-                                                echo '<td>';
-                                                echo '<b>'.$terms[$termCount][1].'</b>';
-                                                echo '</td>';
-                                                echo '<td colspan=6>';
-                                                echo dateConvertBack($guid, $terms[$termCount][0]);
-                                                echo '</td>';
-                                                echo '</tr>';
-                                                ++$termCount;
-                                            }
-                                        }
+								//Spit out row for start of term
+								while ($lesson['1'] >= $terms[$termCount][0] and $termCount < (count($terms) - 1)) {
+									if (substr($terms[$termCount][1], 0, 3) == 'End' and $lesson['1'] == $terms[$termCount][0]) {
+										break;
+									} else {
+										echo "<tr class='dull'>";
+										echo '<td>';
+										echo '<b>'.$terms[$termCount][1].'</b>';
+										echo '</td>';
+										echo '<td colspan=6>';
+										echo dateConvertBack($guid, $terms[$termCount][0]);
+										echo '</td>';
+										echo '</tr>';
+										++$termCount;
+									}
+								}
 
-                                        //Spit out row for special day
-                                        while ($lesson['1'] >= @$specials[$specialCount][0] and $specialCount < count($specials)) {
-                                            echo "<tr class='dull'>";
-                                            echo '<td>';
-                                            echo '<b>'.$specials[$specialCount][1].'</b>';
-                                            echo '</td>';
-                                            echo '<td colspan=6>';
-                                            echo $specials[$specialCount][2];
-                                            echo '</td>';
-                                            echo '</tr>';
-                                            ++$specialCount;
-                                        }
+								//Spit out row for special day
+								while ($lesson['1'] >= @$specials[$specialCount][0] and $specialCount < count($specials)) {
+									echo "<tr class='dull'>";
+									echo '<td>';
+									echo '<b>'.$specials[$specialCount][1].'</b>';
+									echo '</td>';
+									echo '<td colspan=6>';
+									echo $specials[$specialCount][2];
+									echo '</td>';
+									echo '</tr>';
+									++$specialCount;
+								}
 
-                                        //COLOR ROW BY STATUS!
-                                        if ($lesson[8] != 'School Closure') {
-                                            echo "<tr class=$rowNum>";
-                                            echo "<td $style>";
-                                            echo '<b>Lesson '.($classCount + 1).'</b>';
-                                            echo '</td>';
-                                            echo "<td $style>";
-                                            echo dateConvertBack($guid, $lesson['1']).'<br/>';
-                                            if ($lesson[8] == 'Timing Change') {
-                                                echo '<u>'.$lesson[8].'</u><br/><i>('.substr($lesson[9], 0, 5).'-'.substr($lesson[10], 0, 5).')</i>';
-                                            }
-                                            echo '</td>';
-                                            echo "<td $style>";
-                                            echo date('D', dateConvertToTimestamp($lesson['1']));
-                                            echo '</td>';
-                                            echo "<td $style>";
-                                            echo date('M', dateConvertToTimestamp($lesson['1']));
-                                            echo '</td>';
-                                            echo "<td $style>";
-                                            echo $lesson['4'].'<br/>';
-                                            echo substr($lesson['2'], 0, 5).' - '.substr($lesson['3'], 0, 5);
-                                            echo '</td>';
-                                            echo "<td $style>";
-                                            if ($lesson['0'] == 'Planned') {
-                                                echo $lesson['5'].'<br/>';
-                                            }
-                                            echo '</td>';
-                                            echo "<td $style>";
-                                            if ($lesson['0'] == 'Unplanned') {
-                                                echo "<input name='deploy$count' type='checkbox'>";
-                                                echo "<input name='date$count' type='hidden' value='".$lesson['1']."'>";
-                                                echo "<input name='timeStart$count' type='hidden' value='".$lesson['2']."'>";
-                                                echo "<input name='timeEnd$count' type='hidden' value='".$lesson['3']."'>";
-                                                echo "<input name='period$count' type='hidden' value='".$lesson['4']."'>";
-                                                echo "<input name='gibbonTTDayRowClassID$count' type='hidden' value='".$lesson['6']."'>";
-                                                echo "<input name='gibbonTTDayDateID$count' type='hidden' value='".$lesson['7']."'>";
-                                            }
-                                            echo '</td>';
-                                            echo '</tr>';
-                                            ++$classCount;
-                                        }
+								//COLOR ROW BY STATUS!
+								if ($lesson[8] != 'School Closure') {
+									echo "<tr class=$rowNum>";
+									echo "<td $style>";
+									echo '<b>Lesson '.($classCount + 1).'</b>';
+									echo '</td>';
+									echo "<td $style>";
+									echo dateConvertBack($guid, $lesson['1']).'<br/>';
+									if ($lesson[8] == 'Timing Change') {
+										echo '<u>'.$lesson[8].'</u><br/><i>('.substr($lesson[9], 0, 5).'-'.substr($lesson[10], 0, 5).')</i>';
+									}
+									echo '</td>';
+									echo "<td $style>";
+									echo date('D', dateConvertToTimestamp($lesson['1']));
+									echo '</td>';
+									echo "<td $style>";
+									echo date('M', dateConvertToTimestamp($lesson['1']));
+									echo '</td>';
+									echo "<td $style>";
+									echo $lesson['4'].'<br/>';
+									echo substr($lesson['2'], 0, 5).' - '.substr($lesson['3'], 0, 5);
+									echo '</td>';
+									echo "<td $style>";
+									if ($lesson['0'] == 'Planned') {
+										echo $lesson['5'].'<br/>';
+									}
+									echo '</td>';
+									echo "<td $style>";
+									if ($lesson['0'] == 'Unplanned') {
+										echo "<input name='deploy$count' type='checkbox'>";
+										echo "<input name='date$count' type='hidden' value='".$lesson['1']."'>";
+										echo "<input name='timeStart$count' type='hidden' value='".$lesson['2']."'>";
+										echo "<input name='timeEnd$count' type='hidden' value='".$lesson['3']."'>";
+										echo "<input name='period$count' type='hidden' value='".$lesson['4']."'>";
+										echo "<input name='gibbonTTDayRowClassID$count' type='hidden' value='".$lesson['6']."'>";
+										echo "<input name='gibbonTTDayDateID$count' type='hidden' value='".$lesson['7']."'>";
+									}
+									echo '</td>';
+									echo '</tr>';
+									++$classCount;
+								}
 
-                                        //Spit out row for end of term
-                                        while ($lesson['1'] >= @$terms[$termCount][0] and $termCount < count($terms) and substr($terms[$termCount][1], 0, 3) == 'End') {
-                                            echo "<tr class='dull'>";
-                                            echo '<td>';
-                                            echo '<b>'.$terms[$termCount][1].'</b>';
-                                            echo '</td>';
-                                            echo '<td colspan=6>';
-                                            echo dateConvertBack($guid, $terms[$termCount][0]);
-                                            echo '</td>';
-                                            echo '</tr>';
-                                            ++$termCount;
-                                        }
-                                    }
+								//Spit out row for end of term
+								while ($lesson['1'] >= @$terms[$termCount][0] and $termCount < count($terms) and substr($terms[$termCount][1], 0, 3) == 'End') {
+									echo "<tr class='dull'>";
+									echo '<td>';
+									echo '<b>'.$terms[$termCount][1].'</b>';
+									echo '</td>';
+									echo '<td colspan=6>';
+									echo dateConvertBack($guid, $terms[$termCount][0]);
+									echo '</td>';
+									echo '</tr>';
+									++$termCount;
+								}
+							}
 
                             if (@$terms[$termCount][0] != '') {
                                 echo "<tr class='dull'>";

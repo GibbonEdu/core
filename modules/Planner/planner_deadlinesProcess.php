@@ -56,8 +56,7 @@ if ($viewBy == 'date') {
     $params = "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView";
 }
 
-if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.php') == false) {
-    echo 'gere';
+if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.php') == false) { echo 'gere';
     $URL .= "&return=error0$params";
     header("Location: {$URL}");
 } else {

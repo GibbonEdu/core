@@ -136,8 +136,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
                     $rowSpecial = $resultSpecial->fetch();
                 }
 
-                    //Check which days are school days
-                    $days = array();
+				//Check which days are school days
+				$days = array();
                 $days['Mon'] = 'Y';
                 $days['Tue'] = 'Y';
                 $days['Wed'] = 'Y';
@@ -271,14 +271,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
         echo '<td class="right">';
         echo '<select style="width: 202px" name="gibbonTTDayID">';
 
-                            //Check which timetables are not already linked to this date
-                            try {
-                                $dataCheck = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-                                $sqlCheck = 'SELECT * FROM gibbonTT WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
-                                $resultCheck = $connection2->prepare($sqlCheck);
-                                $resultCheck->execute($dataCheck);
-                            } catch (PDOException $e) {
-                            }
+		//Check which timetables are not already linked to this date
+		try {
+			$dataCheck = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+			$sqlCheck = 'SELECT * FROM gibbonTT WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
+			$resultCheck = $connection2->prepare($sqlCheck);
+			$resultCheck->execute($dataCheck);
+		} catch (PDOException $e) {
+		}
 
         $tt = array();
         $count = 0;

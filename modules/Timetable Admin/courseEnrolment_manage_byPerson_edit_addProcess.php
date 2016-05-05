@@ -35,8 +35,7 @@ $type = $_GET['type'];
 $allUsers = $_GET['allUsers'];
 $search = $_GET['search'];
 
-if ($gibbonSchoolYearID == '' or $gibbonPersonID == '') {
-    echo 'Fatal error loading this page!';
+if ($gibbonSchoolYearID == '' or $gibbonPersonID == '') { echo 'Fatal error loading this page!';
 } else {
     $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/courseEnrolment_manage_byPerson_edit.php&type=$type&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID&allUsers=$allUsers&search=$search";
 

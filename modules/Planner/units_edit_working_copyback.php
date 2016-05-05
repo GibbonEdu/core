@@ -147,22 +147,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
 										<select class="standardWidth" name="working">
 											<?php
                                             echo "<option value='N'>".__($guid, 'No').'</option>';
-                        echo "<option value='Y'>".__($guid, 'Yes').'</option>';
-                        ?>				
+                        					echo "<option value='Y'>".__($guid, 'Yes').'</option>';
+                        					?>				
 										</select>
 									</td>
 								</tr>
 								<tr>
 									<td>
-										<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-                        ?></span>
+										<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 									</td>
 									<td class="right">
 										<input name="gibbonTTID" id="gibbonTTID" value="<?php echo $_GET['gibbonTTID'] ?>" type="hidden">
 										<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php echo $_GET['gibbonSchoolYearID'] ?>" type="hidden">
 										<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-										<input type="submit" value="<?php echo __($guid, 'Submit');
-                        ?>">
+										<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 									</td>
 								</tr>
 							</table>

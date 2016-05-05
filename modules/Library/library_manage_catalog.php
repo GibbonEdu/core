@@ -96,121 +96,116 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
     //Display filters
     echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Library/library_manage_catalog.php'>";
-    echo "<table class='noIntBorder' cellspacing='0' style='width: 100%'>";
-    ?>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'ID/Name/Producer') ?></b><br/>
-					<span class="emphasis small"></span>
-				</td>
-				<td class="right">
-					<?php
-                    echo "<input type='text' name='name' id='name' value='".htmlPrep($name)."' style='width:302px'/>";
-    ?>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Type') ?></b><br/>
-					<span class="emphasis small"></span>
-				</td>
-				<td class="right">
-					<?php
-                    try {
-                        $dataType = array();
-                        $sqlType = "SELECT * FROM gibbonLibraryType WHERE active='Y' ORDER BY name";
-                        $resultType = $connection2->prepare($sqlType);
-                        $resultType->execute($dataType);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
-    echo "<select name='gibbonLibraryTypeID' id='gibbonLibraryTypeID' style='width:302px'>";
-    echo "<option value=''></option>";
-    while ($rowType = $resultType->fetch()) {
-        $selected = '';
-        if ($rowType['gibbonLibraryTypeID'] == $gibbonLibraryTypeID) {
-            $selected = 'selected';
-        }
-        echo "<option $selected value='".$rowType['gibbonLibraryTypeID']."'>".__($guid, $rowType['name']).'</option>';
-    }
-    echo '</select>';
-    ?>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Location') ?> *</b><br/>
-					<span class="emphasis small"></span>
-				</td>
-				<td class="right">
-					<?php
-                    try {
-                        $dataLocation = array();
-                        $sqlLocation = 'SELECT * FROM gibbonSpace ORDER BY name';
-                        $resultLocation = $connection2->prepare($sqlLocation);
-                        $resultLocation->execute($dataLocation);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
-    echo "<select name='gibbonSpaceID' id='gibbonSpaceID' style='width:302px'>";
-    echo "<option value=''></option>";
-    while ($rowLocation = $resultLocation->fetch()) {
-        $selected = '';
-        if ($rowLocation['gibbonSpaceID'] == $gibbonSpaceID) {
-            $selected = 'selected';
-        }
-        echo "<option $selected value='".$rowLocation['gibbonSpaceID']."'>".$rowLocation['name'].'</option>';
-    }
-    echo '</select>';
-    ?>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Status') ?></b><br/>
-					<span class="emphasis small"></span>
-				</td>
-				<td class="right">
-					<?php
+    echo "<table class='noIntBorder' cellspacing='0' style='width: 100%'>"; ?>
+		<tr>
+			<td> 
+				<b><?php echo __($guid, 'ID/Name/Producer') ?></b><br/>
+				<span class="emphasis small"></span>
+			</td>
+			<td class="right">
+				<?php
+				echo "<input type='text' name='name' id='name' value='".htmlPrep($name)."' style='width:302px'/>"; ?>
+			</td>
+		</tr>
+		<tr>
+			<td> 
+				<b><?php echo __($guid, 'Type') ?></b><br/>
+				<span class="emphasis small"></span>
+			</td>
+			<td class="right">
+				<?php
+				try {
+					$dataType = array();
+					$sqlType = "SELECT * FROM gibbonLibraryType WHERE active='Y' ORDER BY name";
+					$resultType = $connection2->prepare($sqlType);
+					$resultType->execute($dataType);
+				} catch (PDOException $e) {
+					echo "<div class='error'>".$e->getMessage().'</div>';
+				}
+				echo "<select name='gibbonLibraryTypeID' id='gibbonLibraryTypeID' style='width:302px'>";
+				echo "<option value=''></option>";
+				while ($rowType = $resultType->fetch()) {
+					$selected = '';
+					if ($rowType['gibbonLibraryTypeID'] == $gibbonLibraryTypeID) {
+						$selected = 'selected';
+					}
+					echo "<option $selected value='".$rowType['gibbonLibraryTypeID']."'>".__($guid, $rowType['name']).'</option>';
+				}
+				echo '</select>';?>
+			</td>
+		</tr>
+		<tr>
+			<td> 
+				<b><?php echo __($guid, 'Location') ?> *</b><br/>
+				<span class="emphasis small"></span>
+			</td>
+			<td class="right">
+				<?php
+				try {
+					$dataLocation = array();
+					$sqlLocation = 'SELECT * FROM gibbonSpace ORDER BY name';
+					$resultLocation = $connection2->prepare($sqlLocation);
+					$resultLocation->execute($dataLocation);
+				} catch (PDOException $e) {
+					echo "<div class='error'>".$e->getMessage().'</div>';
+				}
+				echo "<select name='gibbonSpaceID' id='gibbonSpaceID' style='width:302px'>";
+				echo "<option value=''></option>";
+				while ($rowLocation = $resultLocation->fetch()) {
+					$selected = '';
+					if ($rowLocation['gibbonSpaceID'] == $gibbonSpaceID) {
+						$selected = 'selected';
+					}
+					echo "<option $selected value='".$rowLocation['gibbonSpaceID']."'>".$rowLocation['name'].'</option>';
+				}
+				echo '</select>';?>
+			</td>
+		</tr>
+		<tr>
+			<td> 
+				<b><?php echo __($guid, 'Status') ?></b><br/>
+				<span class="emphasis small"></span>
+			</td>
+			<td class="right">
+				<?php
                     echo "<select name='status' id='status' style='width:302px'>";
-    echo "<option value=''></option>";
-    echo '<option ';
-    if ($status == 'Available') {
-        echo 'selected ';
-    }
-    echo "value='Available'>".__($guid, 'Available').'</option>';
-    echo '<option ';
-    if ($status == 'Decommissioned') {
-        echo 'selected ';
-    }
-    echo "value='Decommissioned'>".__($guid, 'Decommissioned').'</option>';
-    echo '<option ';
-    if ($status == 'In Use') {
-        echo 'selected ';
-    }
-    echo "value='In Use'>".__($guid, 'In Use').'</option>';
-    echo '<option ';
-    if ($status == 'Lost') {
-        echo 'selected ';
-    }
-    echo "value='Lost'>".__($guid, 'Lost').'</option>';
-    echo '<option ';
-    if ($status == 'On Loan') {
-        echo 'selected ';
-    }
-    echo "value='On Loan'>".__($guid, 'On Loan').'</option>';
-    echo '<option ';
-    if ($status == 'Repair') {
-        echo 'selected ';
-    }
-    echo "value='Repair'>".__($guid, 'Repair').'</option>';
-    echo '<option ';
-    if ($status == 'Reserved') {
-        echo 'selected ';
-    }
-    echo "value='Reserved'>".__($guid, 'Reserved').'</option>';
-    echo '</select>';
-    ?>
+					echo "<option value=''></option>";
+					echo '<option ';
+					if ($status == 'Available') {
+						echo 'selected ';
+					}
+					echo "value='Available'>".__($guid, 'Available').'</option>';
+					echo '<option ';
+					if ($status == 'Decommissioned') {
+						echo 'selected ';
+					}
+					echo "value='Decommissioned'>".__($guid, 'Decommissioned').'</option>';
+					echo '<option ';
+					if ($status == 'In Use') {
+						echo 'selected ';
+					}
+					echo "value='In Use'>".__($guid, 'In Use').'</option>';
+					echo '<option ';
+					if ($status == 'Lost') {
+						echo 'selected ';
+					}
+					echo "value='Lost'>".__($guid, 'Lost').'</option>';
+					echo '<option ';
+					if ($status == 'On Loan') {
+						echo 'selected ';
+					}
+					echo "value='On Loan'>".__($guid, 'On Loan').'</option>';
+					echo '<option ';
+					if ($status == 'Repair') {
+						echo 'selected ';
+					}
+					echo "value='Repair'>".__($guid, 'Repair').'</option>';
+					echo '<option ';
+					if ($status == 'Reserved') {
+						echo 'selected ';
+					}
+					echo "value='Reserved'>".__($guid, 'Reserved').'</option>';
+					echo '</select>';?>
 				</td>
 			</tr>
 			<tr>
@@ -221,23 +216,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 				<td class="right">
 					<?php
                     echo '<select name="gibbonPersonIDOwnership" id="gibbonPersonIDOwnership" style="width: 302px">';
-    echo "<option value=''></option>";
-    try {
-        $dataSelect = array();
-        $sqlSelect = "SELECT gibbonPersonID, preferredName, surname FROM gibbonPerson WHERE gibbonPerson.status='Full' ORDER BY surname, preferredName";
-        $resultSelect = $connection2->prepare($sqlSelect);
-        $resultSelect->execute($dataSelect);
-    } catch (PDOException $e) {
-    }
-    while ($rowSelect = $resultSelect->fetch()) {
-        $selected = '';
-        if ($rowSelect['gibbonPersonID'] == $gibbonPersonIDOwnership) {
-            $selected = 'selected';
-        }
-        echo "<option $selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).'</option>';
-    }
-    echo '</select>';
-    ?>
+					echo "<option value=''></option>";
+					try {
+						$dataSelect = array();
+						$sqlSelect = "SELECT gibbonPersonID, preferredName, surname FROM gibbonPerson WHERE gibbonPerson.status='Full' ORDER BY surname, preferredName";
+						$resultSelect = $connection2->prepare($sqlSelect);
+						$resultSelect->execute($dataSelect);
+					} catch (PDOException $e) {
+					}
+					while ($rowSelect = $resultSelect->fetch()) {
+						$selected = '';
+						if ($rowSelect['gibbonPersonID'] == $gibbonPersonIDOwnership) {
+							$selected = 'selected';
+						}
+						echo "<option $selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).'</option>';
+					}
+					echo '</select>';?>
 				</td>
 			</tr>
 			<tr>
@@ -247,20 +241,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 				</td>
 				<td class="right">
 					<?php
-                    echo "<input type='text' name='typeSpecificFields' id='typeSpecificFields' value='".htmlPrep($typeSpecificFields)."' style='width:302px'/>";
-    ?>
+                    echo "<input type='text' name='typeSpecificFields' id='typeSpecificFields' value='".htmlPrep($typeSpecificFields)."' style='width:302px'/>"; ?>
 				</td>
 			</tr>
 			<?php
             echo '<tr>';
-    echo "<td class='right' colspan=2>";
-    echo "<input type='hidden' name='q' value='".$_GET['q']."'>";
-    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Library/library_manage_catalog.php'>".__($guid, 'Clear Filters').'</a> ';
-    echo "<input type='submit' value='".__($guid, 'Go')."'>";
-    echo '</td>';
-    echo '</tr>';
-    echo '</table>';
-    echo '</form>';
+			echo "<td class='right' colspan=2>";
+			echo "<input type='hidden' name='q' value='".$_GET['q']."'>";
+			echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Library/library_manage_catalog.php'>".__($guid, 'Clear Filters').'</a> ';
+			echo "<input type='submit' value='".__($guid, 'Go')."'>";
+			echo '</td>';
+		echo '</tr>';
+	echo '</table>';
+	echo '</form>';
 
     //Set pagination variable
     $page = 1;
@@ -378,8 +371,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
                 $rowNum = 'odd';
             }
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$rowNum>";
             echo '<td>';
             echo '<b>'.$row['id'].'</b><br/>';
             try {

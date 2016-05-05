@@ -155,15 +155,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                                     }
                                 }
                             }
-        ?>				
+        					?>					
 						</select>
 					</td>
 				</tr>
 				<tr>
 					<td colspan=2 class="right">
 						<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/data_medical.php">
-						<input type="submit" value="<?php echo __($guid, 'Submit');
-        ?>">
+						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 					</td>
 				</tr>
 			</table>
@@ -280,42 +279,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 									</td>
 									<td class="right">
 										<select class="standardWidth" name="bloodType">
-											<option <?php if ($rowForm['bloodType'] == '') {
-    echo 'selected ';
-}
-                        ?>value=""></option>
-											<option <?php if ($rowForm['bloodType'] == 'O+') {
-    echo 'selected ';
-}
-                        ?>value="O+">O+</option>
-											<option <?php if ($rowForm['bloodType'] == 'A+') {
-    echo 'selected ';
-}
-                        ?>value="A+">A+</option>
-											<option <?php if ($rowForm['bloodType'] == 'B+') {
-    echo 'selected ';
-}
-                        ?>value="B+">B+</option>
-											<option <?php if ($rowForm['bloodType'] == 'AB+') {
-    echo 'selected ';
-}
-                        ?>value="AB+">AB+</option>
-											<option <?php if ($rowForm['bloodType'] == 'O-') {
-    echo 'selected ';
-}
-                        ?>value="O-">O-</option>
-											<option <?php if ($rowForm['bloodType'] == 'A-') {
-    echo 'selected ';
-}
-                        ?>value="A-">A-</option>
-											<option <?php if ($rowForm['bloodType'] == 'B-') {
-    echo 'selected ';
-}
-                        ?>value="B-">B-</option>
-											<option <?php if ($rowForm['bloodType'] == 'AB-') {
-    echo 'selected ';
-}
-                        ?>value="AB-">AB-</option>
+											<option <?php if ($rowForm['bloodType'] == '') { echo 'selected '; } ?>value=""></option>
+											<option <?php if ($rowForm['bloodType'] == 'O+') { echo 'selected '; } ?>value="O+">O+</option>
+											<option <?php if ($rowForm['bloodType'] == 'A+') { echo 'selected '; } ?>value="A+">A+</option>
+											<option <?php if ($rowForm['bloodType'] == 'B+') { echo 'selected '; } ?>value="B+">B+</option>
+											<option <?php if ($rowForm['bloodType'] == 'AB+') { echo 'selected '; } ?>value="AB+">AB+</option>
+											<option <?php if ($rowForm['bloodType'] == 'O-') { echo 'selected '; } ?>value="O-">O-</option>
+											<option <?php if ($rowForm['bloodType'] == 'A-') { echo 'selected '; } ?>value="A-">A-</option>
+											<option <?php if ($rowForm['bloodType'] == 'B-') { echo 'selected '; } ?>value="B-">B-</option>
+											<option <?php if ($rowForm['bloodType'] == 'AB-') { echo 'selected '; } ?>value="AB-">AB-</option>
 										</select>
 									</td>
 								</tr>
@@ -326,18 +298,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 									</td>
 									<td class="right">
 										<select class="standardWidth" name="longTermMedication">
-											<option <?php if ($rowForm['longTermMedication'] == '') {
-    echo 'selected ';
-}
-                        ?>value=""></option>
-											<option <?php if ($rowForm['longTermMedication'] == 'Y') {
-    echo 'selected ';
-}
-                        ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-											<option <?php if ($rowForm['longTermMedication'] == 'N') {
-    echo 'selected ';
-}
-                        ?>value="N"><?php echo __($guid, 'No') ?></option>
+											<option <?php if ($rowForm['longTermMedication'] == '') { echo 'selected '; } ?>value=""></option>
+											<option <?php if ($rowForm['longTermMedication'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
+											<option <?php if ($rowForm['longTermMedication'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
 										</select>
 									</td>
 								</tr>
@@ -356,18 +319,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 									</td>
 									<td class="right">
 										<select class="standardWidth" name="tetanusWithin10Years">
-											<option <?php if ($rowForm['tetanusWithin10Years'] == '') {
-    echo 'selected ';
-}
-                        ?>value=""></option>
-											<option <?php if ($rowForm['tetanusWithin10Years'] == 'Y') {
-    echo 'selected ';
-}
-                        ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-											<option <?php if ($rowForm['tetanusWithin10Years'] == 'N') {
-    echo 'selected ';
-}
-                        ?>value="N"><?php echo __($guid, 'No') ?></option>
+											<option <?php if ($rowForm['tetanusWithin10Years'] == '') { echo 'selected '; } ?>value=""></option>
+											<option <?php if ($rowForm['tetanusWithin10Years'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
+											<option <?php if ($rowForm['tetanusWithin10Years'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
 										</select>
 									</td>
 								</tr>
@@ -393,34 +347,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 
                             while ($rowCond = $resultCond->fetch()) {
                                 ?>
-										<tr class='break'>
-											<td colspan=2> 
-												<h3><?php echo __($guid, 'Medical Condition') ?> <?php echo $count + 1 ?></h3>
-											</td>
-										</tr>
-										<tr>
-											<td> 
-												<b><?php echo __($guid, 'Condition Name') ?> *</b><br/>
-											</td>
-											<td class="right">
-												<select class="standardWidth" name="name<?php echo $count ?>" id="name<?php echo $count ?>">
-													<?php
-                                                    try {
-                                                        $dataSelect = array();
-                                                        $sqlSelect = 'SELECT * FROM gibbonMedicalCondition ORDER BY name';
-                                                        $resultSelect = $connection2->prepare($sqlSelect);
-                                                        $resultSelect->execute($dataSelect);
-                                                    } catch (PDOException $e) {
-                                                    }
-                                echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-                                while ($rowSelect = $resultSelect->fetch()) {
-                                    if ($rowCond['name'] == $rowSelect['name']) {
-                                        echo "<option selected value='".htmlPrep($rowSelect['name'])."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-                                    } else {
-                                        echo "<option value='".htmlPrep($rowSelect['name'])."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-                                    }
-                                }
-                                ?>				
+								<tr class='break'>
+									<td colspan=2> 
+										<h3><?php echo __($guid, 'Medical Condition') ?> <?php echo $count + 1 ?></h3>
+									</td>
+								</tr>
+								<tr>
+									<td> 
+										<b><?php echo __($guid, 'Condition Name') ?> *</b><br/>
+									</td>
+									<td class="right">
+										<select class="standardWidth" name="name<?php echo $count ?>" id="name<?php echo $count ?>">
+											<?php
+											try {
+												$dataSelect = array();
+												$sqlSelect = 'SELECT * FROM gibbonMedicalCondition ORDER BY name';
+												$resultSelect = $connection2->prepare($sqlSelect);
+												$resultSelect->execute($dataSelect);
+											} catch (PDOException $e) {
+											}
+											echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
+											while ($rowSelect = $resultSelect->fetch()) {
+												if ($rowCond['name'] == $rowSelect['name']) {
+													echo "<option selected value='".htmlPrep($rowSelect['name'])."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
+												} else {
+													echo "<option value='".htmlPrep($rowSelect['name'])."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
+												}
+											}
+											?>				
 												</select>
 												<script type="text/javascript">
 													var name<?php echo $count ?>=new LiveValidation('name<?php echo $count ?>');
@@ -444,14 +398,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                                                     } catch (PDOException $e) {
                                                     }
 
-                                while ($rowSelect = $resultSelect->fetch()) {
-                                    $selected = '';
-                                    if ($rowCond['gibbonAlertLevelID'] == $rowSelect['gibbonAlertLevelID']) {
-                                        $selected = 'selected';
-                                    }
-                                    echo "<option $selected value='".$rowSelect['gibbonAlertLevelID']."'>".__($guid, $rowSelect['name']).'</option>';
-                                }
-                                ?>
+													while ($rowSelect = $resultSelect->fetch()) {
+														$selected = '';
+														if ($rowCond['gibbonAlertLevelID'] == $rowSelect['gibbonAlertLevelID']) {
+															$selected = 'selected';
+														}
+														echo "<option $selected value='".$rowSelect['gibbonAlertLevelID']."'>".__($guid, $rowSelect['name']).'</option>';
+													}
+													?>
 												</select>
 												<script type="text/javascript">
 													var gibbonAlertLevelID<?php echo $count ?>=new LiveValidation('gibbonAlertLevelID<?php echo $count ?>');
@@ -501,16 +455,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 												<script type="text/javascript">
 													var lastEpisode<?php echo $count ?>=new LiveValidation('lastEpisode<?php echo $count ?>');
 													lastEpisode<?php echo $count ?>.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-                                ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-                                ?>." } ); 
+														echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+													} else {
+														echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+													}
+																					?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+														echo 'dd/mm/yyyy';
+													} else {
+														echo $_SESSION[$guid]['i18n']['dateFormat'];
+													}
+                               					?>." } ); 
 												</script>
 												 <script type="text/javascript">
 													$(function() {
@@ -539,11 +493,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 										<input name="gibbonPersonMedicalConditionUpdateID<?php echo $count ?>" id="gibbonPersonMedicalConditionUpdateID<?php echo $count ?>" value="<?php echo htmlPrep($rowCond['gibbonPersonMedicalConditionUpdateID']) ?>" type="hidden">
 										<?php
                                         ++$count;
-                            }
+										}
 
-                            echo "<input name='count' id='count' value='$count' type='hidden'>";
-                        }
-                        ?>
+										echo "<input name='count' id='count' value='$count' type='hidden'>";
+									}
+									?>
 								<tr class='break'>
 									<td colspan=2> 
 										<h3><?php echo __($guid, 'Add Medical Condition') ?></h3>
@@ -585,15 +539,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                                                 $resultSelect->execute($dataSelect);
                                             } catch (PDOException $e) {
                                             }
-                        echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-                        while ($rowSelect = $resultSelect->fetch()) {
-                            if ($rowCond['name'] == $rowSelect['name']) {
-                                echo "<option selected value='".htmlPrep($rowSelect['name'])."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-                            } else {
-                                echo "<option value='".htmlPrep($rowSelect['name'])."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-                            }
-                        }
-                        ?>				
+											echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
+											while ($rowSelect = $resultSelect->fetch()) {
+												if ($rowCond['name'] == $rowSelect['name']) {
+													echo "<option selected value='".htmlPrep($rowSelect['name'])."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
+												} else {
+													echo "<option value='".htmlPrep($rowSelect['name'])."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
+												}
+											}
+											?>				
 										</select>
 										<script type="text/javascript">
 											var name2=new LiveValidation('name2');
@@ -617,10 +571,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                                             } catch (PDOException $e) {
                                             }
 
-                        while ($rowSelect = $resultSelect->fetch()) {
-                            echo "<option value='".$rowSelect['gibbonAlertLevelID']."'>".__($guid, $rowSelect['name']).'</option>';
-                        }
-                        ?>
+											while ($rowSelect = $resultSelect->fetch()) {
+												echo "<option value='".$rowSelect['gibbonAlertLevelID']."'>".__($guid, $rowSelect['name']).'</option>';
+											}
+											?>
 										</select>
 										<script type="text/javascript">
 											var gibbonAlertLevelID=new LiveValidation('gibbonAlertLevelID');
@@ -670,16 +624,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 										<script type="text/javascript">
 											var lastEpisode=new LiveValidation('lastEpisode');
 											lastEpisode.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-                        ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-                        ?>." } ); 
+												echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+											} else {
+												echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+											}
+																	?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+												echo 'dd/mm/yyyy';
+											} else {
+												echo $_SESSION[$guid]['i18n']['dateFormat'];
+											}
+                        					?>." } ); 
 										</script>
 										 <script type="text/javascript">
 											$(function() {
@@ -706,8 +660,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 								</tr>
 								<tr>
 									<td>
-										<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-                        ?></span>
+										<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 									</td>
 									<td class="right">
 										<?php
@@ -716,10 +669,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                                         } else {
                                             echo "<input type='hidden' name='existing' value='N'>";
                                         }
-                        ?>
-										<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-										<input type="submit" value="<?php echo __($guid, 'Submit');
-                        ?>">
+                        			?>										<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
+										<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 									</td>
 								</tr>
 							</table>

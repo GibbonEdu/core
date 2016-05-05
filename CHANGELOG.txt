@@ -76,6 +76,8 @@ v12.0.00
 		Departments: fixed filter in Homework link from Class view page
 		Finance: fixed <? bug
 		Finance: added ability to provide multiple company email addresses
+		Finance: fixed bug preventing printing of receipts when status is 'Paid - Partial'
+		Finance: added ability (off by default) for students to view their own invoices
 		Form Groups: adjusted labels in Sort By select
 		Formal Assessment: fixed issue with View Classes menu not appearing for a user with no classes (e.g. admin)
 		Formal Assessment: fixed uploaded response file selector gigantism issue
@@ -113,6 +115,7 @@ v12.0.00
 		Timetable: fixed rendering to allow Sunday as first day or the week, according to values in gibbonDaysOfWeek
 		Timetable: fixed rendering bug preventing some time labels from being displayed
 		Timetable: made "Back To Search" link persistent when timetable controls used
+		Timetable: added ability for department coordinator to manage facility changes within their department
 		Tracking: adjusted Data Points export to combine multiple column internal assessments for one subject into a column
 		User Admin: added notification to form tutor(s) when a student's privacy options change (via Edit or Data Update).
 		User Admin: made max_input_vars test a little more generous

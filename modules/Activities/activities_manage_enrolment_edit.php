@@ -93,47 +93,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 						</td>
 						<td class="right">
 							<select class="standardWidth" name="status">
-								<option <?php if ($row['status'] == 'Accepted') {
-    echo 'selected ';
-}
-            ?>value="Accepted"><?php echo __($guid, 'Accepted') ?></option>
+								<option <?php if ($row['status'] == 'Accepted') { echo 'selected '; } ?>value="Accepted"><?php echo __($guid, 'Accepted') ?></option>
 								<?php
                                 $enrolment = getSettingByScope($connection2, 'Activities', 'enrolmentType');
-            if ($enrolment == 'Competitive') {
-                ?>
-									<option <?php if ($row['status'] == 'Waiting List') {
-    echo 'selected ';
-}
-                ?>value="Waiting List"><?php echo __($guid, 'Waiting List') ?></option>
+								if ($enrolment == 'Competitive') {
+									?>
+									<option <?php if ($row['status'] == 'Waiting List') { echo 'selected '; } ?>value="Waiting List"><?php echo __($guid, 'Waiting List') ?></option>
 									<?php
-
-            } else {
-                ?>
-									<option <?php if ($row['status'] == 'Pending') {
-    echo 'selected ';
-}
-                ?>value="Pending"><?php echo __($guid, 'Pending') ?></option>
+									} else {
+										?>
+									<option <?php if ($row['status'] == 'Pending') { echo 'selected '; } ?>value="Pending"><?php echo __($guid, 'Pending') ?></option>
 									<?php
-
-            }
-            ?>
-								<option <?php if ($row['status'] == 'Not Accepted') {
-    echo 'selected ';
-}
-            ?>value="Not Accepted"><?php echo __($guid, 'Not Accepted') ?></option>
+									}
+									?>
+									<option <?php if ($row['status'] == 'Not Accepted') { echo 'selected '; } ?>value="Not Accepted"><?php echo __($guid, 'Not Accepted') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input name="gibbonPersonID" id="gibbonPersonID" value="<?php echo $gibbonPersonID ?>" type="hidden">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

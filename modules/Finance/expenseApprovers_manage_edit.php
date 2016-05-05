@@ -56,8 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
-            ?>
+            $row = $result->fetch(); ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/expenseApprovers_manage_editProcess.php?gibbonFinanceExpenseApproverID=$gibbonFinanceExpenseApproverID" ?>">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
@@ -75,14 +74,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
                                     $resultSelect->execute($dataSelect);
                                 } catch (PDOException $e) {
                                 }
-            while ($rowSelect = $resultSelect->fetch()) {
-                $selected = '';
-                if ($row['gibbonPersonID'] == $rowSelect['gibbonPersonID']) {
-                    $selected = 'selected';
-                }
-                echo "<option $selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
-            }
-            ?>
+								while ($rowSelect = $resultSelect->fetch()) {
+									$selected = '';
+									if ($row['gibbonPersonID'] == $rowSelect['gibbonPersonID']) {
+										$selected = 'selected';
+									}
+									echo "<option $selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
+								}
+								?>
 							</select>
 							<script type="text/javascript">
 								var gibbonPersonID=new LiveValidation('gibbonPersonID');
@@ -92,8 +91,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
 					</tr>
 					<?php
                     $expenseApprovalType = getSettingByScope($connection2, 'Finance', 'expenseApprovalType');
-            if ($expenseApprovalType == 'Chain Of All') {
-                ?>
+            		if ($expenseApprovalType == 'Chain Of All') {
+               		?>
 						<tr>
 							<td> 
 								<b><?php echo __($guid, 'Sequence Number') ?> *</b><br/>
@@ -109,18 +108,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
 							</td>
 						</tr>
 						<?php
-
-            }
-            ?>
+					}
+					?>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

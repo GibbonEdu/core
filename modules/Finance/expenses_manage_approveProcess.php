@@ -38,8 +38,7 @@ $gibbonFinanceExpenseID = $_POST['gibbonFinanceExpenseID'];
 $status2 = $_POST['status2'];
 $gibbonFinanceBudgetID2 = $_POST['gibbonFinanceBudgetID2'];
 
-if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') {
-    echo 'Fatal error loading this page!';
+if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'Fatal error loading this page!';
 } else {
     $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/expenses_manage_approve.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2&status2=$status2";
     $URLApprove = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/expenses_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2&status2=$status2";

@@ -99,26 +99,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 						</td>
 						<td class="right">
 							<select name="status" id="status" class="standardWidth">
-								<option <?php if ($row['status'] == 'Married') {
-    echo 'selected ';
-}
-            ?>value="Married"><?php echo __($guid, 'Married') ?></option>
-								<option <?php if ($row['status'] == 'Separated') {
-    echo 'selected ';
-}
-            ?>value="Separated"><?php echo __($guid, 'Separated') ?></option>
-								<option <?php if ($row['status'] == 'Divorced') {
-    echo 'selected ';
-}
-            ?>value="Divorced"><?php echo __($guid, 'Divorced') ?></option>
-								<option <?php if ($row['status'] == 'De Facto') {
-    echo 'selected ';
-}
-            ?>value="De Facto"><?php echo __($guid, 'De Facto') ?></option>
-								<option <?php if ($row['status'] == 'Other') {
-    echo 'selected ';
-}
-            ?>value="Other"><?php echo __($guid, 'Other') ?></option>
+								<option <?php if ($row['status'] == 'Married') { echo 'selected '; } ?>value="Married"><?php echo __($guid, 'Married') ?></option>
+								<option <?php if ($row['status'] == 'Separated') { echo 'selected '; } ?>value="Separated"><?php echo __($guid, 'Separated') ?></option>
+								<option <?php if ($row['status'] == 'Divorced') { echo 'selected '; } ?>value="Divorced"><?php echo __($guid, 'Divorced') ?></option>
+								<option <?php if ($row['status'] == 'De Facto') { echo 'selected '; } ?>value="De Facto"><?php echo __($guid, 'De Facto') ?></option>
+								<option <?php if ($row['status'] == 'Other') { echo 'selected '; } ?>value="Other"><?php echo __($guid, 'Other') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -130,21 +115,21 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 							<select name="languageHomePrimary" id="languageHomePrimary" class="standardWidth">
 								<?php
                                 echo "<option value=''></option>";
-            try {
-                $dataSelect = array();
-                $sqlSelect = 'SELECT name FROM gibbonLanguage ORDER BY name';
-                $resultSelect = $connection2->prepare($sqlSelect);
-                $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) {
-            }
-            while ($rowSelect = $resultSelect->fetch()) {
-                $selected = '';
-                if ($row['languageHomePrimary'] == $rowSelect['name']) {
-                    $selected = 'selected';
-                }
-                echo "<option $selected value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-            }
-            ?>				
+								try {
+									$dataSelect = array();
+									$sqlSelect = 'SELECT name FROM gibbonLanguage ORDER BY name';
+									$resultSelect = $connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								} catch (PDOException $e) {
+								}
+								while ($rowSelect = $resultSelect->fetch()) {
+									$selected = '';
+									if ($row['languageHomePrimary'] == $rowSelect['name']) {
+										$selected = 'selected';
+									}
+									echo "<option $selected value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
+								}
+								?>				
 							</select>
 						</td>
 					</tr>
@@ -156,21 +141,21 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 							<select name="languageHomeSecondary" id="languageHomeSecondary" class="standardWidth">
 								<?php
                                 echo "<option value=''></option>";
-            try {
-                $dataSelect = array();
-                $sqlSelect = 'SELECT name FROM gibbonLanguage ORDER BY name';
-                $resultSelect = $connection2->prepare($sqlSelect);
-                $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) {
-            }
-            while ($rowSelect = $resultSelect->fetch()) {
-                $selected = '';
-                if ($row['languageHomeSecondary'] == $rowSelect['name']) {
-                    $selected = 'selected';
-                }
-                echo "<option $selected value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-            }
-            ?>				
+								try {
+									$dataSelect = array();
+									$sqlSelect = 'SELECT name FROM gibbonLanguage ORDER BY name';
+									$resultSelect = $connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								} catch (PDOException $e) {
+								}
+								while ($rowSelect = $resultSelect->fetch()) {
+									$selected = '';
+									if ($row['languageHomeSecondary'] == $rowSelect['name']) {
+										$selected = 'selected';
+									}
+									echo "<option $selected value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
+								}
+								?>				
 							</select>
 						</td>
 					</tr>
@@ -215,10 +200,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                                         $resultAuto->execute($dataAuto);
                                     } catch (PDOException $e) {
                                     }
-            while ($rowAuto = $resultAuto->fetch()) {
-                echo '"'.$rowAuto['name'].'", ';
-            }
-            ?>
+								while ($rowAuto = $resultAuto->fetch()) {
+									echo '"'.$rowAuto['name'].'", ';
+								}
+								?>
 								];
 								$( "#homeAddressDistrict" ).autocomplete({source: availableTags});
 							});
@@ -232,33 +217,31 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 							<select name="homeAddressCountry" id="homeAddressCountry" class="standardWidth">
 								<?php
                                 echo "<option value=''></option>";
-            try {
-                $dataSelect = array();
-                $sqlSelect = 'SELECT printable_name FROM gibbonCountry ORDER BY printable_name';
-                $resultSelect = $connection2->prepare($sqlSelect);
-                $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) {
-            }
-            while ($rowSelect = $resultSelect->fetch()) {
-                $selected = '';
-                if ($rowSelect['printable_name'] == $row['homeAddressCountry']) {
-                    $selected = ' selected';
-                }
-                echo "<option $selected value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
-            }
-            ?>				
+								try {
+									$dataSelect = array();
+									$sqlSelect = 'SELECT printable_name FROM gibbonCountry ORDER BY printable_name';
+									$resultSelect = $connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								} catch (PDOException $e) {
+								}
+								while ($rowSelect = $resultSelect->fetch()) {
+									$selected = '';
+									if ($rowSelect['printable_name'] == $row['homeAddressCountry']) {
+										$selected = ' selected';
+									}
+									echo "<option $selected value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
+								}
+								?>				
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>
@@ -365,72 +348,32 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                     foreach ($children as $child) {
                         echo '<td>';
                         ?>
-										<select name="relationships[]" id="relationships[]" style="width: 100%">
-											<option <?php if (@$relationships[$adult['gibbonPersonID']][$child['gibbonPersonID']] == '') {
-    echo 'selected';
-}
-                        ?> value=""></option>
-											<option <?php if (@$relationships[$adult['gibbonPersonID']][$child['gibbonPersonID']] == 'Mother') {
-    echo 'selected';
-}
-                        ?> value="Mother"><?php echo __($guid, 'Mother') ?></option>
-											<option <?php if (@$relationships[$adult['gibbonPersonID']][$child['gibbonPersonID']] == 'Father') {
-    echo 'selected';
-}
-                        ?> value="Father"><?php echo __($guid, 'Father') ?></option>
-											<option <?php if (@$relationships[$adult['gibbonPersonID']][$child['gibbonPersonID']] == 'Step-Mother') {
-    echo 'selected';
-}
-                        ?> value="Step-Mother"><?php echo __($guid, 'Step-Mother') ?></option>
-											<option <?php if (@$relationships[$adult['gibbonPersonID']][$child['gibbonPersonID']] == 'Step-Father') {
-    echo 'selected';
-}
-                        ?> value="Step-Father"><?php echo __($guid, 'Step-Father') ?></option>
-											<option <?php if (@$relationships[$adult['gibbonPersonID']][$child['gibbonPersonID']] == 'Adoptive Parent') {
-    echo 'selected';
-}
-                        ?> value="Adoptive Parent"><?php echo __($guid, 'Adoptive Parent') ?></option>
-											<option <?php if (@$relationships[$adult['gibbonPersonID']][$child['gibbonPersonID']] == 'Guardian') {
-    echo 'selected';
-}
-                        ?> value="Guardian"><?php echo __($guid, 'Guardian') ?></option>
-											<option <?php if (@$relationships[$adult['gibbonPersonID']][$child['gibbonPersonID']] == 'Grandmother') {
-    echo 'selected';
-}
-                        ?> value="Grandmother"><?php echo __($guid, 'Grandmother') ?></option>
-											<option <?php if (@$relationships[$adult['gibbonPersonID']][$child['gibbonPersonID']] == 'Grandfather') {
-    echo 'selected';
-}
-                        ?> value="Grandfather"><?php echo __($guid, 'Grandfather') ?></option>
-											<option <?php if (@$relationships[$adult['gibbonPersonID']][$child['gibbonPersonID']] == 'Aunt') {
-    echo 'selected';
-}
-                        ?> value="Aunt"><?php echo __($guid, 'Aunt') ?></option>
-											<option <?php if (@$relationships[$adult['gibbonPersonID']][$child['gibbonPersonID']] == 'Uncle') {
-    echo 'selected';
-}
-                        ?> value="Uncle"><?php echo __($guid, 'Uncle') ?></option>
-											<option <?php if (@$relationships[$adult['gibbonPersonID']][$child['gibbonPersonID']] == 'Nanny/Helper') {
-    echo 'selected';
-}
-                        ?> value="Nanny/Helper"><?php echo __($guid, 'Nanny/Helper') ?></option>
-											<option <?php if (@$relationships[$adult['gibbonPersonID']][$child['gibbonPersonID']] == 'Other') {
-    echo 'selected';
-}
-                        ?> value="Other"><?php echo __($guid, 'Other') ?></option>
-										</select>
-										<input type="hidden" name="gibbonPersonID1[]" value="<?php echo $adult['gibbonPersonID'] ?>">
-										<input type="hidden" name="gibbonPersonID2[]" value="<?php echo $child['gibbonPersonID'] ?>">
-										<?php
-                                    echo '</td>';
+							<select name="relationships[]" id="relationships[]" style="width: 100%">
+								<option <?php if (@$relationships[$adult['gibbonPersonID']][$child['gibbonPersonID']] == '') { echo 'selected'; } ?> value=""></option>
+								<option <?php if (@$relationships[$adult['gibbonPersonID']][$child['gibbonPersonID']] == 'Mother') { echo 'selected'; } ?> value="Mother"><?php echo __($guid, 'Mother') ?></option>
+								<option <?php if (@$relationships[$adult['gibbonPersonID']][$child['gibbonPersonID']] == 'Father') { echo 'selected'; } ?> value="Father"><?php echo __($guid, 'Father') ?></option>
+								<option <?php if (@$relationships[$adult['gibbonPersonID']][$child['gibbonPersonID']] == 'Step-Mother') { echo 'selected'; } ?> value="Step-Mother"><?php echo __($guid, 'Step-Mother') ?></option>
+								<option <?php if (@$relationships[$adult['gibbonPersonID']][$child['gibbonPersonID']] == 'Step-Father') { echo 'selected'; } ?> value="Step-Father"><?php echo __($guid, 'Step-Father') ?></option>
+								<option <?php if (@$relationships[$adult['gibbonPersonID']][$child['gibbonPersonID']] == 'Adoptive Parent') { echo 'selected'; } ?> value="Adoptive Parent"><?php echo __($guid, 'Adoptive Parent') ?></option>
+								<option <?php if (@$relationships[$adult['gibbonPersonID']][$child['gibbonPersonID']] == 'Guardian') { echo 'selected'; } ?> value="Guardian"><?php echo __($guid, 'Guardian') ?></option>
+								<option <?php if (@$relationships[$adult['gibbonPersonID']][$child['gibbonPersonID']] == 'Grandmother') { echo 'selected'; } ?> value="Grandmother"><?php echo __($guid, 'Grandmother') ?></option>
+								<option <?php if (@$relationships[$adult['gibbonPersonID']][$child['gibbonPersonID']] == 'Grandfather') { echo 'selected'; } ?> value="Grandfather"><?php echo __($guid, 'Grandfather') ?></option>
+								<option <?php if (@$relationships[$adult['gibbonPersonID']][$child['gibbonPersonID']] == 'Aunt') { echo 'selected'; } ?> value="Aunt"><?php echo __($guid, 'Aunt') ?></option>
+								<option <?php if (@$relationships[$adult['gibbonPersonID']][$child['gibbonPersonID']] == 'Uncle') { echo 'selected'; } ?> value="Uncle"><?php echo __($guid, 'Uncle') ?></option>
+								<option <?php if (@$relationships[$adult['gibbonPersonID']][$child['gibbonPersonID']] == 'Nanny/Helper') { echo 'selected'; } ?> value="Nanny/Helper"><?php echo __($guid, 'Nanny/Helper') ?></option>
+								<option <?php if (@$relationships[$adult['gibbonPersonID']][$child['gibbonPersonID']] == 'Other') { echo 'selected'; } ?> value="Other"><?php echo __($guid, 'Other') ?></option>
+							</select>
+							<input type="hidden" name="gibbonPersonID1[]" value="<?php echo $adult['gibbonPersonID'] ?>">
+							<input type="hidden" name="gibbonPersonID2[]" value="<?php echo $child['gibbonPersonID'] ?>">
+							<?php
+						echo '</td>';
                     }
                     echo '</tr>';
                 }
                 ?>
 						<tr><td colspan="<?php echo count($children) + 1 ?>" class="right">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-                ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td></tr>
 						<?php
                     echo '</table>';
@@ -478,8 +421,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                     }
                     ++$count;
 
-                        //COLOR ROW BY STATUS!
-                        echo "<tr class=$rowNum>";
+                    //COLOR ROW BY STATUS!
+                    echo "<tr class=$rowNum>";
                     echo '<td>';
                     echo getUserPhoto($guid, $child['image_240'], 75);
                     echo '</td>';
@@ -534,8 +477,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 						<td class="right">
 							<select name="gibbonPersonID" id="gibbonPersonID" class="standardWidth">
 								<?php
-                                echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-            ?>
+                                echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>'; ?>
 								<optgroup label='--<?php echo __($guid, 'Enroled Students') ?>--'>
 								<?php
                                 try {
@@ -545,10 +487,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                                     $resultSelect->execute($dataSelect);
                                 } catch (PDOException $e) {
                                 }
-            while ($rowSelect = $resultSelect->fetch()) {
-                echo "<option value='".$rowSelect['gibbonPersonID']."'>".htmlPrep($rowSelect['name']).' - '.formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student').'</option>';
-            }
-            ?>
+								while ($rowSelect = $resultSelect->fetch()) {
+									echo "<option value='".$rowSelect['gibbonPersonID']."'>".htmlPrep($rowSelect['name']).' - '.formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student').'</option>';
+								}
+								?>
 								</optgroup>
 								<optgroup label='--<?php echo __($guid, 'All Users') ?>--'>
 								<?php
@@ -559,14 +501,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                                     $resultSelect->execute($dataSelect);
                                 } catch (PDOException $e) {
                                 }
-            while ($rowSelect = $resultSelect->fetch()) {
-                $expected = '';
-                if ($rowSelect['status'] == 'Expected') {
-                    $expected = ' (Expected)';
-                }
-                echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.$rowSelect['username'].')'.$expected.'</option>';
-            }
-            ?>
+								while ($rowSelect = $resultSelect->fetch()) {
+									$expected = '';
+									if ($rowSelect['status'] == 'Expected') {
+										$expected = ' (Expected)';
+									}
+									echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.$rowSelect['username'].')'.$expected.'</option>';
+								}
+								?>
 							</select>
 							<script type="text/javascript">
 								var gibbonPersonID=new LiveValidation('gibbonPersonID');
@@ -585,13 +527,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 					</tr>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>
@@ -654,8 +594,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                     }
                     ++$count;
 
-                        //COLOR ROW BY STATUS!
-                        echo "<tr class=$rowNum>";
+                    //COLOR ROW BY STATUS!
+                    echo "<tr class=$rowNum>";
                     echo '<td>';
                     echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID='.$adult['gibbonPersonID']."'>".formatName($adult['title'], $adult['preferredName'], $adult['surname'], 'Parent').'</a>';
                     echo '</td>';
@@ -712,21 +652,21 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 							<select name="gibbonPersonID2" id="gibbonPersonID2" class="standardWidth">
 								<?php
                                 echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-            try {
-                $dataSelect = array();
-                $sqlSelect = "SELECT status, gibbonPersonID, preferredName, surname, username FROM gibbonPerson WHERE status='Full' OR status='Expected' ORDER BY surname, preferredName";
-                $resultSelect = $connection2->prepare($sqlSelect);
-                $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) {
-            }
-            while ($rowSelect = $resultSelect->fetch()) {
-                $expected = '';
-                if ($rowSelect['status'] == 'Expected') {
-                    $expected = ' (Expected)';
-                }
-                echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Parent', true, true).' ('.$rowSelect['username'].')'.$expected.'</option>';
-            }
-            ?>				
+								try {
+									$dataSelect = array();
+									$sqlSelect = "SELECT status, gibbonPersonID, preferredName, surname, username FROM gibbonPerson WHERE status='Full' OR status='Expected' ORDER BY surname, preferredName";
+									$resultSelect = $connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								} catch (PDOException $e) {
+								}
+								while ($rowSelect = $resultSelect->fetch()) {
+									$expected = '';
+									if ($rowSelect['status'] == 'Expected') {
+										$expected = ' (Expected)';
+									}
+									echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Parent', true, true).' ('.$rowSelect['username'].')'.$expected.'</option>';
+								}
+								?>				
 							</select>
 							<script type="text/javascript">
 								var gibbonPersonID2=new LiveValidation('gibbonPersonID2');
@@ -775,10 +715,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 								$(document).ready(function(){
 									<?php 
                                     echo '$("#contactCall").attr("disabled", "disabled");';
-            echo '$("#contactSMS").attr("disabled", "disabled");';
-            echo '$("#contactEmail").attr("disabled", "disabled");';
-            echo '$("#contactMail").attr("disabled", "disabled");';
-            ?>	
+									echo '$("#contactSMS").attr("disabled", "disabled");';
+									echo '$("#contactEmail").attr("disabled", "disabled");';
+									echo '$("#contactMail").attr("disabled", "disabled");'; ?>	
 									$("#contactPriority").change(function(){
 										if ($('#contactPriority').val()=="1" ) {
 											$("#contactCall").attr("disabled", "disabled");
@@ -853,13 +792,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 					
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

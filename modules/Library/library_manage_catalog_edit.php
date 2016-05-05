@@ -113,21 +113,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 							<?php
                             //Get list of all ids already in use
                             $idList = '';
-            try {
-                $dataSelect = array();
-                $sqlSelect = "SELECT id FROM gibbonLibraryItem WHERE NOT id='".$row['id']."' ORDER BY id";
-                $resultSelect = $connection2->prepare($sqlSelect);
-                $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) {
-            }
-            while ($rowSelect = $resultSelect->fetch()) {
-                $idList .= "'".$rowSelect['id']."',";
-            }
-            ?>
+							try {
+								$dataSelect = array();
+								$sqlSelect = "SELECT id FROM gibbonLibraryItem WHERE NOT id='".$row['id']."' ORDER BY id";
+								$resultSelect = $connection2->prepare($sqlSelect);
+								$resultSelect->execute($dataSelect);
+							} catch (PDOException $e) {
+							}
+							while ($rowSelect = $resultSelect->fetch()) {
+								$idList .= "'".$rowSelect['id']."',";
+							}
+							?>
 							<script type="text/javascript">
 								var idCheck=new LiveValidation('idCheck');
-								idCheck.add( Validate.Exclusion, { within: [<?php echo $idList;
-            ?>], failureMessage: "ID already in use!", partialMatch: false, caseSensitive: false } );
+								idCheck.add( Validate.Exclusion, { within: [<?php echo $idList; ?>], failureMessage: "ID already in use!", partialMatch: false, caseSensitive: false } );
 								idCheck.add(Validate.Presence);
 							</script>
 						</td>
@@ -164,16 +163,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 							<script type="text/javascript">
 								var purchaseDate=new LiveValidation('purchaseDate');
 								purchaseDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-            ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-            ?>." } ); 
+								echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+								}
+											?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+									echo 'dd/mm/yyyy';
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormat'];
+								}
+								?>." } ); 
 							</script>
 							 <script type="text/javascript">
 								$(function() {
@@ -224,21 +223,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 						<td class="right">
 							<select name="imageType" id="imageType" class='imageType standardWidth'>
 								<option value=""></option>
-								<option <?php if ($row['imageType'] == 'File') {
-    echo 'selected';
-}
-            ?> value="File" /> <?php echo __($guid, 'File') ?>
-								<option <?php if ($row['imageType'] == 'Link') {
-    echo 'selected';
-}
-            ?> value="Link" /> <?php echo __($guid, 'Link') ?>
+								<option <?php if ($row['imageType'] == 'File') { echo 'selected'; } ?> value="File" /> <?php echo __($guid, 'File') ?>
+								<option <?php if ($row['imageType'] == 'Link') { echo 'selected'; } ?> value="Link" /> <?php echo __($guid, 'Link') ?>
 							</select>
 						</td>
 					</tr>
-					<tr id="imageFileRow" <?php if ($row['imageType'] != 'File') {
-    echo "style='display: none'";
-}
-            ?>>
+					<tr id="imageFileRow" <?php if ($row['imageType'] != 'File') { echo "style='display: none'"; } ?>>
 						<td> 
 							<b><?php echo __($guid, 'Image File') ?></b><br/>
 						</td>
@@ -247,41 +237,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
                             if ($row['imageType'] == 'File' and $row['imageLocation'] != '') {
                                 echo __($guid, 'Current attachment:')." <a href='".$_SESSION[$guid]['absoluteURL'].'/'.$row['imageLocation']."'>".$row['imageLocation'].'</a><br/><br/>';
                             }
-            ?>
+            				?>
 							<input type="file" name="imageFile" id="imageFile"><br/><br/>
 							<script type="text/javascript">
 								var imageFile=new LiveValidation('imageFile');
 								imageFile.add( Validate.Inclusion, { within: ['.jpg','.jpeg','.png','.gif'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
-								<?php if ($row['imageType'] != 'File') {
-    echo 'imageFile.disable();';
-}
-            ?>
+								<?php if ($row['imageType'] != 'File') { echo 'imageFile.disable();'; } ?>
 							</script>	
 							<?php
-                            echo getMaxUpload($guid);
-            ?>
+                            echo getMaxUpload($guid); ?>
 						</td>
 					</tr>
-					<tr id="imageLinkRow" <?php if ($row['imageType'] != 'Link') {
-    echo "style='display: none'";
-}
-            ?>>
+					<tr id="imageLinkRow" <?php if ($row['imageType'] != 'Link') { echo "style='display: none'"; } ?>>
 						<td> 
 							<b><?php echo __($guid, 'Image Link') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<input name="imageLink" id="imageLink" maxlength=255 value="<?php if ($row['imageType'] == 'Link') {
-    echo $row['imageLocation'];
-}
-            ?>" type="text" class="standardWidth">
+							<input name="imageLink" id="imageLink" maxlength=255 value="<?php if ($row['imageType'] == 'Link') { echo $row['imageLocation']; } ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var imageLink=new LiveValidation('imageLink');
 								imageLink.add(Validate.Presence);
 								imageLink.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
-								<?php if ($row['imageType'] != 'Link') {
-    echo 'imageLink.disable();';
-}
-            ?>
+								<?php if ($row['imageType'] != 'Link') { echo 'imageLink.disable();'; } ?>
 							</script>	
 						</td>
 					</tr>
@@ -296,21 +273,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 							<select name="gibbonSpaceID" id="gibbonSpaceID" class="standardWidth">
 								<?php
                                 echo "<option value=''></option>";
-            try {
-                $dataSelect = array();
-                $sqlSelect = 'SELECT * FROM gibbonSpace ORDER BY name';
-                $resultSelect = $connection2->prepare($sqlSelect);
-                $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) {
-            }
-            while ($rowSelect = $resultSelect->fetch()) {
-                $selected = '';
-                if ($row['gibbonSpaceID'] == $rowSelect['gibbonSpaceID']) {
-                    $selected = 'selected';
-                }
-                echo "<option $selected value='".$rowSelect['gibbonSpaceID']."'>".htmlPrep($rowSelect['name']).'</option>';
-            }
-            ?>				
+								try {
+									$dataSelect = array();
+									$sqlSelect = 'SELECT * FROM gibbonSpace ORDER BY name';
+									$resultSelect = $connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								} catch (PDOException $e) {
+								}
+								while ($rowSelect = $resultSelect->fetch()) {
+									$selected = '';
+									if ($row['gibbonSpaceID'] == $rowSelect['gibbonSpaceID']) {
+										$selected = 'selected';
+									}
+									echo "<option $selected value='".$rowSelect['gibbonSpaceID']."'>".htmlPrep($rowSelect['name']).'</option>';
+								}
+								?>				
 							</select>
 						</td>
 					</tr>
@@ -350,56 +327,46 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 						<td class="right">
 							<select name="ownershipType" id="ownershipType" class='ownershipType standardWidth'>
 								<option value=""></option>
-								<option <?php if ($row['ownershipType'] == 'School') {
-    echo 'selected';
-}
-            ?> value="School" /> <?php echo __($guid, 'School') ?>
-								<option <?php if ($row['ownershipType'] == 'Individual') {
-    echo 'selected';
-}
-            ?> value="Individual" /> <?php echo __($guid, 'Individual') ?>
+								<option <?php if ($row['ownershipType'] == 'School') { echo 'selected'; } ?> value="School" /> <?php echo __($guid, 'School') ?>
+								<option <?php if ($row['ownershipType'] == 'Individual') { echo 'selected'; } ?> value="Individual" /> <?php echo __($guid, 'Individual') ?>
 							</select>
 						</td>
 					</tr>
 					<?php
                     $selectContents = "<option value=''></option>";
-            $selectContents .= "<optgroup label='--".__($guid, 'Students By Roll Group')."--'>";
-            try {
-                $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                $sqlSelect = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonRollGroup.name AS name FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND status='FULL' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name, surname, preferredName";
-                $resultSelect = $connection2->prepare($sqlSelect);
-                $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) {
-            }
-            while ($rowSelect = $resultSelect->fetch()) {
-                $selectContents .= "<option value='".$rowSelect['gibbonPersonID']."'>".htmlPrep($rowSelect['name']).' - '.formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).'</option>';
-            }
-            $selectContents .= '</optgroup>';
-            $selectContents .= "<optgroup label='--<?php print __($guid, 'All Users') ?>--'>";
-            try {
-                $dataSelect = array();
-                $sqlSelect = "SELECT gibbonPersonID, surname, preferredName, status, username FROM gibbonPerson WHERE status='Full' OR status='Expected' ORDER BY surname, preferredName";
-                $resultSelect = $connection2->prepare($sqlSelect);
-                $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) {
-            }
-            while ($rowSelect = $resultSelect->fetch()) {
-                $expected = '';
-                if ($rowSelect['status'] == 'Expected') {
-                    $expected = ' '.__($guid, '(Expected)');
-                }
-                $selected = '';
-                if ($row['gibbonPersonIDOwnership'] == $rowSelect['gibbonPersonID']) {
-                    $selected = 'selected';
-                }
-                $selectContents .= "<option $selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.$rowSelect['username'].')'.$expected.'</option>';
-            }
-            $selectContents .= '</optgroup>';
-            ?>
-					<tr id="ownershipTypeSchoolRow" <?php if ($row['ownershipType'] != 'School') {
-    echo "style='display: none'";
-}
-            ?>>
+					$selectContents .= "<optgroup label='--".__($guid, 'Students By Roll Group')."--'>";
+					try {
+						$dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+						$sqlSelect = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonRollGroup.name AS name FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND status='FULL' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name, surname, preferredName";
+						$resultSelect = $connection2->prepare($sqlSelect);
+						$resultSelect->execute($dataSelect);
+					} catch (PDOException $e) {
+					}
+					while ($rowSelect = $resultSelect->fetch()) {
+						$selectContents .= "<option value='".$rowSelect['gibbonPersonID']."'>".htmlPrep($rowSelect['name']).' - '.formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).'</option>';
+					}
+					$selectContents .= '</optgroup>';
+					$selectContents .= "<optgroup label='--<?php print __($guid, 'All Users') ?>--'>";
+					try {
+						$dataSelect = array();
+						$sqlSelect = "SELECT gibbonPersonID, surname, preferredName, status, username FROM gibbonPerson WHERE status='Full' OR status='Expected' ORDER BY surname, preferredName";
+						$resultSelect = $connection2->prepare($sqlSelect);
+						$resultSelect->execute($dataSelect);
+					} catch (PDOException $e) {
+					}
+					while ($rowSelect = $resultSelect->fetch()) {
+						$expected = '';
+						if ($rowSelect['status'] == 'Expected') {
+							$expected = ' '.__($guid, '(Expected)');
+						}
+						$selected = '';
+						if ($row['gibbonPersonIDOwnership'] == $rowSelect['gibbonPersonID']) {
+							$selected = 'selected';
+						}
+						$selectContents .= "<option $selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.$rowSelect['username'].')'.$expected.'</option>';
+					}
+					$selectContents .= '</optgroup>'; ?>
+					<tr id="ownershipTypeSchoolRow" <?php if ($row['ownershipType'] != 'School') { echo "style='display: none'"; } ?>>
 						<td> 
 							<b><?php echo __($guid, 'Main User') ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Person the device is assigned to.') ?></span>
@@ -410,10 +377,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 							</select>
 						</td>
 					</tr>
-					<tr id="ownershipTypeIndividualRow" <?php if ($row['ownershipType'] != 'Individual') {
-    echo "style='display: none'";
-}
-            ?>>
+					<tr id="ownershipTypeIndividualRow" <?php if ($row['ownershipType'] != 'Individual') { echo "style='display: none'"; } ?>>
 						<td> 
 							<b><?php echo __($guid, 'Owner') ?></b><br/>
 						</td>
@@ -432,21 +396,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 							<select name="gibbonDepartmentID" id="gibbonDepartmentID" class="standardWidth">
 								<?php
                                 echo "<option value=''></option>";
-            try {
-                $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                $sqlSelect = 'SELECT * FROM gibbonDepartment ORDER BY name';
-                $resultSelect = $connection2->prepare($sqlSelect);
-                $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) {
-            }
-            while ($rowSelect = $resultSelect->fetch()) {
-                $selected = '';
-                if ($row['gibbonDepartmentID'] == $rowSelect['gibbonDepartmentID']) {
-                    $selected = 'selected';
-                }
-                echo "<option $selected value='".$rowSelect['gibbonDepartmentID']."'>".htmlPrep($rowSelect['name']).'</option>';
-            }
-            ?>
+								try {
+									$dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+									$sqlSelect = 'SELECT * FROM gibbonDepartment ORDER BY name';
+									$resultSelect = $connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								} catch (PDOException $e) {
+								}
+								while ($rowSelect = $resultSelect->fetch()) {
+									$selected = '';
+									if ($row['gibbonDepartmentID'] == $rowSelect['gibbonDepartmentID']) {
+										$selected = 'selected';
+									}
+									echo "<option $selected value='".$rowSelect['gibbonDepartmentID']."'>".htmlPrep($rowSelect['name']).'</option>';
+								}
+								?>
 							</select>
 						</td>
 					</tr>
@@ -457,14 +421,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 						</td>
 						<td class="right">
 							<select name="bookable" id="bookable" class="standardWidth">
-								<option <?php if ($row['bookable'] == 'N') {
-    echo 'selected';
-}
-            ?> value="N" /> <?php echo __($guid, 'No') ?>
-								<option <?php if ($row['bookable'] == 'Y') {
-    echo 'selected';
-}
-            ?> value="Y" /> <?php echo __($guid, 'Yes') ?>
+								<option <?php if ($row['bookable'] == 'N') { echo 'selected'; } ?> value="N" /> <?php echo __($guid, 'No') ?>
+								<option <?php if ($row['bookable'] == 'Y') { echo 'selected'; } ?> value="Y" /> <?php echo __($guid, 'Yes') ?>
 							</select>
 						</td>
 					</tr>
@@ -475,14 +433,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 						</td>
 						<td class="right">
 							<select name="borrowable" id="borrowable" class="borrowable standardWidth">
-								<option <?php if ($row['borrowable'] == 'Y') {
-    echo 'selected';
-}
-            ?> value="Y" /> <?php echo __($guid, 'Yes') ?>
-								<option <?php if ($row['borrowable'] == 'N') {
-    echo 'selected';
-}
-            ?> value="N" /> <?php echo __($guid, 'No') ?>
+								<option <?php if ($row['borrowable'] == 'Y') { echo 'selected'; } ?> value="Y" /> <?php echo __($guid, 'Yes') ?>
+								<option <?php if ($row['borrowable'] == 'N') { echo 'selected'; } ?> value="N" /> <?php echo __($guid, 'No') ?>
 							</select>
 						</td>
 					</tr>
@@ -501,10 +453,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 							 });
 						});
 					</script>
-					<tr id='statusRowBorrowable' <?php if ($row['borrowable'] == 'N') {
-    echo "style='display: none'";
-}
-            ?>>
+					<tr id='statusRowBorrowable' <?php if ($row['borrowable'] == 'N') { echo "style='display: none'"; } ?>>
 						<td> 
 							<b><?php echo __($guid, 'Status') ?>? *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
@@ -513,39 +462,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 							<input readonly name='statusBorrowable' style='width: 300px' type='text' value='<?php echo $row['status'] ?>' />
 						</td>
 					</tr>
-					<tr id="statusRowNotBorrowable" <?php if ($row['borrowable'] == 'Y') {
-    echo "style='display: none'";
-}
-            ?>>
+					<tr id="statusRowNotBorrowable" <?php if ($row['borrowable'] == 'Y') { echo "style='display: none'"; } ?>>
 						<td> 
 							<b>Status? *</b><br/>
 						</td>
 						<td class="right">
 							<select name="statusNotBorrowable" id="status" class="standardWidth">
-								<option <?php if ($row['status'] == 'Available') {
-    echo 'selected';
-}
-            ?> value="Available" /> <?php echo __($guid, 'Available') ?>
-								<option <?php if ($row['status'] == 'In Use') {
-    echo 'selected';
-}
-            ?> value="In Use" /> <?php echo __($guid, 'In Use') ?>
-								<option <?php if ($row['status'] == 'Reserved') {
-    echo 'selected';
-}
-            ?> value="Reserved" /> <?php echo __($guid, 'Reserved') ?>
-								<option <?php if ($row['status'] == 'Decommissioned') {
-    echo 'selected';
-}
-            ?> value="Decommissioned" /> <?php echo __($guid, 'Decommissioned') ?>
-								<option <?php if ($row['status'] == 'Lost') {
-    echo 'selected';
-}
-            ?> value="Lost" /> <?php echo __($guid, 'Lost') ?>
-								<option <?php if ($row['status'] == 'Repair') {
-    echo 'selected';
-}
-            ?> value="Repair" /> <?php echo __($guid, 'Repair') ?>
+								<option <?php if ($row['status'] == 'Available') { echo 'selected'; } ?> value="Available" /> <?php echo __($guid, 'Available') ?>
+								<option <?php if ($row['status'] == 'In Use') { echo 'selected'; } ?> value="In Use" /> <?php echo __($guid, 'In Use') ?>
+								<option <?php if ($row['status'] == 'Reserved') { echo 'selected'; } ?> value="Reserved" /> <?php echo __($guid, 'Reserved') ?>
+								<option <?php if ($row['status'] == 'Decommissioned') { echo 'selected'; } ?> value="Decommissioned" /> <?php echo __($guid, 'Decommissioned') ?>
+								<option <?php if ($row['status'] == 'Lost') { echo 'selected'; } ?> value="Lost" /> <?php echo __($guid, 'Lost') ?>
+								<option <?php if ($row['status'] == 'Repair') { echo 'selected'; } ?> value="Repair" /> <?php echo __($guid, 'Repair') ?>
 							</select>
 						</td>
 					</tr>
@@ -570,24 +498,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 						</td>
 						<td class="right">
 							<select name="replacement" id="replacement" class="standardWidth">
-								<option <?php if ($row['replacement'] == 'N') {
-    echo 'selected';
-}
-            ?> value="N"><?php echo ynExpander($guid, 'N') ?></option>
-								<option <?php if ($row['replacement'] == 'Y') {
-    echo 'selected';
-}
-            ?> value="Y"><?php echo ynExpander($guid, 'Y') ?></option>
+								<option <?php if ($row['replacement'] == 'N') { echo 'selected'; } ?> value="N"><?php echo ynExpander($guid, 'N') ?></option>
+								<option <?php if ($row['replacement'] == 'Y') { echo 'selected'; } ?> value="Y"><?php echo ynExpander($guid, 'Y') ?></option>
 							</select>
 						</td>
 					</tr>
-					<tr id='gibbonSchoolYearIDReplacementRow' <?php if ($row['replacement'] == 'N') {
-    echo "style='display: none'";
-}
-            ?>>
+					<tr id='gibbonSchoolYearIDReplacementRow' <?php if ($row['replacement'] == 'N') { echo "style='display: none'"; } ?>>
 						<td> 
-							<b><?php echo __($guid, 'Replacement Year');
-            ?></b><br/>
+							<b><?php echo __($guid, 'Replacement Year'); ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'When is this item scheduled for replacement.') ?></span>
 						</td>
 						<td class="right">
@@ -600,25 +518,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
                                     $resultSelect->execute($dataSelect);
                                 } catch (PDOException $e) {
                                 }
-            echo "<option value=''></option>";
-            while ($rowSelect = $resultSelect->fetch()) {
-                $selected = '';
-                if ($rowSelect['gibbonSchoolYearID'] == $row['gibbonSchoolYearIDReplacement']) {
-                    $selected = 'selected';
-                }
-                echo "<option $selected value='".$rowSelect['gibbonSchoolYearID']."'>".htmlPrep($rowSelect['name']).'</option>';
-            }
-            ?>				
+								echo "<option value=''></option>";
+								while ($rowSelect = $resultSelect->fetch()) {
+									$selected = '';
+									if ($rowSelect['gibbonSchoolYearID'] == $row['gibbonSchoolYearIDReplacement']) {
+										$selected = 'selected';
+									}
+									echo "<option $selected value='".$rowSelect['gibbonSchoolYearID']."'>".htmlPrep($rowSelect['name']).'</option>';
+								}
+								?>				
 							</select>
 						</td>
 					</tr>
-					<tr id='replacementCostRow' <?php if ($row['replacement'] == 'N') {
-    echo "style='display: none'";
-}
-            ?>>
+					<tr id='replacementCostRow' <?php if ($row['replacement'] == 'N') { echo "style='display: none'"; } ?>>
 						<td> 
-							<b><?php echo __($guid, 'Replacement Cost');
-            ?></b><br/>
+							<b><?php echo __($guid, 'Replacement Cost'); ?></b><br/>
 							<span style="font-size: 90%">
 								<i>
 								<?php
@@ -627,7 +541,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
                                 } else {
                                     echo __($guid, 'Numeric value of the replacement cost.');
                                 }
-            ?>
+           	 					?>
 								</i>
 							</span>
 						</td>
@@ -645,30 +559,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 						</td>
 						<td class="right">
 							<select name="physicalCondition" id="physicalCondition" class="standardWidth">
-								<option <?php if ($row['physicalCondition'] == '') {
-    echo 'selected';
-}
-            ?> value="" />
-								<option <?php if ($row['physicalCondition'] == 'As New') {
-    echo 'selected';
-}
-            ?> value="As New" /> <?php echo __($guid, 'As New') ?>
-								<option <?php if ($row['physicalCondition'] == 'Lightly Worn') {
-    echo 'selected';
-}
-            ?> value="Lightly Worn" /> <?php echo __($guid, 'Lightly Worn') ?>
-								<option <?php if ($row['physicalCondition'] == 'Moderately Worn') {
-    echo 'selected';
-}
-            ?> value="Moderately Worn" /> <?php echo __($guid, 'Moderately Worn') ?>
-								<option <?php if ($row['physicalCondition'] == 'Damaged') {
-    echo 'selected';
-}
-            ?> value="Damaged" /> <?php echo __($guid, 'Damaged') ?>
-								<option <?php if ($row['physicalCondition'] == 'Unusable') {
-    echo 'selected';
-}
-            ?> value="Unusable" /> <?php echo __($guid, 'Unusable') ?>
+								<option <?php if ($row['physicalCondition'] == '') { echo 'selected'; } ?> value="" />
+								<option <?php if ($row['physicalCondition'] == 'As New') { echo 'selected'; } ?> value="As New" /> <?php echo __($guid, 'As New') ?>
+								<option <?php if ($row['physicalCondition'] == 'Lightly Worn') { echo 'selected'; } ?> value="Lightly Worn" /> <?php echo __($guid, 'Lightly Worn') ?>
+								<option <?php if ($row['physicalCondition'] == 'Moderately Worn') { echo 'selected'; } ?> value="Moderately Worn" /> <?php echo __($guid, 'Moderately Worn') ?>
+								<option <?php if ($row['physicalCondition'] == 'Damaged') { echo 'selected'; } ?> value="Damaged" /> <?php echo __($guid, 'Damaged') ?>
+								<option <?php if ($row['physicalCondition'] == 'Unusable') { echo 'selected'; } ?> value="Unusable" /> <?php echo __($guid, 'Unusable') ?>
 							</select>
 						</td>
 					</tr>
@@ -697,128 +593,126 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
                     } catch (PDOException $e) {
                     }
 
-            if ($resultFields->rowCount() != 1) {
-                echo "<div class='error'>";
-                echo __($guid, 'The specified record cannot be found.');
-                echo '</div>';
-            } else {
-                $rowFields = $resultFields->fetch();
-                $fields = unserialize($rowFields['fields']);
-                $fieldValues = unserialize($row['fields']);
-                $output = '';
-                foreach ($fields as $field) {
-                    $fieldName = preg_replace('/ /', '', $field['name']);
-                    echo '<tr>';
-                    echo '<td> ';
-                    echo '<b>'.__($guid, $field['name']).'</b>';
-                    if ($field['required'] == 'Y') {
-                        echo ' *';
-                    }
-                    $output .= "<br/><span style='font-size: 90%'><i>".str_replace('dd/mm/yyyy', $_SESSION[$guid]['i18n']['dateFormat'], $field['description']).'</span>';
-                    echo '</td>';
-                    echo "<td class='right'>";
-                    if ($field['type'] == 'Text') {
-                        echo "<input maxlength='".$field['options']."' name='field".$fieldName."' id='field".$fieldName."' value='";
-                        if (isset($fieldValues[$field['name']])) {
-                            echo htmlPrep($fieldValues[$field['name']]);
-                        }
-                        echo "' type='text' style='width: 300px'>";
-                    } elseif ($field['type'] == 'Select') {
-                        echo "<select name='field".$fieldName."' id='field".$fieldName."' type='text' style='width: 300px'>";
-                        if ($field['required'] == 'Y') {
-                            echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-                        }
-                        $options = explode(',', $field['options']);
-                        foreach ($options as $option) {
-                            $option = trim($option);
-                            $selected = '';
-                            if (isset($fieldValues[$field['name']])) {
-                                if ($option == $fieldValues[$field['name']]) {
-                                    $selected = 'selected';
-                                }
-                            }
-                            echo "<option $selected value='$option'>$option</option>";
-                        }
-                        echo '</select>';
-                    } elseif ($field['type'] == 'Textarea') {
-                        echo "<textarea rows='".$field['options']."' name='field".$fieldName."' id='field".$fieldName."' style='width: 300px'>";
-                        if (isset($fieldValues[$field['name']])) {
-                            echo htmlPrep($fieldValues[$field['name']]);
-                        }
-                        echo '</textarea>';
-                    } elseif ($field['type'] == 'Date') {
-                        echo "<input name='field".$fieldName."' id='field".$fieldName."' maxlength=10 value='";
-                        if (isset($fieldValues[$field['name']])) {
-                            echo dateConvertBack($guid, $fieldValues[$field['name']]);
-                        }
-                        echo "' type='text' style='width: 300px'>";
-                        echo "<script type='text/javascript'>";
-                        echo 'var field'.$fieldName."=new LiveValidation('field".$fieldName."');";
-                        $output .= 'field'.$fieldName.'.add( Validate.Format, {pattern:';
-                        if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-                            $output .= "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-                        } else {
-                            $output .= $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-                        }
-                        $output .= ", failureMessage: 'Use ".$_SESSION[$guid]['i18n']['dateFormat'].".' } );";
-                        echo '</script>';
-                        echo "<script type='text/javascript'>";
-                        echo '$(function() {';
-                        echo "$( '#field".$fieldName."' ).datepicker();";
-                        echo '});';
-                        echo '</script>';
-                    } elseif ($field['type'] == 'URL') {
-                        echo "<input maxlength='".$field['options']."' name='field".$fieldName."' id='field".$fieldName."' value='";
-                        if (isset($fieldValues[$field['name']])) {
-                            htmlPrep($fieldValues[$field['name']]);
-                        }
-                        echo "' type='text' style='width: 300px'>";
-                        echo "<script type='text/javascript'>";
-                        echo 'var field'.$fieldName."=new LiveValidation('field".$fieldName."');";
-                        echo 'field'.$fieldName.".add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: \"Must start with http://\" } );";
-                        echo '</script>';
-                    }
-                    echo '</td>';
-                    echo '</tr>';
-                            //NEED LIVE VALIDATION
-                            if ($field['required'] == 'Y') {
-                                if ($field['type'] == 'Text' or $field['type'] == 'Textarea' or $field['type'] == 'Date' or $field['type'] == 'URL') {
-                                    echo "<script type='text/javascript'>";
-                                    echo 'var field'.$fieldName."=new LiveValidation('field".$fieldName."');";
-                                    echo 'field'.$fieldName.'.add(Validate.Presence);';
-                                    echo '</script>';
-                                } elseif ($field['type'] == 'Select') {
-                                    echo "<script type='text/javascript'>";
-                                    echo 'var field'.$fieldName."=new LiveValidation('field".$fieldName."');";
-                                    echo 'field'.$fieldName.".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: 'Select something!'});";
-                                    echo '</script>';
-                                }
-                            }
-                }
-                echo "<script type='text/javascript'>";
-                echo '$(document).ready(function(){';
-                echo "$('#type').change(function(){";
-                foreach ($fields as $field) {
-                    if ($field['required'] == 'Y') {
-                        $fieldName = preg_replace('/ /', '', $field['name']);
-                        echo 'field'.$fieldName.'.disable() ;';
-                    }
-                }
-                echo '})';
-                echo '});';
-                echo '</script>';
-            }
-            ?>
+					if ($resultFields->rowCount() != 1) {
+						echo "<div class='error'>";
+						echo __($guid, 'The specified record cannot be found.');
+						echo '</div>';
+					} else {
+						$rowFields = $resultFields->fetch();
+						$fields = unserialize($rowFields['fields']);
+						$fieldValues = unserialize($row['fields']);
+						$output = '';
+						foreach ($fields as $field) {
+							$fieldName = preg_replace('/ /', '', $field['name']);
+							echo '<tr>';
+							echo '<td> ';
+							echo '<b>'.__($guid, $field['name']).'</b>';
+							if ($field['required'] == 'Y') {
+								echo ' *';
+							}
+							$output .= "<br/><span style='font-size: 90%'><i>".str_replace('dd/mm/yyyy', $_SESSION[$guid]['i18n']['dateFormat'], $field['description']).'</span>';
+							echo '</td>';
+							echo "<td class='right'>";
+							if ($field['type'] == 'Text') {
+								echo "<input maxlength='".$field['options']."' name='field".$fieldName."' id='field".$fieldName."' value='";
+								if (isset($fieldValues[$field['name']])) {
+									echo htmlPrep($fieldValues[$field['name']]);
+								}
+								echo "' type='text' style='width: 300px'>";
+							} elseif ($field['type'] == 'Select') {
+								echo "<select name='field".$fieldName."' id='field".$fieldName."' type='text' style='width: 300px'>";
+								if ($field['required'] == 'Y') {
+									echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
+								}
+								$options = explode(',', $field['options']);
+								foreach ($options as $option) {
+									$option = trim($option);
+									$selected = '';
+									if (isset($fieldValues[$field['name']])) {
+										if ($option == $fieldValues[$field['name']]) {
+											$selected = 'selected';
+										}
+									}
+									echo "<option $selected value='$option'>$option</option>";
+								}
+								echo '</select>';
+							} elseif ($field['type'] == 'Textarea') {
+								echo "<textarea rows='".$field['options']."' name='field".$fieldName."' id='field".$fieldName."' style='width: 300px'>";
+								if (isset($fieldValues[$field['name']])) {
+									echo htmlPrep($fieldValues[$field['name']]);
+								}
+								echo '</textarea>';
+							} elseif ($field['type'] == 'Date') {
+								echo "<input name='field".$fieldName."' id='field".$fieldName."' maxlength=10 value='";
+								if (isset($fieldValues[$field['name']])) {
+									echo dateConvertBack($guid, $fieldValues[$field['name']]);
+								}
+								echo "' type='text' style='width: 300px'>";
+								echo "<script type='text/javascript'>";
+								echo 'var field'.$fieldName."=new LiveValidation('field".$fieldName."');";
+								$output .= 'field'.$fieldName.'.add( Validate.Format, {pattern:';
+								if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
+									$output .= "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+								} else {
+									$output .= $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+								}
+								$output .= ", failureMessage: 'Use ".$_SESSION[$guid]['i18n']['dateFormat'].".' } );";
+								echo '</script>';
+								echo "<script type='text/javascript'>";
+								echo '$(function() {';
+								echo "$( '#field".$fieldName."' ).datepicker();";
+								echo '});';
+								echo '</script>';
+							} elseif ($field['type'] == 'URL') {
+								echo "<input maxlength='".$field['options']."' name='field".$fieldName."' id='field".$fieldName."' value='";
+								if (isset($fieldValues[$field['name']])) {
+									htmlPrep($fieldValues[$field['name']]);
+								}
+								echo "' type='text' style='width: 300px'>";
+								echo "<script type='text/javascript'>";
+								echo 'var field'.$fieldName."=new LiveValidation('field".$fieldName."');";
+								echo 'field'.$fieldName.".add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: \"Must start with http://\" } );";
+								echo '</script>';
+							}
+							echo '</td>';
+							echo '</tr>';
+							//NEED LIVE VALIDATION
+							if ($field['required'] == 'Y') {
+								if ($field['type'] == 'Text' or $field['type'] == 'Textarea' or $field['type'] == 'Date' or $field['type'] == 'URL') {
+									echo "<script type='text/javascript'>";
+									echo 'var field'.$fieldName."=new LiveValidation('field".$fieldName."');";
+									echo 'field'.$fieldName.'.add(Validate.Presence);';
+									echo '</script>';
+								} elseif ($field['type'] == 'Select') {
+									echo "<script type='text/javascript'>";
+									echo 'var field'.$fieldName."=new LiveValidation('field".$fieldName."');";
+									echo 'field'.$fieldName.".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: 'Select something!'});";
+									echo '</script>';
+								}
+							}
+						}
+						echo "<script type='text/javascript'>";
+						echo '$(document).ready(function(){';
+						echo "$('#type').change(function(){";
+						foreach ($fields as $field) {
+							if ($field['required'] == 'Y') {
+								$fieldName = preg_replace('/ /', '', $field['name']);
+								echo 'field'.$fieldName.'.disable() ;';
+							}
+						}
+						echo '})';
+						echo '});';
+						echo '</script>';
+					}
+					?>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="gibbonLibraryItemID" value="<?php echo $row['gibbonLibraryItemID'] ?>">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

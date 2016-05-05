@@ -59,8 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
-            ?>
+            $row = $result->fetch(); ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/department_manage_editProcess.php?gibbonDepartmentID=$gibbonDepartmentID&address=".$_SESSION[$guid]['address'] ?>" enctype="multipart/form-data">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr class='break'>
@@ -74,8 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
 							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></i><br/></span>
 						</td>
 						<td class="right">
-							<?php $type = $row['type'];
-            ?>
+							<?php $type = $row['type']; ?>
 							<input readonly name="type" id="type" value="<?php echo $type ?>" type="text" class="standardWidth">
 						</td>
 					</tr>
@@ -121,29 +119,27 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
 						<td> 
 							<b><?php echo __($guid, 'Logo') ?></b><br/>
 							<span class="emphasis small">125x125px jpg/png/gif</i><br/></span>
-							<?php if ($row['logo'] != '') {
-    ?>
+							<?php if ($row['logo'] != '') { ?>
 							<span class="emphasis small"><?php echo __($guid, 'Will overwrite existing attachment.') ?></span>
 							<?php 
-}
-            ?>
+							}
+            				?>
 						</td>
 						<td class="right">
 							<?php
                             if ($row['logo'] != '') {
                                 echo __($guid, 'Current attachment:')." <a href='".$_SESSION[$guid]['absoluteURL'].'/'.$row['logo']."'>".$row['logo'].'</a><br/><br/>';
                             }
-            ?>
+            				?>
 							<input type="file" name="file" id="file"><br/><br/>
 							<?php
-                            echo getMaxUpload($guid);
-            $ext = "'.png','.jpeg','.jpg','.gif'";
-            ?>
+                            echo getMaxUpload($guid); 
+                            $ext = "'.png','.jpeg','.jpg','.gif'"; 
+                            ?>
 							
 							<script type="text/javascript">
 								var file=new LiveValidation('file');
-								file.add( Validate.Inclusion, { within: [<?php echo $ext;
-            ?>], failureMessage: "<?php echo __($guid, 'Illegal file type!') ?>", partialMatch: true, caseSensitive: false } );
+								file.add( Validate.Inclusion, { within: [<?php echo $ext; ?>], failureMessage: "<?php echo __($guid, 'Illegal file type!') ?>", partialMatch: true, caseSensitive: false } );
 							</script>
 						</td>
 					</tr>
@@ -164,51 +160,51 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
                                 echo "<div class='error'>".$e->getMessage().'</div>';
                             }
 
-            if ($result->rowCount() < 1) {
-                echo "<div class='error'>";
-                echo __($guid, 'There are no records to display.');
-                echo '</div>';
-            } else {
-                echo '<i><b>Warning</b>: If you delete a member of staff, any unsaved changes to this record will be lost!</i>';
-                echo "<table cellspacing='0' style='width: 100%'>";
-                echo "<tr class='head'>";
-                echo '<th>';
-                echo __($guid, 'Name');
-                echo '</th>';
-                echo '<th>';
-                echo __($guid, 'Role');
-                echo '</th>';
-                echo '<th>';
-                echo __($guid, 'Action');
-                echo '</th>';
-                echo '</tr>';
+							if ($result->rowCount() < 1) {
+								echo "<div class='error'>";
+								echo __($guid, 'There are no records to display.');
+								echo '</div>';
+							} else {
+								echo '<i><b>Warning</b>: If you delete a member of staff, any unsaved changes to this record will be lost!</i>';
+								echo "<table cellspacing='0' style='width: 100%'>";
+								echo "<tr class='head'>";
+								echo '<th>';
+								echo __($guid, 'Name');
+								echo '</th>';
+								echo '<th>';
+								echo __($guid, 'Role');
+								echo '</th>';
+								echo '<th>';
+								echo __($guid, 'Action');
+								echo '</th>';
+								echo '</tr>';
 
-                $count = 0;
-                $rowNum = 'odd';
-                while ($row = $result->fetch()) {
-                    if ($count % 2 == 0) {
-                        $rowNum = 'even';
-                    } else {
-                        $rowNum = 'odd';
-                    }
-                    ++$count;
+								$count = 0;
+								$rowNum = 'odd';
+								while ($row = $result->fetch()) {
+									if ($count % 2 == 0) {
+										$rowNum = 'even';
+									} else {
+										$rowNum = 'odd';
+									}
+									++$count;
 
-                                        //COLOR ROW BY STATUS!
-                                        echo "<tr class=$rowNum>";
-                    echo '<td>';
-                    echo formatName('', $row['preferredName'], $row['surname'], 'Staff', true, true);
-                    echo '</td>';
-                    echo '<td>';
-                    echo $row['role'];
-                    echo '</td>';
-                    echo '<td>';
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/department_manage_edit_staff_deleteProcess.php?address='.$_GET['q'].'&gibbonDepartmentStaffID='.$row['gibbonDepartmentStaffID']."&gibbonDepartmentID=$gibbonDepartmentID'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
-                    echo '</td>';
-                    echo '</tr>';
-                }
-                echo '</table>';
-            }
-            ?>
+									//COLOR ROW BY STATUS!
+									echo "<tr class=$rowNum>";
+									echo '<td>';
+									echo formatName('', $row['preferredName'], $row['surname'], 'Staff', true, true);
+									echo '</td>';
+									echo '<td>';
+									echo $row['role'];
+									echo '</td>';
+									echo '<td>';
+									echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/department_manage_edit_staff_deleteProcess.php?address='.$_GET['q'].'&gibbonDepartmentStaffID='.$row['gibbonDepartmentStaffID']."&gibbonDepartmentID=$gibbonDepartmentID'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+									echo '</td>';
+									echo '</tr>';
+								}
+								echo '</table>';
+							}
+							?>
 						</td>
 					</tr>
 					<tr class='break'>
@@ -231,10 +227,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
                                 $resultSelect->execute($dataSelect);
                             } catch (PDOException $e) {
                             }
-            while ($rowSelect = $resultSelect->fetch()) {
-                echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
-            }
-            ?>
+							while ($rowSelect = $resultSelect->fetch()) {
+								echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
+							}
+							?>
 						</select>
 					</td>
 					
@@ -268,19 +264,17 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
 									<?php
 
                                 }
-            ?>
+           	 					?>
 							</select>
 						</td>
 					</tr>
 					
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

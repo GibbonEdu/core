@@ -45,8 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
 
     echo '<h2>';
     echo __($guid, 'Search');
-    echo '</h2>';
-    ?>
+    echo '</h2>';?>
 	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
 		<table class='noIntBorder' cellspacing='0' style="width: 100%">	
 			<tr><td style="width: 30%"></td><td></td></tr>
@@ -56,10 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
 					<span class="emphasis small"><?php echo __($guid, 'Preferred, surname, username, email, phone number, vehicle registration') ?></span>
 				</td>
 				<td class="right">
-					<input name="search" id="search" maxlength=20 value="<?php if (isset($_GET['search'])) {
-    echo $_GET['search'];
-}
-    ?>" type="text" class="standardWidth">
+					<input name="search" id="search" maxlength=20 value="<?php if (isset($_GET['search'])) { echo $_GET['search']; } ?>" type="text" class="standardWidth">
 				</td>
 			</tr>
 			<tr>
@@ -67,10 +63,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
 					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/user_manage.php">
 					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 					<?php
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/user_manage.php'>".__($guid, 'Clear Search').'</a>';
-    ?>
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/user_manage.php'>".__($guid, 'Clear Search').'</a>';?>
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>
@@ -171,8 +165,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
             }
             ++$count;
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$rowNum>";
             echo '<td>';
             echo getUserPhoto($guid, $row['image_240'], 75);
             echo '</td>';
@@ -192,14 +186,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
             foreach ($families as $family) {
                 if ($family[1] == $row['gibbonPersonID']) {
                     if ($family[2] == 'child') { //Link child to self
-                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$family[1]."&search=&allStudents=on&sort=surname, preferredName&subpage=Family'>".$family[3].'</a><br/>';
+                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$family[1]."&search=&allStudents=on&sort=surname, preferredName&subpage=Family'>".$family[3].'</a><br/>';
                     } else { //Link adult to eldest child in family
-                                    foreach ($families as $family2) {
-                                        if ($family[0] == $family2[0] and $family2[2] == 'child' and $childCount == 0) {
-                                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$family2[1]."&search=&allStudents=on&sort=surname, preferredName&subpage=Family'>".$family[3].'</a><br/>';
-                                            ++$childCount;
-                                        }
-                                    }
+						foreach ($families as $family2) {
+							if ($family[0] == $family2[0] and $family2[2] == 'child' and $childCount == 0) {
+								echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$family2[1]."&search=&allStudents=on&sort=surname, preferredName&subpage=Family'>".$family[3].'</a><br/>';
+								++$childCount;
+							}
+						}
                     }
                 }
             }

@@ -115,13 +115,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
 					<input type="file" name="file" id="file"><br/><br/>
 					<?php
                     echo getMaxUpload($guid);
-    $ext = "'.png','.jpeg','.jpg','.gif'";
-    ?>
+    				$ext = "'.png','.jpeg','.jpg','.gif'"; 
+    				?>
 					
 					<script type="text/javascript">
 						var file=new LiveValidation('file');
-						file.add( Validate.Inclusion, { within: [<?php echo $ext;
-    ?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+						file.add( Validate.Inclusion, { within: [<?php echo $ext; ?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 					</script>
 				</td>
 			</tr>
@@ -140,10 +139,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
                             $resultSelect->execute($dataSelect);
                         } catch (PDOException $e) {
                         }
-    while ($rowSelect = $resultSelect->fetch()) {
-        echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
-    }
-    ?>
+						while ($rowSelect = $resultSelect->fetch()) {
+							echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
+						}
+						?>
 					</select>
 				</td>
 			</tr>
@@ -176,12 +175,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
 			</tr>
 			<tr>
 				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-    ?></span>
+					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 				</td>
 				<td class="right">
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>

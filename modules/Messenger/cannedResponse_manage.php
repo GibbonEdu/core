@@ -75,8 +75,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/cannedResponse_m
             }
             ++$count;
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$rowNum>";
             echo '<td>';
             echo $row['subject'];
             echo '</td>';

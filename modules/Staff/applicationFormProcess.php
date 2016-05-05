@@ -213,10 +213,9 @@ if ($proceed == false) {
             foreach ($gibbonStaffJobOpeningIDs as $gibbonStaffJobOpeningID) {
                 $thisFail = false;
 
-                //Check for existence of behaviour record
                 try {
                     $data = array('gibbonStaffJobOpeningID' => $gibbonStaffJobOpeningID);
-                    $sql = 'SELECT gibbonStaffJobOpeningID, jobTitle FROM gibbonStaffJobOpening WHERE gibbonStaffJobOpeningID=:gibbonStaffJobOpeningID';
+                    $sql = 'SELECT gibbonStaffJobOpeningID, jobTitle, type FROM gibbonStaffJobOpening WHERE gibbonStaffJobOpeningID=:gibbonStaffJobOpeningID';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
@@ -227,6 +226,7 @@ if ($proceed == false) {
                 } else {
                     $row = $result->fetch();
                     $jobTitle = $row['jobTitle'];
+                    $type = $row['type'];
 
                     //Write to database
                     try {
@@ -295,11 +295,11 @@ if ($proceed == false) {
                         }
 
                         //Email reference form link to referee
-                        $applicationFormRefereeLink = getSettingByScope($connection2, 'Staff', 'applicationFormRefereeLink');
-                        if ($applicationFormRefereeLink != '' and ($referenceEmail1 != '' or $refereeEmail2 != '') and $_SESSION[$guid]['organisationHRName'] != '' and $_SESSION[$guid]['organisationHREmail'] != '') {
+                        $applicationFormRefereeLink = unserialize(getSettingByScope($connection2, 'Staff', 'applicationFormRefereeLink'));
+                        if ($applicationFormRefereeLink[$type] != '' and ($referenceEmail1 != '' or $refereeEmail2 != '') and $_SESSION[$guid]['organisationHRName'] != '' and $_SESSION[$guid]['organisationHREmail'] != '') {
                             //Prep message
                             $subject = __($guid, 'Request For Reference');
-                            $body = sprintf(__($guid, 'To whom it may concern,%4$sThis email is being sent in relation to the job application of an individual who has nominated you as a referee: %1$s.%4$sIn assessing their application for the post of %5$s at our school, we would like to enlist your help in completing the following reference form: %2$s.<br/><br/>Please feel free to contact me, should you have any questions in regard to this matter.%4$sRegards,%4$s%3$s'), formatName('', $preferredName, $surname, 'Staff', false, true), "<a href='$applicationFormRefereeLink' target='_blank'>$applicationFormRefereeLink</a>", $_SESSION[$guid]['organisationHRName'], '<br/><br/>', $jobTitle);
+                            $body = sprintf(__($guid, 'To whom it may concern,%4$sThis email is being sent in relation to the job application of an individual who has nominated you as a referee: %1$s.%4$sIn assessing their application for the post of %5$s at our school, we would like to enlist your help in completing the following reference form: %2$s.<br/><br/>Please feel free to contact me, should you have any questions in regard to this matter.%4$sRegards,%4$s%3$s'), formatName('', $preferredName, $surname, 'Staff', false, true), "<a href='" . $applicationFormRefereeLink[$type] . "' target='_blank'>" . $applicationFormRefereeLink[$type] . "</a>", $_SESSION[$guid]['organisationHRName'], '<br/><br/>', $jobTitle);
                             $body .= "<p class='emphasis'>".sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
                             $bodyPlain = preg_replace('#<br\s*/?>#i', "\n", $body);
                             $bodyPlain = str_replace('</p>', "\n\n", $bodyPlain);

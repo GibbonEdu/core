@@ -64,50 +64,49 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_view.p
     echo '<b>'.__($guid, 'Tags').'</b>';
     echo '</td>';
     echo "<td style='padding: 0px 2px 0px 0px'>";
-                    //Tag selector
-                    try {
-                        $dataList = array();
-                        $sqlList = 'SELECT * FROM gibbonResourceTag WHERE count>0 ORDER BY tag';
-                        $resultList = $connection2->prepare($sqlList);
-                        $resultList->execute($dataList);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
+	//Tag selector
+	try {
+		$dataList = array();
+		$sqlList = 'SELECT * FROM gibbonResourceTag WHERE count>0 ORDER BY tag';
+		$resultList = $connection2->prepare($sqlList);
+		$resultList->execute($dataList);
+	} catch (PDOException $e) {
+		echo "<div class='error'>".$e->getMessage().'</div>';
+	}
 
     $list = '';
     while ($rowList = $resultList->fetch()) {
         $list = $list.'{id: "'.$rowList['tag'].'", name: "'.$rowList['tag'].' <i>('.$rowList['count'].')</i>"},';
     }
     ?>
-					<style>
-						ul.token-input-list-facebook { width: 300px; height: 25px!important; float: right }
-						div.token-input-dropdown-facebook { width: 300px }
-					</style>
-					<input type="text" id="tag" name="tag" />
-					<script type="text/javascript">
-						$(document).ready(function() {
-							 $("#tag").tokenInput([
-								<?php echo substr($list, 0, -1) ?>
-							], 
-								{theme: "facebook",
-								hintText: "Type a tag...",
-								allowCreation: false,
-								preventDuplicates: true,
-								<?php
-                                $tagString = '';
-    if ($tags != '') {
-        $tagList = explode(',', $tags);
-        foreach ($tagList as $tag) {
-            $tagString .= "{id: '$tag', name: '$tag'},";
-        }
-    }
-    echo 'prePopulate: ['.substr($tagString, 0, -1).'],';
-    ?>
-								tokenLimit: null});
-						});
-					</script>
-					<?php
-                echo '</td>';
+	<style>
+		ul.token-input-list-facebook { width: 300px; height: 25px!important; float: right }
+		div.token-input-dropdown-facebook { width: 300px }
+	</style>
+	<input type="text" id="tag" name="tag" />
+	<script type="text/javascript">
+		$(document).ready(function() {
+			 $("#tag").tokenInput([
+				<?php echo substr($list, 0, -1) ?>
+			], 
+				{theme: "facebook",
+				hintText: "Type a tag...",
+				allowCreation: false,
+				preventDuplicates: true,
+				<?php
+				$tagString = '';
+				if ($tags != '') {
+					$tagList = explode(',', $tags);
+					foreach ($tagList as $tag) {
+						$tagString .= "{id: '$tag', name: '$tag'},";
+					}
+				}
+				echo 'prePopulate: ['.substr($tagString, 0, -1).'],';?>
+				tokenLimit: null});
+				});
+			</script>
+			<?php
+		echo '</td>';
     echo '</tr>';
     echo '<tr>';
     echo '<td>';
@@ -314,8 +313,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_view.p
             }
             ++$count;
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$rowNum>";
             echo '<td>';
             echo getResourceLink($guid, $row['gibbonResourceID'], $row['type'], $row['name'], $row['content']);
             echo "<span style='font-size: 85%; font-style: italic'>".formatName($row['title'], $row['preferredName'], $row['surname'], 'Staff').'</span>';

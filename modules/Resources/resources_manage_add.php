@@ -138,20 +138,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
                                 $resultExt->execute($dataExt);
                             } catch (PDOException $e) {
                             }
-        $ext = '';
-        while ($rowExt = $resultExt->fetch()) {
-            $ext = $ext."'.".$rowExt['extension']."',";
-        }
-        ?>
+							$ext = '';
+							while ($rowExt = $resultExt->fetch()) {
+								$ext = $ext."'.".$rowExt['extension']."',";
+							}
+							?>
 							var file=new LiveValidation('file');
 							file.add( Validate.Inclusion, { within: [<?php echo $ext;
-        ?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+							?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 							file.add(Validate.Presence);
 							file.disable();
 						</script>	
 						<?php
                         echo getMaxUpload($guid);
-        ?>
+        			?>
 					</td>
 				</tr>
 				<tr id="resourceHTML">
@@ -203,13 +203,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
                 } catch (PDOException $e) {
                     echo "<div class='error'>".$e->getMessage().'</div>';
                 }
-        if ($resultCategory->rowCount() == 1) {
-            $rowCategory = $resultCategory->fetch();
-            $options = $rowCategory['value'];
+				if ($resultCategory->rowCount() == 1) {
+					$rowCategory = $resultCategory->fetch();
+					$options = $rowCategory['value'];
 
-            if ($options != '') {
-                $options = explode(',', $options);
-                ?>
+					if ($options != '') {
+						$options = explode(',', $options);
+						?>
 						<tr>
 							<td> 
 								<b><?php echo __($guid, 'Category') ?> *</b><br/>
@@ -225,7 +225,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 									<?php
 
                                     }
-                ?>
+                				?>
 								</select>
 								<script type="text/javascript">
 									var category=new LiveValidation('category');
@@ -235,31 +235,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 						</tr>
 						<?php
 
-            }
-        }
+					}
+				}
 
-        try {
-            $dataPurpose = array();
-            $sqlPurpose = "(SELECT * FROM gibbonSetting WHERE scope='Resources' AND name='purposesGeneral')";
-            if ($highestAction == 'Manage Resources_all') {
-                $sqlPurpose .= " UNION (SELECT * FROM gibbonSetting WHERE scope='Resources' AND name='purposesRestricted')";
-            }
-            $resultPurpose = $connection2->prepare($sqlPurpose);
-            $resultPurpose->execute($dataPurpose);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
+				try {
+					$dataPurpose = array();
+					$sqlPurpose = "(SELECT * FROM gibbonSetting WHERE scope='Resources' AND name='purposesGeneral')";
+					if ($highestAction == 'Manage Resources_all') {
+						$sqlPurpose .= " UNION (SELECT * FROM gibbonSetting WHERE scope='Resources' AND name='purposesRestricted')";
+					}
+					$resultPurpose = $connection2->prepare($sqlPurpose);
+					$resultPurpose->execute($dataPurpose);
+				} catch (PDOException $e) {
+					echo "<div class='error'>".$e->getMessage().'</div>';
+				}
 
-        if ($resultPurpose->rowCount() > 0) {
-            $options = '';
-            while ($rowPurpose = $resultPurpose->fetch()) {
-                $options .= $rowPurpose['value'].',';
-            }
-            $options = substr($options, 0, -1);
+				if ($resultPurpose->rowCount() > 0) {
+					$options = '';
+					while ($rowPurpose = $resultPurpose->fetch()) {
+						$options .= $rowPurpose['value'].',';
+					}
+					$options = substr($options, 0, -1);
 
-            if ($options != '') {
-                $options = explode(',', $options);
-                ?>
+					if ($options != '') {
+						$options = explode(',', $options);
+						?>
 						<tr>
 							<td> 
 								<b><?php echo __($guid, 'Purpose') ?></b><br/>
@@ -275,15 +275,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 									<?php
 
                                     }
-                ?>
+               				 	?>
 								</select>
 							</td>
 						</tr>
 						<?php
 
-            }
-        }
-        ?>
+						}
+					}
+					?>
 				<tr>
 					<td> 
 						<b><?php echo __($guid, 'Tags') ?> *</b><br/>
@@ -300,11 +300,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
                         } catch (PDOException $e) {
                             echo "<div class='error'>".$e->getMessage().'</div>';
                         }
-        $list = '';
-        while ($rowList = $resultList->fetch()) {
-            $list = $list.'{id: "'.$rowList['tag'].'", name: "'.$rowList['tag'].' <i>('.$rowList['count'].')</i>"},';
-        }
-        ?>
+						$list = '';
+						while ($rowList = $resultList->fetch()) {
+							$list = $list.'{id: "'.$rowList['tag'].'", name: "'.$rowList['tag'].' <i>('.$rowList['count'].')</i>"},';
+						}
+						?>
 						<style>
 							td.right ul.token-input-list-facebook { width: 302px; float: right } 
 							td.right div.token-input-dropdown-facebook { width: 120px } 
@@ -335,7 +335,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 					<td class="right">
 						<?php 
                         echo "<fieldset style='border: none'>";
-        ?>
+       	 				?>
 						<script type="text/javascript">
 							$(function () {
 								$('.checkall').click(function () {
@@ -345,18 +345,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 						</script>
 						<?php
                         echo __($guid, 'All/None')." <input type='checkbox' class='checkall' checked><br/>";
-        $yearGroups = getYearGroups($connection2);
-        if ($yearGroups == '') {
-            echo '<i>'.__($guid, 'No year groups available.').'</i>';
-        } else {
-            for ($i = 0; $i < count($yearGroups); $i = $i + 2) {
-                $checked = 'checked ';
-                echo __($guid, $yearGroups[($i + 1)])." <input $checked type='checkbox' name='gibbonYearGroupIDCheck".($i) / 2 ."'><br/>";
-                echo "<input type='hidden' name='gibbonYearGroupID".($i) / 2 ."' value='".$yearGroups[$i]."'>";
-            }
-        }
-        echo '</fieldset>';
-        ?>
+						$yearGroups = getYearGroups($connection2);
+						if ($yearGroups == '') {
+							echo '<i>'.__($guid, 'No year groups available.').'</i>';
+						} else {
+							for ($i = 0; $i < count($yearGroups); $i = $i + 2) {
+								$checked = 'checked ';
+								echo __($guid, $yearGroups[($i + 1)])." <input $checked type='checkbox' name='gibbonYearGroupIDCheck".($i) / 2 ."'><br/>";
+								echo "<input type='hidden' name='gibbonYearGroupID".($i) / 2 ."' value='".$yearGroups[$i]."'>";
+							}
+						}
+						echo '</fieldset>'; ?>
 						<input type="hidden" name="count" value="<?php echo(count($yearGroups)) / 2 ?>">
 					</td>
 				</tr>
@@ -372,13 +371,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
 				
 				<tr>
 					<td>
-						<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-        ?></span>
+						<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 					</td>
 					<td class="right">
 						<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-						<input type="submit" value="<?php echo __($guid, 'Submit');
-        ?>">
+						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 					</td>
 				</tr>
 			</table>

@@ -33,8 +33,7 @@ $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
 $gibbonFinanceBillingScheduleID = $_POST['gibbonFinanceBillingScheduleID'];
 $search = $_GET['search'];
 
-if ($gibbonFinanceBillingScheduleID == '' or $gibbonSchoolYearID == '') {
-    echo 'Fatal error loading this page!';
+if ($gibbonFinanceBillingScheduleID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
 } else {
     $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/billingSchedule_manage_edit.php&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search";
 

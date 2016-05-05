@@ -98,18 +98,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 						<td class="right">
 							<select class="standardWidth" name="status">
 								<option value=""></option>
-								<option <?php if ($row['status'] == 'Pending') {
-    echo 'selected';
-}
-            ?> value="Pending"><?php echo __($guid, 'Pending') ?></option>
-								<option <?php if ($row['status'] == 'Active') {
-    echo 'selected';
-}
-            ?> value="Active"><?php echo __($guid, 'Active') ?></option>
-								<option <?php if ($row['status'] == 'Expired') {
-    echo 'selected';
-}
-            ?> value="Expired"><?php echo __($guid, 'Expired') ?></option>
+								<option <?php if ($row['status'] == 'Pending') { echo 'selected'; } ?> value="Pending"><?php echo __($guid, 'Pending') ?></option>
+								<option <?php if ($row['status'] == 'Active') { echo 'selected'; } ?> value="Active"><?php echo __($guid, 'Active') ?></option>
+								<option <?php if ($row['status'] == 'Expired') { echo 'selected'; } ?> value="Expired"><?php echo __($guid, 'Expired') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -123,16 +114,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 								var dateStart=new LiveValidation('dateStart');
 								dateStart.add(Validate.Presence);
 								dateStart.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-            ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-            ?>." } ); 
+								echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+								}
+											?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+									echo 'dd/mm/yyyy';
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormat'];
+								}
+								?>." } ); 
 							</script>
 							<script type="text/javascript">
 								$(function() {
@@ -146,23 +137,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 							<b><?php echo __($guid, 'End Date') ?></b><br/>
 						</td>
 						<td class="right">
-							<input name="dateEnd" id="dateEnd" maxlength=10 value="<?php if ($row['dateEnd'] != '') {
-    echo dateConvertBack($guid, $row['dateEnd']);
-}
-            ?>" type="text" class="standardWidth">
+							<input name="dateEnd" id="dateEnd" maxlength=10 value="<?php if ($row['dateEnd'] != '') { echo dateConvertBack($guid, $row['dateEnd']); } ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var dateEnd=new LiveValidation('dateEnd');
 								dateEnd.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-            ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-            ?>." } ); 
+								echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+								}
+											?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+									echo 'dd/mm/yyyy';
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormat'];
+								}
+								?>." } ); 
 							</script>
 							<script type="text/javascript">
 								$(function() {
@@ -173,9 +161,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 					</tr>
 					<?php
                     $types = getSettingByScope($connection2, 'Staff', 'salaryScalePositions');
-            if ($types != false) {
-                $types = explode(',', $types);
-                ?>
+					if ($types != false) {
+						$types = explode(',', $types);
+						?>
 						<tr>
 							<td> 
 								<b><?php echo __($guid, 'Salary Scale') ?></b><br/>
@@ -195,14 +183,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 									<?php
 
                                     }
-                ?>
+               					?>
 								</select>
 							</td>
 						</tr>
 						<?php
 
-            }
-            ?>
+					}
+					?>
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php echo __($guid, 'Salary') ?></b><br/>
@@ -211,22 +199,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 						<td class="right">
 							<select style="width: 150px" name="salaryPeriod">
 								<option value=""></option>
-								<option <?php if ($row['salaryPeriod'] == 'Week') {
-    echo 'selected';
-}
-            ?> value="Week"><?php echo __($guid, 'Week') ?></option>
-								<option <?php if ($row['salaryPeriod'] == 'Month') {
-    echo 'selected';
-}
-            ?> value="Month"><?php echo __($guid, 'Month') ?></option>
-								<option <?php if ($row['salaryPeriod'] == 'Year') {
-    echo 'selected';
-}
-            ?> value="Year"><?php echo __($guid, 'Year') ?></option>
-								<option <?php if ($row['salaryPeriod'] == 'Contract') {
-    echo 'selected';
-}
-            ?> value="Contract"><?php echo __($guid, 'Contract') ?></option>
+								<option <?php if ($row['salaryPeriod'] == 'Week') { echo 'selected'; } ?> value="Week"><?php echo __($guid, 'Week') ?></option>
+								<option <?php if ($row['salaryPeriod'] == 'Month') { echo 'selected'; } ?> value="Month"><?php echo __($guid, 'Month') ?></option>
+								<option <?php if ($row['salaryPeriod'] == 'Year') { echo 'selected'; } ?> value="Year"><?php echo __($guid, 'Year') ?></option>
+								<option <?php if ($row['salaryPeriod'] == 'Contract') { echo 'selected'; } ?> value="Contract"><?php echo __($guid, 'Contract') ?></option>
 							</select>
 							<input name="salaryAmount" id="salaryAmount" maxlength=12 value="<?php echo htmlPrep($row['salaryAmount']) ?>" type="text" style="width: 145px">
 							<script type="text/javascript">
@@ -237,9 +213,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 					</tr>
 					<?php
                     $types = getSettingByScope($connection2, 'Staff', 'responsibilityPosts');
-            if ($types != false) {
-                $types = explode(',', $types);
-                ?>
+					if ($types != false) {
+						$types = explode(',', $types);
+                		?>
 						<tr>
 							<td> 
 								<b><?php echo __($guid, 'Responsibility Level') ?></b><br/>
@@ -259,14 +235,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 									<?php
 
                                     }
-                ?>
+                				?>
 								</select>
 							</td>
 						</tr>
 						<?php
 
-            }
-            ?>
+					}
+					?>
 					<tr>
 						<td style='width: 275px'> 
 							<b><?php echo __($guid, 'Responsibility') ?></b><br/>
@@ -275,22 +251,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 						<td class="right">
 							<select style="width: 150px" name="responsibilityPeriod">
 								<option value=""></option>
-								<option <?php if ($row['responsibilityPeriod'] == 'Week') {
-    echo 'selected';
-}
-            ?> value="Week"><?php echo __($guid, 'Week') ?></option>
-								<option <?php if ($row['responsibilityPeriod'] == 'Month') {
-    echo 'selected';
-}
-            ?> value="Month"><?php echo __($guid, 'Month') ?></option>
-								<option <?php if ($row['responsibilityPeriod'] == 'Year') {
-    echo 'selected';
-}
-            ?> value="Year"><?php echo __($guid, 'Year') ?></option>
-								<option <?php if ($row['responsibilityPeriod'] == 'Contract') {
-    echo 'selected';
-}
-            ?> value="Contract"><?php echo __($guid, 'Contract') ?></option>
+								<option <?php if ($row['responsibilityPeriod'] == 'Week') { echo 'selected'; } ?> value="Week"><?php echo __($guid, 'Week') ?></option>
+								<option <?php if ($row['responsibilityPeriod'] == 'Month') { echo 'selected'; } ?> value="Month"><?php echo __($guid, 'Month') ?></option>
+								<option <?php if ($row['responsibilityPeriod'] == 'Year') { echo 'selected'; } ?> value="Year"><?php echo __($guid, 'Year') ?></option>
+								<option <?php if ($row['responsibilityPeriod'] == 'Contract') { echo 'selected'; } ?> value="Contract"><?php echo __($guid, 'Contract') ?></option>
 							</select>
 							<input name="responsibilityAmount" id="responsibilityAmount" maxlength=12 value="<?php echo htmlPrep($row['responsibilityAmount']) ?>" type="text" style="width: 145px">
 							<script type="text/javascript">
@@ -307,22 +271,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 						<td class="right">
 							<select style="width: 150px" name="housingPeriod">
 								<option value=""></option>
-								<option <?php if ($row['housingPeriod'] == 'Week') {
-    echo 'selected';
-}
-            ?> value="Week"><?php echo __($guid, 'Week') ?></option>
-								<option <?php if ($row['housingPeriod'] == 'Month') {
-    echo 'selected';
-}
-            ?> value="Month"><?php echo __($guid, 'Month') ?></option>
-								<option <?php if ($row['housingPeriod'] == 'Year') {
-    echo 'selected';
-}
-            ?> value="Year"><?php echo __($guid, 'Year') ?></option>
-								<option <?php if ($row['housingPeriod'] == 'Contract') {
-    echo 'selected';
-}
-            ?> value="Contract"><?php echo __($guid, 'Contract') ?></option>
+								<option <?php if ($row['housingPeriod'] == 'Week') { echo 'selected'; } ?> value="Week"><?php echo __($guid, 'Week') ?></option>
+								<option <?php if ($row['housingPeriod'] == 'Month') { echo 'selected'; } ?> value="Month"><?php echo __($guid, 'Month') ?></option>
+								<option <?php if ($row['housingPeriod'] == 'Year') { echo 'selected'; } ?> value="Year"><?php echo __($guid, 'Year') ?></option>
+								<option <?php if ($row['housingPeriod'] == 'Contract') { echo 'selected'; } ?> value="Contract"><?php echo __($guid, 'Contract') ?></option>
 							</select>
 							<input name="housingAmount" id="housingAmount" maxlength=12 value="<?php echo htmlPrep($row['housingAmount']) ?>" type="text" style="width: 145px">
 							<script type="text/javascript">
@@ -339,22 +291,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 						<td class="right">
 							<select style="width: 150px" name="travelPeriod">
 								<option value=""></option>
-								<option <?php if ($row['travelPeriod'] == 'Week') {
-    echo 'selected';
-}
-            ?> value="Week"><?php echo __($guid, 'Week') ?></option>
-								<option <?php if ($row['travelPeriod'] == 'Month') {
-    echo 'selected';
-}
-            ?> value="Month"><?php echo __($guid, 'Month') ?></option>
-								<option <?php if ($row['travelPeriod'] == 'Year') {
-    echo 'selected';
-}
-            ?> value="Year"><?php echo __($guid, 'Year') ?></option>
-								<option <?php if ($row['travelPeriod'] == 'Contract') {
-    echo 'selected';
-}
-            ?> value="Contract"><?php echo __($guid, 'Contract') ?></option>
+								<option <?php if ($row['travelPeriod'] == 'Week') { echo 'selected'; } ?> value="Week"><?php echo __($guid, 'Week') ?></option>
+								<option <?php if ($row['travelPeriod'] == 'Month') { echo 'selected'; } ?> value="Month"><?php echo __($guid, 'Month') ?></option>
+								<option <?php if ($row['travelPeriod'] == 'Year') { echo 'selected'; } ?> value="Year"><?php echo __($guid, 'Year') ?></option>
+								<option <?php if ($row['travelPeriod'] == 'Contract') { echo 'selected'; } ?> value="Contract"><?php echo __($guid, 'Contract') ?></option>
 							</select>
 							<input name="travelAmount" id="travelAmount" maxlength=12 value="<?php echo htmlPrep($row['travelAmount']) ?>" type="text" style="width: 145px">
 							<script type="text/javascript">
@@ -371,22 +311,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 						<td class="right">
 							<select style="width: 150px" name="retirementPeriod">
 								<option value=""></option>
-								<option <?php if ($row['retirementPeriod'] == 'Week') {
-    echo 'selected';
-}
-            ?> value="Week"><?php echo __($guid, 'Week') ?></option>
-								<option <?php if ($row['retirementPeriod'] == 'Month') {
-    echo 'selected';
-}
-            ?> value="Month"><?php echo __($guid, 'Month') ?></option>
-								<option <?php if ($row['retirementPeriod'] == 'Year') {
-    echo 'selected';
-}
-            ?> value="Year"><?php echo __($guid, 'Year') ?></option>
-								<option <?php if ($row['retirementPeriod'] == 'Contract') {
-    echo 'selected';
-}
-            ?> value="Contract"><?php echo __($guid, 'Contract') ?></option>
+								<option <?php if ($row['retirementPeriod'] == 'Week') { echo 'selected'; } ?> value="Week"><?php echo __($guid, 'Week') ?></option>
+								<option <?php if ($row['retirementPeriod'] == 'Month') { echo 'selected'; } ?> value="Month"><?php echo __($guid, 'Month') ?></option>
+								<option <?php if ($row['retirementPeriod'] == 'Year') { echo 'selected'; } ?> value="Year"><?php echo __($guid, 'Year') ?></option>
+								<option <?php if ($row['retirementPeriod'] == 'Contract') { echo 'selected'; } ?> value="Contract"><?php echo __($guid, 'Contract') ?></option>
 							</select>
 							<input name="retirementAmount" id="retirementAmount" maxlength=12 value="<?php echo htmlPrep($row['retirementAmount']) ?>" type="text" style="width: 145px">
 							<script type="text/javascript">
@@ -403,22 +331,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 						<td class="right">
 							<select style="width: 150px" name="bonusPeriod">
 								<option value=""></option>
-								<option <?php if ($row['bonusPeriod'] == 'Week') {
-    echo 'selected';
-}
-            ?> value="Week"><?php echo __($guid, 'Week') ?></option>
-								<option <?php if ($row['bonusPeriod'] == 'Month') {
-    echo 'selected';
-}
-            ?> value="Month"><?php echo __($guid, 'Month') ?></option>
-								<option <?php if ($row['bonusPeriod'] == 'Year') {
-    echo 'selected';
-}
-            ?> value="Year"><?php echo __($guid, 'Year') ?></option>
-								<option <?php if ($row['bonusPeriod'] == 'Contract') {
-    echo 'selected';
-}
-            ?> value="Contract"><?php echo __($guid, 'Contract') ?></option>
+								<option <?php if ($row['bonusPeriod'] == 'Week') { echo 'selected'; } ?> value="Week"><?php echo __($guid, 'Week') ?></option>
+								<option <?php if ($row['bonusPeriod'] == 'Month') { echo 'selected'; } ?> value="Month"><?php echo __($guid, 'Month') ?></option>
+								<option <?php if ($row['bonusPeriod'] == 'Year') { echo 'selected'; } ?> value="Year"><?php echo __($guid, 'Year') ?></option>
+								<option <?php if ($row['bonusPeriod'] == 'Contract') { echo 'selected'; } ?> value="Contract"><?php echo __($guid, 'Contract') ?></option>
 							</select>
 							<input name="bonusAmount" id="bonusAmount" maxlength=12 value="<?php echo htmlPrep($row['bonusAmount']) ?>" type="text" style="width: 145px">
 							<script type="text/javascript">
@@ -443,19 +359,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 						<td style='width: 275px'> 
 							<b><?php echo __($guid, 'Contract File') ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Accepts PDF, ODT, DOC, DOCX, RTF.') ?><br/></span>
-							<?php if ($row['contractUpload'] != '') {
-    ?>
+							<?php if ($row['contractUpload'] != '') { ?>
 							<span class="emphasis small"><?php echo __($guid, 'Will overwrite existing attachment.') ?></span>
 							<?php 
-}
-            ?>
+							}
+            				?>
 						</td>
 						<td class="right">
 							<?php
                             if ($row['contractUpload'] != '') {
                                 echo __($guid, 'Current attachment:')." <a href='".$_SESSION[$guid]['absoluteURL'].'/'.$row['contractUpload']."'>".$row['contractUpload'].'</a><br/><br/>';
                             }
-            ?>
+            				?>
 							<input type="file" name="file1" id="file1"><br/><br/>
 							<script type="text/javascript">
 								var file1=new LiveValidation('file1');
@@ -465,14 +380,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 					</tr>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input name="gibbonStudentEnrolmentID" id="gibbonStudentEnrolmentID" value="<?php echo $gibbonStudentEnrolmentID ?>" type="hidden">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

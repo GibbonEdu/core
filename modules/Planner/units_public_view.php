@@ -56,8 +56,7 @@ if ($makeUnitsPublic != 'Y') {
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
-            ?>
+            $row = $result->fetch(); ?>
 			<script type='text/javascript'>
 				$(function() {
 					$( "#tabs" ).tabs({
@@ -169,11 +168,11 @@ if ($makeUnitsPublic != 'Y') {
             }
             echo '</div>';
             echo "<div id='tabs3'>";
-                    //Resources
-                    $noReosurces = true;
+			//Resources
+			$noReosurces = true;
 
-                    //Links
-                    $links = '';
+			//Links
+			$links = '';
             $linksArray = array();
             $linksCount = 0;
             $dom = new DOMDocument();
@@ -202,8 +201,8 @@ if ($makeUnitsPublic != 'Y') {
                 $noReosurces = false;
             }
 
-                    //Images
-                    $images = '';
+			//Images
+			$images = '';
             $imagesArray = array();
             $imagesCount = 0;
             $dom2 = new DOMDocument();
@@ -230,8 +229,8 @@ if ($makeUnitsPublic != 'Y') {
                 $noReosurces = false;
             }
 
-                    //Embeds
-                    $embeds = '';
+			//Embeds
+			$embeds = '';
             $embedsArray = array();
             $embedsCount = 0;
             $dom2 = new DOMDocument();
@@ -258,23 +257,23 @@ if ($makeUnitsPublic != 'Y') {
                 $noReosurces = false;
             }
 
-                    //No resources!
-                    if ($noReosurces) {
-                        echo "<div class='error'>";
-                        echo __($guid, 'There are no records to display.');
-                        echo '</div>';
-                    }
+			//No resources!
+			if ($noReosurces) {
+				echo "<div class='error'>";
+				echo __($guid, 'There are no records to display.');
+				echo '</div>';
+			}
             echo '</div>';
             echo "<div id='tabs4'>";
-                    //Spit out outcomes
-                    try {
-                        $dataBlocks = array('gibbonUnitID' => $gibbonUnitID);
-                        $sqlBlocks = "SELECT gibbonUnitOutcome.*, scope, name, nameShort, category, gibbonYearGroupIDList FROM gibbonUnitOutcome JOIN gibbonOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) WHERE gibbonUnitID=:gibbonUnitID AND active='Y' ORDER BY sequenceNumber";
-                        $resultBlocks = $connection2->prepare($sqlBlocks);
-                        $resultBlocks->execute($dataBlocks);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
+				//Spit out outcomes
+				try {
+					$dataBlocks = array('gibbonUnitID' => $gibbonUnitID);
+					$sqlBlocks = "SELECT gibbonUnitOutcome.*, scope, name, nameShort, category, gibbonYearGroupIDList FROM gibbonUnitOutcome JOIN gibbonOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) WHERE gibbonUnitID=:gibbonUnitID AND active='Y' ORDER BY sequenceNumber";
+					$resultBlocks = $connection2->prepare($sqlBlocks);
+					$resultBlocks->execute($dataBlocks);
+				} catch (PDOException $e) {
+					echo "<div class='error'>".$e->getMessage().'</div>';
+				}
             if ($resultBlocks->rowCount() > 0) {
                 echo "<table cellspacing='0' style='width: 100%'>";
                 echo "<tr class='head'>";
@@ -304,8 +303,8 @@ if ($makeUnitsPublic != 'Y') {
                         $rowNum = 'odd';
                     }
 
-                                //COLOR ROW BY STATUS!
-                                echo "<tr class=$rowNum>";
+					//COLOR ROW BY STATUS!
+					echo "<tr class=$rowNum>";
                     echo '<td>';
                     echo '<b>'.$rowBlocks['scope'].'</b><br/>';
                     echo '</td>';

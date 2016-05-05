@@ -108,13 +108,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_import.ph
 					</tr>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>
@@ -136,7 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_import.ph
                         } elseif ($permission == 'School') {
                             echo '<li><b>'.__($guid, 'Scope').' *</b> - '.__($guid, 'School or Learning Area').'</li>';
                         }
-            ?>
+            		?>
 						<li><b><?php echo __($guid, 'Learning Area') ?></b> - <?php echo __($guid, 'Learning Area name, or blank if scope is School') ?></li>
 						<li><b><?php echo __($guid, 'Name') ?> *</b></li>
 						<li><b><?php echo __($guid, 'Short Name') ?> *</b></li>
@@ -144,19 +142,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_import.ph
 						<li><b><?php echo __($guid, 'Description') ?></b></li>
 						<?php
                         $yearGroupList = '';
-            for ($i = 0; $i < count($yearGroups); $i = $i + 2) {
-                $yearGroupList .= __($guid, $yearGroups[($i + 1)]).', ';
-            }
-            $yearGroupList = substr($yearGroupList, 0, -2);
-            ?>
+						for ($i = 0; $i < count($yearGroups); $i = $i + 2) {
+							$yearGroupList .= __($guid, $yearGroups[($i + 1)]).', ';
+						}
+						$yearGroupList = substr($yearGroupList, 0, -2); ?>
 						<li><b><?php echo __($guid, 'Year Groups') ?></b> - <?php echo sprintf(__($guid, 'Comma separated list, e.g: %1$s'), '<i>'.$yearGroupList.'</i>') ?></li>
 					</ol>
 				</li>
 				<li><?php echo __($guid, 'Do not include a header row in the CSV files.') ?></li>
 			</ol>
-		<?php
+			<?php
 
-        } elseif ($step == 2) {
+			} elseif ($step == 2) {
             ?>
 			<h2>
 				<?php echo __($guid, 'Step 2 - Data Check & Confirm') ?>

@@ -33,8 +33,7 @@ $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
 $gibbonPersonID = $_POST['gibbonPersonID'];
 $search = $_GET['search'];
 
-if ($gibbonSchoolYearID == '') {
-    echo 'Fatal error loading this page!';
+if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
 } else {
     $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/studentEnrolment_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search";
 

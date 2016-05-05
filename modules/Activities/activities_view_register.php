@@ -274,9 +274,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 														</td>
 													</tr>
 													<?php
-
-                                                }
-                                        ?>
+													}
+													?>
 												<tr>
 													<td> 
 														<b><?php echo __($guid, 'Cost') ?></b><br/>
@@ -286,16 +285,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 														<?php
                                                             if (getSettingByScope($connection2, 'Activities', 'payment') != 'None' and getSettingByScope($connection2, 'Activities', 'payment') != 'Single') {
                                                                 ?>
-																<input readonly name="payment" id="payment" maxlength=7 value="<?php if (substr($_SESSION[$guid]['currency'], 4) != '') {
-    echo substr($_SESSION[$guid]['currency'], 4);
-}
-                                                                echo $row['payment'];
-                                                                ?>" type="text" class="standardWidth">
+																<input readonly name="payment" id="payment" maxlength=7 value="<?php if (substr($_SESSION[$guid]['currency'], 4) != '') { echo substr($_SESSION[$guid]['currency'], 4); } echo $row['payment']; ?>" type="text" class="standardWidth">
 																<?php
-
-                                                            }
-                                        ?>
-														
+																}
+                                        						?>
 													</td>
 												</tr>
 												
@@ -337,13 +330,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 														</td>
 													</tr>
 													<?php
-
-                                                }
-                                        ?>
+													}
+													?>
 												<tr>
 													<td>
-														<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-                                        ?></span>
+														<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');?></span>
 													</td>
 													<td class="right">
 														<input type="hidden" name="mode" value="<?php echo $mode ?>">
@@ -432,7 +423,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 										</table>
 									</form>
 									<?php
-
                                 }
                             }
                         }

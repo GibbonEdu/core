@@ -115,8 +115,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
                     }
                     ++$count;
 
-                        //COLOR ROW BY STATUS!
-                        echo "<tr class=$rowNum>";
+                    //COLOR ROW BY STATUS!
+                    echo "<tr class=$rowNum>";
                     echo '<td>';
                     try {
                         $dataRollGroup = array('gibbonRollGroupID' => $row['gibbonRollGroupID']);

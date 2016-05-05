@@ -93,14 +93,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 						</td>
 						<td class="right">
 							<select name="childDataAccess" id="childDataAccess" class="standardWidth">
-								<option <?php if ($row['childDataAccess'] == 'Y') {
-    echo 'selected ';
-}
-            ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-								<option <?php if ($row['childDataAccess'] == 'N') {
-    echo 'selected ';
-}
-            ?>value="N"><?php echo __($guid, 'No') ?></option>
+								<option <?php if ($row['childDataAccess'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
+								<option <?php if ($row['childDataAccess'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -111,18 +105,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 						</td>
 						<td class="right">
 							<select name="contactPriority" id="contactPriority" class="standardWidth">
-								<option <?php if ($row['contactPriority'] == '1') {
-    echo 'selected ';
-}
-            ?>value="1"><?php echo __($guid, '1') ?></option>
-								<option <?php if ($row['contactPriority'] == '2') {
-    echo 'selected ';
-}
-            ?>value="2"><?php echo __($guid, '2') ?></option>
-								<option <?php if ($row['contactPriority'] == '3') {
-    echo 'selected ';
-}
-            ?>value="3"><?php echo __($guid, '3') ?></option>
+								<option <?php if ($row['contactPriority'] == '1') { echo 'selected '; } ?>value="1"><?php echo __($guid, '1') ?></option>
+								<option <?php if ($row['contactPriority'] == '2') { echo 'selected '; } ?>value="2"><?php echo __($guid, '2') ?></option>
+								<option <?php if ($row['contactPriority'] == '3') { echo 'selected '; } ?>value="3"><?php echo __($guid, '3') ?></option>
 							</select>
 							<script type="text/javascript">
 								/* Advanced Options Control */
@@ -134,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                                         echo '$("#contactEmail").attr("disabled", "disabled");';
                                         echo '$("#contactMail").attr("disabled", "disabled");';
                                     }
-            ?>	
+           	 					?>	
 									$("#contactPriority").change(function(){
 										if ($('#contactPriority').val()=="1" ) {
 											$("#contactCall").attr("disabled", "disabled");
@@ -164,14 +149,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 						</td>
 						<td class="right">
 							<select name="contactCall" id="contactCall" class="standardWidth">
-								<option <?php if ($row['contactCall'] == 'Y') {
-    echo 'selected ';
-}
-            ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-								<option <?php if ($row['contactCall'] == 'N') {
-    echo 'selected ';
-}
-            ?>value="N"><?php echo __($guid, 'No') ?></option>
+								<option <?php if ($row['contactCall'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
+								<option <?php if ($row['contactCall'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -182,14 +161,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 						</td>
 						<td class="right">
 							<select name="contactSMS" id="contactSMS" class="standardWidth">
-								<option <?php if ($row['contactSMS'] == 'Y') {
-    echo 'selected ';
-}
-            ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-								<option <?php if ($row['contactSMS'] == 'N') {
-    echo 'selected ';
-}
-            ?>value="N"><?php echo __($guid, 'No') ?></option>
+								<option <?php if ($row['contactSMS'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
+								<option <?php if ($row['contactSMS'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -200,14 +173,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 						</td>
 						<td class="right">
 							<select name="contactEmail" id="contactEmail" class="standardWidth">
-								<option <?php if ($row['contactEmail'] == 'Y') {
-    echo 'selected ';
-}
-            ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-								<option <?php if ($row['contactEmail'] == 'N') {
-    echo 'selected ';
-}
-            ?>value="N"><?php echo __($guid, 'No') ?></option>
+								<option <?php if ($row['contactEmail'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
+								<option <?php if ($row['contactEmail'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -218,26 +185,18 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 						</td>
 						<td class="right">
 							<select name="contactMail" id="contactMail" class="standardWidth">
-								<option <?php if ($row['contactMail'] == 'Y') {
-    echo 'selected ';
-}
-            ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-								<option <?php if ($row['contactMail'] == 'N') {
-    echo 'selected ';
-}
-            ?>value="N"><?php echo __($guid, 'No') ?></option>
+								<option <?php if ($row['contactMail'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
+								<option <?php if ($row['contactMail'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

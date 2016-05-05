@@ -33,8 +33,7 @@ $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
 $gibbonFinanceFeeID = $_POST['gibbonFinanceFeeID'];
 $search = $_GET['search'];
 
-if ($gibbonFinanceFeeID == '' or $gibbonSchoolYearID == '') {
-    echo 'Fatal error loading this page!';
+if ($gibbonFinanceFeeID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
 } else {
     $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/fees_manage_edit.php&gibbonFinanceFeeID=$gibbonFinanceFeeID&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search";
 

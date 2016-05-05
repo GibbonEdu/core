@@ -38,7 +38,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffApplicatio
     //Proceed!
     $staffApplicationFormIntroduction = $_POST['staffApplicationFormIntroduction'];
     $staffApplicationFormQuestions = $_POST['staffApplicationFormQuestions'];
-    $applicationFormRefereeLink = $_POST['applicationFormRefereeLink'];
     $staffApplicationFormPostscript = $_POST['staffApplicationFormPostscript'];
     $staffApplicationFormAgreement = $_POST['staffApplicationFormAgreement'];
     $staffApplicationFormMilestones = $_POST['staffApplicationFormMilestones'];
@@ -50,6 +49,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffApplicatio
     $staffApplicationFormDefaultEmail = $_POST['staffApplicationFormDefaultEmail'];
     $staffApplicationFormDefaultWebsite = $_POST['staffApplicationFormDefaultWebsite'];
     $staffApplicationFormUsernameFormat = $_POST['staffApplicationFormUsernameFormat'];
+    //Deal with reference links
+    $refereeLinks=array() ;
+    if (isset($_POST['refereeLinks']) AND isset($_POST['types'])) {
+        for ($i=0; $i<count($_POST['refereeLinks']); $i++) {
+            $refereeLinks[$_POST['types'][$i]] = $_POST['refereeLinks'][$i] ;
+        }
+        $applicationFormRefereeLink = serialize($refereeLinks) ;
+    }
 
     //Write to database
     $fail = false;

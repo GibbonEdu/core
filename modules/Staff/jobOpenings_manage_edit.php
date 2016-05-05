@@ -56,8 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_e
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
-            ?>
+            $row = $result->fetch(); ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/jobOpenings_manage_editProcess.php?gibbonStaffJobOpeningID=$gibbonStaffJobOpeningID" ?>">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
@@ -68,35 +67,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_e
 							<select name="type" id="type" class="standardWidth">
 								<?php
                                 echo '<option value="Please select...">'.__($guid, 'Please select...').'</option>';
-            echo "<optgroup label='--".__($guid, 'Basic')."--'>";
-            $selected = '';
-            if ($row['type'] == 'Teaching') {
-                $selected = 'selected';
-            }
-            echo "<option $selected value=\"Teaching\">".__($guid, 'Teaching').'</option>';
-            $selected = '';
-            if ($row['type'] == 'Support') {
-                $selected = 'selected';
-            }
-            echo "<option $selected value=\"Support\">".__($guid, 'Support').'</option>';
-            echo '</optgroup>';
-            echo "<optgroup label='--".__($guid, 'System Roles')."--'>";
-            try {
-                $dataSelect = array();
-                $sqlSelect = "SELECT * FROM gibbonRole WHERE category='Staff' ORDER BY name";
-                $resultSelect = $connection2->prepare($sqlSelect);
-                $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) {
-            }
-            while ($rowSelect = $resultSelect->fetch()) {
-                $selected = '';
-                if ($rowSelect['name'] == $row['type']) {
-                    $selected = 'selected';
-                }
-                echo "<option $selected value=\"".$rowSelect['name'].'">'.__($guid, $rowSelect['name']).'</option>';
-            }
-            echo '</optgroup>';
-            ?>
+								echo "<optgroup label='--".__($guid, 'Basic')."--'>";
+								$selected = '';
+								if ($row['type'] == 'Teaching') {
+									$selected = 'selected';
+								}
+								echo "<option $selected value=\"Teaching\">".__($guid, 'Teaching').'</option>';
+								$selected = '';
+								if ($row['type'] == 'Support') {
+									$selected = 'selected';
+								}
+								echo "<option $selected value=\"Support\">".__($guid, 'Support').'</option>';
+								echo '</optgroup>';
+								echo "<optgroup label='--".__($guid, 'System Roles')."--'>";
+								try {
+									$dataSelect = array();
+									$sqlSelect = "SELECT * FROM gibbonRole WHERE category='Staff' ORDER BY name";
+									$resultSelect = $connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								} catch (PDOException $e) {
+								}
+								while ($rowSelect = $resultSelect->fetch()) {
+									$selected = '';
+									if ($rowSelect['name'] == $row['type']) {
+										$selected = 'selected';
+									}
+									echo "<option $selected value=\"".$rowSelect['name'].'">'.__($guid, $rowSelect['name']).'</option>';
+								}
+								echo '</optgroup>'; ?>
 							</select>
 							<script type="text/javascript">
 								var type=new LiveValidation('type');
@@ -120,12 +118,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_e
 						<td> 
 							<b><?php echo __($guid, 'Opening Date') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Format:').' ';
-            if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-                echo 'dd/mm/yyyy';
-            } else {
-                echo $_SESSION[$guid]['i18n']['dateFormat'];
-            }
-            ?></span>
+							if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+								echo 'dd/mm/yyyy';
+							} else {
+								echo $_SESSION[$guid]['i18n']['dateFormat'];
+							}
+							?></span>
 						</td>
 						<td class="right">
 							<input name="dateOpen" id="dateOpen" maxlength=10 value="<?php echo dateConvertBack($guid, $row['dateOpen']) ?>" type="text" class="standardWidth">
@@ -145,14 +143,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_e
 						</td>
 						<td class="right">
 							<select name="active" id="active" class="standardWidth">
-								<option <?php if ($row['active'] == 'Y') {
-    echo 'selected';
-}
-            ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
-								<option <?php if ($row['active'] == 'N') {
-    echo 'selected';
-}
-            ?> value="N"><?php echo __($guid, 'No') ?></option>
+								<option <?php if ($row['active'] == 'Y') { echo 'selected'; } ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
+								<option <?php if ($row['active'] == 'N') { echo 'selected'; } ?> value="N"><?php echo __($guid, 'No') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -161,19 +153,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_e
 							<b><?php echo __($guid, 'Body') ?> *</b>
 							<?php 
                             //Attempt to build a signature for the user
-                            echo getEditor($guid,  true, 'description', $row['description'], 20, true, true, false, true);
-            ?>
+                            echo getEditor($guid,  true, 'description', $row['description'], 20, true, true, false, true); ?>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

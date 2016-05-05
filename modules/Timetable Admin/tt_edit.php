@@ -37,23 +37,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit.ph
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    if (isset($_GET['deleteReturn'])) {
-        $deleteReturn = $_GET['deleteReturn'];
-    } else {
-        $deleteReturn = '';
-    }
-    $deleteReturnMessage = '';
-    $class = 'error';
-    if (!($deleteReturn == '')) {
-        if ($deleteReturn == 'success0') {
-            $deleteReturnMessage = __($guid, 'Your request was completed successfully.');
-            $class = 'success';
-        }
-        echo "<div class='$class'>";
-        echo $deleteReturnMessage;
-        echo '</div>';
-    }
-
     //Check if school year specified
     $gibbonTTID = $_GET['gibbonTTID'];
     if ($gibbonTTID == '') {
@@ -76,8 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit.ph
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
-            ?>
+            $row = $result->fetch(); ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/tt_editProcess.php?gibbonTTID=$gibbonTTID&gibbonSchoolYearID=".$_GET['gibbonSchoolYearID'] ?>">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
@@ -128,16 +110,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit.ph
 							<select class="standardWidth" name="active">
 								<?php
                                 echo '<option ';
-            if ($row['active'] == 'Y') {
-                echo 'selected ';
-            };
-            echo "value='Y'>".__($guid, 'Yes').'</option>';
-            echo '<option ';
-            if ($row['active'] == 'N') {
-                echo 'selected ';
-            };
-            echo " value='N'>".__($guid, 'No').'</option>';
-            ?>				
+								if ($row['active'] == 'Y') {
+									echo 'selected ';
+								};
+								echo "value='Y'>".__($guid, 'Yes').'</option>';
+								echo '<option ';
+								if ($row['active'] == 'N') {
+									echo 'selected ';
+								};
+								echo " value='N'>".__($guid, 'No').'</option>'; ?>				
 							</select>
 						</td>
 					</tr>
@@ -149,33 +130,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit.ph
 						<td class="right">
 							<?php 
                             $yearGroups = getNonTTYearGroups($connection2, $_GET['gibbonSchoolYearID'], $gibbonTTID);
-            if ($yearGroups == '') {
-                echo '<i>'.__($guid, 'No year groups available.').'</i>';
-            } else {
-                for ($i = 0; $i < count($yearGroups); $i = $i + 2) {
-                    $checked = '';
-                    if (is_numeric(strpos($row['gibbonYearGroupIDList'], $yearGroups[$i]))) {
-                        $checked = 'checked ';
-                    }
-                    echo __($guid, $yearGroups[($i + 1)])." <input $checked type='checkbox' name='gibbonYearGroupIDCheck".($i) / 2 ."'><br/>";
-                    echo "<input type='hidden' name='gibbonYearGroupID".($i) / 2 ."' value='".$yearGroups[$i]."'>";
-                }
-            }
-            ?>
+							if ($yearGroups == '') {
+								echo '<i>'.__($guid, 'No year groups available.').'</i>';
+							} else {
+								for ($i = 0; $i < count($yearGroups); $i = $i + 2) {
+									$checked = '';
+									if (is_numeric(strpos($row['gibbonYearGroupIDList'], $yearGroups[$i]))) {
+										$checked = 'checked ';
+									}
+									echo __($guid, $yearGroups[($i + 1)])." <input $checked type='checkbox' name='gibbonYearGroupIDCheck".($i) / 2 ."'><br/>";
+									echo "<input type='hidden' name='gibbonYearGroupID".($i) / 2 ."' value='".$yearGroups[$i]."'>";
+								}
+							}
+							?>
 							<input type="hidden" name="count" value="<?php echo(count($yearGroups)) / 2 ?>">
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input name="gibbonTTID" id="gibbonTTID" value="<?php echo $_GET['gibbonTTID'] ?>" type="hidden">
 							<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php echo $_GET['gibbonSchoolYearID'] ?>" type="hidden">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>
@@ -229,8 +208,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit.ph
                         $rowNum = 'odd';
                     }
 
-                        //COLOR ROW BY STATUS!
-                        echo "<tr class=$rowNum>";
+                    //COLOR ROW BY STATUS!
+                    echo "<tr class=$rowNum>";
                     echo '<td>';
                     echo $row['name'];
                     echo '</td>';

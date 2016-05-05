@@ -79,8 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                     echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Staff/staff_manage.php&search=$search&allStaff=$allStaff'>".__($guid, 'Back to Search Results').'</a>';
                     echo '</div>';
                 }
-                echo '<h3>'.__($guid, 'General Information').'</h3>';
-                ?>
+                echo '<h3>'.__($guid, 'General Information').'</h3>'; ?>
 				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/staff_manage_editProcess.php?gibbonStaffID='.$row['gibbonStaffID']."&search=$search&allStaff=$allStaff" ?>">
 					<table class='smallIntBorder fullWidth' cellspacing='0'>	
 						<tr class='break'>
@@ -106,21 +105,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
 								<input name="initials" id="initials" maxlength=4 value="<?php echo $row['initials'] ?>" type="text" class="standardWidth">
 								<?php
                                 $idList = '';
-                try {
-                    $dataSelect = array('initials' => $row['initials']);
-                    $sqlSelect = 'SELECT initials FROM gibbonStaff WHERE NOT initials=:initials ORDER BY initials';
-                    $resultSelect = $connection2->prepare($sqlSelect);
-                    $resultSelect->execute($dataSelect);
-                } catch (PDOException $e) {
-                }
-                while ($rowSelect = $resultSelect->fetch()) {
-                    $idList .= "'".$rowSelect['initials']."',";
-                }
-                ?>
+								try {
+									$dataSelect = array('initials' => $row['initials']);
+									$sqlSelect = 'SELECT initials FROM gibbonStaff WHERE NOT initials=:initials ORDER BY initials';
+									$resultSelect = $connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								} catch (PDOException $e) {
+								}
+								while ($rowSelect = $resultSelect->fetch()) {
+									$idList .= "'".$rowSelect['initials']."',";
+								}
+								?>
 								<script type="text/javascript">
 									var initials=new LiveValidation('initials');
-									initials.add( Validate.Exclusion, { within: [<?php echo $idList;
-                ?>], failureMessage: "Initials already in use!", partialMatch: false, caseSensitive: false } );
+									initials.add( Validate.Exclusion, { within: [<?php echo $idList; ?>], failureMessage: "Initials already in use!", partialMatch: false, caseSensitive: false } );
 								</script>
 							</td>
 						</tr>
@@ -133,35 +131,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
 								<select name="type" id="type" class="standardWidth">
 									<?php
                                     echo '<option value="Please select...">'.__($guid, 'Please select...').'</option>';
-                echo "<optgroup label='--".__($guid, 'Basic')."--'>";
-                $selected = '';
-                if ($row['type'] == 'Teaching') {
-                    $selected = 'selected';
-                }
-                echo "<option $selected value=\"Teaching\">".__($guid, 'Teaching').'</option>';
-                $selected = '';
-                if ($row['type'] == 'Support') {
-                    $selected = 'selected';
-                }
-                echo "<option $selected value=\"Support\">".__($guid, 'Support').'</option>';
-                echo '</optgroup>';
-                echo "<optgroup label='--".__($guid, 'System Roles')."--'>";
-                try {
-                    $dataSelect = array();
-                    $sqlSelect = "SELECT * FROM gibbonRole WHERE category='Staff' ORDER BY name";
-                    $resultSelect = $connection2->prepare($sqlSelect);
-                    $resultSelect->execute($dataSelect);
-                } catch (PDOException $e) {
-                }
-                while ($rowSelect = $resultSelect->fetch()) {
-                    $selected = '';
-                    if ($rowSelect['name'] == $row['type']) {
-                        $selected = 'selected';
-                    }
-                    echo "<option $selected value=\"".$rowSelect['name'].'">'.__($guid, $rowSelect['name']).'</option>';
-                }
-                echo '</optgroup>';
-                ?>
+									echo "<optgroup label='--".__($guid, 'Basic')."--'>";
+									$selected = '';
+									if ($row['type'] == 'Teaching') {
+										$selected = 'selected';
+									}
+									echo "<option $selected value=\"Teaching\">".__($guid, 'Teaching').'</option>';
+									$selected = '';
+									if ($row['type'] == 'Support') {
+										$selected = 'selected';
+									}
+									echo "<option $selected value=\"Support\">".__($guid, 'Support').'</option>';
+									echo '</optgroup>';
+									echo "<optgroup label='--".__($guid, 'System Roles')."--'>";
+									try {
+										$dataSelect = array();
+										$sqlSelect = "SELECT * FROM gibbonRole WHERE category='Staff' ORDER BY name";
+										$resultSelect = $connection2->prepare($sqlSelect);
+										$resultSelect->execute($dataSelect);
+									} catch (PDOException $e) {
+									}
+									while ($rowSelect = $resultSelect->fetch()) {
+										$selected = '';
+										if ($rowSelect['name'] == $row['type']) {
+											$selected = 'selected';
+										}
+										echo "<option $selected value=\"".$rowSelect['name'].'">'.__($guid, $rowSelect['name']).'</option>';
+									}
+									echo '</optgroup>'; ?>
 								</select>
 								<script type="text/javascript">
 									var type=new LiveValidation('type');
@@ -181,28 +178,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
 							<td> 
 								<b><?php echo __($guid, 'Start Date') ?></b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Users\'s first day at school.') ?><br/> <?php echo __($guid, 'Format:').' ';
-                if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-                    echo 'dd/mm/yyyy';
-                } else {
-                    echo $_SESSION[$guid]['i18n']['dateFormat'];
-                }
-                ?></span>
+								if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+									echo 'dd/mm/yyyy';
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormat'];
+								}
+								?></span>
 							</td>
 							<td class="right">
 								<input name="dateStart" id="dateStart" maxlength=10 value="<?php echo dateConvertBack($guid, $row['dateStart']) ?>" type="text" class="standardWidth">
 								<script type="text/javascript">
 									var dateStart=new LiveValidation('dateStart');
-									dateStart.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-                ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-                ?>." } ); 
+									dateStart.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') { echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+									} else {
+										echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+									}
+									?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
+									} else {
+										echo $_SESSION[$guid]['i18n']['dateFormat'];
+									}
+                					?>." } ); 
 								</script>
 								 <script type="text/javascript">
 									$(function() {
@@ -226,17 +221,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
 								<input name="dateEnd" id="dateEnd" maxlength=10 value="<?php echo dateConvertBack($guid, $row['dateEnd']) ?>" type="text" class="standardWidth">
 								<script type="text/javascript">
 									var dateEnd=new LiveValidation('dateEnd');
-									dateEnd.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-                ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-                ?>." } ); 
+									dateEnd.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') { echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+									} else {
+										echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+									}
+									?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
+									} else {
+										echo $_SESSION[$guid]['i18n']['dateFormat'];
+									}
+                					?>." } ); 
 								</script>
 								 <script type="text/javascript">
 									$(function() {
@@ -270,34 +263,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
 							</td>
 							<td class="right">
 								<select class="standardWidth" name="firstAidQualified" id="firstAidQualified" class="firstAidQualified">
-									<option <?php if ($row['firstAidQualified'] == '') {
-    echo 'selected';
-}
-                ?> value=""></option>
-									<option <?php if ($row['firstAidQualified'] == 'Y') {
-    echo 'selected';
-}
-                ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
-									<option <?php if ($row['firstAidQualified'] == 'N') {
-    echo 'selected';
-}
-                ?> value="N"><?php echo __($guid, 'No') ?></option>
+									<option <?php if ($row['firstAidQualified'] == '') { echo 'selected'; } ?> value=""></option>
+									<option <?php if ($row['firstAidQualified'] == 'Y') { echo 'selected'; } ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
+									<option <?php if ($row['firstAidQualified'] == 'N') { echo 'selected'; } ?> value="N"><?php echo __($guid, 'No') ?></option>
 								</select>
 							</td>
 						</tr>
-						<tr id='firstAidExpiryRow' <?php if ($row['firstAidQualified'] != 'Y') {
-    echo "style='display: none'";
-}
-                ?>>
+						<tr id='firstAidExpiryRow' <?php if ($row['firstAidQualified'] != 'Y') { echo "style='display: none'"; } ?>>
 							<td> 
 								<b><?php echo __($guid, 'First Aid Expiry') ?></b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Format:').' ';
-                if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-                    echo 'dd/mm/yyyy';
-                } else {
-                    echo $_SESSION[$guid]['i18n']['dateFormat'];
-                }
-                ?></span>
+								if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+									echo 'dd/mm/yyyy';
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormat'];
+								}
+								?></span>
 							</td>
 							<td class="right">
 								<input name="firstAidExpiry" id="firstAidExpiry" maxlength=10 value="<?php echo dateConvertBack($guid, $row['firstAidExpiry']) ?>" type="text" class="standardWidth">
@@ -322,21 +303,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
 								<select name="countryOfOrigin" id="countryOfOrigin" class="standardWidth">
 									<?php
                                     echo "<option value=''></option>";
-                try {
-                    $dataSelect = array();
-                    $sqlSelect = 'SELECT printable_name FROM gibbonCountry ORDER BY printable_name';
-                    $resultSelect = $connection2->prepare($sqlSelect);
-                    $resultSelect->execute($dataSelect);
-                } catch (PDOException $e) {
-                }
-                while ($rowSelect = $resultSelect->fetch()) {
-                    $selected = '';
-                    if ($rowSelect['printable_name'] == $row['countryOfOrigin']) {
-                        $selected = 'selected';
-                    }
-                    echo "<option $selected value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
-                }
-                ?>				
+									try {
+										$dataSelect = array();
+										$sqlSelect = 'SELECT printable_name FROM gibbonCountry ORDER BY printable_name';
+										$resultSelect = $connection2->prepare($sqlSelect);
+										$resultSelect->execute($dataSelect);
+									} catch (PDOException $e) {
+									}
+									while ($rowSelect = $resultSelect->fetch()) {
+										$selected = '';
+										if ($rowSelect['printable_name'] == $row['countryOfOrigin']) {
+											$selected = 'selected';
+										}
+										echo "<option $selected value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
+									}
+									?>				
 								</select>
 							</td>
 						</tr>
@@ -380,13 +361,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
 						</tr>
 						<tr>
 							<td>
-								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-                ?></span>
+								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 							</td>
 							<td class="right">
 								<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-								<input type="submit" value="<?php echo __($guid, 'Submit');
-                ?>">
+								<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 							</td>
 						</tr>
 					</table>

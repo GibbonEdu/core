@@ -90,7 +90,7 @@ if (is_null($_SESSION[$guid]['username'])) {
             ++$count;
 
                 //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+            echo "<tr class=$rowNum>";
             echo '<td>';
             echo $row['source'];
             echo '</td>';
@@ -164,8 +164,8 @@ if (is_null($_SESSION[$guid]['username'])) {
             }
             ++$count;
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+			//COLOR ROW BY STATUS!
+			echo "<tr class=$rowNum>";
             echo '<td>';
             echo $row['source'];
             echo '</td>';

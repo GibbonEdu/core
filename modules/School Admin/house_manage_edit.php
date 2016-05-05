@@ -56,8 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
-            ?>
+            $row = $result->fetch(); ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/house_manage_editProcess.php?gibbonHouseID=$gibbonHouseID" ?>" enctype="multipart/form-data">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
@@ -95,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
                             if ($row['logo'] != '') {
                                 echo __($guid, 'Current attachment:')." <a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/'.$row['logo']."'>".$row['logo']."</a> <a href='".$_SESSION[$guid]['absoluteURL']."/modules/School Admin/house_manage_edit_photoDeleteProcess.php?gibbonHouseID=$gibbonHouseID' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a><br/><br/>";
                             }
-            ?>
+            				?>
 							<input type="file" name="file1" id="file1"><br/><br/>
 							<input type="hidden" name="attachment1" value='<?php echo $row['image_240'] ?>'>
 							<script type="text/javascript">
@@ -106,13 +105,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
 					</tr>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

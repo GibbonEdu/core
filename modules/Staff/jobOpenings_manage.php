@@ -86,8 +86,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage.p
 
             ++$count;
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$rowNum>";
             echo '<td>';
             echo __($guid, $row['type']);
             echo '</td>';

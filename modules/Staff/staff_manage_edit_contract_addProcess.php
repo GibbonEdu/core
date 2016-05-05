@@ -32,8 +32,7 @@ date_default_timezone_set($_SESSION[$guid]['timezone']);
 $gibbonStaffID = $_GET['gibbonStaffID'];
 $search = $_GET['search'];
 
-if ($gibbonStaffID == '') {
-    echo 'Fatal error loading this page!';
+if ($gibbonStaffID == '') { echo 'Fatal error loading this page!';
 } else {
     $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/staff_manage_edit_contract_add.php&gibbonStaffID=$gibbonStaffID&search=$search";
 

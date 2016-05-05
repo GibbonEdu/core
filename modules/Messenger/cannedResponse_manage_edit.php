@@ -56,8 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/cannedResponse_m
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
-            ?>
+            $row = $result->fetch(); ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/cannedResponse_manage_editProcess.php?gibbonMessengerCannedResponseID=$gibbonMessengerCannedResponseID" ?>">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
@@ -78,19 +77,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/cannedResponse_m
 							<b><?php echo __($guid, 'Body') ?> *</b>
 							<?php 
                             //Attempt to build a signature for the user
-                            echo getEditor($guid,  true, 'body', $row['body'], 20, true, true, false, true);
-            ?>
+                            echo getEditor($guid,  true, 'body', $row['body'], 20, true, true, false, true); ?>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

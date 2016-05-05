@@ -32,8 +32,7 @@ date_default_timezone_set($_SESSION[$guid]['timezone']);
 $gibbonTTColumnRowID = $_GET['gibbonTTColumnRowID'];
 $gibbonTTColumnID = $_GET['gibbonTTColumnID'];
 
-if ($gibbonTTColumnID == '') {
-    echo 'Fatal error loading this page!';
+if ($gibbonTTColumnID == '') { echo 'Fatal error loading this page!';
 } else {
     $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/ttColumn_edit_row_edit.php&gibbonTTColumnID=$gibbonTTColumnID&gibbonTTColumnRowID=$gibbonTTColumnRowID";
 
