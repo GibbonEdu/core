@@ -259,7 +259,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
 
                                 if ($resultTT->rowCount() == 1) {
                                     $rowTT = $resultTT->fetch();
-                                    echo "<span style='font-size: 80%'><i>".date('D jS M, Y', dateConvertToTimestamp($rowLessons['date'])).'<br/>'.$rowTT['period'].' ('.substr($rowLessons['timeStart'], 0, 5).' - '.substr($rowLessons['timeEnd'], 0, 5).')</span>';
+                                    echo "<span style='font-size: 80%'><i>".date('D jS M, Y', dateConvertToTimestamp($rowLessons['date'])).'<br/>'.$rowTT['period'].' ('.substr($rowLessons['timeStart'], 0, 5).' - '.substr($rowLessons['timeEnd'], 0, 5).')</i></span>';
                                 } else {
                                     echo "<span style='font-size: 80%'><i>";
                                     if ($rowLessons['date'] != '') {
@@ -268,7 +268,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
                                     } else {
                                         echo 'Date not set<br/>';
                                     }
-                                    echo '</span>';
+                                    echo '</i></span>';
                                 }
 
                                 echo "<input type='hidden' name='order[]' value='lessonHeader-$i' >";
@@ -277,7 +277,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
                                 echo "<input type='hidden' name='timeEnd$i' value='".$rowLessons['timeEnd']."' >";
                                 echo "<input type='hidden' name='gibbonPlannerEntryID$i' value='".$rowLessons['gibbonPlannerEntryID']."' >";
                                 echo "<div style='text-align: right; float: right; margin-top: -33px; margin-right: 3px'>";
-                                echo "<span style='font-size: 80%'><i>".__($guid, 'Add Block:').'</span><br/>';
+                                echo "<span style='font-size: 80%'><i>".__($guid, 'Add Block:').'</i></span><br/>';
                                 echo "<script type='text/javascript'>";
                                 echo '$(document).ready(function(){';
                                 echo "$(\"#blockAdd$i\").change(function(){";
@@ -368,21 +368,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
 							.drop { border: none; background-color: #eeeeee }
 							.hover { border: none; background-color: #D4F6DC }
 						</style>
-										
+
 						<script type="text/javascript">
 							$(function() {
 								var receiveCount=0 ;
-								
+
 								//Create list of lesson sortables
 								<?php for ($i = 0; $i < $cells; ++$i) { ?>
 									<?php $sortableList .= "#sortable$i, " ?>
 								<?php } ?>
-								
+
 								//Create lesson sortables
 								<?php for ($i = 0; $i < $cells; ++$i) { ?>
 									$( "#sortable<?php echo $i ?>" ).sortable({
 										revert: false,
-										tolerance: 15, 
+										tolerance: 15,
 										connectWith: "<?php echo substr($sortableList, 0, -2) ?>",
 										items: "div.blockOuter",
 										receive: function(event,ui) {
@@ -390,8 +390,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
 											var receiveid='receive'+receiveCount ;
 											$('#' + receiveid + ' .delete').show() ;
 											$('#' + receiveid + ' .delete').click(function() {
-												$('#' + receiveid).fadeOut(600, function(){ 
-													$('#' + receiveid).remove(); 
+												$('#' + receiveid).fadeOut(600, function(){
+													$('#' + receiveid).remove();
 												});
 											});
 											$('#' + receiveid + ' .completeDiv').show() ;
@@ -412,8 +412,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
 									<?php for ($j = $blockCount; $j < $blockCount2; ++$j) { ?>
 										$("#draggable<?php echo $j ?> .delete").show() ;
 										$("#draggable<?php echo $j ?> .delete").click(function() {
-											$("#draggable<?php echo $j ?>").fadeOut(600, function(){ 
-												$("#draggable<?php echo $j ?>").remove(); 
+											$("#draggable<?php echo $j ?>").fadeOut(600, function(){
+												$("#draggable<?php echo $j ?>").remove();
 											});
 										});
 										$("#draggable<?php echo $j ?> .completeDiv").show() ;
@@ -427,14 +427,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
 											});
 									<?php }
 								} ?>
-								
+
 								//Draggables
 								<?php for ($i = 0; $i < $blockCount; ++$i) { ?>
 									$( "#draggable<?php echo $i ?>" ).draggable({
 										connectToSortable: "<?php echo substr($sortableList, 0, -2) ?>",
 										helper: "clone"
 									});
-								<?php } ?>	
+								<?php } ?>
 							});
 						</script>
 						<?php
