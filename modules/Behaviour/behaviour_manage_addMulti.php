@@ -51,8 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         }
         echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Behaviour/behaviour_manage.php&gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonRollGroupID='.$_GET['gibbonRollGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type']."'>".__($guid, 'Back to Search Results').'</a>';
     }
-    echo '</div>';
-    ?>
+    echo '</div>';?>
 
 	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/behaviour_manage_addMultiProcess.php?gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonRollGroupID='.$_GET['gibbonRollGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type'] ?>">
 		<table class='smallIntBorder fullWidth' cellspacing='0'>	
@@ -72,10 +71,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                                 $resultSelect->execute($dataSelect);
                             } catch (PDOException $e) {
                             }
-    while ($rowSelect = $resultSelect->fetch()) {
-        echo "<option value='".$rowSelect['gibbonPersonID']."'>".htmlPrep($rowSelect['name']).' - '.formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).'</option>';
-    }
-    ?>
+							while ($rowSelect = $resultSelect->fetch()) {
+								echo "<option value='".$rowSelect['gibbonPersonID']."'>".htmlPrep($rowSelect['name']).' - '.formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).'</option>';
+							}
+							?>
 						</optgroup>
 						<optgroup label='--<?php echo __($guid, 'Students by Name') ?>--'>
 							<?php
@@ -86,10 +85,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                                 $resultSelect->execute($dataSelect);
                             } catch (PDOException $e) {
                             }
-    while ($rowSelect = $resultSelect->fetch()) {
-        echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['name']).')</option>';
-    }
-    ?>
+							while ($rowSelect = $resultSelect->fetch()) {
+								echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['name']).')</option>';
+							}
+							?>
 						</optgroup>
 					</select>
 				</td>
@@ -98,27 +97,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 				<td> 
 					<b><?php echo __($guid, 'Date') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-    ?></span>
+						echo 'dd/mm/yyyy';
+					} else {
+						echo $_SESSION[$guid]['i18n']['dateFormat'];
+					}
+					?></span>
 				</td>
 				<td class="right">
 					<input name="date" id="date" maxlength=10 value="<?php echo date($_SESSION[$guid]['i18n']['dateFormatPHP']) ?>" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var date=new LiveValidation('date');
 						date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-    ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-    ?>." } ); 
+							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+						}
+							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+							echo 'dd/mm/yyyy';
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormat'];
+						}
+						?>." } ); 
 					</script>
 					 <script type="text/javascript">
 						$(function() {
@@ -175,7 +174,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 									<?php
 
                                     }
-                        ?>
+                        			?>
 									<?php
                                     for ($i = 0; $i < count($optionsNegative); ++$i) {
                                         ?>
@@ -183,8 +182,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 									<?php
 
                                     }
-                        ?>
-								</select>
+                        			?>								</select>
 								<script type="text/javascript">
 									var descriptor=new LiveValidation('descriptor');
 									descriptor.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
@@ -203,8 +201,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     if ($enableLevels == 'Y') {
         $optionsLevels = getSettingByScope($connection2, 'Behaviour', 'levels');
         if ($optionsLevels != '') {
-            $optionsLevels = explode(',', $optionsLevels);
-            ?>
+            $optionsLevels = explode(',', $optionsLevels); ?>
 					<tr>
 						<td> 
 							<b><?php echo __($guid, 'Level') ?> *</b><br/>
@@ -220,7 +217,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 								<?php
 
                                 }
-            ?>
+           	 					?>
 							</select>
 							<script type="text/javascript">
 								var level=new LiveValidation('level');
@@ -230,9 +227,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 					</tr>
 					<?php
 
-        }
-    }
-    ?>
+						}
+					}
+					?>
 			<script type='text/javascript'>
 				$(document).ready(function(){
 					autosize($('textarea'));
@@ -252,8 +249,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 			</tr>
 			<tr>
 				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-    ?></span>
+					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">

@@ -64,57 +64,57 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
         echo "<fieldset style='border: none'>";
         echo "<div class='linkTop' style='height: 27px'>";
         ?>
-					<input style='margin-top: 0px; float: right' type='submit' value='<?php echo __($guid, 'Go') ?>'>
-					<select name="action" id="action" style='width:120px; float: right; margin-right: 1px;'>
-						<option value="Select action"><?php echo __($guid, 'Select action') ?></option>
-						<?php
-                        try {
-                            $dataSchedule = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                            $sqlSchedule = 'SELECT * FROM gibbonFinanceBillingSchedule WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
-                            $resultSchedule = $connection2->prepare($sqlSchedule);
-                            $resultSchedule->execute($dataSchedule);
-                        } catch (PDOException $e) {
-                        }
-        while ($rowSchedule = $resultSchedule->fetch()) {
-            echo "<option value='".$rowSchedule['gibbonFinanceBillingScheduleID']."'>".sprintf(__($guid, 'Generate Invoices To %1$s'), $rowSchedule['name']).'</option>';
-        }
-        ?>
-						<option value="Generate Invoice - Simulate"><?php echo __($guid, 'Generate Invoice - Simulate') ?></option>
-					</select>
-					<script type="text/javascript">
-						var action=new LiveValidation('action');
-						action.add(Validate.Exclusion, { within: ['Select action'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-					</script>
-					<?php
-                echo '</div>';
+		<input style='margin-top: 0px; float: right' type='submit' value='<?php echo __($guid, 'Go') ?>'>
+		<select name="action" id="action" style='width:120px; float: right; margin-right: 1px;'>
+			<option value="Select action"><?php echo __($guid, 'Select action') ?></option>
+				<?php
+				try {
+					$dataSchedule = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+					$sqlSchedule = 'SELECT * FROM gibbonFinanceBillingSchedule WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
+					$resultSchedule = $connection2->prepare($sqlSchedule);
+					$resultSchedule->execute($dataSchedule);
+				} catch (PDOException $e) {
+				}
+				while ($rowSchedule = $resultSchedule->fetch()) {
+					echo "<option value='".$rowSchedule['gibbonFinanceBillingScheduleID']."'>".sprintf(__($guid, 'Generate Invoices To %1$s'), $rowSchedule['name']).'</option>';
+				}
+				?>
+			<option value="Generate Invoice - Simulate"><?php echo __($guid, 'Generate Invoice - Simulate') ?></option>
+		</select>
+		<script type="text/javascript">
+			var action=new LiveValidation('action');
+			action.add(Validate.Exclusion, { within: ['Select action'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
+		</script>
+		<?php
+		echo '</div>';
 
-        echo "<table cellspacing='0' style='width: 100%'>";
-        echo "<tr class='head'>";
-        echo '<th>';
-        echo __($guid, 'Roll Group');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Student');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Activity');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Cost').'<br/>';
-        echo "<span style='font-style: italic; font-size: 85%'>".$_SESSION[$guid]['currency'].'</span>';
-        echo '</th>';
-        echo '<th>';
-        ?>
-							<script type="text/javascript">
-								$(function () {
-									$('.checkall').click(function () {
-										$(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
-									});
-								});
-							</script>
-							<?php
-                            echo "<input type='checkbox' class='checkall'>";
-        echo '</th>';
+		echo "<table cellspacing='0' style='width: 100%'>";
+		echo "<tr class='head'>";
+		echo '<th>';
+		echo __($guid, 'Roll Group');
+		echo '</th>';
+		echo '<th>';
+		echo __($guid, 'Student');
+		echo '</th>';
+		echo '<th>';
+		echo __($guid, 'Activity');
+		echo '</th>';
+		echo '<th>';
+		echo __($guid, 'Cost').'<br/>';
+		echo "<span style='font-style: italic; font-size: 85%'>".$_SESSION[$guid]['currency'].'</span>';
+		echo '</th>';
+		echo '<th>';
+		?>
+		<script type="text/javascript">
+			$(function () {
+				$('.checkall').click(function () {
+					$(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
+				});
+			});
+		</script>
+		<?php
+		echo "<input type='checkbox' class='checkall'>";
+			echo '</th>';
         echo '</tr>';
 
         $count = 0;
@@ -127,8 +127,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
             }
             ++$count;
 
-                        //COLOR ROW BY STATUS!
-                        echo "<tr class=$rowNum>";
+			//COLOR ROW BY STATUS!
+			echo "<tr class=$rowNum>";
             echo '<td>';
             echo $row['rollGroup'];
             echo '</td>';
@@ -216,8 +216,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
             }
             ++$count;
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$rowNum>";
             echo '<td>';
             echo $row['rollGroup'];
             echo '</td>';

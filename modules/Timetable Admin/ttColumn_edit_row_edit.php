@@ -123,10 +123,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
                                             $resultAuto->execute($dataAuto);
                                         } catch (PDOException $e) {
                                         }
-            while ($rowAuto = $resultAuto->fetch()) {
-                echo '"'.substr($rowAuto['timeStart'], 0, 5).'", ';
-            }
-            ?>
+										while ($rowAuto = $resultAuto->fetch()) {
+											echo '"'.substr($rowAuto['timeStart'], 0, 5).'", ';
+										}
+										?>
 									];
 									$( "#timeStart" ).autocomplete({source: availableTags});
 								});
@@ -156,10 +156,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
                                             $resultAuto->execute($dataAuto);
                                         } catch (PDOException $e) {
                                         }
-            while ($rowAuto = $resultAuto->fetch()) {
-                echo '"'.substr($rowAuto['timeEnd'], 0, 5).'", ';
-            }
-            ?>
+										while ($rowAuto = $resultAuto->fetch()) {
+											echo '"'.substr($rowAuto['timeEnd'], 0, 5).'", ';
+										}
+										?>
 									];
 									$( "#timeEnd" ).autocomplete({source: availableTags});
 								});
@@ -174,49 +174,46 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
 							<select class="standardWidth" name="type">
 								<?php
                                 echo '<option ';
-            if ($row['type'] == 'Lesson') {
-                echo 'selected ';
-            };
-            echo " value='Lesson'>".__($guid, 'Lesson').'</option>';
-            echo '<option ';
-            if ($row['type'] == 'Pastoral') {
-                echo 'selected ';
-            };
-            echo " value='Pastoral'>".__($guid, 'Pastoral').'</option>';
-            echo '<option ';
-            if ($row['type'] == 'Sport') {
-                echo 'selected ';
-            };
-            echo " value='Sport'>".__($guid, 'Sport').'</option>';
-            echo '<option ';
-            if ($row['type'] == 'Break') {
-                echo 'selected ';
-            };
-            echo " value='Break'>".__($guid, 'Break').'</option>';
-            echo '<option ';
-            if ($row['type'] == 'Service') {
-                echo 'selected ';
-            };
-            echo " value='Service'>".__($guid, 'Service').'</option>';
-            echo '<option ';
-            if ($row['type'] == 'Other') {
-                echo 'selected ';
-            };
-            echo " value='Other'>".__($guid, 'Other').'</option>';
-            ?>
+								if ($row['type'] == 'Lesson') {
+									echo 'selected ';
+								};
+								echo " value='Lesson'>".__($guid, 'Lesson').'</option>';
+								echo '<option ';
+								if ($row['type'] == 'Pastoral') {
+									echo 'selected ';
+								};
+								echo " value='Pastoral'>".__($guid, 'Pastoral').'</option>';
+								echo '<option ';
+								if ($row['type'] == 'Sport') {
+									echo 'selected ';
+								};
+								echo " value='Sport'>".__($guid, 'Sport').'</option>';
+								echo '<option ';
+								if ($row['type'] == 'Break') {
+									echo 'selected ';
+								};
+								echo " value='Break'>".__($guid, 'Break').'</option>';
+								echo '<option ';
+								if ($row['type'] == 'Service') {
+									echo 'selected ';
+								};
+								echo " value='Service'>".__($guid, 'Service').'</option>';
+								echo '<option ';
+								if ($row['type'] == 'Other') {
+									echo 'selected ';
+								};
+								echo " value='Other'>".__($guid, 'Other').'</option>'; ?>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input name="gibbonTTColumnID" id="gibbonTTColumnID" value="<?php echo $gibbonTTColumnID ?>" type="hidden">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

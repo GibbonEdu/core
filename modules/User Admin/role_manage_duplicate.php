@@ -69,8 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_dup
 							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 						</td>
 						<td class="right">
-							<?php echo "<input readonly value='".$row['name']."' type='text' style='width: 300px'>";
-            ?>
+							<?php echo "<input readonly value='".$row['name']."' type='text' style='width: 300px'>"; ?>
 						</td>
 					</tr>
 					<tr>
@@ -99,13 +98,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_dup
 					</tr>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

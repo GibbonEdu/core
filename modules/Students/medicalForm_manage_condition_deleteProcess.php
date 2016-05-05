@@ -33,8 +33,7 @@ date_default_timezone_set($_SESSION[$guid]['timezone']);
 $gibbonPersonMedicalID = $_GET['gibbonPersonMedicalID'];
 $gibbonPersonMedicalConditionID = $_GET['gibbonPersonMedicalConditionID'];
 $search = $_GET['search'];
-if ($gibbonPersonMedicalID == '' or $gibbonPersonMedicalConditionID == '') {
-    echo 'Fatal error loading this page!';
+if ($gibbonPersonMedicalID == '' or $gibbonPersonMedicalConditionID == '') { echo 'Fatal error loading this page!';
 } else {
     $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/medicalForm_manage_condition_delete.php&gibbonPersonMedicalID=$gibbonPersonMedicalID&gibbonPersonMedicalConditionID=$gibbonPersonMedicalConditionID&search=$search";
     $URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/medicalForm_manage_edit.php&gibbonPersonMedicalID=$gibbonPersonMedicalID&search=$search";

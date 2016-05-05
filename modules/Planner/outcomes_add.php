@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_add.php')
 								<?php
 
                             }
-            ?>
+            				?>
 						</td>
 					</tr>
 					
@@ -116,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_add.php')
 						<?php
 
                     }
-            ?>
+            		?>
 					<tr id='learningAreaRow'>
 						<td> 
 							<b><?php echo __($guid, 'Learning Area') ?> *</b><br/>
@@ -136,14 +136,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_add.php')
                                 $resultSelect->execute($dataSelect);
                             } catch (PDOException $e) {
                             }
-            ?>
+            				?>
 							<select name="gibbonDepartmentID" id="gibbonDepartmentID" class="standardWidth">
 								<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
 								<?php
                                 while ($rowSelect = $resultSelect->fetch()) {
                                     echo "<option value='".$rowSelect['gibbonDepartmentID']."'>".$rowSelect['name'].'</option>';
                                 }
-            ?>
+           	 					?>
 							</select>
 							<script type="text/javascript">
 								var gibbonDepartmentID=new LiveValidation('gibbonDepartmentID');
@@ -152,7 +152,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_add.php')
                                 if ($highestAction == 'Manage Outcomes_viewEditAll') {
                                     echo 'gibbonDepartmentID.disable();';
                                 }
-            ?>
+           	 					?>
 							</script>
 						</td>
 					</tr>
@@ -210,10 +210,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_add.php')
                                             $resultAuto->execute($dataAuto);
                                         } catch (PDOException $e) {
                                         }
-            while ($rowAuto = $resultAuto->fetch()) {
-                echo '"'.$rowAuto['category'].'", ';
-            }
-            ?>
+										while ($rowAuto = $resultAuto->fetch()) {
+											echo '"'.$rowAuto['category'].'", ';
+										}
+										?>
 									];
 									$( "#category" ).autocomplete({source: availableTags});
 								});
@@ -235,8 +235,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_add.php')
 						</td>
 						<td class="right">
 							<?php
-                            echo "<fieldset style='border: none'>";
-            ?>
+                            echo "<fieldset style='border: none'>"; ?>
 							<script type="text/javascript">
 								$(function () {
 									$('.checkall').click(function () {
@@ -246,29 +245,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_add.php')
 							</script>
 							<?php
                             echo __($guid, 'All/None')." <input type='checkbox' class='checkall'><br/>";
-            $yearGroups = getYearGroups($connection2);
-            if ($yearGroups == '') {
-                echo '<i>'.__($guid, 'No year groups available.').'</i>';
-            } else {
-                for ($i = 0; $i < count($yearGroups); $i = $i + 2) {
-                    echo __($guid, $yearGroups[($i + 1)])." <input type='checkbox' name='gibbonYearGroupIDCheck".($i) / 2 ."'><br/>";
-                    echo "<input type='hidden' name='gibbonYearGroupID".($i) / 2 ."' value='".$yearGroups[$i]."'>";
-                }
-            }
-            echo '</fieldset>';
-            ?>
+							$yearGroups = getYearGroups($connection2);
+							if ($yearGroups == '') {
+								echo '<i>'.__($guid, 'No year groups available.').'</i>';
+							} else {
+								for ($i = 0; $i < count($yearGroups); $i = $i + 2) {
+									echo __($guid, $yearGroups[($i + 1)])." <input type='checkbox' name='gibbonYearGroupIDCheck".($i) / 2 ."'><br/>";
+									echo "<input type='hidden' name='gibbonYearGroupID".($i) / 2 ."' value='".$yearGroups[$i]."'>";
+								}
+							}
+							echo '</fieldset>'; ?>
 							<input type="hidden" name="count" value="<?php echo(count($yearGroups)) / 2 ?>">
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

@@ -106,23 +106,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 							<td class="right">
 								<?php
                                 $terms = getTerms($connection2, $_SESSION[$guid]['gibbonSchoolYearID'], true);
-                        $termList = '';
-                        for ($i = 0; $i < count($terms); $i = $i + 2) {
-                            if (is_numeric(strpos($row['gibbonSchoolYearTermIDList'], $terms[$i]))) {
-                                $termList .= $terms[($i + 1)].', ';
-                            }
-                        }
-                        if ($termList == '') {
-                            $termList = '-, ';
-                        }
-                        ?>
+								$termList = '';
+								for ($i = 0; $i < count($terms); $i = $i + 2) {
+									if (is_numeric(strpos($row['gibbonSchoolYearTermIDList'], $terms[$i]))) {
+										$termList .= $terms[($i + 1)].', ';
+									}
+								}
+								if ($termList == '') {
+									$termList = '-, ';
+								}
+								?>
 								<input readonly name="name" id="name" maxlength=20 value="<?php echo substr($termList, 0, -2) ?>" type="text" class="standardWidth">
 							</td>
 						</tr>
 						<?php
-
-                    }
-            ?>
+					}
+                    ?>
 					<tr>
 						<td> 
 							<b><?php echo __($guid, 'Students') ?> *</b><br/>
@@ -159,10 +158,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                                 } catch (PDOException $e) {
                                 }
 
-            while ($rowSelect = $resultSelect->fetch()) {
-                echo "<option value='".$rowSelect['gibbonPersonID']."'>".htmlPrep($rowSelect['name']).' - '.formatName('', $rowSelect['preferredName'], $rowSelect['surname'], 'Student', true).'</option>';
-            }
-            ?>
+									while ($rowSelect = $resultSelect->fetch()) {
+										echo "<option value='".$rowSelect['gibbonPersonID']."'>".htmlPrep($rowSelect['name']).' - '.formatName('', $rowSelect['preferredName'], $rowSelect['surname'], 'Student', true).'</option>';
+									}
+									?>
 								</optgroup>
 								<optgroup label='--<?php echo __($guid, 'All Users') ?>--'>
 								<?php
@@ -173,14 +172,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                                     $resultSelect->execute($dataSelect);
                                 } catch (PDOException $e) {
                                 }
-            while ($rowSelect = $resultSelect->fetch()) {
-                $expected = '';
-                if ($rowSelect['status'] == 'Expected') {
-                    $expected = ' (Expected)';
-                }
-                echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.$rowSelect['username'].')'.$expected.'</option>';
-            }
-            ?>
+								while ($rowSelect = $resultSelect->fetch()) {
+									$expected = '';
+									if ($rowSelect['status'] == 'Expected') {
+										$expected = ' (Expected)';
+									}
+									echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.$rowSelect['username'].')'.$expected.'</option>';
+								}
+								?>
 								</optgroup>
 							</select>
 						</td>
@@ -194,24 +193,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 								<option value="Accepted"><?php echo __($guid, 'Accepted') ?></option>
 								<?php
                                 $enrolment = getSettingByScope($connection2, 'Activities', 'enrolmentType');
-            if ($enrolment == 'Competitive') {
-                echo "<option value='Waiting List'>".__($guid, 'Waiting List').'</option>';
-            } else {
-                echo "<option value='Pending'>".__($guid, 'Pending').'</option>';
-            }
-            ?>
+								if ($enrolment == 'Competitive') {
+									echo "<option value='Waiting List'>".__($guid, 'Waiting List').'</option>';
+								} else {
+									echo "<option value='Pending'>".__($guid, 'Pending').'</option>';
+								}
+								?>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

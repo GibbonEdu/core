@@ -35,8 +35,7 @@ date_default_timezone_set($_SESSION[$guid]['timezone']);
 $action = $_POST['action'];
 $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
 
-if ($gibbonFinanceBudgetCycleID == '' or $action == '') {
-    echo 'Fatal error loading this page!';
+if ($gibbonFinanceBudgetCycleID == '' or $action == '') { echo 'Fatal error loading this page!';
 } else {
     $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/expenses_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID";
 

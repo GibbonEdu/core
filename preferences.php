@@ -196,10 +196,8 @@ if ($result->rowCount() == 1) {
             ?>
 			<tr>
 				<td> 
-					<b><?php echo __($guid, 'Personal Background');
-            ?></b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Set your own custom background image.').'<br/>'.__($guid, 'Please provide URL to image.');
-            ?></span>
+					<b><?php echo __($guid, 'Personal Background'); ?></b><br/>
+					<span class="emphasis small"><?php echo __($guid, 'Set your own custom background image.').'<br/>'.__($guid, 'Please provide URL to image.'); ?></span>
 				</td>
 				<td class="right">
 					<input name="personalBackground" id="personalBackground" value="<?php echo $row['personalBackground'] ?>" type="text" class="standardWidth">
@@ -295,8 +293,7 @@ if ($result->rowCount() == 1) {
                     if ($_SESSION[$guid]['receiveNotificationEmails'] == 'Y') {
                         echo ' selected ';
                     }
-                    echo "value='Y'>".ynExpander($guid, 'Y').'</option>';
-                    ?>				
+                    echo "value='Y'>".ynExpander($guid, 'Y').'</option>'; ?>				
 				</select>
 			</td>
 		</tr>

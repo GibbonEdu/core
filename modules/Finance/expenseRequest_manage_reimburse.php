@@ -114,19 +114,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 								<td class="right">
 									<?php
                                     $yearName = '';
-                    try {
-                        $dataYear = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
-                        $sqlYear = 'SELECT * FROM gibbonFinanceBudgetCycle WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID';
-                        $resultYear = $connection2->prepare($sqlYear);
-                        $resultYear->execute($dataYear);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
-                    if ($resultYear->rowCount() == 1) {
-                        $rowYear = $resultYear->fetch();
-                        $yearName = $rowYear['name'];
-                    }
-                    ?>
+									try {
+										$dataYear = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
+										$sqlYear = 'SELECT * FROM gibbonFinanceBudgetCycle WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID';
+										$resultYear = $connection2->prepare($sqlYear);
+										$resultYear->execute($dataYear);
+									} catch (PDOException $e) {
+										echo "<div class='error'>".$e->getMessage().'</div>';
+									}
+									if ($resultYear->rowCount() == 1) {
+										$rowYear = $resultYear->fetch();
+										$yearName = $rowYear['name'];
+									}
+									?>
 									<input readonly name="name" id="name" maxlength=20 value="<?php echo $yearName ?>" type="text" class="standardWidth">
 									<input name="gibbonFinanceBudgetCycleID" id="gibbonFinanceBudgetCycleID" maxlength=20 value="<?php echo $gibbonFinanceBudgetCycleID ?>" type="hidden" class="standardWidth">
 									<script type="text/javascript">
@@ -140,8 +140,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 									<b><?php echo __($guid, 'Budget') ?> *</b><br/>
 								</td>
 								<td class="right">
-									<input readonly name="name" id="name" maxlength=20 value="<?php echo $row['budget'];
-                    ?>" type="text" class="standardWidth">
+									<input readonly name="name" id="name" maxlength=20 value="<?php echo $row['budget']; ?>" type="text" class="standardWidth">
 								</td>
 							</tr>
 							<tr>
@@ -149,8 +148,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 									<b><?php echo __($guid, 'Title') ?> *</b><br/>
 								</td>
 								<td class="right">
-									<input readonly name="name" id="name" maxlength=60 value="<?php echo $row['title'];
-                    ?>" type="text" class="standardWidth">
+									<input readonly name="name" id="name" maxlength=60 value="<?php echo $row['title']; ?>" type="text" class="standardWidth">
 								</td>
 							</tr>
 							<tr>
@@ -174,7 +172,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 										<?php
 
                                     }
-                    ?>
+                   		 			?>
 									<script type="text/javascript">
 										var status=new LiveValidation('status');
 										status.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
@@ -186,8 +184,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 									<b><?php echo __($guid, 'Description') ?></b>
 									<?php 
                                         echo '<p>';
-                    echo $row['body'];
-                    echo '</p>'
+										echo $row['body'];
+										echo '</p>'
                                     ?>
 								</td>
 							</tr>
@@ -196,8 +194,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 									<b><?php echo __($guid, 'Purchase By') ?> *</b><br/>
 								</td>
 								<td class="right">
-									<input readonly name="purchaseBy" id="purchaseBy" maxlength=60 value="<?php echo $row['purchaseBy'];
-                    ?>" type="text" class="standardWidth">
+									<input readonly name="purchaseBy" id="purchaseBy" maxlength=60 value="<?php echo $row['purchaseBy']; ?>" type="text" class="standardWidth">
 								</td>
 							</tr>
 							<tr>
@@ -205,8 +202,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 									<b><?php echo __($guid, 'Purchase Details') ?></b>
 									<?php 
                                         echo '<p>';
-                    echo $row['purchaseDetails'];
-                    echo '</p>'
+										echo $row['purchaseDetails'];
+										echo '</p>'
                                     ?>
 								</td>
 							</tr>
@@ -220,7 +217,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 								<td colspan=2> 
 									<?php
                                     echo getExpenseLog($guid, $gibbonFinanceExpenseID, $connection2);
-                    ?>
+                    				?>
 								</td>
 							</tr>
 							
@@ -268,16 +265,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 									<script type="text/javascript">
 										var paymentDate=new LiveValidation('paymentDate');
 										paymentDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-                    ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-                    ?>." } ); 
+											echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+										} else {
+											echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+										}
+										?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+											echo 'dd/mm/yyyy';
+										} else {
+											echo $_SESSION[$guid]['i18n']['dateFormat'];
+										}
+										?>." } ); 
 										paymentDate.add(Validate.Presence);
 									</script>
 									 <script type="text/javascript">
@@ -295,7 +292,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                                     if ($_SESSION[$guid]['currency'] != '') {
                                         echo "<span style='font-style: italic; font-size: 85%'>".$_SESSION[$guid]['currency'].'</span>';
                                     }
-                    ?>
+                   		 			?>
 									</span>
 								</td>
 								<td class="right">
@@ -324,14 +321,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 								<td class="right">
 									<?php
                                     echo "<select name='paymentMethod' id='paymentMethod' style='width:302px'>";
-                    echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-                    echo "<option value='Bank Transfer'>Bank Transfer</option>";
-                    echo "<option value='Cash'>Cash</option>";
-                    echo "<option value='Cheque'>Cheque</option>";
-                    echo "<option value='Credit Card'>Credit Card</option>";
-                    echo "<option value='Other'>Other</option>";
-                    echo '</select>';
-                    ?>
+									echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
+									echo "<option value='Bank Transfer'>Bank Transfer</option>";
+									echo "<option value='Cash'>Cash</option>";
+									echo "<option value='Cheque'>Cheque</option>";
+									echo "<option value='Credit Card'>Credit Card</option>";
+									echo "<option value='Other'>Other</option>";
+									echo '</select>';
+									?>
 									<script type="text/javascript">
 										var paymentMethod=new LiveValidation('paymentMethod');
 										paymentMethod.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
@@ -347,12 +344,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 									<input type="file" name="file" id="file"><br/><br/>
 										<?php
                                         echo getMaxUpload($guid);
-                    $ext = "'.png','.jpeg','.jpg','.gif','.pdf'";
-                    ?>
+										$ext = "'.png','.jpeg','.jpg','.gif','.pdf'";
+										?>
 										<script type="text/javascript">
 											var file=new LiveValidation('file');
-											file.add( Validate.Inclusion, { within: [<?php echo $ext;
-                    ?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+											file.add( Validate.Inclusion, { within: [<?php echo $ext; ?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 											file.add(Validate.Presence);
 										</script>
 									</td>
@@ -361,8 +357,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 							
 							<tr>
 								<td>
-									<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-                    ?></span>
+									<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 								</td>
 								<td class="right">
 									<input name="gibbonFinanceExpenseID" id="gibbonFinanceExpenseID" value="<?php echo $gibbonFinanceExpenseID ?>" type="hidden">
@@ -370,8 +365,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 									<input name="status2" id="status2" value="<?php echo $status2 ?>" type="hidden">
 									<input name="gibbonFinanceBudgetID2" id="gibbonFinanceBudgetID2" value="<?php echo $gibbonFinanceBudgetID2 ?>" type="hidden">
 									<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-									<input type="submit" value="<?php echo __($guid, 'Submit');
-                    ?>">
+									<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 								</td>
 							</tr>
 						</table>

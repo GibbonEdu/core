@@ -139,8 +139,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                     echo "<th rowspan=2 style='width: 20px; text-align: center'>";
                     $title = __($guid, 'Personalised target grade');
 
-                                    //Get PAS
-                                    $PAS = getSettingByScope($connection2, 'System', 'primaryAssessmentScale');
+					//Get PAS
+					$PAS = getSettingByScope($connection2, 'System', 'primaryAssessmentScale');
                     try {
                         $dataPAS = array('gibbonScaleID' => $PAS);
                         $sqlPAS = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
@@ -176,27 +176,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             $gibbonRubricIDEffort[$i] = $row['gibbonRubricIDEffort'];
                         }
 
-                                    //WORK OUT IF THERE IS SUBMISSION
-                                    if (is_null($row2['gibbonPlannerEntryID']) == false) {
-                                        try {
-                                            $dataSub = array('gibbonPlannerEntryID' => $row2['gibbonPlannerEntryID']);
-                                            $sqlSub = "SELECT * FROM gibbonPlannerEntry WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND homeworkSubmission='Y'";
-                                            $resultSub = $connection2->prepare($sqlSub);
-                                            $resultSub->execute($dataSub);
-                                        } catch (PDOException $e) {
-                                            echo "<div class='error'>".$e->getMessage().'</div>';
-                                        }
+						//WORK OUT IF THERE IS SUBMISSION
+						if (is_null($row2['gibbonPlannerEntryID']) == false) {
+							try {
+								$dataSub = array('gibbonPlannerEntryID' => $row2['gibbonPlannerEntryID']);
+								$sqlSub = "SELECT * FROM gibbonPlannerEntry WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND homeworkSubmission='Y'";
+								$resultSub = $connection2->prepare($sqlSub);
+								$resultSub->execute($dataSub);
+							} catch (PDOException $e) {
+								echo "<div class='error'>".$e->getMessage().'</div>';
+							}
 
-                                        if ($resultSub->rowCount() == 1) {
-                                            $submission = true;
-                                            $rowSub = $resultSub->fetch();
-                                            $homeworkDueDateTime = $rowSub['homeworkDueDateTime'];
-                                            $lessonDate[$i] = $rowSub['date'];
-                                        }
-                                    }
+							if ($resultSub->rowCount() == 1) {
+								$submission = true;
+								$rowSub = $resultSub->fetch();
+								$homeworkDueDateTime = $rowSub['homeworkDueDateTime'];
+								$lessonDate[$i] = $rowSub['date'];
+							}
+						}
 
-                                    //Column count
-                                    $span = 2;
+						//Column count
+						$span = 2;
                         if ($submission == true) {
                             ++$span;
                         }
@@ -344,8 +344,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             }
                             ++$count;
 
-                                    //COLOR ROW BY STATUS!
-                                    echo "<tr class=$rowNum>";
+							//COLOR ROW BY STATUS!
+							echo "<tr class=$rowNum>";
                             echo '<td>';
                             echo "<div style='padding: 2px 0px'>".($count).") <b><a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowStudents['gibbonPersonID'].'&subpage=Markbook#'.$gibbonCourseClassID."'>".formatName('', $rowStudents['preferredName'], $rowStudents['surname'], 'Student', true).'</a><br/></div>';
                             echo '</td>';
@@ -480,13 +480,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                                         } else {
                                             echo "<input style='max-width: 228px; margin-top: 5px' type='file' name='response$count' id='response$count'>";
                                             ?>
-															<script type="text/javascript">
-																var <?php echo "response$count" ?>=new LiveValidation('<?php echo "response$count" ?>');
-																<?php echo "response$count" ?>.add( Validate.Inclusion, { within: [<?php echo $ext;
-                                            ?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
-															</script>
-															<?php
-
+											<script type="text/javascript">
+												var <?php echo "response$count" ?>=new LiveValidation('<?php echo "response$count" ?>');
+												<?php echo "response$count" ?>.add( Validate.Inclusion, { within: [<?php echo $ext; ?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+											</script>
+											<?php
                                         }
                                     }
                                     echo '</td>';
@@ -497,42 +495,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                         }
                     }
                     ?>
-							<tr class='break'>
-								<?php
-                                echo '<td colspan='.($span).'>';
-                    ?>
-									<h3><?php echo __($guid, 'Assessment Complete?') ?></h3>
-								</td>
-							</tr>
-							<tr>
-								<?php
-                                echo '<td>';
-                    ?>
-									<b><?php echo __($guid, 'Go Live Date') ?></b><br/>
-									<span class="emphasis small"><?php echo __($guid, '1. Format') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-                    ?><br/><?php echo __($guid, '2. Column is hidden until date is reached.') ?></span>
-								</td>
-								<td class="right" colspan="<?php echo $span - 1 ?>">
-									<input name="completeDate" id="completeDate" maxlength=10 value="<?php echo dateConvertBack($guid, $row2['completeDate']) ?>" type="text" class="standardWidth">
-									<script type="text/javascript">
-										var completeDate=new LiveValidation('completeDate');
-										completeDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-                    ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-                    ?>." } ); 
+					<tr class='break'>
+						<?php
+						echo '<td colspan='.($span).'>'; ?>
+							<h3><?php echo __($guid, 'Assessment Complete?') ?></h3>
+						</td>
+					</tr>
+					<tr>
+						<?php
+						echo '<td>'; ?>
+							<b><?php echo __($guid, 'Go Live Date') ?></b><br/>
+							<span class="emphasis small"><?php echo __($guid, '1. Format') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
+							} else {
+								echo $_SESSION[$guid]['i18n']['dateFormat'];
+							}
+                    		?><br/><?php echo __($guid, '2. Column is hidden until date is reached.') ?></span>
+						</td>
+						<td class="right" colspan="<?php echo $span - 1 ?>">
+							<input name="completeDate" id="completeDate" maxlength=10 value="<?php echo dateConvertBack($guid, $row2['completeDate']) ?>" type="text" class="standardWidth">
+							<script type="text/javascript">
+								var completeDate=new LiveValidation('completeDate');
+								completeDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') { echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormatRegEx']; }?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormat'];
+								} ?>." } ); 
 									</script>
-									 <script type="text/javascript">
+									<script type="text/javascript">
 										$(function() {
 											$( "#completeDate" ).datepicker();
 										});
@@ -542,14 +532,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
 							<tr>
 								<?php
                                 echo "<td style='text-align: left'>";
-                    echo getMaxUpload($guid, true);
-                    echo '</td>';
-                    echo "<td class='right' colspan=".($span - 1).'>';
-                    ?>
+									echo getMaxUpload($guid, true);
+									echo '</td>';
+									echo "<td class='right' colspan=".($span - 1).'>'; ?>
 									<input name="count" id="count" value="<?php echo $count ?>" type="hidden">
-									<input type="submit" value="<?php echo __($guid, 'Submit');
-                    ?>">
-								
+									<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 								</td>
 							</tr>
 							<?php

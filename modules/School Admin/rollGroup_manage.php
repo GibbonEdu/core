@@ -135,8 +135,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
                     $rowNum = 'odd';
                 }
 
-                    //COLOR ROW BY STATUS!
-                    echo "<tr class=$rowNum>";
+                //COLOR ROW BY STATUS!
+                echo "<tr class=$rowNum>";
                 echo '<td>';
                 echo '<b>'.$row['name'].'</b><br/>';
                 echo "<span style='font-size: 85%; font-style: italic'>".$row['nameShort'].'</span>';

@@ -173,56 +173,56 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
                         echo "<form method='get' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/expenses_manage.php'>";
                         echo "<table class='noIntBorder' cellspacing='0' style='width: 100%'>";
                         ?>
-								<tr>
-									<td> 
-										<b><?php echo __($guid, 'Status') ?></b><br/>
-										<span class="emphasis small"></span>
-									</td>
-									<td class="right">
-										<?php
-                                        echo "<select name='status2' id='status2' style='width:302px'>";
-                        $selected = '';
-                        if ($status2 == '') {
-                            $selected = 'selected';
-                        }
-                        echo "<option $selected value=''>".__($guid, 'All').'</option>';
-                        $selected = '';
-                        if ($status2 == 'Requested') {
-                            $selected = 'selected';
-                        }
-                        echo "<option $selected value='Requested'>".__($guid, 'Requested').'</option>';
-                        $selected = '';
-                        if ($status2 == 'Requested - Approval Required') {
-                            $selected = 'selected';
-                        }
-                        echo "<option $selected value='Requested - Approval Required'>".__($guid, 'Requested - Approval Required').'</option>';
-                        $selected = '';
-                        if ($status2 == 'Approved') {
-                            $selected = 'selected';
-                        }
-                        echo "<option $selected value='Approved'>".__($guid, 'Approved').'</option>';
-                        $selected = '';
-                        if ($status2 == 'Rejected') {
-                            $selected = 'selected';
-                        }
-                        echo "<option $selected value='Rejected'>".__($guid, 'Rejected').'</option>';
-                        $selected = '';
-                        if ($status2 == 'Cancelled') {
-                            $selected = 'selected';
-                        }
-                        echo "<option $selected value='Cancelled'>".__($guid, 'Cancelled').'</option>';
-                        $selected = '';
-                        if ($status2 == 'Ordered') {
-                            $selected = 'selected';
-                        }
-                        echo "<option $selected value='Ordered'>".__($guid, 'Ordered').'</option>';
-                        $selected = '';
-                        if ($status2 == 'Paid') {
-                            $selected = 'selected';
-                        }
-                        echo "<option $selected value='Paid'>".__($guid, 'Paid').'</option>';
-                        echo '</select>';
-                        ?>
+						<tr>
+							<td> 
+								<b><?php echo __($guid, 'Status') ?></b><br/>
+								<span class="emphasis small"></span>
+							</td>
+							<td class="right">
+								<?php
+								echo "<select name='status2' id='status2' style='width:302px'>";
+									$selected = '';
+									if ($status2 == '') {
+										$selected = 'selected';
+									}
+									echo "<option $selected value=''>".__($guid, 'All').'</option>';
+									$selected = '';
+									if ($status2 == 'Requested') {
+										$selected = 'selected';
+									}
+									echo "<option $selected value='Requested'>".__($guid, 'Requested').'</option>';
+									$selected = '';
+									if ($status2 == 'Requested - Approval Required') {
+										$selected = 'selected';
+									}
+									echo "<option $selected value='Requested - Approval Required'>".__($guid, 'Requested - Approval Required').'</option>';
+									$selected = '';
+									if ($status2 == 'Approved') {
+										$selected = 'selected';
+									}
+									echo "<option $selected value='Approved'>".__($guid, 'Approved').'</option>';
+									$selected = '';
+									if ($status2 == 'Rejected') {
+										$selected = 'selected';
+									}
+									echo "<option $selected value='Rejected'>".__($guid, 'Rejected').'</option>';
+									$selected = '';
+									if ($status2 == 'Cancelled') {
+										$selected = 'selected';
+									}
+									echo "<option $selected value='Cancelled'>".__($guid, 'Cancelled').'</option>';
+									$selected = '';
+									if ($status2 == 'Ordered') {
+										$selected = 'selected';
+									}
+									echo "<option $selected value='Ordered'>".__($guid, 'Ordered').'</option>';
+									$selected = '';
+									if ($status2 == 'Paid') {
+										$selected = 'selected';
+									}
+									echo "<option $selected value='Paid'>".__($guid, 'Paid').'</option>';
+									echo '</select>';
+									?>
 									</td>
 								</tr>
 								<tr>
@@ -233,96 +233,96 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
 									<td class="right">
 										<?php
                                         echo "<select name='gibbonFinanceBudgetID2' id='gibbonFinanceBudgetID2' style='width:302px'>";
-                        $selected = '';
-                        if ($gibbonFinanceBudgetID2 == '') {
-                            $selected = 'selected';
-                        }
-                        echo "<option $selected value=''>".__($guid, 'All').'</option>';
-                        if ($budgetsAll == null) {
-                            $budgetsAll = $budgets;
-                        }
-                        foreach ($budgetsAll as $budget) {
-                            $selected = '';
-                            if ($gibbonFinanceBudgetID2 == $budget[0]) {
-                                $selected = 'selected';
-                            }
-                            echo "<option $selected value='".$budget[0]."'>".$budget[1].'</option>';
-                        }
-                        echo '</select>';
-                        ?>
+										$selected = '';
+										if ($gibbonFinanceBudgetID2 == '') {
+											$selected = 'selected';
+										}
+										echo "<option $selected value=''>".__($guid, 'All').'</option>';
+										if ($budgetsAll == null) {
+											$budgetsAll = $budgets;
+										}
+										foreach ($budgetsAll as $budget) {
+											$selected = '';
+											if ($gibbonFinanceBudgetID2 == $budget[0]) {
+												$selected = 'selected';
+											}
+											echo "<option $selected value='".$budget[0]."'>".$budget[1].'</option>';
+										}
+										echo '</select>';
+										?>
 									</td>
 								</tr>
 								<?php
 
                                 echo '<tr>';
-                        echo "<td class='right' colspan=2>";
-                        echo "<input type='hidden' name='gibbonFinanceBudgetCycleID' value='$gibbonFinanceBudgetCycleID'>";
-                        echo "<input type='hidden' name='q' value='".$_GET['q']."'>";
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/expenses_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID'>".__($guid, 'Clear Filters').'</a> ';
-                        echo "<input type='submit' value='".__($guid, 'Go')."'>";
-                        echo '</td>';
-                        echo '</tr>';
-                        echo '</table>';
-                        echo '</form>';
+								echo "<td class='right' colspan=2>";
+								echo "<input type='hidden' name='gibbonFinanceBudgetCycleID' value='$gibbonFinanceBudgetCycleID'>";
+								echo "<input type='hidden' name='q' value='".$_GET['q']."'>";
+								echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/expenses_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID'>".__($guid, 'Clear Filters').'</a> ';
+								echo "<input type='submit' value='".__($guid, 'Go')."'>";
+								echo '</td>';
+								echo '</tr>';
+								echo '</table>';
+								echo '</form>';
 
-                        try {
-                            //Set Up filter wheres
-                            $data = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
-                            $whereBudget = '';
-                            if ($gibbonFinanceBudgetID2 != '') {
-                                $data['gibbonFinanceBudgetID'] = $gibbonFinanceBudgetID2;
-                                $whereBudget .= ' AND gibbonFinanceBudget.gibbonFinanceBudgetID=:gibbonFinanceBudgetID';
-                            }
-                            $approvalRequiredFilter = false;
-                            $whereStatus = '';
-                            if ($status2 != '') {
-                                if ($status2 == 'Requested - Approval Required') {
-                                    $data['status'] = 'Requested';
-                                    $approvalRequiredFilter = true;
-                                } else {
-                                    $data['status'] = $status2;
-                                }
-                                $whereStatus .= ' AND gibbonFinanceExpense.status=:status';
-                            }
-                            //GET THE DATA ACCORDING TO FILTERS
-                            if ($highestAction == 'Manage Expenses_all') { //Access to everything
-                                $sql = "SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget, surname, preferredName, 'Full' AS access 
-									FROM gibbonFinanceExpense 
-									JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) 
-									JOIN gibbonPerson ON (gibbonFinanceExpense.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID) 
-									WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID $whereBudget $whereStatus 
-									ORDER BY FIND_IN_SET(gibbonFinanceExpense.status, 'Pending,Issued,Paid,Refunded,Cancelled'), timestampCreator DESC";
-                            } else { //Access only to own budgets
-                                $data['gibbonPersonID'] = $_SESSION[$guid]['gibbonPersonID'];
-                                $sql = "SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget, surname, preferredName, access
-									FROM gibbonFinanceExpense 
-									JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) 
-									JOIN gibbonFinanceBudgetPerson ON (gibbonFinanceBudgetPerson.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID)
-									JOIN gibbonPerson ON (gibbonFinanceExpense.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID) 
-									WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetPerson.gibbonPersonID=:gibbonPersonID $whereBudget $whereStatus 
-									ORDER BY FIND_IN_SET(gibbonFinanceExpense.status, 'Pending,Issued,Paid,Refunded,Cancelled'), timestampCreator DESC";
-                            }
-                            $result = $connection2->prepare($sql);
-                            $result->execute($data);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
+								try {
+									//Set Up filter wheres
+									$data = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
+									$whereBudget = '';
+									if ($gibbonFinanceBudgetID2 != '') {
+										$data['gibbonFinanceBudgetID'] = $gibbonFinanceBudgetID2;
+										$whereBudget .= ' AND gibbonFinanceBudget.gibbonFinanceBudgetID=:gibbonFinanceBudgetID';
+									}
+									$approvalRequiredFilter = false;
+									$whereStatus = '';
+									if ($status2 != '') {
+										if ($status2 == 'Requested - Approval Required') {
+											$data['status'] = 'Requested';
+											$approvalRequiredFilter = true;
+										} else {
+											$data['status'] = $status2;
+										}
+										$whereStatus .= ' AND gibbonFinanceExpense.status=:status';
+									}
+									//GET THE DATA ACCORDING TO FILTERS
+									if ($highestAction == 'Manage Expenses_all') { //Access to everything
+										$sql = "SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget, surname, preferredName, 'Full' AS access 
+											FROM gibbonFinanceExpense 
+											JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) 
+											JOIN gibbonPerson ON (gibbonFinanceExpense.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID) 
+											WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID $whereBudget $whereStatus 
+											ORDER BY FIND_IN_SET(gibbonFinanceExpense.status, 'Pending,Issued,Paid,Refunded,Cancelled'), timestampCreator DESC";
+									} else { //Access only to own budgets
+										$data['gibbonPersonID'] = $_SESSION[$guid]['gibbonPersonID'];
+										$sql = "SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget, surname, preferredName, access
+											FROM gibbonFinanceExpense 
+											JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) 
+											JOIN gibbonFinanceBudgetPerson ON (gibbonFinanceBudgetPerson.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID)
+											JOIN gibbonPerson ON (gibbonFinanceExpense.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID) 
+											WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetPerson.gibbonPersonID=:gibbonPersonID $whereBudget $whereStatus 
+											ORDER BY FIND_IN_SET(gibbonFinanceExpense.status, 'Pending,Issued,Paid,Refunded,Cancelled'), timestampCreator DESC";
+									}
+									$result = $connection2->prepare($sql);
+									$result->execute($data);
+								} catch (PDOException $e) {
+									echo "<div class='error'>".$e->getMessage().'</div>';
+								}
 
-                        echo '<h3>';
-                        echo __($guid, 'View');
-                        echo '</h3>';
+								echo '<h3>';
+								echo __($guid, 'View');
+								echo '</h3>';
 
-                        $allowExpenseAdd = getSettingByScope($connection2, 'Finance', 'allowExpenseAdd');
-                        if ($highestAction == 'Manage Expenses_all' and $allowExpenseAdd == 'Y') { //Access to everything
-                            echo "<div class='linkTop' style='text-align: right'>";
-                            echo "<a style='margin-right: 3px' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/expenses_manage_add.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a><br/>";
-                            echo '</div>';
-                        }
+								$allowExpenseAdd = getSettingByScope($connection2, 'Finance', 'allowExpenseAdd');
+								if ($highestAction == 'Manage Expenses_all' and $allowExpenseAdd == 'Y') { //Access to everything
+									echo "<div class='linkTop' style='text-align: right'>";
+									echo "<a style='margin-right: 3px' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/expenses_manage_add.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a><br/>";
+									echo '</div>';
+								}
 
-                        echo "<form onsubmit='return confirm(\"".__($guid, 'Are you sure you wish to process this action? It cannot be undone.')."\")' method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/expenses_manage_processBulk.php?gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>";
-                        echo "<fieldset style='border: none'>";
-                        echo "<div class='linkTop' style='text-align: right; margin-bottom: 40px'>";
-                        ?>
+								echo "<form onsubmit='return confirm(\"".__($guid, 'Are you sure you wish to process this action? It cannot be undone.')."\")' method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/expenses_manage_processBulk.php?gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>";
+								echo "<fieldset style='border: none'>";
+								echo "<div class='linkTop' style='text-align: right; margin-bottom: 40px'>";
+								?>
 									<input style='margin-top: 0px; float: right' type='submit' value='<?php echo __($guid, 'Go') ?>'>
 									<select name="action" id="action" style='width:120px; float: right; margin-right: 1px;'>
 										<option value="Select action"><?php echo __($guid, 'Select action') ?></option>
@@ -333,53 +333,53 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
 										action.add(Validate.Exclusion, { within: ['Select action'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
 									</script>
 									<?php
-                                echo '</div>';
-                        echo "<table cellspacing='0' style='width: 100%'>";
-                        echo "<tr class='head'>";
-                        echo "<th style='width: 110px'>";
-                        echo __($guid, 'Title').'<br/>';
-                        echo "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Budget').'</span>';
-                        echo '</th>';
-                        echo "<th style='width: 110px'>";
-                        echo __($guid, 'Staff');
-                        echo '</th>';
-                        echo "<th style='width: 100px'>";
-                        echo __($guid, 'Status');
-                        echo '</th>';
-                        echo "<th style='width: 90px'>";
-                        echo __($guid, 'Cost')."<br/><span style='font-style: italic; font-size: 75%'>(".$_SESSION[$guid]['currency'].')</span><br/>';
-                        echo '</th>';
-                        echo "<th style='width: 120px'>";
-                        echo __($guid, 'Date');
-                        echo '</th>';
-                        echo "<th style='width: 140px'>";
-                        echo __($guid, 'Actions');
-                        echo '</th>';
-                        echo '<th>';
-                        ?>
-											<script type="text/javascript">
-												$(function () {
-													$('.checkall').click(function () {
-														$(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
-													});
-												});
-											</script>
-											<?php
-                                            echo "<input type='checkbox' class='checkall'>";
-                        echo '</th>';
-                        echo '</tr>';
+                                	echo '</div>';
+									echo "<table cellspacing='0' style='width: 100%'>";
+									echo "<tr class='head'>";
+									echo "<th style='width: 110px'>";
+									echo __($guid, 'Title').'<br/>';
+									echo "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Budget').'</span>';
+									echo '</th>';
+									echo "<th style='width: 110px'>";
+									echo __($guid, 'Staff');
+									echo '</th>';
+									echo "<th style='width: 100px'>";
+									echo __($guid, 'Status');
+									echo '</th>';
+									echo "<th style='width: 90px'>";
+									echo __($guid, 'Cost')."<br/><span style='font-style: italic; font-size: 75%'>(".$_SESSION[$guid]['currency'].')</span><br/>';
+									echo '</th>';
+									echo "<th style='width: 120px'>";
+									echo __($guid, 'Date');
+									echo '</th>';
+									echo "<th style='width: 140px'>";
+									echo __($guid, 'Actions');
+									echo '</th>';
+									echo '<th>';
+									?>
+									<script type="text/javascript">
+										$(function () {
+											$('.checkall').click(function () {
+												$(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
+											});
+										});
+									</script>
+									<?php
+									echo "<input type='checkbox' class='checkall'>";
+									echo '</th>';
+									echo '</tr>';
 
-                        $count = 0;
-                        $rowNum = 'odd';
-                        while ($row = $result->fetch()) {
-                            $approvalRequired = approvalRequired($guid, $_SESSION[$guid]['gibbonPersonID'], $row['gibbonFinanceExpenseID'], $gibbonFinanceBudgetCycleID, $connection2, false);
-                            if ($approvalRequiredFilter == false or ($approvalRequiredFilter and $approvalRequired)) {
-                                if ($count % 2 == 0) {
-                                    $rowNum = 'even';
-                                } else {
-                                    $rowNum = 'odd';
-                                }
-                                ++$count;
+									$count = 0;
+									$rowNum = 'odd';
+									while ($row = $result->fetch()) {
+										$approvalRequired = approvalRequired($guid, $_SESSION[$guid]['gibbonPersonID'], $row['gibbonFinanceExpenseID'], $gibbonFinanceBudgetCycleID, $connection2, false);
+										if ($approvalRequiredFilter == false or ($approvalRequiredFilter and $approvalRequired)) {
+											if ($count % 2 == 0) {
+												$rowNum = 'even';
+											} else {
+												$rowNum = 'odd';
+											}
+											++$count;
 
                                             //Color row by status
                                             if ($row['status'] == 'Approved') {

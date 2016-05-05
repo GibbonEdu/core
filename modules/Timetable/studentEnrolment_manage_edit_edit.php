@@ -121,27 +121,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
 						</td>
 						<td class="right">
 							<select class="standardWidth" name="role">
-								<option <?php if ($row['role'] == 'Student') {
-    echo 'selected ';
-}
-            ?>value="Student"><?php echo __($guid, 'Student') ?></option>
-								<option <?php if ($row['role'] == 'Student - Left') {
-    echo 'selected ';
-}
-            ?>value="Student - Left"><?php echo __($guid, 'Student - Left') ?></option>
+								<option <?php if ($row['role'] == 'Student') { echo 'selected '; } ?>value="Student"><?php echo __($guid, 'Student') ?></option>
+								<option <?php if ($row['role'] == 'Student - Left') { echo 'selected '; } ?>value="Student - Left"><?php echo __($guid, 'Student - Left') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input name="gibbonPersonID" id="gibbonPersonID" value="<?php echo $gibbonPersonID ?>" type="hidden">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

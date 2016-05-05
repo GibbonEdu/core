@@ -28,83 +28,96 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view_prin
     echo __($guid, 'You do not have access to this action.');
     echo '</div>';
 } else {
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-    $gibbonFinanceInvoiceID = $_GET['gibbonFinanceInvoiceID'];
-    $type = $_GET['type'];
-    $gibbonPersonID = null;
-    if (isset($_GET['gibbonPersonID'])) {
-        $gibbonPersonID = $_GET['gibbonPersonID'];
-    }
-
-    if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '' or $type == '' or $gibbonPersonID == '') {
+    //Get action with highest precendence
+    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __($guid, 'The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        //Confirm access to this student
-        try {
-            $dataChild = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
-            $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'";
-            $resultChild = $connection2->prepare($sqlChild);
-            $resultChild->execute($dataChild);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
+        $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
+        $gibbonFinanceInvoiceID = $_GET['gibbonFinanceInvoiceID'];
+        $type = $_GET['type'];
+        $gibbonPersonID = null;
+        if (isset($_GET['gibbonPersonID'])) {
+            $gibbonPersonID = $_GET['gibbonPersonID'];
         }
-        if ($resultChild->rowCount() < 1) {
+
+        if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '' or $type == '' or $gibbonPersonID == '') {
             echo "<div class='error'>";
-            echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+            echo __($guid, 'You have not specified one or more required parameters.');
             echo '</div>';
         } else {
-            $rowChild = $resultChild->fetch();
-
+            //Confirm access to this student
             try {
-                $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID, 'gibbonPersonID' => $gibbonPersonID);
-                $sql = "SELECT surname, preferredName, gibbonFinanceInvoice.* FROM gibbonFinanceInvoice JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID AND gibbonFinanceInvoicee.gibbonPersonID=:gibbonPersonID AND (gibbonFinanceInvoice.status='Issued' OR gibbonFinanceInvoice.status='Paid' OR gibbonFinanceInvoice.status='Paid - Partial')";
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
+                if ($highestAction=="View Invoices_myChildren") {
+                    $dataChild = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
+                    $sqlChild = "SELECT gibbonPerson.gibbonPersonID FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'";
+                } else if ($highestAction=="View Invoices_mine") {
+                    $dataChild = array('gibbonPersonID' => $gibbonPersonID);
+                    $sqlChild = "SELECT gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonPersonID=:gibbonPersonID" ;
+                }
+                $resultChild = $connection2->prepare($sqlChild);
+                $resultChild->execute($dataChild);
             } catch (PDOException $e) {
                 echo "<div class='error'>".$e->getMessage().'</div>';
             }
-
-            if ($result->rowCount() != 1) {
+            if ($resultChild->rowCount() < 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'The specified record cannot be found.');
+                echo __($guid, 'The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
-                //Let's go!
-                $row = $result->fetch();
+                $rowChild = $resultChild->fetch();
 
-                $statusExtra = '';
-                if ($row['status'] == 'Issued' and $row['invoiceDueDate'] < date('Y-m-d')) {
-                    $statusExtra = 'Overdue';
-                }
-                if ($row['status'] == 'Paid' and $row['invoiceDueDate'] < $row['paidDate']) {
-                    $statusExtra = 'Late';
+                try {
+                    $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID, 'gibbonPersonID' => $gibbonPersonID);
+                    $sql = "SELECT surname, preferredName, gibbonFinanceInvoice.* FROM gibbonFinanceInvoice JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID AND gibbonFinanceInvoicee.gibbonPersonID=:gibbonPersonID AND (gibbonFinanceInvoice.status='Issued' OR gibbonFinanceInvoice.status='Paid' OR gibbonFinanceInvoice.status='Paid - Partial')";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    echo "<div class='error'>".$e->getMessage().'</div>';
                 }
 
-                if ($type == 'invoice') {
-                    echo '<h2>';
-                    echo 'Invoice';
-                    echo '</h2>';
-                    $invoiceContents = invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency'], false, true);
-                    if ($invoiceContents == false) {
-                        echo "<div class='error'>";
-                        echo __($guid, 'An error occurred.');
-                        echo '</div>';
-                    } else {
-                        echo $invoiceContents;
+                if ($result->rowCount() != 1) {
+                    echo "<div class='error'>";
+                    echo __($guid, 'The specified record cannot be found.');
+                    echo '</div>';
+                } else {
+                    //Let's go!
+                    $row = $result->fetch();
+
+                    $statusExtra = '';
+                    if ($row['status'] == 'Issued' and $row['invoiceDueDate'] < date('Y-m-d')) {
+                        $statusExtra = 'Overdue';
                     }
-                } elseif ($type = 'Receipt') {
-                    echo '<h2>';
-                    echo __($guid, 'Receipt');
-                    echo '</h2>';
-                    $receiptContents = receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency'], false, $receiptNumber);
-                    if ($receiptContents == false) {
-                        echo "<div class='error'>";
-                        echo __($guid, 'An error occurred.');
-                        echo '</div>';
-                    } else {
-                        echo $receiptContents;
+                    if ($row['status'] == 'Paid' and $row['invoiceDueDate'] < $row['paidDate']) {
+                        $statusExtra = 'Late';
+                    }
+
+                    if ($type == 'invoice') {
+                        echo '<h2>';
+                        echo 'Invoice';
+                        echo '</h2>';
+                        $invoiceContents = invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency'], false, true);
+                        if ($invoiceContents == false) {
+                            echo "<div class='error'>";
+                            echo __($guid, 'An error occurred.');
+                            echo '</div>';
+                        } else {
+                            echo $invoiceContents;
+                        }
+                    } elseif ($type = 'Receipt') {
+                        echo '<h2>';
+                        echo __($guid, 'Receipt');
+                        echo '</h2>';
+                        $receiptContents = receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency'], false, $receiptNumber);
+                        if ($receiptContents == false) {
+                            echo "<div class='error'>";
+                            echo __($guid, 'An error occurred.');
+                            echo '</div>';
+                        } else {
+                            echo $receiptContents;
+                        }
                     }
                 }
             }

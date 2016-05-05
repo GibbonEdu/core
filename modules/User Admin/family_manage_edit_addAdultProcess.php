@@ -33,8 +33,7 @@ $search = $_GET['search'];
 $gibbonFamilyID = $_GET['gibbonFamilyID'];
 $gibbonPersonID = $_POST['gibbonPersonID2'];
 
-if ($gibbonFamilyID == '') {
-    echo 'Fatal error loading this page!';
+if ($gibbonFamilyID == '') { echo 'Fatal error loading this page!';
 } else {
     $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/family_manage_edit.php&gibbonFamilyID=$gibbonFamilyID&search=$search";
 

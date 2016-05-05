@@ -108,8 +108,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage.php
                 $rowNum = 'error';
             }
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$rowNum>";
             echo '<td>';
             echo '<b>'.$row['name'].'</b><br/>';
             echo '</td>';

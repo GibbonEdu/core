@@ -2745,18 +2745,15 @@ function sidebar($connection2, $guid)
             if ((isset($_SESSION[$guid]['username']) == false)) { // If Google Auth set to No make sure login screen not visible when logged in
             ?>
 			<h2>
-				<?php echo __($guid, 'Login');
-                ?>
+				<?php echo __($guid, 'Login'); ?>
 			</h2>
-			<form name="loginForm" method="post" action="./login.php?<?php if (isset($_GET['q'])) {
-    echo 'q='.$_GET['q'];
+			<form name="loginForm" method="post" action="./login.php?<?php if (isset($_GET['q'])) { echo 'q='.$_GET['q'];
 }
                 ?>">
 				<table class='noIntBorder' cellspacing='0' style="width: 100%; margin: 0px 0px">
 					<tr>
 						<td>
-							<b><?php echo __($guid, 'Username');
-                ?></b>
+							<b><?php echo __($guid, 'Username'); ?></b>
 						</td>
 						<td class="right">
 							<input name="username" id="username" maxlength=20 type="text" style="width:120px">
@@ -2768,8 +2765,7 @@ function sidebar($connection2, $guid)
 					</tr>
 					<tr>
 						<td>
-							<b><?php echo __($guid, 'Password');
-                ?></b>
+							<b><?php echo __($guid, 'Password'); ?></b>
 						</td>
 						<td class="right">
 							<input name="password" id="password" maxlength=30 type="password" style="width:120px">
@@ -2781,8 +2777,7 @@ function sidebar($connection2, $guid)
 					</tr>
 					<tr class='schoolYear' id='schoolYear'>
 						<td>
-							<b><?php echo __($guid, 'School Year');
-                ?></b>
+							<b><?php echo __($guid, 'School Year'); ?></b>
 						</td>
 						<td class="right">
 							<select name="gibbonSchoolYearID" id="gibbonSchoolYearID" style="width: 120px">
@@ -2808,8 +2803,7 @@ function sidebar($connection2, $guid)
 					</tr>
 					<tr class='language' id='language'>
 						<td>
-							<b><?php echo __($guid, 'Language');
-                ?></b>
+							<b><?php echo __($guid, 'Language'); ?></b>
 						</td>
 						<td class="right">
 							<select name="gibboni18nID" id="gibboni18nID" style="width: 120px">
@@ -2848,11 +2842,8 @@ function sidebar($connection2, $guid)
                 echo '$(".language").fadeToggle(1000);';
                 echo '});';
                 echo '});';
-                echo '</script>';
-                ?>
-							<span style='font-size: 10px'><a class='show_hide' onclick='false' href='#'><?php echo __($guid, 'Options');
-                ?></a> . <a href="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php?q=passwordReset.php"><?php echo __($guid, 'Forgot Password?');
-                ?></a></span>
+                echo '</script>'; ?>
+							<span style='font-size: 10px'><a class='show_hide' onclick='false' href='#'><?php echo __($guid, 'Options'); ?></a> . <a href="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php?q=passwordReset.php"><?php echo __($guid, 'Forgot Password?'); ?></a></span>
 						</td>
 					</tr>
 					<tr>

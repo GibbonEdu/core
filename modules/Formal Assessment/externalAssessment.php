@@ -66,11 +66,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 				<td class="right">
 					<?php
                     $checked = '';
-    if ($allStudents == 'on') {
-        $checked = 'checked';
-    }
-    echo "<input $checked name=\"allStudents\" id=\"allStudents\" type=\"checkbox\">";
-    ?>
+					if ($allStudents == 'on') {
+						$checked = 'checked';
+					}
+					echo "<input $checked name=\"allStudents\" id=\"allStudents\" type=\"checkbox\">";
+					?>
 				</td>
 			</tr>
 			<tr>
@@ -78,10 +78,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/externalAssessment.php">
 					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 					<?php
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/externalAssessment.php'>".__($guid, 'Clear Search').'</a>';
-    ?>
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/externalAssessment.php'>".__($guid, 'Clear Search').'</a>';?>
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>
@@ -167,8 +165,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
             }
             ++$count;
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$rowNum>";
             echo '<td>';
             echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
             echo '</td>';

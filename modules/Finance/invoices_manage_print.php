@@ -89,13 +89,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
 
                 ?>
 					<tr class='<?php echo $rowNum ?>'>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Invoice') ?></b><br/>
 						</td>
 						<td class="left">
 							<?php
-                            echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module'].'/invoices_manage_print_print.php&type=invoice&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID'>".__($guid, 'Print')."<img style='margin-left: 5px' title='".__($guid, 'Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
-                ?>
+                            echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module'].'/invoices_manage_print_print.php&type=invoice&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID'>".__($guid, 'Print')."<img style='margin-left: 5px' title='".__($guid, 'Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>"; ?>
 						</td>
 					</tr>
 					<?php
@@ -111,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
                         if ($row['reminderCount'] >= 0) {
                             ?>
 							<tr class='<?php echo $rowNum ?>'>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Reminder 1') ?></b><br/>
 								</td>
 								<td class="left">
@@ -132,7 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
                         if ($row['reminderCount'] >= 1) {
                             ?>
 							<tr class='<?php echo $rowNum ?>'>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Reminder 2') ?></b><br/>
 								</td>
 								<td class="left">
@@ -153,7 +152,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
                         if ($row['reminderCount'] >= 2) {
                             ?>
 							<tr class='<?php echo $rowNum ?>'>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Reminder 3') ?></b><br/>
 								</td>
 								<td class="left">
@@ -166,7 +165,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
 
                         }
                     }
-                if ($row['status'] == 'Paid') {
+                	if ($row['status'] == 'Paid' OR $row['status'] == 'Paid - Partial') {
                     //Get individual payments that make up receipt
                         try {
                             $data = array('foreignTable' => 'gibbonFinanceInvoice', 'foreignTableID' => $gibbonFinanceInvoiceID);
@@ -180,7 +179,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
                     if ($result->rowCount() < 1) {
                         ?>
 							<tr class='<?php echo $rowNum ?>'>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Receipt') ?></b><br/>
 								</td>
 								<td class="left">
@@ -201,7 +200,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
                             }
                             ?>
 								<tr class='<?php echo $rowNum ?>'>
-									<td> 
+									<td>
 										<b><?php echo sprintf(__($guid, 'Receipt %1$s'), ($count2 + 1)) ?></b><br/>
 									</td>
 									<td class="left">

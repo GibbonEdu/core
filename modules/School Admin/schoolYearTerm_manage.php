@@ -83,8 +83,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearTer
                 $rowNum = 'odd';
             }
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$rowNum>";
             echo '<td>';
             echo $row['yearName'];
             echo '</td>';

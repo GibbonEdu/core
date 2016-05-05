@@ -77,8 +77,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
                 $rowNum = 'odd';
             }
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$rowNum>";
             echo '<td>';
             echo $row['sequenceNumber'];
             echo '</td>';

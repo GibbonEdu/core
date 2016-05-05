@@ -307,30 +307,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
                                 echo '</div>';
                                 echo '</div>';
 
-                                                //Get blocks
-                                                try {
-                                                    if ($hooked == false) {
-                                                        $dataLessonBlocks = array('gibbonPlannerEntryID' => $rowLessons['gibbonPlannerEntryID'], 'gibbonCourseClassID' => $gibbonCourseClassID);
-                                                        $sqlLessonBlocks = 'SELECT * FROM gibbonUnitClassBlock JOIN gibbonUnitClass ON (gibbonUnitClassBlock.gibbonUnitClassID=gibbonUnitClass.gibbonUnitClassID) WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY sequenceNumber';
-                                                    } else {
-                                                        $dataLessonBlocks = array('gibbonPlannerEntryID' => $rowLessons['gibbonPlannerEntryID'], 'gibbonCourseClassID' => $gibbonCourseClassID);
-                                                        $sqlLessonBlocks = 'SELECT '.$hookOptions['classSmartBlockTable'].'.* FROM '.$hookOptions['classSmartBlockTable'].' JOIN '.$hookOptions['classLinkTable'].' ON ('.$hookOptions['classSmartBlockTable'].'.'.$hookOptions['classSmartBlockJoinField'].'='.$hookOptions['classLinkTable'].'.'.$hookOptions['classLinkIDField'].') WHERE '.$hookOptions['classSmartBlockTable'].'.'.$hookOptions['classSmartBlockPlannerJoin'].'=:gibbonPlannerEntryID AND '.$hookOptions['classLinkTable'].'.'.$hookOptions['classLinkJoinFieldClass'].'=:gibbonCourseClassID ORDER BY sequenceNumber';
-                                                    }
-                                                    $resultLessonBlocks = $connection2->prepare($sqlLessonBlocks);
-                                                    $resultLessonBlocks->execute($dataLessonBlocks);
-                                                } catch (PDOException $e) {
-                                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                                }
+								//Get blocks
+								try {
+									if ($hooked == false) {
+										$dataLessonBlocks = array('gibbonPlannerEntryID' => $rowLessons['gibbonPlannerEntryID'], 'gibbonCourseClassID' => $gibbonCourseClassID);
+										$sqlLessonBlocks = 'SELECT * FROM gibbonUnitClassBlock JOIN gibbonUnitClass ON (gibbonUnitClassBlock.gibbonUnitClassID=gibbonUnitClass.gibbonUnitClassID) WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY sequenceNumber';
+									} else {
+										$dataLessonBlocks = array('gibbonPlannerEntryID' => $rowLessons['gibbonPlannerEntryID'], 'gibbonCourseClassID' => $gibbonCourseClassID);
+										$sqlLessonBlocks = 'SELECT '.$hookOptions['classSmartBlockTable'].'.* FROM '.$hookOptions['classSmartBlockTable'].' JOIN '.$hookOptions['classLinkTable'].' ON ('.$hookOptions['classSmartBlockTable'].'.'.$hookOptions['classSmartBlockJoinField'].'='.$hookOptions['classLinkTable'].'.'.$hookOptions['classLinkIDField'].') WHERE '.$hookOptions['classSmartBlockTable'].'.'.$hookOptions['classSmartBlockPlannerJoin'].'=:gibbonPlannerEntryID AND '.$hookOptions['classLinkTable'].'.'.$hookOptions['classLinkJoinFieldClass'].'=:gibbonCourseClassID ORDER BY sequenceNumber';
+									}
+									$resultLessonBlocks = $connection2->prepare($sqlLessonBlocks);
+									$resultLessonBlocks->execute($dataLessonBlocks);
+								} catch (PDOException $e) {
+									echo "<div class='error'>".$e->getMessage().'</div>';
+								}
 
-                                                //Get outcomes
-                                                try {
-                                                    $dataOutcomes = array('gibbonUnitID' => $gibbonUnitID);
-                                                    $sqlOutcomes = "SELECT gibbonOutcome.gibbonOutcomeID, gibbonOutcome.name, gibbonOutcome.category, scope, gibbonDepartment.name AS department FROM gibbonUnitOutcome JOIN gibbonOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) LEFT JOIN gibbonDepartment ON (gibbonOutcome.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonUnitID=:gibbonUnitID AND active='Y' ORDER BY sequenceNumber";
-                                                    $resultOutcomes = $connection2->prepare($sqlOutcomes);
-                                                    $resultOutcomes->execute($dataOutcomes);
-                                                } catch (PDOException $e) {
-                                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                                }
+								//Get outcomes
+								try {
+									$dataOutcomes = array('gibbonUnitID' => $gibbonUnitID);
+									$sqlOutcomes = "SELECT gibbonOutcome.gibbonOutcomeID, gibbonOutcome.name, gibbonOutcome.category, scope, gibbonDepartment.name AS department FROM gibbonUnitOutcome JOIN gibbonOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) LEFT JOIN gibbonDepartment ON (gibbonOutcome.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonUnitID=:gibbonUnitID AND active='Y' ORDER BY sequenceNumber";
+									$resultOutcomes = $connection2->prepare($sqlOutcomes);
+									$resultOutcomes->execute($dataOutcomes);
+								} catch (PDOException $e) {
+									echo "<div class='error'>".$e->getMessage().'</div>';
+								}
                                 $unitOutcomes = $resultOutcomes->fetchall();
 
                                 while ($rowLessonBlocks = $resultLessonBlocks->fetch()) {
@@ -348,16 +348,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
                             $cells = $i;
                         }
                         ?>
-								<div class='linkTop' style='margin-top: 0px!important'>
-									<?php
-                                    echo "<script type='text/javascript'>";
-                        echo "var count=$blockCount2 ;";
-                        echo '</script>';
-                        echo "<input type='submit' value='Submit'>";
-                        ?>
-								</div>
+						<div class='linkTop' style='margin-top: 0px!important'>
 							<?php
-                            echo '</div>';
+							echo "<script type='text/javascript'>";
+							echo "var count=$blockCount2 ;";
+							echo '</script>';
+							echo "<input type='submit' value='Submit'>";
+							?>
+						</div>
+						<?php
+                        echo '</div>';
                         echo '</form>';
 
                         //Add drag/drop controls
@@ -374,16 +374,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
 								var receiveCount=0 ;
 								
 								//Create list of lesson sortables
-								<?php for ($i = 0; $i < $cells; ++$i) {
-    ?>
+								<?php for ($i = 0; $i < $cells; ++$i) { ?>
 									<?php $sortableList .= "#sortable$i, " ?>
-								<?php 
-}
-                        ?>
+								<?php } ?>
 								
 								//Create lesson sortables
-								<?php for ($i = 0; $i < $cells; ++$i) {
-    ?>
+								<?php for ($i = 0; $i < $cells; ++$i) { ?>
 									$( "#sortable<?php echo $i ?>" ).sortable({
 										revert: false,
 										tolerance: 15, 
@@ -413,8 +409,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
 										 newItem=ui.item;
 										}
 									});
-									<?php for ($j = $blockCount; $j < $blockCount2; ++$j) {
-    ?>
+									<?php for ($j = $blockCount; $j < $blockCount2; ++$j) { ?>
 										$("#draggable<?php echo $j ?> .delete").show() ;
 										$("#draggable<?php echo $j ?> .delete").click(function() {
 											$("#draggable<?php echo $j ?>").fadeOut(600, function(){ 
@@ -430,26 +425,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
 													$("#draggable<?php echo $j ?> .completeHide").val('off') ;
 												}
 											});
-									<?php 
-}
-    ?>
-									
-									
-								<?php 
-}
-                        ?>
+									<?php }
+								} ?>
 								
 								//Draggables
-								<?php for ($i = 0; $i < $blockCount; ++$i) {
-    ?>
+								<?php for ($i = 0; $i < $blockCount; ++$i) { ?>
 									$( "#draggable<?php echo $i ?>" ).draggable({
 										connectToSortable: "<?php echo substr($sortableList, 0, -2) ?>",
 										helper: "clone"
 									});
-								<?php 
-}
-                        ?>
-								
+								<?php } ?>	
 							});
 						</script>
 						<?php

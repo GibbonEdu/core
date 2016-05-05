@@ -63,16 +63,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage_
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
-            ?>
+            $row = $result->fetch(); ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/theme_manage_uninstallProcess.php?gibbonThemeID=$gibbonThemeID&orphaned=$orphaned" ?>">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td style='width: 275px'> 
-							<b><?php echo __($guid, 'Are you sure you want to delete this record?');
-            ?></b><br/>
-							<span style="font-size: 90%; color: #cc0000"><i><?php echo __($guid, 'This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!');
-            ?></span>
+							<b><?php echo __($guid, 'Are you sure you want to delete this record?'); ?></b><br/>
+							<span style="font-size: 90%; color: #cc0000"><i><?php echo __($guid, 'This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!'); ?></span>
 						</td>
 						<td class="right">
 							
@@ -81,8 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage_
 					<tr>
 						<td> 
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Yes');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Yes'); ?>">
 						</td>
 						<td class="right">
 							

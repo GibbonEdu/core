@@ -83,23 +83,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_em
             echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
             echo '</td>';
             echo '<td colspan=3>';
-                        //Get details of last personal data form update
-                        try {
-                            $dataMedical = array('gibbonPersonID' => $row['gibbonPersonID']);
-                            $sqlMedical = "SELECT * FROM gibbonPersonUpdate WHERE gibbonPersonID=:gibbonPersonID AND status='Complete' ORDER BY timestamp DESC";
-                            $resultMedical = $connection2->prepare($sqlMedical);
-                            $resultMedical->execute($dataMedical);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
+			//Get details of last personal data form update
+			try {
+				$dataMedical = array('gibbonPersonID' => $row['gibbonPersonID']);
+				$sqlMedical = "SELECT * FROM gibbonPersonUpdate WHERE gibbonPersonID=:gibbonPersonID AND status='Complete' ORDER BY timestamp DESC";
+				$resultMedical = $connection2->prepare($sqlMedical);
+				$resultMedical->execute($dataMedical);
+			} catch (PDOException $e) {
+				echo "<div class='error'>".$e->getMessage().'</div>';
+			}
             if ($resultMedical->rowCount() > 0) {
                 $rowMedical = $resultMedical->fetch();
-                            //Is last update more recent than 90 days?
-                            if (substr($rowMedical['timestamp'], 0, 10) > date('Y-m-d', (time() - (90 * 24 * 60 * 60)))) {
-                                echo dateConvertBack($guid, substr($rowMedical['timestamp'], 0, 10));
-                            } else {
-                                echo "<span style='color: #ff0000; font-weight: bold'>".dateConvertBack($guid, substr($rowMedical['timestamp'], 0, 10)).'</span>';
-                            }
+				//Is last update more recent than 90 days?
+				if (substr($rowMedical['timestamp'], 0, 10) > date('Y-m-d', (time() - (90 * 24 * 60 * 60)))) {
+					echo dateConvertBack($guid, substr($rowMedical['timestamp'], 0, 10));
+				} else {
+					echo "<span style='color: #ff0000; font-weight: bold'>".dateConvertBack($guid, substr($rowMedical['timestamp'], 0, 10)).'</span>';
+				}
             } else {
                 echo "<span style='color: #ff0000; font-weight: bold'>".__($guid, 'NA').'</span>';
             }

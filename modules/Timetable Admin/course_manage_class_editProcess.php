@@ -33,8 +33,7 @@ $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
 $gibbonCourseID = $_GET['gibbonCourseID'];
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
 
-if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') {
-    echo 'Fatal error loading this page!';
+if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
 } else {
     $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/course_manage_class_edit.php&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonSchoolYearID=$gibbonSchoolYearID";
 

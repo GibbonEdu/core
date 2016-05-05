@@ -101,8 +101,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields.php'
             }
             ++$count;
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$rowNum>";
             echo '<td>';
             echo $row['name'];
             echo '</td>';

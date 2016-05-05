@@ -84,8 +84,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_privacy_st
             }
             ++$count;
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$rowNum>";
             echo '<td>';
             echo $count;
             echo '</td>';

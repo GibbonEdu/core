@@ -91,19 +91,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
 					<td class="right">
 						<?php
                         $yearName = '';
-        try {
-            $dataYear = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-            $sqlYear = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-            $resultYear = $connection2->prepare($sqlYear);
-            $resultYear->execute($dataYear);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
-        if ($resultYear->rowCount() == 1) {
-            $rowYear = $resultYear->fetch();
-            $yearName = $rowYear['name'];
-        }
-        ?>
+						try {
+							$dataYear = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+							$sqlYear = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
+							$resultYear = $connection2->prepare($sqlYear);
+							$resultYear->execute($dataYear);
+						} catch (PDOException $e) {
+							echo "<div class='error'>".$e->getMessage().'</div>';
+						}
+						if ($resultYear->rowCount() == 1) {
+							$rowYear = $resultYear->fetch();
+							$yearName = $rowYear['name'];
+						}
+						?>
 						<input readonly name="yearName" id="yearName" maxlength=20 value="<?php echo $yearName ?>" type="text" class="standardWidth">
 						<script type="text/javascript">
 							var yearName=new LiveValidation('yearName');
@@ -121,54 +121,54 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
 							<optgroup label='--<?php echo __($guid, 'All Enrolled Students by Roll Group') ?>--'>
 							<?php
                             $students = array();
-        $count = 0;
-        try {
-            $dataSelect = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-            $sqlSelect = "SELECT gibbonFinanceInvoiceeID, preferredName, surname, gibbonRollGroup.name AS name, dayType FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup, gibbonFinanceInvoicee WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID AND status='FULL' AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name, surname, preferredName";
-            $resultSelect = $connection2->prepare($sqlSelect);
-            $resultSelect->execute($dataSelect);
-        } catch (PDOException $e) {
-        }
-        while ($rowSelect = $resultSelect->fetch()) {
-            echo "<option value='".$rowSelect['gibbonFinanceInvoiceeID']."'>".htmlPrep($rowSelect['name']).' - '.formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).'</option>';
-            $students[$count]['gibbonFinanceInvoiceeID'] = $rowSelect['gibbonFinanceInvoiceeID'];
-            $students[$count]['student'] = formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true);
-            $students[$count]['rollGroup'] = htmlPrep($rowSelect['name']);
-            $students[$count]['dayType'] = htmlPrep($rowSelect['dayType']);
-            ++$count;
-        }
-        ?>
+							$count = 0;
+							try {
+								$dataSelect = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+								$sqlSelect = "SELECT gibbonFinanceInvoiceeID, preferredName, surname, gibbonRollGroup.name AS name, dayType FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup, gibbonFinanceInvoicee WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID AND status='FULL' AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name, surname, preferredName";
+								$resultSelect = $connection2->prepare($sqlSelect);
+								$resultSelect->execute($dataSelect);
+							} catch (PDOException $e) {
+							}
+							while ($rowSelect = $resultSelect->fetch()) {
+								echo "<option value='".$rowSelect['gibbonFinanceInvoiceeID']."'>".htmlPrep($rowSelect['name']).' - '.formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).'</option>';
+								$students[$count]['gibbonFinanceInvoiceeID'] = $rowSelect['gibbonFinanceInvoiceeID'];
+								$students[$count]['student'] = formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true);
+								$students[$count]['rollGroup'] = htmlPrep($rowSelect['name']);
+								$students[$count]['dayType'] = htmlPrep($rowSelect['dayType']);
+								++$count;
+							}
+							?>
 							</optgroup>
 							<?php
                             $dayTypeOptions = getSettingByScope($connection2, 'User Admin', 'dayTypeOptions');
-        if ($dayTypeOptions != '') {
-            $dayTypes = explode(',', $dayTypeOptions);
-            foreach ($dayTypes as $dayType) {
-                echo "<optgroup label='--$dayType ".__($guid, 'Students by Roll Groups')."--'>";
-                foreach ($students as $student) {
-                    if ($student['dayType'] == $dayType) {
-                        echo "<option value='".$student['gibbonFinanceInvoiceeID']."'>".$student['rollGroup'].' - '.$student['student'].'</option>';
-                    }
-                }
-                echo '</optgroup>';
-            }
-        }
-        ?>
+							if ($dayTypeOptions != '') {
+								$dayTypes = explode(',', $dayTypeOptions);
+								foreach ($dayTypes as $dayType) {
+									echo "<optgroup label='--$dayType ".__($guid, 'Students by Roll Groups')."--'>";
+									foreach ($students as $student) {
+										if ($student['dayType'] == $dayType) {
+											echo "<option value='".$student['gibbonFinanceInvoiceeID']."'>".$student['rollGroup'].' - '.$student['student'].'</option>';
+										}
+									}
+									echo '</optgroup>';
+								}
+							}
+							?>
 							<optgroup label='--<?php echo __($guid, 'All Enrolled Students by Alphabet') ?>--'>
 							<?php
                             $students = array();
-        $count = 0;
-        try {
-            $dataSelect = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-            $sqlSelect = "SELECT gibbonFinanceInvoiceeID, preferredName, surname, gibbonRollGroup.name AS name, dayType FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup, gibbonFinanceInvoicee WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID AND status='FULL' AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName";
-            $resultSelect = $connection2->prepare($sqlSelect);
-            $resultSelect->execute($dataSelect);
-        } catch (PDOException $e) {
-        }
-        while ($rowSelect = $resultSelect->fetch()) {
-            echo "<option value='".$rowSelect['gibbonFinanceInvoiceeID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' - '.htmlPrep($rowSelect['name']).'</option>';
-        }
-        ?>
+							$count = 0;
+							try {
+								$dataSelect = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+								$sqlSelect = "SELECT gibbonFinanceInvoiceeID, preferredName, surname, gibbonRollGroup.name AS name, dayType FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup, gibbonFinanceInvoicee WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID AND status='FULL' AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName";
+								$resultSelect = $connection2->prepare($sqlSelect);
+								$resultSelect->execute($dataSelect);
+							} catch (PDOException $e) {
+							}
+							while ($rowSelect = $resultSelect->fetch()) {
+								echo "<option value='".$rowSelect['gibbonFinanceInvoiceeID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' - '.htmlPrep($rowSelect['name']).'</option>';
+							}
+							?>
 							</optgroup>
 							
 						</select>
@@ -215,17 +215,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
 						<select name="gibbonFinanceBillingScheduleID" id="gibbonFinanceBillingScheduleID" class="standardWidth">
 							<?php
                             echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-        try {
-            $dataSelect = array();
-            $sqlSelect = "SELECT * FROM gibbonFinanceBillingSchedule WHERE active='Y' ORDER BY name";
-            $resultSelect = $connection2->prepare($sqlSelect);
-            $resultSelect->execute($dataSelect);
-        } catch (PDOException $e) {
-        }
-        while ($rowSelect = $resultSelect->fetch()) {
-            echo "<option value='".$rowSelect['gibbonFinanceBillingScheduleID']."'>".$rowSelect['name'].'</option>';
-        }
-        ?>				
+							try {
+								$dataSelect = array();
+								$sqlSelect = "SELECT * FROM gibbonFinanceBillingSchedule WHERE active='Y' ORDER BY name";
+								$resultSelect = $connection2->prepare($sqlSelect);
+								$resultSelect->execute($dataSelect);
+							} catch (PDOException $e) {
+							}
+							while ($rowSelect = $resultSelect->fetch()) {
+								echo "<option value='".$rowSelect['gibbonFinanceBillingScheduleID']."'>".$rowSelect['name'].'</option>';
+							}
+							?>				
 						</select>
 						<script type="text/javascript">
 							var gibbonFinanceBillingScheduleID=new LiveValidation('gibbonFinanceBillingScheduleID');
@@ -243,16 +243,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
 							<script type="text/javascript">
 							var invoiceDueDate=new LiveValidation('invoiceDueDate');
 							invoiceDueDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-        ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-        ?>." } ); 
+								echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+							} else {
+								echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+							}
+									?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+								echo 'dd/mm/yyyy';
+							} else {
+								echo $_SESSION[$guid]['i18n']['dateFormat'];
+							}
+							?>." } ); 
 							invoiceDueDate.add(Validate.Presence);
 						</script>
 						 <script type="text/javascript">
@@ -276,7 +276,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
 				</tr>
 				<?php 
                 $type = 'fee';
-        ?> 
+        		?> 
 				<style>
 					#<?php echo $type ?> { list-style-type: none; margin: 0; padding: 0; width: 100%; }
 					#<?php echo $type ?> div.ui-state-default { margin: 0 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 58px; }
@@ -304,45 +304,45 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
 												<option class='all' value='0'><?php echo __($guid, 'Choose a fee to add it') ?></option>
 												<?php
                                                 echo "<option value='Ad Hoc'>Ad Hoc Fee</option>";
-        $switchContents = 'case "Ad Hoc": ';
-        $switchContents .= "$(\"#fee\").append('<div id=\'feeOuter' + feeCount + '\'><img style=\'margin: 10px 0 5px 0\' src=\'".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/loading.gif\' alt=\'Loading\' onclick=\'return false;\' /><br/>Loading</div>');";
-        $switchContents .= '$("#feeOuter" + feeCount).load("'.$_SESSION[$guid]['absoluteURL'].'/modules/Finance/invoices_manage_add_blockFeeAjax.php","mode=add&id=" + feeCount + "&feeType='.urlencode('Ad Hoc').'&gibbonFinanceFeeID=&name='.urlencode('Ad Hoc Fee').'&description=&gibbonFinanceFeeCategoryID=1&fee=") ;';
-        $switchContents .= 'feeCount++ ;';
-        $switchContents .= "$('#newFee').val('0');";
-        $switchContents .= 'break;';
-        $currentCategory = '';
-        $lastCategory = '';
-        for ($i = 0; $i < 2; ++$i) {
-            try {
-                $dataSelect = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-                if ($i == 0) {
-                    $sqlSelect = "SELECT gibbonFinanceFee.*, gibbonFinanceFeeCategory.name AS category FROM gibbonFinanceFee LEFT JOIN gibbonFinanceFeeCategory ON (gibbonFinanceFee.gibbonFinanceFeeCategoryID=gibbonFinanceFeeCategory.gibbonFinanceFeeCategoryID) WHERE gibbonFinanceFee.active='Y' AND gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonFinanceFee.gibbonFinanceFeeCategoryID=1 ORDER BY gibbonFinanceFee.gibbonFinanceFeeCategoryID, gibbonFinanceFee.name";
-                } else {
-                    $sqlSelect = "SELECT gibbonFinanceFee.*, gibbonFinanceFeeCategory.name AS category FROM gibbonFinanceFee LEFT JOIN gibbonFinanceFeeCategory ON (gibbonFinanceFee.gibbonFinanceFeeCategoryID=gibbonFinanceFeeCategory.gibbonFinanceFeeCategoryID) WHERE gibbonFinanceFee.active='Y' AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceFee.gibbonFinanceFeeCategoryID=1 ORDER BY gibbonFinanceFee.gibbonFinanceFeeCategoryID, gibbonFinanceFee.name";
-                }
-                $resultSelect = $connection2->prepare($sqlSelect);
-                $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-            while ($rowSelect = $resultSelect->fetch()) {
-                $currentCategory = $rowSelect['category'];
-                if (($currentCategory != $lastCategory) and $currentCategory != '') {
-                    echo "<optgroup label='--".$currentCategory."--'>";
-                    $categories[$categoryCount] = $currentCategory;
-                    ++$categoryCount;
-                }
-                echo "<option value='".$rowSelect['gibbonFinanceFeeID']."'>".$rowSelect['name'].'</option>';
-                $switchContents .= 'case "'.$rowSelect['gibbonFinanceFeeID'].'": ';
-                $switchContents .= "$(\"#fee\").append('<div id=\'feeOuter' + feeCount + '\'><img style=\'margin: 10px 0 5px 0\' src=\'".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/loading.gif\' alt=\'Loading\' onclick=\'return false;\' /><br/>Loading</div>');";
-                $switchContents .= '$("#feeOuter" + feeCount).load("'.$_SESSION[$guid]['absoluteURL'].'/modules/Finance/invoices_manage_add_blockFeeAjax.php","mode=add&id=" + feeCount + "&feeType=Standard&gibbonFinanceFeeID='.urlencode($rowSelect['gibbonFinanceFeeID']).'&name='.urlencode($rowSelect['name']).'&description='.urlencode($rowSelect['description']).'&gibbonFinanceFeeCategoryID='.urlencode($rowSelect['gibbonFinanceFeeCategoryID']).'&fee='.urlencode($rowSelect['fee']).'&category='.urlencode($rowSelect['category']).'") ;';
-                $switchContents .= 'feeCount++ ;';
-                $switchContents .= "$('#newFee').val('0');";
-                $switchContents .= 'break;';
-                $lastCategory = $rowSelect['category'];
-            }
-        }
-        ?>
+												$switchContents = 'case "Ad Hoc": ';
+												$switchContents .= "$(\"#fee\").append('<div id=\'feeOuter' + feeCount + '\'><img style=\'margin: 10px 0 5px 0\' src=\'".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/loading.gif\' alt=\'Loading\' onclick=\'return false;\' /><br/>Loading</div>');";
+												$switchContents .= '$("#feeOuter" + feeCount).load("'.$_SESSION[$guid]['absoluteURL'].'/modules/Finance/invoices_manage_add_blockFeeAjax.php","mode=add&id=" + feeCount + "&feeType='.urlencode('Ad Hoc').'&gibbonFinanceFeeID=&name='.urlencode('Ad Hoc Fee').'&description=&gibbonFinanceFeeCategoryID=1&fee=") ;';
+												$switchContents .= 'feeCount++ ;';
+												$switchContents .= "$('#newFee').val('0');";
+												$switchContents .= 'break;';
+												$currentCategory = '';
+												$lastCategory = '';
+												for ($i = 0; $i < 2; ++$i) {
+													try {
+														$dataSelect = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+														if ($i == 0) {
+															$sqlSelect = "SELECT gibbonFinanceFee.*, gibbonFinanceFeeCategory.name AS category FROM gibbonFinanceFee LEFT JOIN gibbonFinanceFeeCategory ON (gibbonFinanceFee.gibbonFinanceFeeCategoryID=gibbonFinanceFeeCategory.gibbonFinanceFeeCategoryID) WHERE gibbonFinanceFee.active='Y' AND gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonFinanceFee.gibbonFinanceFeeCategoryID=1 ORDER BY gibbonFinanceFee.gibbonFinanceFeeCategoryID, gibbonFinanceFee.name";
+														} else {
+															$sqlSelect = "SELECT gibbonFinanceFee.*, gibbonFinanceFeeCategory.name AS category FROM gibbonFinanceFee LEFT JOIN gibbonFinanceFeeCategory ON (gibbonFinanceFee.gibbonFinanceFeeCategoryID=gibbonFinanceFeeCategory.gibbonFinanceFeeCategoryID) WHERE gibbonFinanceFee.active='Y' AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceFee.gibbonFinanceFeeCategoryID=1 ORDER BY gibbonFinanceFee.gibbonFinanceFeeCategoryID, gibbonFinanceFee.name";
+														}
+														$resultSelect = $connection2->prepare($sqlSelect);
+														$resultSelect->execute($dataSelect);
+													} catch (PDOException $e) {
+														echo "<div class='error'>".$e->getMessage().'</div>';
+													}
+													while ($rowSelect = $resultSelect->fetch()) {
+														$currentCategory = $rowSelect['category'];
+														if (($currentCategory != $lastCategory) and $currentCategory != '') {
+															echo "<optgroup label='--".$currentCategory."--'>";
+															$categories[$categoryCount] = $currentCategory;
+															++$categoryCount;
+														}
+														echo "<option value='".$rowSelect['gibbonFinanceFeeID']."'>".$rowSelect['name'].'</option>';
+														$switchContents .= 'case "'.$rowSelect['gibbonFinanceFeeID'].'": ';
+														$switchContents .= "$(\"#fee\").append('<div id=\'feeOuter' + feeCount + '\'><img style=\'margin: 10px 0 5px 0\' src=\'".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/loading.gif\' alt=\'Loading\' onclick=\'return false;\' /><br/>Loading</div>');";
+														$switchContents .= '$("#feeOuter" + feeCount).load("'.$_SESSION[$guid]['absoluteURL'].'/modules/Finance/invoices_manage_add_blockFeeAjax.php","mode=add&id=" + feeCount + "&feeType=Standard&gibbonFinanceFeeID='.urlencode($rowSelect['gibbonFinanceFeeID']).'&name='.urlencode($rowSelect['name']).'&description='.urlencode($rowSelect['description']).'&gibbonFinanceFeeCategoryID='.urlencode($rowSelect['gibbonFinanceFeeCategoryID']).'&fee='.urlencode($rowSelect['fee']).'&category='.urlencode($rowSelect['category']).'") ;';
+														$switchContents .= 'feeCount++ ;';
+														$switchContents .= "$('#newFee').val('0');";
+														$switchContents .= 'break;';
+														$lastCategory = $rowSelect['category'];
+													}
+												}
+												?>
 											</select>
 											<script type='text/javascript'>
 												function feeDisplayElements(number) {
@@ -362,13 +362,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
 				
 				<tr>
 					<td>
-						<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-        ?></span>
+						<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 					</td>
 					<td class="right">
 						<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-						<input type="submit" value="<?php echo __($guid, 'Submit');
-        ?>">
+						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 					</td>
 				</tr>
 			</table>

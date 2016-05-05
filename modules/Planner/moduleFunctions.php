@@ -77,8 +77,7 @@ function makeBlock($guid, $connection2, $i, $mode = 'masterAdd', $title = '', $t
 					}
 				});
 			
-				<?php if ($mode == 'masterAdd') {
-    ?>
+				<?php if ($mode == 'masterAdd') { ?>
 					var titleClick<?php echo $i ?>=false ;
 					$('#title<?php echo $i ?>').focus(function() {
 						if (titleClick<?php echo $i ?>==false) {
@@ -133,42 +132,21 @@ function makeBlock($guid, $connection2, $i, $mode = 'masterAdd', $title = '', $t
 			<tr>
 				<td style='width: 50%'>
 					<input name='order[]' type='hidden' value='<?php echo $i ?>'>
-					<input <?php if ($mode == 'embed') {
-    echo 'readonly';
-}
-    ?> maxlength=100 id='title<?php echo $i ?>' name='title<?php echo $i ?>' type='text' style='float: left; border: 1px dotted #aaa; background: none; margin-left: 3px; <?php if ($mode == 'masterAdd') {
-    echo 'color: #999;';
-}
-    ?> margin-top: 0px; font-size: 140%; font-weight: bold; width: 350px' value='<?php if ($mode == 'masterAdd') {
-    echo sprintf(__($guid, 'Block %1$s'), $i);
-} else {
-    echo htmlPrep($title);
-}
-    ?>'><br/>
-					<input <?php if ($mode == 'embed') {
-    echo 'readonly';
-}
-    ?> maxlength=50 id='type<?php echo $i ?>' name='type<?php echo $i ?>' type='text' style='float: left; border: 1px dotted #aaa; background: none; margin-left: 3px; <?php if ($mode == 'masterAdd') {
-    echo 'color: #999;';
-}
-    ?> margin-top: 2px; font-size: 110%; font-style: italic; width: 250px' value='<?php if ($mode == 'masterAdd') {
-    echo __($guid, 'type (e.g. discussion, outcome)');
-} else {
-    echo htmlPrep($type);
-}
-    ?>'>
-					<input <?php if ($mode == 'embed') {
-    echo 'readonly';
-}
-    ?> maxlength=3 id='length<?php echo $i ?>' name='length<?php echo $i ?>' type='text' style='float: left; border: 1px dotted #aaa; background: none; margin-left: 3px; <?php if ($mode == 'masterAdd') {
-    echo 'color: #999;';
-}
-    ?> margin-top: 2px; font-size: 110%; font-style: italic; width: 95px' value='<?php if ($mode == 'masterAdd') {
-    echo __($guid, 'length (min)');
-} else {
-    echo htmlPrep($length);
-}
-    ?>'>
+					<input <?php if ($mode == 'embed') { echo 'readonly'; } ?> maxlength=100 id='title<?php echo $i ?>' name='title<?php echo $i ?>' type='text' style='float: left; border: 1px dotted #aaa; background: none; margin-left: 3px; <?php if ($mode == 'masterAdd') { echo 'color: #999;'; } ?> margin-top: 0px; font-size: 140%; font-weight: bold; width: 350px' value='<?php if ($mode == 'masterAdd') { echo sprintf(__($guid, 'Block %1$s'), $i);
+					} else {
+						echo htmlPrep($title);
+					}
+					?>'><br/>
+					<input <?php if ($mode == 'embed') { echo 'readonly'; } ?> maxlength=50 id='type<?php echo $i ?>' name='type<?php echo $i ?>' type='text' style='float: left; border: 1px dotted #aaa; background: none; margin-left: 3px; <?php if ($mode == 'masterAdd') { echo 'color: #999;'; } ?> margin-top: 2px; font-size: 110%; font-style: italic; width: 250px' value='<?php if ($mode == 'masterAdd') { echo __($guid, 'type (e.g. discussion, outcome)');
+					} else {
+						echo htmlPrep($type);
+					}
+					?>'>
+					<input <?php if ($mode == 'embed') { echo 'readonly'; } ?> maxlength=3 id='length<?php echo $i ?>' name='length<?php echo $i ?>' type='text' style='float: left; border: 1px dotted #aaa; background: none; margin-left: 3px; <?php if ($mode == 'masterAdd') { echo 'color: #999;'; } ?> margin-top: 2px; font-size: 110%; font-style: italic; width: 95px' value='<?php if ($mode == 'masterAdd') { echo __($guid, 'length (min)');
+					} else {
+						echo htmlPrep($length);
+					}
+						?>'>
 				</td>
 				<td style='text-align: right; width: 50%'>
 					<div style='margin-bottom: 5px'>
@@ -188,11 +166,11 @@ function makeBlock($guid, $connection2, $i, $mode = 'masterAdd', $title = '', $t
                                 echo "<div style='float: right; margin-top: -2px' id='starBox$i'><img id='star$i' title='".__($guid, 'Star')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/like_off.png'/></div> ";
                             }
                         }
-    if ($mode != 'plannerEdit' and $mode != 'embed') {
-        echo "<img style='margin-top: 2px' id='delete$i' title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/> ";
-    }
-    if ($mode == 'workingEdit') {
-        //Check that block is still connected to master (poor design in original smart units means that they might be disconnected, and so copyback will not work.
+						if ($mode != 'plannerEdit' and $mode != 'embed') {
+							echo "<img style='margin-top: 2px' id='delete$i' title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/> ";
+						}
+						if ($mode == 'workingEdit') {
+							//Check that block is still connected to master (poor design in original smart units means that they might be disconnected, and so copyback will not work.
                             try {
                                 $dataCheck = array('gibbonUnitBlockID' => $gibbonUnitBlockID, 'gibbonUnitClassBlockID' => $gibbonUnitClassBlockID);
                                 $sqlCheck = 'SELECT * FROM gibbonUnitBlock JOIN gibbonUnitClassBlock ON (gibbonUnitClassBlock.gibbonUnitBlockID=gibbonUnitBlock.gibbonUnitBlockID) LEFT JOIN gibbonUnitBlockStar ON (gibbonUnitBlockStar.gibbonUnitBlockID=gibbonUnitBlock.gibbonUnitBlockID) WHERE gibbonUnitClassBlockID=:gibbonUnitClassBlockID AND gibbonUnitBlock.gibbonUnitBlockID=:gibbonUnitBlockID';
@@ -201,38 +179,37 @@ function makeBlock($guid, $connection2, $i, $mode = 'masterAdd', $title = '', $t
                             } catch (PDOException $e) {
                                 echo "<div class='error'>".$e->getMessage().'</div>';
                             }
-        if ($resultCheck->rowCount() == 1) {
-            $rowCheck = $resultCheck->fetch();
-            if (is_null($rowCheck['gibbonUnitBlockStarID'])) {
-                echo "<a onclick='return confirm(\"".__($guid, 'Are you sure you want to leave this page? Any unsaved changes will be lost.')."\")' style='margin-right: 2px; font-weight: normal; font-style: normal; color: #fff' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/units_edit_working_copyback.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'].'&gibbonCourseID='.$_GET['gibbonCourseID'].'&gibbonCourseClassID='.$_GET['gibbonCourseClassID'].'&gibbonUnitID='.$_GET['gibbonUnitID']."&gibbonUnitBlockID=$gibbonUnitBlockID&gibbonUnitClassBlockID=$gibbonUnitClassBlockID&gibbonUnitClassID=".$_GET['gibbonUnitClassID']."'><img id='copyback$i' title='Copy Back' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/copyback.png'/></a>";
-            } else {
-                echo "<img style='margin-left: -2px; margin-right: 2px' title='".__($guid, 'This is a Star Block')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/like_on.png'/> ";
-            }
-        }
-    }
-    if ($mode != 'embed') {
-        echo "<div title='".__($guid, 'Show/Hide Details')."' id='show$i' style='margin-right: 3px; margin-top: 3px; margin-left: 3px; padding-right: 1px; float: right; width: 25px; height: 25px; background-image: url(\"".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/plus.png\"); background-repeat: no-repeat'></div></br>";
-    }
-    ?>
+							if ($resultCheck->rowCount() == 1) {
+								$rowCheck = $resultCheck->fetch();
+								if (is_null($rowCheck['gibbonUnitBlockStarID'])) {
+									echo "<a onclick='return confirm(\"".__($guid, 'Are you sure you want to leave this page? Any unsaved changes will be lost.')."\")' style='margin-right: 2px; font-weight: normal; font-style: normal; color: #fff' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/units_edit_working_copyback.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'].'&gibbonCourseID='.$_GET['gibbonCourseID'].'&gibbonCourseClassID='.$_GET['gibbonCourseClassID'].'&gibbonUnitID='.$_GET['gibbonUnitID']."&gibbonUnitBlockID=$gibbonUnitBlockID&gibbonUnitClassBlockID=$gibbonUnitClassBlockID&gibbonUnitClassID=".$_GET['gibbonUnitClassID']."'><img id='copyback$i' title='Copy Back' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/copyback.png'/></a>";
+								} else {
+									echo "<img style='margin-left: -2px; margin-right: 2px' title='".__($guid, 'This is a Star Block')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/like_on.png'/> ";
+								}
+							}
+						}
+						if ($mode != 'embed') {
+							echo "<div title='".__($guid, 'Show/Hide Details')."' id='show$i' style='margin-right: 3px; margin-top: 3px; margin-left: 3px; padding-right: 1px; float: right; width: 25px; height: 25px; background-image: url(\"".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/plus.png\"); background-repeat: no-repeat'></div></br>";
+						}
+						?>
 					</div>
 					<?php
                     if ($mode == 'plannerEdit') {
                         echo '</br>';
                     }
-    if ($mode != 'embed') {
-        ?>
-						<div style='margin-right: 5px'>Complete? <input id='complete<?php echo $i ?>' name='complete<?php echo $i ?>' style='margin-right: 2px' type="checkbox" <?php if ($mode == 'masterAdd' or $mode == 'masterEdit') {
-    echo 'disabled';
-} else {
-    if ($complete == 'Y') {
-        echo 'checked';
-    }
-}
-        ?>></div>
-						<?php
+					if ($mode != 'embed') {
+						?>
+						<div style='margin-right: 5px'>Complete? <input id='complete<?php echo $i ?>' name='complete<?php echo $i ?>' style='margin-right: 2px' type="checkbox" <?php if ($mode == 'masterAdd' or $mode == 'masterEdit') { echo 'disabled';
+					} else {
+						if ($complete == 'Y') {
+							echo 'checked';
+						}
+					}
+						?>></div>
+					<?php
 
-    }
-    ?>
+					}
+					?>
 					<input type='hidden' name='gibbonUnitBlockID<?php echo $i ?>' value='<?php echo $gibbonUnitBlockID ?>'>
 					<input type='hidden' name='gibbonUnitClassBlockID<?php echo $i ?>' value='<?php echo $gibbonUnitClassBlockID ?>'>
 				</td>
@@ -243,7 +220,7 @@ function makeBlock($guid, $connection2, $i, $mode = 'masterAdd', $title = '', $t
                     if ($mode == 'masterAdd') {
                         $contents = getSettingByScope($connection2, 'Planner', 'smartBlockTemplate');
                     }
-    echo "<div style='text-align: left; font-weight: bold; margin-top: 15px'>".__($guid, 'Block Contents').'</div>';
+    				echo "<div style='text-align: left; font-weight: bold; margin-top: 15px'>".__($guid, 'Block Contents').'</div>';
                     //Block Contents
                     if ($mode != 'embed') {
                         echo getEditor($guid, false, "contents$i", $contents, 20, true, false, false, true);
@@ -312,7 +289,7 @@ function makeBlock($guid, $connection2, $i, $mode = 'masterAdd', $title = '', $t
                             echo '</table>';
                         }
                     }
-    ?>
+   				 	?>
 				</td>
 			</tr>
 		</table>
@@ -804,10 +781,8 @@ function makeBlockOutcome($guid,  $i, $type = '', $gibbonOutcomeID = '', $title 
 					<td style='width: 50%'>
 						<input name='<?php echo $type ?>order[]' type='hidden' value='<?php echo $i ?>'>
 						<input name='<?php echo $type ?>gibbonOutcomeID<?php echo $i ?>' type='hidden' value='<?php echo $gibbonOutcomeID ?>'>
-						<input readonly maxlength=100 id='<?php echo $type ?>title<?php echo $i ?>' name='<?php echo $type ?>title<?php echo $i ?>' type='text' style='float: none; border: 1px dotted #aaa; background: none; margin-left: 3px; margin-top: 0px; font-size: 140%; font-weight: bold; width: 350px' value='<?php echo $title;
-    ?>'><br/>
-						<input readonly maxlength=100 id='<?php echo $type ?>category<?php echo $i ?>' name='<?php echo $type ?>category<?php echo $i ?>' type='text' style='float: left; border: 1px dotted #aaa; background: none; margin-left: 3px; margin-top: 2px; font-size: 110%; font-style: italic; width: 250px' value='<?php echo $category;
-    ?>'>
+						<input readonly maxlength=100 id='<?php echo $type ?>title<?php echo $i ?>' name='<?php echo $type ?>title<?php echo $i ?>' type='text' style='float: none; border: 1px dotted #aaa; background: none; margin-left: 3px; margin-top: 0px; font-size: 140%; font-weight: bold; width: 350px' value='<?php echo $title; ?>'><br/>
+						<input readonly maxlength=100 id='<?php echo $type ?>category<?php echo $i ?>' name='<?php echo $type ?>category<?php echo $i ?>' type='text' style='float: left; border: 1px dotted #aaa; background: none; margin-left: 3px; margin-top: 2px; font-size: 110%; font-style: italic; width: 250px' value='<?php echo $category; ?>'>
 						<script type="text/javascript">
 							if($('#<?php echo $type ?>category<?php echo $i ?>').val()=="") {
 								$('#<?php echo $type ?>category<?php echo $i ?>').css("border","none") ;
@@ -818,8 +793,7 @@ function makeBlockOutcome($guid,  $i, $type = '', $gibbonOutcomeID = '', $title 
 						<div style='margin-bottom: 25px'>
 							<?php
                             echo "<img id='".$type."delete$i' title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/> ";
-    echo "<div id='".$type."show$i' title='".__($guid, 'Show/Hide Details')."' style='margin-right: 3px; margin-left: 3px; padding-right: 1px; float: right; width: 25px; height: 25px; background-image: url(\"".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/plus.png\"); background-repeat: no-repeat'></div>";
-    ?>
+   	 						echo "<div id='".$type."show$i' title='".__($guid, 'Show/Hide Details')."' style='margin-right: 3px; margin-left: 3px; padding-right: 1px; float: right; width: 25px; height: 25px; background-image: url(\"".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/plus.png\"); background-repeat: no-repeat'></div>"; ?>
 						</div>
 						<input type='hidden' name='id<?php echo $i ?>' value='<?php echo $id ?>'>
 					</td>
@@ -833,7 +807,7 @@ function makeBlockOutcome($guid,  $i, $type = '', $gibbonOutcomeID = '', $title 
                                 echo "<div style='padding: 5px'>$contents</div>";
                                 echo "<input type='hidden' name='".$type.'contents'.$i."' value='".htmlPrep($contents)."'/>";
                             }
-    ?>
+   				 			?>
 					</td>
 				</tr>
 			</table>

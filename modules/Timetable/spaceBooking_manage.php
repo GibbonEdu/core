@@ -121,8 +121,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                 }
                 ++$count;
 
-                    //COLOR ROW BY STATUS!
-                    echo "<tr class=$rowNum>";
+                //COLOR ROW BY STATUS!
+                echo "<tr class=$rowNum>";
                 echo '<td>';
                 echo dateConvertBack($guid, $row['date']);
                 echo '</td>';

@@ -34,8 +34,7 @@ $gibbonAlarmID = $_POST['gibbonAlarmID'];
 $gibbonPersonID = $_POST['gibbonPersonID'];
 
 //Proceed!
-if ($gibbonAlarmID == '' or $gibbonPersonID == '') {
-    echo "<div class='error'>";
+if ($gibbonAlarmID == '' or $gibbonPersonID == '') { echo "<div class='error'>";
     echo __($guid, 'An error has occurred.');
     echo '</div>';
 } else {

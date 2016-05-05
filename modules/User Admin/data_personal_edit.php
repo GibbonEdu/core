@@ -100,8 +100,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_personal_e
             echo '</th>';
             echo '</tr>';
 
-                    //COLOR ROW BY STATUS!
-                    echo "<tr class='odd'>";
+			//COLOR ROW BY STATUS!
+			echo "<tr class='odd'>";
             echo '<td>';
             echo __($guid, 'Title');
             echo '</td>';
@@ -1053,8 +1053,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_personal_e
             }
             echo '</td>';
             echo '</tr>';
-                    //Check if any roles are "Student"
-                    $privacySet = false;
+			//Check if any roles are "Student"
+			$privacySet = false;
             if ($student) {
                 $privacySetting = getSettingByScope($connection2, 'User Admin', 'privacy');
                 $privacyBlurb = getSettingByScope($connection2, 'User Admin', 'privacyBlurb');
@@ -1088,8 +1088,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_personal_e
                 echo '<input type="hidden" name="newprivacyOn" value="">';
             }
 
-                    //CUSTOM FIELDS
-                    $fields = unserialize($row['fields']);
+			//CUSTOM FIELDS
+			$fields = unserialize($row['fields']);
             $newfields = unserialize($row['newfields']);
             $resultFields = getCustomFields($connection2, $guid, $student, $staff, $parent, $other, null, true);
             if ($resultFields->rowCount() > 0) {
@@ -1142,8 +1142,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_personal_e
             echo "<input type='submit' value='Submit'>";
             echo '</td>';
             echo '</tr>';
-            echo '</table>';
-            ?>
+            echo '</table>'; ?>
 			</form>
 			<?php
 

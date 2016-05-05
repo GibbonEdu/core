@@ -36,8 +36,7 @@ $action = $_POST['action'];
 $gibbonUnitBlockID = $_POST['gibbonUnitBlockID'];
 $i = $_POST['i'];
 
-if ($gibbonPersonID == '' or $action == '' or $gibbonUnitBlockID == '' or $i == '') {
-    echo __($guid, 'Error');
+if ($gibbonPersonID == '' or $action == '' or $gibbonUnitBlockID == '' or $i == '') { echo __($guid, 'Error');
 } else {
     if ($action == 'star') {
         //Write to database

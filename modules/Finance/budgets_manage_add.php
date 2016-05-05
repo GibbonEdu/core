@@ -89,9 +89,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_add
 			</tr>
 			<?php
             $categories = getSettingByScope($connection2, 'Finance', 'budgetCategories');
-    if ($categories != false) {
-        $categories = explode(',', $categories);
-        ?>
+			if ($categories != false) {
+				$categories = explode(',', $categories);
+				?>
 				<tr>
 					<td> 
 						<b><?php echo __($guid, 'Category') ?> *</b><br/>
@@ -107,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_add
 							<?php
 
                             }
-        ?>
+        					?>	
 						</select>
 						<script type="text/javascript">
 							var category=new LiveValidation('category');
@@ -115,10 +115,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_add
 						</script>
 					</td>
 				</tr>
-				<?php
+			<?php
 
-    } else {
-        ?>
+			} else {
+				?>
 				<tr>
 					<td> 
 						<b><?php echo __($guid, 'Category') ?> *</b><br/>
@@ -129,9 +129,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_add
 					</td>
 				</tr>
 				<?php
-
-    }
-    ?>
+			}
+			?>
 			<tr class='break'>
 				<td colspan=2> 
 					<h3><?php echo __($guid, 'Staff') ?></h3>
@@ -145,19 +144,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_add
 				<td class="right">
 					<select name="staff[]" id="staff[]" multiple style="width: 302px; height: 150px">
 						<?php
-                        try {
-                            $dataSelect = array();
-                            $sqlSelect = "SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
-                            $resultSelect = $connection2->prepare($sqlSelect);
-                            $resultSelect->execute($dataSelect);
-                        } catch (PDOException $e) {
-                        }
-    while ($rowSelect = $resultSelect->fetch()) {
-        echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
-    }
-    ?>
+						try {
+							$dataSelect = array();
+							$sqlSelect = "SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
+							$resultSelect = $connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						} catch (PDOException $e) {
+						}
+						while ($rowSelect = $resultSelect->fetch()) {
+							echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
+						}
+						?>
 					</select>
 				</td>
+			</tr>
 			<tr>
 				<td> 
 					<b><?php echo __($guid, 'Access') ?></b><br/>
@@ -172,13 +172,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_add
 			</tr>
 			<tr>
 				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-    ?></span>
+					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>
