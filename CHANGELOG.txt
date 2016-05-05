@@ -48,6 +48,7 @@ v12.0.00
 	Security
 		System: converted links to GNU GPL to HTTPS
 		System: converted links to Gibbon website to HTTPS
+		System: prevented non-login access to preferences
 
 	Tweaks & Bug Fixes
 		System: Added Danish, Persian, Brazilian Portugese, Dutch, Georgian and Hungarian as development languages
