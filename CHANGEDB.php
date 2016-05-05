@@ -366,4 +366,7 @@ INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, 
 INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Formal Assessment'), 'View External Assessments_myChildrens', 1, 'External Assessment', 'Allows a parent to view external assessment records for their children.', 'externalAssessment_view.php', 'externalAssessment_view.php', 'Y', 'N', 'N', 'N', 'N', 'N', 'N', 'Y', 'N') ;end
 ALTER TABLE `gibbonAction` ADD `menuShow` ENUM('Y','N') NOT NULL DEFAULT 'Y' AFTER `entrySidebar`;end
 ALTER TABLE `gibbonMarkbookColumn` ADD `sequenceNumber` INT(3) UNSIGNED NOT NULL DEFAULT '100' AFTER `description`, ADD `date` DATE AFTER `description`;end
+ALTER TABLE `gibbonMarkbookColumn` ADD `attainmentRaw` ENUM('Y','N') NOT NULL DEFAULT 'N' AFTER `attainmentWeighting`, ADD `attainmentRawMax` INT(4) NULL AFTER `attainmentRaw`;edit
+ALTER TABLE `gibbonMarkbookEntry` ADD `attainmentValueRaw` INT(4) NULL AFTER `attainmentValue`;end
+
 ";
