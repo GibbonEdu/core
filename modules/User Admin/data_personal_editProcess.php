@@ -76,6 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_personal_e
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
             } else {
+                $row = $result->fetch();
                 $row2 = $result2->fetch();
 
                 //Get categories
@@ -415,6 +416,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_personal_e
                         $set .= 'gibbonPerson.vehicleRegistration=:vehicleRegistration, ';
                     }
                 }
+                $privacy_old=$row2["privacy"] ;
                 if (isset($_POST['newprivacyOn'])) {
                     if ($_POST['newprivacyOn'] == 'on') {
                         $data['privacy'] = $_POST['newprivacy'];
@@ -468,7 +470,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_personal_e
                         exit();
                     }
 
-                    //Notify tutors of change to pruvacy settings
+                    //Notify tutors of change to privacy settings
                     if (isset($_POST['newprivacyOn'])) {
                         if ($_POST['newprivacyOn'] == 'on') {
                             try {
@@ -492,6 +494,17 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_personal_e
                                     setNotification($connection2, $guid, $rowDetail['gibbonPersonIDTutor3'], $notificationText, 'Students', "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=");
                                 }
                             }
+
+                            //Set log
+                            $gibbonModuleID=getModuleIDFromName($connection2, 'User Admin') ;
+                            $privacyValues=array() ;
+                            $privacyValues['oldValue'] = $privacy_old ;
+                            $privacyValues['newValue'] = $_POST['newprivacy'] ;
+                            $privacyValues['gibbonPersonIDRequestor'] = $row['gibbonPersonIDUpdater'] ;
+                            $privacyValues['gibbonPersonIDAcceptor'] = $_SESSION[$guid]["gibbonPersonID"] ;
+
+                            setLog($connection2, $_SESSION[$guid]["gibbonSchoolYearID"], $gibbonModuleID, $_SESSION[$guid]["gibbonPersonID"], 'Privacy - Value Changed via Data Updater', $privacyValues, $_SERVER['REMOTE_ADDR']) ;
+
                         }
                     }
 

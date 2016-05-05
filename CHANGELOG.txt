@@ -126,7 +126,7 @@ v12.0.00
 		User Admin: fixed bug preventing family import
 		User Admin: added ability to allow control over formatting of usernames
 		User Admin: made list of religions settable via a comma-separated list in User Settings
-
+		User Admin: added log entry when privacy settings are changed
 
 v11.0.00
 --------
