@@ -77,11 +77,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 				<div class='warning'>
 					<b><u><?php echo __($guid, 'Note') ?></u></b>: <?php echo __($guid, 'Changes made here do not apply to emails and SMS messages (which have already been sent), but only to message wall messages.') ?>
 				</div>
-				
+
 				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/messenger_manage_editProcess.php?gibbonMessengerID=$gibbonMessengerID&search=$search&address=".$_GET['q'] ?>" enctype="multipart/form-data">
-					<table class='smallIntBorder fullWidth' cellspacing='0'>	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>
 						<tr class='break'>
-							<td colspan=2> 
+							<td colspan=2>
 								<h3><?php echo __($guid, 'Delivery Mode') ?></h3>
 							</td>
 						</tr>
@@ -89,12 +89,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
                         if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_byEmail')) {
                             ?>
 							<tr>
-								<td style='width: 275px'> 
+								<td style='width: 275px'>
 									<b><?php echo __($guid, 'Email') ?> *</b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Deliver this message to user\'s primary email account?') ?><br/></span>
 								</td>
 								<td class="right">
-									<?php 
+									<?php
                                     if ($row['email'] == 'Y') {
                                         echo "<img title='".__($guid, 'Sent by email.')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> ";
                                     } else {
@@ -112,7 +112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 								$(document).ready(function(){
 									$(".messageWall").click(function(){
 										if ($('input[name=messageWall]:checked').val()=="Y" ) {
-											$("#messageWallRow").slideDown("fast", $("#messageWallRow").css("display","table-row")); 
+											$("#messageWallRow").slideDown("fast", $("#messageWallRow").css("display","table-row"));
 										} else {
 											$("#messageWallRow").css("display","none");
 										}
@@ -120,17 +120,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 								});
 							</script>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Message Wall') ?> *</b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Place this message on user\'s message wall?') ?><br/></span>
 								</td>
 								<td class="right">
-									<input <?php if ($row['messageWall'] == 'Y')) { echo 'checked'; } ?> type="radio" name="messageWall" class="messageWall" value="Y"/> <?php echo __($guid, 'Yes') ?>
-									<input <?php if ($row['messageWall'] == 'N')) { echo 'checked'; } ?> type="radio" name="messageWall" class="messageWall" value="N"/> <?php echo __($guid, 'No') ?>
+									<input <?php if ($row['messageWall'] == 'Y') { echo 'checked'; } ?> type="radio" name="messageWall" class="messageWall" value="Y"/> <?php echo __($guid, 'Yes') ?>
+									<input <?php if ($row['messageWall'] == 'N') { echo 'checked'; } ?> type="radio" name="messageWall" class="messageWall" value="N"/> <?php echo __($guid, 'No') ?>
 								</td>
 							</tr>
 							<tr id="messageWallRow" <?php if ($row['messageWall'] == 'N') { echo "style='display: none'"; } ?>>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Publication Dates') ?> *</b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Select up to three individual dates.') ?></br><?php echo __($guid, 'Format:').' ';
 									if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
@@ -152,7 +152,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 										} else {
 											echo $_SESSION[$guid]['i18n']['dateFormat'];
 										}
-                    					?>." } ); 
+                    					?>." } );
 									</script>
 									<script type="text/javascript">
 										$(function() {
@@ -171,7 +171,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 										} else {
 											echo $_SESSION[$guid]['i18n']['dateFormat'];
 										}
-                    					?>." } ); 
+                    					?>." } );
 									</script>
 									 <script type="text/javascript">
 										$(function() {
@@ -190,7 +190,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 										} else {
 											echo $_SESSION[$guid]['i18n']['dateFormat'];
 										}
-                    					?>." } ); 
+                    					?>." } );
 									</script>
 									 <script type="text/javascript">
 										$(function() {
@@ -205,7 +205,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 						if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_bySMS')) {
 							?>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'SMS') ?> *</b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Deliver this message to user\'s mobile phone?') ?><br/></span>
 								</td>
@@ -223,15 +223,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 
 						}
 						?>
-						
-						
+
+
 						<tr class='break'>
-							<td colspan=2> 
+							<td colspan=2>
 								<h3><?php echo __($guid, 'Message Details') ?></h3>
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Subject') ?> *</b><br/>
 								<span class="emphasis small"></span>
 							</td>
@@ -244,14 +244,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 							</td>
 						</tr>
 						<tr>
-							<td colspan=2> 
+							<td colspan=2>
 								<b><?php echo __($guid, 'Body') ?> *</b>
 								<?php echo getEditor($guid,  true, 'body', $row['body'], 20, true, true, false, true, 'purpose=Mass%20Mailer%20Attachment') ?>
 							</td>
 						</tr>
-						
+
 						<tr class='break'>
-							<td colspan=2> 
+							<td colspan=2>
 								<h3><?php echo __($guid, 'Targets') ?></h3>
 							</td>
 						</tr>
@@ -275,7 +275,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 									<?php } ?>
 									$(".role").click(function(){
 										if ($('input[name=role]:checked').val()=="Y" ) {
-											$("#roleRow").slideDown("fast", $("#roleRow").css("display","table-row")); 
+											$("#roleRow").slideDown("fast", $("#roleRow").css("display","table-row"));
 										} else {
 											$("#roleRow").css("display","none");
 										}
@@ -283,7 +283,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 								});
 							</script>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Role') ?></b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Users of a certain type.') ?><br/></span>
 								</td>
@@ -300,7 +300,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
                             $selectedAll = substr($selectedAll, 0, -1);
                             ?>
 							<tr id="roleRow">
-								<td class='hiddenReveal'> 
+								<td class='hiddenReveal'>
 									<b><?php echo __($guid, 'Select Roles') ?></b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 								</td>
@@ -325,7 +325,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 									</select>
 								</td>
 							</tr>
-							
+
 							<?php
                             //Role Category
                             try {
@@ -345,7 +345,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 									<?php } ?>
 									$(".roleCategory").click(function(){
 										if ($('input[name=roleCategory]:checked').val()=="Y" ) {
-											$("#roleCategoryRow").slideDown("fast", $("#roleCategoryRow").css("display","table-row")); 
+											$("#roleCategoryRow").slideDown("fast", $("#roleCategoryRow").css("display","table-row"));
 										} else {
 											$("#roleCategoryRow").css("display","none");
 										}
@@ -353,7 +353,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 								});
 							</script>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Role Category') ?></b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Users of a certain type.') ?><br/></span>
 								</td>
@@ -370,7 +370,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
                             $selectedAll = substr($selectedAll, 0, -1);
                             ?>
 							<tr id="roleCategoryRow">
-								<td class='hiddenReveal'> 
+								<td class='hiddenReveal'>
 									<b><?php echo __($guid, 'Select Role Categories') ?></b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 								</td>
@@ -420,10 +420,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 									<?php } ?>
 									$(".yearGroup").click(function(){
 										if ($('input[name=yearGroup]:checked').val()=="Y" ) {
-											$("#yearGroupRow").slideDown("fast", $("#yearGroupRow").css("display","table-row")); 
-											$("#yearGroupRow2").slideDown("fast", $("#yearGroupRow2").css("display","table-row")); 
-											$("#yearGroupRow3").slideDown("fast", $("#yearGroupRow3").css("display","table-row")); 
-											$("#yearGroupRow4").slideDown("fast", $("#yearGroupRow4").css("display","table-row")); 
+											$("#yearGroupRow").slideDown("fast", $("#yearGroupRow").css("display","table-row"));
+											$("#yearGroupRow2").slideDown("fast", $("#yearGroupRow2").css("display","table-row"));
+											$("#yearGroupRow3").slideDown("fast", $("#yearGroupRow3").css("display","table-row"));
+											$("#yearGroupRow4").slideDown("fast", $("#yearGroupRow4").css("display","table-row"));
 										} else {
 											$("#yearGroupRow").css("display","none");
 											$("#yearGroupRow2").css("display","none");
@@ -434,13 +434,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 								});
 							</script>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Year Group') ?></b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Students in year; all staff.') ?><br/></span>
 								</td>
 								<td class="right">
-									<input <?php if ($resultTarget->rowCount() > 0)) { echo 'checked'; } ?> type="radio" name="yearGroup" class="yearGroup" value="Y"/> <?php echo __($guid, 'Yes') ?>
-									<input <?php if ($resultTarget->rowCount() <= 0)) { echo 'checked'; } ?> type="radio" name="yearGroup" class="yearGroup" value="N"/> <?php echo __($guid, 'No') ?>
+									<input <?php if ($resultTarget->rowCount() > 0) { echo 'checked'; } ?> type="radio" name="yearGroup" class="yearGroup" value="Y"/> <?php echo __($guid, 'Yes') ?>
+									<input <?php if ($resultTarget->rowCount() <= 0) { echo 'checked'; } ?> type="radio" name="yearGroup" class="yearGroup" value="N"/> <?php echo __($guid, 'No') ?>
 								</td>
 							</tr>
 							<?php
@@ -462,7 +462,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 							}
 							$selectedAll = substr($selectedAll, 0, -1); ?>
 							<tr id="yearGroupRow">
-								<td class='hiddenReveal'> 
+								<td class='hiddenReveal'>
 									<b><?php echo __($guid, 'Select Year Groups') ?></b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 								</td>
@@ -488,7 +488,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 								</td>
 							</tr>
 							<tr id="yearGroupRow3">
-								<td class='hiddenReveal'> 
+								<td class='hiddenReveal'>
 									<b><?php echo __($guid, 'Include staff?') ?></b><br/>
 								</td>
 								<td class="hiddenReveal right">
@@ -504,7 +504,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 								</td>
 							</tr>
 							<tr id="yearGroupRow4">
-								<td class='hiddenReveal'> 
+								<td class='hiddenReveal'>
 									<b><?php echo __($guid, 'Include students?') ?></b><br/>
 								</td>
 								<td class="hiddenReveal right">
@@ -523,7 +523,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
                             if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_yearGroups_parents')) {
                                 ?>
 								<tr id="yearGroupRow2">
-									<td class='hiddenReveal'> 
+									<td class='hiddenReveal'>
 										<b><?php echo __($guid, 'Include parents?') ?></b><br/>
 									</td>
 									<td class="hiddenReveal right">
@@ -564,10 +564,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 									<?php } ?>
 									$(".rollGroup").click(function(){
 										if ($('input[name=rollGroup]:checked').val()=="Y" ) {
-											$("#rollGroupRow").slideDown("fast", $("#rollGroupRow").css("display","table-row")); 
-											$("#rollGroupRow2").slideDown("fast", $("#rollGroupRow2").css("display","table-row")); 
-											$("#rollGroupRow3").slideDown("fast", $("#rollGroupRow3").css("display","table-row")); 
-											$("#rollGroupRow4").slideDown("fast", $("#rollGroupRow4").css("display","table-row")); 
+											$("#rollGroupRow").slideDown("fast", $("#rollGroupRow").css("display","table-row"));
+											$("#rollGroupRow2").slideDown("fast", $("#rollGroupRow2").css("display","table-row"));
+											$("#rollGroupRow3").slideDown("fast", $("#rollGroupRow3").css("display","table-row"));
+											$("#rollGroupRow4").slideDown("fast", $("#rollGroupRow4").css("display","table-row"));
 										} else {
 											$("#rollGroupRow").css("display","none");
 											$("#rollGroupRow2").css("display","none");
@@ -578,13 +578,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 								});
 							</script>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Roll Group') ?></b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Tutees and tutors.') ?><br/></span>
 								</td>
 								<td class="right">
-									<input <?php if ($resultTarget->rowCount() > 0)) { echo 'checked'; } ?> type="radio" name="rollGroup" class="rollGroup" value="Y"/> <?php echo __($guid, 'Yes') ?>
-									<input <?php if ($resultTarget->rowCount() <= 0)) { echo 'checked'; } ?> type="radio" name="rollGroup" class="rollGroup" value="N"/> <?php echo __($guid, 'No') ?>
+									<input <?php if ($resultTarget->rowCount() > 0) { echo 'checked'; } ?> type="radio" name="rollGroup" class="rollGroup" value="Y"/> <?php echo __($guid, 'Yes') ?>
+									<input <?php if ($resultTarget->rowCount() <= 0) { echo 'checked'; } ?> type="radio" name="rollGroup" class="rollGroup" value="N"/> <?php echo __($guid, 'No') ?>
 								</td>
 							</tr>
 							<?php
@@ -606,7 +606,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 							}
 							$selectedAll = substr($selectedAll, 0, -1); ?>
 							<tr id="rollGroupRow">
-								<td class='hiddenReveal'> 
+								<td class='hiddenReveal'>
 									<b><?php echo __($guid, 'Select Roll Groups') ?></b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 								</td>
@@ -643,7 +643,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 								</td>
 							</tr>
 							<tr id="rollGroupRow3">
-								<td class='hiddenReveal'> 
+								<td class='hiddenReveal'>
 									<b><?php echo __($guid, 'Include staff?') ?></b><br/>
 								</td>
 								<td class="hiddenReveal right">
@@ -659,7 +659,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 								</td>
 							</tr>
 							<tr id="rollGroupRow4">
-								<td class='hiddenReveal'> 
+								<td class='hiddenReveal'>
 									<b><?php echo __($guid, 'Include student?') ?></b><br/>
 								</td>
 								<td class="hiddenReveal right">
@@ -678,7 +678,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
                             if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_rollGroups_parents')) {
                                 ?>
 								<tr id="rollGroupRow2">
-									<td class='hiddenReveal'> 
+									<td class='hiddenReveal'>
 										<b><?php echo __($guid, 'Include parents?') ?></b><br/>
 									</td>
 									<td class="hiddenReveal right">
@@ -719,10 +719,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 									<?php } ?>
 									$(".course").click(function(){
 										if ($('input[name=course]:checked').val()=="Y" ) {
-											$("#courseRow").slideDown("fast", $("#courseRow").css("display","table-row")); 
-											$("#courseRow2").slideDown("fast", $("#courseRow2").css("display","table-row")); 
-											$("#courseRow3").slideDown("fast", $("#courseRow3").css("display","table-row")); 
-											$("#courseRow4").slideDown("fast", $("#courseRow4").css("display","table-row")); 
+											$("#courseRow").slideDown("fast", $("#courseRow").css("display","table-row"));
+											$("#courseRow2").slideDown("fast", $("#courseRow2").css("display","table-row"));
+											$("#courseRow3").slideDown("fast", $("#courseRow3").css("display","table-row"));
+											$("#courseRow4").slideDown("fast", $("#courseRow4").css("display","table-row"));
 										} else {
 											$("#courseRow").css("display","none");
 											$("#courseRow2").css("display","none");
@@ -733,13 +733,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 								});
 							</script>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Course') ?></b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Members of a course of study.') ?><br/></span>
 								</td>
 								<td class="right">
-									<input <?php if ($resultTarget->rowCount() > 0)) { echo 'checked'; } ?> type="radio" name="course" class="course" value="Y"/> <?php echo __($guid, 'Yes') ?>
-									<input <?php if ($resultTarget->rowCount() <= 0)) { echo 'checked'; } ?> type="radio" name="course" class="course" value="N"/> <?php echo __($guid, 'No') ?>
+									<input <?php if ($resultTarget->rowCount() > 0) { echo 'checked'; } ?> type="radio" name="course" class="course" value="Y"/> <?php echo __($guid, 'Yes') ?>
+									<input <?php if ($resultTarget->rowCount() <= 0) { echo 'checked'; } ?> type="radio" name="course" class="course" value="N"/> <?php echo __($guid, 'No') ?>
 								</td>
 							</tr>
 							<?php
@@ -761,7 +761,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 							}
 							$selectedAll = substr($selectedAll, 0, -1); ?>
 							<tr id="courseRow">
-								<td class='hiddenReveal'> 
+								<td class='hiddenReveal'>
 									<b><?php echo __($guid, 'Select Courses') ?></b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 								</td>
@@ -792,7 +792,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 								</td>
 							</tr>
 							<tr id="courseRow3">
-								<td class='hiddenReveal'> 
+								<td class='hiddenReveal'>
 									<b><?php echo __($guid, 'Include staff?') ?></b><br/>
 								</td>
 								<td class="hiddenReveal right">
@@ -808,7 +808,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 								</td>
 							</tr>
 							<tr id="courseRow4">
-								<td class='hiddenReveal'> 
+								<td class='hiddenReveal'>
 									<b><?php echo __($guid, 'Include students?') ?></b><br/>
 								</td>
 								<td class="hiddenReveal right">
@@ -827,7 +827,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
                             if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_courses_parents')) {
                                 ?>
 								<tr id="courseRow2">
-									<td class='hiddenReveal'> 
+									<td class='hiddenReveal'>
 										<b><?php echo __($guid, 'Include parents?') ?></b><br/>
 									</td>
 									<td class="hiddenReveal right">
@@ -868,10 +868,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 									<?php } ?>
 									$(".class").click(function(){
 										if ($('input[name=class]:checked').val()=="Y" ) {
-											$("#classRow").slideDown("fast", $("#classRow").css("display","table-row")); 
-											$("#classRow2").slideDown("fast", $("#classRow2").css("display","table-row")); 
-											$("#classRow3").slideDown("fast", $("#classRow3").css("display","table-row")); 
-											$("#classRow4").slideDown("fast", $("#classRow4").css("display","table-row")); 
+											$("#classRow").slideDown("fast", $("#classRow").css("display","table-row"));
+											$("#classRow2").slideDown("fast", $("#classRow2").css("display","table-row"));
+											$("#classRow3").slideDown("fast", $("#classRow3").css("display","table-row"));
+											$("#classRow4").slideDown("fast", $("#classRow4").css("display","table-row"));
 										} else {
 											$("#classRow").css("display","none");
 											$("#classRow2").css("display","none");
@@ -882,13 +882,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 								});
 							</script>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Class') ?></b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Members of a class within a course.') ?><br/></span>
 								</td>
 								<td class="right">
-									<input <?php if ($resultTarget->rowCount() > 0)) { echo 'checked'; } ?> type="radio" name="class" class="class" value="Y"/> <?php echo __($guid, 'Yes') ?>
-									<input <?php if ($resultTarget->rowCount() <= 0)) { echo 'checked'; } ?> type="radio" name="class" class="class" value="N"/> <?php echo __($guid, 'No') ?>
+									<input <?php if ($resultTarget->rowCount() > 0) { echo 'checked'; } ?> type="radio" name="class" class="class" value="Y"/> <?php echo __($guid, 'Yes') ?>
+									<input <?php if ($resultTarget->rowCount() <= 0) { echo 'checked'; } ?> type="radio" name="class" class="class" value="N"/> <?php echo __($guid, 'No') ?>
 								</td>
 							</tr>
 							<?php
@@ -910,7 +910,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 							}
 							$selectedAll = substr($selectedAll, 0, -1); ?>
 							<tr id="classRow">
-								<td class='hiddenReveal'> 
+								<td class='hiddenReveal'>
 									<b><?php echo __($guid, 'Select Classes') ?></b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 								</td>
@@ -941,7 +941,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 								</td>
 							</tr>
 							<tr id="classRow3">
-								<td class='hiddenReveal'> 
+								<td class='hiddenReveal'>
 									<b><?php echo __($guid, 'Include staff?') ?></b><br/>
 								</td>
 								<td class="hiddenReveal right">
@@ -957,7 +957,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 								</td>
 							</tr>
 							<tr id="classRow4">
-								<td class='hiddenReveal'> 
+								<td class='hiddenReveal'>
 									<b><?php echo __($guid, 'Include students?') ?></b><br/>
 								</td>
 								<td class="hiddenReveal right">
@@ -976,7 +976,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
                             if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_classes_parents')) {
                                 ?>
 								<tr id="classRow2">
-									<td class='hiddenReveal'> 
+									<td class='hiddenReveal'>
 										<b><?php echo __($guid, 'Include parents?') ?></b><br/>
 									</td>
 									<td class="hiddenReveal right">
@@ -1017,10 +1017,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 									<?php } ?>
 									$(".activity").click(function(){
 										if ($('input[name=activity]:checked').val()=="Y" ) {
-											$("#activitiesRow").slideDown("fast", $("#activitiesRow").css("display","table-row")); 
-											$("#activitiesRow2").slideDown("fast", $("#activitiesRow2").css("display","table-row")); 
-											$("#activitiesRow3").slideDown("fast", $("#activitiesRow3").css("display","table-row")); 
-											$("#activitiesRow4").slideDown("fast", $("#activitiesRow4").css("display","table-row")); 
+											$("#activitiesRow").slideDown("fast", $("#activitiesRow").css("display","table-row"));
+											$("#activitiesRow2").slideDown("fast", $("#activitiesRow2").css("display","table-row"));
+											$("#activitiesRow3").slideDown("fast", $("#activitiesRow3").css("display","table-row"));
+											$("#activitiesRow4").slideDown("fast", $("#activitiesRow4").css("display","table-row"));
 										} else {
 											$("#activitiesRow").css("display","none");
 											$("#activitiesRow2").css("display","none");
@@ -1031,13 +1031,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 								});
 							</script>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Activity') ?></b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Members of an activity.') ?><br/></span>
 								</td>
 								<td class="right">
-									<input <?php if ($resultTarget->rowCount() > 0)) { echo 'checked'; } ?> type="radio" name="activity" class="activity" value="Y"/> <?php echo __($guid, 'Yes') ?>
-									<input <?php if ($resultTarget->rowCount() <= 0)) { echo 'checked'; } ?> type="radio" name="activity" class="activity" value="N"/> <?php echo __($guid, 'No') ?>
+									<input <?php if ($resultTarget->rowCount() > 0) { echo 'checked'; } ?> type="radio" name="activity" class="activity" value="Y"/> <?php echo __($guid, 'Yes') ?>
+									<input <?php if ($resultTarget->rowCount() <= 0) { echo 'checked'; } ?> type="radio" name="activity" class="activity" value="N"/> <?php echo __($guid, 'No') ?>
 								</td>
 							</tr>
 							<?php
@@ -1059,7 +1059,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 							}
 							$selectedAll = substr($selectedAll, 0, -1); ?>
 							<tr id="activitiesRow">
-								<td class='hiddenReveal'> 
+								<td class='hiddenReveal'>
 									<b><?php echo __($guid, 'Select Activities') ?></b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 								</td>
@@ -1096,7 +1096,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 								</td>
 							</tr>
 							<tr id="activitiesRow3">
-								<td class='hiddenReveal'> 
+								<td class='hiddenReveal'>
 									<b><?php echo __($guid, 'Include staff?') ?></b><br/>
 								</td>
 								<td class="hiddenReveal right">
@@ -1112,7 +1112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 								</td>
 							</tr>
 							<tr id="activitiesRow4">
-								<td class='hiddenReveal'> 
+								<td class='hiddenReveal'>
 									<b><?php echo __($guid, 'Include students?') ?></b><br/>
 								</td>
 								<td class="hiddenReveal right">
@@ -1131,7 +1131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
                             if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_activities_parents')) {
                                 ?>
 								<tr id="activitiesRow2">
-									<td class='hiddenReveal'> 
+									<td class='hiddenReveal'>
 										<b><?php echo __($guid, 'Include parents?') ?></b><br/>
 									</td>
 									<td class="hiddenReveal right">
@@ -1169,7 +1169,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 									<?php } ?>
 									$(".applicants").click(function(){
 										if ($('input[name=applicants]:checked').val()=="Y" ) {
-											$("#applicantsRow").slideDown("fast", $("#applicantsRow").css("display","table-row")); 
+											$("#applicantsRow").slideDown("fast", $("#applicantsRow").css("display","table-row"));
 										} else {
 											$("#applicantsRow").css("display","none");
 										}
@@ -1177,13 +1177,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 								});
 							</script>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Applicants') ?></b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Applicants from a given year.').'<br/>'.__($guid, 'Does not apply to the message wall.') ?></span>
 								</td>
 								<td class="right">
-									<input <?php if ($resultTarget->rowCount() > 0)) { echo 'checked'; } ?> type="radio" name="applicants" class="applicants" value="Y"/> <?php echo __($guid, 'Yes') ?>
-									<input <?php if ($resultTarget->rowCount() <= 0)) { echo 'checked'; } ?> type="radio" name="applicants" class="applicants" value="N"/> <?php echo __($guid, 'No') ?>
+									<input <?php if ($resultTarget->rowCount() > 0) { echo 'checked'; } ?> type="radio" name="applicants" class="applicants" value="Y"/> <?php echo __($guid, 'Yes') ?>
+									<input <?php if ($resultTarget->rowCount() <= 0) { echo 'checked'; } ?> type="radio" name="applicants" class="applicants" value="N"/> <?php echo __($guid, 'No') ?>
 								</td>
 							</tr>
 							<?php
@@ -1193,7 +1193,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 							}
 							$selectedAll = substr($selectedAll, 0, -1); ?>
 							<tr id="applicantsRow">
-								<td class='hiddenReveal'> 
+								<td class='hiddenReveal'>
 									<b><?php echo __($guid, 'Select Years') ?></b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 								</td>
@@ -1239,7 +1239,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 									<?php } ?>
 									$(".houses").click(function(){
 										if ($('input[name=houses]:checked').val()=="Y" ) {
-											$("#housesRow").slideDown("fast", $("#housesRow").css("display","table-row")); 
+											$("#housesRow").slideDown("fast", $("#housesRow").css("display","table-row"));
 										} else {
 											$("#housesRow").css("display","none");
 										}
@@ -1247,13 +1247,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 								});
 							</script>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Houses') ?></b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Houses for competitions, etc.') ?><br/></span>
 								</td>
 								<td class="right">
-									<input <?php if ($resultTarget->rowCount() > 0)) { echo 'checked'; } ?> type="radio" name="houses" class="houses" value="Y"/> <?php echo __($guid, 'Yes') ?>
-									<input <?php if ($resultTarget->rowCount() <= 0)) { echo 'checked'; } ?> type="radio" name="houses" class="houses" value="N"/> <?php echo __($guid, 'No') ?>
+									<input <?php if ($resultTarget->rowCount() > 0) { echo 'checked'; } ?> type="radio" name="houses" class="houses" value="Y"/> <?php echo __($guid, 'Yes') ?>
+									<input <?php if ($resultTarget->rowCount() <= 0) { echo 'checked'; } ?> type="radio" name="houses" class="houses" value="N"/> <?php echo __($guid, 'No') ?>
 								</td>
 							</tr>
 							<?php
@@ -1263,7 +1263,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 							}
 							$selectedAll = substr($selectedAll, 0, -1); ?>
 							<tr id="housesRow">
-								<td class='hiddenReveal'> 
+								<td class='hiddenReveal'>
 									<b><?php echo __($guid, 'Select Houses') ?></b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 								</td>
@@ -1315,7 +1315,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 									<?php } ?>
 									$(".individuals").click(function(){
 										if ($('input[name=individuals]:checked').val()=="Y" ) {
-											$("#individualsRow").slideDown("fast", $("#individualsRow").css("display","table-row")); 
+											$("#individualsRow").slideDown("fast", $("#individualsRow").css("display","table-row"));
 										} else {
 											$("#individualsRow").css("display","none");
 										}
@@ -1323,13 +1323,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 								});
 							</script>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Indviduals') ?></b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Individuals from the whole school.') ?><br/></span>
 								</td>
 								<td class="right">
-									<input <?php if ($resultTarget->rowCount() > 0)) { echo 'checked'; } ?> type="radio" name="individuals" class="individuals" value="Y"/> <?php echo __($guid, 'Yes') ?>
-									<input <?php if ($resultTarget->rowCount() <= 0)) { echo 'checked'; } ?> type="radio" name="individuals" class="individuals" value="N"/> <?php echo __($guid, 'No') ?>
+									<input <?php if ($resultTarget->rowCount() > 0) { echo 'checked'; } ?> type="radio" name="individuals" class="individuals" value="Y"/> <?php echo __($guid, 'Yes') ?>
+									<input <?php if ($resultTarget->rowCount() <= 0) { echo 'checked'; } ?> type="radio" name="individuals" class="individuals" value="N"/> <?php echo __($guid, 'No') ?>
 								</td>
 							</tr>
 							<?php
@@ -1339,7 +1339,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 							}
 							$selectedAll = substr($selectedAll, 0, -1); ?>
 							<tr id="individualsRow">
-								<td class='hiddenReveal'> 
+								<td class='hiddenReveal'>
 									<b><?php echo __($guid, 'Select Individuals') ?></b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 								</td>
