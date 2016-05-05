@@ -120,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                 $currentType = '';
                 echo "<option value=''></option>";
                 while ($rowSelect = $resultSelect->fetch()) {
-                    $currentType = $rowSelect['type'];
+                    $currentType = (isset($rowSelect['type']))? $rowSelect['type'] : '';
                     if ($currentType != $lastType) {
                         echo "<optgroup label='--".$currentType."--'>";
                     }
@@ -256,7 +256,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                                     } else {
                                         echo $_SESSION[$guid]['i18n']['dateFormat'];
                                     }
-                                    $startingDate = (isset($_GET['date'])) $_GET['date'] : dateConvertBack($guid, date('Y-m-d'));
+                                    $startingDate = (isset($_GET['date']))? $_GET['date'] : dateConvertBack($guid, date('Y-m-d'));
                                 ?></span>
                             </td>
                             <td class="right">

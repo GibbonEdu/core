@@ -145,7 +145,7 @@
 
 	        	echo ( ($_SESSION[$guid]['markbookTerm'] == -1)? __($guid, "All Terms") : $_SESSION[$guid]['markbookTermName'] ) ." : ";
 
-	        	echo __($guid, "Records") ." ". ($pageNum * $markbook->getColumnsPerPage()) ."-";
+	        	echo __($guid, "Records") ." ". max(1, ($pageNum * $markbook->getColumnsPerPage()) ) ."-";
 	        	echo ( $markbook->getColumnCountThisPage() + ($pageNum * $markbook->getColumnsPerPage()) ) ;
 	        	echo " ". __($guid, 'of') ." ". $markbook->getColumnCountTotal() ;
 

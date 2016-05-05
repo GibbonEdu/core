@@ -48,6 +48,7 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
 
     $selectTerm = (isset($_SESSION[$guid]['markbookTerm']))? $_SESSION[$guid]['markbookTerm'] : 0;
     $selectTerm = (isset($_GET['gibbonSchoolYearTermID']))? $_GET['gibbonSchoolYearTermID'] : $selectTerm;
+    $selectTermName = __($guid, 'All Terms');
 
     while ($rowTerm = $resultTerms->fetch()) {
 
