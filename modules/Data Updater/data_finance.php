@@ -76,11 +76,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
             $gibbonFinanceInvoiceeID = $_GET['gibbonFinanceInvoiceeID'];
         }
         ?>
-		
+
 		<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-			<table class='smallIntBorder fullWidth' cellspacing='0'>	
+			<table class='smallIntBorder fullWidth' cellspacing='0'>
 				<tr>
-					<td style='width: 275px'> 
+					<td style='width: 275px'>
 						<b><?php echo __($guid, 'Invoicee') ?> *</b><br/>
 						<span class="emphasis small"><?php echo __($guid, 'Individual for whom invoices are generated.') ?></span>
 					</td>
@@ -129,7 +129,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
                                     }
                                 }
                             }
-        					?>					
+        					?>
 						</select>
 					</td>
 				</tr>
@@ -207,7 +207,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
                 } elseif ($result->rowCount() == 1) {
                     $existing = true;
                     $proceed = false;
-                    if ($updateReturn == '') {
+                    if (!isset($_GET['return'])) {
                         echo "<div class='warning'>";
                         echo __($guid, 'You have already submitted a form, which is pending approval by an administrator. If you wish to make changes, please edited the data below, but remember your data will not appear in the system until it has been approved.');
                         echo '</div>';
@@ -236,13 +236,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
                     //Let's go!
                     $row = $result->fetch(); ?>
 					<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/data_financeProcess.php?gibbonFinanceInvoiceeID='.$gibbonFinanceInvoiceeID ?>">
-						<table class='smallIntBorder fullWidth' cellspacing='0'>	
+						<table class='smallIntBorder fullWidth' cellspacing='0'>
 							<tr class='break'>
-								<td colspan=2> 
+								<td colspan=2>
 									<h4><?php echo __($guid, 'Invoice To') ?></h4>
 								</td>
 							</tr>
-							
+
 							<script type="text/javascript">
 								/* Resource 1 Option Control */
 								$(document).ready(function(){
@@ -265,7 +265,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
 											$("#companyCategoriesRow").css("display","none");
 										}
 									}
-							
+
 									$(".invoiceTo").click(function(){
 										if ($('input[name=invoiceTo]:checked').val()=="Family" ) {
 											$("#companyNameRow").css("display","none");
@@ -281,17 +281,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
 											companyContact.disable() ;
 											companyName.disable() ;
 										} else {
-											$("#companyNameRow").slideDown("fast", $("#companyNameRow").css("display","table-row")); 
-											$("#companyContactRow").slideDown("fast", $("#companyContactRow").css("display","table-row")); 
-											$("#companyAddressRow").slideDown("fast", $("#companyAddressRow").css("display","table-row")); 
-											$("#companyEmailRow").slideDown("fast", $("#companyEmailRow").css("display","table-row")); 
-											$("#companyCCFamilyRow").slideDown("fast", $("#companyCCFamilyRow").css("display","table-row")); 
-											$("#companyPhoneRow").slideDown("fast", $("#companyPhoneRow").css("display","table-row")); 
-											$("#companyAllRow").slideDown("fast", $("#companyAllRow").css("display","table-row")); 
+											$("#companyNameRow").slideDown("fast", $("#companyNameRow").css("display","table-row"));
+											$("#companyContactRow").slideDown("fast", $("#companyContactRow").css("display","table-row"));
+											$("#companyAddressRow").slideDown("fast", $("#companyAddressRow").css("display","table-row"));
+											$("#companyEmailRow").slideDown("fast", $("#companyEmailRow").css("display","table-row"));
+											$("#companyCCFamilyRow").slideDown("fast", $("#companyCCFamilyRow").css("display","table-row"));
+											$("#companyPhoneRow").slideDown("fast", $("#companyPhoneRow").css("display","table-row"));
+											$("#companyAllRow").slideDown("fast", $("#companyAllRow").css("display","table-row"));
 											if ($('input[name=companyAll]:checked').val()=="Y" ) {
 												$("#companyCategoriesRow").css("display","none");
 											} else {
-												$("#companyCategoriesRow").slideDown("fast", $("#companyCategoriesRow").css("display","table-row")); 
+												$("#companyCategoriesRow").slideDown("fast", $("#companyCategoriesRow").css("display","table-row"));
 											}
 											companyEmail.enable() ;
 											companyAddress.enable() ;
@@ -299,12 +299,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
 											companyName.enable() ;
 										}
 									 });
-							 
+
 									 $(".companyAll").click(function(){
 										if ($('input[name=companyAll]:checked').val()=="Y" ) {
 											$("#companyCategoriesRow").css("display","none");
 										} else {
-											$("#companyCategoriesRow").slideDown("fast", $("#companyCategoriesRow").css("display","table-row")); 
+											$("#companyCategoriesRow").slideDown("fast", $("#companyCategoriesRow").css("display","table-row"));
 										}
 									 });
 								});
@@ -315,16 +315,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
 								</td>
 							</tr>
 							<tr>
-								<td style='width: 275px'> 
+								<td style='width: 275px'>
 									<b><?php echo __($guid, 'Send Invoices To') ?></b><br/>
 								</td>
 								<td class="right">
 									<input <?php if ($row['invoiceTo'] == 'Family' or $row['invoiceTo'] == '') { echo 'checked'; } ?> type="radio" name="invoiceTo" value="Family" class="invoiceTo" /> <?php echo __($guid, 'Family') ?>
-									<input <?php if ($row['invoiceTo'] == 'Company')) { echo 'checked'; } ?> type="radio" name="invoiceTo" value="Company" class="invoiceTo" /> <?php echo __($guid, 'Company') ?>
+									<input <?php if ($row['invoiceTo'] == 'Company') { echo 'checked'; } ?> type="radio" name="invoiceTo" value="Company" class="invoiceTo" /> <?php echo __($guid, 'Company') ?>
 								</td>
 							</tr>
 							<tr id="companyNameRow">
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Company Name') ?> *</b><br/>
 								</td>
 								<td class="right">
@@ -336,7 +336,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
 								</td>
 							</tr>
 							<tr id="companyContactRow">
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Company Contact Person') ?> *</b><br/>
 								</td>
 								<td class="right">
@@ -348,7 +348,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
 								</td>
 							</tr>
 							<tr id="companyAddressRow">
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Company Address') ?> *</b><br/>
 								</td>
 								<td class="right">
@@ -360,7 +360,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
 								</td>
 							</tr>
 							<tr id="companyEmailRow">
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Company Emails') ?> *</b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Comma-separated list of email address.') ?></span>
 								</td>
@@ -373,7 +373,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
 								</td>
 							</tr>
 							<tr id="companyCCFamilyRow">
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'CC Family?') ?></b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Should the family be sent a copy of billing emails?') ?></span>
 								</td>
@@ -385,7 +385,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
 								</td>
 							</tr>
 							<tr id="companyPhoneRow">
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Company Phone') ?></b><br/>
 								</td>
 								<td class="right">
@@ -405,7 +405,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
 							} else {
 								?>
 								<tr id="companyAllRow">
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Company All?') ?></b><br/>
 										<span class="emphasis small"><?php echo __($guid, 'Should all items be billed to the specified company, or just some?') ?></span>
 									</td>
@@ -415,7 +415,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
 									</td>
 								</tr>
 								<tr id="companyCategoriesRow">
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Company Fee Categories') ?></b><br/>
 										<span class="emphasis small"><?php echo __($guid, 'If the specified company is not paying all fees, which categories are they paying?') ?></span>
 									</td>
@@ -438,8 +438,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
 								</tr>
 								<?php
 							}
-							?>							
-							
+							?>
+
 							<tr>
 								<td>
 									<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
