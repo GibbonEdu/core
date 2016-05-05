@@ -376,5 +376,6 @@ INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, 
 UPDATE gibbonAction SET category='Facilities' WHERE category='Spaces' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Timetable');end
 ALTER TABLE `gibbonMarkbookColumn` ADD `sequenceNumber` INT(3) UNSIGNED NOT NULL DEFAULT '100' AFTER `description`, ADD `date` DATE AFTER `description`;end
 ALTER TABLE `gibbonMarkbookColumn` ADD `attainmentRaw` ENUM('Y','N') NOT NULL DEFAULT 'N' AFTER `attainmentWeighting`, ADD `attainmentRawMax` INT(4) NULL AFTER `attainmentRaw`;edit
-ALTER TABLE `gibbonMarkbookEntry` ADD `attainmentValueRaw` INT(4) NULL AFTER `attainmentValue`;end
+ALTER TABLE `gibbonMarkbookEntry` ADD `attainmentValueRaw` VARCHAR(10) NULL AFTER `attainmentValue`;end
+INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'Markbook', 'enableRawAttainment', 'Enable Raw Attainment Marks', 'Should recording of raw marks be enabled in the Markbook?', 'N');end
 ";

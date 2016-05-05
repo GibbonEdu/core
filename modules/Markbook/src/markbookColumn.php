@@ -108,8 +108,16 @@ class markbookColumn
     	return (isset($this->data['submission']))? $this->data['submission'] == 'Y' : false;
     }
 
+    public function displayRawMarks() {
+        return (isset($this->data['attainmentRaw']))? $this->data['attainmentRaw'] == 'Y' : false;
+    }
+
     public function hasAttainmentGrade() {
     	return (isset($this->data['gibbonScaleIDAttainment']))? !empty($this->data['gibbonScaleIDAttainment']) : false;
+    }
+
+    public function hasAttainmentRawMax() {
+        return (isset($this->data['attainmentRawMax']))? !empty($this->data['attainmentRawMax']) : false;
     }
 
     public function hasAttainmentRubric() {

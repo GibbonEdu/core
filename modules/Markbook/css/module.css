@@ -142,8 +142,19 @@ table.blank td {
 	padding: 0px 5px !important;
 }
 
+input[id$="attainmentValueRaw"] {
+	width: 38px;
+	float: none;
+	text-align: right;
+	padding-right:4px;
+}
 
-/*.markbook-data,
+select[id$="attainmentValue"] {
+	float: none;
+}
+
+
+.markbook-data,
 .markbook-data:link,
 .markbook-data:visited {
 	opacity: 0;
@@ -151,11 +162,14 @@ table.blank td {
 	color: #666;
 	text-decoration: none;
 	margin: -6px 0px -3px;
+	transition: opacity 500;
 }
 
 .markbook-data:hover {
 	opacity: 1;
-}*/
+}
+
+
 
 /* Double-scroll */
 

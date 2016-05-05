@@ -50,20 +50,33 @@
         return;
     }
 
+    $_SESSION[$guid]['markbookClass'] = $gibbonCourseClassID;
+
     //Check existence of and access to this class.
     $class = getClass($pdo, $_SESSION[$guid]['gibbonPersonID'], $gibbonCourseClassID);
 
-    if ($class == NULL) {
+    if ($class == NULL && $multiAdd == false) {
         echo "<div class='trail'>";
         echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'View Markbook').'</div>';
         echo '</div>';
+
+        //Get class chooser
+        echo classChooser($guid, $pdo, $gibbonCourseClassID);
+
         echo "<div class='error'>";
-        echo __($guid, 'The specified record does not exist.');
+        if ($multiAdd == true) {
+            echo __($guid, 'The specified record does not exist.');
+        } else {
+            echo __($guid, 'Your request failed because you do not have access to this action.');
+        }
+        
+        
         echo '</div>';
+
         return;
     }
 
-    $_SESSION[$guid]['markbookClass'] = $gibbonCourseClassID;
+    
 
     $courseName = $class['courseName'];
     $gibbonYearGroupIDList = $class['gibbonYearGroupIDList'];
@@ -96,14 +109,14 @@
 
     //Get teacher list
     $teacherList = getTeacherList( $pdo, $gibbonCourseClassID );
-    $teaching = (isset($teacherList[ $_SESSION[$guid]['gibbonPersonID'] ]) );
+    $canEditThisClass = (isset($teacherList[ $_SESSION[$guid]['gibbonPersonID'] ]) || $multiAdd == true);
 
     // Build the markbook object for this class
     $markbook = new Module\Markbook\markbookView(NULL, NULL, $pdo, $gibbonCourseClassID );
 
     if ($markbook == NULL || $markbook->getColumnCountTotal() < 1) {
         echo "<div class='linkTop'>";
-        if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php') and $teaching) {
+        if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php') and $canEditThisClass) {
             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID'>".__($guid, 'Add')."<img title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
         }
         echo '</div>';
@@ -139,9 +152,9 @@
 
         // Display the Top Links
         echo "<div class='linkTop'>";
-        if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php')) {
+        if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php') ) {
 
-        	echo "<div style='padding-top: 16px; margin-right: 10px; float: left'>";
+        	echo "<div style='padding-top: 16px; margin-right: 10px; text-align: left; width: 300px; float: left;'>";
 
 	        	echo ( ($_SESSION[$guid]['markbookTerm'] == -1)? __($guid, "All Terms") : $_SESSION[$guid]['markbookTermName'] ) ." : ";
 
@@ -164,11 +177,16 @@
 		            }
 		        }
 	        echo '</div>';
+        }
 
+        if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php') and $canEditThisClass) {
 
             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID'>".__($guid, 'Add')."<img title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a> | ";
             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_targets.php&gibbonCourseClassID=$gibbonCourseClassID'>".__($guid, 'Targets')."<img title='".__($guid, 'Set Personalised Attainment Targets')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/target.png'/></a> | ";
             echo "<a href='".$_SESSION[$guid]['absoluteURL']."/modules/Markbook/markbook_viewExportAll.php?gibbonCourseClassID=$gibbonCourseClassID&return=markbook_view.php'>".__($guid, 'Export to Excel')."<img title='".__($guid, 'Export to Excel')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png'/></a>";
+
+        } else {
+            echo '<br clear="both"/>';
         }
         echo '</div>';
 
@@ -290,7 +308,7 @@
             }
             echo '</span>';
             echo '<div class="columnActions">';
-            if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php')) {
+            if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php') and $canEditThisClass) {
                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID."'><img title='".__($guid, 'Enter Data')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/markbook.png'/></a> ";
                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_delete.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
@@ -308,20 +326,30 @@
                 if ($column->displayAttainment() ) {
 
                     echo "<th class='columnLabel medColumn'>";
-                    try {
-                        $dataScale = array('gibbonScaleID' => $column->getData('gibbonScaleIDAttainment'));
-                        $sqlScale = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
-                        $resultScale = $connection2->prepare($sqlScale);
-                        $resultScale->execute($dataScale);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
+
                     $scale = '';
-                    if ($resultScale->rowCount() == 1) {
-                        $rowScale = $resultScale->fetch();
-                        $scale = ' - '.$rowScale['name'];
-                        if ($rowScale['usage'] != '') {
-                            $scale = $scale.': '.$rowScale['usage'];
+                    if ($markbook->getSetting('enableRawAttainment') == 'Y' && isset($_SESSION[$guid]['markbookFilter']) ) {
+                        if ($_SESSION[$guid]['markbookFilter'] == 'raw' && $column->displayRawMarks() and $column->hasAttainmentRawMax()) {
+                            $scale = ' - ' . __($guid, 'Raw Marks') .' '. __($guid, 'out of') .': '. $column->getData('attainmentRawMax');
+                        } 
+                    }
+
+                    if (empty($scale)) {
+                        try {
+                            $dataScale = array('gibbonScaleID' => $column->getData('gibbonScaleIDAttainment'));
+                            $sqlScale = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
+                            $resultScale = $connection2->prepare($sqlScale);
+                            $resultScale->execute($dataScale);
+                        } catch (PDOException $e) {
+                            echo "<div class='error'>".$e->getMessage().'</div>';
+                        }
+                       
+                        if ($resultScale->rowCount() == 1) {
+                            $rowScale = $resultScale->fetch();
+                            $scale = ' - '.$rowScale['name'];
+                            if ($rowScale['usage'] != '') {
+                                $scale = $scale.': '.$rowScale['usage'];
+                            }
                         }
                     }
                     
@@ -467,12 +495,24 @@
                                 } elseif ($rowEntry['attainmentValue'] == 'Incomplete') {
                                     $attainment = __($guid, 'Inc');
                                 }
+
+                                if ($markbook->getSetting('enableRawAttainment') == 'Y' && isset($_SESSION[$guid]['markbookFilter']) ) {
+                                    if ($_SESSION[$guid]['markbookFilter'] == 'raw' && $column->displayRawMarks() and $column->hasAttainmentRawMax()) {
+                                        $attainment = (isset($rowEntry['attainmentValueRaw']))? $rowEntry['attainmentValueRaw'] : '';
+                                    }
+                                }
                                 echo "<div $styleAttainment title='".htmlPrep($rowEntry['attainmentDescriptor'])."'>" . $attainment;
                             }
                             if ($column->hasAttainmentRubric()) {
                                 echo "<a class='thickbox rubricIcon' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/markbook_view_rubric.php&gibbonRubricID='.$column->getData('gibbonRubricIDAttainment')."&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID.'&gibbonPersonID='.$rowStudents['gibbonPersonID']."&mark=FALSE&type=attainment&width=1100&height=550'><img title='".__($guid, 'View Rubric')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/rubric.png'/></a>";
                             }
-                            if ($column->hasEffortGrade()) {
+
+                            if ($column->hasAttainmentGrade()) {
+
+                                if (empty($attainment) && isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit.php") && $canEditThisClass) {
+                                    print "<a class='markbook-data' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $column->gibbonMarkbookColumnID . "#".$rowStudents["gibbonPersonID"]."'><img style='margin-top: 3px' title='" . _("Edit") . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png' width='14' height='14'/></a> " ;
+                                }
+
                                 echo '</div>';
                             }
                             echo '</td>';
@@ -498,6 +538,11 @@
                                 echo "<a class='thickbox rubricIcon' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/markbook_view_rubric.php&gibbonRubricID='.$column->getData('gibbonRubricIDEffort')."&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID.'&gibbonPersonID='.$rowStudents['gibbonPersonID']."&mark=FALSE&type=effort&width=1100&height=550'><img title='".__($guid, 'View Rubric')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/rubric.png'/></a>";
                             }
                             if ($column->hasEffortGrade()) {
+
+                                if (empty($effort) && isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit.php") && $canEditThisClass) {
+                                    print "<a class='markbook-data' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $column->gibbonMarkbookColumnID . "#".$rowStudents["gibbonPersonID"]."'><img style='margin-top: 3px' title='" . _("Edit") . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png' width='14' height='14'/></a> " ;
+                                }
+
                                 echo '</div>';
                             }
                             echo '</td>';
@@ -524,10 +569,17 @@
                         }
                         echo '</td>';
                     } else {
-                    	if ($column->displayAttainment()) echo "<td class='medColumn'></td>";
-                    	if ($column->displayEffort()) echo "<td class='medColumn'></td>";
-                    	if ($column->displayComment()) echo "<td class='largeColumn'></td>";
-                    	if ($column->displayUploadedResponse()) echo "<td class='smallColumn'></td>";
+                        echo "<td>";
+
+                        if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit.php") && $canEditThisClass) {
+                            print "<a class='markbook-data' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $column->gibbonMarkbookColumnID . "#".$rowStudents["gibbonPersonID"]."'><img style='margin-top: 3px' title='" . _("Add") . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new_mini.png'/></a> " ;
+                        }
+
+                        echo "</td>";
+                    	// if ($column->displayAttainment()) echo "<td class='medColumn'></td>";
+                    	// if ($column->displayEffort()) echo "<td class='medColumn'></td>";
+                    	// if ($column->displayComment()) echo "<td class='largeColumn'></td>";
+                    	// if ($column->displayUploadedResponse()) echo "<td class='smallColumn'></td>";
                     }
 
                     if ($column->displaySubmission()) {

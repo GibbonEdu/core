@@ -73,17 +73,24 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
         $_SESSION[$guid]['markbookTermName'] = $selectTermName;
     }
 
-    $selectFilter = (isset($_GET['columnFilter']))? $_GET['columnFilter'] : '';
+    $selectFilter = (isset($_SESSION[$guid]['markbookFilter']))? $_SESSION[$guid]['markbookFilter'] : 0;
+    $selectFilter = (isset($_GET['columnFilter']))? $_GET['columnFilter'] : $selectFilter;
+
+    $_SESSION[$guid]['markbookFilter'] = $selectFilter;
 
     $output .= "&nbsp;&nbsp;&nbsp;<span>".__($guid, 'Show').": </span>";
     $output .= "<select name='columnFilter' id='columnFilter' style='width:193px; float: none;'>";
     $output .= "<option value=''>".__($guid, 'All Columns')."</option>";
     $output .= "<option value='marked' ".(($selectFilter == 'marked')? 'selected' : '')." >".__($guid, 'Marked')."</option>";
     $output .= "<option value='unmarked' ".(($selectFilter == 'unmarked')? 'selected' : '')." >".__($guid, 'Unmarked')."</option>";
+
+    if (getSettingByScope($pdo->getConnection(), 'Markbook', 'enableRawAttainment') == 'Y' ) {
+        $output .= "<option value='raw' ".(($selectFilter == 'raw')? 'selected' : '')." >".__($guid, 'Raw Marks')."</option>";
+    }
     // $output .= "<option value='week' ".(($selectFilter == 'week')? 'selected' : '').">".__($guid, 'This Week')."</option>";
     // $output .= "<option value='month' ".(($selectFilter == 'month')? 'selected' : '').">".__($guid, 'This Month')."</option>";
     $output .= '</select>';
-
+    
 
     $output .= "&nbsp;&nbsp;&nbsp;<span>".__($guid, 'Class').": </span>";
     $output .= "<select name='gibbonCourseClassID' id='gibbonCourseClassID' style='width:193px; float: none;'>";

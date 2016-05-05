@@ -24,6 +24,7 @@ include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
 //Get alternative header names
 $enableColumnWeighting = getSettingByScope($connection2, 'Markbook', 'enableColumnWeighting');
+$enableRawAttainment = getSettingByScope($connection2, 'Markbook', 'enableRawAttainment');
 $attainmentAlternativeName = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeName');
 $attainmentAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeNameAbrev');
 $effortAlternativeName = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName');
@@ -381,11 +382,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
 											if ($('input[name=attainment]:checked').val()=="Y" ) {
 												$("#gibbonScaleIDAttainmentRow").slideDown("fast", $("#gibbonScaleIDAttainmentRow").css("display","table-row")); 
 												$("#attainmentWeightingRow").slideDown("fast", $("#attainmentWeightingRow").css("display","table-row")); 
+												$("#attainmentRawMaxRow").slideDown("fast", $("#attainmentRawMaxRow").css("display","table-row"));
 												$("#gibbonRubricIDAttainmentRow").slideDown("fast", $("#gibbonRubricIDAttainmentRow").css("display","table-row")); 
 												
 											} else {
 												$("#gibbonScaleIDAttainmentRow").css("display","none");
 												$("#attainmentWeightingRow").css("display","none");
+												$("#attainmentRawMaxRow").css("display","none");
 												$("#gibbonRubricIDAttainmentRow").css("display","none");
 											}
 										 });
@@ -435,6 +438,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
 									</td>
 								</tr>
 								<?php
+
+								if ($enableRawAttainment == 'Y') {
+                                    ?>
+									<tr id="attainmentRawMaxRow" <?php if ($row2['attainment'] == 'N') { echo "style='display: none'"; } ?>>
+										<td> 
+											<b><?php if ($attainmentAlternativeName != '') { echo $attainmentAlternativeName.' '.__($guid, 'Weighting');
+											} else {
+												echo __($guid, 'Attainment Total Mark');
+											}
+                                    		?></b><br/>
+                                    		<span class="emphasis small"><?php echo __($guid, 'Leave blank to omit raw marks.') ?></span>
+										</td>
+										<td class="right">
+											<input name="attainmentRawMax" id="attainmentRawMax" maxlength=4 value="<?php echo $row2['attainmentRawMax'] ?>" type="text" class="standardWidth">
+											<script type="text/javascript">
+												var attainmentRawMax=new LiveValidation('attainmentRawMax');
+												attainmentRawMax.add(Validate.Numericality);
+											</script>
+										</td>
+									</tr>
+									<?php
+                                } else {
+                                	?>
+                                	<input type="hidden" name="attainmentRawMax" id="attainmentRawMax" maxlength=4 value="<?php echo $row2['attainmentRawMax'] ?>" >
+                                	<?php
+                                }
+
                                 if ($enableColumnWeighting == 'Y') {
                                     ?>
 									<tr id="attainmentWeightingRow" <?php if ($row2['attainment'] == 'N') { echo "style='display: none'"; } ?>>
@@ -455,6 +485,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
 									</tr>
 									<?php
                                 }
+
                         		?>
 								<tr id='gibbonRubricIDAttainmentRow' <?php if ($row2['attainment'] == 'N') { echo "style='display: none'"; } ?>>
 									<td> 

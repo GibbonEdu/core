@@ -23,15 +23,62 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
 //Get alternative header names
+$enableRawAttainment = getSettingByScope($connection2, 'Markbook', 'enableRawAttainment');
 $attainmentAlternativeName = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeName');
 $attainmentAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeNameAbrev');
 $effortAlternativeName = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName');
 $effortAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'effortAlternativeNameAbrev');
 
 echo "<script type='text/javascript'>";
-    echo '$(document).ready(function(){';
-        echo "autosize($('textarea'));";
-    echo '});';
+?>
+    $(document).ready(function(){
+        autosize($('textarea'));
+    });
+    
+    // Map [Enter] key to work like the [Tab] key
+    // Daniel P. Clark 2014
+    // Modified for Gibbon Markbook Edit Data
+
+    $(document).keydown(function(e) {
+        // Set self as the current item in focus
+        var self = $(':focus'),
+          // Set the form by the current item in focus
+          form = self.parents('form:eq(0)'),
+          focusable;
+
+        var index = self.attr('name').substr(0, self.attr('name').indexOf('-'));
+        var attainmentNext = $( '#' + (parseInt(index) + 1) + '-attainmentValueRaw');
+
+        function enterKey(){
+
+            if (e.which === 13 && !self.is('textarea,div[contenteditable=true]')) { // [Enter] key
+                //If not a regular hyperlink/button/textarea
+                if ($.inArray(self, focusable) && (!self.is('a,button'))){
+                    // Then prevent the default [Enter] key behaviour from submitting the form
+                    e.preventDefault();
+                } // Otherwise follow the link/button as by design, or put new line in textarea
+
+                self.change();
+
+                if (attainmentNext.length) {
+                    attainmentNext.focus();
+                    attainmentNext.select();
+
+                    // Scroll to the next raw score
+                    $('html, body').animate( {
+                        scrollTop: $('html, body').scrollTop() + ( attainmentNext.offset().top - self.offset().top ),
+                    }, 250);
+                }
+
+                return false;
+            }
+        }
+
+        // We need to capture the [Shift] key and check the [Enter] key either way.
+        if (e.shiftKey) { enterKey() } else { enterKey() }
+    });
+
+    <?php
 echo '</script>';
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_data.php') == false) {
@@ -105,6 +152,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                         echo "<div class='warning'>";
                         echo __($guid, 'WordPress Comment Push is enabled: this feature allows you to push comments to student work submitted using a WordPress site. If you wish to push a comment, just select the checkbox next to the submitted work.');
                         echo '</div>';
+                    }
+
+                    if ($row2['attainment'] == 'Y' && $row2['attainmentRaw'] == 'Y' && !empty($row2['attainmentRawMax']) && $enableRawAttainment == 'Y') {
+                        echo '<span class="emphasis small subdued">';
+                        echo __($guid, 'Press enter when recording marks to jump to the next student. Attainment values with a percentage grade scale will be calculated automatically.');
+                        echo '</span>';
                     }
 
                     echo "<div class='linkTop'>";
@@ -202,7 +255,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                         }
                         if ($row2['attainment'] == 'Y') {
                             ++$span;
+
+                            if ($row2['attainmentRaw'] == 'Y' && !empty($row2['attainmentRawMax']) && $enableRawAttainment == 'Y') {
+                                ++$span;
+                            }
                         }
+
                         if ($row2['effort'] == 'Y') {
                             ++$span;
                         }
@@ -252,7 +310,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             echo '</th>';
                         }
                         if ($row2['attainment'] == 'Y') {
-                            echo "<th style='text-align: center; width: 30px'>";
+
+                            if ($row2['attainmentRaw'] == 'Y' && !empty($row2['attainmentRawMax']) && $enableRawAttainment == 'Y') {
+                                
+                                echo "<th style='text-align: center; width: 60px'>";
+                                    echo "<span title='".__($guid, 'Raw Attainment Mark')."'>".__($guid, 'Mark').'</span>';
+                                echo '</th>';
+                            }
+
+                            echo "<th style='text-align: center; width: 60px'>";
                             $scale = '';
                             if ($attainmentID[$i] != '') {
                                 try {
@@ -272,6 +338,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                                 $gibbonScaleIDAttainment = $rowScale['gibbonScaleID'];
                                 echo "<input name='scaleAttainment' id='scaleAttainment' value='".$attainmentID[$i]."' type='hidden'>";
                                 echo "<input name='lowestAcceptableAttainment' id='lowestAcceptableAttainment' value='".$rowScale['lowestAcceptable']."' type='hidden'>";
+
+                                if ($row2['attainmentRaw'] == 'Y' && !empty($row2['attainmentRawMax']) && $enableRawAttainment == 'Y') {
+
+                                    $scaleType = (strpos( strtolower($rowScale['name']), 'percent') !== false)? '%' : $rowScale['nameShort'];
+                                    echo "<input name='attainmentRawMax' id='attainmentRawMax' value='".$row2['attainmentRawMax']."' data-scale='$scaleType' type='hidden'>";
+                                }
                             }
                             if ($attainmentAlternativeName != '' and $attainmentAlternativeNameAbrev != '') {
                                 echo "<span title='".$attainmentAlternativeName.htmlPrep($scale)."'>".$attainmentAlternativeNameAbrev.'</span>';
@@ -345,7 +417,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             ++$count;
 
 							//COLOR ROW BY STATUS!
-							echo "<tr class=$rowNum>";
+							echo "<tr id=".$rowStudents["gibbonPersonID"]." class=$rowNum>";
                             echo '<td>';
                             echo "<div style='padding: 2px 0px'>".($count).") <b><a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowStudents['gibbonPersonID'].'&subpage=Markbook#'.$gibbonCourseClassID."'>".formatName('', $rowStudents['preferredName'], $rowStudents['surname'], 'Student', true).'</a><br/></div>';
                             echo '</td>';
@@ -441,16 +513,37 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                                     echo '</td>';
                                 }
                                 if ($row2['attainment'] == 'Y') {
-                                    echo "<td style='text-align: center'>";
-                                                    //Create attainment grade select
-                                                    if ($row2['gibbonScaleIDAttainment'] != '') {
-                                                        echo renderGradeScaleSelect($connection2, $guid, $gibbonScaleIDAttainment, "$count-attainmentValue", 'value', true, '58', 'value', $rowEntry['attainmentValue']);
-                                                    }
-                                    echo "<div style='height: 20px'>";
-                                    if ($row2['gibbonRubricIDAttainment'] != '') {
-                                        echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/markbook_view_rubric.php&gibbonRubricID='.$row2['gibbonRubricIDAttainment']."&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonPersonID=".$rowStudents['gibbonPersonID']."&type=attainment&width=1100&height=550'><img style='margin-top: 3px' title='".__($guid, 'Mark Rubric')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/rubric.png'/></a>";
+
+                                    if ($row2['attainmentRaw'] == 'Y' && !empty($row2['attainmentRawMax']) && $enableRawAttainment == 'Y') {
+
+                                        $attainmentClass = '';
+                                        $attainmentValueRaw = (isset($rowEntry['attainmentValueRaw']))? $rowEntry['attainmentValueRaw'] : '';
+
+                                        if (strpos( strtolower($rowScale['name']), 'percent') !== false || $rowScale['nameShort'] == '%') {
+                                            $attainmentPercent = round( ($attainmentValueRaw / $row2['attainmentRawMax']) * 100 ) . '%';
+                                            if ( !empty($rowEntry['attainmentValue']) && $attainmentPercent != $rowEntry['attainmentValue'] ) {
+                                                $attainmentClass = 'highlight';
+                                            }
+                                        }
+
+                                        echo "<td style='text-align: center; white-space: nowrap'>";
+                                            echo "<input name='$count-attainmentValueRaw' id='$count-attainmentValueRaw' value='$attainmentValueRaw' type='text' maxlength=10 class='$attainmentClass'>";
+                                            echo ' / ' . $row2['attainmentRawMax'];
+                                        echo '</td>';
                                     }
-                                    echo '</div>';
+
+                                    echo "<td style='text-align: center'>";
+                                            //Create attainment grade select
+                                            if ($row2['gibbonScaleIDAttainment'] != '') {
+                                                echo renderGradeScaleSelect($connection2, $guid, $gibbonScaleIDAttainment, "$count-attainmentValue", 'value', true, '58', 'value', $rowEntry['attainmentValue']);
+                                            }
+                                    
+                                    if ($row2['gibbonRubricIDAttainment'] != '') {
+                                        echo "<div style='height: 20px'>";
+                                        echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/markbook_view_rubric.php&gibbonRubricID='.$row2['gibbonRubricIDAttainment']."&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonPersonID=".$rowStudents['gibbonPersonID']."&type=attainment&width=1100&height=550'><img style='margin-top: 3px' title='".__($guid, 'Mark Rubric')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/rubric.png'/></a>";
+                                         echo '</div>';
+                                    }
+                                   
                                     echo '</td>';
                                 }
                                 if ($row2['effort'] == 'Y') {

@@ -42,6 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
     }
     $markbookType = substr($markbookType, 0, -1);
     $enableColumnWeighting = $_POST['enableColumnWeighting'];
+    $enableRawAttainment = $_POST['enableRawAttainment'];
     $attainmentAlternativeName = $_POST['attainmentAlternativeName'];
     $attainmentAlternativeNameAbrev = $_POST['attainmentAlternativeNameAbrev'];
     $effortAlternativeName = $_POST['effortAlternativeName'];
@@ -54,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
     $personalisedWarnings = $_POST['personalisedWarnings'];
 
     //Validate Inputs
-    if ($markbookType == '' or $enableColumnWeighting == '') {
+    if ($markbookType == '' or $enableColumnWeighting == '' or $enableRawAttainment == '') {
         $URL .= '&return=error3';
         header("Location: {$URL}");
     } else {
@@ -73,6 +74,15 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
         try {
             $data = array('value' => $enableColumnWeighting);
             $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='enableColumnWeighting'";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $fail = true;
+        }
+
+        try {
+            $data = array('value' => $enableRawAttainment);
+            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='enableRawAttainment'";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {

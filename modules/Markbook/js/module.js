@@ -24,19 +24,86 @@ jQuery(function($){
 	});
 	
 	// Pairs the position of the top scrollbar with the bottom scrollbar
-    $(".doublescroll-top").scroll(function(){
-        $(".doublescroll-container")
-            .scrollLeft($(".doublescroll-top").scrollLeft());
+    $('.doublescroll-top').scroll(function(){
+        $('.doublescroll-container')
+            .scrollLeft($('.doublescroll-top').scrollLeft());
     });
-    $(".doublescroll-container").scroll(function(){
-        $(".doublescroll-top")
-            .scrollLeft($(".doublescroll-container").scrollLeft());
+    $('.doublescroll-container').scroll(function(){
+        $('.doublescroll-top')
+            .scrollLeft($('.doublescroll-container').scrollLeft());
     });
 
-    $("#myTable.markbook").dragtable({
+    $('#myTable.markbook').dragtable({
 		items: 'thead .dragtable-drag-handle', //th:not( .notdraggable ):not( :has( .dragtable-drag-handle ) ),
 		scroll: true,
 		appendTarget: ':parent',
+	});
+
+    // Update the attainment value to match raw score
+    // But not the other way around, in case teachers need to adjust the percent
+	$('input[id$="attainmentValueRaw"]').change( function() {
+
+		// This value wont exist if not using a percent scale
+		if ($('#attainmentRawMax').length == false) return;
+
+		$(this).removeClass('highlight');
+
+		var index = $(this).attr('name').substr(0, $(this).attr('name').indexOf('-')); 
+		var thisValue = parseFloat( $(this).val() );
+		var maxValue = parseInt( $('#attainmentRawMax').val() );
+		var attainment = $( '#' + index + '-attainmentValue');
+
+		if ( $(this).val() == '' || maxValue == 0 || maxValue == '') {
+			return;
+		}
+		else if ( isNaN(thisValue) ) {
+			attainment.find('option[value=""]').prop('selected', true);
+			$(this).val('');
+			return;
+		}
+
+		if ($('#attainmentRawMax').data('scale') == '%') {
+			if ( thisValue > maxValue ) {
+				thisValue = maxValue;
+				$(this).val(thisValue);
+			}
+
+			var calculatedValue = Math.round( ( thisValue / maxValue ) * 100  );
+
+			if (calculatedValue >= 0 && calculatedValue <= 100) {
+				if (attainment.val( calculatedValue + '%' ).length) {
+					attainment.val( calculatedValue + '%' ).prop('selected', true);
+				} else {
+					attainment.find('option[value=""]').prop('selected', true);
+					$(this).addClass('highlight');
+				}
+			}
+		} 
+
+	});
+
+	// Highlight a raw value if it doesnt match the percent, but don't change it
+	$('select[id$="attainmentValue"]').change( function() {
+
+		// This value wont exist if not using a percent scale
+		if ($('#attainmentRawMax').length == false || $('#attainmentRawMax').data('scale') != '%') return;
+
+		var index = $(this).attr('name').substr(0, $(this).attr('name').indexOf('-')); 
+		var attainmentRaw = $( '#' + index + '-attainmentValueRaw');
+
+		if (attainmentRaw.length) {
+			attainmentRaw.removeClass('highlight');
+
+			if (attainmentRaw.val() != '' ) {
+				var rawValue = parseFloat( attainmentRaw.val() );
+				var maxValue = parseInt( $('#attainmentRawMax').val() );
+
+				var calculatedValue = Math.round( ( rawValue / maxValue ) * 100  ) ;
+				if (calculatedValue >= 0 && calculatedValue <= 100 && calculatedValue+'%' != $(this).val() ) {
+					attainmentRaw.addClass('highlight');
+				}
+			}
+		}
 	});
 
 }); 

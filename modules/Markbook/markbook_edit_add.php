@@ -24,6 +24,7 @@ include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
 //Get alternative header names
 $enableColumnWeighting = getSettingByScope($connection2, 'Markbook', 'enableColumnWeighting');
+$enableRawAttainment = getSettingByScope($connection2, 'Markbook', 'enableRawAttainment');
 $attainmentAlternativeName = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeName');
 $attainmentAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeNameAbrev');
 $effortAlternativeName = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName');
@@ -323,10 +324,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
 									if ($('input[name=attainment]:checked').val()=="Y" ) {
 										$("#gibbonScaleIDAttainmentRow").slideDown("fast", $("#gibbonScaleIDAttainmentRow").css("display","table-row")); 
 										$("#gibbonRubricIDAttainmentRow").slideDown("fast", $("#gibbonRubricIDAttainmentRow").css("display","table-row")); 
-										$("#attainmentWeightingRow").slideDown("fast", $("#attainmentWeightingRow").css("display","table-row")); 
+										$("#attainmentWeightingRow").slideDown("fast", $("#attainmentWeightingRow").css("display","table-row"));
+										$("#attainmentRawMaxRow").slideDown("fast", $("#attainmentRawMaxRow").css("display","table-row")); 
 									} else {
 										$("#gibbonScaleIDAttainmentRow").css("display","none");
 										$("#gibbonRubricIDAttainmentRow").css("display","none");
+										$("#attainmentRawMaxRow").css("display","none");
 										$("#attainmentWeightingRow").css("display","none");
 									}
 								 });
@@ -376,6 +379,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
 							</td>
 						</tr>
 						<?php
+
+						if ($enableRawAttainment == 'Y') {
+                            ?>
+							<tr id="attainmentRawMaxRow">
+								<td> 
+									<b><?php if ($attainmentAlternativeName != '') { echo $attainmentAlternativeName.' '.__($guid, 'Weighting');
+									} else {
+										echo __($guid, 'Attainment Total Mark');
+									}
+                            		?></b><br/>
+                            		<span class="emphasis small"><?php echo __($guid, 'Leave blank to omit raw marks.') ?></span>
+								</td>
+								<td class="right">
+									<input name="attainmentRawMax" id="attainmentRawMax" maxlength=4 value="" type="text" class="standardWidth">
+									<script type="text/javascript">
+										var attainmentRawMax=new LiveValidation('attainmentRawMax');
+										attainmentRawMax.add(Validate.Numericality);
+									</script>
+								</td>
+							</tr>
+							<?php
+                        }
+
                         if ($enableColumnWeighting == 'Y') {
                             ?>
 							<tr id="attainmentWeightingRow">
