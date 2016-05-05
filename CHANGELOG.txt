@@ -93,6 +93,7 @@ v12.0.00
 		Markbook: added line break display to full comment in various viewing locations
 		Messenger: stripped JavaScript out of widget preview text.
 		Messenger: removed signature from Quick Wall messages
+		Messenger: added Attendance target for message sharing
 		Planner: fixed surplus slash issue in Crowd Assessment settings in Lesson Planner add page
 		Planner: fixed style mismatch in Guest section of lesson planner full view
 		Planner: attendance alignment tweak
