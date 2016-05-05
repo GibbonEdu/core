@@ -1227,55 +1227,6 @@ else {
 						<?php
 					}
 				}
-				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_individuals")) {
-					?>
-					<script type="text/javascript">
-						/* Role Control */
-						$(document).ready(function(){
-							$("#individualsRow").css("display","none");
-							$(".individuals").click(function(){
-								if ($('input[name=individuals]:checked').val()=="Y" ) {
-									$("#individualsRow").slideDown("fast", $("#individualsRow").css("display","table-row"));
-								} else {
-									$("#individualsRow").css("display","none");
-								}
-							 });
-						});
-					</script>
-					<tr>
-						<td>
-							<b><?php print __($guid, 'Individuals') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Individuals from the whole school.') ?><br/></i></span>
-						</td>
-						<td class="right">
-							<input type="radio" name="individuals" class="individuals" value="Y"/> <?php print __($guid, 'Yes') ?>
-							<input checked type="radio" name="individuals" class="individuals" value="N"/> <?php print __($guid, 'No') ?>
-						</td>
-					</tr>
-					<tr id="individualsRow">
-						<td class='hiddenReveal'>
-							<b><?php print __($guid, 'Select Individuals') ?></b><br/>
-							<span style="font-size: 90%"><i><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></i></span>
-						</td>
-						<td class="hiddenReveal right">
-							<select name="individualList[]" id="individualList[]" multiple style="width: 302px; height: 100px">
-								<?php
-								try {
-									$dataSelect=array();
-									$sqlSelect="SELECT gibbonPersonID, preferredName, surname FROM gibbonPerson WHERE status='Full' ORDER BY surname, preferredName" ;
-									$resultSelect=$connection2->prepare($sqlSelect);
-									$resultSelect->execute($dataSelect);
-								}
-								catch(PDOException $e) { }
-								while ($rowSelect=$resultSelect->fetch()) {
-									print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", $rowSelect["preferredName"], $rowSelect["surname"], "Student", true) . "</option>" ;
-								}
-								?>
-							</select>
-						</td>
-					</tr>
-					<?php
-				}
 
 				// Absentees
 				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_attendance")) {
@@ -1378,6 +1329,57 @@ else {
 					</tr>
 				<?php
 				}
+
+				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_individuals")) {
+					?>
+					<script type="text/javascript">
+						/* Role Control */
+						$(document).ready(function(){
+							$("#individualsRow").css("display","none");
+							$(".individuals").click(function(){
+								if ($('input[name=individuals]:checked').val()=="Y" ) {
+									$("#individualsRow").slideDown("fast", $("#individualsRow").css("display","table-row"));
+								} else {
+									$("#individualsRow").css("display","none");
+								}
+							 });
+						});
+					</script>
+					<tr>
+						<td>
+							<b><?php print __($guid, 'Individuals') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Individuals from the whole school.') ?><br/></i></span>
+						</td>
+						<td class="right">
+							<input type="radio" name="individuals" class="individuals" value="Y"/> <?php print __($guid, 'Yes') ?>
+							<input checked type="radio" name="individuals" class="individuals" value="N"/> <?php print __($guid, 'No') ?>
+						</td>
+					</tr>
+					<tr id="individualsRow">
+						<td class='hiddenReveal'>
+							<b><?php print __($guid, 'Select Individuals') ?></b><br/>
+							<span style="font-size: 90%"><i><?php print __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></i></span>
+						</td>
+						<td class="hiddenReveal right">
+							<select name="individualList[]" id="individualList[]" multiple style="width: 302px; height: 100px">
+								<?php
+								try {
+									$dataSelect=array();
+									$sqlSelect="SELECT gibbonPersonID, preferredName, surname FROM gibbonPerson WHERE status='Full' ORDER BY surname, preferredName" ;
+									$resultSelect=$connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								}
+								catch(PDOException $e) { }
+								while ($rowSelect=$resultSelect->fetch()) {
+									print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", $rowSelect["preferredName"], $rowSelect["surname"], "Student", true) . "</option>" ;
+								}
+								?>
+							</select>
+						</td>
+					</tr>
+					<?php
+				}
+
 				?>
 				<tr>
 					<td>
