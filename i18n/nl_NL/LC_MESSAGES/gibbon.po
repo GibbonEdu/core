@@ -25175,7 +25175,7 @@ msgstr ""
 
 #: modules/Application Form/applicationForm.php:1076
 #: modules/Students/applicationForm.php:1138
-msgid "Do not include a second parent/gaurdian"
+msgid "Do not include a second parent/guardian"
 msgstr ""
 
 #: modules/Application Form/applicationForm.php:1084
@@ -40521,7 +40521,7 @@ msgstr ""
 
 #: modules/User Admin/applicationForm_manage_edit_print.php:340
 #: modules/Students/applicationForm_manage_edit_print.php:340
-msgid "Parents/Gaurdians"
+msgid "Parents/Guardians"
 msgstr ""
 
 #: modules/User Admin/applicationForm_manage_edit_print.php:380

@@ -319,7 +319,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             }
             echo '</table>';
 
-            echo '<h4>'.__($guid, 'Parents/Gaurdians').'</h4>';
+            echo '<h4>'.__($guid, 'Parents/Guardians').'</h4>';
             //No family in Gibbon
             if ($row['gibbonFamilyID'] == '') {
                 echo "<table cellspacing='0' style='width: 100%'>";
