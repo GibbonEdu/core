@@ -487,6 +487,7 @@
                             if ($column->hasAttainmentGrade()) {
                                 $styleAttainment = getAlertStyle($alert, $rowEntry['attainmentConcern']);
                                 $attainment = '';
+                                $attainmentDesc = $rowEntry['attainmentDescriptor'];
                                 if ($rowEntry['attainmentValue'] != '') {
                                     $attainment = __($guid, $rowEntry['attainmentValue']);
                                 }
@@ -496,12 +497,19 @@
                                     $attainment = __($guid, 'Inc');
                                 }
 
-                                if ($markbook->getSetting('enableRawAttainment') == 'Y' && isset($_SESSION[$guid]['markbookFilter']) ) {
-                                    if ($_SESSION[$guid]['markbookFilter'] == 'raw' && $column->displayRawMarks() and $column->hasAttainmentRawMax()) {
+                                if ($markbook->getSetting('enableRawAttainment') == 'Y' && $column->displayRawMarks() && $column->hasAttainmentRawMax()) {
+
+                                    if (isset($_SESSION[$guid]['markbookFilter']) && $_SESSION[$guid]['markbookFilter'] == 'raw') {
                                         $attainment = (isset($rowEntry['attainmentValueRaw']))? $rowEntry['attainmentValueRaw'] : '';
+                                    } else {
+                                        $attainmentDesc .= '<br/>';
+                                        $attainmentDesc .= (isset($rowEntry['attainmentValueRaw']))? $rowEntry['attainmentValueRaw'] : '';
+                                        $attainmentDesc .= ' / ' . $column->getData('attainmentRawMax');
                                     }
                                 }
-                                echo "<div $styleAttainment title='".htmlPrep($rowEntry['attainmentDescriptor'])."'>" . $attainment;
+
+
+                                echo "<div $styleAttainment title='".htmlPrep($attainmentDesc)."'>" . $attainment;
                             }
                             if ($column->hasAttainmentRubric()) {
                                 echo "<a class='thickbox rubricIcon' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/markbook_view_rubric.php&gibbonRubricID='.$column->getData('gibbonRubricIDAttainment')."&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID.'&gibbonPersonID='.$rowStudents['gibbonPersonID']."&mark=FALSE&type=attainment&width=1100&height=550'><img title='".__($guid, 'View Rubric')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/rubric.png'/></a>";

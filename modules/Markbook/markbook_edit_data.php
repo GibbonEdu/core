@@ -155,9 +155,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                     }
 
                     if ($row2['attainment'] == 'Y' && $row2['attainmentRaw'] == 'Y' && !empty($row2['attainmentRawMax']) && $enableRawAttainment == 'Y') {
-                        echo '<span class="emphasis small subdued">';
-                        echo __($guid, 'Press enter when recording marks to jump to the next student. Attainment values with a percentage grade scale will be calculated automatically.');
-                        echo '</span>';
+                        echo '<p>';
+                        echo __($guid, 'Press enter when recording marks to jump to the next student. Attainment values with a percentage grade scale will be calculated automatically. You can override the automatic value by selecting a different grade.');
+                        echo '</p>';
                     }
 
                     echo "<div class='linkTop'>";

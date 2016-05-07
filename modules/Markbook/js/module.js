@@ -47,6 +47,7 @@ jQuery(function($){
 		if ($('#attainmentRawMax').length == false) return;
 
 		$(this).removeClass('highlight');
+        $(this).prop('title', '' );
 
 		var index = $(this).attr('name').substr(0, $(this).attr('name').indexOf('-')); 
 		var thisValue = parseFloat( $(this).val() );
@@ -101,6 +102,7 @@ jQuery(function($){
 				var calculatedValue = Math.round( ( rawValue / maxValue ) * 100  ) ;
 				if (calculatedValue >= 0 && calculatedValue <= 100 && calculatedValue+'%' != $(this).val() ) {
 					attainmentRaw.addClass('highlight');
+                    attainmentRaw.prop('title', calculatedValue+'%' );
 				}
 			}
 		}
