@@ -89,8 +89,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                         $attainmentDescriptor = '';
                         $attainmentConcern = '';
                     } else {
-                        $attainmentValue = $_POST["$i-attainmentValue"];
-                        $attainmentValueRaw = $_POST["$i-attainmentValueRaw"];
+                        $attainmentValue = (isset($_POST["$i-attainmentValue"]))? $_POST["$i-attainmentValue"] : null;
+                        $attainmentValueRaw = (isset($_POST["$i-attainmentValueRaw"]))? $_POST["$i-attainmentValueRaw"] : null;
                     }
                     //Effort
                     if ($effort == 'N') {

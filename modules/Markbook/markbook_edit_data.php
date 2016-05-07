@@ -539,7 +539,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                                             }
                                     
                                     if ($row2['gibbonRubricIDAttainment'] != '') {
-                                        echo "<div style='height: 20px'>";
+                                        echo "<div class='rubricLink'>";
                                         echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/markbook_view_rubric.php&gibbonRubricID='.$row2['gibbonRubricIDAttainment']."&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonPersonID=".$rowStudents['gibbonPersonID']."&type=attainment&width=1100&height=550'><img style='margin-top: 3px' title='".__($guid, 'Mark Rubric')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/rubric.png'/></a>";
                                          echo '</div>';
                                     }
@@ -551,11 +551,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                                     if ($row2['gibbonScaleIDEffort'] != '') {
                                         echo renderGradeScaleSelect($connection2, $guid, $gibbonScaleIDEffort, "$count-effortValue", 'value', true, '58', 'value', $rowEntry['effortValue']);
                                     }
-                                    echo "<div style='height: 20px'>";
+                                    
                                     if ($row2['gibbonRubricIDEffort'] != '') {
+                                        echo "<div class='rubricLink'>";
                                         echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/markbook_view_rubric.php&gibbonRubricID='.$row2['gibbonRubricIDEffort']."&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonPersonID=".$rowStudents['gibbonPersonID']."&type=effort&width=1100&height=550'><img style='margin-top: 3px' title='".__($guid, 'Mark Rubric')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/rubric.png'/></a>";
+                                        echo '</div>';
                                     }
-                                    echo '</div>';
+                                    
                                     echo '</td>';
                                 }
                                 if ($row2['comment'] == 'Y' or $row2['uploadedResponse'] == 'Y') {

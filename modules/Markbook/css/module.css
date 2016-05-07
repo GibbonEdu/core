@@ -80,6 +80,7 @@ table.markbook thead tr.head {
 
 table.columnLabels {
 	width: 100%;
+	height: 25px;
 }
 
 th.columnLabel {
@@ -149,8 +150,14 @@ input[id$="attainmentValueRaw"] {
 	padding-right:4px;
 }
 
-select[id$="attainmentValue"] {
+select[id$="attainmentValue"],
+select[id$="effortValue"] {
 	float: none;
+}
+
+.rubricLink {
+	height: 20px;
+	float: left;
 }
 
 
@@ -266,7 +273,7 @@ select[id$="attainmentValue"] {
 .dragtable-drag-handle{
 	cursor: move;
 	height: 2px;
-	width: 31px;
+	width: 30.5px;
 	background: transparent;
 	margin: 4px auto 10px auto;
 	border-color: #bbbbbb;

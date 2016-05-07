@@ -517,8 +517,10 @@
 
                             if ($column->hasAttainmentGrade()) {
 
-                                if (empty($attainment) && isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit.php") && $canEditThisClass) {
-                                    print "<a class='markbook-data' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $column->gibbonMarkbookColumnID . "#".$rowStudents["gibbonPersonID"]."'><img style='margin-top: 3px' title='" . _("Edit") . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png' width='14' height='14'/></a> " ;
+                                if (empty($attainment) && $column->hasAttainmentRubric() == false) {
+                                    if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit.php") && $canEditThisClass) {
+                                        print "<a class='markbook-data' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $column->gibbonMarkbookColumnID . "#".$rowStudents["gibbonPersonID"]."'><img style='margin-top: 3px' title='" . _("Edit") . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png' width='14' height='14'/></a> " ;
+                                    }
                                 }
 
                                 echo '</div>';
@@ -547,8 +549,11 @@
                             }
                             if ($column->hasEffortGrade()) {
 
-                                if (empty($effort) && isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit.php") && $canEditThisClass) {
-                                    print "<a class='markbook-data' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $column->gibbonMarkbookColumnID . "#".$rowStudents["gibbonPersonID"]."'><img style='margin-top: 3px' title='" . _("Edit") . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png' width='14' height='14'/></a> " ;
+                                if (empty($effort) && $column->hasEffortRubric() == false) {
+
+                                    if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit.php") && $canEditThisClass) {
+                                        print "<a class='markbook-data' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $column->gibbonMarkbookColumnID . "#".$rowStudents["gibbonPersonID"]."'><img style='margin-top: 3px' title='" . _("Edit") . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png' width='14' height='14'/></a> " ;
+                                    }
                                 }
 
                                 echo '</div>';
