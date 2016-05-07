@@ -22,6 +22,9 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
     //Set timezone from session variable
     date_default_timezone_set($_SESSION[$guid]['timezone']);
 
+    $enableGroupByTerm = getSettingByScope($pdo->getConnection(), 'Markbook', 'enableGroupByTerm');
+    $enableRawAttainment = getSettingByScope($pdo->getConnection(), 'Markbook', 'enableRawAttainment');
+
     $output = '';
 
     $output .= "<h3 style='margin-top: 0px'>";
@@ -36,10 +39,10 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
     $output .= "<form method='get' action='".$_SESSION[$guid]['absoluteURL']."/index.php'>";
     $output .= "<input name='q' id='q' type='hidden' value='/modules/Markbook/markbook_view.php'>";
 
-    if (getSettingByScope($pdo->getConnection(), 'Markbook', 'enableGroupByTerm') == 'Y' ) {
+    if ($enableGroupByTerm == 'Y' ) {
     
         $output .= "<span>".__($guid, 'Term').": </span>";
-        $output .= "<select name='gibbonSchoolYearTermID' id='gibbonSchoolYearTermID' style='width:193px; float: none;'>";
+        $output .= "<select name='gibbonSchoolYearTermID' id='gibbonSchoolYearTermID' style='width:140px; float: none;'>";
         $output .= "<option value='-1'>".__($guid, 'All Terms')."</option>";
         try {
             $data=array("gibbonSchoolYearID"=>$_SESSION[$guid]['gibbonSchoolYearID']);
@@ -82,14 +85,20 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
     $_SESSION[$guid]['markbookFilter'] = $selectFilter;
 
     $output .= "&nbsp;&nbsp;&nbsp;<span>".__($guid, 'Show').": </span>";
-    $output .= "<select name='columnFilter' id='columnFilter' style='width:193px; float: none;'>";
+    $output .= "<select name='columnFilter' id='columnFilter' style='width:140px; float: none;'>";
     $output .= "<option value=''>".__($guid, 'All Columns')."</option>";
+
+    if ($enableGroupByTerm == 'Y' ) {
+        $output .= "<option value='terms' ".(($selectFilter == 'terms')? 'selected' : '')." >".__($guid, 'Term Averages')."</option>";
+    }
+
+    if ($enableRawAttainment == 'Y' ) {
+        $output .= "<option value='raw' ".(($selectFilter == 'raw')? 'selected' : '')." >".__($guid, 'Raw Marks')."</option>";
+    }
+
     $output .= "<option value='marked' ".(($selectFilter == 'marked')? 'selected' : '')." >".__($guid, 'Marked')."</option>";
     $output .= "<option value='unmarked' ".(($selectFilter == 'unmarked')? 'selected' : '')." >".__($guid, 'Unmarked')."</option>";
 
-    if (getSettingByScope($pdo->getConnection(), 'Markbook', 'enableRawAttainment') == 'Y' ) {
-        $output .= "<option value='raw' ".(($selectFilter == 'raw')? 'selected' : '')." >".__($guid, 'Raw Marks')."</option>";
-    }
     // $output .= "<option value='week' ".(($selectFilter == 'week')? 'selected' : '').">".__($guid, 'This Week')."</option>";
     // $output .= "<option value='month' ".(($selectFilter == 'month')? 'selected' : '').">".__($guid, 'This Month')."</option>";
     $output .= '</select>';
@@ -167,12 +176,16 @@ function getAnyTaughtClass( $pdo, $gibbonPersonID, $gibbonSchoolYearID ) {
     return ($result->rowCount() > 0)? $result->fetch() : NULL;
 }
 
-function getClass( $pdo, $gibbonPersonID, $gibbonCourseClassID ) {
+function getClass( $pdo, $gibbonPersonID, $gibbonCourseClassID, $highestAction = '' ) {
     try {
-        $data = array( 'gibbonPersonID' => $gibbonPersonID, 'gibbonCourseClassID' => $gibbonCourseClassID);
-        // $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourse.name AS courseName, gibbonCourseClass.nameShort AS class, gibbonYearGroupIDList FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassID=:gibbonCourseClassID';
+        if ($highestAction == 'Edit Markbook_everything') {
+            $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
+            $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonYearGroupIDList FROM gibbonCourse, gibbonCourseClass WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class';
+        } else {
 
-        $sql = "SELECT gibbonCourse.nameShort AS course, gibbonCourse.name AS courseName, gibbonCourseClass.nameShort AS class, gibbonCourse.gibbonYearGroupIDList, gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class";
+            $data = array( 'gibbonPersonID' => $gibbonPersonID, 'gibbonCourseClassID' => $gibbonCourseClassID);
+            $sql = "SELECT gibbonCourse.nameShort AS course, gibbonCourse.name AS courseName, gibbonCourseClass.nameShort AS class, gibbonCourse.gibbonYearGroupIDList, gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class";
+        }
 
         $result = $pdo->executeQuery($data, $sql);
     } catch (PDOException $e) {

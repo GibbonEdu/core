@@ -56,11 +56,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
 
         if ($gibbonCourseClassID == '') {
             echo '<h1>';
-            echo 'Edit Markbook';
+            echo __($guid, 'Edit Markbook');
             echo '</h1>';
             echo "<div class='warning'>";
-            echo __($guid, 'Use the class listing on the right to choose a Markbook to edit.');
+            echo __($guid, 'The selected record does not exist, or you do not have access to it.');
             echo '</div>';
+
+            //Get class chooser
+            echo classChooser($guid, $pdo, $gibbonCourseClassID);
+            return;
         }
         //Check existence of and access to this class.
         else {
@@ -142,6 +146,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
                 if ($teaching) {
                     echo "<div class='linkTop'>";
                     echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+
+                    if (getSettingByScope($connection2, 'Markbook', 'enableColumnWeighting') == 'Y') {
+                        echo " | <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/weighting_manage.php&gibbonCourseClassID=$gibbonCourseClassID'>".__($guid, 'Manage Weightings')."<img title='".__($guid, 'Manage Weightings')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/run.png'/></a>";
+                    }
+
                     echo '</div>';
                 }
 
