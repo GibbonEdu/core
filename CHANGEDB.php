@@ -377,6 +377,7 @@ UPDATE gibbonAction SET category='Facilities' WHERE category='Spaces' AND gibbon
 ALTER TABLE `gibbonMarkbookColumn` ADD `sequenceNumber` INT(3) UNSIGNED NOT NULL DEFAULT '100' AFTER `description`, ADD `date` DATE AFTER `description`;end
 ALTER TABLE `gibbonMarkbookColumn` ADD `attainmentRaw` ENUM('Y','N') NOT NULL DEFAULT 'N' AFTER `attainmentWeighting`, ADD `attainmentRawMax` INT(4) NULL AFTER `attainmentRaw`;end
 ALTER TABLE `gibbonMarkbookColumn` ADD `gibbonSchoolYearTermID` INT(5) UNSIGNED ZEROFILL NULL AFTER `gibbonPlannerEntryID`;end
+ALTER TABLE `gibbonMarkbookColumn` CHANGE `attainmentWeighting` `attainmentWeighting` DECIMAL(5,2) NULL DEFAULT NULL;end
 ALTER TABLE `gibbonMarkbookEntry` ADD `attainmentValueRaw` VARCHAR(10) NULL AFTER `attainmentValue`;end
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'Markbook', 'enableRawAttainment', 'Enable Raw Attainment Marks', 'Should recording of raw marks be enabled in the Markbook?', 'N');end
 INSERT INTO `gibbonSetting` (`gibbonSystemSettingsID` ,`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES (NULL , 'Markbook', 'enableGroupByTerm', 'Group Columns by Term', 'Should columns and total scores be grouped by term?', 'N');end

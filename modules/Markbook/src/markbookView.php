@@ -292,7 +292,7 @@ class markbookView
     public function cacheWeightings( ) {
 
     	$this->weightings = array();
-        //$weightingsCount = 0;
+
         try {
             $data = array('gibbonCourseClassID' => $this->gibbonCourseClassID);
             $sql = "SELECT attainmentWeighting, attainmentValue, gibbonPersonIDStudent FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonScale ON (gibbonMarkbookColumn.gibbonScaleIDAttainment=gibbonScale.gibbonScaleID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonScale.numeric='Y' AND gibbonScaleID=(SELECT value FROM gibbonSetting WHERE scope='System' AND name='primaryAssessmentScale') AND complete='Y' AND NOT attainmentValue='' ORDER BY gibbonPersonIDStudent";

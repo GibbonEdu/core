@@ -275,7 +275,7 @@
             echo '</th>';
 
             //Cache all weighting data for efficient use below
-            $markbook->cacheWeightings( $gibbonCourseClassID );
+            $markbook->cacheWeightings( );
         }
 
         $columnID = array();
@@ -301,7 +301,7 @@
             }
             echo $column->getData('type');
             if ($markbook->getSetting('enableColumnWeighting') == 'Y' and $column->hasAttainmentWeighting() ) {
-                echo ' . '.__($guid, 'Weighting').' '.$column->getData('attainmentWeighting');
+                echo ' . '.__($guid, 'Weighting').' '.floatval( $column->getData('attainmentWeighting') );
             }
             if ($column->hasAttachment( $_SESSION[$guid]['absolutePath'] )) {
                 echo " | <a 'title='".__($guid, 'Download more information')."' href='".$_SESSION[$guid]['absoluteURL'].'/'.$column->getData('attachment')."'>More info</a>";
