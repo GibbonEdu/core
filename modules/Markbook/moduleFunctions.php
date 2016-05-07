@@ -35,42 +35,45 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
     $output .= "<td style='vertical-align: top; text-align: right'>";
     $output .= "<form method='get' action='".$_SESSION[$guid]['absoluteURL']."/index.php'>";
     $output .= "<input name='q' id='q' type='hidden' value='/modules/Markbook/markbook_view.php'>";
+
+    if (getSettingByScope($pdo->getConnection(), 'Markbook', 'enableGroupByTerm') == 'Y' ) {
     
-    $output .= "<span>".__($guid, 'Term').": </span>";
-    $output .= "<select name='gibbonSchoolYearTermID' id='gibbonSchoolYearTermID' style='width:193px; float: none;'>";
-    $output .= "<option value='-1'>".__($guid, 'All Terms')."</option>";
-    try {
-        $data=array("gibbonSchoolYearID"=>$_SESSION[$guid]['gibbonSchoolYearID']);
-        $sql="SELECT gibbonSchoolYearTermID, name, UNIX_TIMESTAMP(firstDay) AS firstTime, UNIX_TIMESTAMP(lastDay) AS lastTime FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber" ;
-        $resultTerms=$pdo->executeQuery($data, $sql);
-    }
-    catch(PDOException $e) { }
+        $output .= "<span>".__($guid, 'Term').": </span>";
+        $output .= "<select name='gibbonSchoolYearTermID' id='gibbonSchoolYearTermID' style='width:193px; float: none;'>";
+        $output .= "<option value='-1'>".__($guid, 'All Terms')."</option>";
+        try {
+            $data=array("gibbonSchoolYearID"=>$_SESSION[$guid]['gibbonSchoolYearID']);
+            $sql="SELECT gibbonSchoolYearTermID, name, UNIX_TIMESTAMP(firstDay) AS firstTime, UNIX_TIMESTAMP(lastDay) AS lastTime FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber" ;
+            $resultTerms=$pdo->executeQuery($data, $sql);
+        }
+        catch(PDOException $e) { }
 
-    $selectTerm = (isset($_SESSION[$guid]['markbookTerm']))? $_SESSION[$guid]['markbookTerm'] : 0;
-    $selectTerm = (isset($_GET['gibbonSchoolYearTermID']))? $_GET['gibbonSchoolYearTermID'] : $selectTerm;
-    $selectTermName = __($guid, 'All Terms');
+        $selectTerm = (isset($_SESSION[$guid]['markbookTerm']))? $_SESSION[$guid]['markbookTerm'] : 0;
+        $selectTerm = (isset($_GET['gibbonSchoolYearTermID']))? $_GET['gibbonSchoolYearTermID'] : $selectTerm;
+        $selectTermName = __($guid, 'All Terms');
 
-    while ($rowTerm = $resultTerms->fetch()) {
+        while ($rowTerm = $resultTerms->fetch()) {
 
-        $selected = '';
-        if ($selectTerm != 0) {
-            if ($selectTerm == $rowTerm['gibbonSchoolYearTermID']) {
+            $selected = '';
+            if ($selectTerm != 0) {
+                if ($selectTerm == $rowTerm['gibbonSchoolYearTermID']) {
+                    $selected = 'selected';
+                    $selectTermName = $rowTerm['name'];
+                }
+            } else if (time() >= $rowTerm['firstTime'] && time() < $rowTerm['lastTime']) {
                 $selected = 'selected';
+                $selectTerm = $rowTerm['gibbonSchoolYearTermID'];
                 $selectTermName = $rowTerm['name'];
             }
-        } else if (time() >= $rowTerm['firstTime'] && time() < $rowTerm['lastTime']) {
-            $selected = 'selected';
-            $selectTerm = $rowTerm['gibbonSchoolYearTermID'];
-            $selectTermName = $rowTerm['name'];
+
+            $output .= "<option $selected value='".$rowTerm['gibbonSchoolYearTermID']."'>".htmlPrep($rowTerm['name']).'</option>';
         }
+        $output .= '</select>';
 
-        $output .= "<option $selected value='".$rowTerm['gibbonSchoolYearTermID']."'>".htmlPrep($rowTerm['name']).'</option>';
-    }
-    $output .= '</select>';
-
-    if ($selectTerm != 0) {
-        $_SESSION[$guid]['markbookTerm'] = $selectTerm;
-        $_SESSION[$guid]['markbookTermName'] = $selectTermName;
+        if ($selectTerm != 0) {
+            $_SESSION[$guid]['markbookTerm'] = $selectTerm;
+            $_SESSION[$guid]['markbookTermName'] = $selectTermName;
+        }
     }
 
     $selectFilter = (isset($_SESSION[$guid]['markbookFilter']))? $_SESSION[$guid]['markbookFilter'] : 0;

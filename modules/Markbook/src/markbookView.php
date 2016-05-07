@@ -155,7 +155,7 @@ class markbookView
     		$data = array('gibbonCourseClassID' => $this->gibbonCourseClassID);
     		$where = $this->getColumnFilters();
 
-    		$sql = 'SELECT * FROM gibbonMarkbookColumn WHERE '.$where.' ORDER BY sequenceNumber, complete, completeDate DESC LIMIT '.($pageNum * $this->columnsPerPage).', '.$this->columnsPerPage;
+    		$sql = 'SELECT * FROM gibbonMarkbookColumn WHERE '.$where.' ORDER BY sequenceNumber, date, complete, completeDate LIMIT '.($pageNum * $this->columnsPerPage).', '.$this->columnsPerPage;
 
     		//echo $sql;
 
