@@ -221,9 +221,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
 							</td>
 						</tr>
 						<?php
-                        $types = getSettingByScope($connection2, 'Markbook', 'markbookType');
+						$types = getSettingByScope($connection2, 'Markbook', 'markbookType');
 						if ($types != false) {
-							$types = explode(',', $types); ?>
+							$types = explode(',', $types);
+
+							$weightedTypes = array();
+							if ($enableColumnWeighting == 'Y') {
+								try {
+				                    $dataWeights = array('gibbonCourseClassID' => $gibbonCourseClassID);
+				                    $sqlWeights = 'SELECT type, description, calculate FROM gibbonMarkbookWeight WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY calculate, type';
+				                    $resultWeights = $connection2->prepare($sqlWeights);
+				                    $resultWeights->execute($dataWeights);
+				                } catch (PDOException $e) {}
+
+				                if ($resultWeights->rowCount() > 0) {
+				                	$weightedTypes = $resultWeights->fetchAll();
+				            	}
+							}
+							?>
 							<tr>
 								<td> 
 									<b><?php echo __($guid, 'Type') ?> *</b><br/>
@@ -232,12 +247,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
 								<td class="right">
 									<select name="type" id="type" class="standardWidth">
 										<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
-										<?php
-                                        for ($i = 0; $i < count($types); ++$i) {
-                                            ?>
-											<option value="<?php echo trim($types[$i]) ?>"><?php echo trim($types[$i]) ?></option>
-										<?php
+										
+										<?php  
+										if (count($weightedTypes) > 0) {
+											
+											$lastCalculateType  = '';
+											foreach ($weightedTypes as $type) {
+												if ($lastCalculateType != $type['calculate']) {
 
+													if ($lastCalculateType != '') echo '</optgroup>';
+													echo '<optgroup label="';
+													echo ($type['calculate'] == 'term')? __($guid, 'Per Term') : __($guid, 'Whole Year');
+													echo '">';
+												}
+
+												printf('<option value="%s">%s</option>', $type['type'], $type['description'] );
+												
+												$lastCalculateType = $type['calculate'];
+											}
+											echo '</optgroup>';
+										} else {
+
+                                            for ($i = 0; $i < count($types); ++$i) {
+                                                printf('<option value="%1$s">%1$s</option>', trim($types[$i]) );
+                                            }
                                         }
                     					?>
 									</select>
@@ -248,8 +281,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
 								</td>
 							</tr>
 						<?php
-				        }
-				        ?>
+                        }
+                        ?>
 						<tr>
 							<td> 
 								<b><?php echo __($guid, 'Attachment') ?></b><br/>

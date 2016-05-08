@@ -532,30 +532,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                                         echo '</td>';
                                     }
 
-                                    echo "<td style='text-align: center'>";
+                                    echo "<td style='text-align: center; white-space: nowrap;'>";
                                             //Create attainment grade select
                                             if ($row2['gibbonScaleIDAttainment'] != '') {
                                                 echo renderGradeScaleSelect($connection2, $guid, $gibbonScaleIDAttainment, "$count-attainmentValue", 'value', true, '58', 'value', $rowEntry['attainmentValue']);
                                             }
                                     
                                     if ($row2['gibbonRubricIDAttainment'] != '') {
-                                        echo "<div class='rubricLink'>";
-                                        echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/markbook_view_rubric.php&gibbonRubricID='.$row2['gibbonRubricIDAttainment']."&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonPersonID=".$rowStudents['gibbonPersonID']."&type=attainment&width=1100&height=550'><img style='margin-top: 3px' title='".__($guid, 'Mark Rubric')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/rubric.png'/></a>";
-                                         echo '</div>';
+                                        echo "  <a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/markbook_view_rubric.php&gibbonRubricID='.$row2['gibbonRubricIDAttainment']."&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonPersonID=".$rowStudents['gibbonPersonID']."&type=attainment&width=1100&height=550'><img style='margin-top: 3px' title='".__($guid, 'Mark Rubric')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/rubric.png'/></a>";
                                     }
                                    
                                     echo '</td>';
                                 }
                                 if ($row2['effort'] == 'Y') {
-                                    echo "<td style='text-align: center'>";
+                                    echo "<td style='text-align: center; white-space: nowrap;'>";
                                     if ($row2['gibbonScaleIDEffort'] != '') {
                                         echo renderGradeScaleSelect($connection2, $guid, $gibbonScaleIDEffort, "$count-effortValue", 'value', true, '58', 'value', $rowEntry['effortValue']);
                                     }
                                     
                                     if ($row2['gibbonRubricIDEffort'] != '') {
-                                        echo "<div class='rubricLink'>";
-                                        echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/markbook_view_rubric.php&gibbonRubricID='.$row2['gibbonRubricIDEffort']."&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonPersonID=".$rowStudents['gibbonPersonID']."&type=effort&width=1100&height=550'><img style='margin-top: 3px' title='".__($guid, 'Mark Rubric')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/rubric.png'/></a>";
-                                        echo '</div>';
+                                        echo "  <a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/markbook_view_rubric.php&gibbonRubricID='.$row2['gibbonRubricIDEffort']."&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonPersonID=".$rowStudents['gibbonPersonID']."&type=effort&width=1100&height=550'><img style='margin-top: 3px' title='".__($guid, 'Mark Rubric')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/rubric.png'/></a>";
                                     }
                                     
                                     echo '</td>';
@@ -563,7 +559,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                                 if ($row2['comment'] == 'Y' or $row2['uploadedResponse'] == 'Y') {
                                     echo "<td style='text-align: right'>";
                                     if ($row2['comment'] == 'Y') {
-                                        echo "<textarea name='comment".$count."' id='comment".$count."' rows=6 style='width: 330px'>".$rowEntry['comment'].'</textarea>';
+                                        echo "<textarea name='comment".$count."' id='comment".$count."' rows=6 style='width: 300px'>".$rowEntry['comment'].'</textarea>';
                                         if ($row2['uploadedResponse'] == 'Y') {
                                             echo '<br/>';
                                         }
@@ -571,7 +567,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                                     if ($row2['uploadedResponse'] == 'Y') {
                                         if ($rowEntry['response'] != '') {
                                             echo "<input type='hidden' name='response$count' id='response$count' value='".$rowEntry['response']."'>";
-                                            echo "<div style='width: 330px; float: right'><a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowEntry['response']."'>".__($guid, 'Uploaded Response')."</a> <a href='".$_SESSION[$guid]['absoluteURL']."/modules/Markbook/markbook_edit_data_responseDeleteProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonPersonID=".$rowStudents['gibbonPersonID']."' onclick='return confirm(\"".__($guid, 'Are you sure you want to delete this record? Unsaved changes will be lost.')."\")'><img style='margin-bottom: -8px' id='image_240_delete' title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a><br/></div>";
+                                            echo "<div style='width: 300px; float: right'><a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowEntry['response']."'>".__($guid, 'Uploaded Response')."</a> <a href='".$_SESSION[$guid]['absoluteURL']."/modules/Markbook/markbook_edit_data_responseDeleteProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonPersonID=".$rowStudents['gibbonPersonID']."' onclick='return confirm(\"".__($guid, 'Are you sure you want to delete this record? Unsaved changes will be lost.')."\")'><img style='margin-bottom: -8px' id='image_240_delete' title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a><br/></div>";
                                         } else {
                                             echo "<input style='max-width: 228px; margin-top: 5px' type='file' name='response$count' id='response$count'>";
                                             ?>

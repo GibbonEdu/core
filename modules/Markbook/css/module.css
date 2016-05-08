@@ -155,11 +155,18 @@ select[id$="effortValue"] {
 	float: none;
 }
 
-.rubricLink {
-	height: 20px;
-	float: left;
+.miniIcon {
+	position: relative;
+	display: inline-block;
 }
+.miniIcon img + img {
 
+	width: 16px;
+	height: 16px;
+	position: absolute;
+	bottom: -2px;
+	right: -2px;
+}
 
 .markbook-data,
 .markbook-data:link,
@@ -178,6 +185,8 @@ select[id$="effortValue"] {
 
 
 
+
+
 /* Double-scroll */
 
 .doublescroll-wrapper {
@@ -187,6 +196,7 @@ select[id$="effortValue"] {
 	background: #FBFBFB none repeat scroll 0% 0%;
 	border: 1px solid #CCC;
 	border-radius: 3px;
+	margin-bottom: 20px;
 }
 
 .doublescroll-top {
@@ -253,7 +263,7 @@ select[id$="effortValue"] {
 	position: absolute;
 	top: 0px;
 	left: 175px;
-	background: #666 none repeat scroll 0% 0%;
+	background: #666666 none repeat scroll 0% 0%;
 	height: calc(100% );
 	width: 1px;
 	z-index: 1;
@@ -293,9 +303,10 @@ select[id$="effortValue"] {
   * this gets applied to the table copy of the col that we are dragging 
   */ 
 .dragtable-drag-wrapper .dragtable-drag-col{
-    opacity: 0.7;
+    opacity: 0.8;
     filter: alpha(opacity=70);
     cursor:move;
+    box-shadow: 1px 3px 4px rgba(0,0,0,0.4);
 }
 
 .dragtable-drag-col td:first-of-type {
@@ -311,27 +322,35 @@ select[id$="effortValue"] {
 }
 
 .dragtable-drag-col th {
-	border-bottom: 0px;
 	padding: 5px !important;
 }
 
 .dragtable-drag-col tbody td {
-	padding: 5px !important;
+	padding: 0px 5px !important;
 	height: 15px;
 }
 
 /*
 	placeholder is just a name for the real table col
 */
+
+
 .dragtable-col-placeholder { 
-    border-left: 1px dotted black;
-    border-right: 1px dotted black; 
-    color:#EFEFEF;
-    background: #EFEFEF !important; 
+    /*border-left: 1px dotted black;
+    border-right: 1px dotted black; */
+    border-left: 1px solid #666666 !important;
+    border-right: 1px solid #666666 !important; 
+    border-top: 0;
+    border-bottom: 0;
+    /*border: 0;
+    box-shadow: 1px 3px 4px rgba(0,0,0,0.2) inset;*/
+
+    color:#CCCCCC;
+    background: #CCCCCC !important; /*#EFEFEF*/
     visibility: visible !important;
 }
-table .dragtable-col-placeholder:first{
-	border-top:1px dotted black;
+table .dragtable-col-placeholder:first-of-type{
+	border-top:1px solid #666666 !important;
 }
 
 

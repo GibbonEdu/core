@@ -267,6 +267,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
 								$types = getSettingByScope($connection2, 'Markbook', 'markbookType');
 								if ($types != false) {
 									$types = explode(',', $types);
+
+									$weightedTypes = array();
+									if ($enableColumnWeighting == 'Y') {
+										try {
+						                    $dataWeights = array('gibbonCourseClassID' => $gibbonCourseClassID);
+						                    $sqlWeights = 'SELECT type, description, calculate FROM gibbonMarkbookWeight WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY calculate, type';
+						                    $resultWeights = $connection2->prepare($sqlWeights);
+						                    $resultWeights->execute($dataWeights);
+						                } catch (PDOException $e) {}
+						                
+						                if ($resultWeights->rowCount() > 0) {
+						                	$weightedTypes = $resultWeights->fetchAll();
+						            	}
+									}
 									?>
 									<tr>
 										<td> 
@@ -276,17 +290,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
 										<td class="right">
 											<select name="type" id="type" class="standardWidth">
 												<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
-												<?php
-                                                for ($i = 0; $i < count($types); ++$i) {
-                                                    $selected = '';
-                                                    if ($row2['type'] == $types[$i]) {
-                                                        $selected = 'selected';
-                                                    }
-                                                    ?>
-													<option <?php echo $selected ?> value="<?php echo trim($types[$i]) ?>"><?php echo trim($types[$i]) ?></option>
-												<?php
+												
+												<?php  
+												if (count($weightedTypes) > 0) {
+													
+													$lastCalculateType  = '';
+													foreach ($weightedTypes as $type) {
+														if ($lastCalculateType != $type['calculate']) {
 
-                                                }
+															if ($lastCalculateType != '') echo '</optgroup>';
+															echo '<optgroup label="';
+															echo ($type['calculate'] == 'term')? __($guid, 'Per Term') : __($guid, 'Whole Year');
+															echo '">';
+														}
+
+														$selected = ($row2['type'] == $type['type'])? 'selected' : '';
+														printf('<option %s value="%s">%s</option>', $selected, $type['type'], $type['description'] );
+														
+														$lastCalculateType = $type['calculate'];
+													}
+													echo '</optgroup>';
+												} else {
+
+	                                                for ($i = 0; $i < count($types); ++$i) {
+	                                                    $selected = ($row2['type'] == $types[$i])? 'selected' : '';
+	                                                    printf('<option value="%2$s" %1$s>%2$s</option>', $selected, trim($types[$i]) );
+	                                                }
+	                                            }
                             					?>
 											</select>
 											<script type="text/javascript">
