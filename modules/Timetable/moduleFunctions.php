@@ -143,7 +143,7 @@ function getSpaceBookingEventsSpace($guid, $connection2, $startDayStamp, $gibbon
 
     try {
         $dataSpaceBooking = array('gibbonSpaceID' => $gibbonSpaceID);
-        $sqlSpaceBooking = "SELECT gibbonTTSpaceBooking.*, name, title, surname, preferredName FROM gibbonTTSpaceBooking JOIN gibbonSpace ON (gibbonTTSpaceBooking.gibbonSpaceID=gibbonSpace.gibbonSpaceID) JOIN gibbonPerson ON (gibbonTTSpaceBooking.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonTTSpaceBooking.gibbonSpaceID=:gibbonSpaceID AND date>='".date('Y-m-d', $startDayStamp)."' AND  date<='".date('Y-m-d', ($startDayStamp + (7 * 24 * 60 * 60)))."' ORDER BY date, timeStart, name";
+        $sqlSpaceBooking = "SELECT gibbonTTSpaceBooking.*, name, title, surname, preferredName FROM gibbonTTSpaceBooking JOIN gibbonSpace ON (gibbonTTSpaceBooking.foreignKeyID=gibbonSpace.gibbonSpaceID) JOIN gibbonPerson ON (gibbonTTSpaceBooking.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignKey='gibbonSpaceID' AND gibbonTTSpaceBooking.foreignKeyID=:gibbonSpaceID AND date>='".date('Y-m-d', $startDayStamp)."' AND  date<='".date('Y-m-d', ($startDayStamp + (7 * 24 * 60 * 60)))."' ORDER BY date, timeStart, name";
         $resultSpaceBooking = $connection2->prepare($sqlSpaceBooking);
         $resultSpaceBooking->execute($dataSpaceBooking);
     } catch (PDOException $e) {
@@ -1644,7 +1644,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
                     if ($_SESSION[$guid]['viewCalendarSpaceBooking'] == 'Y') {
                         $checked = 'checked';
                     }
-                    $output .= "<span class='ttSpaceBookingCalendar' style='opacity: $schoolCalendarAlpha'>".__($guid, 'Bookings').' ';
+                    $output .= "<span class='ttSpaceBookingCalendar' style='opacity: $schoolCalendarAlpha'><a style='color: #fff' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Timetable/spaceBooking_manage.php'>".__($guid, 'Bookings').'</a> ';
                     $output .= "<input $checked style='margin-left: 3px' type='checkbox' name='spaceBookingCalendar' onclick='submit();'/>";
                     $output .= '</span>';
                 }
