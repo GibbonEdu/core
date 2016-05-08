@@ -35,7 +35,6 @@ class markbookColumn
 	 * @var array
 	 */
 	private $data = array();
-
 	private $spanCount;
 
 	/**
@@ -43,9 +42,7 @@ class markbookColumn
      *
      * @version  3rd May 2016
      * @since    3rd May 2016
-     * @param    Gibbon\session
-     * @param    Gibbon\config
-     * @param    Gibbon\sqlConnection
+     * @param    array  SQL Data Row
      * @return   void
      */
     public function __construct( $row )
@@ -53,19 +50,6 @@ class markbookColumn
     	$this->gibbonMarkbookColumnID = $row['gibbonMarkbookColumnID'];
 
     	$this->data = $row;
-
-    	// $data['columnID'] = $row['gibbonMarkbookColumnID'];
-     //    $data['attainmentOn'] = $row['attainment'];
-     //    $data['attainmentID'] = $row['gibbonScaleIDAttainment'];
-     //    $data['effortOn'] = $row['effort'];
-     //    $data['effortID'] = $row['gibbonScaleIDEffort'];
-     //    $data['gibbonPlannerEntryID'] = $row['gibbonPlannerEntryID'];
-     //    $data['gibbonRubricIDAttainment'] = $row['gibbonRubricIDAttainment'];
-     //    $data['gibbonRubricIDEffort'] = $row['gibbonRubricIDEffort'];
-     //    $data['comment'] = $row['comment'];
-     //    $data['uploadedResponse'] = $row['uploadedResponse'];
-     //    $data['submission'] = false;
-
     	$this->spanCount = 0;
 
     	if ( $this->displayAttainment() ) $this->spanCount++;
