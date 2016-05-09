@@ -32,48 +32,65 @@ class markbookView
 	/**
 	 * Gibbon\sqlConnection
 	 */
-	private $pdo ;
+	protected $pdo ;
 	
 	/**
 	 * Gibbon\session
 	 */
-	private $session ;
+	protected $session ;
 	
 	/**
 	 * Gibbon\config
 	 */
-	private $config ;
+	protected $config ;
 
 	/**
 	 * Gibbon Settings
 	 */
-	private $settings = array();
+	protected $settings = array();
 
 	/**
-	 * Markbook Class Settings - readonly
+	 * Markbook Values
 	 */
-	private $columnsPerPage = 12;
-	private $columnsThisPage;
-
-	private $columnCountTotal = -1;
-	private $minSequenceNumber = -1;
+	protected $columnsPerPage = 12;
+	protected $columnsThisPage = -1;
+	protected $columnCountTotal = -1;
+	protected $minSequenceNumber = -1;
 
 	/**
 	 * Cache markbook values to reduce queries
 	 */
-	private $primaryAssessmentScale;
-	private $externalAssessmentFields;
-	private $personalizedTargets;
-	private $columnWeightings;
-    private $categoryWeightings;
+	protected $primaryAssessmentScale;
+	protected $externalAssessmentFields;
+	protected $personalizedTargets;
+
+    /**
+     * Weightings
+     * @var array
+     */
+    protected $categoryWeightings;
+	protected $weightedMarkbookEntry;
+
+    protected $weightedAverages;
+
+    protected $termAverages;
+    protected $endOfYearAverages;
     
     /**
      * Filters
+     * @var array
      */
-    private $columnFilters;
-    private $sortFilters;
+    protected $columnFilters;
+    protected $sortFilters;
 
-    private $columns = array();
+    /**
+     * Column Row Data
+     * @var array
+     */
+    protected $columns = array();
+
+    public $terms = array();
+    public $categories = array();
 
 	public $gibbonCourseClassID;
 
@@ -163,7 +180,7 @@ class markbookView
 
     public function getColumns( $pageNum ) {
 
-        // First ensure the total have been laoded, and cancel out early if there are no columns
+        // First ensure the total has been laoded, and cancel out early if there are no columns
         if ($this->getColumnCountTotal() < 1) return false;
 
     	try {
@@ -171,8 +188,6 @@ class markbookView
     		$where = $this->getColumnFilters();
 
     		$sql = 'SELECT * FROM gibbonMarkbookColumn WHERE '.$where.' ORDER BY sequenceNumber, date, complete, completeDate LIMIT '.($pageNum * $this->columnsPerPage).', '.$this->columnsPerPage;
-
-    		//echo $sql;
 
 	        $result=$this->pdo->executeQuery($data, $sql);
 	    } catch (PDOException $e) { $this->error( $e->getMessage() ); }
@@ -213,75 +228,6 @@ class markbookView
         return (isset($this->columns[$i]))? $this->columns[$i] : NULL;
     }
 
-    private function getColumnFilters() {
-
-    	$where = 'gibbonCourseClassID=:gibbonCourseClassID';
-
-        $where .= ' AND '. implode(' AND ', $this->columnFilters );
-
-    	// $gibbonSchoolYearTermID = (isset($_GET['gibbonSchoolYearTermID']))? $_GET['gibbonSchoolYearTermID'] : '';
-     //    $columnFilter = (isset($_GET['columnFilter']))? $_GET['columnFilter'] : '';
-
-     //    if (empty($gibbonSchoolYearTermID)) {
-     //        $gibbonSchoolYearTermID = $_SESSION[$this->config->get('guid')]['markbookTerm'];
-     //    }
-
-    	// if (!empty($gibbonSchoolYearTermID)) {
-
-     //    	try {
-		   //      $data=array("gibbonSchoolYearTermID"=>$gibbonSchoolYearTermID );
-		   //      $sql="SELECT firstDay, lastDay FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearTermID=:gibbonSchoolYearTermID" ;
-		   //      $resultTerms=$this->pdo->executeQuery($data, $sql);
-		   //  } catch (PDOException $e) { $this->error( $e->getMessage() ); }
-
-		   //  if ($resultTerms->rowCount() > 0) {
-		   //  	$termRow = $resultTerms->fetch();
-     //    		$where .= " AND (date IS NOT NULL AND date BETWEEN '".$termRow['firstDay']."' AND '".$termRow['lastDay']."' )";
-     //    	}
-     //    }
-
-
-     //    }
-
-        return $where;
-    }
-
-    public function filterByDateRange( $startDate, $endDate ) {
-        // Use a key in the array to limit to one date filter at a time
-        $this->columnFilters['daterange'] = "(date IS NOT NULL AND date BETWEEN '".$startDate."' AND '".$endDate."' )";
-    }
-
-    public function filterByTerm( $gibbonSchoolYearTermID ) {
-        if (empty($gibbonSchoolYearTermID)) return;
-        
-        try {
-            $data=array("gibbonSchoolYearTermID"=>$gibbonSchoolYearTermID );
-            $sql="SELECT firstDay, lastDay FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearTermID=:gibbonSchoolYearTermID" ;
-            $resultTerms=$this->pdo->executeQuery($data, $sql);
-        } catch (PDOException $e) { $this->error( $e->getMessage() ); }
-
-        if ($resultTerms->rowCount() > 0) {
-            $termRow = $resultTerms->fetch();
-            $this->filterByDateRange( $termRow['firstDay'], $termRow['lastDay'] );
-        }
-    }
-
-    public function filterByFormOptions( $filter ) {
-        if (empty($filter)) return;
-
-        switch ($filter) {
-             case 'marked':      $this->filterByQuery( "complete = 'Y'" ); break;
-             case 'unmarked':    $this->filterByQuery( "complete = 'N'" ); break;
-             case 'week':        $this->filterByQuery( "WEEKOFYEAR(date)=WEEKOFYEAR(NOW())" ); break;
-             case 'month':       $this->filterByQuery( "MONTH(date)=MONTH(NOW())" ); break;
-         }
-    }
-
-    public function filterByQuery($query) {
-        if (empty($query)) return;
-        $this->columnFilters[] = $query;
-    }
-
     public function getTargetForStudent( $gibbonPersonID ) {
     	return (isset($this->personalizedTargets[$gibbonPersonID]))? $this->personalizedTargets[$gibbonPersonID] : '';
     }
@@ -312,49 +258,134 @@ class markbookView
         $output = '';
         $totalWeight = 0;
         $cummulativeWeightedScore = 0;
-        $percent = false;
 
-        if (!isset($this->columnWeightings[$gibbonPersonID])) return $output;
+        if (!isset($this->weightedMarkbookEntries[$gibbonPersonID])) return $output;
 
-        foreach ($this->columnWeightings[$gibbonPersonID] as $weighting) {
-            $totalWeight += $weighting['weighting'];
-            if (strpos($weighting['value'], '%') !== false) {
-                $weighting['value'] = str_replace('%', '', $weighting['value']);
-                $percent = true;
-            }
-            $cummulativeWeightedScore += ($weighting['value'] * $weighting['weighting']);
+        foreach ($this->weightedMarkbookEntries[$gibbonPersonID] as $weighting) {
+            $totalWeight += $weighting['weight'];
+            $cummulativeWeightedScore += ($weighting['value'] * $weighting['weight']);
         }
         
         if ($totalWeight > 0) {
             $output = round($cummulativeWeightedScore / $totalWeight, 0);
-            if ($percent) {
-                $output .= '%';
-            }
+            $output = ($weighting['percent'])? $output.'%' : $output;
         }
 
         return $output;
     }
 
-    public function getWeightingTypeDescription( $type ) {
+    public function formattedAverage( $average ) {
+        $PAS = $this->getPrimaryAssessmentScale();
+        $percent = ( stripos($PAS['name'], 'percent') !== false || $PAS['nameShort'] == '%')? '%' : '';
+        return "<span title='".round($average, 2)."'>". round($average, 0) ."$percent</span>";
+    }
+
+    public function getTypeAverage( $gibbonPersonID, $gibbonSchoolYearTermID, $type ) {
+        return (isset($this->weightedAverages[$gibbonPersonID]['type'][$gibbonSchoolYearTermID][$type]))? $this->weightedAverages[$gibbonPersonID]['type'][$gibbonSchoolYearTermID][$type] : '';
+    }
+
+    public function getTermAverage( $gibbonPersonID, $gibbonSchoolYearTermID ) {
+        return (isset($this->weightedAverages[$gibbonPersonID]['term'][$gibbonSchoolYearTermID]))? $this->weightedAverages[$gibbonPersonID]['term'][$gibbonSchoolYearTermID] : '';
+    }
+
+    public function getEndOfYearAverage( $gibbonPersonID ) {
+        return (isset($this->weightedAverages[$gibbonPersonID]['endOfYear']))? $this->weightedAverages[$gibbonPersonID]['endOfYear'] : '';
+    }
+
+    public function getOverallAverage( $gibbonPersonID ) {
+        return (isset($this->weightedAverages[$gibbonPersonID]['allTerms']))? $this->weightedAverages[$gibbonPersonID]['allTerms'] : '';
+    }
+
+    public function getFinalGradeAverage( $gibbonPersonID ) {
+        return (isset($this->weightedAverages[$gibbonPersonID]['finalGrade']))? $this->weightedAverages[$gibbonPersonID]['finalGrade'] : '';
+    }
+
+    public function getTypeDescription( $type ) {
         return (isset($this->categoryWeightings[$type]))? $this->categoryWeightings[$type]['description'] : $type;
     }
 
-    public function cacheWeightings( ) {
+    public function getWeightingByType( $type ) {
+        return (isset($this->categoryWeightings[$type]))? $this->categoryWeightings[$type]['weighting'] : 1;
+    }
 
-    	$this->columnWeightings = array();
+    public function getWeightedCategories() {
+        return (isset($this->categoryWeightings))? $this->categoryWeightings : array();
+    }
 
-        try {
-            $data = array('gibbonCourseClassID' => $this->gibbonCourseClassID);
-            $sql = "SELECT attainmentWeighting, attainmentValue, gibbonPersonIDStudent FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonScale ON (gibbonMarkbookColumn.gibbonScaleIDAttainment=gibbonScale.gibbonScaleID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonScale.numeric='Y' AND gibbonScaleID=(SELECT value FROM gibbonSetting WHERE scope='System' AND name='primaryAssessmentScale') AND complete='Y' AND NOT attainmentValue='' ORDER BY gibbonPersonIDStudent";
-            $result=$this->pdo->executeQuery($data, $sql);
-        } catch (PDOException $e) { $this->error( $e->getMessage() ); }
+    protected function calculateWeightedAverages( ) {
 
-        if ($result->rowCount() > 0) {
-            while ($rowWeightings = $result->fetch()) {
-                $id = $rowWeightings['gibbonPersonIDStudent'];
-                $this->columnWeightings[$id][] = array( 'weighting' => $rowWeightings['attainmentWeighting'], 'value' => $rowWeightings['attainmentValue'] );
+        foreach($this->termAverages as $gibbonPersonID => $averages) {
+
+            if (count($averages) < 1) continue;
+
+            $weightedAverages = array();
+            
+            $overallTotal = 0;
+            $overallCumulative = 0;
+
+            foreach ($averages as $termID => $term) {
+
+                if ($termID === 'endOfYear') continue;
+
+                $termTotal = 0;
+                $termCumulative = 0;
+                foreach ($term as $type => $weighted) {
+
+                    if ($weighted['total'] <= 0) continue;
+                        
+                    $typeWeight = $this->getWeightingByType( $type );
+                    $typeAverage = ( $weighted['cumulative'] / $weighted['total'] );
+
+                    $termTotal += $typeWeight;
+                    $termCumulative += ($typeAverage * $typeWeight);
+
+                    $weightedAverages['type'][$termID][$type] = $typeAverage;
+                }
+
+                $termWeight = 1;
+                $termAverage = ( $termCumulative / $termTotal );
+
+                $weightedAverages['term'][$termID] = $termAverage;
+
+                $overallTotal += $termWeight;
+                $overallCumulative += ($termAverage * $termWeight);
             }
+
+            $finalTotal = 0;
+            $finalCumulative = 0;
+
+            if (isset($averages['endOfYear'])) {
+                foreach ($averages['endOfYear'] as $type => $weighted) {
+
+                    if ($weighted['total'] <= 0) continue;
+                            
+                    $typeWeight = $this->getWeightingByType( $type );
+                    $typeAverage = ( $weighted['cumulative'] / $weighted['total'] );
+
+                    $finalTotal += $typeWeight;
+                    $finalCumulative += ($typeAverage * $typeWeight);
+
+                    $weightedAverages['type']['endOfYear'][$type] = $typeAverage;
+                }
+            }
+
+            $weightedAverages['endOfYear'] = ( $finalCumulative / $finalTotal );
+
+            $overallWeight = min(100.0, max(0.0, 100.0 - $finalTotal));
+            $overallAverage = ( $overallCumulative / $overallTotal );
+
+            $weightedAverages['allTerms'] = $overallAverage;
+
+            $finalTotal += $overallWeight;
+            $finalCumulative += ($overallAverage * $overallWeight);
+
+            $weightedAverages['finalGrade'] = ( $finalCumulative / $finalTotal );
+
+            $this->weightedAverages[$gibbonPersonID] = $weightedAverages;
         }
+    }
+
+    public function cacheWeightings( ) {
 
         $this->categoryWeightings = array();
 
@@ -371,6 +402,61 @@ class markbookView
                 $this->categoryWeightings[ $rowWeightings['type'] ] = $rowWeightings;
             }
         }
+
+
+    	$this->weightedMarkbookEntries = array();
+        $this->termAverages = array();
+
+        try {
+            $data = array('gibbonCourseClassID' => $this->gibbonCourseClassID);
+            $sql = "SELECT attainmentWeighting, attainmentValue, type, gibbonSchoolYearTermID, gibbonPersonIDStudent FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonScale ON (gibbonMarkbookColumn.gibbonScaleIDAttainment=gibbonScale.gibbonScaleID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonScale.numeric='Y' AND gibbonScaleID=(SELECT value FROM gibbonSetting WHERE scope='System' AND name='primaryAssessmentScale') AND complete='Y' AND NOT attainmentValue='' ORDER BY gibbonPersonIDStudent";
+            $result=$this->pdo->executeQuery($data, $sql);
+        } catch (PDOException $e) { $this->error( $e->getMessage() ); }
+
+        if ($result->rowCount() > 0) {
+            while ($entry = $result->fetch()) {
+
+                // Exclude incomplete values -- maybe make this a setting later?
+                if ($entry['attainmentValue'] == 'Incomplete' || stripos($entry['attainmentValue'], 'Inc') !== false ) {
+                    continue;
+                }
+
+                $gibbonPersonID = $entry['gibbonPersonIDStudent'];
+                $type = (isset($entry['type']))? $entry['type'] : 'Unknown';
+
+                if ($this->settings['enableGroupByTerm'] == 'Y' && isset($entry['gibbonSchoolYearTermID']) ) {
+                    $term = $entry['gibbonSchoolYearTermID'];
+                } else {
+                    $term = 0;
+                }
+
+                $weight = floatval($entry['attainmentWeighting']);
+                $value = floatval($entry['attainmentValue']);
+
+                if (isset($this->categoryWeightings[$type]) && $this->categoryWeightings[$type]['calculate'] == 'year') {
+                    $term = 'endOfYear';
+                }
+
+                if (isset($this->termAverages[$gibbonPersonID][$term][$type])) {
+                    $this->termAverages[$gibbonPersonID][$term][$type]['total'] += $weight;
+                    $this->termAverages[$gibbonPersonID][$term][$type]['cumulative'] += ($value * $weight);
+                } else {
+                    $this->termAverages[$gibbonPersonID][$term][$type] = array(
+                        'total' => $weight,
+                        'cumulative' => ($value * $weight),
+                    );
+                }
+
+                $this->categories[] = $type;
+                $this->terms[] = $term;
+            }
+        }
+
+        $this->categories = array_unique($this->categories);
+        $this->terms = array_unique($this->terms);
+
+
+        $this->calculateWeightedAverages();
     }
 
     public function getPrimaryAssessmentScale() {
@@ -380,13 +466,12 @@ class markbookView
     	$PAS = getSettingByScope($this->pdo->getConnection(), 'System', 'primaryAssessmentScale');
         try {
             $data = array('gibbonScaleID' => $PAS);
-            $sql = 'SELECT name FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
+            $sql = 'SELECT name, nameShort FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
             $result = $this->pdo->executeQuery($data, $sql);
         } catch (PDOException $e) { $this->error( $e->getMessage() ); }
 
         if ($result->rowCount() == 1) {
-            $row = $result->fetch();
-            $this->primaryAssessmentScale = (isset($row['name']))? $row['name'] : '';
+            $this->primaryAssessmentScale = $result->fetch();
         }
 
         return $this->primaryAssessmentScale;
@@ -441,7 +526,70 @@ class markbookView
 
     }
 
-    private function error( $message ) {
+    public function filterByDateRange( $startDate, $endDate ) {
+
+        // Check for properly formatted, valid dates
+        $checkStart = explode('-', $startDate);
+        $checkEnd = explode('-', $endDate);
+        if (empty($checkStart) || count($checkStart) != 3 || empty($checkEnd) || count($checkEnd) != 3) {
+            return false;
+        }
+
+        if (!checkdate($checkStart[1], $checkStart[2], $checkStart[0]) || !checkdate($checkEnd[1], $checkEnd[2], $checkEnd[0])) {
+            return false;
+        }
+        
+        // Use a key in the array to limit to one date filter at a time
+        $this->columnFilters['daterange'] = "(date IS NOT NULL AND date BETWEEN '".$startDate."' AND '".$endDate."' )";
+        return true;
+    }
+
+    public function filterByTerm( $gibbonSchoolYearTermID ) {
+        if (empty($gibbonSchoolYearTermID)) return false;
+
+        try {
+            $data=array("gibbonSchoolYearTermID"=>$gibbonSchoolYearTermID );
+            $sql="SELECT firstDay, lastDay FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearTermID=:gibbonSchoolYearTermID" ;
+            $resultTerms=$this->pdo->executeQuery($data, $sql);
+        } catch (PDOException $e) { $this->error( $e->getMessage() ); }
+
+        if ($resultTerms->rowCount() > 0) {
+            $termRow = $resultTerms->fetch();
+            return $this->filterByDateRange( $termRow['firstDay'], $termRow['lastDay'] );
+        } else {
+            return false;
+        }
+    }
+
+    public function filterByFormOptions( $filter ) {
+        if (empty($filter)) return false;
+
+        switch ($filter) {
+             case 'marked':      return $this->filterByQuery( "complete = 'Y'" ); break;
+             case 'unmarked':    return $this->filterByQuery( "complete = 'N'" ); break;
+             case 'week':        return $this->filterByQuery( "WEEKOFYEAR(date)=WEEKOFYEAR(NOW())" ); break;
+             case 'month':       return $this->filterByQuery( "MONTH(date)=MONTH(NOW())" ); break;
+         }
+    }
+
+    public function filterByQuery($query) {
+        if (empty($query)) return false;
+
+        $this->columnFilters[] = $query;
+        return true;
+    }
+
+    protected function getColumnFilters() {
+
+        $where = 'gibbonCourseClassID=:gibbonCourseClassID';
+        if (!empty($this->columnFilters)) {
+            $where .= ' AND '. implode(' AND ', $this->columnFilters );
+        }
+
+        return $where;
+    }
+
+    protected function error( $message ) {
     	echo "<div class='error'>".$e->getMessage().'</div>';
     }
 

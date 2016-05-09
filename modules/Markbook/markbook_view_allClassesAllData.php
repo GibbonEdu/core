@@ -117,7 +117,9 @@
     if (empty($gibbonSchoolYearTermID)) {
         $gibbonSchoolYearTermID = (isset($_SESSION[$guid]['markbookTerm']))? $_SESSION[$guid]['markbookTerm'] : '';
     }
+
     $markbook->filterByTerm( $gibbonSchoolYearTermID );
+    
 
     // Add class chooser filters
     $columnFilter = (isset($_GET['columnFilter']))? $_GET['columnFilter'] : '';
@@ -193,7 +195,9 @@
             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID'>".__($guid, 'Add')."<img title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a> | ";
             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_targets.php&gibbonCourseClassID=$gibbonCourseClassID'>".__($guid, 'Targets')."<img title='".__($guid, 'Set Personalised Attainment Targets')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/target.png'/></a> | ";
             if ($markbook->getSetting('enableColumnWeighting') == 'Y') {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/weighting_manage.php&gibbonCourseClassID=$gibbonCourseClassID'>".__($guid, 'Weightings')."<img title='".__($guid, 'Weightings')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/run.png'/></a> | ";
+                if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.php') == true) {
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/weighting_manage.php&gibbonCourseClassID=$gibbonCourseClassID'>".__($guid, 'Weightings')."<img title='".__($guid, 'Weightings')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/run.png'/></a> | ";
+                }
             }
             echo "<a href='".$_SESSION[$guid]['absoluteURL']."/modules/Markbook/markbook_viewExportAll.php?gibbonCourseClassID=$gibbonCourseClassID&return=markbook_view.php'>".__($guid, 'Export to Excel')."<img title='".__($guid, 'Export to Excel')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png'/></a>";
 
@@ -246,7 +250,7 @@
             //Get PAS
             $PAS = $markbook->getPrimaryAssessmentScale();
             if (!empty($PAS)) {
-                $title .= ' | '.$PAS.' '.__($guid, 'Scale').' ';
+                $title .= ' | '.$PAS['name'].' '.__($guid, 'Scale').' ';
             }
 
             echo "<div class='verticalText' title='$title'>";
@@ -265,7 +269,7 @@
             //Get PAS
             $PAS = $markbook->getPrimaryAssessmentScale();
             if (!empty($PAS)) {
-                $title .= ' | '.$PAS.' '.__($guid, 'Scale').' ';
+                $title .= ' | '.$PAS['name'].' '.__($guid, 'Scale').' ';
             }
 
             echo "<div class='verticalText' title='$title'>";
@@ -282,12 +286,32 @@
                     $markbook->getSetting('attainmentName') );
 
             echo "<div class='verticalText' title='$title'>";
-            echo __($guid, 'Total').'<br/>';
+
+            if ($markbook->getSetting('enableGroupByTerm') == 'Y' && $gibbonSchoolYearTermID > 0) {
+                echo __($guid, 'Term&nbsp;Total').'<br/>';
+            } else {
+                echo __($guid, 'Total').'<br/>';
+            }
+            
             echo '</div>';
             echo '</th>';
 
             //Cache all weighting data for efficient use below
             $markbook->cacheWeightings( );
+        }
+
+        if ($columnFilter == 'averages') {
+            echo "<th class='dataColumn notdraggable dragtable-drag-boundary' data-header='weighting'>";
+            echo "<div class='verticalText'>";
+                echo __($guid, 'Overall');
+            echo '</div>';
+            echo '</th>';
+
+            echo "<th class='dataColumn notdraggable dragtable-drag-boundary' data-header='weighting'>";
+            echo "<div class='verticalText'>";
+                echo __($guid, 'Final Grade');
+            echo '</div>';
+            echo '</th>';
         }
 
         $columnID = array();
@@ -300,7 +324,7 @@
 
             $info = '<h6 style="color:#ffffff;">'.$column->getData('description').'</h6>';
             $info .= '<ul style="margin: 0;">';
-            $info .= '<li>'.__($guid, 'Type').' - '.$markbook->getWeightingTypeDescription( $column->getData('type') ) .'</li>';
+            $info .= '<li>'.__($guid, 'Type').' - '.$markbook->getTypeDescription( $column->getData('type') ) .'</li>';
 
             if (isset($unit[0])) {
                 $info .= '<li>'.__($guid, 'Unit').' - '. $unit[0] .'</li>';
@@ -329,7 +353,7 @@
             echo "<span class='details'>";
 
 			echo (isset($unit[0]))? $unit[0].'<br/>' : '';
-            echo $markbook->getWeightingTypeDescription( $column->getData('type') );
+            echo $markbook->getTypeDescription( $column->getData('type') );
 
             if ($column->hasAttachment( $_SESSION[$guid]['absolutePath'] )) {
                 echo " | <a 'title='".__($guid, 'Download more information')."' href='".$_SESSION[$guid]['absoluteURL'].'/'.$column->getData('attachment')."' target='_blank'>".__($guid,"More Info")."</a><br/>";
@@ -498,7 +522,26 @@
                 //Calculate and output weighted totals
                 if ($markbook->getSetting('enableColumnWeighting') == 'Y') {
                     echo "<td>";
-                        echo $markbook->getWeightingForStudent( $rowStudents['gibbonPersonID'] );
+
+                    if ($markbook->getSetting('enableGroupByTerm') == 'Y' && $gibbonSchoolYearTermID > 0) {
+                        $average = $markbook->getTermAverage($rowStudents['gibbonPersonID'], $gibbonSchoolYearTermID);
+                    } else {
+                        $average = $markbook->getFinalGradeAverage($rowStudents['gibbonPersonID']);
+                    }
+
+                    echo $markbook->formattedAverage($average);
+                        
+                        //echo $markbook->getWeightingForStudent( $rowStudents['gibbonPersonID'] );
+                    echo '</td>';
+                }
+
+                if ($columnFilter == 'averages') {
+                    echo "<td>";
+                        echo $markbook->formattedAverage( $markbook->getOverallAverage($rowStudents['gibbonPersonID']) );
+                    echo '</td>';
+
+                    echo "<td>";
+                        echo $markbook->formattedAverage( $markbook->getFinalGradeAverage($rowStudents['gibbonPersonID']) );
                     echo '</td>';
                 }
 
@@ -702,6 +745,21 @@
 
         echo '</div>';
         echo '</div><br/>';
+
+        // Do some stuff
+
+        echo 'Term 1: '. $markbook->getTermAverage('0000001285', '00019') .'<br/>';
+        echo 'Term 2: '. $markbook->getTermAverage('0000001285', '00020') .'<br/>';
+        echo 'Term 3: '. $markbook->getTermAverage('0000001285', '00021') .'<br/>';
+
+
+        echo 'Final Exam: '. $markbook->getTypeAverage('0000001285', 'endOfYear', 'Exam') .'<br/>';
+
+        echo 'Final Grade: '. $markbook->getFinalGradeAverage('0000001285') .'<br/>';
+
+        echo '<hr><br/><br/>';
+
+        // end stuff
 
     }
         

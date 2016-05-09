@@ -338,9 +338,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
 								    } catch (PDOException $e) {
 								    }
 
+								    $gibbonSchoolYearTermID = (isset($_SESSION[$guid]['markbookTerm']))? $_SESSION[$guid]['markbookTerm'] : '';
+
 								    while ($rowTerm = $resultTerms->fetch()) {
 
-							            $selected = (time() >= $rowTerm['firstTime'] && time() < $rowTerm['lastTime'])? 'selected' : '';
+								    	if ($gibbonSchoolYearTermID != 0) {
+								    		$selected = ($gibbonSchoolYearTermID == $rowTerm['gibbonSchoolYearTermID'])? 'selected' : '';
+								    	} else {
+							            	$selected = (time() >= $rowTerm['firstTime'] && time() < $rowTerm['lastTime'])? 'selected' : '';
+							        	}
 
 							            print "<option $selected value='".$rowTerm['gibbonSchoolYearTermID']."'>".htmlPrep($rowTerm['name']).'</option>';
 							        }

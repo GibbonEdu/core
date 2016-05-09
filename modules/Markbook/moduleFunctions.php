@@ -22,6 +22,7 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
     //Set timezone from session variable
     date_default_timezone_set($_SESSION[$guid]['timezone']);
 
+    $enableColumnWeighting = getSettingByScope($pdo->getConnection(), 'Markbook', 'enableColumnWeighting');
     $enableGroupByTerm = getSettingByScope($pdo->getConnection(), 'Markbook', 'enableGroupByTerm');
     $enableRawAttainment = getSettingByScope($pdo->getConnection(), 'Markbook', 'enableRawAttainment');
 
@@ -88,8 +89,8 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
     $output .= "<select name='columnFilter' id='columnFilter' style='width:140px; float: none;'>";
     $output .= "<option value=''>".__($guid, 'All Columns')."</option>";
 
-    if ($enableGroupByTerm == 'Y' ) {
-        $output .= "<option value='terms' ".(($selectFilter == 'terms')? 'selected' : '')." >".__($guid, 'Term Averages')."</option>";
+    if ($enableGroupByTerm == 'Y' || $enableColumnWeighting == 'Y' ) {
+        $output .= "<option value='averages' ".(($selectFilter == 'averages')? 'selected' : '')." >".__($guid, 'Overall Grades')."</option>";
     }
 
     if ($enableRawAttainment == 'Y' ) {

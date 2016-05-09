@@ -60,7 +60,9 @@ table.markbook thead tr.head {
 .dataColumn {
 	width: 40px;
 	min-width: 40px;
-	max-width: 40px
+	max-width: 40px;
+	vertical-align: bottom;
+	padding-bottom: 25px !important;
 }
 
 .marksColumn {
@@ -95,16 +97,19 @@ th.columnLabel:first-of-type {
 .smallColumn {
 	min-width:20px;
 	width: 30px;
+	white-space: nowrap;
 }
 
 .medColumn {
 	min-width:40px;
 	width: 40px;
+	white-space: nowrap;
 }
 
 .largeColumn {
 	min-width:40px;
 	width: 80px;
+	white-space: nowrap;
 }
 
 .rubricIcon img {
@@ -129,6 +134,9 @@ table.mini tr.head {
 	-ms-transform: rotate(-90deg);
 	-o-transform: rotate(-90deg);
 	transform: rotate(-90deg);
+	transform-origin: 14px 0;
+	white-space: nowrap;
+	padding-left: 15px;
 }
 
 .studentName {

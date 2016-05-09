@@ -18,9 +18,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 jQuery(function($){
 
-	// Matches the width of the top placeholder to the final table width
+	
 	$(window).on('load', function (e) {
+        // Matches the width of the top placeholder to the final table width
 	    $('.doublescroll-top-tablewidth').width($('.doublescroll-container table').width());
+
+        // Start scrolled to the left, where all the recent stuff is
+        $('.doublescroll-container').scrollLeft($('.doublescroll-container table').width());
 	});
 	
 	// Pairs the position of the top scrollbar with the bottom scrollbar
