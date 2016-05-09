@@ -50,7 +50,7 @@ body {
 	padding-left: 1px;
 	margin: 10px auto ;
 	position:relative ;
-	border-radius: 5px; 
+	border-radius: 5px;
 	box-shadow: 0px 0px 20px rgba(0,0,0,0.4);
 }
 #wrap-report {
@@ -65,7 +65,7 @@ body {
 	padding: 0 ;
 	height: 158px!important ;
 	background-color: #ffffff ;
-	border-radius: 5px 5px 0 0; 
+	border-radius: 5px 5px 0 0;
 }
 #header-logo {
 	margin:0 0 0 0px;
@@ -84,11 +84,11 @@ body {
 #header-menu {
 	color:#fff;
 	font-weight:bold;
-	height: 32px!important;	
+	height: 32px!important;
 	margin: 3px 0 0 0 ;
-	background-color: rgba(240,240,240,0.9);	
-	border-top: 1px solid rgba(0,0,0,0.15);	
-	border-bottom: 1px solid rgba(0,0,0,0.15);	
+	background-color: rgba(240,240,240,0.9);
+	border-top: 1px solid rgba(0,0,0,0.15);
+	border-bottom: 1px solid rgba(0,0,0,0.15);
 }
 #header-finder {
 	float: right ;
@@ -98,7 +98,7 @@ body {
 	top:24px;
 	right:24px;
 	left:auto;
-	width:360px;	
+	width:360px;
 }
 #header-finder h2 {
 	text-align: right ;
@@ -109,25 +109,25 @@ body {
 }
 
 #content-wrap {
-	width:1102px; 
+	width:1102px;
 	background-color: rgba(255,255,255,0.9) ;
-	margin: 0 0 0 -1px;	
+	margin: 0 0 0 -1px;
 }
 #content-wrap-report {
 	background-color: rgba(255,255,255,0.9) ;
 	position:relative;
-	width:100%; 
+	width:100%;
 }
 #content {
 	margin: 0 0 0 -1px;
 	padding: 0 25px 0 25px;
 	min-height: 470px;
 	width: 752px;
-	max-width: 752px!important; 
+	max-width: 752px!important;
 	position:relative;
     overflow:hidden;
     float:left;
-	border-right: 1px solid rgba(0,0,0,0.15);	
+	border-right: 1px solid rgba(0,0,0,0.15);
 }
 #content-wide {
 	margin: 0 0 0 -1px;
@@ -140,18 +140,18 @@ body {
 #content div.trail {
 	text-align: left;
 	font-size: 70%;
-	margin: 10px 0px 10px -18px; 
+	margin: 10px 0px 10px -18px;
 	height: 16px;
 	padding-top: 7px;
 	padding-left: 20px;
 	font-weight: normal;
 	width: 783px;
-	color: #3B73AF ;	
+	color: #3B73AF ;
 }
 #content-wide div.trail {
 	text-align: left;
 	font-size: 70%;
-	margin: 10px 0px 10px -18px; 
+	margin: 10px 0px 10px -18px;
 	height: 16px;
 	padding-top: 7px;
 	padding-left: 20px;
@@ -168,12 +168,12 @@ div.trailHead {
 	float: left;
 }
 div.trailHead a {
-	text-decoration: underline; 
+	text-decoration: underline;
 	font-weight: normal;
 	color: #3B73AF;
 }
 div.trailHead a:hover {
-	text-decoration: underline; 
+	text-decoration: underline;
 	font-weight: normal;
 	color: #c00;
 }
@@ -191,9 +191,9 @@ div.sidebarExtra {
 }
 #footer {
 	clear:both;
-	width:1102px; 
+	width:1102px;
 	background-color: rgba(255,255,255,0.9) ;
-	margin: 0 0 0 -1px;	
+	margin: 0 0 0 -1px;
 	padding: 20px 0px 10px 0px;
 	font-size:85%;
 	color:#fff;
@@ -203,26 +203,26 @@ div.sidebarExtra {
 }
 #footer-report {
 	clear:both;
-	width:750px; 
+	width:750px;
 	color: #333;
-	margin: 0 0 0 -1px;	
+	margin: 0 0 0 -1px;
 	padding: 5px 0px 5px 0px;
 	font-size:75%;
 	text-align: right ;
 	font-style: italic ;
 }
 div.minorLinks {
-	text-align: right; 
-	padding-right: 13px; 
+	text-align: right;
+	padding-right: 13px;
 	padding-top: 0px;
-	margin-top: 10px; 
-	margin-bottom: 0px; 
+	margin-top: 10px;
+	margin-bottom: 0px;
 	color: #fff;
-	font-size: 80%; 
-	font-weight: normal; 
+	font-size: 80%;
+	font-weight: normal;
 }
 div.minorLinksTopGap {
-	margin-top: 25px; 
+	margin-top: 25px;
 }
 img.minorLinkIcon {
 	height: 38px ;
@@ -240,7 +240,7 @@ div.minorLinks a {
 div.minorLinks a:hover {
 	color: #aaa;
 }
-	
+
 /* NAV */
 #nav, #nav ul {
 	padding: 0;
@@ -252,7 +252,7 @@ div.minorLinks a:hover {
 	font-weight: bold ;
 	font-size: 90% ;
 	width: 1087px;
-	padding-top: 5px; 
+	padding-top: 5px;
 	padding-left: 15px;
 	text-transform: uppercase ;
 }
@@ -283,7 +283,7 @@ div.minorLinks a:hover {
 	padding: 2px;
 	position: absolute;
 	font-weight:normal;
-	left: -999em; 
+	left: -999em;
 	text-shadow: none;
 	width: 180px ;
 }
@@ -297,7 +297,7 @@ div.minorLinks a:hover {
 	float:none;
 	border:none;
 	border:1px none #fff;
-	text-align: left; 
+	text-align: left;
 	font-size: 118%;
 	text-transform: none ;
 	line-height: 105% ;
@@ -318,8 +318,8 @@ div.minorLinks a:hover {
 }
 
 #nav li.active {
-	background: none; 
-	color: #ffffff; 
+	background: none;
+	color: #ffffff;
 	border: 1px none #c00
 }
 #nav li.active ul {
@@ -366,16 +366,16 @@ ul.moduleMenu h4 {
 a,a:link,a:hover {
 	background:transparent;
 	text-decoration:underline;
-} 
+}
 a:link {
 	color:#c00;
-} 
+}
 a:visited {
 	color:#c00;
-} 
+}
 a:hover,a:active {
 	color:#069;
-} 
+}
 a.active {
 	font-weight: bold ;
 	text-decoration: underline ;
@@ -393,7 +393,7 @@ a img {
 }
 
 /* TYPOGRAPHY */
-p { 
+p {
 	margin: 0px 0px 15px 0px;
 	text-align: justify;
 	font-size: 13px;
@@ -558,7 +558,7 @@ table tr.even td {
 }
 table tr:last-child td {
 	border-bottom:0;
-	
+
 }
 table tr:last-child td:first-child {
 	-moz-border-radius-bottomleft:3px;
@@ -590,7 +590,7 @@ tr.current, tr.current td, div.current, td.current {
 tr.past, tr.past td, div.past, td.past {
 	background-color: #F6CECB!important ;
 	background: -webkit-gradient(linear, left top, left bottom, from(#F8D1CD), to(#F6CECB))!important;
-	background: -moz-linear-gradient(top,  #F8D1CD,  #F6CECB)!important;	
+	background: -moz-linear-gradient(top,  #F8D1CD,  #F6CECB)!important;
 }
 tr.error, tr.error td, div.erorr, td.error {
 	background-color: #F6CECB!important ;
@@ -660,7 +660,7 @@ tr.mceFirst td {
 table.mceToolbar {
 	box-shadow:none!important;
 	-moz-box-shadow:none!important;
-	-webkit-box-shadow:none!important;	
+	-webkit-box-shadow:none!important;
 }
 td.mceIframeContainer {
 	background-color: white!important ;
@@ -749,28 +749,28 @@ input[type="submit"]:hover {
 }
 
 input[type="submit"].buttonLink {
-	background: none; 
-	color: #c00; 
-	border: none; 
-	font-weight: normal; 
-	font-size: 13px; 
+	background: none;
+	color: #c00;
+	border: none;
+	font-weight: normal;
+	font-size: 13px;
 	text-decoration: underline;
 	height: 28px;
 }
 
 input[type="submit"].buttonLink:hover {
-	background: none; 
-	color: #069; 
-	border: none; 
-	font-weight: normal; 
-	font-size: 13px; 
+	background: none;
+	color: #069;
+	border: none;
+	font-weight: normal;
+	font-size: 13px;
 }
 
 
 /* MESSAGES */
 div.message {
 	border: 1px solid #3B73AF;
-	color: #3B73AF; 
+	color: #3B73AF;
 	background-color: #D0EAFD;
 	font-size: 12px;
 	padding: 5px;
@@ -778,7 +778,7 @@ div.message {
 	box-shadow: 2px 2px 2px rgba(50,50,50,0.05);
 }
 div.message a {
-	color: #3B73AF; 
+	color: #3B73AF;
 }
 div.message a:hover {
 	color: #c00 ;
@@ -786,7 +786,7 @@ div.message a:hover {
 
 div.error {
 	border-left: 6px solid #CC0000;
-	color: #CC0000; 
+	color: #CC0000;
 	background-color: #F6CECB;
 	font-size: 12px;
 	padding: 10px;
@@ -795,7 +795,7 @@ div.error {
 }
 div.warning {
 	border-left: 6px solid #D65602;
-	color: #D65602; 
+	color: #D65602;
 	background-color: #FFD2A9;
 	font-size: 12px;
 	padding: 10px;
@@ -804,7 +804,7 @@ div.warning {
 }
 div.success {
 	border-left: 6px solid #390;
-	color: #390; 
+	color: #390;
 	background-color: #D4F6DC;
 	font-size: 12px;
 	padding: 10px;
@@ -836,7 +836,7 @@ div.linkTopLeft {
 img.user {
 	background-color: #ffffff ;
 	border: 1px solid #000000 ;
-	padding: 4px ; 
+	padding: 4px ;
 	box-shadow: 2px 2px 2px rgba(50,50,50,0.35);
 }
 
@@ -852,13 +852,13 @@ a img.resource, img.resource {
 }
 .ui-widget-content {
 	border: none!important;
-}	
+}
 .ui-tabs-panel {
 	border: 1px solid rgb(155, 155, 155)!important;
 	background: rgba(255,255,255,0.75)!important;
-}	
+}
 .ui-tabs {
-	padding: 0px!important;	
+	padding: 0px!important;
 }
 .ui-tabs-active {
 	border: 1px solid rgb(155, 155, 155)!important;
@@ -880,11 +880,11 @@ div.ui-widget-overlay {
 div.ui-dialog {
 	font-family: Helvetica, Arial, sans-serif!important;
 	font-size: 85% ;
-	border-radius: 2px; 
+	border-radius: 2px;
 }
 
 div.ui-dialog div.ui-dialog-titlebar {
-	border-radius: 2px; 
+	border-radius: 2px;
 	background-image: none ;
 	background-color: #A88EDB!important ;
 	border: none ;
@@ -894,7 +894,7 @@ div.ui-dialog button.ui-button {
 	font-family: Helvetica, Arial, sans-serif!important;
 	font-size: 85% ;
 	color: #333 ;
-	border-radius: 2px; 
+	border-radius: 2px;
 }
 
 div#ui-datepicker-div {
@@ -913,7 +913,7 @@ div#ui-datepicker-div {
 .LV_valid {
     color:#00CC00;
 }
-	
+
 .LV_invalid {
     color:#CC0000;
 }
@@ -1030,14 +1030,14 @@ div#tabs {
 }
 
 .ui-autocomplete .ui-menu-item, .ui-autocomplete .ui-menu-item:hover {
-	border: none!important; 
+	border: none!important;
 	border-radius: 0!important ;
 }
 
 .ui-autocomplete .ui-corner-all, .ui-autocomplete .ui-corner-all:hover {
 	color: #fff!important ;
 	background: rgba(25, 25, 25, 0.9)!important;
-	border: none!important; 
+	border: none!important;
 	border-radius: 0!important ;
 }
 
@@ -1078,75 +1078,75 @@ div.ui-datepicker-header {
 }
 
 td.hiddenReveal, div.hiddenReveal {
-	background: none; 
+	background: none;
 	background-color: #EDF7FF!important;
 }
 
 /* Timetable styles */
 th.ttCalendarBar {
-	vertical-align: top; 
-	width: 100%; 
-	text-align: right!important; 
-	background-image: none!important; 
+	vertical-align: top;
+	width: 100%;
+	text-align: right!important;
+	background-image: none!important;
 	background-color: #f2f2f2!important
 }
 span.ttSchoolCalendar {
 	color: #fff;
-	font-weight: bold; 
-	margin: 0px -2px 0px 5px; 
-	background-color: rgb(51,153,0); 
-	padding: 5px 7px; 
+	font-weight: bold;
+	margin: 0px -2px 0px 5px;
+	background-color: rgb(51,153,0);
+	padding: 5px 7px;
 	border: 1px solid #555
 }
 div.ttSchoolCalendar {
 	background-color: rgb(51,153,0) ;
-	color: #fff; 
+	color: #fff;
 	font-weight: bold ;
 }
 span.ttPersonalCalendar {
 	color: #fff;
-	font-weight: bold; 
-	margin: 0px -2px 0px 5px; 
-	background-color: rgb(103,153,207); 
-	padding: 5px 7px; 
+	font-weight: bold;
+	margin: 0px -2px 0px 5px;
+	background-color: rgb(103,153,207);
+	padding: 5px 7px;
 	border: 1px solid #555;
 }
 
 div.ttPersonalCalendar {
-	background-color: rgb(103,153,207); 
-	color: #fff; 
+	background-color: rgb(103,153,207);
+	color: #fff;
 	font-weight: bold ;
 }
 
 span.ttSpaceBookingCalendar {
 	color: #fff;
-	font-weight: bold; 
-	margin: 0px -2px 0px 5px; 
-	background-color: #E5760D; 
-	padding: 5px 7px; 
+	font-weight: bold;
+	margin: 0px -2px 0px 5px;
+	background-color: #E5760D;
+	padding: 5px 7px;
 	border: 1px solid #555;
 }
 
 div.ttSpaceBookingCalendar {
-	background-color: #E5760D; 
-	color: #fff; 
+	background-color: #E5760D;
+	color: #fff;
 	font-weight: bold ;
 }
 
 div.ttClosure {
 	border: 1px solid rgb(136,136,136);
 	background-color: rgb(255,196,202);
-	color: rgb(255,0,0); 
+	color: rgb(255,0,0);
 	border: 1px solid rgb(136,136,136) ;
 }
 div.ttGeneric {
 	background-color: rgb(238,238,238);
-	color: rgb(0,0,0); 
+	color: rgb(0,0,0);
 	border: 1px solid rgb(136,136,136) ;
 }
 div.ttCurrent {
 	background-color: rgb(179,239,194) ;
-	color: rgb(0,0,0); 
+	color: rgb(0,0,0);
 	border: 1px solid rgb(136,136,136) ;
 }
 div.ttLesson {
@@ -1167,9 +1167,9 @@ div.ttPeriodCurrent {
 
 table.chatBox {
 	margin-top: 0px ;
-	padding: 0px ; 
+	padding: 0px ;
 	margin-bottom: -1px ;
-	border: 1px solid #333 ; 
+	border: 1px solid #333 ;
 	background-color: #f9f9f9;
 	border-radius:0px;
 }
@@ -1194,17 +1194,17 @@ table.chatBox tr td {
 
 /* RESOURCE UPLOAD SLIDER */
 div.resourceAddSlider {
-	min-height: 60px; 
-	border: 1px solid #C0C0C0; 
-	text-align: center; 
-	width: 100%; 
-	margin-top: 5px; 
+	min-height: 60px;
+	border: 1px solid #C0C0C0;
+	text-align: center;
+	width: 100%;
+	margin-top: 5px;
 	margin-bottom: -5px
 }
 
 /* V12 NEW CLASSES */
 p.emphasis, span.emphasis {
-	font-style: italic ; 
+	font-style: italic ;
 }
 span.small {
 	font-size: 93% ;
@@ -1220,4 +1220,7 @@ table.fullWidth {
 }
 div.blockOuter {
 	text-align: center;
+}
+h1.bigTop, h2.bigTop, h3.bigTop, h4.bigTop, h5.bigTop, h6.bigTop {
+	margin-top: 60px!important;
 }
