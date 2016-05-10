@@ -592,7 +592,7 @@ tr.past, tr.past td, div.past, td.past {
 	background: -webkit-gradient(linear, left top, left bottom, from(#F8D1CD), to(#F6CECB))!important;
 	background: -moz-linear-gradient(top,  #F8D1CD,  #F6CECB)!important;
 }
-tr.error, tr.error td, div.erorr, td.error {
+tr.error, tr.error td, div.error, td.error {
 	background-color: #F6CECB!important ;
 	background: -webkit-gradient(linear, left top, left bottom, from(#F8D1CD), to(#F6CECB))!important;
 	background: -moz-linear-gradient(top,  #F8D1CD,  #F6CECB)!important;
