@@ -91,7 +91,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
 						</td>
 					</tr>
                     <?php
-                     if (isset($moduleTables)) {
+                    include $_SESSION[$guid]['absolutePath'].'/modules/'.$row['name'].'/manifest.php';
+                    if (isset($moduleTables)) {
                          ?>
     					<tr>
     						<td style='width: 275px'>
@@ -106,7 +107,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                                     echo '</div>';
                                 } else {
                                     $count = 0;
-                                    include $_SESSION[$guid]['absolutePath'].'/modules/'.$row['name'].'/manifest.php';
                                     if (is_array($moduleTables)) {
                                         foreach ($moduleTables as $moduleTable) {
                                             $type = null;

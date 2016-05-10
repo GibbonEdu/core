@@ -27,13 +27,18 @@ if (!isset($_SESSION[$guid]["username"])) {
     echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > </div><div class='trailEnd'>Preferences</div>";
     echo '</div>';
 
+    $return = null;
+    if (isset($_GET['return'])) {
+        $return = $_GET['return'];
+    }
+
     //Deal with force reset notification
     if (isset($_GET['forceReset'])) {
         $forceReset = $_GET['forceReset'];
     } else {
         $forceReset = null;
     }
-    if ($forceReset == 'Y') {
+    if ($forceReset == 'Y' AND $return != 'successa') {
         $forceResetReturnMessage = '<b><u>'.__($guid, 'Your account has been flagged for a password reset. You cannot continue into the system until you change your password.').'</b></u>';
         echo "<div class='error'>";
         echo $forceResetReturnMessage;

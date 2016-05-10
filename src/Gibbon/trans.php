@@ -32,12 +32,12 @@ class trans
 	 * Gibbon\sqlConnection
 	 */
 	private $pdo ;
-	
+
 	/**
 	 * Gibbon\session
 	 */
 	private $session ;
-	
+
 	/**
 	 * Construct
 	 *
@@ -61,17 +61,14 @@ class trans
 	 */
 	public function setStringReplacementList()
 	{
-		if (! $this->session->get('stringReplacement'))
-		{
-			$this->session->set('stringReplacement', array()) ;
-			$sql="SELECT * FROM gibbonString ORDER BY priority DESC, original" ; 
-			$result = $this->pdo->executeQuery(array(), $sql);
-	
-			if ($result->rowCount()>0)
-				$this->session->set('stringReplacement', $result->fetchAll()) ;
-			else
-				$this->session->set('stringReplacement', false) ;
-		}
+		$this->session->set('stringReplacement', array()) ;
+		$sql="SELECT * FROM gibbonString ORDER BY priority DESC, original" ;
+		$result = $this->pdo->executeQuery(array(), $sql);
+
+		if ($result->rowCount()>0)
+			$this->session->set('stringReplacement', $result->fetchAll()) ;
+		else
+			$this->session->set('stringReplacement', false) ;
 	}
 	/**
 	 * Custom translation function to allow custom string replacement
@@ -86,11 +83,11 @@ class trans
 //Custom translation function to allow custom string replacement
 	public function __($text, $guid = true)
 	{
-		
+
 		$replacements = $this->session->get('stringReplacement', $guid) !== NULL ? $this->session->get('stringReplacement', $guid) : array() ;
-		
+
 		$text=_($text) ;
-		
+
 		if (isset($replacements)) {
 			if (is_array($replacements)) {
 				foreach ($replacements AS $replacement) {
@@ -118,11 +115,11 @@ class trans
 							}
 						}
 					}
-					
+
 				}
 			}
 		}
-		
+
 		return $text ;
 	}
 }

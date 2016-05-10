@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
     //Validate Inputs
     $name = $_POST['name'];
     $nameShort = $_POST['nameShort'];
-    $gibbonPersonIDTutor = 'gibbonPersonIDTutor=NULL';
+    $gibbonPersonIDTutor = null;
     if ($_POST['gibbonPersonIDTutor'] != '') {
         $gibbonPersonIDTutor = $_POST['gibbonPersonIDTutor'];
     }
