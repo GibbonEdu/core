@@ -200,7 +200,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                     //Fetch units
                     try {
                         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonCourseID' => $gibbonCourseID);
-                        $sql = 'SELECT gibbonUnitID, gibbonUnit.gibbonCourseID, nameShort, gibbonUnit.name, gibbonUnit.description FROM gibbonUnit JOIN gibbonCourse ON gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonUnit.gibbonCourseID=:gibbonCourseID ORDER BY ordering, name';
+                        $sql = 'SELECT gibbonUnitID, gibbonUnit.gibbonCourseID, nameShort, gibbonUnit.name, gibbonUnit.description, active FROM gibbonUnit JOIN gibbonCourse ON gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonUnit.gibbonCourseID=:gibbonCourseID ORDER BY ordering, name';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {
@@ -224,6 +224,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                         echo "<th style='width: 450px'>";
                         echo __($guid, 'Description');
                         echo '</th>';
+                        echo '<th>';
+                        echo __($guid, 'Active');
+                        echo '</th>';
                         echo "<th style='width: 140px'>";
                         echo __($guid, 'Actions');
                         echo '</th>';
@@ -238,6 +241,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                                 $rowNum = 'odd';
                             }
 
+                            if ($row['active'] != 'Y') {
+                                $rowNum = 'error';
+                            }
+
                             //COLOR ROW BY STATUS!
                             echo "<tr class=$rowNum>";
                             echo '<td>';
@@ -245,6 +252,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                             echo '</td>';
                             echo "<td style='max-width: 270px'>";
                             echo $row['description'];
+                            echo '</td>';
+                            echo '<td>';
+                            echo ynExpander($guid, $row['active']);
                             echo '</td>';
                             echo '<td>';
                             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/units_edit.php&gibbonUnitID='.$row['gibbonUnitID']."&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
@@ -301,8 +311,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                                         $rowNum = 'odd';
                                     }
 
-                                        //COLOR ROW BY STATUS!
-                                        echo "<tr class=$rowNum>";
+                                    //COLOR ROW BY STATUS!
+                                    echo "<tr class=$rowNum>";
                                     echo '<td>';
                                     echo $rowHookUnits[$hookOptions['unitNameField']];
                                     echo '</td>';

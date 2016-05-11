@@ -144,6 +144,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 										</script>
 									</td>
 								</tr>
+            					<tr>
+            						<td>
+            							<b><?php echo __($guid, 'Active') ?> *</b><br/>
+            							<span class="emphasis small"></span>
+            						</td>
+            						<td class="right">
+            							<select name="active" id="active" class="standardWidth">
+            								<option value="Y"><?php echo __($guid, 'Yes') ?></option>
+            								<option value="N"><?php echo __($guid, 'No') ?></option>
+            							</select>
+            						</td>
+            					</tr>
 								<tr>
 									<td>
 										<b><?php echo __($guid, 'Ordering') ?> *</b><br/>

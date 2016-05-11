@@ -163,6 +163,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
 											</script>
 										</td>
 									</tr>
+        							<tr>
+        								<td>
+        									<b><?php echo __($guid, 'Active') ?> *</b><br/>
+        									<span class="emphasis small"></span>
+        								</td>
+        								<td class="right">
+                                            <select name="active" id="active" class="standardWidth">
+        										<option <?php if ($row['active'] == 'Y') { echo 'selected'; } ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
+        										<option <?php if ($row['active'] == 'N') { echo 'selected'; } ?> value="N"><?php echo __($guid, 'No') ?></option>
+        									</select>
+        								</td>
+        							</tr>
 									<tr>
 										<td>
 											<b><?php echo __($guid, 'Ordering') ?> *</b><br/>
@@ -364,7 +376,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
 									</tr>
                                 </table>
 
-                                
+
                                 <h3 class='bigTop'><?php echo __($guid, 'Advanced Options') ?></h3>
                                 <table class='smallIntBorder fullWidth' cellspacing='0'>
                                     <tr class='break'>

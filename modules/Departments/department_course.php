@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
 
             try {
                 $dataUnit = array('gibbonCourseID' => $gibbonCourseID);
-                $sqlUnit = 'SELECT gibbonUnitID, gibbonUnit.name, gibbonUnit.description, attachment FROM gibbonUnit JOIN gibbonCourse ON (gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonUnit.gibbonCourseID=:gibbonCourseID ORDER BY ordering, name';
+                $sqlUnit = 'SELECT gibbonUnitID, gibbonUnit.name, gibbonUnit.description, attachment FROM gibbonUnit JOIN gibbonCourse ON (gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonUnit.gibbonCourseID=:gibbonCourseID AND active=\'Y\' ORDER BY ordering, name';
                 $resultUnit = $connection2->prepare($sqlUnit);
                 $resultUnit->execute($dataUnit);
             } catch (PDOException $e) {
