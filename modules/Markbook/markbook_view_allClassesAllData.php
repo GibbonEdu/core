@@ -136,11 +136,6 @@
         $pageNum = (isset($_GET['page']))? $_GET['page'] : 0;
         $markbook->getColumns( $pageNum );
 
-        //Work out details for external assessment display
-        if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/externalAssessment_details.php')) {
-            $markbook->cacheExternalAssessments( $courseName, $gibbonYearGroupIDList );
-        }
-
         //Cache all personalized target data 
         $markbook->cachePersonalizedTargets( $gibbonCourseClassID );
 
@@ -148,6 +143,12 @@
         if ($markbook->getSetting('enableColumnWeighting') == 'Y') {
             $markbook->cacheWeightings( );
         }
+
+        //Work out details for external assessment display
+        if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/externalAssessment_details.php')) {
+            $markbook->cacheExternalAssessments( $courseName, $gibbonYearGroupIDList );
+        }
+        
 
         echo '<h3>';
         echo __($guid, 'Results');
@@ -320,10 +321,16 @@
                 }
             }
 
-            if ( empty($markbook->getWeightingByType($columnType))) {
-                $weightInfo .= __($guid, 'Term Weighting').' '.$markbook->getWeightingByType($columnType).'<br/>';
-                $includeMarks = false;
+            if ($markbook->getSetting('enableTypeWeighting') == 'Y' ) {
+                $info .= '<li>'. __($guid, 'Type Weighting').' '.floatval( $markbook->getWeightingByType($columnType) ).'</li>';
+
+                if ( empty($markbook->getWeightingByType($columnType))) {
+                    $weightInfo .= __($guid, 'Type Weighting').' '.floatval( $markbook->getWeightingByType($columnType) ).'<br/>';
+                    $includeMarks = false;
+                }
             }
+
+            
 
             if ($markbook->getReportableByType($columnType) == 'N'  ) {
                 $weightInfo .= __($guid, 'Reportable').'? '.$markbook->getReportableByType($columnType).'<br/>';
@@ -454,42 +461,62 @@
             echo '</th>';
         }
 
+        $title = sprintf(__($guid, 'Weighted mean of all marked columns using Primary Assessment Scale for %1$s, if numeric'), 
+                        $markbook->getSetting('attainmentName') );
         
         //Show weighted scrore
-        if ($markbook->getSetting('enableColumnWeighting') == 'Y') {
+        if ($markbook->getSetting('enableColumnWeighting') == 'Y' && $columnFilter != 'unmarked') {
 
             // Display headings for overall term and category averages
             if ($columnFilter == 'averages') {
-                echo "<th class='dataColumn notdraggable dragtable-drag-boundary' data-header='weighting'>";
-                    echo '<div class="verticalText">' . __($guid, 'Overall') . '</div>';
-                echo '</th>';
+                
+                // Display all used column types
+                if ($markbook->getSetting('enableTypeWeighting') == 'Y' ) {
+                    if ( ($markbook->getSetting('enableGroupByTerm') == 'Y' && $gibbonSchoolYearTermID > 0) || 
+                         ($markbook->getSetting('enableGroupByTerm') == 'N' && $gibbonSchoolYearTermID <= 0) ) {
+                        foreach ($markbook->getColumnTypes('term') as $type) {
+                            echo "<th class='dataColumn notdraggable dragtable-drag-boundary' data-header='final'>";
+                            echo '<div class="verticalText">' . $markbook->getTypeDescription($type) . '</div>';
+                            echo '</th>';
+                        }
+                    }
+                }
 
-                $currentTerms = $markbook->getCurrentTerms();
-                if (count($currentTerms) > 0) {
-                    foreach ($currentTerms as $gibbonSchoolYearTermID) {
+                // Display all used terms
+                if ( ($markbook->getSetting('enableGroupByTerm') == 'Y' && $gibbonSchoolYearTermID <= 0) ) {
+                    foreach ($markbook->getCurrentTerms() as $term) {
                         echo "<th class='dataColumn notdraggable dragtable-drag-boundary' data-header='final'>";
-                        echo '<div class="verticalText">' .__($guid, 'Term') . ' ' . $gibbonSchoolYearTermID . '</div>';
+                        echo '<div class="verticalText">' . $term['name'] . '</div>';
+                        echo '</th>';
+                    }
+                }
+            }
+
+            echo "<th class='dataColumn dataDivider notdraggable dragtable-drag-boundary' data-header='weighting'>";
+            echo "<div class='verticalText' title='$title'>";
+
+            if ($markbook->getSetting('enableGroupByTerm') == 'Y' && $gibbonSchoolYearTermID > 0) {
+                echo $_SESSION[$guid]['markbookTermName'] .'<br/>';
+            }
+            else {
+                echo __($guid, 'Cumulative').'<br/>';
+            }
+            echo '</div>';
+            echo '</th>';
+            
+
+            if ($markbook->getSetting('enableTypeWeighting') == 'Y' && count($markbook->getColumnTypes('year')) > 0 && $gibbonSchoolYearTermID <= 0) {
+
+                if ($columnFilter == 'averages' && $gibbonSchoolYearTermID <= 0) {
+                    foreach ($markbook->getColumnTypes('year') as $type) {
+                        echo "<th class='dataColumn notdraggable dragtable-drag-boundary' data-header='final'>";
+                        echo '<div class="verticalText">' . $markbook->getTypeDescription($type) . '</div>';
                         echo '</th>';
                     }
                 }
 
                 echo "<th class='dataColumn notdraggable dragtable-drag-boundary' data-header='final'>";
                     echo '<div class="verticalText">' .__($guid, 'Final Grade') . '</div>';
-                echo '</th>';
-            } else {
-                echo "<th class='dataColumn notdraggable dragtable-drag-boundary' data-header='weighting'>";
-               
-                $title = sprintf(__($guid, 'Weighted mean of all marked columns using Primary Assessment Scale for %1$s, if numeric'), 
-                        $markbook->getSetting('attainmentName') );
-
-                echo "<div class='verticalText' title='$title'>";
-
-                if ($markbook->getSetting('enableGroupByTerm') == 'Y' && $gibbonSchoolYearTermID > 0) {
-                    echo __($guid, 'Term&nbsp;Total').'<br/>';
-                } else {
-                    echo __($guid, 'Total').'<br/>';
-                }
-                echo '</div>';
                 echo '</th>';
             }
             
@@ -682,10 +709,6 @@
                         }
 
                         echo "</td>";
-                    	// if ($column->displayAttainment()) echo "<td class='medColumn'></td>";
-                    	// if ($column->displayEffort()) echo "<td class='medColumn'></td>";
-                    	// if ($column->displayComment()) echo "<td class='largeColumn'></td>";
-                    	// if ($column->displayUploadedResponse()) echo "<td class='smallColumn'></td>";
                     }
 
                     if ($column->displaySubmission()) {
@@ -749,35 +772,56 @@
 
                 
                 //Calculate and output weighted totals
-                if ($markbook->getSetting('enableColumnWeighting') == 'Y') {
-
+                if ($markbook->getSetting('enableColumnWeighting') == 'Y' && $columnFilter != 'unmarked') {
+                    
                     // Display overall term and category averages
                     if ($columnFilter == 'averages') {
-                        echo '<td class="dataColumn">';
-                            echo $markbook->formattedAverage( $markbook->getOverallAverage($rowStudents['gibbonPersonID']) );
-                        echo '</td>';
+                        
+                        if ($markbook->getSetting('enableTypeWeighting') == 'Y' ) {
+                            if ( ($markbook->getSetting('enableGroupByTerm') == 'Y' && $gibbonSchoolYearTermID > 0) || 
+                                 ($markbook->getSetting('enableGroupByTerm') == 'N' && $gibbonSchoolYearTermID <= 0) ) {
 
-                        $currentTerms = $markbook->getCurrentTerms();
-                        if (count($currentTerms) > 0) {
-                            foreach ($currentTerms as $gibbonSchoolYearTermID) {
+                                // Display all used column types
+                                foreach ($markbook->getColumnTypes('term') as $type) {
+                                    echo '<td class="dataColumn">';
+                                        echo $markbook->formattedAverage( $markbook->getTypeAverage($rowStudents['gibbonPersonID'], $gibbonSchoolYearTermID, $type) );
+                                    echo '</td>';
+                                }
+                            }
+                        }
+
+                        if ( ($markbook->getSetting('enableGroupByTerm') == 'Y' && $gibbonSchoolYearTermID <= 0) ) {
+                            foreach ($markbook->getCurrentTerms() as $term) {
                                 echo '<td class="dataColumn">';
-                                    echo $markbook->formattedAverage( $markbook->getTermAverage($rowStudents['gibbonPersonID'], $gibbonSchoolYearTermID) );
+                                    echo $markbook->formattedAverage( $markbook->getTermAverage($rowStudents['gibbonPersonID'], $term['gibbonSchoolYearTermID']) );
+                                echo '</td>';
+                            }
+                        }
+                    }
+
+
+                    echo '<td class="dataColumn dataDivider">';
+                    if ($markbook->getSetting('enableGroupByTerm') == 'Y' && $gibbonSchoolYearTermID > 0) {
+                        $average = $markbook->getTermAverage($rowStudents['gibbonPersonID'], $gibbonSchoolYearTermID);
+                    } else {
+                        $average = $markbook->getOverallAverage($rowStudents['gibbonPersonID']);
+                    }
+                    echo $markbook->formattedAverage($average);
+                    echo '</td>';
+                    
+
+                    if ($markbook->getSetting('enableTypeWeighting') == 'Y' && count($markbook->getColumnTypes('year')) > 0 && $gibbonSchoolYearTermID <= 0) {
+
+                        if ($columnFilter == 'averages') {
+                            foreach ($markbook->getColumnTypes('year') as $type) {
+                                echo '<td class="dataColumn">';
+                                    echo $markbook->formattedAverage( $markbook->getTypeAverage($rowStudents['gibbonPersonID'], 'endOfYear', $type) );
                                 echo '</td>';
                             }
                         }
 
                         echo '<td class="dataColumn">';
-                            echo $markbook->formattedAverage( $markbook->getFinalGradeAverage($rowStudents['gibbonPersonID']) );
-                        echo '</td>';
-                    } else {
-
-                        echo '<td class="dataColumn">';
-                        if ($markbook->getSetting('enableGroupByTerm') == 'Y' && $gibbonSchoolYearTermID > 0) {
-                            $average = $markbook->getTermAverage($rowStudents['gibbonPersonID'], $gibbonSchoolYearTermID);
-                        } else {
-                            $average = $markbook->getFinalGradeAverage($rowStudents['gibbonPersonID']);
-                        }
-                        echo $markbook->formattedAverage($average);
+                        echo $markbook->formattedAverage($markbook->getFinalGradeAverage($rowStudents['gibbonPersonID']));
                         echo '</td>';
                     }
                 }

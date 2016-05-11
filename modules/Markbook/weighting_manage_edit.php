@@ -186,6 +186,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
                             </tr>
                             <tr>
                                 <td> 
+                                    <b><?php echo __($guid, 'Percent of') ?> *</b><br/>
+                                    <span class="emphasis small"></span>
+                                </td>
+                                <td> 
+                                    <select name="calculate" id="calculate" class='standardWidth'>
+                                        <option value="term" <?php echo ($row2['calculate'] == 'term')? 'selected' : ''; ?>>
+                                        <?php echo __($guid, 'Cumulative Average') ?></option>
+                                        <option value="year" <?php echo ($row2['calculate'] == 'year')? 'selected' : ''; ?>>
+                                        <?php echo __($guid, 'Final Grade') ?></option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td> 
                                     <b><?php echo __($guid, 'Reportable?') ?> *</b><br/>
                                     <span class="emphasis small"></span>
                                 </td>
@@ -195,22 +209,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
                                         <?php echo __($guid, 'Yes') ?></option>
                                         <option value="N" <?php echo ($row2['reportable'] == 'N')? 'selected' : ''; ?>>
                                         <?php echo __($guid, 'No') ?></option>
-                                    </select>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td> 
-                                    <b><?php echo __($guid, 'Calculate') ?> *</b><br/>
-                                    <span class="emphasis small"></span>
-                                </td>
-                                <td> 
-                                    <select name="calculate" id="calculate" class='standardWidth'>
-                                    <?php if (getSettingByScope($connection2, 'Markbook', 'enableGroupByTerm') == 'Y') { ?>
-                                        <option value="term" <?php echo ($row2['calculate'] == 'term')? 'selected' : ''; ?>>
-                                        <?php echo __($guid, 'Per Term') ?></option>
-                                    <?php } ?>
-                                        <option value="year" <?php echo ($row2['calculate'] == 'year')? 'selected' : ''; ?>>
-                                        <?php echo __($guid, 'Whole Year') ?></option>
                                     </select>
                                 </td>
                             </tr>

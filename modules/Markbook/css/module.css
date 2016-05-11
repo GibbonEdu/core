@@ -65,8 +65,7 @@ th.dataColumn {
 	padding-bottom: 25px !important;
 }
 
-
-.dataColumn:last-child {
+.dataColumn.dataDivider {
 	border-left: 1px solid #666;
 }
 

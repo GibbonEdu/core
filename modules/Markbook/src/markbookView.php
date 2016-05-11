@@ -68,14 +68,9 @@ class markbookView
      * Weightings
      * @var array
      */
-    protected $categoryWeightings;
-	protected $weightedMarkbookEntry;
-
+    protected $markbookWeights;
     protected $weightedAverages;
 
-    protected $termAverages;
-    protected $endOfYearAverages;
-    
     /**
      * Filters
      * @var array
@@ -88,9 +83,8 @@ class markbookView
      * @var array
      */
     protected $columns = array();
-
-    public $terms = array();
-    public $categories = array();
+    protected $terms = array();
+    protected $types = array();
 
 	public $gibbonCourseClassID;
 
@@ -127,6 +121,7 @@ class markbookView
 		$this->settings['enableColumnWeighting'] = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'enableColumnWeighting');
         $this->settings['enableRawAttainment'] = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'enableRawAttainment');
         $this->settings['enableGroupByTerm'] = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'enableGroupByTerm');
+        $this->settings['enableTypeWeighting'] = 'N';
 
 		// Get alternative header names
 		$attainmentAltName = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'attainmentAlternativeName');
@@ -253,31 +248,11 @@ class markbookView
 	    }
     }
 
-    public function getWeightingForStudent( $gibbonPersonID ) {
-    	
-        $output = '';
-        $totalWeight = 0;
-        $cummulativeWeightedScore = 0;
-
-        if (!isset($this->weightedMarkbookEntries[$gibbonPersonID])) return $output;
-
-        foreach ($this->weightedMarkbookEntries[$gibbonPersonID] as $weighting) {
-            $totalWeight += $weighting['weight'];
-            $cummulativeWeightedScore += ($weighting['value'] * $weighting['weight']);
-        }
-        
-        if ($totalWeight > 0) {
-            $output = round($cummulativeWeightedScore / $totalWeight, 0);
-            $output = ($weighting['percent'])? $output.'%' : $output;
-        }
-
-        return $output;
-    }
-
     public function formattedAverage( $average ) {
+        if ($average === '') return $average;
+
         $PAS = $this->getPrimaryAssessmentScale();
-        $percent = ( stripos($PAS['name'], 'percent') !== false || $PAS['nameShort'] == '%')? '%' : '';
-        return "<span title='".round($average, 2)."'>". round($average, 0) ."$percent</span>";
+        return "<span title='".round($average, 2)."'>". round($average, 0) . $PAS['percent'] ."</span>";
     }
 
     public function getTypeAverage( $gibbonPersonID, $gibbonSchoolYearTermID, $type ) {
@@ -301,21 +276,28 @@ class markbookView
     }
 
     public function getTypeDescription( $type ) {
-        if (isset($this->categoryWeightings[$type])) {
-            return '<span title="'.floatval($this->categoryWeightings[$type]['weighting']).'% of '.ucfirst($this->categoryWeightings[$type]['calculate']).'">' . $this->categoryWeightings[$type]['description'] . '<span>';
-        } else {
-            return $type;
-        }
-        return (isset($this->categoryWeightings[$type]))? $this->categoryWeightings[$type]['description'] : $type;
+        return (isset($this->markbookWeights[$type]))? $this->markbookWeights[$type]['description'] : $type;
     }
 
     public function getWeightingByType( $type ) {
-        return (isset($this->categoryWeightings[$type]))? $this->categoryWeightings[$type]['weighting'] : 1;
+        if (isset($this->markbookWeights[$type])) {
+            if ($this->markbookWeights[$type]['reportable'] == 'Y') {
+                return $this->markbookWeights[$type]['weighting'];
+            } else {
+                return 0;
+            }
+        } else {
+            return 1;
+        }
     }
 
     public function getReportableByType( $type ) {
-        return (isset($this->categoryWeightings[$type]))? $this->categoryWeightings[$type]['reportable'] : 1;
+        return (isset($this->markbookWeights[$type]))? $this->markbookWeights[$type]['reportable'] : 1;
     }
+
+    public function getColumnTypes( $calculate = 'year' ) {
+        return (isset($this->types[$calculate]))? $this->types[$calculate] : array();
+    } 
 
     public function getCurrentTerms() {
         return (isset($this->terms))? $this->terms : array();
@@ -323,9 +305,9 @@ class markbookView
 
     protected function calculateWeightedAverages( ) {
 
-        foreach($this->termAverages as $gibbonPersonID => $averages) {
+        foreach($this->rawAverages as $gibbonPersonID => $averages) {
 
-            if (count($averages) < 1) continue;
+            if (count($averages) == 0) continue;
 
             $weightedAverages = array();
             
@@ -352,7 +334,7 @@ class markbookView
                 }
 
                 $termWeight = 1;
-                $termAverage = ($termTotal > 0)? ( $termCumulative / $termTotal ) : 0;
+                $termAverage = ($termTotal > 0)? ( $termCumulative / $termTotal ) : '';
 
                 $weightedAverages['term'][$termID] = $termAverage;
 
@@ -378,17 +360,17 @@ class markbookView
                 }
             }
 
-            $weightedAverages['endOfYear'] = ($finalTotal > 0)? ( $finalCumulative / $finalTotal ) : 0;
+            $weightedAverages['endOfYear'] = ($finalTotal > 0)? ( $finalCumulative / $finalTotal ) : '';
 
             $overallWeight = min(100.0, max(0.0, 100.0 - $finalTotal));
-            $overallAverage = ( $overallCumulative / $overallTotal );
+            $overallAverage = ($overallTotal > 0)? ( $overallCumulative / $overallTotal ) : '';
 
             $weightedAverages['allTerms'] = $overallAverage;
 
             $finalTotal += $overallWeight;
             $finalCumulative += ($overallAverage * $overallWeight);
 
-            $weightedAverages['finalGrade'] = ($finalTotal > 0)? ( $finalCumulative / $finalTotal ) : 0;
+            $weightedAverages['finalGrade'] = ($finalTotal > 0)? ( $finalCumulative / $finalTotal ) : '';
 
             $this->weightedAverages[$gibbonPersonID] = $weightedAverages;
         }
@@ -396,7 +378,7 @@ class markbookView
 
     public function cacheWeightings( ) {
 
-        $this->categoryWeightings = array();
+        $this->markbookWeights = array();
 
         try {
             $data = array('gibbonCourseClassID' => $this->gibbonCourseClassID);
@@ -407,14 +389,17 @@ class markbookView
         }
 
         if ($resultWeights->rowCount() > 0) {
+            $this->settings['enableTypeWeighting'] = 'Y';
+
             while ($rowWeightings = $resultWeights->fetch()) {
-                $this->categoryWeightings[ $rowWeightings['type'] ] = $rowWeightings;
+                $this->markbookWeights[ $rowWeightings['type'] ] = $rowWeightings;
             }
         }
 
+        $this->rawAverages = array();
 
-    	$this->weightedMarkbookEntries = array();
-        $this->termAverages = array();
+        $typesUsed = array();
+        $termsUsed = array();
 
         try {
             $data = array('gibbonCourseClassID' => $this->gibbonCourseClassID);
@@ -431,10 +416,17 @@ class markbookView
                 }
 
                 $gibbonPersonID = $entry['gibbonPersonIDStudent'];
-                $type = (isset($entry['type']))? $entry['type'] : 'Unknown';
+
+                if ( isset($entry['type']) ) {
+                    $type = $entry['type'];
+                    $typesUsed[] = $type;
+                } else {
+                    $type = 'Unknown';
+                }
 
                 if ($this->settings['enableGroupByTerm'] == 'Y' && isset($entry['gibbonSchoolYearTermID']) ) {
                     $term = $entry['gibbonSchoolYearTermID'];
+                    $termsUsed[] = $term;
                 } else {
                     $term = 0;
                 }
@@ -442,27 +434,56 @@ class markbookView
                 $weight = floatval($entry['attainmentWeighting']);
                 $value = floatval($entry['attainmentValue']);
 
-                if (isset($this->categoryWeightings[$type]) && $this->categoryWeightings[$type]['calculate'] == 'year') {
+                if (isset($this->markbookWeights[$type]) && $this->markbookWeights[$type]['calculate'] == 'year') {
                     $term = 'endOfYear';
                 }
 
-                if (isset($this->termAverages[$gibbonPersonID][$term][$type])) {
-                    $this->termAverages[$gibbonPersonID][$term][$type]['total'] += $weight;
-                    $this->termAverages[$gibbonPersonID][$term][$type]['cumulative'] += ($value * $weight);
+                if (isset($this->rawAverages[$gibbonPersonID][$term][$type])) {
+                    $this->rawAverages[$gibbonPersonID][$term][$type]['total'] += $weight;
+                    $this->rawAverages[$gibbonPersonID][$term][$type]['cumulative'] += ($value * $weight);
                 } else {
-                    $this->termAverages[$gibbonPersonID][$term][$type] = array(
+                    $this->rawAverages[$gibbonPersonID][$term][$type] = array(
                         'total' => $weight,
                         'cumulative' => ($value * $weight),
                     );
                 }
-
-                $this->categories[] = $type;
-                $this->terms[] = $term;
+                
             }
         }
 
-        $this->categories = array_unique($this->categories);
-        $this->terms = array_unique($this->terms);
+
+        if ($this->settings['enableTypeWeighting'] == 'Y' && count($typesUsed) > 0) {
+            $typesUsed = array_unique($typesUsed);
+
+            foreach ($typesUsed as $type) {
+                if (isset($this->markbookWeights[$type])) {
+                    $this->types[ $this->markbookWeights[$type]['calculate'] ][] = $type;
+                } else {
+                    $this->types['year'][] = $type;
+                }
+            }
+            
+        }
+
+        if ($this->settings['enableGroupByTerm'] == 'Y' && count($termsUsed) > 0) {
+            $termsUsed = array_unique($termsUsed);
+            $this->terms = array();
+
+            try {
+                $data=array("gibbonSchoolYearID"=>$_SESSION[$this->config->get('guid')]['gibbonSchoolYearID']);
+                $sql="SELECT gibbonSchoolYearTermID, name, UNIX_TIMESTAMP(firstDay) AS firstTime, UNIX_TIMESTAMP(lastDay) AS lastTime FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber" ;
+                $resultTerms=$this->pdo->executeQuery($data, $sql);
+            }
+            catch(PDOException $e) { $this->error( $e->getMessage() ); }
+
+            if ($resultTerms->rowCount() > 0) {
+                while ($row = $resultTerms->fetch()) {
+                    if (in_array($row['gibbonSchoolYearTermID'], $termsUsed)) {
+                        $this->terms[] = $row;
+                    }
+                }
+            }
+        }
 
 
         $this->calculateWeightedAverages();
@@ -480,7 +501,9 @@ class markbookView
         } catch (PDOException $e) { $this->error( $e->getMessage() ); }
 
         if ($result->rowCount() == 1) {
-            $this->primaryAssessmentScale = $result->fetch();
+            $PAS = $result->fetch();
+            $this->primaryAssessmentScale = $PAS;
+            $this->primaryAssessmentScale['percent'] = ( stripos($PAS['name'], 'percent') !== false || $PAS['nameShort'] == '%')? '%' : '';
         }
 
         return $this->primaryAssessmentScale;

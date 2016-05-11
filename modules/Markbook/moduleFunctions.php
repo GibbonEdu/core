@@ -78,6 +78,9 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
             $_SESSION[$guid]['markbookTerm'] = $selectTerm;
             $_SESSION[$guid]['markbookTermName'] = $selectTermName;
         }
+    } else {
+        $_SESSION[$guid]['markbookTerm'] = 0;
+        $_SESSION[$guid]['markbookTermName'] = __($guid, 'All Columns');
     }
 
     $selectFilter = (isset($_SESSION[$guid]['markbookFilter']))? $_SESSION[$guid]['markbookFilter'] : 0;

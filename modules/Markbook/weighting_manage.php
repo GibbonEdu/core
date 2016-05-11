@@ -98,21 +98,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.
                 echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Manage').' '.$row['course'].'.'.$row['class'].' '.__($guid, ' Weightings').'</div>';
                 echo '</div>';
 
-                //Add multiple columns
-                // if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.php')) {
-                //     $highestAction2 = getHighestGroupedAction($guid, '/modules/Markbook/weighting_manage.php', $connection2);
-                //     if ($highestAction2 == 'Manage Weightings_everything') {
-
-                //         //Check highest role in any department
-                //         $isCoordinator = isDepartmentCoordinator( $pdo, $_SESSION[$guid]['gibbonPersonID'] );
-                //         if ($isCoordinator == true or $highestAction2 == 'Edit Markbook_multipleClassesAcrossSchool' or $highestAction2 == 'Edit Markbook_everything') {
-                //             echo "<div class='linkTop'>";
-                //             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_addMulti.php&gibbonCourseClassID=$gibbonCourseClassID'>".__($guid, 'Add Multiple Records')."<img style='margin-left: 5px' title='".__($guid, 'Add Multiple Records')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new_multi.png'/></a>";
-                //             echo '</div>';
-                //         }
-                //     }
-                // }
-
                 if (isset($_GET['return'])) {
                     returnProcess($guid, $_GET['return'], null, null);
                 }
@@ -120,17 +105,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.
                 //Get teacher list
                 $teacherList = getTeacherList( $pdo, $gibbonCourseClassID );
                 $teaching = (isset($teacherList[ $_SESSION[$guid]['gibbonPersonID'] ]) );
-
-                // if (!empty($teacherList)) {
-                //     echo '<h3>';
-                //     echo __($guid, 'Teachers');
-                //     echo '</h3>';
-                //     echo '<ul>';
-                //     foreach ($teacherList as $teacher) {
-                //         echo '<li>'. $teacher . '</li>';
-                //     }
-                //     echo '</ul>';
-                // }
 
                 //Print mark
                 echo '<h3>';
@@ -152,8 +126,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.
                     echo '</div>';
                 }
 
-                $enableGroupByTerm = getSettingByScope($connection2, 'Markbook', 'enableGroupByTerm');
-
                 if ($result->rowCount() < 1) {
                     echo "<div class='error'>";
                     echo __($guid, 'There are no records to display.');
@@ -171,10 +143,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.
                     echo __($guid, 'Weighting');
                     echo '</th>';
                     echo '<th>';
-                    echo __($guid, 'Reportable?');
+                    echo __($guid, 'Percent of');
                     echo '</th>';
                     echo '<th>';
-                    echo __($guid, 'Calculate');
+                    echo __($guid, 'Reportable?');
                     echo '</th>';
                     echo '<th style="width:80px">';
                     echo __($guid, 'Actions');
@@ -188,7 +160,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.
                     $weightings = $result->fetchAll();
                     foreach ($weightings as $row) {
 
-                        if ($enableGroupByTerm == 'Y' && $row['calculate'] == 'term' && $row['reportable'] == 'Y') {
+                        if ($row['calculate'] == 'term' && $row['reportable'] == 'Y') {
                             $totalTermWeight += floatval($row['weighting']);
                         } else if ($row['calculate'] == 'year' && $row['reportable'] == 'Y') {
                             $totalYearWeight += floatval($row['weighting']);
@@ -205,10 +177,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.
                         echo floatval($row['weighting']).'%';
                         echo '</td>';
                         echo '<td>';
-                        echo ($row['reportable'] == 'Y')? 'Yes' : 'No';
+                        echo ($row['calculate'] == 'term')? __($guid, 'Cumulative Average') : __($guid, 'Final Grade');
                         echo '</td>';
                         echo '<td>';
-                        echo ($row['calculate'] == 'term')? 'Per Term' : 'Whole Year';
+                        echo ($row['reportable'] == 'Y')? __($guid, 'Yes') : __($guid, 'No');
                         echo '</td>';
                         echo '<td>';
                         echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/weighting_manage_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookWeightID=".$row['gibbonMarkbookWeightID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
@@ -222,15 +194,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.
 
 
                     // Sample term calculation
-                    if ($enableGroupByTerm == 'Y' && $totalTermWeight > 0) {
+                    if ($totalTermWeight > 0) {
 
                         echo '<h4>';
-                        echo __($guid, 'Sample Per-Term Calculation');
+                        echo __($guid, 'Sample Calculation') .': '. __($guid, 'Cumulative Average');
                         echo '</h4>';
 
                         if ($totalTermWeight != 100) {
                             echo "<div class='warning'>";
-                            printf ( __($guid, 'Total per-term weighting is %s. Calculated averages may not be accurate if the total weighting does not add up to 100%%.'), floatval($totalTermWeight).'%' );
+                            printf ( __($guid, 'Total cumulative weighting is %s. Calculated averages may not be accurate if the total weighting does not add up to 100%%.'), floatval($totalTermWeight).'%' );
                             echo '</div>';
                         }
 
@@ -251,19 +223,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.
                         echo '</tr>';
                         echo '<tr>';
                             echo '<td style="text-align:right;">=</td>';
-                            echo '<td style="text-align:left">'. __($guid, 'Average per Term') .'</td>';
+                            echo '<td style="text-align:left">'. __($guid, 'Cumulative Average') .'</td>';
                         echo '</tr>';
                         echo '</table><br/>';
                     }
 
                     if ($totalYearWeight > 0) {
                         echo '<h4>';
-                        echo __($guid, 'Sample Final Grade Calculation');
+                        echo __($guid, 'Sample Calculation') .': '. __($guid, 'Final Grade');
                         echo '</h4>';
 
                         if ($totalYearWeight >= 100 || (100 - $totalYearWeight) <= 0) {
                             echo "<div class='warning'>";
-                            printf ( __($guid, 'Total end of year weighting is %s. Calculated averages may not be accurate if the total weighting is less than 0%% or exceeds 100%%.'), floatval($totalYearWeight).'%' );
+                            printf ( __($guid, 'Total final grade weighting is %s. Calculated averages may not be accurate if the total weighting  exceeds 100%%.'), floatval($totalYearWeight).'%' );
                             echo '</div>';
                         }
 
@@ -272,7 +244,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.
 
                         echo '<tr>';
                             echo '<td style="width:20px;"></td>';
-                            printf( '<td style="text-align:left">%s%% of %s</td>', floatval( max(0, 100 - $totalYearWeight) ), __($guid, 'Overall Average') );
+                            printf( '<td style="text-align:left">%s%% of %s</td>', floatval( max(0, 100 - $totalYearWeight) ), __($guid, 'Cumulative Average') );
                         echo '</tr>';
 
                         foreach ($weightings as $row) {
