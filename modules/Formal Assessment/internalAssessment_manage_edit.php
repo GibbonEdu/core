@@ -89,14 +89,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
                     ?>
 					<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/internalAssessment_manage_editProcess.php?gibbonInternalAssessmentColumnID=$gibbonInternalAssessmentColumnID&gibbonCourseClassID=$gibbonCourseClassID&address=".$_SESSION[$guid]['address'] ?>" enctype="multipart/form-data">
-						<table class='smallIntBorder fullWidth' cellspacing='0'>	
+						<table class='smallIntBorder fullWidth' cellspacing='0'>
 							<tr class='break'>
-								<td colspan=2> 
+								<td colspan=2>
 									<h3><?php echo __($guid, 'Basic Information') ?></h3>
 								</td>
 							</tr>
 							<tr>
-								<td style='width: 275px'> 
+								<td style='width: 275px'>
 									<b><?php echo __($guid, 'Class') ?> *</b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 								</td>
@@ -105,7 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Name') ?> *</b><br/>
 								</td>
 								<td class="right">
@@ -117,7 +117,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Description') ?> *</b><br/>
 								</td>
 								<td class="right">
@@ -134,7 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                         $types = explode(',', $types);
                         ?>
 								<tr>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Type') ?> *</b><br/>
 										<span class="emphasis small"></span>
 									</td>
@@ -164,7 +164,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 								}
 								?>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Attachment') ?></b><br/>
 									<?php if ($row2['attachment'] != '') { ?>
 									<span class="emphasis small"><?php echo __($guid, 'Will overwrite existing attachment.') ?></span>
@@ -191,17 +191,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 										$ext = $ext."'.".$rowExt['extension']."',";
 									}
 									?>
-							
+
 									<script type="text/javascript">
 										var file=new LiveValidation('file');
 										file.add( Validate.Inclusion, { within: [<?php echo $ext; ?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 									</script>
 								</td>
 							</tr>
-							
-							
+
+
 							<tr class='break'>
-								<td colspan=2> 
+								<td colspan=2>
 									<h3>
 										<?php echo __($guid, 'Assessment')  ?>
 									</h3>
@@ -212,7 +212,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 								$(document).ready(function(){
 									 $(".attainment").click(function(){
 										if ($('input[name=attainment]:checked').val()=="Y" ) {
-											$("#gibbonScaleIDAttainmentRow").slideDown("fast", $("#gibbonScaleIDAttainmentRow").css("display","table-row")); 
+											$("#gibbonScaleIDAttainmentRow").slideDown("fast", $("#gibbonScaleIDAttainmentRow").css("display","table-row"));
 										} else {
 											$("#gibbonScaleIDAttainmentRow").css("display","none");
 										}
@@ -220,7 +220,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 								});
 							</script>
 							<tr>
-								<td> 
+								<td>
 									<b><?php if ($attainmentAlternativeName != '') {
 										echo sprintf(__($guid, 'Assess %1$s?'), $attainmentAlternativeName);
 									} else {
@@ -229,12 +229,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 									?> *</b><br/>
 								</td>
 								<td class="right">
-									<input <?php if ($row2['attainment'] == 'Y')) { echo 'checked'; } ?> type="radio" name="attainment" value="Y" class="attainment" /> <?php echo __($guid, 'Yes') ?>
-									<input <?php if ($row2['attainment'] == 'N')) { echo 'checked'; } ?> type="radio" name="attainment" value="N" class="attainment" /> <?php echo __($guid, 'No') ?>
+									<input <?php if ($row2['attainment'] == 'Y') { echo 'checked'; } ?> type="radio" name="attainment" value="Y" class="attainment" /> <?php echo __($guid, 'Yes') ?>
+									<input <?php if ($row2['attainment'] == 'N') { echo 'checked'; } ?> type="radio" name="attainment" value="N" class="attainment" /> <?php echo __($guid, 'No') ?>
 								</td>
 							</tr>
 							<tr id='gibbonScaleIDAttainmentRow' <?php if ($row2['attainment'] == 'N') { echo "style='display: none'"; } ?>>
-								<td> 
+								<td>
 									<b><?php if ($attainmentAlternativeName != '') {
 										echo $attainmentAlternativeName.' '.__($guid, 'Scale');
 									} else {
@@ -260,7 +260,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 												echo "<option value='".$rowSelect['gibbonScaleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
 											}
 										}
-										?>				
+										?>
 									</select>
 								</td>
 							</tr>
@@ -269,8 +269,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 								$(document).ready(function(){
 									 $(".effort").click(function(){
 										if ($('input[name=effort]:checked').val()=="Y" ) {
-											$("#gibbonScaleIDEffortRow").slideDown("fast", $("#gibbonScaleIDEffortRow").css("display","table-row")); 
-											$("#gibbonRubricIDEffortRow").slideDown("fast", $("#gibbonRubricIDEffortRow").css("display","table-row")); 
+											$("#gibbonScaleIDEffortRow").slideDown("fast", $("#gibbonScaleIDEffortRow").css("display","table-row"));
+											$("#gibbonRubricIDEffortRow").slideDown("fast", $("#gibbonRubricIDEffortRow").css("display","table-row"));
 
 										} else {
 											$("#gibbonScaleIDEffortRow").css("display","none");
@@ -280,7 +280,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 								});
 							</script>
 							<tr>
-								<td> 
+								<td>
 									<b><?php if ($effortAlternativeName != '') {
 										echo sprintf(__($guid, 'Assess %1$s?'), $effortAlternativeName);
 									} else {
@@ -289,12 +289,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 									?> *</b><br/>
 								</td>
 								<td class="right">
-									<input <?php if ($row2['effort'] == 'Y')) { echo 'checked'; } ?> type="radio" name="effort" value="Y" class="effort" /> <?php echo __($guid, 'Yes') ?>
-									<input <?php if ($row2['effort'] == 'N')) { echo 'checked'; } ?> type="radio" name="effort" value="N" class="effort" /> <?php echo __($guid, 'No') ?>
+									<input <?php if ($row2['effort'] == 'Y') { echo 'checked'; } ?> type="radio" name="effort" value="Y" class="effort" /> <?php echo __($guid, 'Yes') ?>
+									<input <?php if ($row2['effort'] == 'N') { echo 'checked'; } ?> type="radio" name="effort" value="N" class="effort" /> <?php echo __($guid, 'No') ?>
 								</td>
 							</tr>
 							<tr id='gibbonScaleIDEffortRow' <?php if ($row2['effort'] == 'N') { echo "style='display: none'"; } ?>>
-								<td> 
+								<td>
 									<b><?php if ($effortAlternativeName != '') {
 										echo $effortAlternativeName.' '.__($guid, 'Scale');
 									} else {
@@ -320,36 +320,36 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 												echo "<option value='".$rowSelect['gibbonScaleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
 											}
 										}
-										?>				
+										?>
 									</select>
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Include Comment?') ?> *</b><br/>
 								</td>
 								<td class="right">
-									<input <?php if ($row2['comment'] == 'Y')) { echo 'checked'; } ?> type="radio" name="comment" value="Y" class="comment" /> <?php echo __($guid, 'Yes') ?>
-									<input <?php if ($row2['comment'] == 'N')) { echo 'checked'; } ?> type="radio" name="comment" value="N" class="comment" /> <?php echo __($guid, 'No') ?>
+									<input <?php if ($row2['comment'] == 'Y') { echo 'checked'; } ?> type="radio" name="comment" value="Y" class="comment" /> <?php echo __($guid, 'Yes') ?>
+									<input <?php if ($row2['comment'] == 'N') { echo 'checked'; } ?> type="radio" name="comment" value="N" class="comment" /> <?php echo __($guid, 'No') ?>
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Include Uploaded Response?') ?> *</b><br/>
 								</td>
 								<td class="right">
-									<input <?php if ($row2['uploadedResponse'] == 'Y')) { echo 'checked'; } ?> type="radio" name="uploadedResponse" value="Y" class="uploadedResponse" /> <?php echo __($guid, 'Yes') ?>
-									<input <?php if ($row2['uploadedResponse'] == 'N')) { echo 'checked'; } ?> type="radio" name="uploadedResponse" value="N" class="uploadedResponse" /> <?php echo __($guid, 'No') ?>
+									<input <?php if ($row2['uploadedResponse'] == 'Y') { echo 'checked'; } ?> type="radio" name="uploadedResponse" value="Y" class="uploadedResponse" /> <?php echo __($guid, 'Yes') ?>
+									<input <?php if ($row2['uploadedResponse'] == 'N') { echo 'checked'; } ?> type="radio" name="uploadedResponse" value="N" class="uploadedResponse" /> <?php echo __($guid, 'No') ?>
 								</td>
 							</tr>
-							
+
 							<tr class='break'>
-								<td colspan=2> 
+								<td colspan=2>
 									<h3><?php echo __($guid, 'Access') ?></h3>
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Viewable to Students') ?> *</b><br/>
 									<span class="emphasis small"></span>
 								</td>
@@ -361,7 +361,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Viewable to Parents') ?> *</b><br/>
 									<span class="emphasis small"></span>
 								</td>
@@ -373,7 +373,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Go Live Date') ?></b><br/>
 									<span class="emphasis small"><?php echo __($guid, '1. Format') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
 										echo 'dd/mm/yyyy';
@@ -397,7 +397,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 										} else {
 											echo $_SESSION[$guid]['i18n']['dateFormat'];
 										}
-										?>." } ); 
+										?>." } );
 									</script>
 									 <script type="text/javascript">
 										$(function() {
