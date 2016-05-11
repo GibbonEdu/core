@@ -57,12 +57,17 @@ table.markbook thead tr.head {
 	min-height: 140px;
 }
 
-.dataColumn {
+th.dataColumn {
 	width: 40px;
 	min-width: 40px;
 	max-width: 40px;
 	vertical-align: bottom;
 	padding-bottom: 25px !important;
+}
+
+
+.dataColumn:last-child {
+	border-left: 1px solid #666;
 }
 
 .marksColumn {
@@ -287,11 +292,12 @@ select[id$="effortValue"] {
  *
  */
 
-
 .dragtable-drag-handle{
 	cursor: move;
 	height: 2px;
-	width: 30.5px;
+	width: 31px;
+	max-width: 31px;
+	min-width: 31px;
 	background: transparent;
 	margin: 4px auto 10px auto;
 	border-color: #bbbbbb;
@@ -341,26 +347,18 @@ select[id$="effortValue"] {
 /*
 	placeholder is just a name for the real table col
 */
-
-
 .dragtable-col-placeholder { 
-    /*border-left: 1px dotted black;
-    border-right: 1px dotted black; */
     border-left: 1px solid #666666 !important;
     border-right: 1px solid #666666 !important; 
     border-top: 0;
     border-bottom: 0;
-    /*border: 0;
-    box-shadow: 1px 3px 4px rgba(0,0,0,0.2) inset;*/
-
     color:#CCCCCC;
-    background: #CCCCCC !important; /*#EFEFEF*/
+    background: #CCCCCC !important;
     visibility: visible !important;
 }
 table .dragtable-col-placeholder:first-of-type{
 	border-top:1px solid #666666 !important;
 }
-
 
 .dragtable-col-placeholder * { 
     opacity: 0.0; 

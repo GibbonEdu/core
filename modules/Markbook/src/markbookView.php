@@ -301,6 +301,11 @@ class markbookView
     }
 
     public function getTypeDescription( $type ) {
+        if (isset($this->categoryWeightings[$type])) {
+            return '<span title="'.floatval($this->categoryWeightings[$type]['weighting']).'% of '.ucfirst($this->categoryWeightings[$type]['calculate']).'">' . $this->categoryWeightings[$type]['description'] . '<span>';
+        } else {
+            return $type;
+        }
         return (isset($this->categoryWeightings[$type]))? $this->categoryWeightings[$type]['description'] : $type;
     }
 
@@ -308,9 +313,13 @@ class markbookView
         return (isset($this->categoryWeightings[$type]))? $this->categoryWeightings[$type]['weighting'] : 1;
     }
 
-    public function getWeightedCategories() {
-        return (isset($this->categoryWeightings))? $this->categoryWeightings : array();
+    public function getReportableByType( $type ) {
+        return (isset($this->categoryWeightings[$type]))? $this->categoryWeightings[$type]['reportable'] : 1;
     }
+
+    public function getCurrentTerms() {
+        return (isset($this->terms))? $this->terms : array();
+    } 
 
     protected function calculateWeightedAverages( ) {
 
@@ -343,7 +352,7 @@ class markbookView
                 }
 
                 $termWeight = 1;
-                $termAverage = ( $termCumulative / $termTotal );
+                $termAverage = ($termTotal > 0)? ( $termCumulative / $termTotal ) : 0;
 
                 $weightedAverages['term'][$termID] = $termAverage;
 
@@ -369,7 +378,7 @@ class markbookView
                 }
             }
 
-            $weightedAverages['endOfYear'] = ( $finalCumulative / $finalTotal );
+            $weightedAverages['endOfYear'] = ($finalTotal > 0)? ( $finalCumulative / $finalTotal ) : 0;
 
             $overallWeight = min(100.0, max(0.0, 100.0 - $finalTotal));
             $overallAverage = ( $overallCumulative / $overallTotal );
@@ -379,7 +388,7 @@ class markbookView
             $finalTotal += $overallWeight;
             $finalCumulative += ($overallAverage * $overallWeight);
 
-            $weightedAverages['finalGrade'] = ( $finalCumulative / $finalTotal );
+            $weightedAverages['finalGrade'] = ($finalTotal > 0)? ( $finalCumulative / $finalTotal ) : 0;
 
             $this->weightedAverages[$gibbonPersonID] = $weightedAverages;
         }

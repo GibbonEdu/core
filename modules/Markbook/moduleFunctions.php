@@ -81,12 +81,12 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
     }
 
     $selectFilter = (isset($_SESSION[$guid]['markbookFilter']))? $_SESSION[$guid]['markbookFilter'] : 0;
-    $selectFilter = (isset($_GET['columnFilter']))? $_GET['columnFilter'] : $selectFilter;
+    $selectFilter = (isset($_GET['markbookFilter']))? $_GET['markbookFilter'] : $selectFilter;
 
     $_SESSION[$guid]['markbookFilter'] = $selectFilter;
 
     $output .= "&nbsp;&nbsp;&nbsp;<span>".__($guid, 'Show').": </span>";
-    $output .= "<select name='columnFilter' id='columnFilter' style='width:140px; float: none;'>";
+    $output .= "<select name='markbookFilter' id='markbookFilter' style='width:140px; float: none;'>";
     $output .= "<option value=''>".__($guid, 'All Columns')."</option>";
 
     if ($enableGroupByTerm == 'Y' || $enableColumnWeighting == 'Y' ) {
