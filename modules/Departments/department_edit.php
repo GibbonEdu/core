@@ -97,55 +97,55 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
                                     echo "<div class='error'>".$e->getMessage().'</div>';
                                 }
 
-                if ($result->rowCount() < 1) {
-                    echo "<div class='error'>";
-                    echo __($guid, 'There are no records to display.');
-                    echo '</div>';
-                } else {
-                    echo '<i>'.__($guid, 'Warning: If you delete a resource, any unsaved changes to this planner entry will be lost!').'</i>';
-                    echo "<table cellspacing='0' style='width: 100%'>";
-                    echo "<tr class='head'>";
-                    echo '<th>';
-                    echo __($guid, 'Name');
-                    echo '</th>';
-                    echo '<th>';
-                    echo __($guid, 'Type');
-                    echo '</th>';
-                    echo '<th>';
-                    echo __($guid, 'Actions');
-                    echo '</th>';
-                    echo '</tr>';
+								if ($result->rowCount() < 1) {
+									echo "<div class='error'>";
+									echo __($guid, 'There are no records to display.');
+									echo '</div>';
+								} else {
+									echo '<i>'.__($guid, 'Warning: If you delete a resource, any unsaved changes to this planner entry will be lost!').'</i>';
+									echo "<table cellspacing='0' style='width: 100%'>";
+									echo "<tr class='head'>";
+									echo '<th>';
+									echo __($guid, 'Name');
+									echo '</th>';
+									echo '<th>';
+									echo __($guid, 'Type');
+									echo '</th>';
+									echo '<th>';
+									echo __($guid, 'Actions');
+									echo '</th>';
+									echo '</tr>';
 
-                    $count = 0;
-                    $rowNum = 'odd';
-                    while ($row = $result->fetch()) {
-                        if ($count % 2 == 0) {
-                            $rowNum = 'even';
-                        } else {
-                            $rowNum = 'odd';
-                        }
-                        ++$count;
+									$count = 0;
+									$rowNum = 'odd';
+									while ($row = $result->fetch()) {
+										if ($count % 2 == 0) {
+											$rowNum = 'even';
+										} else {
+											$rowNum = 'odd';
+										}
+										++$count;
 
-                                            //COLOR ROW BY STATUS!
-                                            echo "<tr class=$rowNum>";
-                        echo '<td>';
-                        if ($row['type'] == 'Link') {
-                            echo "<a target='_blank' href='".$row['url']."'>".$row['name'].'</a>';
-                        } else {
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/'.$row['url']."'>".$row['name'].'</a>';
-                        }
-                        echo '</td>';
-                        echo '<td>';
-                        echo $row['type'];
-                        echo '</td>';
-                        echo '<td>';
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/department_edit_resource_deleteProcess.php?gibbonDepartmentResourceID='.$row['gibbonDepartmentResourceID'].'&gibbonDepartmentID='.$row['gibbonDepartmentID'].'&address='.$_GET['q']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
-                        echo '</td>';
-                        echo '</tr>';
-                    }
-                    echo '</table>';
-                }
-                ?>
+										//COLOR ROW BY STATUS!
+										echo "<tr class=$rowNum>";
+										echo '<td>';
+										if ($row['type'] == 'Link') {
+											echo "<a target='_blank' href='".$row['url']."'>".$row['name'].'</a>';
+										} else {
+											echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/'.$row['url']."'>".$row['name'].'</a>';
+										}
+										echo '</td>';
+										echo '<td>';
+										echo $row['type'];
+										echo '</td>';
+										echo '<td>';
+										echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/department_edit_resource_deleteProcess.php?gibbonDepartmentResourceID='.$row['gibbonDepartmentResourceID'].'&gibbonDepartmentID='.$row['gibbonDepartmentID'].'&address='.$_GET['q']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+										echo '</td>';
+										echo '</tr>';
+									}
+									echo '</table>';
+								}
+								?>
 							</td>
 						</tr>
 
@@ -241,7 +241,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
 								 });
 							});
 							
-							</script>
+						</script>
 						<tr class='break'>
 							<td colspan=2> 
 								<h3><?php echo sprintf(__($guid, 'New Resource %1$s'), '1') ?></h3>
@@ -291,15 +291,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
                                     $resultExt->execute($dataExt);
                                 } catch (PDOException $e) {
                                 }
-                $ext = '';
-                while ($rowExt = $resultExt->fetch()) {
-                    $ext = $ext."'.".$rowExt['extension']."',";
-                }
-                ?>
+								$ext = '';
+								while ($rowExt = $resultExt->fetch()) {
+									$ext = $ext."'.".$rowExt['extension']."',";
+								}
+								?>
 								<script type="text/javascript">
 									var file1=new LiveValidation('file1');
 									file1.add( Validate.Inclusion, { within: [<?php echo $ext;
-                ?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+									?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 								</script>
 							</td>
 						</tr>
@@ -354,7 +354,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
 								<script type="text/javascript">
 									var file2=new LiveValidation('file2');
 									file2.add( Validate.Inclusion, { within: [<?php echo $ext;
-                ?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+                					?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 								</script>
 							</td>
 						</tr>
@@ -410,14 +410,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
 								<script type="text/javascript">
 									var file3=new LiveValidation('file3');
 									file3.add( Validate.Inclusion, { within: [<?php echo $ext;
-                ?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+                					?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 								</script>
 							</td>
 						</tr>
 						<tr>
 							<td class="right" colspan=2>
-								<input type="submit" value="<?php echo __($guid, 'Submit');
-                ?>">
+								<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 							</td>
 						</tr>
 					</table>

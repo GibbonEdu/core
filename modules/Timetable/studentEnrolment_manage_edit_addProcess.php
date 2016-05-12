@@ -32,8 +32,7 @@ date_default_timezone_set($_SESSION[$guid]['timezone']);
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
 $gibbonCourseID = $_GET['gibbonCourseID'];
 
-if ($gibbonCourseID == '' or $gibbonCourseClassID == '') {
-    echo 'Fatal error loading this page!';
+if ($gibbonCourseID == '' or $gibbonCourseClassID == '') { echo 'Fatal error loading this page!';
 } else {
     $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/studentEnrolment_manage_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID";
 

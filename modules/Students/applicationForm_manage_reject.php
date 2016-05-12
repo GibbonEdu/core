@@ -83,8 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 							<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php echo $gibbonSchoolYearID ?>" type="hidden">
 							<input name="gibbonApplicationFormID" id="gibbonApplicationFormID" value="<?php echo $gibbonApplicationFormID ?>" type="hidden">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Yes');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Yes'); ?>">
 						</td>
 					</tr>
 				</table>

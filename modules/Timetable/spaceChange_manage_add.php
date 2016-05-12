@@ -53,34 +53,55 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
         if ($step == 1) {
             echo '<h2>';
             echo __($guid, 'Step 1 - Choose Class');
-            echo '</h2>';
-            ?>
+            echo '</h2>'; ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/spaceChange_manage_add.php&step=2' ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Class') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<select name="gibbonCourseClassID" id="gibbonCourseClassID" class="standardWidth">
 								<option value='Please select...'><?php echo __($guid, 'Please select...') ?></option>
 								<?php
+                                echo "<optgroup label='--".__($guid, 'My Classes')."--'>";
                                 try {
-                                    if ($highestAction == 'Manage Space Changes_allClasses') {
-                                        $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                                        $sqlSelect = 'SELECT gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY course, class';
-                                    } else {
-                                        $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                                        $sqlSelect = 'SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID ORDER BY course, class';
-                                    }
+                                    $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                                    $sqlSelect = 'SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID ORDER BY course, class';
                                     $resultSelect = $connection2->prepare($sqlSelect);
                                     $resultSelect->execute($dataSelect);
-                                } catch (PDOException $e) {
+                                } catch (PDOException $e) {}
+                                while ($rowSelect = $resultSelect->fetch()) {
+                                    echo "<option value='".$rowSelect['gibbonCourseClassID']."'>".$rowSelect['course'].'.'.$rowSelect['class'].'</option>';
                                 }
-            while ($rowSelect = $resultSelect->fetch()) {
-                echo "<option value='".$rowSelect['gibbonCourseClassID']."'>".$rowSelect['course'].'.'.$rowSelect['class'].'</option>';
-            }
-            ?>
+                                echo "</optgroup>";
+                                if ($highestAction == 'Manage Facility Changes_allClasses') {
+                                    echo "<optgroup label='--".__($guid, 'All Classes')."--'>";
+                                    try {
+                                        $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                                        $sqlSelect = 'SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY course, class';
+                                        $resultSelect = $connection2->prepare($sqlSelect);
+                                        $resultSelect->execute($dataSelect);
+                                    } catch (PDOException $e) {}
+                                    while ($rowSelect = $resultSelect->fetch()) {
+                                        echo "<option value='".$rowSelect['gibbonCourseClassID']."'>".$rowSelect['course'].'.'.$rowSelect['class'].'</option>';
+                                    }
+                                    echo "</optgroup>";
+                                }
+                                if ($highestAction == 'Manage Facility Changes_myDepartment') {
+                                    echo "<optgroup label='--".__($guid, 'My Department')."--'>";
+                                    try {
+                                        $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                                        $sqlSelect = 'SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND (gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID AND role=\'Coordinator\') ORDER BY course, class';
+                                        $resultSelect = $connection2->prepare($sqlSelect);
+                                        $resultSelect->execute($dataSelect);
+                                    } catch (PDOException $e) { }
+                                    while ($rowSelect = $resultSelect->fetch()) {
+                                        echo "<option value='".$rowSelect['gibbonCourseClassID']."'>".$rowSelect['course'].'.'.$rowSelect['class'].'</option>';
+                                    }
+                                    echo "</optgroup>";
+                                }
+                                ?>
 							</select>
 							<script type="text/javascript">
 								var gibbonCourseClassID=new LiveValidation('gibbonCourseClassID');
@@ -90,13 +111,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
 					</tr>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit');?>">
 						</td>
 					</tr>
 				</table>
@@ -117,9 +136,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
             }
 
             try {
-                if ($highestAction == 'Manage Space Changes_allClasses') {
+                if ($highestAction == 'Manage Facility Changes_allClasses') {
                     $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonCourseClassID' => $gibbonCourseClassID);
                     $sqlSelect = 'SELECT gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class';
+                } else if ($highestAction == 'Manage Facility Changes_myDepartment') {
+                    $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonCourseClassID2' => $gibbonCourseClassID);
+                    $sqlSelect = '(SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID)
+                    UNION
+                    (SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID2 AND (gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID2 AND role=\'Coordinator\') AND gibbonCourseClassID=:gibbonCourseClassID2)';
                 } else {
                     $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonCourseClassID' => $gibbonCourseClassID);
                     $sqlSelect = 'SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class';
@@ -140,9 +164,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
                 $rowSelect = $resultSelect->fetch();
                 ?>
 				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/spaceChange_manage_addProcess.php' ?>">
-					<table class='smallIntBorder fullWidth' cellspacing='0'>	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>
 						<tr>
-							<td style='width: 275px'> 
+							<td style='width: 275px'>
 								<b><?php echo __($guid, 'Class') ?> *</b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 							</td>
@@ -151,7 +175,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Upcoming Class Slots') ?> *</b><br/>
 							</td>
 							<td class="right">
@@ -163,14 +187,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
                                         $sqlSelect = 'SELECT gibbonTTDayRowClass.gibbonTTDayRowClassID, gibbonTTColumnRow.name AS period, timeStart, timeEnd, gibbonTTDay.name AS day, gibbonTTDayDate.date, gibbonTTSpaceChangeID FROM gibbonTTDayRowClass JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) JOIN gibbonTTDay ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) LEFT JOIN gibbonTTSpaceChange ON (gibbonTTSpaceChange.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonTTSpaceChange.date=gibbonTTDayDate.date) WHERE gibbonTTDayRowClass.gibbonCourseClassID=:gibbonCourseClassID AND (gibbonTTDayDate.date>:date1 OR (gibbonTTDayDate.date=:date2 AND timeEnd>:time)) ORDER BY gibbonTTDayDate.date, timeStart';
                                         $resultSelect = $connection2->prepare($sqlSelect);
                                         $resultSelect->execute($dataSelect);
-                                    } catch (PDOException $e) {
+                                    } catch (PDOException $e) { }
+                                    while ($rowSelect = $resultSelect->fetch()) {
+                                        if ($rowSelect['gibbonTTSpaceChangeID'] == '') {
+                                            echo "<option value='".$rowSelect['gibbonTTDayRowClassID'].'-'.$rowSelect['date']."'>".dateConvertBack($guid, $rowSelect['date']).' ('.$rowSelect['day'].' - '.$rowSelect['period'].')</option>';
+                                        }
                                     }
-                while ($rowSelect = $resultSelect->fetch()) {
-                    if ($rowSelect['gibbonTTSpaceChangeID'] == '') {
-                        echo "<option value='".$rowSelect['gibbonTTDayRowClassID'].'-'.$rowSelect['date']."'>".dateConvertBack($guid, $rowSelect['date']).' ('.$rowSelect['day'].' - '.$rowSelect['period'].')</option>';
-                    }
-                }
-                ?>
+                                    ?>
 								</select>
 								<script type="text/javascript">
 									var gibbonCourseClassID=new LiveValidation('gibbonCourseClassID');
@@ -179,42 +202,40 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Facility') ?></b><br/>
 							</td>
 							<td class="right">
 								<select name="gibbonSpaceID" id="gibbonSpaceID" class="standardWidth">
 								<?php
                                 echo "<option value=''></option>";
-                try {
-                    $dataSelect = array();
-                    $sqlSelect = 'SELECT * FROM gibbonSpace ORDER BY name';
-                    $resultSelect = $connection2->prepare($sqlSelect);
-                    $resultSelect->execute($dataSelect);
-                } catch (PDOException $e) {
-                }
-                while ($rowSelect = $resultSelect->fetch()) {
-                    echo "<option value='".$rowSelect['gibbonSpaceID']."'>".htmlPrep($rowSelect['name']).'</option>';
-                }
-                ?>				
+                                try {
+                                    $dataSelect = array();
+                                    $sqlSelect = 'SELECT * FROM gibbonSpace ORDER BY name';
+                                    $resultSelect = $connection2->prepare($sqlSelect);
+                                    $resultSelect->execute($dataSelect);
+                                } catch (PDOException $e) {
+                                }
+                                while ($rowSelect = $resultSelect->fetch()) {
+                                    echo "<option value='".$rowSelect['gibbonSpaceID']."'>".htmlPrep($rowSelect['name']).'</option>';
+                                }
+                                ?>
 							</select>
 							</td>
 						</tr>
 						<tr>
 							<td>
-								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-                ?></span>
+								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');?></span>
 							</td>
 							<td class="right">
+                                <input type="hidden" name="gibbonCourseClassID" value="<?php echo $gibbonCourseClassID ?>">
 								<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-								<input type="submit" value="<?php echo __($guid, 'Submit');
-                ?>">
+								<input type="submit" value="<?php echo __($guid, 'Submit');?>">
 							</td>
 						</tr>
 					</table>
 				</form>
 				<?php
-
             }
         }
     }

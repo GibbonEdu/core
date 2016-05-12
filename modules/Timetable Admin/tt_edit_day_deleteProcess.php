@@ -33,8 +33,7 @@ $gibbonTTDayID = $_GET['gibbonTTDayID'];
 $gibbonTTID = $_GET['gibbonTTID'];
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
 
-if ($gibbonTTID == '' or $gibbonSchoolYearID == '') {
-    echo 'Fatal error loading this page!';
+if ($gibbonTTID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
 } else {
     $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/tt_edit_day_delete.php&gibbonTTID=$gibbonTTID&gibbonTTDayID=$gibbonTTDayID&gibbonSchoolYearID=$gibbonSchoolYearID";
     $URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/tt_edit.php&gibbonTTID=$gibbonTTID&gibbonTTDayID=$gibbonTTDayID&gibbonSchoolYearID=$gibbonSchoolYearID";

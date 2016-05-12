@@ -109,47 +109,45 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
                                     } catch (PDOException $e) {
                                     }
 
-                $tt = array();
-                $count = 0;
-                while ($rowCheck = $resultCheck->fetch()) {
-                    try {
-                        $dataCheckInner = array('gibbonTTID' => $rowCheck['gibbonTTID'], 'date' => date('Y-m-d', $dateStamp));
-                        $sqlCheckInner = 'SELECT * FROM gibbonTT JOIN gibbonTTDay ON (gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID) JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) WHERE gibbonTT.gibbonTTID=:gibbonTTID AND date=:date';
-                        $resultCheckInner = $connection2->prepare($sqlCheckInner);
-                        $resultCheckInner->execute($dataCheckInner);
-                    } catch (PDOException $e) {
-                    }
-                    if ($resultCheckInner->fetch() == 0) {
-                        $tt[$count] = $rowCheck['gibbonTTID'];
-                        ++$count;
-                    }
-                }
-                for ($i = 0; $i < count($tt); ++$i) {
-                    try {
-                        $dataSelect = array('gibbonTTID' => $tt[$i]);
-                        $sqlSelect = 'SELECT gibbonTTDay.*, gibbonTT.name AS ttName FROM gibbonTTDay JOIN gibbonTT ON (gibbonTTDay.gibbonTTID=gibbonTT.gibbonTTID) WHERE gibbonTT.gibbonTTID=:gibbonTTID ORDER BY gibbonTTDay.name';
-                        $resultSelect = $connection2->prepare($sqlSelect);
-                        $resultSelect->execute($dataSelect);
-                    } catch (PDOException $e) {
-                    }
-                    while ($rowSelect = $resultSelect->fetch()) {
-                        echo "<option value='".$rowSelect['gibbonTTDayID']."'>".$rowSelect['ttName'].': '.$rowSelect['nameShort'].'</option>';
-                    }
-                }
-                ?>
+									$tt = array();
+									$count = 0;
+									while ($rowCheck = $resultCheck->fetch()) {
+										try {
+											$dataCheckInner = array('gibbonTTID' => $rowCheck['gibbonTTID'], 'date' => date('Y-m-d', $dateStamp));
+											$sqlCheckInner = 'SELECT * FROM gibbonTT JOIN gibbonTTDay ON (gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID) JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) WHERE gibbonTT.gibbonTTID=:gibbonTTID AND date=:date';
+											$resultCheckInner = $connection2->prepare($sqlCheckInner);
+											$resultCheckInner->execute($dataCheckInner);
+										} catch (PDOException $e) {
+										}
+										if ($resultCheckInner->fetch() == 0) {
+											$tt[$count] = $rowCheck['gibbonTTID'];
+											++$count;
+										}
+									}
+									for ($i = 0; $i < count($tt); ++$i) {
+										try {
+											$dataSelect = array('gibbonTTID' => $tt[$i]);
+											$sqlSelect = 'SELECT gibbonTTDay.*, gibbonTT.name AS ttName FROM gibbonTTDay JOIN gibbonTT ON (gibbonTTDay.gibbonTTID=gibbonTT.gibbonTTID) WHERE gibbonTT.gibbonTTID=:gibbonTTID ORDER BY gibbonTTDay.name';
+											$resultSelect = $connection2->prepare($sqlSelect);
+											$resultSelect->execute($dataSelect);
+										} catch (PDOException $e) {
+										}
+										while ($rowSelect = $resultSelect->fetch()) {
+											echo "<option value='".$rowSelect['gibbonTTDayID']."'>".$rowSelect['ttName'].': '.$rowSelect['nameShort'].'</option>';
+										}
+									}
+									?>
 								</select>
 							</td>
 						</tr>
 						<tr>
 							<td>
-								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-                ?></span>
+								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 							</td>
 							<td class="right">
 								<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php echo $gibbonSchoolYearID ?>" type="hidden">
 								<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-								<input type="submit" value="<?php echo __($guid, 'Submit');
-                ?>">
+								<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 							</td>
 						</tr>
 					</table>

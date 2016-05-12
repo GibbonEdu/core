@@ -32,8 +32,7 @@ date_default_timezone_set($_SESSION[$guid]['timezone']);
 $action = $_POST['action'];
 $countTotal = $_POST['count'];
 
-if ($action == '' or $countTotal == '') {
-    echo 'Fatal error loading this page!';
+if ($action == '' or $countTotal == '') { echo 'Fatal error loading this page!';
 } else {
     $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/activities_payment.php';
 

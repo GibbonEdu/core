@@ -48,8 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
 			<tr>
 				<td style='width: 275px'> 
 					<b><?php echo __($guid, 'Name') ?> *</b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Must be unique.');
-    ?></span>
+					<span class="emphasis small"><?php echo __($guid, 'Must be unique.'); ?></span>
 				</td>
 				<td class="right">
 					<input name="name" id="name" maxlength=50 value="" type="text" class="standardWidth">
@@ -62,8 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
 			<tr>
 				<td> 
 					<b><?php echo __($guid, 'Short Name') ?> *</b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Must be unique.');
-    ?></span>
+					<span class="emphasis small"><?php echo __($guid, 'Must be unique.'); ?></span>
 				</td>
 				<td class="right">
 					<input name="nameShort" id="nameShort" maxlength=10 value="" type="text" class="standardWidth">
@@ -76,8 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
 			<tr>
 				<td> 
 					<b><?php echo __($guid, 'Description') ?> *</b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Brief description of assessment and how it is used.');
-    ?> </span>
+					<span class="emphasis small"><?php echo __($guid, 'Brief description of assessment and how it is used.'); ?> </span>
 				</td>
 				<td class="right">
 					<input name="description" id="description" maxlength=255 value="" type="text" class="standardWidth">
@@ -89,8 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
 			</tr>
 			<tr>
 				<td> 
-					<b><?php echo __($guid, 'Active');
-    ?> *</b><br/>
+					<b><?php echo __($guid, 'Active'); ?> *</b><br/>
 				</td>
 				<td class="right">
 					<select name="active" id="active" class="standardWidth">
@@ -102,10 +98,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
 			
 			<tr>
 				<td> 
-					<b><?php echo __($guid, 'Allow File Upload');
-    ?> *</b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Should the student record include the option of a file upload?');
-    ?> </span>
+					<b><?php echo __($guid, 'Allow File Upload'); ?> *</b><br/>
+					<span class="emphasis small"><?php echo __($guid, 'Should the student record include the option of a file upload?'); ?> </span>
 				</td>
 				<td class="right">
 					<select name="allowFileUpload" id="allowFileUpload" class="standardWidth">
@@ -116,13 +110,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
 			</tr>
 			<tr>
 				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-    ?></span>
+					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>

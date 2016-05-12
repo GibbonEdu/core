@@ -159,14 +159,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
         $output .= "<td class='right'>";
         $output .= "<input type='file' name='".$id."file' id='".$id."file'><br/><br/>";
         $output .= "<script type='text/javascript'>";
-                                        //Get list of acceptable file extensions
-                                        try {
-                                            $dataExt = array();
-                                            $sqlExt = 'SELECT * FROM gibbonFileExtension';
-                                            $resultExt = $connection2->prepare($sqlExt);
-                                            $resultExt->execute($dataExt);
-                                        } catch (PDOException $e) {
-                                        }
+		//Get list of acceptable file extensions
+		try {
+			$dataExt = array();
+			$sqlExt = 'SELECT * FROM gibbonFileExtension';
+			$resultExt = $connection2->prepare($sqlExt);
+			$resultExt->execute($dataExt);
+		} catch (PDOException $e) {
+		}
         $ext = '';
         while ($rowExt = $resultExt->fetch()) {
             $ext = $ext."'.".$rowExt['extension']."',";
@@ -293,15 +293,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Resources/resources_manage
         $output .= "<span style='font-size: 90%'><i>".__($guid, 'Use lots of tags!').'</span>';
         $output .= '</td>';
         $output .= "<td class='right'>";
-                                    //Get tag list
-                                    try {
-                                        $dataList = array();
-                                        $sqlList = 'SELECT * FROM gibbonResourceTag WHERE count>0 ORDER BY tag';
-                                        $resultList = $connection2->prepare($sqlList);
-                                        $resultList->execute($dataList);
-                                    } catch (PDOException $e) {
-                                        $output .= "<div class='error'>".$e->getMessage().'</div>';
-                                    }
+		//Get tag list
+		try {
+			$dataList = array();
+			$sqlList = 'SELECT * FROM gibbonResourceTag WHERE count>0 ORDER BY tag';
+			$resultList = $connection2->prepare($sqlList);
+			$resultList->execute($dataList);
+		} catch (PDOException $e) {
+			$output .= "<div class='error'>".$e->getMessage().'</div>';
+		}
         $list = '';
         while ($rowList = $resultList->fetch()) {
             $list = $list.'{id: "'.$rowList['tag'].'", name: "'.$rowList['tag'].' <i>('.$rowList['count'].')</i>"},';

@@ -356,108 +356,108 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
                                 $rowNum = 'odd';
                                 $divide = false; //Have we passed gotten to today yet?
 
-                                        foreach ($lessons as $lesson) {
-                                            if ($count % 2 == 0) {
-                                                $rowNum = 'even';
-                                            } else {
-                                                $rowNum = 'odd';
-                                            }
+								foreach ($lessons as $lesson) {
+									if ($count % 2 == 0) {
+										$rowNum = 'even';
+									} else {
+										$rowNum = 'odd';
+									}
 
-                                            $style = '';
-                                            if ($lesson[1] >= date('Y-m-d') and $divide == false) {
-                                                $divide = true;
-                                                $style = "style='border-top: 2px solid #333'";
-                                            }
+									$style = '';
+									if ($lesson[1] >= date('Y-m-d') and $divide == false) {
+										$divide = true;
+										$style = "style='border-top: 2px solid #333'";
+									}
 
-                                            if ($divide == false) {
-                                                $rowNum = 'error';
-                                            }
-                                            ++$count;
+									if ($divide == false) {
+										$rowNum = 'error';
+									}
+									++$count;
 
-                                            //Spit out row for start of term
-                                            while ($lesson['1'] >= $terms[$termCount][0] and $termCount < (count($terms) - 1)) {
-                                                if (substr($terms[$termCount][1], 0, 3) == 'End' and $lesson['1'] == $terms[$termCount][0]) {
-                                                    break;
-                                                } else {
-                                                    echo "<tr class='dull'>";
-                                                    echo '<td>';
-                                                    echo '<b>'.$terms[$termCount][1].'</b>';
-                                                    echo '</td>';
-                                                    echo '<td colspan=6>';
-                                                    echo dateConvertBack($guid, $terms[$termCount][0]);
-                                                    echo '</td>';
-                                                    echo '</tr>';
-                                                    ++$termCount;
-                                                }
-                                            }
-                                            //Spit out row for special day
-                                            while ($lesson['1'] >= @$specials[$specialCount][0] and $specialCount < count($specials)) {
-                                                echo "<tr class='dull'>";
-                                                echo '<td>';
-                                                echo '<b>'.$specials[$specialCount][1].'</b>';
-                                                echo '</td>';
-                                                echo '<td colspan=6>';
-                                                echo $specials[$specialCount][2];
-                                                echo '</td>';
-                                                echo '</tr>';
-                                                ++$specialCount;
-                                            }
+									//Spit out row for start of term
+									while ($lesson['1'] >= $terms[$termCount][0] and $termCount < (count($terms) - 1)) {
+										if (substr($terms[$termCount][1], 0, 3) == 'End' and $lesson['1'] == $terms[$termCount][0]) {
+											break;
+										} else {
+											echo "<tr class='dull'>";
+											echo '<td>';
+											echo '<b>'.$terms[$termCount][1].'</b>';
+											echo '</td>';
+											echo '<td colspan=6>';
+											echo dateConvertBack($guid, $terms[$termCount][0]);
+											echo '</td>';
+											echo '</tr>';
+											++$termCount;
+										}
+									}
+									//Spit out row for special day
+									while ($lesson['1'] >= @$specials[$specialCount][0] and $specialCount < count($specials)) {
+										echo "<tr class='dull'>";
+										echo '<td>';
+										echo '<b>'.$specials[$specialCount][1].'</b>';
+										echo '</td>';
+										echo '<td colspan=6>';
+										echo $specials[$specialCount][2];
+										echo '</td>';
+										echo '</tr>';
+										++$specialCount;
+									}
 
-                                            //COLOR ROW BY STATUS!
-                                            if ($lesson[8] != 'School Closure') {
-                                                echo "<tr class=$rowNum>";
-                                                echo "<td $style>";
-                                                echo '<b>Lesson '.($classCount + 1).'</b>';
-                                                echo '</td>';
-                                                echo "<td $style>";
-                                                echo dateConvertBack($guid, $lesson['1']).'<br/>';
-                                                if ($lesson[8] == 'Timing Change') {
-                                                    echo '<u>'.$lesson[8].'</u><br/><i>('.substr($lesson[9], 0, 5).'-'.substr($lesson[10], 0, 5).')</i>';
-                                                }
-                                                echo '</td>';
-                                                echo "<td $style>";
-                                                echo date('D', dateConvertToTimestamp($lesson['1']));
-                                                echo '</td>';
-                                                echo "<td $style>";
-                                                echo date('M', dateConvertToTimestamp($lesson['1']));
-                                                echo '</td>';
-                                                echo "<td $style>";
-                                                echo $lesson['4'].'<br/>';
-                                                echo substr($lesson['2'], 0, 5).' - '.substr($lesson['3'], 0, 5);
-                                                echo '</td>';
-                                                echo "<td $style>";
-                                                if ($lesson['0'] == 'Planned') {
-                                                    echo $lesson['5'].'<br/>';
-                                                }
-                                                echo '</td>';
-                                                echo "<td $style>";
-                                                if ($lesson['0'] == 'Unplanned') {
-                                                    echo "<input name='deploy$count' type='checkbox'>";
-                                                    echo "<input name='date$count' type='hidden' value='".$lesson['1']."'>";
-                                                    echo "<input name='timeStart$count' type='hidden' value='".$lesson['2']."'>";
-                                                    echo "<input name='timeEnd$count' type='hidden' value='".$lesson['3']."'>";
-                                                    echo "<input name='period$count' type='hidden' value='".$lesson['4']."'>";
-                                                    echo "<input name='gibbonTTDayRowClassID$count' type='hidden' value='".$lesson['6']."'>";
-                                                    echo "<input name='gibbonTTDayDateID$count' type='hidden' value='".$lesson['7']."'>";
-                                                }
-                                                echo '</td>';
-                                                echo '</tr>';
-                                                ++$classCount;
-                                            }
+									//COLOR ROW BY STATUS!
+									if ($lesson[8] != 'School Closure') {
+										echo "<tr class=$rowNum>";
+										echo "<td $style>";
+										echo '<b>Lesson '.($classCount + 1).'</b>';
+										echo '</td>';
+										echo "<td $style>";
+										echo dateConvertBack($guid, $lesson['1']).'<br/>';
+										if ($lesson[8] == 'Timing Change') {
+											echo '<u>'.$lesson[8].'</u><br/><i>('.substr($lesson[9], 0, 5).'-'.substr($lesson[10], 0, 5).')</i>';
+										}
+										echo '</td>';
+										echo "<td $style>";
+										echo date('D', dateConvertToTimestamp($lesson['1']));
+										echo '</td>';
+										echo "<td $style>";
+										echo date('M', dateConvertToTimestamp($lesson['1']));
+										echo '</td>';
+										echo "<td $style>";
+										echo $lesson['4'].'<br/>';
+										echo substr($lesson['2'], 0, 5).' - '.substr($lesson['3'], 0, 5);
+										echo '</td>';
+										echo "<td $style>";
+										if ($lesson['0'] == 'Planned') {
+											echo $lesson['5'].'<br/>';
+										}
+										echo '</td>';
+										echo "<td $style>";
+										if ($lesson['0'] == 'Unplanned') {
+											echo "<input name='deploy$count' type='checkbox'>";
+											echo "<input name='date$count' type='hidden' value='".$lesson['1']."'>";
+											echo "<input name='timeStart$count' type='hidden' value='".$lesson['2']."'>";
+											echo "<input name='timeEnd$count' type='hidden' value='".$lesson['3']."'>";
+											echo "<input name='period$count' type='hidden' value='".$lesson['4']."'>";
+											echo "<input name='gibbonTTDayRowClassID$count' type='hidden' value='".$lesson['6']."'>";
+											echo "<input name='gibbonTTDayDateID$count' type='hidden' value='".$lesson['7']."'>";
+										}
+										echo '</td>';
+										echo '</tr>';
+										++$classCount;
+									}
 
-                                            //Spit out row for end of term
-                                            while ($lesson['1'] >= @$terms[$termCount][0] and $termCount < count($terms) and substr($terms[$termCount][1], 0, 3) == 'End') {
-                                                echo "<tr class='dull'>";
-                                                echo '<td>';
-                                                echo '<b>'.$terms[$termCount][1].'</b>';
-                                                echo '</td>';
-                                                echo '<td colspan=6>';
-                                                echo dateConvertBack($guid, $terms[$termCount][0]);
-                                                echo '</td>';
-                                                echo '</tr>';
-                                                ++$termCount;
-                                            }
-                                        }
+									//Spit out row for end of term
+									while ($lesson['1'] >= @$terms[$termCount][0] and $termCount < count($terms) and substr($terms[$termCount][1], 0, 3) == 'End') {
+										echo "<tr class='dull'>";
+										echo '<td>';
+										echo '<b>'.$terms[$termCount][1].'</b>';
+										echo '</td>';
+										echo '<td colspan=6>';
+										echo dateConvertBack($guid, $terms[$termCount][0]);
+										echo '</td>';
+										echo '</tr>';
+										++$termCount;
+									}
+								}
 
                                 if (@$terms[$termCount][0] != '') {
                                     echo "<tr class='dull'>";
@@ -624,26 +624,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
                                         echo '</div>';
                                         echo '</div>';
 
-                                                        //Prep outcomes
-                                                        try {
-                                                            $dataOutcomes = array('gibbonUnitID' => $gibbonUnitID);
-                                                            $sqlOutcomes = "SELECT gibbonOutcome.gibbonOutcomeID, gibbonOutcome.name, gibbonOutcome.category, scope, gibbonDepartment.name AS department FROM gibbonUnitOutcome JOIN gibbonOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) LEFT JOIN gibbonDepartment ON (gibbonOutcome.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonUnitID=:gibbonUnitID AND active='Y' ORDER BY sequenceNumber";
-                                                            $resultOutcomes = $connection2->prepare($sqlOutcomes);
-                                                            $resultOutcomes->execute($dataOutcomes);
-                                                        } catch (PDOException $e) {
-                                                            echo "<div class='error'>".$e->getMessage().'</div>';
-                                                        }
+										//Prep outcomes
+										try {
+											$dataOutcomes = array('gibbonUnitID' => $gibbonUnitID);
+											$sqlOutcomes = "SELECT gibbonOutcome.gibbonOutcomeID, gibbonOutcome.name, gibbonOutcome.category, scope, gibbonDepartment.name AS department FROM gibbonUnitOutcome JOIN gibbonOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) LEFT JOIN gibbonDepartment ON (gibbonOutcome.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonUnitID=:gibbonUnitID AND active='Y' ORDER BY sequenceNumber";
+											$resultOutcomes = $connection2->prepare($sqlOutcomes);
+											$resultOutcomes->execute($dataOutcomes);
+										} catch (PDOException $e) {
+											echo "<div class='error'>".$e->getMessage().'</div>';
+										}
                                         $unitOutcomes = $resultOutcomes->fetchall();
 
-                                                        //Attempt auto deploy
-                                                        $spinCount = 0;
+										//Attempt auto deploy
+										$spinCount = 0;
                                         while ($spinCount < $blockCount and $length > 0) {
                                             if (isset($blocks[$deployCount])) {
                                                 if ($blocks[$deployCount][3] < 1 or $blocks[$deployCount][3] == '') {
                                                     ++$deployCount;
                                                 } else {
                                                     if (($length - $blocks[$deployCount][3]) >= 0) {
-                                                        makeBlock($guid,  $connection2, $blockCount2, $mode = 'workingDeploy', $blocks[$deployCount][1], $blocks[$deployCount][2], $blocks[$deployCount][3], $blocks[$deployCount][4], 'N', $blocks[$deployCount][0], '', $blocks[$deployCount][5], true, $unitOutcomes, $blocks[$deployCount][6]);
+                                                        makeBlock($guid,  $connection2, $blockCount2, $mode = 'workingDeploy', $blocks[$deployCount][1], $blocks[$deployCount][2], $blocks[$deployCount][3], $blocks[$deployCount][4], 'N', $blocks[$deployCount][0], '', $blocks[$deployCount][5], true, $unitOutcomes, @$blocks[$deployCount][6]);
                                                         $length = $length - $blocks[$deployCount][3];
                                                         ++$deployCount;
                                                     }
@@ -663,130 +663,107 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
                             }
 
                             ?>
-									<b><?php echo __($guid, 'Access') ?></b><br/>
-									<table cellspacing='0' style="width: 100%">	
-										<tr id="accessRowStudents">
-											<td> 
-												<b><?php echo __($guid, 'Viewable to Students') ?> *</b><br/>
-												<span class="emphasis small"></span>
-											</td>
-											<td class="right">
-												<?php
-                                                $sharingDefaultStudents = getSettingByScope($connection2, 'Planner', 'sharingDefaultStudents');
-                            ?>
-												<select name="viewableStudents" id="viewableStudents" class="standardWidth">
-													<option <?php if ($sharingDefaultStudents == 'Y') {
-    echo 'selected';
-}
-                            ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
-													<option <?php if ($sharingDefaultStudents == 'N') {
-    echo 'selected';
-}
-                            ?> value="N"><?php echo __($guid, 'No') ?></option>
-												</select>
-											</td>
-										</tr>
-										<tr id="accessRowParents">
-											<td> 
-												<b><?php echo __($guid, 'Viewable to Parents') ?> *</b><br/>
-												<span class="emphasis small"></span>
-											</td>
-											<td class="right">
-												<?php
-                                                $sharingDefaultParents = getSettingByScope($connection2, 'Planner', 'sharingDefaultParents');
-                            ?>
-												<select name="viewableParents" id="viewableParents" class="standardWidth">
-													<option <?php if ($sharingDefaultParents == 'Y') {
-    echo 'selected';
-}
-                            ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
-													<option <?php if ($sharingDefaultParents == 'N') {
-    echo 'selected';
-}
-                            ?> value="N"><?php echo __($guid, 'No') ?></option>
-												</select>
-											</td>
-										</tr>
-									</table>
-									
-									<table class='blank' style='width: 100%' cellspacing=0>
-										<tr>
-											<td>
-												<?php
-                                                echo "<div style='width: 100%; margin-bottom: 20px; text-align: right'>";
-                            echo "<input type='submit' value='Submit'>";
-                            echo '</div>';
-                            ?>
-											</td>
-										</tr>
-									</table>
-								<?php
-                                echo '</div>';
-                            echo '</form>';
+							<b><?php echo __($guid, 'Access') ?></b><br/>
+							<table cellspacing='0' style="width: 100%">
+								<tr id="accessRowStudents">
+									<td>
+										<b><?php echo __($guid, 'Viewable to Students') ?> *</b><br/>
+										<span class="emphasis small"></span>
+									</td>
+									<td class="right">
+										<?php
+										$sharingDefaultStudents = getSettingByScope($connection2, 'Planner', 'sharingDefaultStudents');
+                            			?>
+										<select name="viewableStudents" id="viewableStudents" class="standardWidth">
+											<option <?php if ($sharingDefaultStudents == 'Y') { echo 'selected'; } ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
+											<option <?php if ($sharingDefaultStudents == 'N') { echo 'selected'; } ?> value="N"><?php echo __($guid, 'No') ?></option>
+										</select>
+									</td>
+								</tr>
+								<tr id="accessRowParents">
+									<td>
+										<b><?php echo __($guid, 'Viewable to Parents') ?> *</b><br/>
+										<span class="emphasis small"></span>
+									</td>
+									<td class="right">
+										<?php
+										$sharingDefaultParents = getSettingByScope($connection2, 'Planner', 'sharingDefaultParents');
+                            			?>
+										<select name="viewableParents" id="viewableParents" class="standardWidth">
+											<option <?php if ($sharingDefaultParents == 'Y') { echo 'selected'; } ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
+											<option <?php if ($sharingDefaultParents == 'N') { echo 'selected'; } ?> value="N"><?php echo __($guid, 'No') ?></option>
+										</select>
+									</td>
+								</tr>
+							</table>
 
-                            //Add drag/drop controls
-                            $sortableList = '';
-                            ?>
-							<style>
-								.default { border: none; background-color: #ffffff }
-								.drop { border: none; background-color: #eeeeee }
-								.hover { border: none; background-color: #D4F6DC }
-							</style>
-											
-							<script type="text/javascript">
-								$(function() {
-									var receiveCount=0 ;
-									
-									//Create list of lesson sortables
-									<?php for ($i = 0; $i < $cells; ++$i) {
-    ?>
-										<?php $sortableList .= "#sortable$i, " ?>
-									<?php 
-}
-                            ?>
-									
-									//Create lesson sortables
-									<?php for ($i = 0; $i < $cells; ++$i) {
-    ?>
-										$( "#sortable<?php echo $i ?>" ).sortable({
-											revert: false,
-											tolerance: 15, 
-											connectWith: "<?php echo substr($sortableList, 0, -2) ?>",
-											items: "div.blockOuter",
-											receive: function(event,ui) {
-												var sortid=$(newItem).attr("id", 'receive'+receiveCount) ;
-												var receiveid='receive'+receiveCount ;
-												$('#' + receiveid + ' .delete').show() ;
-												$('#' + receiveid + ' .delete').click(function() {
-													$('#' + receiveid).fadeOut(600, function(){ 
-														$('#' + receiveid).remove(); 
-													});
+							<table class='blank' style='width: 100%' cellspacing=0>
+								<tr>
+									<td>
+										<?php
+										echo "<div style='width: 100%; margin-bottom: 20px; text-align: right'>";
+										echo "<input type='submit' value='Submit'>";
+										echo '</div>';
+										?>
+									</td>
+								</tr>
+							</table>
+						<?php
+						echo '</div>';
+					echo '</form>';
+
+					//Add drag/drop controls
+					$sortableList = '';
+					?>
+					<style>
+						.default { border: none; background-color: #ffffff }
+						.drop { border: none; background-color: #eeeeee }
+						.hover { border: none; background-color: #D4F6DC }
+					</style>
+
+					<script type="text/javascript">
+						$(function() {
+							var receiveCount=0 ;
+
+							//Create list of lesson sortables
+							<?php for ($i = 0; $i < $cells; ++$i) { ?>
+								<?php $sortableList .= "#sortable$i, " ?>
+							<?php } ?>
+								//Create lesson sortables
+								<?php for ($i = 0; $i < $cells; ++$i) { ?>
+									$( "#sortable<?php echo $i ?>" ).sortable({
+										revert: false,
+										tolerance: 15,
+										connectWith: "<?php echo substr($sortableList, 0, -2) ?>",
+										items: "div.blockOuter",
+										receive: function(event,ui) {
+											var sortid=$(newItem).attr("id", 'receive'+receiveCount) ;
+											var receiveid='receive'+receiveCount ;
+											$('#' + receiveid + ' .delete').show() ;
+											$('#' + receiveid + ' .delete').click(function() {
+												$('#' + receiveid).fadeOut(600, function(){
+													$('#' + receiveid).remove();
 												});
-												receiveCount++ ;
-											},
-											beforeStop: function (event, ui) {
-											 newItem=ui.item;
-											}
-										});
-									<?php 
-}
-                            ?>
-									
-									//Draggables
-									<?php for ($i = 0; $i < $blockCount; ++$i) {
-    ?>
-										$( "#draggable<?php echo $i ?>" ).draggable({
-											connectToSortable: "<?php echo substr($sortableList, 0, -2) ?>",
-											helper: "clone"
-										});
-									<?php 
-}
-                            ?>
-									
-								});
-							</script>
-							<?php
+											});
+											receiveCount++ ;
+										},
+										beforeStop: function (event, ui) {
+										 newItem=ui.item;
+										}
+									});
+								<?php } ?>
 
+								//Draggables
+								<?php for ($i = 0; $i < $blockCount; ++$i) { ?>
+									$( "#draggable<?php echo $i ?>" ).draggable({
+										connectToSortable: "<?php echo substr($sortableList, 0, -2) ?>",
+										helper: "clone"
+									});
+								<?php } ?>
+
+							});
+						</script>
+						<?php
                         }
                     }
                 }

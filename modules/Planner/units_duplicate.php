@@ -139,13 +139,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
                                                     echo "<div class='error'>".$e->getMessage().'</div>';
                                                 }
 
-                                if ($resultYear->rowCount() != 1) {
-                                    echo '<i>'.__($guid, 'Unknown').'</i>';
-                                } else {
-                                    $rowYear = $resultYear->fetch();
-                                    echo "<input readonly value='".$rowYear['name']."' type='text' style='width: 300px'>";
-                                }
-                                ?>
+												if ($resultYear->rowCount() != 1) {
+													echo '<i>'.__($guid, 'Unknown').'</i>';
+												} else {
+													$rowYear = $resultYear->fetch();
+													echo "<input readonly value='".$rowYear['name']."' type='text' style='width: 300px'>";
+												}
+												?>
 											</td>
 										</tr>
 										<tr>
@@ -154,8 +154,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
 												<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 											</td>
 											<td class="right">
-												<?php echo "<input readonly value='".$row['courseName']."' type='text' style='width: 300px'>";
-                                ?>
+												<?php echo "<input readonly value='".$row['courseName']."' type='text' style='width: 300px'>"; ?>
 											</td>
 										</tr>
 										<tr>
@@ -164,8 +163,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
 												<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 											</td>
 											<td class="right">
-												<?php echo "<input readonly value='".$row['name']."' type='text' style='width: 300px'>";
-                                ?>
+												<?php echo "<input readonly value='".$row['name']."' type='text' style='width: 300px'>"; ?>
 											</td>
 										</tr>
 										
@@ -183,27 +181,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
 												<select name="gibbonSchoolYearIDCopyTo" id="gibbonSchoolYearIDCopyTo" class="standardWidth">
 													<?php
                                                     echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-                                try {
-                                    $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                                    $sqlSelect = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-                                    $resultSelect = $connection2->prepare($sqlSelect);
-                                    $resultSelect->execute($dataSelect);
-                                } catch (PDOException $e) {
-                                }
-                                if ($resultSelect->rowCount() == 1) {
-                                    $rowSelect = $resultSelect->fetch();
-                                    try {
-                                        $dataSelect2 = array('sequenceNumber' => $rowSelect['sequenceNumber']);
-                                        $sqlSelect2 = 'SELECT * FROM gibbonSchoolYear WHERE sequenceNumber>=:sequenceNumber ORDER BY sequenceNumber ASC';
-                                        $resultSelect2 = $connection2->prepare($sqlSelect2);
-                                        $resultSelect2->execute($dataSelect2);
-                                    } catch (PDOException $e) {
-                                    }
-                                    while ($rowSelect2 = $resultSelect2->fetch()) {
-                                        echo "<option value='".$rowSelect2['gibbonSchoolYearID']."'>".htmlPrep($rowSelect2['name']).'</option>';
-                                    }
-                                }
-                                ?>				
+													try {
+														$dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+														$sqlSelect = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
+														$resultSelect = $connection2->prepare($sqlSelect);
+														$resultSelect->execute($dataSelect);
+													} catch (PDOException $e) {
+													}
+													if ($resultSelect->rowCount() == 1) {
+														$rowSelect = $resultSelect->fetch();
+														try {
+															$dataSelect2 = array('sequenceNumber' => $rowSelect['sequenceNumber']);
+															$sqlSelect2 = 'SELECT * FROM gibbonSchoolYear WHERE sequenceNumber>=:sequenceNumber ORDER BY sequenceNumber ASC';
+															$resultSelect2 = $connection2->prepare($sqlSelect2);
+															$resultSelect2->execute($dataSelect2);
+														} catch (PDOException $e) {
+														}
+														while ($rowSelect2 = $resultSelect2->fetch()) {
+															echo "<option value='".$rowSelect2['gibbonSchoolYearID']."'>".htmlPrep($rowSelect2['name']).'</option>';
+														}
+													}
+													?>				
 												</select>
 												<script type="text/javascript">
 													var gibbonSchoolYearIDCopyTo=new LiveValidation('gibbonSchoolYearIDCopyTo');
@@ -230,11 +228,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
                                                         $resultSelect->execute($dataSelect);
                                                     } catch (PDOException $e) {
                                                     }
-                                while ($rowSelect = $resultSelect->fetch()) {
-                                    echo "<option class='".$rowSelect['gibbonSchoolYearID']."' value='".$rowSelect['gibbonCourseID']."'>".htmlPrep($rowSelect['course']).'</option>';
-                                }
+													while ($rowSelect = $resultSelect->fetch()) {
+														echo "<option class='".$rowSelect['gibbonSchoolYearID']."' value='".$rowSelect['gibbonCourseID']."'>".htmlPrep($rowSelect['course']).'</option>';
+													}
 
-                                ?>				
+													?>				
 												</select>
 												<script type="text/javascript">
 													$("#gibbonCourseIDTarget").chainedTo("#gibbonSchoolYearIDCopyTo");
@@ -247,20 +245,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
 												<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 											</td>
 											<td class="right">
-												<?php echo "<input readonly value='".$row['name']."' type='text' style='width: 300px'>";
-                                ?>
+												<?php echo "<input readonly value='".$row['name']."' type='text' style='width: 300px'>"; ?>
 											</td>
 										</tr>
 										
 										<tr>
 											<td>
-												<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-                                ?></span>
+												<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');?></span>
 											</td>
 											<td class="right">
 												<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-												<input type="submit" value="<?php echo __($guid, 'Submit');
-                                ?>">
+												<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 											</td>
 										</tr>
 									</table>
@@ -324,13 +319,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
                                                     } catch (PDOException $e) {
                                                         echo "<div class='error'>".$e->getMessage().'</div>';
                                                     }
-                                    if ($resultYear->rowCount() != 1) {
-                                        echo '<i>'.__($guid, 'Unknown').'</i>';
-                                    } else {
-                                        $rowYear = $resultYear->fetch();
-                                        echo "<input readonly value='".$rowYear['name']."' type='text' style='width: 300px'>";
-                                    }
-                                    ?>
+													if ($resultYear->rowCount() != 1) {
+														echo '<i>'.__($guid, 'Unknown').'</i>';
+													} else {
+														$rowYear = $resultYear->fetch();
+														echo "<input readonly value='".$rowYear['name']."' type='text' style='width: 300px'>";
+													}
+													?>
 												</td>
 											</tr>
 											<tr>
@@ -339,8 +334,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
 													<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 												</td>
 												<td class="right">
-													<?php echo "<input readonly value='".$row['courseName']."' type='text' style='width: 300px'>";
-                                    ?>
+													<?php echo "<input readonly value='".$row['courseName']."' type='text' style='width: 300px'>"; ?>
 												</td>
 											</tr>
 											<tr>
@@ -349,8 +343,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
 													<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 												</td>
 												<td class="right">
-													<?php echo "<input readonly value='".$row['name']."' type='text' style='width: 300px'>";
-                                    ?>
+													<?php echo "<input readonly value='".$row['name']."' type='text' style='width: 300px'>"; ?>
 												</td>
 											</tr>
 											<tr id="sourceClass">
@@ -361,17 +354,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
 													<select name="gibbonCourseClassIDSource" id="gibbonCourseClassIDSource" class="standardWidth">
 														<?php
                                                         echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-                                    try {
-                                        $dataSelect = array('gibbonCourseID' => $gibbonCourseID);
-                                        $sqlSelect = 'SELECT gibbonCourseClassID, gibbonCourseClass.nameShort AS class, gibbonCourse.nameShort AS course FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourseClass.gibbonCourseID=:gibbonCourseID';
-                                        $resultSelect = $connection2->prepare($sqlSelect);
-                                        $resultSelect->execute($dataSelect);
-                                    } catch (PDOException $e) {
-                                    }
-                                    while ($rowSelect = $resultSelect->fetch()) {
-                                        echo "<option value='".$rowSelect['gibbonCourseClassID']."'>".htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).'</option>';
-                                    }
-                                    ?>				
+														try {
+															$dataSelect = array('gibbonCourseID' => $gibbonCourseID);
+															$sqlSelect = 'SELECT gibbonCourseClassID, gibbonCourseClass.nameShort AS class, gibbonCourse.nameShort AS course FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourseClass.gibbonCourseID=:gibbonCourseID';
+															$resultSelect = $connection2->prepare($sqlSelect);
+															$resultSelect->execute($dataSelect);
+														} catch (PDOException $e) {
+														}
+														while ($rowSelect = $resultSelect->fetch()) {
+															echo "<option value='".$rowSelect['gibbonCourseClassID']."'>".htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).'</option>';
+														}
+														?>				
 													</select>
 												</td>
 											</tr>
@@ -384,13 +377,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
                                                 $resultSelect2->execute($dataSelect2);
                                             } catch (PDOException $e) {
                                             }
-                                    if ($resultSelect2->rowCount() == 1) {
-                                        $rowSelect2 = $resultSelect2->fetch();
-                                        $access = true;
-                                        $course = $rowSelect2['course'];
-                                        $year = $rowSelect2['year'];
-                                    }
-                                    ?>
+											if ($resultSelect2->rowCount() == 1) {
+												$rowSelect2 = $resultSelect2->fetch();
+												$access = true;
+												$course = $rowSelect2['course'];
+												$year = $rowSelect2['year'];
+											}
+											?>
 											
 											<tr class='break'>
 												<td colspan=2> 
@@ -404,8 +397,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
 													<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 												</td>
 												<td class="right">
-													<?php echo "<input readonly value='$year' type='text' style='width: 300px'>";
-                                    ?>
+													<?php echo "<input readonly value='$year' type='text' style='width: 300px'>"; ?>
 												</td>
 											</tr>
 											<tr>
@@ -414,8 +406,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
 													<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 												</td>
 												<td class="right">
-													<?php echo "<input readonly value='$course' type='text' style='width: 300px'>";
-                                    ?>
+													<?php echo "<input readonly value='$course' type='text' style='width: 300px'>"; ?>
 												</td>
 											</tr>
 											<tr>
@@ -424,8 +415,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
 													<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 												</td>
 												<td class="right">
-													<?php echo "<input readonly value='".$row['name']."' type='text' style='width: 300px'>";
-                                    ?>
+													<?php echo "<input readonly value='".$row['name']."' type='text' style='width: 300px'>"; ?>
 												</td>
 											</tr>
 											<tr id="targetClass">
@@ -443,23 +433,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
                                                             $resultSelect->execute($dataSelect);
                                                         } catch (PDOException $e) {
                                                         }
-                                    while ($rowSelect = $resultSelect->fetch()) {
-                                        echo "<option value='".$rowSelect['gibbonCourseClassID']."'>".htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).'</option>';
-                                    }
-                                    ?>				
+														while ($rowSelect = $resultSelect->fetch()) {
+															echo "<option value='".$rowSelect['gibbonCourseClassID']."'>".htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).'</option>';
+														}
+														?>				
 													</select>
 												</td>
 											</tr>
 											<tr>
 												<td>
-													<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-                                    ?></span>
+													<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 												</td>
 												<td class="right">
 													<input type="hidden" name="gibbonCourseIDTarget" value="<?php echo $gibbonCourseIDTarget ?>">
 													<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-													<input type="submit" value="<?php echo __($guid, 'Submit');
-                                    ?>">
+													<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 												</td>
 											</tr>
 										</table>

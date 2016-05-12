@@ -39,8 +39,10 @@ v12.0.00
 		System: beautified code base to align more closely with standard PHP syntax
 		System Admin: added system setting to allow choice of Sunday or Monday as first day of the week
 		Activities: added ability to digitally mark and export activity attendance
+		Formal Assessment: added import functionality for internal assessments
 		Individual Needs: new interface for parents to view individual education plans for their children (off by default)
 		Messenger: added Canned Response functionality for defining commonly sent messages.
+		Planner: added ability to set units to inactive, to hide them from certain views
 		School Admin: changed "Spaces" to "Facilities" and integrated borrowable Library items into Booking (to support laptop carts)
 		Staff: added ability to manage contract information
 		User Admin: added bulk import of user photos from a zip file
@@ -48,6 +50,7 @@ v12.0.00
 	Security
 		System: converted links to GNU GPL to HTTPS
 		System: converted links to Gibbon website to HTTPS
+		System: prevented non-login access to preferences
 
 	Tweaks & Bug Fixes
 		System: Added Danish, Persian, Brazilian Portugese, Dutch, Georgian and Hungarian as development languages
@@ -66,16 +69,20 @@ v12.0.00
 		System: added Ghanaian Cedi as currency
 		System Admin: Improved version comparison in module updater
 		System Admin: Improved version comparison in non-login database updater
+		System Admin: fixed error when removing module with no $moduleTables in manifest.php
 		Activities: fixed error in adding and editing activities when payment is turned off
 		Attendance: added client side warning in case attendance is taken for a day in the past (happens when user not logged out over night)
 		Attendance: added ability to see date range in Form Groups Not Registered
 		Attendance: added reason as title/hover over type in Student History report function
+		Attendance: added database index to improve performance of attendance by roll group page load
 		Behaviour: made column widths consistent when viewing behaviour log
 		Behaviour: increased min-width for Action column
 		Behaviour: fixed <? bug
 		Departments: fixed filter in Homework link from Class view page
 		Finance: fixed <? bug
 		Finance: added ability to provide multiple company email addresses
+		Finance: fixed bug preventing printing of receipts when status is 'Paid - Partial'
+		Finance: added ability (off by default) for students to view their own invoices
 		Form Groups: adjusted labels in Sort By select
 		Formal Assessment: fixed issue with View Classes menu not appearing for a user with no classes (e.g. admin)
 		Formal Assessment: fixed uploaded response file selector gigantism issue
@@ -91,6 +98,7 @@ v12.0.00
 		Markbook: added line break display to full comment in various viewing locations
 		Messenger: stripped JavaScript out of widget preview text.
 		Messenger: removed signature from Quick Wall messages
+		Messenger: added Attendance target for message sharing
 		Planner: fixed surplus slash issue in Crowd Assessment settings in Lesson Planner add page
 		Planner: fixed style mismatch in Guest section of lesson planner full view
 		Planner: attendance alignment tweak
@@ -98,6 +106,7 @@ v12.0.00
 		Planner: added ordering field to units to control the order in which they display
 		Planner: lesson summary now scraped from Smart Block titles
 		Planner: fixed lesson ordering bug in unit dump
+		Planner: simplified interface of Unit Planner
 		Rubrics: added course/class name to historical view result listing
 		School Admin: fixed bug preventing non-contiguous primary external assessment settings from being saved in Formal Assessment settings
 		School Admin: increased length of grade scale short name to 5 chars
@@ -113,6 +122,8 @@ v12.0.00
 		Timetable: fixed rendering to allow Sunday as first day or the week, according to values in gibbonDaysOfWeek
 		Timetable: fixed rendering bug preventing some time labels from being displayed
 		Timetable: made "Back To Search" link persistent when timetable controls used
+		Timetable: added ability for department coordinator to manage facility changes within their department
+		Timetable: fixed facility booking display output when viewing timetable by facility
 		Tracking: adjusted Data Points export to combine multiple column internal assessments for one subject into a column
 		User Admin: added notification to form tutor(s) when a student's privacy options change (via Edit or Data Update).
 		User Admin: made max_input_vars test a little more generous
@@ -120,7 +131,7 @@ v12.0.00
 		User Admin: fixed bug preventing family import
 		User Admin: added ability to allow control over formatting of usernames
 		User Admin: made list of religions settable via a comma-separated list in User Settings
-
+		User Admin: added log entry when privacy settings are changed
 
 v11.0.00
 --------

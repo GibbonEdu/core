@@ -57,44 +57,44 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 
             //Set theme
             $themeCSS = "<link rel='stylesheet' type='text/css' href='./themes/Default/css/main.css' />";
-    if ($_SESSION[$guid]['i18n']['rtl'] == 'Y') {
-        $themeCSS .= "<link rel='stylesheet' type='text/css' href='./themes/Default/css/main_rtl.css' />";
-    }
-    $themeJS = "<script type='text/javascript' src='./themes/Default/js/common.js'></script>";
-    $_SESSION[$guid]['gibbonThemeID'] = '001';
-    $_SESSION[$guid]['gibbonThemeName'] = 'Default';
+			if ($_SESSION[$guid]['i18n']['rtl'] == 'Y') {
+				$themeCSS .= "<link rel='stylesheet' type='text/css' href='./themes/Default/css/main_rtl.css' />";
+			}
+			$themeJS = "<script type='text/javascript' src='./themes/Default/js/common.js'></script>";
+			$_SESSION[$guid]['gibbonThemeID'] = '001';
+			$_SESSION[$guid]['gibbonThemeName'] = 'Default';
 
-    if ($_SESSION[$guid]['gibbonThemeIDPersonal'] != null) {
-        $dataTheme = array('gibbonThemeIDPersonal' => $_SESSION[$guid]['gibbonThemeIDPersonal']);
-        $sqlTheme = 'SELECT * FROM gibbonTheme WHERE gibbonThemeID=:gibbonThemeIDPersonal';
-    } else {
-        $dataTheme = array();
-        $sqlTheme = "SELECT * FROM gibbonTheme WHERE active='Y'";
-    }
-    $resultTheme = $connection2->prepare($sqlTheme);
-    $resultTheme->execute($dataTheme);
-    if ($resultTheme->rowCount() == 1) {
-        $rowTheme = $resultTheme->fetch();
-        $themeCSS = "<link rel='stylesheet' type='text/css' href='./themes/".$rowTheme['name']."/css/main.css' />";
-        if ($_SESSION[$guid]['i18n']['rtl'] == 'Y') {
-            $themeCSS .= "<link rel='stylesheet' type='text/css' href='./themes/".$rowTheme['name']."/css/main_rtl.css' />";
-        }
-        $themeCJS = "<script type='text/javascript' src='./themes/".$rowTheme['name']."/js/common.js'></script>";
-        $_SESSION[$guid]['gibbonThemeID'] = $rowTheme['gibbonThemeID'];
-        $_SESSION[$guid]['gibbonThemeName'] = $rowTheme['name'];
-    }
-    echo $themeCSS;
-    echo $themeJS;
+			if ($_SESSION[$guid]['gibbonThemeIDPersonal'] != null) {
+				$dataTheme = array('gibbonThemeIDPersonal' => $_SESSION[$guid]['gibbonThemeIDPersonal']);
+				$sqlTheme = 'SELECT * FROM gibbonTheme WHERE gibbonThemeID=:gibbonThemeIDPersonal';
+			} else {
+				$dataTheme = array();
+				$sqlTheme = "SELECT * FROM gibbonTheme WHERE active='Y'";
+			}
+			$resultTheme = $connection2->prepare($sqlTheme);
+			$resultTheme->execute($dataTheme);
+			if ($resultTheme->rowCount() == 1) {
+				$rowTheme = $resultTheme->fetch();
+				$themeCSS = "<link rel='stylesheet' type='text/css' href='./themes/".$rowTheme['name']."/css/main.css' />";
+				if ($_SESSION[$guid]['i18n']['rtl'] == 'Y') {
+					$themeCSS .= "<link rel='stylesheet' type='text/css' href='./themes/".$rowTheme['name']."/css/main_rtl.css' />";
+				}
+				$themeCJS = "<script type='text/javascript' src='./themes/".$rowTheme['name']."/js/common.js'></script>";
+				$_SESSION[$guid]['gibbonThemeID'] = $rowTheme['gibbonThemeID'];
+				$_SESSION[$guid]['gibbonThemeName'] = $rowTheme['name'];
+			}
+			echo $themeCSS;
+			echo $themeJS;
 
             //Set module CSS & JS
             $moduleCSS = "<link rel='stylesheet' type='text/css' href='./modules/".$_SESSION[$guid]['module']."/css/module.css' />";
-    $moduleJS = "<script type='text/javascript' src='./modules/".$_SESSION[$guid]['module']."/js/module.js'></script>";
-    echo $moduleCSS;
-    echo $moduleJS;
+			$moduleJS = "<script type='text/javascript' src='./modules/".$_SESSION[$guid]['module']."/js/module.js'></script>";
+			echo $moduleCSS;
+			echo $moduleJS;
 
             //Set timezone from session variable
             date_default_timezone_set($_SESSION[$guid]['timezone']);
-    ?>
+   			?>
 			
 			<link rel="shortcut icon" type="image/x-icon" href="./favicon.ico"/>
 			<script type="text/javascript" src="./lib/LiveValidation/livevalidation_standalone.compressed.js"></script>
@@ -103,7 +103,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
             if ($_SESSION[$guid]['analytics'] != '') {
                 echo $_SESSION[$guid]['analytics'];
             }
-    ?>
+   			 ?>
 		</head>
 		<body style="background: none">
 			<div id="wrap-report" style="width:750px">
@@ -111,45 +111,42 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 					<div style="width:400px; font-size: 100%; float: right">
 						<?php
                         echo "<div style='padding-top: 10px'>";
-    echo "<p style='margin-bottom: 0; padding-bottom: 0'>";
-    echo sprintf(__($guid, 'This printout contains information that is the property of %1$s. If you find this report, and do not have permission to read it, please return it to %2$s (%3$s). In the event that it cannot be returned, please destroy it.'), $_SESSION[$guid]['organisationName'], $_SESSION[$guid]['organisationAdministratorName'], $_SESSION[$guid]['organisationAdministratorEmail']);
-    echo '</p>';
-    echo '</div>';
-    ?>
+						echo "<p style='margin-bottom: 0; padding-bottom: 0'>";
+						echo sprintf(__($guid, 'This printout contains information that is the property of %1$s. If you find this report, and do not have permission to read it, please return it to %2$s (%3$s). In the event that it cannot be returned, please destroy it.'), $_SESSION[$guid]['organisationName'], $_SESSION[$guid]['organisationAdministratorName'], $_SESSION[$guid]['organisationAdministratorEmail']);
+						echo '</p>';
+						echo '</div>';
+						?>
 					</div>
 					<div id="header-logo-report" style="text-align: right">
-						<img height='75px' width='300px' alt="Logo" src="<?php echo $_SESSION[$guid]['absoluteURL'].'/'.$_SESSION[$guid]['organisationLogo'];
-    ?>"/>
+						<img height='75px' width='300px' alt="Logo" src="<?php echo $_SESSION[$guid]['absoluteURL'].'/'.$_SESSION[$guid]['organisationLogo'];?>"/>
 					</div>
 				</div>
 				<div id="content-wrap-report" style="min-height: 500px">
 					
 					<?php
                     $_SESSION[$guid]['address'] = $_GET['q'];
-    $_SESSION[$guid]['module'] = getModuleName($_SESSION[$guid]['address']);
-    $_SESSION[$guid]['action'] = getActionName($_SESSION[$guid]['address']);
+					$_SESSION[$guid]['module'] = getModuleName($_SESSION[$guid]['address']);
+					$_SESSION[$guid]['action'] = getActionName($_SESSION[$guid]['address']);
 
-    if (strstr($_SESSION[$guid]['address'], '..') != false) {
-        echo "<div class='error'>";
-        echo __($guid, 'Illegal address detected: access denied.');
-        echo '</div>';
-    } else {
-        if (is_file('./'.$_SESSION[$guid]['address'])) {
-            include './'.$_SESSION[$guid]['address'];
-        } else {
-            include './error.php';
-        }
-    }
-    ?>
+					if (strstr($_SESSION[$guid]['address'], '..') != false) {
+						echo "<div class='error'>";
+						echo __($guid, 'Illegal address detected: access denied.');
+						echo '</div>';
+					} else {
+						if (is_file('./'.$_SESSION[$guid]['address'])) {
+							include './'.$_SESSION[$guid]['address'];
+						} else {
+							include './error.php';
+						}
+					}
+					?>
 				</div>
 				<div id="footer-report">
-					<?php echo sprintf(__($guid, 'Created by %1$s (%2$s) at %3$s on %4$s.'), $_SESSION[$guid]['username'], $_SESSION[$guid]['organisationNameShort'], date('H:i'), date($_SESSION[$guid]['i18n']['dateFormatPHP']));
-    ?>
+					<?php echo sprintf(__($guid, 'Created by %1$s (%2$s) at %3$s on %4$s.'), $_SESSION[$guid]['username'], $_SESSION[$guid]['organisationNameShort'], date('H:i'), date($_SESSION[$guid]['i18n']['dateFormatPHP']));?>
 				</div>
 			</div>
 		</body>
 	</html>
 	<?php
-
 }
 ?>

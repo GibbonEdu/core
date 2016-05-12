@@ -79,8 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 						<tr>
 							<td colspan=2 style='text-align: justify'> 
 								<?php
-                                echo sprintf(__($guid, 'By clicking the "Proceed" button below you will initiate the rollover from %1$s to %2$s. In a big school this operation may take some time to complete. This will change data in numerous tables across the system! %3$sYou are really, very strongly advised to backup all data before you proceed%4$s.'), '<b>'.$_SESSION[$guid]['gibbonSchoolYearName'].'</b>', '<b>'.$nameNext.'</b>', '<span style="color: #cc0000"><i>', '</span>');
-                ?>
+                                echo sprintf(__($guid, 'By clicking the "Proceed" button below you will initiate the rollover from %1$s to %2$s. In a big school this operation may take some time to complete. This will change data in numerous tables across the system! %3$sYou are really, very strongly advised to backup all data before you proceed%4$s.'), '<b>'.$_SESSION[$guid]['gibbonSchoolYearName'].'</b>', '<b>'.$nameNext.'</b>', '<span style="color: #cc0000"><i>', '</span>'); ?>
 							</td>
 						</tr>
 						<tr>
@@ -156,108 +155,108 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                     $rollGroupOptions = $rollGroupOptions."<option value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
                 }
 
-                    //ADD YEAR FOLLOWING NEXT
-                    if (getNextSchoolYearID($nextYear, $connection2) == false) {
-                        echo '<h4>';
-                        echo sprintf(__($guid, 'Add Year Following %1$s'), $nameNext);
-                        echo '</h4>';
-                        ?>
-						<table class='smallIntBorder fullWidth' cellspacing='0'>	
-							<tr>
-								<td style='width: 275px'> 
-									<b><?php echo __($guid, 'School Year Name') ?> *</b><br/>
-									<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?></span>
-								</td>
-								<td class="right">
-									<input name="nextname" id="nextname" maxlength=9 value="" type="text" class="standardWidth">
-									<script type="text/javascript">
-										var nextname=new LiveValidation('nextname');
-										nextname2.add(Validate.Presence);
-									</script>
-								</td>
-							</tr>
-							<tr>
-								<td> 
-									<b><?php echo __($guid, 'Status') ?> *</b>
-								</td>
-								<td class="right">
-									<input readonly name="next-status" id="next-status" value="Upcoming" type="text" class="standardWidth">
-								</td>
-							</tr>
-							<tr>
-								<td> 
-									<b><?php echo __($guid, 'Sequence Number') ?> *</b><br/>
-									<span class="emphasis small"><?php echo __($guid, 'Must be unique. Controls chronological ordering.') ?></span>
-								</td>
-								<td class="right">
-									<input readonly name="next-sequenceNumber" id="next-sequenceNumber" maxlength=3 value="<?php echo $sequenceNext + 1 ?>" type="text" class="standardWidth">
-								</td>
-							</tr>
-							<tr>
-								<td> 
-									<b><?php echo __($guid, 'First Day') ?> *</b><br/>
-									<span class="emphasis small"><?php echo $_SESSION[$guid]['i18n']['dateFormat']  ?></span>
-								</td>
-								<td class="right">
-									<input name="nextfirstDay" id="nextfirstDay" maxlength=10 value="" type="text" class="standardWidth">
-									<script type="text/javascript">
-										var nextfirstDay=new LiveValidation('nextfirstDay');
-										nextfirstDay.add(Validate.Presence);
-										nextfirstDay.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-                        ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-                        ?>." } ); 
-									</script>
-									 <script type="text/javascript">
-										$(function() {
-											$( "#nextfirstDay" ).datepicker();
-										});
-									</script>
-								</td>
-							</tr>
-							<tr>
-								<td> 
-									<b><?php echo __($guid, 'Last Day') ?> *</b><br/>
-									<span class="emphasis small"><?php echo $_SESSION[$guid]['i18n']['dateFormat']  ?></span>
-								</td>
-								<td class="right">
-									<input name="nextlastDay" id="nextlastDay" maxlength=10 value="" type="text" class="standardWidth">
-									<script type="text/javascript">
-										var nextlastDay=new LiveValidation('nextlastDay');
-										nextlastDay.add(Validate.Presence);
-										nextlastDay.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-                        ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-                        ?>." } ); 
-									</script>
-									 <script type="text/javascript">
-										$(function() {
-											$( "#nextlastDay" ).datepicker();
-										});
-									</script>
-								</td>
-							</tr>
-						</table>
-						<?php
+				//ADD YEAR FOLLOWING NEXT
+				if (getNextSchoolYearID($nextYear, $connection2) == false) {
+					echo '<h4>';
+					echo sprintf(__($guid, 'Add Year Following %1$s'), $nameNext);
+					echo '</h4>';
+					?>
+					<table class='smallIntBorder fullWidth' cellspacing='0'>	
+						<tr>
+							<td style='width: 275px'> 
+								<b><?php echo __($guid, 'School Year Name') ?> *</b><br/>
+								<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?></span>
+							</td>
+							<td class="right">
+								<input name="nextname" id="nextname" maxlength=9 value="" type="text" class="standardWidth">
+								<script type="text/javascript">
+									var nextname=new LiveValidation('nextname');
+									nextname2.add(Validate.Presence);
+								</script>
+							</td>
+						</tr>
+						<tr>
+							<td> 
+								<b><?php echo __($guid, 'Status') ?> *</b>
+							</td>
+							<td class="right">
+								<input readonly name="next-status" id="next-status" value="Upcoming" type="text" class="standardWidth">
+							</td>
+						</tr>
+						<tr>
+							<td> 
+								<b><?php echo __($guid, 'Sequence Number') ?> *</b><br/>
+								<span class="emphasis small"><?php echo __($guid, 'Must be unique. Controls chronological ordering.') ?></span>
+							</td>
+							<td class="right">
+								<input readonly name="next-sequenceNumber" id="next-sequenceNumber" maxlength=3 value="<?php echo $sequenceNext + 1 ?>" type="text" class="standardWidth">
+							</td>
+						</tr>
+						<tr>
+							<td> 
+								<b><?php echo __($guid, 'First Day') ?> *</b><br/>
+								<span class="emphasis small"><?php echo $_SESSION[$guid]['i18n']['dateFormat']  ?></span>
+							</td>
+							<td class="right">
+								<input name="nextfirstDay" id="nextfirstDay" maxlength=10 value="" type="text" class="standardWidth">
+								<script type="text/javascript">
+									var nextfirstDay=new LiveValidation('nextfirstDay');
+									nextfirstDay.add(Validate.Presence);
+									nextfirstDay.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
+									echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+								}
+														?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+									echo 'dd/mm/yyyy';
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormat'];
+								}
+								?>." } );  
+								</script>
+								 <script type="text/javascript">
+									$(function() {
+										$( "#nextfirstDay" ).datepicker();
+									});
+								</script>
+							</td>
+						</tr>
+						<tr>
+							<td> 
+								<b><?php echo __($guid, 'Last Day') ?> *</b><br/>
+								<span class="emphasis small"><?php echo $_SESSION[$guid]['i18n']['dateFormat']  ?></span>
+							</td>
+							<td class="right">
+								<input name="nextlastDay" id="nextlastDay" maxlength=10 value="" type="text" class="standardWidth">
+								<script type="text/javascript">
+									var nextlastDay=new LiveValidation('nextlastDay');
+									nextlastDay.add(Validate.Presence);
+									nextlastDay.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
+									echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+								}
+														?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+									echo 'dd/mm/yyyy';
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormat'];
+								}
+								?>." } );  
+								</script>
+								 <script type="text/javascript">
+									$(function() {
+										$( "#nextlastDay" ).datepicker();
+									});
+								</script>
+							</td>
+						</tr>
+					</table>
+					<?php
 
-                    }
+				}
 
-                    //SET EXPECTED USERS TO FULL
-                    echo '<h4>';
+				//SET EXPECTED USERS TO FULL
+				echo '<h4>';
                 echo __($guid, 'Set Expected Users To Full');
                 echo '</h4>';
                 echo '<p>';
@@ -330,8 +329,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                     echo "<input type='hidden' name='expect-count' value='$count'>";
                 }
 
-                    //ENROL NEW STUDENTS
-                    echo '<h4>';
+				//ENROL NEW STUDENTS
+				echo '<h4>';
                 echo __($guid, 'Enrol New Students (Status Expected)');
                 echo '</h4>';
                 echo '<p>';
@@ -567,8 +566,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                     }
                 }
 
-                    //RE-ENROL OTHER STUDENTS
-                    echo '<h4>';
+				//RE-ENROL OTHER STUDENTS
+				echo '<h4>';
                 echo __($guid, 'Re-Enrol Other Students');
                 echo '</h4>';
                 echo '<p>';
@@ -708,8 +707,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                     }
                 }
 
-                    //SET FINAL YEAR STUDENTS TO LEFT
-                    echo '<h4>';
+				//SET FINAL YEAR STUDENTS TO LEFT
+				echo '<h4>';
                 echo __($guid, 'Set Final Year Students To Left');
                 echo '</h4>';
 
@@ -778,8 +777,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                     echo "<input type='hidden' name='final-count' value='$count'>";
                 }
 
-                    //REGISTER NEW STAFF
-                    echo '<h4>';
+				//REGISTER NEW STAFF
+				echo '<h4>';
                 echo __($guid, 'Register New Staff');
                 echo '</h4>';
                 echo '<p>';

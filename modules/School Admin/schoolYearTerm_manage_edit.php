@@ -55,8 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearTer
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
-            ?>
+            $row = $result->fetch(); ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/schoolYearTerm_manage_editProcess.php?gibbonSchoolYearTermID=$gibbonSchoolYearTermID" ?>">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
@@ -68,21 +67,21 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearTer
 							<select name="gibbonSchoolYearID" id="gibbonSchoolYearID" class="standardWidth">
 								<?php
                                 echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-            try {
-                $dataSelect = array();
-                $sqlSelect = 'SELECT * FROM gibbonSchoolYear ORDER BY sequenceNumber';
-                $resultSelect = $connection2->prepare($sqlSelect);
-                $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) {
-            }
-            while ($rowSelect = $resultSelect->fetch()) {
-                if ($rowSelect['gibbonSchoolYearID'] == $row['gibbonSchoolYearID']) {
-                    echo "<option selected value='".$rowSelect['gibbonSchoolYearID']."'>".htmlPrep($rowSelect['name']).'</option>';
-                } else {
-                    echo "<option value='".$rowSelect['gibbonSchoolYearID']."'>".htmlPrep($rowSelect['name']).'</option>';
-                }
-            }
-            ?>				
+								try {
+									$dataSelect = array();
+									$sqlSelect = 'SELECT * FROM gibbonSchoolYear ORDER BY sequenceNumber';
+									$resultSelect = $connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								} catch (PDOException $e) {
+								}
+								while ($rowSelect = $resultSelect->fetch()) {
+									if ($rowSelect['gibbonSchoolYearID'] == $row['gibbonSchoolYearID']) {
+										echo "<option selected value='".$rowSelect['gibbonSchoolYearID']."'>".htmlPrep($rowSelect['name']).'</option>';
+									} else {
+										echo "<option value='".$rowSelect['gibbonSchoolYearID']."'>".htmlPrep($rowSelect['name']).'</option>';
+									}
+								}
+								?>				
 							</select>
 							<script type="text/javascript">
 								var gibbonSchoolYearTermID=new LiveValidation('gibbonSchoolYearTermID');
@@ -141,16 +140,16 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearTer
 								var firstDay=new LiveValidation('firstDay');
 								firstDay.add(Validate.Presence);
 								firstDay.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-            ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-            ?>." } ); 
+								echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+								}
+											?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+									echo 'dd/mm/yyyy';
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormat'];
+								}
+								?>." } ); 
 							</script>
 							 <script type="text/javascript">
 								$(function() {
@@ -170,16 +169,16 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearTer
 								var lastDay=new LiveValidation('lastDay');
 								lastDay.add(Validate.Presence);
 								lastDay.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-            ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-            ?>." } ); 
+								echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+								}
+											?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+									echo 'dd/mm/yyyy';
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormat'];
+								}
+								?>." } ); 
 							</script>
 							 <script type="text/javascript">
 								$(function() {
@@ -190,13 +189,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearTer
 					</tr>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

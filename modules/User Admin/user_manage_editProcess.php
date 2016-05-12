@@ -288,6 +288,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                 $privacy = null;
             }
             $privacy_old = $row['privacy'];
+
             $studentAgreements = null;
             $agreements = '';
             if (isset($_POST['studentAgreements'])) {
@@ -482,9 +483,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                             exit();
                         }
 
-                        //Notify tutors of change to pruvacy settings
+                        //Deal with change to privacy settings
                         if ($student and getSettingByScope($connection2, 'User Admin', 'privacy') == 'Y') {
                             if ($privacy_old != $privacy) {
+
+                                //Notify tutor
                                 try {
                                     $dataDetail = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
                                     $sqlDetail = 'SELECT gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3 FROM gibbonRollGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID';
@@ -493,6 +496,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                                 } catch (PDOException $e) {
                                 }
                                 if ($resultDetail->rowCount() == 1) {
+
                                     $rowDetail = $resultDetail->fetch();
                                     $name = formatName('', $preferredName, $surname, 'Student', false);
                                     $notificationText = sprintf(__($guid, 'Your tutee, %1$s, has had their privacy settings altered.'), $name);
@@ -506,6 +510,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                                         setNotification($connection2, $guid, $rowDetail['gibbonPersonIDTutor3'], $notificationText, 'Students', "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=");
                                     }
                                 }
+
+                                //Set log
+                                $gibbonModuleID=getModuleIDFromName($connection2, 'User Admin') ;
+                                $privacyValues=array() ;
+                                $privacyValues['oldValue'] = $privacy_old ;
+                                $privacyValues['newValue'] = $privacy ;
+                                setLog($connection2, $_SESSION[$guid]["gibbonSchoolYearID"], $gibbonModuleID, $_SESSION[$guid]["gibbonPersonID"], 'Privacy - Value Changed', $privacyValues, $_SERVER['REMOTE_ADDR']) ;
                             }
                         }
 

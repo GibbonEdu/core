@@ -41,8 +41,7 @@ $themeName = $_GET['themeName'];
 //Grab theme, CSS and JS
 echo '<meta http-equiv="content-type" content="text/html; charset=utf-8"/>';
 $_SESSION[$guid]['gibbonThemeName'] = $themeName;
-if ($themeName == '') {
-    echo "<link rel='stylesheet' type='text/css' href='".$_SESSION[$guid]['absoluteURL']."/themes/Default/css/main.css' />";
+if ($themeName == '') { echo "<link rel='stylesheet' type='text/css' href='".$_SESSION[$guid]['absoluteURL']."/themes/Default/css/main.css' />";
 } else {
     echo "<link rel='stylesheet' type='text/css' href='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$themeName."/css/main.css' />";
 }
@@ -58,8 +57,7 @@ echo '<script type="text/javascript" src='.$_SESSION[$guid]['absoluteURL'].'/lib
 echo '<script type="text/javascript" src="'.$_SESSION[$guid]['absoluteURL'].'/lib/jquery/jquery.js"></script>';
 echo '<script type="text/javascript" src='.$_SESSION[$guid]['absoluteURL'].'/lib/jquery-ui/js/jquery-ui.min.js"></script>';
 
-if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') {
-    echo "<div class='error'>";
+if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') { echo "<div class='error'>";
     echo __($guid, 'You have not specified one or more required parameters.');
     echo '</div>';
 } else {
@@ -174,8 +172,8 @@ if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') {
                                 $rowNum = 'odd';
                             }
 
-                                //COLOR ROW BY STATUS!
-                                echo "<tr class=$rowNum>";
+                            //COLOR ROW BY STATUS!
+                            echo "<tr class=$rowNum>";
                             echo '<td>';
                             echo '<b>'.$rowBlocks['nameShort'].'</b><br/>';
                             echo "<span style='font-size: 75%; font-style: italic'>".$rowBlocks['name'].'</span>';

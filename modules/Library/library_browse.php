@@ -160,8 +160,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
     echo '</tr>';
     echo '</table>';
 
-            //Get current filter values
-            $name = null;
+	//Get current filter values
+	$name = null;
     if (isset($_POST['name'])) {
         $name = trim($_POST['name']);
     }
@@ -211,8 +211,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
         $gibbonLibraryItemID = trim($_GET['gibbonLibraryItemID']);
     }
 
-            //Display filters
-            echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Library/library_browse.php'>";
+	//Display filters
+	echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Library/library_browse.php'>";
     echo "<table class='noIntBorder' cellspacing='0' style='width: 100%; background-color: rgba(255,255,255,0.8); border: 1px solid #444; margin-top: 30px'>";
     echo '<tr>';
     echo "<td style='width: 10px'></td>";
@@ -307,8 +307,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
     echo '</table>';
     echo '</form>';
 
-            //Set pagination variable
-            $page = 1;
+	//Set pagination variable
+	$page = 1;
     if (isset($_GET['page'])) {
         $page = $_GET['page'];
     }
@@ -446,8 +446,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
                 $rowNum = 'odd';
             }
 
-                        //COLOR ROW BY STATUS!
-                        echo "<tr class=$rowNum style='opacity: 1.0'>";
+			//COLOR ROW BY STATUS!
+			echo "<tr class=$rowNum style='opacity: 1.0'>";
             echo "<td style='width: 260px'>";
             echo getImage($guid, $row['imageType'], $row['imageLocation'], false);
             echo '</td>';

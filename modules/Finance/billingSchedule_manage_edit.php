@@ -77,19 +77,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
 						<td class="right">
 							<?php
                             $yearName = '';
-            try {
-                $dataYear = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-                $sqlYear = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-                $resultYear = $connection2->prepare($sqlYear);
-                $resultYear->execute($dataYear);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-            if ($resultYear->rowCount() == 1) {
-                $rowYear = $resultYear->fetch();
-                $yearName = $rowYear['name'];
-            }
-            ?>
+							try {
+								$dataYear = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+								$sqlYear = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
+								$resultYear = $connection2->prepare($sqlYear);
+								$resultYear->execute($dataYear);
+							} catch (PDOException $e) {
+								echo "<div class='error'>".$e->getMessage().'</div>';
+							}
+							if ($resultYear->rowCount() == 1) {
+								$rowYear = $resultYear->fetch();
+								$yearName = $rowYear['name'];
+							}
+							?>
 							<input readonly name="yearName" id="yearName" maxlength=20 value="<?php echo $yearName ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var yearName=new LiveValidation('yearName');
@@ -116,14 +116,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
 						</td>
 						<td class="right">
 							<select name="active" id="active" class="standardWidth">
-								<option <?php if ($row['active'] == 'Y') {
-    echo 'selected';
-}
-            ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
-								<option <?php if ($row['active'] == 'N') {
-    echo 'selected';
-}
-            ?> value="N"><?php echo __($guid, 'No') ?></option>
+								<option <?php if ($row['active'] == 'Y') { echo 'selected'; } ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
+								<option <?php if ($row['active'] == 'N') { echo 'selected'; } ?> value="N"><?php echo __($guid, 'No') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -139,27 +133,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
 						<td> 
 							<b><?php echo __($guid, 'Invoice Issue Date') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Intended issue date.').'<br/>'.__($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-            ?><br/></span>
+								echo 'dd/mm/yyyy';
+							} else {
+								echo $_SESSION[$guid]['i18n']['dateFormat'];
+							}
+							?><br/></span>
 						</td>
 						<td class="right">
 							<input name="invoiceIssueDate" id="invoiceIssueDate" maxlength=10 value="<?php echo dateConvertBack($guid, $row['invoiceIssueDate']) ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var invoiceIssueDate=new LiveValidation('invoiceIssueDate');
 								invoiceIssueDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-            ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-            ?>." } ); 
+								echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+								}
+											?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+									echo 'dd/mm/yyyy';
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormat'];
+								}
+								?>." } ); 
 								invoiceIssueDate.add(Validate.Presence);
 							</script>
 							 <script type="text/javascript">
@@ -174,27 +168,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
 						<td> 
 							<b><?php echo __($guid, 'Invoice Due Date') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Final Payment Date.').'<br/>'.__($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-            ?><br/></span>
+								echo 'dd/mm/yyyy';
+							} else {
+								echo $_SESSION[$guid]['i18n']['dateFormat'];
+							}
+            				?><br/></span>
 						</td>
 						<td class="right">
 							<input name="invoiceDueDate" id="invoiceDueDate" maxlength=10 value="<?php echo dateConvertBack($guid, $row['invoiceDueDate']) ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var invoiceDueDate=new LiveValidation('invoiceDueDate');
 								invoiceDueDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-            ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-            ?>." } ); 
+								echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+								}
+											?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+									echo 'dd/mm/yyyy';
+								} else {
+									echo $_SESSION[$guid]['i18n']['dateFormat'];
+								}
+								?>." } ); 
 								invoiceDueDate.add(Validate.Presence);
 							</script>
 							 <script type="text/javascript">
@@ -207,14 +201,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
 				
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input name="gibbonFinanceBillingScheduleID" id="gibbonFinanceBillingScheduleID" value="<?php echo $gibbonFinanceBillingScheduleID ?>" type="hidden">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

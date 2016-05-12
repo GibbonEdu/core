@@ -94,8 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
             echo '</h3>';
             echo '<p>';
             echo sprintf(__($guid, 'It seems that you have updated your Gibbon code to a new version, and are ready to update your databse from v%1$s to v%2$s. <b>Click "Submit" below to continue. This operation cannot be undone: backup your entire database prior to running the update!'), $versionDB, $versionCode).'</b>';
-            echo '</p>';
-            ?>
+            echo '</p>'; ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/updateProcess.php?type=regularRelease' ?>">
 				<table cellspacing='0' style="width: 100%">	
 					<tr>
@@ -103,8 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
 							<input type="hidden" name="versionDB" value="<?php echo $versionDB ?>">
 							<input type="hidden" name="versionCode" value="<?php echo $versionCode ?>">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>
@@ -160,8 +158,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
             echo '</h3>';
             echo '<p>';
             echo sprintf(__($guid, 'It seems that you have updated your Gibbon code to a new version, and are ready to update your databse from v%1$s line %2$s to v%3$s line %4$s. <b>Click "Submit" below to continue. This operation cannot be undone: backup your entire database prior to running the update!'), $versionDB, $cuttingEdgeCodeLine, $versionCode, $versionMaxLinesMax).'</b>';
-            echo '</p>';
-            ?>
+            echo '</p>'; ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/updateProcess.php?type=cuttingEdge' ?>">
 				<table cellspacing='0' style="width: 100%">	
 					<tr>
@@ -169,8 +166,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
 							<input type="hidden" name="versionDB" value="<?php echo $versionDB ?>">
 							<input type="hidden" name="versionCode" value="<?php echo $versionCode ?>">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

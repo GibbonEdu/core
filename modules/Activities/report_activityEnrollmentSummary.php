@@ -75,8 +75,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
             }
             ++$count;
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$rowNum>";
             echo '<td>';
             echo $row['name'];
             echo '</td>';

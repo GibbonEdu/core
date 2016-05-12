@@ -78,18 +78,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
                                     $resultSelect->execute($dataSelect);
                                 } catch (PDOException $e) {
                                 }
-        while ($rowSelect = $resultSelect->fetch()) {
-            $selected = '';
-            if (is_array($gibbonPersonIDs)) {
-                foreach ($gibbonPersonIDs as $gibbonPersonID) {
-                    if ($rowSelect['gibbonPersonID'] == $gibbonPersonID) {
-                        $selected = 'selected';
-                    }
-                }
-            }
-            echo "<option $selected value='".$rowSelect['gibbonPersonID']."'>".htmlPrep($rowSelect['name']).' - '.formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).'</option>';
-        }
-        ?>
+								while ($rowSelect = $resultSelect->fetch()) {
+									$selected = '';
+									if (is_array($gibbonPersonIDs)) {
+										foreach ($gibbonPersonIDs as $gibbonPersonID) {
+											if ($rowSelect['gibbonPersonID'] == $gibbonPersonID) {
+												$selected = 'selected';
+											}
+										}
+									}
+									echo "<option $selected value='".$rowSelect['gibbonPersonID']."'>".htmlPrep($rowSelect['name']).' - '.formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).'</option>';
+								}
+								?>
 							</optgroup>
 							<optgroup label='--<?php echo __($guid, 'Students by Name') ?>--'>
 								<?php
@@ -100,18 +100,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
                                     $resultSelect->execute($dataSelect);
                                 } catch (PDOException $e) {
                                 }
-        while ($rowSelect = $resultSelect->fetch()) {
-            $selected = '';
-            if (is_array($gibbonPersonIDs)) {
-                foreach ($gibbonPersonIDs as $gibbonPersonID) {
-                    if ($rowSelect['gibbonPersonID'] == $gibbonPersonID) {
-                        $selected = 'selected';
-                    }
-                }
-            }
-            echo "<option $selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['name']).')</option>';
-        }
-        ?>
+								while ($rowSelect = $resultSelect->fetch()) {
+									$selected = '';
+									if (is_array($gibbonPersonIDs)) {
+										foreach ($gibbonPersonIDs as $gibbonPersonID) {
+											if ($rowSelect['gibbonPersonID'] == $gibbonPersonID) {
+												$selected = 'selected';
+											}
+										}
+									}
+									echo "<option $selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['name']).')</option>';
+								}
+								?>
 							</optgroup>
 						</select>
 					</td>
@@ -123,25 +123,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
 					<td class="right">
 						<?php
                         $attainmentTitle = 'Attainment';
-        $attainmentAlt = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeName');
-        if ($attainmentAlt != '') {
-            $attainmentTitle = $attainmentAlt;
-        }
-        $effortTitle = 'Effort';
-        $effortAlt = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName');
-        if ($effortAlt != '') {
-            $effortTitle = $effortAlt;
-        }
-        ?>
+						$attainmentAlt = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeName');
+						if ($attainmentAlt != '') {
+							$attainmentTitle = $attainmentAlt;
+						}
+						$effortTitle = 'Effort';
+						$effortAlt = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName');
+						if ($effortAlt != '') {
+							$effortTitle = $effortAlt;
+						}
+						?>
 						<select name="dataType" id="dataType" class="standardWidth">
-							<option <?php if ($dataType == 'attainment') {
-    echo 'selected';
-}
-        ?> value="attainment"><?php echo __($guid, $attainmentTitle) ?></option>
-							<option <?php if ($dataType == 'effort') {
-    echo 'selected';
-}
-        ?> value="effort"><?php echo __($guid, $effortTitle) ?></option>
+							<option <?php if ($dataType == 'attainment') { echo 'selected'; } ?> value="attainment"><?php echo __($guid, $attainmentTitle) ?></option>
+							<option <?php if ($dataType == 'effort') { echo 'selected'; } ?> value="effort"><?php echo __($guid, $effortTitle) ?></option>
 						</select>
 					</td>
 				</tr>
@@ -159,11 +153,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
                             $resultLA->execute($dataLA);
                         } catch (PDOException $e) {
                         }
-        if ($resultLA->rowCount() < 1) {
-            echo '<i>'.__($guid, 'No Learning Areas available.').'</i>';
-        } else {
-            echo "<fieldset style='border: none'>";
-            ?>
+						if ($resultLA->rowCount() < 1) {
+							echo '<i>'.__($guid, 'No Learning Areas available.').'</i>';
+						} else {
+							echo "<fieldset style='border: none'>"; ?>
 							<script type="text/javascript">
 								$(function () {
 									$('.checkall').click(function () {
@@ -173,27 +166,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
 							</script>
 							<?php
                             echo __($guid, 'All/None')." <input type='checkbox' class='checkall'><br/>";
-            while ($rowLA = $resultLA->fetch()) {
-                $checked = '';
-                if ($gibbonDepartmentIDs != null) {
-                    foreach ($gibbonDepartmentIDs as $gibbonDepartmentID) {
-                        if ($gibbonDepartmentID == $rowLA['gibbonDepartmentID']) {
-                            $checked = 'checked ';
-                        }
-                    }
-                }
-                echo __($guid, $rowLA['name'])." <input $checked type='checkbox' name='gibbonDepartmentIDs[]' value='".$rowLA['gibbonDepartmentID']."'><br/>";
-            }
-        }
-        echo '</fieldset>';
-        ?>
+							while ($rowLA = $resultLA->fetch()) {
+								$checked = '';
+								if ($gibbonDepartmentIDs != null) {
+									foreach ($gibbonDepartmentIDs as $gibbonDepartmentID) {
+										if ($gibbonDepartmentID == $rowLA['gibbonDepartmentID']) {
+											$checked = 'checked ';
+										}
+									}
+								}
+								echo __($guid, $rowLA['name'])." <input $checked type='checkbox' name='gibbonDepartmentIDs[]' value='".$rowLA['gibbonDepartmentID']."'><br/>";
+							}
+						}
+						echo '</fieldset>'; ?>
 						<input type="hidden" name="count" value="<?php echo(count($learningAreas)) / 2 ?>">
 					</td>
 				</tr>
 				<tr>
 					<td colspan=2 class="right">
-						<input type="submit" value="<?php echo __($guid, 'Submit');
-        ?>">
+						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 					</td>
 				</tr>
 			</table>
@@ -469,37 +460,35 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
                                         foreach ($terms as $term) {
                                             echo "'".$term['termFullName']."',";
                                         }
-                        ?>
-								],
+                        			?>								],
 								datasets : [
 									<?php
                                         foreach ($departments as $department) {
-                                            ?>
-											{
-												fillColor : "rgba(<?php echo $department['colour'] ?>,0)",
-												strokeColor : "rgba(<?php echo $department['colour'] ?>,1)",
-												pointColor : "rgba(<?php echo $department['colour'] ?>,1)",
-												pointStrokeColor : "rgba(<?php echo $department['colour'] ?>,0.4)",
-												pointHighlightFill : "rgba(<?php echo $department['colour'] ?>,4)",
-												pointHighlightStroke : "rgba(<?php echo $department['colour'] ?>,0.1)",
-												data : [
-													<?php
-                                                        foreach ($terms as $term) {
-                                                            if ($finalData[$term['termID']][$department['department']]['termID'] == $term['termID']) {
-                                                                if ($finalData[$term['termID']][$department['department']]['department'] == $department['department']) {
-                                                                    echo $finalData[$term['termID']][$department['department']]['gradeWeightedMean'].',';
-                                                                }
-                                                            }
-                                                        }
-                                            ?>
-												]
-											},
-										<?php
+										?>
+										{
+											fillColor : "rgba(<?php echo $department['colour'] ?>,0)",
+											strokeColor : "rgba(<?php echo $department['colour'] ?>,1)",
+											pointColor : "rgba(<?php echo $department['colour'] ?>,1)",
+											pointStrokeColor : "rgba(<?php echo $department['colour'] ?>,0.4)",
+											pointHighlightFill : "rgba(<?php echo $department['colour'] ?>,4)",
+											pointHighlightStroke : "rgba(<?php echo $department['colour'] ?>,0.1)",
+											data : [
+												<?php
+													foreach ($terms as $term) {
+														if ($finalData[$term['termID']][$department['department']]['termID'] == $term['termID']) {
+															if ($finalData[$term['termID']][$department['department']]['department'] == $department['department']) {
+																echo $finalData[$term['termID']][$department['department']]['gradeWeightedMean'].',';
+															}
+														}
+													}
+										?>
+											]
+										},
+									<?php
 
-                                        }
-                        ?>
-								]
-
+									}
+								?>								
+							]
 							}
 
 							window.onload = function(){

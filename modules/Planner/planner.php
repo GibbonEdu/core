@@ -138,8 +138,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                 } else {
                     echo '<h2>';
                     echo __($guid, 'Choose');
-                    echo '</h2>';
-                    ?>
+                    echo '</h2>'; ?>
 					<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
 						<table class='noIntBorder' cellspacing='0' style="width: 100%">	
 							<tr><td style="width: 30%"></td><td></td></tr>
@@ -151,8 +150,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
 								<td class="right">
 									<select name="search" id="search" class="standardWidth">
 										<option value=""></value>
-										<?php echo $options;
-                    ?> 
+										<?php echo $options; ?> 
 									</select>
 								</td>
 							</tr>
@@ -160,8 +158,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
 								<td colspan=2 class="right">
 									<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/planner.php">
 									<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-									<input type="submit" value="<?php echo __($guid, 'Submit');
-                    ?>">
+									<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 								</td>
 							</tr>
 						</table>
@@ -261,13 +258,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                             }
                                             ++$count;
 
-                                                //Highlight class in progress
-                                                if ((date('H:i:s') > $row['timeStart']) and (date('H:i:s') < $row['timeEnd']) and ($date) == date('Y-m-d')) {
-                                                    $rowNum = 'current';
-                                                }
+											//Highlight class in progress
+											if ((date('H:i:s') > $row['timeStart']) and (date('H:i:s') < $row['timeEnd']) and ($date) == date('Y-m-d')) {
+												$rowNum = 'current';
+											}
 
-                                                //COLOR ROW BY STATUS!
-                                                echo "<tr class=$rowNum>";
+											//COLOR ROW BY STATUS!
+											echo "<tr class=$rowNum>";
                                             echo '<td>';
                                             echo $row['course'].'.'.$row['class'];
                                             echo '</td>';
@@ -412,13 +409,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                                 }
                                                 ++$count;
 
-                                                    //Highlight class in progress
-                                                    if ((date('Y-m-d') == $row['date']) and (date('H:i:s') > $row['timeStart']) and (date('H:i:s') < $row['timeEnd'])) {
-                                                        $rowNum = 'current';
-                                                    }
+												//Highlight class in progress
+												if ((date('Y-m-d') == $row['date']) and (date('H:i:s') > $row['timeStart']) and (date('H:i:s') < $row['timeEnd'])) {
+													$rowNum = 'current';
+												}
 
-                                                    //COLOR ROW BY STATUS!
-                                                    echo "<tr class=$rowNum>";
+												//COLOR ROW BY STATUS!
+												echo "<tr class=$rowNum>";
                                                 echo '<td>';
                                                 if (!(is_null($row['date']))) {
                                                     echo '<b>'.dateConvertBack($guid, $row['date']).'</b><br/>';
@@ -1080,118 +1077,118 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                     $rowNum = 'odd';
                                     $divide = false; //Have we passed gotten to today yet?
 
-                                        foreach ($lessons as $lesson) {
-                                            if ($count % 2 == 0) {
-                                                $rowNum = 'even';
-                                            } else {
-                                                $rowNum = 'odd';
-                                            }
+									foreach ($lessons as $lesson) {
+										if ($count % 2 == 0) {
+											$rowNum = 'even';
+										} else {
+											$rowNum = 'odd';
+										}
 
-                                            $style = '';
-                                            if ($lesson[1] >= date('Y-m-d') and $divide == false) {
-                                                $divide = true;
-                                                $style = "style='border-top: 2px solid #333'";
-                                            }
+										$style = '';
+										if ($lesson[1] >= date('Y-m-d') and $divide == false) {
+											$divide = true;
+											$style = "style='border-top: 2px solid #333'";
+										}
 
-                                            if ($divide == false) {
-                                                $rowNum = 'error';
-                                            }
-                                            ++$count;
+										if ($divide == false) {
+											$rowNum = 'error';
+										}
+										++$count;
 
-                                            //Spit out row for start of term
-                                            while ($lesson['1'] >= $terms[$termCount][0] and $termCount < (count($terms) - 1)) {
-                                                if (substr($terms[$termCount][1], 0, 3) == 'End' and $lesson['1'] == $terms[$termCount][0]) {
-                                                    break;
-                                                } else {
-                                                    echo "<tr class='dull'>";
-                                                    echo '<td>';
-                                                    echo '<b>'.$terms[$termCount][1].'</b>';
-                                                    echo '</td>';
-                                                    echo '<td colspan=6>';
-                                                    echo dateConvertBack($guid, $terms[$termCount][0]);
-                                                    echo '</td>';
-                                                    echo '</tr>';
-                                                    ++$termCount;
-                                                }
-                                            }
+										//Spit out row for start of term
+										while ($lesson['1'] >= $terms[$termCount][0] and $termCount < (count($terms) - 1)) {
+											if (substr($terms[$termCount][1], 0, 3) == 'End' and $lesson['1'] == $terms[$termCount][0]) {
+												break;
+											} else {
+												echo "<tr class='dull'>";
+												echo '<td>';
+												echo '<b>'.$terms[$termCount][1].'</b>';
+												echo '</td>';
+												echo '<td colspan=6>';
+												echo dateConvertBack($guid, $terms[$termCount][0]);
+												echo '</td>';
+												echo '</tr>';
+												++$termCount;
+											}
+										}
 
-                                            //Spit out row for special day
-                                            while ($lesson['1'] >= @$specials[$specialCount][0] and $specialCount < count($specials)) {
-                                                echo "<tr class='dull'>";
-                                                echo '<td>';
-                                                echo '<b>'.$specials[$specialCount][1].'</b>';
-                                                echo '</td>';
-                                                echo '<td colspan=6>';
-                                                echo $specials[$specialCount][2];
-                                                echo '</td>';
-                                                echo '</tr>';
-                                                ++$specialCount;
-                                            }
+										//Spit out row for special day
+										while ($lesson['1'] >= @$specials[$specialCount][0] and $specialCount < count($specials)) {
+											echo "<tr class='dull'>";
+											echo '<td>';
+											echo '<b>'.$specials[$specialCount][1].'</b>';
+											echo '</td>';
+											echo '<td colspan=6>';
+											echo $specials[$specialCount][2];
+											echo '</td>';
+											echo '</tr>';
+											++$specialCount;
+										}
 
-                                            //COLOR ROW BY STATUS!
-                                            if ($lesson[8] != 'School Closure') {
-                                                echo "<tr class=$rowNum>";
-                                                echo "<td $style>";
-                                                echo '<b>Lesson '.($classCount + 1).'</b>';
-                                                echo '</td>';
-                                                echo "<td $style>";
-                                                echo '<b>'.dateConvertBack($guid, $lesson['1']).'</b><br/>';
-                                                echo date('l', dateConvertToTimestamp($lesson['1'])).'<br/>';
-                                                echo date('F', dateConvertToTimestamp($lesson['1'])).'<br/>';
-                                                if ($lesson[8] == 'Timing Change') {
-                                                    echo '<u>'.$lesson[8].'</u><br/><i>('.substr($lesson[9], 0, 5).'-'.substr($lesson[10], 0, 5).')</i>';
-                                                }
-                                                echo '</td>';
-                                                echo "<td $style>";
-                                                echo $lesson['4'].'<br/>';
-                                                echo "<span style='font-size: 85%; font-style: italic'>".substr($lesson['2'], 0, 5).' - '.substr($lesson['3'], 0, 5).'</span>';
-                                                echo '</td>';
-                                                echo "<td $style>";
-                                                if ($lesson['0'] == 'Planned') {
-                                                    echo '<b>'.$lesson['5'].'</b><br/>';
-                                                    $unit = getUnit($connection2, $lesson[11], $lesson[13], $lesson[14]);
-                                                    if (isset($unit[0])) {
-                                                        echo "<span style='font-size: 85%; font-style: italic'>";
-                                                        echo $unit[0];
-                                                        if (isset($unit[1])) {
-                                                            if ($unit[1] != '') {
-                                                                echo '<br/><i>'.$unit[1].' Unit</i>';
-                                                            }
-                                                        }
-                                                        echo '</span>';
-                                                    }
-                                                }
-                                                echo '</td>';
-                                                echo "<td $style>";
-                                                if ($lesson['0'] == 'Unplanned') {
-                                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/planner_add.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=".$lesson[1].'&timeStart='.$lesson[2].'&timeEnd='.$lesson[3]."&subView=$subView'><img style='margin-bottom: -4px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-                                                } else {
-                                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/planner_view_full.php&gibbonPlannerEntryID='.$lesson[12]."&viewBy=class&gibbonCourseClassID=$gibbonCourseClassID&width=1000&height=550&subView=$subView'><img title='".__($guid, 'View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
-                                                    if ((($highestAction == 'Lesson Planner_viewAllEditMyClasses' and $teacher == true) or $highestAction == 'Lesson Planner_viewEditAllClasses')) {
-                                                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/planner_edit.php&gibbonPlannerEntryID='.$lesson[12]."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                                                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/planner_bump.php&gibbonPlannerEntryID='.$lesson[12]."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView'><img title='".__($guid, 'Bump')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_right.png'/></a>";
-                                                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/planner_delete.php&gibbonPlannerEntryID='.$lesson[12]."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
-                                                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/planner_duplicate.php&gibbonPlannerEntryID='.$lesson[12]."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date&subView=$subView'><img style='margin-left: 3px' title='".__($guid, 'Duplicate')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/copy.png'/></a>";
-                                                    }
-                                                }
-                                                echo '</td>';
-                                                echo '</tr>';
-                                                ++$classCount;
-                                            }
+										//COLOR ROW BY STATUS!
+										if ($lesson[8] != 'School Closure') {
+											echo "<tr class=$rowNum>";
+											echo "<td $style>";
+											echo '<b>Lesson '.($classCount + 1).'</b>';
+											echo '</td>';
+											echo "<td $style>";
+											echo '<b>'.dateConvertBack($guid, $lesson['1']).'</b><br/>';
+											echo date('l', dateConvertToTimestamp($lesson['1'])).'<br/>';
+											echo date('F', dateConvertToTimestamp($lesson['1'])).'<br/>';
+											if ($lesson[8] == 'Timing Change') {
+												echo '<u>'.$lesson[8].'</u><br/><i>('.substr($lesson[9], 0, 5).'-'.substr($lesson[10], 0, 5).')</i>';
+											}
+											echo '</td>';
+											echo "<td $style>";
+											echo $lesson['4'].'<br/>';
+											echo "<span style='font-size: 85%; font-style: italic'>".substr($lesson['2'], 0, 5).' - '.substr($lesson['3'], 0, 5).'</span>';
+											echo '</td>';
+											echo "<td $style>";
+											if ($lesson['0'] == 'Planned') {
+												echo '<b>'.$lesson['5'].'</b><br/>';
+												$unit = getUnit($connection2, $lesson[11], $lesson[13], $lesson[14]);
+												if (isset($unit[0])) {
+													echo "<span style='font-size: 85%; font-style: italic'>";
+													echo $unit[0];
+													if (isset($unit[1])) {
+														if ($unit[1] != '') {
+															echo '<br/><i>'.$unit[1].' Unit</i>';
+														}
+													}
+													echo '</span>';
+												}
+											}
+											echo '</td>';
+											echo "<td $style>";
+											if ($lesson['0'] == 'Unplanned') {
+												echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/planner_add.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=".$lesson[1].'&timeStart='.$lesson[2].'&timeEnd='.$lesson[3]."&subView=$subView'><img style='margin-bottom: -4px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+											} else {
+												echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/planner_view_full.php&gibbonPlannerEntryID='.$lesson[12]."&viewBy=class&gibbonCourseClassID=$gibbonCourseClassID&width=1000&height=550&subView=$subView'><img title='".__($guid, 'View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
+												if ((($highestAction == 'Lesson Planner_viewAllEditMyClasses' and $teacher == true) or $highestAction == 'Lesson Planner_viewEditAllClasses')) {
+													echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/planner_edit.php&gibbonPlannerEntryID='.$lesson[12]."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+													echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/planner_bump.php&gibbonPlannerEntryID='.$lesson[12]."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView'><img title='".__($guid, 'Bump')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_right.png'/></a>";
+													echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/planner_delete.php&gibbonPlannerEntryID='.$lesson[12]."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+													echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/planner_duplicate.php&gibbonPlannerEntryID='.$lesson[12]."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date&subView=$subView'><img style='margin-left: 3px' title='".__($guid, 'Duplicate')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/copy.png'/></a>";
+												}
+											}
+											echo '</td>';
+											echo '</tr>';
+											++$classCount;
+										}
 
-                                            //Spit out row for end of term/year
-                                            while ($lesson['1'] >= @$terms[$termCount][0] and $termCount < count($terms) and substr($terms[$termCount][1], 0, 3) == 'End') {
-                                                echo "<tr class='dull'>";
-                                                echo '<td>';
-                                                echo '<b>'.$terms[$termCount][1].'</b>';
-                                                echo '</td>';
-                                                echo '<td colspan=6>';
-                                                echo dateConvertBack($guid, $terms[$termCount][0]);
-                                                echo '</td>';
-                                                echo '</tr>';
-                                                ++$termCount;
-                                            }
-                                        }
+										//Spit out row for end of term/year
+										while ($lesson['1'] >= @$terms[$termCount][0] and $termCount < count($terms) and substr($terms[$termCount][1], 0, 3) == 'End') {
+											echo "<tr class='dull'>";
+											echo '<td>';
+											echo '<b>'.$terms[$termCount][1].'</b>';
+											echo '</td>';
+											echo '<td colspan=6>';
+											echo dateConvertBack($guid, $terms[$termCount][0]);
+											echo '</td>';
+											echo '</tr>';
+											++$termCount;
+										}
+									}
 
                                     if (@$terms[$termCount][0] != '') {
                                         echo "<tr class='dull'>";

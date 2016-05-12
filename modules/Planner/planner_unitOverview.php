@@ -229,32 +229,32 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
 							<?php
 
                             echo "<div id='tabs' style='margin: 20px 0'>";
-                                //Tab links
-                                echo '<ul>';
+							//Tab links
+							echo '<ul>';
                             echo "<li><a href='#tabs1'>".__($guid, 'Unit Overview').'</a></li>';
                             echo "<li><a href='#tabs2'>".__($guid, 'Outcomes').'</a></li>';
                             echo "<li><a href='#tabs3'>".__($guid, 'Lessons').'</a></li>';
                             echo "<li><a href='#tabs4'>".__($guid, 'Resources').'</a></li>';
                             echo '</ul>';
 
-                                //Tab content
-                                //UNIT OVERVIEW
-                                echo "<div id='tabs1'>";
+							//Tab content
+							//UNIT OVERVIEW
+							echo "<div id='tabs1'>";
                             if ($highestAction == 'Lesson Planner_viewEditAllClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses') {
                                 echo $rowUnit['details'];
                             } else {
                                 echo '<p>'.$rowUnit['description'].'</p>';
                             }
                             echo '</div>';
-                                //OUTCOMES
-                                echo "<div id='tabs2'>";
+							//OUTCOMES
+							echo "<div id='tabs2'>";
                             try {
                                 $dataOutcomes = $dataMulti;
                                 $dataOutcomes['gibbonUnitID'] = $row['gibbonUnitID'];
                                 $sqlOutcomes = "(SELECT gibbonOutcome.*, gibbonPlannerEntryOutcome.content FROM gibbonPlannerEntryOutcome JOIN gibbonOutcome ON (gibbonPlannerEntryOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) WHERE $whereMulti AND active='Y')
-										UNION
-										(SELECT gibbonOutcome.*, gibbonUnitOutcome.content FROM gibbonUnitOutcome JOIN gibbonOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) WHERE gibbonUnitID=:gibbonUnitID AND active='Y')
-										ORDER BY scope DESC, name";
+									UNION
+									(SELECT gibbonOutcome.*, gibbonUnitOutcome.content FROM gibbonUnitOutcome JOIN gibbonOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) WHERE gibbonUnitID=:gibbonUnitID AND active='Y')
+									ORDER BY scope DESC, name";
                                 $resultOutcomes = $connection2->prepare($sqlOutcomes);
                                 $resultOutcomes->execute($dataOutcomes);
                             } catch (PDOException $e) {
@@ -293,8 +293,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                                         $rowNum = 'odd';
                                     }
 
-                                                //COLOR ROW BY STATUS!
-                                                echo "<tr class=$rowNum>";
+									//COLOR ROW BY STATUS!
+									echo "<tr class=$rowNum>";
                                     echo '<td>';
                                     echo '<b>'.$rowOutcomes['scope'].'</b><br/>';
                                     if ($rowOutcomes['scope'] == 'Learning Area' and $rowOutcomes['gibbonDepartmentID'] != '') {
@@ -400,8 +400,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                                         echo '</p>';
                                     }
 
-                                            //Print chats
-                                            echo "<h5 style='font-size: 85%'>".__($guid, 'Chat').'</h5>';
+									//Print chats
+									echo "<h5 style='font-size: 85%'>".__($guid, 'Chat').'</h5>';
                                     echo '<style type="text/css">';
                                     echo 'table.chatbox { width: 90%!important }';
                                     echo '</style>';
@@ -413,8 +413,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                                 echo "<div id='tabs4'>";
                             $noReosurces = true;
 
-                                    //Links
-                                    $links = '';
+							//Links
+							$links = '';
                             $linksArray = array();
                             $linksCount = 0;
                             $dom = new DOMDocument();
@@ -443,8 +443,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                                 $noReosurces = false;
                             }
 
-                                    //Images
-                                    $images = '';
+							//Images
+							$images = '';
                             $imagesArray = array();
                             $imagesCount = 0;
                             $dom2 = new DOMDocument();
@@ -471,8 +471,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                                 $noReosurces = false;
                             }
 
-                                    //Embeds
-                                    $embeds = '';
+							//Embeds
+							$embeds = '';
                             $embedsArray = array();
                             $embedsCount = 0;
                             $dom2 = new DOMDocument();
@@ -499,12 +499,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                                 $noReosurces = false;
                             }
 
-                                    //No resources!
-                                    if ($noReosurces) {
-                                        echo "<div class='error'>";
-                                        echo __($guid, 'There are no records to display.');
-                                        echo '</div>';
-                                    }
+							//No resources!
+							if ($noReosurces) {
+								echo "<div class='error'>";
+								echo __($guid, 'There are no records to display.');
+								echo '</div>';
+							}
                             echo '</div>';
                             echo '</div>';
                         }

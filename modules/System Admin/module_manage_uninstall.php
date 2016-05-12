@@ -81,68 +81,70 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
-            ?>
+            $row = $result->fetch(); ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/module_manage_uninstallProcess.php?gibbonModuleID=$gibbonModuleID&orphaned=$orphaned" ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr>
-						<td style='width: 275px' colspan=2> 
-							<b><?php echo __($guid, 'Are you sure you want to delete this record?');
-            ?></b><br/>
-							<span style="font-size: 90%; color: #cc0000"><i><?php echo __($guid, 'This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!');
-            ?></span>
+						<td style='width: 275px' colspan=2>
+							<b><?php echo __($guid, 'Are you sure you want to delete this record?'); ?></b><br/>
+							<span style="font-size: 90%; color: #cc0000"><i><?php echo __($guid, 'This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!');?></span>
 						</td>
 					</tr>
-					<tr>
-						<td style='width: 275px'> 
-							<b><?php echo __($guid, 'Remove Data') ?></b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Would you like to remove the following tables and views from your database?') ?></span>
-						</td>
-						<td class="right">
-							<?php
-                            if (is_file($_SESSION[$guid]['absolutePath'].'/modules/'.$row['name'].'/manifest.php') == false) {
-                                echo "<div class='error'>";
-                                echo __($guid, 'An error has occurred.');
-                                echo '</div>';
-                            } else {
-                                $count = 0;
-                                include $_SESSION[$guid]['absolutePath'].'/modules/'.$row['name'].'/manifest.php';
-                                if (is_array($moduleTables)) {
-                                    foreach ($moduleTables as $moduleTable) {
-                                        $type = null;
-                                        $tokens = null;
-                                        $name = '';
-                                        $moduleTable = trim($moduleTable);
-                                        if (substr($moduleTable, 0, 12) == 'CREATE TABLE') {
-                                            $type = __($guid, 'Table');
-                                        } elseif (substr($moduleTable, 0, 11) == 'CREATE VIEW') {
-                                            $type = __($guid, 'View');
-                                        }
-                                        if ($type != null) {
-                                            $tokens = preg_split('/ +/', $moduleTable);
-                                            if (isset($tokens[2])) {
-                                                $name = str_replace('`', '', $tokens[2]);
-                                                if ($name != '') {
-                                                    echo '<b>'.$type.'</b>: '.$name;
-                                                    echo " <input checked type='checkbox' name='remove[]' value='".$type.'-'.$name."' /><br/>";
-                                                    ++$count;
+                    <?php
+                    include $_SESSION[$guid]['absolutePath'].'/modules/'.$row['name'].'/manifest.php';
+                    if (isset($moduleTables)) {
+                         ?>
+    					<tr>
+    						<td style='width: 275px'>
+    							<b><?php echo __($guid, 'Remove Data') ?></b><br/>
+    							<span class="emphasis small"><?php echo __($guid, 'Would you like to remove the following tables and views from your database?') ?></span>
+    						</td>
+    						<td class="right">
+    							<?php
+                                if (is_file($_SESSION[$guid]['absolutePath'].'/modules/'.$row['name'].'/manifest.php') == false) {
+                                    echo "<div class='error'>";
+                                    echo __($guid, 'An error has occurred.');
+                                    echo '</div>';
+                                } else {
+                                    $count = 0;
+                                    if (is_array($moduleTables)) {
+                                        foreach ($moduleTables as $moduleTable) {
+                                            $type = null;
+                                            $tokens = null;
+                                            $name = '';
+                                            $moduleTable = trim($moduleTable);
+                                            if (substr($moduleTable, 0, 12) == 'CREATE TABLE') {
+                                                $type = __($guid, 'Table');
+                                            } elseif (substr($moduleTable, 0, 11) == 'CREATE VIEW') {
+                                                $type = __($guid, 'View');
+                                            }
+                                            if ($type != null) {
+                                                $tokens = preg_split('/ +/', $moduleTable);
+                                                if (isset($tokens[2])) {
+                                                    $name = str_replace('`', '', $tokens[2]);
+                                                    if ($name != '') {
+                                                        echo '<b>'.$type.'</b>: '.$name;
+                                                        echo " <input checked type='checkbox' name='remove[]' value='".$type.'-'.$name."' /><br/>";
+                                                        ++$count;
+                                                    }
                                                 }
                                             }
                                         }
                                     }
+                                    if ($count == 0) {
+                                        echo __($guid, 'There are no records to display.');
+                                    }
                                 }
-                                if ($count == 0) {
-                                    echo __($guid, 'There are no records to display.');
-                                }
-                            }
-            ?>
-						</td>
-					</tr>
+                				?>
+    						</td>
+    					</tr>
+                        <?php
+                    }
+                    ?>
 					<tr>
 						<td class="right" colspan=2>
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

@@ -29189,7 +29189,7 @@ msgstr "護照號碼"
 #: Admin/applicationForm_manage_edit_print.php:335
 #: Admin/applicationForm_manage_edit_print.php:340
 #: modules/User Admin/applicationForm_manage_edit_print.php:340
-msgid "Parents/Gaurdians"
+msgid "Parents/Guardians"
 msgstr "家長/監護人"
 
 #: modules/User Admin/applicationForm_manage_edit_print.php:369
@@ -67913,7 +67913,7 @@ msgstr "其他資料"
 #: modules/Application Form/applicationForm.php:1077
 #: Form/applicationForm.php:1073 Form/applicationForm.php:1076
 #: modules/Application Form/applicationForm.php:1076
-msgid "Do not include a second parent/gaurdian"
+msgid "Do not include a second parent/guardian"
 msgstr "不要包括第二個家長/監護人"
 
 #: modules/Application Form/applicationForm.php:1472 modules/User

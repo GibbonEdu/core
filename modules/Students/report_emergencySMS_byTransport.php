@@ -68,28 +68,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_emergencyS
 					<select class="standardWidth" name="transport">
 						<?php
                         echo "<option value=''></option>";
-    if ($transport == '*') {
-        echo "<option selected value='*'>All</option>";
-    } else {
-        echo "<option value='*'>All</option>";
-    }
-    try {
-        $dataSelect = array();
-        $sqlSelect = 'SELECT DISTINCT transport FROM gibbonPerson ORDER BY transport';
-        $resultSelect = $connection2->prepare($sqlSelect);
-        $resultSelect->execute($dataSelect);
-    } catch (PDOException $e) {
-    }
-    while ($rowSelect = $resultSelect->fetch()) {
-        if ($rowSelect['transport'] != '') {
-            if ($transport == $rowSelect['transport']) {
-                echo "<option selected value='".$rowSelect['transport']."'>".htmlPrep($rowSelect['transport']).'</option>';
-            } else {
-                echo "<option value='".$rowSelect['transport']."'>".htmlPrep($rowSelect['transport']).'</option>';
-            }
-        }
-    }
-    ?>				
+						if ($transport == '*') {
+							echo "<option selected value='*'>All</option>";
+						} else {
+							echo "<option value='*'>All</option>";
+						}
+						try {
+							$dataSelect = array();
+							$sqlSelect = 'SELECT DISTINCT transport FROM gibbonPerson ORDER BY transport';
+							$resultSelect = $connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						} catch (PDOException $e) {
+						}
+						while ($rowSelect = $resultSelect->fetch()) {
+							if ($rowSelect['transport'] != '') {
+								if ($transport == $rowSelect['transport']) {
+									echo "<option selected value='".$rowSelect['transport']."'>".htmlPrep($rowSelect['transport']).'</option>';
+								} else {
+									echo "<option value='".$rowSelect['transport']."'>".htmlPrep($rowSelect['transport']).'</option>';
+								}
+							}
+						}
+						?>				
 					</select>
 				</td>
 			</tr>
@@ -116,10 +116,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_emergencyS
 				<td class="right">
 					<?php
                     $checked = '';
-    if ($hideName == 'on') {
-        $checked = 'checked ';
-    }
-    ?>
+					if ($hideName == 'on') {
+						$checked = 'checked ';
+					}
+					?>
 					<input <?php echo $checked ?> type='checkbox' name='hideName'>
 				</td>
 			</tr>
@@ -127,8 +127,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_emergencyS
 			<tr>
 				<td colspan=2 class="right">
 					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/report_emergencySMS_byTransport.php">
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>

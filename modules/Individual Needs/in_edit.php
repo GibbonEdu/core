@@ -192,24 +192,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
 							<td colspan=2 style='padding-top: 25px'> 
 								<span style='font-weight: bold; font-size: 135%'><?php echo __($guid, 'Targets') ?></span><br/>
 								<?php
-                                echo '<p>'.$archiveTargets.'</p>';
-                ?>
+                                echo '<p>'.$archiveTargets.'</p>'; ?>
 							</td>
 						</tr>
 						<tr>
 							<td colspan=2> 
 								<span style='font-weight: bold; font-size: 135%'><?php echo __($guid, 'Teaching Strategies') ?></span><br/>
 								<?php
-                                echo '<p>'.$archiveStrategies.'</p>';
-                ?>
+                                echo '<p>'.$archiveStrategies.'</p>'; ?>
 							</td>
 						</tr>
 						<tr>
 							<td colspan=2 style='padding-top: 25px'> 
 								<span style='font-weight: bold; font-size: 135%'><?php echo __($guid, 'Notes & Review') ?></span><br/>
 								<?php
-                                echo '<p>'.$archiveNotes.'</p>';
-                ?>
+                                echo '<p>'.$archiveNotes.'</p>'; ?>
 							</td>
 						</tr>
 					</table>
@@ -229,8 +226,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                     echo __($guid, 'Your request failed due to a database error.');
                     echo '</div>';
                 } else {
-                    $rowIEP = $resultIEP->fetch();
-                    ?>	
+                    $rowIEP = $resultIEP->fetch(); ?>	
 						<table class='smallIntBorder fullWidth' cellspacing='0'>	
 							<tr>
 								<td colspan=2 style='padding-top: 25px'> 
@@ -241,7 +237,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                                     } else {
                                         echo '<p>'.$rowIEP['targets'].'</p>';
                                     }
-                    ?>
+                   		 			?>
 								</td>
 							</tr>
 							<tr>
@@ -253,7 +249,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                                     } else {
                                         echo '<p>'.$rowIEP['strategies'].'</p>';
                                     }
-                    ?>
+                   		 			?>
 								</td>
 							</tr>
 							<tr>
@@ -265,7 +261,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                                     } else {
                                         echo '<p>'.$rowIEP['notes'].'</p>';
                                     }
-                    ?>
+                   		 			?>
 								</td>
 							</tr>
 							<?php
@@ -275,14 +271,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
 									<td class="right" colspan=2>
 										<input type="hidden" name="gibbonPersonID" value="<?php echo $gibbonPersonID ?>">
 										<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-										<input type="submit" value="<?php echo __($guid, 'Submit');
-                                ?>">
+										<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 									</td>
 								</tr>
 								<?php
 
                             }
-                    ?>
+                    	?>
 						</table>
 						<?php
 

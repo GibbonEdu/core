@@ -56,8 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             echo __($guid, 'The specified record does not exist.');
             echo '</div>';
         } else {
-            $row = $result->fetch();
-            ?>
+            $row = $result->fetch(); ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/course_manage_class_addProcess.php' ?>">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
@@ -126,15 +125,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 					</tr>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input name="gibbonCourseID" id="gibbonCourseID" value="<?php echo $gibbonCourseID ?>" type="hidden">
 							<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php echo $gibbonSchoolYearID ?>" type="hidden">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

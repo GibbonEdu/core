@@ -102,22 +102,22 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
 								passwordNew.add(Validate.Presence);
 								<?php
                                 $alpha = getSettingByScope($connection2, 'System', 'passwordPolicyAlpha');
-            $numeric = getSettingByScope($connection2, 'System', 'passwordPolicyNumeric');
-            $punctuation = getSettingByScope($connection2, 'System', 'passwordPolicyNonAlphaNumeric');
-            $minLength = getSettingByScope($connection2, 'System', 'passwordPolicyMinLength');
-            if ($alpha == 'Y') {
-                echo 'passwordNew.add( Validate.Format, { pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
-            }
-            if ($numeric == 'Y') {
-                echo 'passwordNew.add( Validate.Format, { pattern: /.*[0-9]/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
-            }
-            if ($punctuation == 'Y') {
-                echo 'passwordNew.add( Validate.Format, { pattern: /[^a-zA-Z0-9]/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
-            }
-            if (is_numeric($minLength)) {
-                echo 'passwordNew.add( Validate.Length, { minimum: '.$minLength.'} );';
-            }
-            ?>
+								$numeric = getSettingByScope($connection2, 'System', 'passwordPolicyNumeric');
+								$punctuation = getSettingByScope($connection2, 'System', 'passwordPolicyNonAlphaNumeric');
+								$minLength = getSettingByScope($connection2, 'System', 'passwordPolicyMinLength');
+								if ($alpha == 'Y') {
+									echo 'passwordNew.add( Validate.Format, { pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
+								}
+								if ($numeric == 'Y') {
+									echo 'passwordNew.add( Validate.Format, { pattern: /.*[0-9]/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
+								}
+								if ($punctuation == 'Y') {
+									echo 'passwordNew.add( Validate.Format, { pattern: /[^a-zA-Z0-9]/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
+								}
+								if (is_numeric($minLength)) {
+									echo 'passwordNew.add( Validate.Length, { minimum: '.$minLength.'} );';
+								}
+								?>
 								
 								$(".generatePassword").click(function(){
 									var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789![]{}()%&*$#^<>~@|';
@@ -157,26 +157,18 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
 						</td>
 						<td class="right">
 							<select class="standardWidth" name="passwordForceReset">
-								<option <?php if ($row['passwordForceReset'] == 'Y') {
-    echo 'selected ';
-}
-            ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-								<option <?php if ($row['passwordForceReset'] == 'N') {
-    echo 'selected ';
-}
-            ?>value="N"><?php echo __($guid, 'No') ?></option>
+								<option <?php if ($row['passwordForceReset'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
+								<option <?php if ($row['passwordForceReset'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

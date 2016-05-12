@@ -80,8 +80,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
                 $rowNum = 'odd';
             }
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$rowNum>";
             echo '<td>';
             echo $row['sequenceNumber'];
             echo '</td>';

@@ -77,11 +77,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
 					<td class="right">
 						<?php
                         $checked = '';
-        if ($allUsers == 'on') {
-            $checked = 'checked';
-        }
-        echo "<input $checked name=\"allUsers\" id=\"allUsers\" type=\"checkbox\">";
-        ?>
+						if ($allUsers == 'on') {
+							$checked = 'checked';
+						}
+						echo "<input $checked name=\"allUsers\" id=\"allUsers\" type=\"checkbox\">";
+						?>
 					</td>
 				</tr>
 				<tr>
@@ -89,10 +89,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
 						<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/tt.php">
 						<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 						<?php
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/tt.php'>".__($guid, 'Clear Filters').'</a>';
-        ?>
-						<input type="submit" value="<?php echo __($guid, 'Submit');
-        ?>">
+                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/tt.php'>".__($guid, 'Clear Filters').'</a>'; ?>
+						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 					</td>
 				</tr>
 			</table>
@@ -176,8 +174,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
                 }
                 ++$count;
 
-                    //COLOR ROW BY STATUS!
-                    echo "<tr class=$rowNum>";
+                //COLOR ROW BY STATUS!
+                echo "<tr class=$rowNum>";
                 echo '<td>';
                 if ($row['type'] == 'Staff') {
                     echo formatName($row['title'], $row['preferredName'], $row['surname'], $row['type'], true);

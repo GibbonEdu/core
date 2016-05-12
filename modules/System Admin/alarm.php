@@ -47,29 +47,24 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
                     $sql = "SELECT * FROM gibbonSetting WHERE scope='System Admin' AND name='customAlarmSound'";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                }
-    $row = $result->fetch();
-    ?>
+                } catch (PDOException $e) {}
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span><br/>
-					<?php if ($row['value'] != '') {
-    ?>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span><br/>
+					<?php if ($row['value'] != '') { ?>
 						<span class="emphasis small"><?php echo __($guid, 'Will overwrite existing attachment.') ?></span>
 					<?php 
-}
-    ?>
+					}
+				?>
 				</td>
 				<td class="right">
 					<?php
                     if ($row['value'] != '') {
                         echo __($guid, 'Current attachment:')." <a href='".$_SESSION[$guid]['absoluteURL'].'/'.$row['value']."'>".$row['value'].'</a><br/><br/>';
                     }
-    ?>
+   				 	?>
 					<input type="file" name="file" id="file"><br/><br/>
 					<?php
                     //Get list of acceptable file extensions
@@ -80,16 +75,15 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
                         $resultExt->execute($dataExt);
                     } catch (PDOException $e) {
                     }
-    $ext = '';
-    while ($rowExt = $resultExt->fetch()) {
-        $ext = $ext."'.".$rowExt['extension']."',";
-    }
-    ?>
+					$ext = '';
+					while ($rowExt = $resultExt->fetch()) {
+						$ext = $ext."'.".$rowExt['extension']."',";
+					}
+					?>
 			
 					<script type="text/javascript">
 						var file=new LiveValidation('file');
-						file.add( Validate.Inclusion, { within: [<?php echo $ext;
-    ?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
+						file.add( Validate.Inclusion, { within: [<?php echo $ext; ?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 					</script>
 					<input type="hidden" name="attachmentCurrent" value="<?php echo $row['value'] ?>">
 				</td>
@@ -101,55 +95,38 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
                     $sql = "SELECT * FROM gibbonSetting WHERE scope='System' AND name='alarm'";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                }
-    $row = $result->fetch();
-    ?>
+                } catch (PDOException $e) {}
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<option <?php if ($row['value'] == 'None') {
-    echo 'selected ';
-}
-    ?>value="None"><?php echo __($guid, 'None') ?></option>
-						<option <?php if ($row['value'] == 'General') {
-    echo 'selected ';
-}
-    ?>value="General"><?php echo __($guid, 'General') ?></option>
-						<option <?php if ($row['value'] == 'Lockdown') {
-    echo 'selected ';
-}
-    ?>value="Lockdown"><?php echo __($guid, 'Lockdown') ?></option>
+						<option <?php if ($row['value'] == 'None') { echo 'selected '; } ?>value="None"><?php echo __($guid, 'None') ?></option>
+						<option <?php if ($row['value'] == 'General') { echo 'selected '; } ?>value="General"><?php echo __($guid, 'General') ?></option>
+						<option <?php if ($row['value'] == 'Lockdown') { echo 'selected '; } ?>value="Lockdown"><?php echo __($guid, 'Lockdown') ?></option>
 						<?php
                         if ($row['value'] != '') {
                             ?>
-							<option <?php if ($row['value'] == 'Custom') {
-    echo 'selected ';
-}
+							<option <?php if ($row['value'] == 'Custom') { echo 'selected '; }
                             ?>value="Custom"><?php echo __($guid, 'Custom') ?></option>
 							<?php
 
                         }
-    ?>
+   				 		?>
 					</select>
 					<input type="hidden" name="alarmCurrent" value="<?php echo $row['value'] ?>">
 				</td>
 			</tr>
             <tr>
 				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-    ?></span>
+					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>

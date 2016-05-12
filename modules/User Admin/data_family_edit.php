@@ -59,164 +59,162 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_family_edi
             }
 
             //Let's go!
-            $row = $result->fetch();
-            ?>
+            $row = $result->fetch(); ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/data_family_editProcess.php?gibbonFamilyUpdateID=$gibbonFamilyUpdateID" ?>">
 				<?php
-                echo "<table cellspacing='0' style='width: 100%'>";
-            echo "<tr class='head'>";
-            echo '<th>';
-            echo __($guid, 'Field');
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'Current Value');
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'New Value');
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'Accept');
-            echo '</th>';
-            echo '</tr>';
+				echo "<table cellspacing='0' style='width: 100%'>";
+				echo "<tr class='head'>";
+				echo '<th>';
+				echo __($guid, 'Field');
+				echo '</th>';
+				echo '<th>';
+				echo __($guid, 'Current Value');
+				echo '</th>';
+				echo '<th>';
+				echo __($guid, 'New Value');
+				echo '</th>';
+				echo '<th>';
+				echo __($guid, 'Accept');
+				echo '</th>';
+				echo '</tr>';
 
-            $rowNum = 'even';
+				$rowNum = 'even';
 
-                    //COLOR ROW BY STATUS!
-                    echo "<tr class='odd'>";
-            echo '<td>';
-            echo __($guid, 'Address Name');
-            echo '</td>';
-            echo '<td>';
-            echo $row['nameAddress'];
-            echo '</td>';
-            echo '<td>';
-            $style = '';
-            if ($row['nameAddress'] != $row['newnameAddress']) {
-                $style = "style='color: #ff0000'";
-            }
-            echo "<span $style>";
-            echo $row['newnameAddress'];
-            echo '</td>';
-            echo '<td>';
-            if ($row['nameAddress'] != $row['newnameAddress']) {
-                echo "<input checked type='checkbox' name='newnameAddressOn'><input name='newnameAddress' type='hidden' value='".htmlprep($row['newnameAddress'])."'>";
-            }
-            echo '</td>';
-            echo '</tr>';
-            echo "<tr class='even'>";
-            echo '<td>';
-            echo __($guid, 'Home Address');
-            echo '</td>';
-            echo '<td>';
-            echo $row['homeAddress'];
-            echo '</td>';
-            echo '<td>';
-            $style = '';
-            if ($row['homeAddress'] != $row['newhomeAddress']) {
-                $style = "style='color: #ff0000'";
-            }
-            echo "<span $style>";
-            echo $row['newhomeAddress'];
-            echo '</td>';
-            echo '<td>';
-            if ($row['homeAddress'] != $row['newhomeAddress']) {
-                echo "<input checked type='checkbox' name='newhomeAddressOn'><input name='newhomeAddress' type='hidden' value='".htmlprep($row['newhomeAddress'])."'>";
-            }
-            echo '</td>';
-            echo '</tr>';
-            echo "<tr class='odd'>";
-            echo '<td>';
-            echo __($guid, 'Home Address (District)');
-            echo '</td>';
-            echo '<td>';
-            echo $row['homeAddressDistrict'];
-            echo '</td>';
-            echo '<td>';
-            $style = '';
-            if ($row['homeAddressDistrict'] != $row['newhomeAddressDistrict']) {
-                $style = "style='color: #ff0000'";
-            }
-            echo "<span $style>";
-            echo $row['newhomeAddressDistrict'];
-            echo '</td>';
-            echo '<td>';
-            if ($row['homeAddressDistrict'] != $row['newhomeAddressDistrict']) {
-                echo "<input checked type='checkbox' name='newhomeAddressDistrictOn'><input name='newhomeAddressDistrict' type='hidden' value='".htmlprep($row['newhomeAddressDistrict'])."'>";
-            }
-            echo '</td>';
-            echo '</tr>';
-            echo "<tr class='even'>";
-            echo '<td>';
-            echo __($guid, 'Home Address (Country)');
-            echo '</td>';
-            echo '<td>';
-            echo $row['homeAddressCountry'];
-            echo '</td>';
-            echo '<td>';
-            $style = '';
-            if ($row['homeAddressCountry'] != $row['newhomeAddressCountry']) {
-                $style = "style='color: #ff0000'";
-            }
-            echo "<span $style>";
-            echo $row['newhomeAddressCountry'];
-            echo '</td>';
-            echo '<td>';
-            if ($row['homeAddressCountry'] != $row['newhomeAddressCountry']) {
-                echo "<input checked type='checkbox' name='newhomeAddressCountryOn'><input name='newhomeAddressCountry' type='hidden' value='".htmlprep($row['newhomeAddressCountry'])."'>";
-            }
-            echo '</td>';
-            echo '</tr>';
-            echo '<tr>';
-            echo '<td>';
-            echo __($guid, 'Home Language - Primary');
-            echo '</td>';
-            echo '<td>';
-            echo $row['languageHomePrimary'];
-            echo '</td>';
-            echo '<td>';
-            $style = '';
-            if ($row['languageHomePrimary'] != $row['newlanguageHomePrimary']) {
-                $style = "style='color: #ff0000'";
-            }
-            echo "<span $style>";
-            echo $row['newlanguageHomePrimary'];
-            echo '</td>';
-            echo '<td>';
-            if ($row['languageHomePrimary'] != $row['newlanguageHomePrimary']) {
-                echo "<input checked type='checkbox' name='newlanguageHomePrimaryOn'><input name='newlanguageHomePrimary' type='hidden' value='".htmlprep($row['newlanguageHomePrimary'])."'>";
-            }
-            echo '</td>';
-            echo '</tr>';
-            echo '<tr>';
-            echo '<td>';
-            echo __($guid, 'Home Language - Secondary');
-            echo '</td>';
-            echo '<td>';
-            echo $row['languageHomeSecondary'];
-            echo '</td>';
-            echo '<td>';
-            $style = '';
-            if ($row['languageHomeSecondary'] != $row['newlanguageHomeSecondary']) {
-                $style = "style='color: #ff0000'";
-            }
-            echo "<span $style>";
-            echo $row['newlanguageHomeSecondary'];
-            echo '</td>';
-            echo '<td>';
-            if ($row['languageHomeSecondary'] != $row['newlanguageHomeSecondary']) {
-                echo "<input checked type='checkbox' name='newlanguageHomeSecondaryOn'><input name='newlanguageHomeSecondary' type='hidden' value='".htmlprep($row['newlanguageHomeSecondary'])."'>";
-            }
-            echo '</td>';
-            echo '</tr>';
-            echo '<tr>';
-            echo "<td class='right' colspan=4>";
-            echo "<input name='gibbonFamilyID' type='hidden' value='".$row['gibbonFamilyID']."'>";
-            echo "<input name='address' type='hidden' value='".$_GET['q']."'>";
-            echo "<input type='submit' value='Submit'>";
-            echo '</td>';
-            echo '</tr>';
-            echo '</table>';
-            ?>
+				//COLOR ROW BY STATUS!
+				echo "<tr class='odd'>";
+				echo '<td>';
+				echo __($guid, 'Address Name');
+				echo '</td>';
+				echo '<td>';
+				echo $row['nameAddress'];
+				echo '</td>';
+				echo '<td>';
+				$style = '';
+				if ($row['nameAddress'] != $row['newnameAddress']) {
+					$style = "style='color: #ff0000'";
+				}
+				echo "<span $style>";
+				echo $row['newnameAddress'];
+				echo '</td>';
+				echo '<td>';
+				if ($row['nameAddress'] != $row['newnameAddress']) {
+					echo "<input checked type='checkbox' name='newnameAddressOn'><input name='newnameAddress' type='hidden' value='".htmlprep($row['newnameAddress'])."'>";
+				}
+				echo '</td>';
+				echo '</tr>';
+				echo "<tr class='even'>";
+				echo '<td>';
+				echo __($guid, 'Home Address');
+				echo '</td>';
+				echo '<td>';
+				echo $row['homeAddress'];
+				echo '</td>';
+				echo '<td>';
+				$style = '';
+				if ($row['homeAddress'] != $row['newhomeAddress']) {
+					$style = "style='color: #ff0000'";
+				}
+				echo "<span $style>";
+				echo $row['newhomeAddress'];
+				echo '</td>';
+				echo '<td>';
+				if ($row['homeAddress'] != $row['newhomeAddress']) {
+					echo "<input checked type='checkbox' name='newhomeAddressOn'><input name='newhomeAddress' type='hidden' value='".htmlprep($row['newhomeAddress'])."'>";
+				}
+				echo '</td>';
+				echo '</tr>';
+				echo "<tr class='odd'>";
+				echo '<td>';
+				echo __($guid, 'Home Address (District)');
+				echo '</td>';
+				echo '<td>';
+				echo $row['homeAddressDistrict'];
+				echo '</td>';
+				echo '<td>';
+				$style = '';
+				if ($row['homeAddressDistrict'] != $row['newhomeAddressDistrict']) {
+					$style = "style='color: #ff0000'";
+				}
+				echo "<span $style>";
+				echo $row['newhomeAddressDistrict'];
+				echo '</td>';
+				echo '<td>';
+				if ($row['homeAddressDistrict'] != $row['newhomeAddressDistrict']) {
+					echo "<input checked type='checkbox' name='newhomeAddressDistrictOn'><input name='newhomeAddressDistrict' type='hidden' value='".htmlprep($row['newhomeAddressDistrict'])."'>";
+				}
+				echo '</td>';
+				echo '</tr>';
+				echo "<tr class='even'>";
+				echo '<td>';
+				echo __($guid, 'Home Address (Country)');
+				echo '</td>';
+				echo '<td>';
+				echo $row['homeAddressCountry'];
+				echo '</td>';
+				echo '<td>';
+				$style = '';
+				if ($row['homeAddressCountry'] != $row['newhomeAddressCountry']) {
+					$style = "style='color: #ff0000'";
+				}
+				echo "<span $style>";
+				echo $row['newhomeAddressCountry'];
+				echo '</td>';
+				echo '<td>';
+				if ($row['homeAddressCountry'] != $row['newhomeAddressCountry']) {
+					echo "<input checked type='checkbox' name='newhomeAddressCountryOn'><input name='newhomeAddressCountry' type='hidden' value='".htmlprep($row['newhomeAddressCountry'])."'>";
+				}
+				echo '</td>';
+				echo '</tr>';
+				echo '<tr>';
+				echo '<td>';
+				echo __($guid, 'Home Language - Primary');
+				echo '</td>';
+				echo '<td>';
+				echo $row['languageHomePrimary'];
+				echo '</td>';
+				echo '<td>';
+				$style = '';
+				if ($row['languageHomePrimary'] != $row['newlanguageHomePrimary']) {
+					$style = "style='color: #ff0000'";
+				}
+				echo "<span $style>";
+				echo $row['newlanguageHomePrimary'];
+				echo '</td>';
+				echo '<td>';
+				if ($row['languageHomePrimary'] != $row['newlanguageHomePrimary']) {
+					echo "<input checked type='checkbox' name='newlanguageHomePrimaryOn'><input name='newlanguageHomePrimary' type='hidden' value='".htmlprep($row['newlanguageHomePrimary'])."'>";
+				}
+				echo '</td>';
+				echo '</tr>';
+				echo '<tr>';
+				echo '<td>';
+				echo __($guid, 'Home Language - Secondary');
+				echo '</td>';
+				echo '<td>';
+				echo $row['languageHomeSecondary'];
+				echo '</td>';
+				echo '<td>';
+				$style = '';
+				if ($row['languageHomeSecondary'] != $row['newlanguageHomeSecondary']) {
+					$style = "style='color: #ff0000'";
+				}
+				echo "<span $style>";
+				echo $row['newlanguageHomeSecondary'];
+				echo '</td>';
+				echo '<td>';
+				if ($row['languageHomeSecondary'] != $row['newlanguageHomeSecondary']) {
+					echo "<input checked type='checkbox' name='newlanguageHomeSecondaryOn'><input name='newlanguageHomeSecondary' type='hidden' value='".htmlprep($row['newlanguageHomeSecondary'])."'>";
+				}
+				echo '</td>';
+				echo '</tr>';
+				echo '<tr>';
+				echo "<td class='right' colspan=4>";
+				echo "<input name='gibbonFamilyID' type='hidden' value='".$row['gibbonFamilyID']."'>";
+				echo "<input name='address' type='hidden' value='".$_GET['q']."'>";
+				echo "<input type='submit' value='Submit'>";
+				echo '</td>';
+				echo '</tr>';
+				echo '</table>'; ?>
 			</form>
 			<?php
 

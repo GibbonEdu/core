@@ -44,8 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/studentsSetti
 			<tr>
 				<td style='width: 275px'> 
 					<b><?php echo __($guid, 'Name') ?> *</b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Must be unique.');
-    ?></span>
+					<span class="emphasis small"><?php echo __($guid, 'Must be unique.'); ?></span>
 				</td>
 				<td class="right">
 					<input name="name" id="name" maxlength=30 value="" type="text" class="standardWidth">
@@ -78,13 +77,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/studentsSetti
 			</tr>
 			<tr>
 				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-    ?></span>
+					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>

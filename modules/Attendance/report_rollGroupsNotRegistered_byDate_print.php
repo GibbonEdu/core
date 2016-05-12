@@ -99,8 +99,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
         $count = 0;
         $rowNum = 'odd';
 
-            //Loop through each date
-            $timestampStart = dateConvertToTimestamp($dateStart);
+		//Loop through each date
+		$timestampStart = dateConvertToTimestamp($dateStart);
         $timestampEnd = dateConvertToTimestamp($dateEnd);
         for ($i = $timestampStart; $i <= $timestampEnd; $i = ($i + (60 * 60 * 24))) {
             if (isSchoolOpen($guid, date('Y-m-d', $i), $connection2, true)) {

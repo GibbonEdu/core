@@ -56,9 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
     $excel = new PHPExcel();
 
     //Create border styles
-    $style_head_fill = array('fill' => array('type' => PHPExcel_Style_Fill::FILL_SOLID, 'color' => array('rgb' => 'eeeeee')),
-                            'borders' => array('top' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '444444')), 'bottom' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '444444'))),
-                            );
+    $style_head_fill = array('fill' => array('type' => PHPExcel_Style_Fill::FILL_SOLID, 'color' => array('rgb' => 'eeeeee')),'borders' => array('top' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '444444')), 'bottom' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '444444'))),);
 
     // Set document properties
     $excel->getProperties()->setCreator(formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff'))
@@ -187,10 +185,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
 
         // SCHOOL YEAR
         $excel->getActiveSheet()->setCellValue('D2', __($guid, 'School Year'))
-                                ->setCellValue('D3', $activity['schoolYearName']);
+            ->setCellValue('D3', $activity['schoolYearName']);
 
         $excel->getActiveSheet()->setCellValue('E2', __($guid, 'Participants'))
-                                ->setCellValue('E3', count($students));
+            ->setCellValue('E3', count($students));
 
         // STAFF
         $staff = array();
@@ -202,21 +200,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
         $infoRowLines = max($infoRowLines, count($staff));
 
         $excel->getActiveSheet()->setCellValue('F2', __($guid, 'Staff'))
-                                ->setCellValue('F3', implode(",\n", $staff));
+            ->setCellValue('F3', implode(",\n", $staff));
 
         $excel->getActiveSheet()->mergeCells('F3:G3');
         $excel->getActiveSheet()->getStyle('F3:G3')->getAlignment()->setWrapText(true);
 
         // YEAR GROUPS
         $excel->getActiveSheet()->setCellValue('H2', __($guid, 'Year Groups'))
-                                ->setCellValue('H3', strip_tags(getYearGroupsFromIDList($guid, $connection2, $activity['gibbonYearGroupIDList'])));
+            ->setCellValue('H3', strip_tags(getYearGroupsFromIDList($guid, $connection2, $activity['gibbonYearGroupIDList'])));
 
         $excel->getActiveSheet()->mergeCells('H3:I3');
         $excel->getActiveSheet()->getStyle('H3:I3')->getAlignment()->setWrapText(true);
 
         // TOTAL SESSIONS
         $excel->getActiveSheet()->setCellValue('J2', __($guid, 'Total Sessions'))
-                                ->setCellValue('J3', count($sessions));
+            ->setCellValue('J3', count($sessions));
 
         $excel->getActiveSheet()->getRowDimension('3')->setRowHeight($infoRowLines * 16);
 
@@ -241,13 +239,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
 
         // Setup the column heading for students
         $excel->getActiveSheet()->setCellValue('A'.($columnStart), __($guid, 'Days'))
-                                ->setCellValue('A'.($columnStart + 1), __($guid, 'Student'));
+            ->setCellValue('A'.($columnStart + 1), __($guid, 'Student'));
         $excel->getActiveSheet()->getStyle('A'.($columnStart))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
         $excel->getActiveSheet()->getStyle('A'.($columnStart + 1))->applyFromArray($style_head_fill);
 
         $excel->getActiveSheet()->setCellValue(num2alpha(count($sessions) + 1).($columnStart + 1), __($guid, 'Attended:'));
         $excel->getActiveSheet()->getStyle(num2alpha(count($sessions) + 1).($columnStart + 1))
-                                ->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+            ->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
 
         // Iterate over the students and output each row
         $columnStart += 2;
@@ -271,8 +269,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
 
         // Add the totals and timestamp data to the bottom of each column
         $excel->getActiveSheet()->setCellValue('A'.($columnStart + $columnEnd), __($guid, 'Total students:'))
-                                ->setCellValue('A'.($columnStart + $columnEnd + 1), __($guid, 'Recorded'))
-                                ->setCellValue('A'.($columnStart + $columnEnd + 2), __($guid, 'By'));
+            ->setCellValue('A'.($columnStart + $columnEnd + 1), __($guid, 'Recorded'))
+            ->setCellValue('A'.($columnStart + $columnEnd + 2), __($guid, 'By'));
 
         $excel->getActiveSheet()->getRowDimension($columnStart + $columnEnd + 1)->setRowHeight(2 * 18);
 

@@ -68,10 +68,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_da
                                 $resultSelect->execute($dataSelect);
                             } catch (PDOException $e) {
                             }
-    while ($rowSelect = $resultSelect->fetch()) {
-        echo "<option value='".$rowSelect['gibbonPersonID']."'>".htmlPrep($rowSelect['name']).' - '.formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).'</option>';
-    }
-    ?>
+							while ($rowSelect = $resultSelect->fetch()) {
+								echo "<option value='".$rowSelect['gibbonPersonID']."'>".htmlPrep($rowSelect['name']).' - '.formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).'</option>';
+							}
+							?>
 						</optgroup>
 						<optgroup label='--<?php echo __($guid, 'Students by Name') ?>--'>
 							<?php
@@ -82,10 +82,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_da
                                 $resultSelect->execute($dataSelect);
                             } catch (PDOException $e) {
                             }
-    while ($rowSelect = $resultSelect->fetch()) {
-        echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['name']).')</option>';
-    }
-    ?>
+							while ($rowSelect = $resultSelect->fetch()) {
+								echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['name']).')</option>';
+							}
+							?>
 						</optgroup>
 					</select>
 				</td>
@@ -93,33 +93,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_da
 			<tr>
 				<td> 
 					<b><?php echo __($guid, 'Date') ?> *</b><br/>
-					<span style="font-size: 85%"><i><?php echo __($guid, 'Earliest acceptable update') ?><br/><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-    ?></span>
+					<span style="font-size: 85%"><i><?php echo __($guid, 'Earliest acceptable update') ?><br/><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
+					} else {
+						echo $_SESSION[$guid]['i18n']['dateFormat'];
+					}
+					?></span>
 				</td>
 				<td class="right">
-					<input name="date" id="date" maxlength=10 value="<?php if ($date != '') {
-    echo $date;
-} else {
-    echo date($_SESSION[$guid]['i18n']['dateFormatPHP'], (time() - (604800 * 26)));
-}
-    ?>" type="text" class="standardWidth">
+					<input name="date" id="date" maxlength=10 value="<?php if ($date != '') { echo $date; } else { echo date($_SESSION[$guid]['i18n']['dateFormatPHP'], (time() - (604800 * 26))); } ?>" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var date=new LiveValidation('date');
 						date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-    ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-    ?>." } ); 
+							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+						}
+							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+							echo 'dd/mm/yyyy';
+						} else {
+							echo $_SESSION[$guid]['i18n']['dateFormat'];
+						}
+						?>." } ); 
 					 	date.add(Validate.Presence);
 					</script>
 					 <script type="text/javascript">
@@ -136,16 +130,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_da
 				</span>
 			</td>
 			<td class="right">
-				<input <?php if ($nonCompliant == 'Y') {
-    echo 'checked';
-}
-    ?> type='checkbox' name='nonCompliant' value='Y'/>
+				<input <?php if ($nonCompliant == 'Y') { echo 'checked'; } ?> type='checkbox' name='nonCompliant' value='Y'/>
 			</td>
 		</tr>
 			<tr>
 				<td colspan=2 class="right">
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>
@@ -258,8 +248,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_da
                 }
                 ++$count;
 
-                    //COLOR ROW BY STATUS!
-                    echo "<tr class=$rowNum>";
+                //COLOR ROW BY STATUS!
+                echo "<tr class=$rowNum>";
                 echo '<td>';
                 echo $count;
                 echo '</td>';

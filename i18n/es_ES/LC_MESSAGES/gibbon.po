@@ -28317,8 +28317,8 @@ msgstr "N&uacutemero de pasaporte"
 #: Admin/applicationForm_manage_edit_print.php:335
 #: Admin/applicationForm_manage_edit_print.php:340
 #: modules/User Admin/applicationForm_manage_edit_print.php:340
-msgid "Parents/Gaurdians"
-msgstr "Los padres / Gaurdians"
+msgid "Parents/Guardians"
+msgstr "Los padres / Guardians"
 
 #: modules/User Admin/applicationForm_manage_edit_print.php:369
 #: Admin/applicationForm_manage_edit_print.php:375
@@ -65179,8 +65179,8 @@ msgstr "Otra informaci&oacuten"
 #: modules/Application Form/applicationForm.php:1077
 #: Form/applicationForm.php:1073
 #: modules/Application Form/applicationForm.php:1073
-msgid "Do not include a second parent/gaurdian"
-msgstr "No incluya un segundo padre / gaurdian"
+msgid "Do not include a second parent/guardian"
+msgstr "No incluya un segundo padre / guardian"
 
 #: modules/Application Form/applicationForm.php:1472 modules/User
 #: Admin/applicationForm_manage_edit.php:1665 Form/applicationForm.php:1464

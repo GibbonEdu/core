@@ -33,8 +33,7 @@ $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
 $gibbonStudentEnrolmentID = $_POST['gibbonStudentEnrolmentID'];
 $search = $_GET['search'];
 
-if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') {
-    echo 'Fatal error loading this page!';
+if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
 } else {
     $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/studentEnrolment_manage_delete.php&gibbonStudentEnrolmentID=$gibbonStudentEnrolmentID&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search";
     $URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/studentEnrolment_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search";

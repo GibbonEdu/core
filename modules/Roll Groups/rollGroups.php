@@ -79,8 +79,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups.php
                 $rowNum = 'odd';
             }
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$rowNum>";
             echo '<td>';
             echo $row['name'];
             echo '</td>';

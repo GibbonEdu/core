@@ -71,12 +71,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             } else {
                 echo __($guid, 'Previous Year').' ';
             }
-        echo ' | ';
-        if (getNextSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/courseEnrolment_manage_byPerson.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__($guid, 'Next Year').'</a> ';
-        } else {
-            echo __($guid, 'Next Year').' ';
-        }
+			echo ' | ';
+			if (getNextSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
+				echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/courseEnrolment_manage_byPerson.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__($guid, 'Next Year').'</a> ';
+			} else {
+				echo __($guid, 'Next Year').' ';
+			}
         echo '</div>';
 
         $allUsers = '';
@@ -90,8 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
         echo '<h3>';
         echo __($guid, 'Filters');
-        echo '</h3>';
-        ?>
+        echo '</h3>'; ?>
 		<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
 			<table class='noIntBorder' cellspacing='0' style="width: 100%">	
 				<tr>
@@ -111,11 +110,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 					<td class="right">
 						<?php
                         $checked = '';
-        if ($allUsers == 'on') {
-            $checked = 'checked';
-        }
-        echo "<input $checked name=\"allUsers\" id=\"allUsers\" type=\"checkbox\">";
-        ?>
+						if ($allUsers == 'on') {
+							$checked = 'checked';
+						}
+						echo "<input $checked name=\"allUsers\" id=\"allUsers\" type=\"checkbox\">";
+						?>
 					</td>
 				</tr>
 				<tr>
@@ -124,10 +123,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 						<input type="hidden" name="gibbonSchoolYearID" value="<?php echo $gibbonSchoolYearID ?>">
 						<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 						<?php
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_manage_byPerson.php'>".__($guid, 'Clear Filters').'</a>';
-        ?>
-						<input type="submit" value="<?php echo __($guid, 'Submit');
-        ?>">
+                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_manage_byPerson.php'>".__($guid, 'Clear Filters').'</a>'; ?>
+						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 					</td>
 				</tr>
 			</table>
@@ -214,8 +211,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 }
                 ++$count;
 
-                    //COLOR ROW BY STATUS!
-                    echo "<tr class=$rowNum>";
+                //COLOR ROW BY STATUS!
+                echo "<tr class=$rowNum>";
                 echo '<td>';
                 echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
                 echo '</td>';

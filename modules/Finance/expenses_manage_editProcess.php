@@ -39,8 +39,7 @@ $status2 = $_POST['status2'];
 $countAgainstBudget = $_POST['countAgainstBudget'];
 $status = $_POST['status'];
 
-if ($gibbonFinanceBudgetCycleID == '') {
-    echo 'Fatal error loading this page!';
+if ($gibbonFinanceBudgetCycleID == '') { echo 'Fatal error loading this page!';
 } else {
     $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/expenses_manage_edit.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2&status2=$status2";
 

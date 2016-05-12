@@ -211,11 +211,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
 
                             echo '</div>';
                             echo "<div id='tabs3'>";
-                                    //Resources
-                                    $noReosurces = true;
+							//Resources
+							$noReosurces = true;
 
-                                    //Links
-                                    $links = '';
+							//Links
+							$links = '';
                             $linksArray = array();
                             $linksCount = 0;
                             $dom = new DOMDocument();
@@ -244,8 +244,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
                                 $noReosurces = false;
                             }
 
-                                    //Images
-                                    $images = '';
+							//Images
+							$images = '';
                             $imagesArray = array();
                             $imagesCount = 0;
                             $dom2 = new DOMDocument();
@@ -272,8 +272,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
                                 $noReosurces = false;
                             }
 
-                                    //Embeds
-                                    $embeds = '';
+							//Embeds
+							$embeds = '';
                             $embedsArray = array();
                             $embedsCount = 0;
                             $dom2 = new DOMDocument();
@@ -300,161 +300,161 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
                                 $noReosurces = false;
                             }
 
-                                    //No resources!
-                                    if ($noReosurces) {
-                                        echo "<div class='error'>";
-                                        echo __($guid, 'There are no records to display.');
-                                        echo '</div>';
-                                    }
+							//No resources!
+							if ($noReosurces) {
+								echo "<div class='error'>";
+								echo __($guid, 'There are no records to display.');
+								echo '</div>';
+							}
                             echo '</div>';
                             echo "<div id='tabs4'>";
-                                    //Spit out outcomes
-                                    try {
-                                        $dataBlocks = array('gibbonUnitID' => $gibbonUnitID);
-                                        $sqlBlocks = "SELECT gibbonUnitOutcome.*, scope, name, nameShort, category, gibbonYearGroupIDList FROM gibbonUnitOutcome JOIN gibbonOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) WHERE gibbonUnitID=:gibbonUnitID AND active='Y' ORDER BY sequenceNumber";
-                                        $resultBlocks = $connection2->prepare($sqlBlocks);
-                                        $resultBlocks->execute($dataBlocks);
-                                    } catch (PDOException $e) {
-                                        echo "<div class='error'>".$e->getMessage().'</div>';
-                                    }
-                            if ($resultBlocks->rowCount() > 0) {
-                                echo "<table cellspacing='0' style='width: 100%'>";
-                                echo "<tr class='head'>";
-                                echo '<th>';
-                                echo __($guid, 'Scope');
-                                echo '</th>';
-                                echo '<th>';
-                                echo __($guid, 'Category');
-                                echo '</th>';
-                                echo '<th>';
-                                echo __($guid, 'Name');
-                                echo '</th>';
-                                echo '<th>';
-                                echo __($guid, 'Year Groups');
-                                echo '</th>';
-                                echo '<th>';
-                                echo __($guid, 'Actions');
-                                echo '</th>';
-                                echo '</tr>';
+								//Spit out outcomes
+								try {
+									$dataBlocks = array('gibbonUnitID' => $gibbonUnitID);
+									$sqlBlocks = "SELECT gibbonUnitOutcome.*, scope, name, nameShort, category, gibbonYearGroupIDList FROM gibbonUnitOutcome JOIN gibbonOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) WHERE gibbonUnitID=:gibbonUnitID AND active='Y' ORDER BY sequenceNumber";
+									$resultBlocks = $connection2->prepare($sqlBlocks);
+									$resultBlocks->execute($dataBlocks);
+								} catch (PDOException $e) {
+									echo "<div class='error'>".$e->getMessage().'</div>';
+								}
+								if ($resultBlocks->rowCount() > 0) {
+									echo "<table cellspacing='0' style='width: 100%'>";
+									echo "<tr class='head'>";
+									echo '<th>';
+									echo __($guid, 'Scope');
+									echo '</th>';
+									echo '<th>';
+									echo __($guid, 'Category');
+									echo '</th>';
+									echo '<th>';
+									echo __($guid, 'Name');
+									echo '</th>';
+									echo '<th>';
+									echo __($guid, 'Year Groups');
+									echo '</th>';
+									echo '<th>';
+									echo __($guid, 'Actions');
+									echo '</th>';
+									echo '</tr>';
 
-                                $count = 0;
-                                $rowNum = 'odd';
-                                while ($rowBlocks = $resultBlocks->fetch()) {
-                                    if ($count % 2 == 0) {
-                                        $rowNum = 'even';
-                                    } else {
-                                        $rowNum = 'odd';
-                                    }
+									$count = 0;
+									$rowNum = 'odd';
+									while ($rowBlocks = $resultBlocks->fetch()) {
+										if ($count % 2 == 0) {
+											$rowNum = 'even';
+										} else {
+											$rowNum = 'odd';
+										}
 
-                                                //COLOR ROW BY STATUS!
-                                                echo "<tr class=$rowNum>";
-                                    echo '<td>';
-                                    echo '<b>'.$rowBlocks['scope'].'</b><br/>';
-                                    if ($rowBlocks['scope'] == 'Learning Area' and $gibbonDepartmentID != '') {
-                                        try {
-                                            $dataLearningArea = array('gibbonDepartmentID' => $gibbonDepartmentID);
-                                            $sqlLearningArea = 'SELECT * FROM gibbonDepartment WHERE gibbonDepartmentID=:gibbonDepartmentID';
-                                            $resultLearningArea = $connection2->prepare($sqlLearningArea);
-                                            $resultLearningArea->execute($dataLearningArea);
-                                        } catch (PDOException $e) {
-                                            echo "<div class='error'>".$e->getMessage().'</div>';
-                                        }
-                                        if ($resultLearningArea->rowCount() == 1) {
-                                            $rowLearningAreas = $resultLearningArea->fetch();
-                                            echo "<span style='font-size: 75%; font-style: italic'>".$rowLearningAreas['name'].'</span>';
-                                        }
-                                    }
-                                    echo '</td>';
-                                    echo '<td>';
-                                    echo '<b>'.$rowBlocks['category'].'</b><br/>';
-                                    echo '</td>';
-                                    echo '<td>';
-                                    echo '<b>'.$rowBlocks['nameShort'].'</b><br/>';
-                                    echo "<span style='font-size: 75%; font-style: italic'>".$rowBlocks['name'].'</span>';
-                                    echo '</td>';
-                                    echo '<td>';
-                                    echo getYearGroupsFromIDList($guid, $connection2, $rowBlocks['gibbonYearGroupIDList']);
-                                    echo '</td>';
-                                    echo '<td>';
-                                    echo "<script type='text/javascript'>";
-                                    echo '$(document).ready(function(){';
-                                    echo "\$(\".description-$count\").hide();";
-                                    echo "\$(\".show_hide-$count\").fadeIn(1000);";
-                                    echo "\$(\".show_hide-$count\").click(function(){";
-                                    echo "\$(\".description-$count\").fadeToggle(1000);";
-                                    echo '});';
-                                    echo '});';
-                                    echo '</script>';
-                                    if ($rowBlocks['content'] != '') {
-                                        echo "<a title='".__($guid, 'View Description')."' class='show_hide-$count' onclick='false' href='#'><img style='padding-left: 0px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/page_down.png' alt='".__($guid, 'Show Comment')."' onclick='return false;' /></a>";
-                                    }
-                                    echo '</td>';
-                                    echo '</tr>';
-                                    if ($rowBlocks['content'] != '') {
-                                        echo "<tr class='description-$count' id='description-$count'>";
-                                        echo '<td colspan=6>';
-                                        echo $rowBlocks['content'];
-                                        echo '</td>';
-                                        echo '</tr>';
-                                    }
-                                    echo '</tr>';
+										//COLOR ROW BY STATUS!
+										echo "<tr class=$rowNum>";
+										echo '<td>';
+										echo '<b>'.$rowBlocks['scope'].'</b><br/>';
+										if ($rowBlocks['scope'] == 'Learning Area' and $gibbonDepartmentID != '') {
+											try {
+												$dataLearningArea = array('gibbonDepartmentID' => $gibbonDepartmentID);
+												$sqlLearningArea = 'SELECT * FROM gibbonDepartment WHERE gibbonDepartmentID=:gibbonDepartmentID';
+												$resultLearningArea = $connection2->prepare($sqlLearningArea);
+												$resultLearningArea->execute($dataLearningArea);
+											} catch (PDOException $e) {
+												echo "<div class='error'>".$e->getMessage().'</div>';
+											}
+											if ($resultLearningArea->rowCount() == 1) {
+												$rowLearningAreas = $resultLearningArea->fetch();
+												echo "<span style='font-size: 75%; font-style: italic'>".$rowLearningAreas['name'].'</span>';
+											}
+										}
+										echo '</td>';
+										echo '<td>';
+										echo '<b>'.$rowBlocks['category'].'</b><br/>';
+										echo '</td>';
+										echo '<td>';
+										echo '<b>'.$rowBlocks['nameShort'].'</b><br/>';
+										echo "<span style='font-size: 75%; font-style: italic'>".$rowBlocks['name'].'</span>';
+										echo '</td>';
+										echo '<td>';
+										echo getYearGroupsFromIDList($guid, $connection2, $rowBlocks['gibbonYearGroupIDList']);
+										echo '</td>';
+										echo '<td>';
+										echo "<script type='text/javascript'>";
+										echo '$(document).ready(function(){';
+										echo "\$(\".description-$count\").hide();";
+										echo "\$(\".show_hide-$count\").fadeIn(1000);";
+										echo "\$(\".show_hide-$count\").click(function(){";
+										echo "\$(\".description-$count\").fadeToggle(1000);";
+										echo '});';
+										echo '});';
+										echo '</script>';
+										if ($rowBlocks['content'] != '') {
+											echo "<a title='".__($guid, 'View Description')."' class='show_hide-$count' onclick='false' href='#'><img style='padding-left: 0px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/page_down.png' alt='".__($guid, 'Show Comment')."' onclick='return false;' /></a>";
+										}
+										echo '</td>';
+										echo '</tr>';
+										if ($rowBlocks['content'] != '') {
+											echo "<tr class='description-$count' id='description-$count'>";
+											echo '<td colspan=6>';
+											echo $rowBlocks['content'];
+											echo '</td>';
+											echo '</tr>';
+										}
+										echo '</tr>';
 
-                                    ++$count;
-                                }
-                                echo '</table>';
-                            }
+										++$count;
+									}
+									echo '</table>';
+								}
 
-                            echo '</div>';
-                            $classCount = 0;
-                            foreach ($classes as $class) {
-                                echo "<div id='tabs".($classCount + 5)."'>";
+								echo '</div>';
+								$classCount = 0;
+								foreach ($classes as $class) {
+									echo "<div id='tabs".($classCount + 5)."'>";
 
-                                        //Print Lessons
-                                        echo '<h2>'.__($guid, 'Lessons').'</h2>';
-                                try {
-                                    $dataLessons = array('gibbonCourseClassID' => $class[1], 'gibbonUnitID' => $gibbonUnitID);
-                                    $sqlLessons = 'SELECT * FROM gibbonPlannerEntry WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonUnitID=:gibbonUnitID ORDER BY date';
-                                    $resultLessons = $connection2->prepare($sqlLessons);
-                                    $resultLessons->execute($dataLessons);
-                                } catch (PDOException $e) {
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                }
+									//Print Lessons
+									echo '<h2>'.__($guid, 'Lessons').'</h2>';
+									try {
+										$dataLessons = array('gibbonCourseClassID' => $class[1], 'gibbonUnitID' => $gibbonUnitID);
+										$sqlLessons = 'SELECT * FROM gibbonPlannerEntry WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonUnitID=:gibbonUnitID ORDER BY date';
+										$resultLessons = $connection2->prepare($sqlLessons);
+										$resultLessons->execute($dataLessons);
+									} catch (PDOException $e) {
+										echo "<div class='error'>".$e->getMessage().'</div>';
+									}
 
-                                if ($resultLessons->rowCount() < 1) {
-                                    echo "<div class='warning'>";
-                                    echo __($guid, 'There are no records to display.');
-                                    echo '</div>';
-                                } else {
-                                    while ($rowLessons = $resultLessons->fetch()) {
-                                        echo '<h3>'.$rowLessons['name'].'</h3>';
-                                        echo $rowLessons['description'].'<br/>';
-                                        if ($rowLessons['teachersNotes'] != '') {
-                                            echo "<div style='background-color: #F6CECB; padding: 0px 3px 10px 3px; width: 98%; text-align: justify; border-bottom: 1px solid #ddd'><p style='margin-bottom: 0px'><b>".__($guid, "Teacher's Notes").':</b></p> '.$rowLessons['teachersNotes'].'</div>';
-                                        }
+									if ($resultLessons->rowCount() < 1) {
+										echo "<div class='warning'>";
+										echo __($guid, 'There are no records to display.');
+										echo '</div>';
+									} else {
+										while ($rowLessons = $resultLessons->fetch()) {
+											echo '<h3>'.$rowLessons['name'].'</h3>';
+											echo $rowLessons['description'].'<br/>';
+											if ($rowLessons['teachersNotes'] != '') {
+												echo "<div style='background-color: #F6CECB; padding: 0px 3px 10px 3px; width: 98%; text-align: justify; border-bottom: 1px solid #ddd'><p style='margin-bottom: 0px'><b>".__($guid, "Teacher's Notes").':</b></p> '.$rowLessons['teachersNotes'].'</div>';
+											}
 
-                                        try {
-                                            $dataBlock = array('gibbonPlannerEntryID' => $rowLessons['gibbonPlannerEntryID']);
-                                            $sqlBlock = 'SELECT * FROM gibbonUnitClassBlock WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID ORDER BY sequenceNumber';
-                                            $resultBlock = $connection2->prepare($sqlBlock);
-                                            $resultBlock->execute($dataBlock);
-                                        } catch (PDOException $e) {
-                                            echo "<div class='error'>".$e->getMessage().'</div>';
-                                        }
+											try {
+												$dataBlock = array('gibbonPlannerEntryID' => $rowLessons['gibbonPlannerEntryID']);
+												$sqlBlock = 'SELECT * FROM gibbonUnitClassBlock WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID ORDER BY sequenceNumber';
+												$resultBlock = $connection2->prepare($sqlBlock);
+												$resultBlock->execute($dataBlock);
+											} catch (PDOException $e) {
+												echo "<div class='error'>".$e->getMessage().'</div>';
+											}
 
-                                        while ($rowBlock = $resultBlock->fetch()) {
-                                            echo "<h5 style='font-size: 85%'>".$rowBlock['title'].'</h5>';
-                                            echo '<p>';
-                                            echo '<b>'.__($guid, 'Type').'</b>: '.$rowBlock['type'].'<br/>';
-                                            echo '<b>'.__($guid, 'Length').'</b>: '.$rowBlock['length'].'<br/>';
-                                            echo '<b>'.__($guid, 'Contents').'</b>: '.$rowBlock['contents'].'<br/>';
-                                            if ($rowBlock['teachersNotes'] != '') {
-                                                echo "<div style='background-color: #F6CECB; padding: 0px 3px 10px 3px; width: 98%; text-align: justify; border-bottom: 1px solid #ddd'><p style='margin-bottom: 0px'><b>".__($guid, "Teacher's Notes").':</b></p> '.$rowBlock['teachersNotes'].'</div>';
-                                            }
-                                            echo '</p>';
-                                        }
+											while ($rowBlock = $resultBlock->fetch()) {
+												echo "<h5 style='font-size: 85%'>".$rowBlock['title'].'</h5>';
+												echo '<p>';
+												echo '<b>'.__($guid, 'Type').'</b>: '.$rowBlock['type'].'<br/>';
+												echo '<b>'.__($guid, 'Length').'</b>: '.$rowBlock['length'].'<br/>';
+												echo '<b>'.__($guid, 'Contents').'</b>: '.$rowBlock['contents'].'<br/>';
+												if ($rowBlock['teachersNotes'] != '') {
+													echo "<div style='background-color: #F6CECB; padding: 0px 3px 10px 3px; width: 98%; text-align: justify; border-bottom: 1px solid #ddd'><p style='margin-bottom: 0px'><b>".__($guid, "Teacher's Notes").':</b></p> '.$rowBlock['teachersNotes'].'</div>';
+												}
+												echo '</p>';
+											}
 
-                                                //Print chats
-                                                echo "<h5 style='font-size: 85%'>".__($guid, 'Chat').'</h5>';
+											//Print chats
+											echo "<h5 style='font-size: 85%'>".__($guid, 'Chat').'</h5>';
                                         echo getThread($guid, $connection2, $rowLessons['gibbonPlannerEntryID'], null, 0, null, null, null, null, null, $class[1], $_SESSION[$guid]['gibbonPersonID'], 'Teacher', false);
                                     }
                                 }

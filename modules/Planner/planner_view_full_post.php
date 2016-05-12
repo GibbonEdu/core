@@ -175,14 +175,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
 								<td class="right" colspan=2>
 									<?php
                                     echo "<input type='hidden' name='search' value='".$_GET['search']."'>";
-                    echo "<input type='hidden' name='replyTo' value='".$replyTo."'>";
-                    echo "<input type='hidden' name='params' value='$params'>";
-                    echo "<input type='hidden' name='gibbonPlannerEntryID' value='$gibbonPlannerEntryID'>";
-                    echo "<input type='hidden' name='address' value='".$_SESSION[$guid]['address']."'>";
-                    ?>
+									echo "<input type='hidden' name='replyTo' value='".$replyTo."'>";
+									echo "<input type='hidden' name='params' value='$params'>";
+									echo "<input type='hidden' name='gibbonPlannerEntryID' value='$gibbonPlannerEntryID'>";
+									echo "<input type='hidden' name='address' value='".$_SESSION[$guid]['address']."'>"; ?>
 									
-									<input type="submit" value="<?php echo __($guid, 'Submit');
-                    ?>">
+									<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 								</td>
 							</tr>
 						</table>

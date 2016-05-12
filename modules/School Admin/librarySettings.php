@@ -44,28 +44,18 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
                     $sql = "SELECT * FROM gibbonSetting WHERE scope='Library' AND name='defaultLoanLength'";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                }
-    $row = $result->fetch();
-    ?>
+                } catch (PDOException $e) {}
+                $row = $result->fetch();
+                ?>
 				<td style='width: 275px'> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
-						<?php for ($i = 0; $i <= 31; ++$i) {
-    ?>
-							<option <?php if ($row['value'] == $i) {
-    echo 'selected ';
-}
-    ?>value="<?php echo $i ?>"><?php echo $i ?></option>
-						<?php 
-}
-    ?>
+						<?php for ($i = 0; $i <= 31; ++$i) { ?>
+							<option <?php if ($row['value'] == $i) { echo 'selected '; } ?>value="<?php echo $i ?>"><?php echo $i ?></option>
+						<?php } ?>
 					</select>
 				</td>
 			</tr>
@@ -76,16 +66,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
                     $sql = "SELECT * FROM gibbonSetting WHERE scope='Library' AND name='browseBGColor'";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                }
-    $row = $result->fetch();
-    ?>
+                } catch (PDOException $e) {}
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<input type='text' name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" maxlength=6 value="<?php echo $row['value'] ?>" class="standardWidth">
@@ -98,16 +84,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
                     $sql = "SELECT * FROM gibbonSetting WHERE scope='Library' AND name='browseBGImage'";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
-                }
-    $row = $result->fetch();
-    ?>
+                } catch (PDOException $e) {}
+                $row = $result->fetch();
+                ?>
 				<td> 
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
-					<span class="emphasis small"><?php if ($row['description'] != '') {
-    echo __($guid, $row['description']);
-}
-    ?></span>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
 					<input type='text' name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>"class="standardWidth" value='<?php echo htmlPrep($row['value']) ?>'>
@@ -119,13 +101,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
 			</tr>
 			<tr>
 				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-    ?></span>
+					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>

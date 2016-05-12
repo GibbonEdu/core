@@ -42,6 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
         header("Location: {$URL}");
     } else {
         //Proceed!
+        $gibbonCourseClassID = $_POST['gibbonCourseClassID'];
         $gibbonTTDayRowClassID = substr($_POST['gibbonTTDayRowClassID'], 0, 12);
         $date = substr($_POST['gibbonTTDayRowClassID'], 13);
         $gibbonSpaceID = null;
@@ -49,31 +50,43 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
             $gibbonSpaceID = $_POST['gibbonSpaceID'];
         }
 
-        //Validate Inputs
-        if ($gibbonTTDayRowClassID == '' or $date == '') {
-            $URL .= '&return=error1';
-            header("Location: {$URL}");
-        } else {
-            //Check unique inputs for uniquness
-            try {
-                $data = array('gibbonTTDayRowClassID' => $gibbonTTDayRowClassID, 'date' => $date);
-                $sql = 'SELECT * FROM gibbonTTSpaceChange WHERE gibbonTTDayRowClassID=:gibbonTTDayRowClassID AND date=:date';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
+        //Check for access
+        try {
+            if ($highestAction == 'Manage Facility Changes_allClasses') {
+                $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonCourseClassID' => $gibbonCourseClassID);
+                $sqlSelect = 'SELECT gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class';
+            } else if ($highestAction == 'Manage Facility Changes_myDepartment') {
+                $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonCourseClassID2' => $gibbonCourseClassID);
+                $sqlSelect = '(SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID)
+                UNION
+                (SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID2 AND (gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID2 AND role=\'Coordinator\') AND gibbonCourseClassID=:gibbonCourseClassID2)';
+            } else {
+                $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonCourseClassID' => $gibbonCourseClassID);
+                $sqlSelect = 'SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class';
             }
+            $resultSelect = $connection2->prepare($sqlSelect);
+            $resultSelect->execute($dataSelect);
+        } catch (PDOException $e) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+            exit();
+        }
 
-            if ($result->rowCount() > 0) {
-                $URL .= '&return=error3';
+        if ($resultSelect->rowCount() != 1) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+            exit();
+        }
+        else {
+            //Validate Inputs
+            if ($gibbonTTDayRowClassID == '' or $date == '') {
+                $URL .= '&return=error1';
                 header("Location: {$URL}");
             } else {
-                //Write to database
+                //Check unique inputs for uniquness
                 try {
-                    $data = array('gibbonTTDayRowClassID' => $gibbonTTDayRowClassID, 'date' => $date, 'gibbonSpaceID' => $gibbonSpaceID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                    $sql = 'INSERT INTO gibbonTTSpaceChange SET gibbonTTDayRowClassID=:gibbonTTDayRowClassID, date=:date, gibbonSpaceID=:gibbonSpaceID, gibbonPersonID=:gibbonPersonID';
+                    $data = array('gibbonTTDayRowClassID' => $gibbonTTDayRowClassID, 'date' => $date);
+                    $sql = 'SELECT * FROM gibbonTTSpaceChange WHERE gibbonTTDayRowClassID=:gibbonTTDayRowClassID AND date=:date';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
@@ -82,8 +95,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
                     exit();
                 }
 
-                $URL .= '&return=success0';
-                header("Location: {$URL}");
+                if ($result->rowCount() > 0) {
+                    $URL .= '&return=error3';
+                    header("Location: {$URL}");
+                } else {
+                    //Write to database
+                    try {
+                        $data = array('gibbonTTDayRowClassID' => $gibbonTTDayRowClassID, 'date' => $date, 'gibbonSpaceID' => $gibbonSpaceID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                        $sql = 'INSERT INTO gibbonTTSpaceChange SET gibbonTTDayRowClassID=:gibbonTTDayRowClassID, date=:date, gibbonSpaceID=:gibbonSpaceID, gibbonPersonID=:gibbonPersonID';
+                        $result = $connection2->prepare($sql);
+                        $result->execute($data);
+                    } catch (PDOException $e) {
+                        $URL .= '&return=error2';
+                        header("Location: {$URL}");
+                        exit();
+                    }
+
+                    $URL .= '&return=success0';
+                    header("Location: {$URL}");
+                }
             }
         }
     }

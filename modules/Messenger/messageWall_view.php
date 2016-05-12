@@ -47,45 +47,42 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view
     echo "<div class='linkTop' style='height: 27px'>";
     echo "<div style='text-align: left; width: 40%; float: left;'>";
     echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Messenger/messageWall_view.php'>";
-    echo "<input name='date' maxlength=10 value='".date($_SESSION[$guid]['i18n']['dateFormatPHP'], (dateConvertToTimestamp(dateConvert($guid, $date)) - (24 * 60 * 60)))."' type='hidden' style='width:100px; float: none; margin-right: 4px;'>";
-    ?>
-				<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='Previous Day'>
-				<?php	
-            echo '</form>';
+    	echo "<input name='date' maxlength=10 value='".date($_SESSION[$guid]['i18n']['dateFormatPHP'], (dateConvertToTimestamp(dateConvert($guid, $date)) - (24 * 60 * 60)))."' type='hidden' style='width:100px; float: none; margin-right: 4px;'>"; ?>
+		<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='Previous Day'>
+		<?php	
+	echo '</form>';
     echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Messenger/messageWall_view.php'>";
-    echo "<input name='date' maxlength=10 value='".date($_SESSION[$guid]['i18n']['dateFormatPHP'], (dateConvertToTimestamp(dateConvert($guid, $date)) + (24 * 60 * 60)))."' type='hidden' style='width:100px; float: none; margin-right: 4px;'>";
-    ?>
-				<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='Next Day'>
-				<?php	
-            echo '</form>';
+    	echo "<input name='date' maxlength=10 value='".date($_SESSION[$guid]['i18n']['dateFormatPHP'], (dateConvertToTimestamp(dateConvert($guid, $date)) + (24 * 60 * 60)))."' type='hidden' style='width:100px; float: none; margin-right: 4px;'>"; ?>
+		<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='Next Day'>
+		<?php	
+	echo '</form>';
     echo '</div>';
     echo "<div style='width: 40%; float: right'>";
     echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Messenger/messageWall_view.php'>";
-    echo "<input name='date' id='date' maxlength=10 value='".$date."' type='text' style='width:100px; float: none; margin-right: 4px;'>";
-    ?>
-				<script type="text/javascript">
-					var date=new LiveValidation('date');
-					date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-    ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-    ?>." } ); 
-					date.add(Validate.Presence);
-				</script>
-				 <script type="text/javascript">
-					$(function() {
-						$( "#date" ).datepicker();
-					});
-				</script>
-				<input style='min-width: 30px; margin-top: 0px; float: right' type='submit' value='<?php echo __($guid, 'Go') ?>'>
-				<?php	
-            echo '</form>';
+    echo "<input name='date' id='date' maxlength=10 value='".$date."' type='text' style='width:100px; float: none; margin-right: 4px;'>"; ?>
+		<script type="text/javascript">
+			var date=new LiveValidation('date');
+			date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
+					echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+				} else {
+					echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+				}
+					?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+					echo 'dd/mm/yyyy';
+				} else {
+					echo $_SESSION[$guid]['i18n']['dateFormat'];
+				}
+				?>." } ); 
+			date.add(Validate.Presence);
+		</script>
+		<script type="text/javascript">
+			$(function() {
+				$( "#date" ).datepicker();
+			});
+		</script>
+		<input style='min-width: 30px; margin-top: 0px; float: right' type='submit' value='<?php echo __($guid, 'Go') ?>'>
+		<?php	
+	echo '</form>';
     echo '</div>';
     echo '</div>';
 

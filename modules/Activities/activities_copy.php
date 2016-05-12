@@ -39,8 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_copy
 
     ?>
 	<p>
-		<?php echo __($guid, 'This action copies all current activities, slots and staff into a specified year.').' '.__($guid, 'Copied activities will be added to any existing activities in the target year.');
-    ?>
+		<?php echo __($guid, 'This action copies all current activities, slots and staff into a specified year.').' '.__($guid, 'Copied activities will be added to any existing activities in the target year.'); ?>
 	</p>
 	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_copyProcess.php' ?>">
 		<table class='smallIntBorder fullWidth' cellspacing='0'>	
@@ -68,10 +67,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_copy
                             $resultSelect->execute($dataSelect);
                         } catch (PDOException $e) {
                         }
-    while ($rowSelect = $resultSelect->fetch()) {
-        echo "<option value='".$rowSelect['gibbonSchoolYearID']."'>".$rowSelect['name'].'</option>';
-    }
-    ?>
+						while ($rowSelect = $resultSelect->fetch()) {
+							echo "<option value='".$rowSelect['gibbonSchoolYearID']."'>".$rowSelect['name'].'</option>';
+						}
+						?>
 					</select>
 					<script type="text/javascript">
 						var gibbonSchoolYearIDTarget=new LiveValidation('gibbonSchoolYearIDTarget');
@@ -81,13 +80,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_copy
 			</tr>
 			<tr>
 				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-    ?></span>
+					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 				</td>
 				<td class="right">
 					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>

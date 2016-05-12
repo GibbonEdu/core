@@ -77,19 +77,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage_edit.p
 						<td class="right">
 							<?php
                             $yearName = '';
-            try {
-                $dataYear = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-                $sqlYear = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-                $resultYear = $connection2->prepare($sqlYear);
-                $resultYear->execute($dataYear);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-            if ($resultYear->rowCount() == 1) {
-                $rowYear = $resultYear->fetch();
-                $yearName = $rowYear['name'];
-            }
-            ?>
+							try {
+								$dataYear = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+								$sqlYear = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
+								$resultYear = $connection2->prepare($sqlYear);
+								$resultYear->execute($dataYear);
+							} catch (PDOException $e) {
+								echo "<div class='error'>".$e->getMessage().'</div>';
+							}
+							if ($resultYear->rowCount() == 1) {
+								$rowYear = $resultYear->fetch();
+								$yearName = $rowYear['name'];
+							}
+							?>
 							<input readonly name="yearName" id="yearName" maxlength=20 value="<?php echo $yearName ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var yearName=new LiveValidation('yearName');
@@ -128,14 +128,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage_edit.p
 						</td>
 						<td class="right">
 							<select name="active" id="active" class="standardWidth">
-								<option <?php if ($row['active'] == 'Y') {
-    echo 'selected';
-}
-            ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
-								<option <?php if ($row['active'] == 'N') {
-    echo 'selected';
-}
-            ?> value="N"><?php echo __($guid, 'No') ?></option>
+								<option <?php if ($row['active'] == 'Y') { echo 'selected'; } ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
+								<option <?php if ($row['active'] == 'N') { echo 'selected'; } ?> value="N"><?php echo __($guid, 'No') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -156,26 +150,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage_edit.p
 							<select name="gibbonFinanceFeeCategoryID" id="gibbonFinanceFeeCategoryID" class="standardWidth">
 								<?php
                                 echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-            try {
-                $dataSelect = array();
-                $sqlSelect = "SELECT * FROM gibbonFinanceFeeCategory WHERE active='Y' AND NOT gibbonFinanceFeeCategoryID=1 ORDER BY name";
-                $resultSelect = $connection2->prepare($sqlSelect);
-                $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) {
-            }
-            while ($rowSelect = $resultSelect->fetch()) {
-                $selected = '';
-                if ($row['gibbonFinanceFeeCategoryID'] == $rowSelect['gibbonFinanceFeeCategoryID']) {
-                    $selected = 'selected';
-                }
-                echo "<option $selected value='".$rowSelect['gibbonFinanceFeeCategoryID']."'>".$rowSelect['name'].'</option>';
-            }
-            $selected = '';
-            if ($row['gibbonFinanceFeeCategoryID'] == 1) {
-                $selected = 'selected';
-            }
-            echo "<option $selected value='1'>Other</option>";
-            ?>				
+								try {
+									$dataSelect = array();
+									$sqlSelect = "SELECT * FROM gibbonFinanceFeeCategory WHERE active='Y' AND NOT gibbonFinanceFeeCategoryID=1 ORDER BY name";
+									$resultSelect = $connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								} catch (PDOException $e) {
+								}
+								while ($rowSelect = $resultSelect->fetch()) {
+									$selected = '';
+									if ($row['gibbonFinanceFeeCategoryID'] == $rowSelect['gibbonFinanceFeeCategoryID']) {
+										$selected = 'selected';
+									}
+									echo "<option $selected value='".$rowSelect['gibbonFinanceFeeCategoryID']."'>".$rowSelect['name'].'</option>';
+								}
+								$selected = '';
+								if ($row['gibbonFinanceFeeCategoryID'] == 1) {
+									$selected = 'selected';
+								}
+								echo "<option $selected value='1'>Other</option>";
+								?>				
 							</select>
 							<script type="text/javascript">
 								var gibbonFinanceFeeCategoryID=new LiveValidation('gibbonFinanceFeeCategoryID');
@@ -194,7 +188,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage_edit.p
                                 } else {
                                     echo __($guid, 'Numeric value of the fee.');
                                 }
-            ?>
+           	 					?>
 								</i>
 							</span>
 						</td>
@@ -210,14 +204,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage_edit.p
 				
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input name="gibbonFinanceFeeID" id="gibbonFinanceFeeID" value="<?php echo $gibbonFinanceFeeID ?>" type="hidden">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

@@ -128,28 +128,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                             } catch (PDOException $e) {
                             }
 
-            if ($resultSelect->rowCount() == 1) {
-                $rowSelect = $resultSelect->fetch();
-                ?>
+							if ($resultSelect->rowCount() == 1) {
+								$rowSelect = $resultSelect->fetch();
+								?>
 								<input readonly name="column" id="column" maxlength=20 value="<?php echo htmlPrep($rowSelect['name']) ?>" type="text" class="standardWidth">
 								<?php
 
-            }
-            ?>				
+								}
+								?>				
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input name="gibbonTTID" id="gibbonTTID" value="<?php echo $gibbonTTID ?>" type="hidden">
 							<input name="gibbonTTColumnID" id="gibbonTTColumnID" value="<?php echo $row['gibbonTTColumnID'] ?>" type="hidden">
 							<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php echo $gibbonSchoolYearID ?>" type="hidden">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>
@@ -205,8 +203,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                         $rowNum = 'odd';
                     }
 
-                        //COLOR ROW BY STATUS!
-                        echo "<tr class=$rowNum>";
+                    //COLOR ROW BY STATUS!
+                    echo "<tr class=$rowNum>";
                     echo '<td>';
                     echo $row['name'];
                     echo '</td>';

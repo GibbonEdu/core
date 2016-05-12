@@ -50,8 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
     echo '<h4>';
     echo __($guid, 'Search');
-    echo '</h2>';
-    ?>
+    echo '</h2>';?>
 	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
 		<table class='noIntBorder' cellspacing='0' style="width: 100%">	
 			<tr><td style="width: 40%"></td><td></td></tr>
@@ -70,10 +69,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 					<input type="hidden" name="gibbonSchoolYearID" value="<?php echo $gibbonSchoolYearID ?>">
 					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 					<?php
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/applicationForm_manage.php'>".__($guid, 'Clear Search').'</a>';
-    ?>
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/applicationForm_manage.php'>".__($guid, 'Clear Search').'</a>';?>
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>
@@ -152,8 +149,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
             ++$count;
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$rowNum>";
             echo '<td>';
             echo ltrim($row['gibbonStaffApplicationFormID'], '0');
             echo '</td>';

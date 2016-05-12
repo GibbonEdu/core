@@ -62,10 +62,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_familyAddr
                                 $resultSelect->execute($dataSelect);
                             } catch (PDOException $e) {
                             }
-    while ($rowSelect = $resultSelect->fetch()) {
-        echo "<option value='".$rowSelect['gibbonPersonID']."'>".htmlPrep($rowSelect['name']).' - '.formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).'</option>';
-    }
-    ?>
+							while ($rowSelect = $resultSelect->fetch()) {
+								echo "<option value='".$rowSelect['gibbonPersonID']."'>".htmlPrep($rowSelect['name']).' - '.formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).'</option>';
+							}
+							?>
 						</optgroup>
 						<optgroup label='--<?php echo __($guid, 'Students by Name') ?>--'>
 							<?php
@@ -76,18 +76,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_familyAddr
                                 $resultSelect->execute($dataSelect);
                             } catch (PDOException $e) {
                             }
-    while ($rowSelect = $resultSelect->fetch()) {
-        echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['name']).')</option>';
-    }
-    ?>
+							while ($rowSelect = $resultSelect->fetch()) {
+								echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['name']).')</option>';
+							}
+							?>
 						</optgroup>
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<td colspan=2 class="right">
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>
@@ -175,36 +174,36 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_familyAddr
                 echo formatName('', $array[$i]['preferredName'], $array[$i]['surname'], 'Student').'<br/>';
                 echo '</td>';
                 echo '<td>';
-                            //Print Name
-                            if ($array[$i]['nameAddress'] != '') {
-                                echo $array[$i]['nameAddress'].'<br/>';
-                            } elseif ($array[$i]['name'] != '') {
-                                echo $array[$i]['name'].'<br/>';
-                            }
+				//Print Name
+				if ($array[$i]['nameAddress'] != '') {
+					echo $array[$i]['nameAddress'].'<br/>';
+				} elseif ($array[$i]['name'] != '') {
+					echo $array[$i]['name'].'<br/>';
+				}
 
-                            //Print address
-                            $addressBits = explode(',', trim($array[$i]['homeAddress']));
-                $addressBits = array_diff($addressBits, array(''));
-                $charsInLine = 0;
-                $buffer = '';
-                foreach ($addressBits as $addressBit) {
-                    if ($buffer == '') {
-                        $buffer = $addressBit;
-                    } else {
-                        if (strlen($buffer.', '.$addressBit) > 26) {
-                            echo $buffer.'<br/>';
-                            $buffer = $addressBit;
-                        } else {
-                            $buffer .= ', '.$addressBit;
-                        }
-                    }
-                }
-                echo $buffer.'<br/>';
+				//Print address
+				$addressBits = explode(',', trim($array[$i]['homeAddress']));
+				$addressBits = array_diff($addressBits, array(''));
+				$charsInLine = 0;
+				$buffer = '';
+				foreach ($addressBits as $addressBit) {
+					if ($buffer == '') {
+						$buffer = $addressBit;
+					} else {
+						if (strlen($buffer.', '.$addressBit) > 26) {
+							echo $buffer.'<br/>';
+							$buffer = $addressBit;
+						} else {
+							$buffer .= ', '.$addressBit;
+						}
+					}
+				}
+				echo $buffer.'<br/>';
 
-                            //Print district and country
-                            if ($array[$i]['homeAddressDistrict'] != '') {
-                                echo $array[$i]['homeAddressDistrict'].'<br/>';
-                            }
+				//Print district and country
+				if ($array[$i]['homeAddressDistrict'] != '') {
+					echo $array[$i]['homeAddressDistrict'].'<br/>';
+				}
                 if ($array[$i]['homeAddressCountry'] != '') {
                     echo $array[$i]['homeAddressCountry'].'<br/>';
                 }

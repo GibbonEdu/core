@@ -61,22 +61,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 					<select class="standardWidth" name="gibbonPersonID">
 						<?php
                         echo "<option value=''></option>";
-    try {
-        $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-        $sqlSelect = "SELECT * FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName";
-        $resultSelect = $connection2->prepare($sqlSelect);
-        $resultSelect->execute($dataSelect);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
-    while ($rowSelect = $resultSelect->fetch()) {
-        if ($gibbonPersonID == $rowSelect['gibbonPersonID']) {
-            echo "<option selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['nameShort']).')</option>';
-        } else {
-            echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['nameShort']).')</option>';
-        }
-    }
-    ?>				
+						try {
+							$dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+							$sqlSelect = "SELECT * FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName";
+							$resultSelect = $connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						} catch (PDOException $e) {
+							echo "<div class='error'>".$e->getMessage().'</div>';
+						}
+						while ($rowSelect = $resultSelect->fetch()) {
+							if ($gibbonPersonID == $rowSelect['gibbonPersonID']) {
+								echo "<option selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['nameShort']).')</option>';
+							} else {
+								echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['nameShort']).')</option>';
+							}
+						}
+						?>				
 					</select>
 				</td>
 			</tr>
@@ -145,16 +145,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 						<script type="text/javascript">
 							var dateStart=new LiveValidation('dateStart');
 							dateStart.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-        ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-        ?>." } ); 
+								echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+							} else {
+								echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+							}
+									?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+								echo 'dd/mm/yyyy';
+							} else {
+								echo $_SESSION[$guid]['i18n']['dateFormat'];
+							}
+							?>." } ); 
 						 	dateStart.add(Validate.Presence);
 						</script>
 						 <script type="text/javascript">
@@ -174,16 +174,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 						<script type="text/javascript">
 							var dateEnd=new LiveValidation('dateEnd');
 							dateEnd.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-    echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-}
-        ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-    echo 'dd/mm/yyyy';
-} else {
-    echo $_SESSION[$guid]['i18n']['dateFormat'];
-}
-        ?>." } ); 
+								echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+							} else {
+								echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+							}
+									?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+								echo 'dd/mm/yyyy';
+							} else {
+								echo $_SESSION[$guid]['i18n']['dateFormat'];
+							}
+							?>." } ); 
 						</script>
 						 <script type="text/javascript">
 							$(function() {
@@ -200,14 +200,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 					<td class="right">
 						<?php
                         echo "<select style='float: none; width: 302px; margin-bottom: 10px' name='reason'>";
-        echo "<option value=''></option>";
-        echo "<option value='Pending'>".__($guid, 'Pending').'</option>';
-        echo "<option value='Education'>".__($guid, 'Education').'</option>';
-        echo "<option value='Family'>".__($guid, 'Family').'</option>';
-        echo "<option value='Medical'>".__($guid, 'Medical').'</option>';
-        echo "<option value='Other'>".__($guid, 'Other').'</option>';
-        echo '</select>';
-        ?>
+						echo "<option value=''></option>";
+						echo "<option value='Pending'>".__($guid, 'Pending').'</option>';
+						echo "<option value='Education'>".__($guid, 'Education').'</option>';
+						echo "<option value='Family'>".__($guid, 'Family').'</option>';
+						echo "<option value='Medical'>".__($guid, 'Medical').'</option>';
+						echo "<option value='Other'>".__($guid, 'Other').'</option>';
+						echo '</select>';
+						?>
 					</td>
 				</tr>
 				<tr>
@@ -218,7 +218,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 					<td class="right">
 						<?php
                         echo "<textarea name='comment' id='comment' rows=3 style='width: 300px'></textarea>";
-        ?>
+        				?>
 						<script type="text/javascript">
 							var comment=new LiveValidation('comment');
 							comment.add( Validate.Length, { maximum: 255 } );
@@ -227,13 +227,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 				</tr>
 				<tr>
 					<td>
-						<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-        ?></span>
+						<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 					</td>
 					<td class="right">
 						<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-						<input type="submit" value="<?php echo __($guid, 'Submit');
-        ?>">
+						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 					</td>
 				</tr>
 			</table>

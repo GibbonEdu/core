@@ -112,38 +112,38 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
 							<select name="gibbonCourseClassID" id="gibbonCourseClassID" class="standardWidth">
 								<?php
                                 $years = explode(',', $row['gibbonYearGroupIDList']);
-            echo "<option value='Please select...'>Please select...</option>";
-            try {
-                $dataSelect = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-                if (count($years) > 0) {
-                    $sqlSelectWhere = ' AND (';
-                    for ($i = 0; $i < count($years); ++$i) {
-                        if ($i > 0) {
-                            $sqlSelectWhere = $sqlSelectWhere.' OR ';
-                        }
-                        $dataSelect[$years[$i]] = '%'.$years[$i].'%';
-                        $sqlSelectWhere = $sqlSelectWhere.'(gibbonYearGroupIDList LIKE :'.$years[$i].')';
-                    }
-                    $sqlSelectWhere = $sqlSelectWhere.')';
-                }
-                $sqlSelect = "SELECT gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID $sqlSelectWhere ORDER BY course, class";
-                $resultSelect = $connection2->prepare($sqlSelect);
-                $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) {
-            }
-            while ($rowSelect = $resultSelect->fetch()) {
-                try {
-                    $dataUnique = array('gibbonTTDayID' => $gibbonTTDayID, 'gibbonTTColumnRowID' => $gibbonTTColumnRowID, 'gibbonCourseClassID' => $rowSelect['gibbonCourseClassID']);
-                    $sqlUnique = 'SELECT * FROM gibbonTTDayRowClass WHERE gibbonTTDayID=:gibbonTTDayID AND gibbonTTColumnRowID=:gibbonTTColumnRowID AND gibbonCourseClassID=:gibbonCourseClassID';
-                    $resultUnique = $connection2->prepare($sqlUnique);
-                    $resultUnique->execute($dataUnique);
-                } catch (PDOException $e) {
-                }
-                if ($resultUnique->rowCount() < 1) {
-                    echo "<option value='".$rowSelect['gibbonCourseClassID']."'>".htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).'</option>';
-                }
-            }
-            ?>				
+								echo "<option value='Please select...'>Please select...</option>";
+								try {
+									$dataSelect = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+									if (count($years) > 0) {
+										$sqlSelectWhere = ' AND (';
+										for ($i = 0; $i < count($years); ++$i) {
+											if ($i > 0) {
+												$sqlSelectWhere = $sqlSelectWhere.' OR ';
+											}
+											$dataSelect[$years[$i]] = '%'.$years[$i].'%';
+											$sqlSelectWhere = $sqlSelectWhere.'(gibbonYearGroupIDList LIKE :'.$years[$i].')';
+										}
+										$sqlSelectWhere = $sqlSelectWhere.')';
+									}
+									$sqlSelect = "SELECT gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID $sqlSelectWhere ORDER BY course, class";
+									$resultSelect = $connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								} catch (PDOException $e) {
+								}
+								while ($rowSelect = $resultSelect->fetch()) {
+									try {
+										$dataUnique = array('gibbonTTDayID' => $gibbonTTDayID, 'gibbonTTColumnRowID' => $gibbonTTColumnRowID, 'gibbonCourseClassID' => $rowSelect['gibbonCourseClassID']);
+										$sqlUnique = 'SELECT * FROM gibbonTTDayRowClass WHERE gibbonTTDayID=:gibbonTTDayID AND gibbonTTColumnRowID=:gibbonTTColumnRowID AND gibbonCourseClassID=:gibbonCourseClassID';
+										$resultUnique = $connection2->prepare($sqlUnique);
+										$resultUnique->execute($dataUnique);
+									} catch (PDOException $e) {
+									}
+									if ($resultUnique->rowCount() < 1) {
+										echo "<option value='".$rowSelect['gibbonCourseClassID']."'>".htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).'</option>';
+									}
+								}
+								?>				
 							</select>
 							<script type="text/javascript">
 								var gibbonCourseClassID=new LiveValidation('gibbonCourseClassID');
@@ -160,40 +160,38 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
 							<select name="gibbonSpaceID" id="gibbonSpaceID" class="standardWidth">
 								<?php
                                 echo "<option value=''></option>";
-            try {
-                $dataSelect = array();
-                $sqlSelect = 'SELECT * FROM gibbonSpace ORDER BY name';
-                $resultSelect = $connection2->prepare($sqlSelect);
-                $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) {
-            }
-            while ($rowSelect = $resultSelect->fetch()) {
-                try {
-                    $dataUnique = array('gibbonTTDayID' => $gibbonTTDayID, 'gibbonTTColumnRowID' => $gibbonTTColumnRowID, 'gibbonSpaceID' => $rowSelect['gibbonSpaceID']);
-                    $sqlUnique = 'SELECT * FROM gibbonTTDayRowClass WHERE gibbonTTDayID=:gibbonTTDayID AND gibbonTTColumnRowID=:gibbonTTColumnRowID AND gibbonSpaceID=:gibbonSpaceID';
-                    $resultUnique = $connection2->prepare($sqlUnique);
-                    $resultUnique->execute($dataUnique);
-                } catch (PDOException $e) {
-                }
-                if ($resultUnique->rowCount() < 1) {
-                    echo "<option value='".$rowSelect['gibbonSpaceID']."'>".htmlPrep($rowSelect['name']).'</option>';
-                }
-            }
-            ?>				
+								try {
+									$dataSelect = array();
+									$sqlSelect = 'SELECT * FROM gibbonSpace ORDER BY name';
+									$resultSelect = $connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								} catch (PDOException $e) {
+								}
+								while ($rowSelect = $resultSelect->fetch()) {
+									try {
+										$dataUnique = array('gibbonTTDayID' => $gibbonTTDayID, 'gibbonTTColumnRowID' => $gibbonTTColumnRowID, 'gibbonSpaceID' => $rowSelect['gibbonSpaceID']);
+										$sqlUnique = 'SELECT * FROM gibbonTTDayRowClass WHERE gibbonTTDayID=:gibbonTTDayID AND gibbonTTColumnRowID=:gibbonTTColumnRowID AND gibbonSpaceID=:gibbonSpaceID';
+										$resultUnique = $connection2->prepare($sqlUnique);
+										$resultUnique->execute($dataUnique);
+									} catch (PDOException $e) {
+									}
+									if ($resultUnique->rowCount() < 1) {
+										echo "<option value='".$rowSelect['gibbonSpaceID']."'>".htmlPrep($rowSelect['name']).'</option>';
+									}
+								}
+								?>				
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');
-            ?></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
 							<input name="gibbonTTID" id="gibbonTTID" value="<?php echo $gibbonTTID ?>" type="hidden">
 							<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php echo $gibbonSchoolYearID ?>" type="hidden">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

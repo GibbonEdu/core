@@ -59,8 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_finance_ed
             }
 
             //Let's go!
-            $row = $result->fetch();
-            ?>
+            $row = $result->fetch(); ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/data_finance_editProcess.php?gibbonFinanceInvoiceeUpdateID=$gibbonFinanceInvoiceeUpdateID" ?>">
 				<?php
                 echo "<table cellspacing='0' style='width: 100%'>";
@@ -81,8 +80,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_finance_ed
 
             $rowNum = 'even';
 
-                    //COLOR ROW BY STATUS!
-                    echo "<tr class='odd'>";
+			//COLOR ROW BY STATUS!
+			echo "<tr class='odd'>";
             echo '<td>';
             echo __($guid, 'Invoice To');
             echo '</td>';
@@ -286,8 +285,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_finance_ed
             echo "<input type='submit' value='Submit'>";
             echo '</td>';
             echo '</tr>';
-            echo '</table>';
-            ?>
+            echo '</table>'; ?>
 			</form>
 			<?php
 

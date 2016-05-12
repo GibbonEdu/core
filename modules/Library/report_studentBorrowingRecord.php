@@ -62,21 +62,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_studentBorr
                             $resultSelect->execute($dataSelect);
                         } catch (PDOException $e) {
                         }
-    while ($rowSelect = $resultSelect->fetch()) {
-        $selected = '';
-        if ($gibbonPersonID == $rowSelect['gibbonPersonID']) {
-            $selected = 'selected';
-        }
-        echo "<option $selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['name']).')</option>';
-    }
-    ?>
+						while ($rowSelect = $resultSelect->fetch()) {
+							$selected = '';
+							if ($gibbonPersonID == $rowSelect['gibbonPersonID']) {
+								$selected = 'selected';
+							}
+							echo "<option $selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['name']).')</option>';
+						}
+						?>
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<td colspan=2 class="right">
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>

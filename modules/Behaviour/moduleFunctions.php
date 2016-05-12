@@ -111,8 +111,8 @@ function getBehaviourRecord($guid, $gibbonPersonID, $connection2)
                     }
                     ++$count;
 
-                        //COLOR ROW BY STATUS!
-                        echo "<tr class=$rowNum>";
+                    //COLOR ROW BY STATUS!
+                    echo "<tr class=$rowNum>";
                     echo '<td>';
                     if (substr($row['timestamp'], 0, 10) > $row['date']) {
                         echo __($guid, 'Updated:').' '.dateConvertBack($guid, substr($row['timestamp'], 0, 10)).'<br/>';

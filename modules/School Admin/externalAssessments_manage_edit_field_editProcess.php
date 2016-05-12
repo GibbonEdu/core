@@ -31,8 +31,7 @@ date_default_timezone_set($_SESSION[$guid]['timezone']);
 
 $gibbonExternalAssessmentFieldID = $_GET['gibbonExternalAssessmentFieldID'];
 $gibbonExternalAssessmentID = $_GET['gibbonExternalAssessmentID'];
-if ($gibbonExternalAssessmentID == '') {
-    echo 'Fatal error loading this page!';
+if ($gibbonExternalAssessmentID == '') { echo 'Fatal error loading this page!';
 } else {
     $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/externalAssessments_manage_edit_field_edit.php&gibbonExternalAssessmentID=$gibbonExternalAssessmentID&gibbonExternalAssessmentFieldID=$gibbonExternalAssessmentFieldID";
 

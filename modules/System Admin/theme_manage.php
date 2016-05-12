@@ -155,14 +155,14 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
                     $themeVerison = getThemeVersion($themeName, $guid);
                     if ($themeVerison > $themesSQL[$themeName][0]['version']) {
                         //Update database
-                                        try {
-                                            $data = array('version' => $themeVerison, 'gibbonThemeID' => $themesSQL[$themeName][0]['gibbonThemeID']);
-                                            $sql = 'UPDATE gibbonTheme SET version=:version WHERE gibbonThemeID=:gibbonThemeID';
-                                            $result = $connection2->prepare($sql);
-                                            $result->execute($data);
-                                        } catch (PDOException $e) {
-                                            echo "<div class='error'>".$e->getMessage().'</div>';
-                                        }
+						try {
+							$data = array('version' => $themeVerison, 'gibbonThemeID' => $themesSQL[$themeName][0]['gibbonThemeID']);
+							$sql = 'UPDATE gibbonTheme SET version=:version WHERE gibbonThemeID=:gibbonThemeID';
+							$result = $connection2->prepare($sql);
+							$result->execute($data);
+						} catch (PDOException $e) {
+							echo "<div class='error'>".$e->getMessage().'</div>';
+						}
                     } else {
                         $themeVerison = $themesSQL[$themeName][0]['version'];
                     }
@@ -200,12 +200,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
         }
         echo '<tr>';
         echo "<td colspan=7 class='right'>";
-        ?>
-						<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-						<input type="submit" value="<?php echo __($guid, 'Submit');
-        ?>">
-						<?php
-                    echo '</td>';
+        	?>
+			<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
+			<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
+			<?php
+		echo '</td>';
         echo '</tr>';
         echo '</table>';
 
@@ -252,8 +251,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
 
                 ++$count;
 
-                    //COLOR ROW BY STATUS!
-                    echo "<tr class=$rowNum>";
+                //COLOR ROW BY STATUS!
+                echo "<tr class=$rowNum>";
                 echo '<td>';
                 echo __($guid, $themeName);
                 echo '</td>';
@@ -265,12 +264,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
         }
         echo '<tr>';
         echo "<td colspan=7 class='right'>";
-        ?>
-					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit');
-        ?>">
-					<?php
-                echo '</td>';
+        	?>
+			<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
+			<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
+			<?php
+		echo '</td>';
         echo '</tr>';
         echo '</table>';
     }

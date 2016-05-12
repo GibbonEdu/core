@@ -35,8 +35,7 @@ date_default_timezone_set($_SESSION[$guid]['timezone']);
 $gibbonActivityID = $_GET['gibbonActivityID'];
 $gibbonPersonID = $_GET['gibbonPersonID'];
 
-if ($gibbonActivityID == '' or $gibbonPersonID == '') {
-    echo 'Fatal error loading this page!';
+if ($gibbonActivityID == '' or $gibbonPersonID == '') { echo 'Fatal error loading this page!';
 } else {
     $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/activities_manage_enrolment_delete.php&gibbonPersonID=$gibbonPersonID&gibbonActivityID=$gibbonActivityID&search=".$_GET['search'];
     $URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/activities_manage_enrolment.php&gibbonActivityID=$gibbonActivityID&search=".$_GET['search'];
