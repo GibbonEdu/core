@@ -29,6 +29,8 @@ $attainmentAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'a
 $effortAlternativeName = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName');
 $effortAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'effortAlternativeNameAbrev');
 
+
+// This script makes entering raw marks easier, by capturing the enter key and moving to the next field insted of submitting
 echo "<script type='text/javascript'>";
 ?>
     $(document).ready(function(){
@@ -154,6 +156,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                         echo '</div>';
                     }
 
+                    // Added an info message to let uers know about enter / automatic calculations
                     if ($row2['attainment'] == 'Y' && $row2['attainmentRaw'] == 'Y' && !empty($row2['attainmentRawMax']) && $enableRawAttainment == 'Y') {
                         echo '<p>';
                         echo __($guid, 'Press enter when recording marks to jump to the next student. Attainment values with a percentage grade scale will be calculated automatically. You can override the automatic value by selecting a different grade.');
@@ -514,6 +517,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                                 }
                                 if ($row2['attainment'] == 'Y') {
 
+                                    // Handle raw attainment values
                                     $attainmentValueRaw = (isset($rowEntry['attainmentValueRaw']))? $rowEntry['attainmentValueRaw'] : '';
                                     if ($row2['attainmentRaw'] == 'Y' && !empty($row2['attainmentRawMax']) && $enableRawAttainment == 'Y') {
 
@@ -530,6 +534,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                                             echo ' / ' . $row2['attainmentRawMax'];
                                         echo '</td>';
                                     } else {
+                                        // Save them if raw marks is turned off, rather than losing the data
                                         echo "<input type='hidden' name='$count-attainmentValueRaw' id='$count-attainmentValueRaw' value='$attainmentValueRaw'  maxlength=10>";
                                     }
 

@@ -19,6 +19,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Module\Markbook ;
 
+use Gibbon\session;
+use Gibbon\config;
+use Gibbon\sqlConnection;
+
 /**
  * Markbook display & edit class
  *
@@ -45,7 +49,7 @@ class markbookView
 	protected $config ;
 
 	/**
-	 * Gibbon Settings
+	 * Gibbon Settings - preloaded
 	 */
 	protected $settings = array();
 
@@ -65,27 +69,46 @@ class markbookView
 	protected $personalizedTargets;
 
     /**
-     * Weightings
+     * Row data from gibbonMarkbookWeight
      * @var array
      */
     protected $markbookWeights;
+
+    /**
+     * Holds the sums for total and cumulative weighted values from markbookEntry
+     * @var array
+     */
     protected $weightedAverages;
 
     /**
-     * Filters
+     * SQL statements to be appended to the query to filter the current view
      * @var array
      */
     protected $columnFilters;
     protected $sortFilters;
 
     /**
-     * Column Row Data
-     * @var array
+     * Array of markbookColumn objects for each gibbonMarkbookColumn
+     * @var array 
      */
     protected $columns = array();
+
+    /**
+     * Array of the currently used gibbonSchoolYearTerms, populated by cacheWeightings
+     * @var array
+     */
     protected $terms = array();
+
+    /**
+     * Array of the currently used Markbook Types, populated by cacheWeightings
+     * @var array
+     */
     protected $types = array();
 
+    /**
+     * The database ID of the gibbonCourseClass
+     * @var [type]
+     */
 	public $gibbonCourseClassID;
 
 	/**
@@ -98,26 +121,26 @@ class markbookView
      * @param    Gibbon\sqlConnection
      * @return   void
      */
-    public function __construct(\Gibbon\session $session = NULL, \Gibbon\config $config = NULL, \Gibbon\sqlConnection $pdo = NULL, $gibbonCourseClassID)
+    public function __construct($session = NULL, $config = NULL, $pdo = NULL, $gibbonCourseClassID)
     {
         if ($session === NULL)
-            $this->session = new \Gibbon\session();
+            $this->session = new session();
         else
             $this->session = $session ;
 
         if ($config === NULL)
-            $this->config = new \Gibbon\config();
+            $this->config = new config();
         else
             $this->config = $config ;
 
         if ($pdo === NULL)
-            $this->pdo = new \Gibbon\sqlConnection();
+            $this->pdo = new sqlConnection();
         else
             $this->pdo = $pdo ;
 
         $this->gibbonCourseClassID = $gibbonCourseClassID;
 
-        // Get Gibbon settings
+        // Preload Gibbon settings - we check them a lot
 		$this->settings['enableColumnWeighting'] = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'enableColumnWeighting');
         $this->settings['enableRawAttainment'] = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'enableRawAttainment');
         $this->settings['enableGroupByTerm'] = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'enableGroupByTerm');
@@ -139,8 +162,8 @@ class markbookView
     /**
      * Get Setting
      * 
-     * @version 11 May 2016
-     * @since   11 May 2016
+     * @version 11th May 2016
+     * @since   11th May 2016
      * @param   string  $key
      * @return  string  Y or N
      */
@@ -150,8 +173,9 @@ class markbookView
 
     /**
      * Get Minimum Sequence Number
-     * @version  7 May 2016
-     * @since    7 May 2016
+     * 
+     * @version  7th May 2016
+     * @since    7th May 2016
      * @return   int  
      */
     public function getMinimumSequenceNumber() {
@@ -160,8 +184,9 @@ class markbookView
 
     /**
      * Get Columns Per Page
-     * @version  2016
-     * @since    2016
+     * 
+     * @version  9th May 2016
+     * @since    9th May 2016
      * @return   int
      */
     public function getColumnsPerPage() {
@@ -170,8 +195,8 @@ class markbookView
 
     /**
      * Get Column Count This Page
-     * @version 2016
-     * @since   2016
+     * @version 7th May 2016
+     * @since   7th May 2016
      * @return  int
      */
     public function getColumnCountThisPage() {
@@ -180,8 +205,9 @@ class markbookView
 
     /**
      * Get Column Count Total
-     * @version 2016
-     * @since   2016
+     * 
+     * @version 7th May 2016
+     * @since   7th May 2016
      * @return  int
      */
     public function getColumnCountTotal() {
@@ -205,30 +231,33 @@ class markbookView
     }
 
     /**
-     * Get Columns
-     * @version 2016
-     * @since   2016
+     * Load Columns
+     * 
+     * @version 7th May 2016
+     * @since   7th May 2016
      * @param   int    $pageNum
      * @return  bool   true if there are columns
      */
-    public function getColumns( $pageNum ) {
+    public function loadColumns( $pageNum ) {
 
-        // First ensure the total has been laoded, and cancel out early if there are no columns
+        // First ensure the total has been loaded, and cancel out early if there are no columns
         if ($this->getColumnCountTotal() < 1) return false;
 
+        // Grab the minimum sequenceNumber only once for the current page set, to pass to markbook_viewAjax.php
+        if ($this->minSequenceNumber == -1) {
+            try {
+                $data = array('gibbonCourseClassID' => $this->gibbonCourseClassID);
+                $where = $this->getColumnFilters();
+                $sql = 'SELECT min(sequenceNumber) as min FROM (SELECT sequenceNumber FROM gibbonMarkbookColumn WHERE '.$where.' LIMIT '.($pageNum * $this->columnsPerPage).', '.$this->columnsPerPage .') as mc';
+                $resultSequence=$this->pdo->executeQuery($data, $sql);
+            } catch (PDOException $e) { $this->error( $e->getMessage() ); }
 
-        try {
-            $data = array('gibbonCourseClassID' => $this->gibbonCourseClassID);
-            $where = $this->getColumnFilters();
-            $sql = 'SELECT min(sequenceNumber) as min FROM (SELECT sequenceNumber FROM gibbonMarkbookColumn WHERE '.$where.' LIMIT '.($pageNum * $this->columnsPerPage).', '.$this->columnsPerPage .') as mc';
-            $resultSequence=$this->pdo->executeQuery($data, $sql);
-        } catch (PDOException $e) { $this->error( $e->getMessage() ); }
-
-        if ($resultSequence->rowCount() > 0) {
-            $this->minSequenceNumber = $resultSequence->fetchColumn();
+            if ($resultSequence->rowCount() > 0) {
+                $this->minSequenceNumber = $resultSequence->fetchColumn();
+            }
         }
 
-
+        // Query the markbook columns, applying any filters that have been added
     	try {
     		$data = array('gibbonCourseClassID' => $this->gibbonCourseClassID);
     		$where = $this->getColumnFilters();
@@ -241,6 +270,7 @@ class markbookView
 	    $this->columnsThisPage = $result->rowCount();
         $this->columns = array();
 
+        // Build a markbookColumn object for each row
         for ($i = 0; $i < $this->columnsThisPage; ++$i) {
 
             $column = new markbookColumn( $result->fetch() );
@@ -271,20 +301,22 @@ class markbookView
     }
 
     /**
-     * Get Column
-     * @version 2016
-     * @since   2016
+     * Get a single markbookColumn object
+     * 
+     * @version 7th May 2016
+     * @since   7th May 2016
      * @param   int     $i Column Index
-     * @return  Object
+     * @return  Object  markbookColumn class
      */
     public function getColumn( $i ) {
         return (isset($this->columns[$i]))? $this->columns[$i] : NULL;
     }
 
     /**
-     * Get Primary Assessment Scale
-     * @version 2016
-     * @since   2016
+     * Get the Primary Assessment Scale info only once & hang onto it
+     * 
+     * @version 7th May 2016
+     * @since   7th May 2016
      * @return  array
      */
     public function getPrimaryAssessmentScale() {
@@ -308,9 +340,10 @@ class markbookView
     }
 
     /**
-     * Get Target For Student
-     * @version 2016
-     * @since   2016
+     * Get Personalized Target from cached values
+     * 
+     * @version 7th May 2016
+     * @since   7th May 2016
      * @param   string $gibbonPersonID
      * @return  int
      */
@@ -319,9 +352,9 @@ class markbookView
     }
 
     /**
-     * Has Personalized Targets
-     * @version 2016
-     * @since   2016
+     * Do we have Personalized Targets? Used to hide the Target column
+     * @version 7th May 2016
+     * @since   7th May 2016
      * @return  bool
      */
     public function hasPersonalizedTargets() {
@@ -330,8 +363,9 @@ class markbookView
 
     /**
      * Cache Personalized Targets
-     * @version 2016
-     * @since   2016
+     * 
+     * @version 7th May 2016
+     * @since   7th May 2016
      */
     public function cachePersonalizedTargets( ) {
 
@@ -351,9 +385,10 @@ class markbookView
     }
 
     /**
-     * Get Formatted Average
-     * @version 2016
-     * @since   2016
+     * Get a Formatted Average with titles and maybe a percent sign
+     * 
+     * @version 7th May 2016
+     * @since   7th May 2016
      * @param   string|int $average
      * @return  string
      */
@@ -365,10 +400,10 @@ class markbookView
     }
 
     /**
-     * Get Type Average
+     * Get the average grade for a given Markbook Type (from pre-calculated values)
      * 
-     * @version 2016
-     * @since   2016
+     * @version 7th May 2016
+     * @since   7th May 2016
      * @param   string $gibbonPersonID
      * @param   string $gibbonSchoolYearTermID
      * @param   string $type
@@ -379,9 +414,9 @@ class markbookView
     }
 
     /**
-     * Get Term Average
-     * @version 2016
-     * @since   2016
+     * Get the average grade for the School Year Term (from pre-calculated values)
+     * @version 7th May 2016
+     * @since   7th May 2016
      * @param   string $gibbonPersonID
      * @param   string $gibbonSchoolYearTermID
      * @return  int|string
@@ -391,9 +426,9 @@ class markbookView
     }
 
     /**
-     * Get Cumulative Average
-     * @version 2016
-     * @since   2016
+     * Get the overall Cumulative Average for all marks (from pre-calculated values)
+     * @version 7th May 2016
+     * @since   7th May 2016
      * @param   string $gibbonPersonID
      * @return  int|string
      */
@@ -402,9 +437,9 @@ class markbookView
     }
 
     /**
-     * Get Final Grade Average
-     * @version 2016
-     * @since   2016
+     * Get the calculated Final Grade average (from pre-calculated values)
+     * @version 7th May 2016
+     * @since   7th May 2016
      * @param   string $gibbonPersonID
      * @return  int|string
      */
@@ -413,9 +448,9 @@ class markbookView
     }
 
     /**
-     * Get Type Description
-     * @version 2016
-     * @since   2016
+     * Get a description for a Markbook Type if it has one set in markbookWeights
+     * @version 7th May 2016
+     * @since   7th May 2016
      * @param   string $type
      * @return  string
      */
@@ -424,9 +459,9 @@ class markbookView
     }
 
     /**
-     * Get Weighting By Type
-     * @version 2016
-     * @since   2016
+     * Get the weighting by Markbook Type, from markbookWeights
+     * @version 7th May 2016
+     * @since   7th May 2016
      * @param   string $type
      * @return  int
      */
@@ -443,9 +478,9 @@ class markbookView
     }
 
     /**
-     * Get Reportable By Type
-     * @version 2016
-     * @since   2016
+     * Get if the Markbook Type is reportable
+     * @version 7th May 2016
+     * @since   7th May 2016
      * @param   string $type
      * @return  string
      */
@@ -454,20 +489,23 @@ class markbookView
     }
 
     /**
-     * Get Column Types
-     * @version 2016
-     * @since   2016
+     * Get a grouped set of column types, for different weighting calculations (currently 'term' or 'year')
+     * Types will only be grouped into 'term' if enableGroupByTerm is on
+     * 
+     * @version 7th May 2016
+     * @since   7th May 2016
      * @param   string $calculate
      * @return  array
      */
-    public function getColumnTypes( $calculate = 'year' ) {
+    public function getGroupedMarkbookTypes( $calculate = 'year' ) {
         return (isset($this->types[$calculate]))? $this->types[$calculate] : array();
     } 
 
     /**
-     * Get Current Terms
-     * @version 2016
-     * @since   2016
+     * Get a subset of terms used by the current markbook columns
+     * 
+     * @version 7th May 2016
+     * @since   7th May 2016
      * @return  array
      */
     public function getCurrentTerms() {
@@ -475,14 +513,17 @@ class markbookView
     } 
 
     /**
-     * Calculate Weighted Averages
-     * @version 2016
-     * @since   2016
+     * Calculate and cache all the weighted averages for this Markbook
+     * 
+     * @version 7th May 2016
+     * @since   7th May 2016
+     * @see cacheWeightings
      */
     protected function calculateWeightedAverages( ) {
 
         if (count($this->rawAverages) == 0 ) return;
 
+        // Iterate through each student in the markbookEntry set
         foreach($this->rawAverages as $gibbonPersonID => $averages) {
 
             if (count($averages) == 0) continue;
@@ -492,6 +533,7 @@ class markbookView
             $overallTotal = 0;
             $overallCumulative = 0;
 
+            // Calculate the 'term' averages (Cumulative Average)
             foreach ($averages as $termID => $term) {
                 if ($termID === 'final') continue;
 
@@ -515,6 +557,7 @@ class markbookView
 
                 $weightedAverages['term'][$termID] = $termAverage;
 
+                // Add the term averages to the overall average
                 $overallTotal += $termWeight;
                 $overallCumulative += ($termAverage * $termWeight);
             }
@@ -522,6 +565,7 @@ class markbookView
             $finalTotal = 0;
             $finalCumulative = 0;
 
+            // Calculate the averages for 'year' (Final Mark) weightings
             if (isset($averages['final'])) {
                 foreach ($averages['final'] as $type => $weighted) {
 
@@ -539,6 +583,7 @@ class markbookView
 
             $weightedAverages['final'] = ($finalTotal > 0)? ( $finalCumulative / $finalTotal ) : '';
 
+            // The overall weight is 100 minus the sum of Final Grade weights
             $overallWeight = min(100.0, max(0.0, 100.0 - $finalTotal));
             $overallAverage = ($overallTotal > 0)? ( $overallCumulative / $overallTotal ) : '';
 
@@ -549,19 +594,22 @@ class markbookView
 
             $weightedAverages['finalGrade'] = ($finalTotal > 0)? ( $finalCumulative / $finalTotal ) : '';
 
+            // Save all the weighted averages in a per-student array
             $this->weightedAverages[$gibbonPersonID] = $weightedAverages;
         }
     }
 
     /**
-     * Cache Weightings
-     * @version 2016
-     * @since   2016
+     * Retrieve all weighting info and weighted markbookEntry rows and collect them in a useful array
+     * 
+     * @version 7th May 2016
+     * @since   7th May 2016
      */
     public function cacheWeightings( ) {
 
         $this->markbookWeights = array();
 
+        // Gather weighted Markbook Type info
         try {
             $data = array('gibbonCourseClassID' => $this->gibbonCourseClassID);
             $sql = 'SELECT type, description, weighting, reportable, calculate FROM gibbonMarkbookWeight WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY calculate, type';
@@ -598,10 +646,12 @@ class markbookView
                 }
 
                 $gibbonPersonID = $entry['gibbonPersonIDStudent'];
+
+                // floatval these to reduce them to numeric info only
                 $weight = floatval($entry['attainmentWeighting']);
                 $value = floatval($entry['attainmentValue']);
 
-                // If we're using a percent scale and have raw values, use the raw percent rather than the rounded values
+                // Use the raw percent rather than the rounded values for higher accuracy, if they're available
                 if ($this->settings['enableRawAttainment'] == 'Y' && stripos($entry['attainmentValue'], '%') !== false )  {
                     if ( $entry['attainmentRaw'] == 'Y' && $entry['attainmentValueRaw'] > 0 && $entry['attainmentRawMax'] > 0) {
                         $value = floatval( ($entry['attainmentValueRaw'] / $entry['attainmentRawMax']) * 100 );
@@ -624,12 +674,14 @@ class markbookView
                     $term = 0;
                 }
 
+                // Group the end-of-course weightings in a specifically named 'term'
                 if ($this->settings['enableTypeWeighting'] == 'Y') {
                     if (isset($this->markbookWeights[$type]) && $this->markbookWeights[$type]['calculate'] == 'year') {
                         $term = 'final';
                     }
                 }
 
+                // Sum up the raw averages for each entry as we go
                 if (isset($this->rawAverages[$gibbonPersonID][$term][$type])) {
                     $this->rawAverages[$gibbonPersonID][$term][$type]['total'] += $weight;
                     $this->rawAverages[$gibbonPersonID][$term][$type]['cumulative'] += ($value * $weight);
@@ -643,6 +695,7 @@ class markbookView
             }
         }
 
+        // Group the used Markbook Types together, if nessesary
         if (count($typesUsed) > 0) {
             $typesUsed = array_unique($typesUsed);
 
@@ -658,6 +711,7 @@ class markbookView
             
         }
 
+        // Get the proper term order and info for the terms used
         if (count($termsUsed) > 0 && $this->settings['enableGroupByTerm'] == 'Y') {
 
             $termsUsed = array_unique($termsUsed);
@@ -685,8 +739,9 @@ class markbookView
 
     /**
      * Has External Assessments
-     * @version 2016
-     * @since   2016
+     * 
+     * @version 7th May 2016
+     * @since   7th May 2016
      * @return  bool
      */
     public function hasExternalAssessments() {
@@ -695,8 +750,9 @@ class markbookView
 
     /**
      * Cache External Assessments
-     * @version 2016
-     * @since   2016
+     * 
+     * @version 7th May 2016
+     * @since   7th May 2016
      * @param   string $courseName            
      * @param   string $gibbonYearGroupIDList                        
      */
@@ -746,9 +802,10 @@ class markbookView
     }
 
     /**
-     * [filterByDateRange description]
-     * @version 2016
-     * @since   2016
+     * Creates a date range SQL filter, also checks validity of dates provided
+     * 
+     * @version 7th May 2016
+     * @since   7th May 2016
      * @param   string $startDate  YYYY-MM-DD Format
      * @param   string $endDate    YYYY-MM-DD Format
      * @return  bool   True if the filter was added
@@ -773,8 +830,9 @@ class markbookView
 
     /**
      * Filter By Term
-     * @version 2016
-     * @since   2016
+     * 
+     * @version 7th May 2016
+     * @since   7th May 2016
      * @param   int|string $gibbonSchoolYearTermID
      * @return  bool       True if the filter was added
      */
@@ -797,10 +855,10 @@ class markbookView
     }
 
     /**
-     * Filter By Form Options
      * Creates simple SQL statements for options from the Class Selector
-     * @version 2016
-     * @since   2016
+     * 
+     * @version 7th May 2016
+     * @since   7th May 2016
      * @param   string $filter
      * @return  bool   True if the filter was added
      */
@@ -816,10 +874,10 @@ class markbookView
     }
 
     /**
-     * Filter By Query
      * Add a raw SQL statement to the filters
-     * @version 2016
-     * @since   2016
+     * 
+     * @version 7th May 2016
+     * @since   7th May 2016
      * @param   string $query
      * @return  bool   True if the filter was added
      */
@@ -831,10 +889,10 @@ class markbookView
     }
 
     /**
-     * Get Column Filters
-     * Retrieve a SQL frieldly string of query modifiers
-     * @version 2016
-     * @since   2016
+     * Get a SQL frieldly string of query modifiers
+     * 
+     * @version 7th May 2016
+     * @since   7th May 2016
      * @return  string
      */
     protected function getColumnFilters() {
@@ -848,10 +906,10 @@ class markbookView
     }
 
     /**
-     * Error
      * Handle error display. Maybe do something fancier here, eventually.
-     * @version 2016
-     * @since   2016
+     * 
+     * @version 7th May 2016
+     * @since   7th May 2016
      * @param   string $message
      */
     protected function error( $message ) {

@@ -33,7 +33,7 @@ date_default_timezone_set($_SESSION[$guid]['timezone']);
 
 $order = (isset($_POST['order']))? $_POST['order'] : '';
 
-if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php') == false) {
 
     echo __($guid, 'Your request failed because you do not have access to this action.');
     
@@ -46,6 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
 
         for ($i = 0; $i < count($columnOrder); $i++) {
 
+            // Re-order the sequenceNumber based off the new column order, using the minimum value to preserve pagination / filters
             try {
                 $data = array('gibbonMarkbookColumnID' => $columnOrder[$i], 'sequenceNumber' => $i + $minSequence );
                 $sql = 'UPDATE gibbonMarkbookColumn SET sequenceNumber=:sequenceNumber WHERE gibbonMarkbookColumnID=:gibbonMarkbookColumnID';

@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 /**
- * Stuff for the Core
+ * Stuff for the Core?
  */
 
 .linkTop a img {
@@ -42,6 +42,17 @@ tr.even:target td {
 	font-size: 90%;
 	font-style: italic;
 	font-weight: normal;
+}
+
+.verticalText {
+	-webkit-transform: rotate(-90deg);
+	-moz-transform: rotate(-90deg);
+	-ms-transform: rotate(-90deg);
+	-o-transform: rotate(-90deg);
+	transform: rotate(-90deg);
+	transform-origin: 14px 0;
+	white-space: nowrap;
+	padding-left: 15px;
 }
 
 
@@ -122,27 +133,6 @@ th.columnLabel:first-of-type {
 	max-width: 32%;
 }
 
-
-table.mini tr.head {
-	background: -webkit-gradient(linear, center top, center bottom, from(#EBEBEB), to(#DFDFDF));
-	background: -webkit-linear-gradient(center top , #EBEBEB, #DFDFDF);
-	background: -o-linear-gradient(center top , #EBEBEB, #DFDFDF);
-	background: -moz-linear-gradient(center top , #EBEBEB, #DFDFDF);
-	background: linear-gradient(center top , #EBEBEB, #DFDFDF);
-}
-
-
-.verticalText {
-	-webkit-transform: rotate(-90deg);
-	-moz-transform: rotate(-90deg);
-	-ms-transform: rotate(-90deg);
-	-o-transform: rotate(-90deg);
-	transform: rotate(-90deg);
-	transform-origin: 14px 0;
-	white-space: nowrap;
-	padding-left: 15px;
-}
-
 .studentName {
 	display: block;
 	font-weight: bold;
@@ -154,6 +144,8 @@ table.blank td {
 	text-align: center;
 	padding: 0px 5px !important;
 }
+
+/* Data Edit input fields*/
 
 input[id$="attainmentValueRaw"] {
 	width: 38px;
@@ -167,6 +159,7 @@ select[id$="effortValue"] {
 	float: none;
 }
 
+/* Mini icons added to the Edit Data to indicate marked/unmarked*/
 .miniIcon {
 	position: relative;
 	display: inline-block;
@@ -180,9 +173,10 @@ select[id$="effortValue"] {
 	right: -2px;
 }
 
-.markbook-data,
-.markbook-data:link,
-.markbook-data:visited {
+/* Small inline edit buttons */
+.markbookQuickEdit,
+.markbookQuickEdit:link,
+.markbookQuickEdit:visited {
 	opacity: 0;
 	display: block;
 	color: #666;
@@ -191,7 +185,7 @@ select[id$="effortValue"] {
 	transition: opacity 500;
 }
 
-.markbook-data:hover {
+.markbookQuickEdit:hover {
 	opacity: 1;
 }
 
@@ -199,7 +193,11 @@ select[id$="effortValue"] {
 
 
 
-/* Double-scroll */
+/* -------------------------------------------------------
+ *
+ * Double-scroll 
+ * 
+ */
 
 .doublescroll-wrapper {
 	display: inline-block;
@@ -282,13 +280,13 @@ select[id$="effortValue"] {
 }
 
 
-/* 
+/* -------------------------------------------------------
  * dragtable
  *
  * @Version 1.0.3
  *
  * default css
- *
+ * -------------------------------------------------------
  */
 
 .dragtable-drag-handle{

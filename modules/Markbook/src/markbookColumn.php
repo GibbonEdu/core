@@ -34,8 +34,8 @@ class markbookColumn
 	 * Table row data from gibbonMarkbookColumn
 	 * @var array
 	 */
-	private $data = array();
-	private $spanCount;
+	protected $data = array();
+	protected $spanCount;
 
 	/**
      * Constructor
@@ -65,9 +65,9 @@ class markbookColumn
      * Get Data
      * Returns field data from the column's row
      * 
-     * @version 3rd May 2016
-     * @since   3rd May 2016
-     * @param   string $key
+     * @version 4th May 2016
+     * @since   4th May 2016
+     * @param   string  $key
      * @return  mixed
      */
     public function getData( $key ) {
@@ -76,8 +76,8 @@ class markbookColumn
 
     /**
      * Display Attainment
-     * @version 3rd May 2016
-     * @since   3rd May 2016
+     * @version 4th May 2016
+     * @since   4th May 2016
      * @return  bool
      */
     public function displayAttainment() {
@@ -90,8 +90,8 @@ class markbookColumn
 
     /**
      * Display Effort
-     * @version 3rd May 2016
-     * @since   3rd May 2016
+     * @version 4th May 2016
+     * @since   4th May 2016
      * @return  bool
      */
     public function displayEffort() {
@@ -104,8 +104,8 @@ class markbookColumn
 
     /**
      * Display Comment
-     * @version 3rd May 2016
-     * @since   3rd May 2016
+     * @version 4th May 2016
+     * @since   4th May 2016
      * @return  bool
      */
     public function displayComment() {
@@ -114,8 +114,8 @@ class markbookColumn
 
     /**
      * Display Uploaded Response
-     * @version 3rd May 2016
-     * @since   3rd May 2016
+     * @version 4th May 2016
+     * @since   4th May 2016
      * @return  bool
      */
     public function displayUploadedResponse() {
@@ -124,8 +124,8 @@ class markbookColumn
 
     /**
      * Display Submission
-     * @version 3rd May 2016
-     * @since   3rd May 2016
+     * @version 4th May 2016
+     * @since   4th May 2016
      * @return  bool
      */
     public function displaySubmission() {
@@ -134,8 +134,8 @@ class markbookColumn
 
     /**
      * Display Raw Marks
-     * @version 3rd May 2016
-     * @since   3rd May 2016
+     * @version 4th May 2016
+     * @since   4th May 2016
      * @return  bool
      */
     public function displayRawMarks() {
@@ -144,8 +144,8 @@ class markbookColumn
 
     /**
      * Has Attainment Grade
-     * @version 3rd May 2016
-     * @since   3rd May 2016
+     * @version 4th May 2016
+     * @since   4th May 2016
      * @return  bool
      */
     public function hasAttainmentGrade() {
@@ -154,8 +154,8 @@ class markbookColumn
 
     /**
      * Has Attainment Raw Max
-     * @version 3rd May 2016
-     * @since   3rd May 2016
+     * @version 4th May 2016
+     * @since   4th May 2016
      * @return  bool
      */
     public function hasAttainmentRawMax() {
@@ -164,8 +164,8 @@ class markbookColumn
 
     /**
      * Has Attainment Rubric
-     * @version 3rd May 2016
-     * @since   3rd May 2016
+     * @version 4th May 2016
+     * @since   4th May 2016
      * @return  bool
      */
     public function hasAttainmentRubric() {
@@ -174,8 +174,8 @@ class markbookColumn
 
     /**
      * Ha sAttainment Weighting
-     * @version 3rd May 2016
-     * @since   3rd May 2016
+     * @version 4th May 2016
+     * @since   4th May 2016
      * @return  bool
      */
     public function hasAttainmentWeighting() {
@@ -184,8 +184,8 @@ class markbookColumn
 
     /**
      * Has Effort Grade
-     * @version 3rd May 2016
-     * @since   3rd May 2016
+     * @version 4th May 2016
+     * @since   4th May 2016
      * @return  bool
      */
     public function hasEffortGrade() {
@@ -194,8 +194,8 @@ class markbookColumn
 
     /**
      * Has Effort Rubric
-     * @version 3rd May 2016
-     * @since   3rd May 2016
+     * @version 4th May 2016
+     * @since   4th May 2016
      * @return  bool
      */
     public function hasEffortRubric() {
@@ -204,9 +204,9 @@ class markbookColumn
 
     /**
      * Has Attachment
-     * @version 3rd May 2016
-     * @since   3rd May 2016
-     * @param   string $path  File path to attachment directory
+     * @version 4th May 2016
+     * @since   4th May 2016
+     * @param   string  $path  File path to attachment directory
      * @return  bool
      */
     public function hasAttachment( $path ) {
@@ -215,8 +215,8 @@ class markbookColumn
 
     /**
      * Get Span Count
-     * @version 3rd May 2016
-     * @since   3rd May 2016
+     * @version 4th May 2016
+     * @since   4th May 2016
      * @return  int
      */
     public function getSpanCount() {
@@ -225,8 +225,8 @@ class markbookColumn
 
     /**
      * Set Submission Details
-     * @version 3rd May 2016
-     * @since   3rd May 2016
+     * @version 4th May 2016
+     * @since   4th May 2016
      * @param   array $row
      */
     public function setSubmissionDetails( $row ) {

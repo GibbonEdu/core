@@ -37,14 +37,16 @@ jQuery(function($){
             .scrollLeft($('.doublescroll-container').scrollLeft());
     });
 
+
+    // Add dragtable functionality to the markbook table
     $('#myTable.markbook').dragtable({
-		items: 'thead th .dragtable-drag-handle', //th:not( .notdraggable ):not( :has( .dragtable-drag-handle ) ),
+		items: 'thead th .dragtable-drag-handle',
 		scroll: true,
 		appendTarget: ':parent',
 	});
 
-    // Update the attainment value to match raw score
-    // But not the other way around, in case teachers need to adjust the percent
+    // In markbook_edit_data.php, update the attainment value to match raw score
+    // But not the other way around, in case teachers need to adjust the value
 	$('input[id$="attainmentValueRaw"]').change( function() {
 
 		// This value wont exist if not using a percent scale
