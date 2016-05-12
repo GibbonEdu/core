@@ -132,7 +132,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
                             <?php
                             $types = getSettingByScope($connection2, 'Markbook', 'markbookType');
                             if ($types != false) :
-                                $types = explode(',', $types); ?>
+                                $types = explode(',', $types);
+
+                                // Reduce the available types by the array_diff of the used types (excluding our currently used type)
+                                try {
+                                    $dataTypes = array('gibbonCourseClassID' => $gibbonCourseClassID, 'type' => $row2['type'] );
+                                    $sqlTypes = 'SELECT type FROM gibbonMarkbookWeight WHERE gibbonCourseClassID=:gibbonCourseClassID AND type<>:type GROUP BY type';
+                                    $resultTypes = $connection2->prepare($sqlTypes);
+                                    $resultTypes->execute($dataTypes);
+                                } catch (PDOException $e) {}
+
+                                if ($resultTypes->rowCount() > 0) {
+                                    $usedTypes = $resultTypes->fetchAll(PDO::FETCH_COLUMN, 0);
+                                    $types = array_diff($types, $usedTypes);
+                                }
+
+                            ?>
                                 <tr>
                                     <td style='width: 275px'> 
                                         <b><?php echo __($guid, 'Type') ?> *</b><br/>
@@ -142,10 +157,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
                                         <select name="type" id="type" class="standardWidth">
                                             <option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
                                             <?php
-                                            for ($i = 0; $i < count($types); ++$i) {
+                                            foreach ($types as $type) {
                                             
-                                                $selected = ($row2['type'] == $types[$i])? 'selected' : '';
-                                                printf ('<option value="%1$s" %2$s>%1$s</option>', trim($types[$i]), $selected );
+                                                $selected = ($row2['type'] == $type)? 'selected' : '';
+                                                printf ('<option value="%1$s" %2$s>%1$s</option>', trim($type), $selected );
                                             }
                                             ?>
                                         </select>

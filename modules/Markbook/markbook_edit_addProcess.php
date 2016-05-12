@@ -69,6 +69,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
         $type = $_POST['type'];
         $date = (!empty($_POST['date']))? dateConvert($guid, $_POST['date']) : '';
         $gibbonSchoolYearTermID = (!empty($_POST['gibbonSchoolYearTermID']))? $_POST['gibbonSchoolYearTermID'] : null;
+
+        // Grab the appropriate term ID if the date is provided and the term ID is not
+        if (empty($gibbonSchoolYearTermID) && !empty($date)) {
+            try {
+                $dataTerm = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'] );
+                $sqlTerm = "SELECT gibbonSchoolYearTermID FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND '$date' BETWEEN firstDay AND lastDay";
+                $resultTerm = $connection2->prepare($sqlTerm);
+                $resultTerm->execute($dataTerm);
+            } catch (PDOException $e) {
+                $URL .= '&return=error2';
+                header("Location: {$URL}");
+                exit();
+            }
+            if ($resultTerm->rowCount() > 0) {
+                $gibbonSchoolYearTermID = $resultTerm->fetchColumn(0);
+            }
+        }
+
         //Sort out attainment
         $attainment = $_POST['attainment'];
         $attainmentWeighting = null;

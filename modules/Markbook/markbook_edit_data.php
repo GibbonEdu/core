@@ -514,11 +514,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                                 }
                                 if ($row2['attainment'] == 'Y') {
 
+                                    $attainmentValueRaw = (isset($rowEntry['attainmentValueRaw']))? $rowEntry['attainmentValueRaw'] : '';
                                     if ($row2['attainmentRaw'] == 'Y' && !empty($row2['attainmentRawMax']) && $enableRawAttainment == 'Y') {
 
                                         $attainmentClass = '';
-                                        $attainmentValueRaw = (isset($rowEntry['attainmentValueRaw']))? $rowEntry['attainmentValueRaw'] : '';
-
                                         if (strpos( strtolower($rowScale['name']), 'percent') !== false || $rowScale['nameShort'] == '%') {
                                             $attainmentPercent = round( ($attainmentValueRaw / $row2['attainmentRawMax']) * 100 ) . '%';
                                             if ( !empty($rowEntry['attainmentValue']) && $attainmentPercent != $rowEntry['attainmentValue'] ) {
@@ -530,6 +529,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                                             echo "<input name='$count-attainmentValueRaw' id='$count-attainmentValueRaw' value='$attainmentValueRaw' type='text' maxlength=10 class='$attainmentClass'>";
                                             echo ' / ' . $row2['attainmentRawMax'];
                                         echo '</td>';
+                                    } else {
+                                        echo "<input type='hidden' name='$count-attainmentValueRaw' id='$count-attainmentValueRaw' value='$attainmentValueRaw'  maxlength=10>";
                                     }
 
                                     echo "<td style='text-align: center; white-space: nowrap;'>";

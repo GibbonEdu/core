@@ -321,45 +321,56 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
 								</td>
 							</tr>
 
-							<tr>
-								<td> 
-									<b><?php echo __($guid, 'Term') ?> *</b><br/>
-								</td>
-								<td class="right">
-									<select name="gibbonSchoolYearTermID" id="gibbonSchoolYearTermID" class="standardWidth">
-									<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
-										
-								<?php
-									try {
-								        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'] );
-								        $sql = 'SELECT gibbonSchoolYearTermID, name, UNIX_TIMESTAMP(firstDay) AS firstTime, UNIX_TIMESTAMP(lastDay) AS lastTime FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber';
-								        $resultTerms = $connection2->prepare($sql);
-								        $resultTerms->execute($data);
-								    } catch (PDOException $e) {
-								    }
+							<?php 
+								// Test to see if any of our school terms overlap. If so, we'll explicitly select a term. If not, it'll be calculated based on the date.
+								try {
+							        $dataOverlap = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'] );
+							        $sqlOverlap = 'SELECT t1.gibbonSchoolYearTermID, t2.gibbonSchoolYearTermID FROM gibbonSchoolYearTerm AS t1, gibbonSchoolYearTerm as t2 WHERE (t1.gibbonSchoolYearID=:gibbonSchoolYearID OR t2.gibbonSchoolYearID=:gibbonSchoolYearID) AND t1.gibbonSchoolYearTermID < t2.gibbonSchoolYearTermID AND (t1.firstDay BETWEEN t2.firstDay AND t2.lastDay OR t1.lastDay BETWEEN t2.firstDay AND t2.lastDay)';
+							        $resultOverlap = $connection2->prepare($sqlOverlap);
+							        $resultOverlap->execute($dataOverlap);
+							    } catch (PDOException $e) {
+							    }
 
-								    $gibbonSchoolYearTermID = (isset($_SESSION[$guid]['markbookTerm']))? $_SESSION[$guid]['markbookTerm'] : '';
+							    if ($resultOverlap->rowCount() > 0) : ?>
+								<tr>
+									<td> 
+										<b><?php echo __($guid, 'Term') ?> *</b><br/>
+									</td>
+									<td class="right">
+										<select name="gibbonSchoolYearTermID" id="gibbonSchoolYearTermID" class="standardWidth">
+										<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
+											
+									<?php
+										try {
+									        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'] );
+									        $sql = 'SELECT gibbonSchoolYearTermID, name, UNIX_TIMESTAMP(firstDay) AS firstTime, UNIX_TIMESTAMP(lastDay) AS lastTime FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber';
+									        $resultTerms = $connection2->prepare($sql);
+									        $resultTerms->execute($data);
+									    } catch (PDOException $e) {
+									    }
 
-								    while ($rowTerm = $resultTerms->fetch()) {
+									    $gibbonSchoolYearTermID = (isset($_SESSION[$guid]['markbookTerm']))? $_SESSION[$guid]['markbookTerm'] : '';
 
-								    	if ($gibbonSchoolYearTermID != 0) {
-								    		$selected = ($gibbonSchoolYearTermID == $rowTerm['gibbonSchoolYearTermID'])? 'selected' : '';
-								    	} else {
-							            	$selected = (time() >= $rowTerm['firstTime'] && time() < $rowTerm['lastTime'])? 'selected' : '';
-							        	}
+									    while ($rowTerm = $resultTerms->fetch()) {
 
-							            print "<option $selected value='".$rowTerm['gibbonSchoolYearTermID']."'>".htmlPrep($rowTerm['name']).'</option>';
-							        }
+									    	if ($gibbonSchoolYearTermID > 0) {
+									    		$selected = ($gibbonSchoolYearTermID == $rowTerm['gibbonSchoolYearTermID'])? 'selected' : '';
+									    	} else {
+								            	$selected = (time() >= $rowTerm['firstTime'] && time() < $rowTerm['lastTime'])? 'selected' : '';
+								        	}
 
-								 ?>
-									</select>
-									<script type="text/javascript">
-										var term=new LiveValidation('gibbonSchoolYearTermID');
-										term.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-									</script>
-								</td>
-							</tr>
+								            print "<option $selected value='".$rowTerm['gibbonSchoolYearTermID']."'>".htmlPrep($rowTerm['name']).'</option>';
+								        }
 
+									 ?>
+										</select>
+										<script type="text/javascript">
+											var term=new LiveValidation('gibbonSchoolYearTermID');
+											term.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
+										</script>
+									</td>
+								</tr>
+							<?php endif; ?>
 							<tr>
                                 <td> 
                                     <b><?php echo __($guid, 'Date') ?>  *</b><br/>

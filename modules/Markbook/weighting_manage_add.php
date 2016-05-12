@@ -110,7 +110,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
                         <?php
                         $types = getSettingByScope($connection2, 'Markbook', 'markbookType');
                         if ($types != false) :
-                            $types = explode(',', $types); ?>
+                            $types = explode(',', $types);
+
+                        // Reduce the available types by the array_diff of the used types
+                        try {
+                            $dataTypes = array('gibbonCourseClassID' => $gibbonCourseClassID);
+                            $sqlTypes = 'SELECT type FROM gibbonMarkbookWeight WHERE gibbonCourseClassID=:gibbonCourseClassID GROUP BY type';
+                            $resultTypes = $connection2->prepare($sqlTypes);
+                            $resultTypes->execute($dataTypes);
+                        } catch (PDOException $e) {}
+
+                        if ($resultTypes->rowCount() > 0) {
+                            $usedTypes = $resultTypes->fetchAll(PDO::FETCH_COLUMN, 0);
+                            $types = array_diff($types, $usedTypes);
+                        }
+                        ?>
                             <tr>
                                 <td style='width: 275px'> 
                                     <b><?php echo __($guid, 'Type') ?> *</b><br/>
@@ -120,9 +134,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
                                     <select name="type" id="type" class="standardWidth">
                                         <option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
                                         <?php
-                                        for ($i = 0; $i < count($types); ++$i) {
+                                        foreach ($types as $type) {
                                             ?>
-                                            <option value="<?php echo trim($types[$i]) ?>"><?php echo trim($types[$i]) ?></option>
+                                            <option value="<?php echo trim($type) ?>"><?php echo trim($type) ?></option>
                                         <?php
 
                                         }

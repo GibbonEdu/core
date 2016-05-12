@@ -90,9 +90,9 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
 
     $output .= "&nbsp;&nbsp;&nbsp;<span>".__($guid, 'Show').": </span>";
     $output .= "<select name='markbookFilter' id='markbookFilter' style='width:140px; float: none;'>";
-    $output .= "<option value=''>".__($guid, 'All Columns')."</option>";
+    $output .= "<option value='' ".(($selectFilter === '')? 'selected' : '').">".__($guid, 'All Columns')."</option>";
 
-    if ($enableGroupByTerm == 'Y' || $enableColumnWeighting == 'Y' ) {
+    if ($enableColumnWeighting == 'Y' ) {
         $output .= "<option value='averages' ".(($selectFilter == 'averages')? 'selected' : '')." >".__($guid, 'Overall Grades')."</option>";
     }
 

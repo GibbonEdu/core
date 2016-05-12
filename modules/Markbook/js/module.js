@@ -38,7 +38,7 @@ jQuery(function($){
     });
 
     $('#myTable.markbook').dragtable({
-		items: 'thead .dragtable-drag-handle', //th:not( .notdraggable ):not( :has( .dragtable-drag-handle ) ),
+		items: 'thead th .dragtable-drag-handle', //th:not( .notdraggable ):not( :has( .dragtable-drag-handle ) ),
 		scroll: true,
 		appendTarget: ':parent',
 	});
@@ -586,7 +586,8 @@ jQuery(function($){
             var from = this.startIndex;
             this.endIndex = to;
             //this col cant be moved past me
-            var th = this.element.find('th').eq( to );
+            var th = this.element.find('th:not(.columnLabel)').eq( to );
+            //alert( th.data('header') );
             //check on th
             if( th.hasClass( this.options.boundary ) == true ){
                 return false;
@@ -600,17 +601,16 @@ jQuery(function($){
                 return false;
             };
             
-            
             if(from < to) {
                 //console.log('move right');
                 for(var i = from; i < to; i++) {
-                    var row2 = this._getCells(this.element[0],i+1);
-                //  console.log(row2)
-                for(var j = 0, length = row2.array.length; j < length; j++){
-                    this._swapCells(this.currentColumnCollection[j],row2.array[j]);
+                        var row2 = this._getCells(this.element[0],i+1);
+                    //console.log(row2)
+                    for(var j = 0, length = row2.array.length; j < length; j++){
+                        this._swapCells(this.currentColumnCollection[j],row2.array[j]);
+                    }
                 }
-            }
-        } else {
+            } else {
                 //console.log('move left');
                 for(var i = from; i > to; i--) {
                     var row2 = this._getCells(this.element[0],i-1);
