@@ -1140,7 +1140,7 @@ if ($proceed == false) {
 										 });
 									});
 								</script>
-								<span style='font-weight: bold; font-style: italic'><?php echo __($guid, 'Do not include a second parent/gaurdian') ?> <input id='secondParent' name='secondParent' type='checkbox' value='No'/></span>
+								<span style='font-weight: bold; font-style: italic'><?php echo __($guid, 'Do not include a second parent/guardian') ?> <input id='secondParent' name='secondParent' type='checkbox' value='No'/></span>
 							</td>
 						</tr>
 						<?php

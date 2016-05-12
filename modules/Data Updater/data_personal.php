@@ -77,11 +77,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
             $gibbonPersonID = $_GET['gibbonPersonID'];
         }
         ?>
-		
+
 		<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-			<table class='smallIntBorder fullWidth' cellspacing='0'>	
+			<table class='smallIntBorder fullWidth' cellspacing='0'>
 				<tr>
-					<td style='width: 275px'> 
+					<td style='width: 275px'>
 						<b><?php echo __($guid, 'Person') ?> *</b><br/>
 					</td>
 					<td class="right">
@@ -143,7 +143,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 									echo "<option value='".$_SESSION[$guid]['gibbonPersonID']."'>".formatName('', htmlPrep($_SESSION[$guid]['preferredName']), htmlPrep($_SESSION[$guid]['surname']), 'Student', true).'</option>';
 								}
 							}
-							?>				
+							?>
 						</select>
 					</td>
 				</tr>
@@ -263,7 +263,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 } elseif ($result->rowCount() == 1) {
                     $existing = true;
                     $proceed = false;
-                    if ($updateReturn == '') {
+                    if (!isset($_GET['return'])) {
                         echo "<div class='warning'>";
                         echo __($guid, 'You have already submitted a form, which is pending approval by an administrator. If you wish to make changes, please edited the data below, but remember your data will not appear in the system until it has been approved.');
                         echo '</div>';
@@ -306,14 +306,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     //Let's go!
                     $row = $result->fetch(); ?>
 					<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/data_personalProcess.php?gibbonPersonID='.$gibbonPersonID ?>">
-						<table class='smallIntBorder fullWidth' cellspacing='0'>	
+						<table class='smallIntBorder fullWidth' cellspacing='0'>
 							<tr class='break'>
-								<td colspan=2> 
+								<td colspan=2>
 									<h3><?php echo __($guid, 'Basic Information') ?></h3>
 								</td>
 							</tr>
 							<tr>
-								<td style='width: 275px'> 
+								<td style='width: 275px'>
 									<b><?php echo __($guid, 'Title') ?><?php if (isset($required['title'])) {
 									if ($required['title'] == 'Y') {
 										echo ' *';
@@ -354,7 +354,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Surname') ?><?php if (isset($required['surname'])) {
 										if ($required['surname'] == 'Y') {
 											echo ' *';
@@ -375,11 +375,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 											echo '</script>';
 										}
 									}
-									?>									
+									?>
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'First Name') ?><?php if (isset($required['firstName'])) {
 									if ($required['firstName'] == 'Y') {
 										echo ' *';
@@ -400,11 +400,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 											echo '</script>';
 										}
 									}
-									?>									
+									?>
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Preferred Name') ?><?php if (isset($required['preferredName'])) {
 									if ($required['preferredName'] == 'Y') {
 										echo ' *';
@@ -425,11 +425,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 											echo '</script>';
 										}
 									}
-									?>									
+									?>
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Official Name') ?><?php if (isset($required['officialName'])) {
 										if ($required['officialName'] == 'Y') {
 											echo ' *';
@@ -450,11 +450,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 											echo '</script>';
 										}
 									}
-									?>									
+									?>
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Name In Characters') ?><?php if (isset($required['nameInCharacters'])) {
 									if ($required['nameInCharacters'] == 'Y') {
 										echo ' *';
@@ -475,11 +475,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 											echo '</script>';
 										}
 									}
-									?>									
+									?>
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Date of Birth') ?><?php if (isset($required['dob'])) {
     								if ($required['dob'] == 'Y') {
 											echo ' *';
@@ -526,22 +526,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 									</script>
 								</td>
 							</tr>
-							
+
 							<?php
                             if ($student or $staff) {
-                                ?> 
+                                ?>
 								<tr class='break'>
-									<td colspan=2> 
+									<td colspan=2>
 										<h3><?php echo __($guid, 'Emergency Contacts') ?></h3>
 									</td>
 								</tr>
 								<tr>
-									<td colspan=2> 
-										<?php echo __($guid, 'These details are used when immediate family members (e.g. parent, spouse) cannot be reached first. Please try to avoid listing immediate family members.') ?> 
+									<td colspan=2>
+										<?php echo __($guid, 'These details are used when immediate family members (e.g. parent, spouse) cannot be reached first. Please try to avoid listing immediate family members.') ?>
 									</td>
 								</tr>
 								<tr>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Contact 1 Name') ?><?php if (isset($required['emergency1Name'])) {
 											if ($required['emergency1Name'] == 'Y') {
 												echo ' *';
@@ -561,11 +561,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 												echo '</script>';
 											}
 										}
-										?>									
+										?>
 									</td>
 								</tr>
 								<tr>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Contact 1 Relationship') ?><?php if (isset($required['emergency1Relationship'])) {
 											if ($required['emergency1Relationship'] == 'Y') {
 												echo ' *';
@@ -603,7 +603,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 									</td>
 								</tr>
 								<tr>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Contact 1 Number 1') ?><?php if (isset($required['emergency1Number1'])) {
 											if ($required['emergency1Number1'] == 'Y') {
 												echo ' *';
@@ -623,11 +623,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 												echo '</script>';
 											}
 										}
-										?>									
+										?>
 									</td>
 								</tr>
 								<tr>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Contact 1 Number 2') ?><?php if (isset($required['emergency1Number2'])) {
 										if ($required['emergency1Number2'] == 'Y') {
 											echo ' *';
@@ -647,11 +647,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 												echo '</script>';
 											}
 										}
-										?>									
+										?>
 									</td>
 								</tr>
 								<tr>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Contact 2 Name') ?><?php if (isset($required['emergency2Name'])) {
 											if ($required['emergency2Name'] == 'Y') {
 												echo ' *';
@@ -671,11 +671,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 												echo '</script>';
 											}
 										}
-										?>									
+										?>
 									</td>
 								</tr>
 								<tr>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Contact 2 Relationship') ?><?php if (isset($required['emergency2Relationship'])) {
 											if ($required['emergency2Relationship'] == 'Y') {
 												echo ' *';
@@ -709,11 +709,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                                         echo '</script>';
                                     }
                                 }
-                                ?>	
+                                ?>
 									</td>
 								</tr>
 								<tr>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Contact 2 Number 1') ?><?php if (isset($required['emergency2Number1'])) {
 											if ($required['emergency2Number1'] == 'Y') {
 												echo ' *';
@@ -733,11 +733,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 												echo '</script>';
 											}
 										}
-										?>									
+										?>
 									</td>
 								</tr>
 								<tr>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Contact 2 Number 2') ?><?php if (isset($required['emergency2Number2'])) {
 											if ($required['emergency2Number2'] == 'Y') {
 												echo ' *';
@@ -757,20 +757,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 												echo '</script>';
 											}
 										}
-										?>									
+										?>
 									</td>
 								</tr>
 								<?php
                             }
                     		?>
-							
+
 							<tr class='break'>
-								<td colspan=2> 
+								<td colspan=2>
 									<h3><?php echo __($guid, 'Contact Information') ?></h3>
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Email') ?><?php if (isset($required['email'])) {
     								if ($required['email'] == 'Y') {
 											echo ' *';
@@ -800,7 +800,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Alternate Email') ?><?php if (isset($required['emailAlternate'])) {
    	 								if ($required['emailAlternate'] == 'Y') {
 											echo ' *';
@@ -830,9 +830,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 									?>
 								</td>
 							</tr>
-							
+
 							<tr>
-								<td colspan=2> 
+								<td colspan=2>
 									<div class='warning'>
 										<?php echo __($guid, 'Address information for an individual only needs to be set under the following conditions:') ?>
 										<ol>
@@ -851,10 +851,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 							}
 							?>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Enter Personal Address?') ?></b><br/>
 								</td>
-								<td class='right' colspan=2> 
+								<td class='right' colspan=2>
 									<script type="text/javascript">
 										/* Advanced Options Control */
 										$(document).ready(function(){
@@ -865,17 +865,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     					?>
 											$("#showAddresses").click(function(){
 												if ($('input[name=showAddresses]:checked').val()=="Yes" ) {
-													$(".address").slideDown("fast", $(".address").css("display","table-row")); 
-												} 
+													$(".address").slideDown("fast", $(".address").css("display","table-row"));
+												}
 												else {
-													$(".address").slideUp("fast"); 
-													$("#address1").val(""); 
-													$("#address1District").val(""); 
-													$("#address1Country").val(""); 
-													$("#address2").val(""); 
-													$("#address2District").val(""); 
-													$("#address2Country").val(""); 
-														
+													$(".address").slideUp("fast");
+													$("#address1").val("");
+													$("#address1District").val("");
+													$("#address1Country").val("");
+													$("#address2").val("");
+													$("#address2District").val("");
+													$("#address2Country").val("");
+
 												}
 											 });
 										});
@@ -883,23 +883,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 									<input <?php if ($addressSet) { echo 'checked' ; } ?> id='showAddresses' name='showAddresses' type='checkbox' value='Yes'/>
 								</td>
 							</tr>
-							
+
 							<tr class='address'>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Address 1') ?></b><br/>
 									<span class="emphasis small"><span class="emphasis small"><?php echo __($guid, 'Unit, Building, Street') ?></span></span>
 								</td>
 								<td class="right">
-									<input name="address1" id="address1" maxlength=255 value="<?php echo htmlPrep($row['address1']) ?>" type="text" class="standardWidth">							
+									<input name="address1" id="address1" maxlength=255 value="<?php echo htmlPrep($row['address1']) ?>" type="text" class="standardWidth">
 								</td>
 							</tr>
 							<tr class='address'>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Address 1 District') ?></b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'County, State, District') ?></span>
 								</td>
 								<td class="right">
-									<input name="address1District" id="address1District" maxlength=30 value="<?php echo $row['address1District'] ?>" type="text" class="standardWidth">								
+									<input name="address1District" id="address1District" maxlength=30 value="<?php echo $row['address1District'] ?>" type="text" class="standardWidth">
 								</td>
 								<script type="text/javascript">
 									$(function() {
@@ -922,7 +922,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 								</script>
 							</tr>
 							<tr class='address'>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Address 1 Country') ?></b><br/>
 								</td>
 								<td class="right">
@@ -947,11 +947,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 											}
 											echo "<option $selected value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
 										}
-										?>				
+										?>
 									</select>
 								</td>
 							</tr>
-							
+
 							<?php
                             //Check for matching addresses
                             if ($row['address1'] != '') {
@@ -993,23 +993,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                                 }
                             }
                     		?>
-					
+
 							<tr class='address'>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Address 2') ?></b><br/>
 									<span class="emphasis small"><span class="emphasis small"><?php echo __($guid, 'Unit, Building, Street') ?></span></span>
 								</td>
 								<td class="right">
-									<input name="address2" id="address2" maxlength=255 value="<?php echo htmlPrep($row['address2']) ?>" type="text" class="standardWidth">							
+									<input name="address2" id="address2" maxlength=255 value="<?php echo htmlPrep($row['address2']) ?>" type="text" class="standardWidth">
 								</td>
 							</tr>
 							<tr class='address'>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Address 2 District') ?></b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'County, State, District') ?></span>
 								</td>
 								<td class="right">
-									<input name="address2District" id="address2District" maxlength=30 value="<?php echo $row['address2District'] ?>" type="text" class="standardWidth">						
+									<input name="address2District" id="address2District" maxlength=30 value="<?php echo $row['address2District'] ?>" type="text" class="standardWidth">
 								</td>
 								<script type="text/javascript">
 									$(function() {
@@ -1032,7 +1032,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 								</script>
 							</tr>
 							<tr class='address'>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Address 2 Country') ?></b><br/>
 								</td>
 								<td class="right">
@@ -1057,7 +1057,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 											}
 											echo "<option $selected value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
 										}
-										?>				
+										?>
 									</select>
 								</td>
 							</tr>
@@ -1065,7 +1065,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                                 for ($i = 1; $i < 5; ++$i) {
                                     ?>
 									<tr>
-										<td> 
+										<td>
 											<b><?php echo __($guid, 'Phone') ?> <?php echo $i ?><?php if (isset($required['phone'.$i])) {
 												if ($required['phone'.$i] == 'Y') {
 													echo ' *';
@@ -1086,7 +1086,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 													echo '</script>';
 												}
 											}
-											?>									
+											?>
 											<select name="phone<?php echo $i ?>CountryCode" id="phone<?php echo $i ?>CountryCode" style="width: 60px">
 												<?php
                                                 if ($required['phone'.$i] == 'Y') {
@@ -1108,7 +1108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 													}
 													echo "<option $selected value='".$rowSelect['iddCountryCode']."'>".htmlPrep($rowSelect['iddCountryCode']).' - '.htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
 												}
-												?>				
+												?>
 											</select>
 											<?php
                                             $fieldName = 'phone'.$i.'CountryCode';
@@ -1154,12 +1154,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                                 }
                     			?>
 							<tr class='break'>
-								<td colspan=2> 
+								<td colspan=2>
 									<h3><?php echo __($guid, 'Background Information') ?></h3>
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'First Language') ?><?php if (isset($required['languageFirst'])) {
     								if ($required['languageFirst'] == 'Y') {
 											echo ' *';
@@ -1190,7 +1190,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 											}
 											echo "<option $selected value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
 										}
-										?>				
+										?>
 									</select>
 									<?php
                                     $fieldName = 'languageFirst';
@@ -1202,11 +1202,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 											echo '</script>';
 										}
 									}
-									?>								
+									?>
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Second Language') ?><?php if (isset($required['languageSecond'])) {
     								if ($required['languageSecond'] == 'Y') {
 											echo ' *';
@@ -1236,7 +1236,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 											}
 											echo "<option $selected value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
 										}
-										?>				
+										?>
 									</select>
 									<?php
                                     $fieldName = 'languageSecond';
@@ -1248,11 +1248,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 											echo '</script>';
 										}
 									}
-									?>									
+									?>
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Third Language') ?><?php if (isset($required['languageThird'])) {
     								if ($required['languageThird'] == 'Y') {
 											echo ' *';
@@ -1282,7 +1282,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 											}
 											echo "<option $selected value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
 										}
-										?>				
+										?>
 									</select>
 									<?php
                                     $fieldName = 'languageThird';
@@ -1294,11 +1294,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 											echo '</script>';
 										}
 									}
-									?>									
+									?>
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Country of Birth') ?><?php if (isset($required['countryOfBirth'])) {
     								if ($required['countryOfBirth'] == 'Y') {
 											echo ' *';
@@ -1328,7 +1328,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 											}
 											echo "<option $selected value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
 										}
-										?>				
+										?>
 									</select>
 									<?php
                                     $fieldName = 'countryOfBirth';
@@ -1344,7 +1344,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Ethnicity') ?><?php if (isset($required['ethnicity'])) {
     								if ($required['ethnicity'] == 'Y') {
 											echo ' *';
@@ -1385,7 +1385,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Religion') ?><?php if (isset($required['religion'])) {
     								if ($required['religion'] == 'Y') {
 											echo ' *';
@@ -1421,7 +1421,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Citizenship 1') ?><?php if (isset($required['citizenship1'])) {
     								if ($required['citizenship1'] == 'Y') {
 											echo ' *';
@@ -1459,7 +1459,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 												echo "<option $selected value='".trim($nationality)."'>".trim($nationality).'</option>';
 											}
 										}
-										?>					
+										?>
 									</select>
 									<?php
                                     $fieldName = 'citizenship1';
@@ -1475,7 +1475,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Citizenship 1 Passport Number') ?><?php if (isset($required['citizenship1Passport'])) {
     								if ($required['citizenship1Passport'] == 'Y') {
 											echo ' *';
@@ -1495,11 +1495,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 											echo '</script>';
 										}
 									}
-									?>									
+									?>
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Citizenship 2') ?><?php if (isset($required['citizenshipr'])) {
     								if ($required['citizenship2'] == 'Y') {
 											echo ' *';
@@ -1537,7 +1537,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 												echo "<option $selected value='".trim($nationality)."'>".trim($nationality).'</option>';
 											}
 										}
-										?>					
+										?>
 									</select>
 									<?php
                                     $fieldName = 'citizenship2';
@@ -1553,7 +1553,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Citizenship 2 Passport Number') ?><?php if (isset($required['citizenship2Passport'])) {
     								if ($required['citizenship2Passport'] == 'Y') {
 											echo ' *';
@@ -1573,11 +1573,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 											echo '</script>';
 										}
 									}
-									?>									
+									?>
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<?php
                                     $star = '';
 									if (isset($required['nationalIDCardNumber'])) {
@@ -1604,11 +1604,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 											echo '</script>';
 										}
 									}
-									?>									
+									?>
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<?php
                                     $star = '';
 									if (isset($required['residencyStatus'])) {
@@ -1667,7 +1667,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<?php
                                     $star = '';
 									if (isset($required['visaExpiryDate'])) {
@@ -1703,7 +1703,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 										} else {
 											echo $_SESSION[$guid]['i18n']['dateFormat'];
 										}
-															?>." } ); 
+															?>." } );
 									 	<?php
                                         if ($required['visaExpiryDate'] == 'Y') {
                                             echo 'visaExpiryDate.add(Validate.Presence);';
@@ -1717,17 +1717,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 									</script>
 								</td>
 							</tr>
-					
+
 							<?php
                             if ($parent) {
-                                ?> 
+                                ?>
 								<tr class='break'>
-									<td colspan=2> 
+									<td colspan=2>
 										<h3><?php echo __($guid, 'Employment') ?></h3>
 									</td>
 								</tr>
 								<tr>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Profession') ?><?php if (isset($required['profession'])) {
 										if ($required['profession'] == 'Y') {
 											echo ' *';
@@ -1747,11 +1747,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                                         echo '</script>';
                                     }
                                 }
-                                ?>									
+                                ?>
 									</td>
 								</tr>
 								<tr>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Employer') ?><?php if (isset($required['employer'])) {
 											if ($required['employer'] == 'Y') {
 												echo ' *';
@@ -1771,11 +1771,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                                         echo '</script>';
                                     }
                                 }
-                                ?>									
+                                ?>
 									</td>
 								</tr>
 								<tr>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Job Title') ?><?php if (isset($required['jobTitle'])) {
 											if ($required['jobTitle'] == 'Y') {
 												echo ' *';
@@ -1795,21 +1795,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                                         echo '</script>';
                                     }
                                 }
-                                ?>									
+                                ?>
 									</td>
 								</tr>
 								<?php
 
                             }
                     		?>
-							
+
 							<tr class='break'>
-								<td colspan=2> 
+								<td colspan=2>
 									<h3><?php echo __($guid, 'Miscellaneous') ?></h3>
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Vehicle Registration') ?><?php if (isset($required['vehicleRegistration'])) {
     								if ($required['vehicleRegistration'] == 'Y') {
 											echo ' *';
@@ -1829,7 +1829,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 											echo '</script>';
 										}
 									}
-									?>									
+									?>
 								</td>
 							</tr>
 							<?php
@@ -1842,7 +1842,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 								if ($privacySetting == 'Y' and $privacyBlurb != '' and $privacyOptions != '') {
 									?>
 									<tr>
-										<td> 
+										<td>
 											<b><?php echo __($guid, 'Privacy') ?></b><br/>
 											<span class="emphasis small"><?php echo htmlPrep($privacyBlurb) ?><br/>
 											</span>
@@ -1861,7 +1861,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 												echo $option." <input $checked type='checkbox' name='privacyOptions[]' value='".htmlPrep($option)."'/><br/>";
 											}
 											?>
-					
+
 										</td>
 									</tr>
 									<?php
@@ -1875,7 +1875,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 							if ($resultFields->rowCount() > 0) {
 								?>
 								<tr class='break'>
-									<td colspan=2> 
+									<td colspan=2>
 										<h3><?php echo __($guid, 'Custom Fields') ?></h3>
 									</td>
 								</tr>
@@ -1889,7 +1889,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                                 }
 							}
 							?>
-							
+
 							<tr>
 								<td>
 									<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>

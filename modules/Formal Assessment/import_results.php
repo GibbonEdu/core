@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_r
 } else {
     //Proceed!
     echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Sync Results').'</div>';
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Import External Assessments').'</div>';
     echo '</div>';
 
     $step = null;
@@ -50,9 +50,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_r
 			<?php echo __($guid, 'This page allows you to import external assessment results from a CSV file. The import includes one row for each student result. The system will match assessments by type and date, updating any matching results, whilst creating new results not already existing in the system.') ?><br/>
 		</p>
 		<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/import_results.php&step=2' ?>" enctype="multipart/form-data">
-			<table class='smallIntBorder fullWidth' cellspacing='0'>	
+			<table class='smallIntBorder fullWidth' cellspacing='0'>
 				<tr>
-					<td style='width: 275px'> 
+					<td style='width: 275px'>
 						<b><?php echo __($guid, 'CSV File') ?> *</b><br/>
 						<span class="emphasis small"><?php echo __($guid, 'See Notes below for specification.') ?></span>
 					</td>
@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_r
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Field Delimiter') ?> *</b><br/>
 					</td>
 					<td class="right">
@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_r
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'String Enclosure') ?> *</b><br/>
 						<span class="emphasis small"></span>
 					</td>
@@ -101,9 +101,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_r
 				</tr>
 			</table>
 		</form>
-		
-		
-		
+
+
+
 		<h4>
 			<?php echo __($guid, 'Notes') ?>
 		</h4>
@@ -112,7 +112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_r
 			<li><?php echo __($guid, 'You may only submit CSV files.') ?></li>
 			<li><?php echo __($guid, 'Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).') ?></li>
 			<li><?php echo __($guid, 'Your import can only include users whose status is set "Expected", "Full" or "Left" (e.g. all users).') ?></li>
-			<li><?php echo __($guid, 'The submitted file must have the following fields in the following order (* denotes required field):') ?></li> 
+			<li><?php echo __($guid, 'The submitted file must have the following fields in the following order (* denotes required field):') ?></li>
 				<ol>
 					<li><b><?php echo __($guid, 'Assessment Name') ?>* </b> - <?php echo __($guid, 'Must match value of gibbonExternalAssessment.name in database.') ?></li>
 					<li><b><?php echo __($guid, 'Official Name') ?> *</b> - <?php echo __($guid, 'Must match value of gibbonPerson.officialName in database,') ?></li>

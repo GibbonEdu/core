@@ -70,9 +70,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
             }
             ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/externalAssessment_manage_details_editProcess.php?search=$search&allStudents=$allStudents" ?>" enctype="multipart/form-data">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'Assessment Type') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 						</td>
@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Date') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Format:').' ';
 							if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 								} else {
 									echo $_SESSION[$guid]['i18n']['dateFormat'];
 								}
-								?>." } ); 
+								?>." } );
 							</script>
 							 <script type="text/javascript">
 								$(function() {
@@ -119,12 +119,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                     if ($row['allowFileUpload'] == 'Y') {
                         ?>
 						<tr>
-							<td style='width: 275px'> 
+							<td style='width: 275px'>
 								<b><?php echo __($guid, 'Upload File') ?></b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Use this to attach raw data, graphical summary, etc.') ?></i><br/></span>
 								<?php if ($row['attachment'] != '') { ?>
 									<span class="emphasis small"><?php echo __($guid, 'Will overwrite existing attachment.') ?></span>
-								<?php 
+								<?php
 								}
                         	?>
 							</td>
@@ -149,7 +149,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 									$ext = $ext."'.".$rowExt['extension']."',";
 								}
 								?>
-					
+
 								<script type="text/javascript">
 									var file=new LiveValidation('file');
 									file.add( Validate.Inclusion, { within: [<?php echo $ext; ?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
@@ -235,16 +235,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 							}
 							?>
 							<tr>
-								<td> 
+								<td>
 									<span style='font-weight: bold' title='<?php echo $rowField['usage'] ?>'><?php echo __($guid, $rowField['name']) ?></span><br/>
 								</td>
 								<td class="right">
 									<input name="<?php echo $count?>-gibbonExternalAssessmentStudentEntryID" id="<?php echo $count?>-gibbonExternalAssessmentStudentEntryID" value="<?php echo $rowField['gibbonExternalAssessmentStudentEntryID'] ?>" type="hidden">
-									<?php 
+									<?php
                                         echo renderGradeScaleSelect($connection2, $guid, $rowField['gibbonScaleID'], "$count-gibbonScaleGradeID", 'id', false, '150', 'id', $rowField['gibbonScaleGradeID']); ?>
 								</td>
 								<td class="right">
-									<?php 
+									<?php
                                         echo renderGradeScaleSelect($connection2, $guid, $_SESSION[$guid]['primaryAssessmentScale'], "$count-gibbonScaleGradeIDPAS", 'id', false, '150', 'id', $rowField['gibbonScaleGradeIDPrimaryAssessmentScale']); ?>
 								</td>
 							</tr>
@@ -275,8 +275,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 					</tr>
 				</table>
 			</form>
-			
-			<?php	
+
+			<?php
         }
     }
 }

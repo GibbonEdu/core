@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
         } else {
             $enableStudentNotes = getSettingByScope($connection2, 'Students', 'enableStudentNotes');
             $skipBrief = false;
-            //Test if View Student Profile_brief and View Student Profile_myChildren are both available and parent has access to this student...if so, skip brief, and go to full. 
+            //Test if View Student Profile_brief and View Student Profile_myChildren are both available and parent has access to this student...if so, skip brief, and go to full.
             if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_brief') and isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_myChildren')) {
                 try {
                     $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID1' => $_GET['gibbonPersonID'], 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
@@ -512,7 +512,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         if ($privacySetting == 'Y') {
                             echo '<tr>';
                             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=3>";
-                            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Image Privacy').'</span><br/>';
+                            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Privacy').'</span><br/>';
                             if ($row['privacy'] != '') {
                                 echo "<span style='color: #cc0000; background-color: #F6CECB'>";
                                 echo __($guid, 'Privacy required:').' '.$row['privacy'];
@@ -561,7 +561,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             echo '</ul>';
                         }
 
-                        //Show timetable 
+                        //Show timetable
                         echo "<a name='timetable'></a>";
                         echo '<h4>';
                         echo __($guid, 'Timetable');
@@ -1661,10 +1661,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     echo '</h3>';
                                     ?>
 									<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-										<table class='noIntBorder' cellspacing='0' style="width: 100%">	
+										<table class='noIntBorder' cellspacing='0' style="width: 100%">
 											<tr><td style="width: 30%"></td><td></td></tr>
 											<tr>
-												<td> 
+												<td>
 													<b><?php echo __($guid, 'Category') ?></b><br/>
 												</td>
 												<td class="right">
@@ -1889,7 +1889,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 echo"<table class='noIntBorder' cellspacing='0' style='width: 100%'>";
                                 ?>
 									<tr>
-										<td> 
+										<td>
 											<b><?php echo __($guid, 'Learning Areas') ?></b><br/>
 											<span class="emphasis small"></span>
 										</td>
@@ -1916,7 +1916,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 										</td>
 									</tr>
 									<tr>
-										<td> 
+										<td>
 											<b><?php echo __($guid, 'School Years') ?></b><br/>
 											<span class="emphasis small"></span>
 										</td>
@@ -1948,7 +1948,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 										$types = explode(',', $types);
 										?>
 										<tr>
-											<td> 
+											<td>
 												<b><?php echo __($guid, 'Type') ?></b><br/>
 												<span class="emphasis small"></span>
 											</td>
@@ -1984,10 +1984,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 											$(document).ready(function(){
 												$(".details").click(function(){
 													if ($('input[name=details]:checked').val()=="Yes" ) {
-														$(".detailItem").slideDown("fast", $("#detailItem").css("{'display' : 'table-row'}")); 
-													} 
+														$(".detailItem").slideDown("fast", $("#detailItem").css("{'display' : 'table-row'}"));
+													}
 													else {
-														$(".detailItem").slideUp("fast"); 
+														$(".detailItem").slideUp("fast");
 													}
 												 });
 											});

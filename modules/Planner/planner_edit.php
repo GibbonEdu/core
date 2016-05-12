@@ -202,14 +202,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                 echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID$params'>".__($guid, 'View')."<img style='margin: 0 0 -4px 3px' title='".__($guid, 'View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a>";
                 echo '</div>'; ?>
 				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/planner_editProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&address=".$_SESSION[$guid]['address'] ?>" enctype="multipart/form-data">
-					<table class='smallIntBorder fullWidth' cellspacing='0'>	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>
 						<tr class='break'>
-							<td colspan=2> 
+							<td colspan=2>
 								<h3 style='margin-top: 0px'><?php echo __($guid, 'Basic Information') ?></h3>
 							</td>
 						</tr>
 						<tr>
-							<td style='width: 275px'> 
+							<td style='width: 275px'>
 								<b><?php echo __($guid, 'Class') ?> *</b><br/>
 							</td>
 							<td class="right">
@@ -235,7 +235,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 										}
 										echo "<option $selected value='".$rowSelect['gibbonCourseClassID']."'>".htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).'</option>';
 									}
-									?>				
+									?>
 								</select>
 								<script type="text/javascript">
 									var gibbonCourseClassID=new LiveValidation('gibbonCourseClassID');
@@ -243,9 +243,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 								</script>
 							</td>
 						</tr>
-					
+
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Unit') ?></b><br/>
 							</td>
 							<td class="right">
@@ -255,7 +255,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 									echo "<optgroup label='--".__($guid, 'Gibbon Units')."--'>";
 									try {
 										$dataSelect = array();
-										$sqlSelect = "SELECT * FROM gibbonUnit JOIN gibbonUnitClass ON (gibbonUnit.gibbonUnitID=gibbonUnitClass.gibbonUnitID) WHERE running='Y' ORDER BY name";
+										$sqlSelect = "SELECT * FROM gibbonUnit JOIN gibbonUnitClass ON (gibbonUnit.gibbonUnitID=gibbonUnitClass.gibbonUnitID) WHERE active='Y' AND running='Y' ORDER BY name";
 										$resultSelect = $connection2->prepare($sqlSelect);
 										$resultSelect->execute($dataSelect);
 									} catch (PDOException $e) {
@@ -308,12 +308,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 								</select>
 								<script type="text/javascript">
 									$("#gibbonUnitID").chainedTo("#gibbonCourseClassID");
-								</script>			
-								
+								</script>
+
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Name') ?> *</b><br/>
 							</td>
 							<td class="right">
@@ -325,7 +325,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Summary') ?> *</b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Will be overwritten by Smart Block titles.') ?><br/></span>
 							</td>
@@ -338,7 +338,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Date') ?> *</b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Format:').' ';
 								if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
@@ -361,7 +361,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 									} else {
 										echo $_SESSION[$guid]['i18n']['dateFormat'];
 									}
-									?>." } ); 
+									?>." } );
 								</script>
 								 <script type="text/javascript">
 									$(function() {
@@ -371,7 +371,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Start Time') ?> *</b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Format: hh:mm (24hr)') ?><br/></span>
 							</td>
@@ -380,7 +380,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 								<script type="text/javascript">
 									var timeStart=new LiveValidation('timeStart');
 									timeStart.add(Validate.Presence);
-									timeStart.add( Validate.Format, {pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use hh:mm" } ); 
+									timeStart.add( Validate.Format, {pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use hh:mm" } );
 								</script>
 								<script type="text/javascript">
 									$(function() {
@@ -404,7 +404,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'End Time') ?> *</b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Format: hh:mm (24hr)') ?><br/></span>
 							</td>
@@ -413,7 +413,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 								<script type="text/javascript">
 									var timeEnd=new LiveValidation('timeEnd');
 									timeEnd.add(Validate.Presence);
-									timeEnd.add( Validate.Format, {pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use hh:mm" } ); 
+									timeEnd.add( Validate.Format, {pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use hh:mm" } );
 								</script>
 								<script type="text/javascript">
 									$(function() {
@@ -436,16 +436,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 								</script>
 							</td>
 						</tr>
-						
+
 						<tr class='break'>
-							<td colspan=2> 
+							<td colspan=2>
 								<h3><?php echo __($guid, 'Lesson Content') ?></h3>
 							</td>
 						</tr>
 						<?php
                         echo '<tr>'; ?>
-							<td colspan=2> 
-								<b><?php echo __($guid, 'Lesson Details') ?></b> 
+							<td colspan=2>
+								<b><?php echo __($guid, 'Lesson Details') ?></b>
 								<?php echo getEditor($guid,  true, 'description', $row['description'], 25, true, false, false) ?>
 							</td>
 							<?php
@@ -504,9 +504,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 												});
 											});
 										</script>
-									
+
 										<div class="sortable" id="sortable" style='width: 100%; padding: 5px 0px 0px 0px'>
-											<?php 
+											<?php
 											$i = 1;
 											$minSeq = 0;
 											while ($rowBlocks = $resultBlocks->fetch()) {
@@ -536,18 +536,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 									echo '</tr>';
 								}
 								?>
-						
+
 						<tr class='break'>
 							<td colspan=3>
 								<h3><?php echo __($guid, 'Teacher\'s Notes') ?></h3>
 							</td>
 						</tr>
 						<tr>
-							<td colspan=2> 
+							<td colspan=2>
 								<?php echo getEditor($guid,  true, 'teachersNotes', $row['teachersNotes'], 25, true, false, false) ?>
 							</td>
 						</tr>
-						
+
 						<?php
                         $checkedYes = '';
 						$checkedNo = '';
@@ -573,7 +573,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 							$crowdNo = 'checked';
 						}
 						?>
-								
+
 						<script type="text/javascript">
 							/* Homework Control */
 							$(document).ready(function(){
@@ -609,27 +609,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 
                                 }
                 				?>
-								
+
 								//Response to clicking on homework control
 								$(".homework").click(function(){
 									if ($('input[name=homework]:checked').val()=="Yes" ) {
 										homeworkDueDate.enable();
 										homeworkDetails.enable();
-										$("#homeworkDueDateRow").slideDown("fast", $("#homeworkDueDateRow").css("display","table-row")); 
-										$("#homeworkDueDateTimeRow").slideDown("fast", $("#homeworkDueDateTimeRow").css("display","table-row")); 
-										$("#homeworkDetailsRow").slideDown("fast", $("#homeworkDetailsRow").css("display","table-row")); 
-										$("#homeworkSubmissionRow").slideDown("fast", $("#homeworkSubmissionRow").css("display","table-row")); 					
-									
+										$("#homeworkDueDateRow").slideDown("fast", $("#homeworkDueDateRow").css("display","table-row"));
+										$("#homeworkDueDateTimeRow").slideDown("fast", $("#homeworkDueDateTimeRow").css("display","table-row"));
+										$("#homeworkDetailsRow").slideDown("fast", $("#homeworkDetailsRow").css("display","table-row"));
+										$("#homeworkSubmissionRow").slideDown("fast", $("#homeworkSubmissionRow").css("display","table-row"));
+
 										if ($('input[name=homeworkSubmission]:checked').val()=="Yes" ) {
-											$("#homeworkSubmissionDateOpenRow").slideDown("fast", $("#homeworkSubmissionDateOpenRow").css("display","table-row")); 
-											$("#homeworkSubmissionDraftsRow").slideDown("fast", $("#homeworkSubmissionDraftsRow").css("display","table-row")); 
-											$("#homeworkSubmissionTypeRow").slideDown("fast", $("#homeworkSubmissionTypeRow").css("display","table-row")); 
-											$("#homeworkSubmissionRequiredRow").slideDown("fast", $("#homeworkSubmissionRequiredRow").css("display","table-row")); 
-											$("#homeworkCrowdAssessRow").slideDown("fast", $("#homeworkCrowdAssessRow").css("display","table-row")); 
-											
+											$("#homeworkSubmissionDateOpenRow").slideDown("fast", $("#homeworkSubmissionDateOpenRow").css("display","table-row"));
+											$("#homeworkSubmissionDraftsRow").slideDown("fast", $("#homeworkSubmissionDraftsRow").css("display","table-row"));
+											$("#homeworkSubmissionTypeRow").slideDown("fast", $("#homeworkSubmissionTypeRow").css("display","table-row"));
+											$("#homeworkSubmissionRequiredRow").slideDown("fast", $("#homeworkSubmissionRequiredRow").css("display","table-row"));
+											$("#homeworkCrowdAssessRow").slideDown("fast", $("#homeworkCrowdAssessRow").css("display","table-row"));
+
 											if ($('input[name=homeworkCrowdAssess]:checked').val()=="Yes" ) {
-												$("#homeworkCrowdAssessControlRow").slideDown("fast", $("#homeworkCrowdAssessControlRow").css("display","table-row")); 
-												
+												$("#homeworkCrowdAssessControlRow").slideDown("fast", $("#homeworkCrowdAssessControlRow").css("display","table-row"));
+
 											} else {
 												$("#homeworkCrowdAssessControlRow").css("display","none");
 											}
@@ -656,19 +656,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 										$("#homeworkCrowdAssessControlRow").css("display","none");
 									}
 								 });
-								 
+
 								 //Response to clicking on online submission control
 								 $(".homeworkSubmission").click(function(){
 									if ($('input[name=homeworkSubmission]:checked').val()=="Yes" ) {
-										$("#homeworkSubmissionDateOpenRow").slideDown("fast", $("#homeworkSubmissionDateOpenRow").css("display","table-row")); 
-										$("#homeworkSubmissionDraftsRow").slideDown("fast", $("#homeworkSubmissionDraftsRow").css("display","table-row")); 
-										$("#homeworkSubmissionTypeRow").slideDown("fast", $("#homeworkSubmissionTypeRow").css("display","table-row")); 
-										$("#homeworkSubmissionRequiredRow").slideDown("fast", $("#homeworkSubmissionRequiredRow").css("display","table-row")); 
-										$("#homeworkCrowdAssessRow").slideDown("fast", $("#homeworkCrowdAssessRow").css("display","table-row")); 
-									
+										$("#homeworkSubmissionDateOpenRow").slideDown("fast", $("#homeworkSubmissionDateOpenRow").css("display","table-row"));
+										$("#homeworkSubmissionDraftsRow").slideDown("fast", $("#homeworkSubmissionDraftsRow").css("display","table-row"));
+										$("#homeworkSubmissionTypeRow").slideDown("fast", $("#homeworkSubmissionTypeRow").css("display","table-row"));
+										$("#homeworkSubmissionRequiredRow").slideDown("fast", $("#homeworkSubmissionRequiredRow").css("display","table-row"));
+										$("#homeworkCrowdAssessRow").slideDown("fast", $("#homeworkCrowdAssessRow").css("display","table-row"));
+
 										if ($('input[name=homeworkCrowdAssess]:checked').val()=="Yes" ) {
-											$("#homeworkCrowdAssessControlRow").slideDown("fast", $("#homeworkCrowdAssessControlRow").css("display","table-row")); 
-											
+											$("#homeworkCrowdAssessControlRow").slideDown("fast", $("#homeworkCrowdAssessControlRow").css("display","table-row"));
+
 										} else {
 											$("#homeworkCrowdAssessControlRow").css("display","none");
 										}
@@ -681,19 +681,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 										$("#homeworkCrowdAssessControlRow").css("display","none");
 									}
 								 });
-								 
+
 								 //Response to clicking on crowd assessment control
 								 $(".homeworkCrowdAssess").click(function(){
 									if ($('input[name=homeworkCrowdAssess]:checked').val()=="Yes" ) {
-										$("#homeworkCrowdAssessControlRow").slideDown("fast", $("#homeworkCrowdAssessControlRow").css("display","table-row")); 
-										
+										$("#homeworkCrowdAssessControlRow").slideDown("fast", $("#homeworkCrowdAssessControlRow").css("display","table-row"));
+
 									} else {
 										$("#homeworkCrowdAssessControlRow").css("display","none");
 									}
-								 }); 
+								 });
 							});
 						</script>
-						
+
 						<?php
                         //Try and find the next slot for this class, to use as default HW deadline
                         if ($row['homework'] == 'N' and $row['date'] != '' and $row['timeStart'] != '' and $row['timeEnd'] != '') {
@@ -716,14 +716,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                             }
                         }
                 		?>
-							
+
 						<tr class='break'>
-							<td colspan=2> 
+							<td colspan=2>
 								<h3><?php echo __($guid, 'Homework') ?></h3>
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Homework?') ?> *</b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'If not previously set, this will default to the start of the next lesson.') ?></span>
 							</td>
@@ -733,7 +733,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 							</td>
 						</tr>
 						<tr id="homeworkDueDateRow">
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Homework Due Date') ?> *</b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
 								} else {
@@ -753,7 +753,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 									} else {
 										echo $_SESSION[$guid]['i18n']['dateFormat'];
 									}
-                					?>." } ); 
+                					?>." } );
 									homeworkDueDate.add(Validate.Presence);
 									<?php
                                     if ($row['homework'] != 'Y') {
@@ -769,7 +769,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 							</td>
 						</tr>
 						<tr id="homeworkDueDateTimeRow">
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Homework Due Date Time') ?></b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Format: hh:mm (24hr)') ?><br/></span>
 							</td>
@@ -777,7 +777,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 								<input name="homeworkDueDateTime" id="homeworkDueDateTime" maxlength=5 value="<?php if ($row['homework'] == 'Y') { echo substr($row['homeworkDueDateTime'], 11, 5); } elseif ($homeworkDueDateTime != '') { echo substr($homeworkDueDateTime, 0, 5); } ?>" type="text" class="standardWidth">
 								<script type="text/javascript">
 									var homeworkDueDateTime=new LiveValidation('homeworkDueDateTime');
-									homeworkDueDateTime.add( Validate.Format, {pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use hh:mm" } ); 
+									homeworkDueDateTime.add( Validate.Format, {pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use hh:mm" } );
 								</script>
 								<script type="text/javascript">
 									$(function() {
@@ -801,8 +801,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 							</td>
 						</tr>
 						<tr id="homeworkDetailsRow">
-							<td colspan=2> 
-								<b><?php echo __($guid, 'Homework Details') ?> *</b> 
+							<td colspan=2>
+								<b><?php echo __($guid, 'Homework Details') ?> *</b>
 								<?php
                                 $initiallyHidden = true;
 								if ($row['homework'] == 'Y') {
@@ -813,7 +813,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 							</td>
 						</tr>
 						<tr id="homeworkSubmissionRow">
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Online Submission?') ?> *</b><br/>
 							</td>
 							<td class="right">
@@ -822,7 +822,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 							</td>
 						</tr>
 						<tr id="homeworkSubmissionDateOpenRow">
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Sumbission Open Date') ?></b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Format:').' ';
 								if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
@@ -844,7 +844,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 									} else {
 										echo $_SESSION[$guid]['i18n']['dateFormat'];
 									}
-									?>." } ); 
+									?>." } );
 								</script>
 								 <script type="text/javascript">
 									$(function() {
@@ -854,7 +854,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 							</td>
 						</tr>
 						<tr id="homeworkSubmissionDraftsRow">
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Drafts') ?> *</b><br/>
 								<span class="emphasis small"></span>
 							</td>
@@ -868,7 +868,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 							</td>
 						</tr>
 						<tr id="homeworkSubmissionTypeRow">
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Submission Type') ?> *</b><br/>
 								<span class="emphasis small"></span>
 							</td>
@@ -881,7 +881,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 							</td>
 						</tr>
 						<tr id="homeworkSubmissionRequiredRow">
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Submission Required') ?> *</b><br/>
 								<span class="emphasis small"></span>
 							</td>
@@ -894,7 +894,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 						</tr>
 						<?php if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAssess.php')) { ?>
 							<tr id="homeworkCrowdAssessRow">
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Crowd Assessment?') ?> *</b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Allow crowd assessment of homework?') ?></span>
 								</td>
@@ -904,7 +904,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 								</td>
 							</tr>
 							<tr id="homeworkCrowdAssessControlRow">
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Access Controls?') ?></b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Decide who can see this homework.') ?></span>
 								</td>
@@ -1010,21 +1010,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 									echo '</table>';?>
 								</td>
 							</tr>
-						<?php 
+						<?php
 						}
                 		?>
-						
+
 						<?php
                         //OUTCOMES
                         if ($viewBy == 'date') {
                             ?>
 							<tr class='break'>
-								<td colspan=2> 
+								<td colspan=2>
 									<h3><?php echo __($guid, 'Outcomes') ?></h3>
 								</td>
 							</tr>
 							<tr>
-								<td colspan=2> 
+								<td colspan=2>
 									<div class='warning'>
 										<?php echo __($guid, 'Outcomes cannot be set when viewing the Planner by date. Use the "Choose A Class" dropdown in the sidebar to switch to a class. Make sure to save your changes first.') ?>
 									</div>
@@ -1035,21 +1035,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                         } else {
                             ?>
 							<tr class='break'>
-								<td colspan=2> 
+								<td colspan=2>
 									<h3><?php echo __($guid, 'Outcomes') ?></h3>
 								</td>
 							</tr>
 							<tr>
-								<td colspan=2> 
+								<td colspan=2>
 									<p><?php echo __($guid, 'Link this lesson to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which lessons.') ?></p>
 								</td>
 							</tr>
-							<?php 
+							<?php
                             $type = 'outcome';
                             $allowOutcomeEditing = getSettingByScope($connection2, 'Planner', 'allowOutcomeEditing');
                             $categories = array();
                             $categoryCount = 0;
-                            ?> 
+                            ?>
 							<style>
 								#<?php echo $type ?> { list-style-type: none; margin: 0; padding: 0; width: 100%; }
 								#<?php echo $type ?> div.ui-state-default { margin: 0 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 58px; }
@@ -1067,7 +1067,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 								});
 							</script>
 							<tr>
-								<td colspan=2> 
+								<td colspan=2>
 									<div class="outcome" id="outcome" style='width: 100%; padding: 5px 0px 0px 0px; min-height: 66px'>
 										<?php
                                         try {
@@ -1214,7 +1214,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 														<script type='text/javascript'>
 															var <?php echo $type ?>Used=new Array(<?php echo substr($usedArrayFill, 0, -1) ?>);
 															var <?php echo $type ?>UsedCount=<?php echo $type ?>Used.length ;
-															
+
 															function outcomeDisplayElements(number) {
 																$("#<?php echo $type ?>Outer0").css("display", "none") ;
 																if (<?php echo $type ?>Used.indexOf(number)<0) {
@@ -1241,15 +1241,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 
                         }
                 		?>
-						
-						
+
+
 						<tr class='break'>
-							<td colspan=2> 
+							<td colspan=2>
 								<h3><?php echo __($guid, 'Access') ?></h3>
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Viewable to Students') ?> *</b><br/>
 								<span class="emphasis small"></span>
 							</td>
@@ -1261,7 +1261,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Viewable to Parents') ?> *</b><br/>
 								<span class="emphasis small"></span>
 							</td>
@@ -1272,14 +1272,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 								</select>
 							</td>
 						</tr>
-						
+
 						<tr class='break'>
-							<td colspan=2> 
+							<td colspan=2>
 								<h3><?php echo __($guid, 'Current Guests') ?></h3>
 							</td>
 						</tr>
 						<tr>
-							<td colspan=2> 
+							<td colspan=2>
 								<?php
                                 try {
                                     $data = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
@@ -1338,12 +1338,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 							</td>
 						</tr>
 						<tr class='break'>
-							<td colspan=2> 
+							<td colspan=2>
 								<h3><?php echo __($guid, 'New Guests') ?></h3>
 							</td>
 						</tr>
 						<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Guest List') ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 						</td>
@@ -1364,7 +1364,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 							</select>
 						</td>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Role') ?></b><br/>
 							</td>
 							<td class="right">

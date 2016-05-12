@@ -605,8 +605,8 @@ function getStaffDashboardContents($connection2, $guid, $gibbonPersonID)
                     }
                     ++$count2;
 
-                        //COLOR ROW BY STATUS!
-                        $rollGroups[$count][3] .= "<tr class=$rowNum>";
+                    //COLOR ROW BY STATUS!
+                    $rollGroups[$count][3] .= "<tr class=$rowNum>";
                     $rollGroups[$count][3] .= '<td>';
                     $rollGroups[$count][3] .= '<b>'.formatName('', $rowBehaviour['preferredNameStudent'], $rowBehaviour['surnameStudent'], 'Student', false).'</b><br/>';
                     if (substr($rowBehaviour['timestamp'], 0, 10) > $rowBehaviour['date']) {
@@ -1084,13 +1084,13 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
                 }
                 ++$count2;
 
-                    //Highlight class in progress
-                    if ((date('H:i:s') > $row['timeStart']) and (date('H:i:s') < $row['timeEnd']) and ($date) == date('Y-m-d')) {
-                        $rowNum = 'current';
-                    }
+                //Highlight class in progress
+                if ((date('H:i:s') > $row['timeStart']) and (date('H:i:s') < $row['timeEnd']) and ($date) == date('Y-m-d')) {
+                    $rowNum = 'current';
+                }
 
-                    //COLOR ROW BY STATUS!
-                    $plannerOutput .= "<tr class=$rowNum>";
+                //COLOR ROW BY STATUS!
+                $plannerOutput .= "<tr class=$rowNum>";
                 $plannerOutput .= '<td>';
                 $plannerOutput .= '<b>'.$row['course'].'.'.$row['class'].'</b><br/>';
                 $plannerOutput .= '</td>';
@@ -2469,15 +2469,15 @@ function getEditor($guid, $tinymceInit = true, $id, $value = '', $rows = 10, $sh
 
     if ($showMedia == true) {
         //DEFINE MEDIA INPUT DISPLAY
-            $output .= "<div class='".$id."resourceSlider' style='display: none; width: 100%; min-height: 60px;'>";
+        $output .= "<div class='".$id."resourceSlider' style='display: none; width: 100%; min-height: 60px;'>";
         $output .= "<div style='text-align: center; width: 100%; margin-top: 5px'>";
         $output .= "<img style='margin: 10px 0 5px 0' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/loading.gif' alt='".__($guid, 'Loading')."' onclick='return false;' /><br/>";
         $output .= __($guid, 'Loading');
         $output .= '</div>';
         $output .= '</div>';
 
-            //DEFINE QUICK INSERT
-            $output .= "<div class='".$id."resourceQuickSlider' style='display: none; width: 100%; min-height: 60px;'>";
+        //DEFINE QUICK INSERT
+        $output .= "<div class='".$id."resourceQuickSlider' style='display: none; width: 100%; min-height: 60px;'>";
         $output .= "<div style='text-align: center; width: 100%; margin-top: 5px'>";
         $output .= "<img style='margin: 10px 0 5px 0' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/loading.gif' alt='".__($guid, 'Loading')."' onclick='return false;' /><br/>";
         $output .= __($guid, 'Loading');
@@ -2487,7 +2487,7 @@ function getEditor($guid, $tinymceInit = true, $id, $value = '', $rows = 10, $sh
 
     if ($showMedia == true and $allowUpload == true) {
         //DEFINE MEDIA ADD DISPLAY
-            $output .= "<div class='".$id."resourceAddSlider' style='display: none; width: 100%; min-height: 60px;'>";
+        $output .= "<div class='".$id."resourceAddSlider' style='display: none; width: 100%; min-height: 60px;'>";
         $output .= "<div style='text-align: center; width: 100%; margin-top: 5px'>";
         $output .= "<img style='margin: 10px 0 5px 0' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/loading.gif' alt='".__($guid, 'Loading')."' onclick='return false;' /><br/>";
         $output .= __($guid, 'Loading');

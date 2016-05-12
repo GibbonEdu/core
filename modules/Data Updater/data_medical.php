@@ -62,38 +62,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
             returnProcess($guid, $_GET['return'], null, $customResponces);
         }
 
-        if (isset($_GET['updateReturn'])) {
-            $updateReturn = $_GET['updateReturn'];
-        } else {
-            $updateReturn = '';
-        }
-        $updateReturnMessage = '';
-        $class = 'error';
-        if (!($updateReturn == '')) {
-            if ($updateReturn == 'fail0') {
-                $updateReturnMessage = __($guid, 'Your request failed because you do not have access to this action.');
-            } elseif ($updateReturn == 'fail1') {
-                $updateReturnMessage = __($guid, 'Your request failed because your inputs were invalid.');
-            } elseif ($updateReturn == 'fail2') {
-                $updateReturnMessage = __($guid, 'Your request failed due to a database error.');
-            } elseif ($updateReturn == 'fail3') {
-                $updateReturnMessage = __($guid, 'Your request failed because your inputs were invalid.');
-            } elseif ($updateReturn == 'fail4') {
-                $updateReturnMessage = __($guid, 'Your request failed because your inputs were invalid.');
-            } elseif ($updateReturn == 'fail5') {
-                $updateReturnMessage = __($guid, 'Your request was successful, but some data was not properly saved.');
-            } elseif ($updateReturn == 'success0') {
-                $updateReturnMessage = __($guid, 'Your request was completed successfully. An administrator will process your request as soon as possible. You will not see the updated data in the system until it has been processed and approved.');
-                if ($_SESSION[$guid]['organisationDBAEmail'] != '' and $_SESSION[$guid]['organisationDBAName'] != '') {
-                    $updateReturnMessage .= ' '.sprintf(__($guid, 'Please contact %1$s if you have any questions.'), "<a href='mailto:".$_SESSION[$guid]['organisationDBAEmail']."'>".$_SESSION[$guid]['organisationDBAName'].'</a>');
-                }
-                $class = 'success';
-            }
-            echo "<div class='$class'>";
-            echo $updateReturnMessage;
-            echo '</div>';
-        }
-
         echo '<h2>';
         echo 'Choose User';
         echo '</h2>';
@@ -103,11 +71,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
             $gibbonPersonID = $_GET['gibbonPersonID'];
         }
         ?>
-		
+
 		<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-			<table class='smallIntBorder fullWidth' cellspacing='0'>	
+			<table class='smallIntBorder fullWidth' cellspacing='0'>
 				<tr>
-					<td style='width: 275px'> 
+					<td style='width: 275px'>
 						<b><?php echo __($guid, 'Person') ?> *</b><br/>
 					</td>
 					<td class="right">
@@ -155,7 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                                     }
                                 }
                             }
-        					?>					
+        					?>
 						</select>
 					</td>
 				</tr>
@@ -246,7 +214,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                     } elseif ($resultForm->rowCount() == 1) {
                         $existing = true;
                         $proceed = true;
-                        if ($updateReturn == '') {
+                        if (!isset($_GET['return'])) {
                             echo "<div class='warning'>";
                             echo __($guid, 'You have already submitted a form, which is pending approval by an administrator. If you wish to make changes, please edited the data below, but remember your data will not appear in the system until it has been approved.');
                             echo '</div>';
@@ -271,9 +239,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                         $rowForm = $resultForm->fetch();
                         ?>
 						<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/data_medicalProcess.php?gibbonPersonID='.$gibbonPersonID ?>">
-							<table class='smallIntBorder fullWidth' cellspacing='0'>	
+							<table class='smallIntBorder fullWidth' cellspacing='0'>
 								<tr>
-									<td style='width: 275px'> 
+									<td style='width: 275px'>
 										<b><?php echo __($guid, 'Blood Type') ?></b><br/>
 										<span class="emphasis small"></span>
 									</td>
@@ -292,7 +260,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 									</td>
 								</tr>
 								<tr>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Long-Term Medication?') ?></b><br/>
 										<span class="emphasis small"></span>
 									</td>
@@ -305,7 +273,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 									</td>
 								</tr>
 								<tr>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Medication Details') ?></b><br/>
 									</td>
 									<td class="right">
@@ -313,7 +281,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 									</td>
 								</tr>
 								<tr>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Tetanus Within Last 10 Years?') ?></b><br/>
 										<span class="emphasis small"></span>
 									</td>
@@ -325,9 +293,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 										</select>
 									</td>
 								</tr>
-								
+
 								<input name="gibbonPersonMedicalID" id="gibbonPersonMedicalID" value="<?php echo htmlPrep($rowForm['gibbonPersonMedicalID']) ?>" type="hidden">
-								
+
 								<?php
                                 $count = 0;
                         if ($rowForm['gibbonPersonMedicalID'] != '' or $existing == true) {
@@ -348,12 +316,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                             while ($rowCond = $resultCond->fetch()) {
                                 ?>
 								<tr class='break'>
-									<td colspan=2> 
+									<td colspan=2>
 										<h3><?php echo __($guid, 'Medical Condition') ?> <?php echo $count + 1 ?></h3>
 									</td>
 								</tr>
 								<tr>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Condition Name') ?> *</b><br/>
 									</td>
 									<td class="right">
@@ -374,16 +342,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 													echo "<option value='".htmlPrep($rowSelect['name'])."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
 												}
 											}
-											?>				
+											?>
 												</select>
 												<script type="text/javascript">
 													var name<?php echo $count ?>=new LiveValidation('name<?php echo $count ?>');
 													name<?php echo $count ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-												</script>	
+												</script>
 											</td>
 										</tr>
 										<tr>
-											<td> 
+											<td>
 												<b><?php echo __($guid, 'Risk') ?> *</b><br/>
 											</td>
 											<td class="right">
@@ -410,11 +378,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 												<script type="text/javascript">
 													var gibbonAlertLevelID<?php echo $count ?>=new LiveValidation('gibbonAlertLevelID<?php echo $count ?>');
 													gibbonAlertLevelID<?php echo $count ?>.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-												</script>	
+												</script>
 											</td>
 										</tr>
 										<tr>
-											<td> 
+											<td>
 												<b><?php echo __($guid, 'Triggers') ?></b><br/>
 											</td>
 											<td class="right">
@@ -422,7 +390,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 											</td>
 										</tr>
 										<tr>
-											<td> 
+											<td>
 												<b><?php echo __($guid, 'Reaction') ?></b><br/>
 											</td>
 											<td class="right">
@@ -430,7 +398,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 											</td>
 										</tr>
 										<tr>
-											<td> 
+											<td>
 												<b><?php echo __($guid, 'Response') ?></b><br/>
 											</td>
 											<td class="right">
@@ -438,7 +406,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 											</td>
 										</tr>
 										<tr>
-											<td> 
+											<td>
 												<b><?php echo __($guid, 'Medication') ?></b><br/>
 											</td>
 											<td class="right">
@@ -446,7 +414,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 											</td>
 										</tr>
 										<tr>
-											<td> 
+											<td>
 												<b><?php echo __($guid, 'Last Episode Date') ?></b><br/>
 												<span class="emphasis small"><?php echo __($guid, 'Format:').' '.$_SESSION[$guid]['i18n']['dateFormat']  ?></span>
 											</td>
@@ -464,7 +432,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 													} else {
 														echo $_SESSION[$guid]['i18n']['dateFormat'];
 													}
-                               					?>." } ); 
+                               					?>." } );
 												</script>
 												 <script type="text/javascript">
 													$(function() {
@@ -474,7 +442,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 											</td>
 										</tr>
 										<tr>
-											<td> 
+											<td>
 												<b><?php echo __($guid, 'Last Episode Treatment') ?></b><br/>
 											</td>
 											<td class="right">
@@ -482,7 +450,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 											</td>
 										</tr>
 										<tr>
-											<td> 
+											<td>
 												<b><?php echo __($guid, 'Comment') ?></b><br/>
 											</td>
 											<td class="right">
@@ -499,23 +467,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 									}
 									?>
 								<tr class='break'>
-									<td colspan=2> 
+									<td colspan=2>
 										<h3><?php echo __($guid, 'Add Medical Condition') ?></h3>
 									</td>
 								</tr>
 								<tr>
-									<td class='right' colspan=2> 
+									<td class='right' colspan=2>
 										<script type="text/javascript">
 											/* Advanced Options Control */
 											$(document).ready(function(){
 												$("#addCondition").click(function(){
 													if ($('input[name=addCondition]:checked').val()=="Yes" ) {
-														$(".addConditionRow").slideDown("fast", $(".addConditionRow").css("display","table-row"));	
+														$(".addConditionRow").slideDown("fast", $(".addConditionRow").css("display","table-row"));
 														namex.enable();
 														gibbonAlertLevelIDx.enable();
-													} 
+													}
 													else {
-														$(".addConditionRow").slideUp("fast"); 	
+														$(".addConditionRow").slideUp("fast");
 														namex.disable();
 														gibbonAlertLevelIDx.disable();
 													}
@@ -526,7 +494,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 									</td>
 								</tr>
 								<tr style='display: none' class='addConditionRow'>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Condition Name') ?> *</b><br/>
 									</td>
 									<td class="right">
@@ -547,7 +515,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 													echo "<option value='".htmlPrep($rowSelect['name'])."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
 												}
 											}
-											?>				
+											?>
 										</select>
 										<script type="text/javascript">
 											var name2=new LiveValidation('name2');
@@ -556,7 +524,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 									</td>
 								</tr>
 								<tr style='display: none' class='addConditionRow'>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Risk') ?> *</b><br/>
 									</td>
 									<td class="right">
@@ -583,7 +551,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 									</td>
 								</tr>
 								<tr style='display: none' class='addConditionRow'>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Triggers') ?></b><br/>
 									</td>
 									<td class="right">
@@ -591,7 +559,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 									</td>
 								</tr>
 								<tr style='display: none' class='addConditionRow'>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Reaction') ?></b><br/>
 									</td>
 									<td class="right">
@@ -599,7 +567,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 									</td>
 								</tr>
 								<tr style='display: none' class='addConditionRow'>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Response') ?></b><br/>
 									</td>
 									<td class="right">
@@ -607,7 +575,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 									</td>
 								</tr>
 								<tr style='display: none' class='addConditionRow'>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Medication') ?></b><br/>
 									</td>
 									<td class="right">
@@ -615,7 +583,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 									</td>
 								</tr>
 								<tr style='display: none' class='addConditionRow'>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Last Episode Date') ?></b><br/>
 										<span class="emphasis small"><?php echo __($guid, 'Format:').' '.$_SESSION[$guid]['i18n']['dateFormat']  ?></span>
 									</td>
@@ -633,7 +601,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 											} else {
 												echo $_SESSION[$guid]['i18n']['dateFormat'];
 											}
-                        					?>." } ); 
+                        					?>." } );
 										</script>
 										 <script type="text/javascript">
 											$(function() {
@@ -643,7 +611,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 									</td>
 								</tr>
 								<tr style='display: none' class='addConditionRow'>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Last Episode Treatment') ?></b><br/>
 									</td>
 									<td class="right">
@@ -651,7 +619,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 									</td>
 								</tr>
 								<tr style='display: none' class='addConditionRow'>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Comment') ?></b><br/>
 									</td>
 									<td class="right">

@@ -239,8 +239,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                     echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/planner.php$params'>".__($guid, 'Planner')." $extra</a> > </div><div class='trailEnd'>".__($guid, 'View Lesson Plan').'</div>';
                     echo '</div>';
 
+                    $returns = array();
+                    $returns['error6'] = __($guid, 'An error occured with your submission, most likely because a submitted file was too large.');
                     if (isset($_GET['return'])) {
-                        returnProcess($guid, $_GET['return'], null, null);
+                        returnProcess($guid, $_GET['return'], $returns, null);
                     }
 
                     if ($gibbonCourseClassID == '') {
@@ -274,7 +276,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         if (strstr($row['role'], 'Guest') == false) {
                             //Links to previous and next lessons
                                     echo "<p style='text-align: right; margin-top: 10px'>";
-                            echo "<span style='font-size: 85%'><i>".__($guid, 'For this class:').'</span><br/>';
+                            echo "<span style='font-size: 85%'>".__($guid, 'For this class:').'</span><br/>';
                             try {
                                 if ($row['role'] == 'Teacher') {
                                     $dataPrevious = array('gibbonCourseClassID' => $row['gibbonCourseClassID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'date1' => $row['date'], 'date2' => $row['date'], 'timeStart' => $row['timeStart']);
@@ -1380,11 +1382,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 												} else {
 													echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
 												}
-                                   	 			?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
-												} else {
-													echo $_SESSION[$guid]['i18n']['dateFormat'];
-												}
-                                    			?>." } );
+                                   	 			?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy'; } else { echo $_SESSION[$guid]['i18n']['dateFormat']; } ?>." } );
 												homeworkDueDate.add(Validate.Presence);
 												<?php
 												if ($rowMyHomework['homework'] != 'Y') {
@@ -1472,7 +1470,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         echo '</div>';
 
 						//Get discussion
-						echo getThread($guid, $connection2, $gibbonPlannerEntryID, null, 0, null, $viewBy, $subView, $date, $class, $gibbonCourseClassID, $gibbonPersonID, $row['role']);
+						echo getThread($guid, $connection2, $gibbonPlannerEntryID, null, 0, null, $viewBy, $subView, $date, @$class, $gibbonCourseClassID, $gibbonPersonID, $row['role']);
 
                         echo '</td>';
                         echo '</tr>';
@@ -1921,7 +1919,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 											$("#confidentialPlan<?php echo $i ?>").slideDown("fast", $("#confidentialPlan<?php echo $i ?>").css("{'display' : 'table-row', 'border' : 'right'}"));
 											<?php
                                         }
-                        			?>									
+                        			?>
                         			}
 									else {
 										$("#teachersNotes").slideUp("fast");
@@ -1933,7 +1931,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 											<?php
 
                                         }
-                        			?>	
+                        			?>
                         			}
 								 });
 							});

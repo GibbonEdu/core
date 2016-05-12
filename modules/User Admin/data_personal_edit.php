@@ -1061,7 +1061,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/data_personal_e
                 if ($privacySetting == 'Y' and $privacyBlurb != '') {
                     echo '<tr>';
                     echo '<td>';
-                    echo __($guid, 'Image Privacy');
+                    echo __($guid, 'Privacy');
                     echo '</td>';
                     echo '<td>';
                     echo $row['privacy'];

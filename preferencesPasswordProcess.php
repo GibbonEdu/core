@@ -30,7 +30,7 @@ $connection2 = $pdo->getConnection();
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-//Check to see if academic year id variables are set, if not set them 
+//Check to see if academic year id variables are set, if not set them
 if (isset($_SESSION[$guid]['gibbonAcademicYearID']) == false or isset($_SESSION[$guid]['gibbonSchoolYearName']) == false) {
     setCurrentSchoolYear($guid, $connection2);
 }
@@ -103,7 +103,12 @@ if ($password == '' or $passwordNew == '' or $passwordConfirm == '') {
                             exit();
                         }
                         $_SESSION[$guid]['passwordForceReset'] = 'N';
+                        $_SESSION[$guid]['passwordStrongSalt'] = $salt;
+                        $_SESSION[$guid]['passwordStrong'] = $passwordStrong;
+                        $_SESSION[$guid]['pageLoads'] = null;
                         $URL .= '&return=successa';
+                        header("Location: {$URL}");
+                        exit() ;
                     }
 
                     $_SESSION[$guid]['passwordStrongSalt'] = $salt;
