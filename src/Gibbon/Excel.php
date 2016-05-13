@@ -6,7 +6,8 @@
  	Downloaded from: http://webscripts.softpedia.com/script/PHP-Clases/Export-To-Excel-50394.html
 	License: GNU GPL
 */
-
+/**
+ */
 namespace Gibbon;
 
 $config = new config();
