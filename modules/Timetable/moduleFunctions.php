@@ -898,81 +898,81 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 
         $zCount = 1;
 
-                //Draw periods from school calendar
-                if ($eventsSchool != false) {
-                    $height = 0;
-                    $top = 0;
-                    $dayTimeStart = '';
-                    foreach ($eventsSchool as $event) {
-                        if (date('Y-m-d', $event[2]) == date('Y-m-d', ($startDayStamp + (86400 * $count)))) {
-                            if ($event[1] == 'All Day') {
-                                $label = $event[0];
-                                $title = '';
-                                if (strlen($label) > 20) {
-                                    $label = substr($label, 0, 20).'...';
-                                    $title = "title='".$event[0]."'";
-                                }
-                                $height = '30px';
-                                $top = (($maxAllDays * -31) - 8 + ($allDay * 30)).'px';
-                                $output .= "<div class='ttSchoolCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
-                                $output .= "<a target=_blank style='color: #fff' href='".$event[5]."'>".$label.'</a>';
-                                $output .= '</div>';
-                                ++$allDay;
-                            } else {
-                                $label = $event[0];
-                                $title = "title='".date('H:i', $event[2]).' to '.date('H:i', $event[3])."'";
-                                if (strlen($label) > 20) {
-                                    $label = substr($label, 0, 20).'...';
-                                    $title = "title='".$event[0].' ('.date('H:i', $event[2]).' to '.date('H:i', $event[3]).")'";
-                                }
-                                $height = ceil(($event[3] - $event[2]) / 60).'px';
-                                $top = (ceil(($event[2] - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)).' '.$gridTimeStart)) / 60 + ($startPad / 60))).'px';
-                                $output .= "<div class='ttSchoolCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
-                                $output .= "<a target=_blank style='color: #fff' href='".$event[5]."'>".$label.'</a>';
-                                $output .= '</div>';
-                            }
-                            ++$zCount;
+        //Draw periods from school calendar
+        if ($eventsSchool != false) {
+            $height = 0;
+            $top = 0;
+            $dayTimeStart = '';
+            foreach ($eventsSchool as $event) {
+                if (date('Y-m-d', $event[2]) == date('Y-m-d', ($startDayStamp + (86400 * $count)))) {
+                    if ($event[1] == 'All Day') {
+                        $label = $event[0];
+                        $title = '';
+                        if (strlen($label) > 20) {
+                            $label = substr($label, 0, 20).'...';
+                            $title = "title='".$event[0]."'";
                         }
+                        $height = '30px';
+                        $top = (($maxAllDays * -31) - 8 + ($allDay * 30)).'px';
+                        $output .= "<div class='ttSchoolCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                        $output .= "<a target=_blank style='color: #fff' href='".$event[5]."'>".$label.'</a>';
+                        $output .= '</div>';
+                        ++$allDay;
+                    } else {
+                        $label = $event[0];
+                        $title = "title='".date('H:i', $event[2]).' to '.date('H:i', $event[3])."'";
+                        if (strlen($label) > 20) {
+                            $label = substr($label, 0, 20).'...';
+                            $title = "title='".$event[0].' ('.date('H:i', $event[2]).' to '.date('H:i', $event[3]).")'";
+                        }
+                        $height = ceil(($event[3] - $event[2]) / 60).'px';
+                        $top = (ceil(($event[2] - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)).' '.$gridTimeStart)) / 60 )).'px';
+                        $output .= "<div class='ttSchoolCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                        $output .= "<a target=_blank style='color: #fff' href='".$event[5]."'>".$label.'</a>';
+                        $output .= '</div>';
                     }
+                    ++$zCount;
                 }
+            }
+        }
 
-                //Draw periods from personal calendar
-                if ($eventsPersonal != false) {
-                    $height = 0;
-                    $top = 0;
-                    $bg = "rgba(103,153,207,$schoolCalendarAlpha)";
-                    foreach ($eventsPersonal as $event) {
-                        if (date('Y-m-d', $event[2]) == date('Y-m-d', ($startDayStamp + (86400 * $count)))) {
-                            if ($event[1] == 'All Day') {
-                                $label = $event[0];
-                                $title = '';
-                                if (strlen($label) > 20) {
-                                    $label = substr($label, 0, 20).'...';
-                                    $title = "title='".$event[0]."'";
-                                }
-                                $height = '30px';
-                                $top = (($maxAllDays * -31) - 8 + ($allDay * 30)).'px';
-                                $output .= "<div class='ttPersonalCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
-                                $output .= "<a target=_blank style='color: #fff' href='".$event[5]."'>".$label.'</a>';
-                                $output .= '</div>';
-                                ++$allDay;
-                            } else {
-                                $label = $event[0];
-                                $title = "title='".date('H:i', $event[2]).' to '.date('H:i', $event[3])."'";
-                                if (strlen($label) > 20) {
-                                    $label = substr($label, 0, 20).'...';
-                                    $title = "title='".$event[0].' ('.date('H:i', $event[2]).' to '.date('H:i', $event[3]).")'";
-                                }
-                                $height = ceil(($event[3] - $event[2]) / 60).'px';
-                                $top = (ceil(($event[2] - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)).' '.$gridTimeStart)) / 60 + ($startPad / 60))).'px';
-                                $output .= "<div class='ttPersonalCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
-                                $output .= "<a target=_blank style='color: #fff' href='".$event[5]."'>".$label.'</a>';
-                                $output .= '</div>';
-                            }
-                            ++$zCount;
+        //Draw periods from personal calendar
+        if ($eventsPersonal != false) {
+            $height = 0;
+            $top = 0;
+            $bg = "rgba(103,153,207,$schoolCalendarAlpha)";
+            foreach ($eventsPersonal as $event) {
+                if (date('Y-m-d', $event[2]) == date('Y-m-d', ($startDayStamp + (86400 * $count)))) {
+                    if ($event[1] == 'All Day') {
+                        $label = $event[0];
+                        $title = '';
+                        if (strlen($label) > 20) {
+                            $label = substr($label, 0, 20).'...';
+                            $title = "title='".$event[0]."'";
                         }
+                        $height = '30px';
+                        $top = (($maxAllDays * -31) - 8 + ($allDay * 30)).'px';
+                        $output .= "<div class='ttPersonalCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                        $output .= "<a target=_blank style='color: #fff' href='".$event[5]."'>".$label.'</a>';
+                        $output .= '</div>';
+                        ++$allDay;
+                    } else {
+                        $label = $event[0];
+                        $title = "title='".date('H:i', $event[2]).' to '.date('H:i', $event[3])."'";
+                        if (strlen($label) > 20) {
+                            $label = substr($label, 0, 20).'...';
+                            $title = "title='".$event[0].' ('.date('H:i', $event[2]).' to '.date('H:i', $event[3]).")'";
+                        }
+                        $height = ceil(($event[3] - $event[2]) / 60).'px';
+                        $top = (ceil(($event[2] - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)).' '.$gridTimeStart)) / 60 )).'px';
+                        $output .= "<div class='ttPersonalCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                        $output .= "<a target=_blank style='color: #fff' href='".$event[5]."'>".$label.'</a>';
+                        $output .= '</div>';
                     }
+                    ++$zCount;
                 }
+            }
+        }
         $output .= '</div>';
         $output .= '</td>';
     } else {
