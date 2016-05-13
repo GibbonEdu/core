@@ -41,180 +41,148 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
     echo __($guid, 'Catalog Summary');
     echo '</h1>';
 
-    try {
-        $data = array();
-        $sqlWhere = 'WHERE ';
-        if ($ownershipType != '') {
-            $data['ownershipType'] = $ownershipType;
-            $sqlWhere .= 'ownershipType=:ownershipType AND ';
-        }
-        if ($gibbonLibraryTypeID != '') {
-            $data['gibbonLibraryTypeID'] = $gibbonLibraryTypeID;
-            $sqlWhere .= 'gibbonLibraryItem.gibbonLibraryTypeID=:gibbonLibraryTypeID AND ';
-        }
-        if ($gibbonSpaceID != '') {
-            $data['gibbonSpaceID'] = $gibbonSpaceID;
-            $sqlWhere .= 'gibbonSpaceID=:gibbonSpaceID AND ';
-        }
-        if ($status != '') {
-            $data['status'] = $status;
-            $sqlWhere .= 'status=:status AND ';
-        }
-        if ($sqlWhere == 'WHERE ') {
-            $sqlWhere = '';
-        } else {
-            $sqlWhere = substr($sqlWhere, 0, -5);
-        }
-        $sql = "SELECT gibbonLibraryItem.*, gibbonLibraryType.fields AS typeFields FROM gibbonLibraryItem JOIN gibbonLibraryType ON (gibbonLibraryItem.gibbonLibraryTypeID=gibbonLibraryType.gibbonLibraryTypeID) $sqlWhere ORDER BY id";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
+	$data = array();
+	$sqlWhere = 'WHERE ';
+	if ($ownershipType != '') {
+		$data['ownershipType'] = $ownershipType;
+		$sqlWhere .= 'ownershipType=:ownershipType AND ';
+	}
+	if ($gibbonLibraryTypeID != '') {
+		$data['gibbonLibraryTypeID'] = $gibbonLibraryTypeID;
+		$sqlWhere .= 'gibbonLibraryItem.gibbonLibraryTypeID=:gibbonLibraryTypeID AND ';
+	}
+	if ($gibbonSpaceID != '') {
+		$data['gibbonSpaceID'] = $gibbonSpaceID;
+		$sqlWhere .= 'gibbonSpaceID=:gibbonSpaceID AND ';
+	}
+	if ($status != '') {
+		$data['status'] = $status;
+		$sqlWhere .= 'status=:status AND ';
+	}
+	if ($sqlWhere == 'WHERE ') {
+		$sqlWhere = '';
+	} else {
+		$sqlWhere = substr($sqlWhere, 0, -5);
+	}
+	$sql = "SELECT gibbonLibraryItem.*, gibbonLibraryType.fields AS typeFields 
+		FROM gibbonLibraryItem 
+			JOIN gibbonLibraryType ON (gibbonLibraryItem.gibbonLibraryTypeID=gibbonLibraryType.gibbonLibraryTypeID) $sqlWhere 
+		ORDER BY id";
+	$result = $pdo->executeQuery($data, $sql, '_');
 
-    echo "<table cellspacing='0' style='width: 100%'>";
-    echo "<tr class='head'>";
-    echo '<th>';
-    echo __($guid, 'School ID');
-    echo '</th>';
-    echo '<th>';
-    echo __($guid, 'Name').'<br/>';
-    echo "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Producer').'</span>';
-    echo '</th>';
-    echo '<th>';
-    echo __($guid, 'Type');
-    echo '</th>';
-    echo '<th>';
-    echo __($guid, 'Location');
-    echo '</th>';
-    echo '<th>';
-    echo __($guid, 'Ownership').'<br/>';
-    echo "<span style='font-size: 85%; font-style: italic'>".__($guid, 'User/Owner').'</span>';
-    echo '</th>';
-    echo '<th>';
-    echo __($guid, 'Status').'<br/>';
-    echo "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Borrowable').'</span>';
-    echo '</th>';
-    echo '<th>';
-    echo __($guid, 'Purchase Date').'<br/>';
-    echo "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Vendor').'</span>';
-    echo '</th>';
-    echo '<th>';
-    echo __($guid, 'Details').'<br/>';
-    echo '</th>';
-    echo '</tr>';
+
+	$excel = new Gibbon\Excel('catalogSummary.xlsx');
+	if ($excel->estimateCellCount($pdo) > 8000)    //  If too big, then render csv instead.
+		return Gibbon\csv::generate($pdo, 'Invoices');
+	$excel->setActiveSheetIndex(0);
+	$excel->getProperties()->setTitle('Catalog Summary');
+	$excel->getProperties()->setSubject('Catalog Summary');
+	$excel->getProperties()->setDescription('Catalog Summary');
+	
+	
+	$excel->getActiveSheet()->setCellValueByColumnAndRow(0, 1, __($guid, 'School ID'));
+	$excel->getActiveSheet()->setCellValueByColumnAndRow(1, 1, __($guid, 'Name'). ' '. __($guid, 'Producer'));
+	$excel->getActiveSheet()->setCellValueByColumnAndRow(2, 1, __($guid, 'Type'));
+	$excel->getActiveSheet()->setCellValueByColumnAndRow(3, 1, __($guid, 'Location'));
+	$excel->getActiveSheet()->setCellValueByColumnAndRow(4, 1, __($guid, 'Ownership').' '.__($guid, 'User/Owner'));
+	$excel->getActiveSheet()->setCellValueByColumnAndRow(5, 1, __($guid, 'Status').' '.__($guid, 'Borrowable'));
+	$excel->getActiveSheet()->setCellValueByColumnAndRow(6, 1, __($guid, 'Purchase Date').' '.__($guid, 'Vendor'));
+	$excel->getActiveSheet()->setCellValueByColumnAndRow(7, 1, __($guid, 'Details'));
+	$excel->getActiveSheet()->getStyle("1:1")->getFont()->setBold(true);
 
     $count = 0;
     $rowNum = 'odd';
+	$r = 1;
     while ($row = $result->fetch()) {
-        if ($count % 2 == 0) {
-            $rowNum = 'even';
-        } else {
-            $rowNum = 'odd';
-        }
         ++$count;
-
-		//COLOR ROW BY STATUS!
-		echo "<tr class=$rowNum>";
-        echo '<td>';
-        echo '<b>'.$row['id'].'</b>';
-        echo '</td>';
-        echo '<td>';
-        echo '<b>'.$row['name'].'</b>';
+		$r++;
+		//Column A
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(0, $r, $row['id']);
+		//Column B
+        $x = $row['name']
         if ($row['producer'] != '') {
-            echo " ; <span style='font-size: 85%; font-style: italic'>".$row['producer'].'</span>';
+            $x .= "\n".$row['producer'];
         }
-        echo '</td>';
-        echo '<td>';
-        try {
-            $dataType = array('gibbonLibraryTypeID' => $row['gibbonLibraryTypeID']);
-            $sqlType = 'SELECT name FROM gibbonLibraryType WHERE gibbonLibraryTypeID=:gibbonLibraryTypeID';
-            $resultType = $connection2->prepare($sqlType);
-            $resultType->execute($dataType);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(1, $r, $x);
+		//Column C
+        $x = '';
+		$dataType = array('gibbonLibraryTypeID' => $row['gibbonLibraryTypeID']);
+		$sqlType = 'SELECT name 
+			FROM gibbonLibraryType 
+			WHERE gibbonLibraryTypeID=:gibbonLibraryTypeID';
+		if (is_null($resultType = $pdo->executeQuery($dataType, $sqlType))) {
+			$x = $pdo->getError();
+		}
         if ($resultType->rowCount() == 1) {
             $rowType = $resultType->fetch();
-            echo __($guid, $rowType['name']);
+            $x = __($guid, $rowType['name']);
         }
-        echo '</td>';
-        echo '<td>';
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(2, $r, $x);
+		//Column D
         if ($row['gibbonSpaceID'] != '') {
-            try {
-                $dataSpace = array('gibbonSpaceID' => $row['gibbonSpaceID']);
-                $sqlSpace = 'SELECT * FROM gibbonSpace WHERE gibbonSpaceID=:gibbonSpaceID';
-                $resultSpace = $connection2->prepare($sqlSpace);
-                $resultSpace->execute($dataSpace);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
+			$dataSpace = array('gibbonSpaceID' => $row['gibbonSpaceID']);
+			$sqlSpace = 'SELECT * FROM gibbonSpace WHERE gibbonSpaceID=:gibbonSpaceID';
+			if (is_null($resultSpace = $pdo->executeQuery($dataSpace, $sqlSpace))) {
+				$x = $pdo->getError();
+			}
             if ($resultSpace->rowCount() == 1) {
                 $rowSpace = $resultSpace->fetch();
-                echo $rowSpace['name'];
+                $x = $rowSpace['name'];
             }
         }
         if ($row['locationDetail'] != '') {
-            echo " ; <span style='font-size: 85%; font-style: italic'>".$row['locationDetail'].'</span>';
+            $x .=  " ; ".$row['locationDetail'];
         }
-        echo '</td>';
-        echo '<td>';
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(3, $r, $row['id']);
+		//Column E
         if ($row['ownershipType'] == 'School') {
             echo $_SESSION[$guid]['organisationNameShort'];
         } elseif ($row['ownershipType'] == 'Individual') {
             echo 'Individual';
         }
         if ($row['gibbonPersonIDOwnership'] != '') {
-            try {
-                $dataPerson = array('gibbonPersonID' => $row['gibbonPersonIDOwnership']);
-                $sqlPerson = 'SELECT title, preferredName, surname FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
-                $resultPerson = $connection2->prepare($sqlPerson);
-                $resultPerson->execute($dataPerson);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
+			$dataPerson = array('gibbonPersonID' => $row['gibbonPersonIDOwnership']);
+			$sqlPerson = 'SELECT title, preferredName, surname FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
+			if (is_null($resultPerson = $pdo->executeQuery($dataPerson, $sqlPerson))) {
+				$x = $pdo->getError();
+			}
             if ($resultPerson->rowCount() == 1) {
                 $rowPerson = $resultPerson->fetch();
-                echo "; <span style='font-size: 85%; font-style: italic'>".formatName($rowPerson['title'], $rowPerson['preferredName'], $rowPerson['surname'], 'Staff', false, true).'</span>';
+                $x = "; ".formatName($rowPerson['title'], $rowPerson['preferredName'], $rowPerson['surname'], 'Staff', false, true);
             }
         }
-        echo '</td>';
-        echo '<td>';
-        echo $row['status'];
-        echo " ; <span style='font-size: 85%; font-style: italic'>".$row['borrowable'].'</span>';
-        echo '</td>';
-        echo '<td>';
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(4, $r, $x);
+		//Column F
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(5, $r, $row['status']."; ".$row['borrowable']);
+ 		//Column G
+		$x = '';
         if ($row['purchaseDate'] == '') {
-            echo '<i>'.__($guid, 'Unknown').'</i>';
+            $x .= __($guid, 'Unknown');
         } else {
-            echo dateConvertBack($guid, $row['purchaseDate']).' ; ';
+            $x .= dateConvertBack($guid, $row['purchaseDate']).' ; ';
         }
         if ($row['vendor'] != '') {
-            echo "; <span style='font-size: 85%; font-style: italic'>".$row['vendor'].'</span>';
+            $x .= "; ".$row['vendor'];
         }
-        echo '</td>';
-        echo '<td>';
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(6, $r, $x);
+		//Column H
+		$x = '';
         $typeFields = unserialize($row['typeFields']);
         $fields = unserialize($row['fields']);
         foreach ($typeFields as $typeField) {
             if (isset($fields[$typeField['name']])) {
                 if ($fields[$typeField['name']] != '') {
-                    echo '<b>'.__($guid, $typeField['name']).': </b>';
+                    $x .= __($guid, $typeField['name']).': ';
                     if (isset($fields[$typeField['name']])) {
-                        echo $fields[$typeField['name']].' ; ';
+                        $x .= $fields[$typeField['name']].' ; ';
                     }
                 }
             }
         }
-        echo '</td>';
-        echo '</tr>';
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(7, $r, $x);
     }
     if ($count == 0) {
-        echo "<tr class=$rowNum>";
-        echo '<td colspan=2>';
-        echo __($guid, 'There are no records to display.');
-        echo '</td>';
-        echo '</tr>';
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(0, $r, __($guid, 'There are no records to display.'));
     }
-    echo '</table>';
+	$excel->exportWorksheet();
 }

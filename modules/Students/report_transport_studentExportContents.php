@@ -45,55 +45,44 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
         echo "<div class='error'>".$e->getMessage().'</div>';
     }
 
-    echo "<table cellspacing='0' style='width: 100%'>";
-    echo "<tr class='head'>";
-    echo '<th>';
-    echo __($guid, 'Transport');
-    echo '</th>';
-    echo '<th>';
-    echo __($guid, 'Student');
-    echo '</th>';
-    echo '<th>';
-    echo __($guid, 'Address');
-    echo '</th>';
-    echo '<th>';
-    echo __($guid, 'Parents');
-    echo '</th>';
-    echo '<th>';
-    echo __($guid, 'Roll Group');
-    echo '</th>';
-    echo '</tr>';
+        $exp = new Gibbon\Excel();
+        $exp->exportWithPage($guid, './report_transport_studentExportContents.php', 'studentTransport.xls');
 
+	$excel = new Gibbon\Excel('studentTransport.xlsx');
+	if ($excel->estimateCellCount($pdo) > 8000)    //  If too big, then render csv instead.
+		return Gibbon\csv::generate($pdo, 'studentTransport');
+	$excel->setActiveSheetIndex(0);
+	$excel->getProperties()->setTitle('Student Transport');
+	$excel->getProperties()->setSubject('Student Transport');
+	$excel->getProperties()->setDescription('Student Transport');
+
+	$excel->getActiveSheet()->setCellValueByColumnAndRow(0, 1, __($guid, 'Transport'));
+	$excel->getActiveSheet()->setCellValueByColumnAndRow(1, 1, __($guid, 'Student'));
+	$excel->getActiveSheet()->setCellValueByColumnAndRow(2, 1, __($guid, 'Address'));
+	$excel->getActiveSheet()->setCellValueByColumnAndRow(3, 1, __($guid, 'Parents'));
+	$excel->getActiveSheet()->setCellValueByColumnAndRow(4, 1, __($guid, 'Roll Group'));
+
+	$r = 1;
     $count = 0;
     $rowNum = 'odd';
     while ($row = $result->fetch()) {
-        if ($count % 2 == 0) {
-            $rowNum = 'even';
-        } else {
-            $rowNum = 'odd';
-        }
-        ++$count;
-
-            //COLOR ROW BY STATUS!
-            echo "<tr class=$rowNum>";
-        echo '<td>';
-        echo $row['transport'];
-        echo '</td>';
-        echo '<td>';
-        echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
-        echo '</td>';
-        echo '<td>';
-        try {
-            $dataFamily = array('gibbonPersonID' => $row['gibbonPersonID']);
-            $sqlFamily = 'SELECT gibbonFamily.gibbonFamilyID, nameAddress, homeAddress, homeAddressDistrict, homeAddressCountry FROM gibbonFamily JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID';
-            $resultFamily = $connection2->prepare($sqlFamily);
-            $resultFamily->execute($dataFamily);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
+        $r++;
+		$count++;
+		//Column A
+ 		$excel->getActiveSheet()->setCellValueByColumnAndRow(0, $r, $row['transport']);
+        //Column B
+ 		$excel->getActiveSheet()->setCellValueByColumnAndRow(1, $r, formatName('', $row['preferredName'], $row['surname'], 'Student', true));
+        //Column C
+		$dataFamily = array('gibbonPersonID' => $row['gibbonPersonID']);
+		$sqlFamily = 'SELECT gibbonFamily.gibbonFamilyID, nameAddress, homeAddress, homeAddressDistrict, homeAddressCountry 
+			FROM gibbonFamily 
+				JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) 
+			WHERE gibbonPersonID=:gibbonPersonID';
+		$resultFamily = $pdo->executeQuery($dataFamily, $sqlFamily, '_');
+		$x = '';
         while ($rowFamily = $resultFamily->fetch()) {
             if ($rowFamily['nameAddress'] != '') {
-                echo $rowFamily['nameAddress'].', ';
+                $x .= $rowFamily['nameAddress'].', ';
             }
             if (substr(rtrim($rowFamily['homeAddress']), -1) == ',') {
                 $address = substr(rtrim($rowFamily['homeAddress']), 0, -1);
@@ -104,15 +93,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
             if ($address != false) {
                 $address = explode(',', $address);
                 for ($i = 0; $i < count($address); ++$i) {
-                    echo $address[$i];
+                    $x .= $address[$i];
                     if ($i < (count($address) - 1)) {
-                        echo ', ';
+                        $x .= ', ';
                     }
                 }
             }
         }
-        echo '</td>';
-        echo '<td>';
+  		$excel->getActiveSheet()->setCellValueByColumnAndRow(2, $r, $x);
+        //Column D
         $contact = '';
         try {
             $dataFamily = array('gibbonPersonID' => $row['gibbonPersonID']);
@@ -154,19 +143,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
         if (substr($contact, -2) == ', ') {
             $contact = substr($contact, 0, -2);
         }
-        echo $contact;
-        echo '</td>';
-        echo '<td>';
-        echo $row['nameShort'];
-        echo '</td>';
-        echo '</tr>';
+  		$excel->getActiveSheet()->setCellValueByColumnAndRow(3, $r, $contact);
+  		$excel->getActiveSheet()->setCellValueByColumnAndRow(4, $r, $row['nameShort']);
     }
     if ($count == 0) {
-        echo "<tr class=$rowNum>";
-        echo '<td colspan=2>';
-        echo __($guid, 'There are no records to display.');
-        echo '</td>';
-        echo '</tr>';
+  		$excel->getActiveSheet()->setCellValueByColumnAndRow(0, $r, __($guid, 'There are no records to display.'));
     }
-    echo '</table>';
+    $excel->exportWorksheet();
 }

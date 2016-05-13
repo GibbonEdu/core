@@ -52,8 +52,6 @@ if ($result) {
             header("Location: {$URL}");
         } else {
             //Proceed!
-            $exp = new Gibbon\Excel();
-
             $sql = 'SELECT surname, preferredName, email FROM gibbonStudentEnrolment INNER JOIN gibbonPerson ON gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonRollGroupID='.$gibbonRollGroupID." AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName";
             $exp = new Gibbon\Excel();
             $exp->exportWithQuery($sql, 'classList.xls', $connection2);

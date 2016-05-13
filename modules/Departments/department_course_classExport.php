@@ -56,7 +56,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
             header("Location: {$URL}");
         } else {
             //Proceed!
-            $exp = new Gibbon\Excel();
             try {
                 $data = array();
                 $sql = "SELECT role, surname, preferredName, email FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonCourseClassID=$gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY role DESC, surname, preferredName";

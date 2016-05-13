@@ -41,14 +41,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
     $alert = getAlert($guid, $connection2, 002);
 
     //Count number of columns
-    try {
-        $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-        $sql = 'SELECT * FROM gibbonMarkbookColumn WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY complete, completeDate DESC';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
+	$data = array('gibbonCourseClassID' => $gibbonCourseClassID);
+	$sql = 'SELECT * FROM gibbonMarkbookColumn WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY complete, completeDate DESC';
+	$result = $pdo->executeQuery($data, $sql, '_');
     $columns = $result->rowCount();
     if ($columns < 1) {
         echo "<div class='warning'>";
@@ -56,11 +51,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
         echo '</div>';
     } else {
         //Print table header
-        echo "<table class='mini' cellspacing='0' style='width: 100%; margin-top: 0px'>";
-        echo "<tr class='head'>";
-        echo "<th style='width: 150px; max-width: 200px'rowspan=2>";
-        echo __($guid, 'Student');
-        echo '</th>';
+		$excel = new Gibbon\Excel('markbookAll.xlsx');
+		if ($excel->estimateCellCount($pdo) > 8000)    //  If too big, then render csv instead.
+			return Gibbon\csv::generate($pdo, 'markbookColumn');
+		$excel->setActiveSheetIndex(0);
+		$excel->getProperties()->setTitle('All Markbook Data');
+		$excel->getProperties()->setSubject('All Markbook Data');
+		$excel->getProperties()->setDescription('All Markbook Data');
+
+
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(0, 1, __($guid, 'Student'));
 
         $span = 3;
         $columnID = array();
@@ -79,92 +79,50 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                 $gibbonRubricIDEffort[$i] = $row['gibbonRubricIDEffort'];
             }
 
-            if ($columnID[$i] == false) {
-                echo "<th style='text-align: center' colspan=$span>";
-
-                echo '</th>';
-            } else {
-                echo "<th style='text-align: center' colspan=$span>";
-                echo $row['name'];
-                echo '</th>';
+            if ($columnID[$i]) {
+				$excel->getActiveSheet()->setCellValueByColumnAndRow(2, 1, $row['name']);
             }
         }
-        echo '</tr>';
 
-        echo "<tr class='head'>";
-        for ($i = 0;$i < $columns;++$i) {
-            if ($columnID[$i] == false) {
-                echo "<th style='text-align: center' colspan=$span>";
 
-                echo '</th>';
-            } else {
-                echo "<th style='border-left: 2px solid #666; text-align: center; width: 40px'>";
-                echo '<b>';
-                if ($attainmentAlternativeNameAbrev != '') {
-                    echo $attainmentAlternativeNameAbrev;
-                } else {
-                    echo __($guid, 'Att');
-                }
-                echo '</b>';
-                echo '</th>';
-                echo "<th style='text-align: center; width: 40px'>";
-                echo '<b>';
+		if ($attainmentAlternativeNameAbrev != '') {
+			$x = $attainmentAlternativeNameAbrev;
+		} else {
+			$x = __($guid, 'Att');
+		}
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(1, 2, $x);
                 if ($effortAlternativeNameAbrev != '') {
-                    echo $effortAlternativeNameAbrev;
+                    $x = $effortAlternativeNameAbrev;
                 } else {
-                    echo __($guid, 'Eff');
+                    $x = __($guid, 'Eff');
                 }
-                echo '</b>';
-                echo '</th>';
-                echo "<th style='text-align: center; width: 80px'>";
-                echo "<span title='".__($guid, 'Comment')."'>".__($guid, 'Com').'</span>';
-                echo '</th>';
-            }
-        }
-        echo '</tr>';
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(2, 2, $x);
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(3, 2, __($guid, 'Comment')." ".__($guid, 'Com'));
+
+		$r = 2;
 
         $count = 0;
         $rowNum = 'odd';
 
-        try {
-            $dataStudents = array('gibbonCourseClassID' => $gibbonCourseClassID);
-            $sqlStudents = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName";
-            $resultStudents = $connection2->prepare($sqlStudents);
-            $resultStudents->execute($dataStudents);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
+		$dataStudents = array('gibbonCourseClassID' => $gibbonCourseClassID);
+		$sqlStudents = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName";
+		$resultStudents = $pdo->executeQuery($dataStudent, $sqlStudents);
         if ($resultStudents->rowCount() < 1) {
-            echo '<tr>';
-            echo '<td colspan='.($columns + 1).'>';
-            echo '<i>'.__($guid, 'There are no records to display.').'</i>';
-            echo '</td>';
-            echo '</tr>';
+			$excel->getActiveSheet()->setCellValueByColumnAndRow(0, 3, __($guid, 'There are no records to display.'));
         } else {
             while ($rowStudents = $resultStudents->fetch()) {
-                if ($count % 2 == 0) {
-                    $rowNum = 'even';
-                } else {
-                    $rowNum = 'odd';
-                }
+                $r++;
                 ++$count;
-
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
-                echo '<td>';
-                echo formatName('', $rowStudents['preferredName'], $rowStudents['surname'], 'Student', true);
-                echo '</td>';
+				//Column A
+				$excel->getActiveSheet()->setCellValueByColumnAndRow(0, $r, formatName('', $rowStudents['preferredName'], $rowStudents['surname'], 'Student', true));
+				//Column B
 
                 for ($i = 0;$i < $columns;++$i) {
                     $row = $result->fetch();
-                    try {
-                        $dataEntry = array('gibbonMarkbookColumnID' => $columnID[($i)], 'gibbonPersonIDStudent' => $rowStudents['gibbonPersonID']);
-                        $sqlEntry = 'SELECT * FROM gibbonMarkbookEntry WHERE gibbonMarkbookColumnID=:gibbonMarkbookColumnID AND gibbonPersonIDStudent=:gibbonPersonIDStudent';
-                        $resultEntry = $connection2->prepare($sqlEntry);
-                        $resultEntry->execute($dataEntry);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
+					$dataEntry = array('gibbonMarkbookColumnID' => $columnID[($i)], 'gibbonPersonIDStudent' => $rowStudents['gibbonPersonID']);
+					$sqlEntry = 'SELECT * FROM gibbonMarkbookEntry WHERE gibbonMarkbookColumnID=:gibbonMarkbookColumnID AND gibbonPersonIDStudent=:gibbonPersonIDStudent';
+					$resultEntry = $pdo->executeQuery($dataEntry, $sqlEntry);
+
                     if ($resultEntry->rowCount() == 1) {
                         $rowEntry = $resultEntry->fetch();
                         $styleAttainment = '';
@@ -173,7 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                         } elseif ($rowEntry['attainmentConcern'] == 'P') {
                             $styleAttainment = "style='color: #390; font-weight: bold; border: 2px solid #390; padding: 2px 4px; background-color: #D4F6DC'";
                         }
-                        echo "<td style='border-left: 2px solid #666; text-align: center'>";
+ //                       echo "<td style='border-left: 2px solid #666; text-align: center'>";
                         $attainment = '';
                         if ($rowEntry['attainmentValue'] != '') {
                             $attainment = __($guid, $rowEntry['attainmentValue']);
@@ -183,9 +141,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                         } elseif ($rowEntry['attainmentValue'] == 'Incomplete') {
                             $attainment = __($guid, 'Inc');
                         }
-                        echo "<div $styleAttainment title='".htmlPrep($rowEntry['attainmentDescriptor'])."'>$attainment";
-                        echo '</div>';
-                        echo '</td>';
+						//Column B
+						$excel->getActiveSheet()->setCellValueByColumnAndRow(1, $r, htmlPrep($rowEntry['attainmentDescriptor']).' '.$attainment);
                         $styleEffort = '';
                         if ($rowEntry['effortConcern'] == 'Y') {
                             $styleEffort = "style='color: #".$alert['color'].'; font-weight: bold; border: 2px solid #'.$alert['color'].'; padding: 2px 4px; background-color: #'.$alert['colorBG']."'";
@@ -199,26 +156,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                         } elseif ($rowEntry['effortValue'] == 'Incomplete') {
                             $effort = __($guid, 'Inc');
                         }
-                        echo "<td style='text-align: center;'>";
-                        echo "<div $styleEffort title='".htmlPrep($rowEntry['effortDescriptor'])."'>$effort";
-                        echo '</div>';
-                        echo '</td>';
-                        echo "<td style='text-align: center;'>";
+ 						//Column C
+						$excel->getActiveSheet()->setCellValueByColumnAndRow(2, $r, $rowEntry['effortDescriptor']);
+ 						//Column D
                         $style = '';
                         if ($rowEntry['comment'] != '') {
-                            echo "<span $style title='".htmlPrep($rowEntry['comment'])."'>".substr($rowEntry['comment'], 0, 10).'...</span>';
+							$excel->getActiveSheet()->setCellValueByColumnAndRow(3, $r, $rowEntry['comment']);
                         }
-                        echo '</td>';
-                    } else {
-                        echo "<td style='text-align: center' colspan=$span>";
-                        echo '</td>';
                     }
                 }
-                echo '</tr>';
             }
-            echo '</table>';
+			$_SESSION[$guid]['exportToExcelParams'] = '';
+			$excel->exportWorksheet();
         }
     }
 }
 
-$_SESSION[$guid]['exportToExcelParams'] = '';
