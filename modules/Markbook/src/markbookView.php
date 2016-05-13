@@ -535,7 +535,7 @@ class markbookView
 
             // Calculate the 'term' averages (Cumulative Average)
             foreach ($averages as $termID => $term) {
-                if ($termID === 'final') continue;
+                if ($termID == 'final') continue;
 
                 $termTotal = 0;
                 $termCumulative = 0;
