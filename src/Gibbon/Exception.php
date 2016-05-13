@@ -22,17 +22,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  * @license    GNU  http://www.gnu.org/licenses/
  * @version    ##VERSION##, ##DATE##
  */
+ /**
+  */
 namespace Gibbon;
 
 
 /**
- * Gibbon_Exception
+ * Gibbon Exception
  *
  * @category   Gibbon
  * @package    Gibbon
  * @copyright  Copyright (c) 2006 - 2014 
  */
-class Gibbon_Exception extends Exception {
+class Exception extends \Exception {
     /**
      * Error handler callback
      *
