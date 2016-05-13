@@ -6,10 +6,9 @@
  	Downloaded from: http://webscripts.softpedia.com/script/PHP-Clases/Export-To-Excel-50394.html
 	License: GNU GPL
 */
-
+/**
+ */
 namespace Gibbon;
-
-use Gibbon\Config ;
 
 $config = new config();
 require_once $config->get('baseDir').'/lib/PHPExcel/Classes/PHPExcel.php';
