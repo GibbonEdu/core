@@ -533,6 +533,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                                             echo "<input name='$count-attainmentValueRaw' id='$count-attainmentValueRaw' value='$attainmentValueRaw' type='text' maxlength=10 class='$attainmentClass'>";
                                             echo ' / ' . $row2['attainmentRawMax'];
                                         echo '</td>';
+                                        ?>
+                                        <script type="text/javascript">
+                                            var <?php echo "rawValue$count" ?>=new LiveValidation('<?php echo "$count-attainmentValueRaw"; ?>');
+                                            <?php echo "rawValue$count" ?>.add(Validate.Numericality, { minimum: 0, maximum: <?php echo $row2['attainmentRawMax']; ?> } );
+                                        </script>
+                                        <?php
                                     } else {
                                         // Save them if raw marks is turned off, rather than losing the data
                                         echo "<input type='hidden' name='$count-attainmentValueRaw' id='$count-attainmentValueRaw' value='$attainmentValueRaw'  maxlength=10>";

@@ -138,7 +138,9 @@
     } else {
 
     	//Get the current page number
-        $pageNum = (isset($_GET['page']))? $_GET['page'] : $_SESSION[$guid]['markbookPage'];
+        $pageNum = (isset($_SESSION[$guid]['markbookPage']))? $_SESSION[$guid]['markbookPage'] : 1;
+        $pageNum = (isset($_GET['page']))? $_GET['page'] : $pageNum;
+
         $_SESSION[$guid]['markbookPage'] = $pageNum;
 
         // Load the columns for the current page

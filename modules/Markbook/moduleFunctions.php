@@ -222,9 +222,9 @@ function getTeacherList( $pdo, $gibbonCourseClassID ) {
 function getAlertStyle( $alert, $concern ) {
 
     if ($concern == 'Y') {
-        return "style='color: #".$alert['color'].'; font-weight: bold; border: 2px solid #'.$alert['color'].'; padding: 2px 4px; background-color: #'.$alert['colorBG'].";max-width:40px;margin:0 auto;'";
+        return "style='color: #".$alert['color'].'; font-weight: bold; border: 2px solid #'.$alert['color'].'; padding: 2px 4px; background-color: #'.$alert['colorBG'].";margin:0 auto;'";
     } else if ($concern == 'P') {
-        return "style='color: #390; font-weight: bold; border: 2px solid #390; padding: 2px 4px; background-color: #D4F6DC;max-width:40px;margin:0 auto;'";
+        return "style='color: #390; font-weight: bold; border: 2px solid #390; padding: 2px 4px; background-color: #D4F6DC;margin:0 auto;'";
     } else {
         return '';
     }

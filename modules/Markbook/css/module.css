@@ -116,8 +116,8 @@ th.columnLabel:first-of-type {
 }
 
 .medColumn {
-	min-width:40px;
-	width: 40px;
+	min-width:50px;
+	width: 65px;
 	white-space: nowrap;
 }
 
@@ -130,7 +130,7 @@ th.columnLabel:first-of-type {
 .rubricIcon img {
 	margin-bottom: -3px;
 	margin-left: 3px;
-	max-width: 32%;
+	
 }
 
 .studentName {

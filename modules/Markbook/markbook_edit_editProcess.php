@@ -94,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                     $name = $_POST['name'];
                     $description = $_POST['description'];
                     $type = $_POST['type'];
-                    $date = (!empty($_POST['date']))? dateConvert($guid, $_POST['date']) : '';
+                    $date = (!empty($_POST['date']))? dateConvert($guid, $_POST['date']) : date('Y-m-d');
                     $gibbonSchoolYearTermID = (!empty($_POST['gibbonSchoolYearTermID']))? $_POST['gibbonSchoolYearTermID'] : null;
                     //Sort out attainment
                     $attainment = $_POST['attainment'];
