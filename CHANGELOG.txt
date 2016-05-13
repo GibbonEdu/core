@@ -119,6 +119,7 @@ v12.0.00
 		Students: improved SEN options, and ability to have a referee, in application form
 		Students: added parent email to search in View Student Profile
 		Students: made country of birth and citizenship compulsory fields in Application Form
+		Students: fixed missing student image in some profile sub pages
 		Timetable: fixed rendering to allow Sunday as first day or the week, according to values in gibbonDaysOfWeek
 		Timetable: fixed rendering bug preventing some time labels from being displayed
 		Timetable: made "Back To Search" link persistent when timetable controls used
