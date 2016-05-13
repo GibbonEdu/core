@@ -41,7 +41,7 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
     $output .= "<input name='q' id='q' type='hidden' value='/modules/Markbook/markbook_view.php'>";
 
     if ($enableGroupByTerm == 'Y' ) {
-    
+
         $output .= "<span>".__($guid, 'Term').": </span>";
         $output .= "<select name='gibbonSchoolYearTermID' id='gibbonSchoolYearTermID' style='width:140px; float: none;'>";
         $output .= "<option value='-1'>".__($guid, 'All Terms')."</option>";
@@ -83,7 +83,7 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
         $_SESSION[$guid]['markbookTermName'] = __($guid, 'All Columns');
     }
 
-    $selectFilter = (isset($_SESSION[$guid]['markbookFilter']))? $_SESSION[$guid]['markbookFilter'] : 0;
+    $selectFilter = (isset($_SESSION[$guid]['markbookFilter']))? $_SESSION[$guid]['markbookFilter'] : '';
     $selectFilter = (isset($_GET['markbookFilter']))? $_GET['markbookFilter'] : $selectFilter;
 
     $_SESSION[$guid]['markbookFilter'] = $selectFilter;
@@ -106,7 +106,7 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
     // $output .= "<option value='week' ".(($selectFilter == 'week')? 'selected' : '').">".__($guid, 'This Week')."</option>";
     // $output .= "<option value='month' ".(($selectFilter == 'month')? 'selected' : '').">".__($guid, 'This Month')."</option>";
     $output .= '</select>';
-    
+
 
     $output .= "&nbsp;&nbsp;&nbsp;<span>".__($guid, 'Class').": </span>";
     $output .= "<select name='gibbonCourseClassID' id='gibbonCourseClassID' style='width:193px; float: none;'>";
