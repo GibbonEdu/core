@@ -134,6 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_i
                     else
                         echo '<li><b>' . __($guid, 'Effort Value') . '</b></li>' ;
                     ?>
+                    <li><b><?php echo __($guid, 'Comment') ?></li>
                 </ol>
 			</li>
 			<li><?php echo __($guid, 'Do not include a header row in the CSV files.') ?></li>
@@ -226,6 +227,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_i
                             $results[$resultSuccessCount]['effortValue'] = '';
                             if (isset($data[5])) {
                                 $results[$resultSuccessCount]['effortValue'] = $data[5];
+                            }
+                            $results[$resultSuccessCount]['comment'] = '';
+                            if (isset($data[6])) {
+                                $results[$resultSuccessCount]['comment'] = $data[6 ];
                             }
                             ++$resultSuccessCount;
                         } else {
@@ -320,7 +325,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_i
                                 if (isset($assessments[$result['courseName'] . '.' . $result['className'] . '-' . $result['columnName']]) == false) {
                                     try {
                                         $dataAssessment = array('columnName' => $result['columnName'], 'courseName' => $result['courseName'], 'className' => $result['className']);
-                                        $sqlAssessment = 'SELECT gibbonInternalAssessmentColumnID, gibbonCourse.gibbonCourseID, gibbonCourseClass.gibbonCourseClassID, attainment, effort
+                                        $sqlAssessment = 'SELECT gibbonInternalAssessmentColumnID, gibbonCourse.gibbonCourseID, gibbonCourseClass.gibbonCourseClassID, attainment, effort, comment, gibbonScaleIDAttainment, gibbonScaleIDEffort
                                             FROM gibbonInternalAssessmentColumn
                                                 JOIN gibbonCourseClass ON (gibbonInternalAssessmentColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
                                                 JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
@@ -348,6 +353,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_i
                                         $assessments[$result['courseName'] . '.' . $result['className'] . '-' . $result['columnName']][2] = $rowAssessment['gibbonInternalAssessmentColumnID'];
                                         $assessments[$result['courseName'] . '.' . $result['className'] . '-' . $result['columnName']][3] = $rowAssessment['attainment'];
                                         $assessments[$result['courseName'] . '.' . $result['className'] . '-' . $result['columnName']][4] = $rowAssessment['effort'];
+                                        $assessments[$result['courseName'] . '.' . $result['className'] . '-' . $result['columnName']][5] = $rowAssessment['comment'];
+                                        $assessments[$result['courseName'] . '.' . $result['className'] . '-' . $result['columnName']][6] = $rowAssessment['gibbonScaleIDAttainment'];
+                                        $assessments[$result['courseName'] . '.' . $result['className'] . '-' . $result['columnName']][7] = $rowAssessment['gibbonScaleIDEffort'];
                                     }
                                 }
 
@@ -359,6 +367,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_i
                                     $gibbonInternalAssessmentColumnID = $assessments[$result['courseName'] . '.' . $result['className'] . '-' . $result['columnName']][2] ;
                                     $attainment = $assessments[$result['courseName'] . '.' . $result['className'] . '-' . $result['columnName']][3] ;
                                     $effort = $assessments[$result['courseName'] . '.' . $result['className'] . '-' . $result['columnName']][4] ;
+                                    $comment = $assessments[$result['courseName'] . '.' . $result['className'] . '-' . $result['columnName']][5] ;
+                                    $gibbonScaleIDAttainment = $assessments[$result['courseName'] . '.' . $result['className'] . '-' . $result['columnName']][6] ;
+                                    $gibbonScaleIDEffort = $assessments[$result['courseName'] . '.' . $result['className'] . '-' . $result['columnName']][7] ;
 
                                     //Check column for student
                                     try {
@@ -383,8 +394,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_i
                                     if ($attainment == 'Y') {
                                         if ($result['attainmentValue']!='NULL')
                                             $attainmentValue = $result['attainmentValue'];
-                                        if (isset($desciptors[$rowAssessmentStudent['gibbonScaleIDAttainment'] . '-' . $result['attainmentValue']]))
-                                            $attainmentDescriptor = $desciptors[$rowAssessmentStudent['gibbonScaleIDAttainment'] . '-' . $result['attainmentValue']] ;
+                                        if (isset($desciptors[$gibbonScaleIDAttainment . '-' . $result['attainmentValue']]))
+                                            $attainmentDescriptor = $desciptors[$gibbonScaleIDAttainment . '-' . $result['attainmentValue']] ;
                                         else
                                             $attainmentDescriptor = $attainmentValue;
                                     }
@@ -394,11 +405,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_i
                                     if ($effort == 'Y') {
                                         if ($result['effortValue']!='NULL')
                                             $effortValue = $result['effortValue'];
-                                        if (isset($desciptors[$rowAssessmentStudent['gibbonScaleIDEffort'] . '-' . $result['effortValue']]))
-                                            $effortDescriptor = $desciptors[$rowAssessmentStudent['gibbonScaleIDEffort'] . '-' . $result['effortValue']];
+                                        if (isset($desciptors[$gibbonScaleIDEffort . '-' . $result['effortValue']]))
+                                            $effortDescriptor = $desciptors[$gibbonScaleIDEffort . '-' . $result['effortValue']];
                                         else {
                                             $effortDescriptor = $effortValue;
                                         }
+                                    }
+
+                                    $commentValue = null ;
+                                    if ($comment == 'Y') {
+                                        $commentValue = $result['comment'];
                                     }
 
                                     if ($resultAssessmentStudent->rowCount() == 1) { //Assessment exists for this student
@@ -407,12 +423,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_i
 
                                         $insertFail = false;
                                         try {
-                                            $dataAssessmentStudentUpdate = array('gibbonInternalAssessmentEntryID'=>$rowAssessmentStudent['gibbonInternalAssessmentEntryID'], 'attainmentValue'=>$attainmentValue, 'attainmentDescriptor'=>$attainmentDescriptor, 'effortValue'=>$effortValue, 'effortDescriptor'=>$effortDescriptor);
+                                            $dataAssessmentStudentUpdate = array('gibbonInternalAssessmentEntryID'=>$rowAssessmentStudent['gibbonInternalAssessmentEntryID'], 'attainmentValue'=>$attainmentValue, 'attainmentDescriptor'=>$attainmentDescriptor, 'effortValue'=>$effortValue, 'effortDescriptor'=>$effortDescriptor, 'comment'=>$commentValue);
                                             $sqlAssessmentStudentUpdate = 'UPDATE gibbonInternalAssessmentEntry
                                                 SET attainmentValue=:attainmentValue,
                                                     attainmentDescriptor=:attainmentDescriptor,
                                                     effortValue=:effortValue,
-                                                    effortDescriptor=:effortDescriptor
+                                                    effortDescriptor=:effortDescriptor,
+                                                    comment=:comment
                                                 WHERE gibbonInternalAssessmentEntryID=:gibbonInternalAssessmentEntryID';
                                             $resultAssessmentStudentUpdate = $connection2->prepare($sqlAssessmentStudentUpdate);
                                             $resultAssessmentStudentUpdate->execute($dataAssessmentStudentUpdate);
@@ -433,7 +450,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_i
                                         //Row does not exist, so create a new row
                                         $insertFail = false ;
                                         try {
-                                            $dataAssessmentStudentUpdate = array('gibbonInternalAssessmentColumnID'=>$gibbonInternalAssessmentColumnID, 'gibbonPersonIDStudent'=>$gibbonPersonID, 'attainmentValue'=>$attainmentValue, 'attainmentDescriptor'=>$attainmentDescriptor, 'effortValue'=>$effortValue, 'effortDescriptor'=>$effortDescriptor, 'gibbonPersonIDLastEdit'=>$_SESSION[$guid]['gibbonPersonID']);
+                                            $dataAssessmentStudentUpdate = array('gibbonInternalAssessmentColumnID'=>$gibbonInternalAssessmentColumnID, 'gibbonPersonIDStudent'=>$gibbonPersonID, 'attainmentValue'=>$attainmentValue, 'attainmentDescriptor'=>$attainmentDescriptor, 'effortValue'=>$effortValue, 'effortDescriptor'=>$effortDescriptor, 'comment'=>$commentValue, 'gibbonPersonIDLastEdit'=>$_SESSION[$guid]['gibbonPersonID']);
                                             $sqlAssessmentStudentUpdate = 'INSERT INTO gibbonInternalAssessmentEntry
                                                 SET
                                                     gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID,
@@ -442,7 +459,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_i
                                                     attainmentDescriptor=:attainmentDescriptor,
                                                     effortValue=:effortValue,
                                                     effortDescriptor=:effortDescriptor,
-                                                    comment=NULL,
+                                                    comment=:comment,
                                                     response=NULL,
                                                     gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit
                                                 ';
