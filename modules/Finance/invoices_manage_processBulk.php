@@ -494,12 +494,7 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
             elseif ($action == 'export') {
                 $_SESSION[$guid]['financeInvoiceExportIDs'] = $gibbonFinanceInvoiceIDs;
 
-                $exp = new Gibbon\Excel();
-                $exp->exportWithPage($guid, './invoices_manage_processBulkExportContents.php', 'invoices.xls', "&gibbonSchoolYearID=$gibbonSchoolYearID");
-
-                // THIS CODE HAS BEEN COMMENTED OUT, AS THE EXPORT RETURNS WITHOUT IT...NOT SURE WHY!
-                //$URL.="&bulkReturn=success0" ;
-                //header("Location: {$URL}");
+				include ('./invoices_manage_processBulkExportContents.php');
             } else {
                 $URL .= '&return=error1';
                 header("Location: {$URL}");

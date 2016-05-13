@@ -33,15 +33,15 @@ class Excel extends \PHPExcel
 		header("Cache-Control: private", false);
 	}
 	/**
-	 * export with Query
+	 * Export with Query
 	 *
 	 * @version	8th April 2016
 	 * @since	8th April 2016
 	 * @return	string	Export to Browser.
 	 */
-	function exportWithQuery($qry, $excel_file_name, $conn)//to export with query
+	function exportWithQuery($qry, $excel_file_name, $conn) 
 	{
-		$body=NULL ;
+		$body = NULL ;
 		try {
 			$tmprst=$conn->query($qry);
 			$tmprst->setFetchMode(PDO::FETCH_NUM);
@@ -67,15 +67,6 @@ class Excel extends \PHPExcel
 
 		$this->setHeader($excel_file_name);
 		echo $header.$body."</table>";
-	}
-	//Ross Parker added the ability to specify paramaters to pass into the file, via a session variable.
-	// deprecated
-	function exportWithPage($guid, $php_page, $excel_file_name, $params="")
-	{
-		throw new Gibbon\Exception(__("", 'This function is no longer valid to generate Excel documents.'));
-		$this->defineWorksheet($excel_file_name);
-		$_SESSION[$guid]["exportToExcelParams"]=$params ;
-		require_once "$php_page";
 	}
 	
 	/**

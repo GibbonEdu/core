@@ -54,9 +54,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
         header("Location: {$URL}");
     } else {
         //Proceed!
-        $exp = new Gibbon\Excel();
-
-        $exp = new Gibbon\Excel();
-        $exp->exportWithPage($guid, './markbook_viewExportContents.php', 'markbookColumn.xls', $gibbonMarkbookColumnID);
+		include './markbook_viewExportContents.php';
     }
 }

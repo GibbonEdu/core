@@ -53,8 +53,7 @@ if ($gibbonFinanceBudgetCycleID == '' or $action == '') { echo 'Fatal error load
             if ($action == 'export') {
                 $_SESSION[$guid]['financeExpenseExportIDs'] = $gibbonFinanceExpenseIDs;
 
-                $exp = new Gibbon\Excel();
-                $exp->exportWithPage($guid, './expenses_manage_processBulkExportContents.php', 'invoices.xls', "&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID");
+				include './expenses_manage_processBulkExportContents.php';
 
                 // THIS CODE HAS BEEN COMMENTED OUT, AS THE EXPORT RETURNS WITHOUT IT...NOT SURE WHY!
                     //$URL.="&bulkReturn=success0" ;

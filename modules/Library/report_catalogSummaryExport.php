@@ -96,7 +96,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
         header("Location: {$URL}");
     } else {
         //Proceed!
-        $exp = new Gibbon\Excel();
-        $exp->exportWithPage($guid, './report_catalogSummaryExportContents.php', 'catalogSummary.xls', "ownershipType=$ownershipType&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status");
+		include './report_catalogSummaryExportContents.php';
     }
 }

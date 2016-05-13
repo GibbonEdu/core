@@ -52,7 +52,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
         header("Location: {$URL}");
     } else {
         //Proceed!
-        $exp = new Gibbon\Excel();
-        $exp->exportWithPage($guid, './report_transport_studentExportContents.php', 'studentTransport.xls');
+		include './report_transport_studentExportContents.php';
     }
 }

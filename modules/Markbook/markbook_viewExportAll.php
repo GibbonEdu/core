@@ -49,8 +49,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
     }
 
     //Proceed!
-    $exp = new Gibbon\Excel();
-
-    $exp = new Gibbon\Excel();
-    $exp->exportWithPage($guid, './markbook_viewExportAllContents.php', 'markbookAll.xls', $gibbonCourseClassID);
+	include './markbook_viewExportAllContents.php';
 }
