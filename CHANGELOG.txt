@@ -41,6 +41,10 @@ v12.0.00
 		Activities: added ability to digitally mark and export activity attendance
 		Formal Assessment: added import functionality for internal assessments
 		Individual Needs: new interface for parents to view individual education plans for their children (off by default)
+		Markbook: added support for raw attainment values that auto-calculate when set to a percent scale
+		Markbook: added configurable weightings for markbook types, along with cumulative and final grade calculation
+		Markkook: added mark book column filters and functionality to view and calculate marks by term
+		Markbook: improved the display, order and pagination of mark book columns
 		Messenger: added Canned Response functionality for defining commonly sent messages.
 		Planner: added ability to set units to inactive, to hide them from certain views
 		School Admin: changed "Spaces" to "Facilities" and integrated borrowable Library items into Booking (to support laptop carts)
@@ -96,6 +100,7 @@ v12.0.00
 		Markbook: fixed issue causing mis-evaluation of personalised targets, for some edge cases
 		Markbook: fixed uploaded response file selector gigantism issue
 		Markbook: added line break display to full comment in various viewing locations
+		Markbook: added session variables to keep the current course, filters and page selected
 		Messenger: stripped JavaScript out of widget preview text.
 		Messenger: removed signature from Quick Wall messages
 		Messenger: added Attendance target for message sharing
