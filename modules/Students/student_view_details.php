@@ -90,6 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     echo '</div>';
                 } else {
                     $row = $result->fetch();
+                    $studentImage=$row['image_240'] ;
 
                     echo "<div class='trail'>";
                     echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/student_view.php'>".__($guid, 'View Student Profiles')."</a> > </div><div class='trailEnd'>".formatName('', $row['preferredName'], $row['surname'], 'Student').'</div>';
@@ -283,6 +284,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     echo '</div>';
                 } else {
                     $row = $result->fetch();
+                    $studentImage=$row['image_240'] ;
 
                     echo "<div class='trail'>";
                     echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/student_view.php&search=$search&allStudents=$allStudents&sort=$sort'>".__($guid, 'View Student Profiles')."</a> > </div><div class='trailEnd'>".formatName('', $row['preferredName'], $row['surname'], 'Student').'</div>';
@@ -1670,16 +1672,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 												<td class="right">
 													<?php
                                                     echo "<select name='category' id='category' style='width:302px'>";
-                                    echo "<option value=''></option>";
-                                    while ($rowCategories = $resultCategories->fetch()) {
-                                        $selected = '';
-                                        if ($category == $rowCategories['gibbonStudentNoteCategoryID']) {
-                                            $selected = 'selected';
-                                        }
-                                        echo "<option $selected value='".$rowCategories['gibbonStudentNoteCategoryID']."'>".$rowCategories['name'].'</option>';
-                                    }
-                                    echo '</select>';
-                                    ?>
+                                                    echo "<option value=''></option>";
+                                                    while ($rowCategories = $resultCategories->fetch()) {
+                                                        $selected = '';
+                                                        if ($category == $rowCategories['gibbonStudentNoteCategoryID']) {
+                                                            $selected = 'selected';
+                                                        }
+                                                        echo "<option $selected value='".$rowCategories['gibbonStudentNoteCategoryID']."'>".$rowCategories['name'].'</option>';
+                                                    }
+                                                    echo '</select>';
+                                                    ?>
 												</td>
 											</tr>
 											<tr>
@@ -1756,8 +1758,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         }
                                         ++$count;
 
-                                            //COLOR ROW BY STATUS!
-                                            echo "<tr class=$rowNum>";
+                                        //COLOR ROW BY STATUS!
+                                        echo "<tr class=$rowNum>";
                                         echo '<td>';
                                         echo dateConvertBack($guid, substr($row['timestamp'], 0, 10)).'<br/>';
                                         echo "<span style='font-size: 75%; font-style: italic'>".substr($row['timestamp'], 11, 5).'</span>';
@@ -2903,7 +2905,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     }
                     $_SESSION[$guid]['sidebarExtra'] .= '</div>';
 
-                    $_SESSION[$guid]['sidebarExtra'] .= getUserPhoto($guid, $row['image_240'], 240);
+                    $_SESSION[$guid]['sidebarExtra'] .= getUserPhoto($guid, $studentImage, 240);
 
                     //PERSONAL DATA MENU ITEMS
                     $_SESSION[$guid]['sidebarExtra'] .= '<h4>'.__($guid, 'Personal').'</h4>';

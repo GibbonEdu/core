@@ -19,11 +19,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+//Set timezone from session variable
+date_default_timezone_set($_SESSION[$guid]['timezone']);
+
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
 //Get alternative header names
 $enableColumnWeighting = getSettingByScope($connection2, 'Markbook', 'enableColumnWeighting');
+$enableRawAttainment = getSettingByScope($connection2, 'Markbook', 'enableRawAttainment');
+$enableGroupByTerm = getSettingByScope($connection2, 'Markbook', 'enableGroupByTerm');
 $attainmentAlternativeName = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeName');
 $attainmentAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeNameAbrev');
 $effortAlternativeName = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName');
@@ -106,6 +111,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                         }
 
                         echo "<div class='linkTop'>";
+                        if ($row2['gibbonPlannerEntryID'] != '') {
+                        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID=$gibbonCourseClassID&gibbonPlannerEntryID=".$row2['gibbonPlannerEntryID']."'>".__($guid, 'View Linked Lesson')."<img style='margin: 0 0 -4px 5px' title='".__($guid, 'View Linked Lesson')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/planner.png'/></a> | ";
+                        }
                         echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=$gibbonMarkbookColumnID'>".__($guid, 'Enter Data')."<img style='margin: 0 0 0px 5px' title='".__($guid, 'Enter Data')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/markbook.png'/></a> ";
                         echo '</div>';
                         ?>
@@ -140,6 +148,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                                             } catch (PDOException $e) {
                                             }
 
+
 											$lastType = '';
 											$currentType = '';
 											echo "<option value=''></option>";
@@ -148,7 +157,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
 												if ($rowSelect['gibbonUnitID'] == $row2['gibbonUnitID'] and $rowSelect['gibbonCourseClassID'] == $row2['gibbonCourseClassID']) {
 													$selected = 'selected';
 												}
-												$currentType = $rowSelect['type'];
+												$currentType = (isset($rowSelect['type']))? $rowSelect['type'] : '';
 												if ($currentType != $lastType) {
 													echo "<optgroup label='--".$currentType."--'>";
 												}
@@ -258,6 +267,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
 								$types = getSettingByScope($connection2, 'Markbook', 'markbookType');
 								if ($types != false) {
 									$types = explode(',', $types);
+
+									$weightedTypes = array();
+									if ($enableColumnWeighting == 'Y') {
+										try {
+						                    $dataWeights = array('gibbonCourseClassID' => $gibbonCourseClassID);
+						                    $sqlWeights = 'SELECT type, description, calculate FROM gibbonMarkbookWeight WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY calculate, type';
+						                    $resultWeights = $connection2->prepare($sqlWeights);
+						                    $resultWeights->execute($dataWeights);
+						                } catch (PDOException $e) {}
+						                
+						                if ($resultWeights->rowCount() > 0) {
+						                	$weightedTypes = $resultWeights->fetchAll();
+						            	}
+									}
 									?>
 									<tr>
 										<td> 
@@ -267,17 +290,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
 										<td class="right">
 											<select name="type" id="type" class="standardWidth">
 												<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
-												<?php
-                                                for ($i = 0; $i < count($types); ++$i) {
-                                                    $selected = '';
-                                                    if ($row2['type'] == $types[$i]) {
-                                                        $selected = 'selected';
-                                                    }
-                                                    ?>
-													<option <?php echo $selected ?> value="<?php echo trim($types[$i]) ?>"><?php echo trim($types[$i]) ?></option>
-												<?php
+												
+												<?php  
+												if (count($weightedTypes) > 0) {
+													
+													$lastCalculateType  = '';
+													foreach ($weightedTypes as $type) {
+														if ($lastCalculateType != $type['calculate']) {
 
-                                                }
+															if ($lastCalculateType != '') echo '</optgroup>';
+															echo '<optgroup label="';
+															echo ($type['calculate'] == 'term')? __($guid, 'Per Term') : __($guid, 'Whole Year');
+															echo '">';
+														}
+
+														$selected = ($row2['type'] == $type['type'])? 'selected' : '';
+														printf('<option %s value="%s">%s</option>', $selected, $type['type'], $type['description'] );
+														
+														$lastCalculateType = $type['calculate'];
+													}
+													echo '</optgroup>';
+												} else {
+
+	                                                for ($i = 0; $i < count($types); ++$i) {
+	                                                    $selected = ($row2['type'] == $types[$i])? 'selected' : '';
+	                                                    printf('<option value="%2$s" %1$s>%2$s</option>', $selected, trim($types[$i]) );
+	                                                }
+	                                            }
                             					?>
 											</select>
 											<script type="text/javascript">
@@ -286,10 +325,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
 											</script>
 										</td>
 									</tr>
-									<?php
-								}
-								?>
+        						<?php
+                                }
+                                ?>
 								
+
 								<tr>
 									<td> 
 										<b><?php echo __($guid, 'Attachment') ?></b><br/>
@@ -326,6 +366,98 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
 										</script>
 									</td>
 								</tr>
+
+								<?php if ($enableGroupByTerm == 'Y') : ?>
+
+									<tr class='break'>
+										<td colspan=2> 
+											<h3>
+												<?php echo __($guid, 'Term Date')  ?>
+											</h3>
+										</td>
+									</tr>
+
+									<tr>
+										<td> 
+											<b><?php echo __($guid, 'Term') ?> *</b><br/>
+										</td>
+										<td class="right">
+											<select name="gibbonSchoolYearTermID" id="gibbonSchoolYearTermID" class="standardWidth">
+											<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
+												
+										<?php
+											try {
+										        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'] );
+										        $sql = 'SELECT gibbonSchoolYearTermID, name, UNIX_TIMESTAMP(firstDay) AS firstTime, UNIX_TIMESTAMP(lastDay) AS lastTime FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber';
+										        $resultTerms = $connection2->prepare($sql);
+										        $resultTerms->execute($data);
+										    } catch (PDOException $e) {
+										    }
+
+										    $timestamp = (isset($row2['date']))? strtotime($row2['date']) : time();
+
+										    while ($rowTerm = $resultTerms->fetch()) {
+
+										    	if ( isset($row2['gibbonSchoolYearTermID']) ) {
+										    		$selected = ($rowTerm['gibbonSchoolYearTermID'] == $row2['gibbonSchoolYearTermID'])? 'selected' : '';
+										    	} else {
+									            	$selected = ($timestamp >= $rowTerm['firstTime'] && $timestamp < $rowTerm['lastTime'])? 'selected' : '';
+									        	}
+
+									            print "<option $selected value='".$rowTerm['gibbonSchoolYearTermID']."'>".htmlPrep($rowTerm['name']).'</option>';
+									        }
+
+										 ?>
+											</select>
+											<script type="text/javascript">
+												var term=new LiveValidation('gibbonSchoolYearTermID');
+												term.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
+											</script>
+										</td>
+									</tr>
+
+									<tr>
+	                                    <td> 
+	                                        <b><?php echo __($guid, 'Date') ?>  *</b><br/>
+	                                        <span class="emphasis small"><?php echo __($guid, '1. Format') ?> 
+	                                        <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+	                                                echo 'dd/mm/yyyy';
+	                                            } else {
+	                                                echo $_SESSION[$guid]['i18n']['dateFormat'];
+	                                            }
+	                                        ?></span>
+	                                    </td>
+	                                    <td class="right">
+	                                        <input name="date" id="date" maxlength=10 value="<?php echo dateConvertBack($guid, $row2['date']); ?>" type="text" class="standardWidth">
+	                                        <script type="text/javascript">
+	                                            var date=new LiveValidation('date');
+	                                            date.add(Validate.Presence);
+	                                            date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
+	                                                echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+	                                            } else {
+	                                                echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+	                                            }
+	                                                            ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+	                                                echo 'dd/mm/yyyy';
+	                                            } else {
+	                                                echo $_SESSION[$guid]['i18n']['dateFormat'];
+	                                            }
+	                                                            ?>." } ); 
+	                                        </script>
+	                                         <script type="text/javascript">
+	                                            $(function() {
+	                                                $( "#date" ).datepicker();
+	                                            });
+	                                        </script>
+	                                    </td>
+	                                </tr>
+
+
+                                <?php else: ?>
+
+                                	<input type="hidden" name="date" id="date" maxlength=10 value="<?php echo dateConvertBack($guid, $row2['date']); ?>" >
+
+								<?php endif; ?>
 								
 								
 								<tr class='break'>
@@ -342,11 +474,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
 											if ($('input[name=attainment]:checked').val()=="Y" ) {
 												$("#gibbonScaleIDAttainmentRow").slideDown("fast", $("#gibbonScaleIDAttainmentRow").css("display","table-row")); 
 												$("#attainmentWeightingRow").slideDown("fast", $("#attainmentWeightingRow").css("display","table-row")); 
+												$("#attainmentRawMaxRow").slideDown("fast", $("#attainmentRawMaxRow").css("display","table-row"));
 												$("#gibbonRubricIDAttainmentRow").slideDown("fast", $("#gibbonRubricIDAttainmentRow").css("display","table-row")); 
 												
 											} else {
 												$("#gibbonScaleIDAttainmentRow").css("display","none");
 												$("#attainmentWeightingRow").css("display","none");
+												$("#attainmentRawMaxRow").css("display","none");
 												$("#gibbonRubricIDAttainmentRow").css("display","none");
 											}
 										 });
@@ -396,6 +530,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
 									</td>
 								</tr>
 								<?php
+
+								if ($enableRawAttainment == 'Y') {
+                                    ?>
+									<tr id="attainmentRawMaxRow" <?php if ($row2['attainment'] == 'N') { echo "style='display: none'"; } ?>>
+										<td> 
+											<b><?php if ($attainmentAlternativeName != '') { echo $attainmentAlternativeName.' '.__($guid, 'Weighting');
+											} else {
+												echo __($guid, 'Attainment Total Mark');
+											}
+                                    		?></b><br/>
+                                    		<span class="emphasis small"><?php echo __($guid, 'Leave blank to omit raw marks.') ?></span>
+										</td>
+										<td class="right">
+											<input name="attainmentRawMax" id="attainmentRawMax" maxlength=4 value="<?php echo $row2['attainmentRawMax'] ?>" type="text" class="standardWidth">
+											<script type="text/javascript">
+												var attainmentRawMax=new LiveValidation('attainmentRawMax');
+												attainmentRawMax.add(Validate.Numericality);
+											</script>
+										</td>
+									</tr>
+									<?php
+                                } else {
+                                	?>
+                                	<input type="hidden" name="attainmentRawMax" id="attainmentRawMax" maxlength=4 value="<?php echo $row2['attainmentRawMax'] ?>" >
+                                	<?php
+                                }
+
                                 if ($enableColumnWeighting == 'Y') {
                                     ?>
 									<tr id="attainmentWeightingRow" <?php if ($row2['attainment'] == 'N') { echo "style='display: none'"; } ?>>
@@ -407,7 +568,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                                     		?></b><br/>
 										</td>
 										<td class="right">
-											<input name="attainmentWeighting" id="attainmentWeighting" maxlength=3 value="<?php echo $row2['attainmentWeighting'] ?>" type="text" class="standardWidth">
+											<input name="attainmentWeighting" id="attainmentWeighting" maxlength=3 value="<?php echo floatval($row2['attainmentWeighting']); ?>" type="text" class="standardWidth">
 											<script type="text/javascript">
 												var attainmentWeighting=new LiveValidation('attainmentWeighting');
 												attainmentWeighting.add(Validate.Numericality);
@@ -416,6 +577,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
 									</tr>
 									<?php
                                 }
+
                         		?>
 								<tr id='gibbonRubricIDAttainmentRow' <?php if ($row2['attainment'] == 'N') { echo "style='display: none'"; } ?>>
 									<td> 
