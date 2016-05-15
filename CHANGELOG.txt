@@ -115,6 +115,7 @@ v12.0.00
 		Rubrics: added course/class name to historical view result listing
 		School Admin: fixed bug preventing non-contiguous primary external assessment settings from being saved in Formal Assessment settings
 		School Admin: increased length of grade scale short name to 5 chars
+		School Admin: added confirm to department staff delete
 		Staff: adjusted role drop down to offer all Staff roles (from gibbonRole), not just Teaching & Support
 		Students: added year group to New Students report when using Date Range setting
 		Students: added All Students filter persistence to Back To Search link on student details page
