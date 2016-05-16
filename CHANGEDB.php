@@ -397,4 +397,5 @@ INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, 
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Markbook' AND gibbonAction.name='Manage Weightings_singleClass'));end
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '2', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Markbook' AND gibbonAction.name='Manage Weightings_singleClass'));end
 UPDATE gibbonAction SET categoryPermissionStaff='Y' WHERE (name='Enter Activity Attendance' OR name='Printable Attendance Sheet') AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Activities');end
+UPDATE gibbonAction SET entrySidebar='N' WHERE name='Privacy Choices by Student' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Students');end
 ";
