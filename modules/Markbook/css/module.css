@@ -134,7 +134,7 @@ th.columnLabel:first-of-type {
 }
 
 .studentName {
-	display: block;
+	display: inline-block;
 	font-weight: bold;
 	height: 15px;
 }

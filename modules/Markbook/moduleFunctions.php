@@ -118,14 +118,17 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
     if ( $resultSelect->rowCount() > 0) {
         if ($resultSelect->fetchColumn(0) > 0) { 
 
-            $selectOrderBy = (isset($_GET['studentOrderBy']))? $_GET['studentOrderBy'] : 'surname';
+            $selectOrderBy = (isset($_SESSION[$guid]['markbookOrderBy']))? $_SESSION[$guid]['markbookOrderBy'] : 'surname';
+            $selectOrderBy = (isset($_GET['markbookOrderBy']))? $_GET['markbookOrderBy'] : $selectOrderBy;
 
             $output .= "&nbsp;&nbsp;&nbsp;<span>".__($guid, 'Sory By').": </span>";
-            $output .= "<select name='studentOrderBy' id='studentOrderBy' style='width:140px; float: none;'>";
+            $output .= "<select name='markbookOrderBy' id='markbookOrderBy' style='width:140px; float: none;'>";
             $output .= "<option value='rollOrder' ".(($selectOrderBy == 'rollOrder')? 'selected' : '')." >".__($guid, 'Roll Order')."</option>";
             $output .= "<option value='surname' ".(($selectOrderBy == 'surname')? 'selected' : '')." >".__($guid, 'Surname')."</option>";
             $output .= "<option value='preferredName' ".(($selectOrderBy == 'preferredName')? 'selected' : '')." >".__($guid, 'Preferred Name')."</option>";
             $output .= '</select>';
+
+            $_SESSION[$guid]['markbookOrderBy'] = $selectOrderBy;
         }
     }
 
