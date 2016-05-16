@@ -174,6 +174,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
                                 <script type="text/javascript">
                                     var weighting=new LiveValidation('weighting');
                                     weighting.add(Validate.Presence);
+                                    weighting.add(Validate.Numericality, { minimum: 0, maximum: 100 } );
                                 </script>
                             </td>
                         </tr>

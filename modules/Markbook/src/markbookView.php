@@ -410,6 +410,7 @@ class markbookView
      * @return  int|string
      */
     public function getTypeAverage( $gibbonPersonID, $gibbonSchoolYearTermID, $type ) {
+        if ($gibbonSchoolYearTermID == '0') $gibbonSchoolYearTermID = 'all';
         return (isset($this->weightedAverages[$gibbonPersonID]['type'][$gibbonSchoolYearTermID][$type]))? $this->weightedAverages[$gibbonPersonID]['type'][$gibbonSchoolYearTermID][$type] : '';
     }
 
@@ -422,6 +423,7 @@ class markbookView
      * @return  int|string
      */
     public function getTermAverage( $gibbonPersonID, $gibbonSchoolYearTermID ) {
+        if ($gibbonSchoolYearTermID == '0') $gibbonSchoolYearTermID = 'all';
         return (isset($this->weightedAverages[$gibbonPersonID]['term'][$gibbonSchoolYearTermID]))? $this->weightedAverages[$gibbonPersonID]['term'][$gibbonSchoolYearTermID] : '';
     }
 
@@ -671,7 +673,7 @@ class markbookView
                     $term = $entry['gibbonSchoolYearTermID'];
                     $termsUsed[] = $term;
                 } else {
-                    $term = 0;
+                    $term = 'all';
                 }
 
                 // Group the end-of-course weightings in a specifically named 'term'
