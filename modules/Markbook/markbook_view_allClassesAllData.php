@@ -120,6 +120,11 @@
     $columnFilter = (isset($_GET['markbookFilter']))? $_GET['markbookFilter'] : $_SESSION[$guid]['markbookFilter'];
     $markbook->filterByFormOptions( $columnFilter );
 
+    // Get the sort order, if it exists
+    $studentOrderBy = (isset($_SESSION[$guid]['markbookOrderBy']))? $_SESSION[$guid]['markbookOrderBy'] : 'surname';
+    $studentOrderBy = (isset($_GET['markbookOrderBy']))? $_GET['markbookOrderBy'] : $studentOrderBy;
+
+
     if ($markbook == NULL || $markbook->getColumnCountTotal() < 1) {
         echo "<div class='linkTop'>";
         if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php') and $canEditThisClass) {
@@ -138,7 +143,7 @@
     } else {
 
     	//Get the current page number
-        $pageNum = (isset($_SESSION[$guid]['markbookPage']))? $_SESSION[$guid]['markbookPage'] : 1;
+        $pageNum = (isset($_SESSION[$guid]['markbookPage']))? $_SESSION[$guid]['markbookPage'] : 0;
         $pageNum = (isset($_GET['page']))? $_GET['page'] : $pageNum;
 
         $_SESSION[$guid]['markbookPage'] = $pageNum;
@@ -183,9 +188,10 @@
 
 	        	echo ( ($_SESSION[$guid]['markbookTerm'] == -1)? __($guid, "All Terms") : $_SESSION[$guid]['markbookTermName'] ) ." : ";
 
-	        	echo __($guid, "Records") ." ". max(1, ($pageNum * $markbook->getColumnsPerPage()) ) ."-";
-	        	echo ( $markbook->getColumnCountThisPage() + ($pageNum * $markbook->getColumnsPerPage()) ) ;
-	        	echo " ". __($guid, 'of') ." ". $markbook->getColumnCountTotal() ;
+                $start = min( max(1, ($pageNum * $markbook->getColumnsPerPage()) ), $markbook->getColumnCountTotal() );
+                $end = min( max( 1, $markbook->getColumnCountThisPage() + ($pageNum * $markbook->getColumnsPerPage()) ), $markbook->getColumnCountTotal() );
+
+	        	echo __($guid, "Records") ." ". $start ."-". $end ." ". __($guid, 'of') ." ". $markbook->getColumnCountTotal() ;
 
 	        	if ($markbook->getColumnCountTotal() > $markbook->getColumnCountThisPage()) {
 	        		echo " : ";
@@ -384,6 +390,7 @@
             echo '<div class="columnActions">';
             if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php') and $canEditThisClass) {
                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+
                 echo "<a class='miniIcon' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID."'><img title='".__($guid, 'Enter Data')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/markbook.png'/> ";
 
                     // Add mini checkmarks if the column is marked and included in calculations
@@ -561,14 +568,11 @@
         // Start displaying the main table data - get the students in this course and begin looping over them
         echo "<tbody>";
 
-        $selectOrderBy = (isset($_GET['studentOrderBy']))? $_GET['studentOrderBy'] : 'surname';
-
         try {
-            
-            if ($selectOrderBy == 'rollOrder') {
+            if ($studentOrderBy == 'rollOrder') {
                 $dataStudents = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonSchoolYearID'=>$_SESSION[$guid]['gibbonSchoolYearID'] );
-                $sqlStudents = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart, rollOrder FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY rollOrder, surname, preferredName";
-            } else if ($selectOrderBy == 'preferredName') {
+                $sqlStudents = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart, rollOrder FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY ISNULL(rollOrder), rollOrder, surname, preferredName";
+            } else if ($studentOrderBy == 'preferredName') {
                 $dataStudents = array('gibbonCourseClassID' => $gibbonCourseClassID);
                 $sqlStudents = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY preferredName, surname";
             } else {
@@ -596,13 +600,13 @@
                 echo "<tr >";
                 echo '<td class="firstColumn">';
 
-                echo "<a class='studentName' href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowStudents['gibbonPersonID'].'&subpage=Markbook#'.$gibbonCourseClassID."'>";
-
-                if ($selectOrderBy == 'rollOrder' && !empty($rowStudents['rollOrder']) ) {
-                    echo $rowStudents['rollOrder'].'. ';
+                if ($studentOrderBy == 'rollOrder' && !empty($rowStudents['rollOrder']) ) {
+                    echo $rowStudents['rollOrder'].') ';
                 }
 
-                $reverseName = ( $selectOrderBy == 'surname' or $selectOrderBy == 'rollOrder' or empty($selectOrderBy) );
+                echo "<a class='studentName' href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowStudents['gibbonPersonID'].'&subpage=Markbook#'.$gibbonCourseClassID."'>";
+
+                $reverseName = ( $studentOrderBy == 'surname' or $studentOrderBy == 'rollOrder' or empty($studentOrderBy) );
                 echo formatName('', $rowStudents['preferredName'], $rowStudents['surname'], 'Student', $reverseName);
 
                 echo '</a>';
