@@ -242,7 +242,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                     $returns = array();
                     $returns['error6'] = __($guid, 'An error occured with your submission, most likely because a submitted file was too large.');
                     if (isset($_GET['return'])) {
-                        returnProcess($guid, $_GET['return'], $returns, null);
+                        returnProcess($guid, $_GET['return'], null, $returns);
                     }
 
                     if ($gibbonCourseClassID == '') {
