@@ -243,7 +243,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 										} else {
 											$link = './index.php?q=/modules/'.$_SESSION[$guid]['module'].'/attendance_take_byPerson.php&gibbonPersonID='.$gibbonPersonID.'&currentDate='.date('d/m/Y', dateConvertToTimestamp($last5SchoolDays[$i]));
 											$rowLast5SchoolDays = $resultLast5SchoolDays->fetch();
-											if ($rowLast5SchoolDays['type'] == 'Absent') {
+											if ($rowLast5SchoolDays['type'] == 'Absent' or $rowLast5SchoolDays['type'] == 'Absent - Excused') {
 												$color = '#c00';
 												$extraStyle = 'color: #c00; background-color: #F6CECB; ';
 											} else {
@@ -276,40 +276,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 								<span class="emphasis small"></span>
 							</td>
 							<td class="right">
-								<?php
-                                echo "<select style='float: none; width: 302px; margin-bottom: 3px' name='type'>";
-								echo '<option ';
-								if ($lastType == 'Present') {
-									echo 'selected ';
-								};
-								echo "value='Present'>".__($guid, 'Present').'</option>';
-								echo '<option ';
-								if ($lastType == 'Present - Late') {
-									echo 'selected ';
-								};
-								echo "value='Present - Late'>".__($guid, 'Present - Late').'</option>';
-								echo '<option ';
-								if ($lastType == 'Present - Offsite') {
-									echo 'selected ';
-								};
-								echo "value='Present - Offsite'>".__($guid, 'Present - Offsite').'</option>';
-								echo '<option ';
-								if ($lastType == 'Absent') {
-									echo 'selected ';
-								};
-								echo "value='Absent'>".__($guid, 'Absent').'</option>';
-								echo '<option ';
-								if ($lastType == 'Left') {
-									echo 'selected ';
-								};
-								echo "value='Left'>".__($guid, 'Left').'</option>';
-								echo '<option ';
-								if ($lastType == 'Left - Early') {
-									echo 'selected ';
-								};
-								echo "value='Left - Early'>".__($guid, 'Left - Early').'</option>';
-								echo '</select>';
-								?>
+								<?php renderAttendanceTypeSelect($guid); ?>
 							</td>
 						</tr>
 						<tr>
@@ -318,40 +285,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 								<span class="emphasis small"></span>
 							</td>
 							<td class="right">
-								<?php
-                                echo "<select style='float: none; width: 302px; margin-bottom: 10px' name='reason'>";
-								echo '<option ';
-								if ($lastReason == '') {
-									echo 'selected ';
-								};
-								echo "value=''></option>";
-								echo '<option ';
-								if ($lastReason == 'Pending') {
-									echo 'selected ';
-								};
-								echo "value='Pending'>".__($guid, 'Pending').'</option>';
-								echo '<option ';
-								if ($lastReason == 'Education') {
-									echo 'selected ';
-								};
-								echo "value='Education'>".__($guid, 'Education').'</option>';
-								echo '<option ';
-								if ($lastReason == 'Family') {
-									echo 'selected ';
-								};
-								echo "value='Family'>".__($guid, 'Family').'</option>';
-								echo '<option ';
-								if ($lastReason == 'Medical') {
-									echo 'selected ';
-								};
-								echo "value='Medical'>".__($guid, 'Medical').'</option>';
-								echo '<option ';
-								if ($lastReason == 'Other') {
-									echo 'selected ';
-								};
-								echo "value='Other'>".__($guid, 'Other').'</option>';
-								echo '</select>';
-								?>
+								<?php renderAttendanceReasonSelect($guid); ?>
 							</td>
 						</tr>
 						<tr>

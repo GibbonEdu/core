@@ -355,22 +355,10 @@ else {
 										}
 									print "</div><br/>" ;
 									print "<input type='hidden' name='$count-gibbonPersonID' value='" . $rowCourseClass["gibbonPersonID"] . "'>" ;
-									print "<select style='float: none; width:130px; margin-bottom: 3px' name='$count-type'>" ;
-										print "<option " ; if ($rowLog["type"]=="Present") { print "selected " ; } ; print "value='Present'>" . _('Present') . "</option>" ;
-										print "<option " ; if ($rowLog["type"]=="Present - Late") { print "selected " ; } ; print "value='Present - Late'>" . _('Present - Late') . "</option>" ;
-										print "<option " ; if ($rowLog["type"]=="Present - Offsite") { print "selected " ; } ; print "value='Present - Offsite'>" . _('Present - Offsite') . "</option>" ;
-										print "<option " ; if ($rowLog["type"]=="Absent") { print "selected " ; } ; print "value='Absent'>" . _('Absent') . "</option>" ;
-										print "<option " ; if ($rowLog["type"]=="Left") { print "selected " ; } ; print "value='Left'>" . _('Left') . "</option>" ;
-										print "<option " ; if ($rowLog["type"]=="Left - Early") { print "selected " ; } ; print "value='Left - Early'>" . _('Left - Early') . "</option>" ;
-									print "</select>" ;
-									print "<select style='float: none; width:130px; margin-bottom: 3px' name='$count-reason'>" ;
-										print "<option " ; if ($rowLog["reason"]=="") { print "selected " ; } ; print "value=''></option>" ;
-										print "<option " ; if ($rowLog["reason"]=="Pending") { print "selected " ; } ; print "value='Pending'>" . _('Pending') . "</option>" ;
-										print "<option " ; if ($rowLog["reason"]=="Education") { print "selected " ; } ; print "value='Education'>" . _('Education') . "</option>" ;
-										print "<option " ; if ($rowLog["reason"]=="Family") { print "selected " ; } ; print "value='Family'>" . _('Family') . "</option>" ;
-										print "<option " ; if ($rowLog["reason"]=="Medical") { print "selected " ; } ; print "value='Medical'>" . _('Medical') . "</option>" ;
-										print "<option " ; if ($rowLog["reason"]=="Other") { print "selected " ; } ; print "value='Other'>" . _('Other') . "</option>" ;
-									print "</select>" ;
+
+									renderAttendanceTypeSelect($guid, $rowLog['type'], "$count-type", '130px');
+                                	renderAttendanceReasonSelect($guid, $rowLog['reason'], "$count-reason", '130px');
+
 									print "<input type='text' maxlength=255 name='$count-comment' id='$count-comment' style='float: none; width:126px; margin-bottom: 3px' value='" . htmlPrep($rowLog["comment"]) . "'>" ;
 								
 									if ($rowLog["type"]=="Present" OR $rowLog["type"]=="Present - Late") {
