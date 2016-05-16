@@ -110,21 +110,23 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
 
     try {
         $dataRollOrder = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonSchoolYearID'=>$_SESSION[$guid]['gibbonSchoolYearID'] );
-        $sqlRollOrder = "SELECT DISTINCT(rollOrder) FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonSchoolYearID=:gibbonSchoolYearID";
+        $sqlRollOrder = "SELECT COUNT(DISTINCT rollOrder) FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonSchoolYearID=:gibbonSchoolYearID";
         $resultSelect = $pdo->executeQuery($dataRollOrder, $sqlRollOrder);
     } catch (PDOException $e) {}
 
     // More than one rollOrder means there are orders assigned to each student, otherwise skip the sort filter
-    if ( $resultSelect->rowCount() > 1) {
+    if ( $resultSelect->rowCount() > 0) {
+        if ($resultSelect->fetchColumn(0) > 0) { 
 
-        $selectOrderBy = (isset($_GET['studentOrderBy']))? $_GET['studentOrderBy'] : 'surname';
+            $selectOrderBy = (isset($_GET['studentOrderBy']))? $_GET['studentOrderBy'] : 'surname';
 
-        $output .= "&nbsp;&nbsp;&nbsp;<span>".__($guid, 'Sory By').": </span>";
-        $output .= "<select name='studentOrderBy' id='studentOrderBy' style='width:140px; float: none;'>";
-        $output .= "<option value='rollOrder' ".(($selectOrderBy == 'rollOrder')? 'selected' : '')." >".__($guid, 'Roll Order')."</option>";
-        $output .= "<option value='surname' ".(($selectOrderBy == 'surname')? 'selected' : '')." >".__($guid, 'Surname')."</option>";
-        $output .= "<option value='preferredName' ".(($selectOrderBy == 'preferredName')? 'selected' : '')." >".__($guid, 'Preferred Name')."</option>";
-        $output .= '</select>';
+            $output .= "&nbsp;&nbsp;&nbsp;<span>".__($guid, 'Sory By').": </span>";
+            $output .= "<select name='studentOrderBy' id='studentOrderBy' style='width:140px; float: none;'>";
+            $output .= "<option value='rollOrder' ".(($selectOrderBy == 'rollOrder')? 'selected' : '')." >".__($guid, 'Roll Order')."</option>";
+            $output .= "<option value='surname' ".(($selectOrderBy == 'surname')? 'selected' : '')." >".__($guid, 'Surname')."</option>";
+            $output .= "<option value='preferredName' ".(($selectOrderBy == 'preferredName')? 'selected' : '')." >".__($guid, 'Preferred Name')."</option>";
+            $output .= '</select>';
+        }
     }
 
 
