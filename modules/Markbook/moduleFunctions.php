@@ -121,7 +121,7 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
             $selectOrderBy = (isset($_SESSION[$guid]['markbookOrderBy']))? $_SESSION[$guid]['markbookOrderBy'] : 'surname';
             $selectOrderBy = (isset($_GET['markbookOrderBy']))? $_GET['markbookOrderBy'] : $selectOrderBy;
 
-            $output .= "&nbsp;&nbsp;&nbsp;<span>".__($guid, 'Sory By').": </span>";
+            $output .= "&nbsp;&nbsp;&nbsp;<span>".__($guid, 'Sort By').": </span>";
             $output .= "<select name='markbookOrderBy' id='markbookOrderBy' style='width:140px; float: none;'>";
             $output .= "<option value='rollOrder' ".(($selectOrderBy == 'rollOrder')? 'selected' : '')." >".__($guid, 'Roll Order')."</option>";
             $output .= "<option value='surname' ".(($selectOrderBy == 'surname')? 'selected' : '')." >".__($guid, 'Surname')."</option>";

@@ -81818,7 +81818,7 @@ msgid "Marked"
 msgstr ""
 
 #: modules/Markbook/moduleFunctions.php:124
-msgid "Sory By"
+msgid "Sort By"
 msgstr ""
 
 #: modules/Markbook/weighting_manage.php:62
