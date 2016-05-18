@@ -112,6 +112,7 @@ v12.0.00
 		Planner: lesson summary now scraped from Smart Block titles
 		Planner: fixed lesson ordering bug in unit dump
 		Planner: simplified interface of Unit Planner
+		Planner: fixed file submission count for student homework
 		Rubrics: added course/class name to historical view result listing
 		School Admin: fixed bug preventing non-contiguous primary external assessment settings from being saved in Formal Assessment settings
 		School Admin: increased length of grade scale short name to 5 chars

@@ -133,14 +133,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                             mkdir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time), 0777, true);
                                         }
                                         $unique = false;
-                                        $count = 0;
-                                        while ($unique == false and $count < 100) {
+                                        $count2 = 0;
+                                        while ($unique == false and $count2 < 100) {
                                             $suffix = randomPassword(16);
                                             $location = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$_SESSION[$guid]['username'].'_'.preg_replace('/[^a-zA-Z0-9]/', '', $lesson)."_$suffix".strrchr($_FILES['file']['name'], '.');
                                             if (!(file_exists($path.'/'.$location))) {
                                                 $unique = true;
                                             }
-                                            ++$count;
+                                            ++$count2;
                                         }
 
                                         if (!(move_uploaded_file($_FILES['file']['tmp_name'], $path.'/'.$location))) {
