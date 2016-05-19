@@ -142,7 +142,8 @@ v12.0.00
 		User Admin: made list of religions settable via a comma-separated list in User Settings
 		User Admin: added log entry when privacy settings are changed
 		User Admin: fixed fields in gibbonPerson holding 0 rather than null
-	
+		User Admin: import interface fixes
+		
 v11.0.00
 --------
 	Headlines

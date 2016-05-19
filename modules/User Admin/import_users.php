@@ -50,9 +50,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_users.ph
 			<?php echo __($guid, 'This page allows you to import user data from a CSV file, in one of two modes: 1) Sync - the import file includes all users, whether they be students, staff, parents or other. The system will take the import and set any existing users not present in the file to "Left", whilst importing new users into the system, or 2) Import - the import file includes only users you wish to add to the system. New users will be assigned a random password, unless a default is set or the Password field is not blank. Select the CSV file you wish to use for the synchronise operation.') ?><br/>
 		</p>
 		<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/import_users.php&step=2' ?>" enctype="multipart/form-data">
-			<table class='smallIntBorder fullWidth' cellspacing='0'>	
+			<table class='smallIntBorder fullWidth' cellspacing='0'>
 				<tr>
-					<td> 
+					<td>
 						<b>Mode *</b><br/>
 						<span class="emphasis small"></span>
 					</td>
@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_users.ph
 					</td>
 				</tr>
 				<tr>
-					<td style='width: 275px'> 
+					<td style='width: 275px'>
 						<b><?php echo __($guid, 'CSV File') ?> *</b><br/>
 						<span class="emphasis small"><?php echo __($guid, 'See Notes below for specification.') ?></span>
 					</td>
@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_users.ph
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Field Delimiter') ?> *</b><br/>
 					</td>
 					<td class="right">
@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_users.ph
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'String Enclosure') ?> *</b><br/>
 						<span class="emphasis small"></span>
 					</td>
@@ -102,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_users.ph
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Default Password') ?></b><br/>
 						<span class="emphasis small"><?php echo __($guid, 'If not set, and Password field is empty, random passwords will be used.') ?></span>
 					</td>
@@ -122,9 +122,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_users.ph
 				</tr>
 			</table>
 		</form>
-		
-		
-		
+
+
+
 		<h4>
 			<?php echo __($guid, 'Notes') ?>
 		</h4>
@@ -133,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_users.ph
 			<li><?php echo __($guid, 'You may only submit CSV files.') ?></li>
 			<li><?php echo __($guid, 'Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).') ?></li>
 			<li><?php echo __($guid, 'Your import should only include those users whose status is set "Full" (e.g. current users).') ?></li>
-			<li><?php echo __($guid, 'The submitted file must have the following fields in the following order (* denotes required field):') ?></li> 
+			<li><?php echo __($guid, 'The submitted file must have the following fields in the following order (* denotes required field):') ?></li>
 				<ol>
 					<li><b><?php echo __($guid, 'Title') ?></b> - <?php echo __($guid, 'e.g. Mr, Mrs, Dr') ?></li>
 					<li><b><?php echo __($guid, 'Surname') ?> *</b> - <?php echo __($guid, 'Family name') ?></li>
