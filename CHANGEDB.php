@@ -399,4 +399,11 @@ INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`
 UPDATE gibbonAction SET categoryPermissionStaff='Y' WHERE (name='Enter Activity Attendance' OR name='Printable Attendance Sheet') AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Activities');end
 UPDATE gibbonAction SET entrySidebar='N' WHERE name='Privacy Choices by Student' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Students');end
 UPDATE gibboni18n SET maintainerName='Sint-Ignatiusschool, Brussels', maintainerWebsite='http://sint-ignatius.be' WHERE code='nl_NL';end
+UPDATE gibbonPerson SET lastTimestamp=NULL WHERE lastTimestamp='0000-00-00 00:00:00';end
+UPDATE gibbonPerson SET lastFailTimestamp=NULL WHERE lastFailTimestamp='0000-00-00 00:00:00';end
+UPDATE gibbonPerson SET visaExpiryDate=NULL WHERE visaExpiryDate='0000-00-00';end
+UPDATE gibbonPerson SET gibbonSchoolYearIDClassOf=NULL WHERE gibbonSchoolYearIDClassOf=0;end
+UPDATE gibbonPerson SET gibbonApplicationFormID=NULL WHERE gibbonApplicationFormID=0;end
+UPDATE gibbonPerson SET gibbonThemeIDPersonal=NULL WHERE gibbonThemeIDPersonal=0;end
+UPDATE gibbonPerson SET gibboni18nIDPersonal=NULL WHERE gibboni18nIDPersonal=0;end
 ";
