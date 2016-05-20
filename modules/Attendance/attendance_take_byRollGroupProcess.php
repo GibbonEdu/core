@@ -91,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                     for ($i = 0; $i < $count; ++$i) {
                         $gibbonPersonID = $_POST[$i.'-gibbonPersonID'];
                         $direction = 'In';
-                        if ($_POST[$i.'-type'] == 'Absent' or $_POST[$i.'-type'] == 'Absent - Excused' or $_POST[$i.'-type'] == 'Left' or $_POST[$i.'-type'] == 'Left - Early') {
+                        if ($_POST[$i.'-type'] == 'Absent' or $_POST[$i.'-type'] == 'Left' or $_POST[$i.'-type'] == 'Left - Early') {
                             $direction = 'Out';
                         }
                         $type = $_POST[$i.'-type'];

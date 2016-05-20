@@ -243,7 +243,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 										} else {
 											$link = './index.php?q=/modules/'.$_SESSION[$guid]['module'].'/attendance_take_byPerson.php&gibbonPersonID='.$gibbonPersonID.'&currentDate='.date('d/m/Y', dateConvertToTimestamp($last5SchoolDays[$i]));
 											$rowLast5SchoolDays = $resultLast5SchoolDays->fetch();
-											if ($rowLast5SchoolDays['type'] == 'Absent' or $rowLast5SchoolDays['type'] == 'Absent - Excused') {
+											if ($rowLast5SchoolDays['type'] == 'Absent') {
 												$color = '#c00';
 												$extraStyle = 'color: #c00; background-color: #F6CECB; ';
 											} else {

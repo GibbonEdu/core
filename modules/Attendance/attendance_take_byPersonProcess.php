@@ -76,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                     //Write to database
                     $fail = false;
                     $direction = 'In';
-                    if ($_POST['type'] == 'Absent' or $_POST['type'] == 'Absent - Excused' or $_POST['type'] == 'Left' or $_POST['type'] == 'Left - Early') {
+                    if ($_POST['type'] == 'Absent' or $_POST['type'] == 'Left' or $_POST['type'] == 'Left - Early') {
                         $direction = 'Out';
                     }
                     $type = $_POST['type'];

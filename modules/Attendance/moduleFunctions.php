@@ -55,7 +55,7 @@ function getAbsenceCount($guid, $gibbonPersonID, $connection2, $dateStart, $date
             //Scan though all of the end of days records, counting up days ending in absent
             if (count($endOfDays) >= 0) {
                 foreach ($endOfDays as $endOfDay) {
-                    if ($endOfDay == 'Absent' || $endOfDay == 'Absent - Excused') {
+                    if ($endOfDay == 'Absent') {
                         ++$absentCount;
                     }
                 }
@@ -319,7 +319,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
                                             ++$logCount;
                                         }
 
-                                        if ($log[0][0] == 'Absent' or $log[0][0] == 'Absent - Excused') {
+                                        if ($log[0][0] == 'Absent') {
                                             ++$countAbsent;
                                             $extraStyle = 'border: 1px solid #c00; color: #c00; background-color: #F6CECB; ';
                                         } else {
@@ -350,8 +350,6 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
                                                     $output .= 'LE';
                                                 } elseif ($log[$x][0] == 'Absent') {
                                                     $output .= 'A';
-                                                } elseif ($log[$x][0] == 'Absent - Excused') {
-                                                    $output .= 'AX';
                                                 }
                                             }
                                             if ($x != 0 and $x != count($log)) {
@@ -434,11 +432,6 @@ function renderAttendanceTypeSelect( $guid, $lastType = '', $name='type', $width
     };
     echo "value='Absent'>".__($guid, 'Absent').'</option>';
     echo '<option ';
-    if ($lastType == 'Absent - Excused') {
-        echo 'selected ';
-    };
-    echo "value='Absent - Excused'>".__($guid, 'Absent - Excused').'</option>';
-    echo '<option ';
     if ($lastType == 'Left') {
         echo 'selected ';
     };
@@ -463,6 +456,11 @@ function renderAttendanceReasonSelect( $guid, $lastReason = '', $name='reason', 
         echo 'selected ';
     };
     echo "value='Pending'>".__($guid, 'Pending').'</option>';
+    echo '<option ';
+    if ($lastReason == 'Unexcused') {
+        echo 'selected ';
+    };
+    echo "value='Unexcused'>".__($guid, 'Unexcused').'</option>';
     echo '<option ';
     if ($lastReason == 'Education') {
         echo 'selected ';
