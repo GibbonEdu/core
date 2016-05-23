@@ -111,7 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
                     echo __($guid, 'Read');
                     echo '</th>';
                     echo '<th>';
-                    echo __($guid, 'Star');
+                    echo __($guid, 'Likes');
                     echo '</th>';
                     echo '<th>';
                     echo __($guid, 'Comments');
@@ -167,7 +167,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
                         }
                         echo '</td>';
                         echo '<td>';
-                        if ($rowWork['gibbonPlannerEntryHomeworkID'] != '' and $rowList['gibbonPersonID'] != $_SESSION[$guid]['gibbonPersonID'] and $rowWork['status'] != 'Exemption') {
+                        if ($rowList['gibbonPersonID'] == $_SESSION[$guid]['gibbonPersonID']) {
+                            $likesTotal = countLikesByContext($connection2, 'Crowd Assessment', 'gibbonPlannerEntryHomeworkID', $rowWork['gibbonPlannerEntryHomeworkID']);
+                            echo $likesTotal;
+                        } elseif ($rowWork['gibbonPlannerEntryHomeworkID'] != '' and $rowList['gibbonPersonID'] != $_SESSION[$guid]['gibbonPersonID'] and $rowWork['status'] != 'Exemption') {
                             $likesGiven = countLikesByContextAndGiver($connection2, 'Crowd Assessment', 'gibbonPlannerEntryHomeworkID', $rowWork['gibbonPlannerEntryHomeworkID'], $_SESSION[$guid]['gibbonPersonID']);
                             if ($likesGiven != 1) {
                                 echo "<a href='".$_SESSION[$guid]['absoluteURL']."/modules/Crowd Assessment/crowdAssess_viewProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=".$rowWork['gibbonPlannerEntryHomeworkID'].'&address='.$_GET['q'].'&gibbonPersonID='.$rowList['gibbonPersonID']."'><img src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/like_off.png'></a>";
