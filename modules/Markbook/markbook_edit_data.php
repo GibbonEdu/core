@@ -44,19 +44,26 @@ echo "<script type='text/javascript'>";
     // Daniel P. Clark 2014
     // Modified for Gibbon Markbook Edit Data
 
-    $(document).keydown(function(e) {
+    $(window).keydown(function(e) {
+
         // Set self as the current item in focus
         var self = $(':focus'),
           // Set the form by the current item in focus
           form = self.parents('form:eq(0)'),
           focusable;
 
-        var index = self.attr('name').substr(0, self.attr('name').indexOf('-'));
-        var attainmentNext = $( '#' + (parseInt(index) + 1) + '-attainmentValueRaw');
+        // Sometimes :focus selector doesnt work (in Chrome specifically)
+        if (self.length == false) {
+            self = e.target.value;
+        }
 
         function enterKey(){
 
             if (e.which === 13 && !self.is('textarea,div[contenteditable=true]')) { // [Enter] key
+
+                var index = self.attr('name').substr(0, self.attr('name').indexOf('-'));
+                var attainmentNext = $( '#' + (parseInt(index) + 1) + '-attainmentValueRaw');
+
                 //If not a regular hyperlink/button/textarea
                 if ($.inArray(self, focusable) && (!self.is('a,button'))){
                     // Then prevent the default [Enter] key behaviour from submitting the form
@@ -66,13 +73,18 @@ echo "<script type='text/javascript'>";
                 self.change();
 
                 if (attainmentNext.length) {
-                    attainmentNext.focus();
-                    attainmentNext.select();
 
-                    // Scroll to the next raw score
-                    $('html, body').animate( {
-                        scrollTop: $('html, body').scrollTop() + ( attainmentNext.offset().top - self.offset().top ),
-                    }, 250);
+                    // Added for Chrome compatibility
+                    setTimeout(function(){
+                        attainmentNext.focus();
+                        attainmentNext.select();
+
+                        // Scroll to the next raw score
+                        $('body').animate( {
+                            scrollTop: $('body').scrollTop() + ( attainmentNext.offset().top - self.offset().top ),
+                        }, 250);
+
+                    },100);
                 }
 
                 return false;
