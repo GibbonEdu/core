@@ -133,6 +133,7 @@ v12.0.00
 		Timetable: made "Back To Search" link persistent when timetable controls used
 		Timetable: added ability for department coordinator to manage facility changes within their department
 		Timetable: fixed facility booking display output when viewing timetable by facility
+		Timetable: fixed bug with school and personal calendar lables overflowing short time-slot events
 		Tracking: adjusted Data Points export to combine multiple column internal assessments for one subject into a column
 		User Admin: added notification to form tutor(s) when a student's privacy options change (via Edit or Data Update).
 		User Admin: made max_input_vars test a little more generous
@@ -143,7 +144,7 @@ v12.0.00
 		User Admin: added log entry when privacy settings are changed
 		User Admin: fixed fields in gibbonPerson holding 0 rather than null
 		User Admin: import interface fixes
-		
+
 v11.0.00
 --------
 	Headlines
