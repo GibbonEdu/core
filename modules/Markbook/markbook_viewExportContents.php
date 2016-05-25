@@ -31,8 +31,6 @@ $effortAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'effor
 
 @session_start();
 
-$gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-$gibbonMarkbookColumnID = $_SESSION[$guid]['exportToExcelParams'];
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -42,7 +40,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
     $alert = getAlert($guid, $connection2, 002);
 
     //Proceed!
-
 	$dataStudents = array('gibbonCourseClassID' => $gibbonCourseClassID);
 	$sqlStudents = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart
 		FROM gibbonCourseClassPerson
@@ -68,22 +65,37 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
 		$excel->getProperties()->setSubject('Markbook Data');
 		$excel->getProperties()->setDescription('Markbook Data');
 
+        //Create border and fill style
+        $style_border = array('borders' => array('right' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '766f6e')), 'left' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '766f6e')), 'top' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '766f6e')), 'bottom' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '766f6e'))));
+        $style_head_fill = array('fill' => array('type' => PHPExcel_Style_Fill::FILL_SOLID, 'color' => array('rgb' => 'B89FE2')));
+
+        //Auto set column widths
+        for($col = 'A'; $col !== 'E'; $col++)
+            $excel->getActiveSheet()->getColumnDimension($col)->setAutoSize(true);
 
 		$excel->getActiveSheet()->setCellValueByColumnAndRow(0, 1, __($guid, 'Student'));
-        if ($attainmentAlternativeName != '') {
-            $x = $attainmentAlternativeName;
+        $excel->getActiveSheet()->getStyleByColumnAndRow(0, 1)->applyFromArray($style_border);
+        $excel->getActiveSheet()->getStyleByColumnAndRow(0, 1)->applyFromArray($style_head_fill);
+
+        if ($attainmentAlternativeNameAbrev != '') {
+            $x = $attainmentAlternativeNameAbrev;
         } else {
-            $x = __($guid, 'Attainment');
+            $x = __($guid, 'Att');
         }
 		$excel->getActiveSheet()->setCellValueByColumnAndRow(1, 1, $x);
-        if ($effortAlternativeName != '') {
-            $x = $effortAlternativeName;
+        $excel->getActiveSheet()->getStyleByColumnAndRow(1, 1)->applyFromArray($style_border);
+        $excel->getActiveSheet()->getStyleByColumnAndRow(1, 1)->applyFromArray($style_head_fill);
+        if ($effortAlternativeNameAbrev != '') {
+            $x = $effortAlternativeNameAbrev;
         } else {
-            $x = __($guid, 'Effort');
+            $x = __($guid, 'Eff');
         }
 		$excel->getActiveSheet()->setCellValueByColumnAndRow(2, 1, $x);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(3, 1, __($guid, 'Comment'));
-		$excel->getActiveSheet()->getStyle("1:1")->getFont()->setBold(true);
+        $excel->getActiveSheet()->getStyleByColumnAndRow(2, 1)->applyFromArray($style_border);
+        $excel->getActiveSheet()->getStyleByColumnAndRow(2, 1)->applyFromArray($style_head_fill);
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(3, 1, __($guid, 'Com'));
+        $excel->getActiveSheet()->getStyleByColumnAndRow(3, 1)->applyFromArray($style_border);
+        $excel->getActiveSheet()->getStyleByColumnAndRow(3, 1)->applyFromArray($style_head_fill);
 
 		$r = 1;
         while ($rowStudents = $resultStudents->fetch()) {
@@ -91,9 +103,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
 			$r++;
 			//Column A
 			$excel->getActiveSheet()->setCellValueByColumnAndRow(0, $r, formatName('', $rowStudents['preferredName'], $rowStudents['surname'], 'Student', true));
-            echo formatName('', $rowStudents['preferredName'], $rowStudents['surname'], 'Student', true);
+            $excel->getActiveSheet()->getStyleByColumnAndRow(0, $r)->applyFromArray($style_border);
 
-			//Column B
+            //Column B
 			$x = '';
 			$dataEntry = array('gibbonMarkbookColumnID' => $gibbonMarkbookColumnID, 'gibbonPersonIDStudent' => $rowStudents['gibbonPersonID']);
 			$sqlEntry = 'SELECT *
@@ -105,38 +117,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
 			}
             if ($resultEntry->rowCount() == 1) {
                 $rowEntry = $resultEntry->fetch();
-                $styleAttainment = '';
-                if ($rowEntry['attainmentConcern'] == 'Y') {
-                    $styleAttainment = "style='color: #".$alert['color'].'; font-weight: bold; border: 2px solid #'.$alert['color'].'; padding: 2px 4px; background-color: #'.$alert['colorBG']."'";
-                }
                 $attainment = $rowEntry['attainmentValue'];
                 if ($rowEntry['attainmentValue'] == 'Complete') {
                     $attainment = 'CO';
                 } elseif ($rowEntry['attainmentValue'] == 'Incomplete') {
                     $attainment = 'IC';
                 }
-                $x .= htmlPrep($rowEntry['attainmentDescriptor'].' '.$attainment);
+                $x .= htmlPrep($rowEntry['attainmentValue']);
 				$excel->getActiveSheet()->setCellValueByColumnAndRow(1, $r, $x);
-                $styleEffort = '';
-                if ($rowEntry['effortConcern'] == 'Y') {
-                    $styleEffort = "style='color: #".$alert['color'].'; font-weight: bold; border: 2px solid #'.$alert['color'].'; padding: 2px 4px; background-color: #'.$alert['colorBG']."'";
-                }
+                $excel->getActiveSheet()->getStyleByColumnAndRow(1, $r)->applyFromArray($style_border);
                 $effort = $rowEntry['effortValue'];
                 if ($rowEntry['effortValue'] == 'Complete') {
                     $effort = 'CO';
                 } elseif ($rowEntry['effortValue'] == 'Incomplete') {
                     $effort = 'IC';
                 }
-				$excel->getActiveSheet()->setCellValueByColumnAndRow(2, $r, htmlPrep($rowEntry['effortDescriptor']).' '.$effort);
-                $style = '';
-                if ($rowEntry['comment'] != '') {
-                	$excel->getActiveSheet()->setCellValueByColumnAndRow(2, $r, htmlPrep($rowEntry['comment'])." ".substr($rowEntry['comment'], 0, 10));
-                }
+				$excel->getActiveSheet()->setCellValueByColumnAndRow(2, $r, htmlPrep($rowEntry['effortValue']));
+                $excel->getActiveSheet()->getStyleByColumnAndRow(2, $r)->applyFromArray($style_border);
+                $excel->getActiveSheet()->setCellValueByColumnAndRow(3, $r, htmlPrep($rowEntry['comment']));
+                $excel->getActiveSheet()->getStyleByColumnAndRow(3, $r)->applyFromArray($style_border);
             } else {
 				$excel->getActiveSheet()->setCellValueByColumnAndRow(1, $r, 'No data.');
+                $excel->getActiveSheet()->getStyleByColumnAndRow(1, $r)->applyFromArray($style_border);
             }
         }
     }
-	$_SESSION[$guid]['exportToExcelParams'] = '';
 	$excel->exportWorksheet();
 }
