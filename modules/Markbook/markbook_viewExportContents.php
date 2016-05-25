@@ -44,14 +44,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
     //Proceed!
 
 	$dataStudents = array('gibbonCourseClassID' => $gibbonCourseClassID);
-	$sqlStudents = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart 
-		FROM gibbonCourseClassPerson 
-			JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) 
-		WHERE role='Student' 
-			AND gibbonCourseClassID=:gibbonCourseClassID 
-			AND status='Full' 
-			AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') 
-			AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') 
+	$sqlStudents = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart
+		FROM gibbonCourseClassPerson
+			JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
+		WHERE role='Student'
+			AND gibbonCourseClassID=:gibbonCourseClassID
+			AND status='Full'
+			AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."')
+			AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."')
 		ORDER BY surname, preferredName";
 	$resultStudents = $pdo->executeQuery($dataStudents, $sqlStudents, '_');
     if ($resultStudents->rowCount() < 1) {
@@ -67,8 +67,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
 		$excel->getProperties()->setTitle('Markbook Data');
 		$excel->getProperties()->setSubject('Markbook Data');
 		$excel->getProperties()->setDescription('Markbook Data');
-		
-		
+
+
 		$excel->getActiveSheet()->setCellValueByColumnAndRow(0, 1, __($guid, 'Student'));
         if ($attainmentAlternativeName != '') {
             $x = $attainmentAlternativeName;
@@ -96,9 +96,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
 			//Column B
 			$x = '';
 			$dataEntry = array('gibbonMarkbookColumnID' => $gibbonMarkbookColumnID, 'gibbonPersonIDStudent' => $rowStudents['gibbonPersonID']);
-			$sqlEntry = 'SELECT * 
-				FROM gibbonMarkbookEntry 
-				WHERE gibbonMarkbookColumnID=:gibbonMarkbookColumnID 
+			$sqlEntry = 'SELECT *
+				FROM gibbonMarkbookEntry
+				WHERE gibbonMarkbookColumnID=:gibbonMarkbookColumnID
 					AND gibbonPersonIDStudent=:gibbonPersonIDStudent';
 			if (is_null($resultEntry = $pdo->executeQuery($dataEntry, $sqlEntry))) {
 				$x .= $pdo->getError();
@@ -115,7 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                 } elseif ($rowEntry['attainmentValue'] == 'Incomplete') {
                     $attainment = 'IC';
                 }
-                $x .= htmlPrep($rowEntry['attainmentDescriptor'].' '.$attainment;
+                $x .= htmlPrep($rowEntry['attainmentDescriptor'].' '.$attainment);
 				$excel->getActiveSheet()->setCellValueByColumnAndRow(1, $r, $x);
                 $styleEffort = '';
                 if ($rowEntry['effortConcern'] == 'Y') {
@@ -140,4 +140,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
 	$_SESSION[$guid]['exportToExcelParams'] = '';
 	$excel->exportWorksheet();
 }
-

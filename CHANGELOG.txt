@@ -91,6 +91,7 @@ v12.0.00
 		Formal Assessment: fixed issue with View Classes menu not appearing for a user with no classes (e.g. admin)
 		Formal Assessment: fixed uploaded response file selector gigantism issue
 		Formal Assessment: added interface for parents and students to view External Assessments (off by default)
+		Formal Assessment: added table indexes for External Assessment to decrease loading time
 		Library: added item count column to lending log
 		Library: added count of records to Manage Catalog
 		Library: removed required status from ISBN10 field in Print Publication
