@@ -21,7 +21,6 @@ require_once dirname(__FILE__).'/gibbon.php';
 //Get and store custom string replacements in session
 function setStringReplacementList($connection2, $guid)
 {
-
     //$caller = debug_backtrace();
     //error_log("DEPRECATED: ".$caller[0]['line'].":".$caller[0]['file']." called " . __METHOD__ . " in " . __FILE__ );
     $trans = new Gibbon\trans();

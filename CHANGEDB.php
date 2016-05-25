@@ -406,4 +406,12 @@ UPDATE gibbonPerson SET gibbonSchoolYearIDClassOf=NULL WHERE gibbonSchoolYearIDC
 UPDATE gibbonPerson SET gibbonApplicationFormID=NULL WHERE gibbonApplicationFormID=0;end
 UPDATE gibbonPerson SET gibbonThemeIDPersonal=NULL WHERE gibbonThemeIDPersonal=0;end
 UPDATE gibbonPerson SET gibboni18nIDPersonal=NULL WHERE gibboni18nIDPersonal=0;end
+ALTER TABLE gibbonExternalAssessmentStudentEntry ADD INDEX `gibbonExternalAssessmentStudentID` (`gibbonExternalAssessmentStudentID`);end
+ALTER TABLE gibbonExternalAssessmentStudentEntry ADD INDEX `gibbonExternalAssessmentFieldID` (`gibbonExternalAssessmentFieldID`);end
+ALTER TABLE gibbonExternalAssessmentStudentEntry ADD INDEX `gibbonScaleGradeID` (`gibbonScaleGradeID`);end
+ALTER TABLE gibbonExternalAssessmentStudentEntry ADD INDEX `gibbonScaleGradeIDPrimaryAssessmentScale` (`gibbonScaleGradeIDPrimaryAssessmentScale`);end
+ALTER TABLE gibbonExternalAssessmentStudent ADD INDEX `gibbonExternalAssessmentID` (`gibbonExternalAssessmentID`);end
+ALTER TABLE gibbonExternalAssessmentStudent ADD INDEX `gibbonPersonID` (`gibbonPersonID`);end
+ALTER TABLE gibbonExternalAssessmentField ADD INDEX `gibbonExternalAssessmentID` (`gibbonExternalAssessmentID`);end
+
 ";

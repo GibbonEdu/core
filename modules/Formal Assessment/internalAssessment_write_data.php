@@ -140,9 +140,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 							<h3><?php echo __($guid, 'Assessment Details') ?></h3>
 						</td>
 					</tr>
-					
+
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Description') ?> *</b><br/>
 						</td>
 						<td class="right" colspan="<?php echo $span ?>">
@@ -154,12 +154,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Attachment') ?></b><br/>
 							<?php if ($row2['attachment'] != '') {
     						?>
 							<span class="emphasis small"><?php echo __($guid, 'Will overwrite existing attachment.') ?></span>
-							<?php 
+							<?php
 								}
                     			?>
 								</td>
@@ -184,7 +184,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 										$ext = $ext."'.".$rowExt['extension']."',";
 									}
 									?>
-							
+
 									<script type="text/javascript">
 										var file=new LiveValidation('file');
 										file.add( Validate.Inclusion, { within: [<?php echo $ext;
@@ -329,7 +329,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                     //COLOR ROW BY STATUS!
                                     echo "<tr class=$rowNum>";
 									echo '<td>';
-									echo "<div style='padding: 2px 0px'>".($count).") <b><a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowStudents['gibbonPersonID'].'&subpage=Markbook#'.$gibbonCourseClassID."'>".formatName('', $rowStudents['preferredName'], $rowStudents['surname'], 'Student', true).'</a><br/></div>';
+									echo "<div style='padding: 2px 0px'>".($count).") <b><a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowStudents['gibbonPersonID'].'&subpage=Internal Assessment\'>'.formatName('', $rowStudents['preferredName'], $rowStudents['surname'], 'Student', true).'</a><br/></div>';
 									echo '</td>';
 
 									for ($i = 0;$i < $columns;++$i) {
@@ -402,10 +402,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 										}
 										if ($row2['attainment'] == 'Y') {
 											echo "<td style='text-align: center'>";
-															//Create attainment grade select
-															if ($row2['gibbonScaleIDAttainment'] != '') {
-																echo renderGradeScaleSelect($connection2, $guid, $gibbonScaleIDAttainment, "$count-attainmentValue", 'value', true, '58', 'value', $rowEntry['attainmentValue']);
-															}
+											//Create attainment grade select
+											if ($row2['gibbonScaleIDAttainment'] != '') {
+												echo renderGradeScaleSelect($connection2, $guid, $gibbonScaleIDAttainment, "$count-attainmentValue", 'value', true, '58', 'value', $rowEntry['attainmentValue']);
+											}
 											echo '</td>';
 										}
 										if ($row2['effort'] == 'Y') {
@@ -473,7 +473,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 										} else {
 											echo $_SESSION[$guid]['i18n']['dateFormat'];
 										}
-															?>." } ); 
+															?>." } );
 									</script>
 									 <script type="text/javascript">
 										$(function() {
@@ -491,7 +491,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 									?>
 									<input name="count" id="count" value="<?php echo $count ?>" type="hidden">
 									<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-								
+
 								</td>
 							</tr>
 							<?php
