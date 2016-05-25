@@ -108,6 +108,31 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
     $output .= '</select>';
 
 
+    try {
+        $dataRollOrder = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonSchoolYearID'=>$_SESSION[$guid]['gibbonSchoolYearID'] );
+        $sqlRollOrder = "SELECT COUNT(DISTINCT rollOrder) FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonSchoolYearID=:gibbonSchoolYearID";
+        $resultSelect = $pdo->executeQuery($dataRollOrder, $sqlRollOrder);
+    } catch (PDOException $e) {}
+
+    // More than one rollOrder means there are orders assigned to each student, otherwise skip the sort filter
+    if ( $resultSelect->rowCount() > 0) {
+        if ($resultSelect->fetchColumn(0) > 0) { 
+
+            $selectOrderBy = (isset($_SESSION[$guid]['markbookOrderBy']))? $_SESSION[$guid]['markbookOrderBy'] : 'surname';
+            $selectOrderBy = (isset($_GET['markbookOrderBy']))? $_GET['markbookOrderBy'] : $selectOrderBy;
+
+            $output .= "&nbsp;&nbsp;&nbsp;<span>".__($guid, 'Sort By').": </span>";
+            $output .= "<select name='markbookOrderBy' id='markbookOrderBy' style='width:140px; float: none;'>";
+            $output .= "<option value='rollOrder' ".(($selectOrderBy == 'rollOrder')? 'selected' : '')." >".__($guid, 'Roll Order')."</option>";
+            $output .= "<option value='surname' ".(($selectOrderBy == 'surname')? 'selected' : '')." >".__($guid, 'Surname')."</option>";
+            $output .= "<option value='preferredName' ".(($selectOrderBy == 'preferredName')? 'selected' : '')." >".__($guid, 'Preferred Name')."</option>";
+            $output .= '</select>';
+
+            $_SESSION[$guid]['markbookOrderBy'] = $selectOrderBy;
+        }
+    }
+
+
     $output .= "&nbsp;&nbsp;&nbsp;<span>".__($guid, 'Class').": </span>";
     $output .= "<select name='gibbonCourseClassID' id='gibbonCourseClassID' style='width:193px; float: none;'>";
     $output .= "<option value=''></option>";
@@ -222,9 +247,9 @@ function getTeacherList( $pdo, $gibbonCourseClassID ) {
 function getAlertStyle( $alert, $concern ) {
 
     if ($concern == 'Y') {
-        return "style='color: #".$alert['color'].'; font-weight: bold; border: 2px solid #'.$alert['color'].'; padding: 2px 4px; background-color: #'.$alert['colorBG'].";max-width:40px;margin:0 auto;'";
+        return "style='color: #".$alert['color'].'; font-weight: bold; border: 2px solid #'.$alert['color'].'; padding: 2px 4px; background-color: #'.$alert['colorBG'].";margin:0 auto;'";
     } else if ($concern == 'P') {
-        return "style='color: #390; font-weight: bold; border: 2px solid #390; padding: 2px 4px; background-color: #D4F6DC;max-width:40px;margin:0 auto;'";
+        return "style='color: #390; font-weight: bold; border: 2px solid #390; padding: 2px 4px; background-color: #D4F6DC;margin:0 auto;'";
     } else {
         return '';
     }

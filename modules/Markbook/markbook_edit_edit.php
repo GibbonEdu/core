@@ -454,7 +454,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
 
 
                                 <?php else: ?>
-
+                                	<input type="hidden" name="gibbonSchoolYearTermID" id="gibbonSchoolYearTermID" value="<?php echo $row2['gibbonSchoolYearTermID']; ?>" >
                                 	<input type="hidden" name="date" id="date" maxlength=10 value="<?php echo dateConvertBack($guid, $row2['date']); ?>" >
 
 								<?php endif; ?>

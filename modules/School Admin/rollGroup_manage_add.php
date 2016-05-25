@@ -59,11 +59,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
             echo '</div>';
         } else {
             $row = $result->fetch(); ?>
-	
+
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/rollGroup_manage_addProcess.php' ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'School Year') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 						</td>
@@ -76,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Name') ?> *</b><br/>
 							<span class="emphasis small">Needs to be unique in school year.</span>
 						</td>
@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Short Name') ?> *</b><br/>
 							<span class="emphasis small">Needs to be unique in school year.</span>
 						</td>
@@ -102,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 						</td>
 					</tr>
 					<tr>
-						<td rowspan=3> 
+						<td rowspan=3>
 							<b><?php echo __($guid, 'Tutors') ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Up to 3 per roll group. The first-listed will be marked as "Main Tutor".') ?></span>
 						</td>
@@ -120,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 								while ($row = $result->fetch()) {
 									echo "<option value='".$row['gibbonPersonID']."'>".formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Staff', true, true).'</option>';
 								}
-								?>				
+								?>
 							</select>
 						</td>
 					</tr>
@@ -139,7 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 								while ($row = $result->fetch()) {
 									echo "<option value='".$row['gibbonPersonID']."'>".formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Staff', true, true).'</option>';
 								}
-								?>				
+								?>
 							</select>
 						</td>
 					</tr>
@@ -158,13 +158,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 								while ($row = $result->fetch()) {
 									echo "<option value='".$row['gibbonPersonID']."'>".formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Staff', true, true).'</option>';
 								}
-								?>				
+								?>
 							</select>
 						</td>
 					</tr>
 					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Location') ?> *</b><br/>
+						<td>
+							<b><?php echo __($guid, 'Location') ?></b><br/>
 							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
@@ -185,12 +185,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 									}
 									echo "<option $selected value='".$rowSelect['gibbonSpaceID']."'>".htmlPrep($rowSelect['name']).'</option>';
 								}
-								?>				
+								?>
 							</select>
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Next Roll Group') ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Sets student progression on rollover.') ?></span>
 						</td>
@@ -217,11 +217,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 								}
 								echo '</select>';
 							}
-							?>		
+							?>
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Website') ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Include http://') ?></span>
 						</td>
@@ -230,7 +230,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 							<script type="text/javascript">
 								var website=new LiveValidation('website');
 								website.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
-							</script>	
+							</script>
 						</td>
 					</tr>
 					<tr>

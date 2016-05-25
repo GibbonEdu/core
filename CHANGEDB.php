@@ -396,4 +396,14 @@ INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`
 INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `entrySidebar`, `menuShow`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Markbook'), 'Manage Weightings_singleClass', 2, 'Markbook', 'Manage markbook weightings for a single class at a time.', 'weighting_manage.php,weighting_manage_add.php,weighting_manage_edit.php,weighting_manage_delete.php', 'weighting_manage.php', 'Y', 'N', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N') ;end
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Markbook' AND gibbonAction.name='Manage Weightings_singleClass'));end
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '2', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Markbook' AND gibbonAction.name='Manage Weightings_singleClass'));end
+UPDATE gibbonAction SET categoryPermissionStaff='Y' WHERE (name='Enter Activity Attendance' OR name='Printable Attendance Sheet') AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Activities');end
+UPDATE gibbonAction SET entrySidebar='N' WHERE name='Privacy Choices by Student' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Students');end
+UPDATE gibboni18n SET maintainerName='Sint-Ignatiusschool, Brussels', maintainerWebsite='http://sint-ignatius.be' WHERE code='nl_NL';end
+UPDATE gibbonPerson SET lastTimestamp=NULL WHERE lastTimestamp='0000-00-00 00:00:00';end
+UPDATE gibbonPerson SET lastFailTimestamp=NULL WHERE lastFailTimestamp='0000-00-00 00:00:00';end
+UPDATE gibbonPerson SET visaExpiryDate=NULL WHERE visaExpiryDate='0000-00-00';end
+UPDATE gibbonPerson SET gibbonSchoolYearIDClassOf=NULL WHERE gibbonSchoolYearIDClassOf=0;end
+UPDATE gibbonPerson SET gibbonApplicationFormID=NULL WHERE gibbonApplicationFormID=0;end
+UPDATE gibbonPerson SET gibbonThemeIDPersonal=NULL WHERE gibbonThemeIDPersonal=0;end
+UPDATE gibbonPerson SET gibboni18nIDPersonal=NULL WHERE gibboni18nIDPersonal=0;end
 ";

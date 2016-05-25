@@ -22,7 +22,7 @@ require_once $config->get('baseDir').'/lib/PHPExcel/Classes/PHPExcel.php';
 class Excel extends \PHPExcel
 {
 	private	$fileName;
-	
+
 	private function setHeader()//this function used to set the header variable
 	{
 		header('Content-type: application/vnd.ms-excel');
@@ -38,7 +38,7 @@ class Excel extends \PHPExcel
 	 * @since	8th April 2016
 	 * @return	string	Export to Browser.
 	 */
-	function exportWithQuery($qry, $excel_file_name, $conn) 
+	function exportWithQuery($qry, $excel_file_name, $conn)
 	{
 		$body = NULL ;
 		try {
@@ -67,7 +67,7 @@ class Excel extends \PHPExcel
 		$this->setHeader($excel_file_name);
 		echo $header.$body."</table>";
 	}
-	
+
 	/**
 	 * define Worksheet
 	 *
@@ -88,7 +88,7 @@ class Excel extends \PHPExcel
 		if (substr($this->fileName, strlen($this->fileName) - 4) === '.xls')
 			$this->fileName .= 'x';
 	}
-	
+
 	/**
 	 * export Worksheet
 	 *
@@ -99,14 +99,14 @@ class Excel extends \PHPExcel
 	 */
 	public function exportWorksheet($openXML = true)
 	{
-		// Instantiate a Writer to create an OfficeOpenXML Excel .xlsx file        
-		// Write the Excel file to filename some_excel_file.xlsx in the current directory   
-		if ($openXML)             
-			$objWriter = new \PHPExcel_Writer_Excel2007($this); 
+		// Instantiate a Writer to create an OfficeOpenXML Excel .xlsx file
+		// Write the Excel file to filename some_excel_file.xlsx in the current directory
+		if ($openXML)
+			$objWriter = new \PHPExcel_Writer_Excel2007($this);
 		else
 		{
 			$this->fileName = substr($this->fileName, 0, -1);
-			$objWriter = new \PHPExcel_Writer_Excel5($this); 
+			$objWriter = new \PHPExcel_Writer_Excel5($this);
 		}
 		// Write the Excel file to filename some_excel_file.xlsx in the current directory
 		$this->setHeader();
@@ -114,7 +114,7 @@ class Excel extends \PHPExcel
 		$objWriter->save('php://output');
 		die();
 	}
-	
+
 	/**
 	 * construct
 	 *
@@ -128,7 +128,7 @@ class Excel extends \PHPExcel
 		parent::__construct();
 		$this->defineWorksheet($fileName);
 	}
-	
+
 	/**
 	 * cell Colour
 	 *
@@ -136,7 +136,7 @@ class Excel extends \PHPExcel
 	 * @since	11th APril 2016
 	 * @param	string	Cell/s
 	 * @param	string	Colour
-	 * @param	object	Chaining 
+	 * @param	object	Chaining
 	 */
 	public function cellColour($cells, $colour)
 	{
@@ -156,18 +156,18 @@ class Excel extends \PHPExcel
 	 * @since	11th April 2016
 	 * @param	string	Cell/s
 	 * @param	string	Colour
-	 * @param	object	Chaining 
+	 * @param	object	Chaining
 	 */
 	public function cellColor($cells, $colour)
 	{
 		return $this->cellColour($cells, $colour);
 	}
-	
+
 	/**
 	 * Estimate Cell Count in Spreadsheet
 	 *
 	 * @version	14th April 2016
-	 * @since	14th April 2016	
+	 * @since	14th April 2016
 	 * @param	Object	Gibbon\sqlConnection
 	 * return	integer	Estimated Cell Count
 	 */
@@ -177,7 +177,7 @@ class Excel extends \PHPExcel
 			return $pdo->getResult()->columnCount (  ) * $pdo->getResult()->rowCount ( );
 		return 0 ;
 	}
-	
+
 	/**
 	 * cell Font Colour
 	 *
@@ -185,7 +185,7 @@ class Excel extends \PHPExcel
 	 * @since	14th APril 2016
 	 * @param	string	Cell/s
 	 * @param	string	Colour
-	 * @param	object	Chaining 
+	 * @param	object	Chaining
 	 */
 	public function cellFontColour($cells, $colour)
 	{
@@ -205,7 +205,7 @@ class Excel extends \PHPExcel
 	 * @since	14th April 2016
 	 * @param	string	Cell/s
 	 * @param	string	Colour
-	 * @param	object	Chaining 
+	 * @param	object	Chaining
 	 */
 	public function cellFontColor($cells, $colour)
 	{

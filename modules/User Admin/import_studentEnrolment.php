@@ -49,11 +49,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_studentE
 		<p>
 			<?php echo __($guid, 'This page allows you to import student enrolment data from a CSV file, in one of two modes: 1) Sync - the import file includes all students. The system will take the import and delete enrolment for any existing students not present in the file, whilst importing new enrolments into the system, or 2) Import - the import file includes only student enrolments you wish to add to the system. Select the CSV file you wish to use for the synchronise operation.') ?><br/>
 		</p>
-		
+
 		<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/import_studentEnrolment.php&step=2' ?>" enctype="multipart/form-data">
-			<table class='smallIntBorder fullWidth' cellspacing='0'>	
+			<table class='smallIntBorder fullWidth' cellspacing='0'>
 				<tr>
-					<td> 
+					<td>
 						<b>Mode *</b><br/>
 						<span class="emphasis small"></span>
 					</td>
@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_studentE
 					</td>
 				</tr>
 				<tr>
-					<td style='width: 275px'> 
+					<td style='width: 275px'>
 						<b><?php echo __($guid, 'CSV File') ?> *</b><br/>
 						<span class="emphasis small"><?php echo __($guid, 'See Notes below for specification.') ?></span>
 					</td>
@@ -78,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_studentE
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Field Delimiter') ?> *</b><br/>
 					</td>
 					<td class="right">
@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_studentE
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'String Enclosure') ?> *</b><br/>
 						<span class="emphasis small"></span>
 					</td>
@@ -114,9 +114,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_studentE
 				</tr>
 			</table>
 		</form>
-		
-		
-		
+
+
+
 		<h4>
 			<?php echo __($guid, 'Notes') ?>
 		</h4>
@@ -125,11 +125,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_studentE
 			<li><?php echo __($guid, 'You may only submit CSV files.') ?></li>
 			<li><?php echo __($guid, 'Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).') ?></li>
 			<li><?php echo __($guid, 'Your import should only include all current students.') ?></li>
-			<li><?php echo __($guid, 'The submitted file must have the following fields in the following order (* denotes required field):') ?></li> 
+			<li><?php echo __($guid, 'The submitted file must have the following fields in the following order (* denotes required field):') ?></li>
 				<ol>
-					<li><b><?php echo __($guid, 'Username') ?></b> - <?php echo __($guid, 'Must be unique.') ?></li>
-					<li><b><?php echo __($guid, 'Roll Group') ?></b> - <?php echo __($guid, 'Roll group short name, as set in School Admim. Must already exist.') ?></li>
-					<li><b><?php echo __($guid, 'Year Group') ?></b> - <?php echo __($guid, 'Year group short name, as set in School Admin. Must already exist') ?></li>
+					<li><b><?php echo __($guid, 'Username') ?> *</b> - <?php echo __($guid, 'Must be unique.') ?></li>
+					<li><b><?php echo __($guid, 'Roll Group') ?> *</b> - <?php echo __($guid, 'Roll group short name, as set in School Admim. Must already exist.') ?></li>
+					<li><b><?php echo __($guid, 'Year Group') ?> *</b> - <?php echo __($guid, 'Year group short name, as set in School Admin. Must already exist') ?></li>
 					<li><b><?php echo __($guid, 'Roll Order') ?></b> - <?php echo __($guid, 'Must be unique to roll group if set.') ?></li>
 				</ol>
 			</li>
@@ -170,7 +170,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_studentE
             $proceed = true;
             $mode = $_POST['mode'];
 
-            if ($mode == 'sync') { //SYNC			
+            if ($mode == 'sync') { //SYNC
                 //PREPARE TABLES
                 echo '<h4>';
                 echo __($guid, 'Prepare Database Tables');
@@ -289,7 +289,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_studentE
                                 //Spit out results
                                 if ($addUserFail == true) {
                                     echo "<div class='error'>";
-
                                     echo __($guid, 'There was an error enroling student:').' '.$user['username'].'.';
                                     echo '</div>';
                                 } else {
@@ -412,7 +411,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_studentE
                                     $result = $connection2->prepare($sql);
                                     $result->execute($data);
                                 } catch (PDOException $e) {
-                                    echo $e->getMessage();
                                     $addUserFail = true;
                                 }
 

@@ -29,6 +29,9 @@ $attainmentAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'a
 $effortAlternativeName = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName');
 $effortAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'effortAlternativeNameAbrev');
 
+// Get the sort order, if it exists
+$studentOrderBy = (isset($_SESSION[$guid]['markbookOrderBy']))? $_SESSION[$guid]['markbookOrderBy'] : 'surname';
+$studentOrderBy = (isset($_GET['markbookOrderBy']))? $_GET['markbookOrderBy'] : $studentOrderBy;
 
 // This script makes entering raw marks easier, by capturing the enter key and moving to the next field insted of submitting
 echo "<script type='text/javascript'>";
@@ -396,8 +399,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                     $count = 0;
                     $rowNum = 'odd';
                     try {
-                        $dataStudents = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                        $sqlStudents = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName";
+                        if ($studentOrderBy == 'rollOrder') {
+                            $dataStudents = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonSchoolYearID'=>$_SESSION[$guid]['gibbonSchoolYearID'] );
+                            $sqlStudents = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart, rollOrder FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY ISNULL(rollOrder), rollOrder, surname, preferredName";
+                        } else if ($studentOrderBy == 'preferredName') {
+                            $dataStudents = array('gibbonCourseClassID' => $gibbonCourseClassID);
+                            $sqlStudents = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY preferredName, surname";
+                        } else {
+                            $dataStudents = array('gibbonCourseClassID' => $gibbonCourseClassID);
+                            $sqlStudents = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName";
+                        }
                         $resultStudents = $connection2->prepare($sqlStudents);
                         $resultStudents->execute($dataStudents);
                     } catch (PDOException $e) {
@@ -422,7 +433,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
 							//COLOR ROW BY STATUS!
 							echo "<tr id=".$rowStudents["gibbonPersonID"]." class=$rowNum>";
                             echo '<td>';
-                            echo "<div style='padding: 2px 0px'>".($count).") <b><a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowStudents['gibbonPersonID'].'&subpage=Markbook#'.$gibbonCourseClassID."'>".formatName('', $rowStudents['preferredName'], $rowStudents['surname'], 'Student', true).'</a><br/></div>';
+                            echo "<div style='padding: 2px 0px'>";
+
+                            if ($studentOrderBy == 'rollOrder' ) {
+                                echo (isset($rowStudents['rollOrder']))? $rowStudents['rollOrder'].') ' : '  ';
+                            } else {
+                                echo ($count).") ";
+                            }
+
+                            echo "<b><a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowStudents['gibbonPersonID'].'&subpage=Markbook#'.$gibbonCourseClassID."'>";
+
+                            $reverseName = ( $studentOrderBy == 'surname' or $studentOrderBy == 'rollOrder' or empty($studentOrderBy) );
+                            echo formatName('', $rowStudents['preferredName'], $rowStudents['surname'], 'Student', $reverseName);
+
+                            echo '</a><br/></div>';
                             echo '</td>';
 
                             echo "<td style='text-align: center'>";
@@ -533,6 +557,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                                             echo "<input name='$count-attainmentValueRaw' id='$count-attainmentValueRaw' value='$attainmentValueRaw' type='text' maxlength=10 class='$attainmentClass'>";
                                             echo ' / ' . $row2['attainmentRawMax'];
                                         echo '</td>';
+                                        ?>
+                                        <script type="text/javascript">
+                                            var <?php echo "rawValue$count" ?>=new LiveValidation('<?php echo "$count-attainmentValueRaw"; ?>');
+                                            <?php echo "rawValue$count" ?>.add(Validate.Numericality, { minimum: 0, maximum: <?php echo $row2['attainmentRawMax']; ?> } );
+                                        </script>
+                                        <?php
                                     } else {
                                         // Save them if raw marks is turned off, rather than losing the data
                                         echo "<input type='hidden' name='$count-attainmentValueRaw' id='$count-attainmentValueRaw' value='$attainmentValueRaw'  maxlength=10>";

@@ -70,7 +70,7 @@ v12.0.00
 		System: updated jQuery to v2.2.3
 		System: themeability enhancements
 		System: added menuShow switch to allow actions to be hidden from the main menu (in case they should only be seen in a hook)
-		System: added Ghanaian Cedi as currency
+		System: added Ghanaian Cedi, Myanmar Kyat as currencies
 		System Admin: Improved version comparison in module updater
 		System Admin: Improved version comparison in non-login database updater
 		System Admin: fixed error when removing module with no $moduleTables in manifest.php
@@ -112,9 +112,11 @@ v12.0.00
 		Planner: lesson summary now scraped from Smart Block titles
 		Planner: fixed lesson ordering bug in unit dump
 		Planner: simplified interface of Unit Planner
+		Planner: fixed file submission count for student homework
 		Rubrics: added course/class name to historical view result listing
 		School Admin: fixed bug preventing non-contiguous primary external assessment settings from being saved in Formal Assessment settings
 		School Admin: increased length of grade scale short name to 5 chars
+		School Admin: added confirm to department staff delete
 		Staff: adjusted role drop down to offer all Staff roles (from gibbonRole), not just Teaching & Support
 		Students: added year group to New Students report when using Date Range setting
 		Students: added All Students filter persistence to Back To Search link on student details page
@@ -125,6 +127,7 @@ v12.0.00
 		Students: added parent email to search in View Student Profile
 		Students: made country of birth and citizenship compulsory fields in Application Form
 		Students: fixed missing student image in some profile sub pages
+		Students: fixed width issue in privacy reportable
 		Timetable: fixed rendering to allow Sunday as first day or the week, according to values in gibbonDaysOfWeek
 		Timetable: fixed rendering bug preventing some time labels from being displayed
 		Timetable: made "Back To Search" link persistent when timetable controls used
@@ -138,7 +141,9 @@ v12.0.00
 		User Admin: added ability to allow control over formatting of usernames
 		User Admin: made list of religions settable via a comma-separated list in User Settings
 		User Admin: added log entry when privacy settings are changed
-
+		User Admin: fixed fields in gibbonPerson holding 0 rather than null
+		User Admin: import interface fixes
+		
 v11.0.00
 --------
 	Headlines

@@ -61,14 +61,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
             //Let's go!
             $row = $result->fetch(); ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/department_manage_editProcess.php?gibbonDepartmentID=$gibbonDepartmentID&address=".$_SESSION[$guid]['address'] ?>" enctype="multipart/form-data">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr class='break'>
 						<td colspan=2>
 							<h3><?php echo __($guid, 'General Information') ?></h3>
 						</td>
 					</tr>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'Type') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></i><br/></span>
 						</td>
@@ -78,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Name') ?> *</b><br/>
 						</td>
 						<td class="right">
@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Short Name') ?> *</b><br/>
 						</td>
 						<td class="right">
@@ -102,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Subject Listing') ?></b><br/>
 						</td>
 						<td class="right">
@@ -110,18 +110,18 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
 						</td>
 					</tr>
 					<tr>
-						<td colspan=2> 
-							<b><?php echo __($guid, 'Blurb') ?></b> 
+						<td colspan=2>
+							<b><?php echo __($guid, 'Blurb') ?></b>
 							<?php echo getEditor($guid,  true, 'blurb', $row['blurb'], 20) ?>
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Logo') ?></b><br/>
 							<span class="emphasis small">125x125px jpg/png/gif</i><br/></span>
 							<?php if ($row['logo'] != '') { ?>
 							<span class="emphasis small"><?php echo __($guid, 'Will overwrite existing attachment.') ?></span>
-							<?php 
+							<?php
 							}
             				?>
 						</td>
@@ -133,10 +133,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
             				?>
 							<input type="file" name="file" id="file"><br/><br/>
 							<?php
-                            echo getMaxUpload($guid); 
-                            $ext = "'.png','.jpeg','.jpg','.gif'"; 
+                            echo getMaxUpload($guid);
+                            $ext = "'.png','.jpeg','.jpg','.gif'";
                             ?>
-							
+
 							<script type="text/javascript">
 								var file=new LiveValidation('file');
 								file.add( Validate.Inclusion, { within: [<?php echo $ext; ?>], failureMessage: "<?php echo __($guid, 'Illegal file type!') ?>", partialMatch: true, caseSensitive: false } );
@@ -144,12 +144,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
 						</td>
 					</tr>
 					<tr class='break'>
-						<td colspan=2> 
+						<td colspan=2>
 							<h3><?php echo __($guid, 'Current Staff') ?></h3>
 						</td>
 					</tr>
 					<tr>
-						<td colspan=2> 
+						<td colspan=2>
 							<?php
                             try {
                                 $data = array('gibbonDepartmentID' => $gibbonDepartmentID);
@@ -198,7 +198,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
 									echo $row['role'];
 									echo '</td>';
 									echo '<td>';
-									echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/department_manage_edit_staff_deleteProcess.php?address='.$_GET['q'].'&gibbonDepartmentStaffID='.$row['gibbonDepartmentStaffID']."&gibbonDepartmentID=$gibbonDepartmentID'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+									echo "<a onclick='return confirm(\"".__($guid, 'Are you sure you wish to delete this record?')."\")' href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/department_manage_edit_staff_deleteProcess.php?address='.$_GET['q'].'&gibbonDepartmentStaffID='.$row['gibbonDepartmentStaffID']."&gibbonDepartmentID=$gibbonDepartmentID'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
 									echo '</td>';
 									echo '</tr>';
 								}
@@ -208,12 +208,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
 						</td>
 					</tr>
 					<tr class='break'>
-						<td colspan=2> 
+						<td colspan=2>
 							<h3><?php echo __($guid, 'New Staff') ?></h3>
 						</td>
 					</tr>
 					<tr>
-					<td> 
+					<td>
 						<b>Staff</b><br/>
 						<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 					</td>
@@ -233,9 +233,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
 							?>
 						</select>
 					</td>
-					
+
 					<tr id='roleLARow'>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Role') ?></b><br/>
 						</td>
 						<td class="right">
@@ -268,7 +268,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
 							</select>
 						</td>
 					</tr>
-					
+
 					<tr>
 						<td>
 							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
