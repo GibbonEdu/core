@@ -1,3 +1,5 @@
 uploads/*
 /config.php
 /vendor/
+modules/IB PYP
+modules/Query Builder
