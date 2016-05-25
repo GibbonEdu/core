@@ -61,18 +61,16 @@ if ($proceed == false) {
         echo '</p>';
     }
     ?>
-	
+
 	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/publicRegistrationProcess.php' ?>" enctype="multipart/form-data">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
-			
-			
-			<tr class='break'>
-				<th colspan=2> 
+		<table class='smallIntBorder fullWidth' cellspacing='0'>
+	        <tr class='break'>
+				<th colspan=2>
 					<?php echo __($guid, 'Account Details'); ?>
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'First Name') ?> *</b><br/>
 				</td>
 				<td class="right">
@@ -84,7 +82,7 @@ if ($proceed == false) {
 				</td>
 			</tr>
 			<tr>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php echo __($guid, 'Surname') ?> *</b><br/>
 				</td>
 				<td class="right">
@@ -95,9 +93,9 @@ if ($proceed == false) {
 					</script>
 				</td>
 			</tr>
-			
+
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Email') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?></span>
 				</td>
@@ -110,9 +108,9 @@ if ($proceed == false) {
 					</script>
 				</td>
 			</tr>
-			
+
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Gender') ?> *</b><br/>
 				</td>
 				<td class="right">
@@ -130,7 +128,7 @@ if ($proceed == false) {
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Date of Birth') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Format:').' '.$_SESSION[$guid]['i18n']['dateFormat']  ?></span>
 				</td>
@@ -148,7 +146,7 @@ if ($proceed == false) {
 						} else {
 							echo $_SESSION[$guid]['i18n']['dateFormat'];
 						}
-						?>." } ); 
+						?>." } );
 					 	dob.add(Validate.Presence);
 					</script>
 					 <script type="text/javascript">
@@ -159,30 +157,44 @@ if ($proceed == false) {
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Username') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?></span>
 				</td>
 				<td class="right">
-					<input name="username" id="username" maxlength=20 value="" type="text" class="standardWidth">
-					<?php
-                    $idList = '';
-					try {
-						$dataSelect = array();
-						$sqlSelect = 'SELECT username FROM gibbonPerson ORDER BY username';
-						$resultSelect = $connection2->prepare($sqlSelect);
-						$resultSelect->execute($dataSelect);
-					} catch (PDOException $e) {
-					}
-					while ($rowSelect = $resultSelect->fetch()) {
-						$idList .= "'".$rowSelect['username']."',";
-					}
-					?>
-					<script type="text/javascript">
-						var username=new LiveValidation('username');
-						username.add( Validate.Exclusion, { within: [<?php echo $idList;?>], failureMessage: "<?php echo __($guid, 'Value already in use!') ?>", partialMatch: false, caseSensitive: false } );
-						username.add(Validate.Presence);
-					</script>
+                    <input name="username" id="username" maxlength=20 value="" type="text" class="standardWidth"><br/><br/><br/>
+                    <div class="LV_validation_message LV_invalid" id='username_availability_result'</div><br/>
+                    <script type="text/javascript">
+                        $(document).ready(function(){
+                           $('#username').keyup(function(){
+                               var username = $('#username').val();
+                               $('#username_availability_result').html('<?php echo __($guid, "Checking availability...") ?>');
+                               $.ajax({
+                                   type : 'POST',
+                                   data : { username: $('#username').val() },
+                                  url: "./publicRegistrationCheck.php",
+                                   success: function(responseText){
+                                       if(responseText == 0){
+                                           $('#username_availability_result').html('<?php echo __($guid, "Username available") ?>');
+                                           $('#username_availability_result').removeClass('LV_invalid');
+                                           $('#username_availability_result').addClass('LV_valid');
+                                       }else if(responseText > 0){
+                                           $('#username_availability_result').html('<?php echo __($guid, "Username already taken") ?>');
+                                           $('#username_availability_result').removeClass('LV_valid');
+                                           $('#username_availability_result').addClass('LV_invalid');
+                                       }else{
+                                           alert('Problem with mysql query');
+                                       }
+                                   }
+                               });
+                            });
+                        });
+
+
+                        // Validation
+                        var username =  new LiveValidation('username');
+                        username.add(Validate.Presence);
+                    </script>
 				</td>
 			</tr>
 			<tr>
@@ -198,14 +210,14 @@ if ($proceed == false) {
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Password') ?> *</b><br/>
 					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
 					<input type='button' class="generatePassword" value="<?php echo __($guid, 'Generate Password') ?>"/>
 					<input name="passwordNew" id="passwordNew" maxlength=20 value="" type="password" class="standardWidth"><br/>
-					
+
 					<script type="text/javascript">
 						var passwordNew=new LiveValidation('passwordNew');
 						passwordNew.add(Validate.Presence);
@@ -227,7 +239,7 @@ if ($proceed == false) {
 							echo 'passwordNew.add( Validate.Length, { minimum: '.$minLength.'} );';
 						}
 						?>
-						
+
 						$(".generatePassword").click(function(){
 							var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789![]{}()%&*$#^<>~@|';
 							var text = '';
@@ -246,7 +258,7 @@ if ($proceed == false) {
 					</script>
 				</td>
 			</tr>
-			
+
 			<?php
             //Privacy statement
             $privacyStatement = getSettingByScope($connection2, 'User Admin', 'publicRegistrationPrivacyStatement');
@@ -306,8 +318,8 @@ if ($proceed == false) {
 				</td>
 			</tr>
 		</table>
-	</form>	
-	
+	</form>
+
 	<?php
     //Get postscrript
     $postscript = getSettingByScope($connection2, 'User Admin', 'publicRegistrationPostscript');

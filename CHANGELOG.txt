@@ -52,6 +52,7 @@ v12.0.00
 		User Admin: added bulk import of user photos from a zip file
 
 	Security
+		System: fixed username leak in public registration page
 		System: converted links to GNU GPL to HTTPS
 		System: converted links to Gibbon website to HTTPS
 		System: prevented non-login access to preferences
