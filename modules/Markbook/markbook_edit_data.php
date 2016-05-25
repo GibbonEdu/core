@@ -74,17 +74,13 @@ echo "<script type='text/javascript'>";
 
                 if (attainmentNext.length) {
 
-                    // Added for Chrome compatibility
-                    setTimeout(function(){
-                        attainmentNext.focus();
-                        attainmentNext.select();
+                    attainmentNext.focus();
+                    attainmentNext.select();
 
-                        // Scroll to the next raw score
-                        $('body').animate( {
-                            scrollTop: $('body').scrollTop() + ( attainmentNext.offset().top - self.offset().top ),
-                        }, 250);
-
-                    },100);
+                    // Scroll to the next raw score
+                    $('html,body').animate( {
+                        scrollTop: $(document).scrollTop() + ( attainmentNext.offset().top - self.offset().top ),
+                    }, 250);
                 }
 
                 return false;
