@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
                 ?>
 				<h2>
 					<?php echo __($guid, 'Step 1 - Quantity') ?>
-				</h2> 
+				</h2>
 				<?php
                 if ($_GET['name'] != '' or $_GET['gibbonLibraryTypeID'] != '' or $_GET['gibbonSpaceID'] != '' or $_GET['status'] != '' or $_GET['gibbonPersonIDOwnership'] != '' or $_GET['typeSpecificFields'] != '') {
                     echo "<div class='linkTop'>";
@@ -83,9 +83,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
                 }
                 ?>
 				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/library_manage_catalog_duplicate.php&step=2&gibbonLibraryItemID='.$row['gibbonLibraryItemID'].'&name='.$_GET['name'].'&gibbonLibraryTypeID='.$_GET['gibbonLibraryTypeID'].'&gibbonSpaceID='.$_GET['gibbonSpaceID'].'&status='.$_GET['status'].'&gibbonPersonIDOwnership='.$_GET['gibbonPersonIDOwnership'].'&typeSpecificFields='.$_GET['typeSpecificFields'] ?>">
-					<table class='smallIntBorder fullWidth' cellspacing='0'>	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>
 						<tr>
-							<td style='width: 275px'> 
+							<td style='width: 275px'>
 								<b><?php echo __($guid, 'Type') ?> *</b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 							</td>
@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Name') ?> *</b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 							</td>
@@ -104,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'ID') ?> *</b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 							</td>
@@ -113,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Author/Brand') ?> *</b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 							</td>
@@ -121,9 +121,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 								<input readonly name="producer" id="producer" maxlength=255 value="<?php echo $row['producer'] ?>" type="text" class="standardWidth">
 							</td>
 						</tr>
-						
+
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Number of Copies') ?> *</b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'How many copies do you want to make of this item?') ?></span>
 							</td>
@@ -137,7 +137,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 								</select>
 							</td>
 						</tr>
-						
+
 						<tr>
 							<td>
 								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
@@ -157,7 +157,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
                 ?>
 				<h2>
 					<?php echo __($guid, 'Step 2 - Details') ?>
-				</h2> 
+				</h2>
 				<?php
                 if ($_GET['name'] != '' or $_GET['gibbonLibraryTypeID'] != '' or $_GET['gibbonSpaceID'] != '' or $_GET['status'] != '' or $_GET['gibbonPersonIDOwnership'] != '' or $_GET['typeSpecificFields'] != '') {
                     echo "<div class='linkTop'>";
@@ -166,7 +166,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
                 }
                 ?>
 				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/library_manage_catalog_duplicateProcess.php?gibbonLibraryItemID='.$row['gibbonLibraryItemID'].'&name='.$_GET['name'].'&gibbonLibraryTypeID='.$_GET['gibbonLibraryTypeID'].'&gibbonSpaceID='.$_GET['gibbonSpaceID'].'&status='.$_GET['status'].'&gibbonPersonIDOwnership='.$_GET['gibbonPersonIDOwnership'].'&typeSpecificFields='.$_GET['typeSpecificFields'] ?>">
-					<table class='smallIntBorder fullWidth' cellspacing='0'>	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>
 						<?php
                         $number = $_POST['number'];
 						for ($i = 1; $i <= $number; ++$i) {
@@ -180,7 +180,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
                             //GENERAL FIELDS
                             ?>
 							<tr>
-								<td style='width: 275px'> 
+								<td style='width: 275px'>
 									<b><?php echo __($guid, 'Name') ?> *</b><br/>
 									<span class="emphasis small">Volume or product name.</span>
 								</td>
@@ -193,7 +193,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'ID') ?> *</b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'School-unique ID or barcode.') ?></span>
 								</td>
@@ -221,7 +221,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Author/Brand') ?> *</b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Who created the item?') ?></span>
 								</td>
@@ -234,7 +234,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Vendor') ?></b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Who supplied the item?') ?></span>
 								</td>
@@ -243,7 +243,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Purchase Date') ?></b><br/>
 									<span class="emphasis small"></span>
 								</td>
@@ -259,7 +259,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 										} else {
 											echo $_SESSION[$guid]['i18n']['dateFormat'];
 										}
-										?>." } ); 
+										?>." } );
 									</script>
 									 <script type="text/javascript">
 										$(function() {
@@ -269,7 +269,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Invoice Number') ?></b><br/>
 									<span class="emphasis small"></span>
 								</td>
@@ -278,7 +278,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 								</td>
 							</tr>
 							<tr id="locationRow">
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Location') ?> *</b><br/>
 								</td>
 								<td class="right">
@@ -299,12 +299,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 											}
 											echo "<option $selected value='".$rowSelect['gibbonSpaceID']."'>".htmlPrep($rowSelect['name']).'</option>';
 										}
-										?>				
+										?>
 									</select>
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Location Detail') ?></b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Shelf, cabinet, sector, etc') ?></span>
 								</td>
@@ -312,18 +312,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 									<input name="locationDetail<?php echo $i ?>" id="locationDetail<?php echo $i ?>" maxlength=255 value="<?php echo $row['locationDetail'] ?>" type="text" class="standardWidth">
 								</td>
 							</tr>
-							
+
 							<!-- FIELDS & CONTROLS FOR OWNERSHIP -->
 							<script type="text/javascript">
 								$(document).ready(function(){
 									$("#ownershipType<?php echo $i ?>").change(function(){
 										if ($('select.ownershipType<?php echo $i ?> option:selected').val()=="School" ) {
 											$("#ownershipTypeIndividualRow<?php echo $i ?>").css("display","none");
-											$("#ownershipTypeSchoolRow<?php echo $i ?>").slideDown("fast", $("#ownershipTypeSchoolRow<?php echo $i ?>").css("display","table-row")); 
+											$("#ownershipTypeSchoolRow<?php echo $i ?>").slideDown("fast", $("#ownershipTypeSchoolRow<?php echo $i ?>").css("display","table-row"));
 										} else if ($('select.ownershipType<?php echo $i ?> option:selected').val()=="Individual" ) {
 											$("#ownershipTypeSchoolRow<?php echo $i ?>").css("display","none");
-											$("#ownershipTypeIndividualRow<?php echo $i ?>").slideDown("fast", $("#ownershipTypeIndividualRow<?php echo $i ?>).css("display","table-row")); 
-										} 
+											$("#ownershipTypeIndividualRow<?php echo $i ?>").slideDown("fast", $("#ownershipTypeIndividualRow<?php echo $i ?>).css("display","table-row"));
+										}
 										else {
 											$("#ownershipTypeIndividualRow<?php echo $i ?>").css("display","none");
 											$("#ownershipTypeSchoolRow<?php echo $i ?>").css("display","none");
@@ -332,12 +332,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 								});
 							</script>
 							<tr id='ownershipTypeRow<?php echo $i ?>'>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Ownership Type') ?></b><br/>
 									<span class="emphasis small"></span>
 								</td>
 								<td class="right">
-									<select name="ownershipType<?php echo $i ?>" id="ownershipType<?php echo $i ?>" class='ownershipType<?php echo $i ?>' class="standardWidth">
+									<select name="ownershipType<?php echo $i ?>" id="ownershipType<?php echo $i ?>" class='ownershipType<?php echo $i ?> standardWidth'>
 										<option value=""></option>
 										<option <?php if ($row['ownershipType'] == 'School') { echo 'selected'; } ?> value="School" /> <?php echo __($guid, 'School') ?>
 										<option <?php if ($row['ownershipType'] == 'Individual') { echo 'selected'; } ?> value="Individual" /> <?php echo __($guid, 'Individual') ?>
@@ -379,7 +379,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 							}
 							$selectContents .= '</optgroup>'; ?>
 							<tr id="ownershipTypeSchoolRow<?php echo $i ?>" <?php if ($row['ownershipType'] != 'School') { echo "style='display: none'"; } ?>>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Main User') ?></b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Person the device is assigned to.') ?></span>
 								</td>
@@ -390,7 +390,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 								</td>
 							</tr>
 							<tr id="ownershipTypeIndividualRow<?php echo $i ?>" <?php if ($row['ownershipType'] != 'Individual') { echo "style='display: none'"; } ?>>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Owner') ?></b><br/>
 								</td>
 								<td class="right">
@@ -400,7 +400,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 								</td>
 							</tr>
 							<tr id="gibbonDepartmentIDRow">
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Department') ?></b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Which department is responsible for the item?') ?></span>
 								</td>
@@ -427,7 +427,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Borrowable?') ?> *</b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Is item available for loan?') ?></span>
 								</td>
@@ -439,7 +439,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Status?') ?> *</b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 								</td>
@@ -447,9 +447,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 									<input readonly style='width: 300px' type='text' value='Available' />
 								</td>
 							</tr>
-							
+
 							<tr id='gibbonSchoolYearIDReplacement'>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Replacement Year'); ?></b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'When is this item scheduled for replacement.') ?></span>
 								</td>
@@ -471,12 +471,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 											}
 											echo "<option $selected value='".$rowSelect['gibbonSchoolYearID']."'>".htmlPrep($rowSelect['name']).'</option>';
 										}
-										?>				
+										?>
 									</select>
 								</td>
 							</tr>
 							<tr id='replacementCostRow'>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Replacement Cost'); ?></b><br/>
 									<span style="font-size: 90%">
 										<i>
@@ -498,10 +498,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 									</script>
 								</td>
 							</tr>
-					
+
 							<tr>
-								<td colspan=2> 
-									<b><?php echo __($guid, 'Comments/Notes') ?></b> 
+								<td colspan=2>
+									<b><?php echo __($guid, 'Comments/Notes') ?></b>
 									<textarea name='comment<?php echo $i ?>' id='comment<?php echo $i ?>' rows=10 style='width: 300px'><?php echo htmlPreP($row['comment']) ?></textarea>
 								</td>
 							</tr>

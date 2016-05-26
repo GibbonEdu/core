@@ -102,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_smartBl
                         //Let's go!
                         $row = $result->fetch();
 
-                        echo "<table cellspacing='0' style='width: 100%'>";
+                        echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
                         echo '<tr>';
                         echo "<td style='width: 34%; vertical-align: top'>";
                         echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'School Year').'</span><br/>';
@@ -125,14 +125,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_smartBl
 
                         ?>
 						<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/units_edit_smartBlockifyProcess.php?gibbonUnitID=$gibbonUnitID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonSchoolYearID=$gibbonSchoolYearID" ?>">
-							<table cellspacing='0' style="width: 100%">	
+							<table cellspacing='0' style="width: 100%">
 								<tr>
-									<td> 
+									<td>
 										<b><?php echo __($guid, 'Are you sure you want to proceed with this request?'); ?></b><br/>
 										<span style="font-size: 90%; color: #cc0000"><i><?php echo __($guid, 'This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!'); ?></span>
 									</td>
 									<td class="right">
-										
+
 									</td>
 								</tr>
 								<tr>
@@ -146,7 +146,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_smartBl
 										<input type="submit" value="<?php echo __($guid, 'Yes'); ?>">
 									</td>
 									<td class="right">
-										
+
 									</td>
 								</tr>
 							</table>

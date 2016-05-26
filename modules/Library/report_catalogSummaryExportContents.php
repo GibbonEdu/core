@@ -32,16 +32,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
     echo '</div>';
 } else {
     //Proceed!
-    $ownershipType = trim($_GET['ownershipType']);
-    $gibbonLibraryTypeID = trim($_GET['gibbonLibraryTypeID']);
-    $gibbonSpaceID = trim($_GET['gibbonSpaceID']);
-    $status = trim($_GET['status']);
+    $ownershipType = trim($ownershipType);
+    $gibbonLibraryTypeID = trim($gibbonLibraryTypeID);
+    $gibbonSpaceID = trim($gibbonSpaceID);
+    $status = trim($status);
 
-    echo '<h1>';
-    echo __($guid, 'Catalog Summary');
-    echo '</h1>';
-
-	$data = array();
+    $data = array();
 	$sqlWhere = 'WHERE ';
 	if ($ownershipType != '') {
 		$data['ownershipType'] = $ownershipType;
@@ -64,22 +60,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
 	} else {
 		$sqlWhere = substr($sqlWhere, 0, -5);
 	}
-	$sql = "SELECT gibbonLibraryItem.*, gibbonLibraryType.fields AS typeFields 
-		FROM gibbonLibraryItem 
-			JOIN gibbonLibraryType ON (gibbonLibraryItem.gibbonLibraryTypeID=gibbonLibraryType.gibbonLibraryTypeID) $sqlWhere 
+	$sql = "SELECT gibbonLibraryItem.*, gibbonLibraryType.fields AS typeFields
+		FROM gibbonLibraryItem
+			JOIN gibbonLibraryType ON (gibbonLibraryItem.gibbonLibraryTypeID=gibbonLibraryType.gibbonLibraryTypeID) $sqlWhere
 		ORDER BY id";
 	$result = $pdo->executeQuery($data, $sql, '_');
 
 
 	$excel = new Gibbon\Excel('catalogSummary.xlsx');
 	if ($excel->estimateCellCount($pdo) > 8000)    //  If too big, then render csv instead.
-		return Gibbon\csv::generate($pdo, 'Invoices');
+		return Gibbon\csv::generate($pdo, 'Catalog Summary');
 	$excel->setActiveSheetIndex(0);
 	$excel->getProperties()->setTitle('Catalog Summary');
 	$excel->getProperties()->setSubject('Catalog Summary');
 	$excel->getProperties()->setDescription('Catalog Summary');
-	
-	
+
+
 	$excel->getActiveSheet()->setCellValueByColumnAndRow(0, 1, __($guid, 'School ID'));
 	$excel->getActiveSheet()->setCellValueByColumnAndRow(1, 1, __($guid, 'Name'). ' '. __($guid, 'Producer'));
 	$excel->getActiveSheet()->setCellValueByColumnAndRow(2, 1, __($guid, 'Type'));
@@ -99,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
 		//Column A
 		$excel->getActiveSheet()->setCellValueByColumnAndRow(0, $r, $row['id']);
 		//Column B
-        $x = $row['name']
+        $x = $row['name'];
         if ($row['producer'] != '') {
             $x .= "\n".$row['producer'];
         }
@@ -107,8 +103,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
 		//Column C
         $x = '';
 		$dataType = array('gibbonLibraryTypeID' => $row['gibbonLibraryTypeID']);
-		$sqlType = 'SELECT name 
-			FROM gibbonLibraryType 
+		$sqlType = 'SELECT name
+			FROM gibbonLibraryType
 			WHERE gibbonLibraryTypeID=:gibbonLibraryTypeID';
 		if (is_null($resultType = $pdo->executeQuery($dataType, $sqlType))) {
 			$x = $pdo->getError();

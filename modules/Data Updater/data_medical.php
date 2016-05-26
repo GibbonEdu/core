@@ -207,18 +207,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                     } catch (PDOException $e) {
                         echo "<div class='error'>".$e->getMessage().'</div>';
                     }
-                    if ($resultForm->rowCount() > 1) {
+                    if ($result->rowCount() > 1) {
                         echo "<div class='error'>";
                         echo __($guid, 'Your request failed due to a database error.');
                         echo '</div>';
-                    } elseif ($resultForm->rowCount() == 1) {
+                    } elseif ($result->rowCount() == 1) {
                         $existing = true;
+                        echo "<div class='warning'>";
+                        echo __($guid, 'You have already submitted a form, which is pending approval by an administrator. If you wish to make changes, please edited the data below, but remember your data will not appear in the system until it has been approved.');
+                        echo '</div>';
                         $proceed = true;
-                        if (!isset($_GET['return'])) {
-                            echo "<div class='warning'>";
-                            echo __($guid, 'You have already submitted a form, which is pending approval by an administrator. If you wish to make changes, please edited the data below, but remember your data will not appear in the system until it has been approved.');
-                            echo '</div>';
-                        }
                     } else {
                         //Get user's data
                         try {
@@ -476,7 +474,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 										<script type="text/javascript">
 											/* Advanced Options Control */
 											$(document).ready(function(){
-												$("#addCondition").click(function(){
+                                                namex.disable();
+                                                gibbonAlertLevelIDx.disable();
+                                                $("#addCondition").click(function(){
 													if ($('input[name=addCondition]:checked').val()=="Yes" ) {
 														$(".addConditionRow").slideDown("fast", $(".addConditionRow").css("display","table-row"));
 														namex.enable();
@@ -518,8 +518,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 											?>
 										</select>
 										<script type="text/javascript">
-											var name2=new LiveValidation('name2');
-											name2.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
+											var namex=new LiveValidation('namex');
+											namex.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
 										</script>
 									</td>
 								</tr>
@@ -545,8 +545,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 											?>
 										</select>
 										<script type="text/javascript">
-											var gibbonAlertLevelID=new LiveValidation('gibbonAlertLevelID');
-											gibbonAlertLevelID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
+											var gibbonAlertLevelIDx=new LiveValidation('gibbonAlertLevelIDx');
+											gibbonAlertLevelIDx.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
 										</script>
 									</td>
 								</tr>

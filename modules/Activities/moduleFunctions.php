@@ -46,21 +46,23 @@ function getActivitySessions($weekDays, $timespan, $sessionAttendanceData)
 {
     $activitySlots = array();
 
-    // Iterate one day at a time from start to end, adding the weekdays that match a time slot
-    for ($time = $timespan['start']; $time <= $timespan['end']; $time += 86400) {
-        $day = date('Y-m-d', $time);
-        if (isset($sessionAttendanceData[ $day ])) {
-            $activitySlots[$day] = $time;
-        } elseif (in_array(date('D', $time), $weekDays)) {
-            $activitySlots[$day] = $time;
+    if (count($timespan) > 0) {
+        // Iterate one day at a time from start to end, adding the weekdays that match a time slot
+        for ($time = $timespan['start']; $time <= $timespan['end']; $time += 86400) {
+            $day = date('Y-m-d', $time);
+            if (isset($sessionAttendanceData[ $day ])) {
+                $activitySlots[$day] = $time;
+            } elseif (in_array(date('D', $time), $weekDays)) {
+                $activitySlots[$day] = $time;
+            }
         }
-    }
 
-    foreach ($sessionAttendanceData as $sessionDate => $sessionData) {
-        $activitySlots[$sessionDate] = strtotime($sessionDate);
-    }
+        foreach ($sessionAttendanceData as $sessionDate => $sessionData) {
+            $activitySlots[$sessionDate] = strtotime($sessionDate);
+        }
 
-    ksort($activitySlots);
+        ksort($activitySlots);
+    }
 
     return $activitySlots;
 }

@@ -664,7 +664,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
 
                             ?>
 							<b><?php echo __($guid, 'Access') ?></b><br/>
-							<table cellspacing='0' style="width: 100%">
+							<table class='smallIntBorder' cellspacing='0' style="width: 100%">
 								<tr id="accessRowStudents">
 									<td>
 										<b><?php echo __($guid, 'Viewable to Students') ?> *</b><br/>

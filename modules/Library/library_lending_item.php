@@ -166,7 +166,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 
                 echo "<table cellspacing='0' style='width: 100%'>";
                 echo "<tr class='head'>";
-                echo "<th style='min-width: 90px'>";
+                echo "<th style='text-align: center; min-width: 90px'>";
                 echo __($guid, 'User');
                 echo '</th>';
                 echo '<th>';
@@ -218,7 +218,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
                             $rowPerson = $resultPerson->fetch();
                         }
                     }
-                    echo '<td>';
+                    echo '<td style=\'text-align: center\'>';
                     if (is_array($rowPerson)) {
                         echo getUserPhoto($guid, $rowPerson['image_240'], 75);
                     }
