@@ -413,5 +413,8 @@ ALTER TABLE gibbonExternalAssessmentStudentEntry ADD INDEX `gibbonScaleGradeIDPr
 ALTER TABLE gibbonExternalAssessmentStudent ADD INDEX `gibbonExternalAssessmentID` (`gibbonExternalAssessmentID`);end
 ALTER TABLE gibbonExternalAssessmentStudent ADD INDEX `gibbonPersonID` (`gibbonPersonID`);end
 ALTER TABLE gibbonExternalAssessmentField ADD INDEX `gibbonExternalAssessmentID` (`gibbonExternalAssessmentID`);end
+UPDATE gibbonAction SET category='Departments' WHERE name='View Departments' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Departments');end
+UPDATE gibbonAction SET category='Resources' WHERE name LIKE 'Manage Resources_%' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Resources');end
+UPDATE gibbonAction SET category='Resources' WHERE name='View Resources' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Resources');end
 
 ";

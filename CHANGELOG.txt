@@ -76,13 +76,18 @@ v12.0.00
 		System Admin: Improved version comparison in non-login database updater
 		System Admin: fixed error when removing module with no $moduleTables in manifest.php
 		Activities: fixed error in adding and editing activities when payment is turned off
+		Activities: added onclick delete confirm for slots and staff in edit view
+		Activities: fixed PHP Notice in moduleFunctions
 		Attendance: added client side warning in case attendance is taken for a day in the past (happens when user not logged out over night)
 		Attendance: added ability to see date range in Form Groups Not Registered
 		Attendance: added reason as title/hover over type in Student History report function
 		Attendance: added database index to improve performance of attendance by roll group page load
+		Attendance: fixed PHP Notice in moduleFunctions
 		Behaviour: made column widths consistent when viewing behaviour log
 		Behaviour: increased min-width for Action column
 		Behaviour: fixed <? bug
+		Data Updater: made message regarding existing submission appear more consistently
+		Data Updater: fixed server-side validation of condition and risk in new medical conditions
 		Departments: fixed filter in Homework link from Class view page
 		Finance: fixed <? bug
 		Finance: added ability to provide multiple company email addresses
@@ -93,12 +98,15 @@ v12.0.00
 		Formal Assessment: fixed uploaded response file selector gigantism issue
 		Formal Assessment: added interface for parents and students to view External Assessments (off by default)
 		Formal Assessment: added table indexes for External Assessment to decrease loading time
+		Individual Needs: fixed PHP Notice in moduleFunctions
 		Library: added item count column to lending log
 		Library: added count of records to Manage Catalog
 		Library: removed required status from ISBN10 field in Print Publication
 		Library: added Condition field to allow tracking of the physical state of an asset
 		Library: added field to indicate whether an item will be replaced or not
 		Library: fixed bug preventing ID clash check from working properly
+		Library: fixed image and name alignment in lending view
+		Library: fixed catalog export PHP Notice and file name errors
 		Markbook: fixed issue causing mis-evaluation of personalised targets, for some edge cases
 		Markbook: fixed uploaded response file selector gigantism issue
 		Markbook: added line break display to full comment in various viewing locations
@@ -115,6 +123,7 @@ v12.0.00
 		Planner: fixed lesson ordering bug in unit dump
 		Planner: simplified interface of Unit Planner
 		Planner: fixed file submission count for student homework
+		Planner: visual consistency tweak to tables
 		Rubrics: added course/class name to historical view result listing
 		School Admin: fixed bug preventing non-contiguous primary external assessment settings from being saved in Formal Assessment settings
 		School Admin: increased length of grade scale short name to 5 chars
@@ -136,6 +145,7 @@ v12.0.00
 		Timetable: added ability for department coordinator to manage facility changes within their department
 		Timetable: fixed facility booking display output when viewing timetable by facility
 		Timetable: fixed bug with school and personal calendar lables overflowing short time-slot events
+		Timetable Admin: visual consistency tweak to tables
 		Tracking: adjusted Data Points export to combine multiple column internal assessments for one subject into a column
 		User Admin: added notification to form tutor(s) when a student's privacy options change (via Edit or Data Update).
 		User Admin: made max_input_vars test a little more generous

@@ -2353,7 +2353,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             //Module includes
                             include './modules/Individual Needs/moduleFunctions.php';
 
-                            $statusTable = printINStatusTable($connection2, $gibbonPersonID, 'disabled');
+                            $statusTable = printINStatusTable($connection2, $guid, $gibbonPersonID, 'disabled');
                             if ($statusTable == false) {
                                 echo "<div class='error'>";
                                 echo __($guid, 'Your request failed due to a database error.');

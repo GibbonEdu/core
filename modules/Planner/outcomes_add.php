@@ -45,8 +45,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_add.php')
             echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/outcomes.php'>".__($guid, 'Manage Outcomes')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Outcome').'</div>';
             echo '</div>';
 
+            $editLink = '';
+            if (isset($_GET['editID'])) {
+                $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/outcomes_edit.php&gibbonOutcomeID='.$_GET['editID'].'&filter2='.$_GET['filter2'];
+            }
             if (isset($_GET['return'])) {
-                returnProcess($guid, $_GET['return'], null, null);
+                returnProcess($guid, $_GET['return'], $editLink, null);
             }
 
             $filter2 = '';
@@ -62,9 +66,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_add.php')
 
             ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/outcomes_addProcess.php?filter2='.$filter2 ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'Scope') ?> *</b><br/>
 							<span class="emphasis small"></span>
 						</td>
@@ -92,18 +96,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_add.php')
             				?>
 						</td>
 					</tr>
-					
-					
+
+
 					<?php
                     if ($highestAction == 'Manage Outcomes_viewEditAll') {
                         ?>
 						<script type="text/javascript">
 							$(document).ready(function(){
 								$("#learningAreaRow").css("display","none");
-								
+
 								$("#scope").change(function(){
 									if ($('#scope option:selected').val()=="Learning Area" ) {
-										$("#learningAreaRow").slideDown("fast", $("#learningAreaRow").css("display","table-row")); 
+										$("#learningAreaRow").slideDown("fast", $("#learningAreaRow").css("display","table-row"));
 										gibbonDepartmentID.enable();
 									}
 									else {
@@ -118,7 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_add.php')
                     }
             		?>
 					<tr id='learningAreaRow'>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Learning Area') ?> *</b><br/>
 							<span class="emphasis small"></span>
 						</td>
@@ -157,7 +161,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_add.php')
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Name') ?> *</b><br/>
 						</td>
 						<td class="right">
@@ -169,7 +173,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_add.php')
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Short Name') ?> *</b><br/>
 						</td>
 						<td class="right">
@@ -181,7 +185,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_add.php')
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Active') ?> *</b><br/>
 							<span class="emphasis small"></span>
 						</td>
@@ -192,9 +196,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_add.php')
 							</select>
 						</td>
 					</tr>
-					
+
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Category') ?></b><br/>
 						</td>
 						<td class="right">
@@ -221,7 +225,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_add.php')
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Description') ?></b><br/>
 						</td>
 						<td class="right">
@@ -229,7 +233,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_add.php')
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Year Groups') ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Relevant student year groups') ?><br/></span>
 						</td>

@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //$mode can be blank or "disabled". $archive is a serialized array of values previously archived
-function printINStatusTable($connection2, $gibbonPersonID, $mode = '', $archive = '')
+function printINStatusTable($connection2, $guid, $gibbonPersonID, $mode = '', $archive = '')
 {
     $output = false;
 

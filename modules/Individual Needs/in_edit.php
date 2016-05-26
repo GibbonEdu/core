@@ -164,12 +164,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
             echo __($guid, 'Individual Needs Status');
             echo '</h3>';
             if ($highestAction == 'Individual Needs Records_view' or $highestAction == 'Individual Needs Records_viewContribute') {
-                $statusTable = printINStatusTable($connection2, $gibbonPersonID, 'disabled');
+                $statusTable = printINStatusTable($connection2, $guid, $gibbonPersonID, 'disabled');
             } elseif ($highestAction == 'Individual Needs Records_viewEdit') {
                 if ($gibbonINArchiveID != '') {
-                    $statusTable = printINStatusTable($connection2, $gibbonPersonID, 'disabled', $archiveDescriptors);
+                    $statusTable = printINStatusTable($connection2, $guid, $gibbonPersonID, 'disabled', $archiveDescriptors);
                 } else {
-                    $statusTable = printINStatusTable($connection2, $gibbonPersonID);
+                    $statusTable = printINStatusTable($connection2, $guid, $gibbonPersonID);
                 }
             }
 
@@ -187,23 +187,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
 
             if (is_null($gibbonINArchiveID) == false) { //SHOW ARCHIVE
                     ?>
-					<table class='smallIntBorder fullWidth' cellspacing='0'>	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>
 						<tr>
-							<td colspan=2 style='padding-top: 25px'> 
+							<td colspan=2 style='padding-top: 25px'>
 								<span style='font-weight: bold; font-size: 135%'><?php echo __($guid, 'Targets') ?></span><br/>
 								<?php
                                 echo '<p>'.$archiveTargets.'</p>'; ?>
 							</td>
 						</tr>
 						<tr>
-							<td colspan=2> 
+							<td colspan=2>
 								<span style='font-weight: bold; font-size: 135%'><?php echo __($guid, 'Teaching Strategies') ?></span><br/>
 								<?php
                                 echo '<p>'.$archiveStrategies.'</p>'; ?>
 							</td>
 						</tr>
 						<tr>
-							<td colspan=2 style='padding-top: 25px'> 
+							<td colspan=2 style='padding-top: 25px'>
 								<span style='font-weight: bold; font-size: 135%'><?php echo __($guid, 'Notes & Review') ?></span><br/>
 								<?php
                                 echo '<p>'.$archiveNotes.'</p>'; ?>
@@ -226,10 +226,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                     echo __($guid, 'Your request failed due to a database error.');
                     echo '</div>';
                 } else {
-                    $rowIEP = $resultIEP->fetch(); ?>	
-						<table class='smallIntBorder fullWidth' cellspacing='0'>	
+                    $rowIEP = $resultIEP->fetch(); ?>
+						<table class='smallIntBorder fullWidth' cellspacing='0'>
 							<tr>
-								<td colspan=2 style='padding-top: 25px'> 
+								<td colspan=2 style='padding-top: 25px'>
 									<span style='font-weight: bold; font-size: 135%'><?php echo __($guid, 'Targets') ?></span><br/>
 									<?php
                                     if ($highestAction == 'Individual Needs Records_viewEdit') {
@@ -241,7 +241,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
 								</td>
 							</tr>
 							<tr>
-								<td colspan=2> 
+								<td colspan=2>
 									<span style='font-weight: bold; font-size: 135%'><?php echo __($guid, 'Teaching Strategies') ?></span><br/>
 									<?php
                                     if ($highestAction == 'Individual Needs Records_viewEdit' or $highestAction == 'Individual Needs Records_viewContribute') {
@@ -253,7 +253,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
 								</td>
 							</tr>
 							<tr>
-								<td colspan=2 style='padding-top: 25px'> 
+								<td colspan=2 style='padding-top: 25px'>
 									<span style='font-weight: bold; font-size: 135%'><?php echo __($guid, 'Notes & Review') ?></span><br/>
 									<?php
                                     if ($highestAction == 'Individual Needs Records_viewEdit') {

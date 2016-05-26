@@ -119,8 +119,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/planner.php$params'>".__($guid, 'Planner')." $extra</a> > </div><div class='trailEnd'".__($guid, '>Add Lesson Plan').'</div>';
             echo '</div>';
 
+            $editLink = '';
+            if (isset($_GET['editID'])) {
+                $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_edit.php&gibbonPlannerEntryID='.$_GET['editID'].$params;
+            }
             if (isset($_GET['return'])) {
-                returnProcess($guid, $_GET['return'], null, null);
+                returnProcess($guid, $_GET['return'], $editLink, null);
             }
 
             ?>

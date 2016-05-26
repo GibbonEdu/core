@@ -346,7 +346,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
                                                     $output .= 'PS';
                                                 } elseif ($log[$x][0] == 'Left') {
                                                     $output .= 'L';
-                                                } elseif ($log[$x[0]] == 'Left - Early') {
+                                                } elseif ($log[$x][0] == 'Left - Early') {
                                                     $output .= 'LE';
                                                 } elseif ($log[$x][0] == 'Absent') {
                                                     $output .= 'A';
