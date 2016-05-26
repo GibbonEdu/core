@@ -4,3 +4,6 @@ uploads/*
 modules/IB PYP
 modules/Query Builder
 missing.yml
+Thumbs.db
+themes/*
+!themes/Default
