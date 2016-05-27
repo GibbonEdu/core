@@ -416,5 +416,5 @@ ALTER TABLE gibbonExternalAssessmentField ADD INDEX `gibbonExternalAssessmentID`
 UPDATE gibbonAction SET category='Departments' WHERE name='View Departments' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Departments');end
 UPDATE gibbonAction SET category='Resources' WHERE name LIKE 'Manage Resources_%' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Resources');end
 UPDATE gibbonAction SET category='Resources' WHERE name='View Resources' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Resources');end
-
+UPDATE gibbonPerson SET dob=NULL WHERE dob='0000-00-00';end
 ";

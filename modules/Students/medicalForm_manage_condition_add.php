@@ -70,9 +70,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
             }
             ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/medicalForm_manage_condition_addProcess.php?gibbonPersonMedicalID=$gibbonPersonMedicalID&search=$search" ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'Person') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 						</td>
@@ -85,16 +85,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
                                 $resultSelect->execute($dataSelect);
                             } catch (PDOException $e) {
                             }
-            				$rowSelect = $resultSelect->fetch(); ?>	
+            				$rowSelect = $resultSelect->fetch(); ?>
 							<input readonly name="personName" id="personName" maxlength=255 value="<?php echo formatName('', $rowSelect['preferredName'], $rowSelect['surname'], 'Student') ?>" type="text" class="standardWidth">
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Condition Name') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<select class="standardWidth" name="name" id="name">
+							<select class="standardWidth" name="name" id="name2">
 								<?php
                                 echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
 								try {
@@ -107,16 +107,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
 								while ($rowSelect = $resultSelect->fetch()) {
 									echo "<option value='".htmlPrep($rowSelect['name'])."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
 								}
-								?>				
+								?>
 							</select>
 							<script type="text/javascript">
-								var name2=new LiveValidation('name');
-								name.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-							</script>	
+								var name2=new LiveValidation('name2');
+								name2.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
+							</script>
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Risk') ?> *</b><br/>
 						</td>
 						<td class="right">
@@ -139,11 +139,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
 							<script type="text/javascript">
 								var gibbonAlertLevelID=new LiveValidation('gibbonAlertLevelID');
 								gibbonAlertLevelID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-							</script>	
+							</script>
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Triggers') ?></b><br/>
 						</td>
 						<td class="right">
@@ -151,7 +151,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Reaction') ?></b><br/>
 						</td>
 						<td class="right">
@@ -159,7 +159,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Response') ?></b><br/>
 						</td>
 						<td class="right">
@@ -167,7 +167,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Medication') ?></b><br/>
 						</td>
 						<td class="right">
@@ -175,7 +175,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Last Episode Date') ?></b><br/>
 							<span class="emphasis small"><?php echo $_SESSION[$guid]['i18n']['dateFormat']  ?></span>
 						</td>
@@ -193,7 +193,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
 								} else {
 									echo $_SESSION[$guid]['i18n']['dateFormat'];
 								}
-								?>." } ); 
+								?>." } );
 							</script>
 							 <script type="text/javascript">
 								$(function() {
@@ -203,7 +203,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Last Episode Treatment') ?></b><br/>
 						</td>
 						<td class="right">
@@ -211,7 +211,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Comment') ?></b><br/>
 						</td>
 						<td class="right">

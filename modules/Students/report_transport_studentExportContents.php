@@ -32,10 +32,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
     echo '</div>';
 } else {
     //Proceed!
-    echo '<h1>';
-    echo __($guid, 'Student Transport');
-    echo '</h1>';
-
     try {
         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
         $sql = "SELECT gibbonPerson.gibbonPersonID, transport, surname, preferredName, address1, address1District, address1Country, nameShort FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY transport, surname, preferredName";
@@ -45,10 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
         echo "<div class='error'>".$e->getMessage().'</div>';
     }
 
-        $exp = new Gibbon\Excel();
-        $exp->exportWithPage($guid, './report_transport_studentExportContents.php', 'studentTransport.xls');
-
-	$excel = new Gibbon\Excel('studentTransport.xlsx');
+    $excel = new Gibbon\Excel('studentTransport.xlsx');
 	if ($excel->estimateCellCount($pdo) > 8000)    //  If too big, then render csv instead.
 		return Gibbon\csv::generate($pdo, 'studentTransport');
 	$excel->setActiveSheetIndex(0);
@@ -56,11 +49,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
 	$excel->getProperties()->setSubject('Student Transport');
 	$excel->getProperties()->setDescription('Student Transport');
 
+    //Create border and fill style
+    $style_border = array('borders' => array('right' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '766f6e')), 'left' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '766f6e')), 'top' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '766f6e')), 'bottom' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '766f6e'))));
+    $style_head_fill = array('fill' => array('type' => PHPExcel_Style_Fill::FILL_SOLID, 'color' => array('rgb' => 'B89FE2')));
+
+    //Auto set column widths
+    for($col = 'A'; $col !== 'F'; $col++)
+        $excel->getActiveSheet()->getColumnDimension($col)->setAutoSize(true);
+
 	$excel->getActiveSheet()->setCellValueByColumnAndRow(0, 1, __($guid, 'Transport'));
+    $excel->getActiveSheet()->getStyleByColumnAndRow(0, 1)->applyFromArray($style_border);
+    $excel->getActiveSheet()->getStyleByColumnAndRow(0, 1)->applyFromArray($style_head_fill);
 	$excel->getActiveSheet()->setCellValueByColumnAndRow(1, 1, __($guid, 'Student'));
+    $excel->getActiveSheet()->getStyleByColumnAndRow(1, 1)->applyFromArray($style_border);
+    $excel->getActiveSheet()->getStyleByColumnAndRow(1, 1)->applyFromArray($style_head_fill);
 	$excel->getActiveSheet()->setCellValueByColumnAndRow(2, 1, __($guid, 'Address'));
+    $excel->getActiveSheet()->getStyleByColumnAndRow(2, 1)->applyFromArray($style_border);
+    $excel->getActiveSheet()->getStyleByColumnAndRow(2, 1)->applyFromArray($style_head_fill);
 	$excel->getActiveSheet()->setCellValueByColumnAndRow(3, 1, __($guid, 'Parents'));
+    $excel->getActiveSheet()->getStyleByColumnAndRow(3, 1)->applyFromArray($style_border);
+    $excel->getActiveSheet()->getStyleByColumnAndRow(3, 1)->applyFromArray($style_head_fill);
 	$excel->getActiveSheet()->setCellValueByColumnAndRow(4, 1, __($guid, 'Roll Group'));
+    $excel->getActiveSheet()->getStyleByColumnAndRow(4, 1)->applyFromArray($style_border);
+    $excel->getActiveSheet()->getStyleByColumnAndRow(4, 1)->applyFromArray($style_head_fill);
 
 	$r = 1;
     $count = 0;
@@ -70,13 +81,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
 		$count++;
 		//Column A
  		$excel->getActiveSheet()->setCellValueByColumnAndRow(0, $r, $row['transport']);
+        $excel->getActiveSheet()->getStyleByColumnAndRow(0, $r)->applyFromArray($style_border);
         //Column B
  		$excel->getActiveSheet()->setCellValueByColumnAndRow(1, $r, formatName('', $row['preferredName'], $row['surname'], 'Student', true));
+        $excel->getActiveSheet()->getStyleByColumnAndRow(1, $r)->applyFromArray($style_border);
         //Column C
 		$dataFamily = array('gibbonPersonID' => $row['gibbonPersonID']);
-		$sqlFamily = 'SELECT gibbonFamily.gibbonFamilyID, nameAddress, homeAddress, homeAddressDistrict, homeAddressCountry 
-			FROM gibbonFamily 
-				JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) 
+		$sqlFamily = 'SELECT gibbonFamily.gibbonFamilyID, nameAddress, homeAddress, homeAddressDistrict, homeAddressCountry
+			FROM gibbonFamily
+				JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
 			WHERE gibbonPersonID=:gibbonPersonID';
 		$resultFamily = $pdo->executeQuery($dataFamily, $sqlFamily, '_');
 		$x = '';
@@ -101,6 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
             }
         }
   		$excel->getActiveSheet()->setCellValueByColumnAndRow(2, $r, $x);
+        $excel->getActiveSheet()->getStyleByColumnAndRow(2, $r)->applyFromArray($style_border);
         //Column D
         $contact = '';
         try {
@@ -109,7 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
             $resultFamily = $connection2->prepare($sqlFamily);
             $resultFamily->execute($dataFamily);
         } catch (PDOException $e) {
-            $contact .= "<div class='error'>".$e->getMessage().'</div>';
+            $contact .= $e->getMessage().'. ';
         }
         while ($rowFamily = $resultFamily->fetch()) {
             try {
@@ -118,15 +132,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
                 $resultFamily2 = $connection2->prepare($sqlFamily2);
                 $resultFamily2->execute($dataFamily2);
             } catch (PDOException $e) {
-                $contact .= "<div class='error'>".$e->getMessage().'</div>';
+                $contact .= $e->getMessage().'. ';
             }
             while ($rowFamily2 = $resultFamily2->fetch()) {
-                $contact .= '<u>'.formatName($rowFamily2['title'], $rowFamily2['preferredName'], $rowFamily2['surname'], 'Parent').'</u>, ';
+                $contact .= formatName($rowFamily2['title'], $rowFamily2['preferredName'], $rowFamily2['surname'], 'Parent').': ';
                 $numbers = 0;
                 for ($i = 1; $i < 5; ++$i) {
                     if ($rowFamily2['phone'.$i] != '') {
                         if ($rowFamily2['phone'.$i.'Type'] != '') {
-                            $contact .= '<i>'.$rowFamily2['phone'.$i.'Type'].':</i> ';
+                            $contact .= $rowFamily2['phone'.$i.'Type'].': ';
                         }
                         if ($rowFamily2['phone'.$i.'CountryCode'] != '') {
                             $contact .= '+'.$rowFamily2['phone'.$i.'CountryCode'].' ';
@@ -136,7 +150,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
                     }
                 }
                 if ($numbers == 0) {
-                    $contact .= "<span style='font-size: 85%; font-style: italic'>No number available.</span>, ";
+                    $contact .= __($guid, "No number available").". ";
                 }
             }
         }
@@ -144,10 +158,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
             $contact = substr($contact, 0, -2);
         }
   		$excel->getActiveSheet()->setCellValueByColumnAndRow(3, $r, $contact);
+        $excel->getActiveSheet()->getStyleByColumnAndRow(3, $r)->applyFromArray($style_border);
   		$excel->getActiveSheet()->setCellValueByColumnAndRow(4, $r, $row['nameShort']);
+        $excel->getActiveSheet()->getStyleByColumnAndRow(4, $r)->applyFromArray($style_border);
     }
     if ($count == 0) {
   		$excel->getActiveSheet()->setCellValueByColumnAndRow(0, $r, __($guid, 'There are no records to display.'));
+        $excel->getActiveSheet()->getStyleByColumnAndRow(0, $r)->applyFromArray($style_border);
     }
     $excel->exportWorksheet();
 }

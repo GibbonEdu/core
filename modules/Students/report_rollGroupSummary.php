@@ -106,8 +106,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_rollGroupS
             $total = 0;
             foreach ($everything as $thing) {
                 if ($thing[2] == $row['name']) {
-                    ++$cellCount;
-                    $total += (($today - strtotime($thing[0])) / 31556926);
+                    if ($thing[0] != null && $thing[0] != '0000-00-00') {
+                        ++$cellCount;
+                        $total += (($today - strtotime($thing[0])) / 31556926);
+                    }
                 }
             }
             if ($cellCount != 0) {
@@ -157,8 +159,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_rollGroupS
         $cellCount = 0;
         $total = 0;
         foreach ($everything as $thing) {
-            ++$cellCount;
-            $total += (($today - strtotime($thing[0])) / 31556926);
+            if ($thing[0] != null && $thing[0] != '0000-00-00') {
+                ++$cellCount;
+                $total += (($today - strtotime($thing[0])) / 31556926);
+            }
         }
         if ($cellCount != 0) {
             echo '<b>'.round(($total / $cellCount), 1).'</b>';
