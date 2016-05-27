@@ -30,8 +30,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
     echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/studentEnrolment_manage.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__($guid, 'Student Enrolment')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Student Enrolment').'</div>';
     echo '</div>';
 
+    $editLink = '';
+    if (isset($_GET['editID'])) {
+        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/studentEnrolment_manage_edit.php&gibbonStudentEnrolmentID='.$_GET['editID'].'&search='.$_GET['search'].'&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'];
+    }
     if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
+        returnProcess($guid, $_GET['return'], $editLink, null);
     }
 
     //Check if school year specified
@@ -49,9 +53,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
         }
         ?>
 		<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/studentEnrolment_manage_addProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&search=$search" ?>">
-			<table class='smallIntBorder fullWidth' cellspacing='0'>	
+			<table class='smallIntBorder fullWidth' cellspacing='0'>
 				<tr>
-					<td style='width: 275px'> 
+					<td style='width: 275px'>
 						<b><?php echo __($guid, 'School Year') ?> *</b><br/>
 						<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 					</td>
@@ -79,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Student') ?> *</b><br/>
 						<span class="emphasis small"></span>
 					</td>
@@ -97,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
 							while ($rowSelect = $resultSelect->fetch()) {
 								echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.$rowSelect['username'].')</option>';
 							}
-							?>				
+							?>
 						</select>
 						<script type="text/javascript">
 							var gibbonPersonID=new LiveValidation('gibbonPersonID');
@@ -106,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Year Group') ?> *</b><br/>
 						<span style="font-size: 90%"></span>
 					</td>
@@ -124,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
 							while ($rowSelect = $resultSelect->fetch()) {
 								echo "<option value='".$rowSelect['gibbonYearGroupID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
 							}
-							?>				
+							?>
 						</select>
 						<script type="text/javascript">
 							var gibbonYearGroupID=new LiveValidation('gibbonYearGroupID');
@@ -133,7 +137,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Roll Group') ?> *</b><br/>
 						<span style="font-size: 90%"></span>
 					</td>
@@ -151,7 +155,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
 							while ($rowSelect = $resultSelect->fetch()) {
 								echo "<option value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
 							}
-							?>				
+							?>
 						</select>
 						<script type="text/javascript">
 							var gibbonRollGroupID=new LiveValidation('gibbonRollGroupID');
@@ -160,7 +164,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Roll Order') ?></b><br/>
 						<span class="emphasis small"><?php echo __($guid, 'Must be unique to roll group if set.') ?></span>
 					</td>

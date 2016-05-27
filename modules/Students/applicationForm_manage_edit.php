@@ -867,7 +867,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 					}
                     ?>
 					<tr>
-						<td colspan=2> 
+						<td colspan=2>
 							<h4><?php echo __($guid, 'Special Educational Needs & Medical') ?></h4>
 							<?php
                             $applicationFormSENText = getSettingByScope($connection2, 'Students', 'applicationFormSENText');
@@ -883,7 +883,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 						$(document).ready(function(){
 							$(".sen").change(function(){
 								if ($('select.sen option:selected').val()=="Y" ) {
-									$("#senDetailsRow").slideDown("fast", $("#senDetailsRow").css("display","table-row")); 
+									$("#senDetailsRow").slideDown("fast", $("#senDetailsRow").css("display","table-row"));
 								} else {
 									$("#senDetailsRow").css("display","none");
 								}
@@ -891,7 +891,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 						});
 					</script>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Special Educational Needs (SEN)') ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Are there any known or suspected SEN concerns, or previous SEN assessments?') ?></span><br/>
 						</td>
@@ -908,9 +908,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 						</td>
 					</tr>
 					<tr id='senDetailsRow' <?php if ($row['sen'] == 'N') { echo "style='display: none'"; } ?>>
-						<td colspan=2 style='padding-top: 15px'> 
+						<td colspan=2 style='padding-top: 15px'>
 							<b><?php echo __($guid, 'SEN Details') ?></b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Provide any comments or information concerning your child\'s development and SEN history.') ?></span><br/> 					
+							<span class="emphasis small"><?php echo __($guid, 'Provide any comments or information concerning your child\'s development and SEN history.') ?></span><br/>
 							<textarea name="senDetails" id="senDetails" rows=5 style="width:738px; margin: 5px 0px 0px 0px"><?php echo htmlPrep($row['senDetails']) ?></textarea>
 						</td>
 					</tr>
@@ -934,7 +934,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 					if ($applicationFormRefereeLink != '') {
 						?>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Current School Reference Email') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'An email address for a referee at the applicant\'s current school.') ?></span>
 							</td>
@@ -2138,14 +2138,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 					</tr>
 					<tr id="companyEmailRow">
 						<td>
-							<b><?php echo __($guid, 'Company Email') ?></b><br/>
+                            <b><?php echo __($guid, 'Company Emails') ?> *</b><br/>
+        					<span class="emphasis small"><?php echo __($guid, 'Comma-separated list of email address.') ?></span>
 						</td>
 						<td class="right">
 							<input name="companyEmail" id="companyEmail" maxlength=255 value="<?php echo $row['companyEmail'] ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var companyEmail=new LiveValidation('companyEmail');
 								companyEmail.add(Validate.Presence);
-								companyEmail.add(Validate.Email);
 							</script>
 						</td>
 					</tr>
