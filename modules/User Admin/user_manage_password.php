@@ -74,9 +74,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
             }
             ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/user_manage_passwordProcess.php?gibbonPersonID='.$gibbonPersonID.'&search='.$_GET['search'] ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'Username') ?> *</b><br/>
 							<span class="emphasis small"></span>
 						</td>
@@ -89,14 +89,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Password') ?> *</b><br/>
 							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
 							<input type='button' class="generatePassword" value="<?php echo __($guid, 'Generate Password') ?>"/>
 							<input name="passwordNew" id="passwordNew" maxlength=20 value="" type="password" class="standardWidth"><br/>
-							
+
 							<script type="text/javascript">
 								var passwordNew=new LiveValidation('passwordNew');
 								passwordNew.add(Validate.Presence);
@@ -118,7 +118,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
 									echo 'passwordNew.add( Validate.Length, { minimum: '.$minLength.'} );';
 								}
 								?>
-								
+
 								$(".generatePassword").click(function(){
 									var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789![]{}()%&*$#^<>~@|';
 									var text = '';
@@ -131,13 +131,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
 									}
 									$('input[name="passwordNew"]').val(text);
 									$('input[name="passwordConfirm"]').val(text);
-									alert('<?php echo __($guid, 'Copy this password if required:') ?>' + '\n\n' + text) ;
+									alert('<?php echo __($guid, 'Copy this password if required:') ?>' + '\r\n\r\n' + text) ;
 								});
 							</script>
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Confirm Password') ?> *</b><br/>
 							<span class="emphasis small"></span>
 						</td>
@@ -151,7 +151,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Force Reset Password?') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'User will be prompted on next login.') ?></span>
 						</td>

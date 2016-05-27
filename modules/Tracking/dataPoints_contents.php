@@ -189,7 +189,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/dataPoints.php') 
                                 if (!(strpos($point['gibbonYearGroupIDList'], $row['gibbonYearGroupID']) === false)) {
                                     //Output data
                                     $excel->getActiveSheet()->setCellValue(num2alpha($activeColumn).'1', $row['yearGroup']);
-                                    $excel->getActiveSheet()->setCellValue(num2alpha($activeColumn).'2', $type."\n".$row['assessment']);
+                                    $excel->getActiveSheet()->setCellValue(num2alpha($activeColumn).'2', $type."\r\n".$row['assessment']);
                                     $excel->getActiveSheet()->setCellValue(num2alpha($activeColumn).'3', $row['course']);
                                     $excel->getActiveSheet()->getStyle(num2alpha($activeColumn).'1')->applyFromArray($style_border);
                                     $excel->getActiveSheet()->getStyle(num2alpha($activeColumn).'1')->applyFromArray($style_head_fill4);

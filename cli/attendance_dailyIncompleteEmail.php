@@ -45,7 +45,7 @@ if (isset($_SESSION[$guid]['i18n']['code'])) {
 date_default_timezone_set($_SESSION[$guid]['timezone']);
 
 //Check for CLI, so this cannot be run through browser
-if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a browser, only via CLI.')."\n\n";
+if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a browser, only via CLI.');
 } else {
     $currentDate = date('Y-m-d');
 

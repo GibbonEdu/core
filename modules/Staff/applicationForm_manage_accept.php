@@ -81,9 +81,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 }
                 echo '</div>'; ?>
 				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/applicationForm_manage_accept.php&step=2&gibbonStaffApplicationFormID=$gibbonStaffApplicationFormID&search=$search" ?>">
-					<table class='smallIntBorder fullWidth' cellspacing='0'>	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo sprintf(__($guid, 'Are you sure you want to accept the application for %1$s?'), formatName('', $row['preferredName'], $row['surname'], 'Student')) ?></b><br/>
 								<br/>
 								<?php
@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 								}
 								?>
 								<input <?php echo $checkedapplicant ?> type='checkbox' name='informApplicant'/> <?php echo __($guid, 'Automatically inform <u>applicant</u> of their Gibbon login details by email?') ?><br/>
-								
+
 								<br/>
 								<i><u><?php echo __($guid, 'The system will perform the following actions:') ?></u></i><br/>
 								<ol>
@@ -117,14 +117,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 							</td>
 						</tr>
 						<tr>
-							<td class='right'> 
+							<td class='right'>
 								<input name="gibbonStaffApplicationFormID" id="gibbonStaffApplicationFormID" value="<?php echo $gibbonStaffApplicationFormID ?>" type="hidden">
 								<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 								<input type="submit" value="Accept">
 							</td>
 						</tr>
 					</table>
-				</form>				
+				</form>
 				<?php
 
             } elseif ($step == 2) {
@@ -253,18 +253,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                                 echo '</h4>';
                                 $to = $_SESSION[$guid]['organisationAdministratorEmail'];
                                 $subject = sprintf(__($guid, 'Create applicant Email/Websites for %1$s at %2$s'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort']);
-                                $body = sprintf(__($guid, 'Please create the following for new staff member %1$s.'), formatName('', $row['preferredName'], $row['surname'], 'Student'))."\n\n";
+                                $body = sprintf(__($guid, 'Please create the following for new staff member %1$s.'), formatName('', $row['preferredName'], $row['surname'], 'Student'))."\r\n\r\n";
                                 if ($applicantDefaultEmail != '') {
-                                    $body .= __($guid, 'Email').': '.$email."\n";
+                                    $body .= __($guid, 'Email').': '.$email."\r\n";
                                 }
                                 if ($applicantDefaultWebsite != '') {
-                                    $body .= __($guid, 'Website').': '.$website."\n";
+                                    $body .= __($guid, 'Website').': '.$website."\r\n";
                                 }
                                 if ($row['dateStart'] != '') {
-                                    $body .= __($guid, 'Start Date').': '.dateConvertBack($guid, $row['dateStart'])."\n";
+                                    $body .= __($guid, 'Start Date').': '.dateConvertBack($guid, $row['dateStart'])."\r\n";
                                 }
-                                $body .= __($guid, 'Job Type').': '.dateConvertBack($guid, $row['type'])."\n";
-                                $body .= __($guid, 'Job Title').': '.dateConvertBack($guid, $row['jobTitle'])."\n";
+                                $body .= __($guid, 'Job Type').': '.dateConvertBack($guid, $row['type'])."\r\n";
+                                $body .= __($guid, 'Job Title').': '.dateConvertBack($guid, $row['jobTitle'])."\r\n";
 
                                 $headers = 'From: '.$_SESSION[$guid]['organisationAdministratorEmail'];
 
@@ -366,9 +366,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                                     $to = $informApplicantEntry['email'];
                                     $subject = sprintf(__($guid, 'Welcome to %1$s at %2$s'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort']);
                                     if ($notificationApplicantMessage != '') {
-                                        $body = sprintf(__($guid, 'Dear %1$s,\n\nWelcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s).\n\nIn order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).\n\n'), formatName('', $informApplicantEntry['preferredName'], $informApplicantEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informApplicantEntry['username'], $informApplicantEntry['password']).$notificationApplicantMessage.sprintf(__($guid, '\n\nPlease feel free to reply to this email should you have any questions.\n\n%1$s,\n\n%2$s Administrator'), $_SESSION[$guid]['organisationAdministratorName'], $_SESSION[$guid]['systemName']);
+                                        $body = sprintf(__($guid, 'Dear %1$s,\r\n\r\nWelcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s).\r\n\r\nIn order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).\r\n\r\n'), formatName('', $informApplicantEntry['preferredName'], $informApplicantEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informApplicantEntry['username'], $informApplicantEntry['password']).$notificationApplicantMessage.sprintf(__($guid, '\r\n\r\nPlease feel free to reply to this email should you have any questions.\r\n\r\n%1$s,\r\n\r\n%2$s Administrator'), $_SESSION[$guid]['organisationAdministratorName'], $_SESSION[$guid]['systemName']);
                                     } else {
-                                        $body = 'Dear '.formatName('', $informApplicantEntry['preferredName'], $informApplicantEntry['surname'], 'Student').",\n\nWelcome to ".$_SESSION[$guid]['systemName'].', '.$_SESSION[$guid]['organisationNameShort']."'s system for managing school information. You can access the system by going to ".$_SESSION[$guid]['absoluteURL'].' and logging in with your new username ('.$informApplicantEntry['username'].') and password ('.$informApplicantEntry['password'].").\n\nIn order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).\n\nPlease feel free to reply to this email should you have any questions.\n\n".$_SESSION[$guid]['organisationAdministratorName'].",\n\n".$_SESSION[$guid]['systemName'].' Administrator';
+                                        $body = 'Dear '.formatName('', $informApplicantEntry['preferredName'], $informApplicantEntry['surname'], 'Student').",\r\n\r\nWelcome to ".$_SESSION[$guid]['systemName'].', '.$_SESSION[$guid]['organisationNameShort']."'s system for managing school information. You can access the system by going to ".$_SESSION[$guid]['absoluteURL'].' and logging in with your new username ('.$informApplicantEntry['username'].') and password ('.$informApplicantEntry['password'].").\r\n\r\nIn order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).\r\n\r\nPlease feel free to reply to this email should you have any questions.\r\n\r\n".$_SESSION[$guid]['organisationAdministratorName'].",\r\n\r\n".$_SESSION[$guid]['systemName'].' Administrator';
                                     }
                                     $headers = 'From: '.$_SESSION[$guid]['organisationAdministratorEmail'];
 

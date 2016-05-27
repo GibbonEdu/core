@@ -50,14 +50,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     }
     ?>
 	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/user_manage_addProcess.php?search='.$_GET['search'] ?>" enctype="multipart/form-data">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'Basic Information') ?></h3>
 				</td>
 			</tr>
 			<tr>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php echo __($guid, 'Title') ?></b><br/>
 				</td>
 				<td class="right">
@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Surname') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Family name as shown in ID documents.') ?></span>
 				</td>
@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'First Name') ?>*</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'First name as shown in ID documents.') ?></span>
 				</td>
@@ -98,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Preferred Name') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Most common name, alias, nickname, etc.') ?></span>
 				</td>
@@ -111,7 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Official Name') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Full name as shown in ID documents.') ?></span>
 				</td>
@@ -124,7 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Name In Characters') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Chinese or other character-based name.') ?></span>
 				</td>
@@ -133,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Gender') ?> *</b><br/>
 				</td>
 				<td class="right">
@@ -151,7 +151,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Date of Birth') ?></b><br/>
 					<span class="emphasis small"><?php echo $_SESSION[$guid]['i18n']['dateFormat']  ?></span>
 				</td>
@@ -169,7 +169,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 						} else {
 							echo $_SESSION[$guid]['i18n']['dateFormat'];
 						}
-						?>." } ); 
+						?>." } );
 					</script>
 					 <script type="text/javascript">
 						$(function() {
@@ -179,7 +179,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'User Photo') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Displayed at 240px by 320px.').'<br/>'.__($guid, 'Accepts images up to 360px by 480px.').'<br/>'.__($guid, 'Accepts aspect ratio between 1:1.2 and 1:1.4.') ?></span>
 				</td>
@@ -191,15 +191,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 					</script>
 				</td>
 			</tr>
-			
-			
+
+
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'System Access') ?></h3>
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Primary Role') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Controls what a user can do and see.') ?></span>
 				</td>
@@ -217,7 +217,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 						while ($rowSelect = $resultSelect->fetch()) {
 							echo "<option value='".$rowSelect['gibbonRoleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
 						}
-						?>				
+						?>
 					</select>
 					<script type="text/javascript">
 						var gibbonRoleIDPrimary=new LiveValidation('gibbonRoleIDPrimary');
@@ -226,7 +226,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Username') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Must be unique. System login name. Cannot be changed.') ?></span>
 				</td>
@@ -265,14 +265,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Password') ?> *</b><br/>
 					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
 					<input type='button' class="generatePassword" value="<?php echo __($guid, 'Generate Password') ?>"/>
 					<input name="passwordNew" id="passwordNew" maxlength=20 value="" type="password" class="standardWidth"><br/>
-					
+
 					<script type="text/javascript">
 						var passwordNew=new LiveValidation('passwordNew');
 						passwordNew.add(Validate.Presence);
@@ -294,7 +294,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 							echo 'passwordNew.add( Validate.Length, { minimum: '.$minLength.'} );';
 						}
 						?>
-						
+
 						$(".generatePassword").click(function(){
 							var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789![]{}()%&*$#^<>~@|';
 							var text = '';
@@ -309,13 +309,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 							}
 							$('input[name="passwordNew"]').val(text);
 							$('input[name="passwordConfirm"]').val(text);
-							alert('<?php echo __($guid, 'Copy this password if required:') ?>' + '\n\n' + text) ;
+							alert('<?php echo __($guid, 'Copy this password if required:') ?>' + '\r\n\r\n' + text) ;
 						});
 					</script>
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Confirm Password') ?> *</b><br/>
 					<span class="emphasis small"></span>
 				</td>
@@ -329,7 +329,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Status') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'This determines visibility within the system.') ?></span>
 				</td>
@@ -342,7 +342,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Can Login?') ?> *</b><br/>
 					<span class="emphasis small"></span>
 				</td>
@@ -354,7 +354,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Force Reset Password?') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'User will be prompted on next login.') ?></span>
 				</td>
@@ -365,14 +365,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 					</select>
 				</td>
 			</tr>
-			
+
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'Contact Information') ?></h3>
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Email') ?></b><br/>
 				</td>
 				<td class="right">
@@ -384,7 +384,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Alternate Email') ?></b><br/>
 					<span class="emphasis small"></span>
 				</td>
@@ -397,7 +397,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</td>
 			</tr>
 			<tr>
-				<td colspan=2> 
+				<td colspan=2>
 					<div class='warning'>
 						<?php echo __($guid, 'Address information for an individual only needs to be set under the following conditions:') ?>
 						<ol>
@@ -412,27 +412,27 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
             //Controls to hide address fields unless they are present, or box is checked
             ?>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Enter Personal Address?') ?></b><br/>
 				</td>
-				<td class='right' colspan=2> 
+				<td class='right' colspan=2>
 					<script type="text/javascript">
 						/* Advanced Options Control */
 						$(document).ready(function(){
 							$(".address").slideUp("fast");
 							$("#showAddresses").click(function(){
 								if ($('input[name=showAddresses]:checked').val()=="Yes" ) {
-									$(".address").slideDown("fast", $(".address").css("display","table-row")); 
-								} 
+									$(".address").slideDown("fast", $(".address").css("display","table-row"));
+								}
 								else {
-									$(".address").slideUp("fast"); 
-									$("#address1").val(""); 
-									$("#address1District").val(""); 
-									$("#address1Country").val(""); 
-									$("#address2").val(""); 
-									$("#address2District").val(""); 
-									$("#address2Country").val(""); 
-										
+									$(".address").slideUp("fast");
+									$("#address1").val("");
+									$("#address1District").val("");
+									$("#address1Country").val("");
+									$("#address2").val("");
+									$("#address2District").val("");
+									$("#address2Country").val("");
+
 								}
 							 });
 						});
@@ -441,7 +441,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</td>
 			</tr>
 			<tr class='address'>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Address 1') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Unit, Building, Street') ?></span>
 				</td>
@@ -450,7 +450,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</td>
 			</tr>
 			<tr class='address'>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Address 1 District') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'County, State, District') ?></span>
 				</td>
@@ -478,7 +478,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</script>
 			</tr>
 			<tr class='address'>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Address 1 Country') ?></b><br/>
 				</td>
 				<td class="right">
@@ -495,12 +495,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 						while ($rowSelect = $resultSelect->fetch()) {
 							echo "<option value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
 						}
-						?>				
+						?>
 					</select>
 				</td>
 			</tr>
 			<tr class='address'>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Address 2') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Unit, Building, Street') ?></span>
 				</td>
@@ -509,7 +509,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</td>
 			</tr>
 			<tr class='address'>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Address 2 District') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'County, State, District') ?></span>
 				</td>
@@ -537,7 +537,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</script>
 			</tr>
 			<tr class='address'>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Address 2 Country') ?></b><br/>
 				</td>
 				<td class="right">
@@ -554,7 +554,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 						while ($rowSelect = $resultSelect->fetch()) {
 							echo "<option value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
 						}
-						?>				
+						?>
 					</select>
 				</td>
 			</tr>
@@ -562,7 +562,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
             for ($i = 1; $i < 5; ++$i) {
                 ?>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Phone') ?> <?php echo $i ?></b><br/>
 						<span class="emphasis small"><?php echo __($guid, 'Type, country code, number.') ?></span>
 					</td>
@@ -581,7 +581,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                 while ($rowSelect = $resultSelect->fetch()) {
                     echo "<option value='".$rowSelect['iddCountryCode']."'>".htmlPrep($rowSelect['iddCountryCode']).' - '.htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
                 }
-                ?>				
+                ?>
 						</select>
 						<select style="width: 70px" name="phone<?php echo $i ?>Type">
 							<option value=""></option>
@@ -592,7 +592,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 							<option value="Pager"><?php echo __($guid, 'Pager') ?></option>
 							<option value="Other"><?php echo __($guid, 'Other') ?></option>
 						</select>
-						
+
 					</td>
 				</tr>
 				<?php
@@ -600,7 +600,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
             }
    		 	?>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Website') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Include http://') ?></span>
 				</td>
@@ -609,13 +609,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 					<script type="text/javascript">
 						var website=new LiveValidation('website');
 						website.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
-					</script>	
+					</script>
 				</td>
 			</tr>
-			
-			
+
+
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'School Information') ?></h3>
 				</td>
 			</tr>
@@ -624,7 +624,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				if ($dayTypeOptions != '') {
 					?>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Day Type') ?></b><br/>
 							<span class="emphasis small"><?php echo getSettingByScope($connection2, 'User Admin', 'dayTypeText'); ?></span>
 						</td>
@@ -636,7 +636,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 								foreach ($dayTypes as $dayType) {
 									echo "<option value='".trim($dayType)."'>".trim($dayType).'</option>';
 								}
-								?>				
+								?>
 							</select>
 						</td>
 					</tr>
@@ -645,7 +645,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				}
 				?>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Last School') ?></b><br/>
 				</td>
 				<td class="right">
@@ -672,7 +672,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</script>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Start Date') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Users\'s first day at school.') ?><br/> <?php echo __($guid, 'Format:').' ';
 					if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
@@ -696,7 +696,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 						} else {
 							echo $_SESSION[$guid]['i18n']['dateFormat'];
 						}
-						?>." } ); 
+						?>." } );
 					</script>
 					 <script type="text/javascript">
 						$(function() {
@@ -706,7 +706,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Class Of') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'When is the student expected to graduate?') ?></span>
 				</td>
@@ -725,18 +725,18 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 						while ($rowSelect = $resultSelect->fetch()) {
 							echo "<option value='".$rowSelect['gibbonSchoolYearID']."'>".htmlPrep($rowSelect['name']).'</option>';
 						}
-						?>				
+						?>
 					</select>
 				</td>
 			</tr>
-			
+
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'Background Information') ?></h3>
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'First Language') ?></b><br/>
 				</td>
 				<td class="right">
@@ -753,12 +753,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 						while ($rowSelect = $resultSelect->fetch()) {
 							echo "<option value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
 						}
-						?>				
+						?>
 					</select>
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Second Language') ?></b><br/>
 				</td>
 				<td class="right">
@@ -775,12 +775,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 						while ($rowSelect = $resultSelect->fetch()) {
 							echo "<option value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
 						}
-						?>				
+						?>
 					</select>
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Third Language') ?></b><br/>
 				</td>
 				<td class="right">
@@ -797,12 +797,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 						while ($rowSelect = $resultSelect->fetch()) {
 							echo "<option value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
 						}
-						?>				
+						?>
 					</select>
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Country of Birth') ?></b><br/>
 				</td>
 				<td class="right">
@@ -819,12 +819,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 						while ($rowSelect = $resultSelect->fetch()) {
 							echo "<option value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
 						}
-						?>				
+						?>
 					</select>
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Ethnicity') ?></b><br/>
 				</td>
 				<td class="right">
@@ -840,7 +840,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Religion') ?></b><br/>
 				</td>
 				<td class="right">
@@ -856,7 +856,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Citizenship 1') ?></b><br/>
 				</td>
 				<td class="right">
@@ -881,21 +881,21 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 								echo "<option value='".trim($nationality)."'>".trim($nationality).'</option>';
 							}
 						}
-						?>				
+						?>
 					</select>
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Citizenship 1 Passport Number') ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="citizenship1Passport" id="citizenship1Passport" maxlength=30 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
-			
+
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Citizenship 1 Passport Scan') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Less than 1440px by 900px') ?></span>
 				</td>
@@ -908,7 +908,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Citizenship 2') ?></b><br/>
 				</td>
 				<td class="right">
@@ -933,12 +933,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 								echo "<option $selected value='".trim($nationality)."'>".trim($nationality).'</option>';
 							}
 						}
-						?>					
+						?>
 					</select>
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Citizenship 2 Passport Number') ?></b><br/>
 				</td>
 				<td class="right">
@@ -946,7 +946,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<?php
                     if ($_SESSION[$guid]['country'] == '') {
                         echo '<b>'.__($guid, 'National ID Card Number').'</b><br/>';
@@ -960,7 +960,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<?php
                     if ($_SESSION[$guid]['country'] == '') {
                         echo '<b>'.__($guid, 'National ID Card Scan').'</b><br/>';
@@ -979,7 +979,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<?php
                     if ($_SESSION[$guid]['country'] == '') {
                         echo '<b>'.__($guid, 'Residency/Visa Type').'</b><br/>';
@@ -1006,7 +1006,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<?php
                     if ($_SESSION[$guid]['country'] == '') {
                         echo '<b>'.__($guid, 'Visa Expiry Date').'</b><br/>';
@@ -1035,7 +1035,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 						} else {
 							echo $_SESSION[$guid]['i18n']['dateFormat'];
 						}
-						?>." } ); 
+						?>." } );
 					</script>
 					 <script type="text/javascript">
 						$(function() {
@@ -1044,15 +1044,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 					</script>
 				</td>
 			</tr>
-			
-			
+
+
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'Employment') ?></h3>
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Profession') ?></b><br/>
 				</td>
 				<td class="right">
@@ -1060,7 +1060,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Employer') ?></b><br/>
 				</td>
 				<td class="right">
@@ -1068,27 +1068,27 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Job Title') ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="jobTitle" id="jobTitle" maxlength=30 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
-			
-			
+
+
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'Emergency Contacts') ?></h3>
 				</td>
 			</tr>
 			<tr>
-				<td colspan=2> 
-					<?php echo __($guid, 'These details are used when immediate family members (e.g. parent, spouse) cannot be reached first. Please try to avoid listing immediate family members.') ?> 
+				<td colspan=2>
+					<?php echo __($guid, 'These details are used when immediate family members (e.g. parent, spouse) cannot be reached first. Please try to avoid listing immediate family members.') ?>
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Contact 1 Name') ?></b><br/>
 				</td>
 				<td class="right">
@@ -1096,7 +1096,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Contact 1 Relationship') ?></b><br/>
 				</td>
 				<td class="right">
@@ -1112,7 +1112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Contact 1 Number 1') ?></b><br/>
 				</td>
 				<td class="right">
@@ -1120,7 +1120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Contact 1 Number 2') ?></b><br/>
 				</td>
 				<td class="right">
@@ -1128,7 +1128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Contact 2 Name') ?></b><br/>
 				</td>
 				<td class="right">
@@ -1136,7 +1136,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Contact 2 Relationship') ?></b><br/>
 				</td>
 				<td class="right">
@@ -1148,11 +1148,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 						<option value="Friend"><?php echo __($guid, 'Friend') ?></option>
 						<option value="Doctor"><?php echo __($guid, 'Doctor') ?></option>
 						<option value="Other"><?php echo __($guid, 'Other') ?></option>
-					</select>	
+					</select>
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Contact 2 Number 1') ?></b><br/>
 				</td>
 				<td class="right">
@@ -1160,21 +1160,21 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Contact 2 Number 2') ?></b><br/>
 				</td>
 				<td class="right">
 					<input name="emergency2Number2" id="emergency2Number2" maxlength=30 value="" type="text" class="standardWidth">
 				</td>
 			</tr>
-			
+
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'Miscellaneous') ?></h3>
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'House') ?></b><br/>
 				</td>
 				<td class="right">
@@ -1191,12 +1191,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 						while ($rowSelect = $resultSelect->fetch()) {
 							echo "<option value='".$rowSelect['gibbonHouseID']."'>".htmlPrep($rowSelect['name']).'</option>';
 						}
-						?>				
+						?>
 					</select>
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Student ID') ?></b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Must be unique if set.') ?></span>
 				</td>
@@ -1205,7 +1205,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Transport') ?></b><br/>
 					<span class="emphasis small"></span>
 				</td>
@@ -1233,7 +1233,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				});
 			</script>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Transport Notes') ?></b><br/>
 					<span class="emphasis small"></span>
 				</td>
@@ -1242,7 +1242,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Locker Number') ?></b><br/>
 					<span style="font-size: 90%"></span>
 				</td>
@@ -1251,7 +1251,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Vehicle Registration') ?></b><br/>
 					<span style="font-size: 90%"></span>
 				</td>
@@ -1266,7 +1266,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 			if ($privacySetting == 'Y' and $privacyBlurb != '' and $privacyOptions != '') {
 				?>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Privacy') ?> *</b><br/>
 						<span class="emphasis small"><?php echo htmlPrep($privacyBlurb) ?><br/>
 						</span>
@@ -1278,7 +1278,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 							echo $option." <input type='checkbox' name='privacyOptions[]' value='".htmlPrep(trim($option))."'/><br/>";
 						}
 						?>
-						
+
 					</td>
 				</tr>
 				<?php
@@ -1291,7 +1291,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     if ($studentAgreementOptions != '') {
         ?>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Student Agreements') ?></b><br/>
 						<span class="emphasis small"><?php echo __($guid, 'Check to indicate that student has signed the relevant agreement.') ?><br/>
 						</span>
@@ -1303,14 +1303,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 							echo $agreement." <input type='checkbox' name='studentAgreements[]' value='".htmlPrep(trim($agreement))."'/><br/>";
 						}
 						?>
-		
+
 					</td>
 				</tr>
 				<?php
 
 			}
 			?>
-			
+
 			<tr>
 				<td>
 					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></i><br/>

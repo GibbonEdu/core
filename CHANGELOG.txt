@@ -72,6 +72,7 @@ v12.0.00
 		System: themeability enhancements
 		System: added menuShow switch to allow actions to be hidden from the main menu (in case they should only be seen in a hook)
 		System: added Ghanaian Cedi, Myanmar Kyat as currencies
+		System: fixed Windows new line issue in PHP plain text emails (\r\n instead of \n)
 		System Admin: Improved version comparison in module updater
 		System Admin: Improved version comparison in non-login database updater
 		System Admin: fixed error when removing module with no $moduleTables in manifest.php

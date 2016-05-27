@@ -44,10 +44,10 @@ if (isset($_SESSION[$guid]['i18n']['code'])) {
 date_default_timezone_set($_SESSION[$guid]['timezone']);
 
 //Check for CLI, so this cannot be run through browser
-//if (php_sapi_name()!="cli") { 
-//	print __($guid, "This script cannot be run from a browser, only via CLI.") . "\n\n" ;
-//}
-//else {
+if (php_sapi_name()!="cli") {
+	print __($guid, "This script cannot be run from a browser, only via CLI.") ;
+}
+else {
     //Check that one of the days in question is a school day
     $isSchoolOpen = false;
     for ($i = 0; $i < 7; ++$i) {
@@ -57,10 +57,10 @@ date_default_timezone_set($_SESSION[$guid]['timezone']);
     }
 
     if ($isSchoolOpen == false) { //No school on any day in the last week
-        echo __($guid, 'School is not open, so no emails will be sent.')."\n\n";
+        echo __($guid, 'School is not open, so no emails will be sent.');
     } else { //Yes school, so go ahead.
         if ($_SESSION[$guid]['organisationEmail'] == '') {
-            echo __($guid, 'This script cannot be run, as no school email address has been set.')."\n\n";
+            echo __($guid, 'This script cannot be run, as no school email address has been set.');
         } else {
             //Lock table
             $lock = true;
@@ -88,7 +88,7 @@ date_default_timezone_set($_SESSION[$guid]['timezone']);
                 $sendFailCount = 0;
 
                 if ($studentCount < 1) { //No students to display
-                    echo __($guid, 'There are no records to display.')."\n\n";
+                    echo __($guid, 'There are no records to display.');
                 } else { //Students to display so get going
                     while ($row = $result->fetch()) {
                         //Get all homework for the past week, ready for email
@@ -153,8 +153,8 @@ date_default_timezone_set($_SESSION[$guid]['timezone']);
                         }
                         if ($resultDetail->rowCount() == 1) {
                             $rowDetail = $resultDetail->fetch();
-                            $replyTo = $rowDetail['email']."\n\n";
-                            $replyToName = $rowDetail['surname'].', '.$rowDetail['preferredName']."\n\n";
+                            $replyTo = $rowDetail['email'];
+                            $replyToName = $rowDetail['surname'].', '.$rowDetail['preferredName'];
                         }
 
                         //Get CP1 parent(s) email (might be multiples if in multiple families
@@ -198,7 +198,7 @@ date_default_timezone_set($_SESSION[$guid]['timezone']);
                                         //Make and store unique code for confirmation. add it to email text.
                                         $key = '';
 
-                                        //Let's go! Create key, send the invite							
+                                        //Let's go! Create key, send the invite
                                         $continue = false;
                                         $count = 0;
                                         while ($continue == false and $count < 100) {

@@ -156,7 +156,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
 
         // TIME SLOTS
         $excel->getActiveSheet()->setCellValue('A2', __($guid, 'Time Slots'))
-                                ->setCellValue('A3', implode(",\n", $slots));
+                                ->setCellValue('A3', implode(",\r\n", $slots));
 
         $excel->getActiveSheet()->getStyle('A3')->getAlignment()->setWrapText(true);
 
@@ -172,7 +172,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
             }
 
             $excel->getActiveSheet()->setCellValue('B2', __($guid, 'Terms'));
-            $excel->getActiveSheet()->setCellValue('B3', implode(",\n", $termList));
+            $excel->getActiveSheet()->setCellValue('B3', implode(",\r\n", $termList));
             $excel->getActiveSheet()->mergeCells('B3:C3');
             $infoRowLines = max($infoRowLines, count($termList));
         } else {
@@ -200,7 +200,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
         $infoRowLines = max($infoRowLines, count($staff));
 
         $excel->getActiveSheet()->setCellValue('F2', __($guid, 'Staff'))
-            ->setCellValue('F3', implode(",\n", $staff));
+            ->setCellValue('F3', implode(",\r\n", $staff));
 
         $excel->getActiveSheet()->mergeCells('F3:G3');
         $excel->getActiveSheet()->getStyle('F3:G3')->getAlignment()->setWrapText(true);

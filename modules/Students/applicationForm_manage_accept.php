@@ -82,9 +82,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 }
                 echo '</div>'; ?>
 				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/applicationForm_manage_accept.php&step=2&gibbonApplicationFormID=$gibbonApplicationFormID&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search" ?>">
-					<table class='smallIntBorder fullWidth' cellspacing='0'>	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo sprintf(__($guid, 'Are you sure you want to accept the application for %1$s?'), formatName('', $row['preferredName'], $row['surname'], 'Student')) ?></b><br/>
 								<br/>
 								<?php
@@ -101,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 								}
 								?>
 								<input <?php echo $checkedParents ?> type='checkbox' name='informParents'/> <?php echo __($guid, 'Automatically inform <u>parents</u> of their Gibbon login details by email?') ?><br/>
-								
+
 								<br/>
 								<i><u><?php echo __($guid, 'The system will perform the following actions:') ?></u></i><br/>
 								<ol>
@@ -139,7 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 							</td>
 						</tr>
 						<tr>
-							<td class='right'> 
+							<td class='right'>
 								<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php echo $gibbonSchoolYearID ?>" type="hidden">
 								<input name="gibbonApplicationFormID" id="gibbonApplicationFormID" value="<?php echo $gibbonApplicationFormID ?>" type="hidden">
 								<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
@@ -147,7 +147,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 							</td>
 						</tr>
 					</table>
-				</form>				
+				</form>
 				<?php
 
             } elseif ($step == 2) {
@@ -272,12 +272,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             echo '</h4>';
                             $to = $_SESSION[$guid]['organisationAdministratorEmail'];
                             $subject = sprintf(__($guid, 'Create Student Email/Websites for %1$s at %2$s'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort']);
-                            $body = sprintf(__($guid, 'Please create the following for new student %1$s.'), formatName('', $row['preferredName'], $row['surname'], 'Student'))."\n\n";
+                            $body = sprintf(__($guid, 'Please create the following for new student %1$s.'), formatName('', $row['preferredName'], $row['surname'], 'Student'))."\r\n\r\n";
                             if ($studentDefaultEmail != '') {
-                                $body .= __($guid, 'Email').': '.$email."\n";
+                                $body .= __($guid, 'Email').': '.$email."\r\n";
                             }
                             if ($studentDefaultWebsite != '') {
-                                $body .= __($guid, 'Website').': '.$website."\n";
+                                $body .= __($guid, 'Website').': '.$website."\r\n";
                             }
                             if ($row['gibbonSchoolYearIDEntry'] != '') {
                                 try {
@@ -291,7 +291,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 if ($resultYearGroup->rowCount() == 1) {
                                     $rowYearGroup = $resultYearGroup->fetch();
                                     if ($rowYearGroup['name'] != '') {
-                                        $body .= __($guid, 'School Year').': '.$rowYearGroup['name']."\n";
+                                        $body .= __($guid, 'School Year').': '.$rowYearGroup['name']."\r\n";
                                     }
                                 }
                             }
@@ -307,7 +307,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 if ($resultYearGroup->rowCount() == 1) {
                                     $rowYearGroup = $resultYearGroup->fetch();
                                     if ($rowYearGroup['name'] != '') {
-                                        $body .= __($guid, 'Year Group').': '.$rowYearGroup['name']."\n";
+                                        $body .= __($guid, 'Year Group').': '.$rowYearGroup['name']."\r\n";
                                     }
                                 }
                             }
@@ -323,12 +323,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 if ($resultYearGroup->rowCount() == 1) {
                                     $rowYearGroup = $resultYearGroup->fetch();
                                     if ($rowYearGroup['name'] != '') {
-                                        $body .= __($guid, 'Roll Group').': '.$rowYearGroup['name']."\n";
+                                        $body .= __($guid, 'Roll Group').': '.$rowYearGroup['name']."\r\n";
                                     }
                                 }
                             }
                             if ($row['dateStart'] != '') {
-                                $body .= __($guid, 'Start Date').': '.dateConvertBack($guid, $row['dateStart'])."\n";
+                                $body .= __($guid, 'Start Date').': '.dateConvertBack($guid, $row['dateStart'])."\r\n";
                             }
 
                             $headers = 'From: '.$_SESSION[$guid]['organisationAdministratorEmail'];
@@ -686,7 +686,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 elseif ($row['parent1surname'] != $row['parent2surname'] and $row['parent2surname'] != '' and $row['parent2preferredName'] != '' and $row['parent2title'] != '') {
                                     $nameAddress = $row['parent1title'].' '.$row['parent1surname'].' & '.$row['parent2title'].' '.$row['parent2surname'];
                                 }
-                                //Just use parent1's name 
+                                //Just use parent1's name
                                 else {
                                     $nameAddress = $row['parent1title'].' '.$row['parent1surname'];
                                 }
@@ -1165,9 +1165,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 $to = $informStudentEntry['email'];
                                 $subject = sprintf(__($guid, 'Welcome to %1$s at %2$s'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort']);
                                 if ($notificationStudentMessage != '') {
-                                    $body = sprintf(__($guid, 'Dear %1$s,\n\nWelcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s).\n\nIn order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).\n\n'), formatName('', $informStudentEntry['preferredName'], $informStudentEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informStudentEntry['username'], $informStudentEntry['password']).$notificationStudentMessage.sprintf(__($guid, '\n\nPlease feel free to reply to this email should you have any questions.\n\n%1$s,\n\n%2$s Administrator'), $_SESSION[$guid]['organisationAdministratorName'], $_SESSION[$guid]['systemName']);
+                                    $body = sprintf(__($guid, 'Dear %1$s,\r\n\r\nWelcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s).\r\n\r\nIn order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).\r\n\r\n'), formatName('', $informStudentEntry['preferredName'], $informStudentEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informStudentEntry['username'], $informStudentEntry['password']).$notificationStudentMessage.sprintf(__($guid, '\r\n\r\nPlease feel free to reply to this email should you have any questions.\r\n\r\n%1$s,\r\n\r\n%2$s Administrator'), $_SESSION[$guid]['organisationAdministratorName'], $_SESSION[$guid]['systemName']);
                                 } else {
-                                    $body = 'Dear '.formatName('', $informStudentEntry['preferredName'], $informStudentEntry['surname'], 'Student').",\n\nWelcome to ".$_SESSION[$guid]['systemName'].', '.$_SESSION[$guid]['organisationNameShort']."'s system for managing school information. You can access the system by going to ".$_SESSION[$guid]['absoluteURL'].' and logging in with your new username ('.$informStudentEntry['username'].') and password ('.$informStudentEntry['password'].").\n\nIn order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).\n\nPlease feel free to reply to this email should you have any questions.\n\n".$_SESSION[$guid]['organisationAdministratorName'].",\n\n".$_SESSION[$guid]['systemName'].' Administrator';
+                                    $body = 'Dear '.formatName('', $informStudentEntry['preferredName'], $informStudentEntry['surname'], 'Student').",\r\n\r\nWelcome to ".$_SESSION[$guid]['systemName'].', '.$_SESSION[$guid]['organisationNameShort']."'s system for managing school information. You can access the system by going to ".$_SESSION[$guid]['absoluteURL'].' and logging in with your new username ('.$informStudentEntry['username'].') and password ('.$informStudentEntry['password'].").\r\n\r\nIn order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).\r\n\r\nPlease feel free to reply to this email should you have any questions.\r\n\r\n".$_SESSION[$guid]['organisationAdministratorName'].",\r\n\r\n".$_SESSION[$guid]['systemName'].' Administrator';
                                 }
                                 $headers = 'From: '.$_SESSION[$guid]['organisationAdministratorEmail'];
 
@@ -1195,9 +1195,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 $to = $informParentsEntry['email'];
                                 $subject = sprintf(__($guid, 'Welcome to %1$s at %2$s'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort']);
                                 if ($notificationParentsMessage != '') {
-                                    $body = sprintf(__($guid, 'Dear %1$s,\n\nWelcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s). You can learn more about using %7$s on the official support website (https://gibbonedu.org/support/parents).\n\nIn order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).\n\n'), formatName('', $informParentsEntry['preferredName'], $informParentsEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informParentsEntry['username'], $informParentsEntry['password'], $_SESSION[$guid]['systemName']).$notificationParentsMessage.sprintf(__($guid, '\n\nPlease feel free to reply to this email should you have any questions.\n\n%1$s,\n\n%2$s Administrator'), $_SESSION[$guid]['organisationAdministratorName'], $_SESSION[$guid]['systemName']);
+                                    $body = sprintf(__($guid, 'Dear %1$s,\r\n\r\nWelcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s). You can learn more about using %7$s on the official support website (https://gibbonedu.org/support/parents).\r\n\r\nIn order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).\r\n\r\n'), formatName('', $informParentsEntry['preferredName'], $informParentsEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informParentsEntry['username'], $informParentsEntry['password'], $_SESSION[$guid]['systemName']).$notificationParentsMessage.sprintf(__($guid, '\r\n\r\nPlease feel free to reply to this email should you have any questions.\r\n\r\n%1$s,\r\n\r\n%2$s Administrator'), $_SESSION[$guid]['organisationAdministratorName'], $_SESSION[$guid]['systemName']);
                                 } else {
-                                    $body = sprintf(__($guid, 'Dear %1$s,\n\nWelcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s). You can learn more about using %7$s on the official support website (https://gibbonedu.org/support/parents).\n\nIn order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).\n\n'), formatName('', $informParentsEntry['preferredName'], $informParentsEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informParentsEntry['username'], $informParentsEntry['password'], $_SESSION[$guid]['systemName']).sprintf(__($guid, '\n\nPlease feel free to reply to this email should you have any questions.\n\n%1$s,\n\n%2$s Administrator'), $_SESSION[$guid]['organisationAdministratorName'], $_SESSION[$guid]['systemName']);
+                                    $body = sprintf(__($guid, 'Dear %1$s,\r\n\r\nWelcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s). You can learn more about using %7$s on the official support website (https://gibbonedu.org/support/parents).\r\n\r\nIn order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).\r\n\r\n'), formatName('', $informParentsEntry['preferredName'], $informParentsEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informParentsEntry['username'], $informParentsEntry['password'], $_SESSION[$guid]['systemName']).sprintf(__($guid, '\r\n\r\nPlease feel free to reply to this email should you have any questions.\r\n\r\n%1$s,\r\n\r\n%2$s Administrator'), $_SESSION[$guid]['organisationAdministratorName'], $_SESSION[$guid]['systemName']);
                                 }
                                 $headers = 'From: '.$_SESSION[$guid]['organisationAdministratorEmail'];
 

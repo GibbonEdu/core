@@ -45,10 +45,10 @@ if (isset($_SESSION[$guid]['i18n']['code'])) {
 date_default_timezone_set($_SESSION[$guid]['timezone']);
 
 //Check for CLI, so this cannot be run through browser
-//if (php_sapi_name()!="cli") { 
-//	print __($guid, "This script cannot be run from a browser, only via CLI.") . "\n\n" ;
-//}
-//else {
+if (php_sapi_name()!="cli") {
+	print __($guid, "This script cannot be run from a browser, only via CLI.") ;
+}
+else {
     //SCAN THROUGH ALL OVERDUE LOANS
     $today = date('Y-m-d');
 

@@ -1861,9 +1861,9 @@ else {
 
 				//Prep message
 				$body.="<p class='emphasis'>" . sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationName"]) ."</p>" ;
-				$bodyPlain=preg_replace('#<br\s*/?>#i', "\n", $body) ;
-				$bodyPlain=str_replace("</p>", "\n\n", $bodyPlain) ;
-				$bodyPlain=str_replace("</div>", "\n\n", $bodyPlain) ;
+				$bodyPlain=preg_replace('#<br\s*/?>#i', "\r\n", $body) ;
+				$bodyPlain=str_replace("</p>", "\r\n\r\n", $bodyPlain) ;
+				$bodyPlain=str_replace("</div>", "\r\n\r\n", $bodyPlain) ;
 				$bodyPlain=preg_replace("#\<a.+href\=[\"|\'](.+)[\"|\'].*\>.*\<\/a\>#U","$1",$bodyPlain);
 				$bodyPlain=strip_tags($bodyPlain, '<a>');
 

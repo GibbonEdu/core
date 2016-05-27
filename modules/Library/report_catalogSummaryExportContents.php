@@ -97,7 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
 		//Column B
         $x = $row['name'];
         if ($row['producer'] != '') {
-            $x .= "\n".$row['producer'];
+            $x .= "\r\n".$row['producer'];
         }
 		$excel->getActiveSheet()->setCellValueByColumnAndRow(1, $r, $x);
 		//Column C

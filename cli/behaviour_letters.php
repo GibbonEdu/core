@@ -45,7 +45,7 @@ if (isset($_SESSION[$guid]['i18n']['code'])) {
 date_default_timezone_set($_SESSION[$guid]['timezone']);
 
 //Check for CLI, so this cannot be run through browser
-if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a browser, only via CLI.')."\n\n";
+if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a browser, only via CLI.');
 } else {
     $emailSendCount = 0;
     $emailFailCount = 0;
@@ -130,7 +130,7 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
                             $lastLetterLevel = $rowLetters['letterLevel'];
                             $lastLetterStatus = $rowLetters['status'];
 
-                            if ($behaviourCount > $rowLetters['recordCountAtCreation']) { //Only consider action if count has increased since creation (stops second day issue of warning when count has not changed)	
+                            if ($behaviourCount > $rowLetters['recordCountAtCreation']) { //Only consider action if count has increased since creation (stops second day issue of warning when count has not changed)
                                 if ($lastLetterStatus == 'Warning') { //Last letter is warning
                                     if ($behaviourCount >= ${'behaviourLettersLetter'.$lastLetterLevel.'Count'} and $behaviourCount < ${'behaviourLettersLetter'.($lastLetterLevel + 1).'Count'}) { //Count escalted to above warning, and less than next full level
                                         $issueExistingLetter = true;
