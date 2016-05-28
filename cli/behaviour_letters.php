@@ -330,12 +330,8 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
 
                                     //Prep message
                                     $body .= '<br/><br/><i>'.sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</i>';
-                                    $bodyPlain = preg_replace('#<br\s*/?>#i', "\n", $body);
-                                    $bodyPlain = str_replace('</p>', "\n\n", $bodyPlain);
-                                    $bodyPlain = str_replace('</div>', "\n\n", $bodyPlain);
-                                    $bodyPlain = preg_replace("#\<a.+href\=[\"|\'](.+)[\"|\'].*\>.*\<\/a\>#U", '$1', $bodyPlain);
-                                    $bodyPlain = strip_tags($bodyPlain, '<a>');
-
+                                    $bodyPlain = emailBodyConvert($body);
+                                    
                                     $mail = new PHPMailer();
                                     $mail->AddAddress($rowMember['email'], $rowMember['surname'].', '.$rowMember['preferredName']);
                                     if ($_SESSION[$guid]['organisationEmail'] != '') {

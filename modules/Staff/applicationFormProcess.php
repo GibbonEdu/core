@@ -300,12 +300,8 @@ if ($proceed == false) {
                             //Prep message
                             $subject = __($guid, 'Request For Reference');
                             $body = sprintf(__($guid, 'To whom it may concern,%4$sThis email is being sent in relation to the job application of an individual who has nominated you as a referee: %1$s.%4$sIn assessing their application for the post of %5$s at our school, we would like to enlist your help in completing the following reference form: %2$s.<br/><br/>Please feel free to contact me, should you have any questions in regard to this matter.%4$sRegards,%4$s%3$s'), formatName('', $preferredName, $surname, 'Staff', false, true), "<a href='" . $applicationFormRefereeLink[$type] . "' target='_blank'>" . $applicationFormRefereeLink[$type] . "</a>", $_SESSION[$guid]['organisationHRName'], '<br/><br/>', $jobTitle);
-                            $body .= "<p class='emphasis'>".sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
-                            $bodyPlain = preg_replace('#<br\s*/?>#i', "\r\n", $body);
-                            $bodyPlain = str_replace('</p>', "\r\n\r\n", $bodyPlain);
-                            $bodyPlain = str_replace('</div>', "\r\n\r\n", $bodyPlain);
-                            $bodyPlain = preg_replace("#\<a.+href\=[\"|\'](.+)[\"|\'].*\>.*\<\/a\>#U", '$1', $bodyPlain);
-                            $bodyPlain = strip_tags($bodyPlain, '<a>');
+                            $body .= "<p style='font-style: italic;'>".sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
+                            $bodyPlain = emailBodyConvert($body);
 
                             $mail = new PHPMailer();
                             $mail->SetFrom($_SESSION[$guid]['organisationHREmail'], $_SESSION[$guid]['organisationHRName']);

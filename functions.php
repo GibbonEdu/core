@@ -18,6 +18,22 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 require_once dirname(__FILE__).'/gibbon.php';
 
+
+//Convert an HTML email body into a plain text email body
+function emailBodyConvert($body)
+{
+    $return = $body;
+
+    $return = preg_replace('#<br\s*/?>#i', "\n", $return);
+    $return = str_replace('</p>', "\n\n", $return);
+    $return = str_replace('</div>', "\n\n", $return);
+    $return = preg_replace("#\<a.+href\=[\"|\'](.+)[\"|\'].*\>.*\<\/a\>#U", '$1', $return);
+    $return = strip_tags($return, '<a>');
+
+    return $return ;
+}
+
+
 //Get and store custom string replacements in session
 function setStringReplacementList($connection2, $guid)
 {
@@ -1775,11 +1791,7 @@ function setNotification($connection2, $guid, $gibbonPersonID, $text, $moduleNam
         $body .= '<br/><br/>';
         $body.sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']);
         $body .= '</p>';
-        $bodyPlain = preg_replace('#<br\s*/?>#i', "\n", $body);
-        $bodyPlain = str_replace('</p>', "\n\n", $bodyPlain);
-        $bodyPlain = str_replace('</div>', "\n\n", $bodyPlain);
-        $bodyPlain = preg_replace("#\<a.+href\=[\"|\'](.+)[\"|\'].*\>.*\<\/a\>#U", '$1', $bodyPlain);
-        $bodyPlain = strip_tags($bodyPlain, '<a>');
+        $bodyPlain = emailBodyConvert($body);
 
         $mail = new PHPMailer();
         $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationName']);

@@ -21,6 +21,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require $_SESSION[$guid]['absolutePath'].'/lib/PHPMailer/class.phpmailer.php';
+
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_manage_accept.php') == false) {
     //Acess denied
@@ -272,12 +274,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             echo '</h4>';
                             $to = $_SESSION[$guid]['organisationAdministratorEmail'];
                             $subject = sprintf(__($guid, 'Create Student Email/Websites for %1$s at %2$s'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort']);
-                            $body = sprintf(__($guid, 'Please create the following for new student %1$s.'), formatName('', $row['preferredName'], $row['surname'], 'Student'))."\r\n\r\n";
+                            $body = sprintf(__($guid, 'Please create the following for new student %1$s.'), formatName('', $row['preferredName'], $row['surname'], 'Student'))."<br/><br/>";
                             if ($studentDefaultEmail != '') {
-                                $body .= __($guid, 'Email').': '.$email."\r\n";
+                                $body .= __($guid, 'Email').': '.$email."<br/>";
                             }
                             if ($studentDefaultWebsite != '') {
-                                $body .= __($guid, 'Website').': '.$website."\r\n";
+                                $body .= __($guid, 'Website').': '.$website."<br/>";
                             }
                             if ($row['gibbonSchoolYearIDEntry'] != '') {
                                 try {
@@ -291,7 +293,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 if ($resultYearGroup->rowCount() == 1) {
                                     $rowYearGroup = $resultYearGroup->fetch();
                                     if ($rowYearGroup['name'] != '') {
-                                        $body .= __($guid, 'School Year').': '.$rowYearGroup['name']."\r\n";
+                                        $body .= __($guid, 'School Year').': '.$rowYearGroup['name']."<br/>";
                                     }
                                 }
                             }
@@ -307,7 +309,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 if ($resultYearGroup->rowCount() == 1) {
                                     $rowYearGroup = $resultYearGroup->fetch();
                                     if ($rowYearGroup['name'] != '') {
-                                        $body .= __($guid, 'Year Group').': '.$rowYearGroup['name']."\r\n";
+                                        $body .= __($guid, 'Year Group').': '.$rowYearGroup['name']."<br/>";
                                     }
                                 }
                             }
@@ -323,17 +325,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 if ($resultYearGroup->rowCount() == 1) {
                                     $rowYearGroup = $resultYearGroup->fetch();
                                     if ($rowYearGroup['name'] != '') {
-                                        $body .= __($guid, 'Roll Group').': '.$rowYearGroup['name']."\r\n";
+                                        $body .= __($guid, 'Roll Group').': '.$rowYearGroup['name']."<br/>";
                                     }
                                 }
                             }
                             if ($row['dateStart'] != '') {
-                                $body .= __($guid, 'Start Date').': '.dateConvertBack($guid, $row['dateStart'])."\r\n";
+                                $body .= __($guid, 'Start Date').': '.dateConvertBack($guid, $row['dateStart'])."<br/>";
                             }
 
-                            $headers = 'From: '.$_SESSION[$guid]['organisationAdministratorEmail'];
+                            $body .= "<p style='font-style: italic;'>".sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
+                            $bodyPlain = emailBodyConvert($body);
 
-                            if (mail($to, $subject, $body, $headers)) {
+                            $mail = new PHPMailer();
+                            $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
+                            $mail->AddAddress($to);
+                            $mail->CharSet = 'UTF-8';
+                            $mail->Encoding = 'base64';
+                            $mail->IsHTML(true);
+                            $mail->Subject = $subject;
+                            $mail->Body = $body;
+                            $mail->AltBody = $bodyPlain;
+
+                            if ($mail->Send()) {
                                 echo "<div class='success'>";
                                 echo sprintf(__($guid, 'A request to create a student email address and/or website address was successfully sent to %1$s.'), $_SESSION[$guid]['organisationAdministratorName']);
                                 echo '</div>';
@@ -1165,13 +1178,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 $to = $informStudentEntry['email'];
                                 $subject = sprintf(__($guid, 'Welcome to %1$s at %2$s'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort']);
                                 if ($notificationStudentMessage != '') {
-                                    $body = sprintf(__($guid, 'Dear %1$s,\r\n\r\nWelcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s).\r\n\r\nIn order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).\r\n\r\n'), formatName('', $informStudentEntry['preferredName'], $informStudentEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informStudentEntry['username'], $informStudentEntry['password']).$notificationStudentMessage.sprintf(__($guid, '\r\n\r\nPlease feel free to reply to this email should you have any questions.\r\n\r\n%1$s,\r\n\r\n%2$s Administrator'), $_SESSION[$guid]['organisationAdministratorName'], $_SESSION[$guid]['systemName']);
+                                    $body = sprintf(__($guid, 'Dear %1$s,<br/><br/>Welcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s).<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>'), formatName('', $informStudentEntry['preferredName'], $informStudentEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informStudentEntry['username'], $informStudentEntry['password']).$notificationStudentMessage.sprintf(__($guid, 'Please feel free to reply to this email should you have any questions.<br/><br/>%1$s,<br/><br/>%2$s Administrator'), $_SESSION[$guid]['organisationAdministratorName'], $_SESSION[$guid]['systemName']);
                                 } else {
-                                    $body = 'Dear '.formatName('', $informStudentEntry['preferredName'], $informStudentEntry['surname'], 'Student').",\r\n\r\nWelcome to ".$_SESSION[$guid]['systemName'].', '.$_SESSION[$guid]['organisationNameShort']."'s system for managing school information. You can access the system by going to ".$_SESSION[$guid]['absoluteURL'].' and logging in with your new username ('.$informStudentEntry['username'].') and password ('.$informStudentEntry['password'].").\r\n\r\nIn order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).\r\n\r\nPlease feel free to reply to this email should you have any questions.\r\n\r\n".$_SESSION[$guid]['organisationAdministratorName'].",\r\n\r\n".$_SESSION[$guid]['systemName'].' Administrator';
+                                    $body = 'Dear '.formatName('', $informStudentEntry['preferredName'], $informStudentEntry['surname'], 'Student').",<br/><br/>Welcome to ".$_SESSION[$guid]['systemName'].', '.$_SESSION[$guid]['organisationNameShort']."'s system for managing school information. You can access the system by going to ".$_SESSION[$guid]['absoluteURL'].' and logging in with your new username ('.$informStudentEntry['username'].') and password ('.$informStudentEntry['password'].").<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>Please feel free to reply to this email should you have any questions.<br/><br/>".$_SESSION[$guid]['organisationAdministratorName'].",<br/><br/>".$_SESSION[$guid]['systemName'].' Administrator';
                                 }
-                                $headers = 'From: '.$_SESSION[$guid]['organisationAdministratorEmail'];
+                                $bodyPlain = emailBodyConvert($body);
 
-                                if (mail($to, $subject, $body, $headers)) {
+                                $mail = new PHPMailer();
+                                $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
+                                $mail->AddAddress($to);
+                                $mail->CharSet = 'UTF-8';
+                                $mail->Encoding = 'base64';
+                                $mail->IsHTML(true);
+                                $mail->Subject = $subject;
+                                $mail->Body = $body;
+                                $mail->AltBody = $bodyPlain;
+
+                                if ($mail->Send()) {
                                     echo "<div class='success'>";
                                     echo __($guid, 'A welcome email was successfully sent to').' '.formatName('', $informStudentEntry['preferredName'], $informStudentEntry['surname'], 'Student').'.';
                                     echo '</div>';
@@ -1195,13 +1218,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 $to = $informParentsEntry['email'];
                                 $subject = sprintf(__($guid, 'Welcome to %1$s at %2$s'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort']);
                                 if ($notificationParentsMessage != '') {
-                                    $body = sprintf(__($guid, 'Dear %1$s,\r\n\r\nWelcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s). You can learn more about using %7$s on the official support website (https://gibbonedu.org/support/parents).\r\n\r\nIn order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).\r\n\r\n'), formatName('', $informParentsEntry['preferredName'], $informParentsEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informParentsEntry['username'], $informParentsEntry['password'], $_SESSION[$guid]['systemName']).$notificationParentsMessage.sprintf(__($guid, '\r\n\r\nPlease feel free to reply to this email should you have any questions.\r\n\r\n%1$s,\r\n\r\n%2$s Administrator'), $_SESSION[$guid]['organisationAdministratorName'], $_SESSION[$guid]['systemName']);
+                                    $body = sprintf(__($guid, 'Dear %1$s,<br/><br/>Welcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s). You can learn more about using %7$s on the official support website (https://gibbonedu.org/support/parents).<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>'), formatName('', $informParentsEntry['preferredName'], $informParentsEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informParentsEntry['username'], $informParentsEntry['password'], $_SESSION[$guid]['systemName']).$notificationParentsMessage.sprintf(__($guid, 'Please feel free to reply to this email should you have any questions.<br/><br/>%1$s,<br/><br/>%2$s Administrator'), $_SESSION[$guid]['organisationAdministratorName'], $_SESSION[$guid]['systemName']);
                                 } else {
-                                    $body = sprintf(__($guid, 'Dear %1$s,\r\n\r\nWelcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s). You can learn more about using %7$s on the official support website (https://gibbonedu.org/support/parents).\r\n\r\nIn order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).\r\n\r\n'), formatName('', $informParentsEntry['preferredName'], $informParentsEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informParentsEntry['username'], $informParentsEntry['password'], $_SESSION[$guid]['systemName']).sprintf(__($guid, '\r\n\r\nPlease feel free to reply to this email should you have any questions.\r\n\r\n%1$s,\r\n\r\n%2$s Administrator'), $_SESSION[$guid]['organisationAdministratorName'], $_SESSION[$guid]['systemName']);
+                                    $body = sprintf(__($guid, 'Dear %1$s,<br/><br/>Welcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s). You can learn more about using %7$s on the official support website (https://gibbonedu.org/support/parents).<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>'), formatName('', $informParentsEntry['preferredName'], $informParentsEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informParentsEntry['username'], $informParentsEntry['password'], $_SESSION[$guid]['systemName']).sprintf(__($guid, 'Please feel free to reply to this email should you have any questions.<br/><br/>%1$s,<br/><br/>%2$s Administrator'), $_SESSION[$guid]['organisationAdministratorName'], $_SESSION[$guid]['systemName']);
                                 }
-                                $headers = 'From: '.$_SESSION[$guid]['organisationAdministratorEmail'];
+                                $bodyPlain = emailBodyConvert($body);
 
-                                if (mail($to, $subject, $body, $headers)) {
+                                $mail = new PHPMailer();
+                                $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
+                                $mail->AddAddress($to);
+                                $mail->CharSet = 'UTF-8';
+                                $mail->Encoding = 'base64';
+                                $mail->IsHTML(true);
+                                $mail->Subject = $subject;
+                                $mail->Body = $body;
+                                $mail->AltBody = $bodyPlain;
+
+                                if ($mail->Send()) {
                                     echo "<div class='success'>";
                                     echo __($guid, 'A welcome email was successfully sent to').' '.formatName('', $informParentsEntry['preferredName'], $informParentsEntry['surname'], 'Student').'.';
                                     echo '</div>';

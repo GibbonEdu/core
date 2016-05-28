@@ -707,12 +707,8 @@ if ($proceed == false) {
                     //Prep message
                     $subject = __($guid, 'Request For Reference');
                     $body = sprintf(__($guid, 'To whom it may concern,%4$sThis email is being sent in relation to the application of a current or former student of your school: %1$s.%4$sIn assessing their application for our school, we would like to enlist your help in completing the following reference form: %2$s.<br/><br/>Please feel free to contact me, should you have any questions in regard to this matter.%4$sRegards,%4$s%3$s'), $officialName, "<a href='$applicationFormRefereeLink' target='_blank'>$applicationFormRefereeLink</a>", $_SESSION[$guid]['organisationAdmissionsName'], '<br/><br/>');
-                    $body .= "<p class='emphasis'>".sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
-                    $bodyPlain = preg_replace('#<br\s*/?>#i', "\r\n", $body);
-                    $bodyPlain = str_replace('</p>', "\r\n\r\n", $bodyPlain);
-                    $bodyPlain = str_replace('</div>', "\r\n\r\n", $bodyPlain);
-                    $bodyPlain = preg_replace("#\<a.+href\=[\"|\'](.+)[\"|\'].*\>.*\<\/a\>#U", '$1', $bodyPlain);
-                    $bodyPlain = strip_tags($bodyPlain, '<a>');
+                    $body .= "<p style='font-style: italic;'>".sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
+                    $bodyPlain = emailBodyConvert($body);
 
                     $mail = new PHPMailer();
                     $mail->SetFrom($_SESSION[$guid]['organisationAdmissionsEmail'], $_SESSION[$guid]['organisationAdmissionsName']);
@@ -772,12 +768,24 @@ if ($proceed == false) {
         //Get email parameters ready to send messages for to admissions for payment problems
         $to = $_SESSION[$guid]['organisationAdmissionsEmail'];
         $subject = $_SESSION[$guid]['organisationNameShort'].' Gibbon Application Form Payment Issue';
-        $headers = 'From: '.$_SESSION[$guid]['organisationAdministratorEmail'];
 
         //Check return values to see if we can proceed
         if ($paymentToken == '' or $gibbonApplicationFormID == '' or $applicationFee == '') {
-            $body = __($guid, 'Payment via PayPal may or may not have been successful, but has not been recorded either way due to a system error. Please check your PayPal account for details. The following may be useful:')."\r\n\r\nPayment Token: $paymentToken\r\n\r\nPayer ID: $paymentPayerID\r\n\r\nApplication Form ID: $gibbonApplicationFormID\r\n\r\nApplication Fee: $applicationFee\r\n\r\n".$_SESSION[$guid]['systemName'].' '.__($guid, 'Administrator');
-            mail($to, $subject, $body, $headers);
+            $body = __($guid, 'Payment via PayPal may or may not have been successful, but has not been recorded either way due to a system error. Please check your PayPal account for details. The following may be useful:')."<br/><br/>Payment Token: $paymentToken<br/><br/>Payer ID: $paymentPayerID<br/><br/>Application Form ID: $gibbonApplicationFormID<br/><br/>Application Fee: $applicationFee<br/><br/>".$_SESSION[$guid]['systemName'].' '.__($guid, 'Administrator');
+            $body .= "<p style='font-style: italic;'>".sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
+            $bodyPlain = emailBodyConvert($body);
+
+            $mail = new PHPMailer();
+            $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
+            $mail->AddAddress($to);
+            $mail->CharSet = 'UTF-8';
+            $mail->Encoding = 'base64';
+            $mail->IsHTML(true);
+            $mail->Subject = $subject;
+            $mail->Body = $body;
+            $mail->AltBody = $bodyPlain;
+
+            $mail->Send();
 
             //Success 2
             $URL .= '&return=success2&id='.$_GET['id'];
@@ -816,8 +824,21 @@ if ($proceed == false) {
                 }
 
                 if ($updateFail == true) {
-                    $body = __($guid, 'Payment via PayPal was successful, but has not been recorded due to a system error. Please check your PayPal account for details. The following may be useful:')."\r\n\r\nPayment Token: $paymentToken\r\n\r\nPayer ID: $paymentPayerID\r\n\r\nApplication Form ID: $gibbonApplicationFormID\r\n\r\nApplication Fee: $applicationFee\r\n\r\n".$_SESSION[$guid]['systemName'].' '.__($guid, 'Administrator');
-                    mail($to, $subject, $body, $headers);
+                    $body = __($guid, 'Payment via PayPal was successful, but has not been recorded due to a system error. Please check your PayPal account for details. The following may be useful:')."<br/><br/>Payment Token: $paymentToken<br/><br/>Payer ID: $paymentPayerID<br/><br/>Application Form ID: $gibbonApplicationFormID<br/><br/>Application Fee: $applicationFee<br/><br/>".$_SESSION[$guid]['systemName'].' '.__($guid, 'Administrator');
+                    $body .= "<p style='font-style: italic;'>".sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
+                    $bodyPlain = emailBodyConvert($body);
+
+                    $mail = new PHPMailer();
+                    $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
+                    $mail->AddAddress($to);
+                    $mail->CharSet = 'UTF-8';
+                    $mail->Encoding = 'base64';
+                    $mail->IsHTML(true);
+                    $mail->Subject = $subject;
+                    $mail->Body = $body;
+                    $mail->AltBody = $bodyPlain;
+
+                    $mail->Send();
 
                     $URL .= '&return=success3&id='.$_GET['id'];
                     header("Location: {$URL}");
@@ -847,8 +868,21 @@ if ($proceed == false) {
                 }
 
                 if ($updateFail == true) {
-                    $body = __($guid, 'Payment via PayPal was unsuccessful, and has also not been recorded due to a system error. Please check your PayPal account for details. The following may be useful:')."\r\n\r\nPayment Token: $paymentToken\r\n\r\nPayer ID: $paymentPayerID\r\n\r\nApplication Form ID: $gibbonApplicationFormID\r\n\r\nApplication Fee: $applicationFee\r\n\r\n".$_SESSION[$guid]['systemName'].' '.__($guid, 'Administrator');
-                    mail($to, $subject, $body, $headers);
+                    $body = __($guid, 'Payment via PayPal was unsuccessful, and has also not been recorded due to a system error. Please check your PayPal account for details. The following may be useful:')."<br/><br/>Payment Token: $paymentToken<br/><br/>Payer ID: $paymentPayerID<br/><br/>Application Form ID: $gibbonApplicationFormID<br/><br/>Application Fee: $applicationFee<br/><br/>".$_SESSION[$guid]['systemName'].' '.__($guid, 'Administrator');
+                    $body .= "<p style='font-style: italic;'>".sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
+                    $bodyPlain = emailBodyConvert($body);
+
+                    $mail = new PHPMailer();
+                    $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
+                    $mail->AddAddress($to);
+                    $mail->CharSet = 'UTF-8';
+                    $mail->Encoding = 'base64';
+                    $mail->IsHTML(true);
+                    $mail->Subject = $subject;
+                    $mail->Body = $body;
+                    $mail->AltBody = $bodyPlain;
+
+                    $mail->Send();
 
                     //Success 2
                     $URL .= '&return=success2&id='.$_GET['id'];

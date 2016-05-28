@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require $_SESSION[$guid]['absolutePath'].'/lib/PHPMailer/class.phpmailer.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_manage_accept.php') == false) {
     //Acess denied
@@ -253,22 +254,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                                 echo '</h4>';
                                 $to = $_SESSION[$guid]['organisationAdministratorEmail'];
                                 $subject = sprintf(__($guid, 'Create applicant Email/Websites for %1$s at %2$s'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort']);
-                                $body = sprintf(__($guid, 'Please create the following for new staff member %1$s.'), formatName('', $row['preferredName'], $row['surname'], 'Student'))."\r\n\r\n";
+                                $body = sprintf(__($guid, 'Please create the following for new staff member %1$s.'), formatName('', $row['preferredName'], $row['surname'], 'Student'))."<br/><br/>";
                                 if ($applicantDefaultEmail != '') {
-                                    $body .= __($guid, 'Email').': '.$email."\r\n";
+                                    $body .= __($guid, 'Email').': '.$email."<br/>";
                                 }
                                 if ($applicantDefaultWebsite != '') {
-                                    $body .= __($guid, 'Website').': '.$website."\r\n";
+                                    $body .= __($guid, 'Website').': '.$website."<br/>";
                                 }
                                 if ($row['dateStart'] != '') {
-                                    $body .= __($guid, 'Start Date').': '.dateConvertBack($guid, $row['dateStart'])."\r\n";
+                                    $body .= __($guid, 'Start Date').': '.dateConvertBack($guid, $row['dateStart'])."<br/>";
                                 }
-                                $body .= __($guid, 'Job Type').': '.dateConvertBack($guid, $row['type'])."\r\n";
-                                $body .= __($guid, 'Job Title').': '.dateConvertBack($guid, $row['jobTitle'])."\r\n";
+                                $body .= __($guid, 'Job Type').': '.dateConvertBack($guid, $row['type'])."<br/>";
+                                $body .= __($guid, 'Job Title').': '.dateConvertBack($guid, $row['jobTitle'])."<br/>";
+                                $bodyPlain = emailBodyConvert($body);
 
-                                $headers = 'From: '.$_SESSION[$guid]['organisationAdministratorEmail'];
+                                $mail = new PHPMailer();
+                                $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
+                                $mail->AddAddress($to);
+                                $mail->CharSet = 'UTF-8';
+                                $mail->Encoding = 'base64';
+                                $mail->IsHTML(true);
+                                $mail->Subject = $subject;
+                                $mail->Body = $body;
+                                $mail->AltBody = $bodyPlain;
 
-                                if (mail($to, $subject, $body, $headers)) {
+                                if ($mail->Send()) {
                                     echo "<div class='success'>";
                                     echo sprintf(__($guid, 'A request to create a applicant email address and/or website address was successfully sent to %1$s.'), $_SESSION[$guid]['organisationAdministratorName']);
                                     echo '</div>';
@@ -366,13 +376,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                                     $to = $informApplicantEntry['email'];
                                     $subject = sprintf(__($guid, 'Welcome to %1$s at %2$s'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort']);
                                     if ($notificationApplicantMessage != '') {
-                                        $body = sprintf(__($guid, 'Dear %1$s,\r\n\r\nWelcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s).\r\n\r\nIn order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).\r\n\r\n'), formatName('', $informApplicantEntry['preferredName'], $informApplicantEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informApplicantEntry['username'], $informApplicantEntry['password']).$notificationApplicantMessage.sprintf(__($guid, '\r\n\r\nPlease feel free to reply to this email should you have any questions.\r\n\r\n%1$s,\r\n\r\n%2$s Administrator'), $_SESSION[$guid]['organisationAdministratorName'], $_SESSION[$guid]['systemName']);
+                                        $body = sprintf(__($guid, 'Dear %1$s,<br/><br/>Welcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s).<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>'), formatName('', $informApplicantEntry['preferredName'], $informApplicantEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informApplicantEntry['username'], $informApplicantEntry['password']).$notificationApplicantMessage.sprintf(__($guid, 'Please feel free to reply to this email should you have any questions.<br/><br/>%1$s,<br/><br/>%2$s Administrator'), $_SESSION[$guid]['organisationAdministratorName'], $_SESSION[$guid]['systemName']);
                                     } else {
-                                        $body = 'Dear '.formatName('', $informApplicantEntry['preferredName'], $informApplicantEntry['surname'], 'Student').",\r\n\r\nWelcome to ".$_SESSION[$guid]['systemName'].', '.$_SESSION[$guid]['organisationNameShort']."'s system for managing school information. You can access the system by going to ".$_SESSION[$guid]['absoluteURL'].' and logging in with your new username ('.$informApplicantEntry['username'].') and password ('.$informApplicantEntry['password'].").\r\n\r\nIn order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).\r\n\r\nPlease feel free to reply to this email should you have any questions.\r\n\r\n".$_SESSION[$guid]['organisationAdministratorName'].",\r\n\r\n".$_SESSION[$guid]['systemName'].' Administrator';
+                                        $body = 'Dear '.formatName('', $informApplicantEntry['preferredName'], $informApplicantEntry['surname'], 'Student').",<br/><br/>Welcome to ".$_SESSION[$guid]['systemName'].', '.$_SESSION[$guid]['organisationNameShort']."'s system for managing school information. You can access the system by going to ".$_SESSION[$guid]['absoluteURL'].' and logging in with your new username ('.$informApplicantEntry['username'].') and password ('.$informApplicantEntry['password'].").<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>Please feel free to reply to this email should you have any questions.<br/><br/>".$_SESSION[$guid]['organisationAdministratorName'].",<br/><br/>".$_SESSION[$guid]['systemName'].' Administrator';
                                     }
-                                    $headers = 'From: '.$_SESSION[$guid]['organisationAdministratorEmail'];
+                                    $bodyPlain = emailBodyConvert($body);
 
-                                    if (mail($to, $subject, $body, $headers)) {
+                                    $mail = new PHPMailer();
+                                    $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
+                                    $mail->AddAddress($to);
+                                    $mail->CharSet = 'UTF-8';
+                                    $mail->Encoding = 'base64';
+                                    $mail->IsHTML(true);
+                                    $mail->Subject = $subject;
+                                    $mail->Body = $body;
+                                    $mail->AltBody = $bodyPlain;
+
+                                    if ($mail->Send()) {
                                         echo "<div class='success'>";
                                         echo __($guid, 'A welcome email was successfully sent to').' '.formatName('', $informApplicantEntry['preferredName'], $informApplicantEntry['surname'], 'Student').'.';
                                         echo '</div>';
