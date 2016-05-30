@@ -61,14 +61,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_edi
             //Let's go!
             $row = $result->fetch(); ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/budgets_manage_editProcess.php?gibbonFinanceBudgetID=$gibbonFinanceBudgetID" ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr class='break'>
-						<td colspan=2> 
+						<td colspan=2>
 							<h3><?php echo __($guid, 'General Settings') ?></h3>
 						</td>
 					</tr>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'Name') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?></span>
 						</td>
@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_edi
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Short Name') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?></span>
 						</td>
@@ -94,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_edi
 						</td>
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Active') ?> *</b><br/>
 							<span class="emphasis small"></span>
 						</td>
@@ -111,7 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_edi
 						$categories = explode(',', $categories);
 						?>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Category') ?> *</b><br/>
 								<span class="emphasis small"></span>
 							</td>
@@ -139,7 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_edi
 						} else {
 							?>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Category') ?> *</b><br/>
 									<span class="emphasis small"></span>
 								</td>
@@ -151,12 +151,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_edi
 						}
 						?>
 					<tr class='break'>
-						<td colspan=2> 
+						<td colspan=2>
 							<h3><?php echo __($guid, 'Current Staff') ?></h3>
 						</td>
 					</tr>
 					<tr>
-						<td colspan=2> 
+						<td colspan=2>
 							<?php
                             try {
                                 $data = array('gibbonFinanceBudgetID' => $gibbonFinanceBudgetID);
@@ -205,7 +205,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_edi
 									echo $row['access'];
 									echo '</td>';
 									echo '<td>';
-									echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/budgets_manage_edit_staff_deleteProcess.php?address='.$_GET['q'].'&gibbonFinanceBudgetPersonID='.$row['gibbonFinanceBudgetPersonID']."&gibbonFinanceBudgetID=$gibbonFinanceBudgetID'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+									echo "<a onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")' href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/budgets_manage_edit_staff_deleteProcess.php?address='.$_GET['q'].'&gibbonFinanceBudgetPersonID='.$row['gibbonFinanceBudgetPersonID']."&gibbonFinanceBudgetID=$gibbonFinanceBudgetID'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
 									echo '</td>';
 									echo '</tr>';
 								}
@@ -215,12 +215,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_edi
 						</td>
 					</tr>
 					<tr class='break'>
-						<td colspan=2> 
+						<td colspan=2>
 							<h3><?php echo __($guid, 'New Staff') ?></h3>
 						</td>
 					</tr>
 					<tr>
-					<td> 
+					<td>
 						<b>Staff</b><br/>
 						<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 					</td>
@@ -240,9 +240,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_edi
 							?>
 						</select>
 					</td>
-					
+
 					<tr id='roleLARow'>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Role') ?></b><br/>
 						</td>
 						<td class="right">

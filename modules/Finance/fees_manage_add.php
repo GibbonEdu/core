@@ -53,9 +53,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage_add.ph
         }
         ?>
 		<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/fees_manage_addProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&search=$search" ?>">
-			<table class='smallIntBorder fullWidth' cellspacing='0'>	
+			<table class='smallIntBorder fullWidth' cellspacing='0'>
 				<tr>
-					<td style='width: 275px'> 
+					<td style='width: 275px'>
 						<b><?php echo __($guid, 'School Year') ?> *</b><br/>
 						<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 					</td>
@@ -83,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage_add.ph
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Name') ?> *</b><br/>
 					</td>
 					<td class="right">
@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage_add.ph
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Short Name') ?> *</b><br/>
 					</td>
 					<td class="right">
@@ -107,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage_add.ph
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Active') ?> *</b><br/>
 						<span class="emphasis small"></span>
 					</td>
@@ -119,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage_add.ph
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Description') ?></b><br/>
 					</td>
 					<td class="right">
@@ -127,7 +127,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage_add.ph
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Category') ?> *</b><br/>
 						<span class="emphasis small"></span>
 					</td>
@@ -146,7 +146,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage_add.ph
 								echo "<option value='".$rowSelect['gibbonFinanceFeeCategoryID']."'>".$rowSelect['name'].'</option>';
 							}
 							echo "<option value='1'>Other</option>";
-							?>				
+							?>
 						</select>
 						<script type="text/javascript">
 							var gibbonFinanceFeeCategoryID=new LiveValidation('gibbonFinanceFeeCategoryID');
@@ -155,7 +155,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage_add.ph
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Fee') ?> *</b><br/>
 						<span style="font-size: 90%">
 							<i>
@@ -165,7 +165,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage_add.ph
                             } else {
                                 echo __($guid, 'Numeric value of the fee.');
                             }
-        					?>	
+        					?>
 							</i>
 						</span>
 					</td>
@@ -174,11 +174,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage_add.ph
 						<script type="text/javascript">
 							var fee=new LiveValidation('fee');
 							fee.add(Validate.Presence);
-							fee.add( Validate.Format, { pattern: /^(?:\d*\.\d{1,2}|\d+)$/, failureMessage: "Invalid number format!" } );
+							fee.add( Validate.Format, { pattern: /^-?[0-9]{1,13}(?:\.[0-9]{1,2})?$/, failureMessage: "Invalid number format!" } );
 						</script>
 					</td>
 				</tr>
-				
+
 				<tr>
 					<td>
 						<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
