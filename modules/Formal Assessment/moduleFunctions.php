@@ -208,7 +208,7 @@ function sidebarExtra($guid, $connection2, $gibbonCourseClassID, $mode = 'manage
     $output = '';
 
     $output .= '<h2>';
-    $output .= __($guid, 'View Classes');
+    $output .= __($guid, 'Select Class');
     $output .= '</h2>';
 
     $selectCount = 0;

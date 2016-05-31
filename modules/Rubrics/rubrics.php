@@ -98,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics.php') == f
         echo"<table class='noIntBorder' cellspacing='0' style='width: 100%'>";
         ?>
 		<tr>
-			<td> 
+			<td>
 				<b><?php echo __($guid, 'Search For') ?></b><br/>
 				<span class="emphasis small"><?php echo __($guid, 'Rubric name.') ?></span>
 			</td>
@@ -107,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics.php') == f
 			</td>
 		</tr>
 		<tr>
-			<td> 
+			<td>
 				<b><?php echo __($guid, 'Learning Areas') ?></b><br/>
 				<span class="emphasis small"></span>
 			</td>
@@ -136,6 +136,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics.php') == f
 		echo '<tr>';
         echo "<td class='right' colspan=2>";
         echo "<input type='hidden' name='q' value='".$_GET['q']."'>";
+        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Rubrics/rubrics.php'>".__($guid, 'Clear Filters').'</a> ';
         echo "<input type='submit' value='".__($guid, 'Go')."'>";
         echo '</td>';
         echo '</tr>';

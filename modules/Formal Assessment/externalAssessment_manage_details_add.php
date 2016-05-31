@@ -107,15 +107,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
             if ($step == 1) {
                 ?>
 				<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/externalAssessment_manage_details_add.php' ?>">
-					<table class='smallIntBorder fullWidth' cellspacing='0'>	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>
 						<tr class='break'>
-							<td colspan=2> 
+							<td colspan=2>
 								<h3><?php echo __($guid, 'Assessment Type') ?></h3>
 							</td>
 						</tr>
-						
+
 						<tr>
-							<td style='width: 275px'> 
+							<td style='width: 275px'>
 								<b><?php echo __($guid, 'Choose Assessment') ?> *</b><br/>
 							</td>
 							<td class="right">
@@ -132,7 +132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 									while ($rowSelect = $resultSelect->fetch()) {
 										echo "<option id='gibbonExternalAssessmentID' value='".$rowSelect['gibbonExternalAssessmentID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
 									}
-									?>				
+									?>
 								</select>
 								<script type="text/javascript">
 									var gibbonExternalAssessmentID=new LiveValidation('gibbonExternalAssessmentID');
@@ -140,16 +140,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 								</script>
 							</td>
 						</tr>
-						
+
 						<!=- Copy CATS GCSE Targets to GCSE=->
 						<script type="text/javascript">
 							$(document).ready(function(){
 								$("#copyToGCSE").css("display","none");
-								
-										
+
+
 								$("#gibbonExternalAssessmentID").change(function(){
 									if ($('#gibbonExternalAssessmentID option:selected').val()=="0002" ) {
-										$("#copyToGCSE").slideDown("fast", $("#copyToGCSE").css("display","table-row")); 
+										$("#copyToGCSE").slideDown("fast", $("#copyToGCSE").css("display","table-row"));
 									}
 									else {
 										$("#copyToGCSE").css("display","none");
@@ -158,7 +158,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 							});
 						</script>
 						<tr id="copyToGCSE">
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Copy Target Grades?') ?> *</b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'These will come from the student\'s last CAT test.') ?></span>
 							</td>
@@ -166,15 +166,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 								<input type="checkbox" name="copyToGCSECheck" id="copyToGCSECheck"><br/><br/>
 							</td>
 						</tr>
-						
+
 						<!=- Use GCSE Grades to create IB=->
 						<script type="text/javascript">
 							$(document).ready(function(){
 								$("#copyToIB").css("display","none");
-								
+
 								$("#gibbonExternalAssessmentID").change(function(){
 									if ($('#gibbonExternalAssessmentID option:selected').val()=="0003" ) {
-										$("#copyToIB").slideDown("fast", $("#copyToIB").css("display","table-row")); 
+										$("#copyToIB").slideDown("fast", $("#copyToIB").css("display","table-row"));
 									}
 									else {
 										$("#copyToIB").css("display","none");
@@ -183,19 +183,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 							});
 						</script>
 						<tr id="copyToIB">
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Create Target Grades?') ?> *</b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'These will be calculated from the student\'s GCSE grades.') ?></span>
 							</td>
 							<td class="right">
-								<select name="copyToIBCheck" id="copyToIBCheck">
+								<select class="standardWidth" name="copyToIBCheck" id="copyToIBCheck">
 									<option value=''></option>
 									<option value='Target'><?php echo __($guid, 'From GCSE Target Grades') ?></option>
 									<option value='Final'>From <?php echo __($guid, 'GCSE Final Grades') ?></option>
 								</select>
 							</td>
 						</tr>
-						
+
 						<tr>
 							<td>
 								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
@@ -433,9 +433,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 
                     ?>
 					<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/externalAssessment_manage_details_addProcess.php?search=$search&allStudents=$allStudents" ?>" enctype="multipart/form-data">
-						<table class='smallIntBorder fullWidth' cellspacing='0'>	
+						<table class='smallIntBorder fullWidth' cellspacing='0'>
 							<tr>
-								<td style='width: 275px'> 
+								<td style='width: 275px'>
 									<b><?php echo __($guid, 'Assessment Type') ?> *</b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 								</td>
@@ -444,7 +444,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Date') ?> *</b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Format:').' ';
                     if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
@@ -469,7 +469,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 										} else {
 											echo $_SESSION[$guid]['i18n']['dateFormat'];
 										}
-															?>." } ); 
+															?>." } );
 									</script>
 									 <script type="text/javascript">
 										$(function() {
@@ -482,7 +482,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                             if ($rowSelect['allowFileUpload'] == 'Y') {
                                 ?>
 								<tr>
-									<td style='width: 275px'> 
+									<td style='width: 275px'>
 										<b><?php echo __($guid, 'Upload File') ?></b><br/>
 										<span class="emphasis small"><?php echo __($guid, 'Use this to attach raw data, graphical summary, etc.') ?></span>
 									</td>
@@ -502,7 +502,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                                     $ext = $ext."'.".$rowExt['extension']."',";
                                 }
                                 ?>
-							
+
 										<script type="text/javascript">
 											var file=new LiveValidation('file');
 											file.add( Validate.Inclusion, { within: [<?php echo $ext;
@@ -562,7 +562,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                             }
                             ?>
 							<tr>
-								<td> 
+								<td>
 									<span style='font-weight: bold' title='<?php echo $rowField['usage'] ?>'><?php echo __($guid, $rowField['name']) ?></span><br/>
 								</td>
 								<td class="right">
@@ -600,7 +600,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 										?>
 													</td>
 													<td class="right">
-														<?php 
+														<?php
 															echo renderGradeScaleSelect($connection2, $guid, $_SESSION[$guid]['primaryAssessmentScale'], "$count-gibbonScaleGradeIDPAS", 'id', false, '150');
 										?>
 													</td>

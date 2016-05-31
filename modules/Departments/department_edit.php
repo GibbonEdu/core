@@ -69,24 +69,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
             } else {
                 ?>
 				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/department_editProcess.php?gibbonDepartmentID=$gibbonDepartmentID&address=".$_GET['q'] ?>" enctype="multipart/form-data">
-					<table class='smallIntBorder fullWidth' cellspacing='0'>	
+					<table class='smallIntBorder fullWidth' cellspacing='0'>
 						<tr class='break'>
-							<td colspan=2> 
+							<td colspan=2>
 								<h3><?php echo __($guid, 'Overview') ?></h3>
 							</td>
 						</tr>
 						<tr>
-							<td colspan=2> 
+							<td colspan=2>
 								<?php echo getEditor($guid,  true, 'blurb', $row['blurb'], 20) ?>
 							</td>
 						</tr>
 						<tr class='break'>
-							<td colspan=2> 
+							<td colspan=2>
 								<h3><?php echo __($guid, 'Current Resources') ?></h3>
 							</td>
 						</tr>
 						<tr>
-							<td colspan=2> 
+							<td colspan=2>
 								<?php
                                 try {
                                     $data = array('gibbonDepartmentID' => $gibbonDepartmentID);
@@ -139,7 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
 										echo $row['type'];
 										echo '</td>';
 										echo '<td>';
-										echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/department_edit_resource_deleteProcess.php?gibbonDepartmentResourceID='.$row['gibbonDepartmentResourceID'].'&gibbonDepartmentID='.$row['gibbonDepartmentID'].'&address='.$_GET['q']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+										echo "<a onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")' href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/department_edit_resource_deleteProcess.php?gibbonDepartmentResourceID='.$row['gibbonDepartmentResourceID'].'&gibbonDepartmentID='.$row['gibbonDepartmentID'].'&address='.$_GET['q']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
 										echo '</td>';
 										echo '</tr>';
 									}
@@ -155,20 +155,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
 								$("#resource1URL").css("display","none");
 								$("#resource1File").css("display","none");
 								$("#resource1ButtonRow").css("display","none");
-								
+
 								$(".type1").click(function(){
 									if ($('input[name=type1]:checked').val()=="Link" ) {
 										$("#resource1File").css("display","none");
-										$("#resource1URL").slideDown("fast", $("#resource1URL").css("display","table-row")); 
-										$("#resource1ButtonRow").slideDown("fast", $("#resource1ButtonRow").css("display","table-row")); 
+										$("#resource1URL").slideDown("fast", $("#resource1URL").css("display","table-row"));
+										$("#resource1ButtonRow").slideDown("fast", $("#resource1ButtonRow").css("display","table-row"));
 									} else {
 										$("#resource1URL").css("display","none");
-										$("#resource1File").slideDown("fast", $("#resource1File").css("display","table-row")); 
-										$("#resource1ButtonRow").slideDown("fast", $("#resource1ButtonRow").css("display","table-row")); 
+										$("#resource1File").slideDown("fast", $("#resource1File").css("display","table-row"));
+										$("#resource1ButtonRow").slideDown("fast", $("#resource1ButtonRow").css("display","table-row"));
 									}
 								 });
 							});
-							
+
 							/* Resource 2 Display Control */
 							$(document).ready(function(){
 								$("#resource2").css("display","none");
@@ -179,32 +179,32 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
 								$("#resource2URL").css("display","none");
 								$("#resource2File").css("display","none");
 								$("#resource2ButtonRow").css("display","none");
-								
+
 								$("#resource1Button").click(function(){
 									$("#resource1Button").css("display","none");
-									$("#resource2").slideDown("fast", $("#resource2").css("display","table-row")); 
-									$("#resource2Name").slideDown("fast", $("#resource2Name").css("display","table-row")); 
-									$("#resource2Students").slideDown("fast", $("#resource2Students").css("display","table-row")); 
-									$("#resource2Parents").slideDown("fast", $("#resource2Parents").css("display","table-row")); 
-									$("#type2").slideDown("fast", $("#type2").css("display","table-row")); 
+									$("#resource2").slideDown("fast", $("#resource2").css("display","table-row"));
+									$("#resource2Name").slideDown("fast", $("#resource2Name").css("display","table-row"));
+									$("#resource2Students").slideDown("fast", $("#resource2Students").css("display","table-row"));
+									$("#resource2Parents").slideDown("fast", $("#resource2Parents").css("display","table-row"));
+									$("#type2").slideDown("fast", $("#type2").css("display","table-row"));
 								});
 							});
-							
+
 							/* Resource 2 Option Control */
 							$(document).ready(function(){
 								$(".type2").click(function(){
 									if ($('input[name=type2]:checked').val()=="Link" ) {
 										$("#resource2File").css("display","none");
-										$("#resource2URL").slideDown("fast", $("#resource2URL").css("display","table-row")); 
-										$("#resource2ButtonRow").slideDown("fast", $("#resource2ButtonRow").css("display","table-row")); 
+										$("#resource2URL").slideDown("fast", $("#resource2URL").css("display","table-row"));
+										$("#resource2ButtonRow").slideDown("fast", $("#resource2ButtonRow").css("display","table-row"));
 									} else {
 										$("#resource2URL").css("display","none");
-										$("#resource2File").slideDown("fast", $("#resource2File").css("display","table-row")); 
-										$("#resource2ButtonRow").slideDown("fast", $("#resource2ButtonRow").css("display","table-row")); 
+										$("#resource2File").slideDown("fast", $("#resource2File").css("display","table-row"));
+										$("#resource2ButtonRow").slideDown("fast", $("#resource2ButtonRow").css("display","table-row"));
 									}
 								 });
 							});
-							
+
 							/* Resource 3 Display Control */
 							$(document).ready(function(){
 								$("#resource3").css("display","none");
@@ -215,40 +215,40 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
 								$("#resource3URL").css("display","none");
 								$("#resource3File").css("display","none");
 								$("#resource3ButtonRow").css("display","none");
-								
+
 								$("#resource2Button").click(function(){
 									$("#resource2Button").css("display","none");
-									$("#resource3").slideDown("fast", $("#resource3").css("display","table-row")); 
-									$("#resource3Name").slideDown("fast", $("#resource3Name").css("display","table-row")); 
-									$("#resource3Students").slideDown("fast", $("#resource3Students").css("display","table-row")); 
-									$("#resource3Parents").slideDown("fast", $("#resource3Parents").css("display","table-row")); 
-									$("#type3").slideDown("fast", $("#type3").css("display","table-row")); 
+									$("#resource3").slideDown("fast", $("#resource3").css("display","table-row"));
+									$("#resource3Name").slideDown("fast", $("#resource3Name").css("display","table-row"));
+									$("#resource3Students").slideDown("fast", $("#resource3Students").css("display","table-row"));
+									$("#resource3Parents").slideDown("fast", $("#resource3Parents").css("display","table-row"));
+									$("#type3").slideDown("fast", $("#type3").css("display","table-row"));
 								});
 							});
-							
+
 							/* Resource 3 Option Control */
 							$(document).ready(function(){
 								$(".type3").click(function(){
 									if ($('input[name=type3]:checked').val()=="Link" ) {
 										$("#resource3File").css("display","none");
-										$("#resource3URL").slideDown("fast", $("#resource3URL").css("display","table-row")); 
-										$("#resource3ButtonRow").slideDown("fast", $("#resource3ButtonRow").css("display","table-row")); 
+										$("#resource3URL").slideDown("fast", $("#resource3URL").css("display","table-row"));
+										$("#resource3ButtonRow").slideDown("fast", $("#resource3ButtonRow").css("display","table-row"));
 									} else {
 										$("#resource3URL").css("display","none");
-										$("#resource3File").slideDown("fast", $("#resource3File").css("display","table-row")); 
-										$("#resource3ButtonRow").slideDown("fast", $("#resource3ButtonRow").css("display","table-row")); 
+										$("#resource3File").slideDown("fast", $("#resource3File").css("display","table-row"));
+										$("#resource3ButtonRow").slideDown("fast", $("#resource3ButtonRow").css("display","table-row"));
 									}
 								 });
 							});
-							
+
 						</script>
 						<tr class='break'>
-							<td colspan=2> 
+							<td colspan=2>
 								<h3><?php echo sprintf(__($guid, 'New Resource %1$s'), '1') ?></h3>
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo sprintf(__($guid, 'Resource %1$s Name'), '1') ?></b><br/>
 							</td>
 							<td class="right">
@@ -256,7 +256,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
 							</td>
 						</tr>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo sprintf(__($guid, 'Resource %1$s Type'), '1') ?></b><br/>
 							</td>
 							<td class="right">
@@ -265,7 +265,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
 							</td>
 						</tr>
 						<tr id="resource1URL">
-							<td> 
+							<td>
 								<b><?php echo sprintf(__($guid, 'Resource %1$s URL'), '1') ?></b><br/>
 							</td>
 							<td class="right">
@@ -273,11 +273,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
 								<script type="text/javascript">
 									var url1=new LiveValidation('url1');
 									url1.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
-								</script>	
+								</script>
 							</td>
 						</tr>
 						<tr id="resource1File">
-							<td> 
+							<td>
 								<b><?php echo sprintf(__($guid, 'Resource %1$s File'), '1') ?></b><br/>
 							</td>
 							<td class="right">
@@ -304,7 +304,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
 							</td>
 						</tr>
 						<tr id="resource1ButtonRow">
-							<td> 
+							<td>
 							</td>
 							<td class="right">
 								<input class="buttonAsLink" id="resource1Button" type="button" value="Add Another Resource">
@@ -312,12 +312,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
 							</td>
 						</tr>
 						<tr class='break' id="resource2">
-							<td colspan=2> 
+							<td colspan=2>
 								<h3><?php echo sprintf(__($guid, 'New Resource %1$s'), '2') ?></h3>
 							</td>
 						</tr>
 						<tr id="resource2Name">
-							<td> 
+							<td>
 								<b><?php echo sprintf(__($guid, 'Resource %1$s Name'), '2') ?></b><br/>
 							</td>
 							<td class="right">
@@ -325,7 +325,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
 							</td>
 						</tr>
 						<tr id="type2">
-							<td> 
+							<td>
 								<b><?php echo sprintf(__($guid, 'Resource %1$s Type'), '2') ?></b><br/>
 							</td>
 							<td class="right">
@@ -334,7 +334,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
 							</td>
 						</tr>
 						<tr id="resource2URL">
-							<td> 
+							<td>
 								<b><?php echo sprintf(__($guid, 'Resource %1$s URL'), '2') ?></b><br/>
 							</td>
 							<td class="right">
@@ -342,11 +342,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
 								<script type="text/javascript">
 									var url2=new LiveValidation('url2');
 									url2.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
-								</script>	
+								</script>
 							</td>
 						</tr>
 						<tr id="resource2File">
-							<td> 
+							<td>
 								<b><?php echo sprintf(__($guid, 'Resource %1$s File'), '2') ?></b><br/>
 							</td>
 							<td class="right">
@@ -359,21 +359,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
 							</td>
 						</tr>
 						<tr id="resource2ButtonRow">
-							<td> 
+							<td>
 							</td>
 							<td class="right">
 								<input class="buttonAsLink" id="resource2Button" type="button" value="Add Another Resource">
 								<a href=""></a>
 							</td>
 						</tr>
-						
+
 						<tr class='break' id="resource3">
-							<td colspan=2> 
+							<td colspan=2>
 								<h3><?php echo sprintf(__($guid, 'New Resource %1$s'), '3') ?></h3>
 							</td>
 						</tr>
 						<tr id="resource3Name">
-							<td> 
+							<td>
 								<b><?php echo sprintf(__($guid, 'Resource %1$s Name'), '3') ?></b><br/>
 							</td>
 							<td class="right">
@@ -381,7 +381,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
 							</td>
 						</tr>
 						<tr id="type3">
-							<td> 
+							<td>
 								<b><?php echo sprintf(__($guid, 'Resource %1$s Type'), '3') ?></b><br/>
 							</td>
 							<td class="right">
@@ -390,7 +390,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
 							</td>
 						</tr>
 						<tr id="resource3URL">
-							<td> 
+							<td>
 								<b><?php echo sprintf(__($guid, 'Resource %1$s URL'), '3') ?></b><br/>
 							</td>
 							<td class="right">
@@ -398,11 +398,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
 								<script type="text/javascript">
 									var url3=new LiveValidation('url3');
 									url3.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
-								</script>	
+								</script>
 							</td>
 						</tr>
 						<tr id="resource3File">
-							<td> 
+							<td>
 								<b><?php echo sprintf(__($guid, 'Resource %1$s File'), '3') ?></b><br/>
 							</td>
 							<td class="right">
