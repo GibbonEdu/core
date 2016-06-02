@@ -1047,6 +1047,14 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         }
         $return .= '</td>';
         $return .= '</tr>';
+        if($row['notes']) {
+            $return .= '<tr>';
+            $return .= "<td colspan=3 style='width: 33%; padding-top: 15px; padding-left: 10px; vertical-align: top; $style $style2 $style3'>";
+            $return .= "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Notes').'</span><br/>';
+            $return .= $row['notes'];
+            $return .= '</td>';
+            $return .= '</tr>';
+        }
         $return .= '</table>';
 
         try {
@@ -1369,6 +1377,14 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
             $return .= ($receiptNumber + 1);
         }
         $return .= '</td>';
+        if($row['notes']) {
+            $return .= '<tr>';
+            $return .= "<td colspan=3 style='width: 33%; padding-top: 15px; padding-left: 10px; vertical-align: top; $style $style2 $style3'>";
+            $return .= "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Notes').'</span><br/>';
+            $return .= $row['notes'];
+            $return .= '</td>';
+            $return .= '</tr>';
+        }
         $return .= '</tr>';
         $return .= '</table>';
 
@@ -1519,7 +1535,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 
         //Display balance
         if ($row['status'] == 'Paid' or $row['status'] == 'Paid - Partial') {
-            if ($rowPayment['status'] == 'Partial') {
+            if (@$rowPayment['status'] == 'Partial') {
                 if ($receiptNumber != null) { //New style receipt, with multiple payments
                     $balanceFail = false;
                     $amountPaid = 0;

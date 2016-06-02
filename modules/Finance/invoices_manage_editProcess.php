@@ -195,9 +195,18 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                         $from = $_POST['email'];
                         if ($partialFail == false and $from != '') {
                             //Send emails
-                            $emails = null;
                             if (isset($_POST['emails'])) {
                                 $emails = $_POST['emails'];
+                                for ($i = 0; $i < count($emails); ++$i) {
+                                    $emailsInner = explode(',', $emails[$i]);
+                                    for ($n = 0; $n < count($emailsInner); ++$n) {
+                                        if ($n == 0) {
+                                            $emails[$i] = trim($emailsInner[$n]);
+                                        } else {
+                                            array_push($emails, trim($emailsInner[$n]));
+                                        }
+                                    }
+                                }
                             }
                             if (count($emails) > 0) {
                                 require $_SESSION[$guid]['absolutePath'].'/lib/PHPMailer/class.phpmailer.php';

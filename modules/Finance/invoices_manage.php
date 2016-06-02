@@ -116,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
         echo "<table class='noIntBorder' cellspacing='0' style='width: 100%'>";
         ?>
 		<tr>
-			<td> 
+			<td>
 				<b><?php echo __($guid, 'Status') ?></b><br/>
 				<span class="emphasis small"></span>
 			</td>
@@ -173,7 +173,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Student') ?></b><br/>
 						<span class="emphasis small"></span>
 					</td>
@@ -201,7 +201,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Month of Issue') ?></b><br/>
 						<span class="emphasis small"></span>
 					</td>
@@ -221,7 +221,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Billing Schedule') ?></b><br/>
 						<span class="emphasis small"></span>
 					</td>
@@ -599,7 +599,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
                 echo '</tr>';
                 if ($row['notes'] != '') {
                     echo "<tr class='comment-$count' id='comment-$count'>";
-                    echo '<td colspan=7>';
+                    echo '<td colspan=8>';
                     echo $row['notes'];
                     echo '</td>';
                     echo '</tr>';

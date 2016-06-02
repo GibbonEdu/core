@@ -77,14 +77,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
         }
         ?>
 		<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/invoices_manage_addProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID" ?>">
-			<table class='smallIntBorder fullWidth' cellspacing='0'>	
+			<table class='smallIntBorder fullWidth' cellspacing='0'>
 				<tr class='break'>
-					<td colspan=2> 
+					<td colspan=2>
 						<h3><?php echo __($guid, 'Basic Information') ?></h3>
 					</td>
 				</tr>
 				<tr>
-					<td style='width: 275px'> 
+					<td style='width: 275px'>
 						<b><?php echo __($guid, 'School Year') ?> *</b><br/>
 						<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 					</td>
@@ -112,7 +112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Invoicees') ?> *</b><br/>
 						<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?><br/><?php echo sprintf(__($guid, 'Visit %1$sManage Invoicees%2$s to automatically generate missing students.'), "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/invoicees_manage.php'>", '</a>') ?></span>
 					</td>
@@ -170,13 +170,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
 							}
 							?>
 							</optgroup>
-							
+
 						</select>
 					</td>
 				</tr>
 				<?php //BILLING TYPE CHOOSER ?>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Scheduling') ?> *</b><br/>
 						<span class="emphasis small"><?php echo __($guid, 'When using scheduled, invoice due date is linked to and determined by the schedule.') ?></span>
 					</td>
@@ -189,26 +189,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
 					$(document).ready(function(){
 						$("#adHocRow").css("display","none");
 						invoiceDueDate.disable() ;
-						$("#schedulingRow").slideDown("fast", $("#schedulingRow").css("display","table-row")); 
-						
+						$("#schedulingRow").slideDown("fast", $("#schedulingRow").css("display","table-row"));
+
 						$(".scheduling").click(function(){
 							if ($('input[name=scheduling]:checked').val()=="Scheduled" ) {
 								$("#adHocRow").css("display","none");
 								invoiceDueDate.disable() ;
-								$("#schedulingRow").slideDown("fast", $("#schedulingRow").css("display","table-row")); 
+								$("#schedulingRow").slideDown("fast", $("#schedulingRow").css("display","table-row"));
 								gibbonFinanceBillingScheduleID.enable() ;
 							} else {
 								$("#schedulingRow").css("display","none");
 								gibbonFinanceBillingScheduleID.disable() ;
-								$("#adHocRow").slideDown("fast", $("#adHocRow").css("display","table-row")); 
+								$("#adHocRow").slideDown("fast", $("#adHocRow").css("display","table-row"));
 								invoiceDueDate.enable() ;
 							}
 						 });
 					});
 				</script>
-				
+
 				<tr id="schedulingRow">
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Billing Schedule') ?> *</b><br/>
 					</td>
 					<td class="right">
@@ -225,7 +225,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
 							while ($rowSelect = $resultSelect->fetch()) {
 								echo "<option value='".$rowSelect['gibbonFinanceBillingScheduleID']."'>".$rowSelect['name'].'</option>';
 							}
-							?>				
+							?>
 						</select>
 						<script type="text/javascript">
 							var gibbonFinanceBillingScheduleID=new LiveValidation('gibbonFinanceBillingScheduleID');
@@ -234,7 +234,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
 					</td>
 				</tr>
 				<tr id="adHocRow">
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Invoice Due Date') ?> *</b><br/>
 						<span class="emphasis small"><?php echo __($guid, 'For fees added to existing invoice, specified date will override existing due date.') ?></span>
 					</td>
@@ -252,7 +252,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
 							} else {
 								echo $_SESSION[$guid]['i18n']['dateFormat'];
 							}
-							?>." } ); 
+							?>." } );
 							invoiceDueDate.add(Validate.Presence);
 						</script>
 						 <script type="text/javascript">
@@ -263,20 +263,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
 					</td>
 				</tr>
 				<tr>
-					<td colspan=2> 
-						<b><?php echo __($guid, 'Notes') ?></b> 
+					<td colspan=2>
+						<b><?php echo __($guid, 'Notes') ?></b><br/>
+                        <span class="emphasis small"><?php echo __($guid, 'Notes will be displayed on the final invoice and receipt.') ?></span>
 						<textarea name='notes' id='notes' rows=5 style='width: 300px'></textarea>
 					</td>
 				</tr>
-				
+
 				<tr class='break'>
-					<td colspan=2> 
+					<td colspan=2>
 						<h3><?php echo __($guid, 'Fees') ?></h3>
 					</td>
 				</tr>
-				<?php 
+				<?php
                 $type = 'fee';
-        		?> 
+        		?>
 				<style>
 					#<?php echo $type ?> { list-style-type: none; margin: 0; padding: 0; width: 100%; }
 					#<?php echo $type ?> div.ui-state-default { margin: 0 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 58px; }
@@ -286,7 +287,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
 					.<?php echo $type ?>-ui-state-highlight {border: 1px solid #fcd3a1; background: #fbf8ee url(images/ui-bg_glass_55_fbf8ee_1x400.png) 50% 50% repeat-x; color: #444444; }
 				</style>
 				<tr>
-					<td colspan=2> 
+					<td colspan=2>
 						<div class="fee" id="fee" style='width: 100%; padding: 5px 0px 0px 0px; min-height: 66px'>
 							<div id="feeOuter0">
 								<div style='color: #ddd; font-size: 230%; margin: 15px 0 0 6px'><?php echo __($guid, 'Fees will be listed here...') ?></div>
@@ -359,7 +360,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
 						</div>
 					</td>
 				</tr>
-				
+
 				<tr>
 					<td>
 						<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>

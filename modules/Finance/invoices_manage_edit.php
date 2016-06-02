@@ -73,16 +73,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                 echo '</div>';
             }
             ?>
-			
+
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/invoices_manage_editProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID" ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr class='break'>
-						<td colspan=2> 
+						<td colspan=2>
 							<h3><?php echo __($guid, 'Basic Information') ?></h3>
 						</td>
 					</tr>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'School Year') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 						</td>
@@ -105,7 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
 							<input readonly name="yearName" id="yearName" value="<?php echo $yearName ?>" type="text" class="standardWidth">
 					</tr>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Invoicee') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 						</td>
@@ -130,7 +130,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
 					</tr>
 					<?php //BILLING TYPE CHOOSER ?>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Scheduling') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 						</td>
@@ -142,7 +142,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                     if ($row['billingScheduleType'] == 'Scheduled') {
                         ?>
 						<tr>
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Billing Schedule') ?> *</b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 							</td>
@@ -171,7 +171,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                         if ($row['status'] == 'Pending' or $row['status'] == 'Issued') {
                             ?>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Invoice Due Date') ?> *</b><br/>
 								</td>
 								<td class="right">
@@ -188,7 +188,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
 										} else {
 											echo $_SESSION[$guid]['i18n']['dateFormat'];
 										}
-                            			?>." } ); 
+                            			?>." } );
 										invoiceDueDate.add(Validate.Presence);
 									</script>
 									 <script type="text/javascript">
@@ -203,7 +203,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                         } else {
                             ?>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Invoice Due Date') ?> *</b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 								</td>
@@ -217,7 +217,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
 					}
 					?>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Status') ?> *</b><br/>
 							<?php
                             if ($row['status'] == 'Pending') {
@@ -274,10 +274,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                         		?>
 								$("#status").change(function(){
 									if ($('#status option:selected').val()=="Paid" || $('#status option:selected').val()=="Paid - Partial" || $('#status option:selected').val()=="Paid - Complete") {
-										$("#paidDateRow").slideDown("fast", $("#paidDateRow").css("display","table-row")); 
-										$("#paidAmountRow").slideDown("fast", $("#paidAmountRow").css("display","table-row")); 
-										$("#paymentTypeRow").slideDown("fast", $("#paymentTypeRow").css("display","table-row")); 
-										$("#paymentTransactionIDRow").slideDown("fast", $("#paymentTransactionIDRow").css("display","table-row")); 
+										$("#paidDateRow").slideDown("fast", $("#paidDateRow").css("display","table-row"));
+										$("#paidAmountRow").slideDown("fast", $("#paidAmountRow").css("display","table-row"));
+										$("#paymentTypeRow").slideDown("fast", $("#paymentTypeRow").css("display","table-row"));
+										$("#paymentTransactionIDRow").slideDown("fast", $("#paymentTransactionIDRow").css("display","table-row"));
 										paidDate.enable() ;
 										paidAmount.enable() ;
 										paymentType.enable() ;
@@ -294,7 +294,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
 							});
 						</script>
 						<tr id="paymentTypeRow">
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Payment Type') ?> *</b><br/>
 							</td>
 							<td class="right">
@@ -315,7 +315,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
 							</td>
 						</tr>
 						<tr id="paymentTransactionIDRow">
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Transaction ID') ?></b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Date of payment, not entry to system.') ?></span>
 							</td>
@@ -324,7 +324,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
 							</td>
 						</tr>
 						<tr id="paidDateRow">
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Date Paid') ?> *</b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Date of payment, not entry to system.') ?></span>
 							</td>
@@ -342,7 +342,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
 									} else {
 										echo $_SESSION[$guid]['i18n']['dateFormat'];
 									}
-                       	 			?>." } ); 
+                       	 			?>." } );
 									paidDate.add(Validate.Presence);
 								</script>
 								 <script type="text/javascript">
@@ -353,7 +353,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
 							</td>
 						</tr>
 						<tr id="paidAmountRow">
-							<td> 
+							<td>
 								<b><?php echo __($guid, 'Amount Paid') ?> *</b><br/>
 								<span class="emphasis small"><?php echo __($guid, 'Amount in current payment.') ?>
 								<?php
@@ -395,21 +395,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
 					}
                     ?>
 					<tr>
-						<td colspan=2> 
-							<b><?php echo __($guid, 'Notes') ?></b> 
+						<td colspan=2>
+							<b><?php echo __($guid, 'Notes') ?></b> <br/>
+                            <span class="emphasis small"><?php echo __($guid, 'Notes will be displayed on the final invoice and receipt.') ?></span>
 							<textarea name='notes' id='notes' rows=5 style='width: 300px'><?php echo htmlPrep($row['notes']) ?></textarea>
 						</td>
 					</tr>
-					
+
 					<tr class='break'>
-						<td colspan=2> 
+						<td colspan=2>
 							<h3><?php echo __($guid, 'Fees') ?></h3>
 						</td>
 					</tr>
-					<?php 
+					<?php
                     if ($row['status'] == 'Pending') {
                         $type = 'fee';
-                        ?> 
+                        ?>
 						<style>
 							#<?php echo $type ?> { list-style-type: none; margin: 0; padding: 0; width: 100%; }
 							#<?php echo $type ?> div.ui-state-default { margin: 0 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 58px; }
@@ -419,7 +420,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
 							.<?php echo $type ?>-ui-state-highlight {border: 1px solid #fcd3a1; background: #fbf8ee url(images/ui-bg_glass_55_fbf8ee_1x400.png) 50% 50% repeat-x; color: #444444; }
 						</style>
 						<tr>
-							<td colspan=2> 
+							<td colspan=2>
 								<div class="fee" id="fee" style='width: 100%; padding: 5px 0px 0px 0px; min-height: 66px'>
 									<?php
                                     $feeCount = 0;
@@ -616,7 +617,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
 								}
 								$("#status").change(function(){
 									if ($('#status option:selected').val()=="Paid" || $('#status option:selected').val()=="Paid - Partial"  || $('#status option:selected').val()=="Paid - Complete") {
-										$(".emailReceipt").slideDown("fast", $(".emailReceipt").css("display","table-row")); 
+										$(".emailReceipt").slideDown("fast", $(".emailReceipt").css("display","table-row"));
 										$("#emailReceipt").val('Y');
 									}
 									else {
@@ -627,7 +628,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
 							});
 						</script>
 						<tr class='break emailReceipt'>
-							<td colspan=2> 
+							<td colspan=2>
 								<h3><?php echo __($guid, 'Email Receipt') ?></h3>
 								<input type='hidden' id='emailReceipt' name='emailReceipt' value='N'/>
 							</td>
@@ -649,7 +650,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                                 if ($row['companyEmail'] != '' and $row['companyContact'] != '' and $row['companyName'] != '') {
                                     ?>
 									<tr class='emailReceipt'>
-										<td> 
+										<td>
 											<b><?php echo $row['companyContact'] ?></b> (<?php echo $row['companyName'];
                                     ?>)
 											<span class="emphasis small"></span>
@@ -679,7 +680,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                                                 if ($rowParents['preferredName'] != '' and $rowParents['surname'] != '' and $rowParents['email'] != '') {
                                                     ?>
 													<tr class='emailReceipt'>
-														<td> 
+														<td>
 															<b><?php echo formatName(htmlPrep($rowParents['title']), htmlPrep($rowParents['preferredName']), htmlPrep($rowParents['surname']), 'Parent', false) ?></b> <i><?php echo __($guid, '(Family CC)') ?></i>
 															<span class="emphasis small"></span>
 														</td>
@@ -716,7 +717,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                                         if ($rowParents['preferredName'] != '' and $rowParents['surname'] != '' and $rowParents['email'] != '') {
                                             ?>
 											<tr class='emailReceipt'>
-												<td> 
+												<td>
 													<b><?php echo formatName(htmlPrep($rowParents['title']), htmlPrep($rowParents['preferredName']), htmlPrep($rowParents['surname']), 'Parent', false) ?></b>
 													<span class="emphasis small"></span>
 												</td>
@@ -738,7 +739,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                             if ($_SESSION[$guid]['email'] != '') {
                                 ?>
 								<tr class='emailReceipt'>
-									<td> 
+									<td>
 										<b><?php echo formatName('', htmlPrep($_SESSION[$guid]['preferredName']), htmlPrep($_SESSION[$guid]['surname']), 'Parent', false) ?></b>
 										<span class="emphasis small"><?php echo __($guid, '(CC Self?)') ?></span>
 									</td>
@@ -767,14 +768,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
 										$("#emailReminder").val('N');
 									}
 									else {
-										$(".emailReminder").slideDown("fast", $(".emailReminder").css("display","table-row")); 
+										$(".emailReminder").slideDown("fast", $(".emailReminder").css("display","table-row"));
 										$("#emailReminder").val('Y');
 									}
 								 });
 							});
 						</script>
 						<tr class='break emailReminder'>
-							<td colspan=2> 
+							<td colspan=2>
 								<h3><?php echo __($guid, 'Email Reminder') ?></h3>
 								<input type='hidden' id='emailReminder' name='emailReminder' value='Y'/>
 							</td>
@@ -796,7 +797,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                                 if ($row['companyEmail'] != '' and $row['companyContact'] != '' and $row['companyName'] != '') {
                                     ?>
 									<tr class='emailReminder'>
-										<td> 
+										<td>
 											<b><?php echo $row['companyContact'] ?></b> (<?php echo $row['companyName'];
                                     ?>)
 											<span class="emphasis small"></span>
@@ -826,7 +827,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                                                 if ($rowParents['preferredName'] != '' and $rowParents['surname'] != '' and $rowParents['email'] != '') {
                                                     ?>
 													<tr class='emailReminder'>
-														<td> 
+														<td>
 															<b><?php echo formatName(htmlPrep($rowParents['title']), htmlPrep($rowParents['preferredName']), htmlPrep($rowParents['surname']), 'Parent', false) ?></b> <i><?php echo __($guid, '(Family CC)') ?></i>
 															<span class="emphasis small"></span>
 														</td>
@@ -863,7 +864,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                                         if ($rowParents['preferredName'] != '' and $rowParents['surname'] != '' and $rowParents['email'] != '') {
                                             ?>
 											<tr class='emailReminder'>
-												<td> 
+												<td>
 													<b><?php echo formatName(htmlPrep($rowParents['title']), htmlPrep($rowParents['preferredName']), htmlPrep($rowParents['surname']), 'Parent', false) ?></b>
 													<span class="emphasis small"></span>
 												</td>
@@ -885,7 +886,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                             if ($_SESSION[$guid]['email'] != '') {
                                 ?>
 								<tr class='emailReminder'>
-									<td> 
+									<td>
 										<b><?php echo formatName('', htmlPrep($_SESSION[$guid]['preferredName']), htmlPrep($_SESSION[$guid]['surname']), 'Parent', false) ?></b>
 										<span class="emphasis small"><?php echo __($guid, '(CC Self?)') ?></span>
 									</td>
@@ -902,7 +903,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                             }
                         }
                     }
-            		?>			
+            		?>
 					<tr>
 						<td>
 							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
