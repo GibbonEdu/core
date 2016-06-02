@@ -20,6 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../functions.php';
 include '../../config.php';
 
+require $_SESSION[$guid]['absolutePath'].'/lib/PHPMailer/class.phpmailer.php';
+
 //New PDO DB connection
 $pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
@@ -195,6 +197,7 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                         $from = $_POST['email'];
                         if ($partialFail == false and $from != '') {
                             //Send emails
+                            $emails = array() ;
                             if (isset($_POST['emails'])) {
                                 $emails = $_POST['emails'];
                                 for ($i = 0; $i < count($emails); ++$i) {
@@ -209,8 +212,6 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                                 }
                             }
                             if (count($emails) > 0) {
-                                require $_SESSION[$guid]['absolutePath'].'/lib/PHPMailer/class.phpmailer.php';
-
                                 //Get receipt number
                                 try {
                                     $dataPayments = array('foreignTable' => 'gibbonFinanceInvoice', 'foreignTableID' => $gibbonFinanceInvoiceID);
@@ -252,13 +253,22 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                         $from = $_POST['email'];
                         if ($partialFail == false and $from != '') {
                             //Send emails
-                            $emails = array() ;
                             if (isset($_POST['emails2'])) {
                                 $emails = $_POST['emails2'];
+                                for ($i = 0; $i < count($emails); ++$i) {
+                                    $emailsInner = explode(',', $emails[$i]);
+                                    for ($n = 0; $n < count($emailsInner); ++$n) {
+                                        if ($n == 0) {
+                                            $emails[$i] = trim($emailsInner[$n]);
+                                        } else {
+                                            array_push($emails, trim($emailsInner[$n]));
+                                        }
+                                    }
+                                }
                             }
-                            if (count($emails) > 0) {
-                                require $_SESSION[$guid]['absolutePath'].'/lib/PHPMailer/class.phpmailer.php';
 
+
+                            if (count($emails) > 0) {
                                 $body = '';
                                 //Prep message
                                 if ($row['reminderCount'] == '0') {

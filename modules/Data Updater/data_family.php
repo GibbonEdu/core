@@ -76,11 +76,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
             $gibbonFamilyID = $_GET['gibbonFamilyID'];
         }
         ?>
-		
+
 		<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-			<table class='smallIntBorder fullWidth' cellspacing='0'>	
+			<table class='smallIntBorder fullWidth' cellspacing='0'>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Family') ?> *</b><br/>
 					</td>
 					<td class="right">
@@ -119,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
                                     }
                                 }
                             }
-        					?>				
+        					?>
 						</select>
 					</td>
 				</tr>
@@ -208,14 +208,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
                     //Let's go!
                     $row = $result->fetch(); ?>
 					<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/data_familyProcess.php?gibbonFamilyID='.$gibbonFamilyID ?>">
-						<table class='smallIntBorder fullWidth' cellspacing='0'>	
+						<table class='smallIntBorder fullWidth' cellspacing='0'>
 							<tr>
-								<td style='width: 275px'> 
+								<td style='width: 275px'>
 									<b><?php echo __($guid, 'Address Name') ?> *</b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Formal name to address parents with.') ?></span>
 								</td>
 								<td class="right">
-									<input name="nameAddress" id="nameAddress" maxlength=100 value="<?php echo htmlPrep($row['nameAddress']) ?>" type="text" class="standardWidth">								
+									<input name="nameAddress" id="nameAddress" maxlength=100 value="<?php echo htmlPrep($row['nameAddress']) ?>" type="text" class="standardWidth">
 									<script type="text/javascript">
 										var nameAddress=new LiveValidation('nameAddress');
 										nameAddress.add(Validate.Presence);
@@ -223,7 +223,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Home Address') ?> *</b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'Unit, Building, Street') ?></span>
 								</td>
@@ -236,7 +236,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Home Address (District)') ?> *</b><br/>
 									<span class="emphasis small"><?php echo __($guid, 'County, State, District') ?></span>
 								</td>
@@ -268,8 +268,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
 									</script>
 							</tr>
 							<tr>
-								<td> 
-									<b><?php echo __($guid, 'Home Address (Country)') ?></b><br/>
+								<td>
+									<b><?php echo __($guid, 'Home Address (Country)') ?> *</b><br/>
 								</td>
 								<td class="right">
 									<select name="homeAddressCountry" id="homeAddressCountry" class="standardWidth">
@@ -289,7 +289,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
 											}
 											echo "<option $selected value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
 										}
-										?>				
+										?>
 									</select>
 									<script type="text/javascript">
 										var homeAddressCountry=new LiveValidation('homeAddressCountry');
@@ -298,7 +298,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Home Language - Primary') ?> *</b><br/>
 								</td>
 								<td class="right">
@@ -319,7 +319,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
 											}
 											echo "<option $selected value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
 										}
-										?>				
+										?>
 									</select>
 									<script type="text/javascript">
 										var languageHomePrimary=new LiveValidation('languageHomePrimary');
@@ -328,7 +328,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
 								</td>
 							</tr>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __($guid, 'Home Language - Secondary') ?></b><br/>
 								</td>
 								<td class="right">
@@ -349,7 +349,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
 											}
 											echo "<option $selected value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
 										}
-										?>				
+										?>
 									</select>
 								</td>
 							</tr>

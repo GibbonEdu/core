@@ -153,7 +153,7 @@ function setPaymentLog($connection2, $guid, $foreignTable, $foreignTableID, $typ
     $return = true;
 
     if ($timestamp == null) {
-        $timestampe = date('Y-m-d H:i:s');
+        $timestamp = date('Y-m-d H:i:s');
     }
     $gibbonPersonID = null;
     if (isset($_SESSION[$guid]['gibbonPersonID'])) {
@@ -1304,7 +1304,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         $return .= "<td style='width: 33%; padding-top: 15px; vertical-align: top; $style $style4'>";
         $return .= "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Status').'</span><br/>';
         if ($receiptNumber == null) { //Old style receipt, before multiple payments
-                        $return .= $row['status'];
+            $return .= $row['status'];
         } else {
             $paymentFail = false;
             if (is_numeric($receiptNumber) == false) {

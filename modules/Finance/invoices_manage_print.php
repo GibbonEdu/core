@@ -199,18 +199,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
                                 $rowNum = 'odd';
                             }
                             ?>
-								<tr class='<?php echo $rowNum ?>'>
-									<td>
-										<b><?php echo sprintf(__($guid, 'Receipt %1$s'), ($count2 + 1)) ?></b><br/>
-									</td>
-									<td class="left">
-										<?php
-                                        echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module']."/invoices_manage_print_print.php&type=receipt&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&gibbonSchoolYearID=$gibbonSchoolYearID&receiptNumber=$count2'>".__($guid, 'Print')."<img style='margin-left: 5px' title='".__($guid, 'Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
-                            ?>
-									</td>
-								</tr>
-								<?php
-                                ++$count;
+							<tr class='<?php echo $rowNum ?>'>
+								<td>
+									<b><?php echo sprintf(__($guid, 'Receipt %1$s'), ($count2 + 1)) ?></b><br/>
+								</td>
+								<td class="left">
+									<?php
+                                    echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module']."/invoices_manage_print_print.php&type=receipt&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&gibbonSchoolYearID=$gibbonSchoolYearID&receiptNumber=$count2'>".__($guid, 'Print')."<img style='margin-left: 5px' title='".__($guid, 'Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
+                                    ?>
+								</td>
+							</tr>
+							<?php
+                            ++$count;
                             ++$count2;
                         }
                     }

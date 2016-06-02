@@ -113,7 +113,7 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
                     if ($rowInternalAssessment['attachment'] != '' and file_exists($_SESSION[$guid]['absolutePath'].'/'.$rowInternalAssessment['attachment'])) {
                         $output .= " | <a 'title='Download more information' href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowInternalAssessment['attachment']."'>More info</a>";
                     }
-                    $output .= '</span><br/>';
+                    $output .= '</span>';
                     $output .= '</td>';
                     if ($rowInternalAssessment['attainment'] == 'N' or $rowInternalAssessment['gibbonScaleIDAttainment'] == '') {
                         $output .= "<td class='dull' style='color: #bbb; text-align: center'>";

@@ -106,10 +106,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view_prin
                         } else {
                             echo $invoiceContents;
                         }
-                    } elseif ($type = 'Receipt') {
+                    } elseif ($type = 'receipt') {
                         echo '<h2>';
                         echo __($guid, 'Receipt');
                         echo '</h2>';
+                        //Get receipt number
+                        $receiptNumber = null;
+                        try {
+                            $dataReceiptNumber = array('gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
+                            $sqlReceiptNumber = "SELECT *
+                                FROM gibbonPayment
+                                JOIN gibbonFinanceInvoice ON (gibbonPayment.foreignTableID=gibbonFinanceInvoice.gibbonFinanceInvoiceID AND gibbonPayment.foreignTable='gibbonFinanceInvoice')
+                                WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID
+                                ORDER BY timestamp DESC, gibbonPayment.gibbonPaymentID DESC
+                            ";
+                            $resultReceiptNumber = $connection2->prepare($sqlReceiptNumber);
+                            $resultReceiptNumber->execute($dataReceiptNumber);
+                        } catch (PDOException $e) { }
+                        $receiptNumber = ($resultReceiptNumber->rowCount()-1) ;
                         $receiptContents = receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency'], false, $receiptNumber);
                         if ($receiptContents == false) {
                             echo "<div class='error'>";

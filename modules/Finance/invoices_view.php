@@ -267,8 +267,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                             }
                             ++$count;
 
-                                        //Work out extra status information
-                                        $statusExtra = '';
+                            //Work out extra status information
+                            $statusExtra = '';
                             if ($row['status'] == 'Issued' and $row['invoiceDueDate'] < date('Y-m-d')) {
                                 $statusExtra = 'Overdue';
                             }
@@ -378,7 +378,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                             echo '</tr>';
                             if ($row['notes'] != '') {
                                 echo "<tr class='comment-$count' id='comment-$count'>";
-                                echo '<td colspan=6>';
+                                echo '<td colspan=7>';
                                 echo $row['notes'];
                                 echo '</td>';
                                 echo '</tr>';

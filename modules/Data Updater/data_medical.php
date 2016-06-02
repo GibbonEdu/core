@@ -207,11 +207,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                     } catch (PDOException $e) {
                         echo "<div class='error'>".$e->getMessage().'</div>';
                     }
-                    if ($result->rowCount() > 1) {
+                    if ($resultForm->rowCount() > 1) {
                         echo "<div class='error'>";
                         echo __($guid, 'Your request failed due to a database error.');
                         echo '</div>';
-                    } elseif ($result->rowCount() == 1) {
+                    } elseif ($resultForm->rowCount() == 1) {
                         $existing = true;
                         echo "<div class='warning'>";
                         echo __($guid, 'You have already submitted a form, which is pending approval by an administrator. If you wish to make changes, please edited the data below, but remember your data will not appear in the system until it has been approved.');
