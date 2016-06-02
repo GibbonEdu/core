@@ -282,7 +282,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
                 echo '</p>';
             }
 
-            //Controls for viewing mode	
+            //Controls for viewing mode
             if ($gibbonPersonID != '') {
                 $output .= "<script type='text/javascript'>";
                 $output .= '$(document).ready(function(){';
@@ -420,7 +420,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 					}
 
 					try {
-						$dataEntry = array('gibbonRubricCellID' => $cells[$rows[$i][0]][$columns[$n][0]][1], 'gibbonPersonID' => $gibbonPersonID, 'contextDBTable' => $contextDBTable, 'contextDBTableID' => $contextDBTableID);
+						$dataEntry = array('gibbonRubricCellID' => @$cells[$rows[$i][0]][$columns[$n][0]][1], 'gibbonPersonID' => $gibbonPersonID, 'contextDBTable' => $contextDBTable, 'contextDBTableID' => $contextDBTableID);
 						$sqlEntry = 'SELECT * FROM gibbonRubricEntry WHERE gibbonRubricCellID=:gibbonRubricCellID AND gibbonPersonID=:gibbonPersonID AND contextDBTable=:contextDBTable AND contextDBTableID=:contextDBTableID';
 						$resultEntry = $connection2->prepare($sqlEntry);
 						$resultEntry->execute($dataEntry);
@@ -433,7 +433,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 						$bgcolor = '#79FA74';
 					}
 					$output .= "<td id='".$rows[$i][0].'-'.$columns[$n][0]."' style='background: none; background-color: $bgcolor; height: 100%; vertical-align: top'>";
-					$output .= "<div class='currentView' style='font-size: 90%'>".$cells[$rows[$i][0]][$columns[$n][0]][0].'</div>';
+					$output .= "<div class='currentView' style='font-size: 90%'>".@$cells[$rows[$i][0]][$columns[$n][0]][0].'</div>';
 					$output .= "<div class='historical' style='font-size: 90%'>";
 
 					if (isset($cells[$rows[$i][0]][$columns[$n][0]][2])) {
@@ -458,7 +458,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 					$output .= '</div>';
 					$output .= "<input type='hidden' name='gibbonRubricColumnID[]' value='".$columns[$n][0]."'>";
 					$output .= "<input type='hidden' name='gibbonRubricRowID[]' value='".$rows[$i][0]."'>";
-					$output .= "<input type='hidden' name='gibbonRubricCellID[]' value='".$cells[$rows[$i][0]][$columns[$n][0]][1]."'>";
+					$output .= "<input type='hidden' name='gibbonRubricCellID[]' value='".@$cells[$rows[$i][0]][$columns[$n][0]][1]."'>";
 					$output .= '</td>';
 				}
 				$output .= '</tr>';

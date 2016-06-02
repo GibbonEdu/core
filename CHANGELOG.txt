@@ -90,10 +90,13 @@ v12.0.00
 		Data Updater: made message regarding existing submission appear more consistently
 		Data Updater: fixed server-side validation of condition and risk in new medical conditions
 		Departments: fixed filter in Homework link from Class view page
+		Departments: added confirm on delete of resources
 		Finance: fixed <? bug
 		Finance: added ability to provide multiple company email addresses
 		Finance: fixed bug preventing printing of receipts when status is 'Paid - Partial'
 		Finance: added ability (off by default) for students to view their own invoices
+		Finance: fixed PHP notice issues
+		Finance: added confirm on delete of budget members
 		Form Groups: adjusted labels in Sort By select
 		Formal Assessment: fixed issue with View Classes menu not appearing for a user with no classes (e.g. admin)
 		Formal Assessment: fixed uploaded response file selector gigantism issue
@@ -126,7 +129,9 @@ v12.0.00
 		Planner: fixed file submission count for student homework
 		Planner: visual consistency tweak to tables
 		Planner: fixed bug allowing homework to be marked as "On Time" if submitting page opened before deadline (aka Alron's Bug)
+		Planner: fixed PHP notice issues
 		Rubrics: added course/class name to historical view result listing
+		Rubrics: fixed PHP Notice issue when cell table entries never created
 		School Admin: fixed bug preventing non-contiguous primary external assessment settings from being saved in Formal Assessment settings
 		School Admin: increased length of grade scale short name to 5 chars
 		School Admin: added confirm to department staff delete
