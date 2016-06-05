@@ -37,11 +37,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
         returnProcess($guid, $_GET['return'], null, null);
     }
     ?>
-	
+
 	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/thirdPartySettingsProcess.php' ?>">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'Google Integration') ?></h3>
 					<?php echo sprintf(__($guid, 'If your school uses Google Apps, you can enable single sign on and calendar integreation with Gibbon. This process makes use of Google\'s APIs, and allows a user to access Gibbon without a username and password, provided that their listed email address is a Google account to which they have access. For configuration instructions, %1$sclick here%2$s.'), "<a href='https://gibbonedu.org/support/administrators/authenticating-with-google-oauth/' target='_blank'>", '</a>') ?>
 				</td>
@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
 					</select>
 				</td>
 			</tr>
-            
+
 			<tr>
 				<?php
                 try {
@@ -78,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=4 type="text" class="standardWidth"><?php echo $row['value'] ?></textarea>
 				</td>
 			</tr>
-            
+
             <tr>
 				<?php
                 try {
@@ -97,7 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -105,7 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=4 type="text" class="standardWidth"><?php echo $row['value'] ?></textarea>
 				</td>
 			</tr>
-            
+
             <tr>
 				<?php
                 try {
@@ -116,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -124,7 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=4 type="text" class="standardWidth"><?php echo $row['value'] ?></textarea>
 				</td>
 			</tr>
-			
+
             <tr>
 				<?php
                 try {
@@ -135,7 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -143,7 +143,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
 					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" rows=4 type="text" class="standardWidth"><?php echo $row['value'] ?></textarea>
 				</td>
 			</tr>
-            
+
             <tr>
 				<?php
                 try {
@@ -154,7 +154,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -174,7 +174,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -182,9 +182,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
 					<input name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" maxlength=255 value="<?php echo $row['value'] ?>" type="text" class="standardWidth">
 				</td>
 			</tr>
-			
+
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'PayPal Payment Gateway') ?></h3>
 				</td>
 			</tr>
@@ -200,7 +200,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -216,7 +216,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
 						if ($row['value'] == 'N') {
 							$selected = 'selected';
 						}
-						echo "<option $selected value='N'>".ynExpander($guid, 'N').'</option>';?>			
+						echo "<option $selected value='N'>".ynExpander($guid, 'N').'</option>';?>
 					</select>
 				</td>
 			</tr>
@@ -232,7 +232,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -252,7 +252,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -272,7 +272,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
                 }
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -280,9 +280,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
 					<input name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" maxlength=255 value="<?php echo $row['value'] ?>" type="text" class="standardWidth">
 				</td>
 			</tr>
-			
+
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'SMS Settings') ?></h3>
 					<?php echo sprintf(__($guid, 'Gibbon is designed to use the %1$sOne Way SMS%2$s gateway to send out SMS messages. This is a paid service, not affiliated with Gibbon, and you must create your own account with them before being able to send out SMSs using the Messenger module. It is possible that completing the fields below with details from other gateways may work.'), "<a href='http://onewaysms.com' target='_blank'>", '</a>') ?>
 				</td>
@@ -297,7 +297,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -305,7 +305,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
 					<input name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" maxlength=50 value="<?php echo htmlPrep($row['value']) ?>" type="text" class="standardWidth">
 				</td>
 			</tr>
-			
+
 			<tr>
 				<?php
                 try {
@@ -316,15 +316,15 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
-					<input name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" maxlength=50 value="<?php echo htmlPrep($row['value']) ?>" type="password" class="standardWidth">
+					<input name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" maxlength=50 value="<?php echo htmlPrep($row['value']) ?>" type="text" class="standardWidth">
 				</td>
 			</tr>
-			
+
 			<tr>
 				<?php
                 try {
@@ -335,7 +335,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -343,7 +343,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
 					<input name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" maxlength=255 value="<?php echo htmlPrep($row['value']) ?>" type="text" class="standardWidth">
 				</td>
 			</tr>
-			
+
 			<tr>
 				<?php
                 try {
@@ -354,7 +354,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
                 } catch (PDOException $e) {}
                 $row = $result->fetch();
                 ?>
-				<td> 
+				<td>
 					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
 					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
@@ -362,7 +362,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
 					<input name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" maxlength=255 value="<?php echo htmlPrep($row['value']) ?>" type="text" class="standardWidth">
 				</td>
 			</tr>
-			
+
 			<tr>
 				<td>
 					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>

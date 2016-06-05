@@ -1615,7 +1615,7 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
         $resultHooks = $connection2->prepare($sqlHooks);
         $resultHooks->execute($dataHooks);
     } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
+        $return .= "<div class='error'>".$e->getMessage().'</div>';
     }
     if ($resultHooks->rowCount() > 0) {
         $count = 0;

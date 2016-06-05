@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         echo "<table class='noIntBorder' cellspacing='0' style='width: 100%'>";
         ?>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Student') ?></b><br/>
 						<span class="emphasis small"></span>
 					</td>
@@ -92,12 +92,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 									echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['nameShort']).')</option>';
 								}
 							}
-							?>			
+							?>
 						</select>
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Roll Group') ?></b><br/>
 						<span class="emphasis small"></span>
 					</td>
@@ -125,7 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Year Group') ?></b><br/>
 						<span class="emphasis small"></span>
 					</td>
@@ -153,7 +153,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Type') ?></b><br/>
 						<span class="emphasis small"></span>
 					</td>
@@ -280,7 +280,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             echo '<th>';
             echo __($guid, 'Teacher');
             echo '</th>';
-            echo "<th style='min-width: 90px'>";
+            echo "<th style='min-width: 110px'>";
             echo __($guid, 'Actions');
             echo '</th>';
             echo '</tr>';
