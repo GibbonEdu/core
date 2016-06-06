@@ -418,4 +418,5 @@ UPDATE gibbonAction SET category='Resources' WHERE name LIKE 'Manage Resources_%
 UPDATE gibbonAction SET category='Resources' WHERE name='View Resources' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Resources');end
 UPDATE gibbonPerson SET dob=NULL WHERE dob='0000-00-00';end
 UPDATE gibbonAction SET category='Request Updates' WHERE name='Update Medical Form_family' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Data Updater');end
+ALTER TABLE `gibbonModule` CHANGE `description` `description` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;end
 ";
