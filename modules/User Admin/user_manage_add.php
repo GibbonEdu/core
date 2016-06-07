@@ -141,8 +141,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 						<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
 						<option value="F"><?php echo __($guid, 'Female') ?></option>
 						<option value="M"><?php echo __($guid, 'Male') ?></option>
-						<option value="F"><?php echo __($guid, 'Other') ?></option>
-						<option value="M"><?php echo __($guid, 'Unspecified') ?></option>
+						<option value="Other"><?php echo __($guid, 'Other') ?></option>
+						<option value="Unspecified"><?php echo __($guid, 'Unspecified') ?></option>
 					</select>
 					<script type="text/javascript">
 						var gender=new LiveValidation('gender');
