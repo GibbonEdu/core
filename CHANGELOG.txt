@@ -163,6 +163,7 @@ v12.0.00
 		User Admin: added log entry when privacy settings are changed
 		User Admin: fixed fields in gibbonPerson holding 0 rather than null
 		User Admin: import interface fixes
+		User Admin: fixed broken Other and Unspecified values in user add (and in Public Registration too)
 
 v11.0.00
 --------
