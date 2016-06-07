@@ -1789,7 +1789,7 @@ function setNotification($connection2, $guid, $gibbonPersonID, $text, $moduleNam
         $body .= "<p style='font-style: italic; font-size: 85%'>";
         $body .= sprintf(__($guid, 'If you do not wish to receive email notifications from %1$s, please %2$sclick here%3$s to adjust your preferences:'), $_SESSION[$guid]['systemName'], "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=preferences.php'>", '</a>');
         $body .= '<br/><br/>';
-        $body.sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']);
+        $body .= sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']);
         $body .= '</p>';
         $bodyPlain = emailBodyConvert($body);
 
