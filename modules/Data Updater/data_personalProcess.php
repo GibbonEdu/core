@@ -144,10 +144,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
                     //Proceed!
                     $title = $_POST['title'];
-                    $surname = $_POST['surname'];
-                    $firstName = $_POST['firstName'];
-                    $preferredName = $_POST['preferredName'];
-                    $officialName = $_POST['officialName'];
+                    $surname = trim($_POST['surname']);
+                    $firstName = trim($_POST['firstName']);
+                    $preferredName = trim($_POST['preferredName']);
+                    $officialName = trim($_POST['officialName']);
                     $nameInCharacters = $_POST['nameInCharacters'];
                     $dob = $_POST['dob'];
                     if ($dob == '') {
@@ -155,8 +155,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     } else {
                         $dob = dateConvert($guid, $dob);
                     }
-                    $email = $_POST['email'];
-                    $emailAlternate = $_POST['emailAlternate'];
+                    $email = trim($_POST['email']);
+                    $emailAlternate = trim($_POST['emailAlternate']);
                     $address1 = $_POST['address1'];
                     $address1District = $_POST['address1District'];
                     $address1Country = $_POST['address1Country'];

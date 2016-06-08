@@ -67,9 +67,9 @@ if ($proceed == false) {
         //Proceed!
         //GET STUDENT FIELDS
         $surname = $_POST['surname'];
-        $firstName = $_POST['firstName'];
-        $preferredName = $_POST['preferredName'];
-        $officialName = $_POST['officialName'];
+        $firstName = trim($_POST['firstName']);
+        $preferredName = trim($_POST['preferredName']);
+        $officialName = trim($_POST['officialName']);
         $nameInCharacters = $_POST['nameInCharacters'];
         $gender = $_POST['gender'];
         $dob = $_POST['dob'];
@@ -94,7 +94,7 @@ if ($proceed == false) {
         } else {
             $visaExpiryDate = dateConvert($guid, $visaExpiryDate);
         }
-        $email = $_POST['email'];
+        $email = trim($_POST['email']);
         $phone1Type = $_POST['phone1Type'];
         if ($_POST['phone1'] != '' and $phone1Type == '') {
             $phone1Type = 'Other';
@@ -177,19 +177,19 @@ if ($proceed == false) {
         }
         $parent1surname = null;
         if (isset($_POST['parent1surname'])) {
-            $parent1surname = $_POST['parent1surname'];
+            $parent1surname = trim($_POST['parent1surname']);
         }
         $parent1firstName = null;
         if (isset($_POST['parent1firstName'])) {
-            $parent1firstName = $_POST['parent1firstName'];
+            $parent1firstName = trim($_POST['parent1firstName']);
         }
         $parent1preferredName = null;
         if (isset($_POST['parent1preferredName'])) {
-            $parent1preferredName = $_POST['parent1preferredName'];
+            $parent1preferredName = trim($_POST['parent1preferredName']);
         }
         $parent1officialName = null;
         if (isset($_POST['parent1officialName'])) {
-            $parent1officialName = $_POST['parent1officialName'];
+            $parent1officialName = trim($_POST['parent1officialName']);
         }
         $parent1nameInCharacters = null;
         if (isset($_POST['parent1nameInCharacters'])) {
@@ -231,7 +231,7 @@ if ($proceed == false) {
         }
         $parent1email = null;
         if (isset($_POST['parent1email'])) {
-            $parent1email = $_POST['parent1email'];
+            $parent1email = trim($_POST['parent1email']);
         }
         $parent1phone1Type = null;
         if (isset($_POST['parent1phone1Type'])) {
@@ -279,19 +279,19 @@ if ($proceed == false) {
         }
         $parent2surname = null;
         if (isset($_POST['parent2surname'])) {
-            $parent2surname = $_POST['parent2surname'];
+            $parent2surname = trim($_POST['parent2surname']);
         }
         $parent2firstName = null;
         if (isset($_POST['parent2firstName'])) {
-            $parent2firstName = $_POST['parent2firstName'];
+            $parent2firstName = trim($_POST['parent2firstName']);
         }
         $parent2preferredName = null;
         if (isset($_POST['parent2preferredName'])) {
-            $parent2preferredName = $_POST['parent2preferredName'];
+            $parent2preferredName = trim($_POST['parent2preferredName']);
         }
         $parent2officialName = null;
         if (isset($_POST['parent2officialName'])) {
-            $parent2officialName = $_POST['parent2officialName'];
+            $parent2officialName = trim($_POST['parent2officialName']);
         }
         $parent2nameInCharacters = null;
         if (isset($_POST['parent2nameInCharacters'])) {
@@ -333,7 +333,7 @@ if ($proceed == false) {
         }
         $parent2email = null;
         if (isset($_POST['parent2email'])) {
-            $parent2email = $_POST['parent2email'];
+            $parent2email = trim($_POST['parent2email']);
         }
         $parent2phone1Type = null;
         if (isset($_POST['parent2phone1Type'])) {

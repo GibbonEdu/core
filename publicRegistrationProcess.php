@@ -57,9 +57,9 @@ if ($proceed == false) {
     }
 
     //Proceed!
-    $surname = $_POST['surname'];
-    $firstName = $_POST['firstName'];
-    $preferredName = $firstName;
+    $surname = trim($_POST['surname']);
+    $firstName = trim($_POST['firstName']);
+    $preferredName = trim($firstName);
     $officialName = $firstName.' '.$surname;
     $gender = $_POST['gender'];
     $dob = $_POST['dob'];
@@ -68,8 +68,8 @@ if ($proceed == false) {
     } else {
         $dob = dateConvert($guid, $dob);
     }
-    $email = $_POST['email'];
-    $username = $_POST['username'];
+    $email = trim($_POST['email']);
+    $username = trim($_POST['username']);
     $password = $_POST['passwordNew'];
     $salt = getSalt();
     $passwordStrong = hash('sha256', $salt.$password);
