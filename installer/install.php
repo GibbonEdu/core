@@ -477,7 +477,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
 																<span class="emphasis small"><?php echo __($guid, 'Join our mailing list and recieve a welcome email from the team.') ?></span>
 															</td>
 															<td class="right">
-																<input name="support" id="support" value="true" type="checkbox">
+																<input checked name="support" id="support" value="true" type="checkbox">
 															</td>
 														</tr>
 														<tr>
