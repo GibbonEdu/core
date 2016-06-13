@@ -134,7 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                 echo '</td>';
             } else {
                 //Check for valid manifest
-                        $manifestOK = false;
+                $manifestOK = false;
                 if (include $_SESSION[$guid]['absolutePath']."/modules/$moduleName/manifest.php") {
                     if ($name != '' and $description != '' and $version != '') {
                         if ($name == $moduleName) {
