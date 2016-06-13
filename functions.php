@@ -4673,7 +4673,7 @@ function returnProcess($guid, $return, $editLink = null, $customReturns = null)
         $returns['error0'] = __($guid, 'Your request failed because you do not have access to this action.');
         $returns['error1'] = __($guid, 'Your request failed because your inputs were invalid.');
         $returns['error2'] = __($guid, 'Your request failed due to a database error.');
-        $returns['error3'] = __($guid, 'Your request failed because some inputs did not meet a requirement for uniqueness.');
+        $returns['error3'] = __($guid, 'Your request failed because your inputs were invalid.');
         $returns['error4'] = __($guid, 'Your request failed because your passwords did not match.');
         $returns['error5'] = __($guid, 'Your request failed because there are no records to show.');
         $returns['error6'] = __($guid, 'Your request was completed successfully, but one or more images were the wrong size and so were not saved.');
