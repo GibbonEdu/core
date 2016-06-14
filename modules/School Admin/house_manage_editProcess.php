@@ -99,9 +99,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
                         while ($unique == false and $count < 100) {
                             $suffix = randomPassword(16);
                             if ($count == 0) {
-                                $logo = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$name."_$suffix".strrchr($_FILES['file1']['name'], '.');
+                                $logo = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.preg_replace('/[^a-zA-Z0-9]/', '', $name)."_$suffix".strrchr($_FILES['file1']['name'], '.');
                             } else {
-                                $logo = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.$name."_$suffix"."_$count".strrchr($_FILES['file1']['name'], '.');
+                                $logo = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.preg_replace('/[^a-zA-Z0-9]/', '', $name)."_$suffix"."_$count".strrchr($_FILES['file1']['name'], '.');
                             }
 
                             if (!(file_exists($path.'/'.$logo))) {

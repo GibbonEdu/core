@@ -37,7 +37,6 @@ v12.0.00
 		System: improved return message handling
 		System: link to Edit shown to user after new record is added
 		System: beautified code base to align more closely with standard PHP syntax
-		System Admin: added system setting to allow choice of Sunday or Monday as first day of the week
 		Activities: added ability to digitally mark and export activity attendance
 		Formal Assessment: added import functionality for internal assessments
 		Individual Needs: new interface for parents to view individual education plans for their children (off by default)
@@ -49,6 +48,7 @@ v12.0.00
 		Planner: added ability to set units to inactive, to hide them from certain views
 		School Admin: changed "Spaces" to "Facilities" and integrated borrowable Library items into Booking (to support laptop carts)
 		Staff: added ability to manage contract information
+		System Admin: added system setting to allow choice of Sunday or Monday as first day of the week
 		User Admin: added bulk import of user photos from a zip file
 
 	Security
@@ -74,9 +74,6 @@ v12.0.00
 		System: added Ghanaian Cedi, Myanmar Kyat as currencies
 		System: converted remaining email scripts from mail to phpmailer
 		System: checked Get Support option in installer by default
-		System Admin: Improved version comparison in module updater
-		System Admin: Improved version comparison in non-login database updater
-		System Admin: fixed error when removing module with no $moduleTables in manifest.php
 		Activities: fixed error in adding and editing activities when payment is turned off
 		Activities: added onclick delete confirm for slots and staff in edit view
 		Activities: fixed PHP Notice in moduleFunctions
@@ -136,6 +133,7 @@ v12.0.00
 		School Admin: fixed bug preventing non-contiguous primary external assessment settings from being saved in Formal Assessment settings
 		School Admin: increased length of grade scale short name to 5 chars
 		School Admin: added confirm to department staff delete
+		School Admin: fixed logo upload bug in Manage Houses
 		Staff: adjusted role drop down to offer all Staff roles (from gibbonRole), not just Teaching & Support
 		Students: added year group to New Students report when using Date Range setting
 		Students: added All Students filter persistence to Back To Search link on student details page
@@ -147,6 +145,9 @@ v12.0.00
 		Students: made country of birth and citizenship compulsory fields in Application Form
 		Students: fixed missing student image in some profile sub pages
 		Students: fixed width issue in privacy reportable
+		System Admin: Improved version comparison in module updater
+		System Admin: Improved version comparison in non-login database updater
+		System Admin: fixed error when removing module with no $moduleTables in manifest.php
 		Timetable: fixed rendering to allow Sunday as first day or the week, according to values in gibbonDaysOfWeek
 		Timetable: fixed rendering bug preventing some time labels from being displayed
 		Timetable: made "Back To Search" link persistent when timetable controls used
