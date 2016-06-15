@@ -77,6 +77,7 @@ v12.0.00
 		Activities: fixed error in adding and editing activities when payment is turned off
 		Activities: added onclick delete confirm for slots and staff in edit view
 		Activities: fixed PHP Notice in moduleFunctions
+		Activities: fixed issue with activity cost and field length
 		Attendance: added client side warning in case attendance is taken for a day in the past (happens when user not logged out over night)
 		Attendance: added ability to see date range in Form Groups Not Registered
 		Attendance: added reason as title/hover over type in Student History report function

@@ -377,11 +377,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
                                 } else {
                                     ?>
-									<input name="payment" id="payment" maxlength=7 value="<?php echo $row['payment'] ?>" type="text" class="standardWidth">
+									<input name="payment" id="payment" maxlength=9 value="<?php echo $row['payment'] ?>" type="text" class="standardWidth">
 									<script type="text/javascript">
 										var payment=new LiveValidation('payment');
 										payment.add(Validate.Presence);
-										payment.add(Validate.Numericality);
+                                        payment.add(Validate.Numericality, { minimum: 0, maximum: 999999.99 } );
 									</script>
 									 <?php
                                 }

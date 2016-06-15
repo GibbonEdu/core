@@ -47,14 +47,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     }
     ?>
 	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_manage_addProcess.php?search='.$_GET['search'] ?>">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
+		<table class='smallIntBorder fullWidth' cellspacing='0'>
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'Basic Information') ?></h3>
 				</td>
 			</tr>
 			<tr>
-				<td style='width: 275px'> 
+				<td style='width: 275px'>
 					<b><?php echo __($guid, 'Name') ?> *</b><br/>
 				</td>
 				<td class="right">
@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Provider') ?> *</b><br/>
 				</td>
 				<td class="right">
@@ -76,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 					</select>
 				</td>
 			</tr>
-			
+
 			<?php
             try {
                 $dataType = array();
@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 					$options = explode(',', $options);
 					?>
 					<tr>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Type') ?></b><br/>
 							<span class="emphasis small"></span>
 						</td>
@@ -117,9 +117,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 				}
 			}
 			?>
-			
+
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Active') ?> *</b><br/>
 					<span class="emphasis small"></span>
 				</td>
@@ -131,7 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Registration') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'Assuming system-wide registration is open, should this activity be open for registration?') ?></span>
 				</td>
@@ -142,7 +142,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 					</select>
 				</td>
 			</tr>
-			
+
 			<?php
             //Should we show date as term or date?
             $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
@@ -150,12 +150,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 			if ($dateType != 'Date') {
 				?>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Terms') ?></b><br/>
 						<span class="emphasis small"><?php echo __($guid, 'Terms in which the activity will run.') ?><br/></span>
 					</td>
 					<td class="right">
-						<?php 
+						<?php
                         $terms = getTerms($connection2, $_SESSION[$guid]['gibbonSchoolYearID']);
 						if ($terms == '') {
 							echo '<i>'.__($guid, 'No terms available.').'</i>';
@@ -205,7 +205,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 					}
 				?>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Listing Start Date') ?> *</b><br/>
 						<span class="emphasis small"><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
 							echo 'dd/mm/yyyy';
@@ -228,7 +228,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 							} else {
 								echo $_SESSION[$guid]['i18n']['dateFormat'];
 							}
-							?>." } ); 
+							?>." } );
 						</script>
 						 <script type="text/javascript">
 							$(function() {
@@ -238,7 +238,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Listing End Date') ?> *</b><br/>
 						<span class="emphasis small"><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
 							echo 'dd/mm/yyyy';
@@ -261,7 +261,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 							} else {
 								echo $_SESSION[$guid]['i18n']['dateFormat'];
 							}
-									?>." } ); 
+									?>." } );
 						</script>
 						 <script type="text/javascript">
 							$(function() {
@@ -271,7 +271,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Program Start Date') ?> *</b><br/>
 						<span class="emphasis small"><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
 							echo 'dd/mm/yyyy';
@@ -294,7 +294,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 							} else {
 								echo $_SESSION[$guid]['i18n']['dateFormat'];
 							}
-									?>." } ); 
+									?>." } );
 						</script>
 						 <script type="text/javascript">
 							$(function() {
@@ -304,7 +304,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 					</td>
 				</tr>
 				<tr>
-					<td> 
+					<td>
 						<b><?php echo __($guid, 'Program End Date') ?> *</b><br/>
 						<span class="emphasis small"><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
 							echo 'dd/mm/yyyy';
@@ -327,7 +327,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 							} else {
 								echo $_SESSION[$guid]['i18n']['dateFormat'];
 							}
-							?>." } ); 
+							?>." } );
 						</script>
 						 <script type="text/javascript">
 							$(function() {
@@ -340,11 +340,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 				}
 			?>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Year Groups') ?></b><br/>
 				</td>
 				<td class="right">
-					<?php 
+					<?php
                     $yearGroups = getYearGroups($connection2);
 					if ($yearGroups == '') {
 						echo '<i>'.__($guid, 'No year groups available.').'</i>';
@@ -360,7 +360,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Max Participants') ?> *</b><br/>
 				</td>
 				<td class="right">
@@ -373,7 +373,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 				</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Cost') ?> *</b><br/>
 					<span class="emphasis small"><?php echo __($guid, 'For entire programme').'. '.$_SESSION[$guid]['currency'].'.' ?><br/></span>
 				</td>
@@ -386,53 +386,53 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
                         } else {
                             ?>
-							<input name="payment" id="payment" maxlength=7 value="0.00" type="text" class="standardWidth">
+							<input name="payment" id="payment" maxlength=9 value="0" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var payment=new LiveValidation('payment');
 								payment.add(Validate.Presence);
-								payment.add(Validate.Numericality);
+                                payment.add(Validate.Numericality, { minimum: 0, maximum: 999999.99 } );
 							</script>
 							 <?php
 
                         }
    				 		?>
-					
+
 				</td>
 			</tr>
 			<tr>
-				<td colspan=2> 
-					<b><?php echo __($guid, 'Description') ?></b> 
+				<td colspan=2>
+					<b><?php echo __($guid, 'Description') ?></b>
 					<?php echo getEditor($guid,  true, 'description', '', 10, true) ?>
 				</td>
 			</tr>
-			
-			
+
+
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'Time Slots') ?></h3>
 				</td>
 			</tr>
-			
+
 			<script type="text/javascript">
 				/* Resource 1 Option Control */
 				$(document).ready(function(){
 					$("#slot1InternalRow").css("display","none");
 					$("#slot1ExternalRow").css("display","none");
 					$("#slot1ButtonRow").css("display","none");
-					
+
 					$(".slot1Location").click(function(){
 						if ($('input[name=slot1Location]:checked').val()=="External" ) {
 							$("#slot1InternalRow").css("display","none");
-							$("#slot1ExternalRow").slideDown("fast", $("#slot1ExternalRow").css("display","table-row")); 
-							$("#slot1ButtonRow").slideDown("fast", $("#slot1ButtonRow").css("display","table-row")); 
+							$("#slot1ExternalRow").slideDown("fast", $("#slot1ExternalRow").css("display","table-row"));
+							$("#slot1ButtonRow").slideDown("fast", $("#slot1ButtonRow").css("display","table-row"));
 						} else {
 							$("#slot1ExternalRow").css("display","none");
-							$("#slot1InternalRow").slideDown("fast", $("#slot1InternalRow").css("display","table-row")); 
-							$("#slot1ButtonRow").slideDown("fast", $("#slot1ButtonRow").css("display","table-row")); 
+							$("#slot1InternalRow").slideDown("fast", $("#slot1InternalRow").css("display","table-row"));
+							$("#slot1ButtonRow").slideDown("fast", $("#slot1ButtonRow").css("display","table-row"));
 						}
 					 });
 				});
-				
+
 				/* Resource 2 Display Control */
 				$(document).ready(function(){
 					$("#slot2Row").css("display","none");
@@ -443,41 +443,41 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 					$("#slot2InternalRow").css("display","none");
 					$("#slot2ExternalRow").css("display","none");
 					$("#slot2ButtonRow").css("display","none");
-					
+
 					$("#slot1Button").click(function(){
 						$("#slot2Button").css("display","none");
-						$("#slot2Row").slideDown("fast", $("#slot2Row").css("display","table-row")); 
-						$("#slot2DayRow").slideDown("fast", $("#slot2DayRow").css("display","table-row")); 
-						$("#slot2StartRow").slideDown("fast", $("#slot2StartRow").css("display","table-row")); 
-						$("#slot2EndRow").slideDown("fast", $("#slot2EndRow").css("display","table-row")); 
-						$("#slot2LocationRow").slideDown("fast", $("#slot2LocationRow").css("display","table-row")); 
+						$("#slot2Row").slideDown("fast", $("#slot2Row").css("display","table-row"));
+						$("#slot2DayRow").slideDown("fast", $("#slot2DayRow").css("display","table-row"));
+						$("#slot2StartRow").slideDown("fast", $("#slot2StartRow").css("display","table-row"));
+						$("#slot2EndRow").slideDown("fast", $("#slot2EndRow").css("display","table-row"));
+						$("#slot2LocationRow").slideDown("fast", $("#slot2LocationRow").css("display","table-row"));
 					});
 				});
-				
+
 				/* Resource 2 Option Control */
 				$(document).ready(function(){
 					$(".slot2Location").click(function(){
 						if ($('input[name=slot2Location]:checked').val()=="External" ) {
 							$("#slot2InternalRow").css("display","none");
-							$("#slot2ExternalRow").slideDown("fast", $("#slot2ExternalRow").css("display","table-row")); 
+							$("#slot2ExternalRow").slideDown("fast", $("#slot2ExternalRow").css("display","table-row"));
 						} else {
 							$("#slot2ExternalRow").css("display","none");
-							$("#slot2InternalRow").slideDown("fast", $("#slot2InternalRow").css("display","table-row")); 
+							$("#slot2InternalRow").slideDown("fast", $("#slot2InternalRow").css("display","table-row"));
 						}
 					 });
 				});
 			</script>
-				
+
 			<?php
             for ($i = 1; $i < 3; ++$i) {
                 ?>
 				<tr id="slot<?php echo $i ?>Row">
-					<td colspan=2> 
+					<td colspan=2>
 						<h4><?php echo __($guid, 'Slot') ?> <?php echo $i ?></h4>
 					</td>
 				</tr>
 				<tr id="slot<?php echo $i ?>DayRow">
-					<td> 
+					<td>
 						<b><?php echo sprintf(__($guid, 'Slot %1$s Day'), $i) ?></b><br/>
 					</td>
 					<td class="right">
@@ -500,7 +500,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 					</td>
 				</tr>
 				<tr id="slot<?php echo $i ?>StartRow">
-					<td> 
+					<td>
 						<b><?php echo sprintf(__($guid, 'Slot %1$s Start Time'), $i) ?></b><br/>
 						<span class="emphasis small"><?php echo __($guid, 'Format: hh:mm') ?></span>
 					</td>
@@ -528,7 +528,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 					</td>
 				</tr>
 				<tr id="slot<?php echo $i ?>EndRow">
-					<td> 
+					<td>
 						<b><?php echo sprintf(__($guid, 'Slot %1$s End Time'), $i) ?></b><br/>
 						<span class="emphasis small"><?php echo __($guid, 'Format: hh:mm') ?></span>
 					</td>
@@ -556,7 +556,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 					</td>
 				</tr>
 				<tr id="slot<?php echo $i ?>LocationRow">
-					<td> 
+					<td>
 						<b><?php echo sprintf(__($guid, 'Slot %1$s Location'), $i) ?></b><br/>
 					</td>
 					<td class="right">
@@ -565,8 +565,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 					</td>
 				</tr>
 				<tr id="slot<?php echo $i ?>InternalRow">
-					<td> 
-						
+					<td>
+
 					</td>
 					<td class="right">
 						<select name="gibbonSpaceID<?php echo $i ?>" id="gibbonSpaceID<?php echo $i ?>" class="standardWidth">
@@ -587,15 +587,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 					</td>
 				</tr>
 				<tr id="slot<?php echo $i ?>ExternalRow">
-					<td> 
-						
+					<td>
+
 					</td>
 					<td class="right">
 						<input name="location<?php echo $i ?>External" id="location<?php echo $i ?>External" maxlength=50 value="" type="text" class="standardWidth">
 					</td>
 				</tr>
 				<tr id="slot<?php echo $i ?>ButtonRow">
-					<td> 
+					<td>
 					</td>
 					<td class="right">
 						<input class="buttonAsLink" id="slot<?php echo $i ?>Button" type="button" value="Add Another Slot">
@@ -605,14 +605,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 				<?php
 			}
     		?>
-			
+
 			<tr class='break'>
-				<td colspan=2> 
+				<td colspan=2>
 					<h3><?php echo __($guid, 'Staff') ?></h3>
 				</td>
 			</tr>
 			<tr>
-			<td> 
+			<td>
 				<b><?php echo __($guid, 'Staff') ?></b><br/>
 				<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
 			</td>
@@ -650,7 +650,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 				</select>
 			</td>
 			<tr>
-				<td> 
+				<td>
 					<b><?php echo __($guid, 'Role') ?></b><br/>
 				</td>
 				<td class="right">
@@ -662,9 +662,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 					</select>
 				</td>
 			</tr>
-			
+
 			<tr>
-				<td> 
+				<td>
 					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 				</td>
 				<td class="right">
