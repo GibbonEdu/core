@@ -110,6 +110,7 @@ v12.0.00
 		Library: fixed bug preventing ID clash check from working properly
 		Library: fixed image and name alignment in lending view
 		Library: fixed catalog export PHP Notice and file name errors
+		Library: fixed issue where " breaks Name and other fields in catalogue manage edit view
 		Markbook: fixed issue causing mis-evaluation of personalised targets, for some edge cases
 		Markbook: fixed uploaded response file selector gigantism issue
 		Markbook: added line break display to full comment in various viewing locations

@@ -68,14 +68,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             }
             ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/library_manage_catalog_editProcess.php?name='.$_GET['name'].'&gibbonLibraryTypeID='.$_GET['gibbonLibraryTypeID'].'&gibbonSpaceID='.$_GET['gibbonSpaceID'].'&status='.$_GET['status'].'&gibbonPersonIDOwnership='.$_GET['gibbonPersonIDOwnership'].'&typeSpecificFields='.$_GET['typeSpecificFields'] ?>" enctype="multipart/form-data">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
+				<table class='smallIntBorder fullWidth' cellspacing='0'>
 					<tr class='break'>
 						<td colspan=2>
 							<h3><?php echo __($guid, 'Catalog Type') ?></h3>
 						</td>
 					</tr>
 					<tr>
-						<td style='width: 275px'> 
+						<td style='width: 275px'>
 							<b><?php echo __($guid, 'Type') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 						</td>
@@ -84,19 +84,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 							<input type='hidden' name='gibbonLibraryTypeID' value='<?php echo $row['gibbonLibraryTypeID'] ?>'>
 						</td>
 					</tr>
-					
+
 					<tr class='break' id='generalDetailsRow'>
 						<td colspan=2>
 							<h3><?php echo __($guid, 'General Details') ?></h3>
 						</td>
 					</tr>
 					<tr id='nameRow'>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Name') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Volume or product name.') ?></span>
 						</td>
 						<td class="right">
-							<input name="name" id="name" maxlength=255 value="<?php echo $row['name'] ?>" type="text" class="standardWidth">
+							<input name="name" id="name" maxlength=255 value="<?php echo htmlPrep($row['name']) ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var name2=new LiveValidation('name');
 								name2.add(Validate.Presence);
@@ -104,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 						</td>
 					</tr>
 					<tr id='idRow'>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'ID') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'School-unique ID or barcode.') ?></span>
 						</td>
@@ -132,12 +132,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 						</td>
 					</tr>
 					<tr id='producerRow'>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Author/Brand') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Who created the item?') ?></span>
 						</td>
 						<td class="right">
-							<input name="producer" id="producer" maxlength=255 value="<?php echo $row['producer'] ?>" type="text" class="standardWidth">
+							<input name="producer" id="producer" maxlength=255 value="<?php echo htmlPrep($row['producer']) ?>" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var producer=new LiveValidation('producer');
 								producer.add(Validate.Presence);
@@ -145,16 +145,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 						</td>
 					</tr>
 					<tr id='vendorRow'>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Vendor') ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Who supplied the item?') ?></span>
 						</td>
 						<td class="right">
-							<input name="vendor" id="vendor" maxlength=100 value="<?php echo $row['vendor'] ?>" type="text" class="standardWidth">
+							<input name="vendor" id="vendor" maxlength=100 value="<?php echo htmlPrep($row['vendor']) ?>" type="text" class="standardWidth">
 						</td>
 					</tr>
 					<tr id='purchaseDateRow'>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Purchase Date') ?></b><br/>
 							<span class="emphasis small"></span>
 						</td>
@@ -172,7 +172,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 								} else {
 									echo $_SESSION[$guid]['i18n']['dateFormat'];
 								}
-								?>." } ); 
+								?>." } );
 							</script>
 							 <script type="text/javascript">
 								$(function() {
@@ -182,30 +182,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 						</td>
 					</tr>
 					<tr id='invoiceNumberRow'>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Invoice Number') ?></b><br/>
 							<span class="emphasis small"></span>
 						</td>
 						<td class="right">
-							<input name="invoiceNumber" id="invoiceNumber" maxlength=50 value="<?php echo $row['invoiceNumber'] ?>" type="text" class="standardWidth">
+							<input name="invoiceNumber" id="invoiceNumber" maxlength=50 value="<?php echo htmlPrep($row['invoiceNumber']) ?>" type="text" class="standardWidth">
 						</td>
 					</tr>
-					
+
 					<!-- FIELDS & CONTROLS FOR IMAGE -->
 					<script type="text/javascript">
 						$(document).ready(function(){
 							$("#imageType").change(function(){
 								if ($('select.imageType option:selected').val()=="Link" ) {
 									$("#imageFileRow").css("display","none");
-									$("#imageLinkRow").slideDown("fast", $("#imageLinkRow").css("display","table-row")); 
+									$("#imageLinkRow").slideDown("fast", $("#imageLinkRow").css("display","table-row"));
 									imageLink.enable();
 									imageFile.disable();
 								} else if ($('select.imageType option:selected').val()=="File" ) {
 									$("#imageLinkRow").css("display","none");
-									$("#imageFileRow").slideDown("fast", $("#imageFileRow").css("display","table-row")); 
+									$("#imageFileRow").slideDown("fast", $("#imageFileRow").css("display","table-row"));
 									imageFile.enable();
 									imageLink.disable();
-								} 
+								}
 								else {
 									$("#imageFileRow").css("display","none");
 									$("#imageLinkRow").css("display","none");
@@ -216,7 +216,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 						});
 					</script>
 					<tr id='imageTypeRow'>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Image Type') ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, '240px x 240px or smaller.') ?></span>
 						</td>
@@ -229,7 +229,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 						</td>
 					</tr>
 					<tr id="imageFileRow" <?php if ($row['imageType'] != 'File') { echo "style='display: none'"; } ?>>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Image File') ?></b><br/>
 						</td>
 						<td class="right">
@@ -243,13 +243,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 								var imageFile=new LiveValidation('imageFile');
 								imageFile.add( Validate.Inclusion, { within: ['.jpg','.jpeg','.png','.gif'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
 								<?php if ($row['imageType'] != 'File') { echo 'imageFile.disable();'; } ?>
-							</script>	
+							</script>
 							<?php
                             echo getMaxUpload($guid); ?>
 						</td>
 					</tr>
 					<tr id="imageLinkRow" <?php if ($row['imageType'] != 'Link') { echo "style='display: none'"; } ?>>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Image Link') ?> *</b><br/>
 						</td>
 						<td class="right">
@@ -259,13 +259,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 								imageLink.add(Validate.Presence);
 								imageLink.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
 								<?php if ($row['imageType'] != 'Link') { echo 'imageLink.disable();'; } ?>
-							</script>	
+							</script>
 						</td>
 					</tr>
-					
-					
+
+
 					<tr id="locationRow">
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Location') ?> *</b><br/>
 							<span class="emphasis small"></span>
 						</td>
@@ -287,12 +287,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 									}
 									echo "<option $selected value='".$rowSelect['gibbonSpaceID']."'>".htmlPrep($rowSelect['name']).'</option>';
 								}
-								?>				
+								?>
 							</select>
 						</td>
 					</tr>
 					<tr id='locationDetailRow'>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Location Detail') ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Shelf, cabinet, sector, etc') ?></span>
 						</td>
@@ -300,18 +300,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 							<input name="locationDetail" id="locationDetail" maxlength=255 value="<?php echo $row['locationDetail'] ?>" type="text" class="standardWidth">
 						</td>
 					</tr>
-					
+
 					<!-- FIELDS & CONTROLS FOR OWNERSHIP -->
 					<script type="text/javascript">
 						$(document).ready(function(){
 							$("#ownershipType").change(function(){
 								if ($('select.ownershipType option:selected').val()=="School" ) {
 									$("#ownershipTypeIndividualRow").css("display","none");
-									$("#ownershipTypeSchoolRow").slideDown("fast", $("#ownershipTypeSchoolRow").css("display","table-row")); 
+									$("#ownershipTypeSchoolRow").slideDown("fast", $("#ownershipTypeSchoolRow").css("display","table-row"));
 								} else if ($('select.ownershipType option:selected').val()=="Individual" ) {
 									$("#ownershipTypeSchoolRow").css("display","none");
-									$("#ownershipTypeIndividualRow").slideDown("fast", $("#ownershipTypeIndividualRow").css("display","table-row")); 
-								} 
+									$("#ownershipTypeIndividualRow").slideDown("fast", $("#ownershipTypeIndividualRow").css("display","table-row"));
+								}
 								else {
 									$("#ownershipTypeIndividualRow").css("display","none");
 									$("#ownershipTypeSchoolRow").css("display","none");
@@ -320,7 +320,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 						});
 					</script>
 					<tr id='ownershipTypeRow'>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Ownership Type') ?></b><br/>
 							<span class="emphasis small"></span>
 						</td>
@@ -367,7 +367,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 					}
 					$selectContents .= '</optgroup>'; ?>
 					<tr id="ownershipTypeSchoolRow" <?php if ($row['ownershipType'] != 'School') { echo "style='display: none'"; } ?>>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Main User') ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Person the device is assigned to.') ?></span>
 						</td>
@@ -378,7 +378,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 						</td>
 					</tr>
 					<tr id="ownershipTypeIndividualRow" <?php if ($row['ownershipType'] != 'Individual') { echo "style='display: none'"; } ?>>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Owner') ?></b><br/>
 						</td>
 						<td class="right">
@@ -388,7 +388,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 						</td>
 					</tr>
 					<tr id="gibbonDepartmentIDRow">
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Department') ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Which department is responsible for the item?') ?></span>
 						</td>
@@ -415,7 +415,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 						</td>
 					</tr>
 					<tr id='bookableRow'>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Bookable As Facility?') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Can item be booked via Facility Booking in Timetable? Useful for laptop carts, etc.') ?></span>
 						</td>
@@ -427,7 +427,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 						</td>
 					</tr>
 					<tr id='borrowableRow'>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Borrowable?') ?> *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'Is item available for loan?') ?></span>
 						</td>
@@ -438,23 +438,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 							</select>
 						</td>
 					</tr>
-					
+
 					<!-- FIELDS & CONTROLS FOR IMAGE -->
 					<script type="text/javascript">
 						$(document).ready(function(){
 							$("#borrowable").change(function(){
 								if ($('select.borrowable option:selected').val()=="Y" ) {
 									$("#statusRowNotBorrowable").css("display","none");
-									$("#statusRowBorrowable").slideDown("fast", $("#statusRowBorrowable").css("display","table-row")); 
+									$("#statusRowBorrowable").slideDown("fast", $("#statusRowBorrowable").css("display","table-row"));
 								} else if ($('select.borrowable option:selected').val()=="N" ) {
 									$("#statusRowBorrowable").css("display","none");
-									$("#statusRowNotBorrowable").slideDown("fast", $("#statusRowNotBorrowable").css("display","table-row")); 
+									$("#statusRowNotBorrowable").slideDown("fast", $("#statusRowNotBorrowable").css("display","table-row"));
 								}
 							 });
 						});
 					</script>
 					<tr id='statusRowBorrowable' <?php if ($row['borrowable'] == 'N') { echo "style='display: none'"; } ?>>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Status') ?>? *</b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 						</td>
@@ -463,7 +463,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 						</td>
 					</tr>
 					<tr id="statusRowNotBorrowable" <?php if ($row['borrowable'] == 'Y') { echo "style='display: none'"; } ?>>
-						<td> 
+						<td>
 							<b>Status? *</b><br/>
 						</td>
 						<td class="right">
@@ -477,13 +477,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 							</select>
 						</td>
 					</tr>
-					
+
 					<script type="text/javascript">
 						$(document).ready(function(){
 							$("#replacement").change(function(){
 								if ($('#replacement option:selected').val()=="Y" ) {
-									$("#gibbonSchoolYearIDReplacementRow").slideDown("fast", $("#gibbonSchoolYearIDReplacementRow").css("display","table-row")); 
-									$("#replacementCostRow").slideDown("fast", $("#replacementCostRow").css("display","table-row")); 
+									$("#gibbonSchoolYearIDReplacementRow").slideDown("fast", $("#gibbonSchoolYearIDReplacementRow").css("display","table-row"));
+									$("#replacementCostRow").slideDown("fast", $("#replacementCostRow").css("display","table-row"));
 								}
 								else {
 									$("#gibbonSchoolYearIDReplacementRow").css("display","none");
@@ -493,7 +493,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 						});
 					</script>
 					<tr id='replacementRow'>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Plan Replacement?') ?> *</b><br/>
 						</td>
 						<td class="right">
@@ -504,7 +504,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 						</td>
 					</tr>
 					<tr id='gibbonSchoolYearIDReplacementRow' <?php if ($row['replacement'] == 'N') { echo "style='display: none'"; } ?>>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Replacement Year'); ?></b><br/>
 							<span class="emphasis small"><?php echo __($guid, 'When is this item scheduled for replacement.') ?></span>
 						</td>
@@ -526,12 +526,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 									}
 									echo "<option $selected value='".$rowSelect['gibbonSchoolYearID']."'>".htmlPrep($rowSelect['name']).'</option>';
 								}
-								?>				
+								?>
 							</select>
 						</td>
 					</tr>
 					<tr id='replacementCostRow' <?php if ($row['replacement'] == 'N') { echo "style='display: none'"; } ?>>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Replacement Cost'); ?></b><br/>
 							<span style="font-size: 90%">
 								<i>
@@ -554,7 +554,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 						</td>
 					</tr>
 					<tr id='physicalConditionRow'>
-						<td> 
+						<td>
 							<b><?php echo __($guid, 'Physical Condition') ?></b><br/>
 						</td>
 						<td class="right">
@@ -568,22 +568,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 							</select>
 						</td>
 					</tr>
-					
-					
+
+
 					<tr id='commentRow'>
-						<td colspan=2> 
-							<b><?php echo __($guid, 'Comments/Notes') ?></b> 
+						<td colspan=2>
+							<b><?php echo __($guid, 'Comments/Notes') ?></b>
 							<textarea name='comment' id='comment' rows=10 style='width: 300px'><?php echo htmlPreP($row['comment']) ?></textarea>
 						</td>
 					</tr>
-					
-					
+
+
 					<tr class='break' id='entryDisplayTitleRow'>
 						<td colspan=2>
 							<h3><?php echo __($guid, 'Type-Specific Details') ?></h3>
 						</td>
 					</tr>
-					
+
 					<?php
                     try {
                         $dataFields = array('gibbonLibraryTypeID' => $row['gibbonLibraryTypeID']);
