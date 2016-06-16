@@ -377,11 +377,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                             //COLOR ROW BY STATUS!
                             echo "<tr class=$rowNum>";
                     echo '<td>';
-                    if ($row['role'] == 'Student - Left') {
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$row['gibbonPersonID']."&subpage=Timetable'>".formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true).'</a>';
-                    } else {
-                        echo formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true);
-                    }
+                    echo formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true);
                     echo '</td>';
                     echo '<td>';
                     echo $row['email'];
