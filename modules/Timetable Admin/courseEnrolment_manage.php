@@ -158,36 +158,39 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                         $total = 0;
                         $active = 0;
                         $expected = 0;
-                        try {
-                            $dataClasses = array('gibbonCourseClassID' => $rowClass['gibbonCourseClassID']);
-                            $sqlClasses = "SELECT gibbonCourseClassPerson.* FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND gibbonCourseClassID=:gibbonCourseClassID AND (NOT role='Student - Left') AND (NOT role='Teacher - Left')";
-                            $resultClasses = $connection2->prepare($sqlClasses);
-                            $resultClasses->execute($dataClasses);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
-                        if ($resultClasses->rowCount() >= 0) {
-                            $active = $resultClasses->rowCount();
-                        }
 
                         try {
                             $dataClasses = array('gibbonCourseClassID' => $rowClass['gibbonCourseClassID']);
-                            $sqlClasses = "SELECT gibbonCourseClassPerson.* FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Expected' AND gibbonCourseClassID=:gibbonCourseClassID AND (NOT role='Student - Left') AND (NOT role='Teacher - Left')";
+                            $sqlClasses = "SELECT gibbonCourseClassPerson.role, gibbonPerson.status FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonCourseClassID=:gibbonCourseClassID";
                             $resultClasses = $connection2->prepare($sqlClasses);
                             $resultClasses->execute($dataClasses);
                         } catch (PDOException $e) {
                             echo "<div class='error'>".$e->getMessage().'</div>';
                         }
                         if ($resultClasses->rowCount() >= 0) {
-                            $expected = $resultClasses->rowCount();
+                            while( $participant = $resultClasses->fetch() ) {
+                                if ($participant['role'] != 'Student - Left' && $participant['role'] != 'Teacher - Left') {
+                                    if ($participant['status'] == 'Full') {
+                                        $active++;
+                                    } else if ($participant['status'] == 'Expected') {
+                                        $expected++;
+                                    }
+                                }
+
+                                $total++;
+                            }
                         }
+
                         echo $active;
                         echo '</td>';
                         echo '<td>';
                         echo $expected;
                         echo '</td>';
                         echo '<td>';
-                        echo '<b>'.($active + $expected).'<b/> ';
+                        echo '<b>'.$total.'<b/>';
+                        if ( ($active + $expected) < $total ) {
+                            echo ' <span style="font-style: italic; color: #c00" title="'.__($guid, "Includes participants marked as Left").'">*</span>';
+                        }
                         echo '</td>';
                         echo '<td>';
                         echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/courseEnrolment_manage_class_edit.php&gibbonCourseClassID='.$rowClass['gibbonCourseClassID'].'&gibbonCourseID='.$row['gibbonCourseID']."&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";

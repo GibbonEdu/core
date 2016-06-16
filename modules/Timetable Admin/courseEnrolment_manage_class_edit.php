@@ -334,6 +334,66 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 echo '</table>';
                 echo '</form>';
             }
+
+            try {
+                $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
+                $sql = "SELECT * FROM gibbonPerson, gibbonCourseClassPerson WHERE (gibbonPerson.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) AND gibbonCourseClassID=:gibbonCourseClassID AND status<>'Full' AND status<>'Expected' ORDER BY role DESC, surname, preferredName";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                echo "<div class='error'>".$e->getMessage().'</div>';
+            }
+
+            if ($result->rowCount() > 0) {
+
+                echo '<h2>';
+                echo __($guid, 'Past Participants');
+                echo '</h2>';
+
+                echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_manage_class_editProcessBulk.php'>";
+                echo "<table cellspacing='0' style='width: 100%'>";
+                echo "<tr class='head'>";
+                echo '<th>';
+                echo __($guid, 'Name');
+                echo '</th>';
+                echo '<th>';
+                echo __($guid, 'Email');
+                echo '</th>';
+                echo '<th>';
+                echo __($guid, 'Class Role');
+                echo '</th>';
+                echo '</tr>';
+
+                $count = 0;
+                $rowNum = 'odd';
+                while ($row = $result->fetch()) {
+                    if ($count % 2 == 0) {
+                        $rowNum = 'even';
+                    } else {
+                        $rowNum = 'odd';
+                    }
+                    ++$count;
+
+                            //COLOR ROW BY STATUS!
+                            echo "<tr class=$rowNum>";
+                    echo '<td>';
+                    if ($row['role'] == 'Student - Left') {
+                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$row['gibbonPersonID']."&subpage=Timetable'>".formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true).'</a>';
+                    } else {
+                        echo formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true);
+                    }
+                    echo '</td>';
+                    echo '<td>';
+                    echo $row['email'];
+                    echo '</td>';
+                    echo '<td>';
+                    echo $row['role'];
+                    echo '</td>';
+                    echo '</tr>';
+                }
+                echo '</table>';
+                echo '</form>';
+            }
         }
     }
 }
