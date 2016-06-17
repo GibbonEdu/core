@@ -420,4 +420,5 @@ UPDATE gibbonPerson SET dob=NULL WHERE dob='0000-00-00';end
 UPDATE gibbonAction SET category='Request Updates' WHERE name='Update Medical Form_family' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Data Updater');end
 ALTER TABLE `gibbonModule` CHANGE `description` `description` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;end
 UPDATE gibbonCountry SET iddCountryCode='853' WHERE printable_name='Macao';end
+UPDATE gibboni18n SET active='Y' WHERE code='nl_NL';end
 ";

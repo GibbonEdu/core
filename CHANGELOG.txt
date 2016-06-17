@@ -24,6 +24,7 @@ v12.0.00
 		PHP 7 compatible
 		Dashboards, with hooks, for staff and students
 		New workflows for advertising job openings, accepting and processing applications
+		Complete Dutch translation ("dank je" to Vic Mortelmans and Kris Clauw)
 
 	Changes With Important Notices
 		System: initial phase of object oriented PHP rewrite: expect errors during upload of the update.
@@ -58,7 +59,7 @@ v12.0.00
 		System: prevented non-login access to preferences
 
 	Tweaks & Bug Fixes
-		System: Added Danish, Persian, Brazilian Portugese, Dutch, Georgian and Hungarian as development languages
+		System: Added Danish, Persian, Brazilian Portugese, Georgian and Hungarian as development languages
 		System: improved MIME type checking on CSV import
 		System: fixed Google login PHP warnings
 		System: fixed login PHP warning
