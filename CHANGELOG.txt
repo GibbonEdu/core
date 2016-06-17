@@ -147,6 +147,7 @@ v12.0.00
 		Students: made country of birth and citizenship compulsory fields in Application Form
 		Students: fixed missing student image in some profile sub pages
 		Students: fixed width issue in privacy reportable
+		Students: fixed bug in auto-house-assign on application accept
 		System Admin: Improved version comparison in module updater
 		System Admin: Improved version comparison in non-login database updater
 		System Admin: fixed error when removing module with no $moduleTables in manifest.php
