@@ -97,6 +97,7 @@ v12.0.00
 		Finance: added ability (off by default) for students to view their own invoices
 		Finance: fixed PHP notice issues
 		Finance: added confirm on delete of budget members
+		Finance: fixed $fess issue
 		Form Groups: adjusted labels in Sort By select
 		Formal Assessment: fixed issue with View Classes menu not appearing for a user with no classes (e.g. admin)
 		Formal Assessment: fixed uploaded response file selector gigantism issue

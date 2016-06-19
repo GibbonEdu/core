@@ -111,7 +111,7 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                     $partialFail = false;
 
                     //Read & Organise Fees
-                    $fess = array();
+                    $fees = array();
                     $count = 0;
                     //Standard Fees
                     try {

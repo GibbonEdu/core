@@ -152,7 +152,7 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                         }
 
                         //Organise Fees
-                        $fess = array();
+                        $fees = array();
                         foreach ($order as $fee) {
                             $fees[$fee]['name'] = $_POST['name'.$fee];
                             $fees[$fee]['gibbonFinanceFeeCategoryID'] = $_POST['gibbonFinanceFeeCategoryID'.$fee];

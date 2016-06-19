@@ -65,7 +65,7 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
             $feeFail = false;
 
             //PROCESS FEES
-            $fess = array();
+            $fees = array();
             foreach ($order as $fee) {
                 $fees[$fee]['name'] = $_POST['name'.$fee];
                 $fees[$fee]['gibbonFinanceFeeCategoryID'] = $_POST['gibbonFinanceFeeCategoryID'.$fee];
@@ -199,7 +199,7 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                                     //Make and store unique code for confirmation. add it to email text.
                                     $key = '';
 
-                                    //Let's go! Create key, send the invite							
+                                    //Let's go! Create key, send the invite
                                     $continue = false;
                                     $count = 0;
                                     while ($continue == false and $count < 100) {
@@ -353,7 +353,7 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                                     //Make and store unique code for confirmation. add it to email text.
                                     $key = '';
 
-                                    //Let's go! Create key, send the invite							
+                                    //Let's go! Create key, send the invite
                                     $continue = false;
                                     $count = 0;
                                     while ($continue == false and $count < 100) {
