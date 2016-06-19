@@ -150,7 +150,8 @@ $_SESSION[$guid]['stringReplacement'] = array();
 													</td>
 													<td class="right">
 														<select name="code" id="code" class="standardWidth">
-															<option value='en_GB'>English - United Kingdom</option>
+															<option value='nl_NL'>Dutch - Nederland</option>
+															<option selected value='en_GB'>English - United Kingdom</option>
 															<option value='en_US'>English - United States</option>
 															<option value='es_ES'>Español</option>
 															<option value='fr_FR'>Français - France</option>
