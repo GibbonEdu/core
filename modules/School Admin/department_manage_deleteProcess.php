@@ -17,91 +17,71 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "../../functions.php" ;
-include "../../config.php" ;
+include '../../functions.php';
+include '../../config.php';
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new Gibbon\sqlConnection();
+$connection2 = $pdo->getConnection();
 
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$gibbonDepartmentID=$_POST["gibbonDepartmentID"] ;
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/department_manage_delete.php&gibbonDepartmentID=$gibbonDepartmentID" ;
-$URLDelete=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/department_manage.php" ;
+$gibbonDepartmentID = $_POST['gibbonDepartmentID'];
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/department_manage_delete.php&gibbonDepartmentID=$gibbonDepartmentID";
+$URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/department_manage.php';
 
-if (isActionAccessible($guid, $connection2, "/modules/School Admin/department_manage_delete.php")==FALSE) {
-	//Fail 0
-	$URL.="&deleteReturn=fail0" ;
-	header("Location: {$URL}");
+if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_manage_delete.php') == false) {
+    $URL .= '&return=error0';
+    header("Location: {$URL}");
+} else {
+    //Proceed!
+    if ($gibbonDepartmentID == '') {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+    } else {
+        try {
+            $data = array('gibbonDepartmentID' => $gibbonDepartmentID);
+            $sql = 'SELECT * FROM gibbonDepartment WHERE gibbonDepartmentID=:gibbonDepartmentID';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+            exit();
+        }
+
+        if ($result->rowCount() != 1) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+        } else {
+            //Write to database
+            try {
+                $data = array('gibbonDepartmentID' => $gibbonDepartmentID);
+                $sql = 'DELETE FROM gibbonDepartment WHERE gibbonDepartmentID=:gibbonDepartmentID';
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                $URL .= '&return=error2';
+                header("Location: {$URL}");
+                exit();
+            }
+
+            try {
+                $data = array('gibbonDepartmentID' => $gibbonDepartmentID);
+                $sql = 'DELETE FROM gibbonDepartmentStaff WHERE gibbonDepartmentID=:gibbonDepartmentID';
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                $URL .= '&return=error2';
+                header("Location: {$URL}");
+                exit();
+            }
+
+            $URLDelete = $URLDelete.'&return=success0';
+            header("Location: {$URLDelete}");
+        }
+    }
 }
-else {
-	//Proceed!
-	if ($gibbonDepartmentID=="") {
-		//Fail1
-		$URL.="&deleteReturn=fail1" ;
-		header("Location: {$URL}");
-	}
-	else {
-		try {
-			$data=array("gibbonDepartmentID"=>$gibbonDepartmentID); 
-			$sql="SELECT * FROM gibbonDepartment WHERE gibbonDepartmentID=:gibbonDepartmentID" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			//Fail2
-			$URL.="&deleteReturn=fail2" ;
-			header("Location: {$URL}");
-			break ;
-		}
-		
-		if ($result->rowCount()!=1) {
-			//Fail 2
-			$URL.="&deleteReturn=fail2" ;
-			header("Location: {$URL}");
-		}
-		else {
-			//Write to database
-			try {
-				$data=array("gibbonDepartmentID"=>$gibbonDepartmentID); 
-				$sql="DELETE FROM gibbonDepartment WHERE gibbonDepartmentID=:gibbonDepartmentID" ;
-				$result=$connection2->prepare($sql);
-				$result->execute($data);
-			}
-			catch(PDOException $e) { 
-				//Fail 2
-				$URL.="&deleteReturn=fail2" ;
-				header("Location: {$URL}");
-				break ;
-			}
-			
-			try {
-				$data=array("gibbonDepartmentID"=>$gibbonDepartmentID); 
-				$sql="DELETE FROM gibbonDepartmentStaff WHERE gibbonDepartmentID=:gibbonDepartmentID" ;
-				$result=$connection2->prepare($sql);
-				$result->execute($data);
-			}
-			catch(PDOException $e) { 
-				//Fail 2
-				$URL.="&deleteReturn=fail2" ;
-				header("Location: {$URL}");
-				break ;
-			}
-			
-			//Success 0
-			$URLDelete=$URLDelete . "&deleteReturn=success0" ;
-			header("Location: {$URLDelete}");
-		}
-	}
-}
-?>

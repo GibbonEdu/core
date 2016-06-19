@@ -17,66 +17,51 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "../../functions.php" ;
-include "../../config.php" ;
+include '../../functions.php';
+include '../../config.php';
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new Gibbon\sqlConnection();
+$connection2 = $pdo->getConnection();
 
-@session_start() ;
+@session_start();
 
 //Module includes
-include "./moduleFunctions.php" ;
+include './moduleFunctions.php';
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$action=$_POST["action"] ;
-$gibbonFinanceBudgetCycleID=$_GET["gibbonFinanceBudgetCycleID"] ;
+$action = $_POST['action'];
+$gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
 
-if ($gibbonFinanceBudgetCycleID=="" OR $action=="") {
-	print "Fatal error loading this page!" ;
+if ($gibbonFinanceBudgetCycleID == '' or $action == '') { echo 'Fatal error loading this page!';
+} else {
+    $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/expenses_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID";
+
+    if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.php') == false) {
+        $URL .= '&return=error0';
+        header("Location: {$URL}");
+    } else {
+        $gibbonFinanceExpenseIDs = $_POST['gibbonFinanceExpenseIDs'];
+        if (count($gibbonFinanceExpenseIDs) < 1) {
+            $URL .= '&return=error1';
+            header("Location: {$URL}");
+        } else {
+            $partialFail = false;
+            //Export
+            if ($action == 'export') {
+                $_SESSION[$guid]['financeExpenseExportIDs'] = $gibbonFinanceExpenseIDs;
+
+				include './expenses_manage_processBulkExportContents.php';
+
+                // THIS CODE HAS BEEN COMMENTED OUT, AS THE EXPORT RETURNS WITHOUT IT...NOT SURE WHY!
+                    //$URL.="&bulkReturn=success0" ;
+                //header("Location: {$URL}");
+            } else {
+                $URL .= '&return=error1';
+                header("Location: {$URL}");
+            }
+        }
+    }
 }
-else {
-	$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/expenses_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID" ;
-	
-	if (isActionAccessible($guid, $connection2, "/modules/Finance/expenses_manage.php")==FALSE) {
-		//Fail 0
-		$URL.="&bulkReturn=fail0" ;
-		header("Location: {$URL}");
-	}
-	else {
-		$gibbonFinanceExpenseIDs=$_POST["gibbonFinanceExpenseIDs"] ;
-		if (count($gibbonFinanceExpenseIDs)<1) {
-			$URL.="&bulkReturn=fail3" ;
-			header("Location: {$URL}");
-		}
-		else {
-			$partialFail=FALSE ;
-			//Export
-			if ($action=="export") {
-				$_SESSION[$guid]["financeExpenseExportIDs"]=$gibbonFinanceExpenseIDs ;
-				
-				$exp=new ExportToExcel();
-				$exp->exportWithPage($guid, "./expenses_manage_processBulkExportContents.php","invoices.xls", "&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID");
-				
-				// THIS CODE HAS BEEN COMMENTED OUT, AS THE EXPORT RETURNS WITHOUT IT...NOT SURE WHY!
-				//Success 0
-				//$URL.="&bulkReturn=success0" ;
-				//header("Location: {$URL}");
-			}
-			else {
-				$URL.="&bulkReturn=fail3" ;
-				header("Location: {$URL}");
-			}
-		}
-	}
-}
-?>

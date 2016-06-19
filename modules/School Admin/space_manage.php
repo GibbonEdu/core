@@ -17,172 +17,159 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+@session_start();
 
-if (isActionAccessible($guid, $connection2, "/modules/School Admin/space_manage.php")==FALSE) {
-	//Acess denied
-	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
-	print "</div>" ;
+if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage.php') == false) {
+    //Acess denied
+    echo "<div class='error'>";
+    echo __($guid, 'You do not have access to this action.');
+    echo '</div>';
+} else {
+    //Proceed!
+    echo "<div class='trail'>";
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Manage Facilities').'</div>';
+    echo '</div>';
+
+    if (isset($_GET['return'])) {
+        returnProcess($guid, $_GET['return'], null, null);
+    }
+
+    //Set pagination variable
+    $page = 1;
+    if (isset($_GET['page'])) {
+        $page = $_GET['page'];
+    }
+    if ((!is_numeric($page)) or $page < 1) {
+        $page = 1;
+    }
+
+    try {
+        $data = array();
+        $sql = 'SELECT * FROM gibbonSpace ORDER BY name';
+        $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        echo "<div class='error'>".$e->getMessage().'</div>';
+    }
+
+    echo "<div class='linkTop'>";
+    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/space_manage_add.php'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+    echo '</div>';
+
+    if ($result->rowCount() < 1) {
+        echo "<div class='error'>";
+        echo __($guid, 'There are no records to display.');
+        echo '</div>';
+    } else {
+        if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
+            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top');
+        }
+
+        echo "<table cellspacing='0' style='width: 100%'>";
+        echo "<tr class='head'>";
+        echo '<th>';
+        echo __($guid, 'Name');
+        echo '</th>';
+        echo '<th>';
+        echo __($guid, 'Type');
+        echo '</th>';
+        echo '<th>';
+        echo __($guid, 'Staff');
+        echo '</th>';
+        echo '<th>';
+        echo __($guid, 'Capacity');
+        echo '</th>';
+        echo '<th>';
+        echo __($guid, 'Facilities');
+        echo '</th>';
+        echo '<th>';
+        echo __($guid, 'Actions');
+        echo '</th>';
+        echo '</tr>';
+
+        $count = 0;
+        $rowNum = 'odd';
+        try {
+            $resultPage = $connection2->prepare($sqlPage);
+            $resultPage->execute($data);
+        } catch (PDOException $e) {
+            echo "<div class='error'>".$e->getMessage().'</div>';
+        }
+        while ($row = $resultPage->fetch()) {
+            if ($count % 2 == 0) {
+                $rowNum = 'even';
+            } else {
+                $rowNum = 'odd';
+            }
+            ++$count;
+
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$rowNum>";
+            echo '<td>';
+            echo $row['name'];
+            echo '</td>';
+            echo '<td>';
+            echo $row['type'];
+            echo '</td>';
+            echo '<td>';
+            try {
+                $dataStaff = array('gibbonSpaceID' => $row['gibbonSpaceID']);
+                $sqlStaff = "SELECT surname, preferredName FROM gibbonPerson JOIN gibbonSpace ON (gibbonPerson.gibbonPersonID=gibbonSpace.gibbonPersonID1 OR gibbonPerson.gibbonPersonID=gibbonSpace.gibbonPersonID2) WHERE gibbonSpaceID=:gibbonSpaceID AND status='Full' ORDER BY surname, preferredName";
+                $resultStaff = $connection2->prepare($sqlStaff);
+                $resultStaff->execute($dataStaff);
+            } catch (PDOException $e) {
+                echo "<div class='error'>".$e->getMessage().'</div>';
+            }
+            while ($rowStaff = $resultStaff->fetch()) {
+                echo formatName('', $rowStaff['preferredName'], $rowStaff['surname'], 'Staff', true, true).'<br/>';
+            }
+            echo '</td>';
+            echo '<td>';
+            echo $row['capacity'];
+            echo '</td>';
+            echo '<td>';
+            if ($row['computer'] == 'Y') {
+                echo __($guid, 'Teaching computer').'<br/>';
+            }
+            if ($row['computerStudent'] > 0) {
+                echo $row['computerStudent'].' student computers<br/>';
+            }
+            if ($row['projector'] == 'Y') {
+                echo __($guid, 'Projector').'<br/>';
+            }
+            if ($row['tv'] == 'Y') {
+                echo __($guid, 'TV').'<br/>';
+            }
+            if ($row['dvd'] == 'Y') {
+                echo __($guid, 'DVD Player').'<br/>';
+            }
+            if ($row['hifi'] == 'Y') {
+                echo __($guid, 'Hifi').'<br/>';
+            }
+            if ($row['speakers'] == 'Y') {
+                echo __($guid, 'Speakers').'<br/>';
+            }
+            if ($row['iwb'] == 'Y') {
+                echo __($guid, 'Interactive White Board').'<br/>';
+            }
+            if ($row['phoneInternal'] != '') {
+                echo __($guid, 'Extension Number').': '.$row['phoneInternal'].'<br/>';
+            }
+            if ($row['phoneExternal'] != '') {
+                echo __($guid, 'Phone Number').': '.$row['phoneExternal'].'<br/>';
+            }
+            echo '</td>';
+            echo '<td>';
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/space_manage_edit.php&gibbonSpaceID='.$row['gibbonSpaceID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/space_manage_delete.php&gibbonSpaceID='.$row['gibbonSpaceID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+            echo '</td>';
+            echo '</tr>';
+        }
+        echo '</table>';
+
+        if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
+            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom');
+        }
+    }
 }
-else {
-	//Proceed!
-	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Manage Spaces') . "</div>" ;
-	print "</div>" ;
-	
-	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-	$deleteReturnMessage="" ;
-	$class="error" ;
-	if (!($deleteReturn=="")) {
-		if ($deleteReturn=="success0") {
-			$deleteReturnMessage=_("Your request was completed successfully.") ;		
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $deleteReturnMessage;
-		print "</div>" ;
-	} 
-	
-	//Set pagination variable
-	$page=1 ; if (isset($_GET["page"])) { $page=$_GET["page"] ; }
-	if ((!is_numeric($page)) OR $page<1) {
-		$page=1 ;
-	}
-	
-	try {
-		$data=array(); 
-		$sql="SELECT * FROM gibbonSpace ORDER BY name" ; 
-		$sqlPage=$sql . " LIMIT " . $_SESSION[$guid]["pagination"] . " OFFSET " . (($page-1)*$_SESSION[$guid]["pagination"]) ;
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { 
-		print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-	}
-	
-	print "<div class='linkTop'>" ;
-	print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/space_manage_add.php'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
-	print "</div>" ;
-	
-	if ($result->rowCount()<1) {
-		print "<div class='error'>" ;
-		print _("There are no records to display.") ;
-		print "</div>" ;
-	}
-	else {
-		if ($result->rowCount()>$_SESSION[$guid]["pagination"]) {
-			printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top") ;
-		}
-	
-		print "<table cellspacing='0' style='width: 100%'>" ;
-			print "<tr class='head'>" ;
-				print "<th>" ;
-					print _("Name") ;
-				print "</th>" ;
-				print "<th>" ;
-					print _("Type") ;
-				print "</th>" ;
-				print "<th>" ;
-					print _("Staff") ;
-				print "</th>" ;
-				print "<th>" ;
-					print _("Capacity") ;
-				print "</th>" ;
-				print "<th>" ;
-					print _("Facilities") ;
-				print "</th>" ;
-				print "<th>" ;
-					print _("Actions") ;
-				print "</th>" ;
-			print "</tr>" ;
-			
-			$count=0;
-			$rowNum="odd" ;
-			try {
-				$resultPage=$connection2->prepare($sqlPage);
-				$resultPage->execute($data);
-			}
-			catch(PDOException $e) { 
-				print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-			}
-			while ($row=$resultPage->fetch()) {
-				if ($count%2==0) {
-					$rowNum="even" ;
-				}
-				else {
-					$rowNum="odd" ;
-				}
-				$count++ ;
-				
-				//COLOR ROW BY STATUS!
-				print "<tr class=$rowNum>" ;
-					print "<td>" ;
-						print $row["name"] ;
-					print "</td>" ;
-					print "<td>" ;
-						print $row["type"] ;
-					print "</td>" ;
-					print "<td>" ;
-						try {
-							$dataStaff=array("gibbonSpaceID"=>$row["gibbonSpaceID"]); 
-							$sqlStaff="SELECT surname, preferredName FROM gibbonPerson JOIN gibbonSpace ON (gibbonPerson.gibbonPersonID=gibbonSpace.gibbonPersonID1 OR gibbonPerson.gibbonPersonID=gibbonSpace.gibbonPersonID2) WHERE gibbonSpaceID=:gibbonSpaceID AND status='Full' ORDER BY surname, preferredName" ;
-							$resultStaff=$connection2->prepare($sqlStaff);
-							$resultStaff->execute($dataStaff);
-						}
-						catch(PDOException $e) { 
-							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-						}
-						while ($rowStaff=$resultStaff->fetch()) {
-							print formatName("", $rowStaff["preferredName"], $rowStaff["surname"], "Staff", true, true) . "<br/>" ;
-						}
-					print "</td>" ;
-					print "<td>" ;
-						print $row["capacity"] ;
-					print "</td>" ;
-					print "<td>" ;
-						if ($row["computer"]=="Y") {
-							print _("Teaching computer") . "<br/>" ;
-						}
-						if ($row["computerStudent"]>0) {
-							print $row["computerStudent"] . " student computers<br/>" ;
-						}
-						if ($row["projector"]=="Y") {
-							print _("Projector") . "<br/>" ;
-						}
-						if ($row["tv"]=="Y") {
-							print _("TV") . "<br/>" ;
-						}
-						if ($row["dvd"]=="Y") {
-							print _("DVD Player") . "<br/>" ;
-						}
-						if ($row["hifi"]=="Y") {
-							print _("Hifi") . "<br/>" ;
-						}
-						if ($row["speakers"]=="Y") {
-							print _("Speakers") . "<br/>" ;
-						}
-						if ($row["iwb"]=="Y") {
-							print _("Interactive White Board") . "<br/>" ;
-						}
-						if ($row["phoneInternal"]!="") {
-							print _("Extension Number") . ": " . $row["phoneInternal"] . "<br/>" ;
-						}
-						if ($row["phoneExternal"]!="") {
-							print _("Phone Number") . ": " . $row["phoneExternal"] . "<br/>" ;
-						}
-					print "</td>" ;
-					print "<td>" ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/space_manage_edit.php&gibbonSpaceID=" . $row["gibbonSpaceID"] . "'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/space_manage_delete.php&gibbonSpaceID=" . $row["gibbonSpaceID"] . "'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
-					print "</td>" ;
-				print "</tr>" ;
-			}
-		print "</table>" ;
-		
-		if ($result->rowCount()>$_SESSION[$guid]["pagination"]) {
-			printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "bottom") ;
-		}
-	}
-}
-?>

@@ -17,119 +17,98 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "../../functions.php" ;
-include "../../config.php" ;
+include '../../functions.php';
+include '../../config.php';
 
-include "./moduleFunctions.php" ;
+include './moduleFunctions.php';
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new Gibbon\sqlConnection();
+$connection2 = $pdo->getConnection();
 
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$gibbonFinanceInvoiceeID=$_GET["gibbonFinanceInvoiceeID"] ;
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/invoicees_manage_edit.php&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&search=" . $_GET["search"] . "&allUsers=" . $_GET["allUsers"] ;
+$gibbonFinanceInvoiceeID = $_GET['gibbonFinanceInvoiceeID'];
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/invoicees_manage_edit.php&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&search=".$_GET['search'].'&allUsers='.$_GET['allUsers'];
 
-if (isActionAccessible($guid, $connection2, "/modules/Finance/invoicees_manage_edit.php")==FALSE) {
-	//Fail 0
-	$URL.="&updateReturn=fail0" ;
-	header("Location: {$URL}");
+if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_edit.php') == false) {
+    $URL .= '&return=error0';
+    header("Location: {$URL}");
+} else {
+    //Proceed!
+    //Check if school year specified
+    if ($gibbonFinanceInvoiceeID == '') {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+    } else {
+        try {
+            $data = array('gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID);
+            $sql = 'SELECT * FROM gibbonFinanceInvoicee WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+            exit();
+        }
+
+        if ($result->rowCount() != 1) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+        } else {
+            //Proceed!
+            $invoiceTo = $_POST['invoiceTo'];
+            if ($invoiceTo == 'Company') {
+                $companyName = $_POST['companyName'];
+                $companyContact = $_POST['companyContact'];
+                $companyAddress = $_POST['companyAddress'];
+                $companyEmail = $_POST['companyEmail'];
+                $companyCCFamily = $_POST['companyCCFamily'];
+                $companyPhone = $_POST['companyPhone'];
+                $companyAll = $_POST['companyAll'];
+                $gibbonFinanceFeeCategoryIDList = null;
+                if ($companyAll == 'N') {
+                    $gibbonFinanceFeeCategoryIDList == '';
+                    $gibbonFinanceFeeCategoryIDArray = $_POST['gibbonFinanceFeeCategoryIDList'];
+                    if (count($gibbonFinanceFeeCategoryIDArray) > 0) {
+                        foreach ($gibbonFinanceFeeCategoryIDArray as $gibbonFinanceFeeCategoryID) {
+                            $gibbonFinanceFeeCategoryIDList .= $gibbonFinanceFeeCategoryID.',';
+                        }
+                        $gibbonFinanceFeeCategoryIDList = substr($gibbonFinanceFeeCategoryIDList, 0, -1);
+                    }
+                }
+            } else {
+                $companyName = null;
+                $companyContact = null;
+                $companyAddress = null;
+                $companyEmail = null;
+                $companyCCFamily = null;
+                $companyPhone = null;
+                $companyAll = null;
+                $gibbonFinanceFeeCategoryIDList = null;
+            }
+            if ($invoiceTo == '') {
+                $URL .= '&return=error1';
+                header("Location: {$URL}");
+            } else {
+                //Write to database
+                try {
+                    $data = array('invoiceTo' => $invoiceTo, 'companyName' => $companyName, 'companyContact' => $companyContact, 'companyAddress' => $companyAddress, 'companyEmail' => $companyEmail, 'companyCCFamily' => $companyCCFamily, 'companyPhone' => $companyPhone, 'companyAll' => $companyAll, 'gibbonFinanceFeeCategoryIDList' => $gibbonFinanceFeeCategoryIDList, 'gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID);
+                    $sql = 'UPDATE gibbonFinanceInvoicee SET invoiceTo=:invoiceTo, companyName=:companyName, companyContact=:companyContact, companyAddress=:companyAddress, companyEmail=:companyEmail, companyCCFamily=:companyCCFamily, companyPhone=:companyPhone, companyAll=:companyAll, gibbonFinanceFeeCategoryIDList=:gibbonFinanceFeeCategoryIDList WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID';
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    $URL .= '&return=error2';
+                    header("Location: {$URL}");
+                    exit();
+                }
+
+                $URL .= '&return=success0';
+                header("Location: {$URL}");
+            }
+        }
+    }
 }
-else {
-	//Proceed!
-	//Check if school year specified
-	if ($gibbonFinanceInvoiceeID=="") {
-		//Fail1
-		$URL.="&updateReturn=fail1" ;
-		header("Location: {$URL}");
-	}
-	else {
-		try {
-			$data=array("gibbonFinanceInvoiceeID"=>$gibbonFinanceInvoiceeID); 
-			$sql="SELECT * FROM gibbonFinanceInvoicee WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			//Fail2
-			$URL.="&deleteReturn=fail2" ;
-			header("Location: {$URL}");
-			break ;
-		}
-	
-		if ($result->rowCount()!=1) {
-			//Fail 2
-			$URL.="&updateReturn=fail2" ;
-			header("Location: {$URL}");
-		}
-		else {
-			//Proceed!
-			$invoiceTo=$_POST["invoiceTo"] ;
-			if ($invoiceTo=="Company") {
-				$companyName=$_POST["companyName"] ;
-				$companyContact=$_POST["companyContact"] ;
-				$companyAddress=$_POST["companyAddress"] ;
-				$companyEmail=$_POST["companyEmail"] ;
-				$companyCCFamily=$_POST["companyCCFamily"] ;
-				$companyPhone=$_POST["companyPhone"] ;
-				$companyAll=$_POST["companyAll"] ;
-				$gibbonFinanceFeeCategoryIDList=NULL ;
-				if ($companyAll=="N") {
-					$gibbonFinanceFeeCategoryIDList=="" ;
-					$gibbonFinanceFeeCategoryIDArray=$_POST["gibbonFinanceFeeCategoryIDList"] ;
-					if (count($gibbonFinanceFeeCategoryIDArray)>0) {
-						foreach ($gibbonFinanceFeeCategoryIDArray AS $gibbonFinanceFeeCategoryID) {
-							$gibbonFinanceFeeCategoryIDList.=$gibbonFinanceFeeCategoryID . "," ;
-						}
-						$gibbonFinanceFeeCategoryIDList=substr($gibbonFinanceFeeCategoryIDList,0,-1) ;
-					}
-				}
-			}
-			else {
-				$companyName=NULL ;
-				$companyContact=NULL ;
-				$companyAddress=NULL ;
-				$companyEmail=NULL ;
-				$companyCCFamily=NULL ;
-				$companyPhone=NULL ;
-				$companyAll=NULL ;
-				$gibbonFinanceFeeCategoryIDList=NULL ;
-			}
-			if ($invoiceTo=="") {
-				//Fail 3
-				$URL.="&updateReturn=fail3" ;
-				header("Location: {$URL}");
-			}
-			else {
-				//Write to database
-				try {
-					$data=array("invoiceTo"=>$invoiceTo, "companyName"=>$companyName, "companyContact"=>$companyContact, "companyAddress"=>$companyAddress, "companyEmail"=>$companyEmail, "companyCCFamily"=>$companyCCFamily, "companyPhone"=>$companyPhone, "companyAll"=>$companyAll, "gibbonFinanceFeeCategoryIDList"=>$gibbonFinanceFeeCategoryIDList, "gibbonFinanceInvoiceeID"=>$gibbonFinanceInvoiceeID); 
-					$sql="UPDATE gibbonFinanceInvoicee SET invoiceTo=:invoiceTo, companyName=:companyName, companyContact=:companyContact, companyAddress=:companyAddress, companyEmail=:companyEmail, companyCCFamily=:companyCCFamily, companyPhone=:companyPhone, companyAll=:companyAll, gibbonFinanceFeeCategoryIDList=:gibbonFinanceFeeCategoryIDList WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { 
-					//Fail 2
-					$URL.="&addReturn=fail2" ;
-					header("Location: {$URL}");
-					break ;
-				}
-				
-				//Success 0
-				$URL.="&updateReturn=success0" ;
-				header("Location: {$URL}");
-			}
-		}
-	}
-}
-?>

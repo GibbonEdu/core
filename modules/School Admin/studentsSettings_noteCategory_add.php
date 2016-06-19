@@ -17,55 +17,37 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+@session_start();
 
-if (isActionAccessible($guid, $connection2, "/modules/School Admin/studentsSettings_noteCategory_add.php")==FALSE) {
-	//Acess denied
-	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
-	print "</div>" ;
-}
-else {
-	//Proceed!
-	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/studentsSettings.php'>" . _('Manage Students Settings') . "</a> > </div><div class='trailEnd'>" . _('Add Note Category') . "</div>" ;
-	print "</div>" ;
-	
-	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
-	$addReturnMessage="" ;
-	$class="error" ;
-	if (!($addReturn=="")) {
-		if ($addReturn=="fail0") {
-			$addReturnMessage=_("Your request failed because you do not have access to this action.") ;	
-		}
-		else if ($addReturn=="fail2") {
-			$addReturnMessage=_("Your request failed due to a database error.") ;	
-		}
-		else if ($addReturn=="fail3") {
-			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($addReturn=="fail4") {
-			$addReturnMessage=_("Your request failed because some inputs did not meet a requirement for uniqueness.") ;	
-		}
-		else if ($addReturn=="success0") {
-			$addReturnMessage=_("Your request was completed successfully. You can now add another record if you wish.") ;	
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $addReturnMessage;
-		print "</div>" ;
-	} 
-	
-	?>
-	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/studentsSettings_noteCategory_addProcess.php" ?>">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+if (isActionAccessible($guid, $connection2, '/modules/School Admin/studentsSettings_noteCategory_add.php') == false) {
+    //Acess denied
+    echo "<div class='error'>";
+    echo __($guid, 'You do not have access to this action.');
+    echo '</div>';
+} else {
+    //Proceed!
+    echo "<div class='trail'>";
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/studentsSettings.php'>".__($guid, 'Manage Students Settings')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Note Category').'</div>';
+    echo '</div>';
+
+    $editLink = '';
+    if (isset($_GET['editID'])) {
+        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/School Admin/studentsSettings_noteCategory_edit.php&gibbonStudentNoteCategoryID='.$_GET['editID'];
+    }
+    if (isset($_GET['return'])) {
+        returnProcess($guid, $_GET['return'], $editLink, null);
+    }
+
+    ?>
+	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/studentsSettings_noteCategory_addProcess.php' ?>">
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr>
 				<td style='width: 275px'> 
-					<b><?php print _('Name') ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php print _('Must be unique.') ; ?></i></span>
+					<b><?php echo __($guid, 'Name') ?> *</b><br/>
+					<span class="emphasis small"><?php echo __($guid, 'Must be unique.'); ?></span>
 				</td>
 				<td class="right">
-					<input name="name" id="name" maxlength=30 value="" type="text" style="width: 300px">
+					<input name="name" id="name" maxlength=30 value="" type="text" class="standardWidth">
 					<script type="text/javascript">
 						var name2=new LiveValidation('name');
 						name2.add(Validate.Presence);
@@ -74,36 +56,37 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Active') ?> *</b><br/>
-					<span style="font-size: 90%"><i></i></span>
+					<b><?php echo __($guid, 'Active') ?> *</b><br/>
+					<span class="emphasis small"></span>
 				</td>
 				<td class="right">
-					<select name="active" id="active" style="width: 302px">
-						<option value="Y"><?php print _('Yes') ?></option>
-						<option value="N"><?php print _('No') ?></option>
+					<select name="active" id="active" class="standardWidth">
+						<option value="Y"><?php echo __($guid, 'Yes') ?></option>
+						<option value="N"><?php echo __($guid, 'No') ?></option>
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Template') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('HTML code to be inserted into blank note.') ?></i></span>
+					<b><?php echo __($guid, 'Template') ?></b><br/>
+					<span class="emphasis small"><?php echo __($guid, 'HTML code to be inserted into blank note.') ?></span>
 				</td>
 				<td class="right">
-					<textarea name="template" id="template" rows=8 style="width: 300px"></textarea>
+					<textarea name="template" id="template" rows=8 class="standardWidth"></textarea>
 				</td>
 			</tr>
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 				</td>
 				<td class="right">
-					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>
 	</form>
 	<?php
+
 }
 ?>

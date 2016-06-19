@@ -17,108 +17,95 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "../../functions.php" ;
-include "../../config.php" ;
+include '../../functions.php';
+include '../../config.php';
 
-include "./moduleFunctions.php" ;
+include './moduleFunctions.php';
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new Gibbon\sqlConnection();
+$connection2 = $pdo->getConnection();
 
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$id=$_GET["id"] ;
-$mode=NULL ;
-if (isset($_GET["mode"])) {
-	$mode=$_GET["mode"] ;
+$id = $_GET['id'];
+$mode = null;
+if (isset($_GET['mode'])) {
+    $mode = $_GET['mode'];
 }
-if ($mode=="") {
-	$mode="masterAdd" ;
+if ($mode == '') {
+    $mode = 'masterAdd';
 }
-$gibbonUnitBlockID=NULL ;
-if (isset($_GET["gibbonUnitBlockID"])) {
-	$gibbonUnitBlockID=$_GET["gibbonUnitBlockID"] ;
+$gibbonUnitBlockID = null;
+if (isset($_GET['gibbonUnitBlockID'])) {
+    $gibbonUnitBlockID = $_GET['gibbonUnitBlockID'];
 }
 
 //IF UNIT DOES NOT CONTAIN HYPHEN, IT IS A GIBBON UNIT
-$gibbonUnitID=NULL ;
-if (isset($_GET["gibbonUnitID"])) {
-	$gibbonUnitID=$_GET["gibbonUnitID"] ;
-} 
-if (strpos($gibbonUnitID,"-")==FALSE) {
-	$hooked=FALSE ;
+$gibbonUnitID = null;
+if (isset($_GET['gibbonUnitID'])) {
+    $gibbonUnitID = $_GET['gibbonUnitID'];
 }
-else {
-	$hooked=TRUE ;
-	$gibbonHookIDToken=substr($gibbonUnitID,11) ;
-	$gibbonUnitIDToken=substr($gibbonUnitID,0,10) ;
-}
-
-if ($gibbonUnitBlockID!="") {
-	try {
-		if ($hooked==FALSE) {
-			$data=array("gibbonUnitBlockID"=>$gibbonUnitBlockID); 
-			$sql="SELECT * FROM gibbonUnitBlock WHERE gibbonUnitBlockID=:gibbonUnitBlockID" ;
-		}
-		else {
-			try {
-				$dataHooks=array("gibbonHookID"=>$gibbonHookIDToken); 
-				$sqlHooks="SELECT * FROM gibbonHook WHERE type='Unit' AND gibbonHookID=:gibbonHookID ORDER BY name" ;
-				$resultHooks=$connection2->prepare($sqlHooks);
-				$resultHooks->execute($dataHooks);
-			}
-			catch(PDOException $e) { }
-			if ($resultHooks->rowCount()==1) {
-				$rowHooks=$resultHooks->fetch() ;
-				$hookOptions=unserialize($rowHooks["options"]) ;
-				if ($hookOptions["unitTable"]!="" AND $hookOptions["unitIDField"]!="" AND $hookOptions["unitCourseIDField"]!="" AND $hookOptions["unitNameField"]!="" AND $hookOptions["unitDescriptionField"]!="" AND $hookOptions["classLinkTable"]!="" AND $hookOptions["classLinkJoinFieldUnit"]!="" AND $hookOptions["classLinkJoinFieldClass"]!="" AND $hookOptions["classLinkIDField"]!="") {
-					$data=array("unitSmartBlockIDField"=>$gibbonUnitBlockID); 
-					$sql="SELECT * FROM " . $hookOptions["unitSmartBlockTable"] . " WHERE " . $hookOptions["unitSmartBlockIDField"] . "=:unitSmartBlockIDField" ;
-				}
-			}
-		}
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { 
-		print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-	}
-	if ($result->rowCount()==1) {
-		$row=$result->fetch() ;
-		if ($hooked==FALSE) {
-			$title=$row["title"] ;
-			$type=$row["type"] ;
-			$length=$row["length"] ;
-			$contents=$row["contents"] ;
-			$teachersNotes=$row["teachersNotes"] ;
-		}
-		else {
-			$title=$row[$hookOptions["unitSmartBlockTitleField"]] ;
-			$type=$row[$hookOptions["unitSmartBlockTypeField"]] ;
-			$length=$row[$hookOptions["unitSmartBlockLengthField"]] ;
-			$contents=$row[$hookOptions["unitSmartBlockContentsField"]] ;
-			$teachersNotes=$row[$hookOptions["unitSmartBlockTeachersNotesField"]] ;
-		}
-	}
-}
-else {
-	$title="" ;
-	$type="" ;
-	$length="" ;
-	$contents=getSettingByScope($connection2, "Planner", "smartBlockTemplate" ) ; 
-	$teachersNotes="" ;
-
+if (strpos($gibbonUnitID, '-') == false) {
+    $hooked = false;
+} else {
+    $hooked = true;
+    $gibbonHookIDToken = substr($gibbonUnitID, 11);
+    $gibbonUnitIDToken = substr($gibbonUnitID, 0, 10);
 }
 
-makeBlock($guid,  $connection2, $id, $mode, $title, $type, $length, $contents, "N", $gibbonUnitBlockID, "", $teachersNotes, FALSE ) ;
-?>
+if ($gibbonUnitBlockID != '') {
+    try {
+        if ($hooked == false) {
+            $data = array('gibbonUnitBlockID' => $gibbonUnitBlockID);
+            $sql = 'SELECT * FROM gibbonUnitBlock WHERE gibbonUnitBlockID=:gibbonUnitBlockID';
+        } else {
+            try {
+                $dataHooks = array('gibbonHookID' => $gibbonHookIDToken);
+                $sqlHooks = "SELECT * FROM gibbonHook WHERE type='Unit' AND gibbonHookID=:gibbonHookID ORDER BY name";
+                $resultHooks = $connection2->prepare($sqlHooks);
+                $resultHooks->execute($dataHooks);
+            } catch (PDOException $e) {
+            }
+            if ($resultHooks->rowCount() == 1) {
+                $rowHooks = $resultHooks->fetch();
+                $hookOptions = unserialize($rowHooks['options']);
+                if ($hookOptions['unitTable'] != '' and $hookOptions['unitIDField'] != '' and $hookOptions['unitCourseIDField'] != '' and $hookOptions['unitNameField'] != '' and $hookOptions['unitDescriptionField'] != '' and $hookOptions['classLinkTable'] != '' and $hookOptions['classLinkJoinFieldUnit'] != '' and $hookOptions['classLinkJoinFieldClass'] != '' and $hookOptions['classLinkIDField'] != '') {
+                    $data = array('unitSmartBlockIDField' => $gibbonUnitBlockID);
+                    $sql = 'SELECT * FROM '.$hookOptions['unitSmartBlockTable'].' WHERE '.$hookOptions['unitSmartBlockIDField'].'=:unitSmartBlockIDField';
+                }
+            }
+        }
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        echo "<div class='error'>".$e->getMessage().'</div>';
+    }
+    if ($result->rowCount() == 1) {
+        $row = $result->fetch();
+        if ($hooked == false) {
+            $title = $row['title'];
+            $type = $row['type'];
+            $length = $row['length'];
+            $contents = $row['contents'];
+            $teachersNotes = $row['teachersNotes'];
+        } else {
+            $title = $row[$hookOptions['unitSmartBlockTitleField']];
+            $type = $row[$hookOptions['unitSmartBlockTypeField']];
+            $length = $row[$hookOptions['unitSmartBlockLengthField']];
+            $contents = $row[$hookOptions['unitSmartBlockContentsField']];
+            $teachersNotes = $row[$hookOptions['unitSmartBlockTeachersNotesField']];
+        }
+    }
+} else {
+    $title = '';
+    $type = '';
+    $length = '';
+    $contents = getSettingByScope($connection2, 'Planner', 'smartBlockTemplate');
+    $teachersNotes = '';
+}
+
+makeBlock($guid,  $connection2, $id, $mode, $title, $type, $length, $contents, 'N', $gibbonUnitBlockID, '', $teachersNotes, false);

@@ -17,52 +17,37 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "../../functions.php" ;
-include "../../config.php" ;
+include '../../functions.php';
+include '../../config.php';
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new Gibbon\sqlConnection();
+$connection2 = $pdo->getConnection();
 
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$gibbonCourseClassID=$_GET["gibbonCourseClassID"] ;
-$return=$_GET["return"] ;
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Markbook/$return" ;
+$gibbonCourseClassID = $_GET['gibbonCourseClassID'];
+$return = $_GET['return'];
+$URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Markbook/$return";
 
-if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_view.php")==FALSE) {
-	//Fail 0
-	$URL.="&exportReturn=fail0" ;
-	header("Location: {$URL}");
+if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php') == false) {
+    $URL .= '&return=error0';
+    header("Location: {$URL}");
+} else {
+    try {
+        $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
+        $sql = 'SELECT * FROM gibbonMarkbookColumn JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $URL .= '&return=error0';
+        header("Location: {$URL}");
+        exit();
+    }
+
+    //Proceed!
+	include './markbook_viewExportAllContents.php';
 }
-else {
-	try {
-		$data=array("gibbonCourseClassID"=>$gibbonCourseClassID); 
-		$sql="SELECT * FROM gibbonMarkbookColumn JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID" ;
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { 
-		//Fail 0
-		$URL.="&exportReturn=fail0" ;
-		header("Location: {$URL}");
-		break ;
-	}
-	
-	//Proceed!
-	$exp=new ExportToExcel();
-	
-	$exp=new ExportToExcel();
-	$exp->exportWithPage($guid, "./markbook_viewExportAllContents.php","markbookAll.xls", $gibbonCourseClassID);
-	
-}
-?>

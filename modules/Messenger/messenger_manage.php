@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -30,48 +30,48 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print _("The highest grouped action cannot be determined.") ;
+		print __($guid, "The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
 		//Proceed!
 		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Manage Messages') . "</div>" ;
+		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Manage Messages') . "</div>" ;
 		print "</div>" ;
-		
+
 		if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
 		$deleteReturnMessage="" ;
 		$class="error" ;
 		if (!($deleteReturn=="")) {
 			if ($deleteReturn=="success0") {
-				$deleteReturnMessage=_("Your request was completed successfully.") ;		
+				$deleteReturnMessage=__($guid, "Your request was completed successfully.") ;
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;
 				print $deleteReturnMessage;
 			print "</div>" ;
-		} 
-		
+		}
+
 		print "<h2>" ;
-		print _("Search") ;
+		print __($guid, "Search") ;
 		print "</h2>" ;
-		
+
 		$search=NULL;
 		if (isset($_GET["search"])) {
 			$search=$_GET["search"] ;
 		}
-		
+
 		?>
 		<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-			<table class='noIntBorder' cellspacing='0' style="width: 100%">	
+			<table class='noIntBorder' cellspacing='0' style="width: 100%">
 				<tr><td style="width: 30%"></td><td></td></tr>
 				<tr>
-					<td> 
-						<b><?php print _('Search In') ?></b><br/>
-						<span style="font-size: 90%"><i><?php print _('Subject, body.') ?></i></span>
+					<td>
+						<b><?php print __($guid, 'Search In') ?></b><br/>
+						<span class="emphasis small"><?php print __($guid, 'Subject, body.') ?></span>
 					</td>
 					<td class="right">
-						<input name="search" id="search" maxlength=20 value="<?php print $search ?>" type="text" style="width: 300px">
+						<input name="search" id="search" maxlength=20 value="<?php print $search ?>" type="text" class="standardWidth">
 					</td>
 				</tr>
 				<tr>
@@ -79,116 +79,116 @@ else {
 						<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/messenger_manage.php">
 						<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 						<?php
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage.php'>" . _('Clear Search') . "</a>" ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage.php'>" . __($guid, 'Clear Search') . "</a>" ;
 						?>
-						<input type="submit" value="<?php print _("Submit") ; ?>">
+						<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 					</td>
 				</tr>
 			</table>
 		</form>
 		<?php
-		
+
 		print "<h2>" ;
-		print _("Messages") ;
+		print __($guid, "Messages") ;
 		print "</h2>" ;
-		
+
 		//Set pagination variable
 		$page=1 ; if (isset($_GET["page"])) { $page=$_GET["page"] ; }
 		if ((!is_numeric($page)) OR $page<1) {
 			$page=1 ;
 		}
-		
+
 		try {
 			if ($highestAction=="Manage Messages_all") {
 				if ($search=="") {
-					$data=array(); 
-					$sql="SELECT gibbonMessenger.*, title, surname, preferredName, category FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) ORDER BY timestamp DESC" ; 
+					$data=array();
+					$sql="SELECT gibbonMessenger.*, title, surname, preferredName, category FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) ORDER BY timestamp DESC" ;
 				}
 				else {
-					$data=array("search1"=>"%$search%", "search2"=>"%$search%"); 
-					$sql="SELECT gibbonMessenger.*, title, surname, preferredName, category FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE (subject LIKE :search1 OR body LIKE :search2) ORDER BY timestamp DESC" ; 
+					$data=array("search1"=>"%$search%", "search2"=>"%$search%");
+					$sql="SELECT gibbonMessenger.*, title, surname, preferredName, category FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE (subject LIKE :search1 OR body LIKE :search2) ORDER BY timestamp DESC" ;
 				}
 			}
 			else {
 				if ($search=="") {
-					$data=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-					$sql="SELECT gibbonMessenger.*, title, surname, preferredName, category FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonMessenger.gibbonPersonID=:gibbonPersonID ORDER BY timestamp DESC" ; 
+					$data=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]);
+					$sql="SELECT gibbonMessenger.*, title, surname, preferredName, category FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonMessenger.gibbonPersonID=:gibbonPersonID ORDER BY timestamp DESC" ;
 				}
 				else {
-					$data=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "search1"=>"%$search%", "search2"=>"%$search%"); 
-					$sql="SELECT gibbonMessenger.*, title, surname, preferredName, category FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonMessenger.gibbonPersonID=:gibbonPersonID AND (subject LIKE :search1 OR body LIKE :search2) ORDER BY timestamp DESC" ; 
+					$data=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "search1"=>"%$search%", "search2"=>"%$search%");
+					$sql="SELECT gibbonMessenger.*, title, surname, preferredName, category FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonMessenger.gibbonPersonID=:gibbonPersonID AND (subject LIKE :search1 OR body LIKE :search2) ORDER BY timestamp DESC" ;
 				}
 			}
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
-		catch(PDOException $e) { 
-			print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+		catch(PDOException $e) {
+			print "<div class='error'>" . $e->getMessage() . "</div>" ;
 		}
-		
-		$sqlPage=$sql ." LIMIT " . $_SESSION[$guid]["pagination"] . " OFFSET " . (($page-1)*$_SESSION[$guid]["pagination"]) ; 
-		
+
+		$sqlPage=$sql ." LIMIT " . $_SESSION[$guid]["pagination"] . " OFFSET " . (($page-1)*$_SESSION[$guid]["pagination"]) ;
+
 		if (isActionAccessible($guid, $connection2,"/modules/Messenger/messenger_post.php")==TRUE OR isActionAccessible($guid, $connection2,"/modules/Messenger/messenger_postQuickWall.php")==TRUE) {
 			print "<div class='linkTop'>" ;
 				if (isActionAccessible($guid, $connection2,"/modules/Messenger/messenger_post.php")==TRUE) {
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_post.php'>" .  _('New Message') . "<img style='margin-left: 5px' title='" . _('New Message') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_post.php'>" .  __($guid, 'New Message') . "<img style='margin-left: 5px' title='" . __($guid, 'New Message') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
 				}
 				if (isActionAccessible($guid, $connection2,"/modules/Messenger/messenger_postQuickWall.php")==TRUE) {
 					if (isActionAccessible($guid, $connection2,"/modules/Messenger/messenger_post.php")==TRUE) {
 						print " | " ;
 					}
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_postQuickWall.php'>" .  _('New Quick Wall Message') . "<img style='margin-left: 5px' title='" . _('New Quick Wall Message') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_postQuickWall.php'>" .  __($guid, 'New Quick Wall Message') . "<img style='margin-left: 5px' title='" . __($guid, 'New Quick Wall Message') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
 				}
 			print "</div>" ;
 		}
-		
+
 		if ($result->rowCount()<1) {
 			print "<div class='error'>" ;
-			print _("There are no records to display.") ;
+			print __($guid, "There are no records to display.") ;
 			print "</div>" ;
 		}
 		else {
 			if ($result->rowCount()>$_SESSION[$guid]["pagination"]) {
 				printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top") ;
 			}
-		
+
 			print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
 					print "<th>" ;
-						print _("Subject") ;
+						print __($guid, "Subject") ;
 					print "</th>" ;
 					print "<th style='width: 100px'>" ;
-						print _('Date Sent'). "<br/>" ;
-						print "<span style='font-style: italic; font-size: 85%'>" . _('Dates Published') . "</span>" ;
+						print __($guid, 'Date Sent'). "<br/>" ;
+						print "<span style='font-style: italic; font-size: 85%'>" . __($guid, 'Dates Published') . "</span>" ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Author") ;
+						print __($guid, "Author") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Recipients") ;
+						print __($guid, "Recipients") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Email") ;
+						print __($guid, "Email") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Wall") ;
+						print __($guid, "Wall") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("SMS") ;
+						print __($guid, "SMS") ;
 					print "</th>" ;
 					print "<th style='width: 120px'>" ;
-						print _("Actions") ;
+						print __($guid, "Actions") ;
 					print "</th>" ;
 				print "</tr>" ;
-				
+
 				$count=0;
 				$rowNum="odd" ;
 				try {
 					$resultPage=$connection2->prepare($sqlPage);
 					$resultPage->execute($data);
 				}
-				catch(PDOException $e) { 
-					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+				catch(PDOException $e) {
+					print "<div class='error'>" . $e->getMessage() . "</div>" ;
 				}
 				while ($row=$resultPage->fetch()) {
 					if ($count%2==0) {
@@ -197,8 +197,8 @@ else {
 					else {
 						$rowNum="odd" ;
 					}
-					
-					
+
+
 					//COLOR ROW BY STATUS!
 					print "<tr class=$rowNum>" ;
 						print "<td>" ;
@@ -225,152 +225,158 @@ else {
 						print "</td>" ;
 						print "<td>" ;
 							try {
-								$dataTargets=array("gibbonMessengerID"=>$row["gibbonMessengerID"]); 
+								$dataTargets=array("gibbonMessengerID"=>$row["gibbonMessengerID"]);
 								$sqlTargets="SELECT type, id FROM gibbonMessengerTarget WHERE gibbonMessengerID=:gibbonMessengerID ORDER BY type, id" ;
 								$resultTargets=$connection2->prepare($sqlTargets);
 								$resultTargets->execute($dataTargets);
 							}
-							catch(PDOException $e) { 
-								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+							catch(PDOException $e) {
+								print "<div class='error'>" . $e->getMessage() . "</div>" ;
 							}
 							$targets="" ;
 							while ($rowTargets=$resultTargets->fetch()) {
 								if ($rowTargets["type"]=="Activity") {
 									try {
-										$dataTarget=array("gibbonActivityID"=>$rowTargets["id"]); 
+										$dataTarget=array("gibbonActivityID"=>$rowTargets["id"]);
 										$sqlTarget="SELECT name FROM gibbonActivity WHERE gibbonActivityID=:gibbonActivityID" ;
 										$resultTarget=$connection2->prepare($sqlTarget);
 										$resultTarget->execute($dataTarget);
 									}
-									catch(PDOException $e) { 
-										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+									catch(PDOException $e) {
+										print "<div class='error'>" . $e->getMessage() . "</div>" ;
 									}
 									if ($resultTarget->rowCount()==1) {
 										$rowTarget=$resultTarget->fetch() ;
-										$targets.="<b>" . _($rowTargets["type"]) . "</b> - " . $rowTarget["name"] . "<br/>" ;
+										$targets.="<b>" . __($guid, $rowTargets["type"]) . "</b> - " . $rowTarget["name"] . "<br/>" ;
 									}
 								}
 								else if ($rowTargets["type"]=="Class") {
 									try {
-										$dataTarget=array("gibbonCourseClassID"=>$rowTargets["id"]); 
+										$dataTarget=array("gibbonCourseClassID"=>$rowTargets["id"]);
 										$sqlTarget="SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassID=:gibbonCourseClassID" ;
 										$resultTarget=$connection2->prepare($sqlTarget);
 										$resultTarget->execute($dataTarget);
 									}
-									catch(PDOException $e) { 
-										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+									catch(PDOException $e) {
+										print "<div class='error'>" . $e->getMessage() . "</div>" ;
 									}
 									if ($resultTarget->rowCount()==1) {
 										$rowTarget=$resultTarget->fetch() ;
-										$targets.="<b>" . _($rowTargets["type"]) . "</b> - " . $rowTarget["course"] . "." . $rowTarget["class"] . "<br/>" ;
+										$targets.="<b>" . __($guid, $rowTargets["type"]) . "</b> - " . $rowTarget["course"] . "." . $rowTarget["class"] . "<br/>" ;
 									}
 								}
 								else if ($rowTargets["type"]=="Course") {
 									try {
-										$dataTarget=array("gibbonCourseID"=>$rowTargets["id"]); 
+										$dataTarget=array("gibbonCourseID"=>$rowTargets["id"]);
 										$sqlTarget="SELECT name FROM gibbonCourse WHERE gibbonCourseID=:gibbonCourseID" ;
 										$resultTarget=$connection2->prepare($sqlTarget);
 										$resultTarget->execute($dataTarget);
 									}
-									catch(PDOException $e) { 
-										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+									catch(PDOException $e) {
+										print "<div class='error'>" . $e->getMessage() . "</div>" ;
 									}
 									if ($resultTarget->rowCount()==1) {
 										$rowTarget=$resultTarget->fetch() ;
-										$targets.="<b>" . _($rowTargets["type"]) . "</b> - " . $rowTarget["name"] . "<br/>" ;
+										$targets.="<b>" . __($guid, $rowTargets["type"]) . "</b> - " . $rowTarget["name"] . "<br/>" ;
 									}
 								}
 								else if ($rowTargets["type"]=="Role") {
 									try {
-										$dataTarget=array("gibbonRoleID"=>$rowTargets["id"]); 
+										$dataTarget=array("gibbonRoleID"=>$rowTargets["id"]);
 										$sqlTarget="SELECT name FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleID" ;
 										$resultTarget=$connection2->prepare($sqlTarget);
 										$resultTarget->execute($dataTarget);
 									}
-									catch(PDOException $e) { 
-										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+									catch(PDOException $e) {
+										print "<div class='error'>" . $e->getMessage() . "</div>" ;
 									}
 									if ($resultTarget->rowCount()==1) {
 										$rowTarget=$resultTarget->fetch() ;
-										$targets.="<b>" . _($rowTargets["type"]) . "</b> - " . _($rowTarget["name"]) . "<br/>" ;
+										$targets.="<b>" . __($guid, $rowTargets["type"]) . "</b> - " . __($guid, $rowTarget["name"]) . "<br/>" ;
 									}
 								}
 								else if ($rowTargets["type"]=="Role Category") {
-									$targets.="<b>" . _($rowTargets["type"]) . "</b> - " . _($rowTargets["id"]) . "<br/>" ;
+									$targets.="<b>" . __($guid, $rowTargets["type"]) . "</b> - " . __($guid, $rowTargets["id"]) . "<br/>" ;
 								}
 								else if ($rowTargets["type"]=="Roll Group") {
 									try {
-										$dataTarget=array("gibbonRollGroupID"=>$rowTargets["id"]); 
+										$dataTarget=array("gibbonRollGroupID"=>$rowTargets["id"]);
 										$sqlTarget="SELECT name FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID" ;
 										$resultTarget=$connection2->prepare($sqlTarget);
 										$resultTarget->execute($dataTarget);
 									}
-									catch(PDOException $e) { 
-										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+									catch(PDOException $e) {
+										print "<div class='error'>" . $e->getMessage() . "</div>" ;
 									}
 									if ($resultTarget->rowCount()==1) {
 										$rowTarget=$resultTarget->fetch() ;
-										$targets.="<b>" . _($rowTargets["type"]) . "</b> - " . $rowTarget["name"] . "<br/>" ;
+										$targets.="<b>" . __($guid, $rowTargets["type"]) . "</b> - " . $rowTarget["name"] . "<br/>" ;
 									}
 								}
 								else if ($rowTargets["type"]=="Year Group") {
 									try {
-										$dataTarget=array("gibbonYearGroupID"=>$rowTargets["id"]); 
+										$dataTarget=array("gibbonYearGroupID"=>$rowTargets["id"]);
 										$sqlTarget="SELECT name FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupID" ;
 										$resultTarget=$connection2->prepare($sqlTarget);
 										$resultTarget->execute($dataTarget);
 									}
-									catch(PDOException $e) { 
-										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+									catch(PDOException $e) {
+										print "<div class='error'>" . $e->getMessage() . "</div>" ;
 									}
 									if ($resultTarget->rowCount()==1) {
 										$rowTarget=$resultTarget->fetch() ;
-										$targets.="<b>" . _($rowTargets["type"]) . "</b> - " . _($rowTarget["name"]) . "<br/>" ;
+										$targets.="<b>" . __($guid, $rowTargets["type"]) . "</b> - " . __($guid, $rowTarget["name"]) . "<br/>" ;
 									}
 								}
 								else if ($rowTargets["type"]=="Applicants") {
 									try {
-										$dataTarget=array("gibbonSchoolYearID"=>$rowTargets["id"]); 
+										$dataTarget=array("gibbonSchoolYearID"=>$rowTargets["id"]);
 										$sqlTarget="SELECT name FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID" ;
 										$resultTarget=$connection2->prepare($sqlTarget);
 										$resultTarget->execute($dataTarget);
 									}
-									catch(PDOException $e) { 
-										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+									catch(PDOException $e) {
+										print "<div class='error'>" . $e->getMessage() . "</div>" ;
 									}
 									if ($resultTarget->rowCount()==1) {
 										$rowTarget=$resultTarget->fetch() ;
-										$targets.="<b>" . _($rowTargets["type"]) . "</b> - " . $rowTarget["name"] . "<br/>" ;
+										$targets.="<b>" . __($guid, $rowTargets["type"]) . "</b> - " . $rowTarget["name"] . "<br/>" ;
 									}
 								}
 								else if ($rowTargets["type"]=="Houses") {
 									try {
-										$dataTarget=array("gibbonHouseID"=>$rowTargets["id"]); 
+										$dataTarget=array("gibbonHouseID"=>$rowTargets["id"]);
 										$sqlTarget="SELECT name FROM gibbonHouse WHERE gibbonHouseID=:gibbonHouseID" ;
 										$resultTarget=$connection2->prepare($sqlTarget);
 										$resultTarget->execute($dataTarget);
 									}
-									catch(PDOException $e) { 
-										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+									catch(PDOException $e) {
+										print "<div class='error'>" . $e->getMessage() . "</div>" ;
 									}
 									if ($resultTarget->rowCount()==1) {
 										$rowTarget=$resultTarget->fetch() ;
-										$targets.="<b>" . _($rowTargets["type"]) . "</b> - " . $rowTarget["name"] . "<br/>" ;
+										$targets.="<b>" . __($guid, $rowTargets["type"]) . "</b> - " . $rowTarget["name"] . "<br/>" ;
 									}
 								}
+                                else if ($rowTargets["type"]=="Transport") {
+									$targets.="<b>" . __($guid, $rowTargets["type"]) . "</b> - " . __($guid, $rowTargets["id"]) . "<br/>" ;
+								}
+                                else if ($rowTargets["type"]=="Attendance") {
+                                  $targets.="<b>" . __($guid, $rowTargets["type"]) . "</b> - " . __($guid, $rowTargets["id"]) . "<br/>" ;
+                                }
 								else if ($rowTargets["type"]=="Individuals") {
 									try {
-										$dataTarget=array("gibbonPersonID"=>$rowTargets["id"]); 
+										$dataTarget=array("gibbonPersonID"=>$rowTargets["id"]);
 										$sqlTarget="SELECT preferredName, surname FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
 										$resultTarget=$connection2->prepare($sqlTarget);
 										$resultTarget->execute($dataTarget);
 									}
-									catch(PDOException $e) { 
-										print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+									catch(PDOException $e) {
+										print "<div class='error'>" . $e->getMessage() . "</div>" ;
 									}
 									if ($resultTarget->rowCount()==1) {
 										$rowTarget=$resultTarget->fetch() ;
-										$targets.="<b>" . _($rowTargets["type"]) . "</b> - " . formatName("", $rowTarget["preferredName"], $rowTarget["surname"], "Student", true) . "<br/>" ;
+										$targets.="<b>" . __($guid, $rowTargets["type"]) . "</b> - " . formatName("", $rowTarget["preferredName"], $rowTarget["surname"], "Student", true) . "<br/>" ;
 									}
 								}
 							}
@@ -378,32 +384,32 @@ else {
 						print "</td>" ;
 						print "<td>" ;
 							if ($row["email"]=="Y") {
-								print "<img title='" . _('Sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
+								print "<img title='" . __($guid, 'Sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
 							}
 							else {
-								print "<img title='" . _('Not sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/> " ;
+								print "<img title='" . __($guid, 'Not sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/> " ;
 							}
 						print "</td>" ;
 						print "<td>" ;
 							if ($row["messageWall"]=="Y") {
-								print "<img title='" . _('Sent by message wall.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
+								print "<img title='" . __($guid, 'Sent by message wall.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
 							}
 							else {
-								print "<img title='" . _('Not sent by message wall.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/> " ;
+								print "<img title='" . __($guid, 'Not sent by message wall.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/> " ;
 							}
 						print "</td>" ;
 						print "<td>" ;
 							if ($row["sms"]=="Y") {
-								print "<img title='" . _('Sent by sms.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
+								print "<img title='" . __($guid, 'Sent by sms.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
 							}
 							else {
-								print "<img title='" . _('Not sent by sms.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/> " ;
+								print "<img title='" . __($guid, 'Not sent by sms.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/> " ;
 							}
 						print "</td>" ;
 						print "<td>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_edit.php&gibbonMessengerID=" . $row["gibbonMessengerID"] . "&sidebar=true&search=$search'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_delete.php&gibbonMessengerID=" . $row["gibbonMessengerID"] . "&sidebar=true&search=$search'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
-							print "<script type='text/javascript'>" ;	
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_edit.php&gibbonMessengerID=" . $row["gibbonMessengerID"] . "&sidebar=true&search=$search'><img title='" . __($guid, 'Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_delete.php&gibbonMessengerID=" . $row["gibbonMessengerID"] . "&sidebar=true&search=$search'><img title='" . __($guid, 'Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
+							print "<script type='text/javascript'>" ;
 								print "$(document).ready(function(){" ;
 									print "\$(\".comment-$count\").hide();" ;
 									print "\$(\".show_hide-$count\").fadeIn(1000);" ;
@@ -413,7 +419,7 @@ else {
 								print "});" ;
 							print "</script>" ;
 							if ($row["smsReport"]!="" OR $row["emailReport"]!="") {
-								print "<a title='" . _('View Send Report') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/page_down.png' alt='" . _('Show Comment') . "' onclick='return false;' /></a>" ;
+								print "<a title='" . __($guid, 'View Send Report') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_down.png' alt='" . __($guid, 'Show Comment') . "' onclick='return false;' /></a>" ;
 							}
 						print "</td>" ;
 					print "</tr>" ;
@@ -441,11 +447,11 @@ else {
 							print "</td>" ;
 						print "</tr>" ;
 					}
-					
+
 					$count++ ;
 				}
 			print "</table>" ;
-			
+
 			if ($result->rowCount()>$_SESSION[$guid]["pagination"]) {
 				printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "bottom") ;
 			}

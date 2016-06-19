@@ -17,100 +17,85 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "../../functions.php" ;
-include "../../config.php" ;
+include '../../functions.php';
+include '../../config.php';
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new Gibbon\sqlConnection();
+$connection2 = $pdo->getConnection();
 
-@session_start() ;
+@session_start();
 
 //Module includes
-include "./moduleFunctions.php" ;
+include './moduleFunctions.php';
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["address"]) . "/report_catalogSummary.php" ;
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address']).'/report_catalogSummary.php';
 
-if (isActionAccessible($guid, $connection2, "/modules/Library/report_catalogSummary.php")==FALSE) {
-	//Fail 0
-	$URL.="&exportReturn=fail0" ;
-	header("Location: {$URL}");
+if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSummary.php') == false) {
+    $URL .= '&return=error0';
+    header("Location: {$URL}");
+} else {
+    $naownershipTypeme = trim($_GET['ownershipType']);
+    $gibbonLibraryTypeID = trim($_GET['gibbonLibraryTypeID']);
+    $gibbonSpaceID = trim($_GET['gibbonSpaceID']);
+    $status = trim($_GET['status']);
+
+    $ownershipType = null;
+    if (isset($_GET['ownershipType'])) {
+        $ownershipType = trim($_GET['ownershipType']);
+    }
+    $gibbonLibraryTypeID = null;
+    if (isset($_GET['gibbonLibraryTypeID'])) {
+        $gibbonLibraryTypeID = trim($_GET['gibbonLibraryTypeID']);
+    }
+    $gibbonSpaceID = null;
+    if (isset($_GET['gibbonSpaceID'])) {
+        $gibbonSpaceID = trim($_GET['gibbonSpaceID']);
+    }
+    $status = null;
+    if (isset($_GET['status'])) {
+        $status = trim($_GET['status']);
+    }
+
+    try {
+        $data = array();
+        $sqlWhere = 'WHERE ';
+        if ($ownershipType != '') {
+            $data['ownershipType'] = $ownershipType;
+            $sqlWhere .= 'ownershipType=:ownershipType AND ';
+        }
+        if ($gibbonLibraryTypeID != '') {
+            $data['gibbonLibraryTypeID'] = $gibbonLibraryTypeID;
+            $sqlWhere .= 'gibbonLibraryTypeID=:gibbonLibraryTypeID AND ';
+        }
+        if ($gibbonSpaceID != '') {
+            $data['gibbonSpaceID'] = $gibbonSpaceID;
+            $sqlWhere .= 'gibbonSpaceID=:gibbonSpaceID AND ';
+        }
+        if ($status != '') {
+            $data['status'] = $status;
+            $sqlWhere .= 'status=:status AND ';
+        }
+        if ($sqlWhere == 'WHERE ') {
+            $sqlWhere = '';
+        } else {
+            $sqlWhere = substr($sqlWhere, 0, -5);
+        }
+        $sql = "SELECT * FROM gibbonLibraryItem $sqlWhere ORDER BY id";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        echo "<div class='error'>".$e->getMessage().'</div>';
+    }
+
+    if ($result->rowCount() < 1) {
+        $URL .= '&return=error3';
+        header("Location: {$URL}");
+    } else {
+        //Proceed!
+		include './report_catalogSummaryExportContents.php';
+    }
 }
-else {
-	$naownershipTypeme=trim($_GET["ownershipType"]) ;
-	$gibbonLibraryTypeID=trim($_GET["gibbonLibraryTypeID"]) ;
-	$gibbonSpaceID=trim($_GET["gibbonSpaceID"]) ;
-	$status=trim($_GET["status"]) ;
-
-	$ownershipType=NULL ;
-	if (isset($_GET["ownershipType"])) {
-		$ownershipType=trim($_GET["ownershipType"]) ;
-	}
-	$gibbonLibraryTypeID=NULL ;
-	if (isset($_GET["gibbonLibraryTypeID"])) {
-		$gibbonLibraryTypeID=trim($_GET["gibbonLibraryTypeID"]) ;
-	}
-	$gibbonSpaceID=NULL ;
-	if (isset($_GET["gibbonSpaceID"])) {
-		$gibbonSpaceID=trim($_GET["gibbonSpaceID"]) ;
-	}
-	$status=NULL ;
-	if (isset($_GET["status"])) {
-		$status=trim($_GET["status"]) ;
-	}
-	
-
-	try {
-		$data=array(); 
-		$sqlWhere="WHERE " ;
-		if ($ownershipType!="") {
-			$data["ownershipType"]=$ownershipType ;
-			$sqlWhere.="ownershipType=:ownershipType AND " ; 
-		}
-		if ($gibbonLibraryTypeID!="") {
-			$data["gibbonLibraryTypeID"]=$gibbonLibraryTypeID;
-			$sqlWhere.="gibbonLibraryTypeID=:gibbonLibraryTypeID AND " ; 
-		}
-		if ($gibbonSpaceID!="") {
-			$data["gibbonSpaceID"]=$gibbonSpaceID;
-			$sqlWhere.="gibbonSpaceID=:gibbonSpaceID AND " ; 
-		}
-		if ($status!="") {
-			$data["status"]=$status;
-			$sqlWhere.="status=:status AND " ; 
-		}
-		if ($sqlWhere=="WHERE ") {
-			$sqlWhere="" ;
-		}
-		else {
-			$sqlWhere=substr($sqlWhere,0,-5) ;
-		}
-		$sql="SELECT * FROM gibbonLibraryItem $sqlWhere ORDER BY id" ; 
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { 
-		print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-	}
-
-	if ($result->rowCount()<1) {
-		//Fail 3
-		$URL.="&exportReturn=fail3" ;
-		header("Location: {$URL}");
-	}
-	else {
-		//Proceed!
-		$exp=new ExportToExcel();
-		$exp->exportWithPage($guid, "./report_catalogSummaryExportContents.php","catalogSummary.xls", "ownershipType=$ownershipType&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status");
-	}
-}
-?>

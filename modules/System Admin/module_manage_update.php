@@ -17,140 +17,116 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+@session_start();
 
-if (isActionAccessible($guid, $connection2, "/modules/System Admin/module_manage_update.php")==FALSE) {
-	//Acess denied
-	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
-	print "</div>" ;
-}
-else {
-	//Proceed!
-	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/module_manage.php'>" . _('Manage Modules') . "</a> > </div><div class='trailEnd'>" . _('Update Module') . "</div>" ;
-	print "</div>" ;
-	
-	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-	$updateReturnMessage="" ;
-	$class="error" ;
-	if (!($updateReturn=="")) {
-		if ($updateReturn=="fail0") {
-			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
-		}
-		else if ($updateReturn=="fail1") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($updateReturn=="fail2") {
-			$updateReturnMessage=_("Your request failed due to a database error.") ;	
-		}
-		else if ($updateReturn=="fail3") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($updateReturn=="fail5") {
-			$updateReturnMessage=_("Your request failed.") ;	
-		}
-		else if ($updateReturn=="success0") {
-			$updateReturnMessage=_("Your request was completed successfully.") ;	
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $updateReturnMessage ;
-			if (isset($_SESSION[$guid]["moduleUpdateError"])) {
-				if ($_SESSION[$guid]["moduleUpdateError"]!="") {
-					print "<br/><br/>" ;
-					print _("The following SQL statements caused errors:") . " " . $_SESSION[$guid]["moduleUpdateError"] ;
-				}
-				$_SESSION[$guid]["moduleUpdateError"]=NULL ;
-			}
-		print "</div>" ;
-	} 
-	
-	//Check if school year specified
-	$gibbonModuleID=$_GET["gibbonModuleID"] ;
-	if ($gibbonModuleID=="") {
-		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
-		print "</div>" ;
-	}
-	else {
-		try {
-			$data=array("gibbonModuleID"=>$gibbonModuleID); 
-			$sql="SELECT * FROM gibbonModule WHERE gibbonModuleID=:gibbonModuleID" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-		}
-		
-		if ($result->rowCount()!=1) {
-			print "<div class='error'>" ;
-				print _("The specified record cannot be found.") ;
-			print "</div>" ;
-		}
-		else {
-			//Let's go!
-			$row=$result->fetch() ;
-			
-			$versionDB=$row["version"] ;
-			if (file_exists($_SESSION[$guid]["absolutePath"] . "/modules/" . $row["name"] . "/version.php")) {
-				include $_SESSION[$guid]["absolutePath"] . "/modules/" . $row["name"] . "/version.php" ;
-			}	
-			@$versionCode=$moduleVersion ;
-			
-			print "<p>" ;
-				print sprintf(_('This page allows you to semi-automatically update the %1$s module to a new version. You need to take care of the file updates, and based on the new files, Gibbon will do the database upgrades.'), htmlPrep($row["name"])) ;
-			print "</p>" ;
-			
-			if ($updateReturn=="success0") {
-				print "<p>" ;
-					print "<b>" . _('You seem to be all up to date, good work!') . "</b>" ;
-				print "</p>" ;
-			}
-			else if ($versionDB>$versionCode OR $versionCode=="") {
-				//Error
-				print "<div class='error'>" ;
-					print _("An error has occurred determining the version of the system you are using.") ;
-				print "</div>" ;
-			}
-			else if ($versionDB==$versionCode) {
-				//Instructions on how to update
-				print "<h3>" ;
-					print _("Update Instructions") ;
-				print "</h3>" ;
-				print "<ol>" ;
-					print "<li>" . sprintf(_('You are currently using %1$s v%2$s.'),  htmlPrep($row["name"]), $versionCode) . "</i></li>" ;
-					print "<li>" . sprintf(_('Check %1$s for a newer version of this module.'), "<a target='_blank' href='http://gibbonedu.org/extend'>gibbonedu.org</a>") . "</li>" ;
-					print "<li>" . _('Download the latest version, and unzip it on your computer.') . "</li>" ;
-					print "<li>" . _('Use an FTP client to upload the new files to your server\'s modules folder.') . "</li>" ;
-					print "<li>" . _('Reload this page and follow the instructions to update your database to the latest version.') . "</li>" ;
-				print "</ol>" ;
-			}
-			else if ($versionDB<$versionCode) {
-				//Time to update
-				print "<h3>" ;
-					print _("Datebase Update") ;
-				print "</h3>" ;
-				print "<p>" ;
-					print sprintf(_('It seems that you have updated your %1$s module code to a new version, and are ready to update your databse from v%2$s to v%3$s. <b>Click "Submit" below to continue. This operation cannot be undone: backup your entire database prior to running the update!'), htmlPrep($row["name"]), $versionDB, $versionCode) . "</b>" ;
-				print "</p>" ;
-				?>
-				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/module_manage_updateProcess.php?&gibbonModuleID=$gibbonModuleID" ?>">
+if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage_update.php') == false) {
+    //Acess denied
+    echo "<div class='error'>";
+    echo __($guid, 'You do not have access to this action.');
+    echo '</div>';
+} else {
+    //Proceed!
+    echo "<div class='trail'>";
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/module_manage.php'>".__($guid, 'Manage Modules')."</a> > </div><div class='trailEnd'>".__($guid, 'Update Module').'</div>';
+    echo '</div>';
+
+    $return = null;
+    if (isset($_GET['return'])) {
+        $return = $_GET['return'];
+    }
+    $returns = array();
+    $returns['warning1'] = __($guid, 'Some aspects of your request failed, but others were successful. The elements that failed are shown below:');
+    if (isset($_GET['return'])) {
+        returnProcess($guid, $_GET['return'], null, $returns);
+    }
+    if (isset($_SESSION[$guid]['moduleUpdateError'])) {
+        if ($_SESSION[$guid]['moduleUpdateError'] != '') {
+            echo "<div class='error'>";
+            echo __($guid, 'The following SQL statements caused errors:').' '.$_SESSION[$guid]['moduleUpdateError'];
+            echo '</div>';
+        }
+        $_SESSION[$guid]['moduleUpdateError'] = null;
+    }
+
+    //Check if school year specified
+    $gibbonModuleID = $_GET['gibbonModuleID'];
+    if ($gibbonModuleID == '') {
+        echo "<div class='error'>";
+        echo __($guid, 'You have not specified one or more required parameters.');
+        echo '</div>';
+    } else {
+        try {
+            $data = array('gibbonModuleID' => $gibbonModuleID);
+            $sql = 'SELECT * FROM gibbonModule WHERE gibbonModuleID=:gibbonModuleID';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            echo "<div class='error'>".$e->getMessage().'</div>';
+        }
+
+        if ($result->rowCount() != 1) {
+            echo "<div class='error'>";
+            echo __($guid, 'The specified record cannot be found.');
+            echo '</div>';
+        } else {
+            //Let's go!
+            $row = $result->fetch();
+
+            $versionDB = $row['version'];
+            if (file_exists($_SESSION[$guid]['absolutePath'].'/modules/'.$row['name'].'/version.php')) {
+                include $_SESSION[$guid]['absolutePath'].'/modules/'.$row['name'].'/version.php';
+            }
+            @$versionCode = $moduleVersion;
+
+            echo '<p>';
+            echo sprintf(__($guid, 'This page allows you to semi-automatically update the %1$s module to a new version. You need to take care of the file updates, and based on the new files, Gibbon will do the database upgrades.'), htmlPrep($row['name']));
+            echo '</p>';
+
+            if ($return == 'success0') {
+                echo '<p>';
+                echo '<b>'.__($guid, 'You seem to be all up to date, good work!').'</b>';
+                echo '</p>';
+            } elseif ($versionDB > $versionCode or $versionCode == '') {
+                //Error
+                echo "<div class='error'>";
+                echo __($guid, 'An error has occurred determining the version of the system you are using.');
+                echo '</div>';
+            } elseif ($versionDB == $versionCode) {
+                //Instructions on how to update
+                echo '<h3>';
+                echo __($guid, 'Update Instructions');
+                echo '</h3>';
+                echo '<ol>';
+                echo '<li>'.sprintf(__($guid, 'You are currently using %1$s v%2$s.'),  htmlPrep($row['name']), $versionCode).'</i></li>';
+                echo '<li>'.sprintf(__($guid, 'Check %1$s for a newer version of this module.'), "<a target='_blank' href='https://gibbonedu.org/extend'>gibbonedu.org</a>").'</li>';
+                echo '<li>'.__($guid, 'Download the latest version, and unzip it on your computer.').'</li>';
+                echo '<li>'.__($guid, 'Use an FTP client to upload the new files to your server\'s modules folder.').'</li>';
+                echo '<li>'.__($guid, 'Reload this page and follow the instructions to update your database to the latest version.').'</li>';
+                echo '</ol>';
+            } elseif ($versionDB < $versionCode) {
+                //Time to update
+                echo '<h3>';
+                echo __($guid, 'Datebase Update');
+                echo '</h3>';
+                echo '<p>';
+                echo sprintf(__($guid, 'It seems that you have updated your %1$s module code to a new version, and are ready to update your databse from v%2$s to v%3$s. <b>Click "Submit" below to continue. This operation cannot be undone: backup your entire database prior to running the update!'), htmlPrep($row['name']), $versionDB, $versionCode).'</b>';
+                echo '</p>'; ?>
+				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/module_manage_updateProcess.php?&gibbonModuleID=$gibbonModuleID" ?>">
 					<table cellspacing='0' style="width: 100%">	
 						<tr>
 							<td class="right"> 
-								<input type="hidden" name="versionDB" value="<?php print $versionDB ?>">
-								<input type="hidden" name="versionCode" value="<?php print $versionCode ?>">
-								<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-								<input type="submit" value="<?php print _("Submit") ; ?>">
+								<input type="hidden" name="versionDB" value="<?php echo $versionDB ?>">
+								<input type="hidden" name="versionCode" value="<?php echo $versionCode ?>">
+								<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
+								<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 							</td>
 						</tr>
 					</table>
 				</form>
 				<?php
-			}
-		}
-	}
+
+            }
+        }
+    }
 }
 ?>

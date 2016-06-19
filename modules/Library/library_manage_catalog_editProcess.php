@@ -17,222 +17,197 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "../../functions.php" ;
-include "../../config.php" ;
+include '../../functions.php';
+include '../../config.php';
 
-include "./moduleFunctions.php" ;
+include './moduleFunctions.php';
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new Gibbon\sqlConnection();
+$connection2 = $pdo->getConnection();
 
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$gibbonLibraryItemID=$_POST["gibbonLibraryItemID"] ;
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/library_manage_catalog_edit.php&gibbonLibraryItemID=$gibbonLibraryItemID&name=" . $_GET["name"] . "&gibbonLibraryTypeID=" . $_GET["gibbonLibraryTypeID"] . "&gibbonSpaceID=" . $_GET["gibbonSpaceID"] . "&status=" . $_GET["status"] . "&gibbonPersonIDOwnership=" . $_GET["gibbonPersonIDOwnership"] . "&typeSpecificFields=" . $_GET["typeSpecificFields"] ;
+$gibbonLibraryItemID = $_POST['gibbonLibraryItemID'];
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/library_manage_catalog_edit.php&gibbonLibraryItemID=$gibbonLibraryItemID&name=".$_GET['name'].'&gibbonLibraryTypeID='.$_GET['gibbonLibraryTypeID'].'&gibbonSpaceID='.$_GET['gibbonSpaceID'].'&status='.$_GET['status'].'&gibbonPersonIDOwnership='.$_GET['gibbonPersonIDOwnership'].'&typeSpecificFields='.$_GET['typeSpecificFields'];
 
-if (isActionAccessible($guid, $connection2, "/modules/Library/library_manage_catalog_edit.php")==FALSE) {
-	//Fail 0
-	$URL.="&updateReturn=fail0" ;
-	header("Location: {$URL}");
+if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_catalog_edit.php') == false) {
+    $URL .= '&return=error0';
+    header("Location: {$URL}");
+} else {
+    //Proceed!
+    //Check if school year specified
+    if ($gibbonLibraryItemID == '') {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+    } else {
+        try {
+            $data = array('gibbonLibraryItemID' => $gibbonLibraryItemID);
+            $sql = 'SELECT * FROM gibbonLibraryItem WHERE gibbonLibraryItemID=:gibbonLibraryItemID';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+            exit();
+        }
+
+        if ($result->rowCount() != 1) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+        } else {
+            $row = $result->fetch();
+            //Proceed!
+            //Get general fields
+            $gibbonLibraryTypeID = $_POST['gibbonLibraryTypeID'];
+            $id = $_POST['id'];
+            $name = $_POST['name'];
+            $producer = $_POST['producer'];
+            $vendor = $_POST['vendor'];
+            $purchaseDate = null;
+            if ($_POST['purchaseDate'] != '') {
+                $purchaseDate = dateConvert($guid, $_POST['purchaseDate']);
+            }
+            $invoiceNumber = $_POST['invoiceNumber'];
+            $imageType = $_POST['imageType'];
+            if ($imageType == 'Link') {
+                $imageLocation = $_POST['imageLink'];
+            } elseif ($imageType == 'File') {
+                $imageLocation = $row['imageLocation'];
+            } else {
+                $imageLocation = '';
+            }
+            $replacement = $_POST['replacement'];
+            $gibbonSchoolYearIDReplacement = null;
+            $replacementCost = null;
+            if ($replacement == 'Y') {
+                if ($_POST['gibbonSchoolYearIDReplacement'] != '') {
+                    $gibbonSchoolYearIDReplacement = $_POST['gibbonSchoolYearIDReplacement'];
+                }
+                if ($_POST['replacementCost'] != '') {
+                    $replacementCost = $_POST['replacementCost'];
+                }
+            } else {
+                $replacement == 'N';
+            }
+            $comment = $_POST['comment'];
+            $gibbonSpaceID = null;
+            if ($_POST['gibbonSpaceID'] != '') {
+                $gibbonSpaceID = $_POST['gibbonSpaceID'];
+            }
+            $locationDetail = $_POST['locationDetail'];
+            $ownershipType = $_POST['ownershipType'];
+            $gibbonPersonIDOwnership = null;
+            if ($ownershipType == 'School' and $_POST['gibbonPersonIDOwnershipSchool'] != '') {
+                $gibbonPersonIDOwnership = $_POST['gibbonPersonIDOwnershipSchool'];
+            } elseif ($ownershipType == 'Individual' and $_POST['gibbonPersonIDOwnershipIndividual'] != '') {
+                $gibbonPersonIDOwnership = $_POST['gibbonPersonIDOwnershipIndividual'];
+            }
+            $gibbonDepartmentID = null;
+            if ($_POST['gibbonDepartmentID'] != '') {
+                $gibbonDepartmentID = $_POST['gibbonDepartmentID'];
+            }
+            $bookable = $_POST['bookable'];
+            $borrowable = $_POST['borrowable'];
+            if ($borrowable == 'Y') {
+                $status = $_POST['statusBorrowable'];
+            } else {
+                $status = $_POST['statusNotBorrowable'];
+            }
+            $physicalCondition = $_POST['physicalCondition'];
+
+            //Get type-specific fields
+            try {
+                $data = array('gibbonLibraryTypeID' => $gibbonLibraryTypeID);
+                $sql = "SELECT * FROM gibbonLibraryType WHERE gibbonLibraryTypeID=:gibbonLibraryTypeID AND active='Y' ORDER BY name";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+            }
+
+            if ($result->rowCount() == 1) {
+                $row = $result->fetch();
+                $fieldsIn = unserialize($row['fields']);
+                $fieldsOut = array();
+                foreach ($fieldsIn as $field) {
+                    $fieldName = preg_replace('/ /', '', $field['name']);
+                    if ($field['type'] == 'Date') {
+                        $fieldsOut[$field['name']] = dateConvert($guid, $_POST['field'.$fieldName]);
+                    } else {
+                        $fieldsOut[$field['name']] = $_POST['field'.$fieldName];
+                    }
+                }
+            }
+
+            if ($gibbonLibraryTypeID == '' or $name == '' or $id == '' or $producer == '' or $bookable == '' or $borrowable == '' or $replacement == '') {
+                $URL .= '&return=error3';
+                header("Location: {$URL}");
+            } else {
+                //Check unique inputs for uniquness
+                try {
+                    $dataUnique = array('id' => $id, 'gibbonLibraryItemID' => $gibbonLibraryItemID);
+                    $sqlUnique = 'SELECT * FROM gibbonLibraryItem WHERE id=:id AND NOT gibbonLibraryItemID=:gibbonLibraryItemID';
+                    $resultUnique = $connection2->prepare($sqlUnique);
+                    $resultUnique->execute($dataUnique);
+                } catch (PDOException $e) {
+                    $URL .= '&return=error2';
+                    header("Location: {$URL}");
+                    exit();
+                }
+
+                if ($resultUnique->rowCount() > 0) {
+                    $URL .= '&return=error3';
+                    header("Location: {$URL}");
+                } else {
+                    //Move attached image  file, if there is one
+                    if (isset($_FILES['imageFile'])) {
+                        if ($_FILES['imageFile']['tmp_name'] != '' and $imageType == 'File') {
+                            //Move attached file, if there is one
+                            if ($_FILES['imageFile']['tmp_name'] != '') {
+                                $time = time();
+                                //Check for folder in uploads based on today's date
+                                $path = $_SESSION[$guid]['absolutePath'];
+                                if (is_dir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time)) == false) {
+                                    mkdir($path.'/uploads/'.date('Y', $time).'/'.date('m', $time), 0777, true);
+                                }
+                                $unique = false;
+                                $count = 0;
+                                while ($unique == false and $count < 100) {
+                                    $suffix = randomPassword(16);
+                                    $imageLocation = 'uploads/'.date('Y', $time).'/'.date('m', $time).'/'.preg_replace('/[^a-zA-Z0-9]/', '', $id)."_$suffix".strrchr($_FILES['imageFile']['name'], '.');
+                                    if (!(file_exists($path.'/'.$imageLocation))) {
+                                        $unique = true;
+                                    }
+                                    ++$count;
+                                }
+
+                                if (!(move_uploaded_file($_FILES['imageFile']['tmp_name'], $path.'/'.$imageLocation))) {
+                                    $URL .= '&return=warning1';
+                                    header("Location: {$URL}");
+                                }
+                            }
+                        }
+                    }
+
+                    //Write to database
+                    try {
+                        $data = array('id' => $id, 'name' => $name, 'producer' => $producer, 'fields' => serialize($fieldsOut), 'vendor' => $vendor, 'purchaseDate' => $purchaseDate, 'invoiceNumber' => $invoiceNumber, 'imageType' => $imageType, 'imageLocation' => $imageLocation, 'replacement' => $replacement, 'gibbonSchoolYearIDReplacement' => $gibbonSchoolYearIDReplacement, 'replacementCost' => $replacementCost, 'comment' => $comment, 'gibbonSpaceID' => $gibbonSpaceID, 'locationDetail' => $locationDetail, 'ownershipType' => $ownershipType, 'gibbonPersonIDOwnership' => $gibbonPersonIDOwnership, 'gibbonDepartmentID' => $gibbonDepartmentID, 'bookable' => $bookable, 'borrowable' => $borrowable, 'status' => $status, 'physicalCondition' => $physicalCondition, 'gibbonPersonIDUpdate' => $_SESSION[$guid]['gibbonPersonID'], 'timestampUpdate' => date('Y-m-d H:i:s', time()), 'gibbonLibraryItemID' => $gibbonLibraryItemID);
+                        $sql = 'UPDATE gibbonLibraryItem SET id=:id, name=:name, producer=:producer, fields=:fields, vendor=:vendor, purchaseDate=:purchaseDate, invoiceNumber=:invoiceNumber, imageType=:imageType, imageLocation=:imageLocation, replacement=:replacement, gibbonSchoolYearIDReplacement=:gibbonSchoolYearIDReplacement, replacementCost=:replacementCost, comment=:comment, gibbonSpaceID=:gibbonSpaceID, locationDetail=:locationDetail, ownershipType=:ownershipType, gibbonPersonIDOwnership=:gibbonPersonIDOwnership, gibbonDepartmentID=:gibbonDepartmentID, bookable=:bookable, borrowable=:borrowable, status=:status, physicalCondition=:physicalCondition, gibbonPersonIDUpdate=:gibbonPersonIDUpdate, timestampUpdate=:timestampUpdate WHERE gibbonLibraryItemID=:gibbonLibraryItemID';
+                        $result = $connection2->prepare($sql);
+                        $result->execute($data);
+                    } catch (PDOException $e) {
+                        $URL .= '&return=error2';
+                        header("Location: {$URL}");
+                        exit();
+                    }
+
+                    $URL .= '&return=success0';
+                    header("Location: {$URL}");
+                }
+            }
+        }
+    }
 }
-else {
-	//Proceed!
-	//Check if school year specified
-	if ($gibbonLibraryItemID=="") {
-		//Fail1
-		$URL.="&updateReturn=fail1" ;
-		header("Location: {$URL}");
-	}
-	else {
-		try {
-			$data=array("gibbonLibraryItemID"=>$gibbonLibraryItemID); 
-			$sql="SELECT * FROM gibbonLibraryItem WHERE gibbonLibraryItemID=:gibbonLibraryItemID" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			//Fail2
-			$URL.="&deleteReturn=fail2" ;
-			header("Location: {$URL}");
-			break ;
-		}
-		
-		if ($result->rowCount()!=1) {
-			//Fail 2
-			$URL.="&updateReturn=fail2" ;
-			header("Location: {$URL}");
-		}
-		else {
-			$row=$result->fetch() ;
-			//Proceed!
-			//Get general fields
-			$gibbonLibraryTypeID=$_POST["gibbonLibraryTypeID"] ;
-			$id=$_POST["id"] ;
-			$name=$_POST["name"] ;
-			$producer=$_POST["producer"] ;
-			$vendor=$_POST["vendor"] ;
-			$purchaseDate=NULL ;
-			if ($_POST["purchaseDate"]!="") {
-				$purchaseDate=dateConvert($guid, $_POST["purchaseDate"]);
-			}
-			$invoiceNumber=$_POST["invoiceNumber"] ;
-			$imageType=$_POST["imageType"] ;
-			if ($imageType=="Link") {
-				$imageLocation=$_POST["imageLink"] ;
-			}
-			else if ($imageType=="File") {
-				$imageLocation=$row["imageLocation"] ;
-			}
-			else {
-				$imageLocation="" ;
-			}
-			$gibbonSchoolYearIDReplacement=NULL ;
-			if ($_POST["gibbonSchoolYearIDReplacement"]!="") {
-				$gibbonSchoolYearIDReplacement=$_POST["gibbonSchoolYearIDReplacement"] ;
-			}
-			$replacementCost=NULL ;
-			if ($_POST["replacementCost"]!="") {
-				$replacementCost=$_POST["replacementCost"] ;
-			}
-			$comment=$_POST["comment"] ;
-			$gibbonSpaceID=NULL ;
-			if ($_POST["gibbonSpaceID"]!="") {
-				$gibbonSpaceID=$_POST["gibbonSpaceID"];
-			}
-			$locationDetail=$_POST["locationDetail"] ;
-			$ownershipType=$_POST["ownershipType"] ;
-			$gibbonPersonIDOwnership=NULL ;
-			if ($ownershipType=="School" AND $_POST["gibbonPersonIDOwnershipSchool"]!="") {
-				$gibbonPersonIDOwnership=$_POST["gibbonPersonIDOwnershipSchool"];
-			}
-			else if ($ownershipType=="Individual" AND $_POST["gibbonPersonIDOwnershipIndividual"]!="") {
-				$gibbonPersonIDOwnership=$_POST["gibbonPersonIDOwnershipIndividual"];
-			}
-			$gibbonDepartmentID=NULL ;
-			if ($_POST["gibbonDepartmentID"]!="") {
-				$gibbonDepartmentID=$_POST["gibbonDepartmentID"];
-			}
-			$borrowable=$_POST["borrowable"] ;
-			if ($borrowable=="Y") {
-				$status=$_POST["statusBorrowable"] ;
-			}
-			else {
-				$status=$_POST["statusNotBorrowable"] ;
-			}
-			
-			
-			//Get type-specific fields
-			try {
-				$data=array("gibbonLibraryTypeID"=>$gibbonLibraryTypeID); 
-				$sql="SELECT * FROM gibbonLibraryType WHERE gibbonLibraryTypeID=:gibbonLibraryTypeID AND active='Y' ORDER BY name" ;
-				$result=$connection2->prepare($sql);
-				$result->execute($data);
-			}
-			catch(PDOException $e) { }
-			
-			if ($result->rowCount()==1) {
-				$row=$result->fetch() ;
-				$fieldsIn=unserialize($row["fields"]) ;
-				$fieldsOut=array() ;
-				foreach ($fieldsIn as $field) {
-					$fieldName=preg_replace("/ /", "", $field["name"]) ;
-					if ($field["type"]=="Date") {
-						$fieldsOut[$field["name"]]=dateConvert($guid, $_POST["field" . $fieldName]) ;
-					}
-					else {
-						$fieldsOut[$field["name"]]=$_POST["field" . $fieldName] ;
-					}
-				}
-			}
-			
-			if ($gibbonLibraryTypeID=="" OR $name=="" OR $id=="" OR $producer=="" OR $borrowable=="") {
-				//Fail 3
-				$URL.="&updateReturn=fail3" ;
-				header("Location: {$URL}");
-			}
-			else {
-				//Check unique inputs for uniquness
-				try {
-					$dataUnique=array("id"=>$id, "gibbonLibraryItemID"=>$gibbonLibraryItemID); 
-					$sqlUnique="SELECT * FROM gibbonLibraryItem WHERE id=:id AND NOT gibbonLibraryItemID=:gibbonLibraryItemID" ;
-					$resultUnique=$connection2->prepare($sqlUnique);
-					$resultUnique->execute($dataUnique);
-				}
-				catch(PDOException $e) { 
-					//Fail 2
-					$URL.="&addReturn=fail2" ;
-					header("Location: {$URL}");
-					break ;
-				}
-				
-				if ($resultUnique->rowCount()>0) {
-					//Fail 4
-					$URL.="&addReturn=fail4" ;
-					header("Location: {$URL}");
-				}
-				else {
-					//Move attached image  file, if there is one
-					if (isset($_FILES["imageFile"])) {
-						if ($_FILES["imageFile"]["tmp_name"]!="" AND $imageType=="File") {
-							//Move attached file, if there is one
-							if ($_FILES["imageFile"]["tmp_name"]!="") {
-								$time=time() ;
-								//Check for folder in uploads based on today's date
-								$path=$_SESSION[$guid]["absolutePath"] ; ;
-								if (is_dir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time))==FALSE) {
-									mkdir($path ."/uploads/" . date("Y", $time) . "/" . date("m", $time), 0777, TRUE) ;
-								}
-								$unique=FALSE;
-								$count=0 ;
-								while ($unique==FALSE AND $count<100) {
-									$suffix=randomPassword(16) ;
-									$imageLocation="uploads/" . date("Y", $time) . "/" . date("m", $time) . "/" . preg_replace("/[^a-zA-Z0-9]/", "", $id) . "_$suffix" . strrchr($_FILES["imageFile"]["name"], ".") ;
-									if (!(file_exists($path . "/" . $imageLocation))) {
-										$unique=TRUE ;
-									}
-									$count++ ;
-								}
-							
-								if (!(move_uploaded_file($_FILES["imageFile"]["tmp_name"],$path . "/" . $imageLocation))) {
-									//Fail 5
-									$URL.="&addReturn=fail5" ;
-									header("Location: {$URL}");
-								}
-							}
-						}
-					}
-					
-			
-					//Write to database
-					try {
-						$data=array("id"=>$id, "name"=>$name, "producer"=>$producer, "fields"=>serialize($fieldsOut), "vendor"=>$vendor, "purchaseDate"=>$purchaseDate, "invoiceNumber"=>$invoiceNumber, "imageType"=>$imageType, "imageLocation"=>$imageLocation, "gibbonSchoolYearIDReplacement"=>$gibbonSchoolYearIDReplacement, "replacementCost"=>$replacementCost, "comment"=>$comment, "gibbonSpaceID"=>$gibbonSpaceID, "locationDetail"=>$locationDetail, "ownershipType"=>$ownershipType, "gibbonPersonIDOwnership"=>$gibbonPersonIDOwnership, "gibbonDepartmentID"=>$gibbonDepartmentID, "borrowable"=>$borrowable, "status"=>$status, "gibbonPersonIDUpdate"=>$_SESSION[$guid]["gibbonPersonID"], "timestampUpdate"=>date('Y-m-d H:i:s', time()), "gibbonLibraryItemID"=>$gibbonLibraryItemID) ; 
-						$sql="UPDATE gibbonLibraryItem SET id=:id, name=:name, producer=:producer, fields=:fields, vendor=:vendor, purchaseDate=:purchaseDate, invoiceNumber=:invoiceNumber, imageType=:imageType, imageLocation=:imageLocation, gibbonSchoolYearIDReplacement=:gibbonSchoolYearIDReplacement, replacementCost=:replacementCost, comment=:comment, gibbonSpaceID=:gibbonSpaceID, locationDetail=:locationDetail, ownershipType=:ownershipType, gibbonPersonIDOwnership=:gibbonPersonIDOwnership, gibbonDepartmentID=:gibbonDepartmentID, borrowable=:borrowable, status=:status, gibbonPersonIDUpdate=:gibbonPersonIDUpdate, timestampUpdate=:timestampUpdate WHERE gibbonLibraryItemID=:gibbonLibraryItemID" ;
-						$result=$connection2->prepare($sql);
-						$result->execute($data);
-					}
-					catch(PDOException $e) { 
-						//Fail 2
-						$URL.="&updateReturn=fail2" ;
-						header("Location: {$URL}");
-						break ;
-					}
-	
-					//Success 0
-					$URL.="&updateReturn=success0" ;
-					header("Location: {$URL}");
-				}
-			}
-		}
-	}
-}
-?>

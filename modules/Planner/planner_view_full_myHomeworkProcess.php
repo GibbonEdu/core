@@ -18,175 +18,143 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Gibbon system-wide includes
-include "../../functions.php" ;
-include "../../config.php" ;
+include '../../functions.php';
+include '../../config.php';
 
 //Module includes
-include "./moduleFunctions.php" ;
+include './moduleFunctions.php';
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new Gibbon\sqlConnection();
+$connection2 = $pdo->getConnection();
 
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$gibbonPlannerEntryID=$_GET["gibbonPlannerEntryID"] ;
-$params="" ;
-if (isset($_GET["date"])) {
-	$params=$params."&date=" . $_GET["date"] ;
+$gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
+$params = '';
+if (isset($_GET['date'])) {
+    $params = $params.'&date='.$_GET['date'];
 }
-if (isset($_GET["viewBy"])) {
-	$params=$params."&viewBy=" . $_GET["viewBy"] ;
+if (isset($_GET['viewBy'])) {
+    $params = $params.'&viewBy='.$_GET['viewBy'];
 }
-if (isset($_GET["gibbonCourseClassID"])) {
-	$params=$params."&gibbonCourseClassID=" . $_GET["gibbonCourseClassID"] ;
+if (isset($_GET['gibbonCourseClassID'])) {
+    $params = $params.'&gibbonCourseClassID='.$_GET['gibbonCourseClassID'];
 }
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID$params" ;
+$URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID$params";
 
-if (isActionAccessible($guid, $connection2, "/modules/Planner/planner_view_full.php")==FALSE) {
-	//Fail 0
-	$URL.="&updateReturn=fail0" ;
-	header("Location: {$URL}");
-}
-else {
-	//Proceed!
-	//Check if planner specified
-	if ($gibbonPlannerEntryID=="") {
-		//Fail1
-		$URL.="&updateReturn=fail1" ;
-		header("Location: {$URL}");
-	}
-	else {
-		try {
-			$data=array("gibbonPlannerEntryID"=>$gibbonPlannerEntryID, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-			$sql="SELECT * FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID AND role='Student'" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			//Fail2
-			$URL.="&updateReturn=fail2" ;
-			header("Location: {$URL}");
-			break ;
-		}
+if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.php') == false) {
+    $URL .= '&return=error0';
+    header("Location: {$URL}");
+} else {
+    //Proceed!
+    //Check if planner specified
+    if ($gibbonPlannerEntryID == '') {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+    } else {
+        try {
+            $data = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+            $sql = "SELECT * FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID AND role='Student'";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+            exit();
+        }
 
-		if ($result->rowCount()!=1) {
-			//Fail 2
-			$URL.="&updateReturn=fail2" ;
-			header("Location: {$URL}");
-		}
-		else {	
-			//Get variables
-			$homework=$_POST["homework"] ;
-			if ($_POST["homework"]=="Yes") {
-				$homework="Y" ;
-				//Attempt to prevent XSS attack
-				$homeworkDetails=$_POST["homeworkDetails"] ;
-				$homeworkDetails=tinymceStyleStripTags($homeworkDetails, $connection2) ;
-				if ($_POST["homeworkDueDateTime"]!="") {
-					$homeworkDueDateTime=$_POST["homeworkDueDateTime"] . ":59" ;
-				}
-				else {
-					$homeworkDueDateTime="21:00:00" ;
-				}
-				if ($_POST["homeworkDueDate"]!="") {
-					$homeworkDueDate=dateConvert($guid, $_POST["homeworkDueDate"]) . " " . $homeworkDueDateTime ;
-				}
-			}
-			else {
-				$homework="N" ;
-				$homeworkDueDate=NULL ;
-				$homeworkDetails="" ;
-			}
-			
-			
-			if ($homework=="N") { //IF HOMEWORK NO, DELETE ANY RECORDS
-				try {
-					$data=array("gibbonPlannerEntryID"=>$gibbonPlannerEntryID, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-					$sql="DELETE FROM gibbonPlannerEntryStudentHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { 
-					//Fail2
-					$URL.="&updateReturn=fail2" ;
-					header("Location: {$URL}");
-					break ;
-				}
-				
-				//Success 0
-				$URL.="&updateReturn=success0" ;
-				header("Location: {$URL}");
-			}
-			else { //IF HOMEWORK YES, DEAL WITH RECORDS
-				//Check for record
-				try {
-					$data=array("gibbonPlannerEntryID"=>$gibbonPlannerEntryID, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-					$sql="SELECT * FROM gibbonPlannerEntryStudentHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { 
-					//Fail2
-					$URL.="&updateReturn=fail2" ;
-					header("Location: {$URL}");
-					break ;
-				}
-			
-				if ($result->rowCount()>1) { //Error!
-					//Fail2
-					$URL.="&updateReturn=fail2" ;
-					header("Location: {$URL}");
-					break ;
-				}
-				if ($result->rowCount()==1) { //Exists, so update
-					try {
-						$data=array("gibbonPlannerEntryID"=>$gibbonPlannerEntryID, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "homeworkDueDateTime"=>$homeworkDueDate, "homeworkDetails"=>$homeworkDetails); 
-						$sql="UPDATE gibbonPlannerEntryStudentHomework SET homeworkDueDateTime=:homeworkDueDateTime, homeworkDetails=:homeworkDetails WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID" ;
-						$result=$connection2->prepare($sql);
-						$result->execute($data);
-					}
-					catch(PDOException $e) { 
-						//Fail 2
-						$URL.="&updateReturn=fail2" ;
-						header("Location: {$URL}");
-						break ;
-					}
-					
-					//Success 0
-					$URL.="&updateReturn=success0" ;
-					header("Location: {$URL}");
-				}
-				else { //Does not exist, so create
-					//Write to database
-					try {
-						$data=array("gibbonPlannerEntryID"=>$gibbonPlannerEntryID, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], "homeworkDueDateTime"=>$homeworkDueDate, "homeworkDetails"=>$homeworkDetails); 
-						$sql="INSERT INTO gibbonPlannerEntryStudentHomework SET gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonPersonID=:gibbonPersonID, homeworkDueDateTime=:homeworkDueDateTime, homeworkDetails=:homeworkDetails" ;
-						$result=$connection2->prepare($sql);
-						$result->execute($data);
-					}
-					catch(PDOException $e) { 
-						//Fail 2
-						$URL.="&updateReturn=fail2" ;
-						header("Location: {$URL}");
-						break ;
-					}
-					
-					//Success 0
-					$URL.="&updateReturn=success0" ;
-					header("Location: {$URL}");
-				}
-			}
-		}
-	}
+        if ($result->rowCount() != 1) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+        } else {
+            //Get variables
+            $homework = $_POST['homework'];
+            if ($_POST['homework'] == 'Yes') {
+                $homework = 'Y';
+                //Attempt to prevent XSS attack
+                $homeworkDetails = $_POST['homeworkDetails'];
+                $homeworkDetails = tinymceStyleStripTags($homeworkDetails, $connection2);
+                if ($_POST['homeworkDueDateTime'] != '') {
+                    $homeworkDueDateTime = $_POST['homeworkDueDateTime'].':59';
+                } else {
+                    $homeworkDueDateTime = '21:00:00';
+                }
+                if ($_POST['homeworkDueDate'] != '') {
+                    $homeworkDueDate = dateConvert($guid, $_POST['homeworkDueDate']).' '.$homeworkDueDateTime;
+                }
+            } else {
+                $homework = 'N';
+                $homeworkDueDate = null;
+                $homeworkDetails = '';
+            }
+
+            if ($homework == 'N') { //IF HOMEWORK NO, DELETE ANY RECORDS
+                try {
+                    $data = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                    $sql = 'DELETE FROM gibbonPlannerEntryStudentHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID';
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    $URL .= '&return=error2';
+                    header("Location: {$URL}");
+                    exit();
+                }
+
+                $URL .= '&return=success0';
+                header("Location: {$URL}");
+            } else { //IF HOMEWORK YES, DEAL WITH RECORDS
+                //Check for record
+                try {
+                    $data = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                    $sql = 'SELECT * FROM gibbonPlannerEntryStudentHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID';
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    $URL .= '&return=error2';
+                    header("Location: {$URL}");
+                    exit();
+                }
+
+                if ($result->rowCount() > 1) { //Error!
+                            $URL .= '&return=error2';
+                    header("Location: {$URL}");
+                    exit();
+                }
+                if ($result->rowCount() == 1) { //Exists, so update
+                    try {
+                        $data = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'homeworkDueDateTime' => $homeworkDueDate, 'homeworkDetails' => $homeworkDetails);
+                        $sql = 'UPDATE gibbonPlannerEntryStudentHomework SET homeworkDueDateTime=:homeworkDueDateTime, homeworkDetails=:homeworkDetails WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID';
+                        $result = $connection2->prepare($sql);
+                        $result->execute($data);
+                    } catch (PDOException $e) {
+                        $URL .= '&return=error2';
+                        header("Location: {$URL}");
+                        exit();
+                    }
+
+                    $URL .= '&return=success0';
+                    header("Location: {$URL}");
+                } else { //Does not exist, so create
+                    //Write to database
+                    try {
+                        $data = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'homeworkDueDateTime' => $homeworkDueDate, 'homeworkDetails' => $homeworkDetails);
+                        $sql = 'INSERT INTO gibbonPlannerEntryStudentHomework SET gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonPersonID=:gibbonPersonID, homeworkDueDateTime=:homeworkDueDateTime, homeworkDetails=:homeworkDetails';
+                        $result = $connection2->prepare($sql);
+                        $result->execute($data);
+                    } catch (PDOException $e) {
+                        $URL .= '&return=error2';
+                        header("Location: {$URL}");
+                        exit();
+                    }
+
+                    $URL .= '&return=success0';
+                    header("Location: {$URL}");
+                }
+            }
+        }
+    }
 }
-?>

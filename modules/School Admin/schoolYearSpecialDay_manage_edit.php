@@ -17,114 +17,95 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+@session_start();
 
-if (isActionAccessible($guid, $connection2, "/modules/School Admin/schoolYearSpecialDay_manage_edit.php")==FALSE) {
-	//Acess denied
-	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
-	print "</div>" ;
-}
-else {
-	//Proceed!
-	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/schoolYearSpecialDay_manage.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . _('Manage Special Days') . "</a> > </div><div class='trailEnd'>" . _('Edit Special Day') . "</div>" ;
-	print "</div>" ;
-	
-	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-	$updateReturnMessage="" ;
-	$class="error" ;
-	if (!($updateReturn=="")) {
-		if ($updateReturn=="fail0") {
-			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
-		}
-		else if ($updateReturn=="fail1") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($updateReturn=="fail2") {
-			$updateReturnMessage=_("Your request failed due to a database error.") ;	
-		}
-		else if ($updateReturn=="fail3") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($updateReturn=="fail4") {
-			$updateReturnMessage=_("Your request failed because some inputs did not meet a requirement for uniqueness.") ;	
-		}
-		else if ($updateReturn=="success0") {
-			$updateReturnMessage=_("Your request was completed successfully.") ;	
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $updateReturnMessage;
-		print "</div>" ;
-	} 
-	
-	//Check if school year specified
-	$gibbonSchoolYearSpecialDayID=$_GET["gibbonSchoolYearSpecialDayID"] ;
-	if ($gibbonSchoolYearSpecialDayID=="") {
-		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
-		print "</div>" ;
-	}
-	else {
-		try {
-			$data=array("gibbonSchoolYearSpecialDayID"=>$gibbonSchoolYearSpecialDayID); 
-			$sql="SELECT * FROM gibbonSchoolYearSpecialDay WHERE gibbonSchoolYearSpecialDayID=:gibbonSchoolYearSpecialDayID" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-		}
+if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpecialDay_manage_edit.php') == false) {
+    //Acess denied
+    echo "<div class='error'>";
+    echo __($guid, 'You do not have access to this action.');
+    echo '</div>';
+} else {
+    //Proceed!
+    echo "<div class='trail'>";
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/schoolYearSpecialDay_manage.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__($guid, 'Manage Special Days')."</a> > </div><div class='trailEnd'>".__($guid, 'Edit Special Day').'</div>';
+    echo '</div>';
 
-		if ($result->rowCount()!=1) {
-			print "<div class='error'>" ;
-				print _("The specified record cannot be found.") ;
-			print "</div>" ;
-		}
-		else {
-			//Let's go!
-			$row=$result->fetch() ;
-			?>
-			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/schoolYearSpecialDay_manage_editProcess.php?gibbonSchoolYearSpecialDayID=$gibbonSchoolYearSpecialDayID&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] ?>">
-			<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+    if (isset($_GET['return'])) {
+        returnProcess($guid, $_GET['return'], null, null);
+    }
+
+    //Check if school year specified
+    $gibbonSchoolYearSpecialDayID = $_GET['gibbonSchoolYearSpecialDayID'];
+    if ($gibbonSchoolYearSpecialDayID == '') {
+        echo "<div class='error'>";
+        echo __($guid, 'You have not specified one or more required parameters.');
+        echo '</div>';
+    } else {
+        try {
+            $data = array('gibbonSchoolYearSpecialDayID' => $gibbonSchoolYearSpecialDayID);
+            $sql = 'SELECT * FROM gibbonSchoolYearSpecialDay WHERE gibbonSchoolYearSpecialDayID=:gibbonSchoolYearSpecialDayID';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            echo "<div class='error'>".$e->getMessage().'</div>';
+        }
+
+        if ($result->rowCount() != 1) {
+            echo "<div class='error'>";
+            echo __($guid, 'The specified record cannot be found.');
+            echo '</div>';
+        } else {
+            //Let's go!
+            $row = $result->fetch(); ?>
+			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/schoolYearSpecialDay_manage_editProcess.php?gibbonSchoolYearSpecialDayID=$gibbonSchoolYearSpecialDayID&gibbonSchoolYearID=".$_GET['gibbonSchoolYearID'] ?>">
+			<table class='smallIntBorder fullWidth' cellspacing='0'>	
 				<tr>
 					<td style='width: 275px'> 
-						<b><?php print _('Date') ?> *</b><br/>
-						<span style="font-size: 90%"><i><?php print _('Must be unique.')?> <?php print _('This value cannot be changed.') ?></i></span>
+						<b><?php echo __($guid, 'Date') ?> *</b><br/>
+						<span class="emphasis small"><?php echo __($guid, 'Must be unique.')?> <?php echo __($guid, 'This value cannot be changed.') ?></span>
 					</td>
 					<td class="right">
-						<input readonly name="date" id="date" maxlength=10 value="<?php print dateConvertBack($guid, $row["date"]) ?>" type="text" style="width: 300px">
+						<input readonly name="date" id="date" maxlength=10 value="<?php echo dateConvertBack($guid, $row['date']) ?>" type="text" class="standardWidth">
 						<script type="text/javascript">
 							var date=new LiveValidation('date');
 							date.add(Validate.Presence);
-							date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]["i18n"]["dateFormatRegEx"]=="") {  print "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i" ; } else { print $_SESSION[$guid]["i18n"]["dateFormatRegEx"] ; } ?>, failureMessage: "Use <?php if ($_SESSION[$guid]["i18n"]["dateFormat"]=="") { print "dd/mm/yyyy" ; } else { print $_SESSION[$guid]["i18n"]["dateFormat"] ; }?>." } ); 
+							date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
+							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+							} else {
+								echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+							}
+										?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+								echo 'dd/mm/yyyy';
+							} else {
+								echo $_SESSION[$guid]['i18n']['dateFormat'];
+							}
+							?>." } ); 
 						</script>
 					</td>
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('Type') ?> *</b>
+						<b><?php echo __($guid, 'Type') ?> *</b>
 					</td>
 					<td class="right">
-						<select name="type" id="type" style="width: 302px">
-							<option value="Please select..."><?php print _('Please select...') ?></option>
-							<option <?php if ($row["type"]=="School Closure") { print "selected " ; } ?>value="School Closure"><?php print _('School Closure') ?></option>
-							<option <?php if ($row["type"]=="Timing Change") { print "selected " ; } ?>value="Timing Change"><?php print _('Timing Change') ?></option>
+						<select name="type" id="type" class="standardWidth">
+							<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
+							<option <?php if ($row['type'] == 'School Closure') { echo 'selected '; } ?>value="School Closure"><?php echo __($guid, 'School Closure') ?></option>
+							<option <?php if ($row['type'] == 'Timing Change') { echo 'selected '; } ?>value="Timing Change"><?php echo __($guid, 'Timing Change') ?></option>
 						</select>
 						<script type="text/javascript">
 							var type=new LiveValidation('type');
-							type.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php print _('Select something!') ?>"});
+							type.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
 						</script>
 					</td>
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('Name') ?> *</b><br/>
-						<span style="font-size: 90%"><i></i></span>
+						<b><?php echo __($guid, 'Name') ?> *</b><br/>
+						<span class="emphasis small"></span>
 					</td>
 					<td class="right">
-						<input name="name" id="name" maxlength=20 value="<?php print htmlPrep($row["name"]) ?>" type="text" style="width: 300px">
+						<input name="name" id="name" maxlength=20 value="<?php echo htmlPrep($row['name']) ?>" type="text" class="standardWidth">
 						<script type="text/javascript">
 							var name2=new LiveValidation('name');
 							name2.add(Validate.Presence);
@@ -133,50 +114,48 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('Description') ?></b><br/>
-						<span style="font-size: 90%"><i></i></span>
+						<b><?php echo __($guid, 'Description') ?></b><br/>
+						<span class="emphasis small"></span>
 					</td>
 					<td class="right">
-						<input name="description" id="description" maxlength=255 value="<?php print htmlPrep($row["description"]) ?>" type="text" style="width: 300px">
+						<input name="description" id="description" maxlength=255 value="<?php echo htmlPrep($row['description']) ?>" type="text" class="standardWidth">
 					</td>
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('School Opens') ?></b>
+						<b><?php echo __($guid, 'School Opens') ?></b>
 					</td>
 					<td class="right">
 						<select style="width:100px" name="schoolOpenM" id="schoolOpenM">
 							<?php
-							print "<option value='Minutes'>" . _('Minutes') . "</option>" ;
-							for ($i=0;$i<60;$i++) {
-								$iPrint=$i;
-								if (strlen($i)==1) {
-									$iPrint="0" . $i ;
+                            echo "<option value='Minutes'>".__($guid, 'Minutes').'</option>';
+							for ($i = 0;$i < 60;++$i) {
+								$iPrint = $i;
+								if (strlen($i) == 1) {
+									$iPrint = '0'.$i;
 								}
-								
-								if (substr($row["schoolOpen"],3,2)==$i AND $row["schoolOpen"]!=NULL) {
-									print "<option selected value='" . $iPrint . "'>" . $iPrint . "</option>" ;
-								}
-								else {
-									print "<option value='" . $iPrint . "'>" . $iPrint . "</option>" ;
+
+								if (substr($row['schoolOpen'], 3, 2) == $i and $row['schoolOpen'] != null) {
+									echo "<option selected value='".$iPrint."'>".$iPrint.'</option>';
+								} else {
+									echo "<option value='".$iPrint."'>".$iPrint.'</option>';
 								}
 							}
 							?>				
 						</select>
 						<select style="width:100px" name="schoolOpenH" id="schoolOpenH">
 							<?php
-							print "<option value='Hours'>" . _('Hours') . "</option>" ;
-							for ($i=0;$i<24;$i++) {
-								$iPrint=$i;
-								if (strlen($i)==1) {
-									$iPrint="0" . $i ;
+                            echo "<option value='Hours'>".__($guid, 'Hours').'</option>';
+							for ($i = 0;$i < 24;++$i) {
+								$iPrint = $i;
+								if (strlen($i) == 1) {
+									$iPrint = '0'.$i;
 								}
-								
-								if (substr($row["schoolOpen"],0,2)==$i AND $row["schoolOpen"]!=NULL) {
-									print "<option selected value='" . $iPrint . "'>" . $iPrint . "</option>" ;
-								}
-								else {
-									print "<option value='" . $iPrint . "'>" . $iPrint . "</option>" ;
+
+								if (substr($row['schoolOpen'], 0, 2) == $i and $row['schoolOpen'] != null) {
+									echo "<option selected value='".$iPrint."'>".$iPrint.'</option>';
+								} else {
+									echo "<option value='".$iPrint."'>".$iPrint.'</option>';
 								}
 							}
 							?>				
@@ -185,41 +164,39 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('School Starts') ?></b>
+						<b><?php echo __($guid, 'School Starts') ?></b>
 					</td>
 					<td class="right">
 						<select style="width:100px" name="schoolStartM" id="schoolStartM">
 							<?php
-							print "<option value='Minutes'>" . _('Minutes') . "</option>" ;
-							for ($i=0;$i<60;$i++) {
-								$iPrint=$i;
-								if (strlen($i)==1) {
-									$iPrint="0" . $i ;
+                            echo "<option value='Minutes'>".__($guid, 'Minutes').'</option>';
+							for ($i = 0;$i < 60;++$i) {
+								$iPrint = $i;
+								if (strlen($i) == 1) {
+									$iPrint = '0'.$i;
 								}
-								
-								if (substr($row["schoolStart"],3,2)==$i AND $row["schoolStart"]!=NULL) {
-									print "<option selected value='" . $iPrint . "'>" . $iPrint . "</option>" ;
-								}
-								else {
-									print "<option value='" . $iPrint . "'>" . $iPrint . "</option>" ;
+
+								if (substr($row['schoolStart'], 3, 2) == $i and $row['schoolStart'] != null) {
+									echo "<option selected value='".$iPrint."'>".$iPrint.'</option>';
+								} else {
+									echo "<option value='".$iPrint."'>".$iPrint.'</option>';
 								}
 							}
 							?>				
 						</select>
 						<select style="width:100px" name="schoolStartH" id="schoolStartH">
 							<?php
-							print "<option value='Hours'>" . _('Hours') . "</option>" ;
-							for ($i=0;$i<24;$i++) {
-								$iPrint=$i;
-								if (strlen($i)==1) {
-									$iPrint="0" . $i ;
+                            echo "<option value='Hours'>".__($guid, 'Hours').'</option>';
+							for ($i = 0;$i < 24;++$i) {
+								$iPrint = $i;
+								if (strlen($i) == 1) {
+									$iPrint = '0'.$i;
 								}
-								
-								if (substr($row["schoolStart"],0,2)==$i AND $row["schoolStart"]!=NULL) {
-									print "<option selected value='" . $iPrint . "'>" . $iPrint . "</option>" ;
-								}
-								else {
-									print "<option value='" . $iPrint . "'>" . $iPrint . "</option>" ;
+
+								if (substr($row['schoolStart'], 0, 2) == $i and $row['schoolStart'] != null) {
+									echo "<option selected value='".$iPrint."'>".$iPrint.'</option>';
+								} else {
+									echo "<option value='".$iPrint."'>".$iPrint.'</option>';
 								}
 							}
 							?>				
@@ -228,84 +205,80 @@ else {
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('School Ends') ?></b>
+						<b><?php echo __($guid, 'School Ends') ?></b>
 					</td>
 					<td class="right">
 						<select style="width:100px" name="schoolEndM" id="schoolEndM">
 							<?php
-							print "<option value='Minutes'>" . _('Minutes') . "</option>" ;
-							for ($i=0;$i<60;$i++) {
-								$iPrint=$i;
-								if (strlen($i)==1) {
-									$iPrint="0" . $i ;
+                            echo "<option value='Minutes'>".__($guid, 'Minutes').'</option>';
+							for ($i = 0;$i < 60;++$i) {
+								$iPrint = $i;
+								if (strlen($i) == 1) {
+									$iPrint = '0'.$i;
 								}
-								
-								if (substr($row["schoolEnd"],3,2)==$i AND $row["schoolEnd"]!=NULL) {
-									print "<option selected value='" . $iPrint . "'>" . $iPrint . "</option>" ;
-								}
-								else {
-									print "<option value='" . $iPrint . "'>" . $iPrint . "</option>" ;
+
+								if (substr($row['schoolEnd'], 3, 2) == $i and $row['schoolEnd'] != null) {
+									echo "<option selected value='".$iPrint."'>".$iPrint.'</option>';
+								} else {
+									echo "<option value='".$iPrint."'>".$iPrint.'</option>';
 								}
 							}
 							?>				
 						</select>
 						<select style="width:100px" name="schoolEndH" id="schoolEndH">
 							<?php
-							print "<option value='Hours'>" . _('Hours') . "</option>" ;
-							for ($i=0;$i<24;$i++) {
-								$iPrint=$i;
-								if (strlen($i)==1) {
-									$iPrint="0" . $i ;
+                            echo "<option value='Hours'>".__($guid, 'Hours').'</option>';
+							for ($i = 0;$i < 24;++$i) {
+								$iPrint = $i;
+								if (strlen($i) == 1) {
+									$iPrint = '0'.$i;
 								}
-								
-								if (substr($row["schoolEnd"],0,2)==$i AND $row["schoolEnd"]!=NULL) {
-									print "<option selected value='" . $iPrint . "'>" . $iPrint . "</option>" ;
-								}
-								else {
-									print "<option value='" . $iPrint . "'>" . $iPrint . "</option>" ;
+
+								if (substr($row['schoolEnd'], 0, 2) == $i and $row['schoolEnd'] != null) {
+									echo "<option selected value='".$iPrint."'>".$iPrint.'</option>';
+								} else {
+									echo "<option value='".$iPrint."'>".$iPrint.'</option>';
 								}
 							}
-							?>				
+            				?>				
 						</select>
 					</td>
 				</tr>
 				<tr>
 					<td> 
-						<b><?php print _('School Closes') ?></b>
+						<b><?php echo __($guid, 'School Closes') ?></b>
 					</td>
 					<td class="right">
 						<select style="width:100px" name="schoolCloseM" id="schoolCloseM">
 							<?php
-							print "<option value='Minutes'>" . _('Minutes') . "</option>" ;
-							for ($i=0;$i<60;$i++) {
-								$iPrint=$i;
-								if (strlen($i)==1) {
-									$iPrint="0" . $i ;
+                            echo "<option value='Minutes'>".__($guid, 'Minutes').'</option>';
+							for ($i = 0;$i < 60;++$i) {
+								$iPrint = $i;
+								if (strlen($i) == 1) {
+									$iPrint = '0'.$i;
 								}
-								
-								if (substr($row["schoolClose"],3,2)==$i AND $row["schoolClose"]!=NULL) {
-									print "<option selected value='" . $iPrint . "'>" . $iPrint . "</option>" ;
-								}
-								else {
-									print "<option value='" . $iPrint . "'>" . $iPrint . "</option>" ;
+
+								if (substr($row['schoolClose'], 3, 2) == $i and $row['schoolClose'] != null) {
+									echo "<option selected value='".$iPrint."'>".$iPrint.'</option>';
+								} else {
+									echo "<option value='".$iPrint."'>".$iPrint.'</option>';
 								}
 							}
 							?>				
 						</select>
 						<select style="width:100px" name="schoolCloseH" id="schoolCloseH">
 							<?php
-							print "<option value='Hours'>" . _('Hours') . "</option>" ;
-							for ($i=0;$i<24;$i++) {
-								$iPrint=$i;
-								if (strlen($i)==1) {
-									$iPrint="0" . $i ;
+                            echo "<option value='Hours'>".__($guid, 'Hours').'</option>';
+							for ($i = 0;$i < 24;++$i) {
+								$iPrint = $i;
+								if (strlen($i) == 1) {
+									$iPrint = '0'.$i;
 								}
-								
-								if (substr($row["schoolClose"],0,2)==$i AND $row["schoolClose"]!=NULL) {
-									print "<option selected value='" . $iPrint . "'>" . $iPrint . "</option>" ;
-								}
-								else {
-									print "<option value='" . $iPrint . "'>" . $iPrint . "</option>" ;
+
+								if (substr($row['schoolClose'], 0, 2) == $i and $row['schoolClose'] != null) {
+									echo "<option selected value='".$iPrint."'>".$iPrint.'</option>';
+								} else {
+									echo "<option value='".$iPrint."'>".$iPrint.'</option>';
 								}
 							}
 							?>				
@@ -314,18 +287,19 @@ else {
 				</tr>
 				<tr>
 					<td>
-						<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+						<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 					</td>
 					<td class="right">
-						<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php print $_GET["gibbonSchoolYearID"] ?>" type="hidden">
-						<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-						<input type="submit" value="<?php print _("Submit") ; ?>">
+						<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php echo $_GET['gibbonSchoolYearID'] ?>" type="hidden">
+						<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
+						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 					</td>
 				</tr>
 			</table>
 			</form>
 			<?php
-		}
-	}
+
+        }
+    }
 }
 ?>

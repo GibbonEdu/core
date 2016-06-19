@@ -17,75 +17,55 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+@session_start();
 
-if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/tt_edit_day_delete.php")==FALSE) {
-	//Acess denied
-	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
-	print "</div>" ;
-}
-else {
-	//Check if school year specified
-	$gibbonTTDayID=$_GET["gibbonTTDayID"] ;
-	$gibbonTTID=$_GET["gibbonTTID"] ;
-	$gibbonSchoolYearID=$_GET["gibbonSchoolYearID"] ;
-	if ($gibbonTTDayID=="" OR $gibbonTTID=="" OR $gibbonSchoolYearID=="") {
-		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
-		print "</div>" ;
-	}
-	else {
-		try {
-			$data=array("gibbonTTDayID"=>$gibbonTTDayID); 
-			$sql="SELECT * FROM gibbonTTDay WHERE gibbonTTDayID=:gibbonTTDayID" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-		}
+if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_day_delete.php') == false) {
+    //Acess denied
+    echo "<div class='error'>";
+    echo __($guid, 'You do not have access to this action.');
+    echo '</div>';
+} else {
+    //Check if school year specified
+    $gibbonTTDayID = $_GET['gibbonTTDayID'];
+    $gibbonTTID = $_GET['gibbonTTID'];
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
+    if ($gibbonTTDayID == '' or $gibbonTTID == '' or $gibbonSchoolYearID == '') {
+        echo "<div class='error'>";
+        echo __($guid, 'You have not specified one or more required parameters.');
+        echo '</div>';
+    } else {
+        try {
+            $data = array('gibbonTTDayID' => $gibbonTTDayID);
+            $sql = 'SELECT * FROM gibbonTTDay WHERE gibbonTTDayID=:gibbonTTDayID';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            echo "<div class='error'>".$e->getMessage().'</div>';
+        }
 
-		if ($result->rowCount()!=1) {
-			print "<div class='error'>" ;
-				print _("The specified record cannot be found.") ;
-			print "</div>" ;
-		}
-		else {
-			//Let's go!
-			$row=$result->fetch() ;
-			
-			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt.php&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . _('Manage Timetables') . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/tt_edit.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=" . $_GET["gibbonSchoolYearID"] . "'>" . _('Edit Timetable') . "</a> > </div><div class='trailEnd'>" . _('Delete Timetable Day') . "</div>" ; 
-			print "</div>" ;
-			
-			if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-			$deleteReturnMessage="" ;
-			$class="error" ;
-			if (!($deleteReturn=="")) {
-				if ($deleteReturn=="fail0") {
-					$deleteReturnMessage=_("Your request failed because you do not have access to this action.") ;	
-				}
-				else if ($deleteReturn=="fail1") {
-					$deleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-				}
-				else if ($deleteReturn=="fail2") {
-					$deleteReturnMessage=_("Your request was successful, but some data was not properly saved.") ;	
-				}
-				else if ($deleteReturn=="fail3") {
-					$deleteReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-				}
-				print "<div class='$class'>" ;
-					print $deleteReturnMessage;
-				print "</div>" ;
-			} 
-			?>
-			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/tt_edit_day_deleteProcess.php?gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID" ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+        if ($result->rowCount() != 1) {
+            echo "<div class='error'>";
+            echo __($guid, 'The specified record cannot be found.');
+            echo '</div>';
+        } else {
+            //Let's go!
+            $row = $result->fetch();
+
+            echo "<div class='trail'>";
+            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/tt.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__($guid, 'Manage Timetables')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/tt_edit.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=".$_GET['gibbonSchoolYearID']."'>".__($guid, 'Edit Timetable')."</a> > </div><div class='trailEnd'>".__($guid, 'Delete Timetable Day').'</div>';
+            echo '</div>';
+
+            if (isset($_GET['return'])) {
+                returnProcess($guid, $_GET['return'], null, null);
+            }
+
+            ?>
+			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/tt_edit_day_deleteProcess.php?gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID" ?>">
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td style='width: 275px'> 
-							<b><?php print _('Are you sure you want to delete this record?') ; ?></b><br/>
-							<span style="font-size: 90%; color: #cc0000"><i><?php print _('This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!') ; ?></i></span>
+							<b><?php echo __($guid, 'Are you sure you want to delete this record?'); ?></b><br/>
+							<span style="font-size: 90%; color: #cc0000"><i><?php echo __($guid, 'This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!'); ?></span>
 						</td>
 						<td class="right">
 							
@@ -93,8 +73,8 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<?php print _('Yes') ; ?>">
+							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
+							<input type="submit" value="<?php echo __($guid, 'Yes'); ?>">
 						</td>
 						<td class="right">
 							
@@ -103,7 +83,8 @@ else {
 				</table>
 			</form>
 			<?php
-		}
-	}
+
+        }
+    }
 }
 ?>

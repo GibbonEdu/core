@@ -17,52 +17,50 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "../../functions.php" ;
-include "../../config.php" ;
+include '../../functions.php';
+include '../../config.php';
 
-include "./moduleFunctions.php" ;
+include './moduleFunctions.php';
 
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$location=$_POST["location"] ;
-$count=$_POST["count"] ;
+$location = $_POST['location'];
+$count = $_POST['count'];
 
-if ($location!="") {
-	$site=@file_get_contents($location);
-	if (strstr($site, "<meta name=\"generator\" content=\"WordPress") OR strstr($site, "wp-content")) {
-		$action="" ;
-		$doc=new DOMDocument();
-		@$doc->loadHtml($site);
-		
-		//Get form action
-		$selector=new DOMXpath($doc);
-		$results=$selector->query('//form');
-		foreach ($results as $result) {
-			if (strstr($result->getAttribute('action'), "wp-comments-post.php")) {
-				$action=$result->getAttribute('action') ;
-				break ;
-			}
-		}
-	
-		//Get post ID
-		$id="" ;
-		$doc->preserveWhiteSpace=FALSE;
-		@$doc->loadXml($xhtml);
-		foreach( $doc->getElementsByTagName('link') as $node ) {
-			if ($node->getAttribute('rel')=="shortlink") {
-				$id=$node->getAttribute('href') ;
-				$id=substr($id,(strpos($id, "?p=")+3)) ;
-				break ;
-			}
-		}
-	
-		if ($action!="" AND $id!="") {
-			print " <input name='$count-wordpressCommentPush' id='$count-wordpressCommentPush' type='checkbox' value='$id-$action'>" ;
-		}	
-	}
+if ($location != '') {
+    $site = @file_get_contents($location);
+    if (strstr($site, '<meta name="generator" content="WordPress') or strstr($site, 'wp-content')) {
+        $action = '';
+        $doc = new DOMDocument();
+        @$doc->loadHtml($site);
+
+        //Get form action
+        $selector = new DOMXpath($doc);
+        $results = $selector->query('//form');
+        foreach ($results as $result) {
+            if (strstr($result->getAttribute('action'), 'wp-comments-post.php')) {
+                $action = $result->getAttribute('action');
+                break;
+            }
+        }
+
+        //Get post ID
+        $id = '';
+        $doc->preserveWhiteSpace = false;
+        @$doc->loadXml($xhtml);
+        foreach ($doc->getElementsByTagName('link') as $node) {
+            if ($node->getAttribute('rel') == 'shortlink') {
+                $id = $node->getAttribute('href');
+                $id = substr($id, (strpos($id, '?p=') + 3));
+                break;
+            }
+        }
+
+        if ($action != '' and $id != '') {
+            echo " <input name='$count-wordpressCommentPush' id='$count-wordpressCommentPush' type='checkbox' value='$id-$action'>";
+        }
+    }
 }
-
-?>

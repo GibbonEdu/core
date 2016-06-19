@@ -4,14 +4,8 @@ include "../../functions.php" ;
 include "../../config.php" ;
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new Gibbon\sqlConnection();
+$connection2 = $pdo->getConnection();
 
 @session_start() ;
 
@@ -66,7 +60,9 @@ $cancelURL=$_SESSION[$guid]["absoluteURL"] . "/" . $_GET["fail"];
 //' it is included at the top of this file.
 //'-------------------------------------------------
 $resArray=CallShortcutExpressCheckout ($paymentAmount, $currencyCodeType, $paymentType, urlencode($returnURL), urlencode($cancelURL), $guid);
-$ack=strtoupper($resArray["ACK"]);
+$ack=strtoupper(@$resArray["ACK"]);
+
+	
 if($ack=="SUCCESS" || $ack=="SUCCESSWITHWARNING")
 {
 	RedirectToPayPal ( $resArray["TOKEN"] );
@@ -78,6 +74,8 @@ else
 	$ErrorShortMsg=urldecode($resArray["L_SHORTMESSAGE0"]);
 	$ErrorLongMsg=urldecode($resArray["L_LONGMESSAGE0"]);
 	$ErrorSeverityCode=urldecode($resArray["L_SEVERITYCODE0"]);
+	
+	print $ErrorLongMsg ; exit() ;
 	
 	if ($ErrorLongMsg="Currency is not supported") {
 		$URL=$_SESSION[$guid]["gatewayCurrencyNoSupportReturnURL"] ;

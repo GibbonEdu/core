@@ -17,56 +17,54 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+@session_start();
 
 //Module includes
-include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
+include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, "/modules/Activities/report_activitySpread_rollGroup.php")==FALSE) {
-	//Acess denied
-	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
-	print "</div>" ;
-}
-else {
-	//Proceed!
-	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Activity Spread by Roll Group') . "</div>" ;
-	print "</div>" ;
+if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activitySpread_rollGroup.php') == false) {
+    //Acess denied
+    echo "<div class='error'>";
+    echo __($guid, 'You do not have access to this action.');
+    echo '</div>';
+} else {
+    //Proceed!
+    echo "<div class='trail'>";
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Activity Spread by Roll Group').'</div>';
+    echo '</div>';
+
+    echo '<h2>';
+    echo __($guid, 'Choose Roll Group');
+    echo '</h2>';
+
+    $gibbonRollGroupID = null;
+    if (isset($_GET['gibbonRollGroupID'])) {
+        $gibbonRollGroupID = $_GET['gibbonRollGroupID'];
+    }
+    ?>
 	
-	print "<h2>" ;
-	print _("Choose Roll Group") ;
-	print "</h2>" ;
-	
-	$gibbonRollGroupID=NULL ;
-	if (isset($_GET["gibbonRollGroupID"])) {
-		$gibbonRollGroupID=$_GET["gibbonRollGroupID"] ;
-	}
-	?>
-	
-	<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr>
 				<td style='width: 275px'> 
-					<b><?php print _('Roll Group') ?> *</b><br/>
+					<b><?php echo __($guid, 'Roll Group') ?> *</b><br/>
 				</td>
 				<td class="right">
-					<select style="width: 302px" name="gibbonRollGroupID">
+					<select class="standardWidth" name="gibbonRollGroupID">
 						<?php
-						print "<option value=''></option>" ;
+                        echo "<option value=''></option>";
 						try {
-							$dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-							$sqlSelect="SELECT * FROM gibbonRollGroup WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name" ;
-							$resultSelect=$connection2->prepare($sqlSelect);
+							$dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+							$sqlSelect = 'SELECT * FROM gibbonRollGroup WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
+							$resultSelect = $connection2->prepare($sqlSelect);
 							$resultSelect->execute($dataSelect);
+						} catch (PDOException $e) {
 						}
-						catch(PDOException $e) { }
-						while ($rowSelect=$resultSelect->fetch()) {
-							if ($gibbonRollGroupID==$rowSelect["gibbonRollGroupID"]) {
-								print "<option selected value='" . $rowSelect["gibbonRollGroupID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
-							}
-							else {
-								print "<option value='" . $rowSelect["gibbonRollGroupID"] . "'>" . htmlPrep($rowSelect["name"]) . "</option>" ;
+						while ($rowSelect = $resultSelect->fetch()) {
+							if ($gibbonRollGroupID == $rowSelect['gibbonRollGroupID']) {
+								echo "<option selected value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
+							} else {
+								echo "<option value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
 							}
 						}
 						?>				
@@ -75,191 +73,181 @@ else {
 			</tr>
 			<tr>
 				<td> 
-					<b><?php print _('Status') ?> *</b><br/>
+					<b><?php echo __($guid, 'Status') ?> *</b><br/>
 				</td>
 				<td class="right">
-					<select style="width: 302px" name="status">
+					<select class="standardWidth" name="status">
 						<?php
-						print "<option value='Accepted'>" . _('Accepted') . "</option>" ;
-						$selected="" ;
-						if ($_GET["status"]=="Registered") {
-							$selected="selected" ;
+                        echo "<option value='Accepted'>".__($guid, 'Accepted').'</option>';
+						$selected = '';
+						if ($_GET['status'] == 'Registered') {
+							$selected = 'selected';
 						}
-						print "<option $selected value='Registered'>" . _('Registered') . "</option>" ;
-						?>				
+						echo "<option $selected value='Registered'>".__($guid, 'Registered').'</option>';?>				
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<td colspan=2 class="right">
-					<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/report_activitySpread_rollGroup.php">
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/report_activitySpread_rollGroup.php">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>
 	</form>
 	<?php
-	
-	if ($gibbonRollGroupID!="") {
-		$output="" ;
-		print "<h2>" ;
-		print _("Report Data") ;
-		print "</h2>" ;
-		
-		try {
-			$data=array("gibbonRollGroupID"=>$gibbonRollGroupID); 
-			$sql="SELECT gibbonPerson.gibbonPersonID, surname, preferredName, name FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND gibbonStudentEnrolment.gibbonRollGroupID=:gibbonRollGroupID ORDER BY surname, preferredName" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-		}
 
-		if ($result->rowCount()<1) {
-			print "<div class='error'>" ;
-				print _("There are no records to display.") ;
-			print "</div>" ;
-		}
-		else {
-			print "<table class='mini' cellspacing='0' style='width: 100%'>" ;
-				print "<tr class='head'>" ;
-					print "<th rowspan=2>" ;
-						print _("Roll Group") ;
-					print "</th>" ;
-					print "<th rowspan=2>" ;
-						print _("Student") ;
-					print "</th>" ;
-					//Get terms and days of week
-					$terms=getTerms($connection2, $_SESSION[$guid]["gibbonSchoolYearID"]) ;
-					$days=FALSE ;
-					
-					try {
-						$dataDays=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-						$sqlDays="SELECT DISTINCT gibbonDaysOfWeek.* FROM gibbonDaysOfWeek JOIN gibbonActivitySlot ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID) JOIN gibbonActivity ON (gibbonActivitySlot.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND schoolDay='Y' ORDER BY sequenceNumber" ;
-						$resultDays=$connection2->prepare($sqlDays);
-						$resultDays->execute($dataDays);
-					}
-					catch(PDOException $e) { 
-						print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-					}
+    if ($gibbonRollGroupID != '') {
+        $output = '';
+        echo '<h2>';
+        echo __($guid, 'Report Data');
+        echo '</h2>';
 
-					while ($rowDays=$resultDays->fetch()) {
-						$days=$days . $rowDays["gibbonDaysOfWeekID"] . "," ;
-						$days=$days . $rowDays["nameShort"] . "," ;
-					}
-					if ($days!=FALSE) {
-						$days=substr($days,0,(strlen($days)-1)) ;
-						$days=explode(",", $days) ;
-					}
-					
-					//Create columns
-					$columns=array() ;
-					$columnCount=0 ;
-					for ($i=0; $i<count($terms); $i=$i+2) {
-						print "<th colspan=" . count($days)/2 . ">" ;
-							print $terms[($i+1)] ;
-						print "</th>" ;		
-					}
-				print "</tr>" ;
-				print "<tr class='head'>" ;
-					for ($i=0; $i<count($terms); $i=$i+2) {
-						for ($j=0; $j<count($days); $j=$j+2) {
-							print "<th>" ;
-								print _($days[($j+1)]) ;
-								$columns[$columnCount][0]=$terms[$i] ;
-								$columns[$columnCount][1]=$days[$j] ;
-								$columnCount++ ;
-							print "</th>" ;		
-						}
-					}
-				print "</tr>" ;
-				
-				$count=0;
-				$rowNum="odd" ;
-				while ($row=$result->fetch()) {
-					if ($count%2==0) {
-						$rowNum="even" ;
-					}
-					else {
-						$rowNum="odd" ;
-					}
-					$count++ ;
-					
-					//COLOR ROW BY STATUS!
-					print "<tr class=$rowNum>" ;
-						print "<td>" ;
-							print $row["name"] ;
-						print "</td>" ;
-						print "<td>" ;
-							//List activities seleted in title of student name
-							try {
-								$dataActivities=array("gibbonPersonID"=>$row["gibbonPersonID"], "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]); 
-								$sqlActivities="SELECT gibbonActivity.* FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND NOT status='Not Accepted' ORDER BY name" ;
-								$resultActivities=$connection2->prepare($sqlActivities);
-								$resultActivities->execute($dataActivities);
-							}
-							catch(PDOException $e) { 
-								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-							}
+        try {
+            $data = array('gibbonRollGroupID' => $gibbonRollGroupID);
+            $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, name FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonRollGroupID=:gibbonRollGroupID ORDER BY surname, preferredName";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            echo "<div class='error'>".$e->getMessage().'</div>';
+        }
 
-							
-							$title="" ;
-							while ($rowActivities=$resultActivities->fetch()) {
-								$title=$title . $rowActivities["name"] . " | " ;
-							}
-							$title=substr($title,0,-3) ;
-							print "<span title='$title'>" . formatName("", $row["preferredName"], $row["surname"], "Student", true) . "</span>" ;
-						print "</td>" ;
-						for ($i=0; $i<$columnCount; $i++) {
-							print "<td>" ;
-								try {
-									$dataReg=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID"=>$row["gibbonPersonID"], "gibbonDaysOfWeekID"=>$columns[$i][1], "gibbonSchoolYearTermIDList"=>"%" . $columns[$i][0] . "%"); 
-									if ($_GET["status"]=="Accepted") {
-										$sqlReg="SELECT DISTINCT gibbonActivity.name, gibbonActivityStudent.status FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) JOIN gibbonActivitySlot ON (gibbonActivitySlot.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND gibbonDaysOfWeekID=:gibbonDaysOfWeekID AND gibbonSchoolYearTermIDList LIKE :gibbonSchoolYearTermIDList AND status='Accepted'" ;
-									}
-									else {
-										$sqlReg="SELECT DISTINCT gibbonActivity.name, gibbonActivityStudent.status FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) JOIN gibbonActivitySlot ON (gibbonActivitySlot.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND gibbonDaysOfWeekID=:gibbonDaysOfWeekID AND gibbonSchoolYearTermIDList LIKE :gibbonSchoolYearTermIDList AND NOT status='Not Accepted'" ;
-									}
-									$resultReg=$connection2->prepare($sqlReg);
-									$resultReg->execute($dataReg);
-								}
-								catch(PDOException $e) { 
-									print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-								}
+        if ($result->rowCount() < 1) {
+            echo "<div class='error'>";
+            echo __($guid, 'There are no records to display.');
+            echo '</div>';
+        } else {
+            echo "<table class='mini' cellspacing='0' style='width: 100%'>";
+            echo "<tr class='head'>";
+            echo '<th rowspan=2>';
+            echo __($guid, 'Roll Group');
+            echo '</th>';
+            echo '<th rowspan=2>';
+            echo __($guid, 'Student');
+            echo '</th>';
+                    //Get terms and days of week
+                    $terms = getTerms($connection2, $_SESSION[$guid]['gibbonSchoolYearID']);
+            $days = false;
 
-								$title="" ;
-								$notAccepted=FALSE ;
-								while ($rowReg=$resultReg->fetch()) {
-									$title.=$rowReg["name"] . ", " ;
-									if ($rowReg["status"]!="Accepted") {
-										$notAccepted=TRUE ;
-									}
-								}
-								if ($title=="") {
-									$title=_("There are no records to display.") ;
-								}
-								else {
-									$title=substr($title,0,-2) ;
-								}
-								print "<span title='" . htmlPrep($title) . "'>" . $resultReg->rowCount() . "<span>" ;
-								if ($notAccepted==TRUE AND $_GET["status"]=="Registered") {
-									print "<span style='color: #cc0000' title='" . _('Some activities not accepted.') . "'> *</span>" ;
-								}
-							print "</td>" ;
-						}
-						
-					print "</tr>" ;
+            try {
+                $dataDays = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                $sqlDays = "SELECT DISTINCT gibbonDaysOfWeek.* FROM gibbonDaysOfWeek JOIN gibbonActivitySlot ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID) JOIN gibbonActivity ON (gibbonActivitySlot.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND schoolDay='Y' ORDER BY sequenceNumber";
+                $resultDays = $connection2->prepare($sqlDays);
+                $resultDays->execute($dataDays);
+            } catch (PDOException $e) {
+                echo "<div class='error'>".$e->getMessage().'</div>';
+            }
+
+            while ($rowDays = $resultDays->fetch()) {
+                $days = $days.$rowDays['gibbonDaysOfWeekID'].',';
+                $days = $days.$rowDays['nameShort'].',';
+            }
+            if ($days != false) {
+                $days = substr($days, 0, (strlen($days) - 1));
+                $days = explode(',', $days);
+            }
+
+			//Create columns
+			$columns = array();
+            $columnCount = 0;
+            for ($i = 0; $i < count($terms); $i = $i + 2) {
+                echo '<th colspan='.count($days) / 2 .'>';
+                echo $terms[($i + 1)];
+                echo '</th>';
+            }
+            echo '</tr>';
+            echo "<tr class='head'>";
+            for ($i = 0; $i < count($terms); $i = $i + 2) {
+                for ($j = 0; $j < count($days); $j = $j + 2) {
+                    echo '<th>';
+                    echo __($guid, $days[($j + 1)]);
+                    $columns[$columnCount][0] = $terms[$i];
+                    $columns[$columnCount][1] = $days[$j];
+                    ++$columnCount;
+                    echo '</th>';
+                }
+            }
+            echo '</tr>';
+
+            $count = 0;
+            $rowNum = 'odd';
+            while ($row = $result->fetch()) {
+                if ($count % 2 == 0) {
+                    $rowNum = 'even';
+                } else {
+                    $rowNum = 'odd';
+                }
+                ++$count;
+
+				//COLOR ROW BY STATUS!
+				echo "<tr class=$rowNum>";
+                echo '<td>';
+                echo $row['name'];
+                echo '</td>';
+                echo '<td>';
+				//List activities seleted in title of student name
+				try {
+					$dataActivities = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+					$sqlActivities = "SELECT gibbonActivity.* FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND NOT status='Not Accepted' ORDER BY name";
+					$resultActivities = $connection2->prepare($sqlActivities);
+					$resultActivities->execute($dataActivities);
+				} catch (PDOException $e) {
+					echo "<div class='error'>".$e->getMessage().'</div>';
 				}
-				if ($count==0) {
-					print "<tr class=$rowNum>" ;
-						print "<td colspan=2>" ;
-							print _("There are no records to display.") ;
-						print "</td>" ;
-					print "</tr>" ;
-				}
-			print "</table>" ;
-		}
-	}
+
+                $title = '';
+                while ($rowActivities = $resultActivities->fetch()) {
+                    $title = $title.$rowActivities['name'].' | ';
+                }
+                $title = substr($title, 0, -3);
+                echo "<span title='$title'>".formatName('', $row['preferredName'], $row['surname'], 'Student', true).'</span>';
+                echo '</td>';
+                for ($i = 0; $i < $columnCount; ++$i) {
+                    echo '<td>';
+                    try {
+                        $dataReg = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $row['gibbonPersonID'], 'gibbonDaysOfWeekID' => $columns[$i][1], 'gibbonSchoolYearTermIDList' => '%'.$columns[$i][0].'%');
+                        if ($_GET['status'] == 'Accepted') {
+                            $sqlReg = "SELECT DISTINCT gibbonActivity.name, gibbonActivityStudent.status FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) JOIN gibbonActivitySlot ON (gibbonActivitySlot.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND gibbonDaysOfWeekID=:gibbonDaysOfWeekID AND gibbonSchoolYearTermIDList LIKE :gibbonSchoolYearTermIDList AND status='Accepted'";
+                        } else {
+                            $sqlReg = "SELECT DISTINCT gibbonActivity.name, gibbonActivityStudent.status FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) JOIN gibbonActivitySlot ON (gibbonActivitySlot.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND gibbonDaysOfWeekID=:gibbonDaysOfWeekID AND gibbonSchoolYearTermIDList LIKE :gibbonSchoolYearTermIDList AND NOT status='Not Accepted'";
+                        }
+                        $resultReg = $connection2->prepare($sqlReg);
+                        $resultReg->execute($dataReg);
+                    } catch (PDOException $e) {
+                        echo "<div class='error'>".$e->getMessage().'</div>';
+                    }
+
+                    $title = '';
+                    $notAccepted = false;
+                    while ($rowReg = $resultReg->fetch()) {
+                        $title .= $rowReg['name'].', ';
+                        if ($rowReg['status'] != 'Accepted') {
+                            $notAccepted = true;
+                        }
+                    }
+                    if ($title == '') {
+                        $title = __($guid, 'There are no records to display.');
+                    } else {
+                        $title = substr($title, 0, -2);
+                    }
+                    echo "<span title='".htmlPrep($title)."'>".$resultReg->rowCount().'<span>';
+                    if ($notAccepted == true and $_GET['status'] == 'Registered') {
+                        echo "<span style='color: #cc0000' title='".__($guid, 'Some activities not accepted.')."'> *</span>";
+                    }
+                    echo '</td>';
+                }
+
+                echo '</tr>';
+            }
+            if ($count == 0) {
+                echo "<tr class=$rowNum>";
+                echo '<td colspan=2>';
+                echo __($guid, 'There are no records to display.');
+                echo '</td>';
+                echo '</tr>';
+            }
+            echo '</table>';
+        }
+    }
 }
 ?>

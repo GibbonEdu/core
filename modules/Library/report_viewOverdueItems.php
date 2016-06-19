@@ -17,152 +17,145 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+@session_start();
 
 //Module includes
-include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
+include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, "/modules/Library/report_viewOverdueItems.php")==FALSE) {
-	//Acess denied
-	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
-	print "</div>" ;
-}
-else {
-	//Proceed!
-	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('View Overdue Items') . "</div>" ;
-	print "</div>" ;
-	
-	print "<h2>" ;
-		print _("Filter") ;
-	print "</h2>" ;
+if (isActionAccessible($guid, $connection2, '/modules/Library/report_viewOverdueItems.php') == false) {
+    //Acess denied
+    echo "<div class='error'>";
+    echo __($guid, 'You do not have access to this action.');
+    echo '</div>';
+} else {
+    //Proceed!
+    echo "<div class='trail'>";
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'View Overdue Items').'</div>';
+    echo '</div>';
 
-	$ignoreStatus="" ;
-	if (isset($_GET["ignoreStatus"])) {
-		$ignoreStatus=$_GET["ignoreStatus"] ;
-	}
-	
+    echo '<h2>';
+    echo __($guid, 'Filter');
+    echo '</h2>';
 
-	?>
-	<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
+    $ignoreStatus = '';
+    if (isset($_GET['ignoreStatus'])) {
+        $ignoreStatus = $_GET['ignoreStatus'];
+    }
+
+    ?>
+	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
 		<table class='noIntBorder' cellspacing='0' style="width: 100%">
 			<tr><td style="width: 30%"></td><td></td></tr>
 			<tr>
 				<td>
-					<b><?php print _('Ignore Status') ?></b><br/>
-					<span style="font-size: 90%"><i><?php print _('Include all studenusersts, regardless of status and current enrolment.') ?></i></span>
+					<b><?php echo __($guid, 'Ignore Status') ?></b><br/>
+					<span class="emphasis small"><?php echo __($guid, 'Include all studenusersts, regardless of status and current enrolment.') ?></span>
 				</td>
 				<td class="right">
 					<?php
-						$checked="" ;
-						if ($ignoreStatus=="on") {
-							$checked="checked" ;
-						}
-						print "<input $checked name=\"ignoreStatus\" id=\"ignoreStatus\" type=\"checkbox\">" ;
-					?>
+                        $checked = '';
+					if ($ignoreStatus == 'on') {
+						$checked = 'checked';
+					}
+					echo "<input $checked name=\"ignoreStatus\" id=\"ignoreStatus\" type=\"checkbox\">"; ?>
 				</td>
 			</tr>
 			
 			<tr>
 				<td colspan=2 class="right">
-					<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/report_viewOverdueItems.php">
-					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/report_viewOverdueItems.php">
+					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 					<?php
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/report_viewOverdueItems.php'>" . _('Clear Search') . "</a>" ;
-					?>
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/report_viewOverdueItems.php'>".__($guid, 'Clear Search').'</a>';?>
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>
 	</form>
 	
-	<?php			
-	print "<h2>" ;
-	print _("Report Data") ;
-	print "</h2>" ;
-	
-	$today=date("Y-m-d") ;
-	
-	try {
-		$data=array("today"=>$today); 
-		if ($ignoreStatus=="on") {
-			$sql="SELECT gibbonLibraryItem.*, surname, preferredName, email FROM gibbonLibraryItem JOIN gibbonPerson ON (gibbonLibraryItem.gibbonPersonIDStatusResponsible=gibbonPerson.gibbonPersonID) WHERE gibbonLibraryItem.status='On Loan' AND borrowable='Y' AND returnExpected<:today ORDER BY surname, preferredName" ;
-		}
-		else {
-			$sql="SELECT gibbonLibraryItem.*, surname, preferredName, email FROM gibbonLibraryItem JOIN gibbonPerson ON (gibbonLibraryItem.gibbonPersonIDStatusResponsible=gibbonPerson.gibbonPersonID) WHERE gibbonLibraryItem.status='On Loan' AND borrowable='Y' AND returnExpected<:today AND gibbonPerson.status='Full' ORDER BY surname, preferredName" ;
-		}
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { 
-		print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-	}
-	
-	print "<table cellspacing='0' style='width: 100%'>" ;
-		print "<tr class='head'>" ;
-			print "<th>" ;
-				print _("Borrowing User") ;
-			print "</th>" ;
-			print "<th>" ;
-				print _("Email") ;
-			print "</th>" ;
-			print "<th>" ;
-				print _("Item") . "<br/>" ;
-				print "<span style='font-size: 85%; font-style: italic'>" . _('Author/Producer') . "</span>" ;
-			print "</th>" ;
-			print "<th>" ;
-				print _("Due Date") ;
-			print "</th>" ;
-			print "<th>" ;
-				print _("Days Overdue") ;
-			print "</th>" ;
-			print "<th style='width: 50px'>" ;
-				print _("Actions") ;
-			print "</th>" ;
-		print "</tr>" ;
-		
-		$count=0;
-		$rowNum="odd" ;
-		while ($row=$result->fetch()) {
-			if ($count%2==0) {
-				$rowNum="even" ;
-			}
-			else {
-				$rowNum="odd" ;
-			}
-			$count++ ;
-			
-			//COLOR ROW BY STATUS!
-			print "<tr class=$rowNum>" ;
-				print "<td>" ;
-					print formatName("", $row["preferredName"], $row["surname"], "Student", true) ;
-				print "</td>" ;
-				print "<td>" ;
-					print $row["email"] ;
-				print "</td>" ;
-				print "<td>" ;
-					print "<b>" . $row["name"] . "</b><br/>" ;
-					print "<span style='font-size: 85%; font-style: italic'>" . $row["producer"] . "</span>" ;
-				print "</td>" ;
-				print "<td>" ;
-					print dateConvertBack($guid, $row["returnExpected"]) ;
-				print "</td>" ;
-				print "<td>" ;
-					print (strtotime($today)-strtotime($row["returnExpected"]))/(60*60*24) ;
-				print "</td>" ;
-				print "<td>" ;
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/library_lending_item.php&gibbonLibraryItemID=" . $row["gibbonLibraryItemID"] . "&name=&gibbonLibraryTypeID=&gibbonSpaceID=&status='><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-				print "</td>" ;
-			print "</tr>" ;
-		}
-		if ($count==0) {
-			print "<tr class=$rowNum>" ;
-				print "<td colspan=4>" ;
-					print _("There are no records to display.") ;
-				print "</td>" ;
-			print "</tr>" ;
-		}
-	print "</table>" ;
+	<?php	
+    echo '<h2>';
+    echo __($guid, 'Report Data');
+    echo '</h2>';
+
+    $today = date('Y-m-d');
+
+    try {
+        $data = array('today' => $today);
+        if ($ignoreStatus == 'on') {
+            $sql = "SELECT gibbonLibraryItem.*, surname, preferredName, email FROM gibbonLibraryItem JOIN gibbonPerson ON (gibbonLibraryItem.gibbonPersonIDStatusResponsible=gibbonPerson.gibbonPersonID) WHERE gibbonLibraryItem.status='On Loan' AND borrowable='Y' AND returnExpected<:today ORDER BY surname, preferredName";
+        } else {
+            $sql = "SELECT gibbonLibraryItem.*, surname, preferredName, email FROM gibbonLibraryItem JOIN gibbonPerson ON (gibbonLibraryItem.gibbonPersonIDStatusResponsible=gibbonPerson.gibbonPersonID) WHERE gibbonLibraryItem.status='On Loan' AND borrowable='Y' AND returnExpected<:today AND gibbonPerson.status='Full' ORDER BY surname, preferredName";
+        }
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        echo "<div class='error'>".$e->getMessage().'</div>';
+    }
+
+    echo "<table cellspacing='0' style='width: 100%'>";
+    echo "<tr class='head'>";
+    echo '<th>';
+    echo __($guid, 'Borrowing User');
+    echo '</th>';
+    echo '<th>';
+    echo __($guid, 'Email');
+    echo '</th>';
+    echo '<th>';
+    echo __($guid, 'Item').'<br/>';
+    echo "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Author/Producer').'</span>';
+    echo '</th>';
+    echo '<th>';
+    echo __($guid, 'Due Date');
+    echo '</th>';
+    echo '<th>';
+    echo __($guid, 'Days Overdue');
+    echo '</th>';
+    echo "<th style='width: 50px'>";
+    echo __($guid, 'Actions');
+    echo '</th>';
+    echo '</tr>';
+
+    $count = 0;
+    $rowNum = 'odd';
+    while ($row = $result->fetch()) {
+        if ($count % 2 == 0) {
+            $rowNum = 'even';
+        } else {
+            $rowNum = 'odd';
+        }
+        ++$count;
+
+		//COLOR ROW BY STATUS!
+		echo "<tr class=$rowNum>";
+        echo '<td>';
+        echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
+        echo '</td>';
+        echo '<td>';
+        echo $row['email'];
+        echo '</td>';
+        echo '<td>';
+        echo '<b>'.$row['name'].'</b><br/>';
+        echo "<span style='font-size: 85%; font-style: italic'>".$row['producer'].'</span>';
+        echo '</td>';
+        echo '<td>';
+        echo dateConvertBack($guid, $row['returnExpected']);
+        echo '</td>';
+        echo '<td>';
+        echo(strtotime($today) - strtotime($row['returnExpected'])) / (60 * 60 * 24);
+        echo '</td>';
+        echo '<td>';
+        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/library_lending_item.php&gibbonLibraryItemID='.$row['gibbonLibraryItemID']."&name=&gibbonLibraryTypeID=&gibbonSpaceID=&status='><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+        echo '</td>';
+        echo '</tr>';
+    }
+    if ($count == 0) {
+        echo "<tr class=$rowNum>";
+        echo '<td colspan=4>';
+        echo __($guid, 'There are no records to display.');
+        echo '</td>';
+        echo '</tr>';
+    }
+    echo '</table>';
 }
 ?>

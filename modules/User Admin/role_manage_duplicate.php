@@ -17,103 +17,67 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+@session_start();
 
 //Module includes
-include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
+include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, "/modules/User Admin/role_manage_duplicate.php")==FALSE) {
-	//Acess denied
-	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
-	print "</div>" ;
-}
-else {
-	//Get action with highest precendence
-	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/User Admin/role_manage.php'>" . _('Manage Roles') . "</a> > </div><div class='trailEnd'>" . _('Duplicate Role') . "</div>" ;
-	print "</div>" ;
-	
-	//Proceed!
-	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-	$updateReturnMessage="" ;
-	$class="error" ;
-	if (!($updateReturn=="")) {
-		if ($updateReturn=="fail0") {
-			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
-		}
-		else if ($updateReturn=="fail1") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($updateReturn=="fail2") {
-			$updateReturnMessage=_("Your request failed due to a database error.") ;	
-		}
-		else if ($updateReturn=="fail3") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($updateReturn=="fail4") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($updateReturn=="fail5") {
-			$updateReturnMessage=_("Your request failed due to an attachment error.") ;	
-		}
-		else if ($updateReturn=="fail6") {
-			$updateReturnMessage=_("Your request was successful, but some data was not properly saved.") ;	
-		}
-		else if ($updateReturn=="success0") {
-			$updateReturnMessage=_("Your request was completed successfully.") ;	
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $updateReturnMessage;
-		print "</div>" ;
-	} 
-	
-	//Check if courseschool year specified
-	$gibbonRoleID=$_GET["gibbonRoleID"]; 
-	if ($gibbonRoleID=="") {
-		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
-		print "</div>" ;
-	}
-	else {
-		try {
-			$data=array("gibbonRoleID"=>$gibbonRoleID); 
-			$sql="SELECT * FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleID" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-		}
+if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_duplicate.php') == false) {
+    //Acess denied
+    echo "<div class='error'>";
+    echo __($guid, 'You do not have access to this action.');
+    echo '</div>';
+} else {
+    //Get action with highest precendence
+    echo "<div class='trail'>";
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/role_manage.php'>".__($guid, 'Manage Roles')."</a> > </div><div class='trailEnd'>".__($guid, 'Duplicate Role').'</div>';
+    echo '</div>';
 
-		if ($result->rowCount()!=1) {
-			print "<div class='error'>" ;
-				print _("The selected record does not exist, or you do not have access to it.") ;
-			print "</div>" ;
-		}
-		else {
-			$row=$result->fetch() ;
-			
-						
-			?>
-			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/role_manage_duplicateProcess.php?gibbonRoleID=$gibbonRoleID" ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+    if (isset($_GET['return'])) {
+        returnProcess($guid, $_GET['return'], null, null);
+    }
+
+    //Check if courseschool year specified
+    $gibbonRoleID = $_GET['gibbonRoleID'];
+    if ($gibbonRoleID == '') {
+        echo "<div class='error'>";
+        echo __($guid, 'You have not specified one or more required parameters.');
+        echo '</div>';
+    } else {
+        try {
+            $data = array('gibbonRoleID' => $gibbonRoleID);
+            $sql = 'SELECT * FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleID';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            echo "<div class='error'>".$e->getMessage().'</div>';
+        }
+
+        if ($result->rowCount() != 1) {
+            echo "<div class='error'>";
+            echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+            echo '</div>';
+        } else {
+            $row = $result->fetch();
+
+            ?>
+			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/role_manage_duplicateProcess.php?gibbonRoleID=$gibbonRoleID" ?>">
+				<table class='smallIntBorder fullWidth' cellspacing='0'>	
 					<tr>
 						<td> 
-							<b><?php print _('Role') ?> *</b><br/>
-							<span style="font-size: 90%"><i><?php print _('This value cannot be changed.') ?></i></span>
+							<b><?php echo __($guid, 'Role') ?> *</b><br/>
+							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
 						</td>
 						<td class="right">
-							<?php print "<input readonly value='" . $row["name"] . "' type='text' style='width: 300px'>" ; ?>
+							<?php echo "<input readonly value='".$row['name']."' type='text' style='width: 300px'>"; ?>
 						</td>
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Name') ?> *</b><br/>
+							<b><?php echo __($guid, 'Name') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<input name="name" id="name" maxlength=20 value="" type="text" style="width: 300px">
+							<input name="name" id="name" maxlength=20 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var name=new LiveValidation('name');
 								name.add(Validate.Presence);
@@ -122,10 +86,10 @@ else {
 					</tr>
 					<tr>
 						<td> 
-							<b><?php print _('Name Short') ?> *</b><br/>
+							<b><?php echo __($guid, 'Name Short') ?> *</b><br/>
 						</td>
 						<td class="right">
-							<input name="nameShort" id="nameShort" maxlength=4 value="" type="text" style="width: 300px">
+							<input name="nameShort" id="nameShort" maxlength=4 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var nameShort=new LiveValidation('nameShort');
 								nameShort.add(Validate.Presence);
@@ -134,17 +98,18 @@ else {
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
-							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-							<input type="submit" value="<?php print _("Submit") ; ?>">
+							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>
 			</form>
 			<?php
-		}
-	}
+
+        }
+    }
 }
 ?>

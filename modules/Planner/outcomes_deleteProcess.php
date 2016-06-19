@@ -17,107 +17,84 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "../../functions.php" ;
-include "../../config.php" ;
+include '../../functions.php';
+include '../../config.php';
 
-include "./moduleFunctions.php" ;
+include './moduleFunctions.php';
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new Gibbon\sqlConnection();
+$connection2 = $pdo->getConnection();
 
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$filter2="" ;
-if (isset($_GET["filter2"])) {
-	$filter2=$_GET["filter2"] ;
+$filter2 = '';
+if (isset($_GET['filter2'])) {
+    $filter2 = $_GET['filter2'];
 }
 
-$gibbonOutcomeID=$_POST["gibbonOutcomeID"] ;
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/outcomes_delete.php&gibbonOutcomeID=$gibbonOutcomeID&filter2=$filter2" ;
-$URLDelete=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/outcomes.php&filter2=$filter2" ;
+$gibbonOutcomeID = $_POST['gibbonOutcomeID'];
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/outcomes_delete.php&gibbonOutcomeID=$gibbonOutcomeID&filter2=$filter2";
+$URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/outcomes.php&filter2=$filter2";
 
-if (isActionAccessible($guid, $connection2, "/modules/Planner/outcomes_delete.php")==FALSE) {
-	//Fail 0
-	$URL.="&deleteReturn=fail0" ;
-	header("Location: {$URL}");
+if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_delete.php') == false) {
+    $URL .= '&return=error0';
+    header("Location: {$URL}");
+} else {
+    //Get action with highest precendence
+    $highestAction = getHighestGroupedAction($guid, $_POST['address'], $connection2);
+    if ($highestAction == false) {
+        $URL .= '&return=error2';
+        header("Location: {$URL}");
+    } else {
+        if ($highestAction != 'Manage Outcomes_viewEditAll' and $highestAction != 'Manage Outcomes_viewAllEditLearningArea') {
+            $URL .= '&return=error0';
+            header("Location: {$URL}");
+        } else {
+            //Proceed!
+            if ($gibbonOutcomeID == '') {
+                $URL .= '&return=error1';
+                header("Location: {$URL}");
+            } else {
+                try {
+                    if ($highestAction == 'Manage Outcomes_viewEditAll') {
+                        $data = array('gibbonOutcomeID' => $gibbonOutcomeID);
+                        $sql = 'SELECT * FROM gibbonOutcome WHERE gibbonOutcomeID=:gibbonOutcomeID';
+                    } elseif ($highestAction == 'Manage Outcomes_viewAllEditLearningArea') {
+                        $data = array('gibbonOutcomeID' => $gibbonOutcomeID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                        $sql = "SELECT * FROM gibbonOutcome JOIN gibbonDepartment ON (gibbonOutcome.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) AND NOT gibbonOutcome.gibbonDepartmentID IS NULL WHERE gibbonOutcomeID=:gibbonOutcomeID AND (role='Coordinator' OR role='Teacher (Curriculum)') AND gibbonPersonID=:gibbonPersonID AND scope='Learning Area'";
+                    }
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    $URL .= '&return=error2';
+                    header("Location: {$URL}");
+                    exit();
+                }
+
+                if ($result->rowCount() != 1) {
+                    $URL .= '&return=error2';
+                    header("Location: {$URL}");
+                } else {
+                    //Write to database
+                    try {
+                        $data = array('gibbonOutcomeID' => $gibbonOutcomeID);
+                        $sql = 'DELETE FROM gibbonOutcome WHERE gibbonOutcomeID=:gibbonOutcomeID';
+                        $result = $connection2->prepare($sql);
+                        $result->execute($data);
+                    } catch (PDOException $e) {
+                        $URL .= '&return=error2';
+                        header("Location: {$URL}");
+                        exit();
+                    }
+
+                    $URLDelete = $URLDelete.'&return=success0';
+                    header("Location: {$URLDelete}");
+                }
+            }
+        }
+    }
 }
-else {
-	//Get action with highest precendence
-	$highestAction=getHighestGroupedAction($guid, $_POST["address"], $connection2) ;
-	if ($highestAction==FALSE) {
-		//Fail2
-		$URL.="&deleteReturn=fail2" ;
-		header("Location: {$URL}");
-	}
-	else {
-		if ($highestAction!="Manage Outcomes_viewEditAll" AND $highestAction!="Manage Outcomes_viewAllEditLearningArea") {
-			//Fail 0
-			$URL.="&deleteReturn=fail0" ;
-			header("Location: {$URL}");
-		}
-		else {
-			//Proceed!
-			if ($gibbonOutcomeID=="") {
-				//Fail1
-				$URL.="&deleteReturn=fail1" ;
-				header("Location: {$URL}");
-			}
-			else {
-				try {
-					if ($highestAction=="Manage Outcomes_viewEditAll") {
-						$data=array("gibbonOutcomeID"=>$gibbonOutcomeID); 
-						$sql="SELECT * FROM gibbonOutcome WHERE gibbonOutcomeID=:gibbonOutcomeID" ;
-					}
-					else if ($highestAction=="Manage Outcomes_viewAllEditLearningArea") {
-						$data=array("gibbonOutcomeID"=>$gibbonOutcomeID, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-						$sql="SELECT * FROM gibbonOutcome JOIN gibbonDepartment ON (gibbonOutcome.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) AND NOT gibbonOutcome.gibbonDepartmentID IS NULL WHERE gibbonOutcomeID=:gibbonOutcomeID AND (role='Coordinator' OR role='Teacher (Curriculum)') AND gibbonPersonID=:gibbonPersonID AND scope='Learning Area'" ;
-					}
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { 
-					//Fail2
-					$URL.="&deleteReturn=fail2" ;
-					header("Location: {$URL}");
-					break ;
-				}
-
-				if ($result->rowCount()!=1) {
-					//Fail 2
-					$URL.="&deleteReturn=fail2" ;
-					header("Location: {$URL}");
-				}
-				else {
-					//Write to database
-					try {
-						$data=array("gibbonOutcomeID"=>$gibbonOutcomeID); 
-						$sql="DELETE FROM gibbonOutcome WHERE gibbonOutcomeID=:gibbonOutcomeID" ;
-						$result=$connection2->prepare($sql);
-						$result->execute($data);
-					}
-					catch(PDOException $e) { 
-						//Fail 2
-						$URL.="&deleteReturn=fail2" ;
-						header("Location: {$URL}");
-						break ;
-					}
-
-					//Success 0
-					$URLDelete=$URLDelete . "&deleteReturn=success0" ;
-					header("Location: {$URLDelete}");
-				}
-			}
-		}
-	}
-}
-?>

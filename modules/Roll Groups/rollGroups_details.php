@@ -17,150 +17,154 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-if (isActionAccessible($guid, $connection2, "/modules/Roll Groups/rollGroups_details.php")==FALSE) {
-	//Acess denied
-	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
-	print "</div>" ;
-}
-else {
-	$gibbonRollGroupID=$_GET["gibbonRollGroupID"] ;
-	if ($gibbonRollGroupID=="") {
-		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
-		print "</div>" ;
-	}
-	else {
-		try {
-			$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonRollGroupID"=>$gibbonRollGroupID); 
-			$sql="SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonRollGroupID, gibbonSchoolYear.name as yearName, gibbonRollGroup.name, gibbonRollGroup.nameShort, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonSpace.name AS space, website FROM gibbonRollGroup JOIN gibbonSchoolYear ON (gibbonRollGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) LEFT JOIN gibbonSpace ON (gibbonRollGroup.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonRollGroupID=:gibbonRollGroupID ORDER BY sequenceNumber, gibbonRollGroup.name" ; 
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-		}
+if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_details.php') == false) {
+    //Acess denied
+    echo "<div class='error'>";
+    echo __($guid, 'You do not have access to this action.');
+    echo '</div>';
+} else {
+    $gibbonRollGroupID = $_GET['gibbonRollGroupID'];
+    if ($gibbonRollGroupID == '') {
+        echo "<div class='error'>";
+        echo __($guid, 'You have not specified one or more required parameters.');
+        echo '</div>';
+    } else {
+        try {
+            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonRollGroupID' => $gibbonRollGroupID);
+            $sql = 'SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonRollGroupID, gibbonSchoolYear.name as yearName, gibbonRollGroup.name, gibbonRollGroup.nameShort, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonSpace.name AS space, website FROM gibbonRollGroup JOIN gibbonSchoolYear ON (gibbonRollGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) LEFT JOIN gibbonSpace ON (gibbonRollGroup.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonRollGroupID=:gibbonRollGroupID ORDER BY sequenceNumber, gibbonRollGroup.name';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            echo "<div class='error'>".$e->getMessage().'</div>';
+        }
 
-		if ($result->rowCount()!=1) {
-			print "<div class='error'>" ;
-			print _("The selected record does not exist, or you do not have access to it.") ;
-			print "</div>" ;
-			print "</div>" ;
-		}
-		else {
-			$row=$result->fetch() ;
-		
-			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/rollGroups.php'>" . _('View Roll Groups') . "</a> > </div><div class='trailEnd'>" . $row["name"] . "</div>" ;
-			print "</div>" ;
-		
-			print "<h3>" ;
-				print _("Basic Information") ;
-			print "</h3>" ;
-			
-			print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
-				print "<tr>" ;
-					print "<td style='width: 33%; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>" . _('Name') . "</span><br/>" ;
-						print "<i>" . $row["name"] . "</i>" ;
-					print "</td>" ;
-					print "<td style='width: 33%; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>" . _('Tutors') . "</span><br/>" ;
-						try {
-							$dataTutor=array("gibbonPersonID1"=>$row["gibbonPersonIDTutor"], "gibbonPersonID2"=>$row["gibbonPersonIDTutor2"], "gibbonPersonID3"=>$row["gibbonPersonIDTutor3"] ); 
-							$sqlTutor="SELECT gibbonPersonID, surname, preferredName, image_240 FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID1 OR gibbonPersonID=:gibbonPersonID2 OR gibbonPersonID=:gibbonPersonID3" ;
-							$resultTutor=$connection2->prepare($sqlTutor);
-							$resultTutor->execute($dataTutor);
-						}
-						catch(PDOException $e) { 
-							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-						}
-						$primaryTutor240="" ;
-						while ($rowTutor=$resultTutor->fetch()) {
-							if (isActionAccessible($guid, $connection2, "/modules/Staff/staff_view_details.php")) {
-								print "<i><a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID=" . $rowTutor["gibbonPersonID"] . "'>" . formatName("", $rowTutor["preferredName"], $rowTutor["surname"], "Staff", false, true) . "</a></i>" ;
-							}
-							else {
-								print "<i>" . formatName("", $rowTutor["preferredName"], $rowTutor["surname"], "Staff", false, true) ;
-							}
-							if ($rowTutor["gibbonPersonID"]==$row["gibbonPersonIDTutor"]) {
-								$primaryTutor240=$rowTutor["image_240"] ;
-								if ($resultTutor->rowCount()>1) {
-									print " (" . _('Main Tutor') . ")" ;
-								}
-							}
-							print "</i><br/>" ;
-						}
-					print "</td>" ;
-					print "<td style='width: 33%; vertical-align: top'>" ;
-						print "<span style='font-size: 115%; font-weight: bold'>" . _('Location') . "</span><br/>" ;
-						print "<i>" . $row["space"] . "</i>" ;
-					print "</td>" ;
-				print "</tr>" ;
-				if ($row["website"]!="") {
-					print "<tr>" ;
-						print "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=3>" ;
-							print "<span style='font-size: 115%; font-weight: bold'>" . _('Website') . "</span><br/>" ;
-							print "<a target='_blank' href='" . $row["website"] . "'>" . $row["website"] . "</a>" ;
-						print "</td>" ;
-					print "</tr>" ;
-				}
-			print "</table>" ;
-			
-			print "<h2>" ;
-			print _("Filters") ;
-			print "</h2>" ;
-	
-			$orderBy=NULL ;
-			if (isset($_GET["orderBy"])) {
-				$orderBy=$_GET["orderBy"] ;
-			}
-			?>
-			<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
+        if ($result->rowCount() != 1) {
+            echo "<div class='error'>";
+            echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+            echo '</div>';
+            echo '</div>';
+        } else {
+            $row = $result->fetch();
+
+            echo "<div class='trail'>";
+            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/rollGroups.php'>".__($guid, 'View Roll Groups')."</a> > </div><div class='trailEnd'>".$row['name'].'</div>';
+            echo '</div>';
+
+            echo '<h3>';
+            echo __($guid, 'Basic Information');
+            echo '</h3>';
+
+            echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
+            echo '<tr>';
+            echo "<td style='width: 33%; vertical-align: top'>";
+            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Name').'</span><br/>';
+            echo '<i>'.$row['name'].'</i>';
+            echo '</td>';
+            echo "<td style='width: 33%; vertical-align: top'>";
+            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Tutors').'</span><br/>';
+            try {
+                $dataTutor = array('gibbonPersonID1' => $row['gibbonPersonIDTutor'], 'gibbonPersonID2' => $row['gibbonPersonIDTutor2'], 'gibbonPersonID3' => $row['gibbonPersonIDTutor3']);
+                $sqlTutor = 'SELECT gibbonPersonID, surname, preferredName, image_240 FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID1 OR gibbonPersonID=:gibbonPersonID2 OR gibbonPersonID=:gibbonPersonID3';
+                $resultTutor = $connection2->prepare($sqlTutor);
+                $resultTutor->execute($dataTutor);
+            } catch (PDOException $e) {
+                echo "<div class='error'>".$e->getMessage().'</div>';
+            }
+            $primaryTutor240 = '';
+            while ($rowTutor = $resultTutor->fetch()) {
+                if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php')) {
+                    echo "<i><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$rowTutor['gibbonPersonID']."'>".formatName('', $rowTutor['preferredName'], $rowTutor['surname'], 'Staff', false, true).'</a></i>';
+                } else {
+                    echo '<i>'.formatName('', $rowTutor['preferredName'], $rowTutor['surname'], 'Staff', false, true);
+                }
+                if ($rowTutor['gibbonPersonID'] == $row['gibbonPersonIDTutor']) {
+                    $primaryTutor240 = $rowTutor['image_240'];
+                    if ($resultTutor->rowCount() > 1) {
+                        echo ' ('.__($guid, 'Main Tutor').')';
+                    }
+                }
+                echo '</i><br/>';
+            }
+            echo '</td>';
+            echo "<td style='width: 33%; vertical-align: top'>";
+            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Location').'</span><br/>';
+            echo '<i>'.$row['space'].'</i>';
+            echo '</td>';
+            echo '</tr>';
+            if ($row['website'] != '') {
+                echo '<tr>';
+                echo "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=3>";
+                echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Website').'</span><br/>';
+                echo "<a target='_blank' href='".$row['website']."'>".$row['website'].'</a>';
+                echo '</td>';
+                echo '</tr>';
+            }
+            echo '</table>';
+
+            echo '<h2>';
+            echo __($guid, 'Filters');
+            echo '</h2>';
+
+            $orderBy = null;
+            if (isset($_GET['orderBy'])) {
+                $orderBy = $_GET['orderBy'];
+            }
+            ?>
+			<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
 				<table class='noIntBorder' cellspacing='0' style="width: 100%">	
 					<tr><td style="width: 30%"></td><td></td></tr>
 					<tr>
 						<td> 
-							<b><?php print _('Order By') ?></b><br/>
+							<b><?php echo __($guid, 'Order By') ?></b><br/>
 						</td>
 						<td class="right">
-							<select name="orderBy" id="orderBy" style="width: 302px">
+							<select name="orderBy" id="orderBy" class="standardWidth">
 								<?php
-								print "<option " ; if ($orderBy=="normal") { print "selected " ; } print "value='normal'>" . _('Normal (Roll Order, Surname, Preferred Name)') . "</option>" ;
-								print "<option " ; if ($orderBy=="surname") { print "selected " ; } print "value='surname'>" . _('Surname (Surname, Preferred Name)') . "</option>" ;
-								print "<option " ; if ($orderBy=="preferredName") { print "selected " ; } print "value='preferredName'>" . _('Preferred Name (PreferredName, Surname)') . "</option>" ;
-								?>			
+                                echo '<option ';
+								if ($orderBy == 'normal') {
+									echo 'selected ';
+								}
+								echo "value='normal'>".__($guid, 'Roll Order').'</option>';
+								echo '<option ';
+								if ($orderBy == 'surname') {
+									echo 'selected ';
+								}
+								echo "value='surname'>".__($guid, 'Surname').'</option>';
+								echo '<option ';
+								if ($orderBy == 'preferredName') {
+									echo 'selected ';
+								}
+								echo "value='preferredName'>".__($guid, 'Preferred Name').'</option>'; ?>			
 							</select>
 						</td>
 					</tr>
 					<tr>
 						<td colspan=2 class="right">
-							<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/rollGroups_details.php">
-							<input type="hidden" name="gibbonRollGroupID" value="<?php print $gibbonRollGroupID ?>">
-							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+							<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/rollGroups_details.php">
+							<input type="hidden" name="gibbonRollGroupID" value="<?php echo $gibbonRollGroupID ?>">
+							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 							<?php
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/rollGroups_details.php&gibbonRollGroupID=$gibbonRollGroupID'>" . _('Clear Filters') . "</a>" ;
-							?>
-							<input type="submit" value="<?php print _("Submit") ; ?>">
+                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/rollGroups_details.php&gibbonRollGroupID=$gibbonRollGroupID'>".__($guid, 'Clear Filters').'</a>'; ?>
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>
 			</form>
 			<?php
-	
-			print "<h3>" ;
-				print _("Students") ;
-			print "</h3>" ;
-			printRollGroupTable($guid, $gibbonRollGroupID, 5, $connection2, FALSE, $orderBy) ;
-		
-			//Set sidebar
-			$_SESSION[$guid]["sidebarExtra"]=getUserPhoto($guid, $primaryTutor240, 240) ;
-		}
-	}
+
+            echo '<h3>';
+            echo __($guid, 'Students');
+            echo '</h3>';
+            echo getRollGroupTable($guid, $gibbonRollGroupID, 5, $connection2, false, $orderBy);
+
+            //Set sidebar
+            $_SESSION[$guid]['sidebarExtra'] = getUserPhoto($guid, $primaryTutor240, 240);
+        }
+    }
 }
 ?>

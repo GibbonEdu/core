@@ -17,157 +17,146 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "../../functions.php" ;
-include "../../config.php" ;
+include '../../functions.php';
+include '../../config.php';
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new Gibbon\sqlConnection();
+$connection2 = $pdo->getConnection();
 
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/userSettings.php" ;
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/userSettings.php';
 
-if (isActionAccessible($guid, $connection2, "/modules/User Admin/userSettings.php")==FALSE) {
-	//Fail 0
-	$URL.="&updateReturn=fail0" ;
-	header("Location: {$URL}");
+if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.php') == false) {
+    $URL .= '&return=error0';
+    header("Location: {$URL}");
+} else {
+    //Proceed!
+    $ethnicity = $_POST['ethnicity'];
+    $religions = $_POST['religions'];
+    $nationality = $_POST['nationality'];
+    $residencyStatus = $_POST['residencyStatus'];
+    $departureReasons = $_POST['departureReasons'];
+    $privacy = $_POST['privacy'];
+    $privacyBlurb = $_POST['privacyBlurb'];
+    $privacyOptions = $_POST['privacyOptions'];
+    $personalBackground = $_POST['personalBackground'];
+    $dayTypeOptions = $_POST['dayTypeOptions'];
+    $dayTypeText = $_POST['dayTypeText'];
+
+    //Write to database
+    $fail = false;
+
+    try {
+        $data = array('value' => $ethnicity);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='ethnicity'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    try {
+        $data = array('value' => $religions);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='religions'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    try {
+        $data = array('value' => $nationality);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='nationality'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    try {
+        $data = array('value' => $departureReasons);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='departureReasons'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    try {
+        $data = array('value' => $residencyStatus);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='residencyStatus'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    try {
+        $data = array('value' => $privacy);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='privacy'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    try {
+        $data = array('value' => $privacyBlurb);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='privacyBlurb'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    try {
+        $data = array('value' => $privacyOptions);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='privacyOptions'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    try {
+        $data = array('value' => $personalBackground);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='personalBackground'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    try {
+        $data = array('value' => $dayTypeOptions);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='dayTypeOptions'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    try {
+        $data = array('value' => $dayTypeText);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='dayTypeText'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    if ($fail == true) {
+        $URL .= '&return=error2';
+        header("Location: {$URL}");
+    } else {
+        //Success 0
+        getSystemSettings($guid, $connection2);
+        $URL .= '&return=success0';
+        header("Location: {$URL}");
+    }
 }
-else {
-	//Proceed!
-	$ethnicity=$_POST["ethnicity"] ; 	
-	$nationality=$_POST["nationality"] ; 	
-	$residencyStatus=$_POST["residencyStatus"] ; 	
-	$departureReasons=$_POST["departureReasons"] ; 	
-	$privacy=$_POST["privacy"] ; 	
-	$privacyBlurb=$_POST["privacyBlurb"] ; 	
-	$privacyOptions=$_POST["privacyOptions"] ; 	
-	$personalBackground=$_POST["personalBackground"] ;  
-	$dayTypeOptions=$_POST["dayTypeOptions"] ; 
-	$dayTypeText=$_POST["dayTypeText"] ; 	
-	
-	//Write to database
-	$fail=FALSE ;
-	
-	try {
-		$data=array("value"=>$ethnicity); 
-		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='ethnicity'" ;
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { 
-		$fail=TRUE ; 
-	}
-	
-	try {
-		$data=array("value"=>$nationality); 
-		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='nationality'" ;
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { 
-		$fail=TRUE ; 
-	}
-	
-	try {
-		$data=array("value"=>$departureReasons); 
-		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='departureReasons'" ;
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { 
-		$fail=TRUE ; 
-	}
-	
-	try {
-		$data=array("value"=>$residencyStatus); 
-		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='residencyStatus'" ;
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { 
-		$fail=TRUE ; 
-	}
-	
-	try {
-		$data=array("value"=>$privacy); 
-		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='privacy'" ;
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { 
-		$fail=TRUE ; 
-	}
-	
-	try {
-		$data=array("value"=>$privacyBlurb); 
-		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='privacyBlurb'" ;
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { 
-		$fail=TRUE ; 
-	}
-	
-	try {
-		$data=array("value"=>$privacyOptions); 
-		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='privacyOptions'" ;
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { 
-		$fail=TRUE ; 
-	}
-	
-	try {
-		$data=array("value"=>$personalBackground); 
-		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='personalBackground'" ;
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { 
-		$fail=TRUE ; 
-	}
-	
-	try {
-		$data=array("value"=>$dayTypeOptions); 
-		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='dayTypeOptions'" ;
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { 
-		$fail=TRUE ; 
-	}
-	
-	try {
-		$data=array("value"=>$dayTypeText); 
-		$sql="UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='dayTypeText'" ;
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { 
-		$fail=TRUE ; 
-	}
-	
-	if ($fail==TRUE) {
-		//Fail 2
-		$URL.="&updateReturn=fail2" ;
-		header("Location: {$URL}");
-	}
-	else {
-		//Success 0
-		getSystemSettings($guid, $connection2) ;
-		$URL.="&updateReturn=success0" ;
-		header("Location: {$URL}");
-	}
-}
-?>

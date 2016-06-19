@@ -17,211 +17,171 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+@session_start();
 
-if (isActionAccessible($guid, $connection2, "/modules/School Admin/studentsSettings.php")==FALSE) {
-	//Acess denied
-	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
-	print "</div>" ;
-}
-else {
-	//Proceed!
-	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Manage Students Settings') . "</div>" ;
-	print "</div>" ;
-	
-	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
-	$updateReturnMessage="" ;
-	$class="error" ;
-	if (!($updateReturn=="")) {
-		if ($updateReturn=="fail0") {
-			$updateReturnMessage=_("Your request failed because you do not have access to this action.") ;	
-		}
-		else if ($updateReturn=="fail1") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($updateReturn=="fail2") {
-			$updateReturnMessage=_("One or more of the fields in your request failed due to a database error.") ;	
-		}
-		else if ($updateReturn=="fail3") {
-			$updateReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($updateReturn=="success0") {
-			$updateReturnMessage=_("Your request was completed successfully.") ;	
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $updateReturnMessage;
-		print "</div>" ;
-	} 
-	
-	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-	$deleteReturnMessage="" ;
-	$class="error" ;
-	if (!($deleteReturn=="")) {
-		if ($deleteReturn=="success0") {
-			$deleteReturnMessage=_("Your request was completed successfully.") ;		
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $deleteReturnMessage;
-		print "</div>" ;
-	} 
-	
-	print "<h3>" ;
-		print _("Student Note Categories") ;
-	print "</h3>" ;
-	print "<p>" ;
-		print _("This section allows you to manage the categories which can be associated with student notes. Categories can be given templates, which will pre-populate the student note on selection.") ;
-	print "</p>" ;	
-	
-	try {
-		$data=array(); 
-		$sql="SELECT * FROM gibbonStudentNoteCategory ORDER BY name" ; 
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { 
-		print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-	}
-	
-	print "<div class='linkTop'>" ;
-	print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/studentsSettings_noteCategory_add.php'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
-	print "</div>" ;
-	
-	if ($result->rowCount()<1) {
-		print "<div class='error'>" ;
-		print _("There are no records to display.") ;
-		print "</div>" ;
-	}
-	else {
-		print "<table cellspacing='0' style='width: 100%'>" ;
-			print "<tr class='head'>" ;
-				print "<th>" ;
-					print _("Name") ;
-				print "</th>" ;
-				print "<th>" ;
-					print _("Active") ;
-				print "</th>" ;
-				print "<th>" ;
-					print _("Actions") ;
-				print "</th>" ;
-			print "</tr>" ;
-			
-			$count=0;
-			$rowNum="odd" ;
-			while ($row=$result->fetch()) {
-				if ($count%2==0) {
-					$rowNum="even" ;
-				}
-				else {
-					$rowNum="odd" ;
-				}
-				$count++ ;
-				
-				if ($row["active"]=="N") {
-					$rowNum="error" ;
-				}
-				
-				//COLOR ROW BY STATUS!
-				print "<tr class=$rowNum>" ;
-					print "<td>" ;
-						print $row["name"] ;
-					print "</td>" ;
-					print "<td>" ;
-						print ynExpander($row["active"]) ;
-					print "</td>" ;
-					print "<td>" ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/studentsSettings_noteCategory_edit.php&gibbonStudentNoteCategoryID=" . $row["gibbonStudentNoteCategoryID"] . "'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/studentsSettings_noteCategory_delete.php&gibbonStudentNoteCategoryID=" . $row["gibbonStudentNoteCategoryID"] . "'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a>" ;
-					print "</td>" ;
-				print "</tr>" ;
-			}
-		print "</table>" ;
-	}
-	
-	print "<h3>" ;
-		print _("Miscellaneous") ;
-	print "</h3>" ;
-	
-	?>
-	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/studentsSettingsProcess.php" ?>">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+if (isActionAccessible($guid, $connection2, '/modules/School Admin/studentsSettings.php') == false) {
+    //Acess denied
+    echo "<div class='error'>";
+    echo __($guid, 'You do not have access to this action.');
+    echo '</div>';
+} else {
+    //Proceed!
+    echo "<div class='trail'>";
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Manage Students Settings').'</div>';
+    echo '</div>';
+
+    if (isset($_GET['return'])) {
+        returnProcess($guid, $_GET['return'], null, null);
+    }
+
+    echo '<h3>';
+    echo __($guid, 'Student Note Categories');
+    echo '</h3>';
+    echo '<p>';
+    echo __($guid, 'This section allows you to manage the categories which can be associated with student notes. Categories can be given templates, which will pre-populate the student note on selection.');
+    echo '</p>';
+
+    try {
+        $data = array();
+        $sql = 'SELECT * FROM gibbonStudentNoteCategory ORDER BY name';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        echo "<div class='error'>".$e->getMessage().'</div>';
+    }
+
+    echo "<div class='linkTop'>";
+    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/studentsSettings_noteCategory_add.php'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+    echo '</div>';
+
+    if ($result->rowCount() < 1) {
+        echo "<div class='error'>";
+        echo __($guid, 'There are no records to display.');
+        echo '</div>';
+    } else {
+        echo "<table cellspacing='0' style='width: 100%'>";
+        echo "<tr class='head'>";
+        echo '<th>';
+        echo __($guid, 'Name');
+        echo '</th>';
+        echo '<th>';
+        echo __($guid, 'Active');
+        echo '</th>';
+        echo '<th>';
+        echo __($guid, 'Actions');
+        echo '</th>';
+        echo '</tr>';
+
+        $count = 0;
+        $rowNum = 'odd';
+        while ($row = $result->fetch()) {
+            if ($count % 2 == 0) {
+                $rowNum = 'even';
+            } else {
+                $rowNum = 'odd';
+            }
+            ++$count;
+
+            if ($row['active'] == 'N') {
+                $rowNum = 'error';
+            }
+
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$rowNum>";
+            echo '<td>';
+            echo $row['name'];
+            echo '</td>';
+            echo '<td>';
+            echo ynExpander($guid, $row['active']);
+            echo '</td>';
+            echo '<td>';
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/studentsSettings_noteCategory_edit.php&gibbonStudentNoteCategoryID='.$row['gibbonStudentNoteCategoryID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/studentsSettings_noteCategory_delete.php&gibbonStudentNoteCategoryID='.$row['gibbonStudentNoteCategoryID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+            echo '</td>';
+            echo '</tr>';
+        }
+        echo '</table>';
+    }
+
+    echo '<h3>';
+    echo __($guid, 'Miscellaneous');
+    echo '</h3>';
+
+    ?>
+	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/studentsSettingsProcess.php' ?>">
+		<table class='smallIntBorder fullWidth' cellspacing='0'>	
 			<tr>
 				<?php
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='Students' AND name='enableStudentNotes'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { }
-				$row=$result->fetch() ;
-				?>
+                try {
+                    $data = array();
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Students' AND name='enableStudentNotes'";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {}
+                $row = $result->fetch();
+                ?>
 				<td style='width: 275px'> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
-						<option <?php if ($row["value"]=="N") {print "selected ";} ?>value="N"><?php print _('No') ?></option>
-						<option <?php if ($row["value"]=="Y") {print "selected ";} ?>value="Y"><?php print _('Yes') ?></option>
+					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
+						<option <?php if ($row['value'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
+						<option <?php if ($row['value'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<?php
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='Students' AND name='extendedBriefProfile'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { }
-				$row=$result->fetch() ;
-				?>
+                try {
+                    $data = array();
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='Students' AND name='extendedBriefProfile'";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {}
+                $row = $result->fetch();
+                ?>
 				<td style='width: 275px'> 
-					<b><?php print _($row["nameDisplay"]) ?> *</b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php echo __($guid, $row['nameDisplay']) ?> *</b><br/>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
-					<select name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" style="width: 302px">
-						<option <?php if ($row["value"]=="N") {print "selected ";} ?>value="N"><?php print _('No') ?></option>
-						<option <?php if ($row["value"]=="Y") {print "selected ";} ?>value="Y"><?php print _('Yes') ?></option>
+					<select name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" class="standardWidth">
+						<option <?php if ($row['value'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
+						<option <?php if ($row['value'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<?php
-				try {
-					$data=array(); 
-					$sql="SELECT * FROM gibbonSetting WHERE scope='School Admin' AND name='studentAgreementOptions'" ;
-					$result=$connection2->prepare($sql);
-					$result->execute($data);
-				}
-				catch(PDOException $e) { }
-				$row=$result->fetch() ;
-				?>
+                try {
+                    $data = array();
+                    $sql = "SELECT * FROM gibbonSetting WHERE scope='School Admin' AND name='studentAgreementOptions'";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {}
+                $row = $result->fetch();
+                ?>
 				<td style='width: 275px'> 
-					<b><?php print _($row["nameDisplay"]) ?></b><br/>
-					<span style="font-size: 90%"><i><?php if ($row["description"]!="") { print _($row["description"]) ; } ?></i></span>
+					<b><?php echo __($guid, $row['nameDisplay']) ?></b><br/>
+					<span class="emphasis small"><?php if ($row['description'] != '') { echo __($guid, $row['description']);}?></span>
 				</td>
 				<td class="right">
-					<textarea name="<?php print $row["name"] ?>" id="<?php print $row["name"] ?>" type="text" style="width: 300px" rows=4><?php print $row["value"] ?></textarea>
+					<textarea name="<?php echo $row['name'] ?>" id="<?php echo $row['name'] ?>" type="text" class="standardWidth" rows=4><?php echo $row['value'] ?></textarea>
 				</td>
 			</tr>
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 				</td>
 				<td class="right">
-					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-					<input type="submit" value="<?php print _("Submit") ; ?>">
+					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 				</td>
 			</tr>
 		</table>
 	</form>
 	<?php
+
 }
 ?>

@@ -17,266 +17,194 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+@session_start();
 
-if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/course_manage.php")==FALSE) {
-	//Acess denied
-	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
-	print "</div>" ;
+if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_manage.php') == false) {
+    //Acess denied
+    echo "<div class='error'>";
+    echo __($guid, 'You do not have access to this action.');
+    echo '</div>';
+} else {
+    //Proceed!
+    echo "<div class='trail'>";
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Manage Courses & Classes').'</div>';
+    echo '</div>';
+
+    if (isset($_GET['return'])) {
+        returnProcess($guid, $_GET['return'], null, null);
+    }
+
+    $gibbonSchoolYearID = '';
+    if (isset($_GET['gibbonSchoolYearID'])) {
+        $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
+    }
+    if ($gibbonSchoolYearID == '' or $gibbonSchoolYearID == $_SESSION[$guid]['gibbonSchoolYearID']) {
+        $gibbonSchoolYearID = $_SESSION[$guid]['gibbonSchoolYearID'];
+        $gibbonSchoolYearName = $_SESSION[$guid]['gibbonSchoolYearName'];
+    }
+
+    if ($gibbonSchoolYearID != $_SESSION[$guid]['gibbonSchoolYearID']) {
+        try {
+            $data = array('gibbonSchoolYearID' => $_GET['gibbonSchoolYearID']);
+            $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            echo "<div class='error'>".$e->getMessage().'</div>';
+        }
+
+        if ($result->rowCount() != 1) {
+            echo "<div class='error'>";
+            echo __($guid, 'The specified record does not exist.');
+            echo '</div>';
+        } else {
+            $row = $result->fetch();
+            $gibbonSchoolYearID = $row['gibbonSchoolYearID'];
+            $gibbonSchoolYearName = $row['name'];
+        }
+    }
+
+    if ($gibbonSchoolYearID != '') {
+        echo '<h2>';
+        echo $gibbonSchoolYearName;
+        echo '</h2>';
+
+        echo "<div class='linkTop'>";
+            //Print year picker
+            $previousYear = getPreviousSchoolYearID($gibbonSchoolYearID, $connection2);
+			$nextYear = getNextSchoolYearID($gibbonSchoolYearID, $connection2);
+			if ($previousYear != false) {
+				echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/course_manage.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__($guid, 'Previous Year').'</a> ';
+			} else {
+				echo __($guid, 'Previous Year').' ';
+			}
+			echo ' | ';
+			if ($nextYear != false) {
+				echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/course_manage.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__($guid, 'Next Year').'</a> ';
+			} else {
+				echo __($guid, 'Next Year').' ';
+			}
+        echo '</div>';
+
+        //Set pagination variable
+        $page = 1;
+        if (isset($_GET['page'])) {
+            $page = $_GET['page'];
+        }
+        if ((!is_numeric($page)) or $page < 1) {
+            $page = 1;
+        }
+
+        try {
+            $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+            $sql = 'SELECT * FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY nameShort, name';
+            $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            echo "<div class='error'>".$e->getMessage().'</div>';
+        }
+
+        echo "<div class='linkTop'>";
+        if ($nextYear != false) {
+            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/modules/Timetable Admin/course_manage_copyProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&gibbonSchoolYearIDNext=$nextYear' onclick='return confirm(\"Are you sure you want to do this? All courses and classes, but not their participants, will be copied.\")'>".__($guid, 'Copy All To Next Year')."<img style='margin-left: 5px' title='".__($guid, 'Copy All To Next Year')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/copy.png'/></a> | ";
+        }
+        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/course_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+        echo '</div>';
+
+        if ($result->rowCount() < 1) {
+            echo "<div class='error'>";
+            echo __($guid, 'There are no records to display.');
+            echo '</div>';
+        } else {
+            if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
+                printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top', "gibbonSchoolYearID=$gibbonSchoolYearID");
+            }
+
+            echo "<table cellspacing='0' style='width: 100%'>";
+            echo "<tr class='head'>";
+            echo '<th>';
+            echo __($guid, 'Short Name');
+            echo '</th>';
+            echo '<th>';
+            echo __($guid, 'Name');
+            echo '</th>';
+            echo '<th>';
+            echo __($guid, 'Learning Area');
+            echo '</th>';
+            echo '<th>';
+            echo __($guid, 'Classes');
+            echo '</th>';
+            echo '<th>';
+            echo __($guid, 'Actions');
+            echo '</th>';
+            echo '</tr>';
+
+            $count = 0;
+            $rowNum = 'odd';
+            try {
+                $resultPage = $connection2->prepare($sqlPage);
+                $resultPage->execute($data);
+            } catch (PDOException $e) {
+                echo "<div class='error'>".$e->getMessage().'</div>';
+            }
+            while ($row = $resultPage->fetch()) {
+                if ($count % 2 == 0) {
+                    $rowNum = 'even';
+                } else {
+                    $rowNum = 'odd';
+                }
+
+                //COLOR ROW BY STATUS!
+                echo "<tr class=$rowNum>";
+                echo '<td>';
+                echo $row['nameShort'];
+                echo '</td>';
+                echo '<td>';
+                echo $row['name'];
+                echo '</td>';
+                echo '<td>';
+                if ($row['gibbonDepartmentID'] != '') {
+                    try {
+                        $dataLA = array('gibbonDepartmentID' => $row['gibbonDepartmentID']);
+                        $sqlLA = 'SELECT * FROM gibbonDepartment WHERE gibbonDepartmentID=:gibbonDepartmentID';
+                        $resultLA = $connection2->prepare($sqlLA);
+                        $resultLA->execute($dataLA);
+                    } catch (PDOException $e) {
+                        echo "<div class='error'>".$e->getMessage().'</div>';
+                    }
+                    if ($resultLA->rowCount() >= 0) {
+                        $rowLA = $resultLA->fetch();
+                        echo $rowLA['name'];
+                    }
+                }
+                echo '</td>';
+                echo '<td>';
+                try {
+                    $dataClasses = array('gibbonCourseID' => $row['gibbonCourseID']);
+                    $sqlClasses = 'SELECT * FROM gibbonCourseClass WHERE gibbonCourseID=:gibbonCourseID';
+                    $resultClasses = $connection2->prepare($sqlClasses);
+                    $resultClasses->execute($dataClasses);
+                } catch (PDOException $e) {
+                    echo "<div class='error'>".$e->getMessage().'</div>';
+                }
+                if ($resultClasses->rowCount() >= 0) {
+                    echo $resultClasses->rowCount();
+                }
+                echo '</td>';
+                echo '<td>';
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/course_manage_edit.php&gibbonCourseID='.$row['gibbonCourseID']."&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/course_manage_delete.php&gibbonCourseID='.$row['gibbonCourseID']."&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+                echo '</td>';
+                echo '</tr>';
+
+                ++$count;
+            }
+            echo '</table>';
+
+            if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
+                printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom', "gibbonSchoolYearID=$gibbonSchoolYearID");
+            }
+        }
+    }
 }
-else {
-	//Proceed!
-	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . _(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . _('Manage Courses & Classes') . "</div>" ;
-	print "</div>" ;
-	
-	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
-	$addReturnMessage="" ;
-	$class="error" ;
-	if (!($addReturn=="")) {
-		if ($addReturn=="fail0") {
-			$addReturnMessage=_("Your request failed because you do not have access to this action.") ;	
-		}
-		else if ($addReturn=="fail2") {
-			$addReturnMessage=_("Your request failed due to a database error.") ;	
-		}
-		else if ($addReturn=="fail3") {
-			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($addReturn=="fail4") {
-			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($addReturn=="fail5") {
-			$addReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($addReturn=="success0") {
-			$addReturnMessage=_("Your request was completed successfully.") ;	
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $addReturnMessage;
-		print "</div>" ;
-	} 
-	
-	if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-	$deleteReturnMessage="" ;
-	$class="error" ;
-	if (!($deleteReturn=="")) {
-		if ($deleteReturn=="success0") {
-			$deleteReturnMessage=_("Your request was completed successfully.") ;	
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $deleteReturnMessage;
-		print "</div>" ;
-	} 
-	
-	if (isset($_GET["copyReturn"])) { $copyReturn=$_GET["copyReturn"] ; } else { $copyReturn="" ; }
-	$copyReturnMessage="" ;
-	$class="error" ;
-	if (!($copyReturn=="")) {
-		if ($copyReturn=="fail0") {
-			$copyReturnMessage=_("Your request failed because you do not have access to this action.") ;	
-		}
-		else if ($copyReturn=="fail1") {
-			$copyReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($copyReturn=="fail2") {
-			$copyReturnMessage=_("Your request failed due to a database error.") ;	
-		}
-		else if ($copyReturn=="fail5") {
-			$copyReturnMessage=_("Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($copyReturn=="success0") {
-			$copyReturnMessage=_("Your request was completed successfully.") ;		
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $copyReturnMessage;
-		print "</div>" ;
-	} 
-	
-	$gibbonSchoolYearID="" ;
-	if (isset($_GET["gibbonSchoolYearID"])) {
-		$gibbonSchoolYearID=$_GET["gibbonSchoolYearID"] ;
-	}
-	if ($gibbonSchoolYearID=="" OR $gibbonSchoolYearID==$_SESSION[$guid]["gibbonSchoolYearID"]) {
-		$gibbonSchoolYearID=$_SESSION[$guid]["gibbonSchoolYearID"] ;
-		$gibbonSchoolYearName=$_SESSION[$guid]["gibbonSchoolYearName"] ;
-	}
-	
-	if ($gibbonSchoolYearID!=$_SESSION[$guid]["gibbonSchoolYearID"]) {
-		try {
-			$data=array("gibbonSchoolYearID"=>$_GET["gibbonSchoolYearID"]); 
-			$sql="SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-		}
-
-		if ($result->rowCount()!=1) {
-			print "<div class='error'>" ;
-				print _("The specified record does not exist.") ;
-			print "</div>" ;
-		}
-		else {
-			$row=$result->fetch() ;
-			$gibbonSchoolYearID=$row["gibbonSchoolYearID"] ;
-			$gibbonSchoolYearName=$row["name"] ;
-		}
-	}
-	
-	if ($gibbonSchoolYearID!="") {
-		print "<h2>" ;
-			print $gibbonSchoolYearName ;
-		print "</h2>" ;
-		
-		print "<div class='linkTop'>" ;
-			//Print year picker
-			$previousYear=getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) ;
-			$nextYear=getNextSchoolYearID($gibbonSchoolYearID, $connection2) ;
-			if ($previousYear!=FALSE) {
-				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/course_manage.php&gibbonSchoolYearID=" . getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) . "'>" . _('Previous Year') . "</a> " ;
-			}
-			else {
-				print _("Previous Year") . " " ;
-			}
-			print " | " ;
-			if ($nextYear!=FALSE) {
-				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/course_manage.php&gibbonSchoolYearID=" . getNextSchoolYearID($gibbonSchoolYearID, $connection2) . "'>" . _('Next Year') . "</a> " ;
-			}
-			else {
-				print _("Next Year") . " " ;
-			}
-		print "</div>" ;
-		
-		//Set pagination variable
-		$page=1 ; if (isset($_GET["page"])) { $page=$_GET["page"] ; }
-		if ((!is_numeric($page)) OR $page<1) {
-			$page=1 ;
-		}
-		
-		try {
-			$data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID); 
-			$sql="SELECT * FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY nameShort, name" ; 
-			$sqlPage=$sql ." LIMIT " . $_SESSION[$guid]["pagination"] . " OFFSET " . (($page-1)*$_SESSION[$guid]["pagination"]) ; 
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-		}
-
-		print "<div class='linkTop'>" ;
-			if ($nextYear!=FALSE) {
-				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/Timetable Admin/course_manage_copyProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&gibbonSchoolYearIDNext=$nextYear' onclick='return confirm(\"Are you sure you want to do this? All courses and classes, but not their participants, will be copied.\")'>" . _('Copy All To Next Year') . "<img style='margin-left: 5px' title='" . _('Copy All To Next Year') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/copy.png'/></a> | " ;
-			}
-			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/course_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID'>" .  _('Add') . "<img style='margin-left: 5px' title='" . _('Add') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
-		print "</div>" ;
-		
-		if ($result->rowCount()<1) {
-			print "<div class='error'>" ;
-			print _("There are no records to display.") ;
-			print "</div>" ;
-		}
-		else {
-			if ($result->rowCount()>$_SESSION[$guid]["pagination"]) {
-				printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top", "gibbonSchoolYearID=$gibbonSchoolYearID") ;
-			}
-		
-			print "<table cellspacing='0' style='width: 100%'>" ;
-				print "<tr class='head'>" ;
-					print "<th>" ;
-						print _("Short Name") ;
-					print "</th>" ;
-					print "<th>" ;
-						print _("Name") ;
-					print "</th>" ;
-					print "<th>" ;
-						print _("Learning Area") ;
-					print "</th>" ;
-					print "<th>" ;
-						print _("Classes") ;
-					print "</th>" ;
-					print "<th>" ;
-						print _("Actions") ;
-					print "</th>" ;
-				print "</tr>" ;
-				
-				$count=0;
-				$rowNum="odd" ;
-				try {
-					$resultPage=$connection2->prepare($sqlPage);
-					$resultPage->execute($data);
-				}
-				catch(PDOException $e) { 
-					print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-				}
-				while ($row=$resultPage->fetch()) {
-					if ($count%2==0) {
-						$rowNum="even" ;
-					}
-					else {
-						$rowNum="odd" ;
-					}
-					
-					
-					//COLOR ROW BY STATUS!
-					print "<tr class=$rowNum>" ;
-						print "<td>" ;
-							print $row["nameShort"] ;
-						print "</td>" ;
-						print "<td>" ;
-							print $row["name"] ;
-						print "</td>" ;
-						print "<td>" ;
-							if ($row["gibbonDepartmentID"]!="") {
-								try {
-									$dataLA=array("gibbonDepartmentID"=>$row["gibbonDepartmentID"]); 
-									$sqlLA="SELECT * FROM gibbonDepartment WHERE gibbonDepartmentID=:gibbonDepartmentID" ;
-									$resultLA=$connection2->prepare($sqlLA);
-									$resultLA->execute($dataLA);
-								}
-								catch(PDOException $e) { 
-									print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-								}
-								if ($resultLA->rowCount()>=0) {
-									$rowLA=$resultLA->fetch() ;
-									print $rowLA["name"] ;
-								}
-							}
-						print "</td>" ;
-						print "<td>" ;
-							try {
-								$dataClasses=array("gibbonCourseID"=>$row["gibbonCourseID"]); 
-								$sqlClasses="SELECT * FROM gibbonCourseClass WHERE gibbonCourseID=:gibbonCourseID" ;
-								$resultClasses=$connection2->prepare($sqlClasses);
-								$resultClasses->execute($dataClasses);
-							}
-							catch(PDOException $e) { 
-								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-							}
-							if ($resultClasses->rowCount()>=0) {
-								print $resultClasses->rowCount() ;
-							}
-						print "</td>" ;
-						print "<td>" ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/course_manage_edit.php&gibbonCourseID=" . $row["gibbonCourseID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='" . _('Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/course_manage_delete.php&gibbonCourseID=" . $row["gibbonCourseID"] . "&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='" . _('Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
-						print "</td>" ;
-					print "</tr>" ;
-					
-					$count++ ;
-				}
-			print "</table>" ;
-			
-			if ($result->rowCount()>$_SESSION[$guid]["pagination"]) {
-				printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "bottom", "gibbonSchoolYearID=$gibbonSchoolYearID") ;
-			}
-		}
-	}
-}
-?>

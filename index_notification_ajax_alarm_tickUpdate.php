@@ -18,71 +18,61 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Gibbon system-wide includes
-include "./functions.php" ;
-include "./config.php" ;
+include './functions.php';
+include './config.php';
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new Gibbon\sqlConnection();
+$connection2 = $pdo->getConnection();
 
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$gibbonAlarmID=$_POST["gibbonAlarmID"] ;
-$gibbonPersonID=$_POST["gibbonPersonID"] ;
+$gibbonAlarmID = $_POST['gibbonAlarmID'];
+$gibbonPersonID = $_POST['gibbonPersonID'];
 
 //Proceed!
-if ($gibbonAlarmID=="" OR $gibbonPersonID=="") {
-	print "<div class='error'>" ;
-		print _("An error has occurred.") ;
-	print "</div>" ;
+if ($gibbonAlarmID == '' or $gibbonPersonID == '') { echo "<div class='error'>";
+    echo __($guid, 'An error has occurred.');
+    echo '</div>';
+} else {
+    //Check confirmation of alarm
+    try {
+        $dataConfirm = array('gibbonAlarmID' => $gibbonAlarmID, 'gibbonAlarmID2' => $gibbonAlarmID, 'gibbonPersonID' => $gibbonPersonID);
+        $sqlConfirm = 'SELECT surname, preferredName, gibbonAlarmConfirmID, gibbonPerson.gibbonPersonID AS confirmer, gibbonAlarm.gibbonPersonID as sounder FROM gibbonPerson JOIN gibbonAlarm ON (gibbonAlarm.gibbonAlarmID=:gibbonAlarmID) LEFT JOIN gibbonAlarmConfirm ON (gibbonAlarmConfirm.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonAlarmConfirm.gibbonAlarmID=:gibbonAlarmID2) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID';
+        $resultConfirm = $connection2->prepare($sqlConfirm);
+        $resultConfirm->execute($dataConfirm);
+    } catch (PDOException $e) {
+        echo $e->getMessage();
+    }
+
+    if ($resultConfirm->rowCount() != 1) {
+        echo "<div class='error'>";
+        echo __($guid, 'An error has occurred.');
+        echo '</div>';
+    } else {
+        $rowConfirm = $resultConfirm->fetch();
+
+        echo "<td style='color: #fff'>";
+        echo formatName('', $rowConfirm['preferredName'], $rowConfirm['surname'], 'Staff', true, true).'<br/>';
+        echo '</td>';
+        echo "<td style='color: #fff'>";
+        if ($rowConfirm['sounder'] == $rowConfirm['confirmer']) {
+            echo __($guid, 'NA');
+        } else {
+            if ($rowConfirm['gibbonAlarmConfirmID'] != '') {
+                echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> ";
+            }
+        }
+        echo '</td>';
+        echo "<td style='color: #fff'>";
+        if ($rowConfirm['sounder'] != $rowConfirm['confirmer']) {
+            if ($rowConfirm['gibbonAlarmConfirmID'] == '') {
+                echo "<a target='_parent' href='".$_SESSION[$guid]['absoluteURL'].'/index_notification_ajax_alarmConfirmProcess.php?gibbonPersonID='.$rowConfirm['confirmer']."&gibbonAlarmID=$gibbonAlarmID'><img title='".__($guid, 'Confirm')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick_light.png'/></a> ";
+            }
+        }
+        echo '</td>';
+    }
 }
-else {	
-	//Check confirmation of alarm
-	try {
-		$dataConfirm=array("gibbonAlarmID"=>$gibbonAlarmID, "gibbonAlarmID2"=>$gibbonAlarmID, "gibbonPersonID"=>$gibbonPersonID); 
-		$sqlConfirm="SELECT surname, preferredName, gibbonAlarmConfirmID, gibbonPerson.gibbonPersonID AS confirmer, gibbonAlarm.gibbonPersonID as sounder FROM gibbonPerson JOIN gibbonAlarm ON (gibbonAlarm.gibbonAlarmID=:gibbonAlarmID) LEFT JOIN gibbonAlarmConfirm ON (gibbonAlarmConfirm.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonAlarmConfirm.gibbonAlarmID=:gibbonAlarmID2) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID" ;
-		$resultConfirm=$connection2->prepare($sqlConfirm);
-		$resultConfirm->execute($dataConfirm);
-	}
-	catch(PDOException $e) { print $e->getMessage() ;}
-	
-	if ($resultConfirm->rowCount()!=1) {
-		print "<div class='error'>" ;
-			print _("An error has occurred.") ;
-		print "</div>" ;
-	}
-	else {
-		$rowConfirm=$resultConfirm->fetch() ;
-		
-		print "<td style='color: #fff'>" ;
-			print formatName("", $rowConfirm["preferredName"],$rowConfirm["surname"], "Staff", true, true) . "<br/>" ;
-		print "</td>" ;
-		print "<td style='color: #fff'>" ;
-			if ($rowConfirm["sounder"]==$rowConfirm["confirmer"]) {
-				print _("NA") ;
-			}
-			else {
-				if ($rowConfirm["gibbonAlarmConfirmID"]!="") {
-					print "<img src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/> " ;
-				}
-			}
-		print "</td>" ;
-		print "<td style='color: #fff'>" ;
-			if ($rowConfirm["sounder"]!=$rowConfirm["confirmer"]) {
-				if ($rowConfirm["gibbonAlarmConfirmID"]=="") {
-					print "<a target='_parent' href='" . $_SESSION[$guid]["absoluteURL"] . "/index_notification_ajax_alarmConfirmProcess.php?gibbonPersonID=" . $rowConfirm["confirmer"] . "&gibbonAlarmID=$gibbonAlarmID'><img title='" . _('Confirm') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick_light.png'/></a> " ;
-				}
-			}
-		print "</td>" ;
-	}
-}
-?>

@@ -17,98 +17,78 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "../../functions.php" ;
-include "../../config.php" ;
+include '../../functions.php';
+include '../../config.php';
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new Gibbon\sqlConnection();
+$connection2 = $pdo->getConnection();
 
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$gibbonSchoolYearID=$_GET["gibbonSchoolYearID"] ;
-$dates=0 ;
-if (isset($_POST["dates"])) {
-	$dates=$_POST["dates"] ;
+$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
+$dates = 0;
+if (isset($_POST['dates'])) {
+    $dates = $_POST['dates'];
 }
-$gibbonTTDayID=$_POST["gibbonTTDayID"] ;
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["q"]) . "/ttDates.php&gibbonSchoolYearID=$gibbonSchoolYearID" ;
+$gibbonTTDayID = $_POST['gibbonTTDayID'];
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['q'])."/ttDates.php&gibbonSchoolYearID=$gibbonSchoolYearID";
 
-if (isActionAccessible($guid, $connection2, "/modules/Timetable Admin/ttDates_edit_add.php")==FALSE) {
-	//Fail 0
-	$URL.="&addReturn=fail0" ;
-	header("Location: {$URL}");
-}
-else {
-	//Proceed!
-	//Validate Inputs
-	if ($gibbonSchoolYearID=="" OR $dates=="" OR count($dates)<1 OR $gibbonTTDayID=="") {
-		//Fail 3
-		$URL.="&addReturn=fail3" ;
-		header("Location: {$URL}");
-	}
-	else {
-		try {
-			$data=array("gibbonSchoolYearID"=>$gibbonSchoolYearID); 
-			$sql="SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			//Fail 2
-			$URL.="&addReturn=fail2" ;
-			header("Location: {$URL}");
-			break ;
-		}
+if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_edit_add.php') == false) {
+    $URL .= '&return=error0';
+    header("Location: {$URL}");
+} else {
+    //Proceed!
+    //Validate Inputs
+    if ($gibbonSchoolYearID == '' or $dates == '' or count($dates) < 1 or $gibbonTTDayID == '') {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+    } else {
+        try {
+            $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+            $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+            exit();
+        }
 
-		if ($result->rowCount()!=1) {
-			//Fail 2
-			$URL.="&addReturn=fail2" ;
-			header("Location: {$URL}");
-		}
-		else {
-			$partialFail=FALSE ;
-			foreach ($dates AS $date) {
-				if (isSchoolOpen($guid, date("Y-m-d", $date), $connection2, TRUE)==FALSE) {
-					$partialFail=TRUE ;
-				}
-				else {
-					//Check if a day from the TT is already set. Not enough time to add this now, but should do this one day
-					
-					//Write to database
-					try {
-						$data=array("gibbonTTDayID"=>$gibbonTTDayID, "date"=>date("Y-m-d", $date)); 
-						$sql="INSERT INTO gibbonTTDayDate SET gibbonTTDayID=:gibbonTTDayID, date=:date" ;
-						$result=$connection2->prepare($sql);
-						$result->execute($data);
-					}
-					catch(PDOException $e) { 
-						$partialFail=TRUE ;
-					}
-				}
-			}
-			
-			//Report result
-			if ($partialFail==TRUE) {
-				//Fail 6
-				$URL.="&addReturn=fail6" ;
-				header("Location: {$URL}");
-			}
-			else {
-				//Success 0
-				$URL.="&addReturn=success0" ;
-				header("Location: {$URL}");
-			}
-		}
-	}
+        if ($result->rowCount() != 1) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+        } else {
+            $partialFail = false;
+            foreach ($dates as $date) {
+                if (isSchoolOpen($guid, date('Y-m-d', $date), $connection2, true) == false) {
+                    $partialFail = true;
+                } else {
+                    //Check if a day from the TT is already set. Not enough time to add this now, but should do this one day
+
+                    //Write to database
+                    try {
+                        $data = array('gibbonTTDayID' => $gibbonTTDayID, 'date' => date('Y-m-d', $date));
+                        $sql = 'INSERT INTO gibbonTTDayDate SET gibbonTTDayID=:gibbonTTDayID, date=:date';
+                        $result = $connection2->prepare($sql);
+                        $result->execute($data);
+                    } catch (PDOException $e) {
+                        $partialFail = true;
+                    }
+                }
+            }
+
+            //Report result
+            if ($partialFail == true) {
+                $URL .= '&return=warning1';
+                header("Location: {$URL}");
+            } else {
+                $URL .= '&return=success0';
+                header("Location: {$URL}");
+            }
+        }
+    }
 }
-?>

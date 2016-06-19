@@ -18,77 +18,62 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Gibbon system-wide includes
-include "./functions.php" ;
-include "./config.php" ;
+include './functions.php';
+include './config.php';
 
 //New PDO DB connection
-try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
-}
+$pdo = new Gibbon\sqlConnection();
+$connection2 = $pdo->getConnection();
 
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$gibbonPersonID=$_GET["gibbonPersonID"] ;
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php" ;
+$gibbonPersonID = $_GET['gibbonPersonID'];
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php';
 
 //Proceed!
 //Check if planner specified
-if ($gibbonPersonID=="" OR $gibbonPersonID!=$_SESSION[$guid]["gibbonPersonID"]) {
-	//Fail1
-	$URL.="?deleteReturn=fail1" ;
-	header("Location: {$URL}");
-}
-else {
-	try {
-		$data=array("gibbonPersonID"=>$gibbonPersonID); 
-		$sql="SELECT * FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
-		$result=$connection2->prepare($sql);
-		$result->execute($data);
-	}
-	catch(PDOException $e) { 
-		//Fail2
-		$URL.="?deleteReturn=fail2" ;
-		header("Location: {$URL}");
-		BREAK ;
-	}
+if ($gibbonPersonID == '' or $gibbonPersonID != $_SESSION[$guid]['gibbonPersonID']) {
+    $URL .= '?return=error1';
+    header("Location: {$URL}");
+} else {
+    try {
+        $data = array('gibbonPersonID' => $gibbonPersonID);
+        $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $URL .= '?return=error2';
+        header("Location: {$URL}");
+        exit();
+    }
 
-	if ($result->rowCount()!=1) {
-		//Fail 2
-		$URL.="?deleteReturn=fail2" ;
-		header("Location: {$URL}");
-	}
-	else {	
-		//UPDATE
-		try {
-			$data=array("gibbonPersonID"=>$gibbonPersonID); 
-			$sql="UPDATE gibbonPerson SET image_240='' WHERE gibbonPersonID=:gibbonPersonID" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			//Fail 2
-			$URL.="?deleteReturn=fail2" ;
-			header("Location: {$URL}");
-			break ;
-		}
-		
-		//Update session variables
-		$_SESSION[$guid]["image_240"]="" ;
-		
-		//Clear cusotm sidebar
-		unset($_SESSION[$guid]["index_customSidebar.php"]) ;
-		
-		$URL.="?deleteReturn=success0" ;
-		//Success 0
-		header("Location: {$URL}");
-	}
+    if ($result->rowCount() != 1) {
+        $URL .= '?return=error2';
+        header("Location: {$URL}");
+    } else {
+        //UPDATE
+        try {
+            $data = array('gibbonPersonID' => $gibbonPersonID);
+            $sql = "UPDATE gibbonPerson SET image_240='' WHERE gibbonPersonID=:gibbonPersonID";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $URL .= '?return=error2';
+            header("Location: {$URL}");
+            exit();
+        }
+
+        //Update session variables
+        $_SESSION[$guid]['image_240'] = '';
+
+        //Clear cusotm sidebar
+        unset($_SESSION[$guid]['index_customSidebar.php']);
+
+        $URL .= '?return=success0';
+        //Success 0
+        header("Location: {$URL}");
+    }
 }
-?>
