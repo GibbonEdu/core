@@ -422,3 +422,11 @@ ALTER TABLE `gibbonModule` CHANGE `description` `description` TEXT CHARACTER SET
 UPDATE gibbonCountry SET iddCountryCode='853' WHERE printable_name='Macao';end
 UPDATE gibboni18n SET active='Y' WHERE code='nl_NL';end
 ";
+
+
+//v13.0.00
+++$count;
+$sql[$count][0] = '13.0.00';
+$sql[$count][1] = "
+
+";
