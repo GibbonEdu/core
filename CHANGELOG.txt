@@ -31,8 +31,8 @@ v13.0.00
 		...
 
 	Tweaks & Bug Fixes
-		...
-	
+		User Admin: fixed PHP Notice issue in user import
+
 
 v12.0.00
 --------
