@@ -78,6 +78,12 @@ class sqlConnection
 			include dirname(__FILE__). '/../../config.php';
 		else
 			return NULL;
+
+		global $countPDO;
+		//$countPDO++;
+		//echo "New PDO (".$countPDO.") ";
+
+
 		return $this->generateConnection($databaseServer, $databaseName, $databaseUsername, $databasePassword, $message);
 	}
 
@@ -95,24 +101,36 @@ class sqlConnection
 	 */
 	 private function generateConnection($databaseServer, $databaseName, $databaseUsername, $databasePassword, $message = NULL)
 	 {
+	 	global $globalPDO;
+
 		$this->pdo = NULL;
-		$this->success = true;
-		try
-		{
-			$this->pdo = new \PDO("mysql:host=".$databaseServer.";dbname=".$databaseName.";charset=utf8", $databaseUsername, $databasePassword );
-			$this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-			$this->pdo->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
-			$this->setSQLMode();
+
+		if (isset($globalPDO) && $globalPDO != NULL) {
+			$this->pdo = $globalPDO;
+			$this->success = true;
+		} else {
+
+			$this->success = true;
+			try
+			{
+				$this->pdo = new \PDO("mysql:host=".$databaseServer.";dbname=".$databaseName.";charset=utf8", $databaseUsername, $databasePassword, array( \PDO::ATTR_PERSISTENT => false) );
+				$this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+				$this->pdo->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
+				$this->setSQLMode();
+			}
+			catch( \PDOException $e)
+			{
+				if ($message === NULL)
+					echo $e->getMessage();
+				else
+					echo $message;
+				$this->success = false;
+				$this->error = $e->getMessage();
+			}
+			$globalPDO = $this->pdo;
+			//echo "New Connection";
 		}
-		catch( \PDOException $e)
-		{
-			if ($message === NULL)
-				echo $e->getMessage();
-			else
-				echo $message;
-			$this->success = false;
-			$this->error = $e->getMessage();
-		}
+
 		return $this;
 	}
 
